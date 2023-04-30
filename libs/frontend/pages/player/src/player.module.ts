@@ -5,9 +5,9 @@ import { AuthGuard } from '@badman/frontend-auth';
 import {
   DetailPageComponent,
   EditPageComponent,
+  RankingBreakdownPageComponent,
   SettingsPageComponent,
 } from './pages';
-import { RankingBreakdownPageComponent } from './pages';
 import { PlayerResolver } from './resolvers/player.resolver';
 
 const MODULE_ROUTES: Routes = [
@@ -45,8 +45,8 @@ const MODULE_ROUTES: Routes = [
           {
             path: ':type',
             component: RankingBreakdownPageComponent,
-          }
-        ]
+          },
+        ],
       },
       {
         path: 'settings',
@@ -60,7 +60,10 @@ const MODULE_ROUTES: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(MODULE_ROUTES)],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(MODULE_ROUTES),
+  ],
   declarations: [],
   providers: [PlayerResolver],
 })

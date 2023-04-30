@@ -18,11 +18,14 @@ import { forkJoin } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import {
   ClubStepComponent,
+  CommentsStepComponent,
   EventsStepComponent,
+  LocationsStepComponent,
   TeamForm,
   TeamsStepComponent,
   TeamsTransferStepComponent,
 } from './components';
+import { LocationForm } from './components/steps/locations/components';
 
 export const STEP_AVAILIBILTY = 1;
 
@@ -46,6 +49,8 @@ export const STEP_AVAILIBILTY = 1;
     EventsStepComponent,
     TeamsTransferStepComponent,
     TeamsStepComponent,
+    LocationsStepComponent,
+    CommentsStepComponent,
   ],
 })
 export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
@@ -64,6 +69,7 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
       },
       [Validators.required]
     ),
+    locations: new FormArray<LocationForm>([], [Validators.required]),
   });
 
   constructor(
@@ -188,8 +194,6 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
         );
       }
     }
-
-    console.log('PROMISES', observables);
 
     forkJoin(observables).subscribe((res) => {
       console.log('RES', res);

@@ -87,6 +87,9 @@
       "@badman/frontend-translation": [
         "libs/frontend/modules/translation/src/index.ts"
       ],
+      "@badman/frontend-twizzit": [
+        "libs/frontend/modules/twizzit/src/index.ts"
+      ],
       "@badman/frontend-utils": ["libs/frontend/modules/utils/src/index.ts"],
       "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],
       "@badman/utils": ["libs/utils/src/index.ts"]

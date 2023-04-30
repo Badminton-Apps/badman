@@ -169,7 +169,7 @@ export class ClubViewComponent implements OnInit {
                           }
                         }
                       }
-                      competitionSubEvent {
+                      subEventCompetition {
                         id
                         name
                         eventType
@@ -246,7 +246,7 @@ export class ClubViewComponent implements OnInit {
           `,
           variables: {
             where: {
-              startYear: year,
+              season: year,
               openDate: { $lte: new Date().toISOString() },
               closeDate: { $gte: new Date().toISOString() },
             },

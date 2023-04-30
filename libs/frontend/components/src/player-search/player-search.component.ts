@@ -7,8 +7,10 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  TemplateRef,
+  ViewChild,
 } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
@@ -30,7 +32,7 @@ import {
   startWith,
   switchMap,
 } from 'rxjs/operators';
-import { NewPlayerComponent } from '../new-player';
+import { PlayerFieldsComponent } from '../fields';
 
 @Component({
   standalone: true,
@@ -47,6 +49,9 @@ import { NewPlayerComponent } from '../new-player';
     MatFormFieldModule,
     MatDialogModule,
     MatInputModule,
+
+    // My Modules
+    PlayerFieldsComponent,
   ],
   selector: 'badman-player-search',
   templateUrl: './player-search.component.html',
@@ -56,7 +61,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   @Output() whenSelectPlayer = new EventEmitter<Player>();
 
   @Input()
-  label = 'all.players.search.label';
+  label = 'all.player.search.label';
 
   @Input()
   allowCreation = false;
@@ -90,6 +95,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
   filteredOptions$!: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
+
+  @ViewChild('newPlayer')
+  newPlayerTemplateRef?: TemplateRef<HTMLElement>;
+  newPlayerFormGroup?: FormGroup;
 
   constructor(private apollo: Apollo, private dialog: MatDialog) {}
 
@@ -262,18 +271,34 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   }
 
   selectedPlayer(event: MatAutocompleteSelectedEvent) {
-    if (event.option.value?.id == null) {
-      const dialogRef = this.dialog.open(NewPlayerComponent, {
-        data: { input: event.option.value },
+    if (event.option.value?.id == null && this.newPlayerTemplateRef) {
+      let firstName: string | undefined;
+      let lastName: string | undefined;
+      if (event.option.value != null) {
+        const spaced = event.option.value.indexOf(' ');
+        if (spaced != -1) {
+          firstName = event.option.value.slice(spaced).trim();
+          lastName = event.option.value.substr(0, spaced).trim();
+        } else {
+          firstName = event.option.value.trim();
+        }
+      }
+
+      this.newPlayerFormGroup = PlayerFieldsComponent.newPlayerForm({
+        firstName,
+        lastName,
       });
-      dialogRef.afterClosed().subscribe(async (player: Partial<Player>) => {
-        if (player) {
+
+      const dialogRef = this.dialog.open(this.newPlayerTemplateRef);
+
+      dialogRef.afterClosed().subscribe(async () => {
+        if (this.newPlayerFormGroup?.value) {
           const dbPlayer = await lastValueFrom(
             this.apollo
-              .mutate<{ addPlayer: Partial<Player> }>({
+              .mutate<{ createPlayer: Partial<Player> }>({
                 mutation: gql`
-                  mutation AddPlayer($data: PlayerNewInput!) {
-                    addPlayer(data: $data) {
+                  mutation createPlayer($data: PlayerNewInput!) {
+                    createPlayer(data: $data) {
                       id
                       slug
                       memberId
@@ -284,17 +309,17 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                 `,
                 variables: {
                   data: {
-                    memberId: player.memberId?.trim(),
-                    firstName: player.firstName?.trim(),
-                    lastName: player.lastName?.trim(),
-                    gender: player.gender?.trim(),
+                    memberId: this.newPlayerFormGroup?.value.memberId?.trim(),
+                    firstName: this.newPlayerFormGroup?.value.firstName?.trim(),
+                    lastName: this.newPlayerFormGroup?.value.lastName?.trim(),
+                    gender: this.newPlayerFormGroup?.value.gender?.trim(),
                   },
                 },
               })
-              .pipe(map((x) => new Player(x.data?.addPlayer)))
+              .pipe(map((x) => new Player(x.data?.createPlayer)))
           );
           if (!this.clearOnSelection) {
-            this.formControl.setValue(player);
+            this.formControl.setValue(this.newPlayerFormGroup?.value);
           }
           this._selectPlayer(dbPlayer);
         }

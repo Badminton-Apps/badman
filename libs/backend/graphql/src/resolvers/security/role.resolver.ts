@@ -1,4 +1,10 @@
-import { Claim, Player, Role, RoleUpdateInput } from '@badman/backend-database';
+import {
+  Claim,
+  Player,
+  Role,
+  RoleNewInput,
+  RoleUpdateInput,
+} from '@badman/backend-database';
 import {
   Logger,
   NotFoundException,
@@ -80,6 +86,79 @@ export class RoleResolver {
 
       await dbRole.setClaims(
         updateRoleData?.claims?.map((c) => c.id),
+        { transaction }
+      );
+
+      await transaction.commit();
+      return dbRole;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async deleteRole(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string
+  ) {
+    const dbRole = await Role.findByPk(id);
+    if (!dbRole) {
+      throw new NotFoundException(`${Role.name}: ${id}`);
+    }
+
+    if (
+      !user.hasAnyPermission([
+        dbRole.clubId + '_edit:role',
+        dbRole.clubId + '_edit:club',
+        'edit-any:club',
+      ])
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+    const transaction = await this._sequelize.transaction();
+    try {
+      await dbRole.destroy({ transaction });
+      await transaction.commit();
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+
+  @Mutation(() => Role)
+  async createRole(
+    @User() user: Player,
+    @Args('data') createRoleData: RoleNewInput
+  ) {
+    if (
+      !user.hasAnyPermission([
+        createRoleData.clubId + '_edit:role',
+        createRoleData.clubId + '_edit:club',
+        'edit-any:club',
+      ])
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`
+      );
+    }
+
+    const transaction = await this._sequelize.transaction();
+    try {
+      const dbRole = await Role.create(
+        { ...createRoleData },
+        {
+          transaction,
+        }
+      );
+
+      await dbRole.setClaims(
+        createRoleData?.claims?.map((c) => c.id),
         { transaction }
       );
 

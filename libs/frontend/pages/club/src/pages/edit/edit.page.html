@@ -71,18 +71,21 @@
 
 <badman-has-claim [any]="['change-base:team']">
   <h2>Base players</h2>
-  <mat-form-field fxFlex="300px">
-    <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
-    <mat-select [formControl]="this.competitionYear">
-      <mat-option
-        *ngFor="let option of this.seasons"
-        [value]="option"
-      >
-        {{ option }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
 
+  <div class="options">
+    <mat-form-field>
+      <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
+      <mat-select [formControl]="this.season">
+        <mat-option *ngFor="let option of this.seasons" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-icon-button *ngIf="this.season.value" (click)="addTeam()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
   <div class="teams">
     <badman-club-edit-team
       *ngFor="let team of this.teamsForYear$ | async"
@@ -90,6 +93,7 @@
       [club]="club"
       (whenPlayerAdded)="this.onAddBasePlayer($event, team)"
       (whenPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
+      (whenSubEventChanged)="this.onSubEventAssignedToTeam($event, team)"
     >
     </badman-club-edit-team>
   </div>

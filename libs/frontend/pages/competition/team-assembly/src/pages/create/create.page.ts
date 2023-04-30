@@ -58,7 +58,7 @@ export class CreatePageComponent implements OnInit {
   pdfLoading = false;
   saveLoading = false;
 
-  @ViewChild('validationWarnings')
+  @ViewChild('validationWarnings', { static: true })
   validationWarnings?: TemplateRef<HTMLElement>;
 
   validationOverview?: {

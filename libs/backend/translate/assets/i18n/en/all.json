@@ -45,6 +45,7 @@
     "usedForUpgrade": "Used for upgrade"
   },
   "button": {
+    "add": "Add",
     "add-comment": "Send comment",
     "all": "All",
     "cancel": "Cancel",
@@ -71,6 +72,12 @@
   },
   "club": {
     "current": "Current club",
+    "delete": {
+      "team": {
+        "description": "Are you sure you want to delete this team?",
+        "title": "Delete team"
+      }
+    },
     "end": "End",
     "menu": {
       "add-player": "Add Player",
@@ -78,6 +85,7 @@
       "edit": "Edit",
       "twizzit": "Twizzit overview"
     },
+    "new-team": "New team",
     "number": "club number",
     "start": "Start date",
     "titles": {
@@ -203,6 +211,7 @@
       "comment-liga": "Comments League competition (for each team)",
       "comment-nat": "Comments National competition (for each team)",
       "comment-prov": "Comments Provincial competition (for each team)",
+      "comments": "Comments",
       "errors": {
         "already": "Player already present as titular.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is base player of other team",
@@ -418,7 +427,11 @@
   },
   "loading": "Loading",
   "locations": {
-    "title": "Location(s)"
+    "add-day": "Add game day",
+    "add-exception": "Add Exception",
+    "days": "Game days",
+    "title": "Location(s)",
+    "uitzonderingen": "Exceptions"
   },
   "management": {
     "calculate": "Calculate",
@@ -466,7 +479,9 @@
     "select-club": "Pick a club",
     "select-encounter": "Pick an encounter",
     "select-end-time": "End time",
+    "select-event-competition": "Select League",
     "select-start-time": "Start time",
+    "select-subevent-competition": "Select series",
     "select-team": "Pick a team",
     "select-team-groups": {
       "F": "Women",
@@ -478,14 +493,13 @@
     "start-time": "Start time"
   },
   "player": {
-    "menu": {
-      "delete": "Delete",
-      "edit": "Edit"
-    }
-  },
-  "players": {
     "backup": "Backup player",
     "base": "Base player",
+    "menu": {
+      "add": "New player",
+      "delete": "Delete",
+      "edit": "Edit"
+    },
     "no-memberid": "Unknown member id",
     "regular": "Regular player",
     "search": {
@@ -615,6 +629,11 @@
     }
   },
   "team": {
+    "change-event": {
+      "change": "Choose series",
+      "pick": "Choose series",
+      "select-event-hint": "Please choose a series first before you can add players"
+    },
     "change-number": {
       "description": "Changing of the team number, also update higher/lower teams",
       "number": "Team number",
@@ -650,7 +669,8 @@
         "male": "M",
         "mix": "MX",
         "national": "NATIONAL"
-      }
+      },
+      "title": "Series"
     },
     "usedForTeam": {
       "description": "Team names are automatically generated, select which prefix you want to use.",
