@@ -85,13 +85,13 @@ export class AssemblyValidationService {
       ],
     });
     const event = await subEvent.getEventCompetition({
-      attributes: ['id', 'usedRankingUnit', 'usedRankingAmount', 'startYear'],
+      attributes: ['id', 'usedRankingUnit', 'usedRankingAmount', 'season'],
     });
 
     const sameYearSubEvents = await EventCompetition.findAll({
       attributes: ['id'],
       where: {
-        startYear: event.startYear,
+        season: event.season,
       },
       include: [
         {
@@ -149,7 +149,7 @@ export class AssemblyValidationService {
       ?.filter((m) => m.teamId !== teamId)
       ?.map((m) => m.meta);
 
-    const year = event.startYear;
+    const year = event.season;
     const usedRankingDate = moment();
     usedRankingDate.set('year', year);
     usedRankingDate.set(event.usedRankingUnit, event.usedRankingAmount);

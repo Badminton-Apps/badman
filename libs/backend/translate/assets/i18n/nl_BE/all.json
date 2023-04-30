@@ -45,6 +45,7 @@
     "usedForUpgrade": "Gebruikt enkel voor upgrade"
   },
   "button": {
+    "add": "Voeg toe",
     "add-comment": "Verstuur opmerking",
     "all": "Alles",
     "cancel": "Annuleren",
@@ -71,6 +72,12 @@
   },
   "club": {
     "current": "Huidig club",
+    "delete": {
+      "team": {
+        "description": "Weet u zeker dat je dit team wilt verwijderen?",
+        "title": "Team verwijderen"
+      }
+    },
     "end": "Einde",
     "menu": {
       "add-player": "Voeg speler toe",
@@ -78,6 +85,7 @@
       "edit": "Bewerken",
       "twizzit": "Twizzit overview"
     },
+    "new-team": "Nieuwe ploeg",
     "number": "club nummer",
     "start": "Begindatum",
     "titles": {
@@ -203,6 +211,7 @@
       "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
       "comment-nat": "Opmerkingen Nationale competitie (per ploeg)",
       "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
+      "comments": "Opmerkingen",
       "errors": {
         "already": "Speler al als titualris aanwezig.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
@@ -418,7 +427,11 @@
   },
   "loading": "Aan het laden",
   "locations": {
-    "title": "Locatie(s)"
+    "add-day": "Voeg speeldag toe",
+    "add-exception": "Voeg uitzondering toe",
+    "days": "Speeldagen",
+    "title": "Locatie(s)",
+    "uitzonderingen": "Uitzonderingen"
   },
   "management": {
     "calculate": "Bereken",
@@ -466,7 +479,9 @@
     "select-club": "Kies een club",
     "select-encounter": "Kies een ontmoeting",
     "select-end-time": "Eind tijd",
+    "select-event-competition": "Selecteer competitie",
     "select-start-time": "Start tijd",
+    "select-subevent-competition": "Selecteer reeks",
     "select-team": "Kies een ploeg",
     "select-team-groups": {
       "F": "Dames",
@@ -478,14 +493,13 @@
     "start-time": ""
   },
   "player": {
-    "menu": {
-      "delete": "Verwijder",
-      "edit": "Bewerken"
-    }
-  },
-  "players": {
     "backup": "Reserve speler",
     "base": "Basis speler",
+    "menu": {
+      "add": "Nieuwe speler",
+      "delete": "Verwijder",
+      "edit": "Bewerken"
+    },
     "no-memberid": "Onbekend lidnummer",
     "regular": "Vaste speler",
     "search": {
@@ -615,6 +629,11 @@
     }
   },
   "team": {
+    "change-event": {
+      "change": "Kies reeks",
+      "pick": "Kies reeks",
+      "select-event-hint": "Gelieve eerst een reeks te kiezen vooraleer je spelers kan toevoegen"
+    },
     "change-number": {
       "description": "Het wijzigen van het ploegnummer, update ook hogere/lagere teams",
       "number": "Ploegnummer",
@@ -650,7 +669,8 @@
         "male": "H",
         "mix": "G",
         "national": ""
-      }
+      },
+      "title": "Reeks"
     },
     "usedForTeam": {
       "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",

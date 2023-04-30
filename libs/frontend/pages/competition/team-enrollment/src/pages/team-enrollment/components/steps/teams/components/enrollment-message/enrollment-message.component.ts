@@ -3,8 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { ValidationMessage } from '../../../../../models';
 import { Player } from '@badman/frontend-models';
+import { ValidationMessage } from '../../../../../models';
 
 @Component({
   selector: 'badman-enrollment-message',

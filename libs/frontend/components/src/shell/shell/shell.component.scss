@@ -46,8 +46,6 @@
       align-items: center;
       gap: 10px;
 
-  
-
       span {
         padding-top: 5px;
       }
@@ -70,5 +68,8 @@
   .content {
     height: calc(100% - 37px);
     overflow: scroll;
+    .loading {
+      height: 3px;
+    }
   }
 }

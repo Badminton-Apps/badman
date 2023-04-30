@@ -111,7 +111,7 @@ export class ResyncBaseTeamsService {
   private async reacalc(transaction?: Transaction) {
     const events = await EventCompetition.findAll({
       where: {
-        startYear: 2022,
+        season: 2022,
       },
       transaction,
     });

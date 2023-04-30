@@ -3,8 +3,8 @@
   <div subTitle *ngIf="this.entries$ | async as entry">
     #{{entry.standing?.position}}/{{entry.standing?.size}} in
     <a
-      [routerLink]="['/competition', entry.competitionSubEvent?.eventCompetition?.slug, 'draw', entry.competitionDraw?.id ]"
-      >{{entry.competitionSubEvent?.eventCompetition?.name}}</a
+      [routerLink]="['/competition', entry.subEventCompetition?.eventCompetition?.slug, 'draw', entry.drawCompetition?.id ]"
+      >{{entry.subEventCompetition?.eventCompetition?.name}}</a
     >
   </div>
 

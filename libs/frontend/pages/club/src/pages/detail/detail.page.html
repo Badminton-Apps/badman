@@ -12,7 +12,7 @@
     </button>
 
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="downloadTwizzit(club)">
+      <button mat-menu-item (click)="downloadTwizzit()">
         <mat-icon>download</mat-icon>
         <span> {{'all.club.menu.twizzit' | translate}}</span>
       </button>
@@ -52,6 +52,9 @@
     <mat-button-toggle value="MX"
       >{{'all.gender.mix' | translate }}</mat-button-toggle
     >
+    <mat-button-toggle value="NATIONAL"
+      >{{'all.gender.national'| translate }}</mat-button-toggle
+    >
   </mat-button-toggle-group>
 
   <!-- year selection -->
@@ -67,18 +70,41 @@
 
 <ng-container *ngIf="this.teams$ | async as teams; else loadingTeams">
   <section class="teams">
-    <h3>{{'all.club.titles.teams' | translate}}</h3>
+    <div class="title">
+      <h3>{{'all.club.titles.teams' | translate}}</h3>
+      <badman-has-claim [any]="['edit-any:club', this.club.id + '_edit:club']">
+        <button mat-icon-button (click)="addTeam()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </badman-has-claim>
+    </div>
     <div class="teams-container">
       <div class="team" *ngFor="let team of teams">
         <div [routerLink]="['team',team.slug]">
           <span class="name">{{team.name}}</span>
-          <span class="event" *ngIf="team.entry?.competitionSubEvent?.name"
-            >{{team.entry?.competitionSubEvent?.name}}</span
+          <span class="event" *ngIf="team.entry?.subEventCompetition?.name"
+            >{{team.entry?.subEventCompetition?.name}}</span
           >
         </div>
 
         <badman-has-claim
-          [any]="['edit-any:club', this.club.id + '_edit:club']"
+          [any]="['edit-any:club']"
+          *ngIf="team.entry?.subEventCompetition?.id"
+        >
+          <button
+            mat-icon-button
+            aria-label="edit team"
+            class="edit-button"
+            (click)="this.editTeam(team)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        </badman-has-claim>
+
+        <!-- allow editing if the entry is empty -->
+        <badman-has-claim
+          [any]="[this.club.id + '_edit:club']"
+          *ngIf="!team.entry?.subEventCompetition?.id"
         >
           <button
             mat-icon-button
