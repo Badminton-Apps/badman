@@ -156,17 +156,18 @@ export class EnrollmentValidationService {
         r?.find((t) => t.teamId === team.team?.id)
       );
 
+
       const errors =
         ruleResults
-          ?.map((r) => r.errors)
+          ?.map((r) => r?.errors)
           ?.flat(1)
           ?.filter((e) => !!e) ?? [];
       const warnings =
         ruleResults
-          ?.map((r) => r.warnings)
+          ?.map((r) => r?.warnings)
           ?.flat(1)
           ?.filter((e) => !!e) ?? [];
-      const valid = ruleResults?.every((r) => r.valid);
+      const valid = ruleResults?.every((r) => r?.valid);
 
       teams.push({
         id: team.team?.id,
