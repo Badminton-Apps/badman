@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.72.0](https://github.com/Badminton-Apps/badman/compare/v6.71.0...v6.72.0) (2023-05-01)
+
+
+### Features
+
+* enrollment fields ([37990df](https://github.com/Badminton-Apps/badman/commit/37990df8fdea576a88797710b17eabd19c9cf56e))
+* teams and events ([e862452](https://github.com/Badminton-Apps/badman/commit/e862452112464513a697df320945cc4becfb6abb))
+
+
+### Bug Fixes
+
+* hide change-encounter if enorllment id disabled ([df4876a](https://github.com/Badminton-Apps/badman/commit/df4876ab94e8810a52de8a02172c05a381220ad7))
+* hide sidebar items which require login ([5c04d67](https://github.com/Badminton-Apps/badman/commit/5c04d67bb676d62681179cb07b0d4e69c6ff10a6))
+* not perfect, but this works ([491c9d1](https://github.com/Badminton-Apps/badman/commit/491c9d1efd8f8c3ea0a83f8437133e41da170057))
+
 ## [6.71.0](https://github.com/Badminton-Apps/badman/compare/v6.70.2...v6.71.0) (2023-04-27)
 
 
