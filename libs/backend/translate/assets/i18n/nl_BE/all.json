@@ -214,13 +214,16 @@
       "comments": "Opmerkingen",
       "errors": {
         "already": "Speler al als titualris aanwezig.",
-        "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
+        "base-other-team": "<strong>{player.fullName}</strong> is ook basis speler in een ander team",
         "comp-status-base": "Basisspeler <strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "none": "Geen fouten gevonden",
         "player-gender": "<strong>{player.fullName}</strong> is een <strong>{player.gender}</strong> maar een <strong>{gender}</strong> was verwacht",
-        "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
+        "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> en mag minimaal <strong>{minLevel}</strong> zijn.",
+        "player-subevent": "<strong>{player.fullName}</strong> is deel van het basis team <strong>{team.name}</strong> dat ook in <strong>{subEvent.name}</strong> speelt",
         "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
+        "team-order": "Team <strong>{team.name}</strong> zit in een lagere reeks maar heeft een lager team nummer",
+        "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere index in dezelfde reeks, maar heeft een lager team nummer",
         "team-to-strong": "Ploegindex titularissen is <strong>{baseIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
         "title": "Fouten"
       },

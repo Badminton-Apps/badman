@@ -214,13 +214,16 @@
       "comments": "Comments",
       "errors": {
         "already": "Player already present as titular.",
-        "club-base-other-team": "<strong>{player.fullName}</strong> is base player of other team",
+        "base-other-team": "<strong>{player.fullName}</strong> is also base player on another team",
         "comp-status-base": "Base player <strong>{player.fullName}</strong> is not marked as a competition player",
         "comp-status-team": "<strong>{player.fullName}</strong> is not marked as a competition player",
         "none": "No errors found",
         "player-gender": "<strong>{player.fullName}</strong> is a <strong>{player.gender}</strong> but a <strong>{gender}</strong> was expected",
-        "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in {rankingType} and may minimally be <strong>{minLevel}</strong>.",
+        "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> and may be at least <strong>{minLevel}</strong> .",
+        "player-subevent": "<strong>{player.fullName}</strong> is part of the base team <strong>{team.name}</strong> that also plays in <strong>{subEvent.name}</strong> ",
         "team-index": "Team index titulars equals <strong>{teamIndex}</strong> and is allowed to mimimally be <strong>{baseIndex}</strong>",
+        "team-order": "Team <strong>{team.name}</strong> is in a lower series but has a lower team number",
+        "team-order-same-subevent": "Team <strong>{team.name}</strong> has a better index in the same range, but has a lower team number",
         "team-to-strong": "Team index titulars equals <strong>{baseIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
         "title": "Errors"
       },
