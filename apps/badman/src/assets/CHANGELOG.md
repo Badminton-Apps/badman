@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.72.0](https://github.com/Badminton-Apps/badman/compare/v6.71.0...v6.72.0) (2023-05-01)
+
+
+### Features
+
+* enrollment fields ([37990df](https://github.com/Badminton-Apps/badman/commit/37990df8fdea576a88797710b17eabd19c9cf56e))
+* teams and events ([e862452](https://github.com/Badminton-Apps/badman/commit/e862452112464513a697df320945cc4becfb6abb))
+
+
+### Bug Fixes
+
+* hide change-encounter if enorllment id disabled ([df4876a](https://github.com/Badminton-Apps/badman/commit/df4876ab94e8810a52de8a02172c05a381220ad7))
+* hide sidebar items which require login ([5c04d67](https://github.com/Badminton-Apps/badman/commit/5c04d67bb676d62681179cb07b0d4e69c6ff10a6))
+* not perfect, but this works ([491c9d1](https://github.com/Badminton-Apps/badman/commit/491c9d1efd8f8c3ea0a83f8437133e41da170057))
+
+## [6.71.0](https://github.com/Badminton-Apps/badman/compare/v6.70.2...v6.71.0) (2023-04-27)
+
+
+### Features
+
+* adding/removing/updating teams ([0c79bbc](https://github.com/Badminton-Apps/badman/commit/0c79bbccaf31720599128cee474db4356d219d5c))
+* cleanup and things ([c8ed4ce](https://github.com/Badminton-Apps/badman/commit/c8ed4ce5f8b83756c5abd9ae5377df182692d92f))
+* comments for a change encounter ([3f46c43](https://github.com/Badminton-Apps/badman/commit/3f46c43799d6eb68452298000f578f8434b65133))
+* enrollment up to teams ([c49952f](https://github.com/Badminton-Apps/badman/commit/c49952fe5bc14122f96019350ac8a5eae06db1f0))
+* loading block ([24c188b](https://github.com/Badminton-Apps/badman/commit/24c188b918576b37dec38f782a46745036083479))
+* showing loading indicator when switching routes ([0b09b99](https://github.com/Badminton-Apps/badman/commit/0b09b994fd848e9c9f7dcc2b93ee20f96694dec5))
+
+
+### Bug Fixes
+
+* adding players to club ([d3e7451](https://github.com/Badminton-Apps/badman/commit/d3e7451a4766b8853a0420fd70bbd1bd5a24a100))
+* creating/deleting/updating roles ([2cd3086](https://github.com/Badminton-Apps/badman/commit/2cd3086863857e61951cfd7abdac920be7c82969))
+* don't allow all requests ([218cfeb](https://github.com/Badminton-Apps/badman/commit/218cfebc0961dfd64219a191949cbe6fd26d2b93))
+* player order mixed ([135e386](https://github.com/Badminton-Apps/badman/commit/135e386d3d096f561fdf941dcc3c56ae57f16d90))
+* worker update for entry's draw ([b7a1e96](https://github.com/Badminton-Apps/badman/commit/b7a1e963e6ba978238ba99c50a5200e4fe06dede))
+
 ### [6.70.2](https://github.com/Badminton-Apps/badman/compare/v6.70.1...v6.70.2) (2023-04-24)
 
 
