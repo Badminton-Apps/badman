@@ -21,8 +21,8 @@ import {
   VERSION_INFO,
 } from '@badman/frontend-html-injects';
 import { Banner } from '@badman/frontend-models';
-import { Observable } from 'rxjs';
-import { filter, map, shareReplay } from 'rxjs/operators';
+import { iif, Observable, of } from 'rxjs';
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { BannerComponent } from '../components/banner/banner.component';
 import { HeaderMenuComponent } from '../components/header-menu';
@@ -41,6 +41,7 @@ import {
   Router,
 } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { AuthenticateService } from '@badman/frontend-auth';
 @Component({
   selector: 'badman-shell',
   imports: [
@@ -103,7 +104,8 @@ export class ShellComponent {
     private apollo: Apollo,
     private router: Router,
     updates: SwUpdate,
-    snackBar: MatSnackBar
+    snackBar: MatSnackBar,
+    private authService: AuthenticateService
   ) {
     this.banner = new Banner(
       config.publisherId,
@@ -133,34 +135,42 @@ export class ShellComponent {
             });
         });
 
-      this.canEnroll$ = this.apollo
-        .query<{
-          eventTournaments: { count: number };
-          eventCompetitions: { count: number };
-        }>({
-          query: gql`
-            # we request only first one, because if it's more that means it's open
-            query CanEnroll($where: JSONObject) {
-              eventCompetitions(take: 1, where: $where) {
-                count
-              }
-            }
-          `,
-          variables: {
-            where: {
-              openDate: { $lte: new Date().toISOString() },
-              closeDate: { $gte: new Date().toISOString() },
-            },
-          },
-        })
-        .pipe(
-          map(
-            (events) =>
-              (events?.data?.eventTournaments?.count ?? 0) != 0 ||
-              (events?.data?.eventCompetitions?.count ?? 0) != 0
+      this.canEnroll$ = this.authService.loggedIn$?.pipe(
+        switchMap((loggedIn) =>
+          iif(
+            () => loggedIn,
+            this.apollo
+              .query<{
+                eventTournaments: { count: number };
+                eventCompetitions: { count: number };
+              }>({
+                query: gql`
+                  # we request only first one, because if it's more that means it's open
+                  query CanEnroll($where: JSONObject) {
+                    eventCompetitions(take: 1, where: $where) {
+                      count
+                    }
+                  }
+                `,
+                variables: {
+                  where: {
+                    openDate: { $lte: new Date().toISOString() },
+                    closeDate: { $gte: new Date().toISOString() },
+                  },
+                },
+              })
+              .pipe(
+                map(
+                  (events) =>
+                    (events?.data?.eventTournaments?.count ?? 0) != 0 ||
+                    (events?.data?.eventCompetitions?.count ?? 0) != 0
+                )
+              ),
+            of(false)
           )
-        );
-
+        )
+      ) as Observable<boolean>;
+      
       this.router.events.subscribe((event: Event) => {
         switch (true) {
           case event instanceof NavigationStart: {
