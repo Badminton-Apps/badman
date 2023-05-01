@@ -1,6 +1,8 @@
 import {
+  EventCompetition,
   Player,
   RankingLastPlace,
+  RankingPlace,
   RankingSystem,
   SubEventCompetition,
   Team,
@@ -15,10 +17,13 @@ import {
 } from '../../models';
 import {
   CompetitionStatusRule,
+  PlayerBaseRule,
   PlayerGenderRule,
   PlayerMinLevelRule,
+  PlayerSubEventRule,
   Rule,
   TeamBaseIndexRule,
+  TeamOrderRule,
   TeamSubeventIndexRule,
 } from './rules';
 
@@ -48,6 +53,11 @@ export class EnrollmentValidationService {
       where: {
         id: teams.map((e) => e.subEventId),
       },
+      include: [
+        {
+          model: EventCompetition,
+        },
+      ],
     });
 
     const playerIds = teams
@@ -61,10 +71,12 @@ export class EnrollmentValidationService {
       },
       include: [
         {
-          model: RankingLastPlace,
+          model: RankingPlace,
           where: {
             systemId: system?.id,
           },
+          order: [['rankingDate', 'DESC']],
+          limit: 1,
         },
       ],
     });
@@ -94,14 +106,17 @@ export class EnrollmentValidationService {
           }))
         );
 
+        const preTeam = previousSeasonTeams.find((p) => p.linkId === t.link);
+
         return {
           team: new Team({
             id: t.id,
             type: t.type,
+            name: t.name,
+            teamNumber: t.teamNumber,
+            link: preTeam?.link,
           }),
-          previousSeasonTeam: previousSeasonTeams.find(
-            (p) => p.linkId === t.link
-          ),
+          previousSeasonTeam: preTeam,
           isNewTeam: t.link === null,
           possibleOldTeam: false,
           id: t.id,
@@ -187,6 +202,9 @@ export class EnrollmentValidationService {
       new CompetitionStatusRule(),
       new PlayerMinLevelRule(),
       new PlayerGenderRule(),
+      new PlayerBaseRule(),
+      new PlayerSubEventRule(),
+      new TeamOrderRule(),
     ];
   }
 }
