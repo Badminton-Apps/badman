@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnDestroy,
-  OnInit
+  OnInit,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -124,84 +124,90 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         shareReplay(1)
       );
-      const filters$ = this._loadFilters(routeParam$, queryParam$);
 
-      this.system$ = filters$.pipe(
-        switchMap(() => this._loadSystem()),
-        tap((system) => {
-          if (system == null) {
-            return;
-          }
-          const end = null;
+      // Load query filters and update the form
+      this._loadFilters(routeParam$, queryParam$)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          // load system
+          this.system$ = this._loadSystem().pipe(
+            tap((system) => {
+              if (system == null) {
+                return;
+              }
+              const end = null;
 
-          // Default we take next update interval, if no end is given
-          const endPeriod =
-            (end ?? null) == null
-              ? moment(system.caluclationIntervalLastUpdate)
-              : moment(end);
-          const startPeriod = endPeriod
-            .clone()
-            .subtract(system.periodAmount, system.periodUnit);
-          const gamePeriod = startPeriod
-            .clone()
-            .subtract(system.updateIntervalAmount, system.updateIntervalUnit);
+              // Default we take next update interval, if no end is given
+              const endPeriod =
+                (end ?? null) == null
+                  ? moment(system.caluclationIntervalLastUpdate)
+                  : moment(end);
+              const startPeriod = endPeriod
+                .clone()
+                .subtract(system.periodAmount, system.periodUnit);
+              const gamePeriod = startPeriod
+                .clone()
+                .subtract(
+                  system.updateIntervalAmount,
+                  system.updateIntervalUnit
+                );
 
-          const nextPeriod = startPeriod
-            .clone()
-            .add(
-              system.caluclationIntervalAmount,
-              system.calculationIntervalUnit
-            );
+              const nextPeriod = startPeriod
+                .clone()
+                .add(
+                  system.caluclationIntervalAmount,
+                  system.calculationIntervalUnit
+                );
 
-          this.period.setValue({
-            start: startPeriod,
-            end: endPeriod,
-            game: gamePeriod,
-            next: nextPeriod,
-          });
-        })
-      );
+              this.period.setValue({
+                start: startPeriod,
+                end: endPeriod,
+                game: gamePeriod,
+                next: nextPeriod,
+              });
+            })
+          );
 
-      this.games$ = filters$.pipe(switchMap(() => this._loadGames()));
+          this.games$ = this._loadGames();
+        });
 
       // if the filters change, we need to update the query params
       this.gameFilter.valueChanges
-        .pipe(
-          takeUntil(this.destroy$),
-          distinctUntilChanged((a, b) => {
-            return JSON.stringify(a) === JSON.stringify(b);
-          })
-          // debounceTime(100)
-        )
+        .pipe(takeUntil(this.destroy$))
         .subscribe((filters) => {
           const queryParams: Params = {};
-          if (filters['includedIgnored']) {
-            queryParams['includedIgnored'] = filters['includedIgnored'];
-          }
-          if (filters['includedUpgrade'] == false) {
-            queryParams['includedUpgrade'] = filters['includedUpgrade'];
-          }
-          if (filters['includedDowngrade'] == false) {
-            queryParams['includedDowngrade'] = filters['includedDowngrade'];
-          }
-          if (filters['includeOutOfScope']) {
-            queryParams['includeOutOfScope'] = filters['includeOutOfScope'];
+
+          queryParams['includedIgnored'] = filters['includedIgnored']
+            ? true
+            : undefined;
+          queryParams['includedUpgrade'] = filters['includedUpgrade']
+            ? undefined
+            : false;
+          queryParams['includedDowngrade'] = filters['includedDowngrade']
+            ? undefined
+            : false;
+          queryParams['includeOutOfScope'] = filters['includeOutOfScope']
+            ? true
+            : undefined;
+
+          const commands =
+            filters['gameType'] !== this.route.snapshot.paramMap.get('type')
+              ? ['..', `${filters['gameType']}`]
+              : [];
+
+          // only navigate if the filters are different
+          if (
+            JSON.stringify(this.route.snapshot.queryParams) ===
+            JSON.stringify(queryParams)
+          ) {
+            return;
           }
 
-          // gameType is a route param, update the route if it changes
-          if (
-            filters['gameType'] !== this.route.snapshot.paramMap.get('type')
-          ) {
-            this.router.navigate(['..', filters['gameType']], {
-              relativeTo: this.route,
-              queryParams: queryParams,
-            });
-          } else {
-            this.router.navigate([], {
-              relativeTo: this.route,
-              queryParams: queryParams,
-            });
-          }
+          // update the query params
+          this.router.navigate(commands, {
+            relativeTo: this.route,
+            queryParams,
+          });
         });
     });
   }
@@ -236,12 +242,15 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
         }
 
         this.gameFilter.patchValue(filters);
+      }),
+      shareReplay(1),
+      distinctUntilChanged((a, b) => {
+        return JSON.stringify(a) === JSON.stringify(b);
       })
     );
   }
 
   private _loadSystem() {
-
     return this.systemService.getPrimarySystemsWhere().pipe(
       switchMap((query) =>
         this.apollo
