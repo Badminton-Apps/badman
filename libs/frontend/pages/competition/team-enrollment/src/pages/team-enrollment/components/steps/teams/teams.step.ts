@@ -398,6 +398,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     if (!input) return of();
     const teams: {
       id?: string;
+      name?: string;
       type: SubEventTypeEnum;
       teamNumber?: number;
       subEventId?: string;
@@ -414,6 +415,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
         if (!team.team.type) return;
         teams.push({
           id: team.team.id,
+          name: team.team.name,
           type: team.team.type,
           teamNumber: team.team.teamNumber,
           subEventId: team.entry.subEventId,
@@ -432,6 +434,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     }
 
     return this.apollo.query<{ enrollmentValidation: ValidationResult }>({
+      fetchPolicy: 'no-cache',
       query: gql`
         query ValidateEnrollment($enrollment: EnrollmentInput!) {
           enrollmentValidation(enrollment: $enrollment) {

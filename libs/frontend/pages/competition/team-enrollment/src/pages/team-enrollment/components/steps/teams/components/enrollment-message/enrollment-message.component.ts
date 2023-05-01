@@ -3,7 +3,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { Player } from '@badman/frontend-models';
+import {
+  EventCompetition,
+  Player,
+  SubEventCompetition,
+  Team,
+} from '@badman/frontend-models';
 import { ValidationMessage } from '../../../../../models';
 
 @Component({
@@ -35,8 +40,11 @@ export class EnrollmentMessageComponent implements OnInit {
       this._getIndex(),
       this._getRequiredGender(),
       this._getPlayers(),
+      this._getTeam(),
+      this._getRanking(),
+      this._getEvent(),
     ]).pipe(
-      map(([index, gender, players]) => {
+      map(([index, gender, players, team, minLevel, event]) => {
         const params: {
           [key: string]: unknown;
         } = {};
@@ -45,7 +53,14 @@ export class EnrollmentMessageComponent implements OnInit {
           params['gender'] = gender;
         }
 
-        return { ...params, ...players, ...index };
+        return {
+          ...params,
+          ...players,
+          ...index,
+          ...team,
+          ...minLevel,
+          ...event,
+        };
       })
     );
   }
@@ -57,6 +72,30 @@ export class EnrollmentMessageComponent implements OnInit {
     const maxIndex = this.validation?.params?.['maxIndex'] as string;
 
     return of({ teamIndex, minIndex, maxIndex, baseIndex });
+  }
+
+  private _getTeam() {
+    const team = this.validation?.params?.['team'] as Partial<Team>;
+
+    return of({ team });
+  }
+
+  private _getRanking() {
+    const minLevel = this.validation?.params?.['minLevel'] as number;
+    const rankingType = this.validation?.params?.['rankingType'] as string;
+
+    return of({ minLevel, rankingType });
+  }
+
+  private _getEvent() {
+    const event = this.validation?.params?.[
+      'event'
+    ] as Partial<EventCompetition>;
+    const subEvent = this.validation?.params?.[
+      'subEvent'
+    ] as Partial<SubEventCompetition>;
+
+    return of({ event, subEvent });
   }
 
   private _getPlayers() {
