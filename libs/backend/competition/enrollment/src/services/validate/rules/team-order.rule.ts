@@ -14,7 +14,9 @@ export class TeamOrderRule extends Rule {
     // iterate over types of SubEventTypeEnum
     for (const type of Object.values(SubEventTypeEnum)) {
       // get all teams of this type
-      const teams = enrollment.teams.filter((team) => team.team.type === type);
+      const teams = enrollment.teams.filter(
+        (team) => team.team.type === type && team.subEvent
+      );
 
       // sort teams by teamIndex
       teams.sort((a, b) => a.teamIndex - b.teamIndex);
