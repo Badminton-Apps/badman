@@ -6,6 +6,9 @@ import {
 } from '../../../models';
 import { Rule } from './_rule.base';
 
+/**
+ * Checks if a player is in the basePlayers array of 2 teams of the same type
+ */
 export class PlayerBaseRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
