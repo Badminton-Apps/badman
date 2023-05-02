@@ -323,6 +323,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
                   );
                   return {
                     ...team,
+                    id: undefined,
                     selected: teamThisSeason != null,
                   } as Team & { selected: boolean };
                 });
@@ -378,10 +379,6 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
   }
 
   select(selected: boolean, team: Team & { selected: boolean }) {
-    if (!team.id) {
-      return;
-    }
-
     // if the team is already selected, we don't need to do anything
     const typedControl = this.control?.get(
       team.type ?? ''
@@ -460,15 +457,19 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.markForCheck();
   }
 
-  selectAll() {
-    for (let i = 0; i < (this.teamsForm?.length ?? 0); i++) {
-      this.teamsForm?.[i].setValue(true);
+  selectAll(type: 'lastSeason' | 'newThisSeason') {
+    const form = type == 'lastSeason' ? this.teamsForm : this.newTeamsForm;
+
+    for (let i = 0; i < (form?.length ?? 0); i++) {
+      form?.[i].setValue(true);
     }
   }
 
-  deselectAll() {
-    for (let i = 0; i < (this.teamsForm?.length ?? 0); i++) {
-      this.teamsForm?.[i].setValue(false);
+  deselectAll(type: 'lastSeason' | 'newThisSeason') {
+    const form = type == 'lastSeason' ? this.teamsForm : this.newTeamsForm;
+
+    for (let i = 0; i < (form?.length ?? 0); i++) {
+      form?.[i].setValue(false);
     }
   }
 

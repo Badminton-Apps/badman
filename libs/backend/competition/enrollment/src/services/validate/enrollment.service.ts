@@ -156,7 +156,6 @@ export class EnrollmentValidationService {
         r?.find((t) => t.teamId === team.team?.id)
       );
 
-
       const errors =
         ruleResults
           ?.map((r) => r?.errors)
