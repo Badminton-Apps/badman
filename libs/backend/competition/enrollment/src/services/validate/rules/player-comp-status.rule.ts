@@ -8,7 +8,7 @@ import { Rule } from './_rule.base';
 /**
  * Checks if all players have the competition status active
  */
-export class CompetitionStatusRule extends Rule {
+export class PlayerCompStatusRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
 
