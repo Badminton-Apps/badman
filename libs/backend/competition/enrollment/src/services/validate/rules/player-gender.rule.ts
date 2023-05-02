@@ -8,7 +8,7 @@ import {
 import { Rule } from './_rule.base';
 
 /**
- * Checks
+ * Checks if the players is the correct gender for the team
  */
 export class PlayerGenderRule extends Rule {
   async validate(enrollment: EnrollmentValidationData): Promise<RuleResult[]> {
