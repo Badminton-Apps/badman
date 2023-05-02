@@ -1,7 +1,6 @@
 import {
   EventCompetition,
   Player,
-  RankingLastPlace,
   RankingPlace,
   RankingSystem,
   SubEventCompetition,
@@ -16,7 +15,7 @@ import {
   TeamEnrollmentOutput,
 } from '../../models';
 import {
-  CompetitionStatusRule,
+  PlayerCompStatusRule,
   PlayerBaseRule,
   PlayerGenderRule,
   PlayerMinLevelRule,
@@ -197,13 +196,14 @@ export class EnrollmentValidationService {
 
   static defaultValidators(): Rule[] {
     return [
+      new PlayerBaseRule(),
+      new PlayerCompStatusRule(),
+      new PlayerGenderRule(),
+      new PlayerMinLevelRule(),
+      new PlayerSubEventRule(),
+
       new TeamBaseIndexRule(),
       new TeamSubeventIndexRule(),
-      new CompetitionStatusRule(),
-      new PlayerMinLevelRule(),
-      new PlayerGenderRule(),
-      new PlayerBaseRule(),
-      new PlayerSubEventRule(),
       new TeamOrderRule(),
     ];
   }

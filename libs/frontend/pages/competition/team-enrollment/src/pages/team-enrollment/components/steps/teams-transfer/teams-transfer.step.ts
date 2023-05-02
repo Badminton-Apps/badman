@@ -23,6 +23,7 @@ import { sortTeams } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 import {
   distinctUntilChanged,
   filter,
@@ -323,7 +324,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
                   );
                   return {
                     ...team,
-                    id: undefined,
+                    id: uuidv4(),
                     selected: teamThisSeason != null,
                   } as Team & { selected: boolean };
                 });
