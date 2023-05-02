@@ -113,13 +113,14 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
     const observables = [];
 
     // save the teams to the backend
-    for (const team of [
+    for (const enrollment of [
       ...this.formGroup.value.teams.M,
       ...this.formGroup.value.teams.F,
       ...this.formGroup.value.teams.MX,
       ...this.formGroup.value.teams.NATIONAL,
     ]) {
-      const players = team.players.map((player: Partial<TeamPlayer>) => {
+
+      const players = enrollment.team.players.map((player: Partial<TeamPlayer>) => {
         return {
           id: player.id,
           membershipType: player.membershipType,
@@ -127,7 +128,7 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
       });
 
       const meta = {
-        players: team.players.map(
+        players: enrollment.entry.players.map(
           (
             player: Partial<Player> & {
               single: number;
@@ -145,12 +146,12 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
       };
 
       const data = {
-        id: team.id,
-        name: team.name,
-        teamNumber: team.teamNumber,
-        type: team.type,
+        id: enrollment.team.id,
+        name: enrollment.team.name,
+        teamNumber: enrollment.team.teamNumber,
+        type: enrollment.team.type,
         clubId: this.formGroup.value.club,
-        link: team.link,
+        link: enrollment.team.link,
         season: this.formGroup.value.season,
         players,
         entry: {
@@ -162,7 +163,7 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
         },
       };
 
-      if (team.id) {
+      if (enrollment.team.id) {
         observables.push(
           this.apollo.mutate({
             mutation: gql`

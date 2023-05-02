@@ -28,7 +28,7 @@ export class EnrollmentInput {
 
 @InputType()
 export class EnrollmentInputTeam extends PartialType(
-  PickType(Team, ['id', 'type', 'link', 'teamNumber'] as const),
+  PickType(Team, ['id', 'name', 'type', 'link', 'teamNumber'] as const),
   InputType
 ) {
   @Field(() => [ID], { nullable: true })
@@ -125,7 +125,7 @@ export class EnrollmentValidationTeam {
   possibleOldTeam: boolean;
 
   teamIndex: number;
-  teamPlayers: (Player)[];
+  teamPlayers: Player[];
   backupPlayers: Player[];
 
   baseIndex: number;

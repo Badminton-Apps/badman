@@ -41,10 +41,6 @@ export class AppController {
     private mailService: MailingService
   ) {}
 
-  @Get('')
-  async getRoot() {
-    return 'Hello world';
-  }
 
   @Post('queue-job')
   async getQueueJob(

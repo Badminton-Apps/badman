@@ -33,14 +33,13 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
-import { v4 as uuidv4 } from 'uuid';
 export type TeamFormValue = {
   team: Team;
   entry: {
     players: EntryCompetitionPlayer[];
     subEventId: string | null;
-  }
-}
+  };
+};
 
 export type TeamForm = FormGroup<{
   team: FormControl<Team>;
@@ -95,7 +94,12 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
   season?: number;
 
   teamsForm?: FormControl[] = [];
-  teams$?: Observable<Team[]>;
+  newTeamsForm?: FormControl[] = [];
+
+  teams$?: Observable<{
+    lastSeason: Team[];
+    newThisSeason: Team[];
+  }>;
   teamSubscriptions: Subscription[] = [];
   destroy$ = new Subject<void>();
 
@@ -303,28 +307,63 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
               map((result) => result.data.teams?.map((team) => new Team(team))),
               map((teams) => teams?.sort(sortTeams)),
               map((teams) => {
-                return teams
-                  ?.filter((team) => team.season == season - 1)
+                const teamsLastSeason = teams?.filter(
+                  (team) => team.season == season - 1
+                );
+                const teamsThisSeason = teams?.filter(
+                  (team) => team.season == season
+                );
+
+                // we have 2 arrays, teams of last season
+                // and teams that have been already created this season but don't have a link to last season
+
+                const lastSeason = teamsLastSeason?.map((team) => {
+                  const teamThisSeason = teamsThisSeason?.find(
+                    (t) => t.link == team.link
+                  );
+                  return {
+                    ...team,
+                    id: undefined,
+                    selected: teamThisSeason != null,
+                  } as Team & { selected: boolean };
+                });
+
+                const newThisSeason = teamsThisSeason
+                  ?.filter((team) => team.link == null)
                   ?.map((team) => {
                     return {
                       ...team,
-                      selected:
-                        teams?.find(
-                          (t) => t.season == season && t.link == team.link
-                        ) != null,
+                      selected: true,
                     } as Team & { selected: boolean };
                   });
+
+                return {
+                  lastSeason,
+                  newThisSeason,
+                };
               })
             )
         ),
         shareReplay(1),
-        tap((teams) => {
+        tap(({ lastSeason, newThisSeason }) => {
           this.teamSubscriptions.forEach((sub) => sub.unsubscribe());
 
-          this.teamsForm = [];
-          for (const team of teams ?? []) {
+          for (const team of lastSeason ?? []) {
             const control = new FormControl(team.selected);
             this.teamsForm?.push(control);
+            this.teamSubscriptions.push(
+              control.valueChanges.subscribe((value) => {
+                if (value == null) {
+                  return;
+                }
+                this.select(value, team);
+              })
+            );
+          }
+
+          for (const team of newThisSeason ?? []) {
+            const control = new FormControl(team.selected);
+            this.newTeamsForm?.push(control);
             this.teamSubscriptions.push(
               control.valueChanges.subscribe((value) => {
                 if (value == null) {
@@ -340,10 +379,6 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
   }
 
   select(selected: boolean, team: Team & { selected: boolean }) {
-    if (!team.id) {
-      return;
-    }
-
     // if the team is already selected, we don't need to do anything
     const typedControl = this.control?.get(
       team.type ?? ''
@@ -358,24 +393,15 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id, selected, ...rest } = team;
-
-      const newTeam = new Team({
-        ...rest,
-        id: uuidv4(),
-        season: (rest.season ?? 0) + 1,
-      });
-
       let entry: {
         players: EntryCompetitionPlayer[];
         subEventId: string | null;
       };
 
       // convert entries
-      if (newTeam.entry) {
+      if (team.entry) {
         entry = {
-          players: (newTeam.entry.meta?.competition?.players?.map((p) => {
+          players: (team.entry.meta?.competition?.players?.map((p) => {
             return {
               id: p.id,
               gender: p.gender,
@@ -398,7 +424,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
       }
       if (typedControl) {
         if (index != null && index >= 0) {
-          typedControl.at(index)?.get('team')?.patchValue(newTeam);
+          typedControl.at(index)?.get('team')?.patchValue(team);
           typedControl.at(index)?.get('entry')?.patchValue(entry);
         } else {
           const players = new FormArray<
@@ -410,7 +436,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
           }
 
           const newGroup = new FormGroup({
-            team: new FormControl(newTeam),
+            team: new FormControl(team as Team),
             entry: new FormGroup({
               players,
               subEventId: new FormControl(entry.subEventId),
@@ -431,15 +457,19 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.markForCheck();
   }
 
-  selectAll() {
-    for (let i = 0; i < (this.teamsForm?.length ?? 0); i++) {
-      this.teamsForm?.[i].setValue(true);
+  selectAll(type: 'lastSeason' | 'newThisSeason') {
+    const form = type == 'lastSeason' ? this.teamsForm : this.newTeamsForm;
+
+    for (let i = 0; i < (form?.length ?? 0); i++) {
+      form?.[i].setValue(true);
     }
   }
 
-  deselectAll() {
-    for (let i = 0; i < (this.teamsForm?.length ?? 0); i++) {
-      this.teamsForm?.[i].setValue(false);
+  deselectAll(type: 'lastSeason' | 'newThisSeason') {
+    const form = type == 'lastSeason' ? this.teamsForm : this.newTeamsForm;
+
+    for (let i = 0; i < (form?.length ?? 0); i++) {
+      form?.[i].setValue(false);
     }
   }
 

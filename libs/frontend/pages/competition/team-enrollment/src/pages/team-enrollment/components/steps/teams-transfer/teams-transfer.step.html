@@ -2,21 +2,37 @@
   {{'all.competition.team-enrollment.transfer-teams-description' | translate}}
 </div>
 
-<div class="all">
-  <button mat-button (click)="selectAll()">
-    {{ 'all.button.all' | translate }}
-  </button>
-  <button mat-button (click)="deselectAll()">
-    {{ 'all.button.none' | translate }}
-  </button>
-</div>
-
 <ng-container *ngIf="teams$ | async as teams else loading">
-  <div class="teams" *ngFor="let team of teams; let i = index ">
+  <div class="all">
+    <button mat-button (click)="selectAll('lastSeason')">
+      {{ 'all.button.all' | translate }}
+    </button>
+    <button mat-button (click)="deselectAll('lastSeason')">
+      {{ 'all.button.none' | translate }}
+    </button>
+  </div>
+  <div class="teams" *ngFor="let team of teams.lastSeason; let i = index ">
     <mat-checkbox [formControl]="this.teamsForm![i]"
       >{{ team.name }}</mat-checkbox
     >
   </div>
+
+  <ng-container *ngIf="teams.newThisSeason.length > 0">
+    <h3>{{ 'all.competition.team-enrollment.new-teams' | translate }}</h3>
+    <div class="all">
+      <button mat-button (click)="selectAll('newThisSeason')">
+        {{ 'all.button.all' | translate }}
+      </button>
+      <button mat-button (click)="deselectAll('newThisSeason')">
+        {{ 'all.button.none' | translate }}
+      </button>
+    </div>
+    <div class="teams" *ngFor="let team of teams.newThisSeason; let i = index ">
+      <mat-checkbox [formControl]="this.newTeamsForm![i]"
+        >{{ team.name }}</mat-checkbox
+      >
+    </div>
+  </ng-container>
 </ng-container>
 
 <ng-template #loading>

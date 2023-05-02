@@ -1,5 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   Inject,
   OnDestroy,
@@ -39,6 +40,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
 import {
+  tap,
+  shareReplay,
+  distinctUntilChanged,
   filter,
   map,
   startWith,
@@ -100,7 +104,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private twizzitService: TwizzitService,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   get isClient(): boolean {
@@ -133,9 +137,13 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       });
 
       const filters$ = combineLatest([
-        this.filter.valueChanges,
-        this.update$,
-      ]).pipe(startWith([this.filter.value]), takeUntil(this.destroy$));
+        this.filter.valueChanges.pipe(startWith(this.filter.value)),
+        this.update$.pipe(startWith(null)),
+      ]).pipe(
+        shareReplay(1),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        takeUntil(this.destroy$)
+      );
 
       this.teams$ = filters$.pipe(
         switchMap(([filter]) => this._loadTeams(filter))
