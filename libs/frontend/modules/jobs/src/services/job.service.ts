@@ -28,6 +28,7 @@ export class JobsService {
     return this.http.post(`${this.config.api}/queue-job`, {
       queue: 'sync',
       job: 'SyncRanking',
+      jobArgs: {},
       removeOnComplete: true,
       removeOnFail: true,
     });
