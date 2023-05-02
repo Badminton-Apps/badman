@@ -221,10 +221,13 @@ export type I18nTranslations = {
                     "base-other-team": string;
                     "comp-status-base": string;
                     "comp-status-team": string;
+                    "faller": string;
+                    "first-team-index": string;
                     "none": string;
                     "player-gender": string;
                     "player-min-level": string;
                     "player-subevent": string;
+                    "riser": string;
                     "team-index": string;
                     "team-order": string;
                     "team-order-same-subevent": string;

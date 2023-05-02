@@ -24,6 +24,10 @@ export class EnrollmentInput {
 
   @Field(() => ID, { nullable: true })
   systemId?: string;
+
+  @Field(() => Int, { nullable: true })
+  season?: number;
+  
 }
 
 @InputType()
