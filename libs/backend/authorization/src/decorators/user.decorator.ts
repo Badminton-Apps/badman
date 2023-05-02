@@ -17,6 +17,7 @@ export const User = createParamDecorator(
     return {
       hasAnyPermission: () => env.NODE_ENV === 'development' || false,
       hasAllPermissions: () => env.NODE_ENV === 'development' || false,
+      toJSON: () => ({}),
       ...user,
     };
   }
