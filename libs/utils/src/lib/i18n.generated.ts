@@ -218,13 +218,16 @@ export type I18nTranslations = {
                 "comments": string;
                 "errors": {
                     "already": string;
-                    "club-base-other-team": string;
+                    "base-other-team": string;
                     "comp-status-base": string;
                     "comp-status-team": string;
                     "none": string;
                     "player-gender": string;
                     "player-min-level": string;
+                    "player-subevent": string;
                     "team-index": string;
+                    "team-order": string;
+                    "team-order-same-subevent": string;
                     "team-to-strong": string;
                     "title": string;
                 };
