@@ -52,6 +52,7 @@ export class EnrollmentValidationService {
       previousSeasonTeams = await Team.findAll({
         where: {
           link: teamIdIds,
+          season: season - 1,
         },
         include: [
           {
