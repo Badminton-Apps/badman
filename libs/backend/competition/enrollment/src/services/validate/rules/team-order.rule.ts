@@ -1,10 +1,10 @@
-import { SubEventCompetition } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
 import {
   EnrollmentValidationData,
   EnrollmentValidationError,
   RuleResult,
 } from '../../../models';
+import { isFirstHigher } from '../utils/sub-event-order';
 import { Rule } from './_rule.base';
 
 export class TeamOrderRule extends Rule {
@@ -32,7 +32,7 @@ export class TeamOrderRule extends Rule {
         );
 
         for (const higherTeam of higherTeams) {
-          const subEventDiff = this.isFirstHigher(
+          const subEventDiff = isFirstHigher(
             higherTeam.subEvent,
             teamEnrollment.subEvent
           );
@@ -71,36 +71,5 @@ export class TeamOrderRule extends Rule {
     }
 
     return results;
-  }
-
-  private isFirstHigher(
-    subEvent1: SubEventCompetition,
-    subEvent2: SubEventCompetition
-  ) {
-    const typeOrder = {
-      NATIONAL: 1,
-      LIGA: 2,
-      PROV: 3,
-    };
-
-    if (subEvent1.id === subEvent2.id) {
-      return 'same';
-    }
-
-    if (
-      typeOrder[subEvent1.eventCompetition.type] <
-      typeOrder[subEvent2.eventCompetition.type]
-    ) {
-      return 'better';
-    } else if (
-      typeOrder[subEvent1.eventCompetition.type] ===
-      typeOrder[subEvent2.eventCompetition.type]
-    ) {
-      if (subEvent1.level < subEvent2.level) {
-        return 'better';
-      }
-    }
-
-    return 'lower';
   }
 }

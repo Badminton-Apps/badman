@@ -400,6 +400,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       id?: string;
       name?: string;
       type: SubEventTypeEnum;
+      link?: string;
       teamNumber?: number;
       subEventId?: string;
       players?: string[];
@@ -419,6 +420,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
           type: team.team.type,
           teamNumber: team.team.teamNumber,
           subEventId: team.entry.subEventId,
+          link: team.team.link,
           players: team.team?.players
             ?.map((p) => p.id)
             ?.filter((p) => p) as string[],
@@ -463,6 +465,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       `,
       variables: {
         enrollment: {
+          season: this.group.get('season')?.value,
           teams,
         },
       },
