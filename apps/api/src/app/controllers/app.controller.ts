@@ -56,7 +56,7 @@ export class AppController {
     this.logger.debug({
       message: 'Queueing job',
       args: args.job,
-      user: user.toJSON(),
+      user: user?.toJSON(),
       hasPerm: user.hasAnyPermission(['change:job']),
     });
 

@@ -10,7 +10,7 @@ import {
 } from '@badman/frontend-html-injects';
 import { JobsModule } from '@badman/frontend-jobs';
 
-import { HttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -32,6 +32,7 @@ import { AppComponent } from './app.component';
 import { ShellComponent } from '@badman/frontend-components';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
+import { AuthHttpInterceptor } from '@auth0/auth0-angular';
 
 const APP_ROUTES: Routes = [
   {
@@ -64,7 +65,7 @@ const APP_ROUTES: Routes = [
       import('@badman/frontend-ranking').then((m) => m.RankingModule),
     data: {
       animation: 'ranking',
-    }
+    },
   },
   {
     path: 'competition',
@@ -183,6 +184,11 @@ const APP_ROUTES: Routes = [
         apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
         libraries: ['places'],
       },
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthHttpInterceptor,
+      multi: true,
     },
   ],
   bootstrap: [AppComponent],
