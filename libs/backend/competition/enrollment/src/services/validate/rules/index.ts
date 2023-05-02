@@ -1,7 +1,7 @@
 // start:ng42.barrel
 export * from './_rule.base';
-export * from './comp-status.rule';
 export * from './player-base.rule';
+export * from './player-comp-status.rule';
 export * from './player-gender.rule';
 export * from './player-min-level.rule';
 export * from './player-subevent.rule';

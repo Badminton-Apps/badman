@@ -6,7 +6,9 @@ import {
 } from '../../../models';
 import { Rule } from './_rule.base';
 import { RankingPlace } from '@badman/backend-database';
-
+/**
+ * Checks if the min level of the subEvent is not crossed
+ */
 export class PlayerMinLevelRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
