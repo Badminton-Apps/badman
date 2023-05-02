@@ -16,8 +16,8 @@ export class PlayerGenderRule extends Rule {
 
     for (const { basePlayers, teamPlayers, team, backupPlayers } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
-      const warnings = [] as EnrollmentValidationError[];
       let teamValid = true;
+      const warnings = [] as EnrollmentValidationError[];
 
       if (team?.type == SubEventTypeEnum.M) {
         errors.push(

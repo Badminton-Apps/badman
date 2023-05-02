@@ -1,11 +1,11 @@
 import { SubEventTypeEnum } from '@badman/utils';
 import {
   EnrollmentValidationData,
-  RuleResult,
   EnrollmentValidationError,
+  RuleResult,
 } from '../../../models';
 import { Rule } from './_rule.base';
-import { RankingPlace } from '@badman/backend-database';
+
 /**
  * Checks if the min level of the subEvent is not crossed
  */
@@ -18,7 +18,6 @@ export class PlayerMinLevelRule extends Rule {
       teamPlayers,
       basePlayers,
       subEvent,
-      system,
     } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
       let teamValid = true;
@@ -27,14 +26,11 @@ export class PlayerMinLevelRule extends Rule {
         const uniquePlayers = new Set([...teamPlayers, ...basePlayers]);
 
         for (const player of uniquePlayers) {
-          let ranking = player?.rankingPlaces?.[0];
+          const ranking = player?.rankingPlaces?.[0];
 
-          ranking = {
-            ...ranking,
-            single: ranking.single || system.amountOfLevels,
-            double: ranking.double || system.amountOfLevels,
-            mix: ranking.mix || system.amountOfLevels,
-          } as RankingPlace;
+          if (!ranking) {
+            continue;
+          }
 
           if (ranking.single < subEvent.maxLevel) {
             teamValid = false;

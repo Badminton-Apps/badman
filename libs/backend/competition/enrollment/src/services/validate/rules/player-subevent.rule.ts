@@ -6,28 +6,25 @@ import {
 } from '../../../models';
 import { Rule } from './_rule.base';
 
+/**
+ * Checks if a player is part of the base of team A and plays in team B as team or backup player
+ */
 export class PlayerSubEventRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
 
-    // create a map of player ids to team and array type
-    const playerMap = new Map<
-      string,
-      { enrollment: EnrollmentValidationTeam; arrayType: string }
-    >();
+    // create a map of player ids and which enrollment they are part of
+    const playerEnrollmentsMap = new Map<string, EnrollmentValidationTeam[]>();
     enrollment.teams.forEach((team) => {
-      team.basePlayers.forEach((player) =>
-        playerMap.set(player.id, { enrollment: team, arrayType: 'basePlayers' })
-      );
-      team.teamPlayers.forEach((player) =>
-        playerMap.set(player.id, { enrollment: team, arrayType: 'teamPlayers' })
-      );
-      team.backupPlayers.forEach((player) =>
-        playerMap.set(player.id, {
-          enrollment: team,
-          arrayType: 'backupPlayers',
-        })
-      );
+      team.teamPlayers.forEach((player) => {
+        const current = playerEnrollmentsMap.get(player.id);
+        return playerEnrollmentsMap.set(player.id, [...(current || []), team]);
+      });
+
+      team.backupPlayers.forEach((player) => {
+        const current = playerEnrollmentsMap.get(player.id);
+        return playerEnrollmentsMap.set(player.id, [...(current || []), team]);
+      });
     });
 
     const warnings = new Map<string, EnrollmentValidationError[]>();
@@ -36,27 +33,25 @@ export class PlayerSubEventRule extends Rule {
     for (const { team, subEvent, basePlayers } of enrollment.teams) {
       // check each player in the team's basePlayers array
       for (const player of basePlayers) {
-        const playerInOtherTeam = playerMap.get(player.id);
-        if (
-          playerInOtherTeam &&
-          playerInOtherTeam.arrayType !== 'basePlayers' &&
-          playerInOtherTeam.enrollment.subEvent.id === subEvent.id &&
-          playerInOtherTeam.enrollment.team.id !== team.id
-        ) {
-          // player is also in another team's teamPlayers or backupPlayers array for the same SubEvent
-          const currentWrans = warnings.get(
-            playerInOtherTeam.enrollment.team.id
-          );
+        // find the player enrollments where not baseplayer
+        const playerInOtherTeam = playerEnrollmentsMap.get(player.id) || [];
 
-          warnings.set(playerInOtherTeam.enrollment.team.id, [
+        // check if any enrollments are for the same subevent but different team
+        const enrollmentSameSubEvent = playerInOtherTeam.filter(
+          (en) => en.subEvent.id === subEvent.id && en.team.id !== team.id
+        );
+
+        for (const otherTeam of enrollmentSameSubEvent) {
+          // player is also in another team's teamPlayers or backupPlayers array for the same SubEvent
+          const currentWrans = warnings.get(otherTeam.team.id);
+
+          warnings.set(otherTeam.team.id, [
             ...(currentWrans || []),
             {
               message: `all.competition.team-enrollment.errors.player-subevent`,
               params: { player, team, subEvent },
             },
           ]);
-
-          this.logger.warn(playerInOtherTeam.enrollment.team);
         }
       }
     }
