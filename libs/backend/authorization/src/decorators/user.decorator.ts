@@ -15,9 +15,9 @@ export const User = createParamDecorator(
 
     // If we don't have a user in the request, set the permissions to return false;
     return {
-      ...user,
       hasAnyPermission: () => env.NODE_ENV === 'development' || false,
       hasAllPermissions: () => env.NODE_ENV === 'development' || false,
+      ...user,
     };
   }
 );
@@ -33,3 +33,4 @@ export interface LoggedInUser extends Player {
     scope: string;
   };
 }
+   

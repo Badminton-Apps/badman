@@ -41,7 +41,6 @@ export class AppController {
     private mailService: MailingService
   ) {}
 
-
   @Post('queue-job')
   async getQueueJob(
     @User() user: Player,
@@ -57,6 +56,7 @@ export class AppController {
     this.logger.debug({
       message: 'Queueing job',
       args: args.job,
+      user: user.toJSON(),
       hasPerm: user.hasAnyPermission(['change:job']),
     });
 
