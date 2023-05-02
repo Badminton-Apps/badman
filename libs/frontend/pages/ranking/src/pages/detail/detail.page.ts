@@ -8,8 +8,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
+  HasClaimComponent,
   PageHeaderComponent,
-  RankingTableComponent
+  RankingTableComponent,
 } from '@badman/frontend-components';
 import { RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
@@ -17,6 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { UploadRankingDialogComponent } from '../../dialogs';
+import { JobsService } from '@badman/frontend-jobs';
+import { take } from 'rxjs';
 
 @Component({
   templateUrl: './detail.page.html',
@@ -38,18 +41,19 @@ import { UploadRankingDialogComponent } from '../../dialogs';
 
     // My Componments
     PageHeaderComponent,
-    RankingTableComponent
+    RankingTableComponent,
+    HasClaimComponent,
   ],
 })
 export class DetailPageComponent implements OnInit {
   rankingSystem!: RankingSystem;
 
-
   constructor(
     private seoService: SeoService,
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private breadcrumbsService: BreadcrumbService
+    private breadcrumbsService: BreadcrumbService,
+    private jobService: JobsService
   ) {}
 
   ngOnInit(): void {
@@ -71,5 +75,9 @@ export class DetailPageComponent implements OnInit {
       },
       disableClose: true,
     });
+  }
+
+  sync() {
+    this.jobService.syncRanking().pipe(take(1)).subscribe();
   }
 }
