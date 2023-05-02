@@ -109,6 +109,14 @@ const APP_ROUTES: Routes = [
           typeof window !== 'undefined' ? window.location.origin : '',
         audience: 'ranking-simulation',
       },
+      httpInterceptor: {
+        allowedList: [
+          {
+            uriMatcher: (uri) => uri.indexOf('v1') > -1,
+            allowAnonymous: true,
+          },
+        ],
+      },
     }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
