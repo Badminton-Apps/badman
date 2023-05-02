@@ -23,4 +23,13 @@ export class JobsService {
       removeOnFail: true,
     });
   }
+
+  syncRanking() {
+    return this.http.post(`${this.config.api}/queue-job`, {
+      queue: 'sync',
+      job: 'SyncRanking',
+      removeOnComplete: true,
+      removeOnFail: true,
+    });
+  }
 }
