@@ -7,33 +7,41 @@
     "build": {
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
       "options": {
+        "target": "node",
+        "compiler": "tsc",
         "outputPath": "dist/apps/scripts",
         "main": "apps/scripts/src/main.ts",
         "tsConfig": "apps/scripts/tsconfig.app.json",
-        "assets": ["apps/scripts/src/assets"]
+        "assets": ["apps/scripts/src/assets"],
+        "webpackConfig": "apps/api/webpack.config.js"
       },
       "configurations": {
+        "development": {},
         "production": {
           "optimization": true,
           "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/scripts/src/environments/environment.ts",
-              "with": "apps/scripts/src/environments/environment.prod.ts"
-            }
-          ]
+          "inspect": false          
         }
       }
     },
     "serve": {
       "executor": "@nx/node:node",
+      "defaultConfiguration": "development",
       "options": {
         "buildTarget": "scripts:build",
         "port": 9240,
         "inspect": "inspect",
         "host": "0.0.0.0"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "api:build:development"
+        },
+        "production": {
+          "buildTarget": "api:build:production"
+        }
       }
     },
     "lint": {
@@ -49,6 +57,12 @@
       "options": {
         "jestConfig": "apps/scripts/jest.config.js",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
   },
