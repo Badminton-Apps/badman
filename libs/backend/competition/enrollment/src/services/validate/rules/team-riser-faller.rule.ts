@@ -1,9 +1,9 @@
+import { isFirstHigher } from '@badman/utils';
 import {
   EnrollmentValidationData,
   RuleResult,
   EnrollmentValidationError,
 } from '../../../models';
-import { isFirstHigher } from '../utils/sub-event-order';
 import { Rule } from './_rule.base';
 
 /**

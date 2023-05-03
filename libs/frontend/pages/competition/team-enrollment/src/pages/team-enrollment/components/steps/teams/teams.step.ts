@@ -35,6 +35,7 @@ import {
   TeamMembershipType,
   UseForTeamName,
   getLetterForRegion,
+  sortSubEventOrder,
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -54,15 +55,13 @@ import {
   shareReplay,
   startWith,
   switchMap,
-  take,
   takeUntil,
-  tap,
 } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
+import { CLUB, EVENTS, SEASON, TEAMS } from '../../../../../forms';
 import { ValidationResult } from '../../../models';
 import { TeamForm, TeamFormValue } from '../teams-transfer';
 import { TeamEnrollmentComponent } from './components';
-import { CLUB, EVENTS, SEASON, TEAMS } from '../../../../../forms';
 
 type FormArrayOfTeams = {
   [key in SubEventType]: FormArray<TeamForm>;
@@ -550,21 +549,30 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
           result.data.subEventCompetitions?.map(
             (subEvent) => new SubEventCompetition(subEvent)
           ) ?? [];
+
         return {
-          M: subEvents.filter((subEvent) => subEvent.eventType === 'M'),
-          F: subEvents.filter((subEvent) => subEvent.eventType === 'F'),
-          MX: subEvents.filter(
-            (subEvent) =>
-              subEvent?.eventType === 'MX' &&
-              subEvent?.eventCompetition?.type &&
-              subEvent?.eventCompetition?.type != LevelType.NATIONAL
-          ),
-          NATIONAL: subEvents.filter(
-            (subEvent) =>
-              subEvent?.eventType === 'MX' &&
-              subEvent?.eventCompetition?.type &&
-              subEvent?.eventCompetition?.type == LevelType.NATIONAL
-          ),
+          M: subEvents
+            .filter((subEvent) => subEvent.eventType === 'M')
+            .sort(sortSubEventOrder),
+          F: subEvents
+            .filter((subEvent) => subEvent.eventType === 'F')
+            .sort(sortSubEventOrder),
+          MX: subEvents
+            .filter(
+              (subEvent) =>
+                subEvent?.eventType === 'MX' &&
+                subEvent?.eventCompetition?.type &&
+                subEvent?.eventCompetition?.type != LevelType.NATIONAL
+            )
+            .sort(sortSubEventOrder),
+          NATIONAL: subEvents
+            .filter(
+              (subEvent) =>
+                subEvent?.eventType === 'MX' &&
+                subEvent?.eventCompetition?.type &&
+                subEvent?.eventCompetition?.type == LevelType.NATIONAL
+            )
+            .sort(sortSubEventOrder),
         };
       }),
       shareReplay(1)
