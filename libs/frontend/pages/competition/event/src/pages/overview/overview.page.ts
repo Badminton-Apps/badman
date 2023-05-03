@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -91,6 +97,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private jobsService: JobsService,
     private matSnackBar: MatSnackBar,
+    private changeDetectorRef: ChangeDetectorRef,
     formBuilder: FormBuilder
   ) {
     this.filter = formBuilder.group({
@@ -255,7 +262,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           order: [
             {
               direction: 'desc',
-              field: 'official'
+              field: 'official',
             },
             {
               direction: direction || 'desc',
@@ -311,6 +318,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
             duration: 2000,
           }
         );
+
+        this.changeDetectorRef.detectChanges();
       });
   }
 
