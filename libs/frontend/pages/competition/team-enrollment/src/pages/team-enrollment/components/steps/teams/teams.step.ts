@@ -62,6 +62,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ValidationResult } from '../../../models';
 import { TeamForm, TeamFormValue } from '../teams-transfer';
 import { TeamEnrollmentComponent } from './components';
+import { CLUB, EVENTS, SEASON, TEAMS } from '../../../../../forms';
 
 type FormArrayOfTeams = {
   [key in SubEventType]: FormArray<TeamForm>;
@@ -121,7 +122,16 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
   control?: FormGroup<FormArrayOfTeams>;
 
   @Input()
-  controlName = 'teams';
+  controlName = TEAMS;
+
+  @Input()
+  seasonControlName = SEASON;
+
+  @Input()
+  clubControlName = CLUB;
+
+  @Input()
+  eventsControlName = EVENTS;
 
   @ViewChildren(TeamEnrollmentComponent, { read: ElementRef })
   teamReferences: QueryList<ElementRef<HTMLElement>> | undefined;
@@ -191,28 +201,20 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     this.clubs$ = this._getClubs();
     this.subEvents$ = this._getSubEvents();
 
-    const initialSubevents = this.setInitialSubEvents();
-    if (initialSubevents) {
-      combineLatest(initialSubevents)
-        .pipe(take(1))
-        .subscribe(() => {
-          this.control?.valueChanges
-            .pipe(
-              takeUntil(this.destroy$),
-              startWith(this.control?.value),
-              debounceTime(200),
-              switchMap((v) =>
-                this.validateEnrollment(v as FormArrayOfTeamsValue)
-              )
-            )
-            .subscribe((v) => {
-              if (v?.data?.enrollmentValidation) {
-                this.#validationResult.next(v?.data?.enrollmentValidation);
-                this.changedector.markForCheck();
-              }
-            });
-        });
-    }
+    this.control?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        startWith(this.control?.value),
+        switchMap((v) => combineLatest(this.setInitialSubEvents() ?? of()).pipe(map(() => v))),
+        debounceTime(200),
+        switchMap((v) => this.validateEnrollment(v as FormArrayOfTeamsValue))
+      )
+      .subscribe((v) => {
+        if (v?.data?.enrollmentValidation) {
+          this.#validationResult.next(v?.data?.enrollmentValidation);
+          this.changedector.markForCheck();
+        }
+      });
   }
 
   ngOnDestroy() {
@@ -465,7 +467,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       `,
       variables: {
         enrollment: {
-          season: this.group.get('season')?.value,
+          season: this.group.get(this.seasonControlName)?.value,
           teams,
         },
       },
@@ -473,7 +475,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
   }
 
   private _getClubs() {
-    const clubId = this.group.get('club')?.value;
+    const clubId = this.group.get(this.clubControlName)?.value;
     return this.apollo
       .query<{ club: Club }>({
         query: gql`
@@ -501,14 +503,14 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
   }
 
   private _getSubEvents() {
-    const eventsVal$ = this.group.get('events')?.valueChanges;
+    const eventsVal$ = this.group.get(this.eventsControlName)?.valueChanges;
 
     if (!eventsVal$) {
       return;
     }
 
     return eventsVal$.pipe(
-      startWith(this.group.get('events')?.value),
+      startWith(this.group.get(this.eventsControlName)?.value),
       filter((events) => !!events && events.length > 0),
       distinctUntilChanged(),
       switchMap((events: string[]) => {

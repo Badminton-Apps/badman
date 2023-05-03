@@ -170,7 +170,9 @@ export class TeamsResolver {
           clubId: newTeamData.clubId,
           season: newTeamData.season,
         },
-        defaults: { ...newTeamData },
+        defaults: {
+          newTeamData,
+        },
         transaction,
       });
 
@@ -183,6 +185,7 @@ export class TeamsResolver {
         teamDb.season = newTeamData.season;
         teamDb.type = newTeamData.type;
         teamDb.teamNumber = newTeamData.teamNumber;
+        teamDb.link = newTeamData.link;
 
         await teamDb.save({ transaction });
       }
@@ -244,13 +247,20 @@ export class TeamsResolver {
         let dbEntry = await teamDb.getEntry({ transaction });
 
         if (!dbEntry) {
-          dbEntry = await EventEntry.create(
-            {
-              ...newTeamData.entry,
+          [dbEntry] = await EventEntry.findCreateFind({
+            where: {
               teamId: teamDb.id,
+              subEventId: newTeamData.entry.subEventId,
             },
-            { transaction, hooks: false }
-          );
+            defaults: {
+              ...newTeamData.entry,
+            },
+            transaction,
+            hooks: false,
+          });
+        } else {
+          // Might be a new link
+          dbEntry.subEventId = newTeamData.entry.subEventId;
         }
 
         if (newTeamData.entry.meta.competition.players) {

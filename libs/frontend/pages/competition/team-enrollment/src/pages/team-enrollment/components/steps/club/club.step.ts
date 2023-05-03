@@ -8,6 +8,7 @@ import {
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SelectClubComponent } from '@badman/frontend-components';
 import { debounceTime, pairwise } from 'rxjs';
+import { CLUB } from '../../../../../forms';
 
 @Component({
   selector: 'badman-club-step',
@@ -24,9 +25,12 @@ export class ClubStepComponent implements OnInit {
   @Input()
   value?: FormControl<string | null | undefined>;
 
+  @Input()
+  controlName = CLUB;
+
   ngOnInit() {
     if (this.group) {
-      this.value = this.group?.get('club') as FormControl<string>;
+      this.value = this.group?.get(this.controlName) as FormControl<string>;
     }
 
     if (!this.value) {
@@ -34,7 +38,7 @@ export class ClubStepComponent implements OnInit {
     }
 
     if (this.group) {
-      this.group.addControl('club', this.value);
+      this.group.addControl(this.controlName, this.value);
     }
 
     this.value?.valueChanges

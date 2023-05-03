@@ -31,6 +31,10 @@ export class PlayerSubEventRule extends Rule {
 
     // check if a player doesn't exist in 2 base teams
     for (const { team, subEvent, basePlayers } of enrollment.teams) {
+      if (!subEvent) {
+        continue;
+      }
+
       // check each player in the team's basePlayers array
       for (const player of basePlayers) {
         // find the player enrollments where not baseplayer
@@ -38,7 +42,7 @@ export class PlayerSubEventRule extends Rule {
 
         // check if any enrollments are for the same subevent but different team
         const enrollmentSameSubEvent = playerInOtherTeam.filter(
-          (en) => en.subEvent.id === subEvent.id && en.team.id !== team.id
+          (en) => en?.subEvent?.id === subEvent.id && en.team.id !== team.id
         );
 
         for (const otherTeam of enrollmentSameSubEvent) {
