@@ -99,9 +99,7 @@
   <div class="expandable-item" (click)="expanded.base = !expanded.base">
     <div>
       {{ 'all.competition.team-enrollment.players.base' | translate }}
-      <span class="index"
-        >Base index: {{ baseIndex }} (Team index: {{ teamIndex }})</span
-      >
+      
     </div>
     <mat-icon *ngIf="!expanded.base">expand_more</mat-icon>
     <mat-icon *ngIf="expanded.base">expand_less</mat-icon>
