@@ -118,14 +118,14 @@ export class EnrollmentValidationService {
           t.type,
           teamPlayers?.map((p) => ({
             ...p.toJSON(),
-            lastRanking: p.rankingLastPlaces?.[0]?.toJSON(),
+            lastRanking: p.rankingPlaces?.[0]?.toJSON(),
           }))
         );
         const baseIndex = getIndexFromPlayers(
           t.type,
           basePlayers?.map((p) => ({
             ...p.toJSON(),
-            lastRanking: p.rankingLastPlaces?.[0]?.toJSON(),
+            lastRanking: p.rankingPlaces?.[0]?.toJSON(),
           }))
         );
 
