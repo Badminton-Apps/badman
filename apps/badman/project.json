@@ -31,6 +31,8 @@
         ],
         "allowedCommonJsDependencies": [
           "moment",
+          "file-saver",
+          "seed-to-color",
           "raf",
           "rgbcolor",
           "quill",

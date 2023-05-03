@@ -16,6 +16,10 @@ export class TeamRiserFallerRule extends Rule {
     for (const { team, previousSeasonTeam, subEvent } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
 
+      if (!subEvent) {
+        continue;
+      }
+
       if (
         previousSeasonTeam?.entry?.standing?.riser &&
         isFirstHigher(

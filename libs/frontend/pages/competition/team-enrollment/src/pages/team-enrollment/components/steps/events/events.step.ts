@@ -24,6 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, pairwise, startWith } from 'rxjs';
 import { TeamForm } from '../teams-transfer';
+import { EVENTS, TEAMS } from '../../../../../forms';
 
 @Component({
   selector: 'badman-events-step',
@@ -55,7 +56,10 @@ export class EventsStepComponent implements OnInit {
   control?: FormControl<string[] | null>;
 
   @Input()
-  controlName = 'events';
+  controlName = EVENTS;
+
+  @Input()
+  teamsControlName = TEAMS;  
 
   provFormControl = new FormControl<EventCompetition | null>(null, [
     Validators.required,
@@ -163,9 +167,12 @@ export class EventsStepComponent implements OnInit {
   }
 
   private _loadInitialEvents() {
-    const teams = this.group.get('teams') as FormGroup<{
+    const teams = this.group.get(this.teamsControlName) as FormGroup<{
       [key in SubEventType]: FormArray<TeamForm>;
     }>;
+
+    console.log(teams.value);
+    console.log(this.group.value);
 
     teams?.valueChanges.pipe(startWith(teams.value)).subscribe((teams) => {
       // find if any team was selected previous year or if current year is already present select those
@@ -246,6 +253,7 @@ export class EventsStepComponent implements OnInit {
           this.select({ checked: true } as MatCheckboxChange, 'NATIONAL');
         }
       }
+      this.cdr.detectChanges();
     });
   }
 }
