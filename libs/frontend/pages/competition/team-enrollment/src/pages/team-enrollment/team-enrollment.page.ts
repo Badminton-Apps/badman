@@ -97,11 +97,6 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
           enrollemnt['all.competition.team-enrollment.title']
         );
       });
-
-    // I'm going to hate myself for this
-    this.formGroup.valueChanges.subscribe((value) => {
-      console.log('VALUE', value);
-    });
   }
 
   ngAfterViewInit(): void {
