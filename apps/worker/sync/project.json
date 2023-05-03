@@ -7,7 +7,10 @@
     "build": {
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
       "options": {
+        "target": "node",
+        "compiler": "tsc",
         "outputPath": "dist/apps/worker/sync",
         "main": "apps/worker/sync/src/main.ts",
         "tsConfig": "apps/worker/sync/tsconfig.app.json",
@@ -19,29 +22,33 @@
             "output": "compile/libs/mailing"
           }
         ],
-        "generatePackageJson": true
+        "webpackConfig": "apps/api/webpack.config.js"
       },
       "configurations": {
+        "development": {},
         "production": {
           "optimization": true,
           "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/worker/sync/src/environments/environment.ts",
-              "with": "apps/worker/sync/src/environments/environment.prod.ts"
-            }
-          ]
+          "inspect": false
         }
       }
     },
     "serve": {
       "executor": "@nx/node:node",
+      "defaultConfiguration": "development",
       "options": {
         "buildTarget": "worker-sync:build",
         "port": 9230,
         "inspect": "inspect",
         "host": "0.0.0.0"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "api:build:development"
+        },
+        "production": {
+          "buildTarget": "api:build:production"
+        }
       }
     },
     "serve-dev": {
@@ -66,6 +73,12 @@
       "options": {
         "jestConfig": "apps/worker/sync/jest.config.js",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
   },

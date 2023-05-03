@@ -7,34 +7,40 @@
     "build": {
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
       "options": {
+        "target": "node",
+        "compiler": "tsc",
         "outputPath": "dist/apps/worker/ranking",
         "main": "apps/worker/ranking/src/main.ts",
         "tsConfig": "apps/worker/ranking/tsconfig.app.json",
         "assets": ["apps/worker/ranking/src/assets"],
-        "generatePackageJson": true
+        "webpackConfig": "apps/api/webpack.config.js"
       },
       "configurations": {
         "production": {
           "optimization": true,
           "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/worker/ranking/src/environments/environment.ts",
-              "with": "apps/worker/ranking/src/environments/environment.prod.ts"
-            }
-          ]
+          "inspect": false
         }
       }
     },
     "serve": {
       "executor": "@nx/node:node",
+      "defaultConfiguration": "development",
       "options": {
         "buildTarget": "worker-ranking:build",
         "port": 9231,
         "inspect": "inspect",
         "host": "0.0.0.0"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "api:build:development"
+        },
+        "production": {
+          "buildTarget": "api:build:production"
+        }
       }
     },
     "serve-dev": {
@@ -59,6 +65,12 @@
       "options": {
         "jestConfig": "apps/worker/ranking/jest.config.js",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
   },
