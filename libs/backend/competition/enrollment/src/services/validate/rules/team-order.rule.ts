@@ -1,10 +1,9 @@
-import { SubEventTypeEnum } from '@badman/utils';
+import { SubEventTypeEnum, isFirstHigher } from '@badman/utils';
 import {
   EnrollmentValidationData,
   EnrollmentValidationError,
   RuleResult,
 } from '../../../models';
-import { isFirstHigher } from '../utils/sub-event-order';
 import { Rule } from './_rule.base';
 
 export class TeamOrderRule extends Rule {
