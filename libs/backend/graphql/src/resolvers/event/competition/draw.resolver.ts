@@ -102,7 +102,13 @@ export class DrawCompetitionResolver {
         const entries = await drawCompetitionDb.getEntries({ transaction });
         const standings: Standing[] = [];
         for (const entry of entries) {
-          standings.push(await entry.getStanding({ transaction }));
+          const standing = await entry.getStanding({ transaction });
+
+          if (!standing) {
+            this.logger.warn(`No standing found for entry ${entry.id}`);
+          } else {
+            standings.push(standing);
+          }
         }
 
         // sort the standings by place
@@ -129,6 +135,8 @@ export class DrawCompetitionResolver {
 
         // save the standings
         for (const standing of standings) {
+          standing.changed('faller', true);
+          standing.changed('riser', true);
           await standing.save({ transaction });
         }
       }
