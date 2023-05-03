@@ -24,6 +24,10 @@ export class PlayerMinLevelRule extends Rule {
       const errors = [] as EnrollmentValidationError[];
       let teamValid = true;
 
+      if (!subEvent){
+        continue;
+      }
+
       if (team?.teamNumber != 1) {
         const uniquePlayers = new Set([...teamPlayers, ...basePlayers]);
 

@@ -22,6 +22,7 @@ import {
   LocationForm,
   LocationavAilibilityType,
 } from './components';
+import { CLUB, LOCATIONS, SEASON } from '../../../../../forms';
 
 @Component({
   selector: 'badman-locations-step',
@@ -41,16 +42,16 @@ export class LocationsStepComponent implements OnInit {
   control?: FormArray<LocationForm>;
 
   @Input()
-  controlName = 'locations';
+  controlName = LOCATIONS;
 
   @Input()
-  clubControlName = 'club';
+  clubControlName = CLUB;
 
   @Input()
   clubId?: string;
 
   @Input()
-  seasonControlName = 'season';
+  seasonControlName = SEASON;
 
   @Input()
   season?: number;

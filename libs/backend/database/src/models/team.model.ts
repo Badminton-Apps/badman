@@ -345,7 +345,7 @@ export class TeamUpdateInput extends PartialType(
 
 @InputType()
 export class TeamNewInput extends PartialType(
-  OmitType(TeamUpdateInput, ['id', 'entry', 'players'] as const),
+  OmitType(TeamUpdateInput, ['entry', 'players'] as const),
   InputType
 ) {
   // Include the entry

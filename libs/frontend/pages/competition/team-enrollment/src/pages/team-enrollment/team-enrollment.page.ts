@@ -26,6 +26,7 @@ import {
   TeamsTransferStepComponent,
 } from './components';
 import { LocationForm } from './components/steps/locations/components';
+import { CLUB, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
 
 export const STEP_AVAILIBILTY = 1;
 
@@ -57,19 +58,16 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
   formGroup: FormGroup = new FormGroup({
-    season: new FormControl(2023, [Validators.required]),
-    club: new FormControl(undefined, [Validators.required]),
-    events: new FormControl([], [Validators.required]),
-    teams: new FormGroup(
-      {
-        M: new FormArray<TeamForm>([]),
-        F: new FormArray<TeamForm>([]),
-        MX: new FormArray<TeamForm>([]),
-        NATIONAL: new FormArray<TeamForm>([]),
-      },
-      [Validators.required]
-    ),
-    locations: new FormArray<LocationForm>([], [Validators.required]),
+    [SEASON]: new FormControl(2023, [Validators.required]),
+    [CLUB]: new FormControl(undefined, [Validators.required]),
+    [EVENTS]: new FormControl([], [Validators.required]),
+    [TEAMS]: new FormGroup({
+      M: new FormArray<TeamForm>([]),
+      F: new FormArray<TeamForm>([]),
+      MX: new FormArray<TeamForm>([]),
+      NATIONAL: new FormArray<TeamForm>([]),
+    }),
+    [LOCATIONS]: new FormArray<LocationForm>([], [Validators.required]),
   });
 
   constructor(
@@ -99,6 +97,11 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
           enrollemnt['all.competition.team-enrollment.title']
         );
       });
+
+    // I'm going to hate myself for this
+    this.formGroup.valueChanges.subscribe((value) => {
+      console.log('VALUE', value);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -119,13 +122,14 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
       ...this.formGroup.value.teams.MX,
       ...this.formGroup.value.teams.NATIONAL,
     ]) {
-
-      const players = enrollment.team.players.map((player: Partial<TeamPlayer>) => {
-        return {
-          id: player.id,
-          membershipType: player.membershipType,
-        };
-      });
+      const players = enrollment.team.players.map(
+        (player: Partial<TeamPlayer>) => {
+          return {
+            id: player.id,
+            membershipType: player.membershipType,
+          };
+        }
+      );
 
       const meta = {
         players: enrollment.entry.players.map(
@@ -155,6 +159,7 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
         season: this.formGroup.value.season,
         players,
         entry: {
+          subEventId: enrollment.entry.subEventId,
           meta: {
             competition: {
               players: meta.players,
@@ -163,37 +168,20 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
         },
       };
 
-      if (enrollment.team.id) {
-        observables.push(
-          this.apollo.mutate({
-            mutation: gql`
-              mutation UpdateTeam($team: TeamUpdateInput!) {
-                updateTeam(data: $team) {
-                  id
-                }
+      observables.push(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation CreateTeam($team: TeamNewInput!) {
+              createTeam(data: $team) {
+                id
               }
-            `,
-            variables: {
-              team: data,
-            },
-          })
-        );
-      } else {
-        observables.push(
-          this.apollo.mutate({
-            mutation: gql`
-              mutation CreateTeam($team: TeamNewInput!) {
-                createTeam(data: $team) {
-                  id
-                }
-              }
-            `,
-            variables: {
-              team: data,
-            },
-          })
-        );
-      }
+            }
+          `,
+          variables: {
+            team: data,
+          },
+        })
+      );
     }
 
     forkJoin(observables).subscribe((res) => {
