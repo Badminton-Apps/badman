@@ -23,27 +23,27 @@ export const sortStanding = (
   }
 ) => {
   const nonOptionalA = {
-    points: a.points || 0,
-    won: a.won || 0,
-    lost: a.lost || 0,
-    gamesWon: a.gamesWon || 0,
-    gamesLost: a.gamesLost || 0,
-    setsWon: a.setsWon || 0,
-    setsLost: a.setsLost || 0,
-    totalPointsWon: a.totalPointsWon || 0,
-    totalPointsLost: a.totalPointsLost || 0,
+    points: a?.points || 0,
+    won: a?.won || 0,
+    lost: a?.lost || 0,
+    gamesWon: a?.gamesWon || 0,
+    gamesLost: a?.gamesLost || 0,
+    setsWon: a?.setsWon || 0,
+    setsLost: a?.setsLost || 0,
+    totalPointsWon: a?.totalPointsWon || 0,
+    totalPointsLost: a?.totalPointsLost || 0,
   };
 
   const nonOptionalB = {
-    points: b.points || 0,
-    won: b.won || 0,
-    lost: b.lost || 0,
-    gamesWon: b.gamesWon || 0,
-    gamesLost: b.gamesLost || 0,
-    setsWon: b.setsWon || 0,
-    setsLost: b.setsLost || 0,
-    totalPointsWon: b.totalPointsWon || 0,
-    totalPointsLost: b.totalPointsLost || 0,
+    points: b?.points || 0,
+    won: b?.won || 0,
+    lost: b?.lost || 0,
+    gamesWon: b?.gamesWon || 0,
+    gamesLost: b?.gamesLost || 0,
+    setsWon: b?.setsWon || 0,
+    setsLost: b?.setsLost || 0,
+    totalPointsWon: b?.totalPointsWon || 0,
+    totalPointsLost: b?.totalPointsLost || 0,
   };
 
   if (nonOptionalA.points > nonOptionalB.points) {
