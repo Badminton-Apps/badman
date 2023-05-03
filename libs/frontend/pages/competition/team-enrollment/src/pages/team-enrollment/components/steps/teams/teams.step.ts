@@ -111,6 +111,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
   }
 
   destroy$ = new Subject<void>();
+  private update$ = new BehaviorSubject(null);
 
   // get striug array  of event types
   eventTypes = Object.values(SubEventTypeEnum);
@@ -140,7 +141,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
   @ViewChild('switch')
   SwitchDialog!: TemplateRef<HTMLElement>;
 
-  subEvents$?: Observable<{
+  subEvents$!: Observable<{
     [key in SubEventType]: SubEventCompetition[];
   }>;
 
@@ -199,15 +200,12 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       this.control?.value?.NATIONAL?.map((t) => t.team?.teamNumber ?? 0) ?? [];
 
     this.clubs$ = this._getClubs();
-    this.subEvents$ = this._getSubEvents();
-
-    this.control?.valueChanges
+    combineLatest([this.control?.valueChanges, this.update$])
       .pipe(
         takeUntil(this.destroy$),
-        startWith(this.control?.value),
-        switchMap((v) => combineLatest(this.setInitialSubEvents() ?? of()).pipe(map(() => v))),
+        startWith([this.control?.value]),
         debounceTime(200),
-        switchMap((v) => this.validateEnrollment(v as FormArrayOfTeamsValue))
+        switchMap(([v]) => this.validateEnrollment(v as FormArrayOfTeamsValue))
       )
       .subscribe((v) => {
         if (v?.data?.enrollmentValidation) {
@@ -215,6 +213,12 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
           this.changedector.markForCheck();
         }
       });
+
+    this.subEvents$ = this._getSubEvents();
+    this.subEvents$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
+      this.setInitialSubEvents(subs);
+      this.changedector.markForCheck();
+    });
   }
 
   ngOnDestroy() {
@@ -506,7 +510,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     const eventsVal$ = this.group.get(this.eventsControlName)?.valueChanges;
 
     if (!eventsVal$) {
-      return;
+      throw new Error('Events control not found');
     }
 
     return eventsVal$.pipe(
@@ -587,60 +591,41 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     };
   }
 
-  private setInitialSubEvents() {
-    const obs = [];
-
-    if (!this.subEvents$) {
-      return;
-    }
-
+  private setInitialSubEvents(subEvents: {
+    [key in SubEventType]: SubEventCompetition[];
+  }) {
     for (const type of this.eventTypes) {
       const control = this.control?.get(type) as FormArray<TeamForm>;
       if (!control) {
         continue;
       }
       const teams = control.value;
-      // combibne control f value changes with subevents
-      obs.push(
-        this.subEvents$.pipe(
-          map((subEvents) => subEvents[type]),
-          shareReplay(1),
-          tap((subs) => {
-            this.teamNumbers.NATIONAL =
-              teams
-                ?.map((t) => t.team?.teamNumber ?? 0)
-                ?.sort((a, b) => a - b) ?? [];
+      const subs = subEvents[type];
 
-            const maxLevels = this._maxLevels(subs);
-            for (let i = 0; i < teams.length; i++) {
-              const team = teams[i];
-              if (!team) {
-                continue;
-              }
+      this.teamNumbers.NATIONAL =
+        teams?.map((t) => t.team?.teamNumber ?? 0)?.sort((a, b) => a - b) ?? [];
 
-              const initial = this.getInitialSubEvent(
-                team as TeamFormValue,
-                subs,
-                maxLevels
-              );
-              if (initial) {
-                control
-                  ?.at(i)
-                  ?.get('entry')
-                  ?.get<string>('subEventId')
-                  ?.patchValue(initial, {
-                    emitEvent: false,
-                  });
-              }
-            }
+      const maxLevels = this._maxLevels(subs);
+      for (let i = 0; i < teams.length; i++) {
+        const team = teams[i];
+        if (!team) {
+          continue;
+        }
 
-            this.changedector.markForCheck();
-          })
-        )
-      );
+        const initial = this.getInitialSubEvent(
+          team as TeamFormValue,
+          subs,
+          maxLevels
+        );
+        if (initial) {
+          control
+            ?.at(i)
+            ?.get('entry')
+            ?.get<string>('subEventId')
+            ?.patchValue(initial);
+        }
+      }
     }
-
-    return obs;
   }
 
   private getInitialSubEvent(

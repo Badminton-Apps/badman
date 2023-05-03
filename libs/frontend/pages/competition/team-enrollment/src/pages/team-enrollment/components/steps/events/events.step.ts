@@ -171,9 +171,6 @@ export class EventsStepComponent implements OnInit {
       [key in SubEventType]: FormArray<TeamForm>;
     }>;
 
-    console.log(teams.value);
-    console.log(this.group.value);
-
     teams?.valueChanges.pipe(startWith(teams.value)).subscribe((teams) => {
       // find if any team was selected previous year or if current year is already present select those
       const competitions: EventCompetition[] = [];

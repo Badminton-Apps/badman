@@ -324,8 +324,6 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
                   (t) => t.link == team.link
                 );
 
-                console.log(teamThisSeason);
-
                 if (teamThisSeason != null) {
                   // remove the team from the teamsThisSeason array
                   teamsThisSeason.splice(
@@ -412,8 +410,6 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     );
 
     if (selected) {
-      console.log('select', team.name);
-
       // if the team is already selected, we don't need to do anything
       if (index != -1) {
         return;
