@@ -28,9 +28,9 @@ import { QuillModule } from 'ngx-quill';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { ShellComponent } from '@badman/frontend-components';
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
 import { AuthHttpInterceptor } from '@auth0/auth0-angular';
 
