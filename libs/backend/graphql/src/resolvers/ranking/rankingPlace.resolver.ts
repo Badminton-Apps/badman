@@ -33,24 +33,24 @@ export class RankingPlaceResolver {
   async rankingPlace(
     @Args('id', { type: () => ID }) id: string
   ): Promise<RankingPlace> {
-    const rankingPlace = await RankingPlace.findByPk(id);
+    const place = await RankingPlace.findByPk(id);
 
-    if (!rankingPlace) {
+    if (!place) {
       throw new NotFoundException(id);
     }
 
-    if (!rankingPlace.single || !rankingPlace.double || !rankingPlace.mix) {
+    if (!place.single || !place.double || !place.mix) {
       // if one of the levels is not set, get the default from the system
-      const system = await RankingSystem.findByPk(rankingPlace.systemId, {
-        attributes: ['single', 'double', 'mix'],
+      const system = await RankingSystem.findByPk(place.systemId, {
+        attributes: ['amountOfLevels'],
       });
 
-      rankingPlace.single = rankingPlace.single || system.amountOfLevels;
-      rankingPlace.double = rankingPlace.double || system.amountOfLevels;
-      rankingPlace.mix = rankingPlace.mix || system.amountOfLevels;
+      place.single = place.single || system.amountOfLevels;
+      place.double = place.double || system.amountOfLevels;
+      place.mix = place.mix || system.amountOfLevels;
     }
 
-    return rankingPlace;
+    return place;
   }
 
   @Query(() => [RankingPlace])
@@ -61,7 +61,7 @@ export class RankingPlaceResolver {
     for (const place of places) {
       if (!place.single || !place.double || !place.mix) {
         const system = await RankingSystem.findByPk(place.systemId, {
-          attributes: ['single', 'double', 'mix'],
+          attributes: ['amountOfLevels'],
         });
 
         place.single = place.single || system.amountOfLevels;

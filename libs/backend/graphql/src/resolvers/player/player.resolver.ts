@@ -14,6 +14,7 @@ import {
   PushSubscriptionInputType,
   RankingLastPlace,
   RankingPlace,
+  RankingSystem,
   Setting,
   SettingUpdateInput,
   Team,
@@ -39,7 +40,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { ListArgs, queryFixer, WhereArgs } from '../../utils';
 @Resolver(() => Player)
 export class PlayersResolver {
-  private readonly logger = new Logger(PlayersResolver.name);
+  protected readonly logger = new Logger(PlayersResolver.name);
 
   constructor(private _sequelize: Sequelize) {}
 
@@ -400,6 +401,8 @@ export class GamePlayersResolver extends PlayersResolver {
 
 @Resolver(() => TeamPlayerMembershipType)
 export class TeamPlayerResolver extends PlayersResolver {
+  protected override readonly logger = new Logger(TeamPlayerResolver.name);
+
   @ResolveField(() => [RankingLastPlace])
   async rankingLastPlaces(
     @Parent() player: Player,
@@ -412,7 +415,22 @@ export class TeamPlayerResolver extends PlayersResolver {
       playerId: player.id,
     };
 
-    return await RankingLastPlace.findAll(args);
+    const places = await RankingLastPlace.findAll(args);
+
+    // if one of the levels is not set, get the default from the system
+    for (const place of places) {
+      if (!place.single || !place.double || !place.mix) {
+        const system = await RankingSystem.findByPk(place.systemId, {
+          attributes: ['amountOfLevels'],
+        });
+
+        place.single = place.single || system.amountOfLevels;
+        place.double = place.double || system.amountOfLevels;
+        place.mix = place.mix || system.amountOfLevels;
+      }
+    }
+
+    return places;
   }
 
   @ResolveField(() => [RankingPlace], {
@@ -433,6 +451,21 @@ export class TeamPlayerResolver extends PlayersResolver {
       playerId: player.id,
     };
 
-    return await RankingPlace.findAll(args);
+    const places = await RankingPlace.findAll(args);
+
+    // if one of the levels is not set, get the default from the system
+    for (const place of places) {
+      if (!place.single || !place.double || !place.mix) {
+        const system = await RankingSystem.findByPk(place.systemId, {
+          attributes: ['amountOfLevels'],
+        });
+
+        place.single = place.single ?? system.amountOfLevels;
+        place.double = place.double ?? system.amountOfLevels;
+        place.mix = place.mix ?? system.amountOfLevels;
+      }
+    }
+
+    return places;
   }
 }
