@@ -17,7 +17,6 @@
           "server",
           "lint",
           "test",
-          "e2e",
           "build-storybook"
         ],
         "accessToken": "YjBjMTIwMmYtNWUxNy00MmI5LTgzMzQtZWNiNzM3Y2QwYjg5fHJlYWQtb25seQ=="
@@ -31,9 +30,6 @@
     },
     "test": {
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
-    },
-    "e2e": {
-      "inputs": ["default", "^production"]
     },
     "lint": {
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
@@ -60,7 +56,6 @@
       "style": "scss",
       "linter": "eslint",
       "unitTestRunner": "jest",
-      "e2eTestRunner": "cypress"
     },
     "@nrwl/angular:library": {
       "linter": "eslint",
