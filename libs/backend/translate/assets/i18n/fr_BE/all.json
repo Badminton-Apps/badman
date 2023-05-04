@@ -250,6 +250,7 @@
       "teams": {
         "captain": "",
         "change-team": "",
+        "new-teams": "Nouvelles équipes pour cette saison",
         "substitude": "",
         "team-index": "",
         "team-index-ignored": "",

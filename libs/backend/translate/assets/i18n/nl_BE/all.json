@@ -250,6 +250,7 @@
       "teams": {
         "captain": "Ploegkapitein",
         "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
+        "new-teams": "Nieuwe teams voor dit seizoen",
         "substitude": "Invallers",
         "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
         "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
