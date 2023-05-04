@@ -24,6 +24,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   Club,
   EntryCompetitionPlayer,
+  EventEntry,
   SubEventCompetition,
   Team,
 } from '@badman/frontend-models';
@@ -315,16 +316,12 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     ref.afterClosed().subscribe((result) => {
       if (!result) return;
       if (!result.newNumber) return;
-      if (!team.id) return;
-      const teams = this.control?.value?.[type] || ([] as Team[]);
-      // this.control
-      //   ?.get(type)
-      //   ?.setValue(
-      //     this.changeNumber(team.id, result.newNumber, club, teams)?.sort(
-      //       (a, b) => (a.teamNumber ?? 0) - (b.teamNumber ?? 0)
-      //     )
-      //   );
-      this.changedector.markForCheck();
+      if (!team.teamNumber) return;
+
+      const newNumber = result.newNumber;
+      this.changeNumber(team.teamNumber, newNumber, club, type);
+
+      this.changedector.detectChanges();
     });
   }
 
@@ -336,42 +333,64 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
   }
 
   private changeNumber(
-    teamId: string,
+    oldNumber: number,
     newNumber: number,
     club: Club,
-    teams: Team[]
+    type: SubEventTypeEnum
   ) {
-    const teamIndex = teams.findIndex((t) => t.id === teamId);
-    const current = teams[teamIndex].teamNumber ?? 0;
+    // iterate over all controls and update the team number / name
+    (this.control?.get(type) as FormArray<TeamForm>).controls.forEach((t) => {
+      const tControl = t.get('team');
+      if (!tControl?.value.teamNumber) return;
 
-    const lowestNumber = Math.min(current ?? 0, newNumber);
-    const highestNumber = Math.max(current ?? 0, newNumber);
+      if (tControl?.value.teamNumber === oldNumber) {
+        console.log(
+          `${tControl.value.name} change ${oldNumber} to ${newNumber}`
+        );
 
-    teams
-      .filter(
-        (t) =>
-          (t.teamNumber ?? 0) >= lowestNumber && (t.teamNumber ?? 0) < current
-      )
-      .forEach((t) => {
-        t.teamNumber = (t.teamNumber ?? 0) + 1;
-        t.name = this.getTeamName(t, club);
-      });
+        tControl?.patchValue({
+          ...tControl.value,
+          teamNumber: newNumber,
+          name: this.getTeamName(tControl.value, club),
+        } as Team);
+      }
 
-    // update all higher numbers
-    teams
-      .filter(
-        (t) =>
-          (t.teamNumber ?? 0) > current && (t.teamNumber ?? 0) <= highestNumber
-      )
-      .forEach((t) => {
-        t.teamNumber = (t.teamNumber ?? 0) - 1;
-        t.name = this.getTeamName(t, club);
-      });
+      // if the number is lower than the old number, increase the number of all teams between the new and old number
+      else if (
+        newNumber < oldNumber &&
+        tControl?.value.teamNumber >= newNumber &&
+        tControl?.value.teamNumber < oldNumber
+      ) {
+        console.log(
+          `${tControl.value.name} change ${tControl?.value.teamNumber} to ${
+            tControl.value.teamNumber + 1
+          }`
+        );
+        tControl?.patchValue({
+          ...tControl.value,
+          teamNumber: tControl.value.teamNumber + 1,
+          name: this.getTeamName(tControl.value, club),
+        } as Team);
+      }
 
-    // update the teamnumber of the team that was changed
-    teams[teamIndex].teamNumber = newNumber;
-    teams[teamIndex].name = this.getTeamName(teams[teamIndex], club);
-    return teams;
+      // if the number is higher than the old number, decrease the number of all teams between the new and old number
+      else if (
+        newNumber > oldNumber &&
+        tControl?.value.teamNumber <= newNumber &&
+        tControl?.value.teamNumber > oldNumber
+      ) {
+        console.log(
+          `${tControl.value.name} change ${tControl?.value.teamNumber} to ${
+            tControl.value.teamNumber - 1
+          }`
+        );
+        tControl?.patchValue({
+          ...tControl.value,
+          teamNumber: tControl.value.teamNumber - 1,
+          name: this.getTeamName(tControl.value, club),
+        } as Team);
+      }
+    });
   }
 
   private getTeamName(team: Team, club: Club) {
@@ -613,7 +632,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       const teams = control.value;
       const subs = subEvents[type];
 
-      this.teamNumbers.NATIONAL =
+      this.teamNumbers[type] =
         teams?.map((t) => t.team?.teamNumber ?? 0)?.sort((a, b) => a - b) ?? [];
 
       const maxLevels = this._maxLevels(subs);

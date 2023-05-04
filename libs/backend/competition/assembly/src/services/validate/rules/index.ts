@@ -8,6 +8,5 @@ export * from './player-order.rule';
 export * from './team-subtitudes.rule';
 export * from './team-base-index.rule';
 export * from './team-club-base.rule';
-export * from './team-subevent.rule';
 export * from './team-subevent-index.rule';
 // end:ng42.barrel
