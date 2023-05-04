@@ -24,7 +24,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   Club,
   EntryCompetitionPlayer,
-  EventEntry,
   SubEventCompetition,
   Team,
 } from '@badman/frontend-models';
@@ -54,7 +53,6 @@ import {
   filter,
   map,
   shareReplay,
-  delay,
   startWith,
   switchMap,
   takeUntil,
@@ -154,6 +152,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     NATIONAL: [],
   };
   clubs$!: Observable<Club>;
+  season!: number;
 
   getTypeArray(type: SubEventType) {
     return this.control?.controls[type] as FormArray<TeamForm>;
@@ -222,6 +221,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       this.control?.setErrors({ loading: false });
       this.changedector.markForCheck();
     });
+    this.season = this.group?.get(SEASON)?.value as number;
   }
 
   ngOnDestroy() {
