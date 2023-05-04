@@ -53,6 +53,7 @@ import {
   filter,
   map,
   shareReplay,
+  delay,
   startWith,
   switchMap,
   takeUntil,
@@ -188,6 +189,8 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       this.group.addControl(this.controlName, this.control);
     }
 
+    this.control.setErrors({ loading: true });
+
     // initial teamnumbers
     this.teamNumbers.M =
       this.control?.value?.M?.map((t) => t.team?.teamNumber ?? 0) ?? [];
@@ -216,6 +219,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     this.subEvents$ = this._getSubEvents();
     this.subEvents$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
       this.setInitialSubEvents(subs);
+      this.control?.setErrors({ loading: false });
       this.changedector.markForCheck();
     });
   }

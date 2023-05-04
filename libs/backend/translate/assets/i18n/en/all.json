@@ -250,6 +250,7 @@
       "teams": {
         "captain": "Team captain",
         "change-team": "By editing the team you can change the default players shown, and who are the backups.",
+        "new-teams": "New teams for this season",
         "substitude": "",
         "team-index": "Team index titulars equals <strong>{current}</strong> and is allowed to mimimally be <strong>{team}</strong>",
         "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team.",

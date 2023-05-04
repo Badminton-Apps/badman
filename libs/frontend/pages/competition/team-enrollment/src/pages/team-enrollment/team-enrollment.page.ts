@@ -27,8 +27,8 @@ import {
 } from './components';
 import { LocationForm } from './components/steps/locations/components';
 import { CLUB, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
-
-export const STEP_AVAILIBILTY = 1;
+import { minAmountOfTeams } from './validators';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -60,13 +60,16 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
   formGroup: FormGroup = new FormGroup({
     [SEASON]: new FormControl(2023, [Validators.required]),
     [CLUB]: new FormControl(undefined, [Validators.required]),
-    [EVENTS]: new FormControl([], [Validators.required]),
-    [TEAMS]: new FormGroup({
-      M: new FormArray<TeamForm>([]),
-      F: new FormArray<TeamForm>([]),
-      MX: new FormArray<TeamForm>([]),
-      NATIONAL: new FormArray<TeamForm>([]),
-    }),
+    [EVENTS]: new FormControl([], [Validators.required, Validators.min(1)]),
+    [TEAMS]: new FormGroup(
+      {
+        M: new FormArray<TeamForm>([]),
+        F: new FormArray<TeamForm>([]),
+        MX: new FormArray<TeamForm>([]),
+        NATIONAL: new FormArray<TeamForm>([]),
+      },
+      [Validators.required, minAmountOfTeams(1)]
+    ),
     [LOCATIONS]: new FormArray<LocationForm>([], [Validators.required]),
   });
 
@@ -74,6 +77,7 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
     private readonly seoService: SeoService,
     private readonly breadcrumbService: BreadcrumbService,
     private readonly translate: TranslateService,
+    private readonly snackBar: MatSnackBar,
     private readonly apollo: Apollo
   ) {}
 
@@ -106,9 +110,8 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
   }
 
   saveAndContinue() {
-    this.vert_stepper.next();
-
     const observables = [];
+    this.formGroup.get(TEAMS)?.setErrors({ loading: true });
 
     // save the teams to the backend
     for (const enrollment of [
@@ -180,7 +183,11 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
     }
 
     forkJoin(observables).subscribe((res) => {
-      console.log('RES', res);
+      this.snackBar.open('Teams saved', 'Close', {
+        duration: 2000,
+      });
+      this.formGroup.get(TEAMS)?.setErrors({ loading: false });
+      this.vert_stepper.next();
     });
   }
 }
