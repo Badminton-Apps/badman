@@ -102,7 +102,7 @@
     (click)="expanded.exceptions = !expanded.exceptions"
   >
     <div>
-      {{ 'all.locations.uitzonderingen' | translate }}
+      {{ 'all.locations.exceptions' | translate }}
     </div>
     <mat-icon *ngIf="!expanded.exceptions">expand_more</mat-icon>
     <mat-icon *ngIf="expanded.exceptions">expand_less</mat-icon>
@@ -141,15 +141,40 @@
             </mat-form-field>
           </div>
           <div class="courts">
-            <mat-form-field>
-              <mat-label>{{ 'all.input.courts' | translate }}</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="courts"
-                alt="courts"
-              />
-            </mat-form-field>
+            <button
+              mat-icon-button
+              [matTooltip]="
+                'all.competition.team-enrollment.locations.courts-hint'
+                  | translate
+              "
+              (click)="
+                this.showCourts[i].manualOpen = !this.showCourts[i].manualOpen
+              "
+            >
+              <mat-icon *ngIf="this.showCourts[i].manualOpen">close</mat-icon>
+              <mat-icon *ngIf="!this.showCourts[i].manualOpen"
+                >menu_open</mat-icon
+              >
+            </button>
+
+            <div
+              [hidden]="
+                !this.showCourts[i].manualOpen && !this.showCourts[i].autoOpen
+              "
+            >
+              <mat-form-field>
+                <mat-label>{{
+                  'all.competition.team-enrollment.locations.availible-courts'
+                    | translate
+                }}</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="courts"
+                  alt="courts"
+                />
+              </mat-form-field>
+            </div>
           </div>
           <div class="delete">
             <button mat-icon-button (click)="removeException(i)">

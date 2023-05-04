@@ -55,10 +55,22 @@ mat-divider {
     flex: 0 0 auto;
   }
 
-  .less-courts {
+  .courts {
     flex: 0 0 auto;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    button {
+      margin-bottom: 20px;
+    }
   }
-
+  .courts,
+  .delete {
+    button {
+      margin-bottom: 20px;
+    }
+  }
+  
   .day {
     flex: 1 1 auto;
   }

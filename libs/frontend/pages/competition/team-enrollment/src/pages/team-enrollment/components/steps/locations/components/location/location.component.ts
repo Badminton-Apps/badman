@@ -20,7 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 export type LocationavAilibilityType = FormGroup<{
   day: FormControl<string | undefined>;
@@ -84,7 +84,14 @@ export class LocationComponent implements OnInit {
   availibilities!: FormArray<LocationavAilibilityType>;
   exceptions!: FormArray<LocationExceptionType>;
 
+  showCourts: {
+    manualOpen: boolean;
+    autoOpen: boolean;
+  }[] = [];
+
   expanded = {
+    start: undefined,
+    end: undefined,
     days: true,
     exceptions: false,
   };
@@ -97,6 +104,13 @@ export class LocationComponent implements OnInit {
     this.exceptions = this.group.get(
       'exceptions'
     ) as FormArray<LocationExceptionType>;
+
+    this.showCourts = this.exceptions.value.map((v) => {
+      return {
+        manualOpen: false,
+        autoOpen: v.courts != 0,
+      };
+    });
   }
 
   addAvailibility() {
@@ -106,7 +120,7 @@ export class LocationComponent implements OnInit {
         startTime: new FormControl(),
         endTime: new FormControl(),
         courts: new FormControl(),
-      })
+      }) as LocationavAilibilityType
     );
     this.expanded.days = true;
   }
@@ -120,9 +134,14 @@ export class LocationComponent implements OnInit {
       new FormGroup({
         start: new FormControl(),
         end: new FormControl(),
-        courts: new FormControl(),
-      })
+        courts: new FormControl(0),
+      }) as LocationExceptionType
     );
+    this.showCourts.push({
+      manualOpen: false,
+      autoOpen: false,
+    });
+
     this.expanded.exceptions = true;
   }
 

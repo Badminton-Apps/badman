@@ -202,16 +202,14 @@
       }
     },
     "team-enrollment": {
-      "availability": "",
-      "base": "",
-      "captain": "",
-      "change-team": "",
       "close": "",
       "closed": "",
-      "comment-liga": "",
-      "comment-nat": "",
-      "comment-prov": "",
-      "comments": "Remarques",
+      "comments": {
+        "liga": "",
+        "nat": "",
+        "prov": "",
+        "title": "Remarques"
+      },
       "errors": {
         "already": "",
         "base-other-team": "<strong>{player.fullName}</strong> est également joueur de base dans une autre équipe",
@@ -230,14 +228,12 @@
         "team-to-strong": "Les titulaires de l'index d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas tomber en dessous de la limite de plage de <strong>{minIndex}</strong> ",
         "title": ""
       },
-      "exceptions": "",
       "info": "",
-      "max": "",
-      "new-exception": "",
-      "new-play-day": "",
+      "locations": {
+        "availible-courts": "Champs disponibles",
+        "courts-hint": "Modifier le nombre de champs disponibles"
+      },
       "open": "",
-      "play-day": "",
-      "player-base": "",
       "players": {
         "backup": "",
         "base": "",
@@ -251,12 +247,16 @@
       "select-location": "",
       "select-teams": "",
       "select-teams-description": "",
-      "substitude": "",
-      "team-index": "",
-      "team-index-ignored": "",
+      "teams": {
+        "captain": "",
+        "change-team": "",
+        "substitude": "",
+        "team-index": "",
+        "team-index-ignored": "",
+        "transfer-teams": "",
+        "transfer-teams-description": ""
+      },
       "title": "",
-      "transfer-teams": "",
-      "transfer-teams-description": "",
       "warnings": {
         "subtitute-team-index": ""
       }
@@ -436,8 +436,8 @@
     "add-day": "Ajouter un jour de match",
     "add-exception": "Ajouter une exception",
     "days": "Jours de match",
-    "title": "Lieu(x)",
-    "uitzonderingen": "Des exceptions"
+    "exceptions": "Des exceptions",
+    "title": "Lieu(x)"
   },
   "management": {
     "calculate": "calculer",

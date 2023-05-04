@@ -202,16 +202,14 @@
       }
     },
     "team-enrollment": {
-      "availability": "Beschikbaarheid",
-      "base": "Grenzen",
-      "captain": "Ploegkapitein",
-      "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
       "close": "Sluiten",
       "closed": "Gesloten",
-      "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
-      "comment-nat": "Opmerkingen Nationale competitie (per ploeg)",
-      "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
-      "comments": "Opmerkingen",
+      "comments": {
+        "liga": "Opmerkingen Liga competitie (per ploeg)",
+        "nat": "Opmerkingen Nationale competitie (per ploeg)",
+        "prov": "Opmerkingen Provinciale competitie (per ploeg)",
+        "title": "Opmerkingen"
+      },
       "errors": {
         "already": "Speler al als titualris aanwezig.",
         "base-other-team": "<strong>{player.fullName}</strong> is ook basis speler in een ander team",
@@ -230,14 +228,12 @@
         "team-to-strong": "Ploegindex titularissen is <strong>{baseIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
         "title": "Fouten"
       },
-      "exceptions": "Uitzonderingen",
       "info": "",
-      "max": "Max",
-      "new-exception": "Nieuwe uitzondering",
-      "new-play-day": "Nieuw speelmoment",
+      "locations": {
+        "availible-courts": "Beschikbare velden",
+        "courts-hint": "Wijzig het aantal beschikbare velden"
+      },
       "open": "Open",
-      "play-day": "Speelmoment",
-      "player-base": "Speler is al basisspeler van andere ploeg",
       "players": {
         "backup": "Reserve speler(s)",
         "base": "Basis spelers(s)",
@@ -251,12 +247,16 @@
       "select-location": "Selecteer locaties",
       "select-teams": "Selecteer teams",
       "select-teams-description": "Hieronder kunt u uw teams aanpassen volgens uw voorkeuren.\n\nU kan optioneel uw vaste en reserve spelers voor elk team definiëren. Door dit te doen, zorgt u ervoor dat alle spelers in aanmerking komen om voor hun respectievelijke teams te spelen en dat het team soepel kan functioneren zonder last-minute wijzigingen of verwarring.",
-      "substitude": "Invallers",
-      "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
-      "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
+      "teams": {
+        "captain": "Ploegkapitein",
+        "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
+        "substitude": "Invallers",
+        "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
+        "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
+        "transfer-teams": "Zet teams over (optioneel)",
+        "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de team nummers in volgende stap nog wijzigen"
+      },
       "title": "Ploegopstelling",
-      "transfer-teams": "Zet teams over (optioneel)",
-      "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de team nummers in volgende stap nog wijzigen",
       "warnings": {
         "subtitute-team-index": "s"
       }
@@ -436,8 +436,8 @@
     "add-day": "Voeg speeldag toe",
     "add-exception": "Voeg uitzondering toe",
     "days": "Speeldagen",
-    "title": "Locatie(s)",
-    "uitzonderingen": "Uitzonderingen"
+    "exceptions": "Uitzonderingen",
+    "title": "Locatie(s)"
   },
   "management": {
     "calculate": "Bereken",
