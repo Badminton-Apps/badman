@@ -19,6 +19,7 @@
             class="team"
             [type]="type"
             [group]="this.group"
+            [season]="season"
             [subEvents]="subEvents"
             [validation]="teamValidationResult( group.get('team')?.value?.id)"
             (changeTeamNumber)="this.changeTeamNumber($event)"

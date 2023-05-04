@@ -15,10 +15,10 @@ import {
   Team,
 } from '@badman/frontend-models';
 import { SubEventType, SubEventTypeEnum } from '@badman/utils';
-import { TeamValidationResult } from '../../../../../models';
-import { TeamComponent } from '../team';
-import { EnrollmentMessageComponent } from '../enrollment-message';
 import { TranslateModule } from '@ngx-translate/core';
+import { TeamValidationResult } from '../../../../../models';
+import { EnrollmentMessageComponent } from '../enrollment-message';
+import { TeamComponent } from '../team';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -45,6 +45,9 @@ export class TeamEnrollmentComponent implements OnInit {
   group!: FormGroup;
 
   @Input()
+  season!: number;
+
+  @Input()
   subEvents!: {
     [key in SubEventType]: SubEventCompetition[];
   };
@@ -64,7 +67,6 @@ export class TeamEnrollmentComponent implements OnInit {
   team!: FormControl<Team>;
   subEvent!: FormControl<string>;
   players!: FormArray<FormControl<EntryCompetitionPlayer>>;
-  season! : number;
 
   ngOnInit(): void {
     this.team = this.group.get('team') as FormControl<Team>;
@@ -75,9 +77,5 @@ export class TeamEnrollmentComponent implements OnInit {
     this.players = entry?.get('players') as FormArray<
       FormControl<EntryCompetitionPlayer>
     >;
-
-    this.season = entry?.get('season')?.value as number;
-
-
   }
 }

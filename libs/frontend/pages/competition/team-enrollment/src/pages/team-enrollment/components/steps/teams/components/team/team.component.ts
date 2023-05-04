@@ -32,6 +32,7 @@ import {
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
+import moment from 'moment';
 import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
 
 @Component({
@@ -235,7 +236,7 @@ export class TeamComponent implements OnInit {
             systemId: this.system?.id,
 
             rankingDate: {
-              $lte: new Date(this.season, 5, 10),
+              $lte: moment([this.season, 5, 10]).toISOString(),
             },
           },
           order: [
