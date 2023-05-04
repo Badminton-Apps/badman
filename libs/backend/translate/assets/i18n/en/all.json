@@ -202,16 +202,14 @@
       }
     },
     "team-enrollment": {
-      "availability": "Availability",
-      "base": "Limits",
-      "captain": "Team captain",
-      "change-team": "By editing the team you can change the default players shown, and who are the backups.",
       "close": "Close",
       "closed": "Closed",
-      "comment-liga": "Comments League competition (for each team)",
-      "comment-nat": "Comments National competition (for each team)",
-      "comment-prov": "Comments Provincial competition (for each team)",
-      "comments": "Comments",
+      "comments": {
+        "liga": "Comments League competition (for each team)",
+        "nat": "Comments National competition (for each team)",
+        "prov": "Comments Provincial competition (for each team)",
+        "title": "Comments"
+      },
       "errors": {
         "already": "Player already present as titular.",
         "base-other-team": "<strong>{player.fullName}</strong> is also base player on another team",
@@ -230,14 +228,12 @@
         "team-to-strong": "Team index titulars equals <strong>{baseIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
         "title": "Errors"
       },
-      "exceptions": "Exceptions",
       "info": "Remarks concerning the team enrollment",
-      "max": "Max",
-      "new-exception": "New Exception",
-      "new-play-day": "New match time",
+      "locations": {
+        "availible-courts": "Available courts",
+        "courts-hint": "Change the number of available fields"
+      },
       "open": "Open",
-      "play-day": "Match time",
-      "player-base": "Player is already basis player of other team",
       "players": {
         "backup": "Backup player(s)",
         "base": "Base player(s)",
@@ -251,12 +247,16 @@
       "select-location": "Select locations",
       "select-teams": "Select teams",
       "select-teams-description": "Below you customize your teams according to your preferences.\n\nYou can optionally define your regular and backup players for each team. By doing so, you ensure that all players are eligible to play for their respective teams, and the team can function smoothly without any last-minute changes or confusion.",
-      "substitude": "",
-      "team-index": "Team index titulars equals <strong>{current}</strong> and is allowed to mimimally be <strong>{team}</strong>",
-      "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team.",
+      "teams": {
+        "captain": "Team captain",
+        "change-team": "By editing the team you can change the default players shown, and who are the backups.",
+        "substitude": "",
+        "team-index": "Team index titulars equals <strong>{current}</strong> and is allowed to mimimally be <strong>{team}</strong>",
+        "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team.",
+        "transfer-teams": "Transfer teams (optional)",
+        "transfer-teams-description": "If you wish to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you will be able to transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nYou can change the teamnumbers in the next step"
+      },
       "title": "Team enrollment",
-      "transfer-teams": "Transfer teams (optional)",
-      "transfer-teams-description": "If you wish to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you will be able to transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nYou can change the teamnumbers in the next step",
       "warnings": {
         "subtitute-team-index": "s"
       }
@@ -436,8 +436,8 @@
     "add-day": "Add game day",
     "add-exception": "Add Exception",
     "days": "Game days",
-    "title": "Location(s)",
-    "uitzonderingen": "Exceptions"
+    "exceptions": "Exceptions",
+    "title": "Location(s)"
   },
   "management": {
     "calculate": "Calculate",
