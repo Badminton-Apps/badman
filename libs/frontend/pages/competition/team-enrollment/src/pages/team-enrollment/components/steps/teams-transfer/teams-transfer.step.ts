@@ -346,8 +346,9 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
                 } as Team & { selected: boolean };
               });
 
+              const linksLastSeason = lastSeason?.map((team) => team.link);
               const newThisSeason = teamsThisSeason
-                ?.filter((team) => team.link == null)
+                ?.filter((team) => !linksLastSeason?.includes(team.link))
                 ?.map((team) => {
                   return {
                     ...team,
