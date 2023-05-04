@@ -232,7 +232,7 @@ export class TeamComponent implements OnInit {
         variables: {
           where: {
             playerId: player.id,
-            systemId: this.system.id,
+            systemId: this.system?.id,
 
             rankingDate: {
               $lte: new Date(this.season, 5, 10),
