@@ -133,10 +133,25 @@ export class PlayersResolver {
     @Parent() player: Player,
     @Args() listArgs: ListArgs
   ): Promise<RankingPlace[]> {
-    return player.getRankingPlaces({
+    const places = await player.getRankingPlaces({
       order: [['rankingDate', 'DESC']],
       ...ListArgs.toFindOptions(listArgs),
     });
+
+    // if one of the levels is not set, get the default from the system
+    for (const place of places) {
+      if (!place.single || !place.double || !place.mix) {
+        const system = await RankingSystem.findByPk(place.systemId, {
+          attributes: ['amountOfLevels'],
+        });
+
+        place.single = place.single ?? system.amountOfLevels;
+        place.double = place.double ?? system.amountOfLevels;
+        place.mix = place.mix ?? system.amountOfLevels;
+      }
+    }
+
+    return places;
   }
 
   @ResolveField(() => [RankingLastPlace], {
@@ -146,10 +161,25 @@ export class PlayersResolver {
     @Parent() player: Player,
     @Args() listArgs: ListArgs
   ): Promise<RankingLastPlace[]> {
-    return player.getRankingLastPlaces({
+    const places = await player.getRankingLastPlaces({
       order: [['rankingDate', 'DESC']],
       ...ListArgs.toFindOptions(listArgs),
     });
+
+    // if one of the levels is not set, get the default from the system
+    for (const place of places) {
+      if (!place.single || !place.double || !place.mix) {
+        const system = await RankingSystem.findByPk(place.systemId, {
+          attributes: ['amountOfLevels'],
+        });
+
+        place.single = place.single ?? system.amountOfLevels;
+        place.double = place.double ?? system.amountOfLevels;
+        place.mix = place.mix ?? system.amountOfLevels;
+      }
+    }
+
+    return places;
   }
 
   @ResolveField(() => [Game])
@@ -424,9 +454,9 @@ export class TeamPlayerResolver extends PlayersResolver {
           attributes: ['amountOfLevels'],
         });
 
-        place.single = place.single || system.amountOfLevels;
-        place.double = place.double || system.amountOfLevels;
-        place.mix = place.mix || system.amountOfLevels;
+        place.single = place.single ?? system.amountOfLevels;
+        place.double = place.double ?? system.amountOfLevels;
+        place.mix = place.mix ?? system.amountOfLevels;
       }
     }
 
