@@ -10,7 +10,8 @@
         matInput
         cdkTextareaAutosize
         #autosize="cdkTextareaAutosize"
-        [formControlName]="type"
+        [formGroupName]="type"
+        formControlName="message"
         cdkAutosizeMinRows="10"
         cdkAutosizeMaxRows="30"
         placeholder="Any other comments"
@@ -18,3 +19,5 @@
     </mat-form-field>
   </ng-container>
 </ng-container>
+
+{{ this.control?.value | json}}

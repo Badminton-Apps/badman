@@ -15,7 +15,7 @@ export class ImageController {
 
     // check if file exists
     if (existsSync(path)) {
-      registerFont(path, { family: 'PT Sans' });
+      // registerFont(path, { family: 'PT Sans' });
     } else {
       this.logger.warn('Font file does not exist', path);
     }

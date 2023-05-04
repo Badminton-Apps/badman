@@ -21,10 +21,15 @@ import {
   EntryCompetitionPlayer,
   Player,
   RankingPlace,
+  RankingSystem,
   Team,
   TeamPlayer,
 } from '@badman/frontend-models';
-import { TeamMembershipType, getIndexFromPlayers } from '@badman/utils';
+import {
+  TeamMembershipType,
+  getCurrentSeason,
+  getIndexFromPlayers,
+} from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
@@ -63,7 +68,10 @@ export class TeamComponent implements OnInit {
   basePlayers!: FormArray<FormControl<EntryCompetitionPlayer>>;
 
   @Input()
-  systemId!: string;
+  system!: RankingSystem;
+
+  @Input()
+  season: number = getCurrentSeason();
 
   @Output()
   editTeam = new EventEmitter<Team>();
@@ -224,13 +232,11 @@ export class TeamComponent implements OnInit {
         variables: {
           where: {
             playerId: player.id,
-            systemId: this.systemId,
+            systemId: this.system.id,
 
-            // TODO: we should use the correct date here
-
-            // rankingDate: {
-            //   $between: [new Date(season - 1, 0, 1), new Date(season, 0, 1)],
-            // },
+            rankingDate: {
+              $lte: new Date(this.season, 5, 10),
+            },
           },
           order: [
             {

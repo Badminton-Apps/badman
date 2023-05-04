@@ -206,16 +206,14 @@ export type I18nTranslations = {
                 };
             };
             "team-enrollment": {
-                "availability": string;
-                "base": string;
-                "captain": string;
-                "change-team": string;
                 "close": string;
                 "closed": string;
-                "comment-liga": string;
-                "comment-nat": string;
-                "comment-prov": string;
-                "comments": string;
+                "comments": {
+                    "liga": string;
+                    "nat": string;
+                    "prov": string;
+                    "title": string;
+                };
                 "errors": {
                     "already": string;
                     "base-other-team": string;
@@ -223,26 +221,24 @@ export type I18nTranslations = {
                     "comp-status-team": string;
                     "faller": string;
                     "first-team-index": string;
+                    "no-subevent": string;
                     "none": string;
                     "player-gender": string;
                     "player-min-level": string;
                     "player-subevent": string;
                     "riser": string;
-                    "no-subevent": string;
                     "team-index": string;
                     "team-order": string;
                     "team-order-same-subevent": string;
                     "team-to-strong": string;
                     "title": string;
                 };
-                "exceptions": string;
                 "info": string;
-                "max": string;
-                "new-exception": string;
-                "new-play-day": string;
+                "locations": {
+                    "availible-courts": string;
+                    "courts-hint": string;
+                };
                 "open": string;
-                "play-day": string;
-                "player-base": string;
                 "players": {
                     "backup": string;
                     "base": string;
@@ -256,12 +252,17 @@ export type I18nTranslations = {
                 "select-location": string;
                 "select-teams": string;
                 "select-teams-description": string;
-                "substitude": string;
-                "team-index": string;
-                "team-index-ignored": string;
+                "teams": {
+                    "captain": string;
+                    "change-team": string;
+                    "new-teams": string;
+                    "substitude": string;
+                    "team-index": string;
+                    "team-index-ignored": string;
+                    "transfer-teams": string;
+                    "transfer-teams-description": string;
+                };
                 "title": string;
-                "transfer-teams": string;
-                "transfer-teams-description": string;
                 "warnings": {
                     "subtitute-team-index": string;
                 };
@@ -441,8 +442,8 @@ export type I18nTranslations = {
             "add-day": string;
             "add-exception": string;
             "days": string;
+            "exceptions": string;
             "title": string;
-            "uitzonderingen": string;
         };
         "management": {
             "calculate": string;

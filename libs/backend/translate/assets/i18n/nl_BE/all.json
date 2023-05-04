@@ -217,6 +217,7 @@
         "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "faller": "Het team moet degraderen, maar staat niet in een lagere reeks ingeschreven",
         "first-team-index": "Een eerste ploeg die gedaald is, mag tijdens het seizoen geen team met ploegindex opstellen die lager is dan hun basisindex",
+        "no-subevent": "Gelieve een reeks te kiezen",
         "none": "Geen fouten gevonden",
         "player-gender": "<strong>{player.fullName}</strong> is een <strong>{player.gender}</strong> maar een <strong>{gender}</strong> was verwacht",
         "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> en mag minimaal <strong>{minLevel}</strong> zijn.",

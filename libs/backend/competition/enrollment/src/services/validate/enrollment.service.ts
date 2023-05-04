@@ -27,6 +27,7 @@ import {
   TeamOrderRule,
   TeamSubeventIndexRule,
   TeamRiserFallerRule,
+  TeamSubEventRule,
 } from './rules';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -105,15 +106,15 @@ export class EnrollmentValidationService {
     });
 
     // // setting default values for levels whe they are missing
-    // players = players.map((p) => {
+    // players = players?.map((p) => {
     //   p.rankingPlaces = p.rankingPlaces?.map(
     //     (rp) =>
-    //       ({
+    //       (new RankingPlace({
     //         ...rp,
     //         single: rp.single ?? system.amountOfLevels,
     //         double: rp.double ?? system.amountOfLevels,
     //         mix: rp.mix ?? system.amountOfLevels,
-    //       } as RankingPlace)
+    //       }
     //   );
     //   return p;
     // });
@@ -240,6 +241,7 @@ export class EnrollmentValidationService {
       new PlayerMinLevelRule(),
       new PlayerSubEventRule(),
 
+      new TeamSubEventRule(),
       new TeamBaseIndexRule(),
       new TeamRiserFallerRule(),
       new TeamSubeventIndexRule(),

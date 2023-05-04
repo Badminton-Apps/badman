@@ -217,6 +217,7 @@
         "comp-status-team": "",
         "faller": "L'équipe devrait être reléguée, mais n'est pas engagée dans une série inférieure cette année.",
         "first-team-index": "Une équipe première éliminée ne peut aligner une équipe dont l'indice est inférieur à son indice de base au cours de la saison.",
+        "no-subevent": "Veuillez choisir une gamme",
         "none": "",
         "player-gender": "<strong>{player.fullName}</strong> est un <strong>{player.gender}</strong> mais un <strong>{gender}</strong> était attendu",
         "player-min-level": "<strong>{player.fullName}</strong> a un indice de <strong>{player.ranking}</strong> dans <strong>{rankingType}</strong> et peut être au moins <strong>{minLevel}</strong> .",

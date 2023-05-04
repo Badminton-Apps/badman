@@ -26,9 +26,10 @@ import {
   TeamsTransferStepComponent,
 } from './components';
 import { LocationForm } from './components/steps/locations/components';
-import { CLUB, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
+import { CLUB, COMMENTS, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
 import { minAmountOfTeams } from './validators';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LevelType } from '@badman/utils';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -181,7 +182,11 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
       );
     }
 
-    this.formGroup.get('comments')
+    const comments = this.formGroup.get(COMMENTS)?.value as {[key in LevelType] : {
+      comment: string;
+      id: string;
+    }}
+
 
     return forkJoin(observables);
   }
