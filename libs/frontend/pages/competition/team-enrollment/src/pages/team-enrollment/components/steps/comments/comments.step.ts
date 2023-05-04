@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  Inject,
   Input,
   OnInit,
 } from '@angular/core';
@@ -11,14 +13,16 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { Subject } from 'rxjs';
-import { startWith, takeUntil } from 'rxjs/operators';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { EVENTS, COMMENTS } from '../../../../../forms';
 import { LevelType, levelTypeSort } from '@badman/utils';
+import { Apollo, gql } from 'apollo-angular';
+import { Comment } from '@badman/frontend-models';
 
 type CommentForm = {
-  [key in LevelType]: FormControl<{
-    comment: string;
-    id: string;
+  [key in LevelType]: FormGroup<{
+    comment: FormControl<string>;
+    id: FormControl<string>;
   }>;
 };
 
@@ -63,6 +67,11 @@ export class CommentsStepComponent implements OnInit {
     NATIONAL: false,
   };
 
+  constructor(
+    @Inject(Apollo) private apollo: Apollo,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {}
+
   ngOnInit() {
     if (this.group) {
       this.control = this.group?.get(
@@ -70,11 +79,22 @@ export class CommentsStepComponent implements OnInit {
       ) as FormGroup<CommentForm>;
     }
 
+    console.log(this.control);
+
     if (!this.control) {
       this.control = new FormGroup<CommentForm>({
-        [LevelType.NATIONAL]: new FormControl(),
-        [LevelType.PROV]: new FormControl(),
-        [LevelType.LIGA]: new FormControl(),
+        [LevelType.NATIONAL]: new FormGroup({
+          comment: new FormControl(),
+          id: new FormControl(),
+        }),
+        [LevelType.PROV]: new FormGroup({
+          comment: new FormControl(),
+          id: new FormControl(),
+        }),
+        [LevelType.LIGA]: new FormGroup({
+          comment: new FormControl(),
+          id: new FormControl(),
+        }),
       });
     }
 
@@ -86,20 +106,62 @@ export class CommentsStepComponent implements OnInit {
       .get(this.eventsControlName)
       ?.valueChanges.pipe(
         takeUntil(this.destroy$),
-        startWith(this.group?.get(this.eventsControlName)?.value)
+        startWith(this.group?.get(this.eventsControlName)?.value),
+        switchMap((events: { name: LevelType; id: string }[]) => {
+          const eventIds = events.map((event) => event.id);
+
+          return this._loadComments(eventIds).pipe(
+            map((result) =>
+              events?.map((event) => ({
+                ...event,
+                comment: result?.find((comment) => comment.linkId === event.id)
+                  ?.message,
+              }))
+            )
+          );
+        })
       )
-      .subscribe((events: { name: LevelType; id: string }[]) => {
-        this.showComments = {
-          [LevelType.NATIONAL]: events?.some(
-            (event) => event.name === LevelType.NATIONAL
-          ),
-          [LevelType.PROV]: events?.some(
-            (event) => event.name === LevelType.PROV
-          ),
-          [LevelType.LIGA]: events?.some(
-            (event) => event.name === LevelType.LIGA
-          ),
-        };
+      .subscribe((events) => {
+        for (const levelType of this.levelTypes) {
+          const control = this.control?.get(levelType);
+
+          if (control) {
+            const event = events?.find((event) => event.name === levelType);
+            if (event) {
+              control.setValue({
+                comment: event.comment || '',
+                id: event.id,
+              });
+              this.showComments[levelType] = true;
+            }
+          }
+
+          this.changeDetectorRef.markForCheck();
+        }
       });
+  }
+
+  private _loadComments(eventIds: string[]) {
+    return this.apollo
+      .query<{ comments: Partial<Comment[]> }>({
+        query: gql`
+          query Comments($where: JSONObject) {
+            comments(where: $where) {
+              linkType
+              linkId
+              message
+            }
+          }
+        `,
+        variables: {
+          where: {
+            linkType: 'competition',
+            linkId: eventIds,
+          },
+        },
+      })
+      .pipe(
+        map((result) => (result?.data?.comments ?? []) as Partial<Comment>[])
+      );
   }
 }

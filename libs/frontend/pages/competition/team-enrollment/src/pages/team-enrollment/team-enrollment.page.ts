@@ -182,11 +182,41 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
       );
     }
 
-    const comments = this.formGroup.get(COMMENTS)?.value as {[key in LevelType] : {
-      comment: string;
-      id: string;
-    }}
+    const comments = this.formGroup.get(COMMENTS)?.value as {
+      [key in LevelType]: {
+        comment: string;
+        id: string;
+      };
+    };
 
+    const club = this.formGroup.get(CLUB)?.value;
+    // save the comments to the backend
+    for (const type of Object.values(LevelType)) {
+      // skip if no comment is set
+      if (!comments[type].comment) {
+        continue;
+      }
+
+      observables.push(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation Mutation($data: CommentNewInput!) {
+              addComment(data: $data) {
+                id
+              }
+            }
+          `,
+          variables: {
+            data: {
+              clubId: club?.id,
+              linkId: comments[type].id,
+              linkType: 'competition',
+              message: comments[type].comment,
+            },
+          },
+        })
+      );
+    }
 
     return forkJoin(observables);
   }

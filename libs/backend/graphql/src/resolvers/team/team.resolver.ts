@@ -162,9 +162,9 @@ export class TeamsResolver {
         newTeamData.teamNumber = highestNumber + 1;
       }
 
-
       // Create or find the team (that was inactive)
-
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { players, entry, ...teamData } = newTeamData;
       const [teamDb, created] = await Team.findOrCreate({
         where: {
           type: newTeamData.type,
@@ -173,7 +173,7 @@ export class TeamsResolver {
           season: newTeamData.season,
         },
         defaults: {
-          ...newTeamData,
+          ...teamData,
         },
         transaction,
       });
@@ -189,7 +189,7 @@ export class TeamsResolver {
         teamDb.teamNumber = newTeamData.teamNumber;
         teamDb.link = newTeamData.link;
         await teamDb.save({ transaction });
-      } 
+      }
       if (created) {
         await teamDb.setClub(dbClub, { transaction });
       }
@@ -316,7 +316,6 @@ export class TeamsResolver {
           await dbEntry.save({ transaction, hooks: false });
         }
       }
-
 
       await transaction.commit();
       return teamDb;
