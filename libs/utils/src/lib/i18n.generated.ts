@@ -228,6 +228,7 @@ export type I18nTranslations = {
                     "player-min-level": string;
                     "player-subevent": string;
                     "riser": string;
+                    "no-subevent": string;
                     "team-index": string;
                     "team-order": string;
                     "team-order-same-subevent": string;

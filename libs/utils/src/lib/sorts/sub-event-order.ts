@@ -1,3 +1,5 @@
+import { LevelType } from '../enums';
+
 const typeOrder = {
   NATIONAL: 1,
   LIGA: 2,
@@ -6,7 +8,7 @@ const typeOrder = {
 
 type SubEventSortInput = Partial<{
   eventCompetition: Partial<{
-    type: 'NATIONAL' | 'LIGA' | 'PROV';
+    type: LevelType;
   }>;
   level: number;
 }>;
@@ -63,3 +65,13 @@ export const sortSubEventOrder = (
   }
   return 1;
 };
+
+export const levelTypeSort = (a: LevelType, b: LevelType) => {
+  if (typeOrder[a] < typeOrder[b]) {
+    return -1;
+  } else if (typeOrder[a] === typeOrder[b]) {
+    return 0;
+  }
+  return 1;
+}
+

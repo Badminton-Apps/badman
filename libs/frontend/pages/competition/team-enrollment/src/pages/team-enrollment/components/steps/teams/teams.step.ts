@@ -105,7 +105,6 @@ type FormArrayOfTeamsValue = {
 })
 export class TeamsStepComponent implements OnInit, OnDestroy {
   #validationResult = new BehaviorSubject<ValidationResult | null>(null);
-
   get validationResult() {
     return this.#validationResult.value;
   }
@@ -520,7 +519,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       startWith(this.group.get(this.eventsControlName)?.value),
       filter((events) => !!events && events.length > 0),
       distinctUntilChanged(),
-      switchMap((events: string[]) => {
+      switchMap((events: { name: LevelType; id: string }[]) => {
         return this.apollo.query<{
           subEventCompetitions: Partial<SubEventCompetition>[];
         }>({
@@ -543,7 +542,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
           `,
           variables: {
             where: {
-              eventId: events,
+              eventId: events?.map((e) => e.id),
             },
           },
         });
