@@ -54,7 +54,7 @@ Add the following to your `launch.json`
 
 for debugging the workers use following ports:
 
-- worker-sync: 9230.
+- worker-sync: 9230
 - worker-ranking: 9231
 
 ### Generate pwa assets
