@@ -97,6 +97,7 @@ export class SelectEventComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.control.setValue(null);
     if (this.formGroup) {
       this.formGroup.removeControl(this.controlName);
     }

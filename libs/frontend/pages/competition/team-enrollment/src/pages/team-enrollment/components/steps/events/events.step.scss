@@ -1,3 +1,11 @@
 :host {
   display: block;
 }
+
+.row {
+  display: flex;
+}
+
+badman-select-event {
+  flex: 0 1 600px;
+}

@@ -21,7 +21,7 @@
   </div>
 
   <div class="information">
-    <div>
+    <div *ngIf="validation?.minBaseIndex">
       Min/max {{ validation?.minBaseIndex }} - {{ validation?.maxBaseIndex }}
     </div>
     <div>Team: {{ validation?.teamIndex }}</div>

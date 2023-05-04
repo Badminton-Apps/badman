@@ -5,7 +5,7 @@ import { Rule } from './_rule.base';
 /**
  * Checks if the substitudes are not better then players from active team (titulars)
  */
-export class SubTeamIndexRule extends Rule {
+export class TeamSubsIndexRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { meta, type, team, subtitudes } = assembly;
     const warnings = [] as AssemblyValidationError[];

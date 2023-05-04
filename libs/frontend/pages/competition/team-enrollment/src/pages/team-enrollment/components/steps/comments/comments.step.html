@@ -1,43 +1,20 @@
 <!-- 3 text -->
-
-<mat-form-field class="comment">
-  <mat-label
-    >{{ 'competition.team-enrollment.comments.nat' | translate }}</mat-label
-  >
-  <textarea
-    matInput
-    cdkTextareaAutosize
-    #autosize="cdkTextareaAutosize"
-    cdkAutosizeMinRows="10"
-    cdkAutosizeMaxRows="30"
-    placeholder="Any other comments"
-  ></textarea>
-</mat-form-field>
-
-<mat-form-field class="comment">
-  <mat-label
-    >{{ 'competition.team-enrollment.comments.liga' | translate }}</mat-label
-  >
-  <textarea
-    matInput
-    cdkTextareaAutosize
-    #autosize="cdkTextareaAutosize"
-    cdkAutosizeMinRows="10"
-    cdkAutosizeMaxRows="30"
-    placeholder="Any other comments"
-  ></textarea>
-</mat-form-field>
-
-<mat-form-field class="comment">
-  <mat-label
-    >{{ 'competition.team-enrollment.comments.prov' | translate }}</mat-label
-  >
-  <textarea
-    matInput
-    cdkTextareaAutosize
-    #autosize="cdkTextareaAutosize"
-    cdkAutosizeMinRows="10"
-    cdkAutosizeMaxRows="30"
-    placeholder="Any other comments"
-  ></textarea>
-</mat-form-field>
+<ng-container *ngIf="this.control" [formGroup]="control">
+  <ng-container *ngFor="let type of levelTypes">
+    <mat-form-field class="comment" *ngIf="showComments[type]">
+      <mat-label
+        >{{ 'all.competition.team-enrollment.comments.' + type |lowercase |
+        translate }}</mat-label
+      >
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        [formControlName]="type"
+        cdkAutosizeMinRows="10"
+        cdkAutosizeMaxRows="30"
+        placeholder="Any other comments"
+      ></textarea>
+    </mat-form-field>
+  </ng-container>
+</ng-container>

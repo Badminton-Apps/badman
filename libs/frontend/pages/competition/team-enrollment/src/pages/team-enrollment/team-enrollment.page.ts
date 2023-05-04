@@ -14,7 +14,7 @@ import { Player, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { forkJoin } from 'rxjs';
+import { forkJoin, lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import {
   ClubStepComponent,
@@ -109,9 +109,8 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
     });
   }
 
-  saveAndContinue() {
+  save() {
     const observables = [];
-    this.formGroup.get(TEAMS)?.setErrors({ loading: true });
 
     // save the teams to the backend
     for (const enrollment of [
@@ -182,12 +181,28 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
       );
     }
 
-    forkJoin(observables).subscribe((res) => {
-      this.snackBar.open('Teams saved', 'Close', {
-        duration: 2000,
-      });
-      this.formGroup.get(TEAMS)?.setErrors({ loading: false });
-      this.vert_stepper.next();
+    this.formGroup.get('comments')
+
+    return forkJoin(observables);
+  }
+
+  async saveAndContinue() {
+    this.formGroup.get(TEAMS)?.setErrors({ loading: true });
+    await lastValueFrom(this.save());
+    this.snackBar.open('Teams saved', 'Close', {
+      duration: 2000,
     });
+    this.formGroup.get(TEAMS)?.setErrors({ loading: false });
+    this.vert_stepper.next();
+  }
+
+  async saveAndFinish() {
+    this.formGroup.get(TEAMS)?.setErrors({ loading: true });
+    await lastValueFrom(this.save());
+    this.snackBar.open('Teams saved', 'Close', {
+      duration: 2000,
+    });
+    this.formGroup.get(TEAMS)?.setErrors({ loading: false });
+    this.vert_stepper.next();
   }
 }
