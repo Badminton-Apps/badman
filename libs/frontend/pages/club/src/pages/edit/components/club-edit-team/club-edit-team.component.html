@@ -1,43 +1,56 @@
-<div class="mat-elevation-z1">
-  <div class="info">
-    <div class="name">
-      <span class="up">
-        {{ team.name }} <small>{{ teamIndex }}</small></span
+<div class="info">
+  <div class="name">
+    <span class="up">
+      {{ team.name }} <small *ngIf="teamIndex">({{ teamIndex }})</small></span
+    >
+    <span class="down">
+      <a
+        (click)="changeSubEvent()"
+        [matTooltipDisabled]="!entry"
+        [matTooltip]="'all.team.change-event.change' | translate"
       >
-    </div>
+        {{ entry ? entry.name : ('all.team.change-event.pick' | translate) }}</a
+      >
+    </span>
   </div>
+</div>
 
-  <div class="content">
-    <mat-list>
-      <ng-container *ngIf="!(this.players && this.players.length > 0)">
-        <mat-list-item>
-          <div class="no-players">No players</div>
-        </mat-list-item>
-      </ng-container>
+<div class="content">
+  <mat-list>
+    <ng-container
+      *ngIf="!(this.players && this.players.length > 0) && this.entry"
+    >
+      <mat-list-item>
+        <div class="no-players">No players</div>
+      </mat-list-item>
+    </ng-container>
 
-      <ng-container *ngIf="this.players && this.players.length > 0">
-        <div mat-list-item  *ngFor="let player of this.players">
-          <span mat-line>
-            {{ player.fullName }}
-            <small
-              >{{ player.single }} - {{ player.double }}
-              <ng-container *ngIf="team.type === 'MX'">
-                - {{ player.mix }}</ng-container
-              ></small
-            >
-          </span>
-          <button mat-icon-button (click)="this.whenPlayerRemoved.next(player)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
-      </ng-container>
-    </mat-list>
-    <badman-player-search
-      (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
-      [ignorePlayers]="this.players"
-      [allowCreation]="true"
-      [where]="this.where"
-      [club]="this.club"
-    ></badman-player-search>
-  </div>
+    <ng-container *ngIf="this.players && this.players.length > 0">
+      <div mat-list-item *ngFor="let player of this.players">
+        <span mat-line>
+          {{ player.fullName }}
+          <small
+            >{{ player.single }} - {{ player.double }}
+            <ng-container *ngIf="team.type === 'MX'">
+              - {{ player.mix }}</ng-container
+            ></small
+          >
+        </span>
+        <button mat-icon-button (click)="this.whenPlayerRemoved.next(player)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </ng-container>
+  </mat-list>
+  <badman-player-search
+    *ngIf="this.entry"
+    (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
+    [ignorePlayers]="this.players"
+    [allowCreation]="true"
+    [where]="this.where"
+    [club]="this.club"
+  ></badman-player-search>
+  <p class="no-event" *ngIf="!this.entry">
+    {{ 'all.team.change-event.select-event-hint' | translate }}
+  </p>
 </div>

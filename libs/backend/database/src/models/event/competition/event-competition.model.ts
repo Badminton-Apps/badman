@@ -66,7 +66,7 @@ export class EventCompetition extends Model {
   @Unique('EventCompetitions_unique_constraint')
   @Field({ nullable: true })
   @Column
-  startYear: number;
+  season: number;
 
   @Field({ nullable: true })
   @Column

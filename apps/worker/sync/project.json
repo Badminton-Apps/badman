@@ -5,9 +5,12 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
       "options": {
+        "target": "node",
+        "compiler": "tsc",
         "outputPath": "dist/apps/worker/sync",
         "main": "apps/worker/sync/src/main.ts",
         "tsConfig": "apps/worker/sync/tsconfig.app.json",
@@ -19,33 +22,37 @@
             "output": "compile/libs/mailing"
           }
         ],
-        "generatePackageJson": true
+        "webpackConfig": "apps/api/webpack.config.js"
       },
       "configurations": {
+        "development": {},
         "production": {
           "optimization": true,
           "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/worker/sync/src/environments/environment.ts",
-              "with": "apps/worker/sync/src/environments/environment.prod.ts"
-            }
-          ]
+          "inspect": false
         }
       }
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
+      "defaultConfiguration": "development",
       "options": {
         "buildTarget": "worker-sync:build",
         "port": 9230,
         "inspect": "inspect",
         "host": "0.0.0.0"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "api:build:development"
+        },
+        "production": {
+          "buildTarget": "api:build:production"
+        }
       }
     },
     "serve-dev": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/node:node",
       "options": {
         "buildTarget": "worker-sync:build",
         "inspect": "inspect",
@@ -54,18 +61,24 @@
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/worker/sync/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
+      "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/worker/sync"],
       "options": {
         "jestConfig": "apps/worker/sync/jest.config.js",
         "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
       }
     }
   },

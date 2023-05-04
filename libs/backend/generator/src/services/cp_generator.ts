@@ -49,7 +49,7 @@ export class CpGeneratorService {
     const file = await this._prepCPfile(event, ADODB);
 
     this.logger.debug('Reading players');
-    const csvPlayers = await this._readCsvPlayers(event.startYear);
+    const csvPlayers = await this._readCsvPlayers(event.season);
 
     this.logger.debug('Adding evetns');
     const events = await this._addEvents(event);
@@ -551,8 +551,8 @@ export class CpGeneratorService {
   }
 
   private async _addTournamentDays(event: EventCompetition) {
-    const start = moment(`${event.startYear}-09-01`);
-    const end = moment(`${event.startYear + 1}-05-31`);
+    const start = moment(`${event.season}-09-01`);
+    const end = moment(`${event.season + 1}-05-31`);
 
     // Generate array for each day from start to end
     const days: moment.Moment[] = [];
@@ -681,7 +681,7 @@ export class CpGeneratorService {
 
           const availabilities = await location.getAvailabilities({
             where: {
-              year: event.startYear,
+              year: event.season,
             },
           });
           const days = [];
@@ -905,7 +905,7 @@ export class CpGeneratorService {
     for (const [, { cpId, dbLocation }] of locations) {
       const availabilities = await dbLocation.getAvailabilities({
         where: {
-          year: event.startYear,
+          year: event.season,
         },
       });
 

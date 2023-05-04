@@ -2,8 +2,13 @@ import { ElementHandle, launch, Page } from 'puppeteer';
 
 export async function getBrowser(headless = true) {
   return await launch({
-    headless,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--single-process', '--disable-dev-shm-usage'],
+    headless: headless ? 'new' : false,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--single-process',
+      '--disable-dev-shm-usage',
+    ],
   });
 }
 

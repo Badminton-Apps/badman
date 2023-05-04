@@ -7,9 +7,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button color="primary">
-    {{ 'all.button.create' | translate }}
+  <button matDialogClose mat-raised-button color="primary">
+    {{ 'all.button.add' | translate }}
   </button>
 
-  <button mat-button [mat-dialog-close]="">Close</button>
+  <button mat-button matDialogClose>Close</button>
 </mat-dialog-actions>

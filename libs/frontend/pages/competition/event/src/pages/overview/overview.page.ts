@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -91,7 +97,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private jobsService: JobsService,
     private matSnackBar: MatSnackBar,
-    formBuilder: FormBuilder
+    private changeDetectorRef: ChangeDetectorRef,
+    formBuilder: FormBuilder 
   ) {
     this.filter = formBuilder.group({
       name: new FormControl(),
@@ -250,12 +257,12 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           where: {
             official: filter?.official == true ? true : undefined,
             name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
-            startYear: filter?.year ? filter.year : undefined,
+            season: filter?.year ? filter.year : undefined,
           },
           order: [
             {
               direction: 'desc',
-              field: 'official'
+              field: 'official',
             },
             {
               direction: direction || 'desc',
@@ -311,6 +318,8 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
             duration: 2000,
           }
         );
+
+        this.changeDetectorRef.detectChanges();
       });
   }
 
