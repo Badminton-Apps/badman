@@ -36,6 +36,7 @@ import {
   UseForTeamName,
   getLetterForRegion,
   sortSubEventOrder,
+  sortTeams,
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -253,6 +254,8 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       }) as TeamForm
     );
 
+    this.teamNumbers[type].push(teamNumber);
+
     const ref = this.snackBar.open(
       `Team ${team.name} added at the end`,
       'Scroll naar team',
@@ -260,6 +263,8 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
         duration: 2000,
       }
     );
+
+    this.changedector.markForCheck();
 
     ref.onAction().subscribe(() => {
       setTimeout(() => {
@@ -298,6 +303,9 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
         t.name = this.getTeamName(t, club);
       }
     }
+
+    // remove last value from array
+    this.teamNumbers[team.type].pop();
   }
 
   async changeTeamNumber(team: Team) {
@@ -320,8 +328,14 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
 
       const newNumber = result.newNumber;
       this.changeNumber(team.teamNumber, newNumber, club, type);
+      // sort teams in control
 
-      this.changedector.detectChanges();
+      const teams = this.control?.get(type) as FormArray<TeamForm>;
+      teams.controls.sort((a: TeamForm, b: TeamForm) =>
+        sortTeams(a.value.team as Team, b.value.team as Team)
+      );
+
+      this.changedector.markForCheck();
     });
   }
 
@@ -338,20 +352,21 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     club: Club,
     type: SubEventTypeEnum
   ) {
+    const teams = this.control?.get(type) as FormArray<TeamForm>;
     // iterate over all controls and update the team number / name
-    (this.control?.get(type) as FormArray<TeamForm>).controls.forEach((t) => {
+    teams.controls.forEach((t) => {
       const tControl = t.get('team');
+      const team = tControl?.value as Team;
       if (!tControl?.value.teamNumber) return;
 
       if (tControl?.value.teamNumber === oldNumber) {
-        console.log(
-          `${tControl.value.name} change ${oldNumber} to ${newNumber}`
-        );
+        console.log(`${team.name} change ${oldNumber} to ${newNumber}`);
+        team.teamNumber = newNumber;
 
         tControl?.patchValue({
-          ...tControl.value,
+          ...team,
           teamNumber: newNumber,
-          name: this.getTeamName(tControl.value, club),
+          name: this.getTeamName(team, club),
         } as Team);
       }
 
@@ -361,15 +376,11 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
         tControl?.value.teamNumber >= newNumber &&
         tControl?.value.teamNumber < oldNumber
       ) {
-        console.log(
-          `${tControl.value.name} change ${tControl?.value.teamNumber} to ${
-            tControl.value.teamNumber + 1
-          }`
-        );
+        team.teamNumber = (team.teamNumber ?? 0) + 1;
         tControl?.patchValue({
-          ...tControl.value,
-          teamNumber: tControl.value.teamNumber + 1,
-          name: this.getTeamName(tControl.value, club),
+          ...team,
+          teamNumber: team.teamNumber,
+          name: this.getTeamName(team, club),
         } as Team);
       }
 
@@ -379,15 +390,12 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
         tControl?.value.teamNumber <= newNumber &&
         tControl?.value.teamNumber > oldNumber
       ) {
-        console.log(
-          `${tControl.value.name} change ${tControl?.value.teamNumber} to ${
-            tControl.value.teamNumber - 1
-          }`
-        );
+        team.teamNumber = (team.teamNumber ?? 0) - 1;
+
         tControl?.patchValue({
-          ...tControl.value,
-          teamNumber: tControl.value.teamNumber - 1,
-          name: this.getTeamName(tControl.value, club),
+          ...team,
+          teamNumber: team.teamNumber - 1,
+          name: this.getTeamName(team, club),
         } as Team);
       }
     });
