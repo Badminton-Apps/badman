@@ -104,19 +104,19 @@ export class EnrollmentValidationService {
       ],
     });
 
-    // setting default values for levels whe they are missing
-    players = players.map((p) => {
-      p.rankingPlaces = p.rankingPlaces?.map(
-        (rp) =>
-          ({
-            ...rp,
-            single: rp.single ?? system.amountOfLevels,
-            double: rp.double ?? system.amountOfLevels,
-            mix: rp.mix ?? system.amountOfLevels,
-          } as RankingPlace)
-      );
-      return p;
-    });
+    // // setting default values for levels whe they are missing
+    // players = players.map((p) => {
+    //   p.rankingPlaces = p.rankingPlaces?.map(
+    //     (rp) =>
+    //       ({
+    //         ...rp,
+    //         single: rp.single ?? system.amountOfLevels,
+    //         double: rp.double ?? system.amountOfLevels,
+    //         mix: rp.mix ?? system.amountOfLevels,
+    //       } as RankingPlace)
+    //   );
+    //   return p;
+    // });
 
     return {
       teams: teams.map((t) => {
