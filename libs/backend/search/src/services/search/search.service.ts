@@ -76,7 +76,7 @@ export class SearchService {
     // Temporary structure to return the results.
     return await EventCompetition.findAll({
       attributes: ['id', 'slug', 'name'],
-      order: [['startYear', 'DESC']],
+      order: [['season', 'DESC']],
       where: { [Op.and]: queries },
       limit: 100,
     });

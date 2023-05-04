@@ -1,6 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SeoService } from '@badman/frontend-seo';
@@ -19,11 +31,22 @@ import { HasClaimComponent } from '@badman/frontend-components';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { Club, Location, Player, Role, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { getCurrentSeason, sortTeams } from '@badman/utils';
+import {
+  SubEventType,
+  SubEventTypeEnum,
+  getCurrentSeason,
+  sortTeams,
+} from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { BehaviorSubject, Observable, Subject, lastValueFrom } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  combineLatest,
+  lastValueFrom,
+} from 'rxjs';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
@@ -34,6 +57,7 @@ import {
 } from './components';
 
 @Component({
+  selector: 'badman-club-edit',
   templateUrl: './edit.page.html',
   styleUrls: ['./edit.page.scss'],
   standalone: true,
@@ -80,10 +104,27 @@ export class EditPageComponent implements OnInit, OnDestroy {
   updateClub$ = new BehaviorSubject(null);
   updateLocation$ = new BehaviorSubject(null);
   updateRoles$ = new BehaviorSubject(null);
+  updateTeams$ = new BehaviorSubject(null);
 
-  competitionYear = new FormControl();
+  season = new FormControl();
+  newTeamForm?: FormGroup;
 
   seasons = [getCurrentSeason()];
+
+  eventTypes = Object.values(SubEventTypeEnum);
+  selectNumbers: number[] = [];
+  teamNumbers: {
+    [key in SubEventType]: number[];
+  } = {
+    F: [],
+    M: [],
+    MX: [],
+    NATIONAL: [],
+  };
+
+  // template ref for adding new team
+  @ViewChild('newTeamTemplate', { static: true })
+  teamTemplate?: TemplateRef<HTMLElement>;
 
   constructor(
     private seoService: SeoService,
@@ -110,11 +151,14 @@ export class EditPageComponent implements OnInit, OnDestroy {
       });
       this.breadcrumbsService.set('@club', clubName);
 
-      this.roles$ = this.updateClub$.pipe(
+      this.roles$ = combineLatest([this.updateClub$, this.updateRoles$]).pipe(
         takeUntil(this.destroy$),
         switchMap(() => this._loadRoles())
       );
-      this.locations$ = this.updateLocation$.pipe(
+      this.locations$ = combineLatest([
+        this.updateClub$,
+        this.updateLocation$,
+      ]).pipe(
         takeUntil(this.destroy$),
         switchMap(() => this._loadLocations())
       );
@@ -125,7 +169,10 @@ export class EditPageComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.teamsForYear$ = this.competitionYear.valueChanges.pipe(
+      this.teamsForYear$ = combineLatest([
+        this.season.valueChanges,
+        this.updateTeams$,
+      ]).pipe(
         takeUntil(this.destroy$),
         switchMap((season) => {
           return this.apollo.query<{ club: Club }>({
@@ -140,10 +187,16 @@ export class EditPageComponent implements OnInit, OnDestroy {
                     clubId
                     type
                     teamNumber
+                    season
                     entry {
                       id
-                      competitionSubEvent {
+                      subEventCompetition {
                         id
+                        name
+                        eventCompetition {
+                          id
+                          name
+                        }
                       }
                       meta {
                         competition {
@@ -176,6 +229,25 @@ export class EditPageComponent implements OnInit, OnDestroy {
         }),
         map((x) => {
           return (x.data.club.teams ?? []).map((t) => new Team(t));
+        }),
+        tap((teams) => {
+          // initial teamnumbers
+          this.teamNumbers.M =
+            teams
+              ?.filter((t) => t.type === SubEventTypeEnum.M)
+              .map((t) => t.teamNumber ?? 0) ?? [];
+          this.teamNumbers.F =
+            teams
+              ?.filter((t) => t.type === SubEventTypeEnum.F)
+              .map((t) => t.teamNumber ?? 0) ?? [];
+          this.teamNumbers.MX =
+            teams
+              ?.filter((t) => t.type === SubEventTypeEnum.MX)
+              .map((t) => t.teamNumber ?? 0) ?? [];
+          this.teamNumbers.NATIONAL =
+            teams
+              ?.filter((t) => t.type === SubEventTypeEnum.NATIONAL)
+              .map((t) => t.teamNumber ?? 0) ?? [];
         }),
         map((teams) => teams.sort(sortTeams))
       );
@@ -434,7 +506,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
       throw new Error('No player id');
     }
 
-    if (!team.entry?.competitionSubEvent?.id) {
+    if (!team.entry?.subEventCompetition?.id) {
       throw new Error('No sub event id');
     }
 
@@ -457,13 +529,13 @@ export class EditPageComponent implements OnInit, OnDestroy {
         `,
         variables: {
           playerId: player.id,
-          subEventId: team.entry.competitionSubEvent.id,
+          subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
       })
     );
     this._deleteTeamFromCache(team.id);
-    this.updateClub$.next(null);
+    this.updateTeams$.next(null);
   }
 
   async onDeleteBasePlayer(player: Partial<Player>, team: Team) {
@@ -474,7 +546,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
       throw new Error('No player id');
     }
 
-    if (!team.entry?.competitionSubEvent?.id) {
+    if (!team.entry?.subEventCompetition?.id) {
       throw new Error('No sub event id');
     }
 
@@ -497,13 +569,60 @@ export class EditPageComponent implements OnInit, OnDestroy {
         `,
         variables: {
           playerId: player.id,
-          subEventId: team.entry.competitionSubEvent.id,
+          subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
       })
     );
     this._deleteTeamFromCache(team.id);
-    this.updateClub$.next(null);
+    this.updateTeams$.next(null);
+  }
+
+  async onSubEventAssignedToTeam(
+    event: {
+      event: string;
+      subEvent: string;
+    },
+    team: Team
+  ) {
+    this.apollo
+      .mutate({
+        mutation: gql`
+          mutation Mutation($teamId: String!, $subEventId: String!) {
+            createEnrollment(teamId: $teamId, subEventId: $subEventId)
+          }
+        `,
+        variables: {
+          teamId: team.id,
+          subEventId: event.subEvent,
+        },
+      })
+      .subscribe(() => {
+        this._deleteTeamFromCache(team.id);
+        this.updateTeams$.next(null);
+      });
+  }
+
+  addTeam() {
+    import('@badman/frontend-team').then((m) => {
+      this.dialog
+        .open(m.AddDialogComponent, {
+          data: {
+            team: {
+              clubId: this.club.id,
+              season: this.season.value,
+            },
+            teamNumbers: this.teamNumbers,
+          },
+
+          width: '100%',
+          maxWidth: '600px',
+        })
+        .afterClosed()
+        .subscribe(() => {
+          this.updateTeams$.next(null);
+        });
+    });
   }
 
   private _deleteRoleFromCache(role?: string) {

@@ -4,6 +4,7 @@ import { EventEntry } from './entry.model';
 import { Location } from './location.model';
 import { Player, TeamPlayer } from './player.model';
 
+
 export class Team {
   id?: string;
   slug?: string;

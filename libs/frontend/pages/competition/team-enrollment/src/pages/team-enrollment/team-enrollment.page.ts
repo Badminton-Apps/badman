@@ -18,11 +18,15 @@ import { forkJoin } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import {
   ClubStepComponent,
+  CommentsStepComponent,
   EventsStepComponent,
+  LocationsStepComponent,
   TeamForm,
   TeamsStepComponent,
   TeamsTransferStepComponent,
 } from './components';
+import { LocationForm } from './components/steps/locations/components';
+import { CLUB, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
 
 export const STEP_AVAILIBILTY = 1;
 
@@ -46,24 +50,24 @@ export const STEP_AVAILIBILTY = 1;
     EventsStepComponent,
     TeamsTransferStepComponent,
     TeamsStepComponent,
+    LocationsStepComponent,
+    CommentsStepComponent,
   ],
 })
 export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
   formGroup: FormGroup = new FormGroup({
-    season: new FormControl(2023, [Validators.required]),
-    club: new FormControl(undefined, [Validators.required]),
-    events: new FormControl([], [Validators.required]),
-    teams: new FormGroup(
-      {
-        M: new FormArray<TeamForm>([]),
-        F: new FormArray<TeamForm>([]),
-        MX: new FormArray<TeamForm>([]),
-        NATIONAL: new FormArray<TeamForm>([]),
-      },
-      [Validators.required]
-    ),
+    [SEASON]: new FormControl(2023, [Validators.required]),
+    [CLUB]: new FormControl(undefined, [Validators.required]),
+    [EVENTS]: new FormControl([], [Validators.required]),
+    [TEAMS]: new FormGroup({
+      M: new FormArray<TeamForm>([]),
+      F: new FormArray<TeamForm>([]),
+      MX: new FormArray<TeamForm>([]),
+      NATIONAL: new FormArray<TeamForm>([]),
+    }),
+    [LOCATIONS]: new FormArray<LocationForm>([], [Validators.required]),
   });
 
   constructor(
@@ -107,21 +111,23 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
     const observables = [];
 
     // save the teams to the backend
-    for (const team of [
+    for (const enrollment of [
       ...this.formGroup.value.teams.M,
       ...this.formGroup.value.teams.F,
       ...this.formGroup.value.teams.MX,
       ...this.formGroup.value.teams.NATIONAL,
     ]) {
-      const players = team.players.map((player: Partial<TeamPlayer>) => {
-        return {
-          id: player.id,
-          membershipType: player.membershipType,
-        };
-      });
+      const players = enrollment.team.players.map(
+        (player: Partial<TeamPlayer>) => {
+          return {
+            id: player.id,
+            membershipType: player.membershipType,
+          };
+        }
+      );
 
       const meta = {
-        players: team.players.map(
+        players: enrollment.entry.players.map(
           (
             player: Partial<Player> & {
               single: number;
@@ -139,15 +145,16 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
       };
 
       const data = {
-        id: team.id,
-        name: team.name,
-        teamNumber: team.teamNumber,
-        type: team.type,
+        id: enrollment.team.id,
+        name: enrollment.team.name,
+        teamNumber: enrollment.team.teamNumber,
+        type: enrollment.team.type,
         clubId: this.formGroup.value.club,
-        link: team.link,
+        link: enrollment.team.link,
         season: this.formGroup.value.season,
         players,
         entry: {
+          subEventId: enrollment.entry.subEventId,
           meta: {
             competition: {
               players: meta.players,
@@ -156,40 +163,21 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
         },
       };
 
-      if (team.id) {
-        observables.push(
-          this.apollo.mutate({
-            mutation: gql`
-              mutation UpdateTeam($team: TeamUpdateInput!) {
-                updateTeam(data: $team) {
-                  id
-                }
+      observables.push(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation CreateTeam($team: TeamNewInput!) {
+              createTeam(data: $team) {
+                id
               }
-            `,
-            variables: {
-              team: data,
-            },
-          })
-        );
-      } else {
-        observables.push(
-          this.apollo.mutate({
-            mutation: gql`
-              mutation CreateTeam($team: TeamNewInput!) {
-                createTeam(data: $team) {
-                  id
-                }
-              }
-            `,
-            variables: {
-              team: data,
-            },
-          })
-        );
-      }
+            }
+          `,
+          variables: {
+            team: data,
+          },
+        })
+      );
     }
-
-    console.log('PROMISES', observables);
 
     forkJoin(observables).subscribe((res) => {
       console.log('RES', res);

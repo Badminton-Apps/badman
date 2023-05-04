@@ -1,6 +1,6 @@
 {
   "name": "badman",
-  "version": "6.70.2",
+  "version": "6.72.0",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -28,7 +28,8 @@
     "format:write": "nx format:write",
     "format:check": "nx format:write",
     "update": "nx migrate latest",
-    "create-release": "node ./scripts/standard-version.js"
+    "create-release": "node ./scripts/standard-version.js",
+    "generate-barrels": "barrelsby --config=barrelsby.config.json"
   },
   "private": true,
   "dependencies": {
@@ -163,25 +164,8 @@
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
     "@nguniversal/builders": "15.2.1",
-    "@nrwl/angular": "15.9.2",
-    "@nrwl/cli": "15.9.2",
-    "@nrwl/cypress": "15.9.2",
-    "@nrwl/eslint-plugin-nx": "15.9.2",
-    "@nrwl/jest": "15.9.2",
-    "@nrwl/js": "15.9.2",
-    "@nrwl/linter": "15.9.2",
-    "@nrwl/nest": "15.9.2",
-    "@nrwl/node": "15.9.2",
-    "@nrwl/nx-cloud": "15.3.5",
-    "@nrwl/storybook": "15.9.2",
-    "@nrwl/workspace": "15.9.2",
     "@prettier/plugin-pug": "^2.3.0",
     "@schematics/angular": "~15.2.0",
-    "@storybook/addon-essentials": "^7.0.0",
-    "@storybook/angular": "^7.0.0",
-    "@storybook/builder-webpack5": "^7.0.0",
-    "@storybook/core-server": "^7.0.0",
-    "@storybook/manager-webpack5": "^6.5.15",
     "@types/compression": "^1.7.2",
     "@types/consolidate": "^0.14.1",
     "@types/cors": "^2.8.13",
@@ -194,8 +178,9 @@
     "@types/quill": "^2.0.10",
     "@types/sequelize": "^4.28.14",
     "@types/uuid": "^9.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.47.0",
-    "@typescript-eslint/parser": "^5.47.0",
+    "@typescript-eslint/eslint-plugin": "5.58.0",
+    "@typescript-eslint/parser": "5.58.0",
+    "barrelsby": "^2.5.1",
     "conventional-changelog": "^3.1.25",
     "cypress": ">= 3 < 13",
     "eslint": "^8.30.0",
@@ -207,7 +192,7 @@
     "jest-environment-node": "^29.4.1",
     "jest-preset-angular": "13.0.0",
     "ng-packagr": "~15.2.2",
-    "nx": "15.9.2",
+    "nx": "16.0.3",
     "postcss": "^8.4.21",
     "postcss-import": "^15.1.0",
     "postcss-preset-env": "^8.0.0",
@@ -217,7 +202,17 @@
     "ts-jest": "29.1.0",
     "ts-node": "10.9.1",
     "typescript": "4.9.5",
-    "webpack": "^5.64.0"
+    "webpack": "^5.64.0",
+    "nx-cloud": "16.0.5",
+    "@nx/workspace": "16.0.3",
+    "@nx/js": "16.0.3",
+    "@nx/linter": "16.0.3",
+    "@nx/cypress": "16.0.3",
+    "@nx/eslint-plugin": "16.0.3",
+    "@nx/jest": "16.0.3",
+    "@nx/node": "16.0.3",
+    "@nx/nest": "16.0.3",
+    "@nx/angular": "16.0.3"
   },
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.18"
@@ -228,9 +223,6 @@
     },
     "@ng-maps/core": {
       "zone.js": "0.13.0"
-    },
-    "@storybook/angular": {
-      "zone.js": "0.13.0"
     }
   },
   "volta": {
@@ -240,4 +232,3 @@
     "defaults"
   ]
 }
-

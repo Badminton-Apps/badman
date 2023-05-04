@@ -14,7 +14,7 @@
       {{#each club.teams as |team|}}
         {{#each team.entries as |entry|}}
           <p><strong>Team:</strong> {{team.name}} ({{team.abbreviation}})<br/>
-          <strong>Reeks:</strong> {{entry.competitionSubEvent.event.name}} - {{entry.competitionSubEvent.name}} <br/>
+          <strong>Reeks:</strong> {{entry.subEventCompetition.event.name}} - {{entry.subEventCompetition.name}} <br/>
           <strong>Kapitein:</strong> {{team.captain.firstName}} {{team.captain.lastName}} ({{team.email}}, {{team.phone}})
           </p>
           <strong>Basisspelers: </strong>

@@ -11,17 +11,14 @@ import { Team } from './team.model';
 export class EventEntry {
   id?: string;
 
-  competitionSubEvent?: SubEventCompetition;
-  competitionDraw?: DrawCompetition;
+  subEventCompetition?: SubEventCompetition;
+  drawCompetition?: DrawCompetition;
 
-  tournamentSubEvent?: SubEventTournament;
-  tournamentDraw?: DrawTournament;
+  subEventTournament?: SubEventTournament;
+  drawTournament?: DrawTournament;
 
-  competitionSubEventId?: string;
-  competitionDrawId?: string;
-
-  tournamentSubEventId?: string;
-  tournamentDrawId?: string;
+  subEventId?: string;
+  drawId?: string;
 
   standing?: Standing;
 
@@ -36,27 +33,27 @@ export class EventEntry {
   constructor({ ...args }: Partial<EventEntry>) {
     this.id = args.id;
 
-    this.competitionSubEvent =
-      args?.competitionSubEvent != null
-        ? new SubEventCompetition(args?.competitionSubEvent)
+    this.subEventCompetition =
+      args?.subEventCompetition != null
+        ? new SubEventCompetition(args?.subEventCompetition)
         : undefined;
-    this.competitionDraw =
-      args?.competitionDraw != null
-        ? new DrawCompetition(args?.competitionDraw)
+    this.drawCompetition =
+      args?.drawCompetition != null
+        ? new DrawCompetition(args?.drawCompetition)
         : undefined;
-    this.tournamentSubEvent =
-      args?.tournamentSubEvent != null
-        ? new SubEventTournament(args?.tournamentSubEvent)
+    this.subEventTournament =
+      args?.subEventTournament != null
+        ? new SubEventTournament(args?.subEventTournament)
         : undefined;
-    this.tournamentDraw =
-      args?.tournamentDraw != null
-        ? new DrawTournament(args?.tournamentDraw)
+    this.drawTournament =
+      args?.drawTournament != null
+        ? new DrawTournament(args?.drawTournament)
         : undefined;
 
-    this.competitionSubEventId = args?.competitionSubEventId;
-    this.competitionDrawId = args?.competitionDrawId;
+    this.subEventId = args?.subEventId;
+    this.drawId = args?.drawId;
     this.teamId = args?.teamId;
-    
+
     this.team = args?.team != null ? new Team(args?.team) : undefined;
     this.standing =
       args?.standing != null ? new Standing(args?.standing) : undefined;
@@ -81,7 +78,7 @@ export interface EntryCompetition {
   players: EntryCompetitionPlayer[];
 }
 
-export interface  EntryCompetitionPlayer {
+export interface EntryCompetitionPlayer {
   id: string;
   single: number;
   double: number;

@@ -1,11 +1,14 @@
 import {
+  EventCompetition,
+  EventEntry,
   Player,
-  RankingLastPlace,
+  RankingPlace,
   RankingSystem,
+  Standing,
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
-import { getIndexFromPlayers } from '@badman/utils';
+import { getCurrentSeason, getIndexFromPlayers } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import {
   EnrollmentInput,
@@ -14,13 +17,19 @@ import {
   TeamEnrollmentOutput,
 } from '../../models';
 import {
-  CompetitionStatusRule,
+  PlayerCompStatusRule,
+  PlayerBaseRule,
   PlayerGenderRule,
   PlayerMinLevelRule,
+  PlayerSubEventRule,
   Rule,
   TeamBaseIndexRule,
+  TeamOrderRule,
   TeamSubeventIndexRule,
+  TeamRiserFallerRule,
 } from './rules';
+import moment from 'moment';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class EnrollmentValidationService {
@@ -29,18 +38,34 @@ export class EnrollmentValidationService {
   async getValidationData({
     systemId,
     teams,
+    season,
   }: EnrollmentInput): Promise<EnrollmentValidationData> {
     const system = systemId
       ? await RankingSystem.findByPk(systemId)
       : await RankingSystem.findOne({ where: { primary: true } });
-    let previousSeasonTeams = [];
+    season = season ?? getCurrentSeason();
+    let previousSeasonTeams: Team[] = [];
 
     const teamIdIds = teams.map((t) => t.link);
+
     if (teamIdIds.length > 0) {
       previousSeasonTeams = await Team.findAll({
         where: {
-          id: teamIdIds,
+          link: teamIdIds,
+          season: season - 1,
         },
+        include: [
+          {
+            model: EventEntry,
+            include: [
+              { model: Standing },
+              {
+                model: SubEventCompetition,
+                include: [{ model: EventCompetition }],
+              },
+            ],
+          },
+        ],
       });
     }
 
@@ -48,6 +73,11 @@ export class EnrollmentValidationService {
       where: {
         id: teams.map((e) => e.subEventId),
       },
+      include: [
+        {
+          model: EventCompetition,
+        },
+      ],
     });
 
     const playerIds = teams
@@ -61,10 +91,15 @@ export class EnrollmentValidationService {
       },
       include: [
         {
-          model: RankingLastPlace,
+          model: RankingPlace,
           where: {
             systemId: system?.id,
+            rankingDate: {
+              [Op.lte]: moment([season, 5, 10]).toDate(),
+            },
           },
+          order: [['rankingDate', 'DESC']],
+          limit: 1,
         },
       ],
     });
@@ -83,25 +118,28 @@ export class EnrollmentValidationService {
           t.type,
           teamPlayers?.map((p) => ({
             ...p.toJSON(),
-            lastRanking: p.rankingLastPlaces?.[0]?.toJSON(),
+            lastRanking: p.rankingPlaces?.[0]?.toJSON(),
           }))
         );
         const baseIndex = getIndexFromPlayers(
           t.type,
           basePlayers?.map((p) => ({
             ...p.toJSON(),
-            lastRanking: p.rankingLastPlaces?.[0]?.toJSON(),
+            lastRanking: p.rankingPlaces?.[0]?.toJSON(),
           }))
         );
+
+        const preTeam = previousSeasonTeams.find((p) => p.link === t.link);
 
         return {
           team: new Team({
             id: t.id,
             type: t.type,
+            name: t.name,
+            teamNumber: t.teamNumber,
+            link: preTeam?.link,
           }),
-          previousSeasonTeam: previousSeasonTeams.find(
-            (p) => p.linkId === t.link
-          ),
+          previousSeasonTeam: preTeam,
           isNewTeam: t.link === null,
           possibleOldTeam: false,
           id: t.id,
@@ -143,15 +181,15 @@ export class EnrollmentValidationService {
 
       const errors =
         ruleResults
-          ?.map((r) => r.errors)
+          ?.map((r) => r?.errors)
           ?.flat(1)
           ?.filter((e) => !!e) ?? [];
       const warnings =
         ruleResults
-          ?.map((r) => r.warnings)
+          ?.map((r) => r?.warnings)
           ?.flat(1)
           ?.filter((e) => !!e) ?? [];
-      const valid = ruleResults?.every((r) => r.valid);
+      const valid = ruleResults?.every((r) => r?.valid);
 
       teams.push({
         id: team.team?.id,
@@ -182,11 +220,16 @@ export class EnrollmentValidationService {
 
   static defaultValidators(): Rule[] {
     return [
-      new TeamBaseIndexRule(),
-      new TeamSubeventIndexRule(),
-      new CompetitionStatusRule(),
-      new PlayerMinLevelRule(),
+      new PlayerBaseRule(),
+      new PlayerCompStatusRule(),
       new PlayerGenderRule(),
+      new PlayerMinLevelRule(),
+      new PlayerSubEventRule(),
+
+      new TeamBaseIndexRule(),
+      new TeamRiserFallerRule(),
+      new TeamSubeventIndexRule(),
+      new TeamOrderRule(),
     ];
   }
 }

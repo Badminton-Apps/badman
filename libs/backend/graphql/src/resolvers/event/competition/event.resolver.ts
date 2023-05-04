@@ -208,7 +208,7 @@ export class EventCompetitionResolver {
         ...eventCompetitionDb.toJSON(),
         id: undefined,
         visualCode: undefined,
-        startYear: year,
+        season: year,
         name: newName,
       });
 

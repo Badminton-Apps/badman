@@ -162,7 +162,9 @@ export class TeamsResolver {
         newTeamData.teamNumber = highestNumber + 1;
       }
 
+
       // Create or find the team (that was inactive)
+
       const [teamDb, created] = await Team.findOrCreate({
         where: {
           type: newTeamData.type,
@@ -170,7 +172,9 @@ export class TeamsResolver {
           clubId: newTeamData.clubId,
           season: newTeamData.season,
         },
-        defaults: { ...newTeamData },
+        defaults: {
+          ...newTeamData,
+        },
         transaction,
       });
 
@@ -183,10 +187,9 @@ export class TeamsResolver {
         teamDb.season = newTeamData.season;
         teamDb.type = newTeamData.type;
         teamDb.teamNumber = newTeamData.teamNumber;
-
+        teamDb.link = newTeamData.link;
         await teamDb.save({ transaction });
-      }
-
+      } 
       if (created) {
         await teamDb.setClub(dbClub, { transaction });
       }
@@ -244,13 +247,20 @@ export class TeamsResolver {
         let dbEntry = await teamDb.getEntry({ transaction });
 
         if (!dbEntry) {
-          dbEntry = await EventEntry.create(
-            {
-              ...newTeamData.entry,
+          [dbEntry] = await EventEntry.findCreateFind({
+            where: {
               teamId: teamDb.id,
+              subEventId: newTeamData.entry.subEventId,
             },
-            { transaction, hooks: false }
-          );
+            defaults: {
+              ...newTeamData.entry,
+            },
+            transaction,
+            hooks: false,
+          });
+        } else {
+          // Might be a new link
+          dbEntry.subEventId = newTeamData.entry.subEventId;
         }
 
         if (newTeamData.entry.meta.competition.players) {
@@ -306,6 +316,7 @@ export class TeamsResolver {
           await dbEntry.save({ transaction, hooks: false });
         }
       }
+
 
       await transaction.commit();
       return teamDb;
@@ -406,6 +417,13 @@ export class TeamsResolver {
         }
       }
 
+      this.logger.debug('updateTeamData', {
+        newTeam: {
+          ...dbTeam.toJSON(),
+          ...updateTeamData,
+        },
+      });
+
       await dbTeam.update(
         { ...dbTeam.toJSON(), ...updateTeamData },
         { transaction }
@@ -422,6 +440,41 @@ export class TeamsResolver {
       // await dbTeam.update(location, { transaction });
       await transaction.commit();
       return dbTeam;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async deleteTeam(
+    @Args('id', { type: () => ID }) id: number,
+    @User() user: Player
+  ): Promise<boolean> {
+    const transaction = await this._sequelize.transaction();
+    try {
+      const dbTeam = await Team.findByPk(id, { transaction });
+
+      if (!dbTeam) {
+        throw new NotFoundException(`${Team.name}: ${id}`);
+      }
+
+      if (
+        !user.hasAnyPermission([
+          `${dbTeam.clubId}_edit:location`,
+          'edit-any:club',
+        ])
+      ) {
+        throw new UnauthorizedException(
+          `You do not have permission to add a competition`
+        );
+      }
+
+      await dbTeam.destroy({ transaction });
+
+      await transaction.commit();
+      return true;
     } catch (e) {
       this.logger.warn('rollback', e);
       await transaction.rollback();
@@ -616,6 +669,16 @@ export class TeamsResolver {
         throw new NotFoundException(
           `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
         );
+      }
+
+      // create meta if not exists
+      if (!entry.meta) {
+        entry.meta = {
+          competition: {
+            teamIndex: -1,
+            players: [],
+          },
+        };
       }
 
       entry.meta?.competition.players.push({

@@ -4,11 +4,14 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
+  TemplateRef,
+  ViewChild,
 } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
@@ -22,15 +25,23 @@ import { MatInputModule } from '@angular/material/input';
 import { Club, Player } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom, merge, Observable, of, ReplaySubject } from 'rxjs';
+import {
+  lastValueFrom,
+  merge,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject,
+} from 'rxjs';
 import {
   debounceTime,
   filter,
   map,
   startWith,
   switchMap,
+  takeUntil,
 } from 'rxjs/operators';
-import { NewPlayerComponent } from '../new-player';
+import { PlayerFieldsComponent } from '../fields';
 
 @Component({
   standalone: true,
@@ -47,16 +58,21 @@ import { NewPlayerComponent } from '../new-player';
     MatFormFieldModule,
     MatDialogModule,
     MatInputModule,
+
+    // My Modules
+    PlayerFieldsComponent,
   ],
   selector: 'badman-player-search',
   templateUrl: './player-search.component.html',
   styleUrls: ['./player-search.component.scss'],
 })
-export class PlayerSearchComponent implements OnChanges, OnInit {
+export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   @Output() whenSelectPlayer = new EventEmitter<Player>();
 
   @Input()
-  label = 'all.players.search.label';
+  label = 'all.player.search.label';
 
   @Input()
   allowCreation = false;
@@ -91,6 +107,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   filteredOptions$!: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
 
+  @ViewChild('newPlayer')
+  newPlayerTemplateRef?: TemplateRef<HTMLElement>;
+  newPlayerFormGroup?: FormGroup;
+
   constructor(private apollo: Apollo, private dialog: MatDialog) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -109,6 +129,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
     this.setPlayer();
 
     const search$ = this.formControl.valueChanges.pipe(
+      takeUntil(this.destroy$),
       startWith(''),
       filter((x) => !!x),
       filter((x) => typeof x === 'string'),
@@ -219,6 +240,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   private setPlayer() {
     of(this.player)
       .pipe(
+        takeUntil(this.destroy$),
         switchMap((p) => {
           if (typeof p == 'string') {
             return lastValueFrom(
@@ -262,43 +284,63 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   }
 
   selectedPlayer(event: MatAutocompleteSelectedEvent) {
-    if (event.option.value?.id == null) {
-      const dialogRef = this.dialog.open(NewPlayerComponent, {
-        data: { input: event.option.value },
-      });
-      dialogRef.afterClosed().subscribe(async (player: Partial<Player>) => {
-        if (player) {
-          const dbPlayer = await lastValueFrom(
-            this.apollo
-              .mutate<{ addPlayer: Partial<Player> }>({
-                mutation: gql`
-                  mutation AddPlayer($data: PlayerNewInput!) {
-                    addPlayer(data: $data) {
-                      id
-                      slug
-                      memberId
-                      firstName
-                      lastName
-                    }
-                  }
-                `,
-                variables: {
-                  data: {
-                    memberId: player.memberId?.trim(),
-                    firstName: player.firstName?.trim(),
-                    lastName: player.lastName?.trim(),
-                    gender: player.gender?.trim(),
-                  },
-                },
-              })
-              .pipe(map((x) => new Player(x.data?.addPlayer)))
-          );
-          if (!this.clearOnSelection) {
-            this.formControl.setValue(player);
-          }
-          this._selectPlayer(dbPlayer);
+    if (event.option.value?.id == null && this.newPlayerTemplateRef) {
+      let firstName: string | undefined;
+      let lastName: string | undefined;
+      if (event.option.value != null) {
+        const spaced = event.option.value.indexOf(' ');
+        if (spaced != -1) {
+          firstName = event.option.value.slice(spaced).trim();
+          lastName = event.option.value.substr(0, spaced).trim();
+        } else {
+          firstName = event.option.value.trim();
         }
+      }
+
+      this.newPlayerFormGroup = PlayerFieldsComponent.newPlayerForm({
+        firstName,
+        lastName,
       });
+
+      const dialogRef = this.dialog.open(this.newPlayerTemplateRef);
+
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async () => {
+          if (this.newPlayerFormGroup?.value) {
+            const dbPlayer = await lastValueFrom(
+              this.apollo
+                .mutate<{ createPlayer: Partial<Player> }>({
+                  mutation: gql`
+                    mutation createPlayer($data: PlayerNewInput!) {
+                      createPlayer(data: $data) {
+                        id
+                        slug
+                        memberId
+                        firstName
+                        lastName
+                      }
+                    }
+                  `,
+                  variables: {
+                    data: {
+                      memberId: this.newPlayerFormGroup?.value.memberId?.trim(),
+                      firstName:
+                        this.newPlayerFormGroup?.value.firstName?.trim(),
+                      lastName: this.newPlayerFormGroup?.value.lastName?.trim(),
+                      gender: this.newPlayerFormGroup?.value.gender?.trim(),
+                    },
+                  },
+                })
+                .pipe(map((x) => new Player(x.data?.createPlayer)))
+            );
+            if (!this.clearOnSelection) {
+              this.formControl.setValue(this.newPlayerFormGroup?.value);
+            }
+            this._selectPlayer(dbPlayer);
+          }
+        });
     } else {
       this._selectPlayer(event.option.value);
     }
@@ -338,5 +380,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       $and: queries,
       ...args?.where,
     };
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

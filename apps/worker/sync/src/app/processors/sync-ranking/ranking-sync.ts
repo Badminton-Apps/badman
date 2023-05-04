@@ -64,7 +64,7 @@ export class RankingSyncer {
   }
 
   async process(args: { transaction: Transaction }) {
-    return this.processor.process({ ...args });
+    await this.processor.process({ ...args });
   }
 
   protected getRankings(): ProcessStep<RankingStepData> {
@@ -198,6 +198,7 @@ export class RankingSyncer {
           publication: VisualPublication,
           category: string,
           places: Map<string, RankingPlace>,
+          newPlayers: Map<string, Player>,
           type: 'single' | 'double' | 'mix',
           gender: 'M' | 'F'
         ) => {
@@ -238,26 +239,30 @@ export class RankingSyncer {
           });
 
           for (const points of rankingPoints) {
-            let foundPlayer = players.find(
-              (p) =>
-                p.memberId ===
-                correctWrongPlayers({ memberId: `${points.Player1.MemberID}` })
-                  .memberId
-            );
+            const memberId = correctWrongPlayers({
+              memberId: `${points.Player1.MemberID}`,
+            }).memberId;
+            let foundPlayer = players.find((p) => p.memberId === memberId);
+
+            if (foundPlayer == null) {
+              foundPlayer = newPlayers.get(memberId);
+            }
 
             if (foundPlayer == null) {
               this.logger.log('New player');
               const [firstName, ...lastName] =
                 points.Player1.Name.split(' ').filter(Boolean);
-              foundPlayer = await new Player(
+
+              foundPlayer = new Player(
                 correctWrongPlayers({
-                  memberId: points.Player1.MemberID,
+                  memberId,
                   firstName,
                   lastName: lastName.join(' '),
                   gender,
                 })
-              ).save({ transaction: args.transaction });
+              );
               players.push(foundPlayer);
+              newPlayers.set(foundPlayer.memberId, foundPlayer);
             }
 
             // Check if other publication has create the ranking place
@@ -302,6 +307,7 @@ export class RankingSyncer {
 
         for (const publication of visiblePublications) {
           const rankingPlaces = new Map<string, RankingPlace>();
+          const newPlayers = new Map<string, Player>();
 
           if (publication.date.isAfter(ranking.lastDate)) {
             if (publication.usedForUpdate) {
@@ -326,6 +332,7 @@ export class RankingSyncer {
               publication,
               categories.find((category) => category.name === 'HE/SM').code,
               rankingPlaces,
+              newPlayers,
               'single',
               'M'
             );
@@ -333,6 +340,7 @@ export class RankingSyncer {
               publication,
               categories.find((category) => category.name === 'DE/SD').code,
               rankingPlaces,
+              newPlayers,
               'single',
               'F'
             );
@@ -344,6 +352,7 @@ export class RankingSyncer {
               publication,
               categories.find((category) => category.name === 'HD/DM').code,
               rankingPlaces,
+              newPlayers,
               'double',
               'M'
             );
@@ -351,6 +360,7 @@ export class RankingSyncer {
               publication,
               categories.find((category) => category.name === 'DD').code,
               rankingPlaces,
+              newPlayers,
               'double',
               'F'
             );
@@ -362,6 +372,7 @@ export class RankingSyncer {
               publication,
               categories.find((category) => category.name === 'GD H/DX M').code,
               rankingPlaces,
+              newPlayers,
               'mix',
               'M'
             );
@@ -369,15 +380,29 @@ export class RankingSyncer {
               publication,
               categories.find((category) => category.name === 'GD D/DX D').code,
               rankingPlaces,
+              newPlayers,
               'mix',
               'F'
             );
+
+            this.logger.debug(`Creating ${newPlayers.size} new players`);
+            if (newPlayers.size > 0) {
+              const newPlayersMap = Array.from(newPlayers).map(([, player]) =>
+                player.toJSON()
+              );
+              await Player.bulkCreate(newPlayersMap, {
+                ignoreDuplicates: true,
+                transaction: args.transaction,
+                returning: false,
+              });
+            }
 
             this.logger.debug(`Creating ranking places`);
 
             const instances = Array.from(rankingPlaces).map(([, place]) =>
               place.toJSON()
             );
+
             await RankingPlace.bulkCreate(instances, {
               ignoreDuplicates: true,
               transaction: args.transaction,

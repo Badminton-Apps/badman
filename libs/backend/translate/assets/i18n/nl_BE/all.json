@@ -45,6 +45,7 @@
     "usedForUpgrade": "Gebruikt enkel voor upgrade"
   },
   "button": {
+    "add": "Voeg toe",
     "add-comment": "Verstuur opmerking",
     "all": "Alles",
     "cancel": "Annuleren",
@@ -71,6 +72,12 @@
   },
   "club": {
     "current": "Huidig club",
+    "delete": {
+      "team": {
+        "description": "Weet u zeker dat je dit team wilt verwijderen?",
+        "title": "Team verwijderen"
+      }
+    },
     "end": "Einde",
     "menu": {
       "add-player": "Voeg speler toe",
@@ -78,6 +85,7 @@
       "edit": "Bewerken",
       "twizzit": "Twizzit overview"
     },
+    "new-team": "Nieuwe ploeg",
     "number": "club nummer",
     "start": "Begindatum",
     "titles": {
@@ -203,15 +211,22 @@
       "comment-liga": "Opmerkingen Liga competitie (per ploeg)",
       "comment-nat": "Opmerkingen Nationale competitie (per ploeg)",
       "comment-prov": "Opmerkingen Provinciale competitie (per ploeg)",
+      "comments": "Opmerkingen",
       "errors": {
         "already": "Speler al als titualris aanwezig.",
-        "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
+        "base-other-team": "<strong>{player.fullName}</strong> is ook basis speler in een ander team",
         "comp-status-base": "Basisspeler <strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
+        "faller": "Het team moet degraderen, maar staat niet in een lagere reeks ingeschreven",
+        "first-team-index": "Een eerste ploeg die gedaald is, mag tijdens het seizoen geen team met ploegindex opstellen die lager is dan hun basisindex",
         "none": "Geen fouten gevonden",
         "player-gender": "<strong>{player.fullName}</strong> is een <strong>{player.gender}</strong> maar een <strong>{gender}</strong> was verwacht",
-        "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
+        "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> en mag minimaal <strong>{minLevel}</strong> zijn.",
+        "player-subevent": "<strong>{player.fullName}</strong> is deel van het basis team <strong>{team.name}</strong> dat ook in <strong>{subEvent.name}</strong> speelt",
+        "riser": "Het team moet promoveren, maar staat niet in een hogere reeks ingeschreven",
         "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
+        "team-order": "Team <strong>{team.name}</strong> zit in een lagere reeks maar heeft een lager team nummer",
+        "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere index in dezelfde reeks, maar heeft een lager team nummer",
         "team-to-strong": "Ploegindex titularissen is <strong>{baseIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
         "title": "Fouten"
       },
@@ -230,7 +245,7 @@
         "team": "",
         "title": "Mogelijke titularissen"
       },
-      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten wet toe tussentijds op te slaan indien er nog onzekerheden zijn over je basis spelers",
+      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten we toe tussentijds op te slaan indien er nog onzekerheden zijn over je basis spelers",
       "select-club": "Selecteer club",
       "select-events": "Selecteer onderdelen",
       "select-location": "Selecteer locaties",
@@ -418,7 +433,11 @@
   },
   "loading": "Aan het laden",
   "locations": {
-    "title": "Locatie(s)"
+    "add-day": "Voeg speeldag toe",
+    "add-exception": "Voeg uitzondering toe",
+    "days": "Speeldagen",
+    "title": "Locatie(s)",
+    "uitzonderingen": "Uitzonderingen"
   },
   "management": {
     "calculate": "Bereken",
@@ -466,7 +485,9 @@
     "select-club": "Kies een club",
     "select-encounter": "Kies een ontmoeting",
     "select-end-time": "Eind tijd",
+    "select-event-competition": "Selecteer competitie",
     "select-start-time": "Start tijd",
+    "select-subevent-competition": "Selecteer reeks",
     "select-team": "Kies een ploeg",
     "select-team-groups": {
       "F": "Dames",
@@ -478,14 +499,13 @@
     "start-time": ""
   },
   "player": {
-    "menu": {
-      "delete": "Verwijder",
-      "edit": "Bewerken"
-    }
-  },
-  "players": {
     "backup": "Reserve speler",
     "base": "Basis speler",
+    "menu": {
+      "add": "Nieuwe speler",
+      "delete": "Verwijder",
+      "edit": "Bewerken"
+    },
     "no-memberid": "Onbekend lidnummer",
     "regular": "Vaste speler",
     "search": {
@@ -615,6 +635,11 @@
     }
   },
   "team": {
+    "change-event": {
+      "change": "Kies reeks",
+      "pick": "Kies reeks",
+      "select-event-hint": "Gelieve eerst een reeks te kiezen vooraleer je spelers kan toevoegen"
+    },
     "change-number": {
       "description": "Het wijzigen van het ploegnummer, update ook hogere/lagere teams",
       "number": "Ploegnummer",
@@ -650,7 +675,8 @@
         "male": "H",
         "mix": "G",
         "national": ""
-      }
+      },
+      "title": "Reeks"
     },
     "usedForTeam": {
       "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",

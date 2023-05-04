@@ -107,7 +107,6 @@ export class Team extends Model {
   preferredTime: Date;
 
   @Field(() => ID)
-  @Default(DataType.UUIDV4)
   @IsUUID(4)
   @Column
   link: string;
@@ -345,7 +344,7 @@ export class TeamUpdateInput extends PartialType(
 
 @InputType()
 export class TeamNewInput extends PartialType(
-  OmitType(TeamUpdateInput, ['id', 'entry', 'players'] as const),
+  OmitType(TeamUpdateInput, ['entry', 'players'] as const),
   InputType
 ) {
   // Include the entry

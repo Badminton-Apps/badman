@@ -101,7 +101,7 @@ export class DetailPageComponent implements OnInit {
 
       const eventCompetitionName = `${this.eventCompetition.name}`;
       this.copyYearControl.setValue(
-        (this.eventCompetition.startYear || new Date().getFullYear()) + 1
+        (this.eventCompetition.season || new Date().getFullYear()) + 1
       );
 
       this.seoService.update({
