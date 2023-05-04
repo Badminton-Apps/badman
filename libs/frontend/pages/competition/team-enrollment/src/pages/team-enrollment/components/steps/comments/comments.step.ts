@@ -16,7 +16,10 @@ import { EVENTS, COMMENTS } from '../../../../../forms';
 import { LevelType, levelTypeSort } from '@badman/utils';
 
 type CommentForm = {
-  [key in LevelType]: FormControl<string | undefined>;
+  [key in LevelType]: FormControl<{
+    comment: string;
+    id: string;
+  }>;
 };
 
 @Component({

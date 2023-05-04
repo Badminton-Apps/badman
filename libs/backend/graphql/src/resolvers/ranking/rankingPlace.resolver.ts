@@ -38,12 +38,39 @@ export class RankingPlaceResolver {
     if (!rankingPlace) {
       throw new NotFoundException(id);
     }
+
+    if (!rankingPlace.single || !rankingPlace.double || !rankingPlace.mix) {
+      // if one of the levels is not set, get the default from the system
+      const system = await RankingSystem.findByPk(rankingPlace.systemId, {
+        attributes: ['single', 'double', 'mix'],
+      });
+
+      rankingPlace.single = rankingPlace.single || system.amountOfLevels;
+      rankingPlace.double = rankingPlace.double || system.amountOfLevels;
+      rankingPlace.mix = rankingPlace.mix || system.amountOfLevels;
+    }
+
     return rankingPlace;
   }
 
   @Query(() => [RankingPlace])
   async rankingPlaces(@Args() listArgs: ListArgs): Promise<RankingPlace[]> {
-    return RankingPlace.findAll(ListArgs.toFindOptions(listArgs));
+    const places = await RankingPlace.findAll(ListArgs.toFindOptions(listArgs));
+
+    // if one of the levels is not set, get the default from the system
+    for (const place of places) {
+      if (!place.single || !place.double || !place.mix) {
+        const system = await RankingSystem.findByPk(place.systemId, {
+          attributes: ['single', 'double', 'mix'],
+        });
+
+        place.single = place.single || system.amountOfLevels;
+        place.double = place.double || system.amountOfLevels;
+        place.mix = place.mix || system.amountOfLevels;
+      }
+    }
+
+    return places;
   }
 
   @ResolveField(() => RankingSystem)

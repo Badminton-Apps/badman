@@ -64,6 +64,7 @@ export class TeamEnrollmentComponent implements OnInit {
   team!: FormControl<Team>;
   subEvent!: FormControl<string>;
   players!: FormArray<FormControl<EntryCompetitionPlayer>>;
+  season! : number;
 
   ngOnInit(): void {
     this.team = this.group.get('team') as FormControl<Team>;
@@ -74,5 +75,9 @@ export class TeamEnrollmentComponent implements OnInit {
     this.players = entry?.get('players') as FormArray<
       FormControl<EntryCompetitionPlayer>
     >;
+
+    this.season = entry?.get('season')?.value as number;
+
+
   }
 }
