@@ -19,12 +19,13 @@ import moment from 'moment';
 import { Op } from 'sequelize';
 import { AssemblyValidationData, AssemblyOutput } from '../../models';
 import {
-  CompetitionStatusRule,
+  PlayerCompStatusRule,
   PlayerGenderRule,
   PlayerMaxGamesRule,
   PlayerMinLevelRule,
   PlayerOrderRule,
   Rule,
+  TeamSubEventRule,
   TeamBaseIndexRule,
   TeamClubBaseRule,
   TeamSubeventIndexRule,
@@ -394,11 +395,12 @@ export class AssemblyValidationService {
 
   static defaultValidators(): Rule[] {
     return [
-      new PlayerOrderRule(),
       new TeamBaseIndexRule(),
       new TeamClubBaseRule(),
       new TeamSubeventIndexRule(),
-      new CompetitionStatusRule(),
+      new TeamSubEventRule(),
+      new PlayerOrderRule(),
+      new PlayerCompStatusRule(),
       new PlayerMinLevelRule(),
       new PlayerMaxGamesRule(),
       new PlayerGenderRule(),
