@@ -45,9 +45,9 @@ export class RankingPlaceResolver {
         attributes: ['amountOfLevels'],
       });
 
-      place.single = place.single || system.amountOfLevels;
-      place.double = place.double || system.amountOfLevels;
-      place.mix = place.mix || system.amountOfLevels;
+      place.single = place.single ?? system.amountOfLevels;
+      place.double = place.double ?? system.amountOfLevels;
+      place.mix = place.mix ?? system.amountOfLevels;
     }
 
     return place;
@@ -64,9 +64,9 @@ export class RankingPlaceResolver {
           attributes: ['amountOfLevels'],
         });
 
-        place.single = place.single || system.amountOfLevels;
-        place.double = place.double || system.amountOfLevels;
-        place.mix = place.mix || system.amountOfLevels;
+        place.single = place.single ?? system.amountOfLevels;
+        place.double = place.double ?? system.amountOfLevels;
+        place.mix = place.mix ?? system.amountOfLevels;
       }
     }
 
