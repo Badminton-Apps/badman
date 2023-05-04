@@ -107,6 +107,7 @@ export class Team extends Model {
   preferredTime: Date;
 
   @Field(() => ID)
+  @Default(DataType.UUIDV4)
   @IsUUID(4)
   @Column
   link: string;
