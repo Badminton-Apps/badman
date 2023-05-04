@@ -34,8 +34,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 // } from './rules';
 // import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
 import { DatabaseModule } from '@badman/backend-database';
-import { EnrollmentValidationService } from './enrollment.service';
 import { ConfigModule } from '@nestjs/config';
+import { EnrollmentValidationService } from './enrollment.service';
 
 describe('EnrollmentValidationService', () => {
   let service: EnrollmentValidationService;

@@ -49,6 +49,7 @@ export type I18nTranslations = {
             "usedForUpgrade": string;
         };
         "button": {
+            "add": string;
             "add-comment": string;
             "all": string;
             "cancel": string;
@@ -75,6 +76,12 @@ export type I18nTranslations = {
         };
         "club": {
             "current": string;
+            "delete": {
+                "team": {
+                    "description": string;
+                    "title": string;
+                };
+            };
             "end": string;
             "menu": {
                 "add-player": string;
@@ -82,6 +89,7 @@ export type I18nTranslations = {
                 "edit": string;
                 "twizzit": string;
             };
+            "new-team": string;
             "number": string;
             "start": string;
             "titles": {
@@ -207,15 +215,22 @@ export type I18nTranslations = {
                 "comment-liga": string;
                 "comment-nat": string;
                 "comment-prov": string;
+                "comments": string;
                 "errors": {
                     "already": string;
-                    "club-base-other-team": string;
+                    "base-other-team": string;
                     "comp-status-base": string;
                     "comp-status-team": string;
+                    "faller": string;
+                    "first-team-index": string;
                     "none": string;
                     "player-gender": string;
                     "player-min-level": string;
+                    "player-subevent": string;
+                    "riser": string;
                     "team-index": string;
+                    "team-order": string;
+                    "team-order-same-subevent": string;
                     "team-to-strong": string;
                     "title": string;
                 };
@@ -422,7 +437,11 @@ export type I18nTranslations = {
         };
         "loading": string;
         "locations": {
+            "add-day": string;
+            "add-exception": string;
+            "days": string;
             "title": string;
+            "uitzonderingen": string;
         };
         "management": {
             "calculate": string;
@@ -470,7 +489,9 @@ export type I18nTranslations = {
             "select-club": string;
             "select-encounter": string;
             "select-end-time": string;
+            "select-event-competition": string;
             "select-start-time": string;
+            "select-subevent-competition": string;
             "select-team": string;
             "select-team-groups": {
                 "F": string;
@@ -482,14 +503,13 @@ export type I18nTranslations = {
             "start-time": string;
         };
         "player": {
+            "backup": string;
+            "base": string;
             "menu": {
+                "add": string;
                 "delete": string;
                 "edit": string;
             };
-        };
-        "players": {
-            "backup": string;
-            "base": string;
             "no-memberid": string;
             "regular": string;
             "search": {
@@ -619,6 +639,11 @@ export type I18nTranslations = {
             };
         };
         "team": {
+            "change-event": {
+                "change": string;
+                "pick": string;
+                "select-event-hint": string;
+            };
             "change-number": {
                 "description": string;
                 "number": string;
@@ -655,6 +680,7 @@ export type I18nTranslations = {
                     "mix": string;
                     "national": string;
                 };
+                "title": string;
             };
             "usedForTeam": {
                 "description": string;

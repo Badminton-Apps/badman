@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -22,7 +22,7 @@ import {
 } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, zip } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil, zip } from 'rxjs';
 
 @Component({
   imports: [
@@ -48,7 +48,8 @@ import { BehaviorSubject, zip } from 'rxjs';
   styleUrls: ['./set-risers-fallers.component.scss'],
   standalone: true,
 })
-export class RisersFallersDialogComponent implements OnInit {
+export class RisersFallersDialogComponent implements OnInit, OnDestroy {
+  destroy$ = new Subject<void>();
   dataSource!: MatTableDataSource<DrawCompetition>;
   originalData!: DrawCompetition[];
 
@@ -107,6 +108,7 @@ export class RisersFallersDialogComponent implements OnInit {
           ],
         },
       })
+      .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         const subEvents = result.data.subEventCompetitions?.map(
           (subEvent) => new SubEventCompetition(subEvent)
@@ -163,29 +165,41 @@ export class RisersFallersDialogComponent implements OnInit {
       });
     });
 
+
+    if (obs.length === 0) {
+      this.loading = false;
+      this.dialogRef.close();
+      return;
+    }
+
     // wait for all observables to complete
 
-    zip(...obs).subscribe((results) => {
-      // update cache
-      results.forEach((result) => {
-        if (!result.data?.updateDrawCompetition) {
-          return;
-        }
+    zip(...obs)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((results) => {
+        // update cache
+        results.forEach((result) => {
+          if (!result.data?.updateDrawCompetition) {
+            return;
+          }
 
-        this.cache.modify({
-          id: `DrawCompetition:${result.data.updateDrawCompetition.id}`,
-          fields: {
-            risers: () => result.data?.updateDrawCompetition.risers,
-            fallers: () => result.data?.updateDrawCompetition.fallers,
-          },
+          this.cache.modify({
+            id: `DrawCompetition:${result.data.updateDrawCompetition.id}`,
+            fields: {
+              risers: () => result.data?.updateDrawCompetition.risers,
+              fallers: () => result.data?.updateDrawCompetition.fallers,
+            },
+          });
         });
+
+        this.loading = false;
+        // close dialog
+        this.dialogRef.close();
       });
+  }
 
-      
-
-      this.loading = false;
-      // close dialog
-      this.dialogRef.close();
-    });
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

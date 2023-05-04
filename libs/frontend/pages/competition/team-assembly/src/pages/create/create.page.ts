@@ -112,6 +112,9 @@ export class CreatePageComponent implements OnInit {
   }
 
   async download() {
+    console.log(this.validationOverview, this.validationWarnings)
+
+
     if (!this.validationOverview?.valid) {
       if (!this.validationOverview || !this.validationWarnings) {
         return;

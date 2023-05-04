@@ -8,13 +8,13 @@ import {
 import { AuthenticateService, LoggedinUser } from '@badman/frontend-auth';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { Team } from '@badman/frontend-models';
+import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, switchMap } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
-import { BetaComponent, ProfileOverviewComponent } from './components';
 import { RankingTableComponent } from '../ranking-table';
-import { TranslateModule } from '@ngx-translate/core';
+import { BetaComponent, ProfileOverviewComponent } from './components';
 
 @Component({
   selector: 'badman-landing',
