@@ -67,8 +67,6 @@
       }}</ng-template
     >
     <ng-template matStepContent>
-      {{formGroup.get('teams')?.errors | json}}
-      
       <badman-teams-step [group]="this.formGroup"></badman-teams-step>
 
       <p class="description">
