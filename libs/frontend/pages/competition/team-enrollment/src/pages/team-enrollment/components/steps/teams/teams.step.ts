@@ -360,7 +360,6 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       if (!tControl?.value.teamNumber) return;
 
       if (tControl?.value.teamNumber === oldNumber) {
-        console.log(`${team.name} change ${oldNumber} to ${newNumber}`);
         team.teamNumber = newNumber;
 
         tControl?.patchValue({
