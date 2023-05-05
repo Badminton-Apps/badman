@@ -32,6 +32,7 @@ export class AvailabilityException {
 }
 
 export class AvailabilityDay {
+  
   day?:
     | 'monday'
     | 'tuesday'

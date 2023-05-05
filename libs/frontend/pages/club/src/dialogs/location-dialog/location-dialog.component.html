@@ -4,10 +4,9 @@
     <badman-location-fields
       [club]="this.data.club"
       [location]="location"
-      (whenLocationUpdate)="this.update($event)"
     ></badman-location-fields>
 
-    <ng-container *ngIf="location.id">
+    <ng-container *ngIf="location.id && this.data.showAvailibilities">
       <h3 mat-dialog-title>
         {{ 'all.competition.team-enrollment.availability' | translate }}
       </h3>
@@ -37,9 +36,19 @@
       color="primary"
       *ngIf="!location.id"
       [disabled]="!this.data.location.name"
-      (click)="this.create()"
+      (click)="this.create(location)"
     >
       {{ 'all.button.create' | translate }}
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      *ngIf="location.id"
+      [disabled]="!this.data.location.name"
+      (click)="this.update(location)"
+    >
+      {{ 'all.button.save' | translate }}
     </button>
 
     <button mat-button [mat-dialog-close]="location">Close</button>

@@ -439,6 +439,7 @@
     "add-exception": "Add Exception",
     "days": "Game days",
     "exceptions": "Exceptions",
+    "hint": "You can add below periods when the hall is not (or reduced) available, for this you have to choose a start and an end date each time. If these are the same, just choose 2x the same day.\n\nIf you have a reduced number of fields, you can set them by clicking on the icon to the right.",
     "title": "Location(s)"
   },
   "management": {

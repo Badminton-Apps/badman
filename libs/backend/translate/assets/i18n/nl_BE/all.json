@@ -258,7 +258,7 @@
         "transfer-teams": "Zet teams over (optioneel)",
         "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de team nummers in volgende stap nog wijzigen"
       },
-      "title": "Ploegopstelling",
+      "title": "Team inschrijvingen",
       "warnings": {
         "subtitute-team-index": "s"
       }
@@ -439,6 +439,7 @@
     "add-exception": "Voeg uitzondering toe",
     "days": "Speeldagen",
     "exceptions": "Uitzonderingen",
+    "hint": "Je kan hieronder periodes toevoegen waarin de zaal niet (of verminderd) beschikbaar is, hiervoor moet je telkens een begin en een eind datum kiezen. Indien deze dezelfde is, kies dan gewoon 2x dezelfde dag.\n\nAls je een verminderd aantal velden hebt, kan je deze instellen door op het icoontje rechts te klikken",
     "title": "Locatie(s)"
   },
   "management": {

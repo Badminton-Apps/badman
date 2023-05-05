@@ -1,5 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { Club, Location } from '@badman/frontend-models';
@@ -31,7 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
 
     // My Modules
-    LocationFieldsComponent
+    LocationFieldsComponent,
   ],
 })
 export class LocationDialogComponent implements OnInit {
@@ -42,8 +46,16 @@ export class LocationDialogComponent implements OnInit {
   update$ = new BehaviorSubject(0);
 
   constructor(
+    private dialogRef: MatDialogRef<LocationDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { location: Location; club: Club; compYears: number[] },
+    public data: {
+      location: Location;
+      club: Club;
+      compYears: number[];
+      onCreate: 'close' | 'stay';
+      onUpdate: 'close' | 'stay';
+      showAvailibilities: boolean;
+    },
     private appollo: Apollo
   ) {}
 
@@ -87,17 +99,17 @@ export class LocationDialogComponent implements OnInit {
     );
   }
 
-  async create() {
+  async create(location: Location) {
     if (!this.data.club?.id) {
       throw new Error('No club');
     }
 
     const newlocation = await lastValueFrom(
       this.appollo
-        .mutate<{ addLocation: Partial<Location> }>({
+        .mutate<{ createLocation: Partial<Location> }>({
           mutation: gql`
-            mutation addLocation($location: LocationInput!, $clubId: ID!) {
-              addLocation(location: $location, clubId: $clubId) {
+            mutation createLocation($data: LocationNewInput!) {
+              createLocation(data: $data) {
                 id
                 name
                 address
@@ -112,36 +124,76 @@ export class LocationDialogComponent implements OnInit {
             }
           `,
           variables: {
-            location: { ...this.data.location },
-            clubId: this.data.club.id,
+            data: {
+              name: location.name,
+              address: location.address,
+              postalcode: location.postalcode,
+              street: location.street,
+              streetNumber: location.streetNumber,
+              city: location.city,
+              state: location.state,
+              phone: location.phone,
+              fax: location.fax,
+              clubId: this.data.club.id,
+            },
           },
         })
-        .pipe(map((x) => new Location(x.data?.addLocation)))
+        .pipe(map((x) => new Location(x.data?.createLocation)))
     );
-    this.data.location = newlocation;
-    this.update$.next(0);
+
+    if (this.data.onCreate === 'close') {
+      this.dialogRef.close(newlocation);
+    } else {
+      this.data.location = newlocation;
+      this.update$.next(0);
+    }
   }
 
   async update(location: Location) {
     if (location?.id) {
-      await lastValueFrom(
-        this.appollo.mutate<{ updateLocation: Partial<Location> }>({
-          mutation: gql`
-            mutation updateLocation($location: LocationInput!) {
-              updateLocation(location: $location) {
-                id
+      const newlocation = await lastValueFrom(
+        this.appollo
+          .mutate<{ updateLocation: Partial<Location> }>({
+            mutation: gql`
+              mutation updateLocation($data: LocationUpdateInput!) {
+                updateLocation(data: $data) {
+                  id
+                  name
+                  address
+                  postalcode
+                  street
+                  streetNumber
+                  city
+                  state
+                  phone
+                  fax
+                }
               }
-            }
-          `,
-          variables: {
-            location,
-          },
-        })
+            `,
+            variables: {
+              data: {
+                id: location.id,
+                name: location.name,
+                address: location.address,
+                postalcode: location.postalcode,
+                street: location.street,
+                streetNumber: location.streetNumber,
+                city: location.city,
+                state: location.state,
+                phone: location.phone,
+                fax: location.fax,
+              },
+            },
+          })
+          .pipe(map((x) => new Location(x.data?.updateLocation)))
       );
 
-      this.update$.next(0);
-    } else {
-      this.data.location = location;
+      if (this.data.onUpdate === 'close') {
+        this.dialogRef.close(newlocation);
+      } else {
+        this.update$.next(0);
+        this.data.location = newlocation;
+      }
     }
   }
 }

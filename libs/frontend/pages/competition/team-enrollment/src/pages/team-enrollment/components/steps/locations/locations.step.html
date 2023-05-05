@@ -1,10 +1,20 @@
 <ng-container [formGroup]="group" *ngIf="control">
   <ng-container formArrayName="locations">
-    <ng-container
+    <div
+      class="row"
       *ngFor="let location of control.controls; let i = index"
       [formGroupName]="i"
     >
-      <badman-location [group]="location"></badman-location>
-    </ng-container>
+      <badman-location
+        (whenLocationUpdate)="this.editLocation(i)"
+        [group]="location"
+      ></badman-location>
+    </div>
   </ng-container>
 </ng-container>
+
+<div class="row">
+  <button mat-stroked-button (click)="addLocation()">
+    {{ 'all.button.add' | translate }}
+  </button>
+</div>

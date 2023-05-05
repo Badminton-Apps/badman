@@ -703,8 +703,6 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
           type = LevelType.PROV;
           newLevel = 1;
         }
-
-        console.log('demote', team.team?.name, type, level, newLevel, subs);
       }
 
       subEventId = subs?.find(
