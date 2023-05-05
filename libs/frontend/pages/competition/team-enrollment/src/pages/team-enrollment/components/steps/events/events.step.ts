@@ -23,14 +23,12 @@ import { EventCompetition } from '@badman/frontend-models';
 import { LevelType, SubEventType, levelTypeSort } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, Observable, Subject, lastValueFrom, of } from 'rxjs';
+import { Subject, lastValueFrom } from 'rxjs';
 import {
   distinctUntilChanged,
-  filter,
-  map,
   pairwise,
   startWith,
-  takeUntil,
+  takeUntil
 } from 'rxjs/operators';
 import { EVENTS, SEASON, TEAMS } from '../../../../../forms';
 import { TeamForm } from '../teams-transfer';
