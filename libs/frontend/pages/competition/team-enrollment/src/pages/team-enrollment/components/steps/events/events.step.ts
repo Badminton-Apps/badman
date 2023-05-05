@@ -105,6 +105,8 @@ export class EventsStepComponent implements OnInit, OnDestroy {
       this.group.addControl(this.controlName, this.control);
     }
 
+   
+
     this.provFormControl.valueChanges
       .pipe(takeUntil(this.destroy$), startWith(null), pairwise())
       .subscribe(([old, event]) => {
@@ -219,6 +221,14 @@ export class EventsStepComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe((teams) => {
+        // reset checkboxes
+        this.checkboxes = {
+          PROV: false,
+          LIGA: false,
+          NATIONAL: false,
+        };
+        this.provFormControl.reset();
+
         // find if any team was selected previous year or if current year is already present select those
         const competitions: EventCompetition[] = [];
 
