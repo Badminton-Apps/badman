@@ -671,9 +671,9 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     maxLevels: ReturnType<typeof this._maxLevels>
   ) {
     let subEventId: string | undefined;
-    let type = team.team.entry?.subEventCompetition?.eventCompetition?.type;
-    const level = team.team.entry?.subEventCompetition?.level ?? 0;
-    if (team.team.entry?.standing?.riser) {
+    let type = team.team?.entry?.subEventCompetition?.eventCompetition?.type;
+    const level = team.team?.entry?.subEventCompetition?.level ?? 0;
+    if (team.team?.entry?.standing?.riser) {
       let newLevel = level - 1;
 
       if (newLevel < 1) {
@@ -690,7 +690,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       subEventId = subs?.find(
         (sub) => sub.level === newLevel && type === sub.eventCompetition?.type
       )?.id;
-    } else if (team.team.entry?.standing?.faller) {
+    } else if (team.team?.entry?.standing?.faller) {
       let newLevel = level - 1;
       if (newLevel > maxLevels.NATIONAL) {
         // we demote to lower level
@@ -709,7 +709,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     } else {
       subEventId = subs?.find(
         (sub) =>
-          sub.level === team.team.entry?.subEventCompetition?.level &&
+          sub.level === team.team?.entry?.subEventCompetition?.level &&
           type === sub.eventCompetition?.type
       )?.id;
     }

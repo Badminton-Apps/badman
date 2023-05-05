@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SelectClubComponent } from '@badman/frontend-components';
-import { debounceTime, pairwise } from 'rxjs';
-import { CLUB } from '../../../../../forms';
+import { Subject, filter, pairwise, startWith, takeUntil } from 'rxjs';
+import { CLUB, COMMENTS, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../../../../forms';
 
 @Component({
   selector: 'badman-club-step',
@@ -19,43 +19,62 @@ import { CLUB } from '../../../../../forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubStepComponent implements OnInit {
+  destroy$ = new Subject<void>();
+
   @Input()
   group!: FormGroup;
 
   @Input()
-  value?: FormControl<string | null | undefined>;
+  // this also contains the searched text
+  value?: FormControl<string | null | undefined> = new FormControl();
+
+  @Input()
+  // this contains the id of the selected club
+  valueId?: FormControl<string | null>;
 
   @Input()
   controlName = CLUB;
 
   ngOnInit() {
     if (this.group) {
-      this.value = this.group?.get(this.controlName) as FormControl<string>;
+      this.valueId = this.group?.get(this.controlName) as FormControl<string>;
     }
 
-    if (!this.value) {
-      this.value = new FormControl<string | undefined>(undefined);
+    if (!this.valueId) {
+      this.valueId = new FormControl();
+    }
+
+    if (this.value?.value) {
+      this.valueId?.setValue(this.value?.value);
     }
 
     if (this.group) {
-      this.group.addControl(this.controlName, this.value);
+      this.group.addControl(this.controlName, this.valueId);
     }
 
     this.value?.valueChanges
-      .pipe(pairwise(), debounceTime(600))
+      .pipe(
+        takeUntil(this.destroy$),
+        filter(
+          (value) =>
+            value?.length === 36 &&
+            value[8] === '-' &&
+            value[13] === '-' &&
+            value[18] === '-' &&
+            value[23] === '-'
+        ),
+        startWith(this.group.value?.[this.controlName]),
+        pairwise()
+      )
       .subscribe(([prev, next]) => {
-        // clear all other values of group
+        // clear all other values of groupw
         if (this.group && prev !== next && next) {
-          this.group.patchValue({
-            club: next,
-            teams: {
-              M: [],
-              F: [],
-              MX: [],
-              NATIONAL: [],
-            },
-            events: [],
-          });
+          this.group.get(TEAMS)?.reset();
+          this.group.get(EVENTS)?.reset();
+          this.group.get(LOCATIONS)?.reset();
+          this.group.get(COMMENTS)?.reset();
+
+          this.valueId?.setValue(next);
         }
       });
   }

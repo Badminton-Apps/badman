@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -9,13 +9,16 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { Player, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
+import { LevelType, getCurrentSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { forkJoin, lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { CLUB, COMMENTS, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
 import {
   ClubStepComponent,
   CommentsStepComponent,
@@ -26,10 +29,7 @@ import {
   TeamsTransferStepComponent,
 } from './components';
 import { LocationForm } from './components/steps/locations/components';
-import { CLUB, COMMENTS, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
 import { minAmountOfTeams } from './validators';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { LevelType } from '@badman/utils';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -55,11 +55,11 @@ import { LevelType } from '@badman/utils';
     CommentsStepComponent,
   ],
 })
-export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
+export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
   formGroup: FormGroup = new FormGroup({
-    [SEASON]: new FormControl(2023, [Validators.required]),
+    [SEASON]: new FormControl(getCurrentSeason() + 1, [Validators.required]),
     [CLUB]: new FormControl(undefined, [Validators.required]),
     [EVENTS]: new FormControl([], [Validators.required, Validators.min(1)]),
     [TEAMS]: new FormGroup(
@@ -102,12 +102,6 @@ export class TeamEnrollmentComponent implements OnInit, AfterViewInit {
           enrollemnt['all.competition.team-enrollment.title']
         );
       });
-  }
-
-  ngAfterViewInit(): void {
-    this.vert_stepper.selectionChange.subscribe(() => {
-      // console.log('NEXT STEP', this.formGroup.value);
-    });
   }
 
   save() {
