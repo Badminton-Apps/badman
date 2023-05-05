@@ -41,7 +41,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class LocationDialogComponent implements OnInit {
   selectedYear?: number;
 
-  location$?: Observable<Location>;
+  location?: Location;
 
   update$ = new BehaviorSubject(0);
 
@@ -64,39 +64,44 @@ export class LocationDialogComponent implements OnInit {
       this.data.location = new Location();
     }
 
-    this.location$ = this.update$.pipe(
-      startWith(0),
-      switchMap(() => {
-        if (this.data.location.id) {
-          return this.appollo
-            .query<{ location: Partial<Location> }>({
-              query: gql`
-                query GetLocationQuery($id: ID!) {
-                  location(id: $id) {
-                    id
-                    name
-                    address
-                    postalcode
-                    street
-                    streetNumber
-                    city
-                    state
-                    phone
-                    fax
+
+    this.update$
+      .pipe(
+        startWith(0),
+        switchMap(() => {
+          if (this.data.location.id) {
+            return this.appollo
+              .query<{ location: Partial<Location> }>({
+                query: gql`
+                  query GetLocationQuery($id: ID!) {
+                    location(id: $id) {
+                      id
+                      name
+                      address
+                      postalcode
+                      street
+                      streetNumber
+                      city
+                      state
+                      phone
+                      fax
+                    }
                   }
-                }
-              `,
-              variables: {
-                id: this.data.location.id,
-              },
-            })
-            .pipe(map((x) => new Location(x.data.location)));
-        } else {
-          return of(null);
-        }
-      }),
-      map((t) => t ?? new Location())
-    );
+                `,
+                variables: {
+                  id: this.data.location.id,
+                },
+              })
+              .pipe(map((x) => new Location(x.data.location)));
+          } else {
+            return of(null);
+          }
+        }),
+        map((t) => t ?? new Location())
+      )
+      .subscribe((x) => {
+        this.location = x;
+      });
   }
 
   async create(location: Location) {
@@ -195,5 +200,9 @@ export class LocationDialogComponent implements OnInit {
         this.data.location = newlocation;
       }
     }
+  }
+
+  locationUpdated(location: Location) {
+    this.location = location;
   }
 }
