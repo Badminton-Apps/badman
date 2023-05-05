@@ -19,11 +19,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
-import { sortTeams } from '@badman/utils';
+import { SubEventType, sortTeams } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
-import { v4 as uuidv4 } from 'uuid';
 import {
   distinctUntilChanged,
   filter,
@@ -34,6 +33,7 @@ import {
   takeUntil,
   tap,
 } from 'rxjs/operators';
+import { v4 as uuidv4 } from 'uuid';
 import { CLUB, SEASON, TEAMS } from '../../../../../forms';
 export type TeamFormValue = {
   team: Team;
@@ -72,12 +72,14 @@ export type TeamForm = FormGroup<{
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsTransferStepComponent implements OnInit, OnDestroy {
+  destroy$ = new Subject<void>();
+ 
   @Input()
   group!: FormGroup;
 
   @Input()
   control?: FormGroup<{
-    [key in 'M' | 'F' | 'MX' | 'NATIONAL']: FormArray<TeamForm>;
+    [key in SubEventType]: FormArray<TeamForm>;
   }>;
 
   @Input()
@@ -103,7 +105,6 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     newThisSeason: Team[];
   }>;
   teamSubscriptions: Subscription[] = [];
-  destroy$ = new Subject<void>();
 
   constructor(
     private apollo: Apollo,
@@ -114,7 +115,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (this.group) {
       this.control = this.group?.get(this.controlName) as FormGroup<{
-        [key in 'M' | 'F' | 'MX' | 'NATIONAL']: FormArray<TeamForm>;
+        [key in SubEventType]: FormArray<TeamForm>;
       }>;
     }
 
@@ -150,16 +151,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     if (this.group) {
       clubid$ = this.group?.valueChanges.pipe(
         map((value) => value?.[this.clubControlName]),
-        startWith(this.group.value?.[this.clubControlName]),
-        filter((value) => value !== undefined && value?.length > 0),
-        filter(
-          (value) =>
-            value.length === 36 &&
-            value[8] === '-' &&
-            value[13] === '-' &&
-            value[18] === '-' &&
-            value[23] === '-'
-        )
+        startWith(this.group.value?.[this.clubControlName])
       );
 
       season$ = this.group?.valueChanges.pipe(
@@ -207,6 +199,9 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
         distinctUntilChanged()
       ),
     ])?.pipe(
+      tap(([clubId, season, system]) => {
+        console.log('Fetching teams', clubId, season, system);
+      }),
       takeUntil(this.destroy$),
       switchMap(([clubId, season, system]) =>
         this.apollo
@@ -366,6 +361,11 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
       shareReplay(1),
       tap(({ lastSeason, newThisSeason }) => {
         this.teamSubscriptions.forEach((sub) => sub.unsubscribe());
+
+        // clear the form
+        this.teamsForm = [];
+        this.newTeamsForm = [];
+        this.teamSubscriptions = [];
 
         for (const team of lastSeason ?? []) {
           const control = new FormControl(team.selected);
