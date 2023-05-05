@@ -157,7 +157,7 @@
       "download": "Download",
       "errors": {
         "already": "Player already present as titular.",
-        "club-base-other-team": "<strong>{player.fullName}</strong> is base player of other team",
+        "club-base-other-team": "<strong>{player.fullName}</strong> is baseplayer of other team",
         "comp-status": "<strong>{player.fullName}</strong> is not marked as a competition player",
         "none": "No errors found",
         "not-enough-players": "Too few titulars are currently lined up for the meeting.",
@@ -212,7 +212,7 @@
       },
       "errors": {
         "already": "Player already present as titular.",
-        "base-other-team": "<strong>{player.fullName}</strong> is also base player on another team",
+        "base-other-team": "<strong>{player.fullName}</strong> is also baseplayer on another team",
         "comp-status-base": "Base player <strong>{player.fullName}</strong> is not marked as a competition player",
         "comp-status-team": "<strong>{player.fullName}</strong> is not marked as a competition player",
         "faller": "The team should be degrade, but is not enrolled in a lower series",
@@ -237,12 +237,12 @@
       "open": "Open",
       "players": {
         "backup": "Backup player(s)",
-        "base": "Base player(s)",
+        "base": "Baseplayer(s)",
         "regular": "Regular player(s)",
         "team": "",
         "title": "Possible titulars"
       },
-      "save-and-continue-tooltip": "You can continue without saving your teams, but we allow you to save in between if there are still uncertainties about your base players",
+      "save-and-continue-tooltip": "You can continue without saving your teams, but we allow you to save in between if there are still uncertainties about your baseplayers",
       "select-club": "Select club",
       "select-events": "Select events",
       "select-location": "Select locations",
@@ -503,7 +503,7 @@
   },
   "player": {
     "backup": "Backup player",
-    "base": "Base player",
+    "base": "Baseplayer",
     "menu": {
       "add": "New player",
       "delete": "Delete",
@@ -644,10 +644,10 @@
       "select-event-hint": "Please choose a series first before you can add players"
     },
     "change-number": {
-      "description": "Changing of the team number, also update higher/lower teams",
-      "number": "Team number",
-      "title": "Change team number",
-      "tooltip": "Change the team number"
+      "description": "Changing of the teamnumber, also update higher/lower teams",
+      "number": "Teamnumber",
+      "title": "Change teamnumber",
+      "tooltip": "Change the teamnumber"
     },
     "check-players": "Tick off the basis players in the checkbox",
     "edit": "Edit",
