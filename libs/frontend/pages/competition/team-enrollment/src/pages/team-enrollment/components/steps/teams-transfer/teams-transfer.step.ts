@@ -199,9 +199,6 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
         distinctUntilChanged()
       ),
     ])?.pipe(
-      tap(([clubId, season, system]) => {
-        console.log('Fetching teams', clubId, season, system);
-      }),
       takeUntil(this.destroy$),
       switchMap(([clubId, season, system]) =>
         this.apollo

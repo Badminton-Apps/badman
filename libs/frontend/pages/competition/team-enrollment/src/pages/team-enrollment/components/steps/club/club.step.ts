@@ -8,7 +8,7 @@ import {
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SelectClubComponent } from '@badman/frontend-components';
 import { Subject, filter, pairwise, startWith, takeUntil } from 'rxjs';
-import { CLUB, COMMENTS, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../../../../forms';
+import { CLUB, COMMENTS, EVENTS, LOCATIONS, TEAMS } from '../../../../../forms';
 
 @Component({
   selector: 'badman-club-step',
