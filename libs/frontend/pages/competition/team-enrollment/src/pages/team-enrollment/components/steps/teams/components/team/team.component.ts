@@ -7,11 +7,12 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -42,9 +43,12 @@ import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
     CommonModule,
 
     TranslateModule,
+    ReactiveFormsModule,
+    FormsModule,
 
     // Material
     MatButtonModule,
+    MatInputModule,
     MatIconModule,
     MatListModule,
     MatSelectModule,
