@@ -149,6 +149,8 @@ export class TeamEnrollmentComponent implements OnInit {
         clubId: this.formGroup.value.club,
         link: enrollment.team.link,
         season: this.formGroup.value.season,
+        preferredDay: enrollment.team.preferredDay,
+        preferredTime: enrollment.team.preferredTime,
         players,
         entry: {
           subEventId: enrollment.entry.subEventId,
@@ -187,7 +189,7 @@ export class TeamEnrollmentComponent implements OnInit {
     // save the comments to the backend
     for (const type of Object.values(LevelType)) {
       // skip if no comment is set
-      if (!comments[type].comment) {
+      if (!comments?.[type]?.comment) {
         continue;
       }
 

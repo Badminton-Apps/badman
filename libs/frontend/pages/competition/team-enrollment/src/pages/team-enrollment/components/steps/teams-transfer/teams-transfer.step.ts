@@ -73,7 +73,7 @@ export type TeamForm = FormGroup<{
 })
 export class TeamsTransferStepComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
- 
+
   @Input()
   group!: FormGroup;
 
@@ -217,6 +217,9 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
                   season
                   link
                   clubId
+                  preferredDay
+                  preferredTime
+                  captainId
                   players {
                     id
                     fullName
