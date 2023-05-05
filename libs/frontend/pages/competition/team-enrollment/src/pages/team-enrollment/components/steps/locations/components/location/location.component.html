@@ -16,8 +16,6 @@
   </div>
 </div>
 <ng-container *ngIf="this.control" [formGroup]="this.control">
-  {{ this.control.value.id }} - {{ this.control.value.year }}
-
   <div class="days">
     <div class="expandable-item" (click)="expanded.days = !expanded.days">
       <div>
