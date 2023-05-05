@@ -30,13 +30,33 @@
   }
 }
 
-.general {
-  .change {
-    opacity: 0;
+.extra-info {
+  p {
+    margin-top: 0;
   }
 
-  &:hover .change {
-    opacity: 1;
+  .general {
+    .change {
+      opacity: 0;
+    }
+
+    &:hover .change {
+      opacity: 1;
+    }
+  }
+
+  .prefered {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+
+    .day {
+      flex: 2;
+    }
+
+    .time {
+      flex: 1;
+    }
   }
 }
 
