@@ -157,7 +157,7 @@
       "download": "Download",
       "errors": {
         "already": "Speler al als titualris aanwezig.",
-        "club-base-other-team": "<strong>{player.fullName}</strong> is basis speler van een ander team",
+        "club-base-other-team": "<strong>{player.fullName}</strong> is basisspeler van een ander team",
         "comp-status": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "none": "Geen fouten gevonden",
         "not-enough-players": "Te weinig titularissen zijn momenteel opgesteld voor de ontmoeting.",
@@ -174,7 +174,7 @@
         "player-order-single": "<strong>{player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter klassement dan <strong>{player1.fullName}</strong> in <strong>{game1}</strong>",
         "players-above-lower": "Paar met hogere opstellingsindex staat voor dit paar opgesteld.",
         "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
-        "team-to-strong": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
+        "team-to-strong": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen",
         "title": "Fouten",
         "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen."
       },
@@ -212,21 +212,21 @@
       },
       "errors": {
         "already": "Speler al als titualris aanwezig.",
-        "base-other-team": "<strong>{player.fullName}</strong> is ook basis speler in een ander team",
+        "base-other-team": "<strong>{player.fullName}</strong> is ook basisspeler in een ander team",
         "comp-status-base": "Basisspeler <strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
-        "faller": "Het team moet degraderen, maar staat niet in een lagere reeks ingeschreven",
+        "faller": "Het team moet degraderen, maar staat niet in een lagere afdeling ingeschreven",
         "first-team-index": "Een eerste ploeg die gedaald is, mag tijdens het seizoen geen team met ploegindex opstellen die lager is dan hun basisindex",
-        "no-subevent": "Gelieve een reeks te kiezen",
+        "no-subevent": "Gelieve een afdeling te kiezen",
         "none": "Geen fouten gevonden",
         "player-gender": "<strong>{player.fullName}</strong> is een <strong>{player.gender}</strong> maar een <strong>{gender}</strong> was verwacht",
         "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> en mag minimaal <strong>{minLevel}</strong> zijn.",
         "player-subevent": "<strong>{player.fullName}</strong> is deel van het basis team <strong>{team.name}</strong> dat ook in <strong>{subEvent.name}</strong> speelt",
-        "riser": "Het team moet promoveren, maar staat niet in een hogere reeks ingeschreven",
+        "riser": "Het team moet promoveren, maar staat niet in een hogere afdeling ingeschreven",
         "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
-        "team-order": "Team <strong>{team.name}</strong> zit in een lagere reeks maar heeft een lager team nummer",
-        "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere index in dezelfde reeks, maar heeft een lager team nummer",
-        "team-to-strong": "Ploegindex titularissen is <strong>{baseIndex}</strong> en mag niet onder de grens van de reeks <strong>{minIndex}</strong> komen",
+        "team-order": "Team <strong>{team.name}</strong> zit in een lagere afdeling maar heeft een lager teamnummer",
+        "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere index in dezelfde afdeling, maar heeft een lager teamnummer",
+        "team-to-strong": "Ploegindex titularissen is <strong>{baseIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen",
         "title": "Fouten"
       },
       "info": "",
@@ -237,12 +237,12 @@
       "open": "Open",
       "players": {
         "backup": "Reserve speler(s)",
-        "base": "Basis spelers(s)",
+        "base": "Basisspeler(s)",
         "regular": "Vaste speler(s)",
         "team": "",
         "title": "Mogelijke titularissen"
       },
-      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten we toe tussentijds op te slaan indien er nog onzekerheden zijn over je basis spelers",
+      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten we toe tussentijds op te slaan indien er nog onzekerheden zijn over je basisspelers",
       "select-club": "Selecteer club",
       "select-events": "Selecteer onderdelen",
       "select-location": "Selecteer locaties",
@@ -256,7 +256,7 @@
         "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
         "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
         "transfer-teams": "Zet teams over (optioneel)",
-        "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de team nummers in volgende stap nog wijzigen"
+        "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de teamnummers in volgende stap nog wijzigen"
       },
       "title": "Team inschrijvingen",
       "warnings": {
@@ -490,7 +490,7 @@
     "select-end-time": "Eind tijd",
     "select-event-competition": "Selecteer competitie",
     "select-start-time": "Start tijd",
-    "select-subevent-competition": "Selecteer reeks",
+    "select-subevent-competition": "Selecteer afdeling",
     "select-team": "Kies een ploeg",
     "select-team-groups": {
       "F": "Dames",
@@ -503,7 +503,7 @@
   },
   "player": {
     "backup": "Reserve speler",
-    "base": "Basis speler",
+    "base": "Basisspeler",
     "menu": {
       "add": "Nieuwe speler",
       "delete": "Verwijder",
@@ -639,9 +639,9 @@
   },
   "team": {
     "change-event": {
-      "change": "Kies reeks",
-      "pick": "Kies reeks",
-      "select-event-hint": "Gelieve eerst een reeks te kiezen vooraleer je spelers kan toevoegen"
+      "change": "Kies afdeling",
+      "pick": "Kies afdeling",
+      "select-event-hint": "Gelieve eerst een afdeling te kiezen vooraleer je spelers kan toevoegen"
     },
     "change-number": {
       "description": "Het wijzigen van het ploegnummer, update ook hogere/lagere teams",
@@ -679,7 +679,7 @@
         "mix": "G",
         "national": ""
       },
-      "title": "Reeks"
+      "title": "Afdeling"
     },
     "usedForTeam": {
       "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",

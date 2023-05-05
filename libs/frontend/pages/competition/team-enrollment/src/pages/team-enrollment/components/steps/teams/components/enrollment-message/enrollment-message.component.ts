@@ -81,10 +81,22 @@ export class EnrollmentMessageComponent implements OnInit {
   }
 
   private _getRanking() {
-    const minLevel = this.validation?.params?.['minLevel'] as number;
-    const rankingType = this.validation?.params?.['rankingType'] as string;
+    const params: {
+      [key: string]: unknown;
+    } = {};
 
-    return of({ minLevel, rankingType });
+    if (this.validation?.params?.['minLevel']) {
+      const minLevel = this.validation?.params?.['minLevel'];
+      params['minLevel'] = minLevel;
+    }
+    if (this.validation?.params?.['rankingType']) {
+      const rankingType = this.validation?.params?.['rankingType'];
+      params['rankingType'] = this.translate
+        .instant(`all.ranking.${rankingType}`)
+        .toLowerCase();
+    }
+
+    return of(params);
   }
 
   private _getEvent() {
