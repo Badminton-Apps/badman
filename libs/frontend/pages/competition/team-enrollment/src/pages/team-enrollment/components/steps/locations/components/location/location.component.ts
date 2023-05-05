@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -17,12 +17,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { getCurrentSeason } from '@badman/utils';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
-export type LocationavAilibilityType = FormGroup<{
+export type LocationavDayType = FormGroup<{
   day: FormControl<string | undefined>;
   startTime: FormControl<string | undefined>;
   endTime: FormControl<string | undefined>;
@@ -32,6 +33,13 @@ export type LocationExceptionType = FormGroup<{
   start: FormControl<Date | undefined>;
   end: FormControl<Date | undefined>;
   courts: FormControl<number | undefined>;
+}>;
+
+export type LocationAvailibilityForm = FormGroup<{
+  id: FormControl<string | undefined>;
+  year: FormControl<number>;
+  days: FormArray<LocationavDayType>;
+  exceptions: FormArray<LocationExceptionType>;
 }>;
 
 export type LocationForm = FormGroup<{
@@ -45,8 +53,7 @@ export type LocationForm = FormGroup<{
   state: FormControl<string | undefined>;
   phone: FormControl<string | undefined>;
   fax: FormControl<string | undefined>;
-  availibilities: FormArray<LocationavAilibilityType>;
-  exceptions: FormArray<LocationExceptionType>;
+  availibilities: FormArray<LocationAvailibilityForm>;
 }>;
 
 @Component({
@@ -81,7 +88,16 @@ export class LocationComponent implements OnInit {
   @Input()
   group!: LocationForm;
 
-  availibilities!: FormArray<LocationavAilibilityType>;
+  @Input()
+  control?: LocationAvailibilityForm;
+
+  @Input()
+  controlName = 'availibilities';
+
+  @Output()
+  whenLocationUpdate = new EventEmitter<void>();
+
+  days!: FormArray<LocationavDayType>;
   exceptions!: FormArray<LocationExceptionType>;
 
   showCourts: {
@@ -97,13 +113,36 @@ export class LocationComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.availibilities = this.group.get(
-      'availibilities'
-    ) as FormArray<LocationavAilibilityType>;
+    let created = false;
+    if (this.group) {
+      const localControl = this.group.get(
+        this.controlName
+      ) as FormArray<LocationAvailibilityForm>;
+      // there should be one created by default
+      this.control = localControl.controls.at(0) as LocationAvailibilityForm;
+    }
 
-    this.exceptions = this.group.get(
+    if (!this.control) {
+      created = true;
+      this.control = new FormGroup({
+        id: new FormControl(),
+        year: new FormControl(getCurrentSeason()),
+        days: new FormArray([] as LocationavDayType[]),
+        exceptions: new FormArray([] as LocationExceptionType[]),
+      }) as unknown as LocationAvailibilityForm;
+    }
+
+    if (this.group && created) {
+      (
+        this.group.get(this.controlName) as FormArray<LocationAvailibilityForm>
+      ).push(this.control);
+    }
+
+    this.exceptions = this.control.get(
       'exceptions'
     ) as FormArray<LocationExceptionType>;
+
+    this.days = this.control.get('days') as FormArray<LocationavDayType>;
 
     this.showCourts = this.exceptions.value.map((v) => {
       return {
@@ -114,19 +153,19 @@ export class LocationComponent implements OnInit {
   }
 
   addAvailibility() {
-    this.availibilities.push(
+    this.days.push(
       new FormGroup({
         day: new FormControl(),
         startTime: new FormControl(),
         endTime: new FormControl(),
         courts: new FormControl(),
-      }) as LocationavAilibilityType
+      }) as LocationavDayType
     );
     this.expanded.days = true;
   }
 
   removeAvailibility(index: number) {
-    this.availibilities.removeAt(index);
+    this.days.removeAt(index);
   }
 
   addException() {

@@ -443,6 +443,7 @@ export type I18nTranslations = {
             "add-exception": string;
             "days": string;
             "exceptions": string;
+            "hint": string;
             "title": string;
         };
         "management": {

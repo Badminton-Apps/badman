@@ -34,7 +34,8 @@
 
     .count,
     .index,
-    .ranking {
+    .ranking,
+    .hint {
       @include mat.typography-level($typography-config, 'caption');
     }
   }
