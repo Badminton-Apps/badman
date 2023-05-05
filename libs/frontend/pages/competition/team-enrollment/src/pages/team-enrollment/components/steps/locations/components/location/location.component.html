@@ -4,29 +4,35 @@
   </div>
 
   <div class="change">
-    <!-- remove location -->
-    <button mat-icon-button class="remove-button" aria-label="Remove location">
-      <mat-icon>delete</mat-icon>
+    <!-- edit location -->
+    <button
+      mat-icon-button
+      class="edit-button"
+      aria-label="edit location"
+      (click)="this.whenLocationUpdate.next()"
+    >
+      <mat-icon>edit</mat-icon>
     </button>
   </div>
 </div>
+<ng-container *ngIf="this.control" [formGroup]="this.control">
+  {{ this.control.value.id }} - {{ this.control.value.year }}
 
-<div class="days">
-  <div class="expandable-item" (click)="expanded.days = !expanded.days">
-    <div>
-      {{ 'all.locations.days' | translate }}
+  <div class="days">
+    <div class="expandable-item" (click)="expanded.days = !expanded.days">
+      <div>
+        {{ 'all.locations.days' | translate }}
+      </div>
+      <mat-icon *ngIf="!expanded.days">expand_more</mat-icon>
+      <mat-icon *ngIf="expanded.days">expand_less</mat-icon>
     </div>
-    <mat-icon *ngIf="!expanded.days">expand_more</mat-icon>
-    <mat-icon *ngIf="expanded.days">expand_less</mat-icon>
-  </div>
 
-  <mat-divider></mat-divider>
+    <mat-divider></mat-divider>
 
-  <div [hidden]="!expanded.days">
-    <ng-container [formGroup]="group">
-      <ng-container formArrayName="availibilities">
+    <div [hidden]="!expanded.days">
+      <ng-container formArrayName="days">
         <div
-          *ngFor="let day of this.availibilities.controls; index as i"
+          *ngFor="let day of this.days.controls; index as i"
           [formGroupName]="i"
           class="availibility"
         >
@@ -89,29 +95,29 @@
           </div>
         </div>
       </ng-container>
-    </ng-container>
-  </div>
-  <button mat-stroked-button color="primary" (click)="addAvailibility()">
-    {{ 'all.locations.add-day' | translate }}
-  </button>
-</div>
-
-<div class="exceptions">
-  <div
-    class="expandable-item"
-    (click)="expanded.exceptions = !expanded.exceptions"
-  >
-    <div>
-      {{ 'all.locations.exceptions' | translate }}
     </div>
-    <mat-icon *ngIf="!expanded.exceptions">expand_more</mat-icon>
-    <mat-icon *ngIf="expanded.exceptions">expand_less</mat-icon>
+    <button mat-stroked-button color="primary" (click)="addAvailibility()">
+      {{ 'all.locations.add-day' | translate }}
+    </button>
   </div>
 
-  <mat-divider></mat-divider>
+  <div class="exceptions">
+    <div
+      class="expandable-item"
+      (click)="expanded.exceptions = !expanded.exceptions"
+    >
+      <div>
+        {{ 'all.locations.exceptions' | translate }}
+      </div>
+      <mat-icon *ngIf="!expanded.exceptions">expand_more</mat-icon>
+      <mat-icon *ngIf="expanded.exceptions">expand_less</mat-icon>
+    </div>
 
-  <div [hidden]="!expanded.exceptions">
-    <ng-container [formGroup]="group">
+    <mat-divider></mat-divider>
+    <p class="hint">
+      {{ 'all.locations.hint' | translate }}
+    </p>
+    <div [hidden]="!expanded.exceptions">
       <ng-container formArrayName="exceptions">
         <div
           *ngFor="let day of this.exceptions.controls; index as i"
@@ -183,10 +189,10 @@
           </div>
         </div>
       </ng-container>
-    </ng-container>
-  </div>
+    </div>
 
-  <button mat-stroked-button (click)="addException()">
-    {{ 'all.locations.add-exception' | translate }}
-  </button>
-</div>
+    <button mat-stroked-button (click)="addException()">
+      {{ 'all.locations.add-exception' | translate }}
+    </button>
+  </div>
+</ng-container>

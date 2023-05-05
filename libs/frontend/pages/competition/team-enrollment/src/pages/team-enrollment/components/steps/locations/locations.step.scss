@@ -1,7 +1,13 @@
 :host {
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-badman-location {
-  flex: 0 1 750px;
+div.row {
+  display: flex;
+  flex-direction: row;
+  badman-location {
+    flex: 0 1 1000px;
+  }
 }

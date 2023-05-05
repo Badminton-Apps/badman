@@ -258,7 +258,7 @@
         "transfer-teams": "",
         "transfer-teams-description": ""
       },
-      "title": "",
+      "title": "Inscriptions des équipes",
       "warnings": {
         "subtitute-team-index": ""
       }
@@ -439,6 +439,7 @@
     "add-exception": "Ajouter une exception",
     "days": "Jours de match",
     "exceptions": "Des exceptions",
+    "hint": "Vous pouvez ajouter des périodes où le lieu n'est pas (ou peu) disponible. Pour cela, vous devez choisir une date de début et une date de fin à chaque fois. Si ces dates sont identiques, il suffit de choisir 2 fois le même jour.\n\nSi vous disposez d'un nombre réduit de champs, vous pouvez le définir en cliquant sur l'icône à droite.",
     "title": "Lieu(x)"
   },
   "management": {

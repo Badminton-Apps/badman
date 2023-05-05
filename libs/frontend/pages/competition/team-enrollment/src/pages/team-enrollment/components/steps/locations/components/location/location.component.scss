@@ -30,6 +30,10 @@
   }
 }
 
+p.hint {
+  white-space: pre-wrap;
+}
+
 .general {
   .change {
     opacity: 0;
@@ -70,7 +74,7 @@ mat-divider {
       margin-bottom: 20px;
     }
   }
-  
+
   .day {
     flex: 1 1 auto;
   }

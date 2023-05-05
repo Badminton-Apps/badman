@@ -27,8 +27,8 @@ import {
   TeamForm,
   TeamsStepComponent,
   TeamsTransferStepComponent,
+  LocationForm,
 } from './components';
-import { LocationForm } from './components/steps/locations/components';
 import { minAmountOfTeams } from './validators';
 
 @Component({
@@ -210,6 +210,58 @@ export class TeamEnrollmentComponent implements OnInit {
           },
         })
       );
+    }
+
+    const locations = this.formGroup.get(LOCATIONS) as FormArray<LocationForm>;
+
+    for (const location of locations.value) {
+      const availibility = location.availibilities?.[0];
+
+      if (!availibility) {
+        continue;
+      }
+      if (!availibility.id) {
+        observables.push(
+          this.apollo.mutate({
+            mutation: gql`
+              mutation CreateAvailability($data: AvailabilityNewInput!) {
+                createAvailability(data: $data) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              data: {
+                year: availibility.year,
+                locationId: location.id,
+                days: availibility.days,
+                exceptions: availibility.exceptions,
+              },
+            },
+          })
+        );
+      } else {
+        observables.push(
+          this.apollo.mutate({
+            mutation: gql`
+              mutation UpdateAvailability($data: AvailabilityUpdateInput!) {
+                updateAvailability(data: $data) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              data: {
+                id: availibility.id,
+                year: availibility.year,
+                locationId: location.id,
+                days: availibility.days,
+                exceptions: availibility.exceptions,
+              },
+            },
+          })
+        );
+      }
     }
 
     return forkJoin(observables);
