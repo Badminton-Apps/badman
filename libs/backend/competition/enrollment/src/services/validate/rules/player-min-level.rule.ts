@@ -37,9 +37,9 @@ export class PlayerMinLevelRule extends Rule {
           // if the player has a missing rankingplace, we set the lowest possible ranking
           ranking = {
             ...ranking,
-            single: ranking.single || system.amountOfLevels,
-            double: ranking.double || system.amountOfLevels,
-            mix: ranking.mix || system.amountOfLevels,
+            single: ranking?.single || system.amountOfLevels,
+            double: ranking?.double || system.amountOfLevels,
+            mix: ranking?.mix || system.amountOfLevels,
           } as RankingPlace;
 
           if (ranking.single < subEvent.maxLevel) {
