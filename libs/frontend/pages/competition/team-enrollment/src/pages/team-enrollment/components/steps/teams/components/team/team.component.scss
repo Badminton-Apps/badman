@@ -48,7 +48,7 @@
 
   .team-info {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 1rem;
 
     .contact {
@@ -68,7 +68,7 @@
 
     .prefered {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       gap: 1rem;
 
       .day {
