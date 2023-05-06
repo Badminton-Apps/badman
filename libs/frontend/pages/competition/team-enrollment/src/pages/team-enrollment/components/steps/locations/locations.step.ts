@@ -14,27 +14,19 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Availability, Location } from '@badman/frontend-models';
+import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { of, Subject, combineLatest } from 'rxjs';
-import {
-  filter,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
+import { Subject, combineLatest, of } from 'rxjs';
+import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CLUB, LOCATIONS, SEASON } from '../../../../../forms';
 import {
   LocationAvailibilityForm,
   LocationComponent,
   LocationForm,
 } from './components';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { Observable } from '@apollo/client/utilities';
-import { getCurrentSeason } from '@badman/utils';
 
 @Component({
   selector: 'badman-locations-step',
