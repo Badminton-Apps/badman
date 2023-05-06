@@ -1,0 +1,88 @@
+
+
+p Beste competitieverantwoordelijke,
+  br
+  br
+  | Onderstaande ploegen werden ingeschreven voor het volgende competitieseizoen #{years}. 
+  | Zolang je deze niet meer wijzigt, blijft de inschrijving exact zoals hieronder behouden. 
+  | Wil je toch nog uitschrijven? Contacteer dan: 
+  a(href='mailto:info@badmintonvlaanderen.be') info@badmintonvlaanderen.be.
+  br
+  br
+  | Bedankt en tot volgend seizoen!
+
+h2 Teams
+table
+  each team in club.teams
+    tr
+      td(style='padding-top:12px' class='mceSpacing-24' valign='top')
+        div(class='mceText' style='font-size:16px;width:100%')
+          p
+            strong Team:
+            | #{team.name} (#{team.abbreviation})
+            br
+            strong Afdeling:
+            | #{team.entry.subEventCompetition.eventCompetition.name} - #{team.entry.subEventCompetition.name}
+            br
+            if team.captain
+              strong Kapitein:
+              |  #{team.captain.firstName} #{team.captain.lastName} (#{team.email}, #{team.phone})
+            else
+              strong(style="color: red;") Error: Kapitein niet ingevuld.
+            br
+            strong Basisspelers:
+              each player in team.entry.meta.competition.players
+                br
+                | #{player.firstName} #{player.lastName} (#{player.memberId})
+                if team.type == 'MX'
+                  | - Single: #{player.single} - Double: #{player.double} - Mix: #{player.mix}
+                else
+                  | - Single: #{player.single} - Double: #{player.double}
+
+
+h2 Locaties
+table
+  each location in locations
+    tr
+      td(style='padding-top:12px' class='mceSpacing-24' valign='top')
+        div(class='mceText' style='font-size:16px;width:100%')
+          p
+            strong #{location.name}
+            br
+            each availability in location.availabilities
+              if availability.days.length
+                p
+                  strong Speelmomenten:
+                  br
+                  ul
+                    each day in availability.days
+                      li #{day.day}, #{day.startTime} - #{day.endTime}: #{day.courts} velden
+              else
+                p
+                  strong Geen speelmomenten
+              if availability.exceptions.length
+                p
+                  strong Uitzonderingen:
+                  br
+                  ul
+                    each exception in availability.exceptions
+                      li !{dateFormat("LL", exception.start)} tot !{dateFormat("LL", exception.end)}: #{exception.courts} velden
+
+h2 Comments
+table
+  each comment in comments
+    tr
+      td(style='padding-top:12px' class='mceSpacing-24' valign='top')
+        div(class='mceText' style='font-size:16px;width:100%')
+          p
+            strong Reeks:
+            | #{comment.competition.name}
+            br
+            strong Wie:
+            | #{comment.player.firstName}, #{comment.player.lastName}
+            if comment.player.memberId
+              | (#{comment.player.memberId})
+            br
+            strong Bericht:
+            br
+            | #{comment.message}

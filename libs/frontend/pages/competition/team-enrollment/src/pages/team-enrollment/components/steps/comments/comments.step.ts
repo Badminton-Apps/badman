@@ -147,6 +147,7 @@ export class CommentsStepComponent implements OnInit {
         query: gql`
           query Comments($where: JSONObject) {
             comments(where: $where) {
+              id
               linkType
               linkId
               message

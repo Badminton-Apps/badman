@@ -1,11 +1,14 @@
 import { CompileService } from '@badman/backend-compile';
 import {
+  Club,
+  Comment,
   EncounterChange,
   EncounterCompetition,
   EventCompetition,
   EventTournament,
+  Location,
   Player,
-  Team,
+  Team
 } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -180,6 +183,32 @@ export class MailingService {
         captain: to.fullName,
         date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
         settingsSlug: to.slug,
+      },
+    } as MailOptions;
+
+    await this._sendMail(options);
+  }
+
+  async sendEnrollmentMail(
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    club: Club,
+    locations: Location[],
+    comments: Comment[]
+  ) {
+    moment.locale('nl-be');
+    const options = {
+      from: 'info@badman.app',
+      to: to.email,
+      subject: `Inschrijving ${club.name}`,
+      template: 'clubenrollment',
+      context: {
+        club: club.toJSON(),
+        locations: locations.map((l) => l.toJSON()),
+        comments: comments.map((c) => c.toJSON()),
       },
     } as MailOptions;
 
