@@ -9,7 +9,6 @@
 @use './src/page-header/page-header.component.theme.scss' as page-header;
 @use './src/standing/standing.component.theme.scss' as standing;
 @use './src/player-search/player-search.component.theme.scss' as player-search;
-@use './src/quill/quill.component.theme.scss' as quill;
 @use './src/loading-block/loading-block.component.theme.scss' as loading-block;
 
 @mixin theme($theme) {
@@ -21,7 +20,6 @@
   @include beta.theme($theme);
   @include page-header.theme($theme);
   @include standing.theme($theme);
-  @include quill.theme($theme);
   @include loading-block.theme($theme);
 }
 
@@ -34,7 +32,6 @@
   @include beta.typography($theme);
   @include page-header.typography($theme);
   @include standing.typography($theme);
-  @include quill.typography($theme);
   @include loading-block.typography($theme);
 }
 
@@ -47,6 +44,5 @@
   @include beta.color($theme);
   @include page-header.color($theme);
   @include standing.color($theme);
-  @include quill.color($theme);
   @include loading-block.color($theme);
 }

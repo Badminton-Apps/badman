@@ -1,4 +1,10 @@
 <ng-container [formGroup]="group" *ngIf="control">
+  <div class="row">
+    <button mat-stroked-button (click)="addLocation()">
+      {{ 'all.button.add-location' | translate }}
+    </button>
+  </div>
+
   <ng-container formArrayName="locations">
     <div
       class="row"
@@ -12,9 +18,3 @@
     </div>
   </ng-container>
 </ng-container>
-
-<div class="row">
-  <button mat-stroked-button (click)="addLocation()">
-    {{ 'all.button.add' | translate }}
-  </button>
-</div>

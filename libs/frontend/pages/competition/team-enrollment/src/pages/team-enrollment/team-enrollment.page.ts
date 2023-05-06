@@ -30,6 +30,7 @@ import {
   LocationForm,
 } from './components';
 import { minAmountOfTeams } from './validators';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -45,6 +46,7 @@ import { minAmountOfTeams } from './validators';
     MatStepperModule,
     MatProgressBarModule,
     MatButtonModule,
+    MatIconModule,
 
     // Own Modules
     ClubStepComponent,
@@ -282,6 +284,7 @@ export class TeamEnrollmentComponent implements OnInit {
   async saveAndFinish() {
     this.formGroup.get(TEAMS)?.setErrors({ loading: true });
     await lastValueFrom(this.save());
+
     this.snackBar.open('Teams saved', 'Close', {
       duration: 2000,
     });

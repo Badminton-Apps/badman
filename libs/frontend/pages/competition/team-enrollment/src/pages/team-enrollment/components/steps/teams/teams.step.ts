@@ -191,15 +191,17 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
 
     this.control.setErrors({ loading: true });
 
-    // initial teamnumbers
-    this.teamNumbers.M =
-      this.control?.value?.M?.map((t) => t.team?.teamNumber ?? 0) ?? [];
-    this.teamNumbers.F =
-      this.control?.value?.F?.map((t) => t.team?.teamNumber ?? 0) ?? [];
-    this.teamNumbers.MX =
-      this.control?.value?.MX?.map((t) => t.team?.teamNumber ?? 0) ?? [];
-    this.teamNumbers.NATIONAL =
-      this.control?.value?.NATIONAL?.map((t) => t.team?.teamNumber ?? 0) ?? [];
+    // initial teamnumbers from 1 to maxlevel
+    for (const type of this.eventTypes) {
+      const maxLevelM = Math.max(
+        ...(this.control?.value?.[type]?.map((t) => t.team?.teamNumber ?? 0) ??
+          [])
+      );
+      this.teamNumbers[type] = Array.from(
+        { length: maxLevelM },
+        (_, i) => i + 1
+      );
+    }
 
     this.clubs$ = this._getClubs();
     combineLatest([this.control?.valueChanges, this.update$])

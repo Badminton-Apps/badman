@@ -231,23 +231,18 @@ export class EditPageComponent implements OnInit, OnDestroy {
           return (x.data.club.teams ?? []).map((t) => new Team(t));
         }),
         tap((teams) => {
-          // initial teamnumbers
-          this.teamNumbers.M =
-            teams
-              ?.filter((t) => t.type === SubEventTypeEnum.M)
-              .map((t) => t.teamNumber ?? 0) ?? [];
-          this.teamNumbers.F =
-            teams
-              ?.filter((t) => t.type === SubEventTypeEnum.F)
-              .map((t) => t.teamNumber ?? 0) ?? [];
-          this.teamNumbers.MX =
-            teams
-              ?.filter((t) => t.type === SubEventTypeEnum.MX)
-              .map((t) => t.teamNumber ?? 0) ?? [];
-          this.teamNumbers.NATIONAL =
-            teams
-              ?.filter((t) => t.type === SubEventTypeEnum.NATIONAL)
-              .map((t) => t.teamNumber ?? 0) ?? [];
+          // initial teamnumbers from 1 to maxlevel
+          for (const type of this.eventTypes) {
+            const maxLevelM = Math.max(
+              ...(teams
+                ?.filter((t) => t.type === type)
+                .map((t) => t.teamNumber ?? 0) ?? [])
+            );
+            this.teamNumbers[type] = Array.from(
+              { length: maxLevelM },
+              (_, i) => i + 1
+            );
+          }
         }),
         map((teams) => teams.sort(sortTeams))
       );

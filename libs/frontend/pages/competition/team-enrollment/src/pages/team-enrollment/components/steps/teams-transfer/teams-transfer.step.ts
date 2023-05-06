@@ -220,6 +220,8 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
                   preferredDay
                   preferredTime
                   captainId
+                  phone
+                  email
                   players {
                     id
                     fullName

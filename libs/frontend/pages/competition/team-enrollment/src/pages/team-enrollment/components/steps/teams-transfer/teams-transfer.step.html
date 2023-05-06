@@ -1,39 +1,45 @@
 <div class="description">
-  {{'all.competition.team-enrollment.teams.transfer-teams-description' | translate}}
+  {{'all.competition.team-enrollment.teams.transfer-teams-description' |
+  translate}}
 </div>
 
-<ng-container *ngIf="teams$ | async as teams else loading">
-  <div class="all">
-    <button mat-button (click)="selectAll('lastSeason')">
-      {{ 'all.button.all' | translate }}
-    </button>
-    <button mat-button (click)="deselectAll('lastSeason')">
-      {{ 'all.button.none' | translate }}
-    </button>
-  </div>
-  <div class="teams" *ngFor="let team of teams.lastSeason; let i = index ">
-    <mat-checkbox [formControl]="this.teamsForm![i]"
-      >{{ team.name }}</mat-checkbox
-    >
-  </div>
-
-  <ng-container *ngIf="teams.newThisSeason.length > 0">
-    <h3>{{ 'all.competition.team-enrollment.teams.new-teams' | translate }}</h3>
+<ng-container *ngIf="teams$ | async as teams; else loading">
     <div class="all">
-      <button mat-button (click)="selectAll('newThisSeason')">
+      <button mat-button (click)="selectAll('lastSeason')">
         {{ 'all.button.all' | translate }}
       </button>
-      <button mat-button (click)="deselectAll('newThisSeason')">
+      <button mat-button (click)="deselectAll('lastSeason')">
         {{ 'all.button.none' | translate }}
       </button>
     </div>
-    <div class="teams" *ngFor="let team of teams.newThisSeason; let i = index ">
-      <mat-checkbox [formControl]="this.newTeamsForm![i]"
+    <div class="teams" *ngFor="let team of teams.lastSeason; let i = index ">
+      <mat-checkbox [formControl]="this.teamsForm![i]"
         >{{ team.name }}</mat-checkbox
       >
     </div>
+
+    <ng-container *ngIf="teams.newThisSeason.length > 0">
+      <h3>
+        {{ 'all.competition.team-enrollment.teams.new-teams' | translate }}
+      </h3>
+      <div class="all">
+        <button mat-button (click)="selectAll('newThisSeason')">
+          {{ 'all.button.all' | translate }}
+        </button>
+        <button mat-button (click)="deselectAll('newThisSeason')">
+          {{ 'all.button.none' | translate }}
+        </button>
+      </div>
+      <div
+        class="teams"
+        *ngFor="let team of teams.newThisSeason; let i = index "
+      >
+        <mat-checkbox [formControl]="this.newTeamsForm![i]"
+          >{{ team.name }}</mat-checkbox
+        >
+      </div>
+    </ng-container>
   </ng-container>
-</ng-container>
 
 <ng-template #loading>
   <mat-progress-bar mode="indeterminate"></mat-progress-bar

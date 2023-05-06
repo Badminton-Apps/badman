@@ -6,6 +6,7 @@ import {
 } from '../../../models';
 import { Rule } from './_rule.base';
 import { RankingPlace } from '@badman/backend-database';
+import { single } from 'rxjs';
 
 /**
  * Checks if the min level of the subEvent is not crossed
@@ -24,7 +25,7 @@ export class PlayerMinLevelRule extends Rule {
       const errors = [] as EnrollmentValidationError[];
       let teamValid = true;
 
-      if (!subEvent){
+      if (!subEvent) {
         continue;
       }
 
@@ -34,12 +35,20 @@ export class PlayerMinLevelRule extends Rule {
         for (const player of uniquePlayers) {
           let ranking = player?.rankingPlaces?.[0];
 
+          const bestRankingMin2 =
+            Math.min(
+              ranking?.single,
+              ranking?.double,
+              ranking?.mix,
+              system.amountOfLevels
+            ) - 2;
+
           // if the player has a missing rankingplace, we set the lowest possible ranking
           ranking = {
             ...ranking,
-            single: ranking?.single || system.amountOfLevels,
-            double: ranking?.double || system.amountOfLevels,
-            mix: ranking?.mix || system.amountOfLevels,
+            single: ranking?.single || bestRankingMin2,
+            double: ranking?.double || bestRankingMin2,
+            mix: ranking?.mix || bestRankingMin2,
           } as RankingPlace;
 
           if (ranking.single < subEvent.maxLevel) {

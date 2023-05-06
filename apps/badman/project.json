@@ -6,7 +6,7 @@
   "prefix": "badman",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser-esbuild",
+      "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/badman/browser",
@@ -187,7 +187,8 @@
           "optimization": false,
           "sourceMap": true,
           "extractLicenses": false,
-          "vendorChunk": true
+          "vendorChunk": true,
+          "buildOptimizer": false
         },
         "dev-beta": {
           "fileReplacements": [
@@ -199,7 +200,8 @@
           "optimization": false,
           "sourceMap": true,
           "extractLicenses": false,
-          "vendorChunk": true
+          "vendorChunk": true,
+          "buildOptimizer": false
         }
       },
       "defaultConfiguration": "development"

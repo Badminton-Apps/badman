@@ -19,7 +19,7 @@ async function bootstrap() {
   const redisHost = configService.get('REDIS_HOST');
   if (redisHost) {
     const redisPass = configService.get('REDIS_PASSWORD');
-    let redisUrl = redisPass ? `redis://:${redisPass}@` : 'redis://';
+    let redisUrl = redisPass ? `redis://:${redisPass}@` : 'redis://'; 
     redisUrl += `${redisHost}:${configService.get('REDIS_PORT')}`;
 
     const redisIoAdapter = new RedisIoAdapter(app);
@@ -53,3 +53,4 @@ async function bootstrap() {
 }
 
 bootstrap();
+ 
