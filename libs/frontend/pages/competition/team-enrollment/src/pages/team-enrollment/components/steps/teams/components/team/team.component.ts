@@ -122,8 +122,8 @@ export class TeamComponent implements OnInit {
     this.team.valueChanges
       .pipe(takeUntil(this.destroy$), startWith(this.team.value))
       .subscribe(() => {
-        this.expanded.team = this.team.value.link == null ?? true;
-        if (this.team.value.type && this.team.value.players) {
+        this.expanded.team = this.team?.value?.link == null ?? true;
+        if (this.team?.value?.type && this.team?.value?.players) {
           this.teamIndex = getIndexFromPlayers(
             this.team.value.type,
             this.team.value.players
@@ -134,7 +134,7 @@ export class TeamComponent implements OnInit {
     this.basePlayers.valueChanges
       .pipe(takeUntil(this.destroy$), startWith(this.basePlayers.value))
       .subscribe(() => {
-        if (this.basePlayers.value && this.team.value.type) {
+        if (this.basePlayers.value && this.team?.value?.type) {
           this.baseIndex = getIndexFromPlayers(
             this.team.value.type,
             this.basePlayers.value

@@ -31,7 +31,8 @@ export class TeamBaseIndexRule extends Rule {
 
       if (
         team?.teamNumber == 1 &&
-        previousSeasonTeam?.entry?.standing?.faller
+        previousSeasonTeam?.entry?.standing?.faller &&
+        teamIndex < baseIndex
       ) {
         teamValid = false;
         errors.push({
@@ -41,7 +42,8 @@ export class TeamBaseIndexRule extends Rule {
 
       results.push({
         teamId: team.id,
-        errors: warning,
+        warnings: warning,
+        errors: errors,
         valid: teamValid,
       });
     }
