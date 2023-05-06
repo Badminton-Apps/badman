@@ -11,7 +11,6 @@ export * from './loading-block';
 export * from './fields';
 export * from './page-header';
 export * from './player-search';
-export * from './quill';
 export * from './ranking-table';
 export * from './selects';
 export * from './shell';

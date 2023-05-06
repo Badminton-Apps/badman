@@ -51,6 +51,7 @@ export type I18nTranslations = {
         "button": {
             "add": string;
             "add-comment": string;
+            "add-location": string;
             "all": string;
             "cancel": string;
             "close": string;
@@ -404,6 +405,7 @@ export type I18nTranslations = {
         };
         "input": {
             "abbreviation": string;
+            "availible-courts": string;
             "city": string;
             "competitionplayer": string;
             "courts": string;
@@ -411,10 +413,12 @@ export type I18nTranslations = {
             "date-range": string;
             "day": string;
             "email": string;
+            "end-hour": string;
             "fax": string;
             "firstname": string;
             "fullName": string;
             "gender": string;
+            "hour": string;
             "lastname": string;
             "memberId": string;
             "name": string;
@@ -423,6 +427,7 @@ export type I18nTranslations = {
             "required": string;
             "select": string;
             "shuttle": string;
+            "start-hour": string;
             "state": string;
             "street": string;
             "streetnumber": string;

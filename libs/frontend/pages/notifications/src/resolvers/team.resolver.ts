@@ -1,14 +1,14 @@
 import { isPlatformServer } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
-import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { Team } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
 import { first, map, tap } from 'rxjs/operators';
 
 @Injectable()
-export class TeamResolver implements Resolve<Team | null> {
+export class TeamResolver  {
   constructor(
     private apollo: Apollo,
     private transferState: TransferState,

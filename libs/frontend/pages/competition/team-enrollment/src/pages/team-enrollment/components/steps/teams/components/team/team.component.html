@@ -27,82 +27,79 @@
   </div>
 </div>
 <div class="extra-info">
-  <div class="prefered">
-    <mat-form-field class="day">
-      <mat-label>{{ 'all.input.day' | translate }}</mat-label>
-      <mat-select [(value)]="team.value.preferredDay">
-        <mat-option value="monday">{{
-          'all.days.monday' | translate
-        }}</mat-option>
-        <mat-option value="tuesday">{{
-          'all.days.tuesday' | translate
-        }}</mat-option>
-        <mat-option value="wednesday">{{
-          'all.days.wednesday' | translate
-        }}</mat-option>
-        <mat-option value="thursday">{{
-          'all.days.thursday' | translate
-        }}</mat-option>
-        <mat-option value="friday">{{
-          'all.days.friday' | translate
-        }}</mat-option>
-        <mat-option value="saturday">{{
-          'all.days.saturday' | translate
-        }}</mat-option>
-        <mat-option value="sunday">{{
-          'all.days.sunday' | translate
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field class="time">
-      <mat-label>Hour</mat-label>
-      <input matInput type="time" [(ngModel)]="team.value.preferredTime" />
-    </mat-form-field>
+  <div class="expandable-item" (click)="expanded.team = !expanded.team">
+    <div
+      class="title"
+      [matTooltip]="this.warningMessage"
+      [matTooltipDisabled]="!hasWarning"
+      matTooltipClass="multi-line-tooltip"
+    >
+      {{ 'all.team.title.base-fields' | translate }}
+
+      <mat-icon *ngIf="hasWarning">warning</mat-icon>
+    </div>
+    <mat-icon *ngIf="!expanded.team">expand_more</mat-icon>
+    <mat-icon *ngIf="expanded.team">expand_less</mat-icon>
   </div>
 
-  <!-- <div class="prefered">
-    <mat-form-field class="day">
-      <mat-label>{{ 'all.input.day' | translate }}</mat-label>
-      <mat-select [(value)]="team.value.preferred2Day">
-        <mat-option value="monday">{{
-          'all.days.monday' | translate
-        }}</mat-option>
-        <mat-option value="tuesday">{{
-          'all.days.tuesday' | translate
-        }}</mat-option>
-        <mat-option value="wednesday">{{
-          'all.days.wednesday' | translate
-        }}</mat-option>
-        <mat-option value="thursday">{{
-          'all.days.thursday' | translate
-        }}</mat-option>
-        <mat-option value="friday">{{
-          'all.days.friday' | translate
-        }}</mat-option>
-        <mat-option value="saturday">{{
-          'all.days.saturday' | translate
-        }}</mat-option>
-        <mat-option value="sunday">{{
-          'all.days.sunday' | translate
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field class="time">
-      <mat-label>Hour</mat-label>
-      <input matInput type="time" [(ngModel)]="team.value.preferred2Time" />
-    </mat-form-field>
-  </div> -->
+  <mat-divider></mat-divider>
 
-  <div class="captain">
-    <p>{{ 'all.team.title.captain' | translate }}</p>
-    <badman-player-search
-      [player]="team.value.captainId"
-      [includePersonal]="true"
-      [allowCreation]="true"
-      [club]="team.value.clubId"
-      [clearOnSelection]="false"
-      (whenSelectPlayer)="team.value.captainId = $event.id"
-    ></badman-player-search>
+  <div *ngIf="expanded.team">
+    <div class="team-info">
+      <div class="prefered">
+        <mat-form-field class="day">
+          <mat-label>{{ 'all.input.day' | translate }}</mat-label>
+          <mat-select [(value)]="team.value.preferredDay">
+            <mat-option value="monday">{{
+              'all.days.monday' | translate
+            }}</mat-option>
+            <mat-option value="tuesday">{{
+              'all.days.tuesday' | translate
+            }}</mat-option>
+            <mat-option value="wednesday">{{
+              'all.days.wednesday' | translate
+            }}</mat-option>
+            <mat-option value="thursday">{{
+              'all.days.thursday' | translate
+            }}</mat-option>
+            <mat-option value="friday">{{
+              'all.days.friday' | translate
+            }}</mat-option>
+            <mat-option value="saturday">{{
+              'all.days.saturday' | translate
+            }}</mat-option>
+            <mat-option value="sunday">{{
+              'all.days.sunday' | translate
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="time">
+          <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
+          <input matInput type="time" [(ngModel)]="team.value.preferredTime" />
+        </mat-form-field>
+      </div>
+      <div class="captain">
+        <p>{{ 'all.team.title.captain' | translate }}</p>
+        <badman-player-search
+          [player]="team.value.captainId"
+          [includePersonal]="true"
+          [allowCreation]="true"
+          [club]="team.value.clubId"
+          [clearOnSelection]="false"
+          (whenSelectPlayer)="team.value.captainId = $event.id"
+        ></badman-player-search>
+      </div>
+      <div class="contact">
+        <mat-form-field class="email">
+          <mat-label>{{ 'all.input.email' | translate }}</mat-label>
+          <input matInput [(ngModel)]="team.value.email" />
+        </mat-form-field>
+        <mat-form-field class="phone">
+          <mat-label>{{ 'all.input.phone' | translate }}</mat-label>
+          <input matInput [(ngModel)]="team.value.phone" />
+        </mat-form-field>
+      </div>
+    </div>
   </div>
 </div>
 

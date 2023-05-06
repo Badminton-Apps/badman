@@ -19,6 +19,30 @@
 
   <mat-step>
     <ng-template matStepLabel
+      >{{ 'all.competition.team-enrollment.select-location' | translate
+      }}</ng-template
+    >
+    <ng-template matStepContent>
+      <badman-locations-step [group]="this.formGroup"></badman-locations-step>
+
+      <div class="actions">
+        <button mat-stroked-button matStepperPrevious>
+          {{ 'all.button.prev' | translate }}
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          matStepperNext
+          [disabled]="this.formGroup.get('locations')?.valid === false"
+        >
+          {{ 'all.button.next' | translate }}
+        </button>
+      </div>
+    </ng-template>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel
       >{{ 'all.competition.team-enrollment.teams.transfer-teams' | translate
       }}</ng-template
     >
@@ -36,7 +60,6 @@
       </button>
     </div>
   </mat-step>
-
   <mat-step>
     <ng-template matStepLabel
       >{{ 'all.competition.team-enrollment.select-events' | translate
@@ -99,34 +122,11 @@
       </div>
     </ng-template>
   </mat-step>
+
   <mat-step>
     <ng-template matStepLabel
-      >{{ 'all.competition.team-enrollment.select-location' | translate
+      >{{ 'all.competition.team-enrollment.comments.title' | translate
       }}</ng-template
-    >
-    <ng-template matStepContent>
-      <badman-locations-step [group]="this.formGroup"></badman-locations-step>
-
-
-      <div class="actions">
-        <button mat-stroked-button matStepperPrevious>
-          {{ 'all.button.prev' | translate }}
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          matStepperNext
-          [disabled]="this.formGroup.get('locations')?.valid === false"
-        >
-          {{ 'all.button.next' | translate }}
-        </button>
-      </div>
-    </ng-template>
-  </mat-step>
-
-  <mat-step>
-    <ng-template matStepLabel
-      >{{ 'all.competition.team-enrollment.comments.title' | translate }}</ng-template
     >
     <ng-template matStepContent>
       <badman-comments-step [group]="this.formGroup"></badman-comments-step>

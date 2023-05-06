@@ -1,14 +1,7 @@
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Params,
-  Router,
-  RouterStateSnapshot,
-  UrlTree,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Params, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import {
@@ -24,7 +17,7 @@ import { AuthenticateService, ClaimService } from '../services';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuard  {
   // Maybe use this for cokkies? https://github.com/ngx-utils/cookies/
 
   private loader$ = new Subject<boolean>();

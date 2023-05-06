@@ -64,20 +64,20 @@
           </div>
           <div class="startTime">
             <mat-form-field>
-              <mat-label>Start hour</mat-label>
+              <mat-label>{{'all.input.start-hour' | translate}}</mat-label>
               <input matInput type="time" formControlName="startTime" />
             </mat-form-field>
           </div>
           <div class="endTime">
             <mat-form-field>
-              <mat-label>End hour</mat-label>
+              <mat-label>{{'all.input.end-hour' | translate}}</mat-label>
               <input matInput type="time" formControlName="endTime" />
             </mat-form-field>
           </div>
 
           <div class="courts">
             <mat-form-field>
-              <mat-label>{{ 'all.input.courts' | translate }}</mat-label>
+              <mat-label>{{ 'all.input.availible-courts' | translate }}</mat-label>
               <input
                 matInput
                 type="number"
@@ -94,7 +94,7 @@
         </div>
       </ng-container>
     </div>
-    <button mat-stroked-button color="primary" (click)="addAvailibility()">
+    <button mat-stroked-button (click)="addAvailibility()">
       {{ 'all.locations.add-day' | translate }}
     </button>
   </div>
@@ -112,9 +112,7 @@
     </div>
 
     <mat-divider></mat-divider>
-    <p class="hint">
-      {{ 'all.locations.hint' | translate }}
-    </p>
+    <p class="hint">{{ 'all.locations.hint' | translate }}</p>
     <div [hidden]="!expanded.exceptions">
       <ng-container formArrayName="exceptions">
         <div
