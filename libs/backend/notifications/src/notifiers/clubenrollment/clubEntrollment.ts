@@ -1,9 +1,4 @@
-import {
-  Club,
-  Comment,
-  Location,
-  Player
-} from '@badman/backend-database';
+import { Club, Comment, Location, Player } from '@badman/backend-database';
 import * as webPush from 'web-push';
 import { Notifier } from '../notifier.base';
 import { unitOfTime } from 'moment';
@@ -48,7 +43,9 @@ export class ClubEnrollmentNotifier extends Notifier<
     data: { club: Club; locations: Location[]; comments: Comment[] },
     args?: { email: string; url: string }
   ): Promise<void> {
-    this.logger.debug(`Sending Email to ${player.fullName}`);
+    this.logger.debug(
+      `Sending Email to ${player.fullName} (${player.email}), target ${args.email}`
+    );
 
     await this.mailing.sendEnrollmentMail(
       {

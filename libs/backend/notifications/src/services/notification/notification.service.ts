@@ -199,7 +199,12 @@ export class NotificationService {
     );
   }
 
-  async notifyEnrollment(userId: string, clubId: string, season: number) {
+  async notifyEnrollment(
+    userId: string,
+    clubId: string,
+    season: number,
+    email: string
+  ) {
     const notifierEnrollment = new ClubEnrollmentNotifier(
       this.mailing,
       this.push
@@ -298,7 +303,7 @@ export class NotificationService {
       user,
       clubId,
       { club, locations, comments },
-      { email: user.email, url }
+      { email: email || user.email, url }
     );
   }
 }

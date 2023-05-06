@@ -5,21 +5,45 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { SelectClubComponent } from '@badman/frontend-components';
 import { Subject, filter, pairwise, startWith, takeUntil } from 'rxjs';
-import { CLUB, COMMENTS, EVENTS, LOCATIONS, TEAMS } from '../../../../../forms';
+import {
+  CLUB,
+  COMMENTS,
+  EMAIL,
+  EVENTS,
+  LOCATIONS,
+  TEAMS,
+} from '../../../../../forms';
+import { MatInputModule } from '@angular/material/input';
+import { TranslateModule } from '@ngx-translate/core';
+import { AuthenticateService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-club-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SelectClubComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslateModule,
+    MatInputModule,
+    SelectClubComponent,
+  ],
   templateUrl: './club.step.html',
   styleUrls: ['./club.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubStepComponent implements OnInit {
   destroy$ = new Subject<void>();
+
+  constructor(private authenticateService: AuthenticateService) {}
 
   @Input()
   group!: FormGroup;
@@ -33,15 +57,26 @@ export class ClubStepComponent implements OnInit {
   valueId?: FormControl<string | null>;
 
   @Input()
+  email!: FormControl<string | null>;
+
+  @Input()
   controlName = CLUB;
+
+  @Input()
+  controlEmailName = EMAIL;
 
   ngOnInit() {
     if (this.group) {
       this.valueId = this.group?.get(this.controlName) as FormControl<string>;
+      this.email = this.group?.get('email') as FormControl<string>;
     }
 
     if (!this.valueId) {
       this.valueId = new FormControl();
+    }
+
+    if (!this.email) {
+      this.email = new FormControl(this.authenticateService.user?.email || '');
     }
 
     if (this.value?.value) {
@@ -50,7 +85,12 @@ export class ClubStepComponent implements OnInit {
 
     if (this.group) {
       this.group.addControl(this.controlName, this.valueId);
+      this.group.addControl(this.controlEmailName, this.email);
     }
+
+    this.authenticateService.user$.subscribe(() =>
+      this.email?.setValue(this.authenticateService.user?.email || '')
+    );
 
     this.value?.valueChanges
       .pipe(

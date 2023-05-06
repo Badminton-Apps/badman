@@ -1,4 +1,10 @@
 :host {
   display: block;
   padding-top: 1rem;
+  max-width: 650px;
+}
+
+
+mat-form-field {
+  width: 100%;
 }

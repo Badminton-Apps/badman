@@ -97,7 +97,7 @@
       <div class="contact">
         <mat-form-field class="email">
           <mat-label>{{ 'all.input.email' | translate }}</mat-label>
-          <input matInput [required]="true" [(ngModel)]="team.value.email" />
+          <input matInput type="email" [required]="true" [(ngModel)]="team.value.email" />
         </mat-form-field>
         <mat-form-field class="phone">
           <mat-label>{{ 'all.input.phone' | translate }}</mat-label>
