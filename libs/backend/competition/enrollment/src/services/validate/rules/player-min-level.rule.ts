@@ -37,18 +37,22 @@ export class PlayerMinLevelRule extends Rule {
 
           const bestRankingMin2 =
             Math.min(
-              ranking?.single,
-              ranking?.double,
-              ranking?.mix,
-              system.amountOfLevels
+              ranking?.single ?? system.amountOfLevels,
+              ranking?.double ?? system.amountOfLevels,
+              ranking?.mix ?? system.amountOfLevels
             ) - 2;
+
+          if (bestRankingMin2 < 0) {
+            this.logger.log(`bestRankingMin2: ${bestRankingMin2}`);
+            this.logger.log(`ranking: ${JSON.stringify(ranking)}`);
+          }
 
           // if the player has a missing rankingplace, we set the lowest possible ranking
           ranking = {
             ...ranking,
-            single: ranking?.single || bestRankingMin2,
-            double: ranking?.double || bestRankingMin2,
-            mix: ranking?.mix || bestRankingMin2,
+            single: ranking?.single ?? bestRankingMin2,
+            double: ranking?.double ?? bestRankingMin2,
+            mix: ranking?.mix ?? bestRankingMin2,
           } as RankingPlace;
 
           if (ranking.single < subEvent.maxLevel) {

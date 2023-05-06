@@ -224,7 +224,7 @@
         "player-min-level": "<strong>{player.fullName}</strong> a un indice de <strong>{player.ranking}</strong> dans <strong>{rankingType}</strong> et peut être au moins <strong>{minLevel}</strong> .",
         "player-subevent": "<strong>{player.fullName}</strong> fait partie de l'équipe de base <strong>{team.name}</strong> qui joue également en <strong>{subEvent.name}</strong> ",
         "riser": "L'équipe devrait être promue mais n'est pas inscrite dans une série supérieure",
-        "team-index": "Les titulaires de l'index d'équipe sont <strong>{teamIndex}</strong> et peuvent être au moins <strong>{baseIndex}</strong> .",
+        "team-index": "La configuration de configuration la plus forte n'est pas possible. L'index de l'équipe est : <strong>{teamIndex}</strong> et l'index de l'équipe de base est : <strong>{baseIndex}</strong>.",
         "team-order": "L'équipe <strong>{team.name}</strong> est dans une série inférieure mais a un numéro d'équipe inférieur",
         "team-order-same-subevent": "L'équipe <strong>{team.name}</strong> a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
         "team-to-strong": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas tomber en dessous de la limite de la division <strong>{minIndex}</strong> ",

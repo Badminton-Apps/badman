@@ -17,14 +17,24 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Availability, Location } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, map, startWith, takeUntil } from 'rxjs/operators';
+import { of, Subject, combineLatest } from 'rxjs';
+import {
+  filter,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { CLUB, LOCATIONS, SEASON } from '../../../../../forms';
 import {
   LocationAvailibilityForm,
   LocationComponent,
   LocationForm,
 } from './components';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Observable } from '@apollo/client/utilities';
+import { getCurrentSeason } from '@badman/utils';
 
 @Component({
   selector: 'badman-locations-step',
@@ -37,6 +47,7 @@ import {
     // Material
     MatDialogModule,
     MatButtonModule,
+    MatProgressBarModule,
 
     // Components
     LocationComponent,
@@ -67,17 +78,7 @@ export class LocationsStepComponent implements OnInit {
   seasonControlName = SEASON;
 
   @Input()
-  season?: number;
-
-  #season!: BehaviorSubject<number>;
-  get seasonValue() {
-    return this.#season.value;
-  }
-
-  #club!: BehaviorSubject<string>;
-  get clubValue() {
-    return this.#club.value;
-  }
+  season = getCurrentSeason();
 
   constructor(
     private apollo: Apollo,
@@ -111,91 +112,77 @@ export class LocationsStepComponent implements OnInit {
       }
     }
 
-    this.#club = new BehaviorSubject<string>(this.clubId as string);
-    this.#season = new BehaviorSubject<number>(this.season as number);
+    const clubId$ =
+      this.group.get(this.clubControlName)?.valueChanges ?? of(this.clubId);
+    const season$ =
+      this.group.get(this.seasonControlName)?.valueChanges ?? of(this.season);
 
-    // fetch clubId
-    if (this.group) {
-      this.group?.valueChanges
-        .pipe(
-          takeUntil(this.destroy$),
-          map((value) => value?.[this.clubControlName]),
-          startWith(this.group.value?.[this.clubControlName]),
-          filter((value) => value !== undefined && value?.length > 0),
-          filter(
-            (value) =>
-              value.length === 36 &&
-              value[8] === '-' &&
-              value[13] === '-' &&
-              value[18] === '-' &&
-              value[23] === '-'
-          )
-        )
-        ?.subscribe((clubId) => {
-          this.#club.next(clubId);
-        });
+    combineLatest([
+      clubId$.pipe(
+        startWith(this.group.get(this.clubControlName)?.value || this.clubId)
+      ),
+      season$.pipe(
+        startWith(this.group.get(this.seasonControlName)?.value || this.season)
+      ),
+    ])
+      .pipe(
+        tap(([clubId, season]) => {
+          if (!clubId || !season) {
+            return;
+          }
 
-      this.group?.valueChanges
-        .pipe(
-          takeUntil(this.destroy$),
-          map((value) => value?.[this.seasonControlName]),
-          startWith(this.group.value?.[this.seasonControlName]),
-          filter((value) => value !== undefined)
-        )
-        ?.subscribe((season) => {
-          this.#season.next(season);
-        });
-    }
+          this.clubId = clubId;
+          this.season = season;
+        }),
+        switchMap(([clubId, season]) =>
+          this.apollo.query<{ locations: Location[] }>({
+            query: gql`
+              query Locations(
+                $where: JSONObject
+                $availibilitiesWhere: JSONObject
+              ) {
+                locations(where: $where) {
+                  id
+                  name
+                  address
+                  street
+                  streetNumber
+                  postalcode
+                  city
+                  state
+                  phone
+                  fax
 
-    this.apollo
-      .query<{ locations: Location[] }>({
-        query: gql`
-          query Locations(
-            $where: JSONObject
-            $availibilitiesWhere: JSONObject
-          ) {
-            locations(where: $where) {
-              id
-              name
-              address
-              street
-              streetNumber
-              postalcode
-              city
-              state
-              phone
-              fax
-
-              availibilities(where: $availibilitiesWhere) {
-                id
-                year
-                days {
-                  day
-                  startTime
-                  endTime
-                  courts
-                }
-                exceptions {
-                  start
-                  end
-                  courts
+                  availibilities(where: $availibilitiesWhere) {
+                    id
+                    year
+                    days {
+                      day
+                      startTime
+                      endTime
+                      courts
+                    }
+                    exceptions {
+                      start
+                      end
+                      courts
+                    }
+                  }
                 }
               }
-            }
-          }
-        `,
-        variables: {
-          where: {
-            clubId: this.clubValue,
-          },
-          availibilitiesWhere: {
-            year: {
-              $or: [this.seasonValue, this.seasonValue - 1],
+            `,
+            variables: {
+              where: {
+                clubId: clubId,
+              },
+              availibilitiesWhere: {
+                year: {
+                  $or: [season, season - 1],
+                },
+              },
             },
-          },
-        },
-      })
-      .pipe(
+          })
+        ),
         takeUntil(this.destroy$),
         map((result) =>
           result.data?.locations?.map((location) => new Location(location))
@@ -208,24 +195,22 @@ export class LocationsStepComponent implements OnInit {
             // filter out the locations that are not available for the current season
             // if no availibilities are set, use the one from previous season
             let availibilty = location.availibilities?.find(
-              (availibility) => availibility.year === this.seasonValue
+              (availibility) => availibility.year === this.season
             );
 
             if (!availibilty) {
               const lastSeason = (location.availibilities?.find(
-                (availibility) => availibility.year === this.seasonValue - 1
+                (availibility) => availibility.year === this.season - 1
               ) ?? {
                 days: [],
               }) as Availability;
 
               availibilty = {
                 ...lastSeason,
-                year: this.seasonValue,
+                year: this.season,
                 exceptions: [],
               };
             }
-
-            console.log(availibilty);
 
             const availibyForm = this.formBuilder.group({
               id: this.formBuilder.control(availibilty?.id),
@@ -277,7 +262,7 @@ export class LocationsStepComponent implements OnInit {
     import('@badman/frontend-club').then((m) => {
       const dialogRef = this.dialog.open(m.LocationDialogComponent, {
         data: {
-          club: { id: this.clubValue },
+          club: { id: this.clubId },
           onCreate: 'close',
           showAvailibilities: false,
         },
@@ -317,7 +302,7 @@ export class LocationsStepComponent implements OnInit {
       const dialogRef = this.dialog.open(m.LocationDialogComponent, {
         data: {
           location: control.value,
-          club: this.clubValue,
+          club: this.clubId,
           onUpdate: 'close',
           showAvailibilities: false,
         },

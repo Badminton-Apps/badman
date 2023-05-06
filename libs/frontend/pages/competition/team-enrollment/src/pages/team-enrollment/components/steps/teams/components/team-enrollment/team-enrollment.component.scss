@@ -3,7 +3,7 @@
 }
 
 badman-team {
-  flex: 0 1 600px;
+  max-width: 600px;
 }
 
 .beside {
@@ -30,3 +30,6 @@ mat-form-field {
   width: 100%;
 }
 
+.event {
+  max-width: 450px;
+}
