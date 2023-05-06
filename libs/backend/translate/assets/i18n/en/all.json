@@ -224,7 +224,7 @@
         "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> and may be at least <strong>{minLevel}</strong> .",
         "player-subevent": "<strong>{player.fullName}</strong> is part of the base team <strong>{team.name}</strong> that also plays in <strong>{subEvent.name}</strong> ",
         "riser": "The team should promote, but is not enrolled in a higher series",
-        "team-index": "Strongest setup setup is not possible. The team index is: <strong>{teamIndex}</strong> and the base team's index is: <strong>{baseIndex}</strong>.",
+        "team-index": "Strongest setup setup is not possible. The team index is <strong>{teamIndex}</strong> and the base team index is <strong>{baseIndex}</strong>.",
         "team-order": "Team <strong>{team.name}</strong> is in a lower series but has a lower team number",
         "team-order-same-subevent": "Team <strong>{team.name}</strong> has a better index in the same range, but has a lower team number",
         "team-to-strong": "Team index baseplayers equals <strong>{baseIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
