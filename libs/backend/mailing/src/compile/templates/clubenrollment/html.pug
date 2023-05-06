@@ -22,11 +22,11 @@ table
             | #{team.name} (#{team.abbreviation})
             br
             strong Afdeling:
-            if team && team.entry && team.entry.subEventCompetition && team.entry.subEventCompetition.eventCompetition && team.entry.subEventCompetition.name
-              | #{team.entry.subEventCompetition.eventCompetition.name} - #{team.entry.subEventCompetition.name}
-            else
-              strong(style="color: red;") Geen afdeling gekozen
-            br
+              if team && team.entry && team.entry.subEventCompetition && team.entry.subEventCompetition.eventCompetition && team.entry.subEventCompetition.name
+                |  #{team.entry.subEventCompetition.eventCompetition.name} - #{team.entry.subEventCompetition.name}
+              else
+                strong(style="color: red;") Geen afdeling gekozen
+              br
             if team.captain
               strong Kapitein:
               |  #{team.captain.firstName} #{team.captain.lastName} (#{team.email}, #{team.phone})
