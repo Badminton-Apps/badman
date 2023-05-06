@@ -86,7 +86,7 @@ export class EnrollmentValidationService {
       .concat(teams.map((t) => t.backupPlayers))
       .concat(teams.map((t) => t.basePlayers))
       .flat(1);
-    let players = await Player.findAll({
+    const players = await Player.findAll({
       where: {
         id: playerIds,
       },
@@ -104,20 +104,6 @@ export class EnrollmentValidationService {
         },
       ],
     });
-
-    // // setting default values for levels whe they are missing
-    // players = players?.map((p) => {
-    //   p.rankingPlaces = p.rankingPlaces?.map(
-    //     (rp) =>
-    //       (new RankingPlace({
-    //         ...rp,
-    //         single: rp.single ?? system.amountOfLevels,
-    //         double: rp.double ?? system.amountOfLevels,
-    //         mix: rp.mix ?? system.amountOfLevels,
-    //       }
-    //   );
-    //   return p;
-    // });
 
     return {
       teams: teams.map((t) => {

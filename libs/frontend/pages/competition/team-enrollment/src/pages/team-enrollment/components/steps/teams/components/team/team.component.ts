@@ -7,7 +7,13 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -92,6 +98,7 @@ export class TeamComponent implements OnInit {
   expanded = {
     regular: false,
     base: true,
+    team: false,
   };
 
   baseCount = 0;
@@ -115,6 +122,7 @@ export class TeamComponent implements OnInit {
     this.team.valueChanges
       .pipe(takeUntil(this.destroy$), startWith(this.team.value))
       .subscribe(() => {
+        this.expanded.team = this.team.value.link == null ?? true;
         if (this.team.value.type && this.team.value.players) {
           this.teamIndex = getIndexFromPlayers(
             this.team.value.type,
@@ -217,6 +225,31 @@ export class TeamComponent implements OnInit {
     this.backupCount = this.team.value.players?.filter(
       (p) => p.membershipType === TeamMembershipType.BACKUP
     ).length;
+
+    // check if all required fields are set (captainId, preferredDay, prefferdTime, email, phone)
+    const warnings = [];
+    if (this.team.value.captainId == null) {
+      warnings.push('No captain selected');
+    }
+
+    if (this.team.value.preferredDay == null) {
+      warnings.push('No preferred day selected');
+    }
+
+    if (this.team.value.preferredTime == null) {
+      warnings.push('No preferred time selected');
+    }
+
+    if (this.team.value.email == null) {
+      warnings.push('No email selected');
+    }
+
+    if (this.team.value.phone == null) {
+      warnings.push('No phone selected');
+    }
+
+    this.hasWarning = warnings.length > 0;
+    this.warningMessage = warnings.join(`\n`);
 
     this.changeDetector.detectChanges();
   }

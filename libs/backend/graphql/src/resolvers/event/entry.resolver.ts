@@ -14,6 +14,7 @@ import { NotFoundException } from '@nestjs/common';
 import {
   Args,
   ID,
+  Mutation,
   Parent,
   Query,
   ResolveField,
@@ -81,6 +82,10 @@ export class EventEntryResolver {
     return eventEntry.getStanding();
   }
 
+  @Mutation(() => Boolean)
+  async finishEventEntry() {
+    return true;
+  }
   // @Mutation(returns => EventEntry)
   // async addEventEntry(
   //   @Args('newEventEntryData') newEventEntryData: NewEventEntryInput,

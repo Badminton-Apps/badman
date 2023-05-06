@@ -2,10 +2,6 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "npmScope": "badman",
   "useDaemonProcess": false,
-  "cli": {
-    "packageManager": "npm"
-  },
-  "packageManager": "npm",
   "ci": "github",
   "tasksRunnerOptions": {
     "default": {
@@ -55,7 +51,7 @@
     "@nx/angular:application": {
       "style": "scss",
       "linter": "eslint",
-      "unitTestRunner": "jest",
+      "unitTestRunner": "jest"
     },
     "@nx/angular:library": {
       "linter": "eslint",
