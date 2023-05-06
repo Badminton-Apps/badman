@@ -112,7 +112,6 @@ export class Team extends Model {
   @Column
   link: string;
 
-
   @Field(() => String, { nullable: true })
   @Column(
     DataType.ENUM(

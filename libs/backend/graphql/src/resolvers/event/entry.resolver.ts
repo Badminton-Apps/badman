@@ -10,7 +10,7 @@ import {
   SubEventTournament,
   Team,
 } from '@badman/backend-database';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
   ID,
@@ -21,9 +21,13 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
+import { NotificationService } from '@badman/backend-notifications';
+import { User } from '@badman/backend-authorization';
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
+  constructor(private notificationService: NotificationService) {}
+
   @Query(() => EventEntry)
   async eventEntry(
     @Args('id', { type: () => ID }) id: string
@@ -83,7 +87,19 @@ export class EventEntryResolver {
   }
 
   @Mutation(() => Boolean)
-  async finishEventEntry() {
+  async finishEventEntry(
+    @User() user: Player,
+    @Args('clubId', { type: () => ID }) clubId: string,
+    @Args('season', { type: () => Number }) season: number
+  ) {
+    if (!user.hasAnyPermission([clubId + '_edit:club', 'edit-any:club'])) {
+      throw new UnauthorizedException(
+        `You do not have permission to enroll a club`
+      );
+    }
+
+    await this.notificationService.notifyEnrollment(user.id, clubId, season);
+
     return true;
   }
   // @Mutation(returns => EventEntry)

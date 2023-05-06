@@ -92,10 +92,6 @@
     <ng-template matStepContent>
       <badman-teams-step [group]="this.formGroup"></badman-teams-step>
 
-      <p class="description">
-        {{'all.competition.team-enrollment.save-and-continue-tooltip'| translate
-        }}
-      </p>
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>
           {{ 'all.button.prev' | translate }}
@@ -107,17 +103,6 @@
           [disabled]="this.formGroup.get('teams')?.valid === false"
         >
           {{ 'all.button.next' | translate }}
-        </button>
-
-        <!-- save inbetween -->
-
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="saveAndContinue()"
-          [disabled]="this.formGroup.get('teams')?.valid === false"
-        >
-          {{ 'all.button.save-and-continue' | translate }}
         </button>
       </div>
     </ng-template>

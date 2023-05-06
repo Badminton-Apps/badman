@@ -1,8 +1,13 @@
 import {
+  Availability,
+  Club,
   EncounterCompetition,
   EventCompetition,
+  EventEntry,
   EventTournament,
   Player,
+  SubEventCompetition,
+  Team,
 } from '@badman/backend-database';
 import { MailingService } from '@badman/backend-mailing';
 import { Injectable, Logger } from '@nestjs/common';
@@ -16,6 +21,8 @@ import {
 } from '../../notifiers';
 import { PushService } from '../push';
 import { ConfigService } from '@nestjs/config';
+import { ClubEnrollmentNotifier } from '../../notifiers/clubenrollment';
+import { sortTeams } from '@badman/utils';
 
 @Injectable()
 export class NotificationService {
@@ -188,6 +195,109 @@ export class NotificationService {
       user,
       event.id,
       { event, success },
+      { email: user?.email, url }
+    );
+  }
+
+  async notifyEnrollment(userId: string, clubId: string, season: number) {
+    const notifierEnrollment = new ClubEnrollmentNotifier(
+      this.mailing,
+      this.push
+    );
+
+    const user = await Player.findByPk(userId);
+    const club = await Club.findByPk(clubId, {
+      include: [
+        {
+          model: Team,
+          where: {
+            season,
+          },
+          include: [
+            {
+              model: Player,
+              as: 'captain',
+            },
+            {
+              model: EventEntry,
+              include: [
+                {
+                  model: SubEventCompetition,
+                  include: [
+                    {
+                      model: EventCompetition,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    const locations = await club.getLocations({
+      include: [{ model: Availability, where: { year: season } }],
+    });
+
+    // eventEntries->subEventIds
+    const eventEntries = new Set(
+      club.teams
+        .map((team) => team.entry)
+        .map((eventEntry) => eventEntry.subEventCompetition)
+        .map((subEvent) => subEvent.eventId)
+    );
+
+    const comments = await club.getComments({
+      where: {
+        linkId: [...eventEntries],
+        linkType: 'competition',
+      },
+      include: [
+        {
+          model: EventCompetition,
+        },
+        {
+          model: Player,
+        },
+      ],
+    });
+
+    const ids = club?.teams
+      ?.map((team) =>
+        team.entry.meta.competition.players.map((player) => player.id)
+      )
+      .flat();
+
+    // fetch all baseaplayers
+    const players = await Player.findAll({
+      where: {
+        id: ids,
+      },
+    });
+
+    club.teams.map((team) => {
+      const basePlayers = {
+        ...team.entry.meta.competition.players.map((player) => {
+          const basePlayer = players.find((p) => p.id === player.id);
+          return {
+            ...basePlayer.toJSON(),
+            ...player,
+          };
+        }),
+      };
+
+      Object.assign(team.entry.meta.competition, { players: basePlayers });
+    });
+
+    club.teams = club.teams?.sort(sortTeams);
+
+    const url = `${this.configService.get('CLIENT_URL')}/club/${club.id}`;
+
+    notifierEnrollment.notify(
+      user,
+      clubId,
+      { club, locations, comments },
       { email: user.email, url }
     );
   }

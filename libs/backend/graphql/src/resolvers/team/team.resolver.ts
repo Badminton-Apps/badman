@@ -187,6 +187,7 @@ export class TeamsResolver {
         teamDb.season = newTeamData.season;
         teamDb.type = newTeamData.type;
         teamDb.teamNumber = newTeamData.teamNumber;
+        teamDb.captainId = newTeamData.captainId;
         teamDb.link = newTeamData.link;
         await teamDb.save({ transaction });
       }

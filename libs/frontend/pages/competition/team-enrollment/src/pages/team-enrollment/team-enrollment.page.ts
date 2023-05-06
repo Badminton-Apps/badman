@@ -153,6 +153,9 @@ export class TeamEnrollmentComponent implements OnInit {
         season: this.formGroup.value.season,
         preferredDay: enrollment.team.preferredDay,
         preferredTime: enrollment.team.preferredTime,
+        captainId: enrollment.team.captainId,
+        phone: enrollment.team.phone,
+        email: enrollment.team.email,
         players,
         entry: {
           subEventId: enrollment.entry.subEventId,
@@ -188,6 +191,7 @@ export class TeamEnrollmentComponent implements OnInit {
     };
 
     const club = this.formGroup.get(CLUB)?.value;
+
     // save the comments to the backend
     for (const type of Object.values(LevelType)) {
       // skip if no comment is set
@@ -198,7 +202,7 @@ export class TeamEnrollmentComponent implements OnInit {
       observables.push(
         this.apollo.mutate({
           mutation: gql`
-            mutation Mutation($data: CommentNewInput!) {
+            mutation AddComment($data: CommentNewInput!) {
               addComment(data: $data) {
                 id
               }
@@ -206,7 +210,7 @@ export class TeamEnrollmentComponent implements OnInit {
           `,
           variables: {
             data: {
-              clubId: club?.id,
+              clubId: club,
               linkId: comments[type].id,
               linkType: 'competition',
               message: comments[type].comment,
@@ -285,7 +289,21 @@ export class TeamEnrollmentComponent implements OnInit {
     this.formGroup.get(TEAMS)?.setErrors({ loading: true });
     await lastValueFrom(this.save());
 
-    this.snackBar.open('Teams saved', 'Close', {
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation FinishingEntry($clubId: ID!, $season: Float!) {
+            finishEventEntry(clubId: $clubId, season: $season)
+          }
+        `,
+        variables: {
+          clubId: this.formGroup.value.club,
+          season: this.formGroup.value.season,
+        },
+      })
+    );
+
+    this.snackBar.open('Ingeschreven', 'Close', {
       duration: 2000,
     });
     this.formGroup.get(TEAMS)?.setErrors({ loading: false });
