@@ -224,7 +224,7 @@
         "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> en mag minimaal <strong>{minLevel}</strong> zijn.",
         "player-subevent": "<strong>{player.fullName}</strong> is deel van het basis team <strong>{team.name}</strong> dat ook in <strong>{subEvent.name}</strong> speelt",
         "riser": "Het team moet promoveren, maar staat niet in een hogere afdeling ingeschreven",
-        "team-index": "Sterkste opstelling opstelling is niet mogelijk. De team index is: <strong>{teamIndex}</strong> en de index van het basis team is: <strong>{baseIndex}</strong>.",
+        "team-index": "Sterkste opstelling opstelling is niet mogelijk. De team index is <strong>{teamIndex}</strong> en de index van het basis team is <strong>{baseIndex}</strong>.",
         "team-order": "Team <strong>{team.name}</strong> zit in een lagere afdeling maar heeft een lager teamnummer",
         "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere index in dezelfde afdeling, maar heeft een lager teamnummer",
         "team-to-strong": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen",
