@@ -410,6 +410,9 @@
     "day": "Temps de jeu",
     "email": "Courriel :",
     "end-hour": "Heure de fin",
+    "error": {
+      "required": "Requis"
+    },
     "fax": "Fax",
     "firstname": "Prénom",
     "fullName": "Full nom",

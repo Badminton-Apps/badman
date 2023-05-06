@@ -3,3 +3,19 @@
   allClubPermission="enlist-any:team"
   [control]="this.value!"
 ></badman-select-club>
+
+<!-- the input for the verification mail -->
+<mat-form-field>
+  <mat-label>{{ 'all.input.email' | translate }}</mat-label>
+  <input type="email" [required]="true" matInput [formControl]="email" />
+</mat-form-field>
+
+<p *ngIf="email.touched">
+  <!-- errors for email -->
+  <mat-error *ngIf="email.hasError('required')">
+    {{ 'all.input.error.required' | translate }}
+  </mat-error>
+  <mat-error *ngIf="email.hasError('email')">
+    {{ 'all.input.error.email' | translate }}
+  </mat-error>
+</p>
