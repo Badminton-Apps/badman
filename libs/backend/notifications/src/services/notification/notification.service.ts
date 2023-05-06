@@ -243,9 +243,9 @@ export class NotificationService {
     // eventEntries->subEventIds
     const eventEntries = new Set(
       club.teams
-        .map((team) => team.entry)
-        .map((eventEntry) => eventEntry.subEventCompetition)
-        .map((subEvent) => subEvent.eventId)
+        .map((team) => team?.entry)
+        .map((eventEntry) => eventEntry?.subEventCompetition)
+        .map((subEvent) => subEvent?.eventId)
     );
 
     const comments = await club.getComments({
