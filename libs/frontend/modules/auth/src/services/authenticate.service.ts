@@ -15,6 +15,7 @@ const PROFILE_QUERY = gql`
       firstName
       fullName
       permissions
+      email
       clubs {
         id
         name
@@ -68,7 +69,7 @@ export class AuthenticateService {
         switchMap((result) => {
           return (
             this.authService?.user$.pipe(
-              map((user) => ({ ...user, ...result.data.me }))
+              map((user) => ({ ...user, ...new Player(result.data.me) }))
             ) ?? of({})
           );
         }),
@@ -105,10 +106,7 @@ export class AuthenticateService {
     );
   }
 
-  login(
-    popup: boolean = true,
-    args?: RedirectLoginOptions | PopupLoginOptions
-  ) {
+  login(popup = true, args?: RedirectLoginOptions | PopupLoginOptions) {
     return popup
       ? this.authService?.loginWithPopup(args)
       : this.authService?.loginWithRedirect(args) ?? of();

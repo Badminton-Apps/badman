@@ -410,6 +410,9 @@
     "day": "Speelmoment",
     "email": "e-mail",
     "end-hour": "Eind uur",
+    "error": {
+      "required": "Verplicht"
+    },
     "fax": "Fax",
     "firstname": "Voornaam",
     "fullName": "Volledige naam",

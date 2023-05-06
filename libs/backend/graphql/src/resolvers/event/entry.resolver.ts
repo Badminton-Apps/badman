@@ -14,6 +14,7 @@ import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
   ID,
+  Int,
   Mutation,
   Parent,
   Query,
@@ -90,7 +91,8 @@ export class EventEntryResolver {
   async finishEventEntry(
     @User() user: Player,
     @Args('clubId', { type: () => ID }) clubId: string,
-    @Args('season', { type: () => Number }) season: number
+    @Args('season', { type: () => Int }) season: number,
+    @Args('email', { type: () => String }) email: string,
   ) {
     if (!user.hasAnyPermission([clubId + '_edit:club', 'edit-any:club'])) {
       throw new UnauthorizedException(
@@ -98,7 +100,7 @@ export class EventEntryResolver {
       );
     }
 
-    await this.notificationService.notifyEnrollment(user.id, clubId, season);
+    await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
 
     return true;
   }

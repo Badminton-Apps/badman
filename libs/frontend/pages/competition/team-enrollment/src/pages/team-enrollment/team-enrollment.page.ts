@@ -292,13 +292,14 @@ export class TeamEnrollmentComponent implements OnInit {
     await lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation FinishingEntry($clubId: ID!, $season: Float!) {
-            finishEventEntry(clubId: $clubId, season: $season)
+          mutation FinishEvent($clubId: ID!, $email: String!, $season: Int!) {
+            finishEventEntry(clubId: $clubId, email: $email, season: $season)
           }
         `,
         variables: {
           clubId: this.formGroup.value.club,
           season: this.formGroup.value.season,
+          email: this.formGroup.value.email,
         },
       })
     );

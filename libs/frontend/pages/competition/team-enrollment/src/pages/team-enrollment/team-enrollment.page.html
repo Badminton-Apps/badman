@@ -11,7 +11,7 @@
       mat-raised-button
       color="primary"
       matStepperNext
-      [disabled]="this.formGroup.get('club')?.valid === false"
+      [disabled]="this.formGroup.get('club')?.valid === false || this.formGroup.get('email')?.valid === false"
     >
       {{ 'all.button.next' | translate }}
     </button>

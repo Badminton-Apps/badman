@@ -410,6 +410,9 @@
     "day": "Match time",
     "email": "Email",
     "end-hour": "End hour",
+    "error": {
+      "required": "Required"
+    },
     "fax": "Fax",
     "firstname": "First name",
     "fullName": "Full name",

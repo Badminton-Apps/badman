@@ -79,8 +79,6 @@ export class CommentsStepComponent implements OnInit {
       ) as FormGroup<CommentForm>;
     }
 
-    console.log(this.control);
-
     if (!this.control) {
       this.control = new FormGroup<CommentForm>({
         [LevelType.NATIONAL]: new FormGroup({
