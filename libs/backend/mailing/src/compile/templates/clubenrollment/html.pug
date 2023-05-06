@@ -21,8 +21,11 @@ table
             strong Team:
             | #{team.name} (#{team.abbreviation})
             br
-            strong Afdeling:
-            | #{team.entry.subEventCompetition.eventCompetition.name} - #{team.entry.subEventCompetition.name}
+           strong Afdeling:
+            if team && team.entry && team.entry.subEventCompetition && team.entry.subEventCompetition.eventCompetition && team.entry.subEventCompetition.name
+              | #{team.entry.subEventCompetition.eventCompetition.name} - #{team.entry.subEventCompetition.name}
+            else
+              strong(style="color: red;") Geen afdeling gekozen
             br
             if team.captain
               strong Kapitein:
