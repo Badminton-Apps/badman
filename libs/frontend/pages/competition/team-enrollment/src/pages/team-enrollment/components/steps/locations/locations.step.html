@@ -1,4 +1,7 @@
-<ng-container [formGroup]="group" *ngIf="control">
+<ng-container
+  [formGroup]="group"
+  *ngIf="(control?.controls?.length ?? 0) > 0; else loading"
+>
   <div class="row">
     <button mat-stroked-button (click)="addLocation()">
       {{ 'all.button.add-location' | translate }}
@@ -8,7 +11,7 @@
   <ng-container formArrayName="locations">
     <div
       class="row"
-      *ngFor="let location of control.controls; let i = index"
+      *ngFor="let location of control?.controls; let i = index"
       [formGroupName]="i"
     >
       <badman-location
@@ -18,3 +21,7 @@
     </div>
   </ng-container>
 </ng-container>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar
+></ng-template>
