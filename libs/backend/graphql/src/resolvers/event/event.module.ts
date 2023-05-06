@@ -5,9 +5,14 @@ import {
   EntryCompetitionPlayersResolver,
 } from './entry.resolver';
 import { TournamentResolverModule } from './tournament.module';
+import { NotificationsModule } from '@badman/backend-notifications';
 
 @Module({
-  imports: [CompetitionResolverModule, TournamentResolverModule],
+  imports: [
+    CompetitionResolverModule,
+    TournamentResolverModule,
+    NotificationsModule,
+  ],
   providers: [EventEntryResolver, EntryCompetitionPlayersResolver],
 })
 export class EventResolverModule {}

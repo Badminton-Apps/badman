@@ -10,7 +10,15 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  ID,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
@@ -59,9 +67,17 @@ export class CommentResolver {
       }
 
       // const recipe = await this.recipesService.create(newCommentData);
-      const comment = await Comment.create({
-        ...newCommentData,
-        playerId: user.id,
+      const [comment] = await Comment.findOrCreate({
+        where: {
+          playerId: user.id,
+          linkId: newCommentData.linkId,
+          linkType: newCommentData.linkType,
+          clubId: newCommentData.clubId,
+        },
+        defaults: {
+          ...newCommentData,
+          playerId: user.id,
+        },
       });
 
       await link.addComment(comment, { transaction });
