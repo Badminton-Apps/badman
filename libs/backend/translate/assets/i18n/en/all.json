@@ -411,6 +411,7 @@
     "email": "Email",
     "end-hour": "End hour",
     "error": {
+      "email": "Please enter a correct email address",
       "required": "Required"
     },
     "fax": "Fax",

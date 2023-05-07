@@ -411,6 +411,7 @@
     "email": "e-mail",
     "end-hour": "Eind uur",
     "error": {
+      "email": "Gelieve een correct email adres in te vullen",
       "required": "Verplicht"
     },
     "fax": "Fax",

@@ -411,6 +411,7 @@
     "email": "Courriel :",
     "end-hour": "Heure de fin",
     "error": {
+      "email": "Veuillez saisir une adresse e-mail correcte",
       "required": "Requis"
     },
     "fax": "Fax",
