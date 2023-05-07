@@ -1,4 +1,4 @@
-<form>
+<form (keydown.enter)="$event.preventDefault()">
   <mat-form-field>
     <mat-label>{{ this.label | translate }}</mat-label>
     <input
