@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.73.1](https://github.com/Badminton-Apps/badman/compare/v6.73.0...v6.73.1) (2023-05-07)
+
+
+### Bug Fixes
+
+* exemptions on the rule ([8628451](https://github.com/Badminton-Apps/badman/commit/8628451e77d9a4c5290775b842233f7b0d0ede0a))
+* only allow enrollment for users with permission ([b87228d](https://github.com/Badminton-Apps/badman/commit/b87228dd99379787243543ef0bb70fe1bb89aba0))
+* removing on enter reload ([9ff566b](https://github.com/Badminton-Apps/badman/commit/9ff566be8b7bc55d3ce8a6c55fac75d175fa7922))
+* settings not loading ([bcb710e](https://github.com/Badminton-Apps/badman/commit/bcb710e3ecf77b248e7b18f3e9e39cb3dda15fd8))
+* team to weak ([3eba37a](https://github.com/Badminton-Apps/badman/commit/3eba37aa90931034f69d855f7a7534b252887793))
+* validation should be so it's a email ([50280f5](https://github.com/Badminton-Apps/badman/commit/50280f58c9e9979b6781ce26f0a1724d66176ed2))
+
 ## [6.73.0](https://github.com/Badminton-Apps/badman/compare/v6.72.0...v6.73.0) (2023-05-07)
 
 
