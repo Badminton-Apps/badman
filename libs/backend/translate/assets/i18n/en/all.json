@@ -228,7 +228,7 @@
         "team-order": "Team <strong>{team.name}</strong> is in a lower series but has a lower team number",
         "team-order-same-subevent": "Team <strong>{team.name}</strong> has a better index in the same range, but has a lower team number",
         "team-to-strong": "Team index baseplayers equals <strong>{baseIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
-        "team-to-week": "Team index starting players is <strong>{baseIndex}</strong> and may not exceed the boundary of the division <strong>{maxIndex}</strong> ",
+        "team-to-week": "Team index starting players is <strong>{baseIndex}</strong> and may not exceed the limit of the division <strong>{maxIndex}</strong> ",
         "title": "Errors"
       },
       "info": "Remarks concerning the team enrollment",
