@@ -198,7 +198,7 @@ export class Player extends Model {
   @Field(() => [String], { nullable: true })
   permissions?: string[];
 
-  @Field(() => Setting)
+  @Field(() => Setting, { nullable: true })
   @HasOne(() => Setting)
   setting?: Setting;
 
