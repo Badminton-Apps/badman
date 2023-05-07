@@ -228,6 +228,7 @@
         "team-order": "Team <strong>{team.name}</strong> zit in een lagere afdeling maar heeft een lager teamnummer",
         "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere index in dezelfde afdeling, maar heeft een lager teamnummer",
         "team-to-strong": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen",
+        "team-to-week": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet bovn de grens van de afdeling <strong>{maxIndex}</strong> komen",
         "title": "Fouten"
       },
       "info": "",
