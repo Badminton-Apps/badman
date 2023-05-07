@@ -45,7 +45,7 @@ block content
                 each player in team.entry.meta.competition.players
                   li #{ player.firstName } #{ player.lastName } 
                     small
-                      (#{ player.memberId })
+                      | (#{ player.memberId })
                       if team.type == 'MX'
                         |  #{ player.single } - #{ player.double } - #{ player.mix }
                       else
@@ -67,8 +67,6 @@ block content
                         each day in availability.days
                           if day.day && day.startTime && day.endTime && day.courts
                             li #{ day.day }, #{ day.startTime } - #{ day.endTime }: #{ day.courts } velden
-                          else
-                            | Geen speelmomenten
                   else
                     p
                       strong Geen speelmomenten
@@ -82,8 +80,9 @@ block content
                               li #{ moment(exception.start).format('LL') }: #{ exception.courts } velden
                             else
                               li #{ moment(exception.start).format('LL') } - #{ moment(exception.end).format('LL') }: #{ exception.courts } velden
-                          else
-                            | Geen uitzonderingen                            
+                  else
+                    p
+                      strong Geen uitzonderingen                          
 
     h2 Comments
     table
