@@ -479,6 +479,11 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
       }
     }
 
+    // sort the teams
+    typedControl?.controls?.sort((a, b) =>
+      sortTeams(a.value.team, b.value.team)
+    );
+
     this.changeDetectorRef.markForCheck();
   }
 

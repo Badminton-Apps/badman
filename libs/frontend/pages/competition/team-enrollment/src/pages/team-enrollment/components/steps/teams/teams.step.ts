@@ -191,17 +191,38 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
 
     this.control.setErrors({ loading: true });
 
-    // initial teamnumbers from 1 to maxlevel
-    for (const type of this.eventTypes) {
-      const maxLevelM = Math.max(
-        ...(this.control?.value?.[type]?.map((t) => t.team?.teamNumber ?? 0) ??
-          [])
-      );
-      this.teamNumbers[type] = Array.from(
-        { length: maxLevelM },
-        (_, i) => i + 1
-      );
-    }
+    // update the teamnumbers object when the lenght of the control changes
+    this.control.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        distinctUntilChanged(
+          (a, b) =>
+            (a.F?.length ?? 0) +
+              (a.M?.length ?? 0) +
+              (a.MX?.length ?? 0) +
+              (a.NATIONAL?.length ?? 0) ===
+            (b.F?.length ?? 0) +
+              (b.M?.length ?? 0) +
+              (b.MX?.length ?? 0) +
+              (b.NATIONAL?.length ?? 0)
+        )
+      )
+      .subscribe(() => {
+        // initial teamnumbers from 1 to maxlevel
+        for (const type of this.eventTypes) {
+          const maxLevel = Math.max(
+            ...(this.control?.value?.[type]?.map(
+              (t) => t.team?.teamNumber ?? 0
+            ) ?? [0])
+          );
+
+          this.teamNumbers[type] = Array.from(
+            { length: maxLevel },
+            (_, i) => i + 1
+          );
+          console.log(type, maxLevel, this.teamNumbers[type]);
+        }
+      });
 
     this.clubs$ = this._getClubs();
     combineLatest([this.control?.valueChanges, this.update$])
@@ -256,8 +277,6 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       }) as TeamForm
     );
 
-    this.teamNumbers[type].push(teamNumber);
-
     const ref = this.snackBar.open(
       `Team ${team.name} added at the end`,
       'Scroll naar team',
@@ -305,9 +324,6 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
         t.name = this.getTeamName(t, club);
       }
     }
-
-    // remove last value from array
-    this.teamNumbers[team.type].pop();
   }
 
   async changeTeamNumber(team: Team) {
@@ -640,9 +656,6 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       }
       const teams = control.value;
       const subs = subEvents[type];
-
-      this.teamNumbers[type] =
-        teams?.map((t) => t.team?.teamNumber ?? 0)?.sort((a, b) => a - b) ?? [];
 
       const maxLevels = this._maxLevels(subs);
       for (let i = 0; i < teams.length; i++) {
