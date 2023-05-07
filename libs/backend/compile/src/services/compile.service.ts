@@ -201,7 +201,13 @@ export class CompileService implements CompileInterface, OnModuleInit {
       [string]
     >(consolidate[engine], asapScheduler)(
       template,
-      Object.assign({}, locals, engineOptions)
+      Object.assign(
+        {
+          moment: require('moment'),
+        },
+        locals,
+        engineOptions
+      )
     );
   }
 

@@ -30,12 +30,20 @@
           {{ 'all.button.prev' | translate }}
         </button>
         <button
-          mat-raised-button
-          color="primary"
+          mat-stroked-button
           matStepperNext
           [disabled]="this.formGroup.get('locations')?.valid === false"
         >
           {{ 'all.button.next' | translate }}
+        </button>
+        <button
+          mat-raised-button
+          (click)="saveAndContinue()"
+          color="primary"
+          matStepperNext
+          [disabled]="this.formGroup.get('locations')?.valid === false"
+        >
+          {{ 'all.button.save-and-continue' | translate }}
         </button>
       </div>
     </ng-template>

@@ -209,6 +209,7 @@ export class MailingService {
         club: club.toJSON(),
         locations: locations.map((l) => l.toJSON()),
         comments: comments.map((c) => c.toJSON()),
+        settingsSlug: to.slug,
       },
     } as MailOptions;
 

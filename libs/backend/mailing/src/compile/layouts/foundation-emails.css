@@ -16,16 +16,6 @@ body {
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
 
-.ExternalClass {
-  width: 100%; }
-  .ExternalClass,
-  .ExternalClass p,
-  .ExternalClass span,
-  .ExternalClass font,
-  .ExternalClass td,
-  .ExternalClass div {
-    line-height: 100%; }
-
 #backgroundTable {
   margin: 0;
   Margin: 0;

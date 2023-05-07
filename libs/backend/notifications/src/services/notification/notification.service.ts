@@ -296,6 +296,7 @@ export class NotificationService {
     });
 
     club.teams = club.teams?.sort(sortTeams);
+    debugger;
 
     const url = `${this.configService.get('CLIENT_URL')}/club/${club.id}`;
 
