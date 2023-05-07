@@ -415,6 +415,7 @@ export type I18nTranslations = {
             "email": string;
             "end-hour": string;
             "error": {
+                "email": string;
                 "required": string;
             };
             "fax": string;
