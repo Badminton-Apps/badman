@@ -2,6 +2,63 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.73.0](https://github.com/Badminton-Apps/badman/compare/v6.72.0...v6.73.0) (2023-05-07)
+
+
+### Features
+
+* adding email ([491ed04](https://github.com/Badminton-Apps/badman/commit/491ed045c039cb4cdec04d212dabc059cfc0ffa9))
+* adding preferred playmoment and captain ([e9178f3](https://github.com/Badminton-Apps/badman/commit/e9178f383316e10854173329b770429a933868ec))
+* finetuning current form ([25562a6](https://github.com/Badminton-Apps/badman/commit/25562a631a9db18e8d68dbac1b904e93f92bc08a))
+* location improvements ([be3554f](https://github.com/Badminton-Apps/badman/commit/be3554fc27cfdca3b90338b53bce590735f3d872))
+* new rules ([ad95f66](https://github.com/Badminton-Apps/badman/commit/ad95f665005e98b3b01b782df137e0930d472931))
+* new rules ([a581ee9](https://github.com/Badminton-Apps/badman/commit/a581ee9853fd8ed9a6fefb217c1c428cd72e2b04))
+* saving in between ([08677a4](https://github.com/Badminton-Apps/badman/commit/08677a4901d9740072a15e068e2b7e628a8c15cd))
+* sending mails ([703d5a0](https://github.com/Badminton-Apps/badman/commit/703d5a096ab17d1c0bd4ea203d7aae9bd9e685a2))
+* some more stuff ([9cdc4fb](https://github.com/Badminton-Apps/badman/commit/9cdc4fb5d96efa814d6cae1faa069e31ffba27f6))
+* some team validations ([7c3ce0b](https://github.com/Badminton-Apps/badman/commit/7c3ce0bd17d88444caba227d377658de1daa4e4e))
+* sort the events based on level ([f479546](https://github.com/Badminton-Apps/badman/commit/f47954685ca256ea28e4c4d55d1faa905fc0de40))
+* switching teams ([81f6b66](https://github.com/Badminton-Apps/badman/commit/81f6b66c366d244e1eb47edba842621fb900088c))
+* sync ranking manual ([65edcda](https://github.com/Badminton-Apps/badman/commit/65edcda28600f9e6a6882b72cd2e6de799e9f615))
+* using min-level -2 when the ranking is unkown ([d8c785d](https://github.com/Badminton-Apps/badman/commit/d8c785d446b7e739331635d21d9a5470afc78892))
+
+
+### Bug Fixes
+
+* adding player ([120c511](https://github.com/Badminton-Apps/badman/commit/120c51149fd7f9116b8a7cbcebbc180c55ea1975))
+* ading location ([e594a5d](https://github.com/Badminton-Apps/badman/commit/e594a5d6b36c7b301011868605dc807ab64f04ff))
+* allowing change of club ([1a918aa](https://github.com/Badminton-Apps/badman/commit/1a918aa674d68a68a701cde1f1654968410f335a))
+* authenticate ([e688698](https://github.com/Badminton-Apps/badman/commit/e688698ca3df482c8506a3de0ca95932c775fbae))
+* exceptions in mails ([f731671](https://github.com/Badminton-Apps/badman/commit/f731671d55bc2bdd79aa791a571552429d92cda7))
+* if no value is visible use default ([6d77dca](https://github.com/Badminton-Apps/badman/commit/6d77dca69cfb4efd901e347c2c95ebff11ddbbb0))
+* limiting permissions ([68776fb](https://github.com/Badminton-Apps/badman/commit/68776fbd58e24466c34a4ae6ca0b00326ed2d7ca))
+* login ? ([f8785c2](https://github.com/Badminton-Apps/badman/commit/f8785c28ed4d2e5fa57d742bef0931f94bc89d02))
+* moving creation of players to separate part, to be sure this doesn't happens ([846c3f0](https://github.com/Badminton-Apps/badman/commit/846c3f0f93bd94eef3a272de51d211437441c756))
+* new player ([c5c7c8d](https://github.com/Badminton-Apps/badman/commit/c5c7c8d9024770e25e7a5cd8f7ab19780814df87))
+* new teams shouldn't generate a new link ([60c17fe](https://github.com/Badminton-Apps/badman/commit/60c17fe943b05677ac81e4c4e782974658b2b81d))
+* no event choosen ([d8a99b2](https://github.com/Badminton-Apps/badman/commit/d8a99b28e007bc2eab02a48debeea2646927ce19))
+* not being able to download the POF ([7f8fbbf](https://github.com/Badminton-Apps/badman/commit/7f8fbbfe24f68afc2f0608a878b9f4b0c2220f08))
+* other ranking thingies ([71127e6](https://github.com/Badminton-Apps/badman/commit/71127e618887f56056d59f55b4564188903a20d1))
+* possible to have not entry ([a1f2036](https://github.com/Badminton-Apps/badman/commit/a1f2036777d1756835ccae5e416765c6edae74f5))
+* promote/downgrade teams ([367cdb1](https://github.com/Badminton-Apps/badman/commit/367cdb1bc2f5d4478c3013d4f944ffad20ba3288))
+* ranking not found should set the values correctly ([241c1a4](https://github.com/Badminton-Apps/badman/commit/241c1a46308c51c7282081c832a2bd7c9eb9ae1f))
+* ranking places ([c2056bf](https://github.com/Badminton-Apps/badman/commit/c2056bf41fe8e31a4192a320257f9d6b70aef0a4))
+* required fields ([65bab11](https://github.com/Badminton-Apps/badman/commit/65bab11544c3b81ce025327072e93cef1be0a3e1))
+* revert breaking change ([27770ad](https://github.com/Badminton-Apps/badman/commit/27770ad95daf240bec914d99ae93e922d4a1fef0))
+* setting risers/fallers ([7da7a28](https://github.com/Badminton-Apps/badman/commit/7da7a2814d53ec81fab42a42579ead186d494a3a))
+* should check last season ([9d7c5bf](https://github.com/Badminton-Apps/badman/commit/9d7c5bff7ec0184d196eb30e28b15c6f212f7b95))
+* some things were incorrectly merged ([9b0bb7e](https://github.com/Badminton-Apps/badman/commit/9b0bb7e504b19f21a4344c7871fa38a54c49bda3))
+* sorting teams after re-adding ([a05a606](https://github.com/Badminton-Apps/badman/commit/a05a6067791d7f46d52d945d0093356fdd6d2d95))
+* strongest team not possible better error ([710ce5a](https://github.com/Badminton-Apps/badman/commit/710ce5ab660f5ea73ab7824af40be5800482ae04))
+* team and base index not calculated ([3f6d963](https://github.com/Badminton-Apps/badman/commit/3f6d9637c2848ec3148555c8dd8581e2ef688726))
+* template ([40e5f73](https://github.com/Badminton-Apps/badman/commit/40e5f7304b78cdfe6e37d99475924d9999944e0d))
+* this spacing should be here ([254282d](https://github.com/Badminton-Apps/badman/commit/254282dc81e3aba10cedd35bfd2c4672aa88e778))
+* title for comments ([a4e1955](https://github.com/Badminton-Apps/badman/commit/a4e1955679412e636f2e1a432fa6b655ce675f5e))
+* translation update ([5e5d4de](https://github.com/Badminton-Apps/badman/commit/5e5d4dea9ae00c21b2c306e2c29bb908e9a416f8))
+* update on locations ([de8c676](https://github.com/Badminton-Apps/badman/commit/de8c6768b6b75c3a50d03d0c2a66d9b12a8719b1))
+* update UI when changes were made ([a88fe06](https://github.com/Badminton-Apps/badman/commit/a88fe06488e9f889bd5317d43f7f2a85f9c76c3b))
+* woops ([263097a](https://github.com/Badminton-Apps/badman/commit/263097ad4a04c783c12587951d8f3162bd7cf227))
+
 ## [6.72.0](https://github.com/Badminton-Apps/badman/compare/v6.71.0...v6.72.0) (2023-05-01)
 
 
