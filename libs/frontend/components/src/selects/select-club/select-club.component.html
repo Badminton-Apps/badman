@@ -1,4 +1,4 @@
-<mat-form-field *ngIf="!this.useAutocomplete" class="">
+<mat-form-field *ngIf="!this.useAutocomplete">
   <mat-label>{{ 'all.pickers.select-club' | translate }}</mat-label>
 
   <mat-select
@@ -6,8 +6,10 @@
     required
     (selectionChange)="this.selectClub($event)"
   >
+    <mat-option
+      *ngFor="let option of filteredClubs$ | async"
+      [value]="option.id"
     >
-    <mat-option *ngFor="let option of this.clubs" [value]="option.id">
       {{ option.name }}
     </mat-option>
   </mat-select>
