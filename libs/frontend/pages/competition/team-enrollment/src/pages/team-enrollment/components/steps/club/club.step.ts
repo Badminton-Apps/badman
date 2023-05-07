@@ -10,6 +10,7 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { SelectClubComponent } from '@badman/frontend-components';
 import { Subject, filter, pairwise, startWith, takeUntil } from 'rxjs';
@@ -76,7 +77,9 @@ export class ClubStepComponent implements OnInit {
     }
 
     if (!this.email) {
-      this.email = new FormControl(this.authenticateService.user?.email || '');
+      this.email = new FormControl(this.authenticateService.user?.email || '', [
+        Validators.email,
+      ]);
     }
 
     if (this.value?.value) {
