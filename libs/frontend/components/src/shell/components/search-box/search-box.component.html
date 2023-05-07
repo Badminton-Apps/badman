@@ -1,4 +1,4 @@
-<form class="header">
+<form class="header" (keydown.enter)="$event.preventDefault()">
   <input
     type="text"
     [placeholder]="this.label | translate"
