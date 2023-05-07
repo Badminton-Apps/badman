@@ -42,6 +42,7 @@ import {
 } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AuthenticateService } from '@badman/frontend-auth';
+import { HasClaimComponent } from '../../has-claim';
 @Component({
   selector: 'badman-shell',
   imports: [
@@ -67,6 +68,8 @@ import { AuthenticateService } from '@badman/frontend-auth';
     MatButtonModule,
     MatSnackBarModule,
     MatProgressBarModule,
+
+    HasClaimComponent,
   ],
   standalone: true,
   templateUrl: './shell.component.html',
