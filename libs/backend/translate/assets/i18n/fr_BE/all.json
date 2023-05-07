@@ -228,6 +228,7 @@
         "team-order": "L'équipe <strong>{team.name}</strong> est dans une série inférieure mais a un numéro d'équipe inférieur",
         "team-order-same-subevent": "L'équipe <strong>{team.name}</strong> a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
         "team-to-strong": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas tomber en dessous de la limite de la division <strong>{minIndex}</strong> ",
+        "team-to-week": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas dépasser la limite de la division <strong>{maxIndex}</strong> ",
         "title": ""
       },
       "info": "",

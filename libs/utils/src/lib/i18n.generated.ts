@@ -232,6 +232,7 @@ export type I18nTranslations = {
                     "team-order": string;
                     "team-order-same-subevent": string;
                     "team-to-strong": string;
+                    "team-to-week": string;
                     "title": string;
                 };
                 "info": string;

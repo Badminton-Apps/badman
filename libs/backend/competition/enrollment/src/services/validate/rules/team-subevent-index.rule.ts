@@ -11,14 +11,22 @@ export class TeamSubeventIndexRule extends Rule {
 
     for (const { baseIndex, subEvent, team } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
-      let teamValid = true;
+      const warnings = [] as EnrollmentValidationError[];
       if (baseIndex < subEvent?.minBaseIndex) {
-        teamValid = false;
         errors.push({
           message: 'all.competition.team-enrollment.errors.team-to-strong',
           params: {
             baseIndex,
             minIndex: subEvent?.minBaseIndex,
+          },
+        });
+      }
+
+      if (baseIndex > subEvent?.maxBaseIndex) {
+        errors.push({
+          message: 'all.competition.team-enrollment.errors.team-to-week',
+          params: {
+            baseIndex,
             maxIndex: subEvent?.maxBaseIndex,
           },
         });
@@ -27,7 +35,8 @@ export class TeamSubeventIndexRule extends Rule {
       results.push({
         teamId: team.id,
         errors,
-        valid: teamValid,
+        warnings,
+        valid: errors.length === 0,
       });
     }
 
