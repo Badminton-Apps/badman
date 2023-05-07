@@ -121,8 +121,6 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         switchMap(([allClubs, , all, user, params]) => {
-          console.log(all, user, params);
-
           if (this.needsPermission && !all) {
             return this.claimSerice.claims$.pipe(
               map((r) =>
@@ -132,8 +130,6 @@ export class SelectClubComponent implements OnInit, OnDestroy {
                 r?.map((c) => c?.replace(`_${this.singleClubPermission}`, ''))
               ),
               switchMap((ids) => {
-                console.log(ids);
-
                 const filtered = allClubs.filter((c) => {
                   if (c.id == null) {
                     return false;
