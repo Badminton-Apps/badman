@@ -110,6 +110,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     if (this.group) {
       this.group.addControl(this.controlName, this.control);
     }
+
     combineLatest([
       this._getClubs(),
       this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
@@ -119,7 +120,9 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     ])
       .pipe(
         takeUntil(this.destroy$),
-        switchMap(([allClubs, all, , user, params]) => {
+        switchMap(([allClubs, , all, user, params]) => {
+          console.log(all, user, params);
+
           if (this.needsPermission && !all) {
             return this.claimSerice.claims$.pipe(
               map((r) =>
@@ -129,12 +132,23 @@ export class SelectClubComponent implements OnInit, OnDestroy {
                 r?.map((c) => c?.replace(`_${this.singleClubPermission}`, ''))
               ),
               switchMap((ids) => {
+                console.log(ids);
+
                 const filtered = allClubs.filter((c) => {
                   if (c.id == null) {
                     return false;
                   }
                   return ids?.indexOf(c.id) != -1;
                 });
+
+                if (filtered.length < this.autoCompleteTreshold) {
+                  this.useAutocomplete = false;
+                }
+
+                if (filtered.length == 1) {
+                  this.control?.disable();
+                  this.control?.setValue(filtered[0].id);
+                } 
 
                 return of({
                   rows: filtered,
@@ -168,7 +182,8 @@ export class SelectClubComponent implements OnInit, OnDestroy {
 
             if (clubIds) {
               this.selectClub(
-                this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null, false
+                this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null,
+                false
               );
             }
           }
