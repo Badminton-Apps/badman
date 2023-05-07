@@ -220,7 +220,6 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
             { length: maxLevel },
             (_, i) => i + 1
           );
-          console.log(type, maxLevel, this.teamNumbers[type]);
         }
       });
 
