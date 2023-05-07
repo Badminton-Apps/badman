@@ -22,12 +22,3 @@ h6,
 .t_cht {
   color: #000 !important;
 }
-.ExternalClass p,
-.ExternalClass span,
-.ExternalClass font,
-.ExternalClass td {
-  line-height: 100%;
-}
-.ExternalClass {
-  width: 100%;
-}
