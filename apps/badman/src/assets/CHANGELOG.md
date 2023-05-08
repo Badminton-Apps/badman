@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.77.0](https://github.com/Badminton-Apps/badman/compare/v6.76.0...v6.77.0) (2023-05-08)
+
+
+### Features
+
+* storing email ([5cccf16](https://github.com/Badminton-Apps/badman/commit/5cccf16b17d436f6058f0a1dc629c1aa1a449dfa))
+
 ## [6.76.0](https://github.com/Badminton-Apps/badman/compare/v6.75.0...v6.76.0) (2023-05-08)
 
 
