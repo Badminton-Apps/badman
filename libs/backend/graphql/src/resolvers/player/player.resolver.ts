@@ -145,9 +145,17 @@ export class PlayersResolver {
           attributes: ['amountOfLevels'],
         });
 
-        place.single = place.single ?? system.amountOfLevels;
-        place.double = place.double ?? system.amountOfLevels;
-        place.mix = place.mix ?? system.amountOfLevels;
+        const bestRankingMin2 =
+          Math.min(
+            place?.single ?? system.amountOfLevels,
+            place?.double ?? system.amountOfLevels,
+            place?.mix ?? system.amountOfLevels
+          ) - 2;
+
+        // if the player has a missing rankingplace, we set the lowest possible ranking
+        place.single = place?.single ?? bestRankingMin2;
+        place.double = place?.double ?? bestRankingMin2;
+        place.mix = place?.mix ?? bestRankingMin2;
       }
     }
 
@@ -173,9 +181,17 @@ export class PlayersResolver {
           attributes: ['amountOfLevels'],
         });
 
-        place.single = place.single ?? system.amountOfLevels;
-        place.double = place.double ?? system.amountOfLevels;
-        place.mix = place.mix ?? system.amountOfLevels;
+        const bestRankingMin2 =
+          Math.min(
+            place?.single ?? system.amountOfLevels,
+            place?.double ?? system.amountOfLevels,
+            place?.mix ?? system.amountOfLevels
+          ) - 2;
+
+        // if the player has a missing rankingplace, we set the lowest possible ranking
+        place.single = place?.single ?? bestRankingMin2;
+        place.double = place?.double ?? bestRankingMin2;
+        place.mix = place?.mix ?? bestRankingMin2;
       }
     }
 
