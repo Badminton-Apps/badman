@@ -35,7 +35,7 @@ const PROFILE_QUERY = gql`
 })
 export class AuthenticateService {
   user$!: Observable<LoggedinUser>;
-  loggedIn$?: Observable<boolean>;
+  loggedIn$!: Observable<boolean>;
   authService?: AuthService;
 
   #user = new BehaviorSubject<LoggedinUser | null>(null);
