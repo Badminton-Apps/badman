@@ -98,7 +98,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     private jobsService: JobsService,
     private matSnackBar: MatSnackBar,
     private changeDetectorRef: ChangeDetectorRef,
-    formBuilder: FormBuilder 
+    formBuilder: FormBuilder
   ) {
     this.filter = formBuilder.group({
       name: new FormControl(),
@@ -391,6 +391,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
                 duration: 2000,
               }
             );
+            this.changeDetectorRef.detectChanges();
           });
       }
     });
