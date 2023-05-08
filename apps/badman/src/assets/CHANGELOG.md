@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.75.0](https://github.com/Badminton-Apps/badman/compare/v6.74.1...v6.75.0) (2023-05-08)
+
+
+### Features
+
+* adding warning ([30b9a77](https://github.com/Badminton-Apps/badman/commit/30b9a77128ca1d87d0a72a432a252f13d94f929a))
+
 ### [6.74.1](https://github.com/Badminton-Apps/badman/compare/v6.74.0...v6.74.1) (2023-05-08)
 
 
