@@ -150,7 +150,7 @@ export class PlayersResolver {
             place?.single ?? system.amountOfLevels,
             place?.double ?? system.amountOfLevels,
             place?.mix ?? system.amountOfLevels
-          ) - 2;
+          ) + 2;
 
         // if the player has a missing rankingplace, we set the lowest possible ranking
         place.single = place?.single ?? bestRankingMin2;
@@ -181,12 +181,16 @@ export class PlayersResolver {
           attributes: ['amountOfLevels'],
         });
 
+
         const bestRankingMin2 =
           Math.min(
             place?.single ?? system.amountOfLevels,
             place?.double ?? system.amountOfLevels,
             place?.mix ?? system.amountOfLevels
-          ) - 2;
+          ) + 2;
+
+        console.log
+
 
         // if the player has a missing rankingplace, we set the lowest possible ranking
         place.single = place?.single ?? bestRankingMin2;

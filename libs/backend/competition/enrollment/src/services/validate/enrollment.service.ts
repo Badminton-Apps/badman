@@ -114,7 +114,7 @@ export class EnrollmentValidationService {
           ranking?.single ?? system.amountOfLevels,
           ranking?.double ?? system.amountOfLevels,
           ranking?.mix ?? system.amountOfLevels
-        ) - 2;
+        ) + 2;
 
       // if the player has a missing rankingplace, we set the lowest possible ranking
       ranking.single = ranking?.single ?? bestRankingMin2;
