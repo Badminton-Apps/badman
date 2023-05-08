@@ -8,15 +8,19 @@
 <!-- the input for the verification mail -->
 <mat-form-field>
   <mat-label>{{ 'all.input.email' | translate }}</mat-label>
-  <input type="email" [required]="true" matInput [formControl]="email" />
-</mat-form-field>
+  <input
+    type="email"
+    [required]="true"
+    matInput
+    [formControl]="email"
+    [errorStateMatcher]="matcher"
+  />
 
-<p *ngIf="email.touched">
   <!-- errors for email -->
+  <mat-error *ngIf="email.hasError('email')&& !email.hasError('required')">
+    {{ 'all.input.error.email' | translate }}
+  </mat-error>
   <mat-error *ngIf="email.hasError('required')">
     {{ 'all.input.error.required' | translate }}
   </mat-error>
-  <mat-error *ngIf="email.hasError('email')">
-    {{ 'all.input.error.email' | translate }}
-  </mat-error>
-</p>
+</mat-form-field>
