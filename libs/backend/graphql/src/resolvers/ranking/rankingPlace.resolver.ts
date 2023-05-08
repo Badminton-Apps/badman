@@ -45,9 +45,17 @@ export class RankingPlaceResolver {
         attributes: ['amountOfLevels'],
       });
 
-      place.single = place.single ?? system.amountOfLevels;
-      place.double = place.double ?? system.amountOfLevels;
-      place.mix = place.mix ?? system.amountOfLevels;
+      const bestRankingMin2 =
+        Math.min(
+          place?.single ?? system.amountOfLevels,
+          place?.double ?? system.amountOfLevels,
+          place?.mix ?? system.amountOfLevels
+        ) - 2;
+
+      // if the player has a missing rankingplace, we set the lowest possible ranking
+      place.single = place?.single ?? bestRankingMin2;
+      place.double = place?.double ?? bestRankingMin2;
+      place.mix = place?.mix ?? bestRankingMin2;
     }
 
     return place;
@@ -60,13 +68,22 @@ export class RankingPlaceResolver {
     // if one of the levels is not set, get the default from the system
     for (const place of places) {
       if (!place.single || !place.double || !place.mix) {
+        // if one of the levels is not set, get the default from the system
         const system = await RankingSystem.findByPk(place.systemId, {
           attributes: ['amountOfLevels'],
         });
 
-        place.single = place.single ?? system.amountOfLevels;
-        place.double = place.double ?? system.amountOfLevels;
-        place.mix = place.mix ?? system.amountOfLevels;
+        const bestRankingMin2 =
+          Math.min(
+            place?.single ?? system.amountOfLevels,
+            place?.double ?? system.amountOfLevels,
+            place?.mix ?? system.amountOfLevels
+          ) - 2;
+
+        // if the player has a missing rankingplace, we set the lowest possible ranking
+        place.single = place?.single ?? bestRankingMin2;
+        place.double = place?.double ?? bestRankingMin2;
+        place.mix = place?.mix ?? bestRankingMin2;
       }
     }
 

@@ -20,7 +20,6 @@ export class PlayerMinLevelRule extends Rule {
       teamPlayers,
       basePlayers,
       subEvent,
-      system,
     } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
       let teamValid = true;
@@ -33,27 +32,7 @@ export class PlayerMinLevelRule extends Rule {
         const uniquePlayers = new Set([...teamPlayers, ...basePlayers]);
 
         for (const player of uniquePlayers) {
-          let ranking = player?.rankingPlaces?.[0];
-
-          const bestRankingMin2 =
-            Math.min(
-              ranking?.single ?? system.amountOfLevels,
-              ranking?.double ?? system.amountOfLevels,
-              ranking?.mix ?? system.amountOfLevels
-            ) - 2;
-
-          if (bestRankingMin2 < 0) {
-            this.logger.log(`bestRankingMin2: ${bestRankingMin2}`);
-            this.logger.log(`ranking: ${JSON.stringify(ranking)}`);
-          }
-
-          // if the player has a missing rankingplace, we set the lowest possible ranking
-          ranking = {
-            ...ranking,
-            single: ranking?.single ?? bestRankingMin2,
-            double: ranking?.double ?? bestRankingMin2,
-            mix: ranking?.mix ?? bestRankingMin2,
-          } as RankingPlace;
+          const ranking = player?.rankingPlaces?.[0];
 
           if (ranking.single < subEvent.maxLevel) {
             teamValid = false;
