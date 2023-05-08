@@ -94,10 +94,21 @@ export class ClubStepComponent implements OnInit {
       this.valueId = new FormControl();
     }
 
+    const localStorageEmail = localStorage.getItem('email');
     if (!this.email) {
-      this.email = new FormControl(this.authenticateService.user?.email || '', [
-        Validators.email,
-      ]);
+      this.email = new FormControl(localStorageEmail, [Validators.email]);
+
+      this.email?.valueChanges
+        .pipe(
+          takeUntil(this.destroy$),
+          filter((value) => value != null && this.email?.valid)
+        )
+        .subscribe((value) => {
+          if (value != null) {
+            console.log('set email', value);
+            localStorage.setItem('email', value);
+          }
+        });
     }
 
     if (this.value?.value) {
@@ -109,9 +120,11 @@ export class ClubStepComponent implements OnInit {
       this.group.addControl(this.controlEmailName, this.email);
     }
 
-    this.authenticateService.user$.subscribe(() =>
-      this.email?.setValue(this.authenticateService.user?.email || '')
-    );
+    this.authenticateService.user$.subscribe(() => {
+      if (this.authenticateService.user?.email && !localStorageEmail) {
+        this.email?.setValue(this.authenticateService.user?.email);
+      }
+    });
 
     this.value?.valueChanges
       .pipe(
