@@ -40,7 +40,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
 import {
-  tap,
   shareReplay,
   distinctUntilChanged,
   filter,

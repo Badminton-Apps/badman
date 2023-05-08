@@ -231,6 +231,8 @@
         "team-to-week": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet boven de grens van de afdeling <strong>{maxIndex}</strong> komen",
         "title": "Fouten"
       },
+      "example-error": "Dit zijn foutmeldingen waardoor de ploeg niet kan ingeschreven worden. Gelieve deze op te lossen.",
+      "example-warning": "Dit zijn waarschuwingen waar rekening mee gehouden dient te worden. De inschrijving kan nog wel afgewerkt worden.",
       "info": "",
       "locations": {
         "availible-courts": "Beschikbare velden",
