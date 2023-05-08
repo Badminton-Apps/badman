@@ -514,8 +514,10 @@
   "player": {
     "backup": "Joueur de réserve",
     "base": "Joueur de base",
+    "claimed": "Revendiqué",
     "menu": {
       "add": "Nouveau joueur",
+      "claim": "Réclamer un compte",
       "delete": "Enlever",
       "edit": "Modifier"
     },
