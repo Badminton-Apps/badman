@@ -22,6 +22,7 @@ import {
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
+import { getRankingWhenNull } from '@badman/utils';
 
 @Resolver(() => RankingPlace)
 export class RankingPlaceResolver {
@@ -33,7 +34,7 @@ export class RankingPlaceResolver {
   async rankingPlace(
     @Args('id', { type: () => ID }) id: string
   ): Promise<RankingPlace> {
-    const place = await RankingPlace.findByPk(id);
+    let place = await RankingPlace.findByPk(id);
 
     if (!place) {
       throw new NotFoundException(id);
@@ -45,17 +46,7 @@ export class RankingPlaceResolver {
         attributes: ['amountOfLevels'],
       });
 
-      const bestRankingMin2 =
-        Math.min(
-          place?.single ?? system.amountOfLevels,
-          place?.double ?? system.amountOfLevels,
-          place?.mix ?? system.amountOfLevels
-        ) + 2;
-
-      // if the player has a missing rankingplace, we set the lowest possible ranking
-      place.single = place?.single ?? bestRankingMin2;
-      place.double = place?.double ?? bestRankingMin2;
-      place.mix = place?.mix ?? bestRankingMin2;
+      place = getRankingWhenNull(place, system.amountOfLevels) as RankingPlace;
     }
 
     return place;
@@ -66,24 +57,14 @@ export class RankingPlaceResolver {
     const places = await RankingPlace.findAll(ListArgs.toFindOptions(listArgs));
 
     // if one of the levels is not set, get the default from the system
-    for (const place of places) {
+    for (let place of places) {
       if (!place.single || !place.double || !place.mix) {
         // if one of the levels is not set, get the default from the system
         const system = await RankingSystem.findByPk(place.systemId, {
           attributes: ['amountOfLevels'],
         });
 
-        const bestRankingMin2 =
-          Math.min(
-            place?.single ?? system.amountOfLevels,
-            place?.double ?? system.amountOfLevels,
-            place?.mix ?? system.amountOfLevels
-          ) + 2;
-
-        // if the player has a missing rankingplace, we set the lowest possible ranking
-        place.single = place?.single ?? bestRankingMin2;
-        place.double = place?.double ?? bestRankingMin2;
-        place.mix = place?.mix ?? bestRankingMin2;
+        place = getRankingWhenNull(place, system.amountOfLevels) as RankingPlace;
       }
     }
 
