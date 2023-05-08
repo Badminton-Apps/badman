@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.74.0](https://github.com/Badminton-Apps/badman/compare/v6.73.2...v6.74.0) (2023-05-08)
+
+
+### Features
+
+* all mailing with Jeroen in CC ([2891d7f](https://github.com/Badminton-Apps/badman/commit/2891d7ff79d5a660f03799c6ea076063bab7c9b1))
+
+
+### Bug Fixes
+
+* claiming player ([09f9290](https://github.com/Badminton-Apps/badman/commit/09f9290f0ccd02d0d46a94323390959ad3193267))
+* maybe overriding the rankingplace? ([466456b](https://github.com/Badminton-Apps/badman/commit/466456b038e4d258d8b7fde71cb13989d8552f1e))
+* missing rankingplace should be created if not exists ([8a6d288](https://github.com/Badminton-Apps/badman/commit/8a6d28810f6b9f1f7a39aae933cce0fbb37aa555))
+* player ranking should be amount of levels -2 ([af58160](https://github.com/Badminton-Apps/badman/commit/af581608bf6755213f5315045919bffab0b8e8ae))
+* ranking when unkown ([2ace02e](https://github.com/Badminton-Apps/badman/commit/2ace02e7b2bb8a34a39cc466d7117659b08d51b5))
+* should have been `+2` ([230a4e0](https://github.com/Badminton-Apps/badman/commit/230a4e03ecdeed4f86ab73c3d491ef8ef6fcd412))
+* typo ([6389555](https://github.com/Badminton-Apps/badman/commit/638955536bbf470d917cae15287b9c396bc6ce05))
+* update UI on change ([3d4ba81](https://github.com/Badminton-Apps/badman/commit/3d4ba81508b69e9292292b7cc290e7d91bd1028c))
+
 ### [6.73.2](https://github.com/Badminton-Apps/badman/compare/v6.73.1...v6.73.2) (2023-05-07)
 
 ### [6.73.1](https://github.com/Badminton-Apps/badman/compare/v6.73.0...v6.73.1) (2023-05-07)
