@@ -86,7 +86,7 @@ export class EnrollmentValidationService {
       .concat(teams.map((t) => t.backupPlayers))
       .concat(teams.map((t) => t.basePlayers))
       .flat(1);
-    const players = await Player.findAll({
+    let players = await Player.findAll({
       where: {
         id: playerIds,
       },
@@ -103,6 +103,25 @@ export class EnrollmentValidationService {
           limit: 1,
         },
       ],
+    });
+
+    // correct ranking if incorrect
+    players = players?.map((p) => {
+      const ranking = p.rankingPlaces?.[0];
+
+      const bestRankingMin2 =
+        Math.min(
+          ranking?.single ?? system.amountOfLevels,
+          ranking?.double ?? system.amountOfLevels,
+          ranking?.mix ?? system.amountOfLevels
+        ) - 2;
+
+      // if the player has a missing rankingplace, we set the lowest possible ranking
+      ranking.single = ranking?.single ?? bestRankingMin2;
+      ranking.double = ranking?.double ?? bestRankingMin2;
+      ranking.mix = ranking?.mix ?? bestRankingMin2;
+
+      return p;
     });
 
     return {
