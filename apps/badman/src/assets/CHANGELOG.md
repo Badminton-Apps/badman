@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.74.1](https://github.com/Badminton-Apps/badman/compare/v6.74.0...v6.74.1) (2023-05-08)
+
+
+### Bug Fixes
+
+* dubbel next when saving on locations ([c43182b](https://github.com/Badminton-Apps/badman/commit/c43182b94735deeb1bd47c0e552eb5f7fcee9a22))
+* role edit ([d3f5e91](https://github.com/Badminton-Apps/badman/commit/d3f5e91f3450dec82bcbce74413af31247d69777))
+
 ## [6.74.0](https://github.com/Badminton-Apps/badman/compare/v6.73.2...v6.74.0) (2023-05-08)
 
 
