@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.76.0](https://github.com/Badminton-Apps/badman/compare/v6.75.0...v6.76.0) (2023-05-08)
+
+
+### Features
+
+* also adding save and continue after teams ([48ab33d](https://github.com/Badminton-Apps/badman/commit/48ab33db7501f5d68b9b1145b5d439319fa853a3))
+
+
+### Bug Fixes
+
+* error on correct spot ([cd9d0ba](https://github.com/Badminton-Apps/badman/commit/cd9d0bae9a511bd912c40df2e6eda4936ab37607))
+
 ## [6.75.0](https://github.com/Badminton-Apps/badman/compare/v6.74.1...v6.75.0) (2023-05-08)
 
 
