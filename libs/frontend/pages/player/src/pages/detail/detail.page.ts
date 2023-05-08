@@ -1,16 +1,14 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnDestroy,
-  OnInit
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import {
   HasClaimComponent,
   PageHeaderComponent,
@@ -22,9 +20,10 @@ import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, Subject, combineLatest } from 'rxjs';
+import { Observable, Subject, combineLatest, lastValueFrom, of } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+
 @Component({
   selector: 'badman-player-detail',
   templateUrl: './detail.page.html',
@@ -65,12 +64,18 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     mix: '',
   };
 
+  hasMenu$?: Observable<boolean>;
+  canClaim$?: Observable<boolean>;
+
   constructor(
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
+    private snackBar: MatSnackBar,
     private apollo: Apollo,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private claim: ClaimService,
+    private auth: AuthenticateService
   ) {}
 
   ngOnInit(): void {
@@ -105,6 +110,32 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         this.teams$ = this._loadTeamsForPlayer();
         this.rankingPlaces$ = this._loadRankingForPlayer();
       });
+
+    this.hasMenu$ = combineLatest([
+      this.auth.loggedIn$ ?? of(false),
+      this.claim.hasAnyClaims$([
+        'edit-any:player',
+        this.player.id + '_edit:player',
+        'change:job',
+      ]),
+    ]).pipe(
+      takeUntil(this.destroy$),
+      map(
+        ([loggedIn, hasClaim]) =>
+          loggedIn && (hasClaim || this.player.sub === null)
+      )
+    );
+
+    this.canClaim$ = combineLatest([
+      this.auth.loggedIn$ ?? of(false),
+      this.auth.user$ ?? of(null),
+    ]).pipe(
+      takeUntil(this.destroy$),
+      map(
+        ([loggedIn, user]) =>
+          loggedIn && user?.id !== this.player.id && this.player.sub === null
+      )
+    );
   }
 
   getPlayer(game: Game, player: number, team: number) {
@@ -136,6 +167,28 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         map((result) => result.data.player.teams?.map((t) => new Team(t))),
         transferState(`teamsPlayer-${this.player.id}`)
       );
+  }
+
+  async claimAccount() {
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation ClaimAccount($playerId: String!) {
+            claimAccount(playerId: $playerId) {
+              id
+            }
+          }
+        `,
+        variables: {
+          playerId: this.player.id,
+        },
+      })
+    );
+
+    this.snackBar.open(this.translate.instant('all.player.claimed'), 'OK', {
+      duration: 5000,
+    });
+    window.location.reload();
   }
 
   private _loadRankingForPlayer() {

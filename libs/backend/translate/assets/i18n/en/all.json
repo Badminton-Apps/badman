@@ -514,8 +514,10 @@
   "player": {
     "backup": "Backup player",
     "base": "Baseplayer",
+    "claimed": "Claimed",
     "menu": {
       "add": "New player",
+      "claim": "Claim account",
       "delete": "Delete",
       "edit": "Edit"
     },

@@ -514,8 +514,10 @@
   "player": {
     "backup": "Reserve speler",
     "base": "Basisspeler",
+    "claimed": "Claimed",
     "menu": {
       "add": "Nieuwe speler",
+      "claim": "Claim account",
       "delete": "Verwijder",
       "edit": "Bewerken"
     },

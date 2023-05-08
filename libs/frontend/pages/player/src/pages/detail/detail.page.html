@@ -38,14 +38,20 @@
       <mat-icon>star_outline</mat-icon>
     </button>
 
-    <badman-has-claim
-      [any]="['edit-any:player', this.player.id + '_edit:player']"
-    >
+    <ng-container *ngIf="this.hasMenu$ | async">
       <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
         <mat-icon>more_vert</mat-icon>
       </button>
 
       <mat-menu #menu="matMenu">
+        <button
+          mat-menu-item
+          *ngIf="this.canClaim$ | async"
+          (click)="this.claimAccount()"
+        >
+          {{ 'all.player.menu.claim' | translate }}
+        </button>
+
         <badman-has-claim
           [any]="['edit-any:player', this.player.id + '_edit:player']"
         >
@@ -54,6 +60,12 @@
             <span>{{'all.player.menu.edit' | translate}}</span>
           </button>
         </badman-has-claim>
+        <!-- <badman-has-claim [any]="['change:job']">
+          <button mat-menu-item (click)="this.syncRanking()">
+            {{ 'all.button.sync-ranking' | translate }}
+          </button>
+        </badman-has-claim> -->
+
         <badman-has-claim [any]="['edit-any:player']">
           <button mat-menu-item>
             <mat-icon>delete</mat-icon>
@@ -61,7 +73,7 @@
           </button>
         </badman-has-claim>
       </mat-menu>
-    </badman-has-claim>
+    </ng-container>
   </div>
 </badman-page-header>
 

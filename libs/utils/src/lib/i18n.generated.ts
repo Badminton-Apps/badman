@@ -518,8 +518,10 @@ export type I18nTranslations = {
         "player": {
             "backup": string;
             "base": string;
+            "claimed": string;
             "menu": {
                 "add": string;
+                "claim": string;
                 "delete": string;
                 "edit": string;
             };
