@@ -107,7 +107,10 @@ export class EnrollmentValidationService {
 
     // correct ranking if incorrect
     players = players?.map((p) => {
-      const ranking = p.rankingPlaces?.[0];
+      const ranking = p.rankingPlaces?.[0] ?? new RankingPlace({
+        playerId: p.id,
+        systemId: system?.id,
+      })
 
       const bestRankingMin2 =
         Math.min(
