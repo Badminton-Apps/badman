@@ -231,6 +231,8 @@
         "team-to-week": "Team index starting players is <strong>{baseIndex}</strong> and may not exceed the limit of the division <strong>{maxIndex}</strong> ",
         "title": "Errors"
       },
+      "example-error": "These are error messages that prevent the team from being registered. Please resolve these.",
+      "example-warning": "These are warnings that should be taken into account. The registration can still be completed.",
       "info": "Remarks concerning the team enrollment",
       "locations": {
         "availible-courts": "Available courts",

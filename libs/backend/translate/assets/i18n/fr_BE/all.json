@@ -231,6 +231,8 @@
         "team-to-week": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas dépasser la limite de la division <strong>{maxIndex}</strong> ",
         "title": ""
       },
+      "example-error": "Ce sont des messages d'erreur qui empêchent l'inscription de l'équipe. Veuillez les résoudre.",
+      "example-warning": "Ce sont des avertissements dont il faut tenir compte. L'enregistrement peut encore être complété.",
       "info": "",
       "locations": {
         "availible-courts": "Champs disponibles",

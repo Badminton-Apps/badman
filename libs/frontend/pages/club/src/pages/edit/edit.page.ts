@@ -103,7 +103,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
   updateClub$ = new BehaviorSubject(null);
   updateLocation$ = new BehaviorSubject(null);
-  updateRoles$ = new BehaviorSubject(null);
+  updateRoles$ = new BehaviorSubject(true);
   updateTeams$ = new BehaviorSubject(null);
 
   season = new FormControl();
@@ -153,7 +153,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
       this.roles$ = combineLatest([this.updateClub$, this.updateRoles$]).pipe(
         takeUntil(this.destroy$),
-        switchMap(() => this._loadRoles())
+        switchMap(([, useCache]) => this._loadRoles(useCache))
       );
       this.locations$ = combineLatest([
         this.updateClub$,
@@ -254,42 +254,38 @@ export class EditPageComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private _loadRoles() {
+  private _loadRoles(useCache = true) {
     return this.apollo
-      .query<{ club: Partial<Club> }>({
+      .query<{ roles: Role[] }>({
+        fetchPolicy: useCache ? 'cache-first' : 'network-only',
         query: gql`
-          query GetClubRoles($id: ID!) {
-            club(id: $id) {
+          query GetClubRoles($where: JSONObject) {
+            roles(where: $where) {
               id
-              roles {
+              name
+              players {
+                slug
                 id
-                name
-                players {
-                  slug
-                  id
-                  firstName
-                  lastName
-                }
+                firstName
+                lastName
               }
             }
           }
         `,
         variables: {
-          id: this.club.id,
+          where: {
+            clubId: this.club.id,
+          },
         },
       })
       .pipe(
         transferState(`clubRolesKey-${this.club.id}`),
         map((result) => {
-          if (!result?.data.club) {
-            throw new Error('No club');
-          }
-
-          if (!result.data.club.roles) {
+          if (!result?.data.roles) {
             throw new Error('No roles');
           }
 
-          return result.data.club.roles.map((roles) => new Role(roles));
+          return result.data.roles.map((roles) => new Role(roles));
         })
       );
   }
@@ -414,7 +410,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         panelClass: 'success',
       });
       this._deleteRoleFromCache(role.id);
-      this.updateRoles$.next(null);
+      this.updateRoles$.next(false);
     }
   }
 
@@ -438,7 +434,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         panelClass: 'success',
       });
       this._deleteRoleFromCache(role.id);
-      this.updateRoles$.next(null);
+      this.updateRoles$.next(false);
     }
   }
 
@@ -490,7 +486,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
       })
     );
     this._deleteRoleFromCache(role.id);
-    this.updateRoles$.next(null);
+    this.updateRoles$.next(false);
   }
 
   async onAddBasePlayer(player: Partial<Player>, team: Team) {
