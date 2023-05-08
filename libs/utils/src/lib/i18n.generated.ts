@@ -235,6 +235,8 @@ export type I18nTranslations = {
                     "team-to-week": string;
                     "title": string;
                 };
+                "example-error": string;
+                "example-warning": string;
                 "info": string;
                 "locations": {
                     "availible-courts": string;
