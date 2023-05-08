@@ -121,6 +121,8 @@ export class EnrollmentValidationService {
       ranking.double = ranking?.double ?? bestRankingMin2;
       ranking.mix = ranking?.mix ?? bestRankingMin2;
 
+      p.rankingPlaces = [ranking];
+
       return p;
     });
 

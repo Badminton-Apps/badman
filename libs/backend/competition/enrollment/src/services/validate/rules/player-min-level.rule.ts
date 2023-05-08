@@ -5,8 +5,6 @@ import {
   RuleResult,
 } from '../../../models';
 import { Rule } from './_rule.base';
-import { RankingPlace } from '@badman/backend-database';
-import { single } from 'rxjs';
 
 /**
  * Checks if the min level of the subEvent is not crossed
