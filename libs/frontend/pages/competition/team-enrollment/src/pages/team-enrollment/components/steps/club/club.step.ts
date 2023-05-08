@@ -8,11 +8,17 @@ import {
 import {
   FormControl,
   FormGroup,
+  FormGroupDirective,
   FormsModule,
+  NgForm,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { AuthenticateService } from '@badman/frontend-auth';
 import { SelectClubComponent } from '@badman/frontend-components';
+import { TranslateModule } from '@ngx-translate/core';
 import { Subject, filter, pairwise, startWith, takeUntil } from 'rxjs';
 import {
   CLUB,
@@ -22,9 +28,20 @@ import {
   LOCATIONS,
   TEAMS,
 } from '../../../../../forms';
-import { MatInputModule } from '@angular/material/input';
-import { TranslateModule } from '@ngx-translate/core';
-import { AuthenticateService } from '@badman/frontend-auth';
+
+export class DirectErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(
+    control: FormControl | null,
+    form: FormGroupDirective | NgForm | null
+  ): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(
+      control &&
+      control.invalid &&
+      (control.dirty || control.touched || isSubmitted)
+    );
+  }
+}
 
 @Component({
   selector: 'badman-club-step',
@@ -43,6 +60,7 @@ import { AuthenticateService } from '@badman/frontend-auth';
 })
 export class ClubStepComponent implements OnInit {
   destroy$ = new Subject<void>();
+  matcher = new DirectErrorStateMatcher();
 
   constructor(private authenticateService: AuthenticateService) {}
 
