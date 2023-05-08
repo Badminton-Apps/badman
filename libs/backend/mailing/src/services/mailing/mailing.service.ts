@@ -203,6 +203,7 @@ export class MailingService {
     const options = {
       from: 'info@badman.app',
       to: to.email,
+      cc: 'jeroen@badmintonvlaanderen.be',
       subject: `Inschrijving ${club.name}`,
       template: 'clubenrollment',
       context: {
