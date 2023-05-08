@@ -111,6 +111,14 @@
         >
           {{ 'all.button.next' | translate }}
         </button>
+        <button
+          mat-raised-button
+          (click)="saveAndContinue()"
+          color="primary"
+          [disabled]="this.formGroup.get('locations')?.valid === false"
+        >
+          {{ 'all.button.save-and-continue' | translate }}
+        </button>
       </div>
     </ng-template>
   </mat-step>
