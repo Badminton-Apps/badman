@@ -16,64 +16,67 @@
     </mat-form-field>
   </div>
 
-  <div class="settings-title">
-    {{ 'all.settings.notifications.encounterChange.title' | translate }}
-  </div>
-  <div class="row">
-    <mat-form-field>
-      <mat-label>{{
-        'all.settings.notifications.encounterChange.conformationNotification'
-          | translate
-      }}</mat-label>
-      <mat-select
-        formControlName="encounterChangeConformationNotification"
-        alt="encounterChangeConformationNotification"
-        multiple
-      >
-        <mat-option
-          *ngFor="let type of this.notificationType"
-          [value]="type.value"
+  <badman-has-claim [any]="['*_change:encounter', 'change-any:encounter']">
+    <div class="settings-title">
+      {{ 'all.settings.notifications.encounterChange.title' | translate }}
+    </div>
+    <div class="row">
+      <mat-form-field>
+        <mat-label>{{
+          'all.settings.notifications.encounterChange.conformationNotification'
+            | translate
+        }}</mat-label>
+        <mat-select
+          formControlName="encounterChangeConformationNotification"
+          alt="encounterChangeConformationNotification"
+          multiple
         >
-          {{ type.viewValue | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>{{
-        'all.settings.notifications.encounterChange.finishedNotification'
-          | translate
-      }}</mat-label>
-      <mat-select
-        formControlName="encounterChangeFinishedNotification"
-        alt="encounterChangeFinishedNotification"
-        multiple
-      >
-        <mat-option
-          *ngFor="let type of this.notificationType"
-          [value]="type.value"
+          <mat-option
+            *ngFor="let type of this.notificationType"
+            [value]="type.value"
+          >
+            {{ type.viewValue | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{
+          'all.settings.notifications.encounterChange.finishedNotification'
+            | translate
+        }}</mat-label>
+        <mat-select
+          formControlName="encounterChangeFinishedNotification"
+          alt="encounterChangeFinishedNotification"
+          multiple
         >
-          {{ type.viewValue | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>{{
-        'all.settings.notifications.encounterChange.newNotification' | translate
-      }}</mat-label>
-      <mat-select
-        formControlName="encounterChangeNewNotification"
-        alt="encounterChangeNewNotification"
-        multiple
-      >
-        <mat-option
-          *ngFor="let type of this.notificationType"
-          [value]="type.value"
+          <mat-option
+            *ngFor="let type of this.notificationType"
+            [value]="type.value"
+          >
+            {{ type.viewValue | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{
+          'all.settings.notifications.encounterChange.newNotification'
+            | translate
+        }}</mat-label>
+        <mat-select
+          formControlName="encounterChangeNewNotification"
+          alt="encounterChangeNewNotification"
+          multiple
         >
-          {{ type.viewValue | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+          <mat-option
+            *ngFor="let type of this.notificationType"
+            [value]="type.value"
+          >
+            {{ type.viewValue | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </badman-has-claim>
 
   <div class="settings-title">
     {{ 'all.settings.notifications.encounter.title' | translate }}
@@ -117,45 +120,72 @@
     </mat-form-field>
   </div>
 
-  <div class="settings-title">
-    {{ 'all.settings.notifications.sync.title' | translate }}
-  </div>
-  <div class="row">
-    <mat-form-field>
-      <mat-label>{{
-        'all.settings.notifications.sync.success' | translate
-      }}</mat-label>
-      <mat-select
-        formControlName="syncSuccessNotification"
-        alt="syncSuccessNotification"
-        multiple
-      >
-        <mat-option
-          *ngFor="let type of this.notificationType"
-          [value]="type.value"
+  <badman-has-claim [any]="['change:job']">
+    <div class="settings-title">
+      {{ 'all.settings.notifications.sync.title' | translate }}
+    </div>
+    <div class="row">
+      <mat-form-field>
+        <mat-label>{{
+          'all.settings.notifications.sync.success' | translate
+        }}</mat-label>
+        <mat-select
+          formControlName="syncSuccessNotification"
+          alt="syncSuccessNotification"
+          multiple
         >
-          {{ type.viewValue | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>{{
-        'all.settings.notifications.sync.failed' | translate
-      }}</mat-label>
-      <mat-select
-        formControlName="syncFailedNotification"
-        alt="syncFailedNotification"
-        multiple
-      >
-        <mat-option
-          *ngFor="let type of this.notificationType"
-          [value]="type.value"
+          <mat-option
+            *ngFor="let type of this.notificationType"
+            [value]="type.value"
+          >
+            {{ type.viewValue | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{
+          'all.settings.notifications.sync.failed' | translate
+        }}</mat-label>
+        <mat-select
+          formControlName="syncFailedNotification"
+          alt="syncFailedNotification"
+          multiple
         >
-          {{ type.viewValue | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+          <mat-option
+            *ngFor="let type of this.notificationType"
+            [value]="type.value"
+          >
+            {{ type.viewValue | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </badman-has-claim>
+
+  <badman-has-claim [any]="['*_enlist:team', 'enlist-any:team']">
+    <div class="settings-title">
+      {{ 'all.settings.notifications.enrollment.title' | translate }}
+    </div>
+    <div class="row">
+      <mat-form-field>
+        <mat-label>{{
+          'all.settings.notifications.enrollment.clubenrollment' | translate
+        }}</mat-label>
+        <mat-select
+          formControlName="clubEnrollmentNotification"
+          alt="clubEnrollmentNotification"
+          multiple
+        >
+          <mat-option
+            *ngFor="let type of this.notificationType"
+            [value]="type.value"
+          >
+            {{ type.viewValue | translate }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </badman-has-claim>
 </form>
 
 <button

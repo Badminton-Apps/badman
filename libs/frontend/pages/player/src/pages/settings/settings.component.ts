@@ -121,6 +121,9 @@ export class SettingsPageComponent implements OnInit {
           this.getValues(setting.syncFailedNotification)
         );
 
+        const clubEnrollmentNotification = new FormControl(
+          this.getValues(setting.clubEnrollmentNotification)
+        );
         this.settingsForm = new FormGroup({
           encounterChangeConformationNotification:
             encounterChangeConformationNotificationControl,
@@ -133,6 +136,7 @@ export class SettingsPageComponent implements OnInit {
             encounterNotEnteredNotificationControl,
           syncSuccessNotification: syncSuccessNotification,
           syncFailedNotification: syncFailedNotification,
+          clubEnrollmentNotification: clubEnrollmentNotification,
           language: new FormControl(setting.language),
         });
       });
@@ -248,6 +252,7 @@ export class SettingsPageComponent implements OnInit {
                 encounterNotEnteredNotification
                 syncSuccessNotification
                 syncFailedNotification
+                clubEnrollmentNotification
                 language
               }
             }

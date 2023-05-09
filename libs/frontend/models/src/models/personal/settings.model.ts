@@ -7,6 +7,7 @@ export class Setting {
   encounterNotEnteredNotification?: NotificationType;
   syncSuccessNotification?: NotificationType;
   syncFailedNotification?: NotificationType;
+  clubEnrollmentNotification?: NotificationType;
   language?: AvaliableLanguages;
 
   constructor({ ...args }: Partial<Setting>) {
@@ -21,6 +22,7 @@ export class Setting {
       args?.encounterNotEnteredNotification;
     this.syncSuccessNotification = args?.syncSuccessNotification;
     this.syncFailedNotification = args?.syncFailedNotification;
+    this.clubEnrollmentNotification = args?.clubEnrollmentNotification;
     this.language = args?.language;
   }
 }
