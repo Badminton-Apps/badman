@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.78.2](https://github.com/Badminton-Apps/badman/compare/v6.78.1...v6.78.2) (2023-05-09)
+
+
+### Bug Fixes
+
+* club edit ([1366b53](https://github.com/Badminton-Apps/badman/commit/1366b53f3d046c374ee6131eb39c915ef419b01c))
+
 ### [6.78.1](https://github.com/Badminton-Apps/badman/compare/v6.78.0...v6.78.1) (2023-05-09)
 
 
