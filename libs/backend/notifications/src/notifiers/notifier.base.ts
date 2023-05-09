@@ -25,7 +25,12 @@ export abstract class Notifier<T, A = { email: string }> {
     player: Player,
     linkId: string,
     data: T,
-    args?: A
+    args?: A,
+    force?: {
+      email?: boolean;
+      push?: boolean;
+      sms?: boolean;
+    }
   ): Promise<void> {
     if (!player) {
       this.logger.warn(`Player not found`);
@@ -34,7 +39,7 @@ export abstract class Notifier<T, A = { email: string }> {
     const settings = await player.getSetting();
     const type = settings?.[this.type] as NotificationType;
 
-    if (!type) {
+    if (!type || !force) {
       this.logger.debug(
         `Notification ${this.type} disabled for ${player.fullName}`
       );
@@ -64,15 +69,15 @@ export abstract class Notifier<T, A = { email: string }> {
 
     this.logger.debug(`Sending notification to ${player.fullName} (${type})`);
 
-    if (type & NotificationType.PUSH) {
+    if (type & NotificationType.PUSH || force?.push) {
       await this.notifyPush(player, data, args);
     }
 
-    if (type & NotificationType.EMAIL) {
+    if (type & NotificationType.EMAIL || force?.email) {
       await this.notifyEmail(player, data, args);
     }
 
-    if (type & NotificationType.SMS) {
+    if (type & NotificationType.SMS || force?.sms) {
       await this.notifySms(player, data, args);
     }
 
