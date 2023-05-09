@@ -18,6 +18,7 @@ block content
       | Bedankt en tot volgend seizoen!
 
     h2 Teams
+    if club && club.teams && club.teams.length
     table
       each team in club.teams
         tr
@@ -50,8 +51,11 @@ block content
                         |  #{ player.single } - #{ player.double } - #{ player.mix }
                       else
                         |  #{ player.single } - #{ player.double }
+    else 
+      p Er werden geen ploegen ingeschreven.
 
     h2 Locaties
+    if locations && locations.length
     table
       each location in locations
         tr
@@ -83,8 +87,11 @@ block content
                   else
                     p
                       strong Geen uitzonderingen                          
+    else
+      p Er werden geen locaties ingevuld.
 
     h2 Comments
+    if comments && comments.length
     table
       each comment in comments
         tr
@@ -100,3 +107,5 @@ block content
                 strong Bericht:
                 br
                 | #{ comment.message }
+    else
+      p Er werden geen opmerkingen ingevuld.
