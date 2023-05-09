@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { HasClaimComponent } from '@badman/frontend-components';
 import { Player, Setting } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { AvaliableLanguages, NotificationType } from '@badman/utils';
@@ -35,6 +36,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatButtonModule,
     TranslateModule,
     MatSnackBarModule,
+
+    HasClaimComponent,
   ],
 })
 export class SettingsPageComponent implements OnInit {

@@ -296,15 +296,16 @@ export class NotificationService {
     });
 
     club.teams = club.teams?.sort(sortTeams);
-    debugger;
-
     const url = `${this.configService.get('CLIENT_URL')}/club/${club.id}`;
 
     notifierEnrollment.notify(
       user,
       clubId,
       { club, locations, comments },
-      { email: email || user.email, url }
+      { email: email || user.email, url },
+      {
+        email: true,
+      }
     );
   }
 }
