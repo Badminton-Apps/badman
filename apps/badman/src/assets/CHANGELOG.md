@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.78.0](https://github.com/Badminton-Apps/badman/compare/v6.77.1...v6.78.0) (2023-05-09)
+
+
+### Features
+
+* force sending emails ([a4f4a3a](https://github.com/Badminton-Apps/badman/commit/a4f4a3aff93cdcaa7ad40f02e9bc12020b0a0e58))
+* settings for club enrollment ([5eecea0](https://github.com/Badminton-Apps/badman/commit/5eecea01e43ec3429296cdfb66043d464fcd1747))
+
 ### [6.77.1](https://github.com/Badminton-Apps/badman/compare/v6.77.0...v6.77.1) (2023-05-09)
 
 
