@@ -17,7 +17,7 @@
         <span> {{'all.club.menu.twizzit' | translate}}</span>
       </button>
       <badman-has-claim [any]="['edit-any:club', this.club.id + '_edit:club']">
-        <button mat-menu-item [routerLink]="'edit'">
+        <button mat-menu-item [routerLink]="['..', this.club.id, 'edit']">
           <mat-icon>edit</mat-icon>
           <span>{{'all.club.menu.edit' | translate}}</span>
         </button>
