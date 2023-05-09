@@ -604,6 +604,10 @@
         "newNotification": "Nieuwe aanvraag",
         "title": "Verplaatsings aanvragen"
       },
+      "enrollment": {
+        "clubenrollment": "Ploeg inschrijvingen",
+        "title": "Inschrijvingen"
+      },
       "messages": {
         "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet bevestigd.",
         "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven.",

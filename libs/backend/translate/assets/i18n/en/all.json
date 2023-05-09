@@ -604,6 +604,10 @@
         "newNotification": "New request",
         "title": "Encounter change requests"
       },
+      "enrollment": {
+        "clubenrollment": "Team registrations",
+        "title": "Enrollment"
+      },
       "messages": {
         "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not accepted yet.",
         "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not entered yet.",

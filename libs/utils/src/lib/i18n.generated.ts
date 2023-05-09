@@ -608,6 +608,10 @@ export type I18nTranslations = {
                     "newNotification": string;
                     "title": string;
                 };
+                "enrollment": {
+                    "clubenrollment": string;
+                    "title": string;
+                };
                 "messages": {
                     "encounterNotAcceptedNotification": string;
                     "encounterNotEnteredNotification": string;

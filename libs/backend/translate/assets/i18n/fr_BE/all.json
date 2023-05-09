@@ -604,6 +604,10 @@
         "newNotification": "Nieuwe aanvraag",
         "title": "Verplaatsings aanvragen"
       },
+      "enrollment": {
+        "clubenrollment": "Inscriptions d'équipe",
+        "title": "Inscriptions"
+      },
       "messages": {
         "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> à <strong>{encounter.date}</strong> n'a pas encore été confirmé.",
         "encounterNotEnteredNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie.",
