@@ -32,7 +32,7 @@ export abstract class Notifier<T, A = { email: string }> {
       return;
     }
     const settings = await player.getSetting();
-    const type = settings[this.type] as NotificationType;
+    const type = settings?.[this.type] as NotificationType;
 
     if (!type) {
       this.logger.debug(
