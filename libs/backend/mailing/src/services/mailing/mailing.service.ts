@@ -343,6 +343,7 @@ export class MailingService {
       // this.logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       this.logger.debug(`Message sent: ${options.subject}, to: ${options.to}`);
     } catch (e) {
+      this.logger.error(e);
       this.logger.error('Hello', e);
     }
   }
