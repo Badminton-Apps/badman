@@ -1,11 +1,11 @@
 <div mat-dialog-content>
-  <ng-container *ngIf="this.group">
+  <div class="fields" *ngIf="this.group">
     <badman-team-fields
       [group]="this.group"
       [teamNumbers]="this.data.teamNumbers"
     ></badman-team-fields>
     <badman-team-player [group]="this.group"></badman-team-player>
-  </ng-container>
+  </div>
 </div>
 <mat-dialog-actions align="end">
   <button mat-raised-button (click)="submit()" color="primary">
