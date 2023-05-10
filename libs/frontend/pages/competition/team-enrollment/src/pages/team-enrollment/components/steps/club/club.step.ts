@@ -105,7 +105,6 @@ export class ClubStepComponent implements OnInit {
         )
         .subscribe((value) => {
           if (value != null) {
-            console.log('set email', value);
             localStorage.setItem('email', value);
           }
         });

@@ -1,11 +1,16 @@
+import {
+  BreakpointObserver,
+  Breakpoints,
+  LayoutModule,
+} from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormControl,
   FormGroup,
-  ReactiveFormsModule,
   FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -21,7 +26,7 @@ import { getCurrentSeason } from '@badman/utils';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 export type LocationavDayType = FormGroup<{
   day: FormControl<string | undefined>;
@@ -112,7 +117,30 @@ export class LocationComponent implements OnInit {
     exceptions: false,
   };
 
+  isSmallScreen = false;
+
+  constructor(private breakpointObserver: BreakpointObserver) {}
+
   ngOnInit(): void {
+    this.breakpointObserver
+      .observe([
+        Breakpoints.XSmall,
+        Breakpoints.Small,
+        Breakpoints.Medium,
+        Breakpoints.Large,
+        Breakpoints.XLarge,
+      ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        for (const query of Object.keys(result.breakpoints)) {
+          if (result.breakpoints[query]) {
+            this.isSmallScreen =
+              query === Breakpoints.Small || query === Breakpoints.XSmall;
+            break;
+          }
+        }
+      });
+
     let created = false;
     if (this.group) {
       const localControl = this.group.get(

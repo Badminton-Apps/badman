@@ -12,6 +12,7 @@
 .basic {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
   .number,
   .season {
     display: flex;

@@ -64,20 +64,22 @@
           </div>
           <div class="startTime">
             <mat-form-field>
-              <mat-label>{{'all.input.start-hour' | translate}}</mat-label>
+              <mat-label>{{ 'all.input.start-hour' | translate }}</mat-label>
               <input matInput type="time" formControlName="startTime" />
             </mat-form-field>
           </div>
           <div class="endTime">
             <mat-form-field>
-              <mat-label>{{'all.input.end-hour' | translate}}</mat-label>
+              <mat-label>{{ 'all.input.end-hour' | translate }}</mat-label>
               <input matInput type="time" formControlName="endTime" />
             </mat-form-field>
           </div>
 
           <div class="courts">
             <mat-form-field>
-              <mat-label>{{ 'all.input.availible-courts' | translate }}</mat-label>
+              <mat-label>{{
+                'all.input.availible-courts' | translate
+              }}</mat-label>
               <input
                 matInput
                 type="number"
@@ -87,8 +89,21 @@
             </mat-form-field>
           </div>
           <div class="delete">
-            <button mat-icon-button (click)="removeAvailibility(i)">
+            <button
+              *ngIf="!isSmallScreen"
+              mat-icon-button
+              (click)="removeAvailibility(i)"
+            >
               <mat-icon>delete</mat-icon>
+            </button>
+
+            <button
+              class="delete-button"
+              *ngIf="isSmallScreen"
+              mat-stroked-button
+              (click)="removeAvailibility(i)"
+            >
+              {{ 'all.button.delete' | translate }}
             </button>
           </div>
         </div>

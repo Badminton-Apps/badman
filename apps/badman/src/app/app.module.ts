@@ -170,7 +170,7 @@ const APP_ROUTES: Routes = [
   providers: [
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: { appearance: 'outline' },
+      useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
     },
 
     {
