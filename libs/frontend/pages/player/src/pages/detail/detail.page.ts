@@ -133,7 +133,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
       map(
         ([loggedIn, user]) =>
-          loggedIn && user?.id !== this.player.id && this.player.sub === null
+          loggedIn && this.player.sub === null && user.id === null
       )
     );
   }

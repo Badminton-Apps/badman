@@ -55,6 +55,11 @@ mat-divider {
   align-items: center;
   gap: 1rem;
 
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .delete {
     flex: 0 0 auto;
   }
@@ -72,6 +77,9 @@ mat-divider {
   .delete {
     button {
       margin-bottom: 20px;
+    }
+    .delete-button {
+      flex: 0 0 auto;
     }
   }
 
