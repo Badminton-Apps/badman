@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.79.0](https://github.com/Badminton-Apps/badman/compare/v6.78.2...v6.79.0) (2023-05-10)
+
+
+### Features
+
+* mobile support and fix for form-field taking up space ([000eea9](https://github.com/Badminton-Apps/badman/commit/000eea9e25407048a4988bab22905cce81069cd9))
+
 ### [6.78.2](https://github.com/Badminton-Apps/badman/compare/v6.78.1...v6.78.2) (2023-05-09)
 
 
