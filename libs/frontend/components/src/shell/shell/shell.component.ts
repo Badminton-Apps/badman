@@ -7,31 +7,9 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { RouterModule } from '@angular/router';
-import {
-  ServiceWorkerModule,
-  SwUpdate,
-  VersionReadyEvent,
-} from '@angular/service-worker';
-import {
-  GoogleAdsConfiguration,
-  GOOGLEADS_CONFIG_TOKEN,
-  VERSION_INFO,
-} from '@badman/frontend-html-injects';
-import { Banner } from '@badman/frontend-models';
-import { iif, Observable, of } from 'rxjs';
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
-import { BreadcrumbModule } from 'xng-breadcrumb';
-import { BannerComponent } from '../components/banner/banner.component';
-import { HeaderMenuComponent } from '../components/header-menu';
-import { NotificationComponent } from '../components/notifications';
-import { SearchBoxComponent } from '../components/search-box/search-box.component';
-import { UserShortcutsComponent } from '../components/user-shortcuts/user-shortcuts.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { LogoComponent } from '../components/logo';
-import { Apollo, gql } from 'apollo-angular';
 import {
   Event,
   NavigationCancel,
@@ -39,10 +17,34 @@ import {
   NavigationError,
   NavigationStart,
   Router,
+  RouterModule,
 } from '@angular/router';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+import {
+  ServiceWorkerModule,
+  SwUpdate,
+  VersionReadyEvent,
+} from '@angular/service-worker';
 import { AuthenticateService } from '@badman/frontend-auth';
+import {
+  GOOGLEADS_CONFIG_TOKEN,
+  GoogleAdsConfiguration,
+  VERSION_INFO,
+} from '@badman/frontend-html-injects';
+import { Banner } from '@badman/frontend-models';
+import { TranslateModule } from '@ngx-translate/core';
+import { Apollo, gql } from 'apollo-angular';
+import { iif, Observable, of } from 'rxjs';
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { BreadcrumbModule } from 'xng-breadcrumb';
 import { HasClaimComponent } from '../../has-claim';
+import {
+  BannerComponent,
+  HeaderMenuComponent,
+  LogoComponent,
+  NotificationComponent,
+  SearchBoxComponent,
+  UserShortcutsComponent,
+} from '../components';
 @Component({
   selector: 'badman-shell',
   imports: [
@@ -173,7 +175,7 @@ export class ShellComponent {
           )
         )
       ) as Observable<boolean>;
-      
+
       this.router.events.subscribe((event: Event) => {
         switch (true) {
           case event instanceof NavigationStart: {

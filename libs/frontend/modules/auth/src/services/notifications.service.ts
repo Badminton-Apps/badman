@@ -15,11 +15,38 @@ import {
 import { AuthenticateService } from './authenticate.service';
 
 const UNREAD_QUERY = gql`
-  query GetUnreadNotifications {
+  query GetNotifications {
     me {
       notifications {
         id
         read
+        type
+        meta
+        club {
+          id
+          name
+        }
+        competition {
+          id
+          name
+        }
+        tournament {
+          id
+          name
+        }
+
+        encounter {
+          id
+          date
+          home {
+            id
+            name
+          }
+          away {
+            id
+            name
+          }
+        }
       }
     }
   }

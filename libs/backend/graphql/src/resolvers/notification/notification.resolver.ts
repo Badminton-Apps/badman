@@ -1,5 +1,6 @@
 import { User } from '@badman/backend-authorization';
 import {
+  Club,
   EncounterCompetition,
   EventCompetition,
   EventTournament,
@@ -55,12 +56,17 @@ export class NotificationResolver {
   ): Promise<EventCompetition> {
     return notification.getCompetition();
   }
-  
+
   @ResolveField(() => EventTournament)
   async tournament(
     @Parent() notification: Notification
   ): Promise<EventTournament> {
     return notification.getTournament();
+  }
+
+  @ResolveField(() => Club)
+  async club(@Parent() notification: Notification): Promise<Club> {
+    return notification.getClub();
   }
 
   @Mutation(() => Notification)
