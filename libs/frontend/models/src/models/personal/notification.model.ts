@@ -1,3 +1,4 @@
+import { Club } from '../club.model';
 import {
   EncounterCompetition,
   EventCompetition,
@@ -15,6 +16,7 @@ export class Notification {
   encounter?: EncounterCompetition;
   competition?: EventCompetition;
   tournament?: EventTournament;
+  club?: Club;
   read?: boolean;
   meta?: string;
 
@@ -33,11 +35,11 @@ export class Notification {
       args?.competition != null
         ? new EventCompetition(args.competition)
         : undefined;
-
     this.tournament =
       args?.tournament != null
         ? new EventTournament(args.tournament)
         : undefined;
+    this.club = args?.club != null ? new Club(args.club) : undefined;
     this.read = args?.read;
     this.meta = args?.meta;
   }

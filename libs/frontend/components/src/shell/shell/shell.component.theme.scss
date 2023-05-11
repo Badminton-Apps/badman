@@ -3,11 +3,7 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use '../components/logo/logo.component.theme.scss' as logo;
-
 @mixin color($theme) {
-  @include logo.color($theme);
-
   badman-shell {
     $color-config: mat.get-color-config($theme);
     $accent-palette: map.get($color-config, 'accent');
@@ -23,8 +19,6 @@
 }
 
 @mixin typography($theme) {
-  @include logo.typography($theme);
-
   badman-shell {
     $typography-config: mat.get-typography-config($theme);
 
@@ -35,8 +29,6 @@
 }
 
 @mixin theme($theme) {
-  @include logo.theme($theme);
-
   // Only apply theme on the correct element
   $color-config: mat.get-color-config($theme);
   @if $color-config != null {

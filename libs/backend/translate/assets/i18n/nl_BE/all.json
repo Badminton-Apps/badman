@@ -609,8 +609,9 @@
         "title": "Inschrijvingen"
       },
       "messages": {
-        "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet bevestigd.",
-        "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven.",
+        "clubEnrollmentNotification": "Club<strong> {club.name}</strong> is succesvol ingeschreven",
+        "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> van <strong>{encounter.date}</strong> is nog niet bevestigd.",
+        "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> van <strong>{encounter.date}</strong> is nog niet ingegeven.",
         "syncFailedNotification": "Sync van event <strong>{event.name}</strong> is mislukt",
         "syncSuccessNotification": "Sync van event <strong>{event.name}</strong> is succesvol uitgevoerd"
       },

@@ -27,6 +27,7 @@ import {
   EventTournament,
 } from '../event';
 import { Player } from '../player.model';
+import { Club } from '../club.model';
 
 @Table({
   timestamps: true,
@@ -86,6 +87,13 @@ export class Notification extends Model {
   })
   tournament: EventTournament;
 
+  @Field(() => Club, { nullable: true })
+  @BelongsTo(() => Club, {
+    foreignKey: 'linkId',
+    constraints: false,
+  })
+  club: Club;
+
   @Field({ nullable: true, defaultValue: false })
   @Column({ defaultValue: false })
   read: boolean;
@@ -107,6 +115,10 @@ export class Notification extends Model {
   // Belongs to EventTournament
   getTournament!: BelongsToGetAssociationMixin<EventTournament>;
   setTournament!: BelongsToSetAssociationMixin<EventTournament, string>;
+
+  // Belongs to Club
+  getClub!: BelongsToGetAssociationMixin<Club>;
+  setClub!: BelongsToSetAssociationMixin<Club, string>;
 }
 
 @InputType()
