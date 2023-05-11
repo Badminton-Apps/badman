@@ -46,6 +46,12 @@ export class Notification extends Model {
   @Column
   id: string;
 
+  @Field({ nullable: true })
+  updatedAt?: Date;
+
+  @Field({ nullable: true })
+  createdAt?: Date;
+
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'sendToId')
   sendTo: Player;
@@ -65,6 +71,7 @@ export class Notification extends Model {
   @Field({ nullable: true })
   @Column
   linkType: string;
+
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {

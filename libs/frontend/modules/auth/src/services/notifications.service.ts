@@ -14,14 +14,15 @@ import {
 } from 'rxjs';
 import { AuthenticateService } from './authenticate.service';
 
-const UNREAD_QUERY = gql`
-  query GetNotifications {
+const QUERY = gql`
+  query GetNotifications($order: [SortOrderType!]) {
     me {
-      notifications {
+      notifications(order: $order) {
         id
         read
         type
         meta
+
         club {
           id
           name
@@ -79,8 +80,16 @@ export class NotificationService {
           // get unread notifications
           return this.apollo
             .query<{ me: { notifications: Notification[] } }>({
-              query: UNREAD_QUERY,
+              query: QUERY,
               fetchPolicy: 'network-only',
+              variables: {
+                order: [
+                  {
+                    direction: 'createdAt',
+                    order: 'DESC',
+                  },
+                ],
+              },
             })
             .pipe(map((result) => result.data.me?.notifications));
         })
