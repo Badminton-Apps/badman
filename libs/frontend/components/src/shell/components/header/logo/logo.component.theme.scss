@@ -4,15 +4,18 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  badman-ranking-table {
+  badman-logo {
     $color-config: mat.get-color-config($theme);
-    // Background color
-    $background: map.get($color-config, 'background');
+    $foreground: map.get($color-config, 'foreground');
+    
+    svg {
+      fill: mat.get-color-from-palette($foreground, 'base');
+    }
   }
 }
 
 @mixin typography($theme) {
-  badman-ranking-table {
+  badman-logo {
     $typography-config: mat.get-typography-config($theme);
   }
 }

@@ -1,5 +1,5 @@
-@use './src/shell/components/search-box/search-box.component.theme.scss' as
-  search-box;
+@use './src/shell/components/theme' as components;
+
 @use './src/shell/shell/shell.component.theme.scss' as shell;
 @use './src/games/recent-games/recent-games.component.theme.scss' as
   recent-games;
@@ -12,7 +12,7 @@
 @use './src/loading-block/loading-block.component.theme.scss' as loading-block;
 
 @mixin theme($theme) {
-  @include search-box.theme($theme);
+  @include components.theme($theme);
   @include player-search.theme($theme);
   @include shell.theme($theme);
   @include recent-games.theme($theme);
@@ -24,7 +24,7 @@
 }
 
 @mixin typography($theme) {
-  @include search-box.typography($theme);
+  @include components.typography($theme);
   @include player-search.typography($theme);
   @include shell.typography($theme);
   @include recent-games.typography($theme);
@@ -36,7 +36,7 @@
 }
 
 @mixin colors($theme) {
-  @include search-box.color($theme);
+  @include components.color($theme);
   @include player-search.color($theme);
   @include shell.color($theme);
   @include recent-games.color($theme);
@@ -46,3 +46,4 @@
   @include standing.color($theme);
   @include loading-block.color($theme);
 }
+ 

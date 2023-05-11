@@ -609,8 +609,9 @@
         "title": "Enrollment"
       },
       "messages": {
-        "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not accepted yet.",
-        "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> is not entered yet.",
+        "clubEnrollmentNotification": "Club<strong> {club.name}</strong> has been successfully registered",
+        "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> of <strong>{encounter.date}</strong> has not yet been confirmed.",
+        "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> of <strong>{encounter.date}</strong> has not yet been entered.",
         "syncFailedNotification": "Sync for event <strong>{event.name}</strong> failed",
         "syncSuccessNotification": "Sync of event <strong>{event.name}</strong> was successful"
       },
