@@ -22,6 +22,7 @@ const QUERY = gql`
         read
         type
         meta
+
         club {
           id
           name
