@@ -613,6 +613,7 @@ export type I18nTranslations = {
                     "title": string;
                 };
                 "messages": {
+                    "clubEnrollmentNotification": string;
                     "encounterNotAcceptedNotification": string;
                     "encounterNotEnteredNotification": string;
                     "syncFailedNotification": string;

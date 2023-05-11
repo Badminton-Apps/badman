@@ -129,6 +129,7 @@ export class NotificationUpdateInput extends PartialType(
     'encounter',
     'competition',
     'tournament',
+    'club',
     'sendTo',
   ] as const),
   InputType
