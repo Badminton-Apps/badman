@@ -85,8 +85,8 @@ export class NotificationService {
               variables: {
                 order: [
                   {
-                    direction: 'createdAt',
-                    order: 'DESC',
+                    direction: 'DESC',
+                    field: 'createdAt',
                   },
                 ],
               },
