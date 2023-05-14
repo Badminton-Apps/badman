@@ -28,7 +28,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/backend/authorization"],
       "options": {
-        "jestConfig": "libs/backend/authorization/jest.config.js",
+        "jestConfig": "libs/backend/authorization/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
