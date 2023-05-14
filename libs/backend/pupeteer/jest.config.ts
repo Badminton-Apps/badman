@@ -1,6 +1,6 @@
 /* eslint-disable */
-module.exports = {
-  displayName: 'pupeteer',
+export default {
+  displayName: 'puppeteer',
   preset: '../../../jest.preset.js',
   globals: {},
   testEnvironment: 'node',
@@ -13,5 +13,5 @@ module.exports = {
     ],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../../coverage/libs/backend/pupeteer',
+  coverageDirectory: '../../../coverage/libs/backend/puppeteer',
 };

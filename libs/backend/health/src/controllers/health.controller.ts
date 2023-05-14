@@ -1,22 +1,12 @@
-import { Controller, Get, Logger, VERSION_NEUTRAL } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import {
-  HealthCheck,
-  HealthCheckService,
-  SequelizeHealthIndicator,
-} from '@nestjs/terminus';
+import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
+import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
 
 @Controller({
   path: '/health',
   version: VERSION_NEUTRAL,
 })
 export class HealthController {
-  private logger = new Logger(HealthController.name);
-  constructor(
-    private health: HealthCheckService,
-    private db: SequelizeHealthIndicator,
-    private config: ConfigService
-  ) {}
+  constructor(private health: HealthCheckService) {}
 
   @Get()
   @HealthCheck()
