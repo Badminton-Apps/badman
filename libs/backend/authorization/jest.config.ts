@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'api-authorization',
+/* eslint-disable */
+export default {
+  displayName: 'authorization',
   preset: '../../../jest.preset.js',
   globals: {},
   testEnvironment: 'node',
@@ -12,5 +13,5 @@ module.exports = {
     ],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../../coverage/libs/backend/authorization',
+  coverageDirectory: '../../../coverage/libs/backend/health',
 };

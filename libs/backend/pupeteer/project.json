@@ -8,11 +8,11 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/backend/health",
-        "tsConfig": "libs/backend/health/tsconfig.lib.json",
-        "packageJson": "libs/backend/health/package.json",
-        "main": "libs/backend/health/src/index.ts",
-        "assets": ["libs/backend-health/*.md"]
+        "outputPath": "dist/libs/backend/puppeteer",
+        "tsConfig": "libs/backend/puppeteer/tsconfig.lib.json",
+        "packageJson": "libs/backend/puppeteer/package.json",
+        "main": "libs/backend/puppeteer/src/index.ts",
+        "assets": ["libs/backend-puppeteer/*.md"]
       }
     },
     "lint": {
@@ -26,7 +26,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/backend/pupeteer"],
       "options": {
-        "jestConfig": "libs/backend/pupeteer/jest.config.js",
+        "jestConfig": "libs/backend/puppeteer/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {
