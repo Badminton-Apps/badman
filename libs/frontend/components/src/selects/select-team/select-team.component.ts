@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -79,7 +87,9 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private authenticateService: AuthenticateService
+    private authenticateService: AuthenticateService,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit() {
@@ -240,7 +250,11 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        transferState(`clubTeamsKey-${clubId}}`),
+        transferState(
+          `clubTeamsKey-${clubId}}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           if (!result?.data.teams) {
             throw new Error('No club');
@@ -267,7 +281,11 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        transferState(`captainOfTeam-${userId}`),
+        transferState(
+          `captainOfTeam-${userId}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           if (!result?.data.teams) {
             throw new Error('No club');

@@ -41,7 +41,7 @@ import { MatIconModule } from '@angular/material/icon';
     NgMapsPlacesModule,
   ],
 })
-export class LocationFieldsComponent implements OnInit {
+export class LocationDialogFieldsComponent implements OnInit {
   @Input()
   location: Location = {} as Location;
 

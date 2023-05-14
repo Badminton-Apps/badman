@@ -69,6 +69,7 @@ import {
 import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 import { Player, PlayerTeamInput } from './player.model';
 import { TeamPlayerMembership } from './team-player-membership.model';
+import { Role } from './security';
 
 @Table({
   timestamps: true,
@@ -187,6 +188,16 @@ export class Team extends Model {
 
   @HasMany(() => EncounterCompetition, 'awayTeamId')
   awayEncounters: EncounterCompetition;
+
+  @Field(() => [Role], { nullable: true })
+  @HasMany(() => Role, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'team',
+    },
+  })
+  roles?: Role[];
 
   // #region hooks
   @BeforeBulkCreate
@@ -319,6 +330,17 @@ export class Team extends Model {
   // Has one Entry
   getEntry!: HasOneGetAssociationMixin<EventEntry>;
   setEntry!: HasOneSetAssociationMixin<EventEntry, string>;
+
+  // Has many Roles
+  getRoles!: HasManyGetAssociationsMixin<Role>;
+  setRoles!: HasManySetAssociationsMixin<Role, string>;
+  addRoles!: HasManyAddAssociationsMixin<Role, string>;
+  addRole!: HasManyAddAssociationMixin<Role, string>;
+  removeRole!: HasManyRemoveAssociationMixin<Role, string>;
+  removeRoles!: HasManyRemoveAssociationsMixin<Role, string>;
+  hasRole!: HasManyHasAssociationMixin<Role, string>;
+  hasRoles!: HasManyHasAssociationsMixin<Role, string>;
+  countRoles!: HasManyCountAssociationsMixin;
 }
 
 @InputType()
@@ -329,6 +351,7 @@ export class TeamUpdateInput extends PartialType(
     'club',
     'players',
     'captain',
+    'roles',
     'entry',
   ] as const),
   InputType

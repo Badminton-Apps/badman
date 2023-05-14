@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, TransferState } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
@@ -11,7 +11,9 @@ import { first, map, switchMap } from 'rxjs/operators';
 export class RankingSystemResolver {
   constructor(
     private apollo: Apollo,
-    private raningSystemService: RankingSystemService
+    private raningSystemService: RankingSystemService,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -46,7 +48,7 @@ export class RankingSystemResolver {
             },
           })
           .pipe(
-            transferState('rankingKey-' + systemId),
+            transferState('rankingKey-' + systemId, this.stateTransfer, this.platformId),
             map((result) => {
               if (!result?.data.rankingSystem) {
                 throw new Error('No player');

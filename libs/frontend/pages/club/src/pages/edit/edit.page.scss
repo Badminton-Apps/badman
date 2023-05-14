@@ -8,7 +8,8 @@
 
 .locations,
 .roles,
-.teams {
+.teams,
+.country {
   display: flex;
   flex-direction: row;
   gap: 1rem;
@@ -20,6 +21,8 @@ badman-club-edit-location {
   display: flex;
   flex-direction: column;
 }
+
+
 
 h2 {
   display: flex;

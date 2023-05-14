@@ -11,11 +11,14 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  PLATFORM_ID,
   TemplateRef,
+  TransferState,
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -241,7 +244,9 @@ export class AssemblyComponent implements OnInit, OnDestroy {
     private systemService: RankingSystemService,
     private authenticateService: AuthenticateService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit() {
@@ -723,7 +728,11 @@ export class AssemblyComponent implements OnInit, OnDestroy {
             },
           })
           .valueChanges.pipe(
-            transferState(`assemblyTeamKey-${teamId}`),
+            transferState(
+              `assemblyTeamKey-${teamId}`,
+              this.stateTransfer,
+              this.platformId
+            ),
             map((result) => {
               if (!result?.data.team) {
                 throw new Error('No club');
@@ -803,7 +812,11 @@ export class AssemblyComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        transferState(`eventForEncounter-${encounterCompetitionId}`),
+        transferState(
+          `eventForEncounter-${encounterCompetitionId}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map(
           (result) =>
             result?.data.encounterCompetition?.drawCompetition
@@ -1045,7 +1058,11 @@ export class AssemblyComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        transferState(`savedAssembly-${encounterId}`),
+        transferState(
+          `savedAssembly-${encounterId}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           if (!result?.data?.encounterCompetition) {
             throw new Error('No encounterCompetition');

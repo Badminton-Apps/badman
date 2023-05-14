@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformServer } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import {
   FormControl,
@@ -18,7 +18,7 @@ import { SeoService } from '@badman/frontend-seo';
 import { AvaliableLanguages, NotificationType } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, of } from 'rxjs';
+import { map, tap, Observable } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -69,6 +69,8 @@ export class SettingsPageComponent implements OnInit {
     },
   ];
 
+  settings$?: Observable<Setting | undefined>;
+
   constructor(
     private apollo: Apollo,
     private translate: TranslateService,
@@ -91,55 +93,59 @@ export class SettingsPageComponent implements OnInit {
       });
       this.breadcrumbsService.set('player/:id', player.fullName);
 
-      this._loadSettings(player).subscribe((setting) => {
-        if (setting === null || setting === undefined) {
-          return;
-        }
-        const encounterChangeConformationNotificationControl = new FormControl(
-          this.getValues(setting.encounterChangeConformationNotification)
-        );
+      this.settings$ = this._loadSettings(player).pipe(
+        tap((setting) => {
+          if (setting === null || setting === undefined) {
+            return;
+          }
+          const encounterChangeConformationNotificationControl =
+            new FormControl(
+              this.getValues(setting.encounterChangeConformationNotification)
+            );
 
-        const encounterChangeFinishedNotificationControl = new FormControl(
-          this.getValues(setting.encounterChangeFinishedNotification)
-        );
+          const encounterChangeFinishedNotificationControl = new FormControl(
+            this.getValues(setting.encounterChangeFinishedNotification)
+          );
 
-        const encounterChangeNewNotificationControl = new FormControl(
-          this.getValues(setting.encounterChangeNewNotification)
-        );
+          const encounterChangeNewNotificationControl = new FormControl(
+            this.getValues(setting.encounterChangeNewNotification)
+          );
 
-        const encounterNotAcceptedNotificationControl = new FormControl(
-          this.getValues(setting.encounterNotAcceptedNotification)
-        );
+          const encounterNotAcceptedNotificationControl = new FormControl(
+            this.getValues(setting.encounterNotAcceptedNotification)
+          );
 
-        const encounterNotEnteredNotificationControl = new FormControl(
-          this.getValues(setting.encounterNotEnteredNotification)
-        );
-        const syncSuccessNotification = new FormControl(
-          this.getValues(setting.syncSuccessNotification)
-        );
-        const syncFailedNotification = new FormControl(
-          this.getValues(setting.syncFailedNotification)
-        );
+          const encounterNotEnteredNotificationControl = new FormControl(
+            this.getValues(setting.encounterNotEnteredNotification)
+          );
+          const syncSuccessNotification = new FormControl(
+            this.getValues(setting.syncSuccessNotification)
+          );
+          const syncFailedNotification = new FormControl(
+            this.getValues(setting.syncFailedNotification)
+          );
 
-        const clubEnrollmentNotification = new FormControl(
-          this.getValues(setting.clubEnrollmentNotification)
-        );
-        this.settingsForm = new FormGroup({
-          encounterChangeConformationNotification:
-            encounterChangeConformationNotificationControl,
-          encounterChangeFinishedNotification:
-            encounterChangeFinishedNotificationControl,
-          encounterChangeNewNotification: encounterChangeNewNotificationControl,
-          encounterNotAcceptedNotification:
-            encounterNotAcceptedNotificationControl,
-          encounterNotEnteredNotification:
-            encounterNotEnteredNotificationControl,
-          syncSuccessNotification: syncSuccessNotification,
-          syncFailedNotification: syncFailedNotification,
-          clubEnrollmentNotification: clubEnrollmentNotification,
-          language: new FormControl(setting.language),
-        });
-      });
+          const clubEnrollmentNotification = new FormControl(
+            this.getValues(setting.clubEnrollmentNotification)
+          );
+          this.settingsForm = new FormGroup({
+            encounterChangeConformationNotification:
+              encounterChangeConformationNotificationControl,
+            encounterChangeFinishedNotification:
+              encounterChangeFinishedNotificationControl,
+            encounterChangeNewNotification:
+              encounterChangeNewNotificationControl,
+            encounterNotAcceptedNotification:
+              encounterNotAcceptedNotificationControl,
+            encounterNotEnteredNotification:
+              encounterNotEnteredNotificationControl,
+            syncSuccessNotification: syncSuccessNotification,
+            syncFailedNotification: syncFailedNotification,
+            clubEnrollmentNotification: clubEnrollmentNotification,
+            language: new FormControl(setting.language),
+          });
+        })
+      )
     });
   }
 
@@ -233,15 +239,11 @@ export class SettingsPageComponent implements OnInit {
   }
 
   private _loadSettings(player: Player) {
-    if (isPlatformServer(this.platformId) || !player) {
-      return of();
-    }
-
     return this.apollo
-      .query<{ me: Player }>({
+      .query<{ player: Player }>({
         query: gql`
-          query GetPlayerSettings {
-            me {
+          query GetPlayerSettings($id: ID!) {
+            player(id: $id) {
               id
               setting {
                 id
@@ -258,13 +260,13 @@ export class SettingsPageComponent implements OnInit {
             }
           }
         `,
+        variables: {
+          id: player.id || player.slug,
+        },
       })
       .pipe(
         map((result) => {
-          if (result.data) {
-            return new Player(result.data.me)?.setting as Setting;
-          }
-          return null;
+          return new Player(result.data.player)?.setting;
         })
       );
   }

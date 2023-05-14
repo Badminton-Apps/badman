@@ -2,10 +2,13 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  PLATFORM_ID,
+  TransferState,
 } from '@angular/core';
 import {
   FormControl,
@@ -87,7 +90,9 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private transferState: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit() {
@@ -235,7 +240,11 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        transferState(`teamEncounterKey-${teamId}`),
+        transferState(
+          `teamEncounterKey-${teamId}`,
+          this.transferState,
+          this.platformId
+        ),
         map(
           (result) =>
             result?.data.encounterCompetitions?.rows.map(

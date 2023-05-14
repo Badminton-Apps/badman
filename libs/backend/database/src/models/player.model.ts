@@ -55,7 +55,6 @@ import {
   Field,
   ID,
   InputType,
-  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -254,7 +253,7 @@ export class Player extends Model {
   removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
   removeClubs!: BelongsToManyRemoveAssociationsMixin<Club, string>;
   hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
-  hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>;
+  hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>; 
   countClub!: BelongsToManyCountAssociationsMixin;
 
   // Belongs to many Claim
@@ -358,7 +357,7 @@ export class Player extends Model {
     });
     claims = [
       ...claims,
-      ...roles.map((r) => r?.claims.map((c) => `${r.clubId}_${c.name}`)).flat(),
+      ...roles.map((r) => r?.claims.map((c) => `${r.linkId}_${c.name}`)).flat(),
     ];
 
     return claims;

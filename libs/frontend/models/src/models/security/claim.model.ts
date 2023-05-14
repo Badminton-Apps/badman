@@ -1,9 +1,11 @@
+import { SecurityType } from '@badman/utils';
+
 export class Claim {
   id?: string;
   name!: string;
   description?: string;
   category?: string;
-  type?: string;
+  type?: SecurityType;
 
   constructor({ ...args }: Partial<Claim>) {
     this.id = args.id;

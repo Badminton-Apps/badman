@@ -4,11 +4,14 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
   QueryList,
   TemplateRef,
+  TransferState,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
@@ -163,7 +166,9 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     private changedector: ChangeDetectorRef,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit() {
@@ -540,7 +545,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        transferState(`club-${clubId}`),
+        transferState(`club-${clubId}`, this.stateTransfer, this.platformId),
         map((r) => {
           if (!r?.data.club) {
             throw new Error('Club not found');

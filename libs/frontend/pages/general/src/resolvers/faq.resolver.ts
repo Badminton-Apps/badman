@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, TransferState } from '@angular/core';
 import { Faq } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { Apollo, gql } from 'apollo-angular';
@@ -6,7 +6,9 @@ import { first, map } from 'rxjs/operators';
 
 @Injectable()
 export class FaqResolver {
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string) {}
 
   resolve() {
     return this.apollo
@@ -22,7 +24,7 @@ export class FaqResolver {
         `,
       })
       .pipe(
-        transferState(`faqsKey`),
+        transferState(`faqsKey`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.faqs) {
             throw new Error('No faq');

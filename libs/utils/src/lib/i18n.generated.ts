@@ -86,8 +86,6 @@ export type I18nTranslations = {
             "end": string;
             "menu": {
                 "add-player": string;
-                "delete": string;
-                "edit": string;
                 "twizzit": string;
             };
             "new-team": string;
@@ -275,6 +273,22 @@ export type I18nTranslations = {
             "type": string;
             "vs": string;
             "vs-short": string;
+        };
+        "countries": {
+            "be": {
+                "antwerpen": string;
+                "brabant-wallon": string;
+                "brussels-hoofdstedelijk-gewest": string;
+                "hainaut": string;
+                "liege": string;
+                "limburg": string;
+                "luxembourg": string;
+                "name": string;
+                "namur": string;
+                "oost-vlaanderen": string;
+                "vlaams-brabant": string;
+                "west-vlaanderen": string;
+            };
         };
         "days": {
             "friday": string;
@@ -583,6 +597,16 @@ export type I18nTranslations = {
                 "eventcompetition": string;
                 "eventtournament": string;
                 "player": string;
+            };
+        };
+        "security": {
+            "claims": {
+                "edit": {
+                    "title": string;
+                };
+            };
+            "roles": {
+                "locked": string;
             };
         };
         "settings": {

@@ -82,8 +82,6 @@
     "end": "Einde",
     "menu": {
       "add-player": "Voeg speler toe",
-      "delete": "Verwijder",
-      "edit": "Bewerken",
       "twizzit": "Twizzit overview"
     },
     "new-team": "Nieuwe ploeg",
@@ -271,6 +269,22 @@
     "type": "Type",
     "vs": "tegen",
     "vs-short": "vs"
+  },
+  "countries": {
+    "be": {
+      "antwerpen": "Antwerpen",
+      "brabant-wallon": "Waals-Brabant",
+      "brussels-hoofdstedelijk-gewest": "Brussels Hoofdstedelijk Gewest",
+      "hainaut": "Henegouwen",
+      "liege": "Luik",
+      "limburg": "Limburg",
+      "luxembourg": "Luxemburg",
+      "name": "België",
+      "namur": "Namen",
+      "oost-vlaanderen": "Oost-Vlaanderen",
+      "vlaams-brabant": "Vlaams-Brabant",
+      "west-vlaanderen": "West-Vlaanderen"
+    }
   },
   "days": {
     "friday": "Vrijdag",
@@ -579,6 +593,16 @@
       "eventcompetition": "Competitie",
       "eventtournament": "Toernooi",
       "player": "Speler"
+    }
+  },
+  "security": {
+    "claims": {
+      "edit": {
+        "title": "Kies welke rechten deze rol heeft"
+      }
+    },
+    "roles": {
+      "locked": "Voorgedefinieerde rol van het systeem (kan niet bewerkt worden, enkel mensen toevoegen en verwijderen, min 1)"
     }
   },
   "settings": {

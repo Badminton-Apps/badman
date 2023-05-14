@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -48,7 +48,9 @@ export class DetailPageComponent implements OnInit {
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit(): void {
@@ -106,7 +108,7 @@ export class DetailPageComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(`teamEntries-${this.team.id}-${year}`),
+        transferState(`teamEntries-${this.team.id}-${year}`, this.stateTransfer, this.platformId),
         map((result) => new EventEntry(result?.data.team.entry as EventEntry))
       );
   }
