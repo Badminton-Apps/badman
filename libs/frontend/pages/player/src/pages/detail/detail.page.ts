@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -75,7 +75,9 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private translate: TranslateService,
     private claim: ClaimService,
-    private auth: AuthenticateService
+    private auth: AuthenticateService,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit(): void {
@@ -165,7 +167,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       })
       .pipe(
         map((result) => result.data.player.teams?.map((t) => new Team(t))),
-        transferState(`teamsPlayer-${this.player.id}`)
+        transferState(`teamsPlayer-${this.player.id}`, this.stateTransfer, this.platformId)
       );
   }
 
@@ -219,7 +221,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        transferState(`rankingPlayer-${this.player.id}`),
+        transferState(`rankingPlayer-${this.player.id}`, this.stateTransfer, this.platformId),
         map((result) => {
           if ((result?.data?.player?.rankingLastPlaces ?? []).length > 0) {
             const findPrimary = result?.data.player.rankingLastPlaces.find(

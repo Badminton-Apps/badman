@@ -82,8 +82,6 @@
     "end": "Fin",
     "menu": {
       "add-player": "Ajouter un joueur",
-      "delete": "Enlever",
-      "edit": "Modifier",
       "twizzit": "Présentation de Twizzit"
     },
     "new-team": "Nouvelle Équipe",
@@ -272,6 +270,22 @@
     "vs": "à",
     "vs-short": "Vs"
   },
+  "countries": {
+    "be": {
+      "antwerpen": "Anvers",
+      "brabant-wallon": "Brabant wallon",
+      "brussels-hoofdstedelijk-gewest": "Région de Bruxelles-Capitale",
+      "hainaut": "Hainaut",
+      "liege": "Liège",
+      "limburg": "Limbourg",
+      "luxembourg": "Luxembourg",
+      "name": "Belgique",
+      "namur": "Namur",
+      "oost-vlaanderen": "Flandre orientale",
+      "vlaams-brabant": "Brabant flamand",
+      "west-vlaanderen": "Flandre occidentale"
+    }
+  },
   "days": {
     "friday": "Vendredi",
     "monday": "Lundi",
@@ -431,7 +445,7 @@
     "select": "Sélectionner",
     "shuttle": "Shuttle",
     "start-hour": "Heure de début",
-    "state": "Province",
+    "state": "state",
     "street": "Rue",
     "streetnumber": "Numéro de la maison",
     "sub": "Inscription",
@@ -579,6 +593,16 @@
       "eventcompetition": "Concours",
       "eventtournament": "Tournoi",
       "player": "Joueur"
+    }
+  },
+  "security": {
+    "claims": {
+      "edit": {
+        "title": "Choisissez les droits dont dispose ce rôle"
+      }
+    },
+    "roles": {
+      "locked": "Rôle prédéfini du système (ne peut être modifié, seulement ajouter et supprimer des personnes, moins 1)"
     }
   },
   "settings": {

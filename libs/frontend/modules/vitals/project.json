@@ -9,6 +9,7 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
+        "tsConfig": "libs/frontend/modules/vitals/tsconfig.lib.json",
         "project": "libs/frontend/modules/vitals/ng-package.json"
       },
       "configurations": {

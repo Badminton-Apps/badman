@@ -5,6 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -34,7 +35,7 @@ import { Banner } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { iif, Observable, of } from 'rxjs';
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { HasClaimComponent } from '../../has-claim';
 import {
@@ -87,12 +88,11 @@ export class ShellComponent {
 
   banner?: Banner;
 
-  isHandset$: Observable<boolean> = this.breakpointObserver
-    .observe(Breakpoints.Handset)
-    .pipe(
-      map((result) => result.matches),
-      shareReplay()
-    );
+  isHandset = toSignal(
+    this.breakpointObserver
+      .observe(Breakpoints.Handset)
+      .pipe(map((result) => result.matches))
+  );
 
   canEnroll$!: Observable<boolean>;
 

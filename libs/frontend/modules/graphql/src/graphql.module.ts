@@ -8,7 +8,6 @@ import {
   NgModule,
   PLATFORM_ID
 } from '@angular/core';
-import { TransferState } from '@angular/platform-browser';
 import {
   ApolloLink,
   InMemoryCache

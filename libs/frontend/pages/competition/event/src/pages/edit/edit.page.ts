@@ -1,6 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  Injector,
+  OnInit,
+  Signal,
+  TemplateRef,
+  inject,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,14 +22,28 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { PageHeaderComponent } from '@badman/frontend-components';
-import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
+import {
+  AddRoleComponent,
+  EditRoleComponent,
+  HasClaimComponent,
+  PageHeaderComponent,
+} from '@badman/frontend-components';
+import { EventCompetition, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
+import { SecurityType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map, shareReplay } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { EventCompetitionLevelFieldsComponent } from './components';
+
+const roleQuery = gql`
+  query GetRoles($where: JSONObject) {
+    roles(where: $where) {
+      id
+    }
+  }
+`;
 
 @Component({
   selector: 'badman-competition-edit',
@@ -41,11 +69,19 @@ import { EventCompetitionLevelFieldsComponent } from './components';
     // Own modules
     PageHeaderComponent,
     EventCompetitionLevelFieldsComponent,
+    HasClaimComponent,
+    AddRoleComponent,
+    EditRoleComponent,
   ],
 })
 export class EditPageComponent implements OnInit {
+  private injector = inject(Injector);
+  public securityTypes: typeof SecurityType = SecurityType;
+
+  roles?: Signal<Role[] | undefined>;
+
   eventCompetition!: EventCompetition;
-  
+
   update$ = new BehaviorSubject(0);
   saved$ = new BehaviorSubject(0);
 
@@ -63,9 +99,9 @@ export class EditPageComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       this.eventCompetition = data['eventCompetition'];
-  
+
       const eventCompetitionName = `${this.eventCompetition.name}`;
-  
+
       this.seoService.update({
         title: eventCompetitionName,
         description: `Competition ${eventCompetitionName}`,
@@ -75,6 +111,24 @@ export class EditPageComponent implements OnInit {
       this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
 
       this.setupFormGroup(this.eventCompetition);
+
+      this.roles = toSignal(
+        this.apollo
+          .watchQuery<{ roles: Partial<Role>[] }>({
+            query: roleQuery,
+            variables: {
+              where: {
+                linkId: this.eventCompetition.id,
+                linkType: 'competition',
+              },
+            },
+          })
+          .valueChanges.pipe(
+            shareReplay(1),
+            map((result) => result.data?.roles?.map((r) => new Role(r)))
+          ),
+        { injector: this.injector }
+      );
     });
   }
 
@@ -112,7 +166,6 @@ export class EditPageComponent implements OnInit {
       ),
     });
   }
-
 
   async copy(templateRef: TemplateRef<object>) {
     this.dialog

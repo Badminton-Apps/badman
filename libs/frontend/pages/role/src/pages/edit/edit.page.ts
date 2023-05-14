@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Claim, Club, Role } from '@badman/frontend-models';
@@ -36,6 +36,8 @@ export class EditPageComponent implements OnInit {
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
     private router: Router,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit(): void {
@@ -98,12 +100,12 @@ export class EditPageComponent implements OnInit {
         `,
         variables: {
           where: {
-            type: ['CLUB', 'TEAM'],
+            type: ['club', 'team'],
           },
         },
       })
       .pipe(
-        transferState('clubTeamsKey-' + this.club.id),
+        transferState('clubTeamsKey-' + this.club.id, this.stateTransfer, this.platformId),
         map((x) => x?.data.claims?.map((c) => new Claim(c))),
         mergeMap((claims) => claims ?? []),
         groupBy((category) => category.category ?? 'Other'),

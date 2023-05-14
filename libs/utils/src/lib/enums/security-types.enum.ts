@@ -1,5 +1,7 @@
 export enum SecurityType {
-  GLOBAL = 'GLOBAL',
-  CLUB = 'CLUB',
-  TEAM = 'TEAM',
+  GLOBAL = 'global',
+  CLUB = 'club',
+  TEAM = 'team',
+  COMPETITION = 'competition',
+  TOURNAMENT = 'tournament',
 }

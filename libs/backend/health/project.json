@@ -1,9 +1,20 @@
 {
   "name": "backend-health",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/health/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/health",
+        "tsConfig": "libs/backend/health/tsconfig.lib.json",
+        "packageJson": "libs/backend/health/package.json",
+        "main": "libs/backend/health/src/index.ts",
+        "assets": ["libs/backend-health/*.md"]
+      }
+    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

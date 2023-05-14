@@ -1,5 +1,11 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
+import {
+  Inject,
+  Injectable,
+  Injector,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { PopupLoginOptions, RedirectLoginOptions } from '@auth0/auth0-spa-js';
 import { Player } from '@badman/frontend-models';

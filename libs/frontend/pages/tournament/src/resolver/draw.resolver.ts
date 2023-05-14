@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, TransferState } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { DrawTournament } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -7,7 +7,11 @@ import { first, map } from 'rxjs/operators';
 
 @Injectable()
 export class DrawResolver {
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
+  ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
     const drawId = route.params['id'];
@@ -52,7 +56,7 @@ export class DrawResolver {
         },
       })
       .pipe(
-        transferState('drawKey-' + drawId),
+        transferState('drawKey-' + drawId, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.drawTournament) {
             throw new Error('No draw found');

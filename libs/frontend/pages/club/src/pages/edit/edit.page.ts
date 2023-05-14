@@ -4,7 +4,9 @@ import {
   Inject,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
   TemplateRef,
+  TransferState,
   ViewChild,
 } from '@angular/core';
 import {
@@ -12,6 +14,7 @@ import {
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -27,13 +30,21 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { InMemoryCache } from '@apollo/client/cache';
-import { HasClaimComponent } from '@badman/frontend-components';
+import {
+  AddRoleComponent,
+  EditRoleComponent,
+  HasClaimComponent,
+  SelectCountryComponent,
+  SelectCountrystateComponent,
+} from '@badman/frontend-components';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { Club, Location, Player, Role, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import {
+  SecurityType,
   SubEventType,
   SubEventTypeEnum,
+  UseForTeamName,
   getCurrentSeason,
   sortTeams,
 } from '@badman/utils';
@@ -44,15 +55,25 @@ import {
   Observable,
   Subject,
   combineLatest,
+  iif,
   lastValueFrom,
+  of,
 } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  skip,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
 import {
   ClubEditLocationComponent,
-  ClubEditRoleComponent,
   ClubEditTeamComponent,
 } from './components';
 
@@ -74,10 +95,13 @@ import {
 
     // My Modules
     ClubEditLocationComponent,
-    ClubEditRoleComponent,
     ClubEditTeamComponent,
-    HasClaimComponent,
     ClubFieldsComponent,
+    HasClaimComponent,
+    SelectCountryComponent,
+    SelectCountrystateComponent,
+    EditRoleComponent,
+    AddRoleComponent,
 
     // Material Modules
     MatButtonToggleModule,
@@ -92,6 +116,8 @@ import {
   ],
 })
 export class EditPageComponent implements OnInit, OnDestroy {
+  public securityTypes: typeof SecurityType = SecurityType;
+
   club!: Club;
 
   destroy$ = new Subject<void>();
@@ -108,6 +134,16 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
   season = new FormControl();
   newTeamForm?: FormGroup;
+  clubGroup?: FormGroup<{
+    id: FormControl<string>;
+    name: FormControl<string>;
+    clubId: FormControl<string>;
+    fullName: FormControl<string>;
+    abbreviation: FormControl<string>;
+    useForTeamName: FormControl<UseForTeamName>;
+    country: FormControl<string>;
+    state: FormControl<string>;
+  }>;
 
   seasons = [getCurrentSeason()];
 
@@ -134,13 +170,14 @@ export class EditPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private apollo: Apollo,
     @Inject(APOLLO_CACHE) private cache: InMemoryCache,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       this.club = data['club'];
-
       const clubName = `${this.club.name}`;
 
       this.seoService.update({
@@ -151,10 +188,47 @@ export class EditPageComponent implements OnInit, OnDestroy {
       });
       this.breadcrumbsService.set('@club', clubName);
 
+      this.clubGroup = new FormGroup({
+        id: new FormControl(this.club.id, [Validators.required]),
+        name: new FormControl(this.club.name, [Validators.required]),
+        clubId: new FormControl(this.club.clubId, [Validators.required]),
+        fullName: new FormControl(this.club.fullName, [Validators.required]),
+        abbreviation: new FormControl(this.club.abbreviation, [
+          Validators.required,
+        ]),
+        useForTeamName: new FormControl(this.club.useForTeamName, [
+          Validators.required,
+        ]),
+        country: new FormControl(this.club.country, [Validators.required]),
+        state: new FormControl(this.club.state, [Validators.required]),
+      }) as FormGroup<{
+        id: FormControl<string>;
+        name: FormControl<string>;
+        clubId: FormControl<string>;
+        fullName: FormControl<string>;
+        abbreviation: FormControl<string>;
+        useForTeamName: FormControl<UseForTeamName>;
+        country: FormControl<string>;
+        state: FormControl<string>;
+      }>;
+
+      this.clubGroup.valueChanges
+        .pipe(
+          takeUntil(this.destroy$),
+          debounceTime(500),
+          distinctUntilChanged(),
+          skip(1),
+          filter(() => this.clubGroup?.valid ?? false)
+        )
+        .subscribe((value) => {
+          this.save(value as Club);
+        });
+
       this.roles$ = combineLatest([this.updateClub$, this.updateRoles$]).pipe(
         takeUntil(this.destroy$),
         switchMap(([, useCache]) => this._loadRoles(useCache))
       );
+
       this.locations$ = combineLatest([
         this.updateClub$,
         this.updateLocation$,
@@ -274,12 +348,17 @@ export class EditPageComponent implements OnInit, OnDestroy {
         `,
         variables: {
           where: {
-            clubId: this.club.id,
+            linkId: this.club.id,
+            linkType: 'club',
           },
         },
       })
       .pipe(
-        transferState(`clubRolesKey-${this.club.id}`),
+        transferState(
+          `clubRolesKey-${this.club.id}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           if (!result?.data.roles) {
             throw new Error('No roles');
@@ -317,7 +396,11 @@ export class EditPageComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        transferState(`clubLocationsKey-${this.club.id}`),
+        transferState(
+          `clubLocationsKey-${this.club.id}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           if (!result?.data.club) {
             throw new Error('No club');
@@ -390,58 +473,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  async onPlayerAddedToRole(player: Player, role: Role) {
-    if (player && role) {
-      await lastValueFrom(
-        this.apollo.mutate({
-          mutation: gql`
-            mutation AddPlayerToRole($playerId: ID!, $roleId: ID!) {
-              addPlayerToRole(playerId: $playerId, roleId: $roleId)
-            }
-          `,
-          variables: {
-            playerId: player.id,
-            roleId: role.id,
-          },
-        })
-      );
-      this.snackBar.open('Player added', undefined, {
-        duration: 1000,
-        panelClass: 'success',
-      });
-      this._deleteRoleFromCache(role.id);
-      this.updateRoles$.next(false);
-    }
-  }
-
-  async onPlayerRemovedFromRole(player: Player, role: Role) {
-    if (player && role) {
-      await lastValueFrom(
-        this.apollo.mutate({
-          mutation: gql`
-            mutation RemovePlayerFromRole($playerId: ID!, $roleId: ID!) {
-              removePlayerFromRole(playerId: $playerId, roleId: $roleId)
-            }
-          `,
-          variables: {
-            playerId: player.id,
-            roleId: role.id,
-          },
-        })
-      );
-      this.snackBar.open('Player removed', undefined, {
-        duration: 1000,
-        panelClass: 'success',
-      });
-      this._deleteRoleFromCache(role.id);
-      this.updateRoles$.next(false);
-    }
-  }
-
-  async onEditRole(role: Role) {
-    this.router.navigate(['role', role.id], { relativeTo: this.route });
-  }
-
   async onEditLocation(location?: Location, club?: Club) {
     const dialogRef = this.dialog.open(LocationDialogComponent, {
       data: { location, club, compYears: [2022, 2021, 2020] },
@@ -469,6 +500,10 @@ export class EditPageComponent implements OnInit, OnDestroy {
     );
 
     this.updateLocation$.next(null);
+  }
+
+  async addRole() {
+    this.updateRoles$.next(false);
   }
 
   async onDeleteRole(role: Role) {

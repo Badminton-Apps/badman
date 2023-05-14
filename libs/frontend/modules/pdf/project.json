@@ -1,5 +1,5 @@
 {
-  "name": "frontend-modules-pdf",
+  "name": "frontend--pdf",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/modules/pdf/src",
@@ -9,6 +9,7 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
+        "tsConfig": "libs/frontend/modules/pdf/tsconfig.lib.json",
         "project": "libs/frontend/modules/pdf/ng-package.json"
       },
       "configurations": {

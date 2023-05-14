@@ -58,7 +58,10 @@
       "unitTestRunner": "jest"
     },
     "@nx/angular:component": {
-      "style": "scss"
+      "style": "scss",
+      "skipTests": true,
+      "export": true,
+      "standalone": true
     }
   },
   "pluginsConfig": {},

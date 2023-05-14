@@ -2,8 +2,11 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  Inject,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
+  TransferState,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -102,7 +105,9 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
     private seoService: SeoService,
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
-    private systemService: RankingSystemService
+    private systemService: RankingSystemService,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit(): void {
@@ -283,7 +288,7 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
             },
           })
           .pipe(
-            transferState('primarySystem'),
+            transferState('primarySystem', this.stateTransfer, this.platformId),
             map((x) =>
               x?.data.rankingSystems[0]
                 ? new RankingSystem(x.data.rankingSystems[0])

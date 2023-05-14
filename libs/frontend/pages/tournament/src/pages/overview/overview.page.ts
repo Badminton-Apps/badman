@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, TransferState, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -88,7 +88,9 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private dialog: MatDialog,
     private matSnackBar: MatSnackBar,
-    formBuilder: FormBuilder
+    formBuilder: FormBuilder,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {
     this.filter = formBuilder.group({
       name: new FormControl(''),
@@ -207,7 +209,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       })
       .pipe(
         transferState(
-          `tournaments-${aort}-${direction}-${page}-${filter?.name}-${filter?.official}`
+          `tournaments-${aort}-${direction}-${page}-${filter?.name}-${filter?.official}`, this.stateTransfer, this.platformId
         ),
         map((result) => {
           if (!result?.data.eventTournaments) {

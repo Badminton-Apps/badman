@@ -4,6 +4,17 @@
   "sourceRoot": "libs/backend/twizzit/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/twizzit",
+        "tsConfig": "libs/backend/twizzit/tsconfig.lib.json",
+        "packageJson": "libs/backend/twizzit/package.json",
+        "main": "libs/backend/twizzit/src/index.ts",
+        "assets": ["libs/backend-twizzit/*.md"]
+      }
+    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

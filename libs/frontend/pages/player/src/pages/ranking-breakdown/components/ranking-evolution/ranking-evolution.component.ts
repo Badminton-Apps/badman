@@ -6,6 +6,7 @@ import {
   Input,
   OnInit,
   PLATFORM_ID,
+  TransferState,
 } from '@angular/core';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -42,6 +43,7 @@ export class RankingEvolutionComponent implements OnInit {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: string,
+    private stateTransfer: TransferState,
     private apollo: Apollo
   ) {}
 
@@ -136,7 +138,9 @@ export class RankingEvolutionComponent implements OnInit {
       })
       .pipe(
         transferState(
-          'player-ranking-places' + this.player.id + this.system.id + '-state'
+          'player-ranking-places' + this.player.id + this.system.id + '-state',
+          this.stateTransfer,
+          this.platformId
         ),
         map((x) => x?.data?.player),
         map((x) => x?.rankingPlaces?.map((x) => new RankingPlace(x)))

@@ -1,7 +1,7 @@
 <badman-has-claim [any]="[club.id + '_edit:club', 'edit-any:club']">
   <badman-club-fields
-    [club]="club"
-    (save)="this.save($event)"
+    *ngIf="clubGroup"
+    [group]="clubGroup"
   ></badman-club-fields>
   <div noPerm>{{ club.name }}</div>
 </badman-has-claim>
@@ -47,25 +47,21 @@
     <badman-has-claim
       [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']"
     >
-      <button
-        mat-icon-button
-        [routerLink]="['/', 'club', club.id, 'edit', 'role', 'add']"
-      >
-        <mat-icon>add</mat-icon>
-      </button>
+      <badman-add-role
+        (whenRoleAdded)="addRole()"
+        linkType="club"
+        [linkId]="this.club.id!"
+      />
     </badman-has-claim>
   </h2>
   <div class="roles">
-    <badman-club-edit-role
-      *ngFor="let role of roles$ | async"
-      [role]="role"
-      [club]="club"
-      (whenPlayerAdded)="this.onPlayerAddedToRole($event, role)"
-      (whenPlayerRemoved)="this.onPlayerRemovedFromRole($event, role)"
-      (whenEdit)="this.onEditRole($event)"
-      (whenDelete)="this.onDeleteRole($event)"
-    >
-    </badman-club-edit-role>
+    <ng-container *ngFor=" let role of this.roles$ | async">
+      <badman-edit-role
+        [roleId]="role.id"
+        *ngIf="role.id"
+        [type]="[securityTypes.CLUB, securityTypes.TEAM]"
+      />
+    </ng-container>
   </div>
 </badman-has-claim>
 
@@ -101,4 +97,26 @@
 
 <ng-template #loading>
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>
+
+<ng-template newRoleTemplate>
+  <h1 mat-dialog-title>Create role</h1>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput #name />
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close>No Thanks</button>
+    <button
+      mat-raised-button
+      color="primary"
+      [mat-dialog-close]="name.value"
+      cdkFocusInitial
+      [disabled]="!name.value || (name?.value ?? 0) <=3"
+    >
+      Ok
+    </button>
+  </div>
 </ng-template>

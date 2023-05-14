@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
@@ -39,7 +46,11 @@ export class UpcomingGamesComponent implements OnInit {
 
   readonly pageSize = 10;
 
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
+  ) {}
 
   ngOnInit() {
     this.upcomingEncounters$ = this.currentIndex$.pipe(
@@ -126,7 +137,11 @@ export class UpcomingGamesComponent implements OnInit {
         },
       })
       .pipe(
-        transferState('upcommingKey-' + this.teamId ?? this.clubid),
+        transferState(
+          'upcommingKey-' + this.teamId ?? this.clubid,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           return result?.data?.encounterCompetitions?.rows?.map(
             (encounter) => new EncounterCompetition(encounter)

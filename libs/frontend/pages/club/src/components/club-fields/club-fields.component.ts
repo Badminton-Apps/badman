@@ -2,32 +2,23 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Input,
-  OnInit,
-  Output,
+  OnInit
 } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators,
+  Validators
 } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ClaimService } from '@badman/frontend-auth';
-import { Club } from '@badman/frontend-models';
+import { HasClaimComponent, SelectCountryComponent, SelectCountrystateComponent } from '@badman/frontend-components';
 import { UseForTeamName } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  skip,
-} from 'rxjs/operators';
 
 @Component({
   selector: 'badman-club-fields',
@@ -48,89 +39,106 @@ import {
     MatSelectModule,
 
     // My Modules
+    HasClaimComponent,
+    SelectCountryComponent,
+    SelectCountrystateComponent,
   ],
 })
 export class ClubFieldsComponent implements OnInit {
+  @Input({ required: true })
+  group!: FormGroup;
+
   @Input()
-  club: Club = {} as Club;
+  controlName = 'country';
 
-  @Output() save = new EventEmitter<Club>();
-
-  clubForm!: FormGroup;
+  @Input()
+  control!: FormGroup<{
+    name: FormControl<string>;
+    clubId: FormControl<string>;
+    fullName: FormControl<string>;
+    abbreviation: FormControl<string>;
+    useForTeamName: FormControl<UseForTeamName>;
+    country: FormControl<string>;
+    subdivision: FormControl<string>;
+  }>;
 
   exampleTeamName?: string;
 
   constructor(private claimService: ClaimService) {}
 
   ngOnInit() {
-    const nameControl = new FormControl(this.club.name, Validators.required);
-    const fullNameControl = new FormControl(this.club.fullName);
-    const clubIdControl = new FormControl(
-      this.club.clubId,
-      Validators.required
-    );
-    const abbrControl = new FormControl(
-      this.club.abbreviation,
-      Validators.required
-    );
-    const useForTeamNameControl = new FormControl(
-      this.club.useForTeamName ?? 'name',
-      Validators.required
-    );
+    if (this.group) {
+      this.control = this.group?.get(this.controlName) as FormGroup<{
+        name: FormControl<string>;
+        clubId: FormControl<string>;
+        fullName: FormControl<string>;
+        abbreviation: FormControl<string>;
+        useForTeamName: FormControl<UseForTeamName>;
+        country: FormControl<string>;
+        subdivision: FormControl<string>;
+      }>;
+    }
 
-    this.clubForm = new FormGroup({
-      name: nameControl,
-      fullName: fullNameControl,
-      abbreviation: abbrControl,
-      useForTeamName: useForTeamNameControl,
-      clubId: clubIdControl,
-    });
+    if (!this.control) {
+      console.log('No control provided, creating one');
+      this.control = new FormGroup({
+        name: new FormControl('', Validators.required),
+        clubId: new FormControl('', Validators.required),
+        fullName: new FormControl('', Validators.required),
+        abbreviation: new FormControl('', Validators.required),
+        useForTeamName: new FormControl(
+          UseForTeamName.NAME,
+          Validators.required
+        ),
+        country: new FormControl('', Validators.required),
+        subdivision: new FormControl('', Validators.required),
+      }) as FormGroup<{
+        name: FormControl<string>;
+        clubId: FormControl<string>;
+        fullName: FormControl<string>;
+        abbreviation: FormControl<string>;
+        useForTeamName: FormControl<UseForTeamName>;
+        country: FormControl<string>;
+        subdivision: FormControl<string>;
+      }>;
+    }
 
-    this.clubForm.disable();
+    if (this.group && !this.group?.get(this.controlName)) {
+      console.log('Adding control to group');
+      this.group.addControl(this.controlName, this.control);
+    }
+
+    this.group.disable();
     this.claimService.hasAnyClaims$(['edit-any:club']).subscribe((r) => {
       if (r) {
-        this.clubForm.enable();
+        this.group.enable();
       }
     });
 
-    this.clubForm.valueChanges.subscribe(() => this._setExampleTeamName());
+    this.group.valueChanges.subscribe(() => this._setExampleTeamName());
 
-    nameControl.valueChanges.subscribe((r) => {
-      if (!abbrControl.touched) {
+    this.group.get('name')?.valueChanges.subscribe((r) => {
+      if (!this.group.get('abbreviation')?.touched) {
         const matches = r?.match(/\b(\w)/g);
-        abbrControl.setValue(matches?.join(''));
+        this.group.get('abbreviation')?.setValue(matches?.join(''));
       }
     });
-
-    this.clubForm.valueChanges
-      .pipe(
-        debounceTime(600),
-        filter(() => this.clubForm.valid),
-        map(
-          () => ({ id: this.club.id, ...this.clubForm.value } as Partial<Club>)
-        ),
-        distinctUntilChanged(),
-        skip(1)
-      )
-      .subscribe((value) => {
-        this.save.next(value);
-      });
 
     this._setExampleTeamName();
   }
 
   private _setExampleTeamName() {
-    switch (this.clubForm.value.useForTeamName) {
+    switch (this.group.value.useForTeamName) {
       case UseForTeamName.FULL_NAME:
-        this.exampleTeamName = `${this.clubForm.value.fullName ?? ''} 1G`;
+        this.exampleTeamName = `${this.group.value.fullName ?? ''} 1G`;
         break;
       case UseForTeamName.ABBREVIATION:
-        this.exampleTeamName = `${this.clubForm.value.abbreviation ?? ''} 1G`;
+        this.exampleTeamName = `${this.group.value.abbreviation ?? ''} 1G`;
         break;
 
       default:
       case UseForTeamName.NAME:
-        this.exampleTeamName = `${this.clubForm.value.name ?? ''} 1G`;
+        this.exampleTeamName = `${this.group.value.name ?? ''} 1G`;
         break;
     }
   }

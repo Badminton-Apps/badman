@@ -4,6 +4,17 @@
   "sourceRoot": "libs/backend/visual/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/visual",
+        "tsConfig": "libs/backend/visual/tsconfig.lib.json",
+        "packageJson": "libs/backend/visual/package.json",
+        "main": "libs/backend/visual/src/index.ts",
+        "assets": ["libs/backend-visual/*.md"]
+      }
+    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

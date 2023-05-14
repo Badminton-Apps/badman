@@ -1,11 +1,11 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
-  ChangeDetectorRef,
   Component,
   Inject,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
+  TransferState,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -40,10 +40,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
 import {
-  shareReplay,
   distinctUntilChanged,
   filter,
   map,
+  shareReplay,
   startWith,
   switchMap,
   take,
@@ -103,7 +103,8 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private twizzitService: TwizzitService,
-    @Inject(PLATFORM_ID) private platformId: string,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   get isClient(): boolean {
@@ -180,8 +181,13 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           },
         })
         .pipe(
+          transferState(
+            `club-${this.club.id}-seasons`,
+            this.stateTransfer,
+            this.platformId
+          ),
           map((result) => {
-            if (!result.data.teams) {
+            if (!result?.data.teams) {
               throw new Error('No teams');
             }
             return result.data.teams.map((row) => row?.season as number);
@@ -240,7 +246,11 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         },
       })
       .valueChanges.pipe(
-        transferState(`clubTeamsKey-${this.club.id}`),
+        transferState(
+          `clubTeamsKey-${this.club.id}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           if (!result?.data.teams) {
             throw new Error('No club');
@@ -285,7 +295,11 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         },
       })
       .valueChanges.pipe(
-        transferState(`clubPlayerTeamsKey-${this.club.id}`),
+        transferState(
+          `clubPlayerTeamsKey-${this.club.id}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           if (!result?.data.club) {
             throw new Error('No club');

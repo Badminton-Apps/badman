@@ -37,7 +37,15 @@ import { LocationEventTournamentMembership } from './location-event-membership.m
 import { SubEventTournament } from './sub-event-tournament.model';
 import { Slugify } from '../../../types';
 import { UsedRankingTiming } from '@badman/utils';
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
+import { Role } from '../../security';
 
 @Table({
   timestamps: true,
@@ -101,7 +109,6 @@ export class EventTournament extends Model {
   })
   subEventTournaments: SubEventTournament[];
 
-
   @Unique('EventTournaments_unique_constraint')
   @Field({ nullable: true })
   @Column
@@ -129,6 +136,24 @@ export class EventTournament extends Model {
   @Field()
   @Column
   official: boolean;
+
+  @Field({ nullable: true })
+  @Column
+  state: string;
+
+  @Field({ nullable: true })
+  @Column
+  country: string;
+
+  @Field(() => [Role], { nullable: true })
+  @HasMany(() => Role, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'tournament',
+    },
+  })
+  roles?: Role[];
 
   regenerateSlug!: Slugify<EventTournament>;
 
@@ -174,15 +199,22 @@ export class EventTournament extends Model {
   hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
   hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
   countLocation!: BelongsToManyCountAssociationsMixin;
-}
 
+  // Has many Role
+  getRoles!: HasManyGetAssociationsMixin<Role>;
+  setRoles!: HasManySetAssociationsMixin<Role, string>;
+  addRoles!: HasManyAddAssociationsMixin<Role, string>;
+  addRole!: HasManyAddAssociationMixin<Role, string>;
+  removeRole!: HasManyRemoveAssociationMixin<Role, string>;
+  removeRoles!: HasManyRemoveAssociationsMixin<Role, string>;
+  hasRole!: HasManyHasAssociationMixin<Role, string>;
+  hasRoles!: HasManyHasAssociationsMixin<Role, string>;
+  countRoles!: HasManyCountAssociationsMixin;
+}
 
 @InputType()
 export class EventTournamentUpdateInput extends PartialType(
-  OmitType(EventTournament, [
-    'createdAt',
-    'updatedAt',
-  ] as const),
+  OmitType(EventTournament, ['createdAt', 'updatedAt', 'roles'] as const),
   InputType
 ) {}
 

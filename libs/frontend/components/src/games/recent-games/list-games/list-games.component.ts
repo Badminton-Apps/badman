@@ -4,8 +4,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  Inject,
   Input,
   OnInit,
+  PLATFORM_ID,
+  TransferState,
   ViewChild,
 } from '@angular/core';
 import {
@@ -71,7 +74,12 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
 
   @ViewChild('bottomObserver', { static: false }) bottomObserver!: ElementRef;
 
-  constructor(formBuilder: FormBuilder, private apollo: Apollo) {
+  constructor(
+    formBuilder: FormBuilder,
+    private apollo: Apollo,
+    private transferState: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
+  ) {
     this.filter = formBuilder.group({
       choices: [['S', 'D', 'MX']],
     });
@@ -208,7 +216,11 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
         },
       })
       .pipe(
-        transferState(`recentGamesKey-${this.playerId}`),
+        transferState(
+          `recentGamesKey-${this.playerId}`,
+          this.transferState,
+          this.platformId
+        ),
         map((result) => {
           return (
             result?.data.player?.games?.map((game) => new Game(game)) ?? []

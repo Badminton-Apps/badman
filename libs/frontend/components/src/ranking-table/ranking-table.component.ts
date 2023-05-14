@@ -2,8 +2,11 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  Inject,
   Input,
-  OnInit
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
 } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RankingSystemService } from '@badman/frontend-graphql';
@@ -36,7 +39,9 @@ export class RankingTableComponent implements OnInit {
 
   constructor(
     private apollo: Apollo,
-    private raningSystemService: RankingSystemService
+    private raningSystemService: RankingSystemService,
+    private transferState: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit() {
@@ -102,7 +107,11 @@ export class RankingTableComponent implements OnInit {
           },
         })
         .pipe(
-          transferState('rankingKey-' + systemId),
+          transferState(
+            'rankingKey-' + systemId,
+            this.transferState,
+            this.platformId
+          ),
           map((result) => {
             if (!result?.data.rankingSystem) {
               throw new Error('No player');

@@ -82,8 +82,6 @@
     "end": "End",
     "menu": {
       "add-player": "Add Player",
-      "delete": "Delete",
-      "edit": "Edit",
       "twizzit": "Twizzit overview"
     },
     "new-team": "New team",
@@ -271,6 +269,22 @@
     "type": "Type",
     "vs": "against",
     "vs-short": "vs"
+  },
+  "countries": {
+    "be": {
+      "antwerpen": "Antwerp",
+      "brabant-wallon": "Walloon Brabant",
+      "brussels-hoofdstedelijk-gewest": "Brussels Capital Region",
+      "hainaut": "Hainaut",
+      "liege": "Liège",
+      "limburg": "Limburg",
+      "luxembourg": "Luxembourg",
+      "name": "Belgium",
+      "namur": "Namur",
+      "oost-vlaanderen": "East Flanders",
+      "vlaams-brabant": "Flemish Brabant",
+      "west-vlaanderen": "West Flanders"
+    }
   },
   "days": {
     "friday": "Friday",
@@ -579,6 +593,16 @@
       "eventcompetition": "Competition",
       "eventtournament": "Tournament",
       "player": "Player"
+    }
+  },
+  "security": {
+    "claims": {
+      "edit": {
+        "title": "Choose what permissions this role has"
+      }
+    },
+    "roles": {
+      "locked": "Predefined system role (cannot be edited, only add and remove people, minus 1)"
     }
   },
   "settings": {

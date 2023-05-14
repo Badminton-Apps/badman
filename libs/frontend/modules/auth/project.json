@@ -1,5 +1,5 @@
 {
-  "name": "frontend-modules-auth",
+  "name": "frontend-auth",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/modules/auth/src",
@@ -9,6 +9,7 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
+        "tsConfig": "libs/frontend/modules/auth/tsconfig.lib.json",
         "project": "libs/frontend/modules/auth/ng-package.json"
       },
       "configurations": {

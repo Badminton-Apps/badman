@@ -9,6 +9,7 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
+        "tsConfig": "libs/frontend/pages/general/tsconfig.lib.json",
         "project": "libs/frontend/pages/general/ng-package.json"
       },
       "configurations": {

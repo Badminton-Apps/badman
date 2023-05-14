@@ -71,8 +71,8 @@ export class RoleResolver {
 
     if (
       !user.hasAnyPermission([
-        dbRole.clubId + '_edit:role',
-        dbRole.clubId + '_edit:club',
+        `${dbRole.linkId}_edit:role`,
+        `${dbRole.linkId}_edit:${dbRole.linkType}}`,
         'edit-any:club',
       ])
     ) {
@@ -110,8 +110,8 @@ export class RoleResolver {
 
     if (
       !user.hasAnyPermission([
-        dbRole.clubId + '_edit:role',
-        dbRole.clubId + '_edit:club',
+        `${dbRole.linkId}_edit:role`,
+        `${dbRole.linkId}_edit:${dbRole.linkType}}`,
         'edit-any:club',
       ])
     ) {
@@ -138,8 +138,8 @@ export class RoleResolver {
   ) {
     if (
       !user.hasAnyPermission([
-        createRoleData.clubId + '_edit:role',
-        createRoleData.clubId + '_edit:club',
+        `${createRoleData.linkId}_edit:role`,
+        `${createRoleData.linkId}_edit:${createRoleData.linkType}}`,
         'edit-any:club',
       ])
     ) {
@@ -185,8 +185,8 @@ export class RoleResolver {
 
     if (
       !user.hasAnyPermission([
-        dbRole.clubId + '_edit:role',
-        dbRole.clubId + '_edit:club',
+        `${dbRole.linkId}_edit:role`,
+        `${dbRole.linkId}_edit:${dbRole.linkType}}`,
         'edit-any:club',
       ])
     ) {
@@ -234,8 +234,8 @@ export class RoleResolver {
 
     if (
       !user.hasAnyPermission([
-        dbRole.clubId + '_edit:role',
-        dbRole.clubId + '_edit:club',
+        `${dbRole.linkId}_edit:role`,
+        `${dbRole.linkId}_edit:${dbRole.linkType}}`,
         'edit-any:club',
       ])
     ) {

@@ -3,7 +3,10 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
+  Inject,
   OnInit,
+  PLATFORM_ID,
+  TransferState,
   ViewChild,
 } from '@angular/core';
 import {
@@ -98,7 +101,9 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     private jobsService: JobsService,
     private matSnackBar: MatSnackBar,
     private changeDetectorRef: ChangeDetectorRef,
-    formBuilder: FormBuilder
+    formBuilder: FormBuilder,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {
     this.filter = formBuilder.group({
       name: new FormControl(),
@@ -275,7 +280,9 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       })
       .pipe(
         transferState(
-          `competitions-${sort}-${direction}-${page}-${filter?.name}-${filter?.official}`
+          `competitions-${sort}-${direction}-${page}-${filter?.name}-${filter?.official}`,
+          this.stateTransfer,
+          this.platformId
         ),
         map((result) => {
           if (!result?.data.eventCompetitions) {

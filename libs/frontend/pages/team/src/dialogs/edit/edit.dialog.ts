@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, TransferState } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -50,6 +50,8 @@ export class EditDialogComponent {
     private apollo: Apollo,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<EditDialogComponent>,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       team: Team;
@@ -102,7 +104,7 @@ export class EditDialogComponent {
         },
       })
       .valueChanges.pipe(
-        transferState(`teamPlayers-${this.data.team.id}`),
+        transferState(`teamPlayers-${this.data.team.id}`, this.stateTransfer, this.platformId),
         map((result) =>
           result?.data.team.players?.map((t) => new TeamPlayer(t))
         ),

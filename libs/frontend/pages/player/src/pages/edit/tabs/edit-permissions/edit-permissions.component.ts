@@ -58,7 +58,7 @@ export class EditPermissionsComponent implements OnInit {
         `,
         variables: {
           where: {
-            type: 'GLOBAL',
+            type: 'global',
           },
         },
       })

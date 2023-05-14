@@ -13,7 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { LocationFieldsComponent } from './components';
+import { LocationDialogFieldsComponent } from './components';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -35,7 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule,
 
     // My Modules
-    LocationFieldsComponent,
+    LocationDialogFieldsComponent,
   ],
 })
 export class LocationDialogComponent implements OnInit {

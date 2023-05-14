@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, TransferState } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { EventTournament } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -9,6 +9,8 @@ import { first, map } from 'rxjs/operators';
 export class EventResolver  {
   constructor(
     private apollo: Apollo,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -50,7 +52,7 @@ export class EventResolver  {
         },
       })
       .pipe(
-        transferState('eventKey-' + eventId),
+        transferState('eventKey-' + eventId, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.eventTournament) {
             throw new Error('No event found!');

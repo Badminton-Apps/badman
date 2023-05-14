@@ -105,7 +105,13 @@ export class Club extends Model {
   teams?: Team[];
 
   @Field(() => [Role], { nullable: true })
-  @HasMany(() => Role)
+  @HasMany(() => Role, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'club',
+    },
+  })
   roles?: Role[];
 
   @Field(() => [Player], { nullable: true })
@@ -123,6 +129,14 @@ export class Club extends Model {
   @Field({ nullable: true })
   @Column
   slug: string;
+
+  @Field({ nullable: true })
+  @Column
+  state: string;
+
+  @Field({ nullable: true })
+  @Column
+  country: string;
 
   regenerateSlug!: Slugify<Club>;
 

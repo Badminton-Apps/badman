@@ -1,5 +1,5 @@
 {
-  "name": "frontend-modules-translation",
+  "name": "frontend--translation",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/modules/translation/src",
@@ -9,6 +9,7 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
+        "tsConfig": "libs/frontend/modules/translation/tsconfig.lib.json",
         "project": "libs/frontend/modules/translation/ng-package.json"
       },
       "configurations": {
