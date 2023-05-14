@@ -1,4 +1,4 @@
-<form [formGroup]="clubForm">
+<form [formGroup]="group">
   <p class="description">{{ 'all.input.required' | translate }}</p>
   <div class="name">
     <mat-form-field>
@@ -22,6 +22,13 @@
     </mat-form-field>
   </div>
 
+  <badman-has-claim [any]="['edit:state']">
+    <div class="country">
+      <badman-select-country [group]="group"></badman-select-country>
+      <badman-select-state [group]="group"></badman-select-state>
+    </div>
+  </badman-has-claim>
+
   <div>
     <mat-form-field>
       <mat-label>{{ 'all.club.number' | translate }}</mat-label>
@@ -38,7 +45,9 @@
   <div class="usedForTeam">
     <div>
       <h2>{{ 'all.team.usedForTeam.title' | translate }}</h2>
-      <p class="description">{{ 'all.team.usedForTeam.description' | translate }}</p>
+      <p class="description">
+        {{ 'all.team.usedForTeam.description' | translate }}
+      </p>
     </div>
     <div class="settings">
       <mat-form-field>

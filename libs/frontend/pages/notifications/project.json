@@ -9,6 +9,7 @@
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
+        "tsConfig": "libs/frontend/pages/notifications/tsconfig.lib.json",
         "project": "libs/frontend/pages/notifications/ng-package.json"
       },
       "configurations": {

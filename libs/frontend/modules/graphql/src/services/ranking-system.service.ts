@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, TransferState } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -16,7 +16,8 @@ export class RankingSystemService {
 
   constructor(
     private apollo: Apollo,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
+    private stateTransfer: TransferState
   ) {
     if (isPlatformBrowser(this.platformId)) {
       const savedSystem = sessionStorage.getItem(WATCH_SYSTEM_KEY);
@@ -38,7 +39,7 @@ export class RankingSystemService {
 
   getPrimarySystemId() {
     return this.getPrimarySystemsWhere().pipe(
-      transferState(`primarySystemId`),
+      transferState(`primarySystemId`, this.stateTransfer, this.platformId),
       switchMap((query) =>
         this.apollo
           .query<{ rankingSystems: { id: string }[] }>({
@@ -55,7 +56,7 @@ export class RankingSystemService {
           })
           .pipe(map((x) => x.data?.rankingSystems?.[0]?.id))
       ),
-      map((result) => result),
+      map((result) => result)
     );
   }
 

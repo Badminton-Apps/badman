@@ -39,6 +39,8 @@ import { Player } from '../player.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
 import { Claim, ClaimUpdateInput } from './claim.model';
 import { PlayerRoleMembership } from './role-player-membership.model';
+import { EventCompetition, EventTournament } from '../event';
+import { Team } from '../team.model';
 
 @Table({
   timestamps: true,
@@ -67,25 +69,55 @@ export class Role extends Model {
   @Column
   description: string;
 
+  @Field()
+  @Column
+  locked: boolean;
+
   @BelongsToMany(() => Claim, () => RoleClaimMembership)
   claims: (Claim & { RoleClaimMembership: RoleClaimMembership })[];
 
   @BelongsToMany(() => Player, () => PlayerRoleMembership)
   players: (Player & { PlayerClaimMembership: PlayerRoleMembership })[];
 
-  @BelongsTo(() => Club, 'clubId')
+  @BelongsTo(() => Club, {
+    foreignKey: 'linkId',
+    constraints: false,
+  })
   club: Club;
 
-  @Field(() => String, { nullable: true })
-  @Column(
-    DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM)
-  )
-  type: SecurityType;
+  @BelongsTo(() => Team, {
+    foreignKey: 'linkId',
+    constraints: false,
+  })
+  team: Team;
 
-  @ForeignKey(() => Club)
+  @BelongsTo(() => EventCompetition, {
+    foreignKey: 'linkId',
+    constraints: false,
+  })
+  competition: EventCompetition;
+
+  @BelongsTo(() => EventTournament, {
+    foreignKey: 'linkId',
+    constraints: false,
+  })
+  tournament: EventTournament;
+
   @Field({ nullable: true })
   @Column
-  clubId: string;
+  linkId: string;
+
+  @Field({ nullable: true })
+  @Column(
+    DataType.ENUM(
+      SecurityType.GLOBAL,
+      SecurityType.CLUB,
+      SecurityType.TEAM,
+      SecurityType.COMPETITION,
+      SecurityType.TOURNAMENT
+    )
+  )
+  linkType: string;
 
   // Belongs to many Claim
   getClaims!: BelongsToManyGetAssociationsMixin<Claim>;
@@ -112,6 +144,18 @@ export class Role extends Model {
   // Belongs to Club
   getClub!: BelongsToGetAssociationMixin<Club>;
   setClub!: BelongsToSetAssociationMixin<Club, string>;
+
+  // Belongs to Team
+  getTeam!: BelongsToGetAssociationMixin<Team>;
+  setTeam!: BelongsToSetAssociationMixin<Team, string>;
+
+  // Belongs to EventCompetition
+  getCompetition!: BelongsToGetAssociationMixin<EventCompetition>;
+  setCompetition!: BelongsToSetAssociationMixin<EventCompetition, string>;
+
+  // Belongs to EventTournament
+  getTournament!: BelongsToGetAssociationMixin<EventTournament>;
+  setTournament!: BelongsToSetAssociationMixin<EventTournament, string>;
 }
 
 @InputType()

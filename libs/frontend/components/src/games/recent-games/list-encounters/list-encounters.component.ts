@@ -2,8 +2,11 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  Inject,
   Input,
   OnInit,
+  PLATFORM_ID,
+  TransferState,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
@@ -36,7 +39,7 @@ import { LoadingBlockComponent } from '../../../loading-block';
     MatListModule,
 
     // own modules
-    LoadingBlockComponent
+    LoadingBlockComponent,
   ],
   selector: 'badman-list-encounters',
   templateUrl: './list-encounters.component.html',
@@ -50,7 +53,11 @@ export class ListEncountersComponent implements OnInit {
 
   recentEncounters$?: Observable<EncounterCompetition[]>;
 
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
+  ) {}
 
   ngOnInit() {
     this.recentEncounters$ = this._loadRecentEncounterForTeams(
@@ -154,7 +161,7 @@ export class ListEncountersComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(`recentKey-${this.teamId ?? this.clubId}`),
+        transferState(`recentKey-${this.teamId ?? this.clubId}`, this.stateTransfer, this.platformId),
         map((result) => {
           return (
             result?.data.encounterCompetitions.rows?.map(

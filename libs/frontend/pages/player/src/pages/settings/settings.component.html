@@ -1,4 +1,4 @@
-<form [formGroup]="this.settingsForm" *ngIf="this.settingsForm">
+<form [formGroup]="this.settingsForm" *ngIf="settings$ | async">
   <div class="settings-title">
     {{ 'all.settings.general.title' | translate }}
   </div>

@@ -1,5 +1,13 @@
-import { isDevMode, NgModule, SecurityContext } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {
+  APP_ID,
+  isDevMode,
+  NgModule,
+  SecurityContext
+} from '@angular/core';
+import {
+  BrowserModule,
+  provideClientHydration,
+} from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import {
@@ -10,15 +18,15 @@ import {
 } from '@badman/frontend-html-injects';
 import { JobsModule } from '@badman/frontend-jobs';
 
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { PdfModule } from '@badman/frontend-pdf';
-import { TwizzitModule } from '@badman/frontend-twizzit';
 import { AuthModule } from '@badman/frontend-auth';
+import { PdfModule } from '@badman/frontend-pdf';
 import { SeoModule } from '@badman/frontend-seo';
 import { TranslationModule } from '@badman/frontend-translation';
+import { TwizzitModule } from '@badman/frontend-twizzit';
 import { AnalyticsModule } from '@badman/frontend-vitals';
 import { NgMapsCoreModule } from '@ng-maps/core';
 import { GOOGLE_MAPS_API_CONFIG, NgMapsGoogleModule } from '@ng-maps/google';
@@ -32,7 +40,6 @@ import { AppComponent } from './app.component';
 import { ShellComponent } from '@badman/frontend-components';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
-import { AuthHttpInterceptor } from '@auth0/auth0-angular';
 
 const APP_ROUTES: Routes = [
   {
@@ -93,8 +100,9 @@ const APP_ROUTES: Routes = [
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    HttpClientModule,
     BrowserAnimationsModule,
-    BrowserModule.withServerTransition({ appId: 'badman' }),
+    BrowserModule,
     GraphQLModule.forRoot({
       api: environment.graphql,
     }),
@@ -168,6 +176,8 @@ const APP_ROUTES: Routes = [
     ShellComponent,
   ],
   providers: [
+    { provide: APP_ID, useValue: 'badman' },
+
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
@@ -193,11 +203,8 @@ const APP_ROUTES: Routes = [
         libraries: ['places'],
       },
     },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthHttpInterceptor,
-      multi: true,
-    },
+
+    provideClientHydration(),
   ],
   bootstrap: [AppComponent],
 })

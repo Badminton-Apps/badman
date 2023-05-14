@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -95,7 +103,9 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     private claimSerice: ClaimService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private authService: AuthenticateService
+    private authService: AuthenticateService,
+    private transferState: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit() {
@@ -144,7 +154,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
                 if (filtered.length == 1) {
                   this.control?.disable();
                   this.control?.setValue(filtered[0].id);
-                } 
+                }
 
                 return of({
                   rows: filtered,
@@ -270,7 +280,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
         `,
       })
       .pipe(
-        transferState(`clubsKey`),
+        transferState(`clubsKey`, this.transferState, this.platformId),
         map((result) => {
           if (!result?.data.clubs) {
             throw new Error('No clubs');

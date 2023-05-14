@@ -12,14 +12,10 @@
     </button>
 
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="downloadTwizzit()">
-        <mat-icon>download</mat-icon>
-        <span> {{'all.club.menu.twizzit' | translate}}</span>
-      </button>
       <badman-has-claim [any]="['edit-any:club', this.club.id + '_edit:club']">
         <button mat-menu-item [routerLink]="['..', this.club.id, 'edit']">
           <mat-icon>edit</mat-icon>
-          <span>{{'all.club.menu.edit' | translate}}</span>
+          <span>{{'all.button.edit' | translate}}</span>
         </button>
         <button mat-menu-item (click)="addPlayer()">
           <mat-icon>add</mat-icon>
@@ -29,9 +25,14 @@
       <badman-has-claim [any]="['edit-any:club']">
         <button mat-menu-item>
           <mat-icon>delete</mat-icon>
-          <span>{{'all.club.menu.delete' | translate}}</span>
+          <span>{{'all.button.delete' | translate}}</span>
         </button>
       </badman-has-claim>
+
+      <button mat-menu-item (click)="downloadTwizzit()">
+        <mat-icon>download</mat-icon>
+        <span> {{'all.club.menu.twizzit' | translate}}</span>
+      </button>
     </mat-menu>
   </div>
 </badman-page-header>

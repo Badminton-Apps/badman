@@ -2,10 +2,27 @@
   display: block;
 }
 
+form {
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
 .name {
   display: flex;
   flex-direction: row;
   gap: 1rem;
+}
+
+.country {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  badman-select-country,
+  badman-select-state {
+    flex: 1 1 auto;
+  }
 }
 
 .usedForTeam {

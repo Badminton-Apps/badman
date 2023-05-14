@@ -1,6 +1,5 @@
 // start:ng42.barrel
 export * from './add-player';
-export * from './claim';
 export * from './confirm';
 export * from './events';
 export * from './game-score';
@@ -15,5 +14,7 @@ export * from './ranking-table';
 export * from './selects';
 export * from './shell';
 export * from './standing';
-// end:ng42.barrel
 
+export * from './roles';
+
+// end:ng42.barrel

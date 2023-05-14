@@ -4,6 +4,17 @@
   "sourceRoot": "libs/backend/generator/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/generator",
+        "tsConfig": "libs/backend/generator/tsconfig.lib.json",
+        "packageJson": "libs/backend/generator/package.json",
+        "main": "libs/backend/generator/src/index.ts",
+        "assets": ["libs/backend-generator/*.md"]
+      }
+    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

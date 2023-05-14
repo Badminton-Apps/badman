@@ -34,6 +34,7 @@ import {
   OmitType,
   PartialType,
 } from '@nestjs/graphql';
+import { Role } from '../../security';
 
 @Table({
   timestamps: true,
@@ -90,6 +91,16 @@ export class EventCompetition extends Model {
   })
   comments: Comment[];
 
+  @Field(() => [Role], { nullable: true })
+  @HasMany(() => Role, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'competition',
+    },
+  })
+  roles?: Role[];
+
   @Field(() => [SubEventCompetition], { nullable: true })
   @HasMany(() => SubEventCompetition, {
     foreignKey: 'eventId',
@@ -133,6 +144,14 @@ export class EventCompetition extends Model {
   @Field()
   @Column
   official: boolean;
+
+  @Field({ nullable: true })
+  @Column
+  state: string;
+
+  @Field({ nullable: true })
+  @Column
+  country: string;
 
   regenerateSlug!: Slugify<EventCompetition>;
 
@@ -178,6 +197,17 @@ export class EventCompetition extends Model {
   hasComment!: HasManyHasAssociationMixin<Comment, string>;
   hasComments!: HasManyHasAssociationsMixin<Comment, string>;
   countComments!: HasManyCountAssociationsMixin;
+
+  // Has many Role
+  getRoles!: HasManyGetAssociationsMixin<Role>;
+  setRoles!: HasManySetAssociationsMixin<Role, string>;
+  addRoles!: HasManyAddAssociationsMixin<Role, string>;
+  addRole!: HasManyAddAssociationMixin<Role, string>;
+  removeRole!: HasManyRemoveAssociationMixin<Role, string>;
+  removeRoles!: HasManyRemoveAssociationsMixin<Role, string>;
+  hasRole!: HasManyHasAssociationMixin<Role, string>;
+  hasRoles!: HasManyHasAssociationsMixin<Role, string>;
+  countRoles!: HasManyCountAssociationsMixin;
 }
 
 @InputType()
@@ -187,6 +217,7 @@ export class EventCompetitionUpdateInput extends PartialType(
     'updatedAt',
     'comments',
     'subEventCompetitions',
+    'roles'
   ] as const),
   InputType
 ) {}

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, TransferState } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -7,7 +7,11 @@ import { first, map } from 'rxjs/operators';
 
 @Injectable()
 export class TeamResolver {
-  constructor(private apollo: Apollo) {}
+  constructor(
+    private apollo: Apollo,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
+  ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
     const teamId = route.params['id'];
@@ -27,7 +31,7 @@ export class TeamResolver {
         },
       })
       .pipe(
-        transferState('teamKey-' + teamId),
+        transferState('teamKey-' + teamId, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.team) {
             throw new Error('No team');

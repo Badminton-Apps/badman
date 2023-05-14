@@ -1,5 +1,5 @@
 {
-  "name": "frontend-modules-utils",
+  "name": "frontend--utils",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/modules/utils/src",
@@ -8,7 +8,9 @@
     "build": {
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "tsConfig": "libs/frontend/modules/utils/tsconfig.lib.json",
       "options": {
+        "tsConfig": "libs/frontend/modules/utils/tsconfig.lib.json",
         "project": "libs/frontend/modules/utils/ng-package.json"
       },
       "configurations": {
