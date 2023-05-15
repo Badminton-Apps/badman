@@ -156,6 +156,7 @@ export class CommentsStepComponent implements OnInit {
           where: {
             linkType: 'competition',
             linkId: eventIds,
+            clubId: this.group?.get('club')?.value,
           },
         },
       })
