@@ -9,10 +9,8 @@ import {
   CompileOptionsFactory,
 } from './interfaces';
 import { CompileService } from './services';
-import { I18nModule } from 'nestjs-i18n';
 
 @Module({
-  imports: [I18nModule],
   controllers: [],
   providers: [CompileService],
   exports: [CompileService],
