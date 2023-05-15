@@ -14,7 +14,8 @@ export * from './ranking-table';
 export * from './selects';
 export * from './shell';
 export * from './standing';
-
+export * from './privacy-policy';
 export * from './roles';
 
 // end:ng42.barrel
+
