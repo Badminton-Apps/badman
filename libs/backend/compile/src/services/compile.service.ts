@@ -35,6 +35,9 @@ import {
   CompileOptions,
   ViewOptions,
 } from '../interfaces';
+import momentTz from 'moment-timezone';
+import { I18nService } from 'nestjs-i18n';
+import { I18nTranslations } from '@badman/utils';
 
 @Injectable()
 export class CompileService implements CompileInterface, OnModuleInit {
@@ -61,7 +64,8 @@ export class CompileService implements CompileInterface, OnModuleInit {
 
   constructor(
     @Inject(COMPILE_OPTIONS_TOKEN)
-    private readonly moduleOptions: CompileModuleOptions
+    private readonly moduleOptions: CompileModuleOptions,
+    private readonly i18nService: I18nService<I18nTranslations>
   ) {}
 
   onModuleInit() {
@@ -196,6 +200,12 @@ export class CompileService implements CompileInterface, OnModuleInit {
     { engine, engineOptions }: ViewOptions,
     locals?: unknown
   ): Observable<string> {
+    const moment = momentTz;
+    moment.tz.setDefault('Europe/Brussels');
+    moment.locale('nl-be');
+
+    const translate = this.i18nService.translate.bind(this.i18nService);
+
     return bindNodeCallback<
       [string, ViewOptions['engineOptions'] | undefined],
       [string]
@@ -203,7 +213,8 @@ export class CompileService implements CompileInterface, OnModuleInit {
       template,
       Object.assign(
         {
-          moment: require('moment'),
+          moment,
+          translate,
         },
         locals,
         engineOptions
