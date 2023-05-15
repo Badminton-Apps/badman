@@ -130,7 +130,7 @@ const APP_ROUTES: Routes = [
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:10000',
+      registrationStrategy: 'registerWhenStable:30000',
     }),
     SeoModule.forRoot({
       siteName: 'Badminton',
