@@ -31,6 +31,10 @@
   badman-club-detail {
     $typography-config: mat.get-typography-config($theme);
 
+    .clubId {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+
     .teams-container .team .event {
       @include mat.typography-level($typography-config, 'caption');
     }
