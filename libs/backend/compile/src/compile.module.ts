@@ -9,8 +9,10 @@ import {
   CompileOptionsFactory,
 } from './interfaces';
 import { CompileService } from './services';
+import { I18nModule } from 'nestjs-i18n';
 
 @Module({
+  imports: [I18nModule],
   controllers: [],
   providers: [CompileService],
   exports: [CompileService],
@@ -29,7 +31,9 @@ export class CompileModule {
     };
   }
 
-  static forRootAsync(options: CompileModuleRegisterAsyncOptions): DynamicModule {
+  static forRootAsync(
+    options: CompileModuleRegisterAsyncOptions
+  ): DynamicModule {
     return {
       global: options.isGlobal,
       module: CompileModule,
@@ -72,7 +76,8 @@ export class CompileModule {
 
     return {
       provide: COMPILE_OPTIONS_TOKEN,
-      useFactory: (factory: CompileOptionsFactory) => factory.createCompileOptions(),
+      useFactory: (factory: CompileOptionsFactory) =>
+        factory.createCompileOptions(),
       inject,
     };
   }
