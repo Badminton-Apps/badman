@@ -1,0 +1,103 @@
+<ng-container *ngIf="this.teams; else loadingTeams">
+  <section class="teams">
+    <div class="title">
+      <h3>{{ 'all.club.titles.teams' | translate }}</h3>
+      <badman-has-claim [any]="['edit-any:club', this.clubId + '_edit:club']">
+        <button mat-icon-button (click)="this.addTeam()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </badman-has-claim>
+    </div>
+    <div class="teams-container">
+      <div class="team" *ngFor="let team of teams()">
+        <div [routerLink]="['team', team.slug]">
+          <span class="name">{{ team.name }}</span>
+          <span class="event" *ngIf="team.entry?.subEventCompetition?.name">{{
+            team.entry?.subEventCompetition?.name
+          }}</span>
+        </div>
+
+        <badman-has-claim
+          [any]="['edit-any:club']"
+          *ngIf="team.entry?.subEventCompetition?.id && this.whenTeamEdit"
+        >
+          <button
+            mat-icon-button
+            aria-label="edit team"
+            class="edit-button"
+            (click)="this.editTeam(team)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        </badman-has-claim>
+
+        <!-- allow editing if the entry is empty -->
+        <badman-has-claim
+          [any]="[this.clubId + '_edit:club']"
+          *ngIf="!team.entry?.subEventCompetition?.id"
+        >
+          <button
+            mat-icon-button
+            aria-label="edit team"
+            class="edit-button"
+            (click)="this.editTeam(team)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+        </badman-has-claim>
+      </div>
+    </div>
+  </section>
+
+  <section class="games" *ngIf="(teams() ?? []).length > 0">
+    <section class="recent-games">
+      <h3>{{ 'all.game.recent.title' | translate }}</h3>
+      <badman-recent-games
+        *ngIf="isClient"
+        [clubId]="clubId"
+        [teams]="teams() ?? []"
+      ></badman-recent-games>
+    </section>
+
+    <section class="upcoming-games">
+      <h3>{{ 'all.game.upcoming.title' | translate }}</h3>
+      <badman-upcoming-games
+        [clubid]="clubId"
+        [teams]="teams() ?? []"
+      ></badman-upcoming-games>
+    </section>
+  </section>
+</ng-container>
+
+<ng-template #loadingTeams>
+  <section class="teams">
+    <h3>{{ 'all.club.titles.teams' | translate }}</h3>
+    <badman-loading-block
+      [items]="9"
+      height="74px"
+      width="250px"
+      direction="row"
+    />
+  </section>
+
+  <section class="games">
+    <section class="recent-games">
+      <h3>{{ 'all.game.recent.title' | translate }}</h3>
+      <badman-loading-block
+        height="24px"
+        subHeight="12px"
+        [items]="10"
+        width="400px"
+      />
+    </section>
+    <section class="upcoming-games">
+      <h3>{{ 'all.game.upcoming.title' | translate }}</h3>
+      <badman-loading-block
+        height="24px"
+        subHeight="12px"
+        [items]="10"
+        width="300px"
+      />
+    </section>
+  </section>
+</ng-template>
