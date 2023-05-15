@@ -27,30 +27,29 @@ block content
                 p
                   //- (#{ team.abbreviation })
                   strong Team:
-                  | #{ team.name }
+                  | #{ " " }#{ team.name }
                   br
                   strong Afdeling:
                   if team && team.entry && team.entry.subEventCompetition && team.entry.subEventCompetition.eventCompetition && team.entry.subEventCompetition.name
-                    | #{ team.entry.subEventCompetition.eventCompetition.name } - #{ team.entry.subEventCompetition.name }
+                    | #{ " " }#{ team.entry.subEventCompetition.eventCompetition.name } - #{ team.entry.subEventCompetition.name }
                   else
                     strong(style='color: red') Geen afdeling gekozen
                   br
                   strong Kapitein:
                   if team.captain
-                    | #{ team.captain.firstName }#{ team.captain.lastName } (#{ team.email }, #{ team.phone })
+                    | #{ " " }#{ team.captain.firstName }#{ " " }#{ team.captain.lastName } (#{ team.email }, #{ team.phone })
                   else
                     strong(style='color: red') Kapitein niet ingevuld.
                   br
                   strong Basisspelers:
                   ul
                   each player in team.entry.meta.competition.players
-                    li #{ player.firstName }#{ player.lastName }
-                      small
-                        | (#{ player.memberId })
+                    li #{ player.firstName }#{ " " }#{ player.lastName }
+                      small #{ " " }(#{ player.memberId })
                         if team.type == 'MX'
-                          | #{ player.single } - #{ player.double } - #{ player.mix }
+                          | #{ " " }#{ player.single } - #{ player.double } - #{ player.mix }
                         else
-                          | #{ player.single } - #{ player.double }
+                          | #{ " " }#{ player.single } - #{ player.double }
     else
       p Er werden geen ploegen ingeschreven.
 
@@ -70,7 +69,7 @@ block content
                         ul
                           each day in availability.days
                             if day.day && day.startTime && day.endTime && day.courts
-                              li #{ day.day }, #{ day.startTime } - #{ day.endTime }: #{ day.courts } velden
+                              li #{ translate('all.days.' + day.day) }, #{ day.startTime } - #{ day.endTime }: #{ day.courts } velden
                     else
                       p
                         strong Geen speelmomenten
@@ -106,6 +105,6 @@ block content
                   br
                   strong Bericht:
                   br
-                  | #{ comment.message }
+                  span(style='white-space: pre-wrap') #{ comment.message }
     else
       p Er werden geen opmerkingen ingevuld.
