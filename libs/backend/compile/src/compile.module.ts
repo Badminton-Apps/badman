@@ -29,7 +29,9 @@ export class CompileModule {
     };
   }
 
-  static forRootAsync(options: CompileModuleRegisterAsyncOptions): DynamicModule {
+  static forRootAsync(
+    options: CompileModuleRegisterAsyncOptions
+  ): DynamicModule {
     return {
       global: options.isGlobal,
       module: CompileModule,
@@ -72,7 +74,8 @@ export class CompileModule {
 
     return {
       provide: COMPILE_OPTIONS_TOKEN,
-      useFactory: (factory: CompileOptionsFactory) => factory.createCompileOptions(),
+      useFactory: (factory: CompileOptionsFactory) =>
+        factory.createCompileOptions(),
       inject,
     };
   }
