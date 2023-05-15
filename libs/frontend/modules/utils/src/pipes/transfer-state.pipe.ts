@@ -6,7 +6,7 @@ import { tap } from 'rxjs/operators';
 export function transferState<T>(
   key: string,
   transferStateService: TransferState,
-  platformId: string
+  platformId: unknown
 ): (source: Observable<T | null>) => Observable<T | null> {
   if (!transferStateService) {
     // return (source: Observable<T | null>) => source;
