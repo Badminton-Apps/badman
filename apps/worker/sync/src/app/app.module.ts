@@ -1,3 +1,4 @@
+import { TranslateModule } from '@badman/backend-translate';
 import { DatabaseModule } from '@badman/backend-database';
 import { LoggingModule } from '@badman/backend-logging';
 import { NotificationsModule } from '@badman/backend-notifications';
@@ -45,6 +46,7 @@ import {
     QueueModule,
     NotificationsModule,
     VisualModule,
+    TranslateModule,
   ],
 })
 export class WorkerSyncModule {}
