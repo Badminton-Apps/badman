@@ -51,6 +51,14 @@ const APP_ROUTES: Routes = [
     },
   },
   {
+    path: 'policy',
+    loadComponent: () =>
+      import('@badman/frontend-components').then((m) => m.PrivacyPolicyComponent),
+    data: {
+      animation: 'landing',
+    },
+  },
+  {
     path: 'club',
     loadChildren: () =>
       import('@badman/frontend-club').then((m) => m.ClubModule),
