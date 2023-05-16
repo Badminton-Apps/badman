@@ -184,8 +184,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
             });
           }),
           switchMap((result) => {
-            console.log(result);
-
             if (!result?.data.eventCompetitions) {
               throw new Error('No eventCompetitions');
             }
