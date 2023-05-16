@@ -1,44 +1,13 @@
 :host {
-  display: block;
-  padding: 1rem;
-}
-
-.search {
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  padding: 16px 16px 0;
+  flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1rem;
-
-  form {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  mat-form-field {
-    &.year {
-      flex: 0 1 100px;
-    }
-    &.search {
-      flex: 0 1 375px;
-    }
-  }
 }
 
-.mat-column-menu {
-  width: 85px;
-  padding: 0;
-  text-align: center;
-}
-
-.mat-column-subEvents {
-  width: 150px;
-  padding: 0;
-}
-
-.mat-row.no-data {
-  padding: 0 16px;
-  line-height: 40px;
-  display: block;
+.filter {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
 }

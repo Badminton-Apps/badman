@@ -1,20 +1,43 @@
 <badman-page-header>
-  <div title>Competitie</div>
+  <div title>{{'all.competition.title' | translate}}</div>
 
   <div actions>
     <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
     </button>
 
-    <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item>
-        <mat-icon>download</mat-icon>
-        <span> {{'all.club.menu.twizzit' | translate}}</span>
+    <badman-has-claim [any]="['change:job']">
+      <button
+        (click)="$event.stopPropagation()"
+        mat-icon-button
+        [matMenuTriggerFor]="menu"
+        title="more options"
+      >
+        <mat-icon>more_vert</mat-icon>
       </button>
-    </mat-menu>
+
+      <mat-menu #menu="matMenu">
+        <badman-has-claim [any]="['change:job']">
+          <button mat-menu-item (click)="this.addEvent()">
+            <mat-icon>sync</mat-icon>
+            <span>Add event</span>
+          </button>
+        </badman-has-claim>
+      </mat-menu>
+    </badman-has-claim>
   </div>
 </badman-page-header>
+
+<form [formGroup]="filter" class="filter">
+  <!-- year selection -->
+  <mat-form-field *ngIf="this.seasons">
+    <mat-label>Season</mat-label>
+    <mat-select formControlName="season">
+      <mat-option *ngFor="let season of this.seasons()" [value]="season">
+        {{ season }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+
+<badman-competition-events [filter]="this.filter" />
