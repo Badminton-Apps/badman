@@ -59,13 +59,13 @@ module.exports = {
           [
             // Global claims
             {
-              name: 'view-any:enrollment',
+              name: 'view-any:enrollment-competition',
               description: 'View any enrollment',
-              category: 'competition',
+              category: 'competitions',
               type: 'global',
             },
             {
-              name: 'view-any:enrollment',
+              name: 'view-any:enrollment-tournament',
               description: 'View any enrollment',
               category: 'tournament',
               type: 'global',
@@ -73,27 +73,27 @@ module.exports = {
 
             // competition claims
             {
-              name: 'view:enrollment',
+              name: 'view:enrollment-competition',
               description: 'View any enrollment',
-              category: 'competition',
+              category: 'competitions',
               type: 'competition',
             },
             {
-              name: 'view:enrollment',
+              name: 'view:enrollment-competition',
               description: 'View any enrollment',
-              category: 'competition',
+              category: 'competitions',
               type: 'club',
             },
 
             // tournament claims
             {
-              name: 'view:enrollment',
+              name: 'view:enrollment-tournament',
               description: 'View any enrollment',
               category: 'tournament',
               type: 'tournament',
             },
             {
-              name: 'view:enrollment',
+              name: 'view:enrollment-tournament',
               description: 'View any enrollment',
               category: 'tournament',
               type: 'club',
@@ -141,7 +141,6 @@ module.exports = {
           { transaction: t }
         );
 
-        
         // update the constraint Claims_name_category_key to also include type
         await queryInterface.sequelize.query(
           'ALTER TABLE "security"."Claims" DROP CONSTRAINT "Claims_name_category_type_key";',
@@ -156,7 +155,12 @@ module.exports = {
         await queryInterface.bulkDelete(
           { tableName: 'Claims', schema: 'security' },
           {
-            name: ['view-any:enrollment', 'view:enrollment'],
+            name: [
+              'view-any:enrollment-competition',
+              'view-any:enrollment-tournament',
+              'view:enrollment-competition',
+              'view:enrollment-tournament',
+            ],
           },
           { transaction: t }
         );

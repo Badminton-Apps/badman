@@ -7,13 +7,15 @@
       mat-icon-button
       *ngIf="eventCompetition.visualCode"
       target="_blank"
-      [href]="'https://www.toernooi.nl/tournament/'+this.eventCompetition.visualCode"
+      [href]="
+        'https://www.toernooi.nl/tournament/' + this.eventCompetition.visualCode
+      "
       [matTooltip]="'all.button.open-in-new-tab' | translate"
     >
       <mat-icon>open_in_new</mat-icon>
     </a>
     <badman-has-claim
-      [any]="['edit-any:competition', 'delete-any:competition','change:job']"
+      [any]="['edit-any:competition', 'delete-any:competition', 'change:job']"
     >
       <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
         <mat-icon>more_vert</mat-icon>
@@ -47,7 +49,8 @@
           >
             <mat-icon>verified_user</mat-icon>
             <span
-              >{{eventCompetition.official ? 'Unmake' : 'Make'}} official</span
+              >{{ eventCompetition.official ? 'Unmake' : 'Make' }}
+              official</span
             >
           </button>
         </badman-has-claim>
@@ -69,45 +72,59 @@
     </badman-has-claim>
   </div>
 
-  <div title>{{eventCompetition.name}}</div>
+  <div title>{{ eventCompetition.name }}</div>
 
   <div subTitle>
     <mat-chip-listbox>
       <mat-chip
-        >{{'all.competition.team-enrollment.title' | translate}}:
-        {{((this.eventCompetition.allowEnlisting ?? false) ?
-        'all.competition.team-enrollment.open': 'all.competition.team-enrollment.closed')
-        | translate}}</mat-chip
+        >{{ 'all.competition.team-enrollment.title' | translate }}: {{
+        (this.eventCompetition.allowEnlisting ?? false ?
+        'all.competition.team-enrollment.open' :
+        'all.competition.team-enrollment.closed' ) | translate }}</mat-chip
       >
       <mat-chip *ngIf="eventCompetition.lastSync">
-        {{'all.event.last-sync' | translate}}: {{eventCompetition.lastSync |
-        amCalendar}}
+        {{ 'all.event.last-sync' | translate }}: {{ eventCompetition.lastSync |
+        amCalendar }}
       </mat-chip>
     </mat-chip-listbox>
   </div>
 </badman-page-header>
 
-<div *ngIf="subEvents" class="subEvents">
-  <div *ngFor="let type of subEvents" class="type">
-    <h3>{{ ('all.gender.long.' + type.eventType) | translate}}</h3>
-    <mat-card *ngFor="let sub of type.subEvents" class="subEvent">
-      <mat-card-header>
-        <mat-card-title>{{sub.name}} {{sub.eventType}}</mat-card-title>
-        <mat-card-subtitle
-          >Max Level: {{sub.maxLevel}}, index: {{sub.minBaseIndex}} -
-          {{sub.maxBaseIndex}}</mat-card-subtitle
-        >
-      </mat-card-header>
-      <div class="draw">
-        <div *ngFor="let draw of sub.drawCompetitions">
-          <button mat-button [routerLink]="['draw', draw.id]">
-            {{draw.name}} ({{draw.size}} teams)
-          </button>
-        </div>
+<mat-tab-group
+  mat-stretch-tabs="false"
+  [selectedIndex]="currentTab()"
+  (selectedIndexChange)="setTab($event)"
+>
+  <mat-tab [label]="'all.competition.subevent.title' | translate">
+    <div *ngIf="subEvents" class="subEvents">
+      <div *ngFor="let type of subEvents" class="type">
+        <h3>{{ 'all.gender.long.' + type.eventType | translate }}</h3>
+        <mat-card *ngFor="let sub of type.subEvents" class="subEvent">
+          <mat-card-header>
+            <mat-card-title>{{ sub.name }} {{ sub.eventType }}</mat-card-title>
+            <mat-card-subtitle
+              >Max Level: {{ sub.maxLevel }}, index: {{ sub.minBaseIndex }} - {{
+              sub.maxBaseIndex }}</mat-card-subtitle
+            >
+          </mat-card-header>
+          <div class="draw">
+            <div *ngFor="let draw of sub.drawCompetitions">
+              <button mat-button [routerLink]="['draw', draw.id]">
+                {{ draw.name }} ({{ draw.size }} teams)
+              </button>
+            </div>
+          </div>
+        </mat-card>
       </div>
-    </mat-card>
-  </div>
-</div>
+    </div>
+  </mat-tab>
+  <mat-tab
+    [label]="'all.competition.team-enrollment.title' | translate"
+    *ngIf="this.canViewEnrollments?.()"
+  >
+    Hey
+  </mat-tab>
+</mat-tab-group>
 
 <ng-template #year>
   <h2 mat-dialog-title>Copy subevent</h2>

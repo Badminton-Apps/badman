@@ -1,32 +1,20 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TeamEnrollmentComponent, TeamEnrollmentsComponent } from './pages';
 import { AuthGuard } from '@auth0/auth0-angular';
+import { TeamEnrollmentComponent } from './pages';
 
 export const ROUTES: Routes = [
   {
     path: '',
-    component: TeamEnrollmentsComponent,
-    canActivate: [AuthGuard],
-    data: {
-      claims: {
-        any: [
-          '[:id]_edit:enrollment',
-          'edit-any:enrollment',
-          '[:id]_view:enrollment',
-          'view-any:enrollment',
-        ],
-      },
-    },
-  },
-  {
-    path: 'new',
     component: TeamEnrollmentComponent,
     canActivate: [AuthGuard],
     data: {
       claims: {
-        any: ['[:id]_edit:enrollment', 'edit-any:enrollment'],
+        any: [
+          '[:id]_edit:enrollment-competition',
+          'edit-any:enrollment-competition',
+        ],
       },
     },
   },
