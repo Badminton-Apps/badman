@@ -55,9 +55,7 @@ import {
   Observable,
   Subject,
   combineLatest,
-  iif,
   lastValueFrom,
-  of,
 } from 'rxjs';
 import {
   debounceTime,
@@ -72,10 +70,7 @@ import {
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
-import {
-  ClubEditLocationComponent,
-  ClubEditTeamComponent,
-} from './components';
+import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
 
 @Component({
   selector: 'badman-club-edit',
@@ -167,7 +162,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
     private breadcrumbsService: BreadcrumbService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private router: Router,
     private apollo: Apollo,
     @Inject(APOLLO_CACHE) private cache: InMemoryCache,
     private route: ActivatedRoute,

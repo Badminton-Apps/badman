@@ -2,10 +2,14 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   Component,
   Inject,
+  Injector,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
+  Signal,
   TransferState,
+  computed,
+  inject,
   signal,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +18,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SeoService } from '@badman/frontend-seo';
 import { Apollo, gql } from 'apollo-angular';
 
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,22 +34,18 @@ import {
   RecentGamesComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import {
-  Club,
-  EncounterCompetition,
-  Player,
-  Team,
-} from '@badman/frontend-models';
+import { Club, EventCompetition, Player, Team } from '@badman/frontend-models';
 import { TwizzitService } from '@badman/frontend-twizzit';
 import { transferState } from '@badman/frontend-utils';
-import { SubEventTypeEnum, getCurrentSeason } from '@badman/utils';
+import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { Observable, Subject, lastValueFrom } from 'rxjs';
-import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { Subject, lastValueFrom, of } from 'rxjs';
+import { filter, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
+import { ClaimService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-club-detail',
@@ -83,14 +84,22 @@ import { ClubTeamsComponent } from './club-teams/club-teams.component';
   ],
 })
 export class DetailPageComponent implements OnInit, OnDestroy {
+  // Injectors
+  authService = inject(ClaimService);
+  injector = inject(Injector);
+
+  // signals
+  seasons?: Signal<number[]>;
+  currentTab = signal(0);
+  canViewEnrollmentForClub?: Signal<boolean | undefined>;
+  canViewEnrollmentForEvent?: Signal<boolean | undefined>;
+  canViewEnrollments?: Signal<boolean | undefined>;
+
   club!: Club;
   filter!: FormGroup;
 
   update$ = new Subject<void>();
   destroy$ = new Subject<void>();
-  seasons = [getCurrentSeason()];
-
-  currentTab = signal(0);
 
   constructor(
     private formBuilder: FormBuilder,
@@ -139,11 +148,62 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           this.currentTab.set(parseInt(tabindex, 10));
         });
 
-      this._getYears().then((years) => {
-        if (years.length > 0) {
-          this.seasons = years;
-        }
-      });
+      this._setYears();
+
+      this.canViewEnrollmentForClub = toSignal(
+        this.authService.hasAnyClaims$([
+          'view-any:enrollment-competition',
+          `${this.club.id}_view:enrollment-competition`,
+        ]),
+        { injector: this.injector }
+      );
+
+      this.canViewEnrollmentForEvent = toSignal(
+        this.filter.get('season')?.valueChanges.pipe(
+          startWith(this.filter.get('season')?.value),
+          switchMap((season) => {
+            return this.apollo.query<{
+              eventCompetitions: {
+                rows: Partial<EventCompetition>[];
+              };
+            }>({
+              query: gql`
+                query CompetitionIdsForSeason($where: JSONObject) {
+                  eventCompetitions(where: $where) {
+                    rows {
+                      id
+                    }
+                  }
+                }
+              `,
+              variables: {
+                where: {
+                  season: season,
+                },
+              },
+            });
+          }),
+          switchMap((result) => {
+            console.log(result);
+
+            if (!result?.data.eventCompetitions) {
+              throw new Error('No eventCompetitions');
+            }
+            return this.authService.hasAnyClaims$(
+              result.data.eventCompetitions.rows.map(
+                (row) => `${row.id}_view:enrollment-competition`
+              )
+            );
+          })
+        ) ?? of(false),
+        { injector: this.injector }
+      );
+
+      this.canViewEnrollments = computed(
+        () =>
+          this.canViewEnrollmentForClub?.() ||
+          this.canViewEnrollmentForEvent?.()
+      );
     });
   }
 
@@ -162,8 +222,8 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private _getYears() {
-    return lastValueFrom(
+  private _setYears() {
+    this.seasons = toSignal(
       this.apollo
         .query<{
           teams: Partial<Team[]>;
@@ -198,7 +258,11 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           map((years) => [...new Set(years)]),
           // sort years
           map((years) => years.sort((a, b) => b - a))
-        )
+        ),
+      {
+        initialValue: [getCurrentSeason()],
+        injector: this.injector,
+      }
     );
   }
 

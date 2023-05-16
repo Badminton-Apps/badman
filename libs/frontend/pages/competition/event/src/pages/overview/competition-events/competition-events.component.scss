@@ -1,18 +1,18 @@
-.teams {
+.events {
   .title {
     display: flex;
     flex-direction: row;
     gap: 1rem;
     align-items: center;
   }
-  .teams-container {
+  .events-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 1rem;
 
-    .team {
-      width: 250px;
+    .event {
+      width: 350px;
       border-width: 1px;
       border-style: solid;
       padding: 1rem;
@@ -38,29 +38,5 @@
         }
       }
     }
-  }
-}
-
-.games {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-
-  // switch to row for mobile
-  @media (max-width: 959.98px) {
-    flex-direction: column;
-  }
-}
-
-
-.recent-games {
-  flex: 1 1 auto;
-}
-
-.upcoming-games {
-  flex: 1 1 250px;
-
-  @media (max-width: 959.98px) {
-    flex: 1;
   }
 }

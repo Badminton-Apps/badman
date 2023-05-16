@@ -77,6 +77,17 @@ export class EventCompetitionResolver {
     return EventCompetition.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
+  @Query(() => [Number])
+  async eventCompetitionSeasons(): Promise<number[]> {
+    return EventCompetition.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('season')), 'season'],
+      ],
+      order: [['season', 'DESC']],
+      raw: true,
+    }).then((result) => result.map((r) => r.season));
+  }
+
   @ResolveField(() => [SubEventCompetition])
   async subEventCompetitions(
     @Parent() event: EventCompetition,
