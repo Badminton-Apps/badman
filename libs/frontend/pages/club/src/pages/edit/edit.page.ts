@@ -17,7 +17,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SeoService } from '@badman/frontend-seo';
 import { Apollo, gql } from 'apollo-angular';
 
