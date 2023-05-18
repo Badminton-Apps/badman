@@ -1,39 +1,39 @@
 import {
+  ClubBuilder,
   DatabaseModule,
-  SystemGroupBuilder,
-  SystemBuilder,
-  RankingSystem,
-  PlayerBuilder,
-  TeamBuilder,
-  EventCompetitionEntryBuilder,
   DrawCompetition,
   DrawCompetitionBuilder,
-  EncounterCompetitionBuilder,
-  SubEventCompetitionBuilder,
-  EventCompetitionBuilder,
-  SubEventCompetition,
-  ClubBuilder,
-  Player,
-  Team,
   EncounterCompetition,
+  EncounterCompetitionBuilder,
+  EventCompetitionBuilder,
+  EventCompetitionEntryBuilder,
+  Player,
+  PlayerBuilder,
+  RankingSystem,
+  SubEventCompetition,
+  SubEventCompetitionBuilder,
+  SystemBuilder,
+  SystemGroupBuilder,
+  Team,
+  TeamBuilder,
 } from '@badman/backend-database';
-import { Sequelize } from 'sequelize-typescript';
-import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+import { Sequelize } from 'sequelize-typescript';
 
+import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
 import { AssemblyValidationService } from './assembly.service';
 import {
-  TeamBaseIndexRule,
-  CompetitionStatusRule,
+  PlayerCompStatusRule,
+  PlayerGenderRule,
+  PlayerMaxGamesRule,
   PlayerMinLevelRule,
   PlayerOrderRule,
-  TeamSubeventIndexRule,
-  PlayerMaxGamesRule,
-  PlayerGenderRule,
+  TeamBaseIndexRule,
   TeamClubBaseRule,
-  SubTeamIndexRule,
+  TeamSubeventIndexRule,
+  TeamSubsIndexRule,
 } from './rules';
-import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
 
 describe('AssemblyValidationService', () => {
   let service: AssemblyValidationService;
@@ -458,7 +458,7 @@ describe('AssemblyValidationService', () => {
       });
     });
 
-    describe('Rule [SubTeamIndexRule]', () => {
+    describe('Rule [TeamSubsIndexRule]', () => {
       describe('warning', () => {
         it.skip('should give warning if the sub is better than one of the players', async () => {
           const validation = await service.fetchAndValidate(
@@ -472,7 +472,7 @@ describe('AssemblyValidationService', () => {
               single4: player999.id,
               subtitudes: [player888.id],
             },
-            [new SubTeamIndexRule()]
+            [new TeamSubsIndexRule()]
           );
 
           expect(validation).toBeDefined();
@@ -492,7 +492,7 @@ describe('AssemblyValidationService', () => {
       });
     });
 
-    describe('Rule [CompetitionStatusRule]', () => {
+    describe('Rule [PlayerCompStatusRule]', () => {
       describe('valid', () => {
         it('should be valid', async () => {
           const validation = await service.fetchAndValidate(
@@ -505,7 +505,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new CompetitionStatusRule()]
+            [new PlayerCompStatusRule()]
           );
 
           expect(validation).toBeDefined();
@@ -530,7 +530,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new CompetitionStatusRule()]
+            [new PlayerCompStatusRule()]
           );
 
           expect(validation).toBeDefined();
@@ -556,7 +556,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new CompetitionStatusRule()]
+            [new PlayerCompStatusRule()]
           );
 
           expect(validation).toBeDefined();
@@ -1847,7 +1847,7 @@ describe('AssemblyValidationService', () => {
       });
     });
 
-    describe('Rule [CompetitionStatusRule]', () => {
+    describe('Rule [PlayerCompStatusRule]', () => {
       describe('valid', () => {
         it('should be valid', async () => {
           const validation = await service.fetchAndValidate(
@@ -1860,7 +1860,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new CompetitionStatusRule()]
+            [new PlayerCompStatusRule()]
           );
 
           expect(validation).toBeDefined();
@@ -1885,7 +1885,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new CompetitionStatusRule()]
+            [new PlayerCompStatusRule()]
           );
 
           expect(validation).toBeDefined();
@@ -1911,7 +1911,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new CompetitionStatusRule()]
+            [new PlayerCompStatusRule()]
           );
 
           expect(validation).toBeDefined();

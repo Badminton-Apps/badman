@@ -1,0 +1,58 @@
+<ng-container *ngIf="eventCompetition">
+  <div class="example-container mat-elevation-z8">
+    <mat-table
+      #table
+      [dataSource]="eventCompetition()?.subEventCompetitions ?? []"
+    >
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Sub. </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+      </ng-container>
+
+      <!-- Expanded Content Column - The detail row is made up of this one column -->
+      <ng-container matColumnDef="expandedDetail">
+        <mat-cell *matCellDef="let detail"> The symbol for </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        matRipple
+        class="element-row"
+        [badmanEnrollmentDetailRow]="row"
+        [badmanEnrollmentDetailRowTpl]="tpl"
+      >
+      </mat-row>
+    </mat-table>
+  </div>
+
+  <ng-template #tpl let-subevent>
+    <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
+      <div *ngFor="let entry of subevent.eventEntries">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header
+            >{{ entry.team.name }} (Team Index:
+            {{
+              entry?.meta?.competition?.teamIndex
+            }})</mat-expansion-panel-header
+          >
+          <mat-list role="list">
+            <mat-list-item
+              role="listitem"
+              *ngFor="let player of entry?.meta?.competition?.players ?? []"
+            >
+              <span matListItemTitle>{{ player.player.fullName }}</span>
+              <span matListItemLine>
+                {{ player.single }}- {{ player.double }} - {{ player.mix }}
+              </span>
+            </mat-list-item>
+          </mat-list>
+        </mat-expansion-panel>
+      </div>
+    </div>
+  </ng-template>
+</ng-container>

@@ -104,7 +104,11 @@ export class EditDialogComponent {
         },
       })
       .valueChanges.pipe(
-        transferState(`teamPlayers-${this.data.team.id}`, this.stateTransfer, this.platformId),
+        transferState(
+          `teamPlayers-${this.data.team.id}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) =>
           result?.data.team.players?.map((t) => new TeamPlayer(t))
         ),
@@ -117,7 +121,7 @@ export class EditDialogComponent {
       );
   }
 
-  teamUpdated() {
+  saveTeam() {
     const data = this.group?.value;
 
     return this.apollo
@@ -146,6 +150,8 @@ export class EditDialogComponent {
           duration: 1000,
           panelClass: 'success',
         });
+
+        this.dialogRef.close();
       });
   }
 

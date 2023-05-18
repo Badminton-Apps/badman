@@ -147,6 +147,12 @@ export type I18nTranslations = {
                 "max": string;
                 "max-base": string;
                 "min-base": string;
+                "name": {
+                    "none": string;
+                    "plural": string;
+                    "singular": string;
+                };
+                "title": string;
             };
             "team-assembly": {
                 "avg-level": string;

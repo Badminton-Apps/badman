@@ -1,9 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { MatTabsModule } from '@angular/material/tabs';
-import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { ClubViewComponent } from './components';
 
 @Component({
   templateUrl: './team-enrollments.component.html',
@@ -13,8 +13,8 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     TranslateModule,
 
-    // Material
-    MatTabsModule,
+    // Own components
+    ClubViewComponent,
   ],
 })
 export class TeamEnrollmentsComponent {
