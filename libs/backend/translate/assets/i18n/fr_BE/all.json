@@ -142,7 +142,13 @@
     "subevent": {
       "max": "Classement maximal",
       "max-base": "Indice de décalage de la base maximale",
-      "min-base": "Indice de décalage de la base minimale"
+      "min-base": "Indice de décalage de la base minimale",
+      "name": {
+        "none": "Aucun département",
+        "plural": "{count} départements",
+        "singular": "1 département"
+      },
+      "title": "Départements"
     },
     "team-assembly": {
       "avg-level": "",

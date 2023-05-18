@@ -2,23 +2,31 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   Component,
   Inject,
+  Injector,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
+  Signal,
   TransferState,
+  computed,
+  inject,
+  signal,
+  effect,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SeoService } from '@badman/frontend-seo';
 import { Apollo, gql } from 'apollo-angular';
 
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
 import {
   AddPlayerComponent,
   HasClaimComponent,
@@ -27,29 +35,25 @@ import {
   RecentGamesComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import {
-  Club,
-  EncounterCompetition,
-  Player,
-  Team,
-} from '@badman/frontend-models';
+import { Club, EventCompetition, Player, Team } from '@badman/frontend-models';
 import { TwizzitService } from '@badman/frontend-twizzit';
 import { transferState } from '@badman/frontend-utils';
-import { SubEventTypeEnum, getCurrentSeason } from '@badman/utils';
+import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { Observable, Subject, combineLatest, lastValueFrom } from 'rxjs';
+import { Subject, lastValueFrom, of } from 'rxjs';
 import {
-  distinctUntilChanged,
   filter,
   map,
-  shareReplay,
   startWith,
   switchMap,
   take,
   takeUntil,
 } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { ClubPlayersComponent } from './club-players/club-players.component';
+import { ClubTeamsComponent } from './club-teams/club-teams.component';
+import { ClaimService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-club-detail',
@@ -72,28 +76,39 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     PageHeaderComponent,
     HasClaimComponent,
     LoadingBlockComponent,
+    ClubPlayersComponent,
+    ClubTeamsComponent,
 
     // Material Modules
     MatButtonToggleModule,
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
+
     MatDialogModule,
     MatSelectModule,
     MatProgressBarModule,
+    MatTabsModule,
   ],
 })
 export class DetailPageComponent implements OnInit, OnDestroy {
+  // Injectors
+  authService = inject(ClaimService);
+  injector = inject(Injector);
+
+  // signals
+  seasons?: Signal<number[]>;
+  currentTab = signal(0);
+  canViewEnrollmentForClub?: Signal<boolean | undefined>;
+  canViewEnrollmentForEvent?: Signal<boolean | undefined>;
+  canViewEnrollments?: Signal<boolean | undefined>;
+
   club!: Club;
   filter!: FormGroup;
 
   update$ = new Subject<void>();
   destroy$ = new Subject<void>();
-  teams$!: Observable<Team[]>;
-  players$!: Observable<{ player: Player; teams: number }[]>;
-  recentEncounters$!: Observable<EncounterCompetition[]>;
-  upcomingEncounters$!: Observable<EncounterCompetition[]>;
-  seasons = [getCurrentSeason()];
+
 
   constructor(
     private formBuilder: FormBuilder,
@@ -101,6 +116,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
     private route: ActivatedRoute,
+    private router: Router,
     private dialog: MatDialog,
     private twizzitService: TwizzitService,
     private stateTransfer: TransferState,
@@ -130,28 +146,82 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       });
       this.breadcrumbsService.set('@club', clubName);
 
-      this._getYears().then((years) => {
-        if (years.length > 0) {
-          this.seasons = years;
-        }
-      });
+      // check if the query params contian tabindex
+      this.route.queryParams
+        .pipe(
+          startWith(this.route.snapshot.queryParams),
+          take(1),
+          filter((params) => params['tab']),
+          map((params) => params['tab'])
+        )
+        .subscribe((tabindex) => {
+          this.currentTab.set(parseInt(tabindex, 10));
+        });
 
-      const filters$ = combineLatest([
-        this.filter.valueChanges.pipe(startWith(this.filter.value)),
-        this.update$.pipe(startWith(null)),
-      ]).pipe(
-        shareReplay(1),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        takeUntil(this.destroy$)
+      this._setYears();
+
+      this.canViewEnrollmentForClub = toSignal(
+        this.authService.hasAnyClaims$([
+          'view-any:enrollment-competition',
+          `${this.club.id}_view:enrollment-competition`,
+        ]),
+        { injector: this.injector }
       );
 
-      this.teams$ = filters$.pipe(
-        switchMap(([filter]) => this._loadTeams(filter))
+      this.canViewEnrollmentForEvent = toSignal(
+        this.filter.get('season')?.valueChanges.pipe(
+          startWith(this.filter.get('season')?.value),
+          switchMap((season) => {
+            return this.apollo.query<{
+              eventCompetitions: {
+                rows: Partial<EventCompetition>[];
+              };
+            }>({
+              query: gql`
+                query CompetitionIdsForSeason($where: JSONObject) {
+                  eventCompetitions(where: $where) {
+                    rows {
+                      id
+                    }
+                  }
+                }
+              `,
+              variables: {
+                where: {
+                  season: season,
+                },
+              },
+            });
+          }),
+          switchMap((result) => {
+            if (!result?.data.eventCompetitions) {
+              throw new Error('No eventCompetitions');
+            }
+            return this.authService.hasAnyClaims$(
+              result.data.eventCompetitions.rows.map(
+                (row) => `${row.id}_view:enrollment-competition`
+              )
+            );
+          })
+        ) ?? of(false),
+        { injector: this.injector }
       );
 
-      this.players$ = filters$.pipe(
-        switchMap(([filter]) => this._loadPlayers(filter))
+      this.canViewEnrollments = computed(
+        () =>
+          this.canViewEnrollmentForClub?.() ||
+          this.canViewEnrollmentForEvent?.()
       );
+    });
+  }
+
+  setTab(index: number) {
+    this.currentTab.set(index);
+    this.router.navigate([], {
+      queryParams: {
+        tab: index === 0 ? undefined : index,
+      },
+      queryParamsHandling: 'merge',
     });
   }
 
@@ -160,8 +230,8 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private _getYears() {
-    return lastValueFrom(
+  private _setYears() {
+    this.seasons = toSignal(
       this.apollo
         .query<{
           teams: Partial<Team[]>;
@@ -196,197 +266,12 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           map((years) => [...new Set(years)]),
           // sort years
           map((years) => years.sort((a, b) => b - a))
-        )
+        ),
+      {
+        initialValue: [getCurrentSeason()],
+        injector: this.injector,
+      }
     );
-  }
-
-  private _loadTeams(filter: {
-    choices: string[];
-    season?: number;
-  }): Observable<Team[]> {
-    return this.apollo
-      .watchQuery<{ teams: Partial<Team>[] }>({
-        query: gql`
-          query Teams($order: [SortOrderType!], $teamsWhere: JSONObject) {
-            teams(order: $order, where: $teamsWhere) {
-              id
-              name
-              slug
-              teamNumber
-              season
-              captainId
-              type
-              entry {
-                id
-                date
-                subEventCompetition {
-                  id
-                  name
-                }
-              }
-            }
-          }
-        `,
-        variables: {
-          teamsWhere: {
-            clubId: this.club.id,
-            season: filter?.season || getCurrentSeason(),
-            type: filter?.choices,
-          },
-          order: [
-            {
-              field: 'type',
-              direction: 'desc',
-            },
-            {
-              field: 'teamNumber',
-              direction: 'asc',
-            },
-          ],
-        },
-      })
-      .valueChanges.pipe(
-        transferState(
-          `clubTeamsKey-${this.club.id}`,
-          this.stateTransfer,
-          this.platformId
-        ),
-        map((result) => {
-          if (!result?.data.teams) {
-            throw new Error('No club');
-          }
-          return result.data.teams?.map((team) => new Team(team));
-        })
-      );
-  }
-
-  private _loadPlayers(filter: {
-    choices: string[];
-    season?: number;
-  }): Observable<
-    {
-      player: Player;
-      teams: number;
-    }[]
-  > {
-    return this.apollo
-      .watchQuery<{ club: Partial<Club> }>({
-        query: gql`
-          query PlayersForTeams($teamsWhere: JSONObject, $clubId: ID!) {
-            club(id: $clubId) {
-              id
-              players {
-                id
-                fullName
-                slug
-                teams(where: $teamsWhere) {
-                  id
-                }
-              }
-            }
-          }
-        `,
-        variables: {
-          clubId: this.club.id,
-          teamsWhere: {
-            season: filter?.season || getCurrentSeason(),
-            type: filter?.choices,
-          },
-        },
-      })
-      .valueChanges.pipe(
-        transferState(
-          `clubPlayerTeamsKey-${this.club.id}`,
-          this.stateTransfer,
-          this.platformId
-        ),
-        map((result) => {
-          if (!result?.data.club) {
-            throw new Error('No club');
-          }
-          return new Club(result.data.club);
-        }),
-        map((club) => {
-          return (club.players ?? []).map((player) => {
-            return {
-              player,
-              teams: (player.teams ?? []).length,
-            };
-          });
-        })
-      );
-  }
-
-  editTeam(team: Team) {
-    this.teams$
-      .pipe(
-        takeUntil(this.destroy$),
-        take(1),
-        switchMap((teams) =>
-          import('@badman/frontend-team').then((m) => {
-            this.dialog
-              .open(m.EditDialogComponent, {
-                data: {
-                  team: team,
-                  teamNumbers: {
-                    [team.type ?? 'M']: teams
-                      ?.filter((t) => t.type == team.type)
-                      ?.map((t) => t.teamNumber),
-                  },
-                },
-
-                width: '100%',
-                maxWidth: '600px',
-              })
-              .afterClosed();
-          })
-        )
-      )
-      .subscribe(() => {
-        this.update$.next();
-      });
-  }
-
-  addTeam() {
-    this.teams$
-      .pipe(
-        takeUntil(this.destroy$),
-        take(1),
-        switchMap((teams) =>
-          import('@badman/frontend-team').then((m) => {
-            this.dialog
-              .open(m.AddDialogComponent, {
-                data: {
-                  team: {
-                    clubId: this.club.id,
-                    season: this.filter.value.season,
-                  },
-                  teamNumbers: {
-                    [SubEventTypeEnum.M]: teams
-                      ?.filter((t) => t.type == SubEventTypeEnum.M)
-                      ?.map((t) => t.teamNumber),
-                    [SubEventTypeEnum.F]: teams
-                      ?.filter((t) => t.type == SubEventTypeEnum.F)
-                      ?.map((t) => t.teamNumber),
-                    [SubEventTypeEnum.MX]: teams
-                      ?.filter((t) => t.type == SubEventTypeEnum.MX)
-                      ?.map((t) => t.teamNumber),
-                    [SubEventTypeEnum.NATIONAL]: teams
-                      ?.filter((t) => t.type == SubEventTypeEnum.NATIONAL)
-                      ?.map((t) => t.teamNumber),
-                  },
-                },
-
-                width: '100%',
-                maxWidth: '600px',
-              })
-              .afterClosed();
-          })
-        )
-      )
-      .subscribe(() => {
-        this.update$.next();
-      });
   }
 
   deletePlayer(player: Player) {

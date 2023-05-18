@@ -1,25 +1,26 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { TeamEnrollmentComponent } from './pages';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
+import { TeamEnrollmentComponent } from './pages';
+
+export const ROUTES: Routes = [
+  {
+    path: '',
+    component: TeamEnrollmentComponent,
+    canActivate: [AuthGuard],
+    data: {
+      claims: {
+        any: [
+          '[:id]_edit:enrollment-competition',
+          'edit-any:enrollment-competition',
+        ],
+      },
+    },
+  },
+];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild([
-      {
-        path: '',
-        pathMatch: 'full',
-        component: TeamEnrollmentComponent,
-        canActivate: [AuthGuard],
-        data: {
-          claims: {
-            any: ['[:id]_edit:club', 'edit-any:club'],
-          },
-        },
-      },
-    ]),
-  ],
+  imports: [CommonModule, RouterModule.forChild(ROUTES)],
 })
 export class TeamEnrollmentModule {}
