@@ -11,6 +11,7 @@ import {
   computed,
   inject,
   signal,
+  effect,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -41,7 +42,14 @@ import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Subject, lastValueFrom, of } from 'rxjs';
-import { filter, map, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
+import {
+  filter,
+  map,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+} from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
@@ -101,6 +109,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   update$ = new Subject<void>();
   destroy$ = new Subject<void>();
 
+
   constructor(
     private formBuilder: FormBuilder,
     private seoService: SeoService,
@@ -140,6 +149,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       // check if the query params contian tabindex
       this.route.queryParams
         .pipe(
+          startWith(this.route.snapshot.queryParams),
           take(1),
           filter((params) => params['tab']),
           map((params) => params['tab'])

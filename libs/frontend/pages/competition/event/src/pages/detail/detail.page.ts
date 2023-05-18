@@ -22,7 +22,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
+import { ClaimService } from '@badman/frontend-auth';
 import {
   HasClaimComponent,
   OpenCloseDateDialogComponent,
@@ -36,7 +36,9 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { combineLatest, lastValueFrom } from 'rxjs';
+import { map, take, filter, startWith } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { CompetitionEnrollmentsComponent } from './competition-enrollments/competition-enrollments.component';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -70,6 +72,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     PageHeaderComponent,
     JobsModule,
     HasClaimComponent,
+    CompetitionEnrollmentsComponent,
   ],
 })
 export class DetailPageComponent implements OnInit {
@@ -135,6 +138,19 @@ export class DetailPageComponent implements OnInit {
         'competition',
         translations['all.competition.title']
       );
+
+      // check if the query params contian tabindex
+      this.route.queryParams
+        .pipe(
+          startWith(this.route.snapshot.queryParams),
+          take(1),
+          filter((params) => params['tab']),
+          map((params) => params['tab'])
+        )
+        .subscribe((tabindex) => {
+          console.log('tabindex', tabindex);
+          this.currentTab.set(parseInt(tabindex, 10));
+        });
 
       this.canViewEnrollments = toSignal(
         this.authService.hasAnyClaims$([
