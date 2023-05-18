@@ -88,6 +88,8 @@
     [label]="'all.competition.team-enrollment.title' | translate"
     *ngIf="this.canViewEnrollments?.()"
   >
-    Hey
+    <ng-template matTabContent>
+      Content 1 - Loaded
+    </ng-template>
   </mat-tab>
 </mat-tab-group>
