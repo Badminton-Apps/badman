@@ -8,11 +8,11 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/backend/puppeteer",
-        "tsConfig": "libs/backend/puppeteer/tsconfig.lib.json",
-        "packageJson": "libs/backend/puppeteer/package.json",
-        "main": "libs/backend/puppeteer/src/index.ts",
-        "assets": ["libs/backend-puppeteer/*.md"]
+        "outputPath": "dist/libs/backend/pupeteer",
+        "tsConfig": "libs/backend/pupeteer/tsconfig.lib.json",
+        "packageJson": "libs/backend/pupeteer/package.json",
+        "main": "libs/backend/pupeteer/src/index.ts",
+        "assets": ["libs/backend-pupeteer/*.md"]
       }
     },
     "lint": {
@@ -26,7 +26,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/backend/pupeteer"],
       "options": {
-        "jestConfig": "libs/backend/puppeteer/jest.config.ts",
+        "jestConfig": "libs/backend/pupeteer/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {

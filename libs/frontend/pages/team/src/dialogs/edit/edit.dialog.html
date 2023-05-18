@@ -11,8 +11,8 @@
   <button mat-button (click)="removeTeam()">
     {{ 'all.button.delete' | translate }}
   </button>
-  <button mat-raised-button [mat-dialog-close] color="primary">
-    {{ 'all.button.close' | translate }}
+  <button mat-raised-button (click)="saveTeam()" color="primary">
+    {{ 'all.button.save' | translate }}
   </button>
 </mat-dialog-actions>
 
