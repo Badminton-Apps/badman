@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { ClaimService } from '@badman/frontend-auth';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 
@@ -47,5 +47,7 @@ export class HasClaimComponent implements OnInit {
     this.show$ = combineLatest(permissions).pipe(
       map((claims) => claims.reduce((acc, claim) => acc || claim, false))
     );
+
+    this.show$ = of(true);
   }
 }
