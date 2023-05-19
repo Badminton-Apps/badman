@@ -1,15 +1,20 @@
 :host {
   display: block;
 }
-.element-row {
+.subevent-row {
   position: relative;
 }
 
-.element-row:not(.expanded) {
+.filter {
+  width: 250px;
+  padding: 1rem 0;
+}
+
+.subevent-row:not(.expanded) {
   cursor: pointer;
 }
 
-.element-row.expanded {
+.subevent-row.expanded {
   border-bottom-color: transparent;
 }
   

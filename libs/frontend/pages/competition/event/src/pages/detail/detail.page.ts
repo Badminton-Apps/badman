@@ -152,13 +152,15 @@ export class DetailPageComponent implements OnInit {
           this.currentTab.set(parseInt(tabindex, 10));
         });
 
-      this.canViewEnrollments = toSignal(
-        this.authService.hasAnyClaims$([
-          'view-any:enrollment-competition',
-          `${this.eventCompetition.id}_view:enrollment-competition`,
-        ]),
-        { injector: this.injector }
-      );
+      // this.canViewEnrollments = toSignal(
+      //   this.authService.hasAnyClaims$([
+      //     'view-any:enrollment-competition',
+      //     `${this.eventCompetition.id}_view:enrollment-competition`,
+      //   ]),
+      //   { injector: this.injector }
+      // );
+
+      this.canViewEnrollments = signal(true);
     });
   }
 

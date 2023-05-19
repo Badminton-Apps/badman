@@ -219,6 +219,7 @@ export type I18nTranslations = {
                     "prov": string;
                     "title": string;
                 };
+                "enrollments": string;
                 "errors": {
                     "already": string;
                     "base-other-team": string;
@@ -390,7 +391,6 @@ export type I18nTranslations = {
                 };
                 "male": string;
                 "mix": string;
-                "mixed": string;
                 "short": {
                     "double": string;
                     "female": string;
@@ -739,58 +739,6 @@ export type I18nTranslations = {
                 "example": string;
                 "select": string;
                 "title": string;
-            };
-        };
-        "team-enrollment": {
-            "assign-team": string;
-            "availability": string;
-            "base": string;
-            "captain": string;
-            "change-team": string;
-            "close": string;
-            "closed": string;
-            "comment-liga": string;
-            "comment-nat": string;
-            "comment-prov": string;
-            "errors": {
-                "already": string;
-                "club-base-other-team": string;
-                "comp-status": string;
-                "none": string;
-                "player-gender": string;
-                "player-genders": string;
-                "player-min-level": string;
-                "team-index": string;
-                "team-to-strong": string;
-                "title": string;
-            };
-            "exceptions": string;
-            "max": string;
-            "new-exception": string;
-            "new-play-day": string;
-            "open": string;
-            "play-day": string;
-            "player-base": string;
-            "players": {
-                "backup": string;
-                "base": string;
-                "team": string;
-                "title": string;
-            };
-            "save-and-continue-tooltip": string;
-            "select-club": string;
-            "select-events": string;
-            "select-location": string;
-            "select-teams": string;
-            "select-teams-description": string;
-            "substitude": string;
-            "team-index": string;
-            "team-index-ignored": string;
-            "title": string;
-            "transfer-teams": string;
-            "transfer-teams-description": string;
-            "warnings": {
-                "subtitute-team-index": string;
             };
         };
         "themes": {
