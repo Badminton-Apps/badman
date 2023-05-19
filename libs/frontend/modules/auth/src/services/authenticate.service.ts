@@ -10,7 +10,15 @@ import { AuthService } from '@auth0/auth0-angular';
 import { PopupLoginOptions, RedirectLoginOptions } from '@auth0/auth0-spa-js';
 import { Player } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, Observable, from, iif, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  from,
+  fromEvent,
+  iif,
+  merge,
+  of,
+} from 'rxjs';
 import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 
 const PROFILE_QUERY = gql`
@@ -61,7 +69,20 @@ export class AuthenticateService {
   ) {
     if (isPlatformBrowser(this._platformId)) {
       this.authService = this.injector.get(AuthService);
-      this.loggedIn$ = this.authService.isAuthenticated$;
+      this.loggedIn$ = merge(
+        of(null),
+        fromEvent(window, 'online'),
+        fromEvent(window, 'offline')
+      ).pipe(
+        map(() => navigator.onLine),
+        switchMap((online) =>
+          iif(
+            () => online,
+            this.authService?.isAuthenticated$ ?? of(false),
+            of(false)
+          )
+        ),
+      );
     } else {
       this.loggedIn$ = of(false);
     }

@@ -215,6 +215,7 @@
         "prov": "",
         "title": "Remarques"
       },
+      "enrollments": "Entrées",
       "errors": {
         "already": "",
         "base-other-team": "<strong>{player.fullName}</strong> est également joueur de base dans une autre équipe",
@@ -386,7 +387,6 @@
       },
       "male": "Hommes",
       "mix": "Mixte",
-      "mixed": "",
       "short": {
         "double": "D",
         "female": "D",
@@ -735,58 +735,6 @@
       "example": "Image d'avant-plan : {teamName}",
       "select": "Préfixe de l'équipe",
       "title": "Nom des équipes"
-    }
-  },
-  "team-enrollment": {
-    "assign-team": "",
-    "availability": "",
-    "base": "",
-    "captain": "",
-    "change-team": "",
-    "close": "",
-    "closed": "",
-    "comment-liga": "",
-    "comment-nat": "",
-    "comment-prov": "",
-    "errors": {
-      "already": "",
-      "club-base-other-team": "",
-      "comp-status": "",
-      "none": "",
-      "player-gender": "",
-      "player-genders": "",
-      "player-min-level": "",
-      "team-index": "",
-      "team-to-strong": "",
-      "title": "n"
-    },
-    "exceptions": "",
-    "max": "",
-    "new-exception": "",
-    "new-play-day": "",
-    "open": "",
-    "play-day": "",
-    "player-base": "",
-    "players": {
-      "backup": "",
-      "base": "",
-      "team": "",
-      "title": "n"
-    },
-    "save-and-continue-tooltip": "",
-    "select-club": "",
-    "select-events": "",
-    "select-location": "",
-    "select-teams": "",
-    "select-teams-description": "",
-    "substitude": "",
-    "team-index": "",
-    "team-index-ignored": "",
-    "title": "",
-    "transfer-teams": "",
-    "transfer-teams-description": "",
-    "warnings": {
-      "subtitute-team-index": ""
     }
   },
   "themes": {

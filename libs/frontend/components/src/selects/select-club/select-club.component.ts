@@ -98,6 +98,12 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   @Input()
   autoCompleteTreshold = 5;
 
+  @Input()
+  autoSelect = true;
+
+  @Input()
+  allowDeselect = false;
+
   constructor(
     private apollo: Apollo,
     private claimSerice: ClaimService,
@@ -181,7 +187,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           }
 
           // if no club is selected and the user has clubs, pick the first one
-          if (user?.clubs) {
+          if (user?.clubs && this.autoSelect) {
             const clubIds = user?.clubs
               ?.filter((c) => c.clubMembership?.end == null)
               ?.map((r) => r.id);
