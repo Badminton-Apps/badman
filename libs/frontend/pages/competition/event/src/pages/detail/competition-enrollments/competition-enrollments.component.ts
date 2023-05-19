@@ -18,6 +18,7 @@ import {
   TransferState,
   inject,
 } from '@angular/core';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -26,9 +27,12 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { EventCompetition } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
-import { map } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 import { MatListModule } from '@angular/material/list';
+import { TranslateModule } from '@ngx-translate/core';
+import { SelectClubComponent } from '@badman/frontend-components';
+import { FormControl } from '@angular/forms';
 @Component({
   selector: 'badman-competition-enrollments',
   standalone: true,
@@ -39,13 +43,16 @@ import { MatListModule } from '@angular/material/list';
     MatCardModule,
     MatRippleModule,
     MatListModule,
+    TranslateModule,
 
     CdkTableModule,
     CdkTreeModule,
     EnrollmentDetailRowDirective,
+    SelectClubComponent,
   ],
   templateUrl: './competition-enrollments.component.html',
   styleUrls: ['./competition-enrollments.component.scss'],
+  providers: [provideAnimations()],
   animations: [
     trigger('detailExpand', [
       state(
@@ -70,12 +77,13 @@ export class CompetitionEnrollmentsComponent implements OnInit {
 
   // signals
   eventCompetition?: Signal<EventCompetition | undefined>;
+  clubControl = new FormControl();
 
   // Inputs
   @Input({ required: true }) eventId?: string;
   @Input() season?: number;
 
-  displayedColumns: string[] = ['name'];
+  displayedColumns: string[] = ['name', 'entries'];
 
   ngOnInit(): void {
     this._setTeams();
@@ -83,52 +91,91 @@ export class CompetitionEnrollmentsComponent implements OnInit {
 
   private _setTeams(): void {
     this.eventCompetition = toSignal(
-      this.apollo
-        .watchQuery<{ eventCompetition: Partial<EventCompetition> }>({
-          query: gql`
-            query EventEntries($eventCompetitionId: ID!) {
-              eventCompetition(id: $eventCompetitionId) {
-                id
-                subEventCompetitions {
-                  id
-                  name
-                  eventEntries {
+      this.clubControl.valueChanges.pipe(
+        startWith(this.clubControl.value),
+        switchMap(
+          () =>
+            this.apollo.watchQuery<{
+              eventCompetition: Partial<EventCompetition>;
+            }>({
+              query: gql`
+                query EventEntries(
+                  $eventCompetitionId: ID!
+                  $order: [SortOrderType!]
+                ) {
+                  eventCompetition(id: $eventCompetitionId) {
                     id
-                    team {
+                    subEventCompetitions(order: $order) {
                       id
                       name
-                      club {
+                      eventType
+                      eventEntries {
                         id
-                        name
-                      }
-                    }
-                    meta {
-                      competition {
-                        teamIndex
-                        players {
+                        team {
                           id
-                          player {
+                          name
+                          club {
                             id
-                            fullName
+                            name
                           }
-                          single
-                          double
-                          mix
+                        }
+                        meta {
+                          competition {
+                            teamIndex
+                            players {
+                              id
+                              player {
+                                id
+                                fullName
+                              }
+                              single
+                              double
+                              mix
+                            }
+                          }
                         }
                       }
                     }
                   }
                 }
-              }
-            }
-          `,
-          variables: {
-            eventCompetitionId: this.eventId,
-          },
-        })
-        .valueChanges.pipe(
-          map((result) => new EventCompetition(result.data.eventCompetition))
+              `,
+              variables: {
+                eventCompetitionId: this.eventId,
+                order: [
+                  {
+                    field: 'eventType',
+                    direction: 'asc',
+                  },
+                  {
+                    field: 'level',
+                    direction: 'asc',
+                  },
+                ],
+              },
+            }).valueChanges
         ),
+        map((result) => {
+          if (!this.clubControl.value) {
+            return result.data.eventCompetition;
+          }
+
+          // filter out the teams that are not from the selected club
+          const subEventCompetitions =
+            result.data.eventCompetition.subEventCompetitions?.filter(
+              (subEventCompetition) =>
+                subEventCompetition.eventEntries?.some(
+                  (eventEntry) =>
+                    eventEntry.team?.club?.id === this.clubControl.value
+                )
+            );
+
+          return {
+            ...result.data.eventCompetition,
+            subEventCompetitions,
+          };
+        }),
+        map((result) => new EventCompetition(result))
+      ),
       { injector: this.injector }
     );
   }
