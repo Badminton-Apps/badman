@@ -47,7 +47,5 @@ export class HasClaimComponent implements OnInit {
     this.show$ = combineLatest(permissions).pipe(
       map((claims) => claims.reduce((acc, claim) => acc || claim, false))
     );
-
-    this.show$ = of(true);
   }
 }
