@@ -61,7 +61,7 @@ export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
   formGroup: FormGroup = new FormGroup({
-    [SEASON]: new FormControl(getCurrentSeason() + 1, [Validators.required]),
+    [SEASON]: new FormControl(getCurrentSeason(), [Validators.required]),
     [CLUB]: new FormControl(undefined, [Validators.required]),
     [EVENTS]: new FormControl([], [Validators.required, Validators.min(1)]),
     [TEAMS]: new FormGroup(
