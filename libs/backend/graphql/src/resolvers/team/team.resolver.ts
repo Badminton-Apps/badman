@@ -208,11 +208,11 @@ export class TeamsResolver {
         const dbMemberships = await TeamPlayerMembership.findAll({
           where: {
             teamId: teamDb.id,
-            playerId: dbPlayers.map((p) => p.id),
           },
           transaction,
         });
 
+        // add or update players
         await Promise.all(
           newTeamData.players.map(async (player) => {
             const dbPlayer = dbPlayers.find((p) => p.id === player.id);
@@ -237,6 +237,19 @@ export class TeamsResolver {
                 },
                 transaction,
               });
+            }
+          })
+        );
+
+        // remove players that are not in the new list
+        await Promise.all(
+          dbMemberships.map(async (membership) => {
+            const player = newTeamData.players.find(
+              (p) => p.id === membership.playerId
+            );
+
+            if (!player) {
+              await membership.destroy({ transaction });
             }
           })
         );
