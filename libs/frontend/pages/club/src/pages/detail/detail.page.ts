@@ -54,6 +54,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
 import { ClaimService } from '@badman/frontend-auth';
+import { ClubCompetitionComponent } from './club-competition/club-competition.component';
 
 @Component({
   selector: 'badman-club-detail',
@@ -78,6 +79,7 @@ import { ClaimService } from '@badman/frontend-auth';
     LoadingBlockComponent,
     ClubPlayersComponent,
     ClubTeamsComponent,
+    ClubCompetitionComponent,
 
     // Material Modules
     MatButtonToggleModule,
