@@ -28,7 +28,10 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { EnrollmentMessageComponent, SelectClubComponent } from '@badman/frontend-components';
+import {
+  EnrollmentMessageComponent,
+  SelectClubComponent,
+} from '@badman/frontend-components';
 import { Club } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -59,7 +62,7 @@ import { MatIconModule } from '@angular/material/icon';
     CdkTreeModule,
     EnrollmentDetailRowDirective,
     SelectClubComponent,
-    EnrollmentMessageComponent
+    EnrollmentMessageComponent,
   ],
   templateUrl: './club-competition.component.html',
   styleUrls: ['./club-competition.component.scss'],
@@ -104,6 +107,9 @@ export class ClubCompetitionComponent implements OnInit {
     this.club = toSignal(
       this.filter?.get('season')?.valueChanges?.pipe(
         startWith(this.filter.value.season ?? {}),
+        tap(() => {
+          this.loading.set(true);
+        }),
         switchMap((filter) => {
           return this.apollo.watchQuery<{
             club: Partial<Club>;
@@ -184,9 +190,7 @@ export class ClubCompetitionComponent implements OnInit {
             },
           }).valueChanges;
         }),
-        tap(() => {
-          this.loading.set(true);
-        }),
+
         map((result) => new Club(result?.data?.club)),
         tap(() => {
           this.loading.set(false);
