@@ -65,6 +65,15 @@ export class AddDialogComponent {
   async submit() {
     const data = this.group?.value;
 
+    const players = data.players.map(
+      (player: Partial<TeamPlayer>) => {
+        return {
+          id: player.id,
+          membershipType: player.membershipType,
+        };
+      }
+    );
+
     this.apollo
       .mutate<{ createTeam: Partial<Team> }>({
         mutation: gql`
@@ -84,6 +93,7 @@ export class AddDialogComponent {
             season: data.season,
             phone: data.phone,
             email: data.email,
+            players
           },
         },
         refetchQueries: () => ['Team', 'Teams'],

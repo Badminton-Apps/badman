@@ -191,7 +191,7 @@ export class ClubTeamsComponent implements OnInit {
                 ?.map((t) => t.teamNumber),
             },
           },
-
+          disableClose: true,
           width: '100%',
           maxWidth: '600px',
         })

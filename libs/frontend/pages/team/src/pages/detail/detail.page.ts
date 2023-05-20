@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -108,8 +114,20 @@ export class DetailPageComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(`teamEntries-${this.team.id}-${year}`, this.stateTransfer, this.platformId),
-        map((result) => new EventEntry(result?.data.team.entry as EventEntry))
+        transferState(
+          `teamEntries-${this.team.id}-${year}`,
+          this.stateTransfer,
+          this.platformId
+        ),
+        map((result) => {
+          if (!result?.data?.team?.entry) {
+            return undefined;
+          }
+
+          return new EventEntry(
+            result?.data?.team?.entry as Partial<EventEntry>
+          );
+        })
       );
   }
 }

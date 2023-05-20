@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
-import { NotificationService } from '@badman/frontend-auth';
+import { AuthenticateService, NotificationService } from '@badman/frontend-auth';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import { LanguageComponent } from '@badman/frontend-translation';
 import { ThemeSwitcherComponent } from '../theme-switcher';
@@ -52,6 +52,7 @@ import moment from 'moment';
 export class NotificationComponent {
   isOpen = signal(false);
   notificationService = inject(NotificationService);
+  authService = inject(AuthenticateService);
 
   notifications = toSignal(this.notificationService.notifications$);
   unread = computed(() => this.notifications()?.filter((notif) => !notif.read));
