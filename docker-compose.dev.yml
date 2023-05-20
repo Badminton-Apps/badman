@@ -40,6 +40,7 @@ services:
     volumes:
       - db-admin:/var/lib/pgadmin
       - ./database/backup:/home/backup
+      - ./database/scripts:/home/scripts
     ports:
       - '${PGADMIN_PORT:-5050}:80'
     links:

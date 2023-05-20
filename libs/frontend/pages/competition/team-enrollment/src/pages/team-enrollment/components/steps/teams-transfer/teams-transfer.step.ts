@@ -27,12 +27,11 @@ import {
   distinctUntilChanged,
   filter,
   map,
-  delay,
   shareReplay,
   startWith,
   switchMap,
   takeUntil,
-  tap,
+  tap
 } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { CLUB, SEASON, TEAMS } from '../../../../../forms';
