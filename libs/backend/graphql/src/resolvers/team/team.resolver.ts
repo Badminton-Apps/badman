@@ -165,18 +165,28 @@ export class TeamsResolver {
       // Create or find the team (that was inactive)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { players, entry, ...teamData } = newTeamData;
-      const [teamDb, created] = await Team.findOrCreate({
-        where: {
-          type: newTeamData.type,
-          teamNumber: newTeamData.teamNumber,
-          clubId: newTeamData.clubId,
-          season: newTeamData.season,
-        },
-        defaults: {
-          ...teamData,
-        },
-        transaction,
-      });
+      let created = false;
+      let teamDb = null;
+
+      if (teamData.link) {
+        teamDb = await Team.findOne({
+          where: {
+            link: newTeamData.link,
+            season: newTeamData.season,
+          },
+          transaction,
+        });
+      }
+
+      if (!teamDb) {
+        teamDb = await Team.create(
+          {
+            ...teamData,
+          },
+          { transaction }
+        );
+        created = true;
+      }
 
       if (!created) {
         // update values
@@ -188,6 +198,8 @@ export class TeamsResolver {
         teamDb.type = newTeamData.type;
         teamDb.teamNumber = newTeamData.teamNumber;
         teamDb.captainId = newTeamData.captainId;
+        teamDb.preferredDay = newTeamData.preferredDay;
+        teamDb.preferredTime = newTeamData.preferredTime;
         teamDb.link = newTeamData.link;
         await teamDb.save({ transaction });
       }
