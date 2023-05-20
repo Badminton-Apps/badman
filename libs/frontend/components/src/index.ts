@@ -1,6 +1,7 @@
 // start:ng42.barrel
 export * from './add-player';
 export * from './confirm';
+export * from './enrollment-message';
 export * from './events';
 export * from './game-score';
 export * from './games';

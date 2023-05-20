@@ -45,6 +45,7 @@ export class Team {
   clubId?: string;
   link?: string;
 
+
   constructor(args?: Partial<Team>) {
     this.id = args?.id;
     this.slug = args?.slug;

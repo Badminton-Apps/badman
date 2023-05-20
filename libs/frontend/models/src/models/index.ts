@@ -21,4 +21,5 @@ export * from './ranking-system.model';
 export * from './request-link.model';
 export * from './standing.model';
 export * from './team.model';
+export * from './validation';
 // end:ng42.barrel

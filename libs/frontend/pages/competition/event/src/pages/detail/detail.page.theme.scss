@@ -3,8 +3,13 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
+@use './competition-enrollments/competition-enrollments.component.theme.scss' as
+  competition-enrollments;
+
 @mixin color($theme) {
   badman-competition-detail {
+    @include competition-enrollments.color($theme);
+
     $color-config: mat.get-color-config($theme);
     // Background color
     $background: map.get($color-config, 'background');
@@ -31,6 +36,8 @@
 }
 
 @mixin typography($theme) {
+  @include competition-enrollments.typography($theme);
+
   $typography-config: mat.get-typography-config($theme);
   badman-competition-detail {
     .header {
