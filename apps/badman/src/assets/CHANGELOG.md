@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.80.0](https://github.com/Badminton-Apps/badman/compare/v6.79.0...v6.80.0) (2023-05-20)
+
+
+### Features
+
+* club team enrollments view ([3edd596](https://github.com/Badminton-Apps/badman/commit/3edd5961bf66f720fec4176d61b3b21e26b19d05))
+* edit role + SSR fix ([05e0b28](https://github.com/Badminton-Apps/badman/commit/05e0b2827e11365f99bbf72daa287cd99b1bee55))
+* fonts local ([bcf84de](https://github.com/Badminton-Apps/badman/commit/bcf84de78b193530b0aaa103bc2c47747e5f7048))
+* privacy policy ([08e4cdf](https://github.com/Badminton-Apps/badman/commit/08e4cdf9448b4a3143fd6d94d72d95487912d294))
+* privacy policy ([07bd83b](https://github.com/Badminton-Apps/badman/commit/07bd83b1292464b726e6be49041c9b430c13cbaf))
+* rework club edit pages ([9bd3a14](https://github.com/Badminton-Apps/badman/commit/9bd3a142a996f33b0f89ff6fd49ab6780cf1c507))
+* show enrollments ([a118df3](https://github.com/Badminton-Apps/badman/commit/a118df39437aeaf1b1c492e0a66447ab0f83d647))
+* showing enrollments for clubs ([d573f33](https://github.com/Badminton-Apps/badman/commit/d573f33725dc884b8f84987af4c1a259dd5a33d9))
+* small notification change ([c6a82d3](https://github.com/Badminton-Apps/badman/commit/c6a82d3ef5164fe1377c63d6b1f84acbcc6b5bdd))
+* sort notifications by received date ([afdcda6](https://github.com/Badminton-Apps/badman/commit/afdcda6ef53a1b91619e22e15c4fb72fe86b0576))
+* sort notifications by received date ([0b48260](https://github.com/Badminton-Apps/badman/commit/0b48260e25d6ae4af6d659c6ca5cdb034ecbd032))
+* the 3 levels of permissions get checked in the right locations ([cdcdb93](https://github.com/Badminton-Apps/badman/commit/cdcdb9345e985d2fa196d797068ea99d67555112))
+* view errors ([89b58e7](https://github.com/Badminton-Apps/badman/commit/89b58e7159bfc0ddaa63ca799630c2d320e4d0b3))
+
+
+### Bug Fixes
+
+* filter club for comments ([32b16b1](https://github.com/Badminton-Apps/badman/commit/32b16b12a8f199a5d85b211cfc21b7608d5857bd))
+* filter club for comments ([183c2b1](https://github.com/Badminton-Apps/badman/commit/183c2b1f2c56a63d1c959d1f524e10d3e676b778))
+* filtereing on club only show the entries of that club ([9221918](https://github.com/Badminton-Apps/badman/commit/9221918c775cea17b0d9602dfbddfcd0df4c783c))
+* Mailing upgrade ([0ce8652](https://github.com/Badminton-Apps/badman/commit/0ce86529b52bcc1c11460f0e055a85cd653385cf))
+* might as well add this here ([beffef9](https://github.com/Badminton-Apps/badman/commit/beffef9e3c65b08a1d16347d06e011329f925fc6))
+* showing index only when filled in ([ba7e89a](https://github.com/Badminton-Apps/badman/commit/ba7e89a4891fe17975fb96c503a41dcae4058fc8))
+* testing not working ([1722ac3](https://github.com/Badminton-Apps/badman/commit/1722ac3e3b7466238e68fdcbcb828fea1d89450a))
+* this should be here ([6a3b2e8](https://github.com/Badminton-Apps/badman/commit/6a3b2e887914530059084f095de565eeeb68b222))
+* updating lock file ([0dd739d](https://github.com/Badminton-Apps/badman/commit/0dd739d976c3cad6259082e1536173d3afb7884d))
+
 ## [6.79.0](https://github.com/Badminton-Apps/badman/compare/v6.78.2...v6.79.0) (2023-05-10)
 
 
