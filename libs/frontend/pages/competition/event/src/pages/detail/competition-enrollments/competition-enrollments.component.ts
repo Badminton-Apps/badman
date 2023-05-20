@@ -19,22 +19,22 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatTableModule } from '@angular/material/table';
-import { EventCompetition } from '@badman/frontend-models';
-import { Apollo, gql } from 'apollo-angular';
-import { delay, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 import { MatListModule } from '@angular/material/list';
-import { TranslateModule } from '@ngx-translate/core';
-import { SelectClubComponent } from '@badman/frontend-components';
-import { FormControl } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { SelectClubComponent } from '@badman/frontend-components';
+import { EventCompetition } from '@badman/frontend-models';
+import { TranslateModule } from '@ngx-translate/core';
+import { Apollo, gql } from 'apollo-angular';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 @Component({
   selector: 'badman-competition-enrollments',
   standalone: true,
@@ -168,8 +168,8 @@ export class CompetitionEnrollmentsComponent implements OnInit {
             return result.data.eventCompetition;
           }
 
-          // filter out the teams that are not from the selected club
-          const subEventCompetitions =
+          // Filter out the subEventCompetitions that do not include the selected club
+          const filteredSubEventCompetitions =
             result.data.eventCompetition.subEventCompetitions?.filter(
               (subEventCompetition) =>
                 subEventCompetition.eventEntries?.some(
@@ -178,10 +178,21 @@ export class CompetitionEnrollmentsComponent implements OnInit {
                 )
             );
 
-          return {
+          // Filter the eventEntries within each filtered subEventCompetition
+          const filteredEventCompetition = {
             ...result.data.eventCompetition,
-            subEventCompetitions,
+            subEventCompetitions: filteredSubEventCompetitions?.map(
+              (subEventCompetition) => ({
+                ...subEventCompetition,
+                eventEntries: subEventCompetition.eventEntries?.filter(
+                  (eventEntry) =>
+                    eventEntry.team?.club?.id === this.clubControl.value
+                ),
+              })
+            ),
           };
+
+          return filteredEventCompetition;
         }),
         map((result) => new EventCompetition(result)),
         tap(() => {
