@@ -269,7 +269,8 @@
       },
       "title": "Team enrollment",
       "warnings": {
-        "subtitute-team-index": "s"
+        "subtitute-team-index": "s",
+        "title": "Warnings"
       }
     },
     "title": "Competition",

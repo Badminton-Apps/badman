@@ -274,6 +274,7 @@ export type I18nTranslations = {
                 "title": string;
                 "warnings": {
                     "subtitute-team-index": string;
+                    "title": string;
                 };
             };
             "title": string;
