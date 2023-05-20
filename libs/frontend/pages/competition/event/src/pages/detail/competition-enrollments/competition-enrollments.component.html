@@ -51,12 +51,16 @@
     <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
       <div *ngFor="let entry of subevent.eventEntries">
         <mat-expansion-panel>
-          <mat-expansion-panel-header
-            >{{ entry.team.name }} (Team Index:
-            {{
-              entry?.meta?.competition?.teamIndex
-            }})</mat-expansion-panel-header
-          >
+          <mat-expansion-panel-header>
+            {{ entry.team.name }}
+
+            <span
+              class="team-index"
+              *ngIf="entry?.meta?.competition?.teamIndex"
+            >
+              (Team Index:{{ entry?.meta?.competition?.teamIndex }})
+            </span>
+          </mat-expansion-panel-header>
           <mat-list role="list">
             <mat-list-item
               role="listitem"
