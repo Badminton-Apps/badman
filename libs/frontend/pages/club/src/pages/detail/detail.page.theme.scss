@@ -5,11 +5,13 @@
 
 @use './club-players/club-players.component.theme.scss' as club-players;
 @use './club-teams/club-teams.component.theme.scss' as club-teams;
+@use './club-competition/club-competition.component.theme.scss' as club-competition;
 
 @mixin color($theme) {
   badman-club-detail {
     @include club-players.color($theme);
     @include club-teams.color($theme);
+    @include club-competition.color($theme);
 
     $color-config: mat.get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
@@ -23,6 +25,7 @@
   badman-club-detail {
     @include club-players.typography($theme);
     @include club-teams.typography($theme);
+    @include club-competition.typography($theme);
 
     $typography-config: mat.get-typography-config($theme);
 
