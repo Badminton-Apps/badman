@@ -10,8 +10,7 @@ import {
   TransferState,
   computed,
   inject,
-  signal,
-  effect,
+  signal
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -27,6 +26,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ClaimService } from '@badman/frontend-auth';
 import {
   AddPlayerComponent,
   HasClaimComponent,
@@ -51,10 +51,9 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { ClubCompetitionComponent } from './club-competition/club-competition.component';
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
-import { ClaimService } from '@badman/frontend-auth';
-import { ClubCompetitionComponent } from './club-competition/club-competition.component';
 
 @Component({
   selector: 'badman-club-detail',
@@ -110,7 +109,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
 
   update$ = new Subject<void>();
   destroy$ = new Subject<void>();
-
 
   constructor(
     private formBuilder: FormBuilder,
