@@ -415,7 +415,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
 
         tControl?.patchValue({
           ...team,
-          teamNumber: team.teamNumber - 1,
+          teamNumber: team.teamNumber,
           name: this.getTeamName(team, club),
         } as Team);
       }
