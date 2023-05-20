@@ -13,5 +13,5 @@ export const getCurrentSeason = (inputDate?: Date | moment.Moment) => {
     date = moment();
   }
 
-  return date.month() >= 6 ? date.year() : date.year() - 1;
+  return date.month() >= 4 ? date.year() : date.year() - 1;
 };

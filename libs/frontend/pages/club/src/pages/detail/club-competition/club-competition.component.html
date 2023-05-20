@@ -10,7 +10,10 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let team">
         {{ team.name }}
-        <span class="team-index" *ngIf="team?.entry?.meta?.competition?.teamIndex">
+        <span
+          class="team-index"
+          *ngIf="team?.entry?.meta?.competition?.teamIndex"
+        >
           (Team Index:{{ team?.entry?.meta?.competition?.teamIndex }})
         </span>
       </mat-cell>
@@ -21,6 +24,33 @@
       <mat-cell *matCellDef="let team">
         {{ team?.entry?.subEventCompetition?.name }}
         {{ team?.entry?.subEventCompetition?.eventType }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="validations">
+      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+      <mat-cell *matCellDef="let team">
+        <mat-icon
+          *ngIf="(team?.entry?.enrollmentValidation?.errors ?? []).length > 0"
+          [matBadge]="(team?.entry?.enrollmentValidation?.errors ?? []).length"
+          class="invalid"
+          [matTooltip]="
+            'all.competition.team-enrollment.errors.title' | translate
+          "
+          >error</mat-icon
+        >
+
+        <mat-icon
+          *ngIf="(team?.entry?.enrollmentValidation?.warnings ?? []).length > 0"
+          [matBadge]="
+            (team?.entry?.enrollmentValidation?.warnings ?? []).length
+          "
+          class="warning"
+          [matTooltip]="
+            'all.competition.team-enrollment.warnings.title' | translate
+          "
+          >warning</mat-icon
+        >
       </mat-cell>
     </ng-container>
 
@@ -52,6 +82,42 @@
           </span>
         </mat-list-item>
       </mat-list>
+
+      <div class="validation-list">
+        <ul
+          class="error-list"
+          *ngIf="(team?.entry?.enrollmentValidation?.errors?.length ?? 0) > 0"
+        >
+          <li *ngFor="let error of team?.entry?.enrollmentValidation?.errors">
+            <badman-enrollment-message
+              [validation]="error"
+            ></badman-enrollment-message>
+          </li>
+        </ul>
+
+        <ul
+          class="warning-list"
+          *ngIf="(team?.entry?.enrollmentValidation?.warnings?.length ?? 0) > 0"
+        >
+          <li
+            *ngFor="let warnings of team?.entry?.enrollmentValidation?.warnings"
+          >
+            <badman-enrollment-message
+              [validation]="warnings"
+            ></badman-enrollment-message>
+          </li>
+        </ul>
+
+        <div
+          class="no-errors"
+          *ngIf="
+            (team?.entry?.enrollmentValidation?.errors?.length ?? 0) === 0 &&
+            (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) === 0
+          "
+        >
+          {{ 'all.competition.team-assembly.errors.none' | translate }}
+        </div>
+      </div>
     </div>
   </ng-template>
 </ng-container>

@@ -32,7 +32,6 @@ import { MomentModule } from 'ngx-moment';
 import { lastValueFrom } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { CompetitionEventsComponent } from './competition-events/competition-events.component';
-import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'badman-competition-overview',
@@ -145,5 +144,4 @@ export class OverviewPageComponent implements OnInit {
       await lastValueFrom(this.jobsService.syncEventById(result));
     }
   }
-
 }
