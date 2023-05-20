@@ -269,7 +269,8 @@
       },
       "title": "Team inschrijvingen",
       "warnings": {
-        "subtitute-team-index": "s"
+        "subtitute-team-index": "s",
+        "title": "Waarschuwingen"
       }
     },
     "title": "Competitie",

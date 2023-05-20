@@ -269,7 +269,8 @@
       },
       "title": "Inscriptions des équipes",
       "warnings": {
-        "subtitute-team-index": ""
+        "subtitute-team-index": "",
+        "title": "Mises en garde"
       }
     },
     "title": "Concours",

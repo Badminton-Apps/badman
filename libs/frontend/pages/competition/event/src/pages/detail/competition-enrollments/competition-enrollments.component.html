@@ -39,17 +39,12 @@
           *ngIf="getValidationsForSubEvent(subevent.id) as validation"
         >
           <mat-icon
-            *ngIf="!validation.warnings && !validation.errors"
-            class="valid"
-            [matTooltip]="'all.competition.team-enrollment.valid' | translate"
-            >check_circle</mat-icon
-          >
-
-          <mat-icon
             *ngIf="validation.errors"
             [matBadge]="validation.errors"
             class="invalid"
-            [matTooltip]="'all.competition.team-enrollment.invalid' | translate"
+            [matTooltip]="
+              'all.competition.team-enrollment.errors.title' | translate
+            "
             >error</mat-icon
           >
 
@@ -57,7 +52,9 @@
             *ngIf="validation.warnings"
             [matBadge]="validation.warnings"
             class="warning"
-            [matTooltip]="'all.competition.team-enrollment.warning' | translate"
+            [matTooltip]="
+              'all.competition.team-enrollment.warnings.title' | translate
+            "
             >warning</mat-icon
           >
         </ng-container>
@@ -103,7 +100,7 @@
                 [matBadge]="entry.enrollmentValidation?.errors.length"
                 class="invalid"
                 [matTooltip]="
-                  'all.competition.team-enrollment.invalid' | translate
+                  'all.competition.team-enrollment.errors.title' | translate
                 "
                 >error</mat-icon
               >
@@ -114,7 +111,7 @@
                 [matBadge]="entry.enrollmentValidation?.warnings.length"
                 class="warning"
                 [matTooltip]="
-                  'all.competition.team-enrollment.warning' | translate
+                  'all.competition.team-enrollment.warnings.title' | translate
                 "
                 >warning</mat-icon
               >
