@@ -8,8 +8,8 @@ import {
   Player,
   SubEventCompetition,
   Team,
+  ValidationMessage,
 } from '@badman/frontend-models';
-import { ValidationMessage } from '../../../../../models';
 
 @Component({
   selector: 'badman-enrollment-message',
