@@ -28,7 +28,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { SelectClubComponent } from '@badman/frontend-components';
+import { EnrollmentMessageComponent, SelectClubComponent } from '@badman/frontend-components';
 import { Club } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -36,6 +36,9 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 import { FormGroup } from '@angular/forms';
 import { of } from 'rxjs';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'badman-club-competition',
   standalone: true,
@@ -46,6 +49,9 @@ import { of } from 'rxjs';
     MatCardModule,
     MatRippleModule,
     MatListModule,
+    MatTooltipModule,
+    MatBadgeModule,
+    MatIconModule,
     MatProgressBarModule,
     TranslateModule,
 
@@ -53,6 +59,7 @@ import { of } from 'rxjs';
     CdkTreeModule,
     EnrollmentDetailRowDirective,
     SelectClubComponent,
+    EnrollmentMessageComponent
   ],
   templateUrl: './club-competition.component.html',
   styleUrls: ['./club-competition.component.scss'],
@@ -87,7 +94,7 @@ export class ClubCompetitionComponent implements OnInit {
   @Input() filter?: FormGroup;
   @Input({ required: true }) clubId?: string;
 
-  displayedColumns: string[] = ['name', 'subevent'];
+  displayedColumns: string[] = ['name', 'subevent', 'validations'];
 
   ngOnInit(): void {
     this._setTeams();
@@ -134,6 +141,26 @@ export class ClubCompetitionComponent implements OnInit {
                           }
                         }
                       }
+                      enrollmentValidation {
+                        id
+                        linkId
+                        teamIndex
+                        baseIndex
+                        isNewTeam
+                        possibleOldTeam
+                        maxLevel
+                        minBaseIndex
+                        maxBaseIndex
+                        valid
+                        errors {
+                          message
+                          params
+                        }
+                        warnings {
+                          message
+                          params
+                        }
+                      }
                     }
                   }
                 }
@@ -153,7 +180,7 @@ export class ClubCompetitionComponent implements OnInit {
               ],
               where: {
                 season: filter,
-              }
+              },
             },
           }).valueChanges;
         }),
