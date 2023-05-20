@@ -8,10 +8,10 @@
   </div>
 </div>
 <mat-dialog-actions align="end">
+  <button mat-stroked-button [mat-dialog-close]>
+    {{ 'all.button.close' | translate }}
+  </button>
   <button mat-raised-button (click)="submit()" color="primary">
     {{ 'all.button.save' | translate }}
-  </button>
-  <button mat-button [mat-dialog-close]>
-    {{ 'all.button.close' | translate }}
   </button>
 </mat-dialog-actions>

@@ -17,6 +17,7 @@ import {
   Signal,
   TransferState,
   inject,
+  signal,
 } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -27,12 +28,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { EventCompetition } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { delay, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 import { MatListModule } from '@angular/material/list';
 import { TranslateModule } from '@ngx-translate/core';
 import { SelectClubComponent } from '@badman/frontend-components';
 import { FormControl } from '@angular/forms';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 @Component({
   selector: 'badman-competition-enrollments',
   standalone: true,
@@ -43,6 +45,7 @@ import { FormControl } from '@angular/forms';
     MatCardModule,
     MatRippleModule,
     MatListModule,
+    MatProgressBarModule,
     TranslateModule,
 
     CdkTableModule,
@@ -77,6 +80,9 @@ export class CompetitionEnrollmentsComponent implements OnInit {
 
   // signals
   eventCompetition?: Signal<EventCompetition | undefined>;
+  loading = signal(false);
+
+  // Form Controls
   clubControl = new FormControl();
 
   // Inputs
@@ -93,6 +99,9 @@ export class CompetitionEnrollmentsComponent implements OnInit {
     this.eventCompetition = toSignal(
       this.clubControl.valueChanges.pipe(
         startWith(this.clubControl.value),
+        tap(() => {
+          this.loading.set(true);
+        }),
         switchMap(
           () =>
             this.apollo.watchQuery<{
@@ -174,7 +183,10 @@ export class CompetitionEnrollmentsComponent implements OnInit {
             subEventCompetitions,
           };
         }),
-        map((result) => new EventCompetition(result))
+        map((result) => new EventCompetition(result)),
+        tap(() => {
+          this.loading.set(false);
+        })
       ),
       { injector: this.injector }
     );
