@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.81.0](https://github.com/Badminton-Apps/badman/compare/v6.80.1...v6.81.0) (2023-05-20)
+
+
+### Features
+
+* remove existing players ([d09106b](https://github.com/Badminton-Apps/badman/commit/d09106b902f0a19a5a75c69f4dcdea52eac96756))
+
+
+### Bug Fixes
+
+* teamnumber not correctly transfered ([0612767](https://github.com/Badminton-Apps/badman/commit/0612767019acbc1121ec846e8e37e44b963f50f0))
+
 ### [6.80.1](https://github.com/Badminton-Apps/badman/compare/v6.80.0...v6.80.1) (2023-05-20)
 
 
