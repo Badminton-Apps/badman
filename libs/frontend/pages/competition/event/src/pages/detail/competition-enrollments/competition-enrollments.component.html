@@ -43,6 +43,10 @@
     </mat-row>
   </mat-table>
 
+  <ng-container *ngIf="loading()">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </ng-container>
+
   <ng-template #tpl let-subevent>
     <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
       <div *ngFor="let entry of subevent.eventEntries">
