@@ -1,3 +1,4 @@
+import { User } from '@badman/backend-authorization';
 import {
   DrawCompetition,
   DrawTournament,
@@ -10,6 +11,14 @@ import {
   SubEventTournament,
   Team,
 } from '@badman/backend-database';
+import {
+  EnrollmentInput,
+  EnrollmentOutput,
+  EnrollmentValidationService,
+  TeamEnrollmentOutput,
+} from '@badman/backend-enrollment';
+import { NotificationService } from '@badman/backend-notifications';
+import { TeamMembershipType } from '@badman/utils';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
@@ -22,12 +31,13 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
-import { NotificationService } from '@badman/backend-notifications';
-import { User } from '@badman/backend-authorization';
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
-  constructor(private notificationService: NotificationService) {}
+  constructor(
+    private notificationService: NotificationService,
+    private enrollmentService: EnrollmentValidationService
+  ) {}
 
   @Query(() => EventEntry)
   async eventEntry(
@@ -87,12 +97,61 @@ export class EventEntryResolver {
     return eventEntry.getStanding();
   }
 
+  @ResolveField(() => TeamEnrollmentOutput, {
+    description: `Validate the enrollment\n\r**note**: the levels are the ones from may!`,
+  })
+  async enrollmentValidation(
+    @Parent() eventEntry: EventEntry
+  ): Promise<TeamEnrollmentOutput> {
+    const team = await eventEntry.getTeam();
+    const teamsOfClub = await Team.findAll({
+      where: {
+        clubId: team.clubId,
+        season: team.season,
+      },
+      include: [{ model: Player, as: 'players' }, { model: EventEntry }],
+    });
+
+    const validation = await this.enrollmentService.fetchAndValidate(
+      {
+        teams: teamsOfClub.map((t) => ({
+          id: t.id,
+          name: t.name,
+          type: t.type,
+          link: t.link,
+          teamNumber: t.teamNumber,
+          basePlayers: t.entry?.meta?.competition?.players?.map((p) => p.id),
+          players: t.players
+            .filter(
+              (p) =>
+                p.TeamPlayerMembership.membershipType ===
+                TeamMembershipType.REGULAR
+            )
+            .map((p) => p.id),
+          backupPlayers: t.players
+            .filter(
+              (p) =>
+                p.TeamPlayerMembership.membershipType ===
+                TeamMembershipType.BACKUP
+            )
+            .map((p) => p.id),
+          subEventId: t.entry?.subEventId,
+        })),
+
+        season: team.season,
+      } as EnrollmentInput,
+      EnrollmentValidationService.defaultValidators()
+    );
+
+    return validation.teams.find((t) => t.id === team.id);
+  }
+
   @Mutation(() => Boolean)
   async finishEventEntry(
     @User() user: Player,
     @Args('clubId', { type: () => ID }) clubId: string,
     @Args('season', { type: () => Int }) season: number,
-    @Args('email', { type: () => String }) email: string,
+    @Args('email', { type: () => String }) email: string
   ) {
     if (!user.hasAnyPermission([clubId + '_edit:club', 'edit-any:club'])) {
       throw new UnauthorizedException(
@@ -100,7 +159,12 @@ export class EventEntryResolver {
       );
     }
 
-    await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
+    await this.notificationService.notifyEnrollment(
+      user.id,
+      clubId,
+      season,
+      email
+    );
 
     return true;
   }

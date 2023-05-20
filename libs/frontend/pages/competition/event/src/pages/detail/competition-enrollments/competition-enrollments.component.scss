@@ -5,6 +5,14 @@
   position: relative;
 }
 
+.mat-column-validations {
+  gap: 1rem;
+}
+
+.panel-header {
+  padding: 1rem 0;
+}
+
 .filter {
   width: 250px;
   padding: 1rem 0;
@@ -20,4 +28,18 @@
 
 .team-index {
   padding-left: 0.5rem;
+}
+
+.loading {
+  animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
 }

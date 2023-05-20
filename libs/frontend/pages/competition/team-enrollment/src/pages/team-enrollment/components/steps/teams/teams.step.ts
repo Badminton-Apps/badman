@@ -29,6 +29,7 @@ import {
   EntryCompetitionPlayer,
   SubEventCompetition,
   Team,
+  ValidationResult,
 } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import {
@@ -63,7 +64,6 @@ import {
 } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { CLUB, EVENTS, SEASON, TEAMS } from '../../../../../forms';
-import { ValidationResult } from '../../../models';
 import { TeamForm, TeamFormValue } from '../teams-transfer';
 import { TeamEnrollmentComponent } from './components';
 

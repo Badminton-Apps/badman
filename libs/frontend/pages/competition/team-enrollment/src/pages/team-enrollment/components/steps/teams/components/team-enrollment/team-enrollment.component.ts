@@ -8,19 +8,17 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { PlayerSearchComponent } from '@badman/frontend-components';
 import {
   EntryCompetitionPlayer,
   SubEventCompetition,
   Team,
+  TeamValidationResult,
 } from '@badman/frontend-models';
 import { SubEventType, SubEventTypeEnum } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { TeamValidationResult } from '../../../../../models';
-import { EnrollmentMessageComponent } from '../enrollment-message';
 import { TeamComponent } from '../team';
+import { EnrollmentMessageComponent } from '@badman/frontend-components';
 
 @Component({
   selector: 'badman-team-enrollment',

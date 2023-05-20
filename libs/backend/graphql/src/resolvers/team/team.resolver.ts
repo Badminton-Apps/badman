@@ -252,7 +252,7 @@ export class TeamsResolver {
             where: {
               teamId: teamDb.id,
               subEventId: newTeamData.entry.subEventId,
-              entryType: 'competition'
+              entryType: 'competition',
             },
             defaults: {
               ...newTeamData.entry,

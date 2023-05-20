@@ -7,6 +7,7 @@ import {
 import { Player } from './player.model';
 import { Standing } from './standing.model';
 import { Team } from './team.model';
+import { TeamValidationResult } from './validation';
 
 export class EventEntry {
   id?: string;
@@ -29,6 +30,8 @@ export class EventEntry {
   team?: Team;
   players?: Player[];
   meta?: Meta;
+
+  enrollmentValidation?: TeamValidationResult;
 
   constructor({ ...args }: Partial<EventEntry>) {
     this.id = args.id;
@@ -58,6 +61,8 @@ export class EventEntry {
     this.standing =
       args?.standing != null ? new Standing(args?.standing) : undefined;
     this.players = args?.players?.map((p) => new Player(p));
+
+    this.enrollmentValidation = args?.enrollmentValidation;
 
     this.meta = args?.meta;
     this.entryType = args?.entryType;
