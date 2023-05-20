@@ -203,6 +203,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
       switchMap(([clubId, season, system]) =>
         this.apollo
           .query<{ teams: Team[] }>({
+            fetchPolicy: 'no-cache',
             query: gql`
               query Teams(
                 $where: JSONObject
