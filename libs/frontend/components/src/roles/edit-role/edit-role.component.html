@@ -15,7 +15,13 @@
       </button>
 
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="editClaims()">
+        <button
+          mat-menu-item
+          (click)="editClaims()"
+          [disabled]="this.role()?.locked"
+          [matTooltip]="'all.security.roles.locked' | translate"
+          [matTooltipDisabled]="!this.role()?.locked"
+        >
           <mat-icon>edit</mat-icon>
           <span>{{ 'all.button.edit' | translate }}</span>
         </button>
