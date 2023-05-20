@@ -328,10 +328,10 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
                     1
                   );
 
-                  // we need to override the lastSeason with new info
+                  // select the team
                   return {
                     ...team,
-                    id: teamThisSeason.id,
+                    ...teamThisSeason,
                     selected: true,
                   } as Team & { selected: boolean };
                 }
