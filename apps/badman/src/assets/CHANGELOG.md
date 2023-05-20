@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.80.1](https://github.com/Badminton-Apps/badman/compare/v6.80.0...v6.80.1) (2023-05-20)
+
+
+### Bug Fixes
+
+* loading animation not showing ([389c78c](https://github.com/Badminton-Apps/badman/commit/389c78c560f12e283c49c900724d891951143882))
+* season should be the current ([072b478](https://github.com/Badminton-Apps/badman/commit/072b47851d9906e194d308af3f0340e1cae02ed1))
+
 ## [6.80.0](https://github.com/Badminton-Apps/badman/compare/v6.79.0...v6.80.0) (2023-05-20)
 
 
