@@ -8,7 +8,7 @@ module.exports = {
       try {
         // remove the constraint on the teams table teams_unique_constraint
         await queryInterface.removeConstraint(
-          'teams',
+          'Teams',
           'teams_unique_constraint',
           {
             transaction: t,
@@ -24,7 +24,7 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       // add the constraint on the teams table teams_unique_constraint
-      await queryInterface.addConstraint('teams', {
+      await queryInterface.addConstraint('Teams', {
         fields: ['clubId', 'season', 'type', 'teamNumber'],
         type: 'unique',
         name: 'teams_unique_constraint',
