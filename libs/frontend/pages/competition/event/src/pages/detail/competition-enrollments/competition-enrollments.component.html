@@ -35,8 +35,15 @@
     <ng-container matColumnDef="validations">
       <mat-header-cell *matHeaderCellDef> </mat-header-cell>
       <mat-cell *matCellDef="let subevent">
+        <ng-container *ngIf="loadingValidations()">
+          loading... ({{ progress() }} / {{ total() }})</ng-container
+        >
+
         <ng-container
-          *ngIf="getValidationsForSubEvent(subevent.id) as validation"
+          *ngIf="
+            !loadingValidations() &&
+            validationsForSubevent.get(subevent.id) as validation
+          "
         >
           <mat-icon
             *ngIf="validation.errors"
@@ -95,26 +102,33 @@
               </span>
 
               <!-- show errors with label -->
-              <mat-icon
-                *ngIf="(entry.enrollmentValidation?.errors ?? []).length > 0"
-                [matBadge]="entry.enrollmentValidation?.errors.length"
-                class="invalid"
-                [matTooltip]="
-                  'all.competition.team-enrollment.errors.title' | translate
+              <ng-container
+                *ngIf="
+                  !loadingValidations() &&
+                  validationsForTeam.get(entry.team.id) as validation
                 "
-                >error</mat-icon
               >
+                <mat-icon
+                  *ngIf="(validation.errors?.length ?? 0) > 0"
+                  [matBadge]="validation.errors.length"
+                  class="invalid"
+                  [matTooltip]="
+                    'all.competition.team-enrollment.errors.title' | translate
+                  "
+                  >error</mat-icon
+                >
 
-              <!-- show warnings with label -->
-              <mat-icon
-                *ngIf="(entry.enrollmentValidation?.warnings ?? []).length > 0"
-                [matBadge]="entry.enrollmentValidation?.warnings.length"
-                class="warning"
-                [matTooltip]="
-                  'all.competition.team-enrollment.warnings.title' | translate
-                "
-                >warning</mat-icon
-              >
+                <!-- show warnings with label -->
+                <mat-icon
+                  *ngIf="(validation.warnings?.length ?? 0) > 0"
+                  [matBadge]="validation.warnings.length"
+                  class="warning"
+                  [matTooltip]="
+                    'all.competition.team-enrollment.warnings.title' | translate
+                  "
+                  >warning</mat-icon
+                >
+              </ng-container>
             </div>
           </mat-expansion-panel-header>
           <mat-list role="list">
@@ -129,12 +143,16 @@
             </mat-list-item>
           </mat-list>
 
-          <div class="validation-list">
-            <ul
-              class="error-list"
-              *ngIf="(entry.enrollmentValidation?.errors?.length ?? 0) > 0"
-            >
-              <li *ngFor="let error of entry.enrollmentValidation?.errors">
+
+          <div
+            class="validation-list"
+            *ngIf="
+              !loadingValidations() &&
+              validationsForTeam.get(entry.team.id) as validation
+            "
+          >
+            <ul class="error-list" *ngIf="(validation.errors?.length ?? 0) > 0">
+              <li *ngFor="let error of validation.errors">
                 <badman-enrollment-message
                   [validation]="error"
                 ></badman-enrollment-message>
@@ -143,9 +161,9 @@
 
             <ul
               class="warning-list"
-              *ngIf="(entry.enrollmentValidation?.warnings?.length ?? 0) > 0"
+              *ngIf="(validation.warnings?.length ?? 0) > 0"
             >
-              <li *ngFor="let warnings of entry.enrollmentValidation?.warnings">
+              <li *ngFor="let warnings of validation.warnings">
                 <badman-enrollment-message
                   [validation]="warnings"
                 ></badman-enrollment-message>
@@ -155,8 +173,8 @@
             <div
               class="no-errors"
               *ngIf="
-                (entry.enrollmentValidation?.errors?.length ?? 0) === 0 &&
-                (entry.enrollmentValidation?.warnings?.length ?? 0) === 0
+                (validation.errors?.length ?? 0) === 0 &&
+                (validation.warnings?.length ?? 0) === 0
               "
             >
               {{ 'all.competition.team-assembly.errors.none' | translate }}

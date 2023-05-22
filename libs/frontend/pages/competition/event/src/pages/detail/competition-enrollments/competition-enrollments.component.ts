@@ -16,6 +16,7 @@ import {
   PLATFORM_ID,
   Signal,
   TransferState,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -36,10 +37,22 @@ import {
   EnrollmentMessageComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
-import { EventCompetition } from '@badman/frontend-models';
+import {
+  EventCompetition,
+  EventEntry,
+  TeamValidationResult,
+} from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { from } from 'rxjs';
+import {
+  bufferCount,
+  concatMap,
+  map,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 
 @Component({
@@ -92,6 +105,19 @@ export class CompetitionEnrollmentsComponent implements OnInit {
   // signals
   eventCompetition?: Signal<EventCompetition | undefined>;
   loading = signal(false);
+
+  validationsForTeam = new Map<string, TeamValidationResult>();
+  validationsForSubevent = new Map<
+    string,
+    {
+      errors: number;
+      warnings: number;
+    }
+  >();
+
+  loadingValidations = signal(false);
+  progress = signal(0);
+  total = signal(0);
 
   // Form Controls
   clubControl = new FormControl();
@@ -164,26 +190,6 @@ export class CompetitionEnrollmentsComponent implements OnInit {
                             }
                           }
                         }
-                        enrollmentValidation {
-                          id
-                          linkId
-                          teamIndex
-                          baseIndex
-                          isNewTeam
-                          possibleOldTeam
-                          maxLevel
-                          minBaseIndex
-                          maxBaseIndex
-                          valid
-                          errors {
-                            message
-                            params
-                          }
-                          warnings {
-                            message
-                            params
-                          }
-                        }
                       }
                     }
                   }
@@ -242,8 +248,109 @@ export class CompetitionEnrollmentsComponent implements OnInit {
       ),
       { injector: this.injector }
     );
+
+    effect(
+      () => {
+        this.loadingValidations.set(true);
+        const eventIds = (this.eventCompetition?.()
+          ?.subEventCompetitions?.map((subEvent) =>
+            subEvent.eventEntries?.map((entry) => entry.id)
+          )
+          ?.flat()
+          ?.filter((id) => !!id) ?? []) as string[];
+
+        this.total.set(eventIds.length);
+
+        from(eventIds)
+          .pipe(
+            bufferCount(10),
+            concatMap((txn) => this.getValidationsForEventEntry(txn))
+          )
+          .subscribe((results) => {
+            this.progress.set(this.progress() + results.length);
+
+            for (const result of results) {
+              if (
+                !result ||
+                !result.teamId ||
+                !result.subEventId ||
+                !result.enrollmentValidation
+              ) {
+                continue;
+              }
+              this.validationsForTeam.set(
+                result.teamId,
+                result.enrollmentValidation
+              );
+
+              const subEventValidation = this.validationsForSubevent.get(
+                result.subEventId
+              );
+
+              this.validationsForSubevent.set(result.subEventId, {
+                errors:
+                  (subEventValidation?.errors ?? 0) +
+                    result.enrollmentValidation.errors?.length ?? 0,
+                warnings:
+                  (subEventValidation?.warnings ?? 0) +
+                    result.enrollmentValidation.warnings?.length ?? 0,
+              });
+            }
+
+            if (this.progress() === this.total()) {
+              this.loadingValidations.set(false);
+            }
+          });
+      },
+      {
+        injector: this.injector,
+        allowSignalWrites: true,
+      }
+    );
   }
 
+  getValidationsForEventEntry(ids: string[]) {
+    return this.apollo
+      .query<{
+        eventEntries: Partial<EventEntry>[];
+      }>({
+        query: gql`
+          query EventEntries($where: JSONObject) {
+            eventEntries(where: $where) {
+              id
+              teamId
+              subEventId
+              enrollmentValidation {
+                id
+                linkId
+                teamIndex
+                baseIndex
+                isNewTeam
+                possibleOldTeam
+                maxLevel
+                minBaseIndex
+                maxBaseIndex
+                valid
+                errors {
+                  message
+                  params
+                }
+                warnings {
+                  message
+                  params
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          where: {
+            id: ids,
+          },
+        },
+      })
+      .pipe(map((result) => result.data.eventEntries));
+  }
   getValidationsForSubEvent(id: string) {
     const validations =
       this.eventCompetition?.()
