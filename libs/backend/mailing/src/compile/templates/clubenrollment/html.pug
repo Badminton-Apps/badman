@@ -78,7 +78,7 @@ block content
                         strong Uitzonderingen:
                         ul
                           each exception in availability.exceptions
-                            if exception.start && exception.end && exception.courts
+                            if exception.start && exception.end
                               if exception.start == exception.end
                                 li #{ moment(exception.start).format('LL') }: #{ exception.courts } velden
                               else
