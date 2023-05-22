@@ -30,16 +30,12 @@
   padding-left: 0.5rem;
 }
 
-.loading {
-  animation: button-loading-spinner 1s ease infinite;
-}
+.players {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 
-@keyframes button-loading-spinner {
-  from {
-    transform: rotate(0turn);
-  }
-
-  to {
-    transform: rotate(1turn);
+  mat-list {
+    flex: 1 1 200px;
   }
 }
