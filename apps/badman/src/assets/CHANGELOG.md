@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.81.3](https://github.com/Badminton-Apps/badman/compare/v6.81.2...v6.81.3) (2023-05-22)
+
+
+### Bug Fixes
+
+* adding player with no rankking ([96cbebd](https://github.com/Badminton-Apps/badman/commit/96cbebda2e158d140cb1e1f7d6c95560536b87e4))
+* expand eceptions when filled in ([cbc7d24](https://github.com/Badminton-Apps/badman/commit/cbc7d24df93d168f44273c035e3b17c2a645bf81))
+
 ### [6.81.2](https://github.com/Badminton-Apps/badman/compare/v6.81.1...v6.81.2) (2023-05-22)
 
 
