@@ -12,7 +12,6 @@ import { Rule } from './_rule.base';
 export class PlayerMinLevelRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
-
     for (const {
       team,
       teamPlayers,
@@ -30,9 +29,7 @@ export class PlayerMinLevelRule extends Rule {
         const uniquePlayers = new Set([...teamPlayers, ...basePlayers]);
 
         for (const player of uniquePlayers) {
-          const ranking = player?.rankingPlaces?.[0];
-
-          if (ranking.single < subEvent.maxLevel) {
+          if (player.single < subEvent.maxLevel && !player.levelException) {
             teamValid = false;
             errors.push({
               message:
@@ -40,8 +37,8 @@ export class PlayerMinLevelRule extends Rule {
               params: {
                 player: {
                   id: player?.id,
-                  fullName: player.fullName,
-                  ranking: ranking.single,
+                  fullName: player.player?.fullName,
+                  ranking: player.single,
                 },
                 minLevel: subEvent.maxLevel,
                 rankingType: 'single',
@@ -49,7 +46,7 @@ export class PlayerMinLevelRule extends Rule {
             });
           }
 
-          if (ranking.double < subEvent.maxLevel) {
+          if (player.double < subEvent.maxLevel && !player.levelException) {
             teamValid = false;
 
             errors.push({
@@ -58,8 +55,8 @@ export class PlayerMinLevelRule extends Rule {
               params: {
                 player: {
                   id: player?.id,
-                  fullName: player.fullName,
-                  ranking: ranking.double,
+                  fullName: player.player?.fullName,
+                  ranking: player.double,
                 },
                 minLevel: subEvent.maxLevel,
                 rankingType: 'double',
@@ -69,7 +66,8 @@ export class PlayerMinLevelRule extends Rule {
 
           if (
             team?.type === SubEventTypeEnum.MX &&
-            ranking.mix < subEvent.maxLevel
+            player.mix < subEvent.maxLevel &&
+            !player.levelException
           ) {
             teamValid = false;
 
@@ -79,8 +77,8 @@ export class PlayerMinLevelRule extends Rule {
               params: {
                 player: {
                   id: player?.id,
-                  fullName: player.fullName,
-                  ranking: ranking.mix,
+                  fullName: player.player?.fullName,
+                  ranking: player.mix,
                 },
                 minLevel: subEvent.maxLevel,
                 rankingType: 'mix',

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/graphql';
 import {
   EntryCompetition,
-  EntryCompetitionPlayers,
+  EntryCompetitionPlayer,
   EntryTournament,
   Player,
 } from '../models';
@@ -33,7 +33,7 @@ export class EntryCompetitionType {
   teamIndex: number;
 
   @Field(() => [EntryCompetitionPlayersType], { nullable: true })
-  players: EntryCompetitionPlayers[];
+  players: EntryCompetitionPlayer[];
 }
 
 @ObjectType({ description: 'A EntryCompetitionPlayers' })

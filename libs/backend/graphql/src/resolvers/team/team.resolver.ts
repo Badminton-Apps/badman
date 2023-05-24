@@ -1,7 +1,7 @@
 import { User } from '@badman/backend-authorization';
 import {
   Club,
-  EntryCompetitionPlayers,
+  EntryCompetitionPlayer,
   EntryCompetitionPlayersInputType,
   EventCompetition,
   EventEntry,
@@ -302,7 +302,7 @@ export class TeamsResolver {
             transaction,
           });
 
-          const players: EntryCompetitionPlayers[] = [];
+          const players: EntryCompetitionPlayer[] = [];
           const playerIds =
             newTeamData.entry.meta.competition.players?.map((p) => p.id) || [];
 

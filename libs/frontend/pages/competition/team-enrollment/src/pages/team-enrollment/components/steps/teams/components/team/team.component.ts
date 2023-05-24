@@ -126,7 +126,13 @@ export class TeamComponent implements OnInit {
         if (this.team?.value?.type && this.team?.value?.players) {
           this.teamIndex = getIndexFromPlayers(
             this.team.value.type,
-            this.team.value.players
+            this.team.value.players?.map((p) => ({
+              id: p.id,
+              gender: p.gender,
+              single: p.rankingPlaces?.[0]?.single ?? 12,
+              double: p.rankingPlaces?.[0]?.double ?? 12,
+              mix: p.rankingPlaces?.[0]?.mix ?? 12,
+            }))
           );
         }
       });

@@ -15,7 +15,6 @@ export class PlayerCompStatusRule extends Rule {
     for (const { basePlayers, teamPlayers, team } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
       const warnings = [] as EnrollmentValidationError[];
-      let teamValid = true;
 
       // If any of the players has competitionPlayer on false, the enrollment is not valid
       for (const player of basePlayers) {
@@ -23,14 +22,13 @@ export class PlayerCompStatusRule extends Rule {
           continue;
         }
 
-        if (!player.competitionPlayer) {
-          teamValid = false;
+        if (!player.player.competitionPlayer) {
           errors.push({
             message: 'all.competition.team-enrollment.errors.comp-status-base',
             params: {
               player: {
                 id: player?.id,
-                fullName: player?.fullName,
+                fullName: player.player?.fullName,
               },
             },
           });
@@ -43,14 +41,13 @@ export class PlayerCompStatusRule extends Rule {
           continue;
         }
 
-        if (!player.competitionPlayer) {
-          teamValid = false;
+        if (!player.player.competitionPlayer) {
           warnings.push({
             message: 'all.competition.team-enrollment.errors.comp-status-team',
             params: {
               player: {
                 id: player?.id,
-                fullName: player?.fullName,
+                fullName: player.player?.fullName,
               },
             },
           });
@@ -61,7 +58,7 @@ export class PlayerCompStatusRule extends Rule {
         teamId: team.id,
         errors,
         warnings,
-        valid: teamValid,
+        valid: errors.length === 0,
       });
     }
 
