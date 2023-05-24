@@ -10,19 +10,26 @@
     $primary-palette: map.get($color-config, 'primary');
     $isDark: map.get($color-config, 'is-dark');
     $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $color: null;
 
+    @if ($isDark) {
+      $color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
+    } @else {
+      $color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
+    }
+    
     border-color: $border-color;
 
     .info {
       border-bottom-color: $border-color;
 
       .down {
-        @if ($isDark) {
-          color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
-        } @else {
-          color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
-        }
+        color: $color;
       }
+    }
+
+    .player .sub-text {
+      color: $color;
     }
   }
 }
@@ -41,6 +48,10 @@
     }
 
     .content .no-event {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+
+    .player .sub-text {
       @include mat.typography-level($typography-config, 'caption');
     }
   }

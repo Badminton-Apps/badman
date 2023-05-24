@@ -90,4 +90,5 @@ export interface EntryCompetitionPlayer {
   mix: number;
   gender: 'M' | 'F';
   player: Partial<Player>;
+  levelException: boolean;
 }
