@@ -2,11 +2,14 @@ import { User } from '@badman/backend-authorization';
 import {
   Club,
   EntryCompetitionPlayers,
+  EntryCompetitionPlayersInputType,
+  EventCompetition,
   EventEntry,
   Location,
   Player,
   RankingLastPlace,
   RankingSystem,
+  SubEventCompetition,
   Team,
   TeamNewInput,
   TeamPlayerMembership,
@@ -38,6 +41,7 @@ import {
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
+import moment from 'moment';
 
 @Resolver(() => Team)
 export class TeamsResolver {
@@ -720,6 +724,82 @@ export class TeamsResolver {
 
       await transaction.commit();
 
+      return entry;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => EventEntry)
+  async updatePlayerMetaForSubEvent(
+    @Args('teamId', { type: () => ID }) teamId: string,
+    @Args('subEventId', { type: () => ID }) subEventId: string,
+    @Args('player', { type: () => EntryCompetitionPlayersInputType })
+    playerCompetition: EntryCompetitionPlayersInputType,
+    @User() user: Player
+  ) {
+    const perm = [`change-base:team`, 'edit-any:club'];
+    const transaction = await this._sequelize.transaction();
+    try {
+      const team = await Team.findByPk(teamId);
+
+      if (!team) {
+        throw new NotFoundException(`${Team.name}: ${teamId}`);
+      }
+
+      if (!user.hasAnyPermission(perm)) {
+        throw new UnauthorizedException();
+      }
+
+      const player = await Player.findByPk(playerCompetition.id);
+      if (!player) {
+        throw new NotFoundException(`${Player.name}: ${playerCompetition.id}`);
+      }
+
+      const entry = await EventEntry.findOne({
+        where: {
+          teamId: teamId,
+          subEventId,
+        },
+        transaction,
+      });
+      if (!entry) {
+        throw new NotFoundException(
+          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
+        );
+      }
+
+      const currentPlayer = entry.meta?.competition?.players.find(
+        (p) => p.id === playerCompetition.id
+      );
+      if (!currentPlayer) {
+        throw new BadRequestException('Player not part of base?');
+      }
+
+      // update the current player with the new values
+      const updatedPlayer = {
+        ...currentPlayer,
+        ...playerCompetition,
+      };
+
+      // update the player in the meta
+      entry.meta.competition.players = entry.meta.competition.players.map((p) =>
+        p.id === playerCompetition.id ? updatedPlayer : p
+      );
+
+      for (const player of entry.meta.competition.players) {
+        this.logger.debug(`${player.id} - ${player.levelException}`);
+      }
+
+      entry.meta = {
+        ...entry.meta,
+      };
+      entry.changed('meta', true);
+      await entry.save({ transaction });
+
+      await transaction.commit();
       return entry;
     } catch (e) {
       this.logger.warn('rollback', e);

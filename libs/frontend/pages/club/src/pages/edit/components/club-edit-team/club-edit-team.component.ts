@@ -6,16 +6,21 @@ import {
   Input,
   OnInit,
   Output,
+  TemplateRef,
+  ViewChild,
 } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PlayerSearchComponent } from '@badman/frontend-components';
 import {
   Club,
+  EntryCompetitionPlayer,
   Player,
   SubEventCompetition,
   Team,
@@ -41,6 +46,8 @@ import { PickEventDialogComponent } from '../../../../dialogs';
     MatButtonModule,
     MatTooltipModule,
     MatDialogModule,
+    MatMenuModule,
+    MatInputModule,
 
     // My Modules
     PlayerSearchComponent,
@@ -49,6 +56,9 @@ import { PickEventDialogComponent } from '../../../../dialogs';
 export class ClubEditTeamComponent implements OnInit {
   @Output() whenPlayerAdded = new EventEmitter<Partial<Player>>();
   @Output() whenPlayerRemoved = new EventEmitter<Partial<Player>>();
+  @Output() whenPlayerMetaUpdated = new EventEmitter<
+    Partial<EntryCompetitionPlayer>
+  >();
   @Output() whenSubEventChanged = new EventEmitter<{
     event: string;
     subEvent: string;
@@ -60,35 +70,24 @@ export class ClubEditTeamComponent implements OnInit {
   @Input()
   team!: Team;
 
-  entry?: SubEventCompetition;
+  subEvent?: SubEventCompetition;
 
-  players?: (Partial<Player> & {
-    single: number;
-    double: number;
-    mix: number;
-  })[];
+  players?: Partial<EntryCompetitionPlayer>[];
   teamIndex?: number;
 
   where!: { [key: string]: unknown };
 
+  @ViewChild('changeRanking')
+  changeRankingTemplateRef?: TemplateRef<HTMLElement>;
+  changeRankingFormGroup?: FormGroup;
+
   constructor(private readonly dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.entry = this.team.entry?.subEventCompetition;
+    this.subEvent = this.team.entry?.subEventCompetition;
 
     this.teamIndex = this.team.entry?.meta?.competition?.teamIndex;
-    this.players = this.team.entry?.meta?.competition?.players.map((p) => {
-      const player = new Player(p.player) as Partial<Player> & {
-        single: number;
-        double: number;
-        mix: number;
-      };
-      player.single = p.single;
-      player.double = p.double;
-      player.mix = p.mix;
-
-      return player;
-    });
+    this.players = this.team.entry?.meta?.competition?.players;
 
     this.where = {
       gender:
@@ -103,8 +102,8 @@ export class ClubEditTeamComponent implements OnInit {
       .open(PickEventDialogComponent, {
         data: {
           season: this.team.season,
-          eventId: this.entry?.eventCompetition?.id,
-          subEventId: this.entry?.id,
+          eventId: this.subEvent?.eventCompetition?.id,
+          subEventId: this.subEvent?.id,
         },
       })
       .afterClosed()
@@ -113,5 +112,36 @@ export class ClubEditTeamComponent implements OnInit {
           this.whenSubEventChanged.emit(event);
         }
       });
+  }
+
+  onLevelException(player: Partial<EntryCompetitionPlayer>) {
+    this.whenPlayerMetaUpdated.emit({
+      ...player,
+      levelException: !player.levelException,
+    });
+  }
+
+  onEditRanking(player: Partial<EntryCompetitionPlayer>) {
+    if (!this.changeRankingTemplateRef) {
+      return;
+    }
+
+    this.changeRankingFormGroup = new FormGroup({
+      single: new FormControl(player.single),
+      double: new FormControl(player.double),
+      mix: new FormControl(player.mix),
+    });
+
+    const dialogRef = this.dialog.open(this.changeRankingTemplateRef);
+    dialogRef.afterClosed().subscribe(() => {
+      if (this.changeRankingFormGroup?.valid) {
+        this.whenPlayerMetaUpdated.emit({
+          ...player,
+          single: this.changeRankingFormGroup?.get('single')?.value,
+          double: this.changeRankingFormGroup?.get('double')?.value,
+          mix: this.changeRankingFormGroup?.get('mix')?.value,
+        });
+      }
+    });
   }
 }
