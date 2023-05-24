@@ -89,6 +89,7 @@
       [club]="club"
       (whenPlayerAdded)="this.onAddBasePlayer($event, team)"
       (whenPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
+      (whenPlayerMetaUpdated)="this.onPlayerMetaUpdated($event, team)"
       (whenSubEventChanged)="this.onSubEventAssignedToTeam($event, team)"
     >
     </badman-club-edit-team>

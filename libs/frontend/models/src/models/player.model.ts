@@ -156,3 +156,4 @@ export class TeamPlayer extends Player {
     this.membershipType = args?.membershipType as TeamMembershipType;
   }
 }
+

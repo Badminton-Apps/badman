@@ -261,11 +261,15 @@ export class EventEntry extends Model {
       (r) => {
         const ranking = dbRanking.find((ranking) => ranking.playerId === r.id);
         return {
-          id: r.id,
-          single: ranking?.single ?? 12,
-          double: ranking?.double ?? 12,
-          mix: ranking?.mix ?? 12,
-          gender: r.gender,
+          ...r,
+          single:
+            (r?.single == -1 ? ranking?.single : r?.single) ??
+            dbSystem.amountOfLevels,
+          double:
+            (r?.double == -1 ? ranking?.double : r?.double) ??
+            dbSystem.amountOfLevels,
+          mix:
+            (r?.mix == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
         };
       }
     );
@@ -279,10 +283,12 @@ export class EventEntry extends Model {
           .filter((p) => p.gender === 'M')
           .sort(
             (b, a) =>
-              (b?.single ?? 12) +
-              (b?.double ?? 12) +
-              (b?.mix ?? 12) -
-              ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+              (b?.single ?? dbSystem.amountOfLevels) +
+              (b?.double ?? dbSystem.amountOfLevels) +
+              (b?.mix ?? dbSystem.amountOfLevels) -
+              ((a?.single ?? dbSystem.amountOfLevels) +
+                (a?.double ?? dbSystem.amountOfLevels) +
+                (a?.mix ?? dbSystem.amountOfLevels))
           )
           .slice(0, 2);
 
@@ -290,10 +296,12 @@ export class EventEntry extends Model {
           .filter((p) => p.gender === 'F')
           .sort(
             (b, a) =>
-              (b?.single ?? 12) +
-              (b?.double ?? 12) +
-              (b?.mix ?? 12) -
-              ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
+              (b?.single ?? dbSystem.amountOfLevels) +
+              (b?.double ?? dbSystem.amountOfLevels) +
+              (b?.mix ?? dbSystem.amountOfLevels) -
+              ((a?.single ?? dbSystem.amountOfLevels) +
+                (a?.double ?? dbSystem.amountOfLevels) +
+                (a?.mix ?? dbSystem.amountOfLevels))
           )
           .slice(0, 2);
         bestPlayers = [...male, ...female];
@@ -301,9 +309,10 @@ export class EventEntry extends Model {
         bestPlayers = instance.meta?.competition.players
           .sort(
             (b, a) =>
-              (b?.single ?? 12) +
-              (b?.double ?? 12) -
-              ((a?.single ?? 12) + (a?.double ?? 12))
+              (b?.single ?? dbSystem.amountOfLevels) +
+              (b?.double ?? dbSystem.amountOfLevels) -
+              ((a?.single ?? dbSystem.amountOfLevels) +
+                (a?.double ?? dbSystem.amountOfLevels))
           )
           .slice(0, 4);
       }
@@ -411,4 +420,5 @@ export interface EntryCompetitionPlayers {
   double: number;
   mix: number;
   gender: 'M' | 'F';
+  levelException?: boolean;
 }
