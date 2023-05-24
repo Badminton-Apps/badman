@@ -1,5 +1,6 @@
 import {
   EncounterCompetition,
+  EntryCompetitionPlayer,
   EventCompetition,
   EventEntry,
   Player,
@@ -142,7 +143,7 @@ export class AssemblyValidationService {
     meta.competition.players = getBestPlayers(
       team.type,
       meta.competition.players
-    );
+    ) as EntryCompetitionPlayer[];
 
     // Other teams meta
     const otherMeta = filteredMemberships

@@ -9,7 +9,7 @@ export class TeamSubEventRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
 
-    for (const { baseIndex, subEvent, team } of enrollment.teams) {
+    for (const { subEvent, team } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
       if (!subEvent) {
         errors.push({

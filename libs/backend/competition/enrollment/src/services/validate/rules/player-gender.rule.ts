@@ -1,9 +1,9 @@
-import { Player, Team } from '@badman/backend-database';
+import { EntryCompetitionPlayer, Team } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
 import {
   EnrollmentValidationData,
-  RuleResult,
   EnrollmentValidationError,
+  RuleResult,
 } from '../../../models';
 import { Rule } from './_rule.base';
 
@@ -14,9 +14,13 @@ export class PlayerGenderRule extends Rule {
   async validate(enrollment: EnrollmentValidationData): Promise<RuleResult[]> {
     const results = [] as RuleResult[];
 
-    for (const { basePlayers, teamPlayers, team, backupPlayers } of enrollment.teams) {
+    for (const {
+      basePlayers,
+      teamPlayers,
+      team,
+      backupPlayers,
+    } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
-      let teamValid = true;
       const warnings = [] as EnrollmentValidationError[];
 
       if (team?.type == SubEventTypeEnum.M) {
@@ -30,24 +34,16 @@ export class PlayerGenderRule extends Rule {
       }
 
       if (team?.type == SubEventTypeEnum.M) {
-        warnings.push(
-          ...this._checkGender(backupPlayers, 'M', team)
-        );
+        warnings.push(...this._checkGender(backupPlayers, 'M', team));
       } else if (team?.type == SubEventTypeEnum.F) {
-        warnings.push(
-          ...this._checkGender(backupPlayers, 'F', team)
-        );
-      }
-
-      if (errors.length > 0) {
-        teamValid = false;
+        warnings.push(...this._checkGender(backupPlayers, 'F', team));
       }
 
       results.push({
         teamId: team.id,
         errors,
-        warnings: warnings,
-        valid: teamValid,
+        warnings,
+        valid: errors.length === 0,
       });
     }
 
@@ -55,7 +51,7 @@ export class PlayerGenderRule extends Rule {
   }
 
   private _checkGender(
-    players: Player[],
+    players: Partial<EntryCompetitionPlayer>[],
     gender: string,
     team: Partial<Team> | Team
   ): EnrollmentValidationError[] {
@@ -69,7 +65,7 @@ export class PlayerGenderRule extends Rule {
         params: {
           player: {
             id: p?.id,
-            fullName: p?.fullName,
+            fullName: p?.player.fullName,
             gender: p?.gender,
           },
           gender,

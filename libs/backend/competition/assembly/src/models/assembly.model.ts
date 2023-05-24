@@ -1,7 +1,7 @@
 import {
   DrawCompetition,
   EncounterCompetition,
-  EntryCompetitionPlayers,
+  EntryCompetitionPlayer,
   EventCompetition,
   Meta,
   Player,
@@ -84,7 +84,7 @@ export class AssemblyOutput {
 
   systemId?: string;
   titularsPlayerData?: Player[];
-  basePlayersData?: EntryCompetitionPlayers[];
+  basePlayersData?: EntryCompetitionPlayer[];
 }
 
 
