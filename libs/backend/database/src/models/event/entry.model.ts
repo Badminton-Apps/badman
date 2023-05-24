@@ -321,14 +321,7 @@ export class EventEntry extends Model {
     if (!instance.meta.competition.teamIndex) {
       instance.meta.competition.teamIndex = getIndexFromPlayers(
         team.type,
-        bestPlayers.map((p) => {
-          return {
-            single: p.single,
-            double: p.double,
-            mix: p.mix,
-            gender: p.gender,
-          };
-        })
+        bestPlayers
       );
     }
   }
@@ -411,14 +404,15 @@ export interface EntryTournament {
 
 export interface EntryCompetition {
   teamIndex: number;
-  players: EntryCompetitionPlayers[];
+  players: EntryCompetitionPlayer[];
 }
 
-export interface EntryCompetitionPlayers {
+export interface EntryCompetitionPlayer {
   id?: string;
   single: number;
   double: number;
   mix: number;
   gender: 'M' | 'F';
   levelException?: boolean;
+  player?: Player;
 }

@@ -53,7 +53,14 @@ export class PlayerSubEventRule extends Rule {
             ...(currentWrans || []),
             {
               message: `all.competition.team-enrollment.errors.player-subevent`,
-              params: { player, team, subEvent },
+              params: {
+                player: {
+                  id: player.id,
+                  fullName: player.player.fullName,
+                },
+                team,
+                subEvent,
+              },
             },
           ]);
         }

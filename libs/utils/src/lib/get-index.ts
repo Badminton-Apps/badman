@@ -7,23 +7,11 @@ export interface IndexPlayer {
   mix: number;
   gender: 'M' | 'F';
 }
-
 export const getIndexFromPlayers = (
   type: SubEventTypeEnum,
-  players: (
-    | {
-        lastRanking?: {
-          single?: number;
-          double?: number;
-          mix?: number;
-        };
-        id?: string;
-        gender?: 'M' | 'F';
-      }
-    | IndexPlayer
-  )[]
+  players: Partial<IndexPlayer>[]
 ) => {
-  const rankings: IndexPlayer[] = [];
+  const rankings: Partial<IndexPlayer>[] = [];
 
   for (const p of players) {
     if (p && 'lastRanking' in p) {
@@ -33,13 +21,13 @@ export const getIndexFromPlayers = (
 
       rankings.push({
         id: p.id,
-        single: p.lastRanking?.single ?? 12,
-        double: p.lastRanking?.double ?? 12,
-        mix: p.lastRanking?.mix ?? 12,
+        single: p.single ?? 12,
+        double: p.double ?? 12,
+        mix: p.mix ?? 12,
         gender: p.gender,
       });
     } else {
-      rankings.push(p as IndexPlayer);
+      rankings.push(p);
     }
   }
 
@@ -69,13 +57,7 @@ export const getIndexFromPlayers = (
 
 export const getBestPlayers = (
   type: SubEventTypeEnum,
-  players: {
-    single: number;
-    double: number;
-    mix: number;
-    gender: 'M' | 'F';
-    id?: string;
-  }[]
+  players: Partial<IndexPlayer>[]
 ) => {
   if (type !== 'MX') {
     const bestPlayers = players
@@ -117,13 +99,7 @@ export const getBestPlayers = (
 
 export const getBestPlayersFromTeam = (
   type: SubEventTypeEnum,
-  rankings: {
-    id?: string;
-    single: number;
-    double: number;
-    mix: number;
-    gender: 'M' | 'F';
-  }[]
+  rankings: Partial<IndexPlayer>[]
 ) => {
   if (type !== 'MX') {
     const bestPlayers = getBestPlayers(type, rankings);
