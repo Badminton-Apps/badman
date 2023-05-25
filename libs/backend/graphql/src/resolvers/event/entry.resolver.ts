@@ -2,7 +2,7 @@ import { User } from '@badman/backend-authorization';
 import {
   DrawCompetition,
   DrawTournament,
-  EntryCompetitionPlayers,
+  EntryCompetitionPlayer,
   EntryCompetitionPlayersType,
   EventEntry,
   Player,
@@ -120,7 +120,7 @@ export class EventEntryResolver {
           type: t.type,
           link: t.link,
           teamNumber: t.teamNumber,
-          basePlayers: t.entry?.meta?.competition?.players?.map((p) => p.id),
+          basePlayers: t.entry?.meta?.competition?.players,
           players: t.players
             .filter(
               (p) =>
@@ -139,7 +139,7 @@ export class EventEntryResolver {
         })),
 
         season: team.season,
-      } as EnrollmentInput,
+      },
       EnrollmentValidationService.defaultValidators()
     );
 
@@ -186,7 +186,7 @@ export class EventEntryResolver {
 export class EntryCompetitionPlayersResolver {
   @ResolveField(() => Player)
   async player(
-    @Parent() eventEntryPlayer: EntryCompetitionPlayers
+    @Parent() eventEntryPlayer: EntryCompetitionPlayer
   ): Promise<Player> {
     return await Player.findByPk(eventEntryPlayer.id);
   }

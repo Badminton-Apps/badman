@@ -28,7 +28,6 @@ export class PlayerBaseRule extends Rule {
     // Check if a player doesn't exist in 2 base teams of the same type
     for (const { team, basePlayers } of enrollment.teams) {
       const errors = [] as EnrollmentValidationError[];
-      let teamValid = true;
 
       for (const player of basePlayers) {
         const countMap = playerCountMap.get(player.id);
@@ -43,11 +42,10 @@ export class PlayerBaseRule extends Rule {
 
           // generate the error message for each team
           for (const otherTeam of otherTeams) {
-            teamValid = false;
             errors.push({
               message: 'all.competition.team-enrollment.errors.base-other-team',
               params: {
-                player: player,
+                player: player.player,
                 teamId: otherTeam.team?.id,
               },
             });
@@ -58,7 +56,7 @@ export class PlayerBaseRule extends Rule {
       results.push({
         teamId: team.id,
         errors,
-        valid: teamValid,
+        valid: errors.length === 0,
       });
     }
 

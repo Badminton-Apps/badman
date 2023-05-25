@@ -116,17 +116,20 @@ export class TeamEnrollmentComponent implements OnInit {
       ...this.formGroup.value.teams.MX,
       ...this.formGroup.value.teams.NATIONAL,
     ]) {
-      const players = enrollment.team.players.map(
-        (player: Partial<TeamPlayer>) => {
+      if (!enrollment?.team?.id) {
+        continue;
+      }
+
+      const players =
+        enrollment?.team?.players?.map((player: Partial<TeamPlayer>) => {
           return {
             id: player.id,
             membershipType: player.membershipType,
           };
-        }
-      );
+        }) ?? [];
 
       const meta = {
-        players: enrollment.entry.players.map(
+        players: enrollment?.entry?.players?.map(
           (
             player: Partial<Player> & {
               single: number;
@@ -134,31 +137,31 @@ export class TeamEnrollmentComponent implements OnInit {
               mix: number;
             }
           ) => ({
-            id: player.id,
-            gender: player.gender,
-            single: player.single,
-            double: player.double,
-            mix: player.mix,
+            id: player?.id,
+            gender: player?.gender,
+            single: player?.single,
+            double: player?.double,
+            mix: player?.mix,
           })
         ),
       };
 
       const data = {
-        id: enrollment.team.id,
-        name: enrollment.team.name,
-        teamNumber: enrollment.team.teamNumber,
-        type: enrollment.team.type,
+        id: enrollment?.team?.id,
+        name: enrollment?.team?.name,
+        teamNumber: enrollment?.team?.teamNumber,
+        type: enrollment?.team?.type,
         clubId: this.formGroup.value.club,
-        link: enrollment.team.link,
+        link: enrollment?.team?.link,
         season: this.formGroup.value.season,
-        preferredDay: enrollment.team.preferredDay,
-        preferredTime: enrollment.team.preferredTime,
-        captainId: enrollment.team.captainId,
-        phone: enrollment.team.phone,
-        email: enrollment.team.email,
+        preferredDay: enrollment?.team?.preferredDay,
+        preferredTime: enrollment?.team?.preferredTime,
+        captainId: enrollment?.team?.captainId,
+        phone: enrollment?.team?.phone,
+        email: enrollment?.team?.email,
         players,
         entry: {
-          subEventId: enrollment.entry.subEventId,
+          subEventId: enrollment?.entry?.subEventId,
           meta: {
             competition: {
               players: meta.players,
