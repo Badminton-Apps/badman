@@ -20,3 +20,4 @@ export * from './roles';
 
 // end:ng42.barrel
 
+export * from './block/block.component';
