@@ -263,67 +263,22 @@ export class EventEntry extends Model {
         return {
           ...r,
           single:
-            (r?.single == -1 ? ranking?.single : r?.single) ??
+            ((r?.single ?? -1) == -1 ? ranking?.single : r?.single) ??
             dbSystem.amountOfLevels,
           double:
-            (r?.double == -1 ? ranking?.double : r?.double) ??
+            ((r?.double ?? -1) == -1 ? ranking?.double : r?.double) ??
             dbSystem.amountOfLevels,
           mix:
-            (r?.mix == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
+            ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
         };
       }
     );
 
     const team = await instance.getTeam();
-
-    let bestPlayers = instance.meta?.competition.players;
-    if (instance.meta?.competition.players?.length > 4) {
-      if (team.type === SubEventTypeEnum.MX) {
-        const male = instance.meta?.competition.players
-          .filter((p) => p.gender === 'M')
-          .sort(
-            (b, a) =>
-              (b?.single ?? dbSystem.amountOfLevels) +
-              (b?.double ?? dbSystem.amountOfLevels) +
-              (b?.mix ?? dbSystem.amountOfLevels) -
-              ((a?.single ?? dbSystem.amountOfLevels) +
-                (a?.double ?? dbSystem.amountOfLevels) +
-                (a?.mix ?? dbSystem.amountOfLevels))
-          )
-          .slice(0, 2);
-
-        const female = instance.meta?.competition.players
-          .filter((p) => p.gender === 'F')
-          .sort(
-            (b, a) =>
-              (b?.single ?? dbSystem.amountOfLevels) +
-              (b?.double ?? dbSystem.amountOfLevels) +
-              (b?.mix ?? dbSystem.amountOfLevels) -
-              ((a?.single ?? dbSystem.amountOfLevels) +
-                (a?.double ?? dbSystem.amountOfLevels) +
-                (a?.mix ?? dbSystem.amountOfLevels))
-          )
-          .slice(0, 2);
-        bestPlayers = [...male, ...female];
-      } else {
-        bestPlayers = instance.meta?.competition.players
-          .sort(
-            (b, a) =>
-              (b?.single ?? dbSystem.amountOfLevels) +
-              (b?.double ?? dbSystem.amountOfLevels) -
-              ((a?.single ?? dbSystem.amountOfLevels) +
-                (a?.double ?? dbSystem.amountOfLevels))
-          )
-          .slice(0, 4);
-      }
-    }
-
-    if (!instance.meta.competition.teamIndex) {
-      instance.meta.competition.teamIndex = getIndexFromPlayers(
-        team.type,
-        bestPlayers
-      );
-    }
+    instance.meta.competition.teamIndex = getIndexFromPlayers(
+      team.type,
+      instance.meta?.competition.players
+    );
   }
 }
 
