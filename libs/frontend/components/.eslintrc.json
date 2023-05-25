@@ -12,15 +12,15 @@
         "@angular-eslint/directive-selector": [
           "error",
           {
-            "type": "attribute",
+            "type": ["element", "attribute"],
             "prefix": "badman",
-            "style": "camelCase"
+            "style": "kebab-case"
           }
         ],
         "@angular-eslint/component-selector": [
           "error",
           {
-            "type": "element",
+            "type": ["element", "attribute"],
             "prefix": "badman",
             "style": "kebab-case"
           }
