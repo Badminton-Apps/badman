@@ -261,67 +261,24 @@ export class EventEntry extends Model {
       (r) => {
         const ranking = dbRanking.find((ranking) => ranking.playerId === r.id);
         return {
-          id: r.id,
-          single: ranking?.single ?? 12,
-          double: ranking?.double ?? 12,
-          mix: ranking?.mix ?? 12,
-          gender: r.gender,
+          ...r,
+          single:
+            ((r?.single ?? -1) == -1 ? ranking?.single : r?.single) ??
+            dbSystem.amountOfLevels,
+          double:
+            ((r?.double ?? -1) == -1 ? ranking?.double : r?.double) ??
+            dbSystem.amountOfLevels,
+          mix:
+            ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
         };
       }
     );
 
     const team = await instance.getTeam();
-
-    let bestPlayers = instance.meta?.competition.players;
-    if (instance.meta?.competition.players?.length > 4) {
-      if (team.type === SubEventTypeEnum.MX) {
-        const male = instance.meta?.competition.players
-          .filter((p) => p.gender === 'M')
-          .sort(
-            (b, a) =>
-              (b?.single ?? 12) +
-              (b?.double ?? 12) +
-              (b?.mix ?? 12) -
-              ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
-          )
-          .slice(0, 2);
-
-        const female = instance.meta?.competition.players
-          .filter((p) => p.gender === 'F')
-          .sort(
-            (b, a) =>
-              (b?.single ?? 12) +
-              (b?.double ?? 12) +
-              (b?.mix ?? 12) -
-              ((a?.single ?? 12) + (a?.double ?? 12) + (a?.mix ?? 12))
-          )
-          .slice(0, 2);
-        bestPlayers = [...male, ...female];
-      } else {
-        bestPlayers = instance.meta?.competition.players
-          .sort(
-            (b, a) =>
-              (b?.single ?? 12) +
-              (b?.double ?? 12) -
-              ((a?.single ?? 12) + (a?.double ?? 12))
-          )
-          .slice(0, 4);
-      }
-    }
-
-    if (!instance.meta.competition.teamIndex) {
-      instance.meta.competition.teamIndex = getIndexFromPlayers(
-        team.type,
-        bestPlayers.map((p) => {
-          return {
-            single: p.single,
-            double: p.double,
-            mix: p.mix,
-            gender: p.gender,
-          };
-        })
-      );
-    }
+    instance.meta.competition.teamIndex = getIndexFromPlayers(
+      team.type,
+      instance.meta?.competition.players
+    );
   }
 }
 
@@ -402,13 +359,15 @@ export interface EntryTournament {
 
 export interface EntryCompetition {
   teamIndex: number;
-  players: EntryCompetitionPlayers[];
+  players: EntryCompetitionPlayer[];
 }
 
-export interface EntryCompetitionPlayers {
+export interface EntryCompetitionPlayer {
   id?: string;
   single: number;
   double: number;
   mix: number;
   gender: 'M' | 'F';
+  levelException?: boolean;
+  player?: Player;
 }

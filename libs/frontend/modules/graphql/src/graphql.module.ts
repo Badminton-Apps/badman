@@ -6,12 +6,9 @@ import {
   isDevMode,
   ModuleWithProviders,
   NgModule,
-  PLATFORM_ID
+  PLATFORM_ID,
 } from '@angular/core';
-import {
-  ApolloLink,
-  InMemoryCache
-} from '@apollo/client/core';
+import { ApolloLink, InMemoryCache } from '@apollo/client/core';
 import { setContext } from '@apollo/client/link/context';
 import { createPersistedQueryLink } from '@apollo/client/link/persisted-queries';
 import { AuthService } from '@auth0/auth0-angular';
@@ -83,7 +80,6 @@ export function createApollo(
     // console.log(`Platform: ${platformId}, hasKey: ${hasKey}`);
   }
 
-
   const link = ApolloLink.from([
     basic,
     auth,
@@ -123,7 +119,6 @@ export function createApollo(
             keyFields: ['id', 'team', 'player'],
           },
           TeamPlayerMembershipType: {
-            // Not a "good" solution, but it works, and I'm tired
             keyFields: ['id', 'teamId', 'membershipType'],
           },
         },

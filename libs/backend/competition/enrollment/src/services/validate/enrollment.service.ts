@@ -1,4 +1,5 @@
 import {
+  EntryCompetitionPlayer,
   EventCompetition,
   EventEntry,
   Player,
@@ -11,7 +12,6 @@ import {
 import { getCurrentSeason, getIndexFromPlayers } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import {
-  EnrollmentInput,
   EnrollmentOutput,
   EnrollmentValidationData,
   TeamEnrollmentOutput,
@@ -31,6 +31,7 @@ import {
 } from './rules';
 import moment from 'moment';
 import { Op } from 'sequelize';
+import { PartialType, PickType } from '@nestjs/graphql';
 
 @Injectable()
 export class EnrollmentValidationService {
@@ -81,14 +82,43 @@ export class EnrollmentValidationService {
       ],
     });
 
-    const playerIds = teams
-      .map((t) => t.players)
-      .concat(teams.map((t) => t.backupPlayers))
-      .concat(teams.map((t) => t.basePlayers))
-      .flat(1);
-    let players = await Player.findAll({
+    const stringPlayerIds = [
+      ...new Set(
+        teams
+          .map((t) => t.players)
+          .concat(teams.map((t) => t.backupPlayers))
+          .concat(teams.map((t) => t.basePlayers))
+          .flat(1)
+          .filter((p) => !instanceOfEntryCompetitionPlayer(p)) as string[]
+      ),
+    ];
+
+    // get all players variables that are of type EntryCompetitionPlayer
+    const existingPlayers = (
+      teams
+        .map((t) => t.players)
+        .concat(teams.map((t) => t.backupPlayers))
+        .concat(teams.map((t) => t.basePlayers))
+        .flat(1)
+        .filter((p) =>
+          instanceOfEntryCompetitionPlayer(p)
+        ) as EntryCompetitionPlayer[]
+    ).filter((p, index, self) => {
+      return index === self.findIndex((e) => e.id === p.id);
+    });
+
+    const eixistingPlayerIds = [...new Set(existingPlayers.map((p) => p.id))];
+
+    const dbPlayers = await Player.findAll({
+      attributes: [
+        'id',
+        'gender',
+        'competitionPlayer',
+        'firstName',
+        'lastName',
+      ],
       where: {
-        id: playerIds,
+        id: stringPlayerIds,
       },
       include: [
         {
@@ -105,54 +135,48 @@ export class EnrollmentValidationService {
       ],
     });
 
-    // correct ranking if incorrect
-    players = players?.map((p) => {
-      const ranking = p.rankingPlaces?.[0] ?? new RankingPlace({
-        playerId: p.id,
-        systemId: system?.id,
-      })
-
-      const bestRankingMin2 =
-        Math.min(
-          ranking?.single ?? system.amountOfLevels,
-          ranking?.double ?? system.amountOfLevels,
-          ranking?.mix ?? system.amountOfLevels
-        ) + 2;
-
-      // if the player has a missing rankingplace, we set the lowest possible ranking
-      ranking.single = ranking?.single ?? bestRankingMin2;
-      ranking.double = ranking?.double ?? bestRankingMin2;
-      ranking.mix = ranking?.mix ?? bestRankingMin2;
-
-      p.rankingPlaces = [ranking];
-
-      return p;
+    const dbPlayersEntry = await Player.findAll({
+      attributes: [
+        'id',
+        'gender',
+        'competitionPlayer',
+        'firstName',
+        'lastName',
+      ],
+      where: {
+        id: eixistingPlayerIds,
+      },
     });
 
     return {
       teams: teams.map((t) => {
-        const basePlayers = players.filter((p) =>
-          t.basePlayers?.includes(p.id)
-        );
-        const teamPlayers = players.filter((p) => t.players?.includes(p.id));
-        const backupPlayers = players.filter((p) =>
-          t.backupPlayers?.includes(p.id)
+        const playersForTeam = this.getPlayers(
+          [t.players, t.backupPlayers, t.basePlayers].flat(1),
+          dbPlayers,
+          dbPlayersEntry,
+          system
         );
 
-        const teamIndex = getIndexFromPlayers(
-          t.type,
-          teamPlayers?.map((p) => ({
-            ...p.toJSON(),
-            lastRanking: p.rankingPlaces?.[0]?.toJSON(),
-          }))
+        const basePlayers = playersForTeam.filter((p) =>
+          t.basePlayers
+            ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
+            .includes(p.id)
         );
-        const baseIndex = getIndexFromPlayers(
-          t.type,
-          basePlayers?.map((p) => ({
-            ...p.toJSON(),
-            lastRanking: p.rankingPlaces?.[0]?.toJSON(),
-          }))
+
+        const teamPlayers = playersForTeam.filter((p) =>
+          t.players
+            ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
+            .includes(p.id)
         );
+
+        const backupPlayers = playersForTeam.filter((p) =>
+          t.backupPlayers
+            ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
+            .includes(p.id)
+        );
+
+        const teamIndex = getIndexFromPlayers(t.type, teamPlayers);
+        const baseIndex = getIndexFromPlayers(t.type, basePlayers);
 
         const preTeam = previousSeasonTeams.find((p) => p.link === t.link);
 
@@ -216,6 +240,20 @@ export class EnrollmentValidationService {
           ?.filter((e) => !!e) ?? [];
       const valid = ruleResults?.every((r) => r?.valid);
 
+      const uniqueErrors = errors.filter((error, index, self) => {
+        return (
+          index ===
+          self.findIndex((e) => JSON.stringify(e) === JSON.stringify(error))
+        );
+      });
+
+      const uniqueWarnings = warnings.filter((warning, index, self) => {
+        return (
+          index ===
+          self.findIndex((w) => JSON.stringify(w) === JSON.stringify(warning))
+        );
+      });
+
       teams.push({
         id: team.team?.id,
         linkId: team.team?.link,
@@ -227,8 +265,8 @@ export class EnrollmentValidationService {
         maxLevel: team.subEvent?.maxLevel,
         minBaseIndex: team.subEvent?.minBaseIndex,
         maxBaseIndex: team.subEvent?.maxBaseIndex,
-        errors: errors,
-        warnings: warnings,
+        errors: uniqueErrors,
+        warnings: uniqueWarnings,
         valid,
       });
     }
@@ -245,8 +283,8 @@ export class EnrollmentValidationService {
 
   static defaultValidators(): Rule[] {
     return [
-      new PlayerBaseRule(),
       new PlayerCompStatusRule(),
+      new PlayerBaseRule(),
       new PlayerGenderRule(),
       new PlayerMinLevelRule(),
       new PlayerSubEventRule(),
@@ -258,4 +296,91 @@ export class EnrollmentValidationService {
       new TeamOrderRule(),
     ];
   }
+
+  private getPlayers(
+    players: (string | EntryCompetitionPlayer)[],
+    withRanking: Player[],
+    withoutRanking: Player[],
+    system?: RankingSystem
+  ): EntryCompetitionPlayer[] {
+    const stringPlayerIds = players.filter(
+      (p) => !instanceOfEntryCompetitionPlayer(p)
+    ) as string[];
+    const eixistingPlayerIds = players.filter((p) =>
+      instanceOfEntryCompetitionPlayer(p)
+    ) as EntryCompetitionPlayer[];
+
+    const addedPlayes: EntryCompetitionPlayer[] = [];
+
+    for (const player of eixistingPlayerIds) {
+      // check if player is already added
+      if (addedPlayes.find((p) => p.id === player.id)) {
+        continue;
+      }
+
+      const dbPlayer = withoutRanking.find((p) => p.id === player.id);
+      player.player = dbPlayer;
+
+      addedPlayes.push(player);
+    }
+
+    for (const id of stringPlayerIds) {
+      // check if player is already added
+      if (addedPlayes.find((p) => p.id === id)) {
+        continue;
+      }
+
+      const dbPlayer = withRanking.find((p) => p.id === id);
+      const ranking =
+        dbPlayer?.rankingPlaces?.[0] ??
+        new RankingPlace({
+          playerId: dbPlayer.id,
+          systemId: system?.id,
+        });
+
+      const bestRankingMin2 =
+        Math.min(
+          ranking?.single ?? system.amountOfLevels,
+          ranking?.double ?? system.amountOfLevels,
+          ranking?.mix ?? system.amountOfLevels
+        ) + 2;
+
+      // if the player has a missing rankingplace, we set the lowest possible ranking
+      ranking.single = ranking?.single ?? bestRankingMin2;
+      ranking.double = ranking?.double ?? bestRankingMin2;
+      ranking.mix = ranking?.mix ?? bestRankingMin2;
+
+      addedPlayes.push({
+        id,
+        player: dbPlayer,
+        single: ranking.single,
+        double: ranking.double,
+        mix: ranking.mix,
+        gender: dbPlayer.gender,
+      });
+    }
+
+    return addedPlayes;
+  }
 }
+
+class EnrollmentInput {
+  teams: EnrollmentInputTeam[];
+  systemId?: string;
+  season?: number;
+}
+
+class EnrollmentInputTeam extends PartialType(
+  PickType(Team, ['id', 'name', 'type', 'link', 'teamNumber'] as const)
+) {
+  basePlayers?: (string | EntryCompetitionPlayer)[];
+  players?: (string | EntryCompetitionPlayer)[];
+  backupPlayers?: (string | EntryCompetitionPlayer)[];
+  subEventId?: string | SubEventCompetition;
+}
+
+const instanceOfEntryCompetitionPlayer = (
+  obj: EntryCompetitionPlayer | string
+): obj is EntryCompetitionPlayer => {
+  return typeof obj !== 'string';
+};

@@ -1,7 +1,13 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   EntryCompetition,
-  EntryCompetitionPlayers,
+  EntryCompetitionPlayer,
   EntryTournament,
   Player,
 } from '../models';
@@ -27,7 +33,7 @@ export class EntryCompetitionType {
   teamIndex: number;
 
   @Field(() => [EntryCompetitionPlayersType], { nullable: true })
-  players: EntryCompetitionPlayers[];
+  players: EntryCompetitionPlayer[];
 }
 
 @ObjectType({ description: 'A EntryCompetitionPlayers' })
@@ -45,8 +51,18 @@ export class EntryCompetitionPlayersType {
   mix: number;
 
   @Field({ nullable: true })
-  gender: string;
+  gender: 'M' | 'F';
 
   @Field(() => Player, { nullable: true })
   player: Player;
+
+  @Field({ nullable: true })
+  levelException: boolean;
 }
+
+// input type for EntryCmopetitionPlayer
+@InputType()
+export class EntryCompetitionPlayersInputType extends PartialType(
+  OmitType(EntryCompetitionPlayersType, ['player'] as const),
+  InputType
+) {}
