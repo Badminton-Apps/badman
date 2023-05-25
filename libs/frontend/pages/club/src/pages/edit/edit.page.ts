@@ -38,7 +38,7 @@ import {
   SelectCountrystateComponent,
 } from '@badman/frontend-components';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
-import { Club, Location, Player, Role, Team } from '@badman/frontend-models';
+import { Club, EntryCompetitionPlayer, Location, Player, Role, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import {
   SecurityType,
@@ -234,6 +234,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
       this._getYears().then((years) => {
         if (years.length > 0) {
           this.seasons = years;
+          this.season.setValue(getCurrentSeason());
         }
       });
 
@@ -244,7 +245,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         switchMap((season) => {
           return this.apollo.query<{ club: Club }>({
-            fetchPolicy: 'network-only',
+            fetchPolicy: 'no-cache',
             query: gql`
               query GetBasePlayersQuery($id: ID!, $where: JSONObject!) {
                 club(id: $id) {
@@ -274,6 +275,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
                             single
                             double
                             mix
+                            levelException
                             player {
                               id
                               slug
@@ -500,6 +502,28 @@ export class EditPageComponent implements OnInit, OnDestroy {
     this.updateRoles$.next(false);
   }
 
+  async addTeam() {
+    import('@badman/frontend-team').then((m) => {
+      this.dialog
+        .open(m.AddDialogComponent, {
+          data: {
+            team: {
+              clubId: this.club.id,
+              season: this.season.value,
+            },
+            teamNumbers: this.teamNumbers,
+          },
+
+          width: '100%',
+          maxWidth: '600px',
+        })
+        .afterClosed()
+        .subscribe(() => {
+          this.updateTeams$.next(null);
+        });
+    });
+  }
+
   async onDeleteRole(role: Role) {
     if (!role?.id) {
       throw new Error('No location id');
@@ -518,7 +542,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
     this.updateRoles$.next(false);
   }
 
-  async onAddBasePlayer(player: Partial<Player>, team: Team) {
+  async onAddBasePlayer(player: Partial<EntryCompetitionPlayer>, team: Team) {
     if (!team?.id) {
       throw new Error('No team id');
     }
@@ -558,7 +582,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
     this.updateTeams$.next(null);
   }
 
-  async onDeleteBasePlayer(player: Partial<Player>, team: Team) {
+  async onDeleteBasePlayer(player: Partial<EntryCompetitionPlayer>, team: Team) {
     if (!team?.id) {
       throw new Error('No team id');
     }
@@ -598,6 +622,55 @@ export class EditPageComponent implements OnInit, OnDestroy {
     this.updateTeams$.next(null);
   }
 
+  async onPlayerMetaUpdated(player: Partial<EntryCompetitionPlayer>, team: Team) {
+    if (!team?.id) {
+      throw new Error('No team id');
+    }
+    if (!player?.id) {
+      throw new Error('No player id');
+    }
+
+    if (!team.entry?.subEventCompetition?.id) {
+      throw new Error('No sub event id');
+    }
+
+    // delete __typename from player
+
+
+    await lastValueFrom(
+      this.apollo.mutate({
+        mutation: gql`
+          mutation UpdatePlayerMetaForSubEvent(
+            $teamId: ID!
+            $subEventId: ID!
+            $player: EntryCompetitionPlayersInputType!
+          ) {
+            updatePlayerMetaForSubEvent(
+              teamId: $teamId
+              subEventId: $subEventId
+              player: $player
+            ) {
+              id
+            }
+          }
+        `,
+        variables: {
+          player: {
+            id: player.id,
+            single: player.single,
+            double: player.double,
+            mix: player.mix,
+            levelException: player.levelException,
+          },
+          subEventId: team.entry.subEventCompetition.id,
+          teamId: team.id,
+        },
+      })
+    );
+    this._deleteTeamFromCache(team.id);
+    this.updateTeams$.next(null);
+  }
+
   async onSubEventAssignedToTeam(
     event: {
       event: string;
@@ -621,28 +694,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
         this._deleteTeamFromCache(team.id);
         this.updateTeams$.next(null);
       });
-  }
-
-  addTeam() {
-    import('@badman/frontend-team').then((m) => {
-      this.dialog
-        .open(m.AddDialogComponent, {
-          data: {
-            team: {
-              clubId: this.club.id,
-              season: this.season.value,
-            },
-            teamNumbers: this.teamNumbers,
-          },
-
-          width: '100%',
-          maxWidth: '600px',
-        })
-        .afterClosed()
-        .subscribe(() => {
-          this.updateTeams$.next(null);
-        });
-    });
   }
 
   private _deleteRoleFromCache(role?: string) {

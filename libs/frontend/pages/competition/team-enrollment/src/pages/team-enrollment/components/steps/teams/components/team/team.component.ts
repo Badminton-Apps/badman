@@ -126,7 +126,13 @@ export class TeamComponent implements OnInit {
         if (this.team?.value?.type && this.team?.value?.players) {
           this.teamIndex = getIndexFromPlayers(
             this.team.value.type,
-            this.team.value.players
+            this.team.value.players?.map((p) => ({
+              id: p.id,
+              gender: p.gender,
+              single: p.rankingPlaces?.[0]?.single ?? 12,
+              double: p.rankingPlaces?.[0]?.double ?? 12,
+              mix: p.rankingPlaces?.[0]?.mix ?? 12,
+            }))
           );
         }
       });
@@ -191,9 +197,9 @@ export class TeamComponent implements OnInit {
     const newPlayer = {
       player,
       id: player.id,
-      single: ranking.data.rankingPlaces?.[0].single,
-      double: ranking.data.rankingPlaces?.[0].double,
-      mix: ranking.data.rankingPlaces?.[0].mix,
+      single: ranking.data.rankingPlaces?.[0]?.single ?? 12,
+      double: ranking.data.rankingPlaces?.[0]?.double ?? 12,
+      mix: ranking.data.rankingPlaces?.[0]?.mix ?? 12,
     } as EntryCompetitionPlayer;
 
     this.basePlayers.push(

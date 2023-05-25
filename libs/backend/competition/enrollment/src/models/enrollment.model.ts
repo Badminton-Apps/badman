@@ -1,6 +1,7 @@
 import {
   Player,
   PlayerUpdateInput,
+  EntryCompetitionPlayer,
   RankingSystem,
   SubEventCompetition,
   Team,
@@ -129,11 +130,11 @@ export class EnrollmentValidationTeam {
   possibleOldTeam: boolean;
 
   teamIndex: number;
-  teamPlayers: Player[];
-  backupPlayers: Player[];
+  teamPlayers: EntryCompetitionPlayer[];
+  backupPlayers: EntryCompetitionPlayer[];
 
   baseIndex: number;
-  basePlayers: Player[];
+  basePlayers: EntryCompetitionPlayer[];
 
   subEvent: SubEventCompetition;
   system: RankingSystem;

@@ -6,10 +6,12 @@
     <span class="down">
       <a
         (click)="changeSubEvent()"
-        [matTooltipDisabled]="!entry"
+        [matTooltipDisabled]="!subEvent"
         [matTooltip]="'all.team.change-event.change' | translate"
       >
-        {{ entry ? entry.name : ('all.team.change-event.pick' | translate) }}</a
+        {{
+          subEvent ? subEvent.name : ('all.team.change-event.pick' | translate)
+        }}</a
       >
     </span>
   </div>
@@ -18,7 +20,7 @@
 <div class="content">
   <mat-list>
     <ng-container
-      *ngIf="!(this.players && this.players.length > 0) && this.entry"
+      *ngIf="!(this.players && this.players.length > 0) && this.subEvent"
     >
       <mat-list-item>
         <div class="no-players">No players</div>
@@ -26,31 +28,105 @@
     </ng-container>
 
     <ng-container *ngIf="this.players && this.players.length > 0">
-      <div mat-list-item *ngFor="let player of this.players">
+      <div mat-list-item *ngFor="let player of this.players" class="player">
         <span mat-line>
-          {{ player.fullName }}
-          <small
-            >{{ player.single }} - {{ player.double }}
+          {{ player?.player?.fullName }}
+          <ng-container *ngIf="player.levelException">
+            <mat-icon class="locked">lock</mat-icon>
+          </ng-container>
+
+          <span class="sub-text">
+            {{ player.single }} - {{ player.double }}
             <ng-container *ngIf="team.type === 'MX'">
-              - {{ player.mix }}</ng-container
-            ></small
-          >
+              - {{ player.mix }}
+            </ng-container>
+          </span>
         </span>
-        <button mat-icon-button (click)="this.whenPlayerRemoved.next(player)">
-          <mat-icon>delete</mat-icon>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
         </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="this.whenPlayerRemoved.next(player)">
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
+          </button>
+          <button mat-menu-item (click)="onLevelException(player)">
+            <mat-icon *ngIf="!player.levelException">lock</mat-icon>
+            <mat-icon *ngIf="player.levelException">lock_open</mat-icon>
+            <span>Toggle level Exemption</span>
+          </button>
+          <button mat-menu-item (click)="onEditRanking(player)">
+            <mat-icon>edit</mat-icon>
+            <span>Edit Ranking</span>
+          </button>
+        </mat-menu>
       </div>
     </ng-container>
   </mat-list>
   <badman-player-search
-    *ngIf="this.entry"
+    *ngIf="this.subEvent"
     (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
     [ignorePlayers]="this.players"
     [allowCreation]="true"
     [where]="this.where"
     [club]="this.club"
   ></badman-player-search>
-  <p class="no-event" *ngIf="!this.entry">
+  <p class="no-event" *ngIf="!this.subEvent">
     {{ 'all.team.change-event.select-event-hint' | translate }}
   </p>
 </div>
+
+<ng-template #changeRanking>
+  <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
+  <mat-dialog-content>
+    <form
+      class="edit-ranking"
+      [formGroup]="this.changeRankingFormGroup"
+      *ngIf="this.changeRankingFormGroup"
+    >
+      <mat-form-field>
+        <mat-label>{{ 'all.ranking.single' | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="single"
+          alt="single"
+          autocomplete="single"
+          required
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'all.ranking.double' | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="double"
+          alt="double"
+          autocomplete="double"
+          required
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ 'all.ranking.mix' | translate }}</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="mix"
+          alt="mix"
+          autocomplete="mix"
+          required
+        />
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button [matDialogClose]="true" color="primary">
+      {{ 'all.button.save' | translate }}
+    </button>
+    <button mat-button matDialogClose>
+      {{ 'all.button.cancel' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

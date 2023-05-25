@@ -1,5 +1,5 @@
 <ng-container *ngIf="this.events; else loading">
-  <h2 mat-dialog-title>Edit location</h2>
+  <h2 mat-dialog-title>Edit event</h2>
   <mat-dialog-content [formGroup]="selectForm">
     <!-- select dropdown events -->
     <mat-form-field>
@@ -22,7 +22,7 @@
           *ngFor="let subEvent of this.subEvents"
           [value]="subEvent.id"
         >
-          {{ subEvent?.name }}
+          {{ subEvent?.name }} {{ subEvent?.eventType }}
         </mat-option>
       </mat-select>
     </mat-form-field>

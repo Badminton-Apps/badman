@@ -1,8 +1,4 @@
-import {
-  BreakpointObserver,
-  Breakpoints,
-  LayoutModule,
-} from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
@@ -169,6 +165,10 @@ export class LocationComponent implements OnInit {
     this.exceptions = this.control.get(
       'exceptions'
     ) as FormArray<LocationExceptionType>;
+
+    if (this.exceptions.length !== 0) {
+      this.expanded.exceptions = true;
+    }
 
     this.days = this.control.get('days') as FormArray<LocationavDayType>;
 
