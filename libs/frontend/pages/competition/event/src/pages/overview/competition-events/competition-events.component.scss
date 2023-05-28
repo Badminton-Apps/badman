@@ -11,32 +11,12 @@
     flex-wrap: wrap;
     gap: 1rem;
 
-    .event {
-      width: 350px;
-      border-width: 1px;
-      border-style: solid;
-      padding: 1rem;
-      border-radius: 5px;
-      display: flex;
-      flex-direction: row;
+    badman-block {
+      width: 400px;
+    }
 
-      & > div {
-        cursor: pointer;
-        flex: 1 1 auto;
-        display: flex;
-        flex-direction: column;
-      }
-
-      // hide button untill hover over team
-      .edit-button {
-        opacity: 0;
-      }
-
-      &:hover {
-        .edit-button {
-          opacity: 1;
-        }
-      }
+    .badman-block-title a {
+      text-decoration: none;
     }
   }
 }
