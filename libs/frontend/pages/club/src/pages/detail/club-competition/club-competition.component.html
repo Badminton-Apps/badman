@@ -162,93 +162,97 @@
     </ng-template>
   </section>
 
-  <section class="locations">
+  <section>
     <h2>Locations</h2>
 
-    <badman-block *ngFor="let location of this.locations?.()">
-      <badman-block-header>
-        <badman-block-title>{{ location.name }}</badman-block-title>
-        <badman-block-actions align="end">
-          <button mat-icon-button [matMenuTriggerFor]="options">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #options="matMenu">
-            <button mat-menu-item>
-              {{ 'all.button.edit' | translate }}
+    <div class="locations">
+      <badman-block *ngFor="let location of this.locations?.()">
+        <badman-block-header>
+          <badman-block-title>{{ location.name }}</badman-block-title>
+          <badman-block-actions align="end">
+            <button mat-icon-button [matMenuTriggerFor]="options">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <badman-has-claim
-              [any]="[club()?.id + '_remove:location', 'edit-any:club']"
-            >
-              <mat-divider></mat-divider>
+            <mat-menu #options="matMenu">
               <button mat-menu-item>
-                {{ 'all.button.delete' | translate }}
+                {{ 'all.button.edit' | translate }}
               </button>
-            </badman-has-claim>
-          </mat-menu>
-        </badman-block-actions>
-      </badman-block-header>
-      <mat-divider></mat-divider>
-      <badman-block-content>
-        <span *ngIf="this.location.street">{{ this.location.street }} </span>
-        <span *ngIf="this.location.streetNumber">{{
-          this.location.streetNumber
-        }}</span>
-        <br />
-        <span *ngIf="this.location.postalcode"
-          >{{ this.location.postalcode }}
-        </span>
-        <span *ngIf="this.location.city">{{ this.location.city }}</span
-        ><br />
-        <span *ngIf="this.location.state">{{ this.location.state }}</span
-        ><br />
-        <span *ngIf="this.location.phone">{{ this.location.phone }}</span>
-        <span *ngIf="this.location.fax">{{ this.location.fax }}</span>
-
-        <div class="days">
-          <div *ngFor="let availibility of this.location?.availibilities ?? []">
-            <h4>
-              {{ 'all.competition.team-enrollment.play-days' | translate }}
-            </h4>
-
-            <mat-list role="list">
-              <mat-list-item
-                role="listitem"
-                *ngFor="let day of availibility?.days ?? []"
+              <badman-has-claim
+                [any]="[club()?.id + '_remove:location', 'edit-any:club']"
               >
-                <span matListItemTitle>
-                  {{ 'all.days.' + day.day | translate }}, {{ day.startTime }}
-                  {{ 'all.breakdown.untill' | translate }}
-                  {{ day.endTime }}</span
+                <mat-divider></mat-divider>
+                <button mat-menu-item>
+                  {{ 'all.button.delete' | translate }}
+                </button>
+              </badman-has-claim>
+            </mat-menu>
+          </badman-block-actions>
+        </badman-block-header>
+        <mat-divider></mat-divider>
+        <badman-block-content>
+          <span *ngIf="this.location.street">{{ this.location.street }} </span>
+          <span *ngIf="this.location.streetNumber">{{
+            this.location.streetNumber
+          }}</span>
+          <br />
+          <span *ngIf="this.location.postalcode"
+            >{{ this.location.postalcode }}
+          </span>
+          <span *ngIf="this.location.city">{{ this.location.city }}</span
+          ><br />
+          <span *ngIf="this.location.state">{{ this.location.state }}</span
+          ><br />
+          <span *ngIf="this.location.phone">{{ this.location.phone }}</span>
+          <span *ngIf="this.location.fax">{{ this.location.fax }}</span>
+
+          <div class="days">
+            <div
+              *ngFor="let availibility of this.location?.availibilities ?? []"
+            >
+              <h4>
+                {{ 'all.competition.team-enrollment.play-days' | translate }}
+              </h4>
+
+              <mat-list role="list">
+                <mat-list-item
+                  role="listitem"
+                  *ngFor="let day of availibility?.days ?? []"
                 >
-                <span matListItemLine>
-                  {{ day.courts }} {{ 'all.input.courts' | translate }}
-                </span>
-              </mat-list-item>
-            </mat-list>
+                  <span matListItemTitle>
+                    {{ 'all.days.' + day.day | translate }}, {{ day.startTime }}
+                    {{ 'all.breakdown.untill' | translate }}
+                    {{ day.endTime }}</span
+                  >
+                  <span matListItemLine>
+                    {{ day.courts }} {{ 'all.input.courts' | translate }}
+                  </span>
+                </mat-list-item>
+              </mat-list>
 
-            <h4>
-              {{ 'all.competition.team-enrollment.exceptions' | translate }}
-            </h4>
+              <h4>
+                {{ 'all.competition.team-enrollment.exceptions' | translate }}
+              </h4>
 
-            <mat-list role="list">
-              <mat-list-item
-                role="listitem"
-                *ngFor="let exception of availibility?.exceptions ?? []"
-              >
-                <span matListItemTitle>
-                  {{ exception.start | amDateFormat : 'L' }}
-                  {{ 'all.breakdown.untill' | translate }}
-                  {{ exception.end | amDateFormat : 'L' }}
-                </span>
-                <span matListItemLine>
-                  {{ exception.courts }}
-                  {{ 'all.input.courts' | translate }}
-                </span>
-              </mat-list-item>
-            </mat-list>
+              <mat-list role="list">
+                <mat-list-item
+                  role="listitem"
+                  *ngFor="let exception of availibility?.exceptions ?? []"
+                >
+                  <span matListItemTitle>
+                    {{ exception.start | amDateFormat : 'L' }}
+                    {{ 'all.breakdown.untill' | translate }}
+                    {{ exception.end | amDateFormat : 'L' }}
+                  </span>
+                  <span matListItemLine>
+                    {{ exception.courts }}
+                    {{ 'all.input.courts' | translate }}
+                  </span>
+                </mat-list-item>
+              </mat-list>
+            </div>
           </div>
-        </div>
-      </badman-block-content>
-    </badman-block>
+        </badman-block-content>
+      </badman-block>
+    </div>
   </section>
 </ng-container>

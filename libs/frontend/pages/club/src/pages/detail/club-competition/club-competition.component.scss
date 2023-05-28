@@ -62,7 +62,8 @@
 }
 
 .locations {
-  flex: 1;
+  display: flex;
+  align-items: flex-start;
   gap: 1rem;
   flex-direction: row;
 
