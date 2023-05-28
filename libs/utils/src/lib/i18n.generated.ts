@@ -713,6 +713,10 @@ export type I18nTranslations = {
             "no-perm": {
                 "email-phone": string;
             };
+            "prefferd": {
+                "title": string;
+            };
+            "team-index": string;
             "teams": string;
             "title": {
                 "base-fields": string;

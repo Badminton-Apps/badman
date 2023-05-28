@@ -709,6 +709,10 @@
     "no-perm": {
       "email-phone": "Je hebt geen toestemming om je e-mailadres of telefoonnummer te wijzigen."
     },
+    "prefferd": {
+      "title": "Voorkeurs speelmoment"
+    },
+    "team-index": "Team index",
     "teams": "Teams",
     "title": {
       "base-fields": "Algemene info",
