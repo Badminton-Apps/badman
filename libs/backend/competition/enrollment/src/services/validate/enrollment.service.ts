@@ -104,10 +104,12 @@ export class EnrollmentValidationService {
           instanceOfEntryCompetitionPlayer(p)
         ) as EntryCompetitionPlayer[]
     ).filter((p, index, self) => {
-      return index === self.findIndex((e) => e.id === p.id);
+      return index === self.findIndex((e) => e?.id === p?.id);
     });
 
-    const eixistingPlayerIds = [...new Set(existingPlayers.map((p) => p.id))];
+    const eixistingPlayerIds = [
+      ...new Set(existingPlayers.map((p) => p?.id)),
+    ]?.filter((p) => p !== null && p !== undefined) as string[];
 
     const dbPlayers = await Player.findAll({
       attributes: [
@@ -313,12 +315,16 @@ export class EnrollmentValidationService {
     const addedPlayes: EntryCompetitionPlayer[] = [];
 
     for (const player of eixistingPlayerIds) {
+      if (!player?.id) {
+        continue;
+      }
+
       // check if player is already added
       if (addedPlayes.find((p) => p.id === player.id)) {
         continue;
       }
 
-      const dbPlayer = withoutRanking.find((p) => p.id === player.id);
+      const dbPlayer = withoutRanking.find((p) => p.id === player?.id);
       player.player = dbPlayer;
 
       addedPlayes.push(player);
