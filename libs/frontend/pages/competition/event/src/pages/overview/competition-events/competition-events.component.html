@@ -3,14 +3,12 @@
     <h3>{{ 'all.competition.subevent.title' | translate }}</h3>
   </div>
   <div class="events-container">
-    <div class="event" *ngFor="let event of events()">
-      <div [routerLink]="[event.slug]">
-        <span class="name">{{ event.name }}</span>
-
-        <span
-          class="sub-events"
-          *ngIf="(event.subEventCompetitions ?? []).length > 0"
-        >
+    <badman-block *ngFor="let event of events()">
+      <badman-block-header>
+        <badman-block-title>
+          <a [routerLink]="[event.slug]">{{ event.name }}</a>
+        </badman-block-title>
+        <badman-block-subtitle>
           {{
             event.subEventCompetitions?.length
               | i18nPlural
@@ -21,54 +19,56 @@
                   }
               | translate : { count: event.subEventCompetitions?.length }
           }}
-        </span>
-      </div>
+        </badman-block-subtitle>
 
-      <badman-has-claim [any]="['edit:competition']">
-        <button
-          (click)="$event.stopPropagation()"
-          mat-icon-button
-          [matMenuTriggerFor]="menu"
-        >
-          <mat-icon>more_vert</mat-icon>
-        </button>
-
-        <mat-menu #menu="matMenu">
+        <badman-block-actions align="end">
           <badman-has-claim [any]="['edit:competition']">
-            <button mat-menu-item [routerLink]="['edit', event.id]">
-              <mat-icon>edit</mat-icon>
-              <span>Edit</span>
-            </button>
-            <button mat-menu-item>
-              <mat-icon>delete</mat-icon>
-              <span>Delete</span>
-            </button>
-            <button mat-menu-item (click)="this.setRisersFallers(event)">
-              <mat-icon>swap_vert</mat-icon>
-              <span>Set risers/fallers</span>
-            </button>
-            <button mat-menu-item (click)="this.setOpenClose(event)">
-              <mat-icon>lock</mat-icon>
-              <span>Set open/close date</span>
+            <button
+              (click)="$event.stopPropagation()"
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+            >
+              <mat-icon>more_vert</mat-icon>
             </button>
 
-            <button
-              mat-menu-item
-              (click)="this.makeOfficial(event, !event.official)"
-            >
-              <mat-icon>verified_user</mat-icon>
-              <span>{{ event.official ? 'Unmake' : 'Make' }} official</span>
-            </button>
+            <mat-menu #menu="matMenu">
+              <badman-has-claim [any]="['edit:competition']">
+                <button mat-menu-item [routerLink]="['edit', event.id]">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+                <button mat-menu-item (click)="this.setRisersFallers(event)">
+                  <mat-icon>swap_vert</mat-icon>
+                  <span>Set risers/fallers</span>
+                </button>
+                <button mat-menu-item (click)="this.setOpenClose(event)">
+                  <mat-icon>lock</mat-icon>
+                  <span>Set open/close date</span>
+                </button>
+
+                <button
+                  mat-menu-item
+                  (click)="this.makeOfficial(event, !event.official)"
+                >
+                  <mat-icon>verified_user</mat-icon>
+                  <span>{{ event.official ? 'Unmake' : 'Make' }} official</span>
+                </button>
+              </badman-has-claim>
+              <badman-has-claim [any]="['change:job']">
+                <button mat-menu-item (click)="syncEvent(event)">
+                  <mat-icon>sync</mat-icon>
+                  <span>Sync</span>
+                </button>
+              </badman-has-claim>
+            </mat-menu>
           </badman-has-claim>
-          <badman-has-claim [any]="['change:job']">
-            <button mat-menu-item (click)="syncEvent(event)">
-              <mat-icon>sync</mat-icon>
-              <span>Sync</span>
-            </button>
-          </badman-has-claim>
-        </mat-menu>
-      </badman-has-claim>
-    </div>
+        </badman-block-actions>
+      </badman-block-header>
+    </badman-block>
   </div>
 </section>
 
@@ -80,6 +80,7 @@
       height="74px"
       width="250px"
       direction="row"
+      w
     />
   </section>
 </ng-template>

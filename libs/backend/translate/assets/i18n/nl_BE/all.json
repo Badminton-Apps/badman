@@ -238,12 +238,15 @@
       },
       "example-error": "Dit zijn foutmeldingen waardoor de ploeg niet kan ingeschreven worden. Gelieve deze op te lossen.",
       "example-warning": "Dit zijn waarschuwingen waar rekening mee gehouden dient te worden. De inschrijving kan nog wel afgewerkt worden.",
+      "exceptions": "Uitzonderingen",
       "info": "",
       "locations": {
         "availible-courts": "Beschikbare velden",
-        "courts-hint": "Wijzig het aantal beschikbare velden"
+        "courts-hint": "Wijzig het aantal beschikbare velden",
+        "title": "Locaties"
       },
       "open": "Open",
+      "play-days": "Speeldagen",
       "players": {
         "backup": "Reserve speler(s)",
         "base": "Basisspeler(s)",
@@ -268,6 +271,7 @@
         "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de teamnummers in volgende stap nog wijzigen"
       },
       "title": "Team inschrijvingen",
+      "validations": "Validaties",
       "warnings": {
         "subtitute-team-index": "s",
         "title": "Waarschuwingen"

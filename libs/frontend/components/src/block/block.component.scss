@@ -1,0 +1,188 @@
+// Size of the `badman-block-header` region custom to Angular Material.
+$badman-block-header-size: 40px !default;
+
+// Default padding for text content within a card.
+$badman-block-default-padding: 1rem !default;
+
+.badman-block {
+  position: relative;
+  display: block;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+
+  // When the block has no content, it should still have the padding on the bottom
+  > *:last-child {
+    padding-bottom: $badman-block-default-padding;
+  }
+
+  .mat-divider {
+    margin-top: calc($badman-block-default-padding/2);
+  }
+}
+
+// Title text and subtitles text within a card. MDC doesn't have pre-made title sections for cards.
+// Maintained here for backwards compatibility with the previous generation MatCard.
+.badman-block-title,
+.badman-block-subtitle {
+  // Custom elements default to `display: inline`. Reset to 'block'.
+  display: block;
+
+  // Titles and subtitles can be set on native header elements which come with
+  // their own margin. Clear it since the spacing is done using `padding`.
+  margin: 0;
+
+  .badman-block-avatar ~ .badman-block-header-text & {
+    // Apply default padding for a text content region. Omit any bottom padding because we assume
+    // this region will be followed by another region that includes top padding.
+    padding: $badman-block-default-padding $badman-block-default-padding 0;
+  }
+}
+
+// Header section at the top of a card. MDC does not have a pre-made header section for cards.
+// Maintained here for backwards compatibility with the previous generation MatCard.
+.badman-block-header {
+  // The primary purpose of the card header is to lay out the title, subtitle, and image in the
+  // correct order. The image will come first, followed by a single div that will contain (via
+  // content projection) both the title and the subtitle.
+  display: flex;
+  min-height: $badman-block-header-size;
+
+  // Apply default padding for the header region. Omit any bottom padding because we assume
+  // this region will be followed by another region that includes top padding.
+  padding: $badman-block-default-padding $badman-block-default-padding 0;
+
+  align-items: center;
+
+  // If we don't have a subtitle, this lowers the padding on top
+  &:not(:has(.badman-block-subtitle)) {
+    padding-top: calc($badman-block-default-padding/2);
+  }
+}
+
+.badman-block-header-text {
+  flex: 1 1 auto;
+}
+
+// Primary card content. MDC does not have a pre-made section for primary content.
+// Adds the default 16px padding to the content. Maintained here for backwards compatibility
+// with the previous generation MatCard.
+.badman-block-content {
+  // Custom elements default to `display: inline`. Reset to 'block'.
+  display: block;
+
+  // Apply default horizontal padding for a content region.
+  padding: 0 $badman-block-default-padding;
+
+  // Only add vertical padding to the main content area if it's not preceeded/followed by another
+  // element within the card.
+  &:first-child {
+    padding-top: $badman-block-default-padding;
+  }
+
+  &:last-child {
+    padding-bottom: $badman-block-default-padding;
+  }
+}
+
+// Title group within a card. MDC does not have a pre-made section for anything title-related.
+// Maintained here for backwards compatibility with the previous generation MatCard.
+.badman-block-title-group {
+  // This element exists primary to lay out its children (title, subtitle, media). The title
+  // and subtitle go first (projected into a single div), followed by the media.
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+// Avatar image for a card. MDC does not specifically have a card avatar or a "common" avatar.
+// They *do* have a list avatar, but it uses a different size than we do here, which we preserve
+// to reduce breaking changes. Ultimately, the avatar styles just consist of a size and a
+// border-radius.
+.badman-block-avatar {
+  height: $badman-block-header-size;
+  width: $badman-block-header-size;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-bottom: $badman-block-default-padding;
+
+  // Makes `<img>` tags behave like `background-size: cover`. Not supported
+  // in IE, but we're using it as a progressive enhancement.
+  object-fit: cover;
+
+  // When a title and subtitle are used alongside an avatar,
+  // reduce the spacing between them to better align with the avatar.
+  & ~ .badman-block-header-text {
+    .badman-block-subtitle,
+    .badman-block-title {
+      line-height: normal;
+    }
+  }
+}
+
+// Specifically sized small image, specific to Angular Material.
+.badman-block-sm-image {
+  width: 80px;
+  height: 80px;
+}
+
+// Specifically sized medium image, specific to Angular Material.
+.badman-block-md-image {
+  width: 112px;
+  height: 112px;
+}
+
+// Specifically sized large image, specific to Angular Material.
+.badman-block-lg-image {
+  width: 152px;
+  height: 152px;
+}
+
+// Specifically sized extra-large image, specific to Angular Material.
+.badman-block-xl-image {
+  width: 240px;
+  height: 240px;
+}
+
+// When both a title and a subtitle are used, eliminate the top padding of whichever comes second
+// because the first already covers the padding.
+//
+// Additionally, reset the padding for title and subtitle when used within `badman-block-header` or
+// `badman-block-title-group` since the padding is captured by parent container already.
+.badman-block-subtitle ~ .badman-block-title,
+.badman-block-title ~ .badman-block-subtitle,
+
+// The `.badman-block-header-text` here is redundant since the header text
+// wrapper is always there in the header, but we need the extra specificity.
+.badman-block-header .badman-block-header-text .badman-block-title,
+.badman-block-header .badman-block-header-text .badman-block-subtitle,
+.badman-block-title-group .badman-block-title,
+.badman-block-title-group .badman-block-subtitle {
+  padding-top: 0;
+}
+
+// Remove the bottom margin from the last child of the card content. We intended to remove
+// margin from elements that have it built-in, such as `<p>`. We do this to avoid having too much
+// space between card content regions, as the space is already captured in the content region
+// element.
+.badman-block-content > :last-child:not(.badman-block-footer) {
+  margin-bottom: 0;
+}
+
+.badman-block-actions {
+  display: flex;
+
+  // Support for actions aligned to the end of the card.
+  &.badman-block-actions-align-end {
+    justify-content: flex-end;
+  }
+
+  // Support for actions aligned to the end of the card.
+  &.badman-block-actions-align-start {
+    justify-content: flex-start;
+
+    // push to the front
+    order: -1;
+  }
+}

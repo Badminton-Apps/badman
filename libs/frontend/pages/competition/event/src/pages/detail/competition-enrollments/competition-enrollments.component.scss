@@ -30,16 +30,35 @@
   padding-left: 0.5rem;
 }
 
-.loading {
-  animation: button-loading-spinner 1s ease infinite;
+.badman-block.base {
+  width: 350px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 }
 
-@keyframes button-loading-spinner {
-  from {
-    transform: rotate(0turn);
+.badman-block.validations {
+  flex: 1;
+  .badman-block-content {
+    padding-top: 1rem;
   }
+}
 
-  to {
-    transform: rotate(1turn);
+.base-players,
+.locations {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}
+
+.badman-block.validations {
+  flex: 1;
+  .badman-block-content {
+    padding-top: 1rem;
   }
 }
