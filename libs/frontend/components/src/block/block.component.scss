@@ -2,7 +2,7 @@
 $badman-block-header-size: 40px !default;
 
 // Default padding for text content within a card.
-$badman-block-default-padding: 16px !default;
+$badman-block-default-padding: 1rem !default;
 
 .badman-block {
   position: relative;
@@ -52,6 +52,11 @@ $badman-block-default-padding: 16px !default;
   padding: $badman-block-default-padding $badman-block-default-padding 0;
 
   align-items: center;
+
+  // If we don't have a subtitle, this lowers the padding on top
+  &:not(:has(.badman-block-subtitle)) {
+    padding-top: calc($badman-block-default-padding/2);
+  }
 }
 
 .badman-block-header-text {
