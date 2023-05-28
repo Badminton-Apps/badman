@@ -19,6 +19,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import {
+  BadmanBlockModule,
   HasClaimComponent,
   LoadingBlockComponent,
   OpenCloseDateDialogComponent,
@@ -49,6 +50,7 @@ import { RisersFallersDialogComponent } from '../../../dialogs';
     // own components
     HasClaimComponent,
     LoadingBlockComponent,
+    BadmanBlockModule,
   ],
   templateUrl: './competition-events.component.html',
   styleUrls: ['./competition-events.component.scss'],
