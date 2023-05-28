@@ -12,6 +12,7 @@ import {
   Component,
   Injector,
   Input,
+  OnDestroy,
   OnInit,
   PLATFORM_ID,
   Signal,
@@ -46,13 +47,14 @@ import {
 } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { from } from 'rxjs';
+import { Subject, from } from 'rxjs';
 import {
   bufferCount,
   concatMap,
   map,
   startWith,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
@@ -98,7 +100,7 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     ]),
   ],
 })
-export class CompetitionEnrollmentsComponent implements OnInit {
+export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
   // injects
   apollo = inject(Apollo);
   injector = inject(Injector);
@@ -122,6 +124,8 @@ export class CompetitionEnrollmentsComponent implements OnInit {
   loadingValidations = signal(false);
   progress = signal(0);
   total = signal(0);
+
+  destroy$ = new Subject<void>();
 
   // Form Controls
   clubControl = new FormControl();
@@ -275,7 +279,8 @@ export class CompetitionEnrollmentsComponent implements OnInit {
         from(eventIds)
           .pipe(
             bufferCount(10),
-            concatMap((txn) => this.getValidationsForEventEntry(txn))
+            concatMap((txn) => this.getValidationsForEventEntry(txn)),
+            takeUntil(this.destroy$)
           )
           .subscribe((results) => {
             this.progress.set(this.progress() + results.length);
@@ -379,5 +384,10 @@ export class CompetitionEnrollmentsComponent implements OnInit {
         (validation) => (validation?.warnings?.length ?? 0) > 0
       ).length,
     };
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
