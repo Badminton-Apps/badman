@@ -8,8 +8,8 @@
     $color-config: mat.get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
     $primary-palette: map.get($color-config, 'primary');
+
     $isDark: map.get($color-config, 'is-dark');
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
     $color: null;
 
     @if ($isDark) {
@@ -18,15 +18,6 @@
       $color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
     }
     
-    border-color: $border-color;
-
-    .info {
-      border-bottom-color: $border-color;
-
-      .down {
-        color: $color;
-      }
-    }
 
     .player .sub-text {
       color: $color;
@@ -37,19 +28,6 @@
 @mixin typography($theme) {
   badman-club-edit-team {
     $typography-config: mat.get-typography-config($theme);
-
-    .info {
-      .up {
-        @include mat.typography-level($typography-config, 'subtitle-1');
-      }
-      .down {
-        @include mat.typography-level($typography-config, 'caption');
-      }
-    }
-
-    .content .no-event {
-      @include mat.typography-level($typography-config, 'caption');
-    }
 
     .player .sub-text {
       @include mat.typography-level($typography-config, 'caption');

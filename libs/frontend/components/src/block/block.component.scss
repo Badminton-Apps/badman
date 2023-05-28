@@ -15,6 +15,10 @@ $badman-block-default-padding: 16px !default;
   > *:last-child {
     padding-bottom: $badman-block-default-padding;
   }
+
+  .mat-divider {
+    margin: $badman-block-default-padding/2 0;
+  }
 }
 
 // Title text and subtitles text within a card. MDC doesn't have pre-made title sections for cards.
