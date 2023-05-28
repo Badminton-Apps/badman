@@ -1,65 +1,87 @@
 <ng-container *ngIf="this.role">
-  <div class="general">
-    <div class="name">
-      {{ this.role()?.name }}
-      <span
-        *ngIf="this.role()?.locked"
-        class="locked"
-        [matTooltip]="'all.security.roles.locked' | translate"
-        ><mat-icon>lock</mat-icon></span
-      >
-    </div>
-    <div class="actions">
-      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-
-      <mat-menu #menu="matMenu">
-        <button
-          mat-menu-item
-          (click)="editClaims()"
-          [disabled]="this.role()?.locked"
+  <badman-block>
+    <badman-block-header>
+      <badman-block-title>
+        {{ this.role()?.name }}
+        <span
+          *ngIf="this.role()?.locked"
+          class="locked"
           [matTooltip]="'all.security.roles.locked' | translate"
-          [matTooltipDisabled]="!this.role()?.locked"
+          ><mat-icon>lock</mat-icon></span
         >
-          <mat-icon>edit</mat-icon>
-          <span>{{ 'all.button.edit' | translate }}</span>
-        </button>
-        <button
-          mat-menu-item
-          [disabled]="this.role()?.locked"
-          [matTooltip]="'all.security.roles.locked' | translate"
-          [matTooltipDisabled]="!this.role()?.locked"
-        >
-          <mat-icon>delete</mat-icon>
-          <span>{{ 'all.button.delete' | translate }}</span>
-        </button>
-      </mat-menu>
-    </div>
-  </div>
+      </badman-block-title>
 
-  <mat-divider></mat-divider>
+      <badman-block-actions align="end">
+        <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+          <mat-icon>more_vert</mat-icon>
+        </button>
 
-  <div class="player" *ngFor="let player of this.role()?.players">
-    <div class="name">
-      {{ player.fullName }}
-    </div>
-    <div class="delete">
-      <button
-        mat-icon-button
-        (click)="onPlayerRemovedFromRole(player)"
-        [disabled]="removeDisabled()"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
-    </div>
-  </div>
-  <badman-player-search
-    [allowCreation]="false"
-    [searchOutsideClub]="true"
-    [label]="'Voeg speler toe'"
-    (whenSelectPlayer)="onPlayerAddedToRole($event)"
-  ></badman-player-search>
+        <mat-menu #menu="matMenu">
+          <button
+            mat-menu-item
+            (click)="editClaims()"
+            [disabled]="this.role()?.locked"
+            [matTooltip]="'all.security.roles.locked' | translate"
+            [matTooltipDisabled]="!this.role()?.locked"
+          >
+            <mat-icon>edit</mat-icon>
+            <span>{{ 'all.button.edit' | translate }}</span>
+          </button>
+          <button
+            mat-menu-item
+            [disabled]="this.role()?.locked"
+            [matTooltip]="'all.security.roles.locked' | translate"
+            [matTooltipDisabled]="!this.role()?.locked"
+          >
+            <mat-icon>delete</mat-icon>
+            <span>{{ 'all.button.delete' | translate }}</span>
+          </button>
+        </mat-menu>
+      </badman-block-actions>
+    </badman-block-header>
+    <mat-divider></mat-divider>
+    <badman-block-content>
+      <mat-list>
+        <ng-container *ngIf="!((this.role()?.players?.length ?? 0) > 0)">
+          <mat-list-item>
+            <div class="no-players">No players</div>
+          </mat-list-item>
+        </ng-container>
+
+        <ng-container *ngIf="(this.role()?.players?.length ?? 0) > 0">
+          <div
+            mat-list-item
+            *ngFor="let player of this.role()?.players"
+            class="player"
+          >
+            <span mat-line>
+              {{ player.fullName }}
+            </span>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button
+                mat-menu-item
+                (click)="onPlayerRemovedFromRole(player)"
+                [disabled]="removeDisabled()"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>{{ 'all.button.delete' | translate }}</span>
+              </button>
+            </mat-menu>
+          </div>
+        </ng-container>
+      </mat-list>
+
+      <badman-player-search
+        [allowCreation]="false"
+        [searchOutsideClub]="true"
+        [label]="'Voeg speler toe'"
+        (whenSelectPlayer)="onPlayerAddedToRole($event)"
+      ></badman-player-search>
+    </badman-block-content>
+  </badman-block>
 </ng-container>
 
 <ng-template #editClaimsTemplate>

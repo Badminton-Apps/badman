@@ -47,7 +47,7 @@
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="this.whenPlayerRemoved.next(player)">
               <mat-icon>delete</mat-icon>
-              <span>Delete</span>
+              <span>{{ 'all.button.delete' | translate }}</span>
             </button>
             <button mat-menu-item (click)="onLevelException(player)">
               <mat-icon *ngIf="!player.levelException">lock</mat-icon>

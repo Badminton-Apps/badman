@@ -50,6 +50,8 @@ $badman-block-default-padding: 16px !default;
   // Apply default padding for the header region. Omit any bottom padding because we assume
   // this region will be followed by another region that includes top padding.
   padding: $badman-block-default-padding $badman-block-default-padding 0;
+
+  align-items: center;
 }
 
 .badman-block-header-text {
