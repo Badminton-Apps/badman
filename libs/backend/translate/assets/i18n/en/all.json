@@ -709,6 +709,10 @@
     "no-perm": {
       "email-phone": "You don't have permissions to edit emails or phone numbers."
     },
+    "prefferd": {
+      "title": "Preferred playing time"
+    },
+    "team-index": "Team Index",
     "teams": "Teams",
     "title": {
       "base-fields": "General info",

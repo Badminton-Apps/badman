@@ -17,7 +17,9 @@
             ><span
               class="team-index"
               *ngIf="team?.entry?.meta?.competition?.teamIndex"
-              >(Team Index:{{ team?.entry?.meta?.competition?.teamIndex }})
+              >({{ 'all.team.team-index' | translate }}:{{
+                team?.entry?.meta?.competition?.teamIndex
+              }})
             </span>
           </div>
         </mat-cell>
@@ -87,19 +89,49 @@
               }}</badman-block-title>
             </badman-block-header>
             <mat-divider />
-            <mat-list role="list">
-              <mat-list-item
-                role="listitem"
-                *ngFor="
-                  let player of team?.entry?.meta?.competition?.players ?? []
-                "
-              >
-                <span matListItemTitle>{{ player.player.fullName }}</span>
-                <span matListItemLine>
-                  {{ player.single }}- {{ player.double }} - {{ player.mix }}
-                </span>
-              </mat-list-item>
-            </mat-list>
+            <badman-block-content>
+              <mat-list role="list">
+                <mat-list-item
+                  role="listitem"
+                  *ngFor="
+                    let player of team?.entry?.meta?.competition?.players ?? []
+                  "
+                >
+                  <span matListItemTitle>{{ player.player.fullName }}</span>
+                  <span matListItemLine
+                    >{{ player.single }}- {{ player.double }} - {{ player.mix }}
+                  </span>
+                </mat-list-item>
+              </mat-list>
+            </badman-block-content>
+          </badman-block>
+          <badman-block class="captain">
+            <badman-block-header>
+              <badman-block-title>{{
+                'all.team.title.base-fields' | translate
+              }}</badman-block-title>
+            </badman-block-header>
+            <mat-divider />
+
+            <badman-block-content>
+              <mat-list role="list">
+                <mat-list-item role="listitem">
+                  <span matListItemTitle>{{ team?.captain?.fullName }}</span>
+                  <span matListItemLine>{{
+                    'all.team.title.captain' | translate
+                  }}</span>
+                </mat-list-item>
+                <mat-list-item role="listitem">
+                  <span matListItemTitle
+                    >{{ 'all.days.' + team?.preferredDay | translate }} -
+                    {{ team?.preferredTime }}</span
+                  >
+                  <span matListItemLine>{{
+                    'all.team.prefferd.title' | translate
+                  }}</span>
+                </mat-list-item>
+              </mat-list>
+            </badman-block-content>
           </badman-block>
 
           <badman-block class="validations">

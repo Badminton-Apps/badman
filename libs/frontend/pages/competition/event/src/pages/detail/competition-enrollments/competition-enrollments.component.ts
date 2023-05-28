@@ -36,6 +36,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   BadmanBlockModule,
   EnrollmentMessageComponent,
+  LoadingBlockComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
 import {
@@ -78,6 +79,7 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     SelectClubComponent,
     EnrollmentMessageComponent,
     BadmanBlockModule,
+    LoadingBlockComponent,
   ],
   templateUrl: './competition-enrollments.component.html',
   styleUrls: ['./competition-enrollments.component.scss'],
@@ -166,6 +168,13 @@ export class CompetitionEnrollmentsComponent implements OnInit {
                           type
                           teamNumber
                           link
+                          preferredDay
+                          preferredTime
+                          captain {
+                            id
+                            fullName
+                          }
+
                           players {
                             id
                             fullName

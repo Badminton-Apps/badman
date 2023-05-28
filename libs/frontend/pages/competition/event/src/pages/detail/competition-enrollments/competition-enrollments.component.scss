@@ -30,7 +30,8 @@
   padding-left: 0.5rem;
 }
 
-.badman-block.base {
+.badman-block.base,
+.badman-block.captain {
   width: 350px;
 
   @media (max-width: 600px) {
@@ -60,5 +61,15 @@
   flex: 1;
   .badman-block-content {
     padding-top: 1rem;
+  }
+}
+
+
+mat-list-item {
+  display: flex;
+  align-items: center;
+  padding: 3px 0;
+  span {
+    flex: 1;
   }
 }
