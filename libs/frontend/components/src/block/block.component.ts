@@ -2,27 +2,35 @@ import {
   ChangeDetectionStrategy,
   Component,
   Directive,
+  HostBinding,
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'badman-block',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './block.component.html',
   styleUrls: ['./block.component.scss'],
-  host: {
-    class: 'mat-mdc-card mdc-card',
-    '[class.mat-mdc-card-outlined]': 'appearance === "outlined"',
-    '[class.mdc-card--outlined]': 'appearance === "outlined"',
-  },
   exportAs: 'badmanBlock',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BadmanBlockComponent {}
+export class BadmanBlockComponent {
+  @HostBinding('class')
+  hostClass = 'badman-block';
+
+  // @HostBinding('class.mat-badman-block-outlined')
+  // get isOutlined() {
+  //   return this.appearance === 'outlined';
+  // }
+
+  // @HostBinding('class.badman-block--outlined')
+  // get isMdcOutlined() {
+  //   return this.appearance === 'outlined';
+  // }
+
+  // @Input() appearance?: string;
+}
 
 /**
  * Title of a card, intended for use within `<badman-block>`. This component is an optional
@@ -32,9 +40,11 @@ export class BadmanBlockComponent {}
  */
 @Directive({
   selector: `badman-block-title, [badman-block-title], [badmanBlockTitle]`,
-  host: { class: 'badman-block-title' },
 })
-export class BadmanBlockTitle {}
+export class BadmanBlockTitleDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-title';
+}
 
 /**
  * Container intended to be used within the `<badman-block>` component. Can contain exactly one
@@ -46,9 +56,11 @@ export class BadmanBlockTitle {}
   templateUrl: './block-title-group.component.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'badman-block-title-group' },
 })
-export class BadmanBlockTitleGroup {}
+export class BadmanBlockTitleGroupComponent {
+  @HostBinding('class')
+  hostClass = 'badman-block-title-group';
+}
 
 /**
  * Content of a card, intended for use within `<badman-block>`. This component is an optional
@@ -59,9 +71,11 @@ export class BadmanBlockTitleGroup {}
  */
 @Directive({
   selector: 'badman-block-content',
-  host: { class: 'badman-block-content' },
 })
-export class BadmanBlockContent {}
+export class BadmanBlockContentDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-content';
+}
 
 /**
  * Sub-title of a card, intended for use within `<badman-block>` beneath a `<badman-block-title>`. This
@@ -72,9 +86,11 @@ export class BadmanBlockContent {}
  */
 @Directive({
   selector: `badman-block-subtitle, [badman-block-subtitle], [badmanBlockSubtitle]`,
-  host: { class: 'badman-block-subtitle' },
 })
-export class BadmanBlockSubtitle {}
+export class BadmanBlockSubtitleDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-subtitle';
+}
 
 /**
  * Bottom area of a card that contains action buttons, intended for use within `<badman-block>`.
@@ -86,25 +102,23 @@ export class BadmanBlockSubtitle {}
 @Directive({
   selector: 'badman-block-actions',
   exportAs: 'badmanBlockActions',
-  host: {
-    class: 'badman-block-actions mdc-card__actions',
-    '[class.badman-block-actions-align-end]': 'align === "end"',
-  },
 })
-export class BadmanBlockActions {
-  // TODO(jelbourn): deprecate `align` in favor of `actionPosition` or `actionAlignment`
-  // as to not conflict with the native `align` attribute.
-
+export class BadmanBlockActionsDirective {
   /** Position of the actions inside the card. */
   @Input() align: 'start' | 'end' = 'start';
 
-  // TODO(jelbourn): support `.mdc-card__actions--full-bleed`.
+  @HostBinding('class')
+  hostClass = 'badman-block-actions';
 
-  // TODO(jelbourn): support  `.mdc-card__action-buttons` and `.mdc-card__action-icons`.
+  @HostBinding('class.badman-block-actions-align-end')
+  get isAtEnd() {
+    return this.align === 'end';
+  }
 
-  // TODO(jelbourn): figure out how to use `.mdc-card__action`, `.mdc-card__action--button`, and
-  // `mdc-card__action--icon`. They're used primarily for positioning, which we might be able to
-  // do implicitly.
+  @HostBinding('class.badman-block-actions-align-start')
+  get isAtStart() {
+    return this.align === 'start';
+  }
 }
 
 /**
@@ -120,9 +134,11 @@ export class BadmanBlockActions {
   templateUrl: './block-header.component.html',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'badman-block-header' },
 })
-export class BadmanBlockHeader {}
+export class BadmanBlockHeaderComponent {
+  @HostBinding('class')
+  hostClass = 'badman-block-header';
+}
 
 /**
  * Footer area a card, intended for use within `<badman-block>`.
@@ -133,13 +149,15 @@ export class BadmanBlockHeader {}
  */
 @Directive({
   selector: 'badman-block-footer',
-  host: { class: 'badman-block-footer' },
 })
-export class BadmanBlockFooter {}
+export class BadmanBlockFooterDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-footer';
+}
 
 // TODO(jelbourn): deprecate the "image" selectors to replace with "media".
 
-// TODO(jelbourn): support `.mdc-card__media-content`.
+// TODO(jelbourn): support `.badman-block__media-content`.
 
 /**
  * Primary image content for a card, intended for use within `<badman-block>`. Can be applied to
@@ -152,39 +170,47 @@ export class BadmanBlockFooter {}
  */
 @Directive({
   selector: '[badman-block-image], [badmanBlockImage]',
-  host: { class: 'badman-block-image mdc-card__media' },
 })
-export class BadmanBlockImage {
-  // TODO(jelbourn): support `.mdc-card__media--square` and `.mdc-card__media--16-9`.
+export class BadmanBlockImageDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-image badman-block__media';
 }
 
 /** Same as `BadmanBlockImage`, but small. */
 @Directive({
   selector: '[badman-block-sm-image], [badmanBlockImageSmall]',
-  host: { class: 'badman-block-sm-image mdc-card__media' },
 })
-export class BadmanBlockSmImage {}
+export class BadmanBlockSmImageDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-sm-image badman-block__media';
+}
 
 /** Same as `BadmanBlockImage`, but medium. */
 @Directive({
   selector: '[badman-block-md-image], [badmanBlockImageMedium]',
-  host: { class: 'badman-block-md-image mdc-card__media' },
 })
-export class BadmanBlockMdImage {}
+export class BadmanBlockMdImageDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-md-image badman-block__media';
+}
 
 /** Same as `BadmanBlockImage`, but large. */
 @Directive({
   selector: '[badman-block-lg-image], [badmanBlockImageLarge]',
-  host: { class: 'badman-block-lg-image mdc-card__media' },
 })
-export class BadmanBlockLgImage {}
+export class BadmanBlockLgImageDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-lg-image badman-block__media';
+}
 
 /** Same as `BadmanBlockImage`, but extra-large. */
 @Directive({
   selector: '[badman-block-xl-image], [badmanBlockImageXLarge]',
-  host: { class: 'badman-block-xl-image mdc-card__media' },
 })
-export class BadmanBlockXlImage {}
+export class BadmanBlockXlImageDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-xl-image badman-block__media';
+}
 
 /**
  * Avatar image content for a card, intended for use within `<badman-block>`. Can be applied to
@@ -197,6 +223,8 @@ export class BadmanBlockXlImage {}
  */
 @Directive({
   selector: '[badman-block-avatar], [badmanBlockAvatar]',
-  host: { class: 'badman-block-avatar' },
 })
-export class BadmanBlockAvatar {}
+export class BadmanBlockAvatarDirective {
+  @HostBinding('class')
+  hostClass = 'badman-block-avatar';
+}
