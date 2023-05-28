@@ -1,123 +1,253 @@
 <ng-container *ngIf="club">
-  <mat-table #table [dataSource]="club()?.teams ?? []">
-    <!--- Note that these columns can be defined in any order.
+  <section>
+    <h2>Teams</h2>
+
+    <mat-table #table [dataSource]="club()?.teams ?? []">
+      <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
 
-    <!-- Position Column -->
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef>
-        {{ 'all.competition.subevent.title' | translate }}
-      </mat-header-cell>
-      <mat-cell *matCellDef="let team">
-        {{ team.name }}
-        <span
-          class="team-index"
-          *ngIf="team?.entry?.meta?.competition?.teamIndex"
-        >
-          (Team Index:{{ team?.entry?.meta?.competition?.teamIndex }})
-        </span>
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="subevent">
-      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-      <mat-cell *matCellDef="let team">
-        {{ team?.entry?.subEventCompetition?.name }}
-        {{ team?.entry?.subEventCompetition?.eventType }}
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="validations">
-      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-      <mat-cell *matCellDef="let team">
-        <mat-icon
-          *ngIf="(team?.entry?.enrollmentValidation?.errors ?? []).length > 0"
-          [matBadge]="(team?.entry?.enrollmentValidation?.errors ?? []).length"
-          class="invalid"
-          [matTooltip]="
-            'all.competition.team-enrollment.errors.title' | translate
-          "
-          >error</mat-icon
-        >
-
-        <mat-icon
-          *ngIf="(team?.entry?.enrollmentValidation?.warnings ?? []).length > 0"
-          [matBadge]="
-            (team?.entry?.enrollmentValidation?.warnings ?? []).length
-          "
-          class="warning"
-          [matTooltip]="
-            'all.competition.team-enrollment.warnings.title' | translate
-          "
-          >warning</mat-icon
-        >
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      matRipple
-      class="subevent-row"
-      [badmanEnrollmentDetailRow]="row"
-      [badmanEnrollmentDetailRowTpl]="tpl"
-    >
-    </mat-row>
-  </mat-table>
-
-  <ng-container *ngIf="loading()">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </ng-container>
-
-  <ng-template #tpl let-team>
-    <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
-      <mat-list role="list">
-        <mat-list-item
-          role="listitem"
-          *ngFor="let player of team?.entry?.meta?.competition?.players ?? []"
-        >
-          <span matListItemTitle>{{ player.player.fullName }}</span>
-          <span matListItemLine>
-            {{ player.single }}- {{ player.double }} - {{ player.mix }}
-          </span>
-        </mat-list-item>
-      </mat-list>
-
-      <div class="validation-list">
-        <ul
-          class="error-list"
-          *ngIf="(team?.entry?.enrollmentValidation?.errors?.length ?? 0) > 0"
-        >
-          <li *ngFor="let error of team?.entry?.enrollmentValidation?.errors">
-            <badman-enrollment-message
-              [validation]="error"
-            ></badman-enrollment-message>
-          </li>
-        </ul>
-
-        <ul
-          class="warning-list"
-          *ngIf="(team?.entry?.enrollmentValidation?.warnings?.length ?? 0) > 0"
-        >
-          <li
-            *ngFor="let warnings of team?.entry?.enrollmentValidation?.warnings"
+      <!-- Position Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'all.competition.subevent.title' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let team">
+          {{ team.name }}
+          <span
+            class="team-index"
+            *ngIf="team?.entry?.meta?.competition?.teamIndex"
           >
-            <badman-enrollment-message
-              [validation]="warnings"
-            ></badman-enrollment-message>
-          </li>
-        </ul>
+            (Team Index:{{ team?.entry?.meta?.competition?.teamIndex }})
+          </span>
+        </mat-cell>
+      </ng-container>
 
-        <div
-          class="no-errors"
-          *ngIf="
-            (team?.entry?.enrollmentValidation?.errors?.length ?? 0) === 0 &&
-            (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) === 0
-          "
-        >
-          {{ 'all.competition.team-assembly.errors.none' | translate }}
+      <ng-container matColumnDef="subevent">
+        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+        <mat-cell *matCellDef="let team">
+          {{ team?.entry?.subEventCompetition?.name }}
+          {{ team?.entry?.subEventCompetition?.eventType }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="validations">
+        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+        <mat-cell *matCellDef="let team">
+          <mat-icon
+            *ngIf="(team?.entry?.enrollmentValidation?.errors ?? []).length > 0"
+            [matBadge]="
+              (team?.entry?.enrollmentValidation?.errors ?? []).length
+            "
+            class="invalid"
+            [matTooltip]="
+              'all.competition.team-enrollment.errors.title' | translate
+            "
+            >error</mat-icon
+          >
+
+          <mat-icon
+            *ngIf="
+              (team?.entry?.enrollmentValidation?.warnings ?? []).length > 0
+            "
+            [matBadge]="
+              (team?.entry?.enrollmentValidation?.warnings ?? []).length
+            "
+            class="warning"
+            [matTooltip]="
+              'all.competition.team-enrollment.warnings.title' | translate
+            "
+            >warning</mat-icon
+          >
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        matRipple
+        class="subevent-row"
+        [badmanEnrollmentDetailRow]="row"
+        [badmanEnrollmentDetailRowTpl]="tpl"
+      >
+      </mat-row>
+    </mat-table>
+
+    <ng-container *ngIf="loading()">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </ng-container>
+
+    <ng-template #tpl let-team>
+      <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
+        <div class="base-players">
+          <badman-block class="base">
+            <badman-block-header>
+              <badman-block-title>{{
+                'all.competition.team-enrollment.players.base' | translate
+              }}</badman-block-title>
+            </badman-block-header>
+            <mat-divider />
+            <mat-list role="list">
+              <mat-list-item
+                role="listitem"
+                *ngFor="
+                  let player of team?.entry?.meta?.competition?.players ?? []
+                "
+              >
+                <span matListItemTitle>{{ player.player.fullName }}</span>
+                <span matListItemLine>
+                  {{ player.single }}- {{ player.double }} - {{ player.mix }}
+                </span>
+              </mat-list-item>
+            </mat-list>
+          </badman-block>
+
+          <badman-block class="validations">
+            <badman-block-header>
+              <badman-block-title>{{
+                'all.competition.team-enrollment.validations' | translate
+              }}</badman-block-title>
+            </badman-block-header>
+            <mat-divider />
+            <badman-block-content>
+              <ul
+                class="error-list"
+                *ngIf="
+                  (team?.entry?.enrollmentValidation?.errors?.length ?? 0) > 0
+                "
+              >
+                <li
+                  *ngFor="
+                    let error of team?.entry?.enrollmentValidation?.errors
+                  "
+                >
+                  <badman-enrollment-message
+                    [validation]="error"
+                  ></badman-enrollment-message>
+                </li>
+              </ul>
+
+              <ul
+                class="warning-list"
+                *ngIf="
+                  (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) > 0
+                "
+              >
+                <li
+                  *ngFor="
+                    let warnings of team?.entry?.enrollmentValidation?.warnings
+                  "
+                >
+                  <badman-enrollment-message
+                    [validation]="warnings"
+                  ></badman-enrollment-message>
+                </li>
+              </ul>
+
+              <div
+                class="no-errors"
+                *ngIf="
+                  (team?.entry?.enrollmentValidation?.errors?.length ?? 0) ===
+                    0 &&
+                  (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) ===
+                    0
+                "
+              >
+                {{ 'all.competition.team-assembly.errors.none' | translate }}
+              </div>
+            </badman-block-content>
+          </badman-block>
         </div>
       </div>
-    </div>
-  </ng-template>
+    </ng-template>
+  </section>
+
+  <section class="locations">
+    <h2>Locations</h2>
+
+    <badman-block *ngFor="let location of this.locations?.()">
+      <badman-block-header>
+        <badman-block-title>{{ location.name }}</badman-block-title>
+        <badman-block-actions align="end">
+          <button mat-icon-button [matMenuTriggerFor]="options">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #options="matMenu">
+            <button mat-menu-item>
+              {{ 'all.button.edit' | translate }}
+            </button>
+            <badman-has-claim
+              [any]="[club()?.id + '_remove:location', 'edit-any:club']"
+            >
+              <mat-divider></mat-divider>
+              <button mat-menu-item>
+                {{ 'all.button.delete' | translate }}
+              </button>
+            </badman-has-claim>
+          </mat-menu>
+        </badman-block-actions>
+      </badman-block-header>
+      <mat-divider></mat-divider>
+      <badman-block-content>
+        <span *ngIf="this.location.street">{{ this.location.street }} </span>
+        <span *ngIf="this.location.streetNumber">{{
+          this.location.streetNumber
+        }}</span>
+        <br />
+        <span *ngIf="this.location.postalcode"
+          >{{ this.location.postalcode }}
+        </span>
+        <span *ngIf="this.location.city">{{ this.location.city }}</span
+        ><br />
+        <span *ngIf="this.location.state">{{ this.location.state }}</span
+        ><br />
+        <span *ngIf="this.location.phone">{{ this.location.phone }}</span>
+        <span *ngIf="this.location.fax">{{ this.location.fax }}</span>
+
+        <div class="days">
+          <div *ngFor="let availibility of this.location?.availibilities ?? []">
+            <h4>
+              {{ 'all.competition.team-enrollment.play-days' | translate }}
+            </h4>
+
+            <mat-list role="list">
+              <mat-list-item
+                role="listitem"
+                *ngFor="let day of availibility?.days ?? []"
+              >
+                <span matListItemTitle>
+                  {{ 'all.days.' + day.day | translate }}, {{ day.startTime }}
+                  {{ 'all.breakdown.untill' | translate }}
+                  {{ day.endTime }}</span
+                >
+                <span matListItemLine>
+                  {{ day.courts }} {{ 'all.input.courts' | translate }}
+                </span>
+              </mat-list-item>
+            </mat-list>
+
+            <h4>
+              {{ 'all.competition.team-enrollment.exceptions' | translate }}
+            </h4>
+
+            <mat-list role="list">
+              <mat-list-item
+                role="listitem"
+                *ngFor="let exception of availibility?.exceptions ?? []"
+              >
+                <span matListItemTitle>
+                  {{ exception.start | amDateFormat : 'L' }}
+                  {{ 'all.breakdown.untill' | translate }}
+                  {{ exception.end | amDateFormat : 'L' }}
+                </span>
+                <span matListItemLine>
+                  {{ exception.courts }}
+                  {{ 'all.input.courts' | translate }}
+                </span>
+              </mat-list-item>
+            </mat-list>
+          </div>
+        </div>
+      </badman-block-content>
+    </badman-block>
+  </section>
 </ng-container>

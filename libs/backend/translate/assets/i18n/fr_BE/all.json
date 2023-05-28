@@ -238,12 +238,15 @@
       },
       "example-error": "Ce sont des messages d'erreur qui empêchent l'inscription de l'équipe. Veuillez les résoudre.",
       "example-warning": "Ce sont des avertissements dont il faut tenir compte. L'enregistrement peut encore être complété.",
+      "exceptions": "Des exceptions",
       "info": "",
       "locations": {
         "availible-courts": "Champs disponibles",
-        "courts-hint": "Modifier le nombre de champs disponibles"
+        "courts-hint": "Modifier le nombre de champs disponibles",
+        "title": "Emplacements"
       },
       "open": "",
+      "play-days": "Jours de match",
       "players": {
         "backup": "",
         "base": "",
@@ -268,6 +271,7 @@
         "transfer-teams-description": ""
       },
       "title": "Inscriptions des équipes",
+      "validations": "Validations",
       "warnings": {
         "subtitute-team-index": "",
         "title": "Mises en garde"

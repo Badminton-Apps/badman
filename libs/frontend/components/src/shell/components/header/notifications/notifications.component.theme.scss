@@ -19,7 +19,7 @@
     background-color: $background-color;
     color: $color;
 
-    [mat-list-item].read {
+    .list-item.read {
       @if ($isDark) {
         color: darken($color, 10%);
       } @else {

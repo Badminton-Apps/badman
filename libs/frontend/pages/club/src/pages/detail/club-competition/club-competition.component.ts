@@ -29,10 +29,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {
+  BadmanBlockModule,
   EnrollmentMessageComponent,
+  HasClaimComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
-import { Club } from '@badman/frontend-models';
+import { Club, Location } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
@@ -42,6 +44,9 @@ import { of } from 'rxjs';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MomentModule } from 'ngx-moment';
 @Component({
   selector: 'badman-club-competition',
   standalone: true,
@@ -56,6 +61,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatBadgeModule,
     MatIconModule,
     MatProgressBarModule,
+    MatMenuModule,
+    MatButtonModule,
+    MomentModule,
     TranslateModule,
 
     CdkTableModule,
@@ -63,6 +71,8 @@ import { MatIconModule } from '@angular/material/icon';
     EnrollmentDetailRowDirective,
     SelectClubComponent,
     EnrollmentMessageComponent,
+    BadmanBlockModule,
+    HasClaimComponent,
   ],
   templateUrl: './club-competition.component.html',
   styleUrls: ['./club-competition.component.scss'],
@@ -91,6 +101,7 @@ export class ClubCompetitionComponent implements OnInit {
 
   // signals
   club?: Signal<Club | undefined>;
+  locations?: Signal<Location[] | undefined>;
   loading = signal(false);
 
   // Inputs
@@ -98,6 +109,12 @@ export class ClubCompetitionComponent implements OnInit {
   @Input({ required: true }) clubId?: string;
 
   displayedColumns: string[] = ['name', 'subevent', 'validations'];
+
+
+  expanded = {
+    days: true,
+    exceptions: true,
+  };
 
   ngOnInit(): void {
     this._setTeams();
@@ -195,6 +212,62 @@ export class ClubCompetitionComponent implements OnInit {
         tap(() => {
           this.loading.set(false);
         })
+      ) ?? of(undefined),
+      { injector: this.injector }
+    );
+
+    this.locations = toSignal(
+      this.filter?.get('season')?.valueChanges?.pipe(
+        startWith(this.filter.value.season ?? {}),
+        switchMap((filter) => {
+          return this.apollo.watchQuery<{
+            club: Partial<Club>;
+          }>({
+            query: gql`
+              query Locations($clubId: ID!, $where: JSONObject) {
+                club(id: $clubId) {
+                  id
+                  locations {
+                    id
+                    name
+                    address
+                    postalcode
+                    street
+                    streetNumber
+                    city
+                    state
+                    phone
+                    fax
+                    availibilities(where: $where) {
+                      id
+
+                      days {
+                        day
+                        startTime
+                        endTime
+                        courts
+                      }
+                      exceptions {
+                        start
+                        end
+                        courts
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              clubId: this.clubId,
+              where: {
+                season: filter,
+              },
+            },
+          }).valueChanges;
+        }),
+
+        map((result) => new Club(result?.data?.club)),
+        map((club) => club?.locations)
       ) ?? of(undefined),
       { injector: this.injector }
     );

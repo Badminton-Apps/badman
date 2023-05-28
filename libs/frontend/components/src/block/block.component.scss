@@ -6,6 +6,7 @@ $badman-block-default-padding: 1rem !default;
 
 .badman-block {
   position: relative;
+  display: block;
 
   border-width: 1px;
   border-style: solid;
@@ -46,6 +47,7 @@ $badman-block-default-padding: 1rem !default;
   // correct order. The image will come first, followed by a single div that will contain (via
   // content projection) both the title and the subtitle.
   display: flex;
+  min-height: $badman-block-header-size;
 
   // Apply default padding for the header region. Omit any bottom padding because we assume
   // this region will be followed by another region that includes top padding.

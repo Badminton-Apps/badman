@@ -187,26 +187,26 @@ export class LocationsStepComponent implements OnInit {
             // filter out the locations that are not available for the current season
             // if no availibilities are set, use the one from previous season
             let availibilty = location.availibilities?.find(
-              (availibility) => availibility.year === this.season
+              (availibility) => availibility.season === this.season
             );
 
             if (!availibilty) {
               const lastSeason = (location.availibilities?.find(
-                (availibility) => availibility.year === this.season - 1
+                (availibility) => availibility.season === this.season - 1
               ) ?? {
                 days: [],
               }) as Availability;
 
               availibilty = {
                 ...lastSeason,
-                year: this.season,
+                season: this.season,
                 exceptions: [],
               };
             }
 
             const availibyForm = this.formBuilder.group({
               id: this.formBuilder.control(availibilty?.id),
-              year: this.formBuilder.control(availibilty?.year),
+              year: this.formBuilder.control(availibilty?.season),
               days: this.formBuilder.array(
                 availibilty?.days?.map((day) =>
                   this.formBuilder.group({

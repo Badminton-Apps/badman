@@ -1,7 +1,62 @@
-:host{
+:host {
   display: block;
+  padding-bottom: 5rem;
 }
 
-.team-index{
+.team-index {
   padding-left: 0.5rem;
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+
+  .base-players,
+  .locations {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+}
+
+.badman-block.base {
+  width: 350px;
+}
+
+.badman-block.validations {
+  flex: 1;
+  .badman-block-content {
+    padding-top: 1rem;
+  }
+}
+
+.locations {
+  flex: 1;
+  gap: 1rem;
+  flex-direction: row;
+
+  .badman-block {
+    width: 350px;
+
+    .badman-block-content {
+      padding-top: 1rem;
+
+      .days {
+        h4 {
+          margin-bottom: 0;
+        }
+
+        mat-list-item {
+          display: flex;
+          align-items: center;
+          padding: 3px 0;
+          span {
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
 }

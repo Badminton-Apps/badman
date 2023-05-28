@@ -2,7 +2,7 @@ import { Location } from './location.model';
 
 export class Availability {
   id?: string;
-  year?: number;
+  season?: number;
   days: AvailabilityDay[];
   exceptions: AvailabilityException[];
   location?: Location;
@@ -10,7 +10,7 @@ export class Availability {
 
   constructor(args?: Partial<Availability>) {
     this.id = args?.id;
-    this.year = args?.year;
+    this.season = args?.season;
     this.days = args?.days?.map((d) => new AvailabilityDay(d)) || [];
     this.exceptions =
       args?.exceptions?.map((e) => new AvailabilityException(e)) || [];
