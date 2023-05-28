@@ -12,13 +12,14 @@
           {{ 'all.competition.subevent.title' | translate }}
         </mat-header-cell>
         <mat-cell *matCellDef="let team">
-          {{ team.name }}
-          <span
-            class="team-index"
-            *ngIf="team?.entry?.meta?.competition?.teamIndex"
-          >
-            (Team Index:{{ team?.entry?.meta?.competition?.teamIndex }})
-          </span>
+          <div class="team">
+            <span class="team-name">{{ team.name }}</span
+            ><span
+              class="team-index"
+              *ngIf="team?.entry?.meta?.competition?.teamIndex"
+              >(Team Index:{{ team?.entry?.meta?.competition?.teamIndex }})
+            </span>
+          </div>
         </mat-cell>
       </ng-container>
 

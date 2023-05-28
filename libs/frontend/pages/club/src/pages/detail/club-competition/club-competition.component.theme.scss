@@ -27,5 +27,9 @@
 @mixin typography($theme) {
   badman-club-competition {
     $typography-config: mat.get-typography-config($theme);
+
+    .team-index {
+      @include mat.typography-level($typography-config, 'caption');
+    }
   }
 }
