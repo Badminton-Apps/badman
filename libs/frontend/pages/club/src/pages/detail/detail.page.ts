@@ -215,7 +215,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
                 map((params) => params['tab'])
               )
               .subscribe((tabindex) => {
-                console.log('tabindex', tabindex);
                 this.currentTab.set(parseInt(tabindex, 10));
               });
           }

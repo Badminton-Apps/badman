@@ -34,6 +34,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {
+  BadmanBlockModule,
   EnrollmentMessageComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
@@ -76,6 +77,7 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     EnrollmentDetailRowDirective,
     SelectClubComponent,
     EnrollmentMessageComponent,
+    BadmanBlockModule,
   ],
   templateUrl: './competition-enrollments.component.html',
   styleUrls: ['./competition-enrollments.component.scss'],

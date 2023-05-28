@@ -132,58 +132,74 @@
             </div>
           </mat-expansion-panel-header>
 
-          <div class="players">
-            <mat-list role="list">
-              <mat-list-item
-                role="listitem"
-                *ngFor="let player of entry?.meta?.competition?.players ?? []"
-              >
-                <span matListItemTitle>{{ player.player.fullName }}</span>
-                <span matListItemLine>
-                  {{ player.single }}- {{ player.double }} - {{ player.mix }}
-                </span>
-              </mat-list-item>
-            </mat-list>
-            <mat-divider [vertical]="true" />
-            <div
-              class="validation-list"
+          <div class="base-players">
+            <badman-block class="base">
+              <badman-block-header>
+                <badman-block-title>{{
+                  'all.competition.team-enrollment.players.base' | translate
+                }}</badman-block-title>
+              </badman-block-header>
+              <mat-divider />
+              <mat-list role="list">
+                <mat-list-item
+                  role="listitem"
+                  *ngFor="let player of entry?.meta?.competition?.players ?? []"
+                >
+                  <span matListItemTitle>{{ player.player.fullName }}</span>
+                  <span matListItemLine>
+                    {{ player.single }}- {{ player.double }} - {{ player.mix }}
+                  </span>
+                </mat-list-item>
+              </mat-list>
+            </badman-block>
+
+            <badman-block
+              class="validations"
               *ngIf="
                 !loadingValidations() &&
                 validationsForTeam.get(entry.team.id) as validation
               "
             >
-              <ul
-                class="error-list"
-                *ngIf="(validation.errors?.length ?? 0) > 0"
-              >
-                <li *ngFor="let error of validation.errors">
-                  <badman-enrollment-message
-                    [validation]="error"
-                  ></badman-enrollment-message>
-                </li>
-              </ul>
+              <badman-block-header>
+                <badman-block-title>{{
+                  'all.competition.team-enrollment.validations' | translate
+                }}</badman-block-title>
+              </badman-block-header>
+              <mat-divider />
+              <badman-block-content>
+                <ul
+                  class="error-list"
+                  *ngIf="(validation.errors?.length ?? 0) > 0"
+                >
+                  <li *ngFor="let error of validation.errors">
+                    <badman-enrollment-message
+                      [validation]="error"
+                    ></badman-enrollment-message>
+                  </li>
+                </ul>
 
-              <ul
-                class="warning-list"
-                *ngIf="(validation.warnings?.length ?? 0) > 0"
-              >
-                <li *ngFor="let warnings of validation.warnings">
-                  <badman-enrollment-message
-                    [validation]="warnings"
-                  ></badman-enrollment-message>
-                </li>
-              </ul>
+                <ul
+                  class="warning-list"
+                  *ngIf="(validation.warnings?.length ?? 0) > 0"
+                >
+                  <li *ngFor="let warnings of validation.warnings">
+                    <badman-enrollment-message
+                      [validation]="warnings"
+                    ></badman-enrollment-message>
+                  </li>
+                </ul>
 
-              <div
-                class="no-errors"
-                *ngIf="
-                  (validation.errors?.length ?? 0) === 0 &&
-                  (validation.warnings?.length ?? 0) === 0
-                "
-              >
-                {{ 'all.competition.team-assembly.errors.none' | translate }}
-              </div>
-            </div>
+                <div
+                  class="no-errors"
+                  *ngIf="
+                    (validation.errors?.length ?? 0) === 0 &&
+                    (validation.warnings?.length ?? 0) === 0
+                  "
+                >
+                  {{ 'all.competition.team-assembly.errors.none' | translate }}
+                </div>
+              </badman-block-content>
+            </badman-block>
           </div>
         </mat-expansion-panel>
       </div>

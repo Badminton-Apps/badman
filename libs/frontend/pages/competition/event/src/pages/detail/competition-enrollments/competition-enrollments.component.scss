@@ -30,12 +30,35 @@
   padding-left: 0.5rem;
 }
 
-.players {
+.badman-block.base {
+  width: 350px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+.badman-block.validations {
+  flex: 1;
+  .badman-block-content {
+    padding-top: 1rem;
+  }
+}
+
+.base-players,
+.locations {
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: 1rem;
 
-  mat-list {
-    flex: 0 0 300px;
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}
+
+.badman-block.validations {
+  flex: 1;
+  .badman-block-content {
+    padding-top: 1rem;
   }
 }
