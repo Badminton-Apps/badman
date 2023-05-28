@@ -10,7 +10,7 @@
   $success-palette: map.get($theme, success);
 
   badman-competition-enrollments {
-    .validation-list {
+    .badman-block.validations {
       .error-list {
         color: mat.get-color-from-palette($danger-palette, 300);
       }
@@ -27,5 +27,9 @@
 @mixin typography($theme) {
   badman-competition-enrollments {
     $typography-config: mat.get-typography-config($theme);
+
+    .team-index {
+      @include mat.typography-level($typography-config, 'caption');
+    }
   }
 }

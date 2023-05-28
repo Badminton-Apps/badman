@@ -9,8 +9,9 @@ import {
   Signal,
   TransferState,
   computed,
+  effect,
   inject,
-  signal
+  signal,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -146,18 +147,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       });
       this.breadcrumbsService.set('@club', clubName);
 
-      // check if the query params contian tabindex
-      this.route.queryParams
-        .pipe(
-          startWith(this.route.snapshot.queryParams),
-          take(1),
-          filter((params) => params['tab']),
-          map((params) => params['tab'])
-        )
-        .subscribe((tabindex) => {
-          this.currentTab.set(parseInt(tabindex, 10));
-        });
-
       this._setYears();
 
       this.canViewEnrollmentForClub = toSignal(
@@ -211,6 +200,26 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         () =>
           this.canViewEnrollmentForClub?.() ||
           this.canViewEnrollmentForEvent?.()
+      );
+
+      effect(
+        () => {
+          // if the canViewEnrollments is loaded
+          if (this.canViewEnrollments?.() !== undefined) {
+            // check if the query params contian tabindex
+            this.route.queryParams
+              .pipe(
+                startWith(this.route.snapshot.queryParams),
+                take(1),
+                filter((params) => params['tab']),
+                map((params) => params['tab'])
+              )
+              .subscribe((tabindex) => {
+                this.currentTab.set(parseInt(tabindex, 10));
+              });
+          }
+        },
+        { injector: this.injector, allowSignalWrites: true }
       );
     });
   }

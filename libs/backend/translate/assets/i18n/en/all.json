@@ -238,12 +238,15 @@
       },
       "example-error": "These are error messages that prevent the team from being registered. Please resolve these.",
       "example-warning": "These are warnings that should be taken into account. The registration can still be completed.",
+      "exceptions": "Exceptions",
       "info": "Remarks concerning the team enrollment",
       "locations": {
         "availible-courts": "Available courts",
-        "courts-hint": "Change the number of available fields"
+        "courts-hint": "Change the number of available fields",
+        "title": "Locations"
       },
       "open": "Open",
+      "play-days": "Game days",
       "players": {
         "backup": "Backup player(s)",
         "base": "Baseplayer(s)",
@@ -268,6 +271,7 @@
         "transfer-teams-description": "If you wish to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you will be able to transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nYou can change the teamnumbers in the next step"
       },
       "title": "Team enrollment",
+      "validations": "Validations",
       "warnings": {
         "subtitute-team-index": "s",
         "title": "Warnings"
