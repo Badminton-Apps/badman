@@ -110,7 +110,6 @@ export class ClubCompetitionComponent implements OnInit {
 
   displayedColumns: string[] = ['name', 'subevent', 'validations'];
 
-
   expanded = {
     days: true,
     exceptions: true,
@@ -142,6 +141,12 @@ export class ClubCompetitionComponent implements OnInit {
                   teams(where: $where, order: $order) {
                     id
                     name
+                    preferredDay
+                    preferredTime
+                    captain {
+                      id
+                      fullName
+                    }
                     entry {
                       id
                       subEventCompetition {

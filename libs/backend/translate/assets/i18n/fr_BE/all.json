@@ -709,6 +709,10 @@
     "no-perm": {
       "email-phone": "Vous n'êtes pas autorisé à modifier votre adresse électronique ou votre numéro de téléphone."
     },
+    "prefferd": {
+      "title": "Temps de jeu préféré"
+    },
+    "team-index": "Indice d'équipe",
     "teams": "Équipes",
     "title": {
       "base-fields": "Informations générales",
