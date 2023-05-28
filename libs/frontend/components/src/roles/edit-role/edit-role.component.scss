@@ -1,48 +1,9 @@
 :host {
-  border-width: 1px;
-  border-style: solid;
-  padding: 1rem;
-  border-radius: 5px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  align-self: baseline;
 }
 
-.player {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-
-  .type {
-    flex: 0 0 auto;
-  }
-
-  .delete {
-    flex: 0 0 auto;
-  }
-
-  .name {
-    flex: 1 1 auto;
-  }
+.badman-block {
+  width: 300px;
 }
 
-.normal-players {
-  .name,
-  .delete {
-    padding-bottom: 22px;
-  }
-}
-
-.general {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-
-  .name {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-  }
-}

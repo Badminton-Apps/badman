@@ -5,6 +5,7 @@ import {
   OnInit,
   Signal,
   TemplateRef,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -139,24 +140,32 @@ export class DetailPageComponent implements OnInit {
         translations['all.competition.title']
       );
 
-      // check if the query params contian tabindex
-      this.route.queryParams
-        .pipe(
-          startWith(this.route.snapshot.queryParams),
-          take(1),
-          filter((params) => params['tab']),
-          map((params) => params['tab'])
-        )
-        .subscribe((tabindex) => {
-          this.currentTab.set(parseInt(tabindex, 10));
-        });
-
       this.canViewEnrollments = toSignal(
         this.authService.hasAnyClaims$([
           'view-any:enrollment-competition',
           `${this.eventCompetition.id}_view:enrollment-competition`,
         ]),
         { injector: this.injector }
+      );
+
+      effect(
+        () => {
+          // if the canViewEnrollments is loaded
+          if (this.canViewEnrollments?.() !== undefined) {
+            // check if the query params contian tabindex
+            this.route.queryParams
+              .pipe(
+                startWith(this.route.snapshot.queryParams),
+                take(1),
+                filter((params) => params['tab']),
+                map((params) => params['tab'])
+              )
+              .subscribe((tabindex) => {
+                this.currentTab.set(parseInt(tabindex, 10));
+              });
+          }
+        },
+        { injector: this.injector, allowSignalWrites: true }
       );
     });
   }

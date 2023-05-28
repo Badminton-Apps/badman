@@ -1,0 +1,15 @@
+<div>
+  <ng-content
+    select="badman-block-title, badman-block-subtitle,
+      [badman-block-title], [badman-block-subtitle],
+      [badmanBlockTitle], [badmanBlockSubtitle]"
+  ></ng-content>
+</div>
+<ng-content
+  select="[badman-block-image], [badmanBlockImage],
+                    [badman-block-sm-image], [badmanBlockImageSmall],
+                    [badman-block-md-image], [badmanBlockImageMedium],
+                    [badman-block-lg-image], [badmanBlockImageLarge],
+                    [badman-block-xl-image], [badmanBlockImageXLarge]"
+></ng-content>
+<ng-content></ng-content>
