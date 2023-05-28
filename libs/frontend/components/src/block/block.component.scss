@@ -17,7 +17,7 @@ $badman-block-default-padding: 16px !default;
   }
 
   .mat-divider {
-    margin-top: $badman-block-default-padding/2;
+    margin-top: calc($badman-block-default-padding/2);
   }
 }
 
