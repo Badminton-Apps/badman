@@ -242,12 +242,15 @@ export type I18nTranslations = {
                 };
                 "example-error": string;
                 "example-warning": string;
+                "exceptions": string;
                 "info": string;
                 "locations": {
                     "availible-courts": string;
                     "courts-hint": string;
+                    "title": string;
                 };
                 "open": string;
+                "play-days": string;
                 "players": {
                     "backup": string;
                     "base": string;
@@ -272,6 +275,7 @@ export type I18nTranslations = {
                     "transfer-teams-description": string;
                 };
                 "title": string;
+                "validations": string;
                 "warnings": {
                     "subtitute-team-index": string;
                     "title": string;

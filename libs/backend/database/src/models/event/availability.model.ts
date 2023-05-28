@@ -51,7 +51,7 @@ export class Availability extends Model {
 
   @Field({ nullable: true })
   @Column
-  year: number;
+  season: number;
 
   @Field(() => [AvailiblyDayType], { nullable: true })
   @Column({
