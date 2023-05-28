@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.82.0](https://github.com/Badminton-Apps/badman/compare/v6.81.5...v6.82.0) (2023-05-28)
+
+
+### Features
+
+* adding locations to team-enrollments ([5fa9849](https://github.com/Badminton-Apps/badman/commit/5fa98490767d45c8cc80ec2335fed800f0093624))
+* block component ([466198d](https://github.com/Badminton-Apps/badman/commit/466198da23a1a03322d89f54f82b59d178fba752))
+* layout for enrollments ([d05e439](https://github.com/Badminton-Apps/badman/commit/d05e439bbcbeedd3b3da652f3d79ccfcfae9b837))
+* locking players and editing ranking levels ([8390ddf](https://github.com/Badminton-Apps/badman/commit/8390ddf5f8fa930fc353a8a6198e17e8ad90720a))
+* move club-edit-location to new block component ([f31e261](https://github.com/Badminton-Apps/badman/commit/f31e261c966426ee09856b2aba9a5766f25e9549))
+* move club-edit-team to new block component ([d4a6f03](https://github.com/Badminton-Apps/badman/commit/d4a6f038010364a7f1665276aa5293af4fac9c5b))
+* move competition list to new block component ([351f15d](https://github.com/Badminton-Apps/badman/commit/351f15d7992d1f13f416808d0167cd2e3e80d66f))
+* move edit-role to new block component ([8cb29e2](https://github.com/Badminton-Apps/badman/commit/8cb29e22f3253bfd4252fb801fdedf0fb8a0f7b3))
+* validation for level exception ([f647e74](https://github.com/Badminton-Apps/badman/commit/f647e740c160ed8f0fbff3f659f947f3ebdfb416))
+
+
+### Bug Fixes
+
+* adding some mobile styling for club team enrollments ([fc9c60d](https://github.com/Badminton-Apps/badman/commit/fc9c60d4b82953faebbaca52e10d65296c4a8641))
+* loading tabindex after permissions check loaded ([a449f18](https://github.com/Badminton-Apps/badman/commit/a449f18f719938ae7bff208f38a54cbe55e702cd))
+* margin was a bit to much ([8df3a1f](https://github.com/Badminton-Apps/badman/commit/8df3a1f595b4c446982f62c3e2a9d4e3ad0cb100))
+* recalulate the index correctly ([b142a81](https://github.com/Badminton-Apps/badman/commit/b142a811a9803eb38cdb876c9c6d020df4250a17))
+
 ### [6.81.5](https://github.com/Badminton-Apps/badman/compare/v6.81.4...v6.81.5) (2023-05-22)
 
 
