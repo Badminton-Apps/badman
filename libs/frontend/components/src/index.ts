@@ -20,5 +20,3 @@ export * from './shell';
 export * from './standing';
 
 // end:ng42.barrel
-
-export * from './block/block.component';

@@ -25,6 +25,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ClaimComponent } from '../claim';
+import { BadmanBlockModule } from '../../block';
+import { MatListModule } from '@angular/material/list';
 
 const roleQuery = gql`
   query GetRole($id: ID!) {
@@ -57,9 +59,11 @@ const roleQuery = gql`
     MatTooltipModule,
     MatMenuModule,
     MatDialogModule,
+    MatListModule,
 
     PlayerSearchComponent,
     ClaimComponent,
+    BadmanBlockModule,
   ],
   templateUrl: './edit-role.component.html',
   styleUrls: ['./edit-role.component.scss'],
