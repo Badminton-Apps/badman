@@ -1,9 +1,9 @@
-<div class="info">
-  <div class="name">
-    <span class="up">
-      {{ team.name }} <small *ngIf="teamIndex">({{ teamIndex }})</small></span
-    >
-    <span class="down">
+<badman-block>
+  <badman-block-header>
+    <badman-block-title>
+      {{ team.name }} <small *ngIf="teamIndex">({{ teamIndex }})</small>
+    </badman-block-title>
+    <badman-block-subtitle>
       <a
         (click)="changeSubEvent()"
         [matTooltipDisabled]="!subEvent"
@@ -11,70 +11,70 @@
       >
         {{
           subEvent ? subEvent.name : ('all.team.change-event.pick' | translate)
-        }}</a
+        }}
+      </a>
+    </badman-block-subtitle>
+  </badman-block-header>
+  <mat-divider></mat-divider>
+  <badman-block-content>
+    <mat-list>
+      <ng-container
+        *ngIf="!(this.players && this.players.length > 0) && this.subEvent"
       >
-    </span>
-  </div>
-</div>
+        <mat-list-item>
+          <div class="no-players">No players</div>
+        </mat-list-item>
+      </ng-container>
 
-<div class="content">
-  <mat-list>
-    <ng-container
-      *ngIf="!(this.players && this.players.length > 0) && this.subEvent"
-    >
-      <mat-list-item>
-        <div class="no-players">No players</div>
-      </mat-list-item>
-    </ng-container>
-
-    <ng-container *ngIf="this.players && this.players.length > 0">
-      <div mat-list-item *ngFor="let player of this.players" class="player">
-        <span mat-line>
-          {{ player?.player?.fullName }}
-          <ng-container *ngIf="player.levelException">
-            <mat-icon class="locked">lock</mat-icon>
-          </ng-container>
-
-          <span class="sub-text">
-            {{ player.single }} - {{ player.double }}
-            <ng-container *ngIf="team.type === 'MX'">
-              - {{ player.mix }}
+      <ng-container *ngIf="this.players && this.players.length > 0">
+        <div mat-list-item *ngFor="let player of this.players" class="player">
+          <span mat-line>
+            {{ player?.player?.fullName }}
+            <ng-container *ngIf="player.levelException">
+              <mat-icon class="locked">lock</mat-icon>
             </ng-container>
+
+            <span class="sub-text">
+              {{ player.single }} - {{ player.double }}
+              <ng-container *ngIf="team.type === 'MX'">
+                - {{ player.mix }}
+              </ng-container>
+            </span>
           </span>
-        </span>
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="this.whenPlayerRemoved.next(player)">
-            <mat-icon>delete</mat-icon>
-            <span>Delete</span>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
           </button>
-          <button mat-menu-item (click)="onLevelException(player)">
-            <mat-icon *ngIf="!player.levelException">lock</mat-icon>
-            <mat-icon *ngIf="player.levelException">lock_open</mat-icon>
-            <span>Toggle level Exemption</span>
-          </button>
-          <button mat-menu-item (click)="onEditRanking(player)">
-            <mat-icon>edit</mat-icon>
-            <span>Edit Ranking</span>
-          </button>
-        </mat-menu>
-      </div>
-    </ng-container>
-  </mat-list>
-  <badman-player-search
-    *ngIf="this.subEvent"
-    (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
-    [ignorePlayers]="this.players"
-    [allowCreation]="true"
-    [where]="this.where"
-    [club]="this.club"
-  ></badman-player-search>
-  <p class="no-event" *ngIf="!this.subEvent">
-    {{ 'all.team.change-event.select-event-hint' | translate }}
-  </p>
-</div>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="this.whenPlayerRemoved.next(player)">
+              <mat-icon>delete</mat-icon>
+              <span>Delete</span>
+            </button>
+            <button mat-menu-item (click)="onLevelException(player)">
+              <mat-icon *ngIf="!player.levelException">lock</mat-icon>
+              <mat-icon *ngIf="player.levelException">lock_open</mat-icon>
+              <span>Toggle level Exemption</span>
+            </button>
+            <button mat-menu-item (click)="onEditRanking(player)">
+              <mat-icon>edit</mat-icon>
+              <span>Edit Ranking</span>
+            </button>
+          </mat-menu>
+        </div>
+      </ng-container>
+    </mat-list>
+    <badman-player-search
+      *ngIf="this.subEvent"
+      (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
+      [ignorePlayers]="this.players"
+      [allowCreation]="true"
+      [where]="this.where"
+      [club]="this.club"
+    ></badman-player-search>
+    <p class="no-event" *ngIf="!this.subEvent">
+      {{ 'all.team.change-event.select-event-hint' | translate }}
+    </p>
+  </badman-block-content>
+</badman-block>
 
 <ng-template #changeRanking>
   <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>

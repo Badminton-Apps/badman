@@ -1,30 +1,13 @@
 :host {
   display: flex;
   flex-direction: column;
+}
+
+.badman-block {
   width: 300px;
-  height: max-content;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 4px;
 }
-
-.info {
-  padding: 0.5rem;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  display: flex;
-  align-items: stretch;
-
-  .name {
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
-    display: flex;
-  }
-}
-
-.content {
-  padding: 0.5rem;
+.badman-block-subtitle {
+  cursor: pointer;
 }
 
 [mat-list-item] {
@@ -32,12 +15,8 @@
   align-items: center;
   padding: 3px 0;
   span {
-    flex: 1; 
+    flex: 1;
   }
-}
-
-.down a {
-  cursor: pointer;
 }
 
 .edit-ranking {
