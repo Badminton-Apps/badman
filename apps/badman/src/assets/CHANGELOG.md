@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.84.0](https://github.com/Badminton-Apps/badman/compare/v6.83.0...v6.84.0) (2023-05-29)
+
+
+### Features
+
+* edititing roles ([384c0d2](https://github.com/Badminton-Apps/badman/commit/384c0d276c92d2e0eebd5b8d24ad817f5edbb01c))
+
+
+### Bug Fixes
+
+* auth should be included ([b4e9ab4](https://github.com/Badminton-Apps/badman/commit/b4e9ab4b43ac423dcedd2f9564a2a8c9328fb5ff))
+
 ## [6.83.0](https://github.com/Badminton-Apps/badman/compare/v6.82.0...v6.83.0) (2023-05-28)
 
 
