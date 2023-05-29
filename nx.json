@@ -48,6 +48,13 @@
     "sharedGlobals": []
   },
   "generators": {
+    "@nx/nest:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "buildable": true,
+      "publishable": true,
+      "simpleName": true
+    },
     "@nx/angular:application": {
       "style": "scss",
       "linter": "eslint",

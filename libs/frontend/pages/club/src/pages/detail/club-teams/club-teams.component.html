@@ -17,10 +17,7 @@
           }}</span>
         </div>
 
-        <badman-has-claim
-          [any]="['edit-any:club']"
-          *ngIf="team.entry?.subEventCompetition?.id && this.whenTeamEdit"
-        >
+        <badman-has-claim [any]="['edit-any:club']" *ngIf="this.whenTeamEdit">
           <button
             mat-icon-button
             aria-label="edit team"

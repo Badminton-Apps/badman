@@ -170,6 +170,17 @@
 
               <badman-block-content>
                 <mat-list role="list">
+                  <mat-list-item
+                    role="listitem"
+                    *ngIf="entry?.meta?.competition?.teamIndex"
+                  >
+                    <span matListItemTitle>{{
+                      entry?.meta?.competition?.teamIndex
+                    }}</span>
+                    <span matListItemLine>{{
+                      'all.team.team-index' | translate
+                    }}</span>
+                  </mat-list-item>
                   <mat-list-item role="listitem">
                     <span matListItemTitle>{{
                       entry?.team?.captain?.fullName
