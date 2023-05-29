@@ -50,4 +50,5 @@ assembly.html
 !.yarn/versions
 .vercel
 
-.cp
+*.cp
+!empty.cp
