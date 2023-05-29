@@ -89,7 +89,7 @@ export class LoggingModule {
                   new transports.Console(),
                   new transports.File({
                     filename: `info-${config.name}.log`,
-                    level: 'info',
+                    level: 'silly',
                     format: combine(
                       timestamp(),
                       logFileFormat

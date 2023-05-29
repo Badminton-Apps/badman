@@ -40,6 +40,7 @@ import { combineLatest, lastValueFrom } from 'rxjs';
 import { map, take, filter, startWith } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments/competition-enrollments.component';
+import { CpService } from '@badman/frontend-cp';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -99,7 +100,8 @@ export class DetailPageComponent implements OnInit {
     private apollo: Apollo,
     private dialog: MatDialog,
     private matSnackBar: MatSnackBar,
-    private jobsService: JobsService
+    private jobsService: JobsService,
+    private cpService: CpService
   ) {}
 
   ngOnInit(): void {
@@ -288,6 +290,10 @@ export class DetailPageComponent implements OnInit {
     await lastValueFrom(
       this.jobsService.syncEventById({ id: this.eventCompetition.visualCode })
     );
+  }
+
+  async downloadCpFile() {
+    await lastValueFrom(this.cpService.downloadCp(this.eventCompetition));
   }
 
   setTab(index: number) {

@@ -1,6 +1,6 @@
 import {
   Club,
-  Comment,
+  EntryCompetitionPlayer,
   EventCompetition,
   EventEntry,
   Location,
@@ -8,13 +8,18 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
-import { getIndexFromPlayers, SubEventTypeEnum } from '@badman/utils';
-import { parseString } from '@fast-csv/parse';
+import { EnrollmentValidationService } from '@badman/backend-enrollment';
+import {
+  I18nTranslations,
+  SubEventTypeEnum,
+  TeamMembershipType,
+} from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { existsSync } from 'fs';
-import { copyFile, readFile, unlink } from 'fs/promises';
+import { copyFile } from 'fs/promises';
 import moment from 'moment';
+import { I18nService } from 'nestjs-i18n';
 import { resolve } from 'path';
 import path = require('path');
 
@@ -28,12 +33,18 @@ export class CpGeneratorService {
     { name: 'Uitloten', displayOrder: 9999, stagetype: 9999 },
   ];
 
-  constructor(private _configService: ConfigService) {}
+  constructor(
+    private _configService: ConfigService,
+    private _validation: EnrollmentValidationService,
+    private readonly i18nService: I18nService<I18nTranslations>
+  ) {}
 
   public async generateCpFile(eventId: string) {
-    const ADODB = null;
+    debugger;
+
+    let ADODB = null;
     try {
-      // ADODB = require('node-adodb');
+      ADODB = require('node-adodb');
     } catch (er) {
       this.logger.warn(`ADODB not found`);
       return;
@@ -48,9 +59,6 @@ export class CpGeneratorService {
     this.logger.debug(`Event found: ${event.name}`);
     const file = await this._prepCPfile(event, ADODB);
 
-    this.logger.debug('Reading players');
-    const csvPlayers = await this._readCsvPlayers(event.season);
-
     this.logger.debug('Adding evetns');
     const events = await this._addEvents(event);
 
@@ -61,80 +69,47 @@ export class CpGeneratorService {
     const locations = await this._addLocations(clubs);
 
     this.logger.debug('Adding teams');
-    const teams = await this._addTeams(events, clubs, locations, csvPlayers);
+    const teams = await this._addTeams(events, clubs, locations);
 
     this.logger.debug('Adding entries');
     await this._addEntries(events, teams);
 
     this.logger.debug('Adding players');
-    await this._addPlayers(teams, clubs, csvPlayers);
-
-    // await this._addTournamentDays(event);
+    await this._addPlayers(teams, clubs);
 
     this.logger.debug('Adding memos');
-    await this._addMemos(event, events, teams, csvPlayers);
+    await this._addMemos(event, clubs, teams);
 
     this.logger.log(`Generation ${event.name} done`);
 
     return file;
   }
 
-  private async _readCsvPlayers(year: number) {
-    const filePath = path.join(
-      process.cwd(),
-      `libs/backend/generator/assets/indexen/Lijst_index_seizoen_${year}-${
-        year + 1
-      }.csv`
-    );
-
-    const csvFile = await readFile(filePath, 'utf8');
-
-    return new Promise<Map<string, csvPlayer>>((resolve, reject) => {
-      const stream = parseString(csvFile, {
-        headers: true,
-        delimiter: ',',
-        ignoreEmpty: true,
-      });
-      const code_players: Map<string, csvPlayer> = new Map();
-      stream.on('data', (row: csvPlayer) => {
-        if (code_players.get(row.Lidnummer) != null) {
-          this.logger.warn('Player exists twice?', row.Lidnummer);
-        }
-
-        code_players.set(row.Lidnummer, row);
-      });
-      stream.on('error', (error) => {
-        this.logger.error(error);
-        reject(error);
-      });
-      stream.on('end', async () => {
-        resolve(code_players);
-      });
-    });
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async _prepCPfile(event: EventCompetition, ADODB: any) {
     const original = path.join(
       process.cwd(),
-      `libs/backend/generator/assets/${event.name}_empty.cp`
+      `libs/backend/generator/assets/empty.cp`
     );
     const destination = path.join(
       process.cwd(),
       `libs/backend/generator/assets/${event.name}.cp`
     );
 
-    if (existsSync(destination)) {
-      await unlink(destination);
+    const existed = existsSync(destination);
+
+    if (!existed) {
+      await copyFile(original, destination);
     }
-    await copyFile(original, destination);
 
     this.connection = ADODB.open(
       `Provider=Microsoft.Jet.OLEDB.4.0;Data Source=${destination};Jet OLEDB:Database Password=${this._configService.get(
         'CP_PASS'
       )}`
     );
-    await this.connection.transaction([
+
+    // delete existing data
+    const queries = [
       'DELETE FROM TournamentDay;',
       'DELETE FROM stageentry;',
       'DELETE FROM League;',
@@ -148,25 +123,61 @@ export class CpGeneratorService {
       'DELETE FROM Club;',
       'DELETE FROM Event;',
       'DELETE FROM stage;',
-      `UPDATE settings SET [value] = "${moment().format(
-        'YYYYMMDD'
-      )}${moment().valueOf()}" where [name] = "unicode"`,
-      `UPDATE settings SET [value] = "${event.name}" where [name] = "tournament"`,
-      `UPDATE settings SET [value] = NULL where 
-      [name] = "director" or 
-      [name] = "DirectorEmail" or 
-      [name] = "DirectorPhone" or 
-      [name] = "LocationAddress1" or 
-      [name] = "LocationPostalCode" or 
-      [name] = "LocationCity" or 
-      [name] = "LocationState" or 
-      [name] = "Location"`,
-      `UPDATE SettingsMemo SET [value] = NULL where 
-      [name] = "TournamentLogo"`,
+    ];
+
+    // // reset identity
+    // queries.push(
+    //   // 'ALTER TABLE TournamentDay ALTER COLUMN id COUNTER(1,1);',
+    //   // 'ALTER TABLE stageentry ALTER COLUMN ID COUNTER(1,1);',
+    //   // 'ALTER TABLE League ALTER COLUMN id COUNTER(1,1);',
+    //   // 'ALTER TABLE Entry ALTER COLUMN id COUNTER(1,1);',
+    //   // 'ALTER TABLE PlayerlevelEntry ALTER COLUMN id COUNTER(1,1);',
+    //   'ALTER TABLE Team ALTER COLUMN id COUNTER(1,1);',
+    //   // 'ALTER TABLE Court ALTER COLUMN id COUNTER(1,1);',
+    //   // 'ALTER TABLE Location ALTER COLUMN id COUNTER(1,1);',
+    //   'ALTER TABLE Player ALTER COLUMN id COUNTER(1,1);',
+    //   'ALTER TABLE Club ALTER COLUMN id COUNTER(1,1);',
+    //   // 'ALTER TABLE Event ALTER COLUMN id COUNTER(1,1);',
+    //   // 'ALTER TABLE stage ALTER COLUMN ID COUNTER(1,1);'
+    // );
+
+    // insert default stages
+    queries.push(
       `INSERT INTO League(id, name) VALUES(1, "Heren");`,
       `INSERT INTO League(id, name) VALUES(2, "Dames");`,
-      `INSERT INTO League(id, name) VALUES(3, "Gemegnd");`,
-    ]);
+      `INSERT INTO League(id, name) VALUES(3, "Gemengd");`,
+      `UPDATE SettingsMemo SET [value] = NULL where [name] = "TournamentLogo"`
+    );
+
+    // if the cp file is new,
+    if (!existed) {
+      //  we need to set a new unicode
+      queries.push(
+        `UPDATE settings SET [value] = "${moment().format(
+          'YYYYMMDDHHmmssSSSS'
+        )}" where [name] = "unicode"`
+      );
+
+      // we need to clear the director settings
+      queries.push(
+        `UPDATE settings SET [value] = NULL where 
+        [name] = "director" or 
+        [name] = "DirectorEmail" or 
+        [name] = "DirectorPhone" or 
+        [name] = "LocationAddress1" or 
+        [name] = "LocationPostalCode" or 
+        [name] = "LocationCity" or 
+        [name] = "LocationState" or 
+        [name] = "Location"`
+      );
+
+      // Set the name
+      queries.push(
+        `UPDATE settings SET [value] = "${event.name}" where [name] = "tournament"`
+      );
+    }
+
+    await this.connection.transaction(queries);
 
     return resolve(destination);
   }
@@ -189,7 +200,7 @@ export class CpGeneratorService {
       const subEvent = subEvents[i];
       const gender = this._getGender(subEvent.eventType);
       const queryEvent = `INSERT INTO Event(name, gender, eventtype, league, sortorder) VALUES("${subEvent.name}", ${gender}, 2, ${gender},${i});`;
-      this.logger.verbose(`Query: ${queryEvent}`);
+      // this.logger.verbose(`Query: ${queryEvent}`);
       const eventRes = await this.connection.execute(
         queryEvent,
         `SELECT @@Identity AS id`
@@ -205,7 +216,7 @@ export class CpGeneratorService {
       };
       for (const stage of this.stages) {
         const queryStage = `INSERT INTO stage(name, event, displayorder, stagetype) VALUES("${stage.name}","${responseEvent.id}", "${stage.displayOrder}", "${stage.stagetype}");`;
-        this.logger.verbose(`Query: ${queryStage}`);
+        // this.logger.verbose(`Query: ${queryStage}`);
         const stageRes = await this.connection.execute(
           queryStage,
           `SELECT @@Identity AS id`
@@ -249,7 +260,7 @@ export class CpGeneratorService {
           const queryClub = `INSERT INTO Club(name, clubId, country, abbreviation) VALUES ("${this._sqlEscaped(
             club.name
           )}", "${club.clubId}", 19, "${club.abbreviation}")`;
-          this.logger.verbose(`Query: ${queryClub}`);
+          // this.logger.verbose(`Query: ${queryClub}`);
           const clubRes = await this.connection.execute(
             queryClub,
             `SELECT @@Identity AS id`
@@ -294,7 +305,7 @@ export class CpGeneratorService {
         }", "${location.postalcode}", "${location.city}", "${
           location.phone
         }", ${cpId} )`;
-        this.logger.verbose(`Query: ${queryLocation}`);
+        // this.logger.verbose(`Query: ${queryLocation}`);
         const locationRes = await this.connection.execute(
           queryLocation,
           `SELECT @@Identity AS id`
@@ -332,8 +343,7 @@ export class CpGeneratorService {
         cpId: string;
         dbLocation: Location;
       }
-    >,
-    players: Map<string, csvPlayer>
+    >
   ) {
     const teamList = new Map<
       string,
@@ -348,15 +358,18 @@ export class CpGeneratorService {
     for (const subEvent of subEvents) {
       const entries = await subEvent.getEventEntries();
       for (const entry of entries) {
-        const team = await entry.getTeam();
+        const team = await entry.getTeam({
+          include: [
+            {
+              model: Player,
+              as: 'players',
+            },
+          ],
+        });
         const club = await team.getClub();
 
         if (clubs.has(club.id)) {
-          const index = await this._getBaseIndex(
-            entry,
-            subEvent.eventType,
-            players
-          );
+          const index = entry.meta.competition.teamIndex;
           const internalClubId = clubs.get(club.id)?.cpId;
           const captain = await team.getCaptain();
           const teamLocations = await team.getLocations();
@@ -382,7 +395,7 @@ export class CpGeneratorService {
             team.email
           )}", ${dayofweek}, ${plantime}, ${prefLoc1}, ${prefLoc2}
       )`;
-          this.logger.verbose(`Query: ${queryTeam}`);
+          // this.logger.verbose(`Query: ${queryTeam}`);
           const teamRes = await this.connection.execute(
             queryTeam,
             `SELECT @@Identity AS id`
@@ -417,8 +430,7 @@ export class CpGeneratorService {
         cpId: string;
         dbClub: Club;
       }
-    >,
-    csvplayers: Map<string, csvPlayer>
+    >
   ) {
     const playerList = new Map<
       string,
@@ -428,26 +440,31 @@ export class CpGeneratorService {
       }
     >();
 
-    const distinctPlayers = new Map<string, string[]>();
+    const playersPerClub = new Map<string, EntryCompetitionPlayer[]>();
     for (const [, { dbTeam, dbEntry }] of teams) {
-      const players = dbEntry?.meta?.competition?.players ?? [];
-      if (distinctPlayers.has(dbTeam.clubId)) {
-        distinctPlayers
-          .get(dbTeam.clubId)
-          .push(...(players?.map((p) => p.id) ?? []));
+      const players = [...(dbEntry?.meta?.competition?.players ?? [])];
+
+      if (playersPerClub.has(dbTeam.clubId)) {
+        //  add players to existing list if they are not already in there
+
+        const existingPlayers = playersPerClub.get(dbTeam.clubId);
+        for (const player of players) {
+          if (!existingPlayers.find((p) => p.id === player.id)) {
+            existingPlayers.push(player);
+          }
+        }
+
+        playersPerClub.set(dbTeam.clubId, existingPlayers);
       } else {
-        distinctPlayers.set(
-          dbTeam.clubId,
-          players?.map((p) => p.id)
-        );
+        playersPerClub.set(dbTeam.clubId, players);
       }
     }
 
     const queries: string[] = [];
-    for (const [clubId, players] of distinctPlayers) {
+    for (const [clubId, players] of playersPerClub) {
       const dbPlayers = await Player.findAll({
         where: {
-          id: players,
+          id: players?.map((p) => p.id) ?? [],
         },
       });
 
@@ -460,7 +477,7 @@ export class CpGeneratorService {
         )}", ${gender}, ${this._sqlEscaped(dbPlayer?.memberId)}, ${
           internalClubId?.cpId
         }, NULL, NULL)`;
-        this.logger.verbose(`Query: ${queryPlayer}`);
+        // this.logger.verbose(`Query: ${queryPlayer}`);
         const playerRes = await this.connection.execute(
           queryPlayer,
           `SELECT @@Identity AS id`
@@ -472,26 +489,20 @@ export class CpGeneratorService {
           dbPlayer: dbPlayer,
         });
 
-        const csvplayer = csvplayers.get(dbPlayer.memberId);
-
-        if (!csvplayer) {
-          this.logger.error(
-            `Player ${dbPlayer.firstName} ${dbPlayer.lastName} has no csv player`
-          );
-        }
+        const entryPlayer = players.find((p) => p.id === dbPlayer.id);
 
         queries.push(
           `INSERT INTO PlayerlevelEntry(leveltype, playerid, level1, level2, level3) VALUES (1, ${
             response.id
-          }, ${csvplayer?.KlassementEnkel ?? -1}, ${
-            csvplayer?.KlassementDubbel ?? -1
-          }, ${csvplayer?.KlassementGemengd ?? -1})`
+          }, ${entryPlayer?.single ?? -1}, ${entryPlayer?.double ?? -1}, ${
+            entryPlayer?.mix ?? -1
+          })`
         );
       }
     }
 
     for (const [, { dbTeam, dbEntry, cpId }] of teams) {
-      const players = dbEntry?.meta?.competition?.players ?? [];
+      const players = [...(dbEntry?.meta?.competition?.players ?? [])];
 
       const query = players?.map((p) => {
         const player = playerList.get(p.id);
@@ -513,7 +524,6 @@ export class CpGeneratorService {
 
     return playerList;
   }
-
   private async _addEntries(
     events: Map<
       string,
@@ -538,50 +548,24 @@ export class CpGeneratorService {
       const subEvent = events.get(dbEntry.subEventId);
 
       const entryQuery = `INSERT INTO Entry(event, team) VALUES ("${subEvent.cpId}", "${cpId}")`;
-      this.logger.verbose(`Query: ${entryQuery}`);
+      // this.logger.verbose(`Query: ${entryQuery}`);
       const entryRes = await this.connection.execute(
         entryQuery,
         `SELECT @@Identity AS id`
       );
 
       const stageQuery = `INSERT INTO stageentry(entry, stage) VALUES (${entryRes[0].id}, ${subEvent['Main Draw']})`;
-      this.logger.verbose(`Query: ${stageQuery}`);
+      // this.logger.verbose(`Query: ${stageQuery}`);
       await this.connection.execute(stageQuery);
     }
   }
-
-  private async _addTournamentDays(event: EventCompetition) {
-    const start = moment(`${event.season}-09-01`);
-    const end = moment(`${event.season + 1}-05-31`);
-
-    // Generate array for each day from start to end
-    const days: moment.Moment[] = [];
-    while (start.isSameOrBefore(end)) {
-      days.push(start.clone());
-      start.add(1, 'days');
-    }
-
-    await this.connection.transaction(
-      days?.map(
-        (d) =>
-          `INSERT INTO TournamentDay (tournamentday, availability) VALUES (#${d.format(
-            'MM/DD/YYYY HH:MM:ss'
-          )}#, 1);`
-      )
-    );
-    return days;
-  }
-
   private async _addMemos(
     event: EventCompetition,
-    events: Map<
+    clubs: Map<
       string,
       {
         cpId: string;
-        dbSubEvent: SubEventCompetition;
-        'Main Draw': number;
-        Reserves: number;
-        Uitloten: number;
+        dbClub: Club;
       }
     >,
     teams: Map<
@@ -591,150 +575,105 @@ export class CpGeneratorService {
         dbTeam: Team;
         dbEntry: EventEntry;
       }
-    >,
-    csvplayers: Map<string, csvPlayer>
+    >
   ) {
     const memos = new Map<
       string,
       {
-        playerErrors: string[];
-        teamErrors: string[];
-        availibility: {
+        errors?: string[];
+        availibility?: {
           location: string;
           days: string[];
           exceptions: string[];
         }[];
-        exceptions: string[];
+        exceptions?: string[];
         comments: string[];
       }
     >();
 
-    for (const [, { cpId, dbTeam, dbEntry }] of teams) {
-      const memo = memos.get(cpId) ?? {
-        playerErrors: [],
-        teamErrors: [],
-        availibility: undefined,
-        exceptions: undefined,
-        comments: [],
-      };
-      const subEvent = events.get(dbEntry.subEventId);
-      const basePlayers = await this._getBasePlayers(
-        dbEntry,
-        subEvent.dbSubEvent.eventType,
-        csvplayers
+    for (const [, { cpId, dbClub }] of clubs) {
+      // find the teams of the club
+      const teamsOfClub = [...teams.values()].filter(
+        (t) => t.dbTeam.clubId === dbClub.id
       );
 
-      // Check players
-      for (const player of basePlayers) {
-        if (player.double < subEvent.dbSubEvent.maxLevel) {
-          memo.playerErrors.push(
-            `${player.firstName} ${player.lastName}(${player.memberId}) is te hoog geklaseerd voor ${subEvent.dbSubEvent.name} ${subEvent.dbSubEvent.eventType} (${player.double} minimum ${subEvent.dbSubEvent.maxLevel})`
-          );
-        }
-        if (player.single < subEvent.dbSubEvent.maxLevel) {
-          memo.playerErrors.push(
-            `${player.firstName} ${player.lastName}(${player.memberId}) is te hoog geklaseerd voor ${subEvent.dbSubEvent.name} ${subEvent.dbSubEvent.eventType}  (${player.single} met minimum ${subEvent.dbSubEvent.maxLevel})`
-          );
-        }
-        if (subEvent.dbSubEvent.eventType == SubEventTypeEnum.MX) {
-          if (player.mix < subEvent.dbSubEvent.maxLevel) {
-            memo.playerErrors.push(
-              `${player.firstName} ${player.lastName}(${player.memberId}) is te hoog geklaseerd voor ${subEvent.dbSubEvent.name} ${subEvent.dbSubEvent.eventType} (${player.mix} met minimum ${subEvent.dbSubEvent.maxLevel})`
-            );
-          }
-        }
-        if (!player.comp) {
-          memo.playerErrors.push(
-            `${player.firstName} ${player.lastName}(${player.memberId}) is geen competitie speler`
-          );
-        }
-      }
+      const validation = await this._validation.fetchAndValidate(
+        {
+          teams: teamsOfClub.map((t) => ({
+            id: t.dbTeam.id,
+            name: t.dbTeam.name,
+            type: t.dbTeam.type,
+            link: t.dbTeam.link,
+            teamNumber: t.dbTeam.teamNumber,
+            basePlayers: [...(t.dbEntry?.meta?.competition?.players ?? [])],
+            players: (t.dbTeam.players ?? [])
+              .filter(
+                (p) =>
+                  p.TeamPlayerMembership.membershipType ===
+                  TeamMembershipType.REGULAR
+              )
+              .map((p) => p.id),
+            backupPlayers: (t.dbTeam.players ?? [])
+              .filter(
+                (p) =>
+                  p.TeamPlayerMembership.membershipType ===
+                  TeamMembershipType.BACKUP
+              )
+              .map((p) => p.id),
+            subEventId: t.dbEntry?.subEventId,
+          })),
 
-      // Check team
-      const index = getIndexFromPlayers(
-        subEvent.dbSubEvent.eventType,
-        basePlayers
+          season: event.season,
+        },
+        EnrollmentValidationService.defaultValidators()
       );
-      if (basePlayers.length < 4) {
-        memo.teamErrors.push(
-          `${4 - basePlayers.length} basis spelers te weinig in team`
-        );
-      }
 
-      if (
-        basePlayers.length >= 4 &&
-        (index > subEvent.dbSubEvent.maxBaseIndex ||
-          index < subEvent.dbSubEvent.minBaseIndex)
-      ) {
-        memo.teamErrors.push(
-          `${index} niet tussen: ${subEvent.dbSubEvent.minBaseIndex} - ${subEvent.dbSubEvent.maxBaseIndex}`
-        );
-      }
-
-      // Availibility
-      const locations = await dbTeam.getLocations();
-      if (locations.length >= 1) {
-        for (const location of locations) {
-          if (memo.availibility?.find((a) => a.location == location.name)) {
-            continue;
-          }
-
-          const availabilities = await location.getAvailabilities({
-            where: {
-              year: event.season,
-            },
-          });
-          const days = [];
-          const exceptions = [];
-          if (availabilities.length >= 1) {
-            for (const availability of availabilities) {
-              if (availability.days) {
-                for (const day of availability.days) {
-                  if (day.day) {
-                    days.push(`${day.day} - ${day.startTime}: ${day.courts}`);
-                  }
-                }
-              }
-
-              if (availability.exceptions) {
-                for (const exception of availability.exceptions) {
-                  if (exception.start) {
-                    exceptions.push(
-                      `${moment(exception.start).format(
-                        'DD/MM/YYYY'
-                      )} - ${moment(exception.end).format('DD/MM/YYYY')}: ${
-                        exception.courts
-                      }`
-                    );
-                  }
-                }
-              }
-            }
-
-            memo.availibility = memo.availibility ?? [];
-            memo.availibility.push({
-              location: location.name,
-              days,
-              exceptions,
-            });
-          }
-        }
-      }
-
-      // Club comments
-      const comments = await Comment.findAll({
+      const comments = await dbClub.getComments({
         where: {
-          clubId: dbTeam.clubId,
           linkType: 'competition',
           linkId: event.id,
         },
-        limit: 1,
-        order: [['createdAt', 'DESC']],
       });
 
-      memo.comments = comments.map((c) => this._sqlEscaped(c.message));
+      for (const team of validation.teams) {
+        try {
+          if (!team) {
+            continue;
+          }
 
-      memos.set(cpId, memo);
+          const teaminput = teams.get(team.id);
+
+          if (!teaminput) {
+            this.logger.warn(
+              `Team ${team.id} is not in the list of teams of the club ${dbClub.name}(${dbClub.id})`
+            );
+            continue;
+          }
+
+          this.logger.verbose(
+            `Team ${teaminput.dbTeam.name}(${team.id}) has ${team.errors?.length} errors`
+          );
+
+          memos.set(teaminput.cpId, {
+            errors: team.errors?.map((e) => {
+              const message: string = this.i18nService.translate(e.message, {
+                args: e.params,
+                lang: 'nl_BE',
+              });
+
+              // replace all html tags with nothing
+
+              return this._sqlEscaped(message.replace(/<[^>]*>?/gm, ''));
+            }),
+            comments: comments.map((c) => c.message),
+          });
+        } catch (e) {
+          this.logger.verbose(
+            `Error while processing team ${team.id} of club ${dbClub.name}(${dbClub.id})`
+          );
+          this.logger.error(e);
+        }
+      }
     }
 
     // Add memos to database
@@ -764,180 +703,29 @@ export class CpGeneratorService {
         memo += '\n\n';
       }
 
-      if (value.playerErrors.length > 0) {
-        memo += `--==[Speler fouten]==--\n`;
-        memo += value.playerErrors.join('\n');
+      if (value.errors?.length > 0) {
+        memo += `--==[Fouten]==--\n`;
+        memo += value.errors.join('\n');
         memo += '\n\n';
       }
 
-      if (value.teamErrors.length > 0) {
-        memo += `--==[Team fouten]==--\n`;
-        memo += value.teamErrors.join('\n');
-        memo += '\n\n';
-      }
-
-      if (value.comments.length > 0) {
+      if (value.comments?.length > 0) {
         memo += `--==[Club comments]==--\n`;
-        memo += value.comments.join('\n');
+        memo += value.comments?.map((m) => this._sqlEscaped(m)).join('\n');
         memo += '\n\n';
       }
 
-      if (memo.length > 0) {
+      if (memo?.length > 0) {
         queries.push(`UPDATE Team set [memo] = "${memo}" where id = ${teamId}`);
       }
     }
-
-    await this.connection.transaction(queries);
-  }
-
-  private async _getBasePlayers(
-    entry: EventEntry,
-    type: SubEventTypeEnum,
-    players: Map<string, csvPlayer>
-  ) {
-    const csvPlayers: csvPlayer[] = [];
-
-    const dbPlayers = await Player.findAll({
-      where: {
-        id: entry?.meta?.competition?.players?.map((p) => p.id) ?? [],
-      },
-    });
-
-    if (!dbPlayers) {
-      this.logger.warn(`No players found for entry ${entry.id}`);
-      return;
+    try {
+      this.logger.verbose(`Updating memos for ${queries.length} teams`);
+      await this.connection.transaction(queries);
+    } catch (e) {
+      this.logger.error(e);
+      throw e;
     }
-
-    for (const dbPlayer of dbPlayers) {
-      if (!dbPlayer.memberId) {
-        this.logger.warn(`Player ${dbPlayer.fullName} has no memberId`);
-      }
-      const player = players.get(dbPlayer.memberId);
-      if (player) {
-        csvPlayers.push(player);
-      } else {
-        this.logger.warn(`Player ${dbPlayer.id} not found`);
-      }
-    }
-
-    const rankings = csvPlayers.map((r) => {
-      return {
-        single: parseInt(`${r.KlassementEnkel}`, 10) || 12,
-        double: parseInt(`${r.KlassementDubbel}`, 10) || 12,
-        mix: parseInt(`${r.KlassementGemengd}`, 10) || 12,
-        gender: this._getGender(r.Geslacht) == 1 ? 'M' : ('F' as 'M' | 'F'),
-        firstName: r.Voornaam,
-        lastName: r.Achternaam,
-        memberId: r.Lidnummer,
-        comp: r.Type == 'Competitiespeler',
-      };
-    });
-
-    let bestPlayers: {
-      single: number;
-      double: number;
-      mix: number;
-      gender: 'M' | 'F';
-      firstName: string;
-      lastName: string;
-      memberId: string;
-      comp: boolean;
-    }[] = [];
-
-    if (type == 'MX') {
-      const bestF = rankings
-        .filter((r) => r.gender == 'F')
-        .sort(
-          (a, b) => a.double + a.single + a.mix - b.double - b.single - b.mix
-        )
-        .slice(0, 2);
-      const bestM = rankings
-        .filter((r) => r.gender == 'M')
-        .sort(
-          (a, b) => a.double + a.single + a.mix - b.double - b.single - b.mix
-        )
-        .slice(0, 2);
-      bestPlayers = [...bestF, ...bestM];
-    } else {
-      // Take 4 lowest single and double ranking
-      bestPlayers = rankings
-        .sort((a, b) => a.double + a.single - b.double - b.single)
-        .slice(0, 4);
-    }
-
-    return bestPlayers;
-  }
-
-  private async _getBaseIndex(
-    entry: EventEntry,
-    type: SubEventTypeEnum,
-    players: Map<string, csvPlayer>
-  ) {
-    const basePlayers = await this._getBasePlayers(entry, type, players);
-    const index = getIndexFromPlayers(
-      type,
-      basePlayers?.map((p) => ({
-        single: p.single,
-        double: p.double,
-        mix: p.mix,
-        gender: p.gender,
-      }))
-    );
-
-    if (index != entry?.meta?.competition?.teamIndex) {
-      // difference between index and teamIndex not bigger then 10
-      // const diff = Math.abs(index - entry?.meta?.competition?.teamIndex);
-
-      this.logger.warn(
-        `Team index ${index} does not match ${entry?.meta?.competition?.teamIndex}`
-      );
-    }
-
-    return index;
-  }
-
-  private async _addAvailibilty(
-    event: EventCompetition,
-    locations: Map<string, { cpId: string; dbLocation: Location }>,
-    days: moment.Moment[]
-  ) {
-    const queries = [];
-    for (const [, { cpId, dbLocation }] of locations) {
-      const availabilities = await dbLocation.getAvailabilities({
-        where: {
-          year: event.season,
-        },
-      });
-
-      for (const availability of availabilities) {
-        // get highest number of courts for a day of a location
-        const courts = availabilities
-          ?.map((a) => a.days?.map((d) => d.courts))
-          .flat();
-        const maxCourts = Math.max(...courts);
-        queries.push(
-          ...Array.from({ length: maxCourts }, (x, i) => i).map(
-            (r) =>
-              `INSERT INTO Court(name, location) VALUES ("${r}", "${cpId}")`
-          )
-        );
-
-        for (const day of availability.days) {
-          for (const playDay of days) {
-            if (playDay.isoWeekday() == this._getDayOfWeek(day.day)) {
-              queries.push(
-                `INSERT INTO TournamentTime(tournamenttime, tournamentday, location, courts) VALUES ("${
-                  day.startTime
-                }", #${playDay.format('MM/DD/YYYY HH:MM:ss')}#, ${cpId}, ${
-                  day.courts
-                })`
-              );
-            }
-          }
-        }
-      }
-    }
-    await this.connection.transaction(queries);
   }
 
   private _sqlEscaped(str: string) {
@@ -969,6 +757,7 @@ export class CpGeneratorService {
         this.logger.warn('no day?', day);
     }
   }
+
   private _getGender(gender: string) {
     if (!gender) {
       return 'NULL';
@@ -992,16 +781,4 @@ export class CpGeneratorService {
         this.logger.warn('no gender?', gender);
     }
   }
-}
-
-interface csvPlayer {
-  Club: string;
-  Lidnummer: string;
-  Voornaam: string;
-  Achternaam: string;
-  Geslacht: string;
-  Type: string;
-  KlassementEnkel: string | number;
-  KlassementDubbel: string | number;
-  KlassementGemengd: string | number;
 }

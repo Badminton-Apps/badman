@@ -115,7 +115,7 @@
       color="primary"
       [mat-dialog-close]="name.value"
       cdkFocusInitial
-      [disabled]="!name.value || (name?.value ?? 0) <=3"
+      [disabled]="!name.value || (name?.value?.length ?? 0) <=3"
     >
       Ok
     </button>

@@ -40,6 +40,7 @@ import { AppComponent } from './app.component';
 import { ShellComponent } from '@badman/frontend-components';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
+import { CpModule } from '@badman/frontend-cp';
 
 const APP_ROUTES: Routes = [
   {
@@ -163,6 +164,9 @@ const APP_ROUTES: Routes = [
     }),
     TwizzitModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/twizzit`,
+    }),
+    CpModule.forRoot({
+      api: `${environment.api}/${environment.apiVersion}/cp`,
     }),
     TranslationModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/translate/i18n/`,
