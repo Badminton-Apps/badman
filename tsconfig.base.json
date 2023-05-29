@@ -24,6 +24,7 @@
         "libs/backend/authorization/src/index.ts"
       ],
       "@badman/backend-cache": ["libs/backend/cache/src/index.ts"],
+      "@badman/backend-cluster": ["libs/backend/cluster/src/index.ts"],
       "@badman/backend-compile": ["libs/backend/compile/src/index.ts"],
       "@badman/backend-database": ["libs/backend/database/src/index.ts"],
       "@badman/backend-enrollment": [
@@ -53,6 +54,7 @@
         "libs/frontend/pages/competition/change-encounter/src/index.ts"
       ],
       "@badman/frontend-club": ["libs/frontend/pages/club/src/index.ts"],
+      "@badman/frontend-cp": ["libs/frontend/modules/cp/src/index.ts"],
       "@badman/frontend-competition": [
         "libs/frontend/pages/competition/event/src/index.ts"
       ],

@@ -147,7 +147,7 @@ export class LocationsStepComponent implements OnInit {
 
                   availibilities(where: $availibilitiesWhere) {
                     id
-                    year
+                    season
                     days {
                       day
                       startTime
@@ -168,7 +168,7 @@ export class LocationsStepComponent implements OnInit {
                 clubId: clubId,
               },
               availibilitiesWhere: {
-                year: {
+                season: {
                   $or: [season, season - 1],
                 },
               },

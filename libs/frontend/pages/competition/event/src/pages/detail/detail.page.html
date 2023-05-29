@@ -60,6 +60,10 @@
             <mat-icon>sync</mat-icon>
             <span>Sync</span>
           </button>
+          <button mat-menu-item (click)="downloadCpFile()">
+            <mat-icon>download</mat-icon>
+            <span>Download CP file</span>
+          </button>
         </badman-has-claim>
 
         <badman-has-claim [any]="['delete:competition']">
