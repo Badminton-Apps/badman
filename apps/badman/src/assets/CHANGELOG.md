@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.83.0](https://github.com/Badminton-Apps/badman/compare/v6.82.0...v6.83.0) (2023-05-28)
+
+
+### Features
+
+* general info teams ([626d160](https://github.com/Badminton-Apps/badman/commit/626d160c86d4eea01a58e9d73f7c9127df4fd413))
+
+
+### Bug Fixes
+
+* cancel fetching when leaving the page ([5967016](https://github.com/Badminton-Apps/badman/commit/5967016a91e8b52b9aec52c7ec80006030d8fe2a))
+
 ## [6.82.0](https://github.com/Badminton-Apps/badman/compare/v6.81.5...v6.82.0) (2023-05-28)
 
 
