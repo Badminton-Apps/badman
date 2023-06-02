@@ -40,8 +40,6 @@ export class CpGeneratorService {
   ) {}
 
   public async generateCpFile(eventId: string) {
-    debugger;
-
     let ADODB = null;
     try {
       ADODB = require('node-adodb');
