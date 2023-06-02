@@ -202,7 +202,7 @@
     "jest-environment-node": "^29.4.1",
     "jest-preset-angular": "^13.0.0",
     "ng-packagr": "16.0.0",
-    "nx": "^16.1.0",
+    "nx": "16.1.0",
     "nx-cloud": "^16.0.5",
     "postcss": "^8.4.21",
     "postcss-import": "^15.1.0",
