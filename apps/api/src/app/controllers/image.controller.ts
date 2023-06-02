@@ -1,6 +1,6 @@
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
-import { createCanvas, registerFont } from 'canvas';
-import { Response } from 'express';
+import { createCanvas } from 'canvas';
+import { FastifyReply } from 'fastify';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
@@ -8,7 +8,7 @@ import { join } from 'path';
   path: 'image',
 })
 export class ImageController {
-  private readonly logger = new Logger(ImageController.name); 
+  private readonly logger = new Logger(ImageController.name);
 
   constructor() {
     const path = join(__dirname, 'assets', 'PTSans-Regular.ttf');
@@ -23,7 +23,7 @@ export class ImageController {
 
   @Get('/')
   async getImage(
-    @Res() res: Response,
+    @Res() res: FastifyReply,
     @Query() query: { title: string; description }
   ) {
     const title = this.formatTitle(query.title);
@@ -60,10 +60,12 @@ export class ImageController {
 
     // elapsed time
 
-    res.setHeader('Content-Type', 'image/png');
-    res.setHeader('Content-Length', image.length);
+    res.headers({
+      'Content-Type': 'image/png',
+      'Content-Length': image.length,
+    });
 
-    res.end(image);
+    res.type('image/png').send(image);
   }
 
   private getMaxNextLine(input, maxChars = 17) {

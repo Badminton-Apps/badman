@@ -9,13 +9,13 @@ import {
   Res,
   StreamableFile,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
 import { readFile } from 'fs/promises';
 import moment from 'moment-timezone';
 import { I18nService } from 'nestjs-i18n';
 import { lastValueFrom, take } from 'rxjs';
 import { AssemblyValidationData, AssemblyValidationError } from '../models';
 import { AssemblyValidationService } from '../services';
+import { FastifyReply, FastifyRequest } from 'fastify';
 
 type gameType =
   | 'single1'
@@ -41,17 +41,17 @@ export class AssemblyController {
 
   @Post('team-assembly')
   async teamAssembly(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) res: FastifyReply
   ) {
     // compile the template that returns a buffer of the pdf
-    const pdf$ = await this.getTeamAssemblyPdf(req.body);
+    const pdf$ = await this.getTeamAssemblyPdf(req.body as any);
 
     // get the buffer from the observable
     const pdf = await lastValueFrom(pdf$);
 
     // set the content type to pdf
-    res.setHeader('Content-Type', 'application/pdf');
+    res.header('Content-Type', 'application/pdf');
 
     // return the pdf as a streamable file
     return new StreamableFile(pdf);
