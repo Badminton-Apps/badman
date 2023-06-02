@@ -1,6 +1,6 @@
 import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import fs, {
   existsSync,
   mkdirSync,
@@ -31,7 +31,7 @@ export class RankingController {
   }
 
   @Get('export')
-  async export(@Res() response: Response, @Query() query: { systems: string }) {
+  async export(@Res() response: FastifyReply, @Query() query: { systems: string }) {
     const systemsIds: string[] = query.systems.split(',');
 
     const files = [];
@@ -110,7 +110,7 @@ export class RankingController {
 
   @Get('exportVisual')
   async exportVisual(
-    @Res() response: Response,
+    @Res() response: FastifyReply,
     @Query() query: { systems: string }
   ) {
     const systemsIds: string[] = query.systems.split(',');
@@ -213,7 +213,7 @@ export class RankingController {
 
   @Get('exportNotVisual')
   async exportNotVisual(
-    @Res() response: Response,
+    @Res() response: FastifyReply,
     @Query() query: { systems: string }
   ) {
     const systemsIds: string[] = query.systems.split(',');
@@ -316,7 +316,7 @@ export class RankingController {
     return this._download(response, files);
   }
 
-  private async _download(response: Response, files: string[]) {
+  private async _download(response: FastifyReply, files: string[]) {
     const filename = `export_${moment().toISOString()}`;
     response.header('Access-Control-Expose-Headers', 'Content-Disposition');
 
@@ -337,6 +337,8 @@ export class RankingController {
       const zip = archiver('zip', {
         zlib: { level: 9 },
       });
+      // this probably won't work 
+      throw new Error('This probably won\'t work');
       zip.pipe(response); // res is a writable stream
 
       for (const file of exportedfiles) {
@@ -353,7 +355,7 @@ export class RankingController {
       const outputFile = join(this._resultFolder, `${files[0]}.csv`);
       const stream = fs.createReadStream(outputFile);
 
-      stream.pipe(response);
+      response.type('text/csv').send(stream);
     }
 
     // Delete files after 10 minutes

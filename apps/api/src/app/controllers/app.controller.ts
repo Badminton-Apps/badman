@@ -24,7 +24,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Queue } from 'bull';
-import { Response } from 'express';
+import { FastifyReply } from 'fastify';
 import { createReadStream } from 'fs';
 import { basename, extname } from 'path';
 
@@ -84,19 +84,19 @@ export class AppController {
   }
 
   @Get('cp')
-  async getCp(@Res() res: Response, @Query() query: { eventId: string }) {
+  async getCp(@Res() res: FastifyReply, @Query() query: { eventId: string }) {
     this.logger.debug('Generating CP');
     try {
       const fileLoc = await this.cpGen.generateCpFile(query.eventId);
       const file = createReadStream(fileLoc);
       const extension = extname(fileLoc);
       const fileName = basename(fileLoc, extension);
-      res.setHeader(
+      res.header(
         'Content-disposition',
         'attachment; filename=' + fileName + extension
       );
 
-      file.pipe(res);
+      res.type(extension).send(file);
     } catch (e) {
       this.logger.error(e?.process?.message ?? e.message);
       throw e;
@@ -104,7 +104,10 @@ export class AppController {
   }
 
   @Get('planner')
-  async getPlanner(@Res() res: Response, @Query() query: { season: string }) {
+  async getPlanner(
+    @Res() res: FastifyReply,
+    @Query() query: { season: string }
+  ) {
     this.logger.debug('Generating planner');
     const result = await this.planner.getPlannerData(query.season);
 
@@ -115,7 +118,7 @@ export class AppController {
   }
 
   @Get('test-glenn')
-  async test(@User() user: Player, @Res() res: Response) {
+  async test(@User() user: Player, @Res() res: FastifyReply) {
     if (!user.hasAnyPermission(['change:job'])) {
       throw new UnauthorizedException('You do not have permission to do this');
     }

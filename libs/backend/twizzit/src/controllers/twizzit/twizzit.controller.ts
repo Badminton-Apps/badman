@@ -1,7 +1,7 @@
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
 import { GameExportService } from '../../services';
 import * as XLSX from 'xlsx';
-import { Response } from 'express';
+import { FastifyReply, FastifyRequest } from 'fastify';
 
 @Controller('twizzit')
 export class TwizzitController {
@@ -11,7 +11,7 @@ export class TwizzitController {
 
   @Get('games')
   async getTwizzitGames(
-    @Res() response: Response,
+    @Res() response: FastifyReply,
     @Query() query: { year: number; clubId: string }
   ) {
     const games = await this._export.gamesExport(query.year, query.clubId);
