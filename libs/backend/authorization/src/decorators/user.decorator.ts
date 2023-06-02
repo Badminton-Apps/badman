@@ -34,4 +34,3 @@ export interface LoggedInUser extends Player {
     scope: string;
   };
 }
-   
