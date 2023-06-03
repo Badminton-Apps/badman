@@ -8,6 +8,8 @@ import { DrawStepData } from './draw';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { Logger } from '@nestjs/common';
+import { runParrallel } from '@badman/utils';
+import { EncounterStepData } from '../../competition-sync/processors';
 
 export interface StandingStepOptions {
   newGames?: boolean;
@@ -15,25 +17,21 @@ export interface StandingStepOptions {
 
 export class TournamentSyncStandingProcessor extends StepProcessor {
   public draws: DrawStepData[];
+  public encounters: EncounterStepData[];
   public games: Game[];
 
   private standingOptions: StandingStepOptions;
 
   constructor(options?: StepOptions & StandingStepOptions) {
-    options.logger = options.logger || new Logger(TournamentSyncStandingProcessor.name);
+    options.logger =
+      options.logger || new Logger(TournamentSyncStandingProcessor.name);
     super(options);
 
     this.standingOptions = options || {};
   }
 
   public async process(): Promise<void> {
-    // Now we can process the games per draw
-    // for (const e of this.draws) {
-    //   const filtered = this.games.filter((g) => g.linkId === e.draw.id);
-    //   await this._processDraws(e.draw, filtered);
-    // }
-
-    await Promise.all(
+    await runParrallel(
       this.draws.map((e) => {
         const filtered = this.games.filter((g) => g.linkId === e.draw.id);
         return this._processDraws(e.draw, filtered);
@@ -58,15 +56,6 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     }
 
     for (const game of games) {
-      // Skip if game isn't played yet
-      // And skip on bye
-      if (
-        (game.winner ?? 0) == 0 ||
-        ((game.set1Team1 ?? 0) == 0 && (game.set1Team2 ?? 0) == 0)
-      ) {
-        continue;
-      }
-
       const playert1p1 = game.players?.find(
         (e) =>
           e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
@@ -84,7 +73,9 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
 
       const t1Standing = standings.get(`${playert1p1?.id}_${draw.id}`);
       const t2Standing = standings.get(`${playert2p1?.id}_${draw.id}`);
-
+      const encounter = this.encounters.find(
+        (e) => e.encounter.id === game.linkId
+      );
       // We played 1 encounter
       t1Standing.played++;
       t2Standing.played++;

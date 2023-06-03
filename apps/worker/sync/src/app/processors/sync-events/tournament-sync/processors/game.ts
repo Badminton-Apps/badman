@@ -5,22 +5,22 @@ import {
   Player,
   RankingSystem,
 } from '@badman/backend-database';
-import moment from 'moment-timezone';
-import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '@badman/backend-visual';
 import {
-  XmlTournament,
+  VisualService,
   XmlMatch,
-  XmlScoreStatus,
   XmlPlayer,
-  correctWrongPlayers,
-} from '../../../../utils';
+  XmlScoreStatus,
+  XmlTournament,
+} from '@badman/backend-visual';
+import { GameStatus, runParrallel } from '@badman/utils';
+import { Logger } from '@nestjs/common';
+import moment from 'moment-timezone';
+import { Op } from 'sequelize';
+import { StepOptions, StepProcessor } from '../../../../processing';
+import { correctWrongPlayers } from '../../../../utils';
 import { DrawStepData } from './draw';
 import { EventStepData } from './event';
 import { SubEventStepData } from './subEvent';
-import { Op } from 'sequelize';
-import { GameStatus } from '@badman/utils';
-import { Logger } from '@nestjs/common';
 
 export interface GameStepOptions {
   newGames?: boolean;
@@ -41,7 +41,8 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions & GameStepOptions
   ) {
-    options.logger = options.logger || new Logger(TournamentSyncGameProcessor.name);
+    options.logger =
+      options.logger || new Logger(TournamentSyncGameProcessor.name);
     super(options);
 
     this.gameOptions = options || {};
@@ -55,7 +56,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    await Promise.all(
+    await runParrallel(
       this.draws.map((e) => this._processSubevent(e.draw, e.internalId))
     );
 
