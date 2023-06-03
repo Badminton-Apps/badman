@@ -100,6 +100,8 @@ export class ClubTeamsComponent implements OnInit {
                   captainId
                   type
                   clubId
+                  email
+                  phone
                   entry {
                     id
                     date
