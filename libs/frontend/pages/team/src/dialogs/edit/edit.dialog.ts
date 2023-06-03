@@ -10,21 +10,21 @@ import {
 } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogModel,
+} from '@badman/frontend-components';
 import { Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { SubEventType, TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom, map, pairwise, startWith, take, tap } from 'rxjs';
+import { lastValueFrom, map, pairwise, startWith, take } from 'rxjs';
 import {
   PLAYERS_CONTROL,
   TeamFieldComponent,
   TeamPlayersComponent,
 } from '../../components';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogModel,
-} from '@badman/frontend-components';
 
 @Component({
   templateUrl: './edit.dialog.html',
