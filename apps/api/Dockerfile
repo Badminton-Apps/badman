@@ -33,6 +33,5 @@ WORKDIR /usr/src/app
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 
-# Debug port number
-EXPOSE ${PORT}
+EXPOSE $PORT
 CMD [ "dumb-init", "node", "./dist/apps/api/main.js"]
