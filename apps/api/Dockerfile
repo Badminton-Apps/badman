@@ -27,7 +27,6 @@ RUN apk add --no-cache \
 	jpeg \
 	pango \
 	giflib
-
 USER node
 WORKDIR /usr/src/app
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
