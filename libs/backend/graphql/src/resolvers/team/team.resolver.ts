@@ -3,13 +3,11 @@ import {
   Club,
   EntryCompetitionPlayer,
   EntryCompetitionPlayersInputType,
-  EventCompetition,
   EventEntry,
   Location,
   Player,
   RankingLastPlace,
   RankingSystem,
-  SubEventCompetition,
   Team,
   TeamNewInput,
   TeamPlayerMembership,
@@ -17,11 +15,11 @@ import {
   TeamUpdateInput,
 } from '@badman/backend-database';
 import {
-  getIndexFromPlayers,
-  getLetterForRegion,
   IsUUID,
   TeamMembershipType,
   UseForTeamName,
+  getIndexFromPlayers,
+  getLetterForRegion,
 } from '@badman/utils';
 import {
   BadRequestException,
@@ -41,7 +39,6 @@ import {
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
-import moment from 'moment';
 
 @Resolver(() => Team)
 export class TeamsResolver {
