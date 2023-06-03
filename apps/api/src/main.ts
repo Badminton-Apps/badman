@@ -17,7 +17,10 @@ import { AppModule, RedisIoAdapter } from './app';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter()
+    new FastifyAdapter(),
+    {
+      bufferLogs: true,
+    }
   );
   const configService = app.get<ConfigService>(ConfigService);
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
