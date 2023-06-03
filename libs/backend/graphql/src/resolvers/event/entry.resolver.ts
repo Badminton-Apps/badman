@@ -12,8 +12,6 @@ import {
   Team,
 } from '@badman/backend-database';
 import {
-  EnrollmentInput,
-  EnrollmentOutput,
   EnrollmentValidationService,
   TeamEnrollmentOutput,
 } from '@badman/backend-enrollment';
