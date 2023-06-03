@@ -6,7 +6,7 @@ import { env } from 'process';
 export const User = createParamDecorator(
   async (data: unknown, context: ExecutionContext) => {
     const ctx = GqlExecutionContext.create(context);
-    const user = ctx.getContext().req.user;
+    const user = ctx.getContext().req?.['user'];
 
     // If we have a user in the request, return it
     if (user && user.sub) {
