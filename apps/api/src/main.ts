@@ -51,7 +51,11 @@ async function bootstrap() {
   });
 
   const port = configService.get('PORT') || 5000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0', (error) => {
+    if (error) {
+      process.exit(1);
+    }
+  });
 
   Logger.debug(
     `🚀 Application is running on: http://localhost:${port}. level: ${configService.get(
