@@ -87,18 +87,18 @@ export class TeamsResolver {
   @ResolveField(() => String)
   async phone(@User() user: Player, @Parent() team: Team) {
     const perm = [`details-any:team`, `${team.clubId}_details:team`];
-    if (user.hasAnyPermission(perm)) {
-      return team.phone;
-    } else {
-      throw new UnauthorizedException();
+    if (!user.hasAnyPermission(perm)) {
+      return null;
     }
+
+    return team.phone;
   }
 
   @ResolveField(() => String)
   async email(@User() user: Player, @Parent() team: Team) {
     const perm = [`details-any:team`, `${team.clubId}_details:team`];
     if (!user.hasAnyPermission(perm)) {
-      throw new UnauthorizedException();
+      return null;
     }
 
     return team.email;
