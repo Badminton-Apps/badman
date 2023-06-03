@@ -16,26 +16,18 @@
   flex: 1 1 auto;
 }
 
-badman-club-edit-role,
-badman-club-edit-location {
+badman-club-edit-role{
   display: flex;
   flex-direction: column;
 }
 
-
+mat-divider {
+  margin: 1rem 0;
+}
 
 h2 {
   display: flex;
   align-items: center;
-}
-
-.options {
-  display: flex;
-  align-items: center;
-
-  .mat-mdc-icon-button {
-    margin-bottom: 22px;
-  }
 }
 
 .teams {
