@@ -43,6 +43,7 @@ export class PermGuard implements CanActivate {
     }
 
     const request = this.getRequest(context);
+
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
@@ -107,7 +108,14 @@ export class PermGuard implements CanActivate {
   }
 
   private getRequest(context: ExecutionContext) {
+    // might be a GqlExecutionContext
     const ctx = GqlExecutionContext.create(context);
-    return ctx.getContext().req;
+    const { req } = ctx.getContext();
+
+    if (req) {
+      return req;
+    }
+
+    return context.switchToHttp().getRequest();
   }
 }
