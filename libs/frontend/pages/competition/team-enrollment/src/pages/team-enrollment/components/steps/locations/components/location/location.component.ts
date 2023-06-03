@@ -38,7 +38,7 @@ export type LocationExceptionType = FormGroup<{
 
 export type LocationAvailibilityForm = FormGroup<{
   id: FormControl<string | undefined>;
-  year: FormControl<number>;
+  season: FormControl<number>;
   days: FormArray<LocationavDayType>;
   exceptions: FormArray<LocationExceptionType>;
 }>;

@@ -206,7 +206,7 @@ export class LocationsStepComponent implements OnInit {
 
             const availibyForm = this.formBuilder.group({
               id: this.formBuilder.control(availibilty?.id),
-              year: this.formBuilder.control(availibilty?.season),
+              season: this.formBuilder.control(availibilty?.season),
               days: this.formBuilder.array(
                 availibilty?.days?.map((day) =>
                   this.formBuilder.group({
