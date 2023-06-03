@@ -14,6 +14,7 @@ RUN npm run build api:build -- --configuration=production
 
 # Production stage
 FROM node:19-alpine As production
+ARG PORT=3000
 ENV NODE_ENV=production \
     TZ="Europe/Brussels" \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
@@ -32,4 +33,5 @@ WORKDIR /usr/src/app
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 
+EXPOSE ${PORT}
 CMD [ "dumb-init", "node", "./dist/apps/api/main.js"]
