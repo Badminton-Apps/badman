@@ -71,15 +71,18 @@ export class TeamFieldComponent implements OnInit {
         }
 
         if (type) {
-          this.options = [...(this.teamNumbers?.[type as SubEventType] ?? [])];
-          if (!this.group?.value.id) {
-            if (this.options?.length === 0) {
-              this.options?.push(0);
-            }
+          // find max number
+          const max = Math.max(
+            ...(this.teamNumbers?.[type as SubEventType] ?? [])
+          );
 
-            this.options?.push(Math.max(...this.options) + 1);
-            this.group?.get('teamNumber')?.setValue(this.options?.at(-1));
+          // if the teamnumber is not set, set it to max + 1
+          if (!this.group?.get('teamNumber')?.value) {
+            this.group?.get('teamNumber')?.setValue(max + 1);
           }
+
+          // options should be all up to max + 1
+          this.options = Array.from({ length: max + 1 }, (_, i) => i + 1);
 
           this.group?.get('teamNumber')?.enable();
         }
