@@ -99,6 +99,7 @@ export class ClubTeamsComponent implements OnInit {
                   season
                   captainId
                   type
+                  clubId
                   entry {
                     id
                     date
@@ -155,6 +156,7 @@ export class ClubTeamsComponent implements OnInit {
                 ?.filter((t) => t.type == team.type)
                 ?.map((t) => t.teamNumber),
             },
+
           },
 
           width: '100%',
