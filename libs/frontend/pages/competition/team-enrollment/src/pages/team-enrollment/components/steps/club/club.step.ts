@@ -87,14 +87,16 @@ export class ClubStepComponent implements OnInit {
   ngOnInit() {
     if (this.group) {
       this.valueId = this.group?.get(this.controlName) as FormControl<string>;
-      this.email = this.group?.get('email') as FormControl<string>;
+      this.email = this.group?.get(
+        this.controlEmailName
+      ) as FormControl<string>;
     }
 
     if (!this.valueId) {
       this.valueId = new FormControl();
     }
 
-    const localStorageEmail = localStorage.getItem('email');
+    const localStorageEmail = localStorage.getItem(this.controlEmailName);
     if (!this.email) {
       this.email = new FormControl(localStorageEmail, [Validators.email]);
 
@@ -105,7 +107,7 @@ export class ClubStepComponent implements OnInit {
         )
         .subscribe((value) => {
           if (value != null) {
-            localStorage.setItem('email', value);
+            localStorage.setItem(this.controlEmailName, value);
           }
         });
     }
