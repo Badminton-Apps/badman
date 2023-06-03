@@ -152,6 +152,7 @@ export class EncounterCompetition extends Model {
   @Column
   endHour: string;
 
+
   @Field(() => EncounterChange, { nullable: true })
   @HasOne(() => EncounterChange, {
     foreignKey: 'encounterId',
