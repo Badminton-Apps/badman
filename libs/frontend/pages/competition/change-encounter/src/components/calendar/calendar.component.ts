@@ -168,6 +168,7 @@ export class CalendarComponent implements OnInit {
                   id
                   name
                   availibilities(where: { year: $year }) {
+                    id
                     year
                     days {
                       courts
