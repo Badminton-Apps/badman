@@ -14,7 +14,7 @@ RUN npm run build api:build -- --configuration=production
 
 # Production stage
 FROM node:19-alpine As production
-ARG PORT=3000
+ARG PORT=5000
 ENV NODE_ENV=production \
     TZ="Europe/Brussels" \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
