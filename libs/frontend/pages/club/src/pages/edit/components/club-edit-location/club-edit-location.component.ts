@@ -160,7 +160,7 @@ export class ClubEditLocationComponent implements OnInit {
 
     this.control = this.formBuilder.group({
       id: this.formBuilder.control(availibilty?.id),
-      season: this.formBuilder.control(availibilty?.season),
+      season: this.formBuilder.control(availibilty?.season ?? this.season),
       days: this.days,
       exceptions: this.exceptions,
     }) as LocationAvailibilityForm;
@@ -225,7 +225,7 @@ export class ClubEditLocationComponent implements OnInit {
           `,
           variables: {
             data: {
-              season: availibility?.season,
+              season: this?.season,
               locationId: this.location.id,
               days: availibility?.days,
               exceptions: availibility?.exceptions,
@@ -246,7 +246,7 @@ export class ClubEditLocationComponent implements OnInit {
           variables: {
             data: {
               id: availibility.id,
-              season: availibility.season,
+              season: this.season,
               locationId: this.location.id,
               days: availibility.days,
               exceptions: availibility.exceptions,

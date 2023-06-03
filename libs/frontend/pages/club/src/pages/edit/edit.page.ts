@@ -372,9 +372,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         }),
         map((x) => {
           return (x.data.club.locations ?? []).map((t) => new Location(t));
-        }),
-        // filter locations that don't have any availabilities
-        map((locations) => locations.filter((l) => l.availibilities.length > 0))
+        })
       );
     });
   }
