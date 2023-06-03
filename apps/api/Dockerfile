@@ -32,5 +32,5 @@ USER node
 WORKDIR /usr/src/app
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-EXPOSE 4000
+EXPOSE 10000
 CMD [ "dumb-init", "node", "./dist/apps/api/main.js"]
