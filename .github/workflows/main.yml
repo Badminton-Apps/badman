@@ -63,7 +63,7 @@ jobs:
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
-          npm run --prefix \scripts create-release -- --affected=${{ needs.main.outputs.affectedProjects }}
+          npm run --prefix \scripts create-release -- --affected="${{ needs.main.outputs.affectedProjects }}"
 
       - name: Create Github Release
         uses: actions/create-release@v1
