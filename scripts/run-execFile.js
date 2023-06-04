@@ -5,7 +5,7 @@ const core = require('@actions/core');
 
 const execFile = promisify(require('child_process').execFile);
 
-module.exports = async function (args, cmd, cmdArgs) {
+module.exports = async function (cmd, cmdArgs, args) {
   core.debug(`Running: ${cmd} ${cmdArgs.join(' ')}`, args);
 
   const promise = execFile(cmd, cmdArgs);
