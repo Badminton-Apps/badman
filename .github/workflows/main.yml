@@ -74,6 +74,9 @@ jobs:
       - name: Push new version and changelog
         id: push_release
         run: |
+          git config --global user.email "info@badman.app"
+          git config --global user.name "Badman Releaser"
+          git config advice.ignoredHook false
           git add .
           git status
           git commit -m "chore(release): v${{ env.NEW_VERSION }}"
