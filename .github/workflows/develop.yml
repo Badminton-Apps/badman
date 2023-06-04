@@ -25,18 +25,6 @@ jobs:
         npx nx affected --target=test --parallel=3 --ci --code-coverage
         npx nx affected --target=build --parallel=3
         npx nx affected --target=server
-      final-commands: |
-        TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-        echo "Found tag: $TAG_VERSION"
-        LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
-        echo "Found hash: $LAST_TAG_HASH"
-        echo "base=$LAST_TAG_HASH"
-        echo "version=$TAG_VERSION"
-        git config --global user.email "info@badman.app"
-        git config --global user.name "Badman Releaser"
-        git config advice.ignoredHook false
-        npm run create-release -- --beta --base=$TAG_VERSION --head=origin/develop
-        git push origin main
 
   agents:
     name: Nx Cloud - Agents
@@ -51,6 +39,26 @@ jobs:
     needs: [main]
 
     steps:
+      - name: Checkout [develop]
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Create release
+        run: |
+          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          echo "Found tag: $TAG_VERSION"
+          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+          echo "Found hash: $LAST_TAG_HASH"
+          echo "base=$LAST_TAG_HASH"
+          echo "version=$TAG_VERSION"
+          git config --global user.email "info@badman.app"
+          git config --global user.name "Badman Releaser"
+          git config advice.ignoredHook false
+          npm run create-release -- --beta --base=$TAG_VERSION --head=origin/develop
+          git push origin main
+
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
           if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/api)" ]; then
