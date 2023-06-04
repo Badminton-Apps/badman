@@ -10,6 +10,7 @@ import {
   Signal,
   TransferState,
   inject,
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -29,7 +30,7 @@ import { SubEventTypeEnum, getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-club-teams',
@@ -63,6 +64,7 @@ export class ClubTeamsComponent implements OnInit {
 
   // signals
   teams?: Signal<Team[] | undefined>;
+  loading = signal(false);
 
   // Inputs
   @Input({ required: true }) clubId?: string;
@@ -86,6 +88,9 @@ export class ClubTeamsComponent implements OnInit {
 
     this.teams = toSignal(
       this.filter?.valueChanges?.pipe(
+        tap(() => {
+          this.loading.set(true);
+        }),
         startWith(this.filter.value ?? {}),
         switchMap((filter) => {
           return this.apollo.watchQuery<{ teams: Partial<Team>[] }>({
@@ -142,6 +147,9 @@ export class ClubTeamsComponent implements OnInit {
             throw new Error('No club');
           }
           return result.data.teams?.map((team) => new Team(team));
+        }),
+        tap(() => {
+          this.loading.set(false);
         })
       ) ?? of([]),
       { injector: this.injector }
@@ -158,7 +166,6 @@ export class ClubTeamsComponent implements OnInit {
                 ?.filter((t) => t.type == team.type)
                 ?.map((t) => t.teamNumber),
             },
-
           },
 
           width: '100%',
