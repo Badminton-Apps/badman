@@ -6,6 +6,10 @@ on:
       - main
     tags:
       - '!**'
+
+env:
+  NODE_ENV: '20.1'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -45,9 +49,12 @@ jobs:
           ref: develop
           fetch-depth: 0
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_ENV }}
+
       - name: install dependencies for release
         run: npm --prefix \scripts instal
-
 
       - name: Create release
         run: |
@@ -63,7 +70,6 @@ jobs:
           npm run --prefix \scripts create-release -- --beta --base=$TAG_VERSION --head=origin/develop
           git push origin main
 
-      
       - name: Create Release
         uses: actions/create-release@v1
         env:
@@ -82,5 +88,5 @@ jobs:
       - name: Trigger deploy hook on Vercel.com (if affected)
         run: |
           if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/badman)" ]; then
-          curl -X POST -H "Content-Type: application/json" ${{ secrets.PROD_CLIENT_HOOK }}
+            curl -X POST -H "Content-Type: application/json" ${{ secrets.PROD_CLIENT_HOOK }}
           fi
