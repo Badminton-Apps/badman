@@ -80,44 +80,6 @@ const conventionalChangelog = require('conventional-changelog');
       },
     });
 
-    // show status 
-    await runExecFile('', 'git', ['status']);
-    
-    // Git add all files
-    await runExecFile('', 'git', ['add', '.']);
-
-    // show status
-    await runExecFile('', 'git', ['status']);
-
-    // Git commit
-    await runExecFile('', 'git', [
-      'commit',
-      '-m',
-      `chore(release): v${newVersion}`,
-    ]);
-
-    // Git tag with annotation
-    await runExecFile('', 'git', [
-      'tag',
-      `v${newVersion}`,
-      `-m`,
-      `chore(release): v${newVersion}`,
-    ]);
-
-    // get the current branch
-    const branchExec = await runExecFile('', 'git', [
-      'branch',
-      '--show-current',
-    ]);
-    const currentBranch = branchExec.stdout.trim();
-
-    // Git push
-    await runExecFile('', 'git', [
-      'push',
-      '--follow-tags',
-      'origin',
-      currentBranch,
-    ]);
 
     core.exportVariable('version', `v${newVersion}`);
   } catch (err) {
