@@ -74,6 +74,9 @@ jobs:
           if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/api)" ]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_API_HOOK }}
           fi
+          if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/worker-sync)" ]; then
+            curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_SYNC_HOOK }}
+          fi
 
       - name: Trigger deploy hook on Vercel.com (if affected)
         run: |
