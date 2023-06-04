@@ -228,8 +228,6 @@ export class LocationsStepComponent implements OnInit {
               ),
             }) as LocationAvailibilityForm;
 
-            console.log(availibyForm);
-
             const group = this.formBuilder.group({
               id: this.formBuilder.control(location.id),
               name: this.formBuilder.control(location.name),
