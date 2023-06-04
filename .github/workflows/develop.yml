@@ -22,6 +22,7 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
+      main-branch-name: develop
       output-affected-projects: true
       parallel-commands: |
         npx nx-cloud record -- npx nx workspace-lint
@@ -59,27 +60,35 @@ jobs:
 
       - name: Create release
         run: |
-          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
-          npm run --prefix \scripts create-release -- --beta --base=$TAG_VERSION --head=origin/develop --affected=${{ needs.main.outputs.affectedProjects }}
-
-          # Set env variable for next step
-          echo version=$TAG_VERSION >> $GITHUB_ENV
+          npm run --prefix \scripts create-release -- --beta --affected=${{ needs.main.outputs.affectedProjects }}
 
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
-          if [ -n "$(git diff --name-only ${{env.version}} origin/develop -- apps/api)" ]; then
+          # read the affected projects from the main job
+          affected=${{ needs.main.outputs.affectedProjects }}
+
+          # print the affected projects
+          echo "Affected projects: $affected"
+
+          # check if the affected projects contains api
+          if [[ $affected == *"api"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_API_HOOK }}
           fi
-          if [ -n "$(git diff --name-only ${{env.version}} origin/develop -- apps/worker-sync)" ]; then
+
+          # check if the affected projects contains worker-sync
+          if [[ $affected == *"worker-sync"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_SYNC_HOOK }}
           fi
 
       - name: Trigger deploy hook on Vercel.com (if affected)
         run: |
-          if [ -n "$(git diff --name-only ${{env.version}} origin/develop -- apps/badman)" ]; then
+          # read the affected projects from the main job
+          affected=${{ needs.main.outputs.affectedProjects }}
+
+          # check if the affected projects contains api
+          if [[ $affected == *"badman"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_CLIENT_HOOK }}
           fi

@@ -364,7 +364,7 @@ jobs:
         if: ${{ inputs.output-affected-projects == true}}
         id: outputAffectedProjects
         run: |
-          affectedProjects=$(npx nx print-affected --select=projects)
+          affectedProjects=$(npx nx print-affected --select=projects --type=app)
           echo affectedProjects $affectedProjects
           echo "affectedProjects=$affectedProjects" >> $GITHUB_OUTPUT
 

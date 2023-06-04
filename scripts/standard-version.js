@@ -24,6 +24,7 @@ const conventionalChangelog = require('conventional-changelog');
       } --dry-run | sed -e '1!d' -e 's/.*to //g'`
     );
     const newVersion = versionExec.stdout.trim();
+    core.info(`newVersion: ${newVersion}`);
 
     // generate the full changelog
     const changelog = await extractChangelogEntry({ version: newVersion });
