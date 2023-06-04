@@ -1,4 +1,4 @@
-<ng-container *ngIf="this.teams; else loadingTeams">
+<ng-container *ngIf="this.teams && !this.loading()">
   <section class="teams">
     <div class="title">
       <h3>{{ 'all.club.titles.teams' | translate }}</h3>
@@ -66,7 +66,7 @@
   </section>
 </ng-container>
 
-<ng-template #loadingTeams>
+<ng-container *ngIf="this.loading()">
   <section class="teams">
     <h3>{{ 'all.club.titles.teams' | translate }}</h3>
     <badman-loading-block
@@ -97,4 +97,4 @@
       />
     </section>
   </section>
-</ng-template>
+</ng-container>
