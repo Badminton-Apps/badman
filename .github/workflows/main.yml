@@ -76,9 +76,9 @@ jobs:
         run: |
           git add .
           git status
-          # git commit -m "chore(release): v${{ env.NEW_VERSION }}"
-          # git tag -a v${{ env.NEW_VERSION }} -m "chore(release): v${{ env.NEW_VERSION }}"
-          # git push --follow-tags origin ${{ inputs.prod-release && 'main' || 'develop' }}
+          git commit -m "chore(release): v${{ env.NEW_VERSION }}"
+          git tag -a v${{ env.NEW_VERSION }} -m "chore(release): v${{ env.NEW_VERSION }}"
+          git push --follow-tags origin ${{ inputs.prod-release && 'main' || 'develop' }}
 
       - name: Create Github Release
         uses: actions/create-release@v1
