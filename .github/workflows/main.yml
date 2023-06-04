@@ -8,7 +8,8 @@ on:
       beta-release:
         description: 'Do beta release'
         required: true
-        default: 'true'
+        default: true
+        type: boolean
 
 env:
   NODE_ENV: '20.1'
@@ -71,7 +72,7 @@ jobs:
 
       - name: Create Github Release
         uses: actions/create-release@v1
-        if: ${{ inputs.beta-release }}
+        if: ${{ inputs.beta-release == false }}
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
