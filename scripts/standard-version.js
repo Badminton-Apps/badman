@@ -74,6 +74,7 @@ const conventionalChangelog = require('conventional-changelog');
       prerelease: beta ? 'beta' : undefined,
       bumpFiles,
       silent: false,
+      releaseAs: newVersion,
       skip: {
         commit: true,
         tag: true,
