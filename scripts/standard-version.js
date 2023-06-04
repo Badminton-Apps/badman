@@ -9,12 +9,10 @@ const conventionalChangelog = require('conventional-changelog');
     const beta =
       process.argv?.find((arg) => arg.includes('--beta')) !== undefined;
 
+    const affected = process.argv?.find((arg) => arg.includes('--affected='));
+
     // get affected projects from env
-    const affectedProjects =
-      core
-        .getInput('affectedProjects')
-        ?.split(',')
-        ?.map((a) => a.trim()) ?? [];
+    const affectedProjects = affected?.split(',')?.map((a) => a.trim()) ?? [];
     core.info(`affectedProjects: ${affectedProjects}`);
 
     // get next version
