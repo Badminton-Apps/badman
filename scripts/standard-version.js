@@ -10,7 +10,11 @@ const conventionalChangelog = require('conventional-changelog');
       process.argv?.find((arg) => arg.includes('--beta')) !== undefined;
 
     // get affected projects from env
-    const affectedProjects = core.getInput('affectedProjects');
+    const affectedProjects =
+      core
+        .getInput('affectedProjects')
+        ?.split(',')
+        ?.map((a) => a.trim()) ?? [];
     core.info(`affectedProjects: ${affectedProjects}`);
 
     // get next version
@@ -34,13 +38,12 @@ const conventionalChangelog = require('conventional-changelog');
     core.info(`changelog: ${changelog}`);
     core.exportVariable('changelog', changelog);
 
-
     const bumpFiles = [
       { filename: 'package.json', type: 'json' },
       { filename: '../package.json', type: 'json' },
     ];
 
-    if (affectedProjects.includes('apps/badman')) {
+    if (affectedProjects.includes('badman')) {
       bumpFiles.push({
         filename: '../apps/badman/src/version.json',
         type: 'json',
@@ -51,21 +54,21 @@ const conventionalChangelog = require('conventional-changelog');
       });
     }
 
-    if (affectedProjects.includes('apps/api')) {
+    if (affectedProjects.includes('api')) {
       bumpFiles.push({
         filename: '../apps/api/src/version.json',
         type: 'json',
       });
     }
 
-    if (affectedProjects.includes('apps/worker-sync')) {
+    if (affectedProjects.includes('worker-sync')) {
       bumpFiles.push({
         filename: '../apps/worker/sync/src/version.json',
         type: 'json',
       });
     }
 
-    if (affectedProjects.includes('apps/worker-ranking')) {
+    if (affectedProjects.includes('worker-ranking')) {
       bumpFiles.push({
         filename: '../apps/worker/ranking/src/version.json',
         type: 'json',
