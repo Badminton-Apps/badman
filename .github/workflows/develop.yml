@@ -48,7 +48,11 @@ jobs:
         with:
           ref: develop
           fetch-depth: 0
-  
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_ENV }}
+
       - name: install dependencies for release
         run: npm --prefix \scripts instal
 
@@ -75,5 +79,5 @@ jobs:
       - name: Trigger deploy hook on Vercel.com (if affected)
         run: |
           if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/badman)" ]; then
-          curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_CLIENT_HOOK }}
+            curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_CLIENT_HOOK }}
           fi
