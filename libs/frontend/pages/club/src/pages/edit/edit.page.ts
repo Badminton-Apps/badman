@@ -24,6 +24,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -39,11 +40,9 @@ import {
 } from '@badman/frontend-components';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import {
-  Availability,
   Club,
   EntryCompetitionPlayer,
   Location,
-  Player,
   Role,
   Team,
 } from '@badman/frontend-models';
@@ -79,7 +78,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
 import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
-import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'badman-club-edit',

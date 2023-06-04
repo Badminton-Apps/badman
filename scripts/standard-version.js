@@ -7,12 +7,16 @@ const conventionalChangelog = require('conventional-changelog');
 (async () => {
   try {
     // get base and head from input args
-    const base = process.argv?.find((arg) => arg.includes('--base='))
+    const base = process.argv
+      ?.find((arg) => arg.includes('--base='))
       ?.replace('--base=', '')
       .trim();
-    const head = process.argv?.find((arg) => arg.includes('--head='))
+    const head = process.argv
+      ?.find((arg) => arg.includes('--head='))
       ?.replace('--head=', '')
       .trim();
+    const beta =
+      process.argv?.find((arg) => arg.includes('--beta')) !== undefined;
 
     core.debug(`base: ${base}`);
     core.debug(`head: ${head}`);
@@ -25,7 +29,9 @@ const conventionalChangelog = require('conventional-changelog');
     // get next version
     const versionExec = await runExec(
       '',
-      "standard-version --dry-run | sed -e '1!d' -e 's/.*to //g'"
+      `standard-version ${
+        beta ? '--prerelease beta' : ''
+      } --dry-run | sed -e '1!d' -e 's/.*to //g'`
     );
     const newVersion = versionExec.stdout.trim();
 
@@ -42,12 +48,13 @@ const conventionalChangelog = require('conventional-changelog');
     core.exportVariable('changelog', changelog);
 
     // Get affected projects from nx
-    const affectedProjects = await runExec('', `npx --yes nx print-affected --base=${base} --head=${head}`);
+    const affectedProjects = await runExec(
+      '',
+      `npx --yes nx print-affected --base=${base} --head=${head}`
+    );
     const affectedProjectsArray = JSON.parse(affectedProjects.stdout).projects;
 
-    const bumpFiles = [
-      { filename: 'package.json', type: 'json' }
-    ];
+    const bumpFiles = [{ filename: 'package.json', type: 'json' }];
 
     if (affectedProjectsArray.includes('badman')) {
       bumpFiles.push({
@@ -80,8 +87,6 @@ const conventionalChangelog = require('conventional-changelog');
         type: 'json',
       });
     }
-
-      
 
     await standardVersion({
       infile: 'apps/badman/src/assets/CHANGELOG.md',
