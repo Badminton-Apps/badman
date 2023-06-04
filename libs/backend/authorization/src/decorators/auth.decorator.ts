@@ -47,7 +47,6 @@ export class PermGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      this._logger.warn(`No token found in request, while not public`);
       return true;
     }
 
