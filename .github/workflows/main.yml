@@ -105,13 +105,16 @@ jobs:
           if [[ $affectedProjects == *"worker-sync"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
           fi
+      
+      
+      ## Vercel deploys automatically on push to branch with Chore: prefix
 
-      - name: Trigger deploy hook on Vercel.com (if affected)
-        run: |
-          # read the affected projects from the main job
-          affectedProjects=$(echo ${{ needs.main.outputs.affectedProjects }} | tr -d ' ')
+      # - name: Trigger deploy hook on Vercel.com (if affected)
+      #   run: |
+      #     # read the affected projects from the main job
+      #     affectedProjects=$(echo ${{ needs.main.outputs.affectedProjects }} | tr -d ' ')
 
-          # check if the affected projects contains api
-          if [[ $affectedProjects == *"badman"* ]]; then
-            curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_CLIENT_HOOK  || secrets.BETA_CLIENT_HOOK }}
-          fi
+      #     # check if the affected projects contains api
+      #     if [[ $affectedProjects == *"badman"* ]]; then
+      #       curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_CLIENT_HOOK  || secrets.BETA_CLIENT_HOOK }}
+      #     fi
