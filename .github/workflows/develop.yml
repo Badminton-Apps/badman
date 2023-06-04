@@ -71,15 +71,15 @@ jobs:
 
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
-          if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/api)" ]; then
+          if [ -n "$(git diff --name-only HEAD^ HEAD -- apps/api)" ]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_API_HOOK }}
           fi
-          if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/worker-sync)" ]; then
+          if [ -n "$(git diff --name-only HEAD^ HEAD -- apps/worker-sync)" ]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_SYNC_HOOK }}
           fi
 
       - name: Trigger deploy hook on Vercel.com (if affected)
         run: |
-          if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/badman)" ]; then
+          if [ -n "$(git diff --name-only HEAD^ HEAD -- apps/badman)" ]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_CLIENT_HOOK }}
           fi
