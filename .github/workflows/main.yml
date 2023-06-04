@@ -25,7 +25,7 @@ jobs:
         npx nx affected --target=test --parallel=3 --ci --code-coverage
         npx nx affected --target=build --parallel=3
         npx nx affected --target=server
-        
+
   agents:
     name: Nx Cloud - Agents
     uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.11
@@ -34,7 +34,7 @@ jobs:
     with:
       number-of-agents: 3
 
-  release:
+  Release:
     runs-on: ubuntu-latest
     needs: [main]
 
@@ -44,6 +44,10 @@ jobs:
         with:
           ref: develop
           fetch-depth: 0
+
+      - name: install dependencies for release
+        run: |
+          npm i -g standard-version conventional-changelog    
 
       - name: Create release
         run: |
@@ -59,6 +63,7 @@ jobs:
           npm run create-release -- --beta --base=$TAG_VERSION --head=origin/develop
           git push origin main
 
+      
       - name: Create Release
         uses: actions/create-release@v1
         env:

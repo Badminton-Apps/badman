@@ -34,7 +34,7 @@ jobs:
     with:
       number-of-agents: 3
 
-  release:
+  Release:
     runs-on: ubuntu-latest
     needs: [main]
 
@@ -44,6 +44,10 @@ jobs:
         with:
           ref: develop
           fetch-depth: 0
+  
+      - name: install dependencies for release
+        run: |
+          npm i -g standard-version conventional-changelog
 
       - name: Create release
         run: |
