@@ -6,25 +6,12 @@ const conventionalChangelog = require('conventional-changelog');
 
 (async () => {
   try {
-    // get base and head from input args
-    const base = process.argv
-      ?.find((arg) => arg.includes('--base='))
-      ?.replace('--base=', '')
-      .trim();
-    const head = process.argv
-      ?.find((arg) => arg.includes('--head='))
-      ?.replace('--head=', '')
-      .trim();
     const beta =
       process.argv?.find((arg) => arg.includes('--beta')) !== undefined;
 
-    core.debug(`base: ${base}`);
-    core.debug(`head: ${head}`);
-
-    if (!base || !head) {
-      core.setFailed('Missing base or head');
-      return;
-    }
+    // get affected projects from env
+    const affectedProjects = core.getInput('affectedProjects');
+    core.info(`affectedProjects: ${affectedProjects}`);
 
     // get next version
     const versionExec = await runExec(
@@ -47,23 +34,13 @@ const conventionalChangelog = require('conventional-changelog');
     core.info(`changelog: ${changelog}`);
     core.exportVariable('changelog', changelog);
 
-    // get affected projects
-    const affectedProjectsExec = await runExecFile('', 'git', [
-      'diff',
-      '--name-only',
-      base,
-      head,
-    ]);
 
-    const affectedProjectsArray = affectedProjectsExec.stdout
-      .trim()
-      .split('\n');
     const bumpFiles = [
       { filename: 'package.json', type: 'json' },
       { filename: '../package.json', type: 'json' },
     ];
 
-    if (affectedProjectsArray.includes('apps/badman')) {
+    if (affectedProjects.includes('apps/badman')) {
       bumpFiles.push({
         filename: '../apps/badman/src/version.json',
         type: 'json',
@@ -74,21 +51,21 @@ const conventionalChangelog = require('conventional-changelog');
       });
     }
 
-    if (affectedProjectsArray.includes('apps/api')) {
+    if (affectedProjects.includes('apps/api')) {
       bumpFiles.push({
         filename: '../apps/api/src/version.json',
         type: 'json',
       });
     }
 
-    if (affectedProjectsArray.includes('apps/worker-sync')) {
+    if (affectedProjects.includes('apps/worker-sync')) {
       bumpFiles.push({
         filename: '../apps/worker/sync/src/version.json',
         type: 'json',
       });
     }
 
-    if (affectedProjectsArray.includes('apps/worker-ranking')) {
+    if (affectedProjects.includes('apps/worker-ranking')) {
       bumpFiles.push({
         filename: '../apps/worker/ranking/src/version.json',
         type: 'json',
