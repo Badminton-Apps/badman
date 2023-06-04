@@ -70,7 +70,7 @@ const conventionalChangelog = require('conventional-changelog');
 
     await standardVersion({
       infile: '../apps/badman/src/assets/CHANGELOG.md',
-      packageFiles: ['../package.json'],
+      packageFiles: ['package.json'],
       prerelease: beta ? 'beta' : undefined,
       bumpFiles,
       silent: false,
@@ -80,8 +80,14 @@ const conventionalChangelog = require('conventional-changelog');
       },
     });
 
-    // Git add .
+    // show status 
+    await runExecFile('', 'git', ['status']);
+    
+    // Git add all files
     await runExecFile('', 'git', ['add', '.']);
+
+    // show status
+    await runExecFile('', 'git', ['status']);
 
     // Git commit
     await runExecFile('', 'git', [
