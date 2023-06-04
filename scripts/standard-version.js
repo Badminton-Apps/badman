@@ -55,44 +55,49 @@ const conventionalChangelog = require('conventional-changelog');
       head,
     ]);
 
-    const affectedProjectsArray = affectedProjectsExec.stdout.trim().split('\n');
-    const bumpFiles = [{ filename: 'package.json', type: 'json' }];
+    const affectedProjectsArray = affectedProjectsExec.stdout
+      .trim()
+      .split('\n');
+    const bumpFiles = [
+      { filename: 'package.json', type: 'json' },
+      { filename: '../package.json', type: 'json' },
+    ];
 
     if (affectedProjectsArray.includes('apps/badman')) {
       bumpFiles.push({
-        filename: 'apps/badman/src/version.json',
+        filename: '../apps/badman/src/version.json',
         type: 'json',
       });
       bumpFiles.push({
-        filename: 'apps/badman/src/assets/config.json',
+        filename: '../apps/badman/src/assets/config.json',
         type: 'json',
       });
     }
 
     if (affectedProjectsArray.includes('apps/api')) {
       bumpFiles.push({
-        filename: 'apps/api/src/version.json',
+        filename: '../apps/api/src/version.json',
         type: 'json',
       });
     }
 
     if (affectedProjectsArray.includes('apps/worker-sync')) {
       bumpFiles.push({
-        filename: 'apps/worker/sync/src/version.json',
+        filename: '../apps/worker/sync/src/version.json',
         type: 'json',
       });
     }
 
     if (affectedProjectsArray.includes('apps/worker-ranking')) {
       bumpFiles.push({
-        filename: 'apps/worker/ranking/src/version.json',
+        filename: '../apps/worker/ranking/src/version.json',
         type: 'json',
       });
     }
 
     await standardVersion({
-      infile: 'apps/badman/src/assets/CHANGELOG.md',
-      packageFiles: ['package.json'],
+      infile: '../apps/badman/src/assets/CHANGELOG.md',
+      packageFiles: ['../package.json'],
       bumpFiles,
       silent: false,
       skip: {
