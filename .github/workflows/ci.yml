@@ -14,7 +14,7 @@ env:
 jobs:
   main:
     name: Nx Cloud - Main Job
-    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.11
+    uses: ./.github/workflows/nx-cloud-main.yml
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
@@ -31,7 +31,7 @@ jobs:
 
   agents:
     name: Nx Cloud - Agents
-    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.11
+    uses: ./.github/workflows/nx-cloud-agents.yml
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
