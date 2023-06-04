@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - develop
-
+    tags:
+      - '!**'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -43,7 +44,7 @@ jobs:
 
       - name: Publish to main branch
         run: |
-          git push origin main
+          git push origin develop
 
       - name: Trigger beta deploy hooks on Render.com (if affected)
         run: |
