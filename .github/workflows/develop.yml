@@ -1,0 +1,54 @@
+name: Develop Branch Workflow
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint, test, build, and serve
+        run: npx nx affected --target=lint,test,build,server
+
+      - id: tag
+        run: |
+          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          echo "Found tag: $TAG_VERSION"
+          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+          echo "Found hash: $LAST_TAG_HASH"
+          echo "base=$LAST_TAG_HASH"
+          echo "version=$TAG_VERSION"
+          git config --global user.email "info@badman.app"
+          git config --global user.name "Badman Releaser"
+          git config advice.ignoredHook false
+          npm run create-release -- --beta --base=$TAG_VERSION --head=origin/develop
+      
+      - name: Publish to main branch
+        run: |
+          git push origin main
+
+      - name: Trigger beta deploy hooks on Render.com (if affected)
+        run: |
+          if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/api)" ]; then
+            curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_API_HOOK }}
+          fi
+
+      - name: Trigger beta deploy hook on Vercel.com (if affected)
+        run: |
+          if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/badman)" ]; then
+            curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_CLIENT_HOOK }}
+          fi
