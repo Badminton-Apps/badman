@@ -23,6 +23,7 @@ import {
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { DrawLocationMapComponent } from './components';
 
 @Component({
   selector: 'badman-detail-draw-competition',
@@ -45,6 +46,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     RecentGamesComponent,
     UpcomingGamesComponent,
     PageHeaderComponent,
+    DrawLocationMapComponent
   ],
 })
 export class DetailDrawCompetitionComponent implements OnInit {
