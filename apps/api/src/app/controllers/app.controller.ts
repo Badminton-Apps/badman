@@ -1,11 +1,6 @@
 import { User } from '@badman/backend-authorization';
 import {
-  DrawCompetition,
-  EncounterCompetition,
-  EventCompetition,
-  Player,
-  SubEventCompetition,
-  Team,
+  Player
 } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
 import { MailingService } from '@badman/backend-mailing';
