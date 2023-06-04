@@ -4,7 +4,7 @@ on:
   workflow_call:
     outputs:
       affectedProjects:
-        description: "list of affeced projects"
+        description: 'list of affeced projects'
         value: ${{ jobs.main.outputs.affectedProjects }}
     secrets:
       NPM_TOKEN:
@@ -58,15 +58,15 @@ on:
       artifacts-path:
         required: false
         type: string
-        default: ""
+        default: ''
       artifacts-name:
         required: false
         type: string
-        default: "nx-main-artifacts"
+        default: 'nx-main-artifacts'
       output-affected-projects:
         required: false
         type: boolean
-        default: false        
+        default: false
       # We needed this input in order to be able to configure out integration tests for this repo, it is not documented
       # so as to not cause confusion/add noise, but technically any consumer of the workflow can use it if they want to.
       working-directory:
@@ -87,7 +87,7 @@ env:
 jobs:
   main:
     outputs:
-      affectedProjects: ${{steps.outputAffectedProjects.outputs.affectedProjects}}    
+      affectedProjects: ${{steps.outputAffectedProjects.outputs.affectedProjects}}
     runs-on: ${{ inputs.runs-on }}
     # The name of the job which will invoke this one is expected to be "Nx Cloud - Main Job", and whatever we call this will be appended
     # to that one after a forward slash, so we keep this one intentionally short to produce "Nx Cloud - Main Job / Run" in the Github UI
@@ -113,6 +113,7 @@ jobs:
         name: Checkout [Default Branch]
         if: ${{ github.event_name != 'pull_request' }}
         with:
+          ref: ${{ inputs.main-branch-name }}
           # We need to fetch all branches and commits so that Nx affected has a base to compare against.
           fetch-depth: 0
 
@@ -130,10 +131,10 @@ jobs:
       # Set node/npm/yarn versions using volta, with optional overrides provided by the consumer
       - uses: volta-cli/action@v4
         with:
-          node-version: "${{ inputs.node-version }}"
-          npm-version: "${{ inputs.npm-version }}"
-          yarn-version: "${{ inputs.yarn-version }}"
-          package-json-path: "${{ inputs.working-directory || github.workspace }}/package.json"
+          node-version: '${{ inputs.node-version }}'
+          npm-version: '${{ inputs.npm-version }}'
+          yarn-version: '${{ inputs.yarn-version }}'
+          package-json-path: '${{ inputs.working-directory || github.workspace }}/package.json'
 
       # Install pnpm with exact version provided by consumer or fallback to latest
       - name: Install PNPM
@@ -386,4 +387,3 @@ jobs:
         with:
           name: ${{ inputs.artifacts-name }}
           path: ${{ inputs.artifacts-path }}
-    
