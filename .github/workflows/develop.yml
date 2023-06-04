@@ -17,11 +17,12 @@ concurrency:
 jobs:
   main:
     name: Nx Cloud - Main Job
-    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.0
+    uses: ./.github/workflows/nx-cloud-main.yml
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
+      output-affected-projects: true
       parallel-commands: |
         npx nx-cloud record -- npx nx workspace-lint
       parallel-commands-on-agents: |
@@ -29,20 +30,10 @@ jobs:
         npx nx affected --target=lint --parallel=3
         npx nx affected --target=test --parallel=3 --ci --code-coverage
         npx nx affected --target=server
-      final-commands: |
-        echo "All parallel jobs are done!"
-
-        # store affected projects in env variable
-        AFFECTED_PROJECTS=$(npx nx print-affected -t build --select=projects --type=app)
-
-        echo "Affected projects: $AFFECTED_PROJECTS"
-
-        # store affected projects in env variable
-        echo affected_projects=$AFFECTED_PROJECTS >> $GITHUB_ENV
 
   agents:
     name: Nx Cloud - Agents
-    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.11
+    uses: ./.github/workflows/nx-cloud-agents.yml
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
@@ -73,7 +64,7 @@ jobs:
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
-          npm run --prefix \scripts create-release -- --beta --base=$TAG_VERSION --head=origin/develop
+          npm run --prefix \scripts create-release -- --beta --base=$TAG_VERSION --head=origin/develop --affected=${{ needs.main.outputs.affectedProjects }}
 
           # Set env variable for next step
           echo version=$TAG_VERSION >> $GITHUB_ENV
