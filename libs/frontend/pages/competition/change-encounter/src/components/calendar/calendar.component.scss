@@ -1,4 +1,3 @@
-@use '@angular/material' as mat;
 
 :host {
   height: 100%;
@@ -190,7 +189,7 @@ mat-chip-avatar {
 }
 
 .event-detail {
-  @include mat.elevation(8);
+  // @include mat.elevation(8);
   // background-color: white;
   border-radius: 8px;
   min-width: 300px;
