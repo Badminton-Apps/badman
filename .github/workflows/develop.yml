@@ -59,27 +59,26 @@ jobs:
       - name: Create release
         run: |
           TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-          echo "Found tag: $TAG_VERSION"
           LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
-          echo "Found hash: $LAST_TAG_HASH"
-          echo "base=$LAST_TAG_HASH"
-          echo "version=$TAG_VERSION"
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
           npm run --prefix \scripts create-release -- --beta --base=$TAG_VERSION --head=origin/develop
 
+          # Set env variable for next step
+          echo version=$TAG_VERSION >> $GITHUB_ENV
+
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
-          if [ -n "$(git diff --name-only HEAD^ HEAD -- apps/api)" ]; then
+          if [ -n "$(git diff --name-only ${{env.version}} origin/develop -- apps/api)" ]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_API_HOOK }}
           fi
-          if [ -n "$(git diff --name-only HEAD^ HEAD -- apps/worker-sync)" ]; then
+          if [ -n "$(git diff --name-only ${{env.version}} origin/develop -- apps/worker-sync)" ]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_SYNC_HOOK }}
           fi
 
       - name: Trigger deploy hook on Vercel.com (if affected)
         run: |
-          if [ -n "$(git diff --name-only HEAD^ HEAD -- apps/badman)" ]; then
+          if [ -n "$(git diff --name-only ${{env.version}} origin/develop -- apps/badman)" ]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_CLIENT_HOOK }}
           fi
