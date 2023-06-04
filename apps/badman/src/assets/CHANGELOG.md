@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.85.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.7...v6.85.0-beta.8) (2023-06-04)
+
+
+### Features
+
+* loading events ([8bb3d2e](https://github.com/Badminton-Apps/badman/commit/8bb3d2e88bf5ed64d9fde2bf5d9e75cb82da9b1f))
+* loading teams ([6fe892c](https://github.com/Badminton-Apps/badman/commit/6fe892c040a85ba10e5a9bb2b1b8ae20b40974a6))
+
+
+### Bug Fixes
+
+* edit-role should have code to push more options to the back ([9173c86](https://github.com/Badminton-Apps/badman/commit/9173c86ae1fec95d32510b9675857f6e2151e2e9))
+* remove logging ([7e6d8f3](https://github.com/Badminton-Apps/badman/commit/7e6d8f39f569afa40977a0c965589d825f6aff2d))
+
 ## [6.85.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.6...v6.85.0-beta.7) (2023-06-04)
 
 
