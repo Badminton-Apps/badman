@@ -1,9 +1,15 @@
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRouteSnapshot, Params, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  Params,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest, of } from 'rxjs';
 import {
   debounceTime,
   filter,
@@ -17,7 +23,7 @@ import { AuthenticateService, ClaimService } from '../services';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard  {
+export class AuthGuard {
   // Maybe use this for cokkies? https://github.com/ngx-utils/cookies/
 
   private loader$ = new Subject<boolean>();
@@ -71,7 +77,7 @@ export class AuthGuard  {
                 appState: { target: state.url },
               })
               ?.pipe(
-                map((state) => {
+                map(() => {
                   return true;
                 })
               ) ?? of(true)

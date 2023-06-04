@@ -6,13 +6,13 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
-import { ALLOW_ANONYMOUS_META_KEY } from './anonymous.decorator';
-import { Reflector } from '@nestjs/core';
-import { GqlExecutionContext } from '@nestjs/graphql';
-import { ConfigService } from '@nestjs/config';
 import { JwksClient } from 'jwks-rsa';
+import { getRequest } from '../utils';
+import { ALLOW_ANONYMOUS_META_KEY } from './anonymous.decorator';
 
 @Injectable()
 export class PermGuard implements CanActivate {
@@ -42,11 +42,12 @@ export class PermGuard implements CanActivate {
       return true;
     }
 
-    const request = this.getRequest(context);
+    const request = getRequest(context);
 
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
+      this._logger.warn(`No token found in request, while not public`);
       return true;
     }
 
@@ -105,17 +106,5 @@ export class PermGuard implements CanActivate {
     const signingKey = await this.jwksClient.getSigningKey(kid);
 
     return signingKey.getPublicKey();
-  }
-
-  private getRequest(context: ExecutionContext) {
-    // might be a GqlExecutionContext
-    const ctx = GqlExecutionContext.create(context);
-    const { req } = ctx.getContext();
-
-    if (req) {
-      return req;
-    }
-
-    return context.switchToHttp().getRequest();
   }
 }
