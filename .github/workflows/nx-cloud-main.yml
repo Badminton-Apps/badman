@@ -117,10 +117,20 @@ jobs:
           # We need to fetch all branches and commits so that Nx affected has a base to compare against.
           fetch-depth: 0
 
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v3
-        with:
-          main-branch-name: ${{ inputs.main-branch-name }}
+      # - name: Derive appropriate SHAs for base and head for `nx affected` commands
+      #   uses: nrwl/nx-set-shas@v3
+      #   with:
+      #     main-branch-name: ${{ inputs.main-branch-name }}
+      - name: set SHAs
+        run: |
+          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          echo "Found tag: $TAG_VERSION"
+          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+          echo "Found hash: $LAST_TAG_HASH"
+          # Set NX_BASE to the last tag
+          echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
+          # Set NX_HEAD to the current commit
+          echo "NX_HEAD=origin/${{inputs.main-branch-name}}" >> $GITHUB_ENV
 
       - name: Detect package manager
         id: package_manager
@@ -310,6 +320,14 @@ jobs:
       - name: Initialize the Nx Cloud distributed CI run
         run: npx nx-cloud start-ci-run
 
+      - name: Store affected projects in output
+        if: ${{ inputs.output-affected-projects == true}}
+        id: outputAffectedProjects
+        run: |
+          affectedProjects=$(npx nx print-affected --select=projects --type=app)
+          echo affectedProjects $affectedProjects
+          echo "affectedProjects=$affectedProjects" >> $GITHUB_OUTPUT
+
       # The good thing about the multi-line string input for sequential commands is that we can simply forward it on as is to the bash shell and it will behave
       # how we want it to in terms of quote escaping, variable assignment etc
       - name: Run any configured init-commands sequentially
@@ -360,14 +378,6 @@ jobs:
       - name: Run any configured parallel commands on main and agent jobs
         # We need to escape the workspace path to be consistent cross-platform: https://github.com/actions/runner/issues/1066
         run: ${GITHUB_WORKSPACE//\\//}/.github/workflows/run-commands-in-parallel.sh '${{ steps.parallel_commands_config.outputs.result }}'
-
-      - name: Store affected projects in output
-        if: ${{ inputs.output-affected-projects == true}}
-        id: outputAffectedProjects
-        run: |
-          affectedProjects=$(npx nx print-affected --select=projects --type=app)
-          echo affectedProjects $affectedProjects
-          echo "affectedProjects=$affectedProjects" >> $GITHUB_OUTPUT
 
       # The good thing about the multi-line string input for sequential commands is that we can simply forward it on as is to the bash shell and it will behave
       # how we want it to in terms of quote escaping, variable assignment etc
