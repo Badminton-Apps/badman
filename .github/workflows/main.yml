@@ -64,13 +64,25 @@ jobs:
       - name: install dependencies for release
         run: npm --prefix \scripts instal
 
+      - name: Merge develop into main
+        if: ${{ inputs.prod-release }}
+        run: |
+          git config --global user.email "info@badman.app"
+          git config --global user.name "Badman Releaser"
+          git config advice.ignoredHook false
+
+          # merge develop into main
+          git checkout main
+          git merge develop
+          git push origin main
+
       - name: Get the new version and changelog
         id: create_release
         run: |
           # if the prod release is false, then we want to create a beta release by appending --beta to the command
           # The script outputs NEW_VERSION=x.x.x to use further
           npm run --prefix \scripts create-release --  ${{ inputs.prod-release && '' || '--beta' }}  --affected="${{ needs.main.outputs.affectedProjects }}"
-      
+
       - name: Push new version and changelog
         id: push_release
         run: |
@@ -83,6 +95,18 @@ jobs:
           git tag -a v${{ env.NEW_VERSION }} -m "chore(release): v${{ env.NEW_VERSION }}"
           git push --follow-tags origin ${{ inputs.prod-release && 'main' || 'develop' }}
 
+      - name: Merge main into develop
+        if: ${{ inputs.prod-release }}
+        run: |
+          git config --global user.email "info@badman.app"
+          git config --global user.name "Badman Releaser"
+          git config advice.ignoredHook false
+
+          # merge main into develop
+          git checkout develop
+          git merge main
+          git push origin develop
+          
       - name: Create Github Release
         uses: actions/create-release@v1
         if: ${{ inputs.prod-release }}
@@ -92,16 +116,6 @@ jobs:
           tag_name: v${{ env.NEW_VERSION }}
           release_name: v${{ env.NEW_VERSION }}
           body: ${{ env.CHANGELOG  }}
-
-      - name: Sync main with develop
-        if: ${{ inputs.prod-release }}
-        run: |
-          git config --global user.email "info@badman.app"
-          git config --global user.name "Badman Releaser"
-          git config advice.ignoredHook false
-          git checkout main
-          git merge develop
-          git push origin main
 
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
