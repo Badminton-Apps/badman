@@ -12,8 +12,9 @@ const conventionalChangelog = require('conventional-changelog');
     const affected = process.argv?.find((arg) => arg.includes('--affected='));
 
     // get affected projects from env
-    const affectedProjects = affected?.split(',')?.map((a) => a.trim()) ?? [];
-    core.info(`affectedProjects: ${affectedProjects}`);
+    const affectedProjects =
+      affected?.split(',')?.map((a) => a.replace(',').trim()) ?? [];
+    core.info(`affectedProjects: ${affected}`);
 
     // get next version
     const versionExec = await runExec(
@@ -23,13 +24,6 @@ const conventionalChangelog = require('conventional-changelog');
       } --dry-run | sed -e '1!d' -e 's/.*to //g'`
     );
     const newVersion = versionExec.stdout.trim();
-
-    // get the current branch
-    const branchExec = await runExecFile('', 'git', [
-      'branch',
-      '--show-current',
-    ]);
-    const currentBranch = branchExec.stdout.trim();
 
     // generate the full changelog
     const changelog = await extractChangelogEntry({ version: newVersion });
@@ -101,6 +95,13 @@ const conventionalChangelog = require('conventional-changelog');
       `-m`,
       `chore(release): v${newVersion}`,
     ]);
+
+    // get the current branch
+    const branchExec = await runExecFile('', 'git', [
+      'branch',
+      '--show-current',
+    ]);
+    const currentBranch = branchExec.stdout.trim();
 
     // Git push
     await runExecFile('', 'git', [
