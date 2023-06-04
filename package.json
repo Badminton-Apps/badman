@@ -150,7 +150,6 @@
     "zone.js": "0.13.0"
   },
   "devDependencies": {
-    "@actions/core": "^1.10.0",
     "@angular-devkit/architect": "0.1600.0",
     "@angular-devkit/build-angular": "16.0.0",
     "@angular-devkit/core": "16.0.0",
