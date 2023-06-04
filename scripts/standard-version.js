@@ -71,6 +71,7 @@ const conventionalChangelog = require('conventional-changelog');
     await standardVersion({
       infile: '../apps/badman/src/assets/CHANGELOG.md',
       packageFiles: ['../package.json'],
+      prerelease: beta ? 'beta' : undefined,
       bumpFiles,
       silent: false,
       skip: {
