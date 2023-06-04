@@ -24,7 +24,7 @@ export const slideInAnimation = trigger('routerTransition', [
     group([
       query(':leave', [
         animate('200ms ease-out', style({ left: '100%', opacity: 0 })),
-      ]), 
+      ]),
       query(':enter', [animate('300ms ease-out', style({ left: '0%' }))]),
       query('@*', animateChild()),
     ]),
