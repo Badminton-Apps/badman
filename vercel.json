@@ -2,6 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "dist/badman/browser",
   "buildCommand": "sh vercel.sh",
+  "github": {
+    "enabled": false
+  },
   "rewrites": [
     {
       "source": "/api/:path*",
