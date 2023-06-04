@@ -25,6 +25,7 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
+      main-branch-name: ${{ inputs.beta-release && 'develop' || 'main' }}
       output-affected-projects: true
       parallel-commands: |
         npx nx-cloud record -- npx nx workspace-lint
