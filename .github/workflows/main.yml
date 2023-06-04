@@ -5,10 +5,10 @@ on:
   workflow_dispatch:
     inputs:
       # main branch name
-      beta-release:
-        description: 'Do beta release'
+      prod-release:
+        description: 'Do prod release'
         required: true
-        default: true
+        default: false
         type: boolean
 
 env:
@@ -26,7 +26,7 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
-      main-branch-name: ${{ inputs.beta-release && 'develop' || 'main' }}
+      main-branch-name: ${{ inputs.prod-release && 'main' || 'develop' }}
       output-affected-projects: true
       parallel-commands: |
         npx nx-cloud record -- npx nx workspace-lint
@@ -52,7 +52,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: ${{ inputs.beta-release && 'develop' || 'main' }}
+          ref: ${{ inputs.prod-release && 'main' || 'develop' }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v3
@@ -68,8 +68,8 @@ jobs:
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
 
-          # if the beta-release input is true, the include --beta flag in the command
-          npm run --prefix \scripts create-release -- ${{ inputs.beta-release && '--beta' }} --affected="${{ needs.main.outputs.affectedProjects }}"
+          # if the prod release is false, then we want to create a beta release by appending --beta to the command
+          npm run --prefix \scripts create-release --  ${{ inputs.prod-release && '' || '--beta' }}  --affected="${{ needs.main.outputs.affectedProjects }}"
 
       - name: Create Github Release
         uses: actions/create-release@v1
@@ -88,12 +88,12 @@ jobs:
 
           # check if the affected projects contains api
           if [[ $affectedProjects == *"api"* ]]; then
-            curl -X POST -H "Content-Type: application/json" ${{ inputs.beta-release && secrets.BETA_API_HOOK || secrets.PROD_API_HOOK }}
+            curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
           fi
 
           # check if the affected projects contains worker-sync
           if [[ $affectedProjects == *"worker-sync"* ]]; then
-            curl -X POST -H "Content-Type: application/json" ${{ inputs.beta-release && secrets.BETA_WORKER_SYNC_HOOK || secrets.PROD_WORKER_SYNC_HOOK }}
+            curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
           fi
 
       - name: Trigger deploy hook on Vercel.com (if affected)
@@ -103,5 +103,5 @@ jobs:
 
           # check if the affected projects contains api
           if [[ $affectedProjects == *"badman"* ]]; then
-            curl -X POST -H "Content-Type: application/json" ${{ inputs.beta-release && secrets.BETA_CLIENT_HOOK || secrets.PROD_CLIENT_HOOK }}
+            curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_CLIENT_HOOK  || secrets.BETA_CLIENT_HOOK }}
           fi
