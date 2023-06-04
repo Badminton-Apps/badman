@@ -85,8 +85,6 @@ const conventionalChangelog = require('conventional-changelog');
     // export the new version and changelog as the environment variables
     core.exportVariable('NEW_VERSION', newVersion);
     core.exportVariable('CHANGELOG', changelog);
-
-    console.log(`NEW_VERSION=newVersion`);
   } catch (err) {
     core.setFailed(err);
     console.error(err);
