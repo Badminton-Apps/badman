@@ -80,6 +80,16 @@ jobs:
           tag_name: ${{ env.version }}
           release_name: ${{ env.version }}
           body: ${{ env.changelog  }}
+      
+      - name: Sync main with develop
+        if: ${{ inputs.prod-release }}
+        run: |
+          git config --global user.email "info@badman.app"
+          git config --global user.name "Badman Releaser"
+          git config advice.ignoredHook false
+          git checkout main
+          git merge develop
+          git push origin main
 
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
