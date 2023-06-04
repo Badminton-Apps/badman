@@ -11,36 +11,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  main:
+    name: Nx Cloud - Main Job
+    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.0
+    secrets:
+      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+    with:
+      number-of-agents: 3
+      parallel-commands: |
+        npx nx-cloud record -- npx nx workspace-lint
+      parallel-commands-on-agents: |
+        npx nx affected --target=lint --parallel=3
+        npx nx affected --target=test --parallel=3 --ci --code-coverage
+        npx nx affected --target=build --parallel=3
+        npx nx affected --target=server
+      final-commands: |
+        TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+        echo "Found tag: $TAG_VERSION"
+        LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+        echo "Found hash: $LAST_TAG_HASH"
+        echo "base=$LAST_TAG_HASH"
+        echo "version=$TAG_VERSION"
+        git config --global user.email "info@badman.app"
+        git config --global user.name "Badman Releaser"
+        git config advice.ignoredHook false
+        npm run create-release -- --base=$TAG_VERSION --head=origin/develop
+        git push origin main
+
+  agents:
+    name: Nx Cloud - Agents
+    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.11
+    secrets:
+      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+    with:
+      number-of-agents: 3
+
+  release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 20.1
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint, test, build, and serve
-        run: npx nx affected --target=lint,test,build,server
-
-      - id: tag
-        run: |
-          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-          echo "Found tag: $TAG_VERSION"
-          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
-          echo "Found hash: $LAST_TAG_HASH"
-          echo "base=$LAST_TAG_HASH"
-          echo "version=$TAG_VERSION"
-          git config --global user.email "info@badman.app"
-          git config --global user.name "Badman Releaser"
-          git config advice.ignoredHook false
-          npm run create-release -- --base=$TAG_VERSION --head=origin/develop
       - name: Create Release
         uses: actions/create-release@v1
         env:
@@ -50,14 +59,10 @@ jobs:
           release_name: ${{ env.version }}
           body: ${{ env.changelog  }}
 
-      - name: Publish to main branch
-        run: |
-          git push origin main
-
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
           if [ -n "$(git diff --name-only HEAD^ HEAD -- packages/api)" ]; then
-          curl -X POST -H "Content-Type: application/json" ${{ secrets.PROD_API_HOOK }}
+            curl -X POST -H "Content-Type: application/json" ${{ secrets.PROD_API_HOOK }}
           fi
 
       - name: Trigger deploy hook on Vercel.com (if affected)
