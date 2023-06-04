@@ -33,7 +33,7 @@ jobs:
         echo "All parallel jobs are done!"
 
         # store affected projects in env variable
-        AFFECTED_PROJECTS=$(nx print-affected -t build --select=projects --type=app)
+        AFFECTED_PROJECTS=$(npx nx print-affected -t build --select=projects --type=app)
 
         echo "Affected projects: $AFFECTED_PROJECTS"
 
