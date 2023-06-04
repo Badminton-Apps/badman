@@ -1,0 +1,21 @@
+{
+  "name": "badman_scripts",
+  "version": "6.84.0",
+  "license": "MIT",
+  "scripts": {
+    "create-release": "node ./scripts/standard-version.js"
+  },
+  "private": true,
+  "dependencies": {
+    "badman": "file:..",
+    "conventional-changelog": "^3.1.25",
+    "standard-version": "^9.5.0"
+  },
+  "volta": {
+    "node": "20.1.0",
+    "npm": "9.6.4"
+  },
+  "engines": {
+    "npm": ">=8.0.0"
+  }
+}
