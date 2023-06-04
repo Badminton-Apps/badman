@@ -63,7 +63,7 @@ jobs:
           git config --global user.email "info@badman.app"
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
-          npm run --prefix \scripts create-release -- --beta --affected=${{ needs.main.outputs.affectedProjects }}
+          npm run --prefix \scripts create-release -- --beta --affected="${{ needs.main.outputs.affectedProjects }}"
 
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
