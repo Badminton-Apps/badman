@@ -189,9 +189,6 @@ export class PlayersResolver {
             place?.mix ?? system.amountOfLevels
           ) + 2;
 
-        console.log
-
-
         // if the player has a missing rankingplace, we set the lowest possible ranking
         place.single = place?.single ?? bestRankingMin2;
         place.double = place?.double ?? bestRankingMin2;
