@@ -47,16 +47,18 @@ const conventionalChangelog = require('conventional-changelog');
     core.info(`changelog: ${changelog}`);
     core.exportVariable('changelog', changelog);
 
-    // Get affected projects from nx
-    const affectedProjects = await runExec(
-      '',
-      `npx --yes nx print-affected --base=${base} --head=${head}`
-    );
-    const affectedProjectsArray = JSON.parse(affectedProjects.stdout).projects;
+    // get affected projects
+    const affectedProjectsExec = await runExecFile('', 'git', [
+      'diff',
+      '--name-only',
+      base,
+      head,
+    ]);
 
+    const affectedProjectsArray = affectedProjectsExec.stdout.trim().split('\n');
     const bumpFiles = [{ filename: 'package.json', type: 'json' }];
 
-    if (affectedProjectsArray.includes('badman')) {
+    if (affectedProjectsArray.includes('apps/badman')) {
       bumpFiles.push({
         filename: 'apps/badman/src/version.json',
         type: 'json',
@@ -67,21 +69,21 @@ const conventionalChangelog = require('conventional-changelog');
       });
     }
 
-    if (affectedProjectsArray.includes('api')) {
+    if (affectedProjectsArray.includes('apps/api')) {
       bumpFiles.push({
         filename: 'apps/api/src/version.json',
         type: 'json',
       });
     }
 
-    if (affectedProjectsArray.includes('worker-sync')) {
+    if (affectedProjectsArray.includes('apps/worker-sync')) {
       bumpFiles.push({
         filename: 'apps/worker/sync/src/version.json',
         type: 'json',
       });
     }
 
-    if (affectedProjectsArray.includes('worker-ranking')) {
+    if (affectedProjectsArray.includes('apps/worker-ranking')) {
       bumpFiles.push({
         filename: 'apps/worker/ranking/src/version.json',
         type: 'json',
