@@ -48,6 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [main]
     if: ${{ needs.main.result == 'success' }}
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -80,7 +82,7 @@ jobs:
           tag_name: ${{ env.version }}
           release_name: ${{ env.version }}
           body: ${{ env.changelog  }}
-      
+
       - name: Sync main with develop
         if: ${{ inputs.prod-release }}
         run: |
@@ -105,8 +107,7 @@ jobs:
           if [[ $affectedProjects == *"worker-sync"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
           fi
-      
-      
+
       ## Vercel deploys automatically on push to branch with Chore: prefix
 
       # - name: Trigger deploy hook on Vercel.com (if affected)
