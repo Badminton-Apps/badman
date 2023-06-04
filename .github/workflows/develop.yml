@@ -5,6 +5,10 @@ on:
     branches:
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,7 +40,7 @@ jobs:
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
           npm run create-release -- --beta --base=$TAG_VERSION --head=origin/develop
-      
+
       - name: Publish to main branch
         run: |
           git push origin main

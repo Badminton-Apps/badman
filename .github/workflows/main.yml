@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,7 +48,7 @@ jobs:
           tag_name: ${{ env.version }}
           release_name: ${{ env.version }}
           body: ${{ env.changelog  }}
-      
+
       - name: Publish to main branch
         run: |
           git push origin main
