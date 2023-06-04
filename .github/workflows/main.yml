@@ -64,20 +64,21 @@ jobs:
       - name: install dependencies for release
         run: npm --prefix \scripts instal
 
-      - name: Create release
+      - name: Get the new version and changelog
+        id: create_release
         run: |
-          git config --global user.email "info@badman.app"
-          git config --global user.name "Badman Releaser"
-          git config advice.ignoredHook false
-
           # if the prod release is false, then we want to create a beta release by appending --beta to the command
+          # The script outputs NEW_VERSION=x.x.x to use further
           npm run --prefix \scripts create-release --  ${{ inputs.prod-release && '' || '--beta' }}  --affected="${{ needs.main.outputs.affectedProjects }}"
-
+      
+      - name: Push new version and changelog
+        id: push_release
+        run: |
           git add .
           git status
-          git commit -m "chore(release): v${{ env.version }}"
-          git tag -a v${{ env.version }} -m "chore(release): v${{ env.version }}"
-          git push --follow-tags origin ${{ inputs.prod-release && 'main' || 'develop' }}
+          # git commit -m "chore(release): v${{ env.NEW_VERSION }}"
+          # git tag -a v${{ env.NEW_VERSION }} -m "chore(release): v${{ env.NEW_VERSION }}"
+          # git push --follow-tags origin ${{ inputs.prod-release && 'main' || 'develop' }}
 
       - name: Create Github Release
         uses: actions/create-release@v1
@@ -85,9 +86,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
-          tag_name: ${{ env.version }}
-          release_name: ${{ env.version }}
-          body: ${{ env.changelog  }}
+          tag_name: v${{ env.NEW_VERSION }}
+          release_name: v${{ env.NEW_VERSION }}
+          body: ${{ env.CHANGELOG  }}
 
       - name: Sync main with develop
         if: ${{ inputs.prod-release }}

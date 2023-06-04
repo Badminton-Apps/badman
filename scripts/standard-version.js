@@ -1,5 +1,4 @@
 const standardVersion = require('standard-version');
-const runExecFile = require('./run-execFile');
 const runExec = require('./run-exec');
 const core = require('@actions/core');
 const conventionalChangelog = require('conventional-changelog');
@@ -13,12 +12,16 @@ const conventionalChangelog = require('conventional-changelog');
 
     // get affected projects from env
     const affectedProjects =
-      affected?.split(',')?.map((a) => a.replace(',').trim()) ?? [];
-    core.info(`affectedProjects: ${affected}`);
+      affected
+        ?.replace('--affected=', '')
+        ?.replace('--affected', '')
+        ?.split(',')
+        ?.map((a) => a.replace(',').trim()) ?? [];
+
+    core.info(`${affectedProjects.length} affected projects: ${affected}`);
 
     // get next version
     const versionExec = await runExec(
-      '',
       `standard-version ${
         beta ? '--prerelease beta' : ''
       } --dry-run | sed -e '1!d' -e 's/.*to //g'`
@@ -29,7 +32,6 @@ const conventionalChangelog = require('conventional-changelog');
     // generate the full changelog
     const changelog = await extractChangelogEntry({ version: newVersion });
     core.info(`changelog: ${changelog}`);
-    core.exportVariable('changelog', changelog);
 
     const bumpFiles = [
       { filename: 'package.json', type: 'json' },
@@ -80,8 +82,11 @@ const conventionalChangelog = require('conventional-changelog');
       },
     });
 
+    // export the new version and changelog as the environment variables
+    core.exportVariable('NEW_VERSION', newVersion);
+    core.exportVariable('CHANGELOG', changelog);
 
-    core.exportVariable('version', `v${newVersion}`);
+    console.log(`NEW_VERSION=newVersion`);
   } catch (err) {
     core.setFailed(err);
     console.error(err);
