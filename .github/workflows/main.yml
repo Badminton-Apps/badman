@@ -30,8 +30,16 @@ jobs:
         npx nx affected --target=test --parallel=3 --ci --code-coverage
         npx nx affected --target=server
       final-commands: |
+        echo "All parallel jobs are done!"
+
         # store affected projects in env variable
-        AFFECTED_PROJECTS=$(npx nx affected:apps --plain) && echo affected_projects=$AFFECTED_PROJECTS >> $GITHUB_ENV
+        AFFECTED_PROJECTS=$(npx nx affected:apps --plain)
+
+        echo "Affected projects: $AFFECTED_PROJECTS"
+
+        # store affected projects in env variable
+        echo affected_projects=$AFFECTED_PROJECTS >> $GITHUB_ENV
+
   agents:
     name: Nx Cloud - Agents
     uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.11
