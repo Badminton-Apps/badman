@@ -68,7 +68,6 @@ jobs:
           git config --global user.name "Badman Releaser"
           git config advice.ignoredHook false
           npm run --prefix \scripts create-release -- --beta --base=$TAG_VERSION --head=origin/develop
-          git push origin main
 
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
