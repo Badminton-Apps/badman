@@ -360,7 +360,7 @@ jobs:
         # We need to escape the workspace path to be consistent cross-platform: https://github.com/actions/runner/issues/1066
         run: ${GITHUB_WORKSPACE//\\//}/.github/workflows/run-commands-in-parallel.sh '${{ steps.parallel_commands_config.outputs.result }}'
 
-      - name: outputAffectedProjects
+      - name: Store affected projects in output
         if: ${{ inputs.output-affected-projects == true}}
         id: outputAffectedProjects
         run: |
