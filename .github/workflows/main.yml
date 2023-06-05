@@ -62,7 +62,7 @@ jobs:
           node-version: ${{ env.NODE_ENV }}
 
       - name: install dependencies for release
-        run: npm --prefix \scripts instal
+        run: npm --prefix \scripts install
 
       - name: Merge develop into main
         if: ${{ inputs.prod-release }}
@@ -80,7 +80,6 @@ jobs:
         id: create_release
         run: |
           # if the prod release is false, then we want to create a beta release by appending --beta to the command
-          # The script outputs NEW_VERSION=x.x.x to use further
           npm run --prefix \scripts create-release --  ${{ inputs.prod-release && '' || '--beta' }}  --affected="${{ needs.main.outputs.affectedProjects }}"
 
       - name: Push new version and changelog
