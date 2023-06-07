@@ -97,6 +97,9 @@ jobs:
           # if the prod release is false, then we want to create a beta release by appending --beta to the command
           npm run --prefix \scripts create-release --  --affected="${{ needs.main.outputs.affectedProjects }}" --prod=${{ inputs.prod-release }}"
 
+          # output new version
+          echo "::set-output name=new_version::${{ env.NEW_VERSION }}"
+
       - name: Push new version and changelog
         id: push_release
         run: |
