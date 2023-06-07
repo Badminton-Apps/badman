@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.85.0-beta.10](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.9...v6.85.0-beta.10) (2023-06-07)
+
+
+### Features
+
+* deleting of players ([f8da85f](https://github.com/Badminton-Apps/badman/commit/f8da85f2d0f2bc327a7e4787323d56fed72fe9e6))
+
 ## [6.85.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.8...v6.85.0-beta.9) (2023-06-07)
 
 
