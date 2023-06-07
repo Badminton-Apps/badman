@@ -5,9 +5,8 @@ const conventionalChangelog = require('conventional-changelog');
 
 (async () => {
   try {
-    const beta =
-      process.argv?.find((arg) => arg.includes('--beta')) !== undefined;
-
+    // check if prod is set to true
+    const prodFlag = process.argv?.find((arg) => arg.includes('--prod'));
     const affected = process.argv?.find((arg) => arg.includes('--affected='));
 
     // get affected projects from env
@@ -20,10 +19,13 @@ const conventionalChangelog = require('conventional-changelog');
 
     core.info(`${affectedProjects.length} affected projects: ${affected}`);
 
+    // if prod is set to false or not set at all, we are in beta mode
+    const prod = prodFlag ? !prodFlag.includes('false') : false;
+
     // get next version
     const versionExec = await runExec(
       `standard-version ${
-        beta ? '--prerelease beta' : ''
+        !prod ? '--prerelease beta' : ''
       } --dry-run | sed -e '1!d' -e 's/.*to //g'`
     );
     const newVersion = versionExec.stdout.trim();
@@ -73,7 +75,7 @@ const conventionalChangelog = require('conventional-changelog');
     await standardVersion({
       infile: '../apps/badman/src/assets/CHANGELOG.md',
       packageFiles: ['package.json'],
-      prerelease: beta ? 'beta' : undefined,
+      prerelease: prod ? undefined : 'beta',
       bumpFiles,
       silent: false,
       skip: {
