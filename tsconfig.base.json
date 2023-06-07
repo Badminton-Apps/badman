@@ -54,11 +54,11 @@
         "libs/frontend/pages/competition/change-encounter/src/index.ts"
       ],
       "@badman/frontend-club": ["libs/frontend/pages/club/src/index.ts"],
-      "@badman/frontend-cp": ["libs/frontend/modules/cp/src/index.ts"],
       "@badman/frontend-competition": [
         "libs/frontend/pages/competition/event/src/index.ts"
       ],
       "@badman/frontend-components": ["libs/frontend/components/src/index.ts"],
+      "@badman/frontend-cp": ["libs/frontend/modules/cp/src/index.ts"],
       "@badman/frontend-general": ["libs/frontend/pages/general/src/index.ts"],
       "@badman/frontend-graphql": [
         "libs/frontend/modules/graphql/src/index.ts"

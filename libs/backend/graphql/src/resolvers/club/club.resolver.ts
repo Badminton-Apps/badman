@@ -1,17 +1,19 @@
+import { User } from '@badman/backend-authorization';
 import {
   Club,
-  Comment,
-  Location,
-  Role,
-  Team,
-  ClubUpdateInput,
-  Player,
-  ClubPlayerMembershipType,
+  ClubNewInput,
   ClubPlayerMembership,
   ClubPlayerMembershipNewInput,
+  ClubPlayerMembershipType,
   ClubPlayerMembershipUpdateInput,
-  ClubNewInput,
+  ClubUpdateInput,
+  Comment,
+  Location,
+  Player,
+  Role,
+  Team,
 } from '@badman/backend-database';
+import { IsUUID } from '@badman/utils';
 import {
   Logger,
   NotFoundException,
@@ -30,11 +32,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
-import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
-import { IsUUID } from '@badman/utils';
-// import { CacheControl } from '@apollo/server/plugin/cacheControl';
-// import { cacheControl } from 'apollo-server-plugin-response-cache';
 
 @ObjectType()
 export class PagedClub {
@@ -105,7 +103,6 @@ export class ClubsResolver {
     return club.getComments(ListArgs.toFindOptions(listArgs));
   }
 
-
   @ResolveField(() => [Role])
   async roles(
     @Parent() club: Club,
@@ -123,7 +120,10 @@ export class ClubsResolver {
   }
 
   @Mutation(() => Club)
-  async createClub(@User() user: Player, @Args('data') newClubData: ClubNewInput) {
+  async createClub(
+    @User() user: Player,
+    @Args('data') newClubData: ClubNewInput
+  ) {
     if (!user.hasAnyPermission(['add:club'])) {
       throw new UnauthorizedException(
         `You do not have permission to add a club`
