@@ -181,7 +181,6 @@ export class PlayersResolver {
           attributes: ['amountOfLevels'],
         });
 
-
         const bestRankingMin2 =
           Math.min(
             place?.single ?? system.amountOfLevels,
@@ -318,6 +317,40 @@ export class PlayersResolver {
       await transaction.commit();
 
       return result;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async removePlayer(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string
+  ) {
+    if (!user.hasAnyPermission(['delete:player'])) {
+      throw new UnauthorizedException(
+        `You do not have permission to delete this player`
+      );
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const player = await Player.findByPk(id, { transaction });
+
+      if (!player) {
+        throw new NotFoundException(`${Player.name}: ${id}`);
+      }
+
+      // destroy player
+      await player.destroy({ transaction });
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
     } catch (error) {
       this.logger.error(error);
       await transaction.rollback();

@@ -4,10 +4,10 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onConfirm()">
-    {{ 'all.button.yes' | translate }}
-  </button>
   <button mat-raised-button (click)="onDismiss()" color="primary">
     {{ 'all.button.no' | translate }}
+  </button>
+  <button mat-button (click)="onConfirm()">
+    {{ 'all.button.yes' | translate }}
   </button>
 </mat-dialog-actions>
