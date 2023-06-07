@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.85.0](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.11...v6.85.0) (2023-06-07)
+
+
+### Bug Fixes
+
+* script should now correctly parse prod flag true/false ([bb3839a](https://github.com/Badminton-Apps/badman/commit/bb3839ae002648934a917c598aa904d393897ffb))
+
 ## [6.85.0-beta.11](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.10...v6.85.0-beta.11) (2023-06-07)
 
 ## [6.85.0-beta.10](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.9...v6.85.0-beta.10) (2023-06-07)
