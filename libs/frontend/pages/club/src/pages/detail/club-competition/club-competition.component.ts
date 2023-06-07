@@ -34,7 +34,13 @@ import {
   HasClaimComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
-import { Club, Location, Comment } from '@badman/frontend-models';
+import {
+  Club,
+  Location,
+  Comment,
+  SubEventCompetition,
+  EventCompetition,
+} from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, startWith, switchMap, tap, filter } from 'rxjs/operators';
@@ -104,7 +110,7 @@ export class ClubCompetitionComponent implements OnInit {
   locations?: Signal<Location[] | undefined>;
   comments?: Signal<Comment[] | undefined>;
   loading = signal(false);
-  eventIds = signal<string[] | undefined>(undefined);
+  events = signal<EventCompetition[]>([]);
 
   // Inputs
   @Input() filter?: FormGroup;
@@ -155,7 +161,10 @@ export class ClubCompetitionComponent implements OnInit {
                         id
                         name
                         eventType
-                        eventId
+                        eventCompetition {
+                          id
+                          name
+                        }
                       }
                       meta {
                         competition {
@@ -218,20 +227,14 @@ export class ClubCompetitionComponent implements OnInit {
 
         map((result) => new Club(result?.data?.club)),
         tap((club) => {
-          const subEvents = [
-            ...new Set(
-              (club?.teams
-                ?.map((team) => team.entry?.subEventCompetition?.eventId)
-                ?.filter(
-                  (value, index, self) => self.indexOf(value) === index
-                ) ?? []) as string[]
-            ),
-          ];
+          // unique set of events
+          const events = club?.teams?.map(
+            (team) => team.entry?.subEventCompetition?.eventCompetition
+          );
+          const uniqueEvents = [...new Set(events)];
 
-          if (subEvents.length > 0) {
-            // set subevents
-            this.eventIds.set(subEvents);
-            console.log('subevents', subEvents);
+          if (uniqueEvents?.length) {
+            this.events.set(uniqueEvents as EventCompetition[]);
           }
 
           this.loading.set(false);
@@ -296,7 +299,8 @@ export class ClubCompetitionComponent implements OnInit {
     );
 
     this.comments = toSignal(
-      toObservable(this.eventIds, { injector: this.injector }).pipe(
+      toObservable(this.events, { injector: this.injector }).pipe(
+        map((events) => events?.map((event) => event?.id)),
         filter((eventIds) => eventIds !== undefined),
         filter((eventIds) => (eventIds?.length ?? 0) > 0),
         switchMap(
@@ -312,6 +316,7 @@ export class ClubCompetitionComponent implements OnInit {
                       id
                       message
                       createdAt
+                      linkId
                       player {
                         id
                         fullName
@@ -333,5 +338,9 @@ export class ClubCompetitionComponent implements OnInit {
       ),
       { injector: this.injector }
     );
+  }
+
+  getEventName(id: string): string {
+    return this.events?.()?.find((event) => event?.id === id)?.name ?? '';
   }
 }
