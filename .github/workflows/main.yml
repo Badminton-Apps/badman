@@ -26,6 +26,8 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Merge develop into main
         run: |
           git config --global user.email "info@badman.app"
@@ -147,6 +149,8 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3      
       - name: Merge main into develop
         run: |
           git config --global user.email "info@badman.app"
