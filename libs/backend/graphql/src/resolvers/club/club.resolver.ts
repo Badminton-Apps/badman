@@ -1,5 +1,6 @@
 import {
   Club,
+  Comment,
   Location,
   Role,
   Team,
@@ -95,6 +96,15 @@ export class ClubsResolver {
   ): Promise<Location[]> {
     return club.getLocations(ListArgs.toFindOptions(listArgs));
   }
+
+  @ResolveField(() => [Comment])
+  async comments(
+    @Parent() club: Club,
+    @Args() listArgs: ListArgs
+  ): Promise<Comment[]> {
+    return club.getComments(ListArgs.toFindOptions(listArgs));
+  }
+
 
   @ResolveField(() => [Role])
   async roles(
