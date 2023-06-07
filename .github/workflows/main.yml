@@ -59,6 +59,7 @@ jobs:
 
   agents:
     name: Nx Cloud - Agents
+    needs: [merge-dev-into-main]
     uses: ./.github/workflows/nx-cloud-agents.yml
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
