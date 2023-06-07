@@ -243,7 +243,7 @@ export class TeamEnrollmentComponent implements OnInit {
             `,
             variables: {
               data: {
-                year: availibility.year,
+                season: availibility.season,
                 locationId: location.id,
                 days: availibility.days,
                 exceptions: availibility.exceptions,
@@ -264,7 +264,7 @@ export class TeamEnrollmentComponent implements OnInit {
             variables: {
               data: {
                 id: availibility.id,
-                year: availibility.year,
+                season: availibility.season,
                 locationId: location.id,
                 days: availibility.days,
                 exceptions: availibility.exceptions,

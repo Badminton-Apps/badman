@@ -5,7 +5,6 @@ import { otherAnimation } from './app.animations';
 @Component({
   selector: 'badman-root',
   template: `<badman-shell>
-    
     <main [@routerTransition]="getRouteAnimationData()">
       <router-outlet></router-outlet>
     </main>
@@ -16,7 +15,9 @@ import { otherAnimation } from './app.animations';
 export class AppComponent {
   loading = false;
 
-  constructor(private contexts: ChildrenOutletContexts) {}
+  constructor(private contexts: ChildrenOutletContexts) {
+    // console.log(this.contexts);
+  }
 
   getRouteAnimationData() {
     return this.contexts.getContext('primary')?.route?.snapshot?.data?.[

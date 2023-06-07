@@ -7,39 +7,6 @@
 </badman-has-claim>
 
 <badman-has-claim
-  [any]="[
-      club.id + '_edit:location',
-      club.id + '_edit:club',
-      'edit-any:club'
-    ]"
->
-  <h2>
-    Locations
-    <badman-has-claim
-      [any]="[
-          club.id + '_add:locations',
-          club.id + '_edit:club',
-          'edit-any:club'
-        ]"
-    >
-      <button mat-icon-button (click)="this.onEditLocation(undefined, club)">
-        <mat-icon>add</mat-icon>
-      </button>
-    </badman-has-claim>
-  </h2>
-  <div class="locations">
-    <badman-club-edit-location
-      *ngFor="let location of locations$ | async"
-      [location]="location"
-      [club]="club"
-      (whenEdit)="this.onEditLocation($event, club)"
-      (whenDelete)="this.onDeleteLocation($event)"
-    >
-    </badman-club-edit-location>
-  </div>
-</badman-has-claim>
-
-<badman-has-claim
   [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']"
 >
   <h2>
@@ -65,26 +32,60 @@
   </div>
 </badman-has-claim>
 
-<badman-has-claim [any]="['change-base:team']">
-  <h2>Base players</h2>
+<badman-has-claim
+  [any]="['change-base:team', club.id + '_edit:club', 'edit-any:club']"
+>
+  <mat-divider />
 
+  <mat-form-field>
+    <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
+    <mat-select [formControl]="this.season">
+      <mat-option *ngFor="let option of this.seasons" [value]="option">
+        {{ option }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</badman-has-claim>
+
+<badman-has-claim
+  [any]="[
+    club.id + '_add:locations',
+    club.id + '_edit:club',
+    'edit-any:club'
+  ]"
+>
   <div class="options">
-    <mat-form-field>
-      <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
-      <mat-select [formControl]="this.season">
-        <mat-option *ngFor="let option of this.seasons" [value]="option">
-          {{ option }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <h2>
+      Locations
+      <button mat-icon-button (click)="this.onEditLocation(undefined, club)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </h2>
+  </div>
+  <div class="locations">
+    <badman-club-edit-location
+      *ngFor="let location of this.locationForSeason$ | async"
+      [location]="location"
+      [season]="this.season.value"
+      [club]="club"
+      (whenEdit)="this.onEditLocation($event, club)"
+    >
+    </badman-club-edit-location>
+  </div>
+</badman-has-claim>
 
-    <button mat-icon-button *ngIf="this.season.value" (click)="addTeam()">
-      <mat-icon>add</mat-icon>
-    </button>
+<badman-has-claim [any]="['change-base:team']">
+  <div class="options">
+    <h2>
+      Base players
+      <button mat-icon-button *ngIf="this.season.value" (click)="addTeam()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </h2>
   </div>
   <div class="teams">
     <badman-club-edit-team
-      *ngFor="let team of this.teamsForYear$ | async"
+      *ngFor="let team of this.teamsForSeason$ | async"
       [team]="team"
       [club]="club"
       (whenPlayerAdded)="this.onAddBasePlayer($event, team)"

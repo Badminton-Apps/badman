@@ -15,7 +15,7 @@
         "main": "apps/worker/ranking/src/main.ts",
         "tsConfig": "apps/worker/ranking/tsconfig.app.json",
         "assets": ["apps/worker/ranking/src/assets"],
-        "webpackConfig": "apps/api/webpack.config.js"
+        "webpackConfig": "apps/worker/ranking/webpack.config.js"
       },
       "configurations": {
         "production": {
@@ -36,20 +36,11 @@
       },
       "configurations": {
         "development": {
-          "buildTarget": "api:build:development"
+          "buildTarget": "worker-ranking:build:development"
         },
         "production": {
-          "buildTarget": "api:build:production"
+          "buildTarget": "worker-ranking:build:production"
         }
-      }
-    },
-    "serve-dev": {
-      "executor": "@nx/node:node",
-      "options": {
-        "buildTarget": "worker-ranking:build",
-        "inspect": "inspect",
-        "port": 9231,
-        "host": "0.0.0.0"
       }
     },
     "lint": {

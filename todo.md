@@ -4,18 +4,13 @@ Here are some genreal TODO's that can be done in the project.
 
 ## Dashboard
 
-- [ ] Should show overview of your team
 
 ## Ranking
 
 - [ ] Allow setting date for ranking
 
 ## Competition
-
-- [ ] Allow manual entry of scores
-- [ ] Allow Chaging players when a game has started (with rules)
-- [ ] Change date of encounter
-- [ ] Enrollment of a team
+none
 
 ## backend project
 
@@ -32,6 +27,7 @@ Here are some genreal TODO's that can be done in the project.
 
 - [x] Should show your latest games
 - [x] Should show your future games
+- [x] Should show overview of your team
 
 ## Assembly
 
@@ -46,6 +42,7 @@ Here are some genreal TODO's that can be done in the project.
 ## Competition
 
 - [x] Load assembly
+- [x] Enrollment of a team
 
 ## backend project
 

@@ -19,7 +19,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -34,10 +34,16 @@ import {
   HasClaimComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
-import { Club, Location } from '@badman/frontend-models';
+import {
+  Club,
+  Location,
+  Comment,
+  SubEventCompetition,
+  EventCompetition,
+} from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap, filter } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 import { FormGroup } from '@angular/forms';
 import { of } from 'rxjs';
@@ -102,7 +108,9 @@ export class ClubCompetitionComponent implements OnInit {
   // signals
   club?: Signal<Club | undefined>;
   locations?: Signal<Location[] | undefined>;
+  comments?: Signal<Comment[] | undefined>;
   loading = signal(false);
+  events = signal<EventCompetition[]>([]);
 
   // Inputs
   @Input() filter?: FormGroup;
@@ -153,6 +161,10 @@ export class ClubCompetitionComponent implements OnInit {
                         id
                         name
                         eventType
+                        eventCompetition {
+                          id
+                          name
+                        }
                       }
                       meta {
                         competition {
@@ -214,7 +226,17 @@ export class ClubCompetitionComponent implements OnInit {
         }),
 
         map((result) => new Club(result?.data?.club)),
-        tap(() => {
+        tap((club) => {
+          // unique set of events
+          const events = club?.teams?.map(
+            (team) => team.entry?.subEventCompetition?.eventCompetition
+          );
+          const uniqueEvents = [...new Set(events)];
+
+          if (uniqueEvents?.length) {
+            this.events.set(uniqueEvents as EventCompetition[]);
+          }
+
           this.loading.set(false);
         })
       ) ?? of(undefined),
@@ -245,7 +267,6 @@ export class ClubCompetitionComponent implements OnInit {
                     fax
                     availibilities(where: $where) {
                       id
-
                       days {
                         day
                         startTime
@@ -276,5 +297,50 @@ export class ClubCompetitionComponent implements OnInit {
       ) ?? of(undefined),
       { injector: this.injector }
     );
+
+    this.comments = toSignal(
+      toObservable(this.events, { injector: this.injector }).pipe(
+        map((events) => events?.map((event) => event?.id)),
+        filter((eventIds) => eventIds !== undefined),
+        filter((eventIds) => (eventIds?.length ?? 0) > 0),
+        switchMap(
+          (eventIds) =>
+            this.apollo.watchQuery<{
+              club: Partial<Club>;
+            }>({
+              query: gql`
+                query Comments($clubId: ID!, $where: JSONObject) {
+                  club(id: $clubId) {
+                    id
+                    comments(where: $where) {
+                      id
+                      message
+                      createdAt
+                      linkId
+                      player {
+                        id
+                        fullName
+                      }
+                    }
+                  }
+                }
+              `,
+              variables: {
+                clubId: this.clubId,
+                where: {
+                  linkId: eventIds,
+                },
+              },
+            }).valueChanges
+        ),
+        map((result) => new Club(result?.data?.club)),
+        map((club) => club?.comments)
+      ),
+      { injector: this.injector }
+    );
+  }
+
+  getEventName(id: string): string {
+    return this.events?.()?.find((event) => event?.id === id)?.name ?? '';
   }
 }

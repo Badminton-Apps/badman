@@ -1,11 +1,9 @@
 import { EventCompetition, Player } from '@badman/backend-database';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '@badman/backend-visual';
+import { VisualService, XmlGenderID, XmlTournament } from '@badman/backend-visual';
 import {
-  XmlTournament,
   correctWrongPlayers,
-  XmlGenderID,
 } from '../../../../utils';
 import { Logger } from '@nestjs/common';
 

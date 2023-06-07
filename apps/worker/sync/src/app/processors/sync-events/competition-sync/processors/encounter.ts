@@ -3,14 +3,18 @@ import {
   EventCompetition,
   Game,
 } from '@badman/backend-database';
-import { VisualService } from '@badman/backend-visual';
+import {
+  VisualService,
+  XmlTeamMatch,
+  XmlTournament,
+} from '@badman/backend-visual';
+import { runParrallel } from '@badman/utils';
+import { Logger } from '@nestjs/common';
 import moment from 'moment-timezone';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
-import { XmlTeamMatch, XmlTournament } from '../../../../utils';
 import { DrawStepData } from './draw';
 import { EntryStepData } from './entry';
-import { Logger } from '@nestjs/common';
 
 export interface EncounterStepData {
   encounter: EncounterCompetition;
@@ -33,14 +37,15 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions & EncounterStepOptions
   ) {
-    options.logger = options.logger || new Logger(CompetitionSyncEncounterProcessor.name);
+    options.logger =
+      options.logger || new Logger(CompetitionSyncEncounterProcessor.name);
     super(options);
 
     this.encounterOptions = options || {};
   }
 
   public async process(): Promise<EncounterStepData[]> {
-    await Promise.all(this.draws.map((e) => this._processEncounters(e)));
+    await runParrallel(this.draws.map((e) => this._processEncounters(e)));
     return this._dbEncounters;
   }
 
@@ -124,9 +129,9 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         await dbEncounter.save({ transaction: this.transaction });
       }
 
-      // Check if encounter was before last run, skip if only process new events
-      if (this.encounterOptions.newGames && dbEncounter.date < this.lastRun) {
-        continue;
+      if (!Array.isArray(xmlTeamMatch.Sets?.Set)) {
+        dbEncounter.homeScore = xmlTeamMatch.Sets?.Set?.Team1;
+        dbEncounter.awayScore = xmlTeamMatch.Sets?.Set?.Team2;
       }
 
       dbEncounter.homeTeamId = team1?.id;
@@ -164,5 +169,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       },
       transaction: this.transaction,
     });
+
+    // remove from db encounters
+    this._dbEncounters = this._dbEncounters.filter(
+      (e) => !encounter.find((r) => r.id === e.encounter.id)
+    );
   }
 }

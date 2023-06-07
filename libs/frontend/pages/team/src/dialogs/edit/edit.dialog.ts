@@ -10,17 +10,21 @@ import {
 } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogModel,
+} from '@badman/frontend-components';
 import { Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { SubEventType, TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { lastValueFrom, map, take } from 'rxjs';
-import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
+import { lastValueFrom, map, pairwise, startWith, take } from 'rxjs';
 import {
-  ConfirmDialogComponent,
-  ConfirmDialogModel,
-} from '@badman/frontend-components';
+  PLAYERS_CONTROL,
+  TeamFieldComponent,
+  TeamPlayersComponent,
+} from '../../components';
 
 @Component({
   templateUrl: './edit.dialog.html',
@@ -69,18 +73,60 @@ export class EditDialogComponent {
       phone: this.fb.control(this.data.team.phone),
       email: this.fb.control(this.data.team.email),
       season: this.fb.control(this.data.team.season),
-      players: this.fb.array(this.data.team.players ?? []),
+      preferredDay: this.fb.control(this.data.team.preferredDay),
+      preferredTime: this.fb.control(this.data.team.preferredTime),
+      [PLAYERS_CONTROL]: this.fb.array(this.data.team.players ?? []),
     });
 
     // Check if the data has players otherwise load them
-    if ((group.value.players?.length ?? 0) > 0) {
+    if ((group.value?.[PLAYERS_CONTROL]?.length ?? 0) > 0) {
       this.group = group;
+      this._listenForPlayers();
     } else {
       lastValueFrom(this._loadPlayers()).then((players) => {
-        group?.setControl('players', this.fb.array(players ?? []));
+        group?.setControl(PLAYERS_CONTROL, this.fb.array(players ?? []));
         this.group = group;
+        this._listenForPlayers();
       });
     }
+  }
+
+  private _listenForPlayers() {
+    this.group
+      ?.get(PLAYERS_CONTROL)
+      ?.valueChanges.pipe(
+        startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []),
+        pairwise()
+      )
+      .subscribe(([prev, curr]: [TeamPlayer[], TeamPlayer[]]) => {
+        if (!prev || !curr) {
+          return;
+        }
+
+        // filter out the new players
+        const newPlayers = curr.filter(
+          (c) => !prev.some((p) => p?.id === c?.id)
+        );
+
+        // filter out the removed players
+        const removedPlayers = prev.filter(
+          (p) => !curr.some((c) => c?.id === p?.id)
+        );
+
+        // if there are new players
+        for (const player of newPlayers) {
+          if (player) {
+            this.playerAdded(player);
+          }
+        }
+
+        // if there are removed players
+        for (const player of removedPlayers) {
+          if (player) {
+            this.playerRemoved(player);
+          }
+        }
+      });
   }
 
   private _loadPlayers() {
@@ -141,6 +187,8 @@ export class EditDialogComponent {
             captainId: data.captainId,
             phone: data.phone,
             email: data.email,
+            preferredDay: data.preferredDay,
+            preferredTime: data.preferredTime,
           },
         },
         refetchQueries: () => ['Team', 'Teams'],

@@ -238,7 +238,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         `,
         variables: {
           where: {
-            season: getCurrentSeason(),
+            season: this.group?.get('season')?.value ?? null,
             clubId: clubId,
           },
           order: [

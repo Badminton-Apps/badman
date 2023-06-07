@@ -212,7 +212,7 @@
       <badman-block *ngFor="let location of this.locations?.()">
         <badman-block-header>
           <badman-block-title>{{ location.name }}</badman-block-title>
-          <badman-block-actions align="end">
+          <!-- <badman-block-actions align="end">
             <button mat-icon-button [matMenuTriggerFor]="options">
               <mat-icon>more_vert</mat-icon>
             </button>
@@ -229,7 +229,7 @@
                 </button>
               </badman-has-claim>
             </mat-menu>
-          </badman-block-actions>
+          </badman-block-actions> -->
         </badman-block-header>
         <mat-divider></mat-divider>
         <badman-block-content>
@@ -295,6 +295,25 @@
             </div>
           </div>
         </badman-block-content>
+      </badman-block>
+    </div>
+  </section>
+  <section>
+    <h2>Comments</h2>
+
+    <div class="comments">
+      <badman-block *ngFor="let comment of this.comments?.()">
+        <badman-block-header>
+          <badman-block-title>
+            {{ getEventName(comment.linkId!) }}
+          </badman-block-title>
+          <badman-block-subtitle>
+            {{ comment.player?.fullName }} -
+            {{ comment.createdAt | amDateFormat : 'LLLL' }}
+          </badman-block-subtitle>
+        </badman-block-header>
+        <mat-divider></mat-divider>
+        <badman-block-content>{{ comment.message }}</badman-block-content>
       </badman-block>
     </div>
   </section>

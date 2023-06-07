@@ -27,7 +27,7 @@
             "output": "assets"
           }
         ],
-        "webpackConfig": "apps/api/webpack.config.js"
+        "webpackConfig": "apps/worker/sync//webpack.config.js"
       },
       "configurations": {
         "development": {},
@@ -49,20 +49,11 @@
       },
       "configurations": {
         "development": {
-          "buildTarget": "api:build:development"
+          "buildTarget": "worker-sync:build:development"
         },
         "production": {
-          "buildTarget": "api:build:production"
+          "buildTarget": "worker-sync:build:production"
         }
-      }
-    },
-    "serve-dev": {
-      "executor": "@nx/node:node",
-      "options": {
-        "buildTarget": "worker-sync:build",
-        "inspect": "inspect",
-        "port": 9230,
-        "host": "0.0.0.0"
       }
     },
     "lint": {

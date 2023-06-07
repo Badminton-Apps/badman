@@ -74,6 +74,10 @@
   "club": {
     "current": "Huidig club",
     "delete": {
+      "player": {
+        "description": "Weet u zeker dat je deze speler wilt verwijderen?",
+        "title": "Speler verwijderen"
+      },
       "team": {
         "description": "Weet u zeker dat je dit team wilt verwijderen?",
         "title": "Team verwijderen"

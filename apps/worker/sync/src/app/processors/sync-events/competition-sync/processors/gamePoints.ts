@@ -31,7 +31,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
     for (const subEvent of subEvents) {
       const index = subEvents.indexOf(subEvent);
       const progress = (index / subEvents.length) * 100;
-      this.logger.debug(`Syncing points for ${subEvent.name} (${progress}%)`);
+      this.logger.debug(`Syncing points for ${subEvent.name} (${progress.toFixed(2)}%)`);
 
       const groups = await subEvent.getRankingGroups({
         include: [{ model: RankingSystem }],

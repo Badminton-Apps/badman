@@ -124,7 +124,7 @@ export interface XmlVenue {
 
 export interface XmlTeamMatch {
   Code: string;
-  Winner: string;
+  Winner: number;
   ScoreStatus: string;
   RoundName: string;
   MatchTime: Date;
@@ -186,7 +186,7 @@ export interface XmlTournamentEvent {
 }
 
 export interface XmlSets {
-  Set: XmlSet[];
+  Set: XmlSet | XmlSet[];
 }
 
 export interface XmlSet {

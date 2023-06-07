@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.85.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.8...v6.85.0-beta.9) (2023-06-07)
+
+
+### Features
+
+* showing comments in club view ([afc1405](https://github.com/Badminton-Apps/badman/commit/afc1405af44a8ce764f9bc6b1c44a50130936fe0))
+
+
+### Bug Fixes
+
+* added eventname ([2698f29](https://github.com/Badminton-Apps/badman/commit/2698f29f5dca65d96c64b005e2a956edc5cad810))
+* allowing preferred to be saved ([04c745f](https://github.com/Badminton-Apps/badman/commit/04c745fcfcdbc3e0c97515406d73f9cc71e3e4ec))
+
+## [6.85.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.7...v6.85.0-beta.8) (2023-06-04)
+
+
+### Features
+
+* loading events ([8bb3d2e](https://github.com/Badminton-Apps/badman/commit/8bb3d2e88bf5ed64d9fde2bf5d9e75cb82da9b1f))
+* loading teams ([6fe892c](https://github.com/Badminton-Apps/badman/commit/6fe892c040a85ba10e5a9bb2b1b8ae20b40974a6))
+
+
+### Bug Fixes
+
+* edit-role should have code to push more options to the back ([9173c86](https://github.com/Badminton-Apps/badman/commit/9173c86ae1fec95d32510b9675857f6e2151e2e9))
+* remove logging ([7e6d8f3](https://github.com/Badminton-Apps/badman/commit/7e6d8f39f569afa40977a0c965589d825f6aff2d))
+
+## [6.85.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.6...v6.85.0-beta.7) (2023-06-04)
+
+
+### Bug Fixes
+
+* get requets for both contexts ([0bcb89c](https://github.com/Badminton-Apps/badman/commit/0bcb89cea564f711a546cdea2446f18d1b72feb9))
+
+## [6.85.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.5...v6.85.0-beta.6) (2023-06-04)
+
+
+### Bug Fixes
+
+* removing some old testing code ([bf39c60](https://github.com/Badminton-Apps/badman/commit/bf39c6032f3a58ad47d2e60a7c757ef106e95f3c))
+
+## [6.85.0-beta.5](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.3...v6.85.0-beta.5) (2023-06-04)
+
+
+### Bug Fixes
+
+* another change to keep it increasing ([61f383e](https://github.com/Badminton-Apps/badman/commit/61f383e27f8b03bb4557c02f4768ac2973ff2b05))
+* changes in badman for triggering builds ([47b49d4](https://github.com/Badminton-Apps/badman/commit/47b49d4a4ff390fd292d7994a7b4ef45560861b9))
+
+## [6.85.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.3...v6.85.0-beta.4) (2023-06-04)
+
+
+### Bug Fixes
+
+* changes in badman for triggering builds ([47b49d4](https://github.com/Badminton-Apps/badman/commit/47b49d4a4ff390fd292d7994a7b4ef45560861b9))
+
 ## [6.84.0](https://github.com/Badminton-Apps/badman/compare/v6.83.0...v6.84.0) (2023-05-29)
 
 

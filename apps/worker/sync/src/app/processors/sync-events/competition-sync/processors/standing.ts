@@ -9,7 +9,7 @@ import {
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { DrawStepData } from './draw';
 import { EncounterStepData } from './encounter';
-import { sortStanding } from '@badman/utils';
+import { runParrallel, sortStanding } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 
 export interface StandingStepOptions {
@@ -30,7 +30,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
   }
 
   public async process(): Promise<void> {
-    await Promise.all(
+    await runParrallel(
       this.draws.map((e) => {
         const filtered = this.encounters
           .filter((g) => g.encounter.drawId === e.draw.id)
@@ -232,7 +232,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
   ) {
     const teams = new Map<string, Team>();
 
-    await Promise.all(
+    await runParrallel(
       encounters.map(async (e) => {
         try {
           if (!teams.has(e.homeTeamId) && e.homeTeamId) {
@@ -277,7 +277,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
   private async _getStanding(draw: DrawCompetition, teams: Team[]) {
     const teamStandings = new Map<string, Standing>();
 
-    await Promise.all(
+    await runParrallel(
       teams.map(async (team) => {
         teamStandings.set(team.id, await this._standingTeam(draw, team));
       })

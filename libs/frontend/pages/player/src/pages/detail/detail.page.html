@@ -66,8 +66,10 @@
           </button>
         </badman-has-claim> -->
 
-        <badman-has-claim [any]="['edit-any:player']">
-          <button mat-menu-item>
+        <badman-has-claim
+          [any]="['delete:player']"
+        >
+          <button mat-menu-item (click)="this.removePlayer()">
             <mat-icon>delete</mat-icon>
             <span>{{'all.player.menu.delete' | translate}}</span>
           </button>

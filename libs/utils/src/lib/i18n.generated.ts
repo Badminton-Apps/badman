@@ -78,6 +78,10 @@ export type I18nTranslations = {
         "club": {
             "current": string;
             "delete": {
+                "player": {
+                    "description": string;
+                    "title": string;
+                };
                 "team": {
                     "description": string;
                     "title": string;

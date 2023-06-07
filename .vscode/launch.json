@@ -10,8 +10,8 @@
       "request": "attach",
       "port": 9229,
       "address": "localhost",
-      "localRoot": "${workspaceFolder}",
-      // "remoteRoot": "/usr/src",
+      "localRoot": "${workspaceFolder}/apps/api",
+      "remoteRoot": "/usr/src",
       "restart": true
     },
     {
@@ -20,9 +20,9 @@
       "request": "attach",
       "port": 9230,
       "address": "localhost",
-      "localRoot": "${workspaceFolder}",
+      "localRoot": "${workspaceFolder}/apps/worker/sync",
       "remoteRoot": "/usr/src",
-      "restart": true,
+      "restart": true
     },
     {
       "name": "Worker - Ranking",
@@ -30,7 +30,7 @@
       "request": "attach",
       "port": 9231,
       "address": "localhost",
-      "localRoot": "${workspaceFolder}",
+      "localRoot": "${workspaceFolder}/apps/worker/ranking",
       "remoteRoot": "/usr/src",
       "restart": true
     }

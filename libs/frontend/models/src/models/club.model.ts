@@ -3,6 +3,7 @@ import { Player } from './player.model';
 import { Role } from './security';
 import { Location } from './location.model';
 import { UseForTeamName } from '@badman/utils';
+import { Comment } from './comment.model';
 
 export class Club {
   id?: string;
@@ -19,6 +20,7 @@ export class Club {
   players?: Player[];
   roles?: Role[];
   locations?: Location[];
+  comments?: Comment[];
 
   clubMembership?: ClubMembership;
 
@@ -38,6 +40,7 @@ export class Club {
     this.players = args.players?.map((p) => new Player(p));
     this.roles = args.roles?.map((p) => new Role(p));
     this.locations = args.locations?.map((p) => new Location(p));
+    this.comments = args.comments?.map((p) => new Comment(p));
     this.clubMembership = args?.clubMembership
       ? new ClubMembership(args.clubMembership)
       : undefined;

@@ -109,6 +109,7 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
     }
 
     const previous = this.group.get(this.dependsOn);
+
     if (!previous) {
       console.warn(`Dependency ${this.dependsOn} not found`, previous);
     } else {
@@ -125,8 +126,8 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
 
           if (next !== null) {
             return (
-              this.group.get('year')?.valueChanges.pipe(
-                startWith(this.group.get('year')?.value),
+              this.group.get('season')?.valueChanges.pipe(
+                startWith(this.group.get('season')?.value),
                 switchMap((year) => this._loadEncounters(year, next))
               ) ?? of([])
             );

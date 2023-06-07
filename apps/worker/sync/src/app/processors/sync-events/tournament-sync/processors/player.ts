@@ -1,12 +1,12 @@
 import { EventTournament, Player } from '@badman/backend-database';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '@badman/backend-visual';
 import {
+  VisualService,
   XmlTournament,
   XmlGenderID,
-  correctWrongPlayers,
-} from '../../../../utils';
+} from '@badman/backend-visual';
+import { correctWrongPlayers } from '../../../../utils';
 import { Logger } from '@nestjs/common';
 
 export class TournamentSyncPlayerProcessor extends StepProcessor {
@@ -17,7 +17,8 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
-    options.logger = options.logger || new Logger(TournamentSyncPlayerProcessor.name);
+    options.logger =
+      options.logger || new Logger(TournamentSyncPlayerProcessor.name);
     super(options);
   }
 
