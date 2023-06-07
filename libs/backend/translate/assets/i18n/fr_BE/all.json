@@ -74,6 +74,10 @@
   "club": {
     "current": "Club actuel",
     "delete": {
+      "player": {
+        "description": "Êtes-vous sûr de vouloir supprimer ce lecteur ?",
+        "title": "Supprimer le lecteur"
+      },
       "team": {
         "description": "Voulez-vous vraiment supprimer cette équipe ?",
         "title": "Supprimer l'équipe"
