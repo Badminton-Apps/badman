@@ -10,11 +10,8 @@
     <mat-toolbar class="logo">
       <a routerLink="/">
         <badman-logo></badman-logo>
-        <span class="version"
-          >{{ versionInfo.version
-          }}<ng-container *ngIf="versionInfo.beta"> - beta</ng-container></span
-        ></a
-      >
+        <span class="version">{{ versionInfo.version }}</span>
+      </a>
     </mat-toolbar>
     <div class="sidebar-items">
       <div>
@@ -51,9 +48,11 @@
               <a mat-list-item [routerLink]="['/competition']">{{
                 'all.shell.sidebar.competition.overview' | translate
               }}</a>
+
               <a mat-list-item [routerLink]="['/competition', 'assembly']">{{
                 'all.shell.sidebar.competition.assembly' | translate
               }}</a>
+
               <badman-has-claim [any]="['*_enlist:team', 'enlist-any:team']">
                 <a
                   mat-list-item

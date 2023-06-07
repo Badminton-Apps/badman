@@ -81,4 +81,43 @@
       {{ 'all.team.no-perm.email-phone' | translate }}
     </div>
   </badman-has-claim>
+
+  <h2>{{ 'all.team.prefferd.title' | translate }}</h2>
+  <div class="prefferd">
+    <mat-form-field class="day">
+      <mat-label>{{ 'all.input.day' | translate }}</mat-label>
+      <mat-select [required]="true" formControlName="preferredDay">
+        <mat-option value="monday">{{
+          'all.days.monday' | translate
+        }}</mat-option>
+        <mat-option value="tuesday">{{
+          'all.days.tuesday' | translate
+        }}</mat-option>
+        <mat-option value="wednesday">{{
+          'all.days.wednesday' | translate
+        }}</mat-option>
+        <mat-option value="thursday">{{
+          'all.days.thursday' | translate
+        }}</mat-option>
+        <mat-option value="friday">{{
+          'all.days.friday' | translate
+        }}</mat-option>
+        <mat-option value="saturday">{{
+          'all.days.saturday' | translate
+        }}</mat-option>
+        <mat-option value="sunday">{{
+          'all.days.sunday' | translate
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="time">
+      <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
+      <input
+        [required]="true"
+        matInput
+        type="time"
+        formControlName="preferredTime"
+      />
+    </mat-form-field>
+  </div>
 </form>

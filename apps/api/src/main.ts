@@ -5,21 +5,29 @@
 
 import { Logger, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { NestFactory } from '@nestjs/core';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 
 import { AppModule, RedisIoAdapter } from './app';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    bufferLogs: true,
-  });
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+    {
+      bufferLogs: true,
+    }
+  );
   const configService = app.get<ConfigService>(ConfigService);
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   const redisHost = configService.get('REDIS_HOST');
   if (redisHost) {
     const redisPass = configService.get('REDIS_PASSWORD');
-    let redisUrl = redisPass ? `redis://:${redisPass}@` : 'redis://'; 
+    let redisUrl = redisPass ? `redis://:${redisPass}@` : 'redis://';
     redisUrl += `${redisHost}:${configService.get('REDIS_PORT')}`;
 
     const redisIoAdapter = new RedisIoAdapter(app);
@@ -43,7 +51,11 @@ async function bootstrap() {
   });
 
   const port = configService.get('PORT') || 5000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0', (error) => {
+    if (error) {
+      process.exit(1);
+    }
+  });
 
   Logger.debug(
     `🚀 Application is running on: http://localhost:${port}. level: ${configService.get(
@@ -53,4 +65,3 @@ async function bootstrap() {
 }
 
 bootstrap();
- 

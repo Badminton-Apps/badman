@@ -7,10 +7,9 @@ import {
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
-import { VisualService } from '@badman/backend-visual';
-import { XmlTournament, XmlDrawTypeID } from '../../../../utils';
+import { VisualService, XmlDrawTypeID, XmlTournament } from '@badman/backend-visual';
 import { SubEventStepData } from './subEvent';
-import { DrawType } from '@badman/utils';
+import { DrawType, runParrallel } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 
 export interface DrawStepData {
@@ -33,7 +32,7 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
   }
 
   public async process(): Promise<DrawStepData[]> {
-    await Promise.all(this.subEvents.map((e) => this._processDraws(e)));
+    await runParrallel(this.subEvents.map((e) => this._processDraws(e)));
     return this._dbDraws;
   }
 

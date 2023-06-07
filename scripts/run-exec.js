@@ -5,7 +5,7 @@ const core = require('@actions/core');
 
 const exec = promisify(require('child_process').exec);
 
-module.exports = async function (args, cmd) {
+module.exports = async function (cmd, args) {
   core.debug(`Running: ${cmd}`, args);
 
   const promise = exec(cmd);

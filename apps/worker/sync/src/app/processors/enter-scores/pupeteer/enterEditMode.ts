@@ -1,4 +1,5 @@
 import { EncounterCompetition } from '@badman/backend-database';
+import { runParrallel } from '@badman/utils';
 import { Page } from 'puppeteer';
 
 export async function enterEditMode(
@@ -23,6 +24,6 @@ export async function enterEditMode(
     await targetPage.goto(
       `https://www.toernooi.nl/sport/matchresult.aspx?id=${eventId}&match=${matchId}`
     );
-    await Promise.all(promises);
+    await runParrallel(promises);
   }
 }

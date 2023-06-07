@@ -1,10 +1,10 @@
 import { Club, EventEntry, Team } from '@badman/backend-database';
-import { VisualService } from '@badman/backend-visual';
-import { teamValues } from '@badman/utils';
+import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
+import { runParrallel, teamValues } from '@badman/utils';
 import { isArray } from 'class-validator';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
-import { correctWrongTeams, XmlItem, XmlTournament } from '../../../../utils';
+import { correctWrongTeams } from '../../../../utils';
 import { DrawStepData } from './draw';
 import { Logger } from '@nestjs/common';
 
@@ -27,7 +27,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EntryStepData[]> {
-    await Promise.all(this.draws.map((e) => this._processEntries(e)));
+    await runParrallel(this.draws.map((e) => this._processEntries(e)));
     return this._entries;
   }
 

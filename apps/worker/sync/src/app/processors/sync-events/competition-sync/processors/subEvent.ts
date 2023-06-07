@@ -6,12 +6,13 @@ import {
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
-import { VisualService } from '@badman/backend-visual';
 import {
+  VisualService,
   XmlGenderID,
   XmlTournament,
   XmlTournamentEvent,
-} from '../../../../utils';
+} from '@badman/backend-visual';
+
 import { LevelType, SubEventTypeEnum } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 

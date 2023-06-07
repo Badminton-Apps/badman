@@ -9,6 +9,7 @@ import {
   Signal,
   TransferState,
   inject,
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -31,7 +32,7 @@ import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, of } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { RisersFallersDialogComponent } from '../../../dialogs';
 
 @Component({
@@ -70,6 +71,7 @@ export class CompetitionEventsComponent implements OnInit {
 
   // signals
   events?: Signal<EventCompetition[] | undefined>;
+  loading = signal(false);
 
   // Inputs
   @Input() filter?: FormGroup<{
@@ -92,6 +94,9 @@ export class CompetitionEventsComponent implements OnInit {
 
     this.events = toSignal(
       this.filter?.valueChanges?.pipe(
+        tap(() => {
+          this.loading.set(true);
+        }),
         startWith(this.filter.value ?? {}),
         switchMap((filter) => {
           return this.apollo.watchQuery<{
@@ -155,6 +160,9 @@ export class CompetitionEventsComponent implements OnInit {
           return result.data.eventCompetitions.rows.map(
             (team) => new EventCompetition(team)
           );
+        }),
+        tap(() => {
+          this.loading.set(false);
         })
       ) ?? of([]),
       { injector: this.injector }

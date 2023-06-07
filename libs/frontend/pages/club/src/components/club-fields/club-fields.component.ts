@@ -80,7 +80,6 @@ export class ClubFieldsComponent implements OnInit {
     }
 
     if (!this.control) {
-      console.log('No control provided, creating one');
       this.control = new FormGroup({
         name: new FormControl('', Validators.required),
         clubId: new FormControl('', Validators.required),
@@ -104,7 +103,6 @@ export class ClubFieldsComponent implements OnInit {
     }
 
     if (this.group && !this.group?.get(this.controlName)) {
-      console.log('Adding control to group');
       this.group.addControl(this.controlName, this.control);
     }
 
