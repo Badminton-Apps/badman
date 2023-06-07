@@ -20,13 +20,19 @@ import {
   signal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { FormGroup } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   BadmanBlockModule,
@@ -36,23 +42,16 @@ import {
 } from '@badman/frontend-components';
 import {
   Club,
-  Location,
   Comment,
-  SubEventCompetition,
   EventCompetition,
+  Location,
 } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, startWith, switchMap, tap, filter } from 'rxjs/operators';
-import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
-import { FormGroup } from '@angular/forms';
-import { of } from 'rxjs';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
 import { MomentModule } from 'ngx-moment';
+import { of } from 'rxjs';
+import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 @Component({
   selector: 'badman-club-competition',
   standalone: true,
