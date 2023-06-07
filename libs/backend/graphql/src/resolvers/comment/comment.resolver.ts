@@ -43,7 +43,7 @@ export class CommentResolver {
     return Comment.findAll(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => Player)
+  @ResolveField(() => Player, { nullable: true })
   async player(@Parent() comment: Comment): Promise<Player> {
     return comment.getPlayer();
   }

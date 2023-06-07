@@ -120,7 +120,6 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     }
 
     if (!this.control) {
-      console.log('No control provided, creating one');
       this.control = new FormGroup({
         M: new FormArray<TeamForm>([]),
         F: new FormArray<TeamForm>([]),
@@ -130,7 +129,6 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     }
 
     if (this.group && !this.group?.get(this.controlName)) {
-      console.log('Adding control to group');
       this.group.addControl(this.controlName, this.control);
     }
 

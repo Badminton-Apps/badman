@@ -216,6 +216,11 @@ export class Game extends Model {
     encounter: EncounterCompetition,
     options: CreateOptions | UpdateOptions
   ) {
+    // If the encounter already has a score, don't update it
+    if ((encounter.homeScore ?? 0) + (encounter.awayScore ?? 0) > 0) {
+      return;
+    }
+
     const games = await encounter.getGames({
       transaction: options.transaction,
     });

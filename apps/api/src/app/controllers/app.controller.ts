@@ -1,11 +1,6 @@
 import { User } from '@badman/backend-authorization';
 import {
-  DrawCompetition,
-  EncounterCompetition,
-  EventCompetition,
-  Player,
-  SubEventCompetition,
-  Team,
+  Player
 } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
 import { MailingService } from '@badman/backend-mailing';
@@ -24,7 +19,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Queue } from 'bull';
-import { Response } from 'express';
+import { FastifyReply } from 'fastify';
 import { createReadStream } from 'fs';
 import { basename, extname } from 'path';
 
@@ -84,19 +79,19 @@ export class AppController {
   }
 
   @Get('cp')
-  async getCp(@Res() res: Response, @Query() query: { eventId: string }) {
+  async getCp(@Res() res: FastifyReply, @Query() query: { eventId: string }) {
     this.logger.debug('Generating CP');
     try {
       const fileLoc = await this.cpGen.generateCpFile(query.eventId);
       const file = createReadStream(fileLoc);
       const extension = extname(fileLoc);
       const fileName = basename(fileLoc, extension);
-      res.setHeader(
+      res.header(
         'Content-disposition',
         'attachment; filename=' + fileName + extension
       );
 
-      file.pipe(res);
+      res.type(extension).send(file);
     } catch (e) {
       this.logger.error(e?.process?.message ?? e.message);
       throw e;
@@ -104,7 +99,10 @@ export class AppController {
   }
 
   @Get('planner')
-  async getPlanner(@Res() res: Response, @Query() query: { season: string }) {
+  async getPlanner(
+    @Res() res: FastifyReply,
+    @Query() query: { season: string }
+  ) {
     this.logger.debug('Generating planner');
     const result = await this.planner.getPlannerData(query.season);
 
@@ -112,63 +110,5 @@ export class AppController {
 
     // Respond ok for now
     res.status(200).send(result);
-  }
-
-  @Get('test-glenn')
-  async test(@User() user: Player, @Res() res: Response) {
-    if (!user.hasAnyPermission(['change:job'])) {
-      throw new UnauthorizedException('You do not have permission to do this');
-    }
-
-    const encounter = await EncounterCompetition.findByPk(
-      'b89fc82b-2322-4330-8599-9a26d7607b1c',
-      {
-        attributes: ['id', 'visualCode', 'date', 'homeTeamId', 'awayTeamId'],
-        include: [
-          {
-            model: Team,
-            as: 'home',
-            attributes: ['id', 'name'],
-          },
-          {
-            model: Team,
-            as: 'away',
-            attributes: ['id', 'name'],
-          },
-          {
-            required: true,
-            attributes: ['id'],
-            model: DrawCompetition,
-            include: [
-              {
-                required: true,
-                attributes: ['id'],
-                model: SubEventCompetition,
-                include: [
-                  {
-                    required: true,
-                    attributes: ['id', 'visualCode'],
-                    model: EventCompetition,
-                    where: {
-                      checkEncounterForFilledIn: true,
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      }
-    );
-
-    await this.notificationService.notifyEncounterNotEntered(encounter);
-
-    // Respond ok for now
-    res.status(200).send();
-  }
-
-  @Get('test')
-  async getInlinePdf() {
-    await this.mailService.sendTestMail();
   }
 }

@@ -1,4 +1,4 @@
-<section class="events" *ngIf="this.events; else loadingEvents">
+<section class="events" *ngIf="this.events && !loading()">
   <div class="title">
     <h3>{{ 'all.competition.subevent.title' | translate }}</h3>
   </div>
@@ -72,7 +72,7 @@
   </div>
 </section>
 
-<ng-template #loadingEvents>
+<ng-container *ngIf="loading()">
   <section class="events">
     <h3>{{ 'all.club.titles.teams' | translate }}</h3>
     <badman-loading-block
@@ -80,7 +80,6 @@
       height="74px"
       width="250px"
       direction="row"
-      w
     />
   </section>
-</ng-template>
+</ng-container>

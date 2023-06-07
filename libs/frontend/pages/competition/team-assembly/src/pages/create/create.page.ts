@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnInit,
-  TemplateRef,
-  ViewChild
-} from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
@@ -29,6 +24,8 @@ import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AssemblyComponent } from './components';
+import { get } from 'http';
+import { getCurrentSeason } from '@badman/utils';
 
 @Component({
   selector: 'badman-assembly-create',
@@ -85,16 +82,11 @@ export class CreatePageComponent implements OnInit {
       keywords: ['assembly', 'badminton'],
     });
     // Set for today
-    const today = moment();
-    const queryYear = parseInt(this.route.snapshot.queryParams['year'], 10);
-    const year = isNaN(queryYear)
-      ? today.month() >= 6
-        ? today.year()
-        : today.year() - 1
-      : queryYear;
+    const queryYear = parseInt(this.route.snapshot.queryParams['season'], 10);
+    const year = isNaN(queryYear) ? getCurrentSeason() : queryYear;
 
     this.formGroup = new FormGroup({
-      year: new FormControl(year),
+      season: new FormControl(year),
       event: this.selectedEventControl,
       club: new FormControl(),
     });
@@ -112,9 +104,6 @@ export class CreatePageComponent implements OnInit {
   }
 
   async download() {
-    console.log(this.validationOverview, this.validationWarnings)
-
-
     if (!this.validationOverview?.valid) {
       if (!this.validationOverview || !this.validationWarnings) {
         return;

@@ -24,6 +24,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -38,7 +39,13 @@ import {
   SelectCountrystateComponent,
 } from '@badman/frontend-components';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
-import { Club, EntryCompetitionPlayer, Location, Player, Role, Team } from '@badman/frontend-models';
+import {
+  Club,
+  EntryCompetitionPlayer,
+  Location,
+  Role,
+  Team,
+} from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import {
   SecurityType,
@@ -108,6 +115,7 @@ import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
     MatOptionModule,
     MatSelectModule,
     MatProgressBarModule,
+    MatDividerModule,
   ],
 })
 export class EditPageComponent implements OnInit, OnDestroy {
@@ -120,7 +128,8 @@ export class EditPageComponent implements OnInit, OnDestroy {
   roles$!: Observable<Role[]>;
   locations$!: Observable<Location[]>;
 
-  teamsForYear$!: Observable<Team[]>;
+  teamsForSeason$!: Observable<Team[]>;
+  locationForSeason$!: Observable<Location[]>;
 
   updateClub$ = new BehaviorSubject(null);
   updateLocation$ = new BehaviorSubject(null);
@@ -223,14 +232,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
         switchMap(([, useCache]) => this._loadRoles(useCache))
       );
 
-      this.locations$ = combineLatest([
-        this.updateClub$,
-        this.updateLocation$,
-      ]).pipe(
-        takeUntil(this.destroy$),
-        switchMap(() => this._loadLocations())
-      );
-
       this._getYears().then((years) => {
         if (years.length > 0) {
           this.seasons = years;
@@ -238,7 +239,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         }
       });
 
-      this.teamsForYear$ = combineLatest([
+      this.teamsForSeason$ = combineLatest([
         this.season.valueChanges,
         this.updateTeams$,
       ]).pipe(
@@ -316,6 +317,61 @@ export class EditPageComponent implements OnInit, OnDestroy {
         }),
         map((teams) => teams.sort(sortTeams))
       );
+
+      this.locationForSeason$ = combineLatest([
+        this.season.valueChanges,
+        this.updateLocation$,
+      ]).pipe(
+        takeUntil(this.destroy$),
+        switchMap((season) => {
+          return this.apollo.query<{ club: Club }>({
+            fetchPolicy: 'no-cache',
+            query: gql`
+              query GetAvailibiltiesForSeason($id: ID!, $where: JSONObject!) {
+                club(id: $id) {
+                  id
+                  locations {
+                    id
+                    name
+                    address
+                    postalcode
+                    street
+                    streetNumber
+                    city
+                    state
+                    phone
+                    fax
+                    availibilities(where: $where) {
+                      id
+                      season
+                      days {
+                        day
+                        startTime
+                        endTime
+                        courts
+                      }
+                      exceptions {
+                        start
+                        end
+                        courts
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              id: this.club.id,
+              where: {
+                season: season,
+              },
+            },
+          });
+        }),
+        map((x) => {
+          return (x.data.club.locations ?? []).map((t) => new Location(t));
+        })
+      );
     });
   }
 
@@ -361,54 +417,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
           }
 
           return result.data.roles.map((roles) => new Role(roles));
-        })
-      );
-  }
-
-  private _loadLocations() {
-    return this.apollo
-      .query<{ club: Partial<Club> }>({
-        query: gql`
-          query GetClubLocations($id: ID!) {
-            club(id: $id) {
-              id
-              locations {
-                id
-                name
-                address
-                postalcode
-                street
-                streetNumber
-                city
-                state
-                phone
-                fax
-              }
-            }
-          }
-        `,
-        variables: {
-          id: this.club.id,
-        },
-      })
-      .pipe(
-        transferState(
-          `clubLocationsKey-${this.club.id}`,
-          this.stateTransfer,
-          this.platformId
-        ),
-        map((result) => {
-          if (!result?.data.club) {
-            throw new Error('No club');
-          }
-
-          if (!result.data.club.locations) {
-            throw new Error('No locations');
-          }
-
-          return result.data.club.locations.map(
-            (location) => new Location(location)
-          );
         })
       );
   }
@@ -582,7 +590,10 @@ export class EditPageComponent implements OnInit, OnDestroy {
     this.updateTeams$.next(null);
   }
 
-  async onDeleteBasePlayer(player: Partial<EntryCompetitionPlayer>, team: Team) {
+  async onDeleteBasePlayer(
+    player: Partial<EntryCompetitionPlayer>,
+    team: Team
+  ) {
     if (!team?.id) {
       throw new Error('No team id');
     }
@@ -622,7 +633,10 @@ export class EditPageComponent implements OnInit, OnDestroy {
     this.updateTeams$.next(null);
   }
 
-  async onPlayerMetaUpdated(player: Partial<EntryCompetitionPlayer>, team: Team) {
+  async onPlayerMetaUpdated(
+    player: Partial<EntryCompetitionPlayer>,
+    team: Team
+  ) {
     if (!team?.id) {
       throw new Error('No team id');
     }
@@ -635,7 +649,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
     }
 
     // delete __typename from player
-
 
     await lastValueFrom(
       this.apollo.mutate({

@@ -1,4 +1,4 @@
-name: CI
+name: CI Workflow
 
 on:
   pull_request:
@@ -6,18 +6,17 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
-  cancel-in-progress: true  
+  cancel-in-progress: true
 
 env:
-  NODE_ENV: '19.3.0'
-
+  NODE_ENV: '20.1'
 
 jobs:
   main:
     name: Nx Cloud - Main Job
-    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.11
+    uses: ./.github/workflows/nx-cloud-main.yml
     secrets:
-      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}    
+      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
       init-commands: |
@@ -32,7 +31,7 @@ jobs:
 
   agents:
     name: Nx Cloud - Agents
-    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.11
+    uses: ./.github/workflows/nx-cloud-agents.yml
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:

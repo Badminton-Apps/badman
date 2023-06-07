@@ -144,12 +144,8 @@ export class VisualService {
     return parsed.Tournament as XmlTournament;
   }
 
-  
-
   async searchEvents(query: string) {
-    const url = `${this._configService.get(
-      'VR_API'
-    )}/Tournament?q=${query}`;
+    const url = `${this._configService.get('VR_API')}/Tournament?q=${query}`;
 
     const result = await this._getFromApi(url, false);
     const body = this._parser.parse(result).Result as XmlResult;
@@ -170,11 +166,8 @@ export class VisualService {
     return tournaments;
   }
 
-  
   async getEvent(id: string) {
-    const url = `${this._configService.get(
-      'VR_API'
-    )}/Tournament/${id}`;
+    const url = `${this._configService.get('VR_API')}/Tournament/${id}`;
 
     const result = await this._getFromApi(url, false);
     const body = this._parser.parse(result).Result as XmlResult;
@@ -182,7 +175,6 @@ export class VisualService {
     if (body.Tournament === undefined) {
       return [];
     }
-
 
     const tournaments = Array.isArray(body.Tournament)
       ? [...body.Tournament]
@@ -263,7 +255,7 @@ export class VisualService {
     if (this._configService.get('NODE_ENV') === 'production') {
       const resultPut = await axios(options);
       const parser = new XMLParser();
- 
+
       const bodyPut = parser.parse(resultPut.data).Result as XmlResult;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
         this.logger.error(options);
@@ -317,7 +309,7 @@ export class VisualService {
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.RankingPublicationPoints;
-  } 
+  }
 
   private async _getFromApi(url: string, useCache = true) {
     const t0 = performance.now();

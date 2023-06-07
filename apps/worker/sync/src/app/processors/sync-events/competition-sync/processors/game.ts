@@ -5,21 +5,21 @@ import {
   Player,
   RankingSystem,
 } from '@badman/backend-database';
-import moment from 'moment';
-import { Op } from 'sequelize';
-import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService } from '@badman/backend-visual';
 import {
-  XmlTournament,
+  VisualService,
   XmlMatch,
-  XmlScoreStatus,
   XmlMatchTypeID,
   XmlPlayer,
-  correctWrongPlayers,
-} from '../../../../utils';
-import { EncounterStepData } from './encounter';
-import { GameStatus, GameType } from '@badman/utils';
+  XmlScoreStatus,
+  XmlTournament,
+} from '@badman/backend-visual';
+import { GameStatus, GameType, runParrallel } from '@badman/utils';
 import { Logger } from '@nestjs/common';
+import moment from 'moment';
+import { Op } from 'sequelize';
+import { StepOptions, StepProcessor } from '../../../../processing';
+import { correctWrongPlayers } from '../../../../utils';
+import { EncounterStepData } from './encounter';
 
 export class CompetitionSyncGameProcessor extends StepProcessor {
   public players: Map<string, Player>;
@@ -33,7 +33,8 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
-    options.logger = options.logger || new Logger(CompetitionSyncGameProcessor.name);
+    options.logger =
+      options.logger || new Logger(CompetitionSyncGameProcessor.name);
     super(options);
   }
 
@@ -56,12 +57,12 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    await Promise.all(
-      this.encounters.map((e) => {
-        const filtered = games.filter((g) => g.linkId === e.encounter.id);
-        return this._processEncounter(e.encounter, e.internalId, filtered);
-      })
-    );
+    const promisses = this.encounters.map((e) => {
+      const filtered = games.filter((g) => g.linkId === e.encounter.id);
+      return this._processEncounter(e.encounter, e.internalId, filtered);
+    });
+
+    await runParrallel(promisses);
 
     return this._games;
   }
@@ -71,20 +72,21 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     internalId: number,
     games: Game[]
   ) {
-    // only get match if encounter is in future
+    // only get info for games that have been played
     if (moment(encounter.date).isAfter(moment())) {
       return;
     }
 
     const isLastWeek = moment().subtract(1, 'week').isBefore(encounter.date);
+    const result = await this.visualService.getMatch(
+      this.visualTournament.Code,
+      internalId,
+      !isLastWeek
+    );
 
-    const visualMatch = (
-      await this.visualService.getMatch(
-        this.visualTournament.Code,
-        internalId,
-        !isLastWeek
-      )
-    ).filter((m) => !m || m?.Winner !== 0) as XmlMatch[];
+    const visualMatch = result.filter(
+      (m) => m != null || m != undefined
+    ) as XmlMatch[];
 
     for (const xmlMatch of visualMatch) {
       let game = games.find(
@@ -204,7 +206,6 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     const team1player2 = this._getPlayer(xmlMatch?.Team1?.Player2);
     const team2player1 = this._getPlayer(xmlMatch?.Team2?.Player1);
     const team2player2 = this._getPlayer(xmlMatch?.Team2?.Player2);
-
 
     if (team1player1) {
       const rankingt1p1 = await team1player1.getRankingPlaces({

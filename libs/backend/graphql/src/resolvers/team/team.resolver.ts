@@ -3,13 +3,11 @@ import {
   Club,
   EntryCompetitionPlayer,
   EntryCompetitionPlayersInputType,
-  EventCompetition,
   EventEntry,
   Location,
   Player,
   RankingLastPlace,
   RankingSystem,
-  SubEventCompetition,
   Team,
   TeamNewInput,
   TeamPlayerMembership,
@@ -17,11 +15,11 @@ import {
   TeamUpdateInput,
 } from '@badman/backend-database';
 import {
-  getIndexFromPlayers,
-  getLetterForRegion,
   IsUUID,
   TeamMembershipType,
   UseForTeamName,
+  getIndexFromPlayers,
+  getLetterForRegion,
 } from '@badman/utils';
 import {
   BadRequestException,
@@ -41,7 +39,6 @@ import {
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
-import moment from 'moment';
 
 @Resolver(() => Team)
 export class TeamsResolver {
@@ -87,18 +84,18 @@ export class TeamsResolver {
   @ResolveField(() => String)
   async phone(@User() user: Player, @Parent() team: Team) {
     const perm = [`details-any:team`, `${team.clubId}_details:team`];
-    if (user.hasAnyPermission(perm)) {
-      return team.phone;
-    } else {
-      throw new UnauthorizedException();
+    if (!user.hasAnyPermission(perm)) {
+      return null;
     }
+
+    return team.phone;
   }
 
   @ResolveField(() => String)
   async email(@User() user: Player, @Parent() team: Team) {
     const perm = [`details-any:team`, `${team.clubId}_details:team`];
     if (!user.hasAnyPermission(perm)) {
-      throw new UnauthorizedException();
+      return null;
     }
 
     return team.email;

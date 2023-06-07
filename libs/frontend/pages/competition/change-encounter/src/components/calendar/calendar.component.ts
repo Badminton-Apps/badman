@@ -1,3 +1,5 @@
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,36 +8,34 @@ import {
   OnInit,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import {
   MatCheckboxChange,
   MatCheckboxModule,
 } from '@angular/material/checkbox';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
-import { forkJoin, lastValueFrom, map } from 'rxjs';
-import { randomLightColor } from 'seed-to-color';
-import { v4 } from 'uuid';
-import { EncounterCompetition, Team, Location } from '@badman/frontend-models';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
+import { HasClaimComponent } from '@badman/frontend-components';
+import { EncounterCompetition, Location, Team } from '@badman/frontend-models';
 import {
   getCurrentSeason,
   getCurrentSeasonPeriod,
   sortTeams,
 } from '@badman/utils';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { HasClaimComponent } from '@badman/frontend-components';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { RouterModule } from '@angular/router';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
+import { TranslateModule } from '@ngx-translate/core';
+import { Apollo, gql } from 'apollo-angular';
+import moment from 'moment';
+import { forkJoin, lastValueFrom, map } from 'rxjs';
+import { randomLightColor } from 'seed-to-color';
+import { v4 } from 'uuid';
 
 @Component({
   selector: 'badman-calendar',
@@ -168,6 +168,7 @@ export class CalendarComponent implements OnInit {
                   id
                   name
                   availibilities(where: { year: $year }) {
+                    id
                     year
                     days {
                       courts

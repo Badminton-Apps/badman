@@ -352,7 +352,6 @@ export class AssemblyComponent implements OnInit, OnDestroy {
           }
 
           if (!acc[player.membershipType]) {
-            console.log(`Creating ${player.membershipType} array`);
             acc[player.membershipType] = [] as TeamPlayer[];
           }
 
