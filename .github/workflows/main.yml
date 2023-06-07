@@ -172,7 +172,7 @@ jobs:
         run: |
           git checkout develop
           git pull
-          git merge --no-ff origin/main
+          git merge --no-ff origin/main -m "chore(release): ${{ needs.release.outputs.NEW_VERSION }}}}"
           git push
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
