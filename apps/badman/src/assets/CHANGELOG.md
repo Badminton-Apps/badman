@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.85.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.8...v6.85.0-beta.9) (2023-06-07)
+
+
+### Features
+
+* showing comments in club view ([afc1405](https://github.com/Badminton-Apps/badman/commit/afc1405af44a8ce764f9bc6b1c44a50130936fe0))
+
+
+### Bug Fixes
+
+* added eventname ([2698f29](https://github.com/Badminton-Apps/badman/commit/2698f29f5dca65d96c64b005e2a956edc5cad810))
+* allowing preferred to be saved ([04c745f](https://github.com/Badminton-Apps/badman/commit/04c745fcfcdbc3e0c97515406d73f9cc71e3e4ec))
+
 ## [6.85.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.85.0-beta.7...v6.85.0-beta.8) (2023-06-04)
 
 
