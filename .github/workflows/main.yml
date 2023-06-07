@@ -103,7 +103,7 @@ jobs:
 
           # merge main into develop
           git checkout develop
-          git merge main
+          git merge $(git rev-parse main)
           git push origin develop
           
       - name: Create Github Release
