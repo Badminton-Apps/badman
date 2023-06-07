@@ -6,11 +6,13 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import {
+  ConfirmDialogComponent,
+  ConfirmDialogModel,
   HasClaimComponent,
   PageHeaderComponent,
   RecentGamesComponent,
@@ -42,6 +44,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatMenuModule,
     MatChipsModule,
     MatTooltipModule,
+    MatDialogModule,
 
     // My Componments
     RecentGamesComponent,
@@ -71,7 +74,9 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   constructor(
     private seoService: SeoService,
     private route: ActivatedRoute,
+    private router: Router,
     private breadcrumbsService: BreadcrumbService,
+    private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private apollo: Apollo,
     private translate: TranslateService,
@@ -243,6 +248,45 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           } as RankingPlace;
         })
       );
+  }
+
+  removePlayer() {
+    const dialogData = new ConfirmDialogModel(
+      'all.club.delete.player.title',
+      'all.club.delete.player.description'
+    );
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: dialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((dialogResult) => {
+      console.log(dialogResult);
+      if (!dialogResult) {
+        return;
+      }
+
+      this.apollo
+        .mutate({
+          mutation: gql`
+            mutation RemovePlayer($id: ID!) {
+              removePlayer(id: $id)
+            }
+          `,
+          variables: {
+            id: this.player.id,
+          },
+          refetchQueries: ['Teams'],
+        })
+        .subscribe(() => {
+          this.snackBar.open('Deleted', undefined, {
+            duration: 1000,
+            panelClass: 'success',
+          });
+          this.router.navigate(['/']);
+        });
+    });
   }
 
   ngOnDestroy(): void {
