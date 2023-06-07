@@ -30,16 +30,15 @@ jobs:
         uses: actions/checkout@v3
       - name: Set Git config
         run: |
-            git config --local user.email "info@badman.app"
-            git config --local user.name "Badman Releaser"
+          git config --local user.email "info@badman.app"
+          git config --local user.name "Badman Releaser"
       - name: Merge develop back to main
         run: |
-            git fetch --unshallow
-            git checkout main
-            git pull
-            git merge --no-ff develop -m "Merging develop into main"
-            git push
-          
+          git fetch --unshallow
+          git checkout main
+          git pull
+          git merge --no-ff develop -m "Merging develop into main"
+          git push
 
   main:
     name: Nx Cloud - Main Job
@@ -96,7 +95,7 @@ jobs:
         id: create_release
         run: |
           # if the prod release is false, then we want to create a beta release by appending --beta to the command
-          npm run --prefix \scripts create-release --  --affected="${{ needs.main.outputs.affectedProjects }}" ${{ inputs.prod-release && ' --beta' }}
+          npm run --prefix \scripts create-release --  --affected="${{ needs.main.outputs.affectedProjects }}" --prod=${{ inputs.prod-release }}"
 
       - name: Push new version and changelog
         id: push_release
@@ -109,7 +108,7 @@ jobs:
           git commit -m "chore(release): v${{ env.NEW_VERSION }}"
           git tag -a v${{ env.NEW_VERSION }} -m "${{ env.CHANGELOG }}"
           git push --follow-tags origin ${{ inputs.prod-release && 'main' || 'develop' }}
-          
+
       - name: Create Github Release
         uses: actions/create-release@v1
         if: ${{ inputs.prod-release }}
@@ -156,17 +155,17 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3      
+        uses: actions/checkout@v3
       - name: Set Git config
         run: |
-            git config --local user.email "info@badman.app"
-            git config --local user.name "Badman Releaser"
+          git config --local user.email "info@badman.app"
+          git config --local user.name "Badman Releaser"
       - name: Merge main back to develop
         run: |
-            git checkout develop
-            git pull
-            git merge --no-ff origin/main -m "chore(release): v${{ needs.release.outputs.NEW_VERSION }}"
-            git push
+          git checkout develop
+          git pull
+          git merge --no-ff origin/main -m "chore(release): v${{ needs.release.outputs.NEW_VERSION }}"
+          git push
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
           # read the affected projects from the main job
