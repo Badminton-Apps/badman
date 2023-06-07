@@ -107,6 +107,8 @@ export class ClubTeamsComponent implements OnInit {
                   clubId
                   email
                   phone
+                  preferredDay
+                  preferredTime
                   entry {
                     id
                     date

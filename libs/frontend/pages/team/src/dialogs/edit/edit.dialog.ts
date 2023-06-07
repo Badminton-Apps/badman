@@ -73,6 +73,8 @@ export class EditDialogComponent {
       phone: this.fb.control(this.data.team.phone),
       email: this.fb.control(this.data.team.email),
       season: this.fb.control(this.data.team.season),
+      preferredDay: this.fb.control(this.data.team.preferredDay),
+      preferredTime: this.fb.control(this.data.team.preferredTime),
       [PLAYERS_CONTROL]: this.fb.array(this.data.team.players ?? []),
     });
 
@@ -185,6 +187,8 @@ export class EditDialogComponent {
             captainId: data.captainId,
             phone: data.phone,
             email: data.email,
+            preferredDay: data.preferredDay,
+            preferredTime: data.preferredTime,
           },
         },
         refetchQueries: () => ['Team', 'Teams'],
