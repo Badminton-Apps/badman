@@ -28,16 +28,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Merge develop into main
+      - name: Set Git config
         run: |
-          git config --global user.email "info@badman.app"
-          git config --global user.name "Badman Releaser"
-          git config advice.ignoredHook false
-
-          # merge develop into main
-          git checkout main
-          git merge develop
-          git push origin main
+            git config --local user.email "info@badman.app"
+            git config --local user.name "Badman Releaser"
+      - name: Merge develop back to main
+        run: |
+            git fetch --unshallow
+            git checkout main
+            git pull
+            git merge --no-ff develop -m "Auto-merge develop back to main"
+            git push
+          
 
   main:
     name: Nx Cloud - Main Job
@@ -71,6 +73,9 @@ jobs:
     name: Release
     needs: [main]
     if: ${{ needs.main.result == 'success' }}
+    # output new version
+    outputs:
+      NEW_VERSION: ${{ steps.create_release.outputs.new_version }}
     permissions:
       contents: write
     steps:
@@ -152,13 +157,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3      
-      - name: Merge main into develop
+      - name: Set Git config
         run: |
-          git config --global user.email "info@badman.app"
-          git config --global user.name "Badman Releaser"
-          git config advice.ignoredHook false
-
-          # merge main into develop
-          git checkout develop
-          git merge $(git rev-parse main)
-          git push origin develop
+            git config --local user.email "info@badman.app"
+            git config --local user.name "Badman Releaser"
+      - name: Merge main back to develop
+        run: |
+            git fetch --unshallow
+            git checkout develop
+            git pull
+            git merge --no-ff main -m "chore(release): v${{ needs.release.outputs.NEW_VERSION }}"
+            git push
