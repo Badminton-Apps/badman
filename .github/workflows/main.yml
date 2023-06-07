@@ -37,7 +37,7 @@ jobs:
             git fetch --unshallow
             git checkout main
             git pull
-            git merge --no-ff develop -m "Auto-merge develop back to main"
+            git merge --no-ff develop -m "Merging develop into main"
             git push
           
 
