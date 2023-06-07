@@ -44,14 +44,19 @@ export class GoogleAdsModule {
       const ads = d.createElement("script");
       ads.type = type;
       ads.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`;
+      ads.async = true;
       ads.crossOrigin = "anonymous";
+      ads.defer = true;
 
-      d.head.appendChild(ads);
+      d.body.appendChild(ads);
 
       const script = d.createElement("script");
       script.type = type;
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      script.defer = true;
       script.innerHTML = scriptconfig();
-      d.head.appendChild(script);
+      d.body.appendChild(script);
 
       // const amp = d.createElement("script");
       // amp.type = type;

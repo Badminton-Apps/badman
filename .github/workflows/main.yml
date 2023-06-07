@@ -18,7 +18,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-run-name: ${{ github.workflow }} ${{ inputs.prod-release && 'prod' || 'beta' }}
+run-name: ${{ inputs.prod-release && 'Prod' || 'Beta' }} release
 
 jobs:
   merge-dev-into-main:
