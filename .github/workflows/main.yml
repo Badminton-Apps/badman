@@ -163,8 +163,7 @@ jobs:
             git config --local user.name "Badman Releaser"
       - name: Merge main back to develop
         run: |
-            git fetch --unshallow
             git checkout develop
             git pull
-            git merge --no-ff main -m "chore(release): v${{ needs.release.outputs.NEW_VERSION }}"
+            git merge --no-ff origin/main -m "chore(release): v${{ needs.release.outputs.NEW_VERSION }}"
             git push
