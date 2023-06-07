@@ -61,6 +61,7 @@ jobs:
 
   agents:
     name: Nx Cloud - Agents
+    if: always()
     needs: [merge-dev-into-main]
     uses: ./.github/workflows/nx-cloud-agents.yml
     secrets:
