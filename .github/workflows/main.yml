@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Release
     needs: [main]
-    if: always() && ${{ needs.main.result == 'success' }}
+    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
 
     # output new version
     outputs:
@@ -156,7 +156,7 @@ jobs:
     name: Merge Main into Dev
     runs-on: ubuntu-latest
     needs: [release, main]
-    if: always() && ${{ inputs.prod-release }}
+    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
     permissions:
       contents: write
     steps:
