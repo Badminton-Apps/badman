@@ -24,7 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   BadmanBlockModule,
@@ -118,7 +118,11 @@ export class ClubEditLocationComponent implements OnInit {
   days!: FormArray<LocationavDayType>;
   exceptions!: FormArray<LocationExceptionType>;
 
-  constructor(private formBuilder: FormBuilder, private apollo: Apollo) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private apollo: Apollo,
+    private snackBar: MatSnackBar
+  ) {}
 
   expanded = {
     start: undefined,
@@ -202,6 +206,11 @@ export class ClubEditLocationComponent implements OnInit {
       }) as LocationExceptionType
     );
 
+    this.showCourts.push({
+      manualOpen: false,
+      autoOpen: false,
+    });
+
     this.expanded.exceptions = true;
   }
 
@@ -257,7 +266,10 @@ export class ClubEditLocationComponent implements OnInit {
     }
 
     forkJoin(observables).subscribe(() => {
-      //
+      this.snackBar.open('Saved', undefined, {
+        duration: 1000,
+        panelClass: 'success',
+      });
     });
   }
 }
