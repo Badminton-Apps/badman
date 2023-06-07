@@ -298,4 +298,24 @@
       </badman-block>
     </div>
   </section>
+  <section>
+    <h2>Comments</h2>
+
+    <div class="comments">
+      <badman-block *ngFor="let comment of this.comments?.()">
+        <badman-block-header>
+          <badman-block-title>
+            {{ comment.player?.fullName }}
+          </badman-block-title>
+          <badman-block-subtitle>
+            {{ comment.createdAt | amDateFormat : 'LLLL' }}
+          </badman-block-subtitle>
+        </badman-block-header>
+        <mat-divider></mat-divider>
+        <badman-block-content>
+          {{ comment.message }}
+        </badman-block-content>
+      </badman-block>
+    </div>
+  </section>
 </ng-container>

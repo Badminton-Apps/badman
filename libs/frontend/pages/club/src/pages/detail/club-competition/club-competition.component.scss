@@ -92,6 +92,37 @@
   }
 }
 
+.comments {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-direction: row;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+
+  .badman-block {
+    flex: 1;
+    white-space: pre-wrap;
+
+    @media (max-width: 600px) {
+      width: unset;
+      flex: 1;
+    }
+
+    .badman-block-content {
+      padding-top: 1rem;
+
+      .days {
+        h4 {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
 mat-list-item {
   display: flex;
   align-items: center;

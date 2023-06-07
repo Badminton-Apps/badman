@@ -19,7 +19,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -34,10 +34,10 @@ import {
   HasClaimComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
-import { Club, Location } from '@badman/frontend-models';
+import { Club, Location, Comment } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap, filter } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 import { FormGroup } from '@angular/forms';
 import { of } from 'rxjs';
@@ -102,7 +102,9 @@ export class ClubCompetitionComponent implements OnInit {
   // signals
   club?: Signal<Club | undefined>;
   locations?: Signal<Location[] | undefined>;
+  comments?: Signal<Comment[] | undefined>;
   loading = signal(false);
+  eventIds = signal<string[] | undefined>(undefined);
 
   // Inputs
   @Input() filter?: FormGroup;
@@ -153,6 +155,7 @@ export class ClubCompetitionComponent implements OnInit {
                         id
                         name
                         eventType
+                        eventId
                       }
                       meta {
                         competition {
@@ -214,7 +217,23 @@ export class ClubCompetitionComponent implements OnInit {
         }),
 
         map((result) => new Club(result?.data?.club)),
-        tap(() => {
+        tap((club) => {
+          const subEvents = [
+            ...new Set(
+              (club?.teams
+                ?.map((team) => team.entry?.subEventCompetition?.eventId)
+                ?.filter(
+                  (value, index, self) => self.indexOf(value) === index
+                ) ?? []) as string[]
+            ),
+          ];
+
+          if (subEvents.length > 0) {
+            // set subevents
+            this.eventIds.set(subEvents);
+            console.log('subevents', subEvents);
+          }
+
           this.loading.set(false);
         })
       ) ?? of(undefined),
@@ -245,7 +264,6 @@ export class ClubCompetitionComponent implements OnInit {
                     fax
                     availibilities(where: $where) {
                       id
-
                       days {
                         day
                         startTime
@@ -274,6 +292,45 @@ export class ClubCompetitionComponent implements OnInit {
         map((result) => new Club(result?.data?.club)),
         map((club) => club?.locations)
       ) ?? of(undefined),
+      { injector: this.injector }
+    );
+
+    this.comments = toSignal(
+      toObservable(this.eventIds, { injector: this.injector }).pipe(
+        filter((eventIds) => eventIds !== undefined),
+        filter((eventIds) => (eventIds?.length ?? 0) > 0),
+        switchMap(
+          (eventIds) =>
+            this.apollo.watchQuery<{
+              club: Partial<Club>;
+            }>({
+              query: gql`
+                query Comments($clubId: ID!, $where: JSONObject) {
+                  club(id: $clubId) {
+                    id
+                    comments(where: $where) {
+                      id
+                      message
+                      createdAt
+                      player {
+                        id
+                        fullName
+                      }
+                    }
+                  }
+                }
+              `,
+              variables: {
+                clubId: this.clubId,
+                where: {
+                  linkId: eventIds,
+                },
+              },
+            }).valueChanges
+        ),
+        map((result) => new Club(result?.data?.club)),
+        map((club) => club?.comments)
+      ),
       { injector: this.injector }
     );
   }
