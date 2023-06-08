@@ -406,6 +406,7 @@ export class TeamsResolver {
               },
               type: dbTeam.type,
             },
+            include: [Club],
             transaction,
           });
           // unique contraints
@@ -430,6 +431,7 @@ export class TeamsResolver {
               },
               type: dbTeam.type,
             },
+            include: [Club],
             transaction,
           });
 
