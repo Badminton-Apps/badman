@@ -76,7 +76,7 @@
     "@nestjs/sequelize": "^9.0.0",
     "@nestjs/terminus": "^9.1.4",
     "@nestjs/websockets": "^9.2.1",
-    "@ng-maps/core": "^4.0.1",
+    "@ng-maps/core": "^5.0.0",
     "@ng-maps/google": "^4.0.0",
     "@ng-maps/places": "^4.0.0",
     "@nguniversal/express-engine": "16.0.0",
