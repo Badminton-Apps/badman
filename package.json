@@ -53,11 +53,11 @@
     "@apollo/server-plugin-operation-registry": "^4.0.1",
     "@apollo/server-plugin-response-cache": "^4.1.2",
     "@apollo/utils.keyvadapter": "^3.0.0",
-    "@as-integrations/fastify": "^1.3.2",
+    "@as-integrations/fastify": "^2.0.0",
     "@auth0/auth0-angular": "2.1.0",
     "@builder.io/partytown": "^0.8.0",
     "@fast-csv/parse": "^4.3.6",
-    "@fontsource/roboto": "^4.5.8",
+    "@fontsource/roboto": "^5.0.0",
     "@keyv/redis": "^2.6.1",
     "@logtail/node": "~0.4.0",
     "@logtail/winston": "^0.4.1",
@@ -80,8 +80,8 @@
     "@ng-maps/google": "^5.0.1",
     "@ng-maps/places": "^5.0.1",
     "@nguniversal/express-engine": "16.0.2",
-    "@ngx-translate/core": "^14.0.0",
-    "@ngx-translate/http-loader": "^7.0.0",
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
     "@socket.io/redis-adapter": "^8.2.1",
     "@types/file-saver": "^2.0.5",
     "@vercel/analytics": "^1.0.1",
@@ -119,7 +119,7 @@
     "nest-winston": "^1.9.2",
     "nestjs-i18n": "^10.2.6",
     "ng-apexcharts": "^1.7.6",
-    "ng-process-env": "^15.2.1",
+    "ng-process-env": "^16.0.0",
     "ngx-markdown": "^16.0.0",
     "ngx-moment": "^6.0.2",
     "ngx-quill": "^22.0.0",
@@ -145,7 +145,7 @@
     "web-vitals": "^3.3.2",
     "winston": "^3.9.0",
     "xlsx": "^0.18.5",
-    "xng-breadcrumb": "^9.0.0",
+    "xng-breadcrumb": "^10.0.0",
     "zone.js": "0.13.0"
   },
   "devDependencies": {
@@ -159,7 +159,7 @@
     "@angular/cli": "~16.0.0",
     "@angular/compiler-cli": "16.0.0",
     "@angular/language-service": "16.0.0",
-    "@nestjs/schematics": "9.1.0",
+    "@nestjs/schematics": "9.2.0",
     "@nestjs/testing": "^9.3.12",
     "@nguniversal/builders": "16.0.0",
     "@nx/angular": "16.3.2",
@@ -239,7 +239,7 @@
   },
   "volta": {
     "node": "20.1.0",
-    "npm": "9.6.7"
+    "npm": "9.7.1"
   },
   "engines": {
     "npm": ">=8.0.0"
