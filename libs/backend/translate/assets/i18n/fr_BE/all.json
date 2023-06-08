@@ -138,6 +138,9 @@
     "last-updated": "Modifié le",
     "liga": "Ligue",
     "load-more": "Charger plus",
+    "map": {
+      "title": "Carte"
+    },
     "national": "Nationales",
     "no-more-encounters": "Plus de rencontres",
     "no-more-games": "Plus de games",
@@ -452,6 +455,8 @@
     "gender": "Genre",
     "hour": "Récréation",
     "lastname": "Lunette arrière",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
     "memberId": "Numéro de membre",
     "name": "Nom",
     "phone": "Téléphone",

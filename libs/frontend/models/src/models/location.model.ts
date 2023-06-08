@@ -1,5 +1,6 @@
 import { EventCompetition, EventTournament } from './events';
 import { Availability } from './availibilty.model';
+import { Club } from './club.model';
 
 export class Location {
   id?: string;
@@ -10,15 +11,21 @@ export class Location {
   state?: string;
   phone?: string;
   fax?: string;
+  club?: Club;
   street?: string;
   streetNumber?: string;
   competitionEvents?: EventCompetition[];
   eventTournements?: EventTournament[];
   availibilities: Availability[];
   courts?: number;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
 
   constructor(args?: Partial<Location>) {
     this.id = args?.id;
+    this.club = args?.club;
     this.name = args?.name;
     this.address = args?.address;
     this.postalcode = args?.postalcode;
@@ -34,6 +41,8 @@ export class Location {
     this.eventTournements = args?.eventTournements?.map(
       (r) => new EventTournament(r)
     );
+    this.coordinates = args?.coordinates;
+
     this.availibilities =
       args?.availibilities?.map((r) => new Availability(r)) ?? [];
     this.courts = args?.courts;

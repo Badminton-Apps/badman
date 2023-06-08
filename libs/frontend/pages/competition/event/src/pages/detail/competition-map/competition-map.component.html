@@ -1,0 +1,31 @@
+<ng-container *ngIf="this.loading()">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-container>
+
+<ng-container *ngIf="!this.loading()">
+  <google-map [center]="this.center()" [zoom]="9" width="100%">
+    <map-marker
+      #marker="mapMarker"
+      *ngFor="let location of locations?.()"
+      [position]="getLatLng(location)"
+      (mapClick)="openInfoWindow(marker, location)"
+    >
+    </map-marker>
+
+    <map-info-window>
+      <div class="info-window">
+        <h3>
+          {{ selectedLocation()?.club?.name }}
+        </h3>
+        <h4>
+          {{ selectedLocation()?.name }}
+        </h4>
+        <p>
+          {{ selectedLocation()?.street }}
+          {{ selectedLocation()?.streetNumber }},
+          {{ selectedLocation()?.postalcode }} {{ selectedLocation()?.city }}
+        </p>
+      </div>
+    </map-info-window>
+  </google-map>
+</ng-container>
