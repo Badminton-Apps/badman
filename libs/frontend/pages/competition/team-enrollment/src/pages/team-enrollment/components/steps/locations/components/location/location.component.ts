@@ -40,7 +40,7 @@ export type LocationAvailibilityForm = FormGroup<{
   id: FormControl<string | undefined>;
   season: FormControl<number>;
   days: FormArray<LocationavDayType>;
-  exceptions: FormArray<LocationExceptionType>;
+exceptions: FormArray<LocationExceptionType>;
 }>;
 
 export type LocationForm = FormGroup<{
@@ -55,6 +55,7 @@ export type LocationForm = FormGroup<{
   phone: FormControl<string | undefined>;
   fax: FormControl<string | undefined>;
   availibilities: FormArray<LocationAvailibilityForm>;
+  
 }>;
 
 @Component({

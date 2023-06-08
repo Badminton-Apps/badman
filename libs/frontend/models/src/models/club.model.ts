@@ -39,7 +39,13 @@ export class Club {
     );
     this.players = args.players?.map((p) => new Player(p));
     this.roles = args.roles?.map((p) => new Role(p));
-    this.locations = args.locations?.map((p) => new Location(p));
+    this.locations = args.locations?.map(
+      (p) =>
+        new Location({
+          ...p,
+          club: this,
+        })
+    );
     this.comments = args.comments?.map((p) => new Comment(p));
     this.clubMembership = args?.clubMembership
       ? new ClubMembership(args.clubMembership)
