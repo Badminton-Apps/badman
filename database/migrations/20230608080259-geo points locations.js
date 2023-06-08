@@ -99,6 +99,8 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
+
+        // remove the geo point column from the locations table
         await queryInterface.removeColumn(
           {
             tableName: 'Locations',
@@ -108,10 +110,12 @@ module.exports = {
           { transaction: t }
         );
 
+        // remove PostGIS extension
         await queryInterface.sequelize.query(
           'DROP EXTENSION IF EXISTS postgis;',
           { transaction: t }
         );
+        
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();
