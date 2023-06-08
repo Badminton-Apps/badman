@@ -1,0 +1,21 @@
+// info: https://material.angular.io/guide/theming-your-components
+
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+  $color-config: mat.get-color-config($theme);
+  $foreground: map.get($color-config, 'foreground');
+
+  badman-competition-map {
+    .info-window {
+      color: black;
+    }
+  }
+}
+
+@mixin typography($theme) {
+  badman-competition-enrollments {
+    $typography-config: mat.get-typography-config($theme);
+  }
+}

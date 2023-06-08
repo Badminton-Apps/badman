@@ -29,6 +29,7 @@ import {
   OpenCloseDateDialogComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
+import { CpService } from '@badman/frontend-cp';
 import { JobsModule, JobsService } from '@badman/frontend-jobs';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
@@ -37,10 +38,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { combineLatest, lastValueFrom } from 'rxjs';
-import { map, take, filter, startWith } from 'rxjs/operators';
+import { filter, map, startWith, take } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { CompetitionEnrollmentsComponent } from './competition-enrollments/competition-enrollments.component';
-import { CpService } from '@badman/frontend-cp';
+import { CompetitionEnrollmentsComponent } from './competition-enrollments';
+import { CompetitionMapComponent } from './competition-map';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -75,6 +76,7 @@ import { CpService } from '@badman/frontend-cp';
     JobsModule,
     HasClaimComponent,
     CompetitionEnrollmentsComponent,
+    CompetitionMapComponent,
   ],
 })
 export class DetailPageComponent implements OnInit {

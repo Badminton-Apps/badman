@@ -13,8 +13,11 @@ import {
 } from '@nestjs/common';
 import {
   Args,
+  Field,
+  Float,
   ID,
   Mutation,
+  ObjectType,
   Parent,
   Query,
   ResolveField,
@@ -23,6 +26,16 @@ import {
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
+import { Geometry } from 'geojson';
+
+@ObjectType()
+export class Coordinates {
+  @Field(() => Float)
+  latitude: number;
+
+  @Field(() => Float)
+  longitude: number;
+}
 
 @Resolver(() => Location)
 export class LocationResolver {
@@ -34,12 +47,22 @@ export class LocationResolver {
   async location(
     @Args('id', { type: () => ID }) id: string
   ): Promise<Location> {
-    return await Location.findByPk(id);
+    const test = await Location.findByPk(id);
+
+    return test;
   }
 
   @Query(() => [Location])
   async locations(@Args() listArgs: ListArgs): Promise<Location[]> {
     return Location.findAll(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => Coordinates)
+  coordinates(@Parent() location: Location): Coordinates {
+    return {
+      latitude: location.coordinates.coordinates[1],
+      longitude: location.coordinates.coordinates[0],
+    };
   }
 
   @ResolveField(() => [Availability])
@@ -74,7 +97,18 @@ export class LocationResolver {
       }
 
       const dbLocation = await Location.create(
-        { ...newLocationData },
+        {
+          ...newLocationData,
+          coordinates: newLocationData.coordinates
+            ? ({
+                type: 'Point',
+                coordinates: [
+                  newLocationData.coordinates.longitude,
+                  newLocationData.coordinates.latitude,
+                ],
+              } as Geometry)
+            : undefined,
+        },
         { transaction }
       );
 
@@ -114,7 +148,19 @@ export class LocationResolver {
       }
 
       await dbLocation.update(
-        { ...dbLocation.toJSON(), ...updateLocationData },
+        {
+          ...dbLocation.toJSON(),
+          ...updateLocationData,
+          coordinates: updateLocationData.coordinates
+            ? ({
+                type: 'Point',
+                coordinates: [
+                  updateLocationData.coordinates.longitude,
+                  updateLocationData.coordinates.latitude,
+                ],
+              } as Geometry)
+            : undefined,
+        },
         { transaction }
       );
 
