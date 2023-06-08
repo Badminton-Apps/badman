@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.86.0](https://github.com/Badminton-Apps/badman/compare/v6.85.4-beta.0...v6.86.0) (2023-06-08)
+
+
+### Features
+
+* version 1 of map in competition ([a355a67](https://github.com/Badminton-Apps/badman/commit/a355a67466931d5f27c76721923448fe26fc0884))
+
+
+### Bug Fixes
+
+* numbering update ([a439c67](https://github.com/Badminton-Apps/badman/commit/a439c674581260105f628b2a95761e49067dfd0c))
+
 ### [6.85.4-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.85.3...v6.85.4-beta.0) (2023-06-08)
 
 ### [6.85.3](https://github.com/Badminton-Apps/badman/compare/v6.85.3-beta.0...v6.85.3) (2023-06-07)
