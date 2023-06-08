@@ -138,6 +138,9 @@
     "last-updated": "Gewijzigd op",
     "liga": "Liga",
     "load-more": "Meer laden",
+    "map": {
+      "title": "Kaart"
+    },
     "national": "Nationaal",
     "no-more-encounters": "Geen ontmoetingen meer",
     "no-more-games": "Geen wedstrijden meer",
@@ -452,6 +455,8 @@
     "gender": "Geslacht",
     "hour": "Speeluur",
     "lastname": "Achteraam",
+    "latitude": "Breedtegraad",
+    "longitude": "Lengtegraad",
     "memberId": "Lidnummer",
     "name": "Naam",
     "phone": "Telefoon",

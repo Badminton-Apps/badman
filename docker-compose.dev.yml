@@ -2,7 +2,7 @@ version: '3'
 services:
   # Databases
   postgres:
-    image: postgres
+    image: postgis/postgis
     shm_size: 1gb
     restart: unless-stopped
     environment:

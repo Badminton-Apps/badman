@@ -4,7 +4,7 @@ import {
   MAT_DIALOG_DATA,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { BehaviorSubject, lastValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { Club, Location } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
@@ -64,7 +64,6 @@ export class LocationDialogComponent implements OnInit {
       this.data.location = new Location();
     }
 
-
     this.update$
       .pipe(
         startWith(0),
@@ -85,6 +84,10 @@ export class LocationDialogComponent implements OnInit {
                       state
                       phone
                       fax
+                      coordinates {
+                        latitude
+                        longitude
+                      }
                     }
                   }
                 `,
@@ -125,6 +128,10 @@ export class LocationDialogComponent implements OnInit {
                 state
                 phone
                 fax
+                coordinates {
+                  latitude
+                  longitude
+                }
               }
             }
           `,
@@ -140,6 +147,10 @@ export class LocationDialogComponent implements OnInit {
               phone: location.phone,
               fax: location.fax,
               clubId: this.data.club.id,
+              coordinates: {
+                latitude: location.coordinates?.latitude,
+                longitude: location.coordinates?.longitude,
+              },
             },
           },
         })
@@ -172,6 +183,10 @@ export class LocationDialogComponent implements OnInit {
                   state
                   phone
                   fax
+                  coordinates {
+                    latitude
+                    longitude
+                  }
                 }
               }
             `,
@@ -187,6 +202,10 @@ export class LocationDialogComponent implements OnInit {
                 state: location.state,
                 phone: location.phone,
                 fax: location.fax,
+                coordinates: {
+                  latitude: location.coordinates?.latitude,
+                  longitude: location.coordinates?.longitude,
+                },
               },
             },
           })
