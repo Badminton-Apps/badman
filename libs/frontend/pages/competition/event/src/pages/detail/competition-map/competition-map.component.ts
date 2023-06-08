@@ -155,9 +155,7 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
           });
           return [...locations.values()];
         }),
-        tap((locations) => {
-          console.log(locations);
-
+        tap(() => {
           this.loading.set(false);
         })
       ),
