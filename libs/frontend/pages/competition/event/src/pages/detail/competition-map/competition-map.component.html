@@ -3,7 +3,7 @@
 </ng-container>
 
 <ng-container *ngIf="!this.loading()">
-  <google-map [center]="this.center()" [zoom]="9" width="100%">
+  <google-map [center]="this.center()" [zoom]="9" width="100%" height="800px">
     <map-marker
       #marker="mapMarker"
       *ngFor="let location of locations?.()"

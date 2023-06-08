@@ -15,11 +15,11 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { EventCompetition, Location } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { Subject, combineLatest, map, startWith, switchMap, tap } from 'rxjs';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import {
   GoogleMapsModule,
@@ -98,7 +98,7 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
           this.loading.set(true);
         }),
         switchMap(
-          ([types, subEvents]) =>
+          () =>
             this.apollo.watchQuery<{
               eventCompetition: Partial<EventCompetition>;
             }>({
