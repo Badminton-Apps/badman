@@ -1,9 +1,4 @@
-import {
-  APP_ID,
-  isDevMode,
-  NgModule,
-  SecurityContext
-} from '@angular/core';
+import { APP_ID, isDevMode, NgModule, SecurityContext } from '@angular/core';
 import {
   BrowserModule,
   provideClientHydration,
@@ -14,6 +9,7 @@ import {
   ClarityModule,
   GoogleAdsModule,
   GoogleAnalyticsModule,
+  GoogleMapsModule,
   VERSION_INFO,
 } from '@badman/frontend-html-injects';
 import { JobsModule } from '@badman/frontend-jobs';
@@ -54,7 +50,9 @@ const APP_ROUTES: Routes = [
   {
     path: 'policy',
     loadComponent: () =>
-      import('@badman/frontend-components').then((m) => m.PrivacyPolicyComponent),
+      import('@badman/frontend-components').then(
+        (m) => m.PrivacyPolicyComponent
+      ),
     data: {
       animation: 'landing',
     },
@@ -186,6 +184,7 @@ const APP_ROUTES: Routes = [
     NgMapsGoogleModule,
     NgMapsPlacesModule.forRoot({ autocomplete: {} }),
     ShellComponent,
+    GoogleMapsModule,
   ],
   providers: [
     { provide: APP_ID, useValue: 'badman' },

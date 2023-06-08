@@ -1,4 +1,4 @@
-<badman-page-header>
+<badman-page-header *ngIf="eventCompetition">
   <div actions>
     <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
@@ -121,6 +121,14 @@
         </mat-card>
       </div>
     </div>
+  </mat-tab>
+  <mat-tab
+    [label]="'all.competition.map.title' | translate"
+    *ngIf="this.canViewEnrollments?.()"
+  >
+    <ng-template matTabContent>
+      <badman-competition-map [eventId]="eventCompetition.id" />
+    </ng-template>
   </mat-tab>
   <mat-tab
     [label]="'all.competition.team-enrollment.title' | translate"

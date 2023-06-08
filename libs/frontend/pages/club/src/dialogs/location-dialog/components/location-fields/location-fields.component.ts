@@ -6,7 +6,12 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { Club, Location } from '@badman/frontend-models';
 import { CommonModule } from '@angular/common';
@@ -75,6 +80,11 @@ export class LocationDialogFieldsComponent implements OnInit {
     const streetControl = new FormControl(this.location.street);
     const streetNumberControl = new FormControl(this.location.streetNumber);
 
+    const coordinatesGroup = new FormGroup({
+      latitude: new FormControl(this.location.coordinates?.latitude),
+      longitude: new FormControl(this.location.coordinates?.longitude),
+    });
+
     this.locationForm = new FormGroup({
       address: addressControl,
       name: nameControl,
@@ -85,6 +95,7 @@ export class LocationDialogFieldsComponent implements OnInit {
       state: stateControl,
       street: streetControl,
       streetNumber: streetNumberControl,
+      coordinates: coordinatesGroup,
     });
     this.locationForm.valueChanges.pipe(debounceTime(600)).subscribe((e) => {
       if (!this.location?.id) {
@@ -118,6 +129,8 @@ export class LocationDialogFieldsComponent implements OnInit {
       r.types.includes('street_number')
     )?.long_name;
 
+    const coordinates = $event.geometry?.location;
+
     this.locationForm.patchValue({
       address: this.locationForm.value.address,
       name: $event.name,
@@ -126,6 +139,10 @@ export class LocationDialogFieldsComponent implements OnInit {
       state: state,
       street: street,
       streetNumber: streetNumber,
+      coordinates: {
+        latitude: coordinates?.lat(),
+        longitude: coordinates?.lng(),
+      },
     });
   }
 }

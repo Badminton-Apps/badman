@@ -1,5 +1,6 @@
 import {
   Field,
+  Float,
   ID,
   InputType,
   ObjectType,
@@ -51,6 +52,7 @@ import { TeamLocationCompetition } from './competition/team-location-membership.
 import { Court } from './court.model';
 import { EventTournament } from './tournament';
 import { LocationEventTournamentMembership } from './tournament/location-event-membership.model';
+import type { Point } from 'geojson';
 
 @Table({
   timestamps: true,
@@ -104,6 +106,10 @@ export class Location extends Model {
   @Field({ nullable: true })
   @Column
   fax: string;
+
+  // @Field(() => Geometry('POINT', 4326), { nullable: true })
+  @Column(DataType.GEOMETRY('POINT', 4326))
+  coordinates: Point;
 
   @BelongsToMany(() => Team, () => TeamLocationCompetition)
   teams: Team[];
@@ -197,10 +203,25 @@ export class Location extends Model {
 }
 
 @InputType()
+export class PointInput {
+  @Field(() => Float)
+  longitude: number;
+
+  @Field(() => Float)
+  latitude: number;
+}
+
+@InputType()
 export class LocationUpdateInput extends PartialType(
-  OmitType(Location, ['createdAt', 'updatedAt'] as const),
+  OmitType(Location, ['createdAt', 'updatedAt', 'coordinates'] as const),
   InputType
-) {}
+) {
+  @Field(() => PointInput)
+  coordinates: {
+    longitude: number;
+    latitude: number;
+  };
+}
 
 @InputType()
 export class LocationNewInput extends PartialType(

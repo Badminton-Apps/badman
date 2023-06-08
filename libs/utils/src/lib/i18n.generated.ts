@@ -142,6 +142,9 @@ export type I18nTranslations = {
             "last-updated": string;
             "liga": string;
             "load-more": string;
+            "map": {
+                "title": string;
+            };
             "national": string;
             "no-more-encounters": string;
             "no-more-games": string;
@@ -456,6 +459,8 @@ export type I18nTranslations = {
             "gender": string;
             "hour": string;
             "lastname": string;
+            "latitude": string;
+            "longitude": string;
             "memberId": string;
             "name": string;
             "phone": string;
