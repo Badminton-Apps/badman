@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.86.2-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.86.2-beta.0...v6.86.2-beta.1) (2023-06-09)
+
+
+### Bug Fixes
+
+* always update the versoin for the client ([ba80843](https://github.com/Badminton-Apps/badman/commit/ba80843f3e8b201c99c8105c060f25f79fbb97e8))
+
 ### [6.86.2-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.86.1...v6.86.2-beta.0) (2023-06-09)
 
 
