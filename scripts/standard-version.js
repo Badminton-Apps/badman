@@ -40,16 +40,14 @@ const conventionalChangelog = require('conventional-changelog');
       { filename: '../package.json', type: 'json' },
     ];
 
-    if (affectedProjects.includes('badman') || prod) {
-      bumpFiles.push({
-        filename: '../apps/badman/src/version.json',
-        type: 'json',
-      });
-      bumpFiles.push({
-        filename: '../apps/badman/src/assets/config.json',
-        type: 'json',
-      });
-    }
+    bumpFiles.push({
+      filename: '../apps/badman/src/version.json',
+      type: 'json',
+    });
+    bumpFiles.push({
+      filename: '../apps/badman/src/assets/config.json',
+      type: 'json',
+    });
 
     if (affectedProjects.includes('api')) {
       bumpFiles.push({
