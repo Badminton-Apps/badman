@@ -393,18 +393,23 @@ export class CpGeneratorService {
             team.email
           )}", ${dayofweek}, ${plantime}, ${prefLoc1}, ${prefLoc2}
       )`;
-          // this.logger.verbose(`Query: ${queryTeam}`);
-          const teamRes = await this.connection.execute(
-            queryTeam,
-            `SELECT @@Identity AS id`
-          );
 
-          const response = teamRes[0];
-          teamList.set(team.id, {
-            cpId: response.id,
-            dbTeam: team,
-            dbEntry: entry,
-          });
+          try {
+            // this.logger.verbose(`Query: ${queryTeam}`);
+            const teamRes = await this.connection.execute(
+              queryTeam,
+              `SELECT @@Identity AS id`
+            );
+            const response = teamRes[0];
+            teamList.set(team.id, {
+              cpId: response.id,
+              dbTeam: team,
+              dbEntry: entry,
+            });
+          } catch (e) {
+            this.logger.error(`Error while inserting team ${team.name}`);
+            this.logger.error(e);
+          }
         } else {
           this.logger.error(`Team ${team.name} has no club`);
         }
