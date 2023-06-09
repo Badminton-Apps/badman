@@ -73,9 +73,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
 
       const t1Standing = standings.get(`${playert1p1?.id}_${draw.id}`);
       const t2Standing = standings.get(`${playert2p1?.id}_${draw.id}`);
-      const encounter = this.encounters.find(
-        (e) => e.encounter.id === game.linkId
-      );
+
       // We played 1 encounter
       t1Standing.played++;
       t2Standing.played++;
