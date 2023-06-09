@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.86.2-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.86.1...v6.86.2-beta.0) (2023-06-09)
+
+
+### Bug Fixes
+
+* job args can be empty ([d5cdf4c](https://github.com/Badminton-Apps/badman/commit/d5cdf4c958f57b799ee49455eba2c06a2f3cb6b3))
+* no encounters in tournaments ([2df89e5](https://github.com/Badminton-Apps/badman/commit/2df89e581e8f3cfd05ce9886474a3e0eaba0bb31))
+
 ### [6.86.1](https://github.com/Badminton-Apps/badman/compare/v6.86.0...v6.86.1) (2023-06-08)
 
 ## [6.86.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.85.4-beta.0...v6.86.0-beta.0) (2023-06-08)
