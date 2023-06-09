@@ -1,5 +1,5 @@
 # Build stage
-FROM node:19-alpine AS build
+FROM node:20-alpine AS build
 WORKDIR /usr/src/app
 COPY . .
 RUN apk add --no-cache --virtual .build-deps \
@@ -13,7 +13,7 @@ RUN npm ci
 RUN npm run build worker-sync:build -- --configuration=production
 
 # Production stage
-FROM node:19-alpine As production
+FROM node:20-alpine As production
 ENV NODE_ENV=production \
     TZ="Europe/Brussels" \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
