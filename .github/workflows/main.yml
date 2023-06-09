@@ -79,7 +79,7 @@ jobs:
 
     # output new version
     outputs:
-      NEW_VERSION: ${{ steps.create_release.outputs.new_version }}
+      NEW_VERSION: ${{ steps.push_release.outputs.new_version }}
     permissions:
       contents: write
     steps:
@@ -102,9 +102,6 @@ jobs:
           # if the prod release is false, then we want to create a beta release by appending --beta to the command
           npm run --prefix \scripts create-release --  --affected="${{ needs.main.outputs.affectedProjects }}" --prod=${{ inputs.prod-release }}
 
-          # output new version
-          echo new_version=${{ env.NEW_VERSION }} >> $GITHUB_OUTPUT
-
       - name: Push new version and changelog
         id: push_release
         run: |
@@ -116,6 +113,8 @@ jobs:
           git commit -m "chore(release): v${{ env.NEW_VERSION }}"
           git tag -a v${{ env.NEW_VERSION }} -m "${{ env.CHANGELOG }}"
           git push --follow-tags origin ${{ inputs.prod-release && 'main' || 'develop' }}
+          # output new version
+          echo new_version=${{ env.NEW_VERSION }} >> $GITHUB_OUTPUT
 
       - name: Create Github Release
         uses: actions/create-release@v1
@@ -172,7 +171,7 @@ jobs:
         run: |
           git checkout develop
           git pull
-          git merge --no-ff origin/main -m "chore(release): ${{ needs.release.outputs.NEW_VERSION }}}}"
+          git merge --no-ff origin/main -m "chore(release): ${{ needs.release.outputs.NEW_VERSION }}"
           git push
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
