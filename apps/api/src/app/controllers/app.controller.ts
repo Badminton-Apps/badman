@@ -1,7 +1,5 @@
 import { User } from '@badman/backend-authorization';
-import {
-  Player
-} from '@badman/backend-database';
+import { Player } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
 import { MailingService } from '@badman/backend-mailing';
 import { NotificationService } from '@badman/backend-notifications';
@@ -57,6 +55,10 @@ export class AppController {
 
     if (!user.hasAnyPermission(['change:job'])) {
       throw new UnauthorizedException('You do not have permission to do this');
+    }
+
+    if (!args.jobArgs) {
+      args.jobArgs = {};
     }
 
     // append the user id to the job args
