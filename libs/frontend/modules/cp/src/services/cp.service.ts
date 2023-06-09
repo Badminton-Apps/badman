@@ -29,7 +29,7 @@ export class CpService {
       })
       .pipe(
         take(1),
-        map((result) => saveAs(result, `cp-${event.name}.cp`))
+        map((result) => saveAs(result, `${event.name}.cp`))
       );
   }
 }
