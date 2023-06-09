@@ -52,3 +52,5 @@ assembly.html
 
 *.cp
 !empty.cp
+*.ldb
+
