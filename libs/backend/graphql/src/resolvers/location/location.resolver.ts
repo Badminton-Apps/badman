@@ -73,6 +73,11 @@ export class LocationResolver {
     return location.getAvailabilities(ListArgs.toFindOptions(listArgs));
   }
 
+  @ResolveField(() => Club)
+  async club(@Parent() location: Location): Promise<Club> {
+    return location.getClub();
+  }
+
   @Mutation(() => Location)
   async createLocation(
     @Args('data') newLocationData: LocationNewInput,
