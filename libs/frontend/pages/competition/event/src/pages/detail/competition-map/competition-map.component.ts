@@ -141,7 +141,10 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
                   id
                   team {
                     id
-                    clubId
+                    club {
+                      id
+                      name
+                    }
                   }
                 }
               }
@@ -156,7 +159,7 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
         map((res) => res.data.eventEntries),
         map((eventEntries) => {
           const clubIds = new Set(
-            eventEntries.map((eventEntry) => eventEntry.team?.clubId)
+            eventEntries.map((eventEntry) => eventEntry.team?.club?.id)
           );
           return [...clubIds] as string[];
         }),
@@ -176,6 +179,10 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
                   postalcode
                   street
                   streetNumber
+                  club {
+                    id
+                    name
+                  }
                   coordinates {
                     latitude
                     longitude
@@ -198,7 +205,9 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
         ),
         map((res) => res.data.locations),
         map((locations) => locations.map((location) => new Location(location))),
-        map((locations) => locations.filter((location) => location.availibilities?.length > 0))
+        map((locations) =>
+          locations.filter((location) => location.availibilities?.length > 0)
+        )
       ),
       {
         injector: this.injector,
