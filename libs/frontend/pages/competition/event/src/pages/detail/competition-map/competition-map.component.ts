@@ -10,22 +10,30 @@ import {
   TransferState,
   ViewChild,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl } from '@angular/forms';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { EventCompetition, Location } from '@badman/frontend-models';
+import {
+  EventCompetition,
+  EventEntry,
+  Location,
+} from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
-import { Subject, combineLatest, map, startWith, switchMap, tap } from 'rxjs';
+import { Subject, map, switchMap } from 'rxjs';
 
 import {
   GoogleMapsModule,
   MapInfoWindow,
   MapMarker,
 } from '@angular/google-maps';
+import {
+  MatCheckboxChange,
+  MatCheckboxModule,
+} from '@angular/material/checkbox';
 
 @Component({
   selector: 'badman-competition-map',
@@ -38,6 +46,7 @@ import {
 
     // Material Modules
     MatProgressBarModule,
+    MatCheckboxModule,
   ],
   templateUrl: './competition-map.component.html',
   styleUrls: ['./competition-map.component.scss'],
@@ -54,6 +63,10 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
 
   // signals
   locations?: Signal<Location[] | undefined>;
+  eventCompetition?: Signal<EventCompetition | undefined>;
+  subEvents = signal<string[]>([]);
+  clubIds?: Signal<string[] | undefined>;
+
   loading = signal(false);
   center = computed(() => {
     const locations = this.locations?.();
@@ -80,86 +93,136 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<void>();
 
-  typeControl = new FormControl();
-  subeEventControl = new FormControl();
-
   // Inputs
   @Input({ required: true }) eventId?: string;
 
   ngOnInit(): void {
-    this.locations = toSignal(
-      combineLatest([
-        this.typeControl.valueChanges.pipe(startWith(this.typeControl.value)),
-        this.subeEventControl.valueChanges.pipe(
-          startWith(this.subeEventControl.value)
+    this.eventCompetition = toSignal(
+      this.apollo
+        .watchQuery<{ eventCompetition: Partial<EventCompetition> }>({
+          query: gql`
+            query GetSubEvents($id: ID!) {
+              eventCompetition(id: $id) {
+                id
+                name
+                season
+                subEventCompetitions {
+                  id
+                  name
+                  level
+                  eventType
+                }
+              }
+            }
+          `,
+          variables: {
+            id: this.eventId,
+          },
+        })
+        .valueChanges.pipe(
+          map((res) => new EventCompetition(res.data.eventCompetition))
         ),
-      ]).pipe(
-        tap(() => {
-          this.loading.set(true);
-        }),
-        switchMap(
-          () =>
-            this.apollo.watchQuery<{
-              eventCompetition: Partial<EventCompetition>;
-            }>({
-              query: gql`
-                query GetLocation($id: ID!) {
-                  eventCompetition(id: $id) {
+      {
+        injector: this.injector,
+      }
+    );
+
+    this.locations = toSignal(
+      toObservable(this.subEvents, {
+        injector: this.injector,
+      }).pipe(
+        switchMap((subEvents) =>
+          this.apollo.query<{
+            eventEntries: EventEntry[];
+          }>({
+            query: gql`
+              query GetTeams($where: JSONObject) {
+                eventEntries(where: $where) {
+                  id
+                  team {
                     id
-                    subEventCompetitions {
-                      id
-                      eventEntries {
-                        id
-                        team {
-                          id
-                          club {
-                            id
-                            name
-                            locations {
-                              id
-                              name
-                              city
-                              postalcode
-                              street
-                              streetNumber
-                              coordinates {
-                                latitude
-                                longitude
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
+                    clubId
                   }
                 }
-              `,
-              variables: {
-                id: this.eventId,
+              }
+            `,
+            variables: {
+              where: {
+                subEventId: subEvents,
               },
-            }).valueChanges
+            },
+          })
         ),
-        map((result) => new EventCompetition(result.data.eventCompetition)),
-        // filter out unqiue locations
-        map((eventCompetition) => {
-          const locations = new Map<string, Location>();
-          eventCompetition?.subEventCompetitions?.forEach((subEvent) => {
-            subEvent?.eventEntries?.forEach((eventEntry) => {
-              eventEntry?.team?.club?.locations?.forEach((location) => {
-                if (!location.id) {
-                  return;
-                }
-                locations.set(location.id, location);
-              });
-            });
-          });
-          return [...locations.values()];
+        map((res) => res.data.eventEntries),
+        map((eventEntries) => {
+          const clubIds = new Set(
+            eventEntries.map((eventEntry) => eventEntry.team?.clubId)
+          );
+          return [...clubIds] as string[];
         }),
-        tap(() => {
-          this.loading.set(false);
-        })
+        switchMap((clubIds) =>
+          this.apollo.query<{
+            locations: Partial<Location[]>;
+          }>({
+            query: gql`
+              query GetLocation(
+                $where: JSONObject
+                $availibilitiesWhere: JSONObject
+              ) {
+                locations(where: $where) {
+                  id
+                  name
+                  city
+                  postalcode
+                  street
+                  streetNumber
+                  coordinates {
+                    latitude
+                    longitude
+                  }
+                  availibilities(where: $availibilitiesWhere) {
+                    id
+                  }
+                }
+              }
+            `,
+            variables: {
+              where: {
+                clubId: clubIds,
+              },
+              availibilitiesWhere: {
+                season: 2023,
+              },
+            },
+          })
+        ),
+        map((res) => res.data.locations),
+        map((locations) => locations.map((location) => new Location(location))),
+        map((locations) => locations.filter((location) => location.availibilities?.length > 0))
       ),
-      { injector: this.injector }
+      {
+        injector: this.injector,
+      }
+    ) as Signal<Location[]>;
+
+    effect(
+      () => {
+        if (!this.eventCompetition?.()) {
+          return;
+        }
+
+        console.log('setting sub events');
+
+        this.subEvents.set(
+          (this.eventCompetition?.()?.subEventCompetitions?.map(
+            (subEvent) => subEvent.id
+          ) ?? []) as string[]
+        );
+      },
+      {
+        injector: this.injector,
+        allowSignalWrites: true,
+      }
     );
   }
 
@@ -178,5 +241,13 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  selectSubEvent(subEventId: string, event: MatCheckboxChange) {
+    if (event.checked) {
+      this.subEvents.set([...this.subEvents(), subEventId]);
+    } else {
+      this.subEvents.set(this.subEvents().filter((id) => id !== subEventId));
+    }
   }
 }

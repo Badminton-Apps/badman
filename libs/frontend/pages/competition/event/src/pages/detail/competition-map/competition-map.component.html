@@ -3,29 +3,43 @@
 </ng-container>
 
 <ng-container *ngIf="!this.loading()">
-  <google-map [center]="this.center()" [zoom]="9" width="100%" height="800px">
-    <map-marker
-      #marker="mapMarker"
-      *ngFor="let location of locations?.()"
-      [position]="getLatLng(location)"
-      (mapClick)="openInfoWindow(marker, location)"
-    >
-    </map-marker>
+  <div class="map">
+    <google-map [center]="this.center()" [zoom]="9" width="100%" height="800px">
+      <map-marker
+        #marker="mapMarker"
+        *ngFor="let location of locations?.()"
+        [position]="getLatLng(location)"
+        (mapClick)="openInfoWindow(marker, location)"
+      >
+      </map-marker>
 
-    <map-info-window>
-      <div class="info-window">
-        <h3>
-          {{ selectedLocation()?.club?.name }}
-        </h3>
-        <h4>
-          {{ selectedLocation()?.name }}
-        </h4>
-        <p>
-          {{ selectedLocation()?.street }}
-          {{ selectedLocation()?.streetNumber }},
-          {{ selectedLocation()?.postalcode }} {{ selectedLocation()?.city }}
-        </p>
+      <map-info-window>
+        <div class="info-window">
+          <h3>
+            {{ selectedLocation()?.club?.name }}
+          </h3>
+          <h4>
+            {{ selectedLocation()?.name }}
+          </h4>
+          <p>
+            {{ selectedLocation()?.street }}
+            {{ selectedLocation()?.streetNumber }},
+            {{ selectedLocation()?.postalcode }} {{ selectedLocation()?.city }}
+          </p>
+        </div>
+      </map-info-window>
+    </google-map>
+
+    <div>
+      <div *ngIf="subEvents?.()">
+        <mat-checkbox
+          *ngFor="let subEvent of eventCompetition?.()?.subEventCompetitions"
+          (change)="selectSubEvent(subEvent.id!, $event)"
+          [checked]="this.subEvents().includes(subEvent.id!)"
+        >
+          {{ subEvent.name }} {{ subEvent.eventType }}
+        </mat-checkbox>
       </div>
-    </map-info-window>
-  </google-map>
+    </div>
+  </div>
 </ng-container>
