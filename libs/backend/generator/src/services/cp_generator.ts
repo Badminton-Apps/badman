@@ -382,10 +382,9 @@ export class CpGeneratorService {
           const prefLoc1 = locations.get(teamLocations[0]?.id)?.cpId ?? 'NULL';
           const prefLoc2 = locations.get(teamLocations[1]?.id)?.cpId ?? 'NULL';
 
-          const queryTeam = `INSERT INTO Team(name, club, country, entrydate, contact, phone, email, dayofweek, plantime, preferredlocation1, preferredlocation2) VALUES (
-      "${this._sqlEscaped(teamName)}", ${internalClubId}, 19, #${moment(
-            entry.createdAt
-          ).format(
+          const queryTeam = `INSERT INTO Team(name, club, country, entrydate, contact, phone, email, dayofweek, plantime, preferredlocation1, preferredlocation2) VALUES ("${this._sqlEscaped(
+            teamName
+          )}", ${internalClubId}, 19, #${moment(entry.createdAt).format(
             'MM/DD/YYYY HH:MM:ss'
           )}#, "${captainName}", "${this._sqlEscaped(
             team.phone
@@ -393,18 +392,25 @@ export class CpGeneratorService {
             team.email
           )}", ${dayofweek}, ${plantime}, ${prefLoc1}, ${prefLoc2}
       )`;
-          // this.logger.verbose(`Query: ${queryTeam}`);
-          const teamRes = await this.connection.execute(
-            queryTeam,
-            `SELECT @@Identity AS id`
-          );
 
-          const response = teamRes[0];
-          teamList.set(team.id, {
-            cpId: response.id,
-            dbTeam: team,
-            dbEntry: entry,
-          });
+          try {
+            // this.logger.verbose(`Query: ${queryTeam}`);
+            const teamRes = await this.connection.execute(
+              queryTeam,
+              `SELECT @@Identity AS id`
+            );
+            const response = teamRes[0]; 
+            teamList.set(team.id, {
+              cpId: response.id,
+              dbTeam: team,
+              dbEntry: entry,
+            });
+          } catch (e) {
+            this.logger.error(`Error while inserting team ${team.name}`, e, {
+              query: queryTeam,
+            });
+            this.logger.error(e);
+          }
         } else {
           this.logger.error(`Team ${team.name} has no club`);
         }
