@@ -57,7 +57,7 @@ export class LocationResolver {
     return Location.findAll(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => Coordinates)
+  @ResolveField(() => Coordinates, { nullable: true })
   coordinates(@Parent() location: Location): Coordinates {
     return {
       latitude: location.coordinates.coordinates[1],
