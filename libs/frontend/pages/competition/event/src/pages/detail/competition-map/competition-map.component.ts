@@ -196,7 +196,9 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
             },
           })
         ),
-        map((res) => res.data.locations)
+        map((res) => res.data.locations),
+        map((locations) => locations.map((location) => new Location(location))),
+        map((locations) => locations.filter((location) => location.availibilities?.length > 0))
       ),
       {
         injector: this.injector,
