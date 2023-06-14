@@ -107,7 +107,6 @@ export class Location extends Model {
   @Column
   fax: string;
 
-  // @Field(() => Geometry('POINT', 4326), { nullable: true })
   @Column(DataType.GEOMETRY('POINT', 4326))
   coordinates: Point;
 
