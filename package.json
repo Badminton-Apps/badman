@@ -15,6 +15,7 @@
     "prerender": "nx prerender badman",
     "dev:up": "docker-compose -f docker-compose.dev.yml up",
     "dev:down": "docker-compose -f docker-compose.dev.yml down",
+    "start:stackblitz": "nx run-many --target=serve --projects=api,badman --parallel",
     "start:server": "nx run-many --target=serve --projects=api,worker-sync,worker-ranking --parallel",
     "start:client": "nx serve client",
     "affected:apps": "nx affected:apps",
@@ -249,7 +250,8 @@
   "engines": {
     "npm": ">=8.0.0"
   },
-  "browserslist": [
-    "defaults"
-  ]
+  "browserslist": ["defaults"],
+  "stackblitz": {
+    "startCommand": "npm run start:stackblitz"
+  }
 }
