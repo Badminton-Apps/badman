@@ -1,8 +1,13 @@
-<h2 mat-dialog-title>Edit open / close</h2>
+<h2 mat-dialog-title>
+  {{ 'all.competition.menu.open_close_change-encounters' | translate }}
+</h2>
 <mat-dialog-content>
   <!-- date time picker -->
   <div *ngIf="openControl">
     <mat-form-field>
+      <mat-label>{{
+        'all.competition.open-close.open-requests' | translate
+      }}</mat-label>
       <input
         matInput
         [ngxMatDatetimePicker]="openPicker"
@@ -17,8 +22,30 @@
     </mat-form-field>
   </div>
 
+  <div *ngIf="requestDateControl">
+    <mat-form-field>
+      <mat-label>{{
+        'all.competition.open-close.close-new-requets' | translate
+      }}</mat-label>
+      <input
+        matInput
+        [ngxMatDatetimePicker]="requestPicker"
+        placeholder="Choose a date"
+        [formControl]="requestDateControl"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="$any(requestPicker)"
+      ></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker #requestPicker> </ngx-mat-datetime-picker>
+    </mat-form-field>
+  </div>
+
   <div *ngIf="closeControl">
     <mat-form-field>
+      <mat-label>{{
+        'all.competition.open-close.close-accept-requests' | translate
+      }}</mat-label>
       <input
         matInput
         [ngxMatDatetimePicker]="closePicker"
@@ -33,6 +60,7 @@
     </mat-form-field>
   </div>
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
   <button mat-button [mat-dialog-close]="">
     {{ 'all.button.close' | translate }}

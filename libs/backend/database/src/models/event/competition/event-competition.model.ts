@@ -82,6 +82,18 @@ export class EventCompetition extends Model {
   @Column(DataType.DATE)
   closeDate?: Date;
 
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  changeOpenDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  changeCloseDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  changeCloseRequestDate?: Date;
+
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
     foreignKey: 'linkId',

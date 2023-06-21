@@ -141,10 +141,23 @@
     "map": {
       "title": "Map"
     },
+    "menu": {
+      "download-cp": "Download cp file",
+      "open_close_change-encounters": "Open/close move encounters",
+      "open_close_enrollments": "Open/Close Enrollments"
+    },
     "national": "National",
     "no-more-encounters": "No more encounters",
     "no-more-games": "No more games",
     "note": "note: Changes are saved directly",
+    "open-close": {
+      "close-accept-requests": "Closure acceptance",
+      "close-enrollment": "Closure",
+      "close-new-requets": "Closing new applications",
+      "hint": "",
+      "open-enrollment": "Date of opening",
+      "open-requests": "Date of opening"
+    },
     "prov": "Provincial",
     "subevent": {
       "max": "Max level",

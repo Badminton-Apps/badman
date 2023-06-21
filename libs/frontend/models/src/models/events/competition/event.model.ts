@@ -9,11 +9,27 @@ export class EventCompetition extends Event {
   comments?: Comment[];
   type?: LevelType;
 
+  changeOpenDate?: Date;
+  changeCloseDate?: Date;
+  changeCloseRequestDate?: Date;
+
   constructor({ ...args }: Partial<EventCompetition>) {
     super(args);
     this.season = args.season;
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
+    this.changeOpenDate = args.changeOpenDate
+      ? new Date(args.changeOpenDate)
+      : undefined;
+
+    this.changeCloseDate = args.changeCloseDate
+      ? new Date(args.changeCloseDate)
+      : undefined;
+
+    this.changeCloseRequestDate = args.changeCloseRequestDate
+      ? new Date(args.changeCloseRequestDate)
+      : undefined;
+
     this.subEventCompetitions = args?.subEventCompetitions
       ?.map((s) => new SubEventCompetition({ ...s, eventCompetition: this }))
       .sort(sortSubEvents);

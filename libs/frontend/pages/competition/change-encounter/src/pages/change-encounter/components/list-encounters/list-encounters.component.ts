@@ -100,15 +100,15 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
               this.formControl?.enable();
             }
 
-            const contrl = this.group.get('year');
+            const contrl = this.group.get('season');
             if (!contrl) {
-              throw new Error('year is not in formGroup');
+              throw new Error('season is not in formGroup');
             }
 
             const encounters = await lastValueFrom(
               contrl.valueChanges.pipe(
                 startWith(contrl.value),
-                switchMap((year) =>
+                switchMap((season) =>
                   this.apollo.query<{
                     encounterCompetitions: { rows: EncounterCompetition[] };
                   }>({
@@ -148,7 +148,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                           awayTeamId: teamId,
                         },
                         date: {
-                          $between: getCurrentSeasonPeriod(year),
+                          $between: getCurrentSeasonPeriod(season),
                         },
                       },
                     },

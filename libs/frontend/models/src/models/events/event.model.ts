@@ -17,6 +17,8 @@ export class Event {
   openDate?: Date;
   closeDate?: Date;
 
+
+
   allowEnlisting?: boolean;
 
   usedRankingUnit?: 'days' | 'weeks' | 'months';

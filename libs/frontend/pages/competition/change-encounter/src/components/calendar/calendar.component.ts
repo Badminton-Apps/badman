@@ -86,7 +86,7 @@ export class CalendarComponent implements OnInit {
   };
 
   public firstDayOfMonth: moment.Moment;
-  private year: number;
+  private season: number;
 
   private teamColors = new Map<string, string>();
 
@@ -115,7 +115,7 @@ export class CalendarComponent implements OnInit {
       this.firstDayOfMonth = moment();
     }
     this.firstDayOfMonth.startOf('month');
-    this.year = getCurrentSeason(this.firstDayOfMonth);
+    this.season = getCurrentSeason(this.firstDayOfMonth);
     this.monthNames = moment.months();
     const weekdays = moment.weekdays();
     this.weekDayNames = [
@@ -161,15 +161,15 @@ export class CalendarComponent implements OnInit {
         .query<{ club: { locations: Location[] } }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetClubLocation($clubId: ID!, $year: Int!) {
+            query GetClubLocation($clubId: ID!, $season: Int!) {
               club(id: $clubId) {
                 id
                 locations {
                   id
                   name
-                  availibilities(where: { year: $year }) {
+                  availibilities(where: { season: $season }) {
                     id
-                    year
+                    season
                     days {
                       courts
                       startTime
@@ -188,7 +188,7 @@ export class CalendarComponent implements OnInit {
           `,
           variables: {
             clubId: this.data.homeClubId,
-            year: this.year,
+            season: this.season,
           },
         })
         .pipe(
@@ -214,10 +214,10 @@ export class CalendarComponent implements OnInit {
         .query<{ club: { teams: Team[] } }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetClubTeams($clubId: ID!, $year: Int!) {
+            query GetClubTeams($clubId: ID!, $season: Int!) {
               club(id: $clubId) {
                 id
-                teams(where: { season: $year }) {
+                teams(where: { season: $season }) {
                   id
                   name
                   type
@@ -229,7 +229,7 @@ export class CalendarComponent implements OnInit {
           `,
           variables: {
             clubId: clubid,
-            year: this.year,
+            season: this.season,
           },
         })
         .pipe(
@@ -288,7 +288,7 @@ export class CalendarComponent implements OnInit {
           variables: {
             where: {
               date: {
-                $between: getCurrentSeasonPeriod(this.year),
+                $between: getCurrentSeasonPeriod(this.season),
               },
               $or: {
                 homeTeamId: team,

@@ -74,6 +74,7 @@ $light-theme: theme.badman-light-theme(
 @include frontend-role.theme($dark-theme);
 @include frontend-team.theme($dark-theme);
 @include frontend-general.theme($dark-theme);
+@include mat.legacy-button-color($dark-theme);
 
 .color-scheme-light {
   @include mat.all-component-colors($light-theme);
@@ -91,6 +92,10 @@ $light-theme: theme.badman-light-theme(
   @include frontend-team.colors($light-theme);
   @include frontend-components.colors($light-theme);
   @include frontend-general.colors($light-theme);
+
+  @include mat.legacy-button-color($light-theme);
+
+
 }
 
 /* You can add global styles to this file, and also import other style files */

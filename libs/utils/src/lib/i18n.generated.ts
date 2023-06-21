@@ -145,10 +145,23 @@ export type I18nTranslations = {
             "map": {
                 "title": string;
             };
+            "menu": {
+                "download-cp": string;
+                "open_close_change-encounters": string;
+                "open_close_enrollments": string;
+            };
             "national": string;
             "no-more-encounters": string;
             "no-more-games": string;
             "note": string;
+            "open-close": {
+                "close-accept-requests": string;
+                "close-enrollment": string;
+                "close-new-requets": string;
+                "hint": string;
+                "open-enrollment": string;
+                "open-requests": string;
+            };
             "prov": string;
             "subevent": {
                 "max": string;
