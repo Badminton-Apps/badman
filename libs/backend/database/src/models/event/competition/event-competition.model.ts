@@ -30,6 +30,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -50,35 +51,35 @@ export class EventCompetition extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
   @Unique('EventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
   @Unique('EventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   season: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   lastSync: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   openDate?: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   closeDate?: Date;
 
   @Field(() => [Comment], { nullable: true })
@@ -114,21 +115,21 @@ export class EventCompetition extends Model {
   type: LevelType;
 
   @Unique('EventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   visualCode: string;
 
   @Default(false)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
   started: boolean;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   slug: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   usedRankingAmount: number;
 
   @Field(() => String, { nullable: true })
@@ -141,16 +142,16 @@ export class EventCompetition extends Model {
     };
   }
 
-  @Field()
-  @Column
+  @Field(() => Boolean)
+  @Column(DataType.BOOLEAN)
   official: boolean;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   state: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   country: string;
 
   regenerateSlug!: Slugify<EventCompetition>;

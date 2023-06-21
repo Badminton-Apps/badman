@@ -36,32 +36,32 @@ export class ClubPlayerMembership extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @ForeignKey(() => Player)
   @AllowNull(false)
   @Index('player_club_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   playerId: string;
 
   @ForeignKey(() => Club)
   @AllowNull(false)
   @Index('player_club_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   clubId: string;
 
   club: Club;
   player: Player;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   end?: Date;
 
   @Default(true)
-  @Field({ nullable: true })
+  @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
   active?: boolean;
 
@@ -69,8 +69,8 @@ export class ClubPlayerMembership extends Model {
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
   @Unique('ClubPlayerMemberships_playerId_clubId_unique')
   @AllowNull(false)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   start: Date;
 }
 

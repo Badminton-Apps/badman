@@ -55,6 +55,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -73,37 +74,37 @@ export class Player extends Model {
     super(values, options);
   }
 
-  @Field({ nullable: true })
+  @Field(() => Date, {nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, {nullable: true })
   createdAt?: Date;
 
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   email: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   phone: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   gender: 'M' | 'F';
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, {nullable: true })
+  @Column(DataType.DATE)
   birthDate: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   sub: string;
 
   @Field(() => [Team], { nullable: true })
@@ -121,37 +122,37 @@ export class Player extends Model {
     return this.entriesP1.concat(this.entriesP2);
   }
 
-  @Field({ nullable: true })
+  @Field(() => String, {nullable: true })
   @Unique('unique_constraint')
   @Index
-  @Column
+  @Column(DataType.STRING)
   firstName: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, {nullable: true })
   @Unique('unique_constraint')
   @Index
-  @Column
+  @Column(DataType.STRING)
   lastName: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, {nullable: true })
   @Column(DataType.VIRTUAL)
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  @Field({ nullable: true })
+  @Field(() => Boolean, {nullable: true })
   @Default(false)
-  @Column
+  @Column(DataType.BOOLEAN)
   competitionPlayer: boolean;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   slug: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, {nullable: true })
   @Unique('unique_constraint')
   @Index
-  @Column
+  @Column(DataType.STRING)
   memberId: string;
 
   @Field(() => [RankingPoint], { nullable: true })
@@ -413,7 +414,7 @@ export class Player extends Model {
 
 @ObjectType()
 export class PagedPlayer {
-  @Field()
+  @Field(() => Int)
   count: number;
 
   @Field(() => [Player])

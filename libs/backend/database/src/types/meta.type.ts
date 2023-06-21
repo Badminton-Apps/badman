@@ -1,6 +1,8 @@
 import {
   Field,
+  ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -23,13 +25,13 @@ export class EntryMetaType {
 
 @ObjectType({ description: 'A EntryTournament' })
 export class EntryTournamentType {
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   place: number;
 }
 
 @ObjectType({ description: 'A EntryCompetition' })
 export class EntryCompetitionType {
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   teamIndex: number;
 
   @Field(() => [EntryCompetitionPlayersType], { nullable: true })
@@ -38,25 +40,25 @@ export class EntryCompetitionType {
 
 @ObjectType({ description: 'A EntryCompetitionPlayers' })
 export class EntryCompetitionPlayersType {
-  @Field({ nullable: true })
+  @Field(() => ID, { nullable: true })
   id: string;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   single: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   double: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   mix: number;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   gender: 'M' | 'F';
 
   @Field(() => Player, { nullable: true })
   player: Player;
 
-  @Field({ nullable: true })
+  @Field(() => Boolean, { nullable: true })
   levelException: boolean;
 }
 

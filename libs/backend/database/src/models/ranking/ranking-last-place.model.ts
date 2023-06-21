@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -34,102 +34,102 @@ export class RankingLastPlace extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   rankingDate: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   gender: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   singlePoints: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   mixPoints: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   doublePoints: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   singlePointsDowngrade: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   mixPointsDowngrade: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   doublePointsDowngrade: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   singleRank: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   mixRank: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   doubleRank: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   totalSingleRanking: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   totalMixRanking: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   totalDoubleRanking: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   totalWithinSingleLevel: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   totalWithinMixLevel: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   totalWithinDoubleLevel: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   single: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   mix: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   double: number;
 
   @Default(false)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
   singleInactive: boolean;
   @Default(false)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
   mixInactive: boolean;
   @Default(false)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
   doubleInactive: boolean;
 
   @Unique('unique_constraint')
   @ForeignKey(() => Player)
   @Index('lastPlaces_ranking_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   playerId: string;
 
   @Unique('unique_constraint')
   @ForeignKey(() => RankingSystem)
   @Index('lastPlaces_ranking_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   systemId: string;
 
   @Field(() => Player, { nullable: true })
@@ -154,7 +154,7 @@ export class RankingLastPlace extends Model {
 
 @ObjectType()
 export class PagedRankingLastPlaces {
-  @Field()
+  @Field(() => Int)
   count: number;
 
   @Field(() => [RankingLastPlace])

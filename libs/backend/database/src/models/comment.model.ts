@@ -42,17 +42,17 @@ export class Comment extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, {nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, {nullable: true })
   createdAt?: Date;
 
 
-  @Field({ nullable: true })
+  @Field(() => String, {nullable: true })
   @Column(DataType.TEXT)
   message: string;
 
@@ -61,8 +61,8 @@ export class Comment extends Model {
 
   @ForeignKey(() => Player)
   @Index
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, {nullable: true })
+  @Column(DataType.UUIDV4)
   playerId: string;
 
   @BelongsTo(() => Club, 'clubId')
@@ -70,8 +70,8 @@ export class Comment extends Model {
 
   @ForeignKey(() => Club)
   @Index
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, {nullable: true })
+  @Column(DataType.UUIDV4)
   clubId: string;
 
   @BelongsTo(() => EventCompetition, {
@@ -87,13 +87,13 @@ export class Comment extends Model {
   encounter: EncounterChange;
 
   @Index('comment_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, {nullable: true })
+  @Column(DataType.UUIDV4)
   linkId: string;
 
   @Index('comment_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   linkType: string;
 
 

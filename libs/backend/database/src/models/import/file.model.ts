@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { BuildOptions } from 'sequelize';
 import {
   Column,
@@ -28,12 +28,12 @@ export class ImporterFile extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Unique('unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
   @Unique('unique_constraint')
@@ -42,32 +42,32 @@ export class ImporterFile extends Model {
   type: EventImportType;
 
   @Unique('unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, {nullable: true })
+  @Column(DataType.DATE)
   firstDay: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   fileLocation: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   dates: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   linkCode: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   visualCode: string;
 
   @Default(false)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean, {nullable: true })
+  @Column(DataType.BOOLEAN)
   importing: boolean;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, {nullable: true })
+  @Column(DataType.NUMBER)
   tournamentNumber: number;
 }

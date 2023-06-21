@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
 import { XMLParser } from 'fast-xml-parser';
 
-import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axiosRateLimit from 'axios-rate-limit';
 import { Moment } from 'moment';
@@ -17,6 +17,7 @@ import {
   XmlTournamentEvent,
 } from '../utils';
 import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class VisualService {

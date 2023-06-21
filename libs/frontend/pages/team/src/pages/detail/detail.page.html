@@ -1,11 +1,20 @@
 <badman-page-header>
   <div title>{{team.name}}</div>
   <div subTitle *ngIf="this.entries$ | async as entry">
-    #{{entry.standing?.position}}/{{entry.standing?.size}} in
-    <a
-      [routerLink]="['/competition', entry.subEventCompetition?.eventCompetition?.slug, 'draw', entry.drawCompetition?.id ]"
-      >{{entry.subEventCompetition?.eventCompetition?.name}}</a
-    >
+    <ng-container *ngIf="entry.drawCompetition?.id">
+      #{{entry.standing?.position}}/{{entry.standing?.size}} in
+      <a
+        [routerLink]="['/competition', entry.subEventCompetition?.eventCompetition?.slug, 'draw', entry.drawCompetition?.id ]"
+        >{{entry.subEventCompetition?.eventCompetition?.name}}</a
+      >
+    </ng-container>
+
+    <ng-container *ngIf="!entry.drawCompetition?.id && entry.id">
+      <a
+        [routerLink]="['/competition', entry.subEventCompetition?.eventCompetition?.slug ]"
+        >{{entry.subEventCompetition?.eventCompetition?.name}}</a
+      >
+    </ng-container>
   </div>
 
   <div actions>

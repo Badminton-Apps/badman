@@ -7,6 +7,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -55,8 +56,8 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { Slugify } from '../types';
 import { TeamPlayerMembershipType } from '../_interception';
+import { Slugify } from '../types';
 import { Club } from './club.model';
 import {
   EncounterCompetition,
@@ -68,8 +69,8 @@ import {
 } from './event';
 import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 import { Player, PlayerTeamInput } from './player.model';
-import { TeamPlayerMembership } from './team-player-membership.model';
 import { Role } from './security';
+import { TeamPlayerMembership } from './team-player-membership.model';
 
 @Table({
   timestamps: true,
@@ -81,26 +82,26 @@ export class Team extends Model {
     super(values, options);
   }
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Column
+  @Column(DataType.UUIDV4)
   id!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Unique('unique_constraint')
-  @Column
+  @Column(DataType.STRING)
   name: string;
 
-  @Field({ nullable: false })
-  @Column
+  @Field(() => Int, { nullable: false })
+  @Column(DataType.NUMBER)
   season: number;
 
   @Field(() => String, { nullable: true })
@@ -110,7 +111,7 @@ export class Team extends Model {
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
-  @Column
+  @Column(DataType.UUIDV4)
   link: string;
 
   @Field(() => String, { nullable: true })
@@ -130,8 +131,8 @@ export class Team extends Model {
   @BelongsToMany(() => Location, () => TeamLocationCompetition)
   locations: Location[];
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   abbreviation: string;
 
   @HasOne(() => EventEntry, 'teamId')
@@ -141,15 +142,15 @@ export class Team extends Model {
   @BelongsTo(() => Club, 'clubId')
   club?: Club;
 
-  @Field({ nullable: true })
+  @Field(() => ID, { nullable: true })
   @ForeignKey(() => Club)
   @Unique('unique_constraint')
   @Index('club_index')
-  @Column
+  @Column(DataType.UUIDV4)
   clubId: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   slug: string;
 
   @Field(() => [TeamPlayerMembershipType], { nullable: true })
@@ -166,21 +167,21 @@ export class Team extends Model {
   @BelongsTo(() => Player, 'captainId')
   captain: Player;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   captainId: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   email: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   phone: string;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   @Unique('unique_constraint')
-  @Column
+  @Column(DataType.NUMBER)
   teamNumber?: number;
 
   @HasMany(() => EncounterCompetition, 'homeTeamId')

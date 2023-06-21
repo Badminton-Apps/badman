@@ -1,4 +1,5 @@
-import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import { Model, Sequelize } from 'sequelize-typescript';
@@ -25,18 +26,18 @@ export class SequelizeAttachReqToModelMiddleware {
       this.logger.debug('initialize cache');
       seq['Cache'] = this._cacheManager;
 
-      seq.addHook('beforeQuery', 'beforeQueryCache', async (options, query) => {
-        //   if (!options) return;
-        //   const model = (options as unknown as { model: any })?.['model'];
-        //   this.logger.debug(`beforeQueryCache: ${model.name}`);
-        //   if (!model) return;
-        //   const cacheKey = `${prefix}${model.name}\\${model.id}`;
-        //   const cached = await seq['Cache'].get(cacheKey);
-        //   if (cached) {
-        //     this.logger.debug(`beforeQueryCache: ${cacheKey} found`);
-        //     return cached as any;
-        //   }
-      });
+      // seq.addHook('beforeQuery', 'beforeQueryCache', async (options, query) => {
+      //   if (!options) return;
+      //   const model = (options as unknown as { model: any })?.['model'];
+      //   this.logger.debug(`beforeQueryCache: ${model.name}`);
+      //   if (!model) return;
+      //   const cacheKey = `${prefix}${model.name}\\${model.id}`;
+      //   const cached = await seq['Cache'].get(cacheKey);
+      //   if (cached) {
+      //     this.logger.debug(`beforeQueryCache: ${cacheKey} found`);
+      //     return cached as any;
+      //   }
+      // });
 
       seq.addHook('afterFind', 'afterFindCache', async (results) => {
         if (!Array.isArray(results)) return;

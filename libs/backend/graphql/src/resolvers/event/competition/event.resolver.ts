@@ -37,7 +37,7 @@ import { ListArgs } from '../../../utils';
 
 @ObjectType()
 export class PagedEventCompetition {
-  @Field()
+  @Field(() => Int)
   count: number;
 
   @Field(() => [EventCompetition])
