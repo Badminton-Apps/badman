@@ -1,13 +1,14 @@
 import {
+  Comment,
   EncounterChange,
   EncounterChangeDate,
-  Comment,
 } from '@badman/backend-database';
 import { Logger, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Field,
   ID,
+  Int,
   ObjectType,
   Parent,
   Query,
@@ -18,7 +19,7 @@ import { ListArgs } from '../../../utils';
 
 @ObjectType()
 export class PagedEncounterChange {
-  @Field()
+  @Field(() => Int)
   count: number;
 
   @Field(() => [EncounterChange])

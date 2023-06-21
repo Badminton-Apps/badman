@@ -1,3 +1,4 @@
+import { getIndexFromPlayers } from '@badman/utils';
 import { NotFoundException } from '@nestjs/common';
 import {
   Field,
@@ -33,7 +34,6 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { getIndexFromPlayers, SubEventTypeEnum } from '@badman/utils';
 import { EntryMetaType } from '../../types';
 import { Player } from '../player.model';
 import { RankingPlace, RankingSystem } from '../ranking';
@@ -61,35 +61,35 @@ export class EventEntry extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @BelongsTo(() => Team, 'teamId')
   team?: Team;
 
-  @Column
-  @Field({ nullable: true })
+  @Column(DataType.STRING)
+  @Field(() => Date, { nullable: true })
   date: Date;
 
   @ForeignKey(() => Team)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.UUIDV4)
   teamId: string;
 
   @BelongsTo(() => Player, 'player1Id')
   player1?: Player;
 
   @ForeignKey(() => Player)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   player1Id: string;
 
   @BelongsTo(() => Player, 'player2Id')
   player2?: Player;
 
   @ForeignKey(() => Player)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   player2Id: string;
 
   @BelongsTo(() => SubEventTournament, {
@@ -124,15 +124,15 @@ export class EventEntry extends Model {
   })
   drawCompetition?: DrawCompetition;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   subEventId: string;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   drawId: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   entryType: string;
 
   @HasOne(() => Standing)
@@ -269,7 +269,8 @@ export class EventEntry extends Model {
             ((r?.double ?? -1) == -1 ? ranking?.double : r?.double) ??
             dbSystem.amountOfLevels,
           mix:
-            ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
+            ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ??
+            dbSystem.amountOfLevels,
         };
       }
     );

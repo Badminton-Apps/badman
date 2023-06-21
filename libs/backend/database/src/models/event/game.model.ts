@@ -1,5 +1,5 @@
 // import { SocketEmitter, EVENTS } from '../../../sockets';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -67,11 +67,11 @@ export class Game extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   playedAt: Date;
 
   @Field(() => String, { nullable: true })
@@ -90,36 +90,36 @@ export class Game extends Model {
   )
   status: GameStatus;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set1Team1?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set1Team2?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set2Team1?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set2Team2?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set3Team1?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set3Team2?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   winner?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   order?: number;
 
-  @Field({ nullable: true })
-  @Column
-  round?: string;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  round?: number;
 
   @Field(() => [RankingPoint], { nullable: true })
   @HasMany(() => RankingPoint, 'gameId')
@@ -140,25 +140,25 @@ export class Game extends Model {
   competition: EncounterCompetition;
 
   @Index('game_parent_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   linkId: string;
 
   @Index('game_parent_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   linkType: string;
 
   @BelongsTo(() => Court, 'courtId')
   court: Court;
 
   @ForeignKey(() => Court)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   courtId: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   visualCode: string;
 
   @Field(() => [GamePlayerMembershipType], { nullable: true })

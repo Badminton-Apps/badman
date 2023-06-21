@@ -1,6 +1,7 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ID } from '@nestjs/graphql';
 import {
   Column,
+  DataType,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -16,13 +17,13 @@ import { SubEventCompetition } from './sub-event-competition.model';
 export class RankingGroupSubEventCompetitionMembership extends Model {
   @PrimaryKey
   @ForeignKey(() => SubEventCompetition)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   subEventId: string;
 
   @PrimaryKey
   @ForeignKey(() => RankingGroup)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   groupId: string;
 }

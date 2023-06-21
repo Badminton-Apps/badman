@@ -27,25 +27,25 @@ export class Faq extends Model {
     super(values, options);
   }
 
-  @Field({ nullable: true })
+  @Field(() => Date, {nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, {nullable: true })
   createdAt?: Date;
 
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Column
+  @Column(DataType.UUIDV4)
   id!: string;
 
-  @Field()
-  @Column
+  @Field(() => String)
+  @Column(DataType.STRING)
   question: string;
 
-  @Field()
-  @Column
+  @Field(() => String)
+  @Column(DataType.STRING)
   answer: string;
 }
 

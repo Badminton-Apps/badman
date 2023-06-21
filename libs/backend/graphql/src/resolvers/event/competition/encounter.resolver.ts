@@ -22,6 +22,7 @@ import {
   Args,
   Field,
   ID,
+  Int,
   Mutation,
   ObjectType,
   Parent,
@@ -37,7 +38,7 @@ import { ListArgs } from '../../../utils';
 
 @ObjectType()
 export class PagedEncounterCompetition {
-  @Field()
+  @Field(() => Int)
   count: number;
 
   @Field(() => [EncounterCompetition])

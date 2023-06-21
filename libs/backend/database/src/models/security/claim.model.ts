@@ -49,23 +49,23 @@ export class Claim extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Unique('Claims_name_category')
   @Index
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
   @Index
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   description: string;
 
   @Unique('Claims_name_category')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   category: string;
 
   @Field(() => String, { nullable: true })

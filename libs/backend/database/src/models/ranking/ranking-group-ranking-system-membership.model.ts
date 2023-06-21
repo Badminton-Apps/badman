@@ -1,5 +1,5 @@
-import { Field } from '@nestjs/graphql';
-import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { Field, ID } from '@nestjs/graphql';
+import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { RankingSystem } from './ranking-system.model';
 import { RankingGroup } from './ranking-group.model';
 
@@ -9,12 +9,12 @@ import { RankingGroup } from './ranking-group.model';
 })
 export class RankingSystemRankingGroupMembership extends Model {
   @ForeignKey(() => RankingSystem)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   systemId: string;
 
   @ForeignKey(() => RankingGroup)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   groupId: string;
 }

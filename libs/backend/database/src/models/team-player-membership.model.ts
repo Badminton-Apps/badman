@@ -1,5 +1,5 @@
 import { TeamMembershipType } from '@badman/utils';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { BuildOptions, SaveOptions } from 'sequelize';
 import {
   AfterBulkCreate,
@@ -32,21 +32,21 @@ export class TeamPlayerMembership extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @ForeignKey(() => Player)
   @AllowNull(false)
   @Index('player_team_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   playerId: string;
 
   @ForeignKey(() => Team)
   @AllowNull(false)
   @Index('player_team_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   teamId: string;
 
   @Default(TeamMembershipType.REGULAR)
@@ -54,14 +54,14 @@ export class TeamPlayerMembership extends Model {
   @Column(DataType.ENUM(...Object.keys(TeamMembershipType)))
   membershipType?: TeamMembershipType;
 
-  @Column
+  @Column(DataType.DATE)
   end?: Date;
 
   // Below is a hacky way to make the Unique across FK's + start
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
   @Unique('TeamPlayerMemberships_teamId_playerId_unique')
   @AllowNull(false)
-  @Column
+  @Column(DataType.DATE)
   start: Date;
 
   @AfterCreate

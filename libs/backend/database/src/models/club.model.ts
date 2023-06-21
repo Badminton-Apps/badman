@@ -1,4 +1,13 @@
-import { Slugify } from '../types';
+import { UseForTeamName } from '@badman/utils';
+import {
+  Field,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -42,21 +51,13 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { UseForTeamName } from '@badman/utils';
+import { Slugify } from '../types';
 import { ClubPlayerMembership } from './club-player-membership.model';
 import { Comment } from './comment.model';
 import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
@@ -72,18 +73,18 @@ export class Club extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Unique('club_number_unique')
   @Index
   @AllowNull(false)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   fullName?: string;
 
   @Default(UseForTeamName.NAME)
@@ -91,13 +92,13 @@ export class Club extends Model {
   @Column(DataType.ENUM('name', 'fullName', 'abbreviation'))
   useForTeamName?: UseForTeamName;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   abbreviation: string;
 
   @Unique('club_number_unique')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   clubId?: number;
 
   @Field(() => [Team], { nullable: true })
@@ -126,16 +127,16 @@ export class Club extends Model {
   @HasMany(() => Location)
   locations: Location[];
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   slug: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   state: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   country: string;
 
   regenerateSlug!: Slugify<Club>;

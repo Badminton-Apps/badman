@@ -28,7 +28,7 @@ export class Assembly extends Model<Assembly> {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Field(() => AssemblyType, { nullable: true })
@@ -41,7 +41,7 @@ export class Assembly extends Model<Assembly> {
   description: string;
 
   @ForeignKey(() => EncounterCompetition)
-  @Column(DataTypes.UUID)
+  @Column(DataTypes.UUIDV4)
   encounterId: string;
 
   @Field(() => EncounterCompetition, { nullable: true })
@@ -53,7 +53,7 @@ export class Assembly extends Model<Assembly> {
 
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })
-  @Column(DataTypes.UUID)
+  @Column(DataTypes.UUIDV4)
   teamId: string;
 
   @Field(() => Team, { nullable: true })
@@ -65,7 +65,7 @@ export class Assembly extends Model<Assembly> {
 
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
-  @Column(DataTypes.UUID)
+  @Column(DataTypes.UUIDV4)
   captainId: string;
 
   @Field(() => Player, { nullable: true })
@@ -77,7 +77,7 @@ export class Assembly extends Model<Assembly> {
 
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
-  @Column(DataTypes.UUID)
+  @Column(DataTypes.UUIDV4)
   playerId: string;
 
   @Field(() => Player, { nullable: true })

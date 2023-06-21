@@ -45,12 +45,12 @@ export class RankingGroup extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Unique
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
   @BelongsToMany(

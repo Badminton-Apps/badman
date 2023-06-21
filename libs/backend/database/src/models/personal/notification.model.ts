@@ -43,35 +43,34 @@ export class Notification extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'sendToId')
   sendTo: Player;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   sendToId: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   type: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   linkId: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   linkType: string;
-
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
@@ -101,11 +100,11 @@ export class Notification extends Model {
   })
   club: Club;
 
-  @Field({ nullable: true, defaultValue: false })
-  @Column({ defaultValue: false })
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
   read: boolean;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({
     type: DataType.JSON,
   })

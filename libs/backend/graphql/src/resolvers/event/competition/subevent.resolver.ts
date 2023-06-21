@@ -10,7 +10,6 @@ import {
 } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
 import {
-  CACHE_MANAGER,
   Inject,
   Logger,
   NotFoundException,
@@ -25,6 +24,7 @@ import {
 } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Resolver(() => SubEventCompetition)
 export class SubEventCompetitionResolver {

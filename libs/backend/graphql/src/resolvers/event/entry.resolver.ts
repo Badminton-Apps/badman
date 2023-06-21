@@ -70,7 +70,7 @@ export class EventEntryResolver {
   ): Promise<SubEventCompetition> {
     return eventEntry.getSubEventCompetition();
   }
-  @ResolveField(() => DrawCompetition)
+  @ResolveField(() => DrawCompetition, { nullable: true })
   async drawCompetition(
     @Parent() eventEntry: EventEntry
   ): Promise<DrawCompetition> {

@@ -39,11 +39,11 @@ export class EncounterChangeDate extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
   selected?: boolean;
 
   @BelongsTo(() => EncounterChange, {
@@ -53,12 +53,12 @@ export class EncounterChangeDate extends Model {
   encounterChange?: EncounterChange;
 
   @ForeignKey(() => EncounterChange)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   encounterChangeId: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   date: Date;
 
   @Field(() => String, { nullable: true })

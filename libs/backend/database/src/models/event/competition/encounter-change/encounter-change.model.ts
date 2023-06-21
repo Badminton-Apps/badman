@@ -58,11 +58,11 @@ export class EncounterChange extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
   accepted?: boolean;
 
   @BelongsTo(() => EncounterCompetition, {
@@ -72,8 +72,8 @@ export class EncounterChange extends Model {
   encounter?: EncounterCompetition;
 
   @ForeignKey(() => EncounterCompetition)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   encounterId: string;
 
   @Field(() => [EncounterChangeDate], { nullable: true })
@@ -152,7 +152,7 @@ export class EncounterChangeUpdateInput extends PartialType(
   ] as const),
   InputType
 ) {
-  @Field()
+  @Field(() => Boolean)
   home: boolean;
 
   @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })

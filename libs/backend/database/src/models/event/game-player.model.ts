@@ -1,7 +1,8 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { BuildOptions } from 'sequelize';
 import {
   Column,
+  DataType,
   ForeignKey,
   Index,
   Model,
@@ -22,41 +23,41 @@ export class GamePlayerMembership extends Model {
     super(values, options);
   }
 
-  @Field({ nullable: true })
+  @Field(() => ID, { nullable: true })
   @ForeignKey(() => Player)
   @Index
-  @Column
+  @Column(DataType.UUIDV4)
   playerId: string;
 
-  @Field({ nullable: true })
+  @Field(() => ID, { nullable: true })
   @ForeignKey(() => Game)
   @Index
-  @Column
+  @Column(DataType.UUIDV4)
   gameId: string;
 
-  @Field({ nullable: true })
+  @Field(() => ID, { nullable: true })
   @ForeignKey(() => RankingSystem)
   @Index
-  @Column
+  @Column(DataType.UUIDV4)
   systemId: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   team: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   player: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   single: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   double: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   mix: number;
 }

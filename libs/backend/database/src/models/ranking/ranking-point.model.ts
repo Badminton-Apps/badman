@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -34,11 +34,11 @@ export class RankingPoint extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   points: number;
 
   @Field(() => Player, { nullable: true })
@@ -57,29 +57,29 @@ export class RankingPoint extends Model {
   system: RankingSystem;
 
   @ForeignKey(() => RankingSystem)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   rankingDate: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   differenceInLevel: number;
 
   @ForeignKey(() => RankingSystem)
   @Index('point_system_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   systemId: string;
 
   @ForeignKey(() => Player)
   @Index('point_system_index')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   playerId: string;
 
   @ForeignKey(() => Game)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   gameId: string;
 
   // Belongs to Player

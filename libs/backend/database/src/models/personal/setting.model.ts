@@ -40,7 +40,7 @@ export class Setting extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Field(() => String, { nullable: true })
@@ -54,8 +54,8 @@ export class Setting extends Model {
   player: Player;
 
   @ForeignKey(() => Player)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   playerId: string;
 
   @Field(() => PushSubscriptionType, { nullable: true })

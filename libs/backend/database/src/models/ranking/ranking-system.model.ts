@@ -65,52 +65,52 @@ export class RankingSystem extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Unique
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   amountOfLevels: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   procentWinning: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   procentWinningPlus1: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   procentLosing: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   minNumberOfGamesUsedForUpgrade: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   maxDiffLevels: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   maxDiffLevelsHighest: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   latestXGamesToUse: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   maxLevelUpPerChange: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   maxLevelDownPerChange: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   gamesForInactivty: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   inactivityAmount: number;
 
   @Field(() => String, { nullable: true })
@@ -128,12 +128,12 @@ export class RankingSystem extends Model {
     };
   }
   @Default(new Date('2016-08-31T22:00:00.000Z'))
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   caluclationIntervalLastUpdate: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.NUMBER)
   caluclationIntervalAmount: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
@@ -146,8 +146,8 @@ export class RankingSystem extends Model {
     };
   }
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   periodAmount: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
@@ -160,11 +160,11 @@ export class RankingSystem extends Model {
     };
   }
   @Default(new Date('2016-08-31T22:00:00.000Z'))
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   updateIntervalAmountLastUpdate: Date;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.NUMBER)
   updateIntervalAmount: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
@@ -181,24 +181,24 @@ export class RankingSystem extends Model {
   @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB', 'VISUAL'))
   rankingSystem: RankingSystems;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
   primary: boolean;
 
-  @Field({ nullable: true })
-  @Column({ defaultValue: false })
+  @Field(() => Boolean, { nullable: true })
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
   runCurrently: boolean;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   runDate: Date;
 
-  @Field({ nullable: true })
-  @Column({ defaultValue: 1 })
+  @Field(() => Int, { nullable: true })
+  @Column({ type: DataType.NUMBER, defaultValue: 1 })
   differenceForUpgrade: number;
 
-  @Field({ nullable: true })
-  @Column({ defaultValue: 0 })
+  @Field(() => Int, { nullable: true })
+  @Column({ type: DataType.NUMBER, defaultValue: 0 })
   differenceForDowngrade: number;
 
   @Field(() => String, { nullable: true })

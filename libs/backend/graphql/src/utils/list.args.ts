@@ -6,10 +6,10 @@ import { queryFixer } from './queryFixer';
 
 @InputType()
 export class SortOrderType {
-  @Field()
+  @Field(() => String)
   field!: string;
 
-  @Field()
+  @Field(() => String)
   direction!: string;
 }
 

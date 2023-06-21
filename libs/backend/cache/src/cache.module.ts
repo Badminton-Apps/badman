@@ -1,4 +1,5 @@
-import { CacheStore, Module, CacheModule as nestCache } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { CacheStore, CacheModule as nestCache } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { redisStore } from 'cache-manager-redis-store';
@@ -9,14 +10,14 @@ import { redisStore } from 'cache-manager-redis-store';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         if (configService.get('DB_CACHE') === 'true') {
-          const redis = await redisStore({
+          const redis = (await redisStore({
             socket: {
               host: configService.get('REDIS_HOST'),
               port: configService.get<number>('REDIS_PORT'),
             },
             password: configService.get('REDIS_PASSWORD'),
             database: configService.get<number>('CACHE_DB') ?? 0,
-          }) as unknown as CacheStore;
+          })) as unknown as CacheStore;
 
           return {
             store: redis,
