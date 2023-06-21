@@ -27,11 +27,11 @@ export class RequestLink extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
   sub: string;
 
   @BelongsTo(() => Player, 'playerId')
@@ -39,8 +39,8 @@ export class RequestLink extends Model {
 
   @ForeignKey(() => Player)
   @Index
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, {nullable: true })
+  @Column(DataType.UUIDV4)
   playerId: string;
 
   // Belongs to Player

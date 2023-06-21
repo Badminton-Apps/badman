@@ -24,6 +24,7 @@ import {
   Field,
   ID,
   Info,
+  Int,
   Mutation,
   ObjectType,
   Parent,
@@ -36,7 +37,7 @@ import { ListArgs } from '../../utils';
 
 @ObjectType()
 export class PagedClub {
-  @Field()
+  @Field(() => Int)
   count: number;
 
   @Field(() => [Club])

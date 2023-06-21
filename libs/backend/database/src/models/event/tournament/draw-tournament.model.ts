@@ -30,7 +30,7 @@ import { DrawType } from '@badman/utils';
 import { Game } from '../game.model';
 import { Standing } from '../standing.model';
 import { EventEntry } from '../entry.model';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 @Table({
   timestamps: true,
@@ -46,12 +46,12 @@ export class DrawTournament extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Unique('DrawTournaments_unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
   @Unique('DrawTournaments_unique_constraint')
@@ -59,8 +59,8 @@ export class DrawTournament extends Model {
   @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
   type: DrawType;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   size: number;
 
   @HasMany(() => Game, {
@@ -82,16 +82,16 @@ export class DrawTournament extends Model {
   eventEntries: EventEntry[];
 
   @Unique('DrawTournaments_unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   visualCode: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   risers: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   fallers: number;
 
   @Field(() => SubEventTournament, { nullable: true })
@@ -103,8 +103,8 @@ export class DrawTournament extends Model {
 
   @Unique('DrawTournaments_unique_constraint')
   @ForeignKey(() => SubEventTournament)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   subeventId: string;
 
   // Has many Game

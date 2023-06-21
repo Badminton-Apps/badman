@@ -1,3 +1,4 @@
+import { SecurityType } from '@badman/utils';
 import {
   Field,
   ID,
@@ -26,21 +27,19 @@ import {
   Column,
   DataType,
   Default,
-  ForeignKey,
   Index,
   IsUUID,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from 'sequelize-typescript';
-import { SecurityType } from '@badman/utils';
 import { Club } from '../club.model';
+import { EventCompetition, EventTournament } from '../event';
 import { Player } from '../player.model';
+import { Team } from '../team.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
 import { Claim, ClaimUpdateInput } from './claim.model';
 import { PlayerRoleMembership } from './role-player-membership.model';
-import { EventCompetition, EventTournament } from '../event';
-import { Team } from '../team.model';
 
 @Table({
   timestamps: true,
@@ -56,21 +55,21 @@ export class Role extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Index
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
   @Index
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   description: string;
 
-  @Field()
-  @Column
+  @Field(() => Boolean)
+  @Column(DataType.BOOLEAN)
   locked: boolean;
 
   @BelongsToMany(() => Claim, () => RoleClaimMembership)
@@ -103,11 +102,11 @@ export class Role extends Model {
   })
   tournament: EventTournament;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   linkId: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(
     DataType.ENUM(
       SecurityType.GLOBAL,

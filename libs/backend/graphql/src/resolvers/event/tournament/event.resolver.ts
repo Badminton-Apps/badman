@@ -8,25 +8,26 @@ import {
   RankingGroup,
   RankingPoint,
   RankingSystem,
-  SubEventTournament
+  SubEventTournament,
 } from '@badman/backend-database';
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
 import { IsUUID } from '@badman/utils';
 import {
   Logger,
   NotFoundException,
-  UnauthorizedException
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   Args,
   Field,
   ID,
+  Int,
   Mutation,
   ObjectType,
   Parent,
   Query,
   ResolveField,
-  Resolver
+  Resolver,
 } from '@nestjs/graphql';
 import { Op, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
@@ -34,7 +35,7 @@ import { ListArgs } from '../../../utils';
 
 @ObjectType()
 export class PagedEventTournament {
-  @Field()
+  @Field(() => Int)
   count: number;
 
   @Field(() => [EventTournament])

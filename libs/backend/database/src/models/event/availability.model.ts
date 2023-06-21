@@ -2,6 +2,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -46,11 +47,11 @@ export class Availability extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   season: number;
 
   @Field(() => [AvailiblyDayType], { nullable: true })
@@ -72,8 +73,8 @@ export class Availability extends Model {
   location: Location;
 
   @ForeignKey(() => Location)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   locationId: string;
 
   // Belongs to Location

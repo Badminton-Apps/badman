@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -57,12 +57,12 @@ export class SubEventCompetition extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
@@ -70,20 +70,20 @@ export class SubEventCompetition extends Model {
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
   eventType: SubEventTypeEnum;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   level?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   maxLevel?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   minBaseIndex?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   maxBaseIndex?: number;
 
   @Field(() => [EventEntry], { nullable: true })
@@ -119,13 +119,13 @@ export class SubEventCompetition extends Model {
 
   @Unique('SubEventCompetitions_unique_constraint')
   @ForeignKey(() => EventCompetition)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   eventId: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   visualCode: string;
 
   // Belongs to many Group
@@ -184,18 +184,18 @@ export class SubEventCompetitionAverageLevel {
   @Field(() => String, { nullable: true })
   gender: 'M' | 'F';
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   single?: number;
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   singleCount?: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   double?: number;
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   doubleCount?: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   mix?: number;
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   mixCount?: number;
 }

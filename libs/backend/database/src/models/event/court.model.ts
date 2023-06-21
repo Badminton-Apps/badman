@@ -44,12 +44,12 @@ export class Court extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
   @Unique('unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   name: string;
 
   @HasMany(() => Game, 'courtId')
@@ -60,8 +60,8 @@ export class Court extends Model {
 
   @ForeignKey(() => Location)
   @Unique('unique_constraint')
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   locationId: string;
 
   // Has many Game

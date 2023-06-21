@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -50,15 +50,15 @@ export class EncounterCompetition extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
+  @Column(DataType.UUIDV4)
   id: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   date: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   originalDate: Date;
 
   @HasMany(() => Game, {
@@ -78,42 +78,42 @@ export class EncounterCompetition extends Model {
   drawCompetition?: DrawCompetition;
 
   @ForeignKey(() => DrawCompetition)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   drawId: string;
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'homeTeamId')
   home: Team;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   homeScore: number;
 
   @ForeignKey(() => Team)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   homeTeamId: string;
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'awayTeamId')
   away: Team;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   awayScore: number;
 
   @ForeignKey(() => Team)
-  @Field({ nullable: true })
-  @Column
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
   awayTeamId: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   synced: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   visualCode: string;
 
   @Field(() => Player, { nullable: true })
@@ -129,27 +129,27 @@ export class EncounterCompetition extends Model {
   acceptedBy: Player;
 
   @Field(() => Date, { nullable: true })
-  @Column
+  @Column(DataType.DATE)
   enteredOn: Date;
 
   @Field(() => Date, { nullable: true })
-  @Column
+  @Column(DataType.DATE)
   acceptedOn: Date;
 
   @Field(() => Boolean, { nullable: true })
-  @Column
+  @Column(DataType.BOOLEAN)
   accepted: boolean;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   shuttle: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   startHour: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   endHour: string;
 
 
