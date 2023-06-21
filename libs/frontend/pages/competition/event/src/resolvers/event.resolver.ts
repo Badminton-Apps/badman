@@ -27,6 +27,8 @@ export class EventResolver {
               season
               openDate
               closeDate
+              changeOpenDate
+              changeCloseDate
               visualCode
               official
               lastSync

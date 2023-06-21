@@ -141,10 +141,23 @@
     "map": {
       "title": "Carte"
     },
+    "menu": {
+      "download-cp": "Télécharger le fichier CP",
+      "open_close_change-encounters": "Ouvrir/fermer les rencontres de déménagement",
+      "open_close_enrollments": "Ouvrir/fermer les inscriptions"
+    },
     "national": "Nationales",
     "no-more-encounters": "Plus de rencontres",
     "no-more-games": "Plus de games",
     "note": "note : les modifications sont enregistrées immédiatement",
+    "open-close": {
+      "close-accept-requests": "Acceptation de la clôture",
+      "close-enrollment": "Fermeture",
+      "close-new-requets": "Clôture des nouvelles demandes",
+      "hint": "",
+      "open-enrollment": "Date d'ouverture",
+      "open-requests": "Date d'ouverture"
+    },
     "prov": "Provinciale",
     "subevent": {
       "max": "Classement maximal",

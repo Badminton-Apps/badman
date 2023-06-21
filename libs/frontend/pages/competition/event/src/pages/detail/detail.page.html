@@ -38,9 +38,20 @@
             <span>Copy</span>
           </button>
 
-          <button mat-menu-item (click)="this.setOpenClose()">
+          <button mat-menu-item (click)="this.setOpenCloseEnrollents()">
             <mat-icon>lock</mat-icon>
-            <span>Set open/close date</span>
+            <span
+              >{{ 'all.competition.menu.open_close_enrollments' | translate
+              }}</span
+            >
+          </button>
+
+          <button mat-menu-item (click)="this.setOpenCloseChangeEncounters()">
+            <mat-icon>lock</mat-icon>
+            <span
+              >{{ 'all.competition.menu.open_close_change-encounters' |
+              translate }}</span
+            >
           </button>
 
           <button

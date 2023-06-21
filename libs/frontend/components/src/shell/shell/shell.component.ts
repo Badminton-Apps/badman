@@ -25,7 +25,7 @@ import {
   SwUpdate,
   VersionReadyEvent,
 } from '@angular/service-worker';
-import { AuthenticateService } from '@badman/frontend-auth';
+import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import {
   GOOGLEADS_CONFIG_TOKEN,
   GoogleAdsConfiguration,
@@ -34,8 +34,8 @@ import {
 import { Banner } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { iif, Observable, of } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { HasClaimComponent } from '../../has-claim';
 import {
@@ -95,6 +95,7 @@ export class ShellComponent {
   );
 
   canEnroll$!: Observable<boolean>;
+  canChange$!: Observable<boolean>;
 
   constructor(
     @Inject(GOOGLEADS_CONFIG_TOKEN) public config: GoogleAdsConfiguration,
@@ -110,7 +111,8 @@ export class ShellComponent {
     private router: Router,
     updates: SwUpdate,
     snackBar: MatSnackBar,
-    private authService: AuthenticateService
+    private authService: AuthenticateService,
+    private auth: ClaimService
   ) {
     this.banner = new Banner(
       config.publisherId,
@@ -140,41 +142,85 @@ export class ShellComponent {
             });
         });
 
-      this.canEnroll$ = this.authService.loggedIn$?.pipe(
-        switchMap((loggedIn) =>
-          iif(
-            () => loggedIn,
-            this.apollo
-              .query<{
-                eventTournaments: { count: number };
-                eventCompetitions: { count: number };
-              }>({
-                query: gql`
-                  # we request only first one, because if it's more that means it's open
-                  query CanEnroll($where: JSONObject) {
-                    eventCompetitions(take: 1, where: $where) {
-                      count
-                    }
-                  }
-                `,
-                variables: {
-                  where: {
-                    openDate: { $lte: new Date().toISOString() },
-                    closeDate: { $gte: new Date().toISOString() },
-                  },
-                },
-              })
-              .pipe(
-                map(
-                  (events) =>
-                    (events?.data?.eventTournaments?.count ?? 0) != 0 ||
-                    (events?.data?.eventCompetitions?.count ?? 0) != 0
-                )
-              ),
-            of(false)
+      const canAnyEnroll$ = this.auth.hasClaim$('*_enlist:team');
+      const canviewEnroll$ = this.auth.hasClaim$('*_enlist:team');
+
+      const openEnrollments = this.apollo
+        .query<{
+          eventTournaments: { count: number };
+          eventCompetitions: { count: number };
+        }>({
+          query: gql`
+            # we request only first one, because if it's more that means it's open
+            query CanEnroll($where: JSONObject) {
+              eventCompetitions(take: 1, where: $where) {
+                count
+              }
+            }
+          `,
+          variables: {
+            where: {
+              openDate: { $lte: new Date().toISOString() },
+              closeDate: { $gte: new Date().toISOString() },
+            },
+          },
+        })
+        .pipe(
+          map(
+            (events) =>
+              (events?.data?.eventTournaments?.count ?? 0) != 0 ||
+              (events?.data?.eventCompetitions?.count ?? 0) != 0
           )
-        )
-      ) as Observable<boolean>;
+        );
+
+      this.canEnroll$ = combineLatest([
+        canAnyEnroll$,
+        canviewEnroll$,
+        openEnrollments,
+      ]).pipe(
+        map(([canAnyEnroll, canViewEnroll, openEnrollments]) => {
+          return canAnyEnroll || (canViewEnroll && openEnrollments);
+        })
+      );
+
+      const openChangeEncounter = this.apollo
+        .query<{
+          eventTournaments: { count: number };
+          eventCompetitions: { count: number };
+        }>({
+          query: gql`
+            # we request only first one, because if it's more that means it's open
+            query CanChange($where: JSONObject) {
+              eventCompetitions(take: 1, where: $where) {
+                count
+              }
+            }
+          `,
+          variables: {
+            where: {
+              changeOpenDate: { $lte: new Date().toISOString() },
+              changeCloseDate: { $gte: new Date().toISOString() },
+            },
+          },
+        })
+        .pipe(
+          map(
+            (events) =>
+              (events?.data?.eventTournaments?.count ?? 0) != 0 ||
+              (events?.data?.eventCompetitions?.count ?? 0) != 0
+          )
+        );
+
+        
+      this.canChange$ = combineLatest([
+        canAnyEnroll$,
+        canviewEnroll$,
+        openChangeEncounter,
+      ]).pipe(
+        map(([canAnyEnroll, canViewEnroll, openChangeEncounter]) => {
+          return canAnyEnroll || (canViewEnroll && openChangeEncounter);
+        })
+      );
 
       this.router.events.subscribe((event: Event) => {
         switch (true) {

@@ -1,8 +1,8 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { ClaimService } from '@badman/frontend-auth';
-import { combineLatest, Observable, of } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'badman-has-claim',

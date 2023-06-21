@@ -25,7 +25,7 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
     SelectClubComponent,
     SelectTeamComponent,
     ListEncountersComponent,
-    ShowRequestsComponent
+    ShowRequestsComponent,
   ],
   standalone: true,
 })
@@ -35,15 +35,15 @@ export class ChangeEncounterComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    const queryYear = parseInt(
-      this.activatedRoute.snapshot.queryParams['year'],
+    const querySeason = parseInt(
+      this.activatedRoute.snapshot.queryParams['season'],
       10
     );
-    const year = isNaN(queryYear) ? getCurrentSeason() : queryYear;
+    const season = isNaN(querySeason) ? getCurrentSeason() : querySeason;
 
     this.formGroup = new FormGroup({
-      year: new FormControl(year),
-      mayRankingDate: new FormControl(moment(`${year}-05-15`).toDate()),
+      season: new FormControl(season),
+      mayRankingDate: new FormControl(moment(`${season}-05-15`).toDate()),
       club: new FormControl(),
       team: new FormControl(),
       encounter: new FormControl(),
