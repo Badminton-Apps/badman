@@ -16,29 +16,31 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthenticateService } from '@badman/frontend-auth';
 import {
   Comment,
   EncounterChange,
   EncounterChangeDate,
   EncounterCompetition,
 } from '@badman/frontend-models';
+import { ChangeEncounterAvailability } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
-import { Observable, lastValueFrom, of } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { DateSelectorComponent } from '../../../../components';
-import { MatOptionModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { ChangeEncounterAvailability } from '@badman/utils';
-import { MatInputModule } from '@angular/material/input';
-import { AuthenticateService } from '@badman/frontend-auth';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MomentModule } from 'ngx-moment';
+import { Observable, lastValueFrom, of } from 'rxjs';
+import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { DateSelectorComponent } from '../../../../components';
 
 @Component({
   selector: 'badman-show-requests',
@@ -61,6 +63,8 @@ import { MomentModule } from 'ngx-moment';
     MatDialogModule,
     MatInputModule,
     MatCheckboxModule,
+    MatSelectModule,
+    MatProgressBarModule,
 
     // Own
     DateSelectorComponent,
@@ -424,8 +428,48 @@ export class ShowRequestsComponent implements OnInit {
     this.dateControls.push(dateControl);
   }
 
-
-  send() {
-    console.log('adding comment');
+  addComment() {
+    this._apollo
+      .mutate({
+        mutation: gql`
+          mutation AddChangeEncounterComment($data: CommentNewInput!) {
+            addComment(data: $data) {
+              id
+            }
+          }
+        `,
+        variables: {
+          data: {
+            message: this.commentControl.value,
+            linkId: this.encounter?.encounterChange?.id,
+            linkType: 'encounterChange',
+            clubId: this.home
+              ? this.encounter?.home?.clubId
+              : this.encounter?.away?.clubId,
+          },
+        },
+      })
+      .pipe(
+        take(1),
+        catchError((err) => {
+          console.error(err);
+          return of(null);
+        })
+      )
+      .subscribe((result) => {
+        if (result) {
+          this._snackBar.open(
+            this._translate.instant(
+              'competition.change-encounter.comment-added'
+            ),
+            'OK',
+            {
+              duration: 4000,
+            }
+          );
+          this.commentControl.setValue('');
+          this._cd.detectChanges();
+        }
+      });
   }
 }

@@ -2,6 +2,7 @@ import {
   Comment,
   CommentNewInput,
   CommentUpdateInput,
+  EncounterChange,
   EventCompetition,
   Player,
 } from '@badman/backend-database';
@@ -80,7 +81,19 @@ export class CommentResolver {
         },
       });
 
-      await link.addComment(comment, { transaction });
+      if (link instanceof EventCompetition) {
+        await link.addComment(comment, { transaction });
+      } else if (link instanceof EncounterChange) {
+        const encounter = await link.getEncounter();
+        const home = await encounter.getHome();
+        const away = await encounter.getAway();
+
+        if (home.clubId === comment.clubId) {
+          await link.addHomeComment(comment, { transaction });
+        } else if (away.clubId === comment.clubId) {
+          await link.addAwayComment(comment, { transaction });
+        }
+      }
 
       await transaction.commit();
       return comment;
@@ -147,6 +160,8 @@ export class CommentResolver {
     switch (linkType) {
       case 'competition':
         return EventCompetition.findByPk(linkId);
+      case 'encounterChange':
+        return EncounterChange.findByPk(linkId);
       default:
         throw new NotFoundException(`${linkType}: ${linkId}`);
     }

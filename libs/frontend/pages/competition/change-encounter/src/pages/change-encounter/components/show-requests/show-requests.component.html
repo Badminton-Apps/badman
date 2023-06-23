@@ -1,3 +1,7 @@
+<ng-container *ngIf="this.previous?.value === null">
+  Please select an encounter
+</ng-container>
+
 <div *ngIf="this.requests$ | async as request">
   <ng-container *ngIf="this.encounter !== null">
     <form [formGroup]="this.formGroupRequest" novalidate (ngSubmit)="save()">
@@ -37,10 +41,8 @@
                 formControlName="date"
               ></badman-date-selector>
 
-              <!-- <mat-form-field fxFlex="22">
-                <mat-label>{{
-                  'all.competition.change-encounter.home' | translate
-                }}</mat-label>
+              <mat-form-field>
+                <mat-label>{{ 'all.competition.home' | translate }}</mat-label>
                 <mat-select formControlName="availabilityHome" required>
                   <mat-option value="POSSIBLE">{{
                     'all.competition.change-encounter.possible' | translate
@@ -51,10 +53,8 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field fxFlex="22">
-                <mat-label>{{
-                  'all.competition.change-encounter.away' | translate
-                }}</mat-label>
+              <mat-form-field>
+                <mat-label>{{ 'all.competition.away' | translate }}</mat-label>
                 <mat-select formControlName="availabilityAway" required>
                   <mat-option value="POSSIBLE">{{
                     'all.competition.change-encounter.possible' | translate
@@ -63,7 +63,7 @@
                     'all.competition.change-encounter.not-possible' | translate
                   }}</mat-option>
                 </mat-select>
-              </mat-form-field> -->
+              </mat-form-field>
 
               <mat-checkbox
                 class="selected"
@@ -99,48 +99,49 @@
           </button>
         </div>
       </div>
-      <div class="comments">
-        <h3>
-          {{ 'all.competition.change-encounter.comments' | translate }}
-        </h3>
+    </form>
 
-        <div id="body">
-          <div
-            class="message"
-            [ngClass]="{
-              me: comment.player?.id === this.authenticateService.user?.id
-            }"
-            *ngFor="let comment of comments"
-          >
-            <div class="message-content">
-              <label>
-                {{ comment.player?.fullName }}
-              </label>
-              {{ comment.message }}
-              <div class="time">
-                {{ comment.createdAt | amDateFormat : 'LLL' }}
-              </div>
+    <div class="comments">
+      <h3>
+        {{ 'all.competition.change-encounter.comments' | translate }}
+      </h3>
+
+      <div id="body">
+        <div
+          class="message"
+          [ngClass]="{
+            me: comment.player?.id === this.authenticateService.user?.id
+          }"
+          *ngFor="let comment of comments"
+        >
+          <div class="message-content">
+            <label>
+              {{ comment.player?.fullName }}
+            </label>
+            {{ comment.message }}
+            <div class="time">
+              {{ comment.createdAt | amDateFormat : 'LLL' }}
             </div>
           </div>
         </div>
-
-        <div>
-          <mat-form-field>
-            <mat-label>{{
-              'all.competition.change-encounter.comment' | translate
-            }}</mat-label>
-            <textarea
-              matInput
-              [formControl]="this.commentControl"
-              rows="5"
-            ></textarea>
-          </mat-form-field>
-          <button mat-raised-button color="primary" (click)="send()">
-            {{ 'all.button.add-comment' | translate }}
-          </button>
-        </div>
       </div>
-    </form>
+
+      <div>
+        <mat-form-field>
+          <mat-label>{{
+            'all.competition.change-encounter.comment' | translate
+          }}</mat-label>
+          <textarea
+            matInput
+            [formControl]="this.commentControl"
+            rows="5"
+          ></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="addComment()">
+          {{ 'all.button.add-comment' | translate }}
+        </button>
+      </div>
+    </div>
   </ng-container>
 </div>
 
@@ -161,4 +162,8 @@
       {{ 'all.button.yes' | translate }}
     </button>
   </mat-dialog-actions>
+</ng-template>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"> ></mat-progress-bar>
 </ng-template>
