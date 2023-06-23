@@ -25,7 +25,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { Game, GamePlayer } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
+import {
+  GameBreakdownType,
+  GameType,
+  getGameResultType,
+  sortGames,
+  sortPlayers,
+} from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -243,6 +249,20 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
     return player?.[this.getGameType(game.gameType ?? GameType.S)];
   }
 
+  getWonStatusForPlayer(game: Game) {
+    return (
+      (game.winner == 1 && this.isTeamOfPlayer(game, 1)) ||
+      (game.winner == 2 && this.isTeamOfPlayer(game, 2))
+    );
+  }
+
+  isTeamOfPlayer(game: Game, team: number) {
+    return game.players
+      ?.filter((p) => p.team == team)
+      ?.map((p) => p.id)
+      ?.includes(this.playerId);
+  }
+
   getPoints(game: Game, team: number) {
     let t1 = this.getPlayer(game, 1, team);
     if (!t1) {
@@ -339,7 +359,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
       ).subscribe((games) => {
         // Add the new items to the existing list
         const currentGames = this.recentGames$.getValue();
-        this.recentGames$.next([...currentGames, ...games]);
+        this.recentGames$.next([...currentGames, ...games].sort(sortGames));
       });
     });
 

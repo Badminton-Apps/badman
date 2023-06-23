@@ -17,11 +17,11 @@
   border-width: 1px;
   border-style: solid;
   padding: 1rem 1rem 1.25rem 1rem;
-  border-radius: 5px;
+  border-radius: 0.25rem;
 
   &.double,
-  &.mix{
-    padding: 1.5rem 1rem 1.50rem 1rem;
+  &.mix {
+    padding: 1.5rem 1rem 1.5rem 1rem;
   }
 
   @media (max-width: 760px) {
@@ -89,7 +89,6 @@
     }
   }
 }
-
 
 #bottomObserver {
   height: 1px;
