@@ -1,0 +1,11 @@
+<ng-container *ngIf="this.group" [formGroup]="group">
+  <!-- year selection -->
+  <mat-form-field *ngIf="this.seasons">
+    <mat-label>Season</mat-label>
+    <mat-select formControlName="season">
+      <mat-option *ngFor="let season of this.seasons()" [value]="season">
+        {{ season }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</ng-container>

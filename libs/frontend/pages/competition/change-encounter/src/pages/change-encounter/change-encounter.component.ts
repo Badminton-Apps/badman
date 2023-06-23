@@ -3,7 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
+  HasClaimComponent,
   SelectClubComponent,
+  SelectSeasonComponent,
   SelectTeamComponent,
 } from '@badman/frontend-components';
 import { getCurrentSeason } from '@badman/utils';
@@ -24,8 +26,10 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
     // Own
     SelectClubComponent,
     SelectTeamComponent,
+    SelectSeasonComponent,
     ListEncountersComponent,
     ShowRequestsComponent,
+    HasClaimComponent,
   ],
   standalone: true,
 })
