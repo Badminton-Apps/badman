@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -18,7 +24,6 @@ import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { Subject, lastValueFrom } from 'rxjs';
 import {
-  delay,
   filter,
   first,
   map,
