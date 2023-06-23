@@ -34,6 +34,7 @@ import {
   LoadingBlockComponent,
   PageHeaderComponent,
   RecentGamesComponent,
+  SelectSeasonComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
 import { Club, EventCompetition, Player, Team } from '@badman/frontend-models';
@@ -80,6 +81,7 @@ import { ClubTeamsComponent } from './club-teams/club-teams.component';
     ClubPlayersComponent,
     ClubTeamsComponent,
     ClubCompetitionComponent,
+    SelectSeasonComponent,
 
     // Material Modules
     MatButtonToggleModule,
@@ -120,7 +122,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private twizzitService: TwizzitService,
-    private stateTransfer: TransferState,
     @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
@@ -129,13 +130,14 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.filter = this.formBuilder.group({
-      choices: [['M', 'F', 'MX', 'NATIONAL']],
-      season: getCurrentSeason(),
-    });
-
     this.route.data.subscribe((data) => {
       this.club = data['club'];
+
+      this.filter = this.formBuilder.group({
+        choices: [['M', 'F', 'MX', 'NATIONAL']],
+        season: getCurrentSeason(),
+        club: this.club,
+      });
 
       const clubName = `${this.club.name}`;
 
@@ -146,8 +148,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         keywords: ['club', 'badminton'],
       });
       this.breadcrumbsService.set('@club', clubName);
-
-      this._setYears();
 
       this.canViewEnrollmentForClub = toSignal(
         this.authService.hasAnyClaims$([
@@ -237,50 +237,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  private _setYears() {
-    this.seasons = toSignal(
-      this.apollo
-        .query<{
-          teams: Partial<Team[]>;
-        }>({
-          query: gql`
-            query CompetitionYears($where: JSONObject) {
-              teams(where: $where) {
-                id
-                season
-              }
-            }
-          `,
-          variables: {
-            where: {
-              clubId: this.club.id,
-            },
-          },
-        })
-        .pipe(
-          transferState(
-            `club-${this.club.id}-seasons`,
-            this.stateTransfer,
-            this.platformId
-          ),
-          map((result) => {
-            if (!result?.data.teams) {
-              throw new Error('No teams');
-            }
-            return result.data.teams.map((row) => row?.season as number);
-          }),
-          // map distinct years
-          map((years) => [...new Set(years)]),
-          // sort years
-          map((years) => years.sort((a, b) => b - a))
-        ),
-      {
-        initialValue: [getCurrentSeason()],
-        injector: this.injector,
-      }
-    );
   }
 
   deletePlayer(player: Player) {

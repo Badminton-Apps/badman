@@ -17,8 +17,13 @@
       [updateUrl]="true"
       [group]="this.formGroup"
     ></badman-select-club>
+    <badman-has-claim [any]="['change-any:encounter']">
+      <badman-select-season [updateUrl]="true" [group]="this.formGroup">
+      </badman-select-season>
+    </badman-has-claim>
     <badman-select-team
       [group]="this.formGroup"
+      [updateOn]="['club', 'season']"
       [updateUrl]="true"
     ></badman-select-team>
   </div>

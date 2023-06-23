@@ -31,6 +31,7 @@ import { Apollo, gql } from 'apollo-angular';
 import {
   Observable,
   Subject,
+  combineLatest,
   concatMap,
   distinctUntilChanged,
   map,
@@ -41,6 +42,7 @@ import {
   switchMap,
   take,
   takeUntil,
+  tap,
 } from 'rxjs';
 
 @Component({
@@ -76,6 +78,9 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   dependsOn = 'club';
 
   @Input()
+  updateOn = ['club'];
+
+  @Input()
   updateUrl = false;
 
   @Input()
@@ -108,10 +113,24 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
     if (!previous) {
       console.warn(`Dependency ${this.dependsOn} not found`, previous);
     } else {
-      this.teams$ = previous.valueChanges.pipe(
+      // get all the controls that we need to update on when change
+      const updateOnControls = this.updateOn
+        ?.filter((controlName) => controlName !== this.dependsOn)
+        .map((controlName) => this.group?.get(controlName))
+        .filter((control) => control != null) as FormControl[];
+
+      this.teams$ = combineLatest([
+        previous.valueChanges.pipe(startWith(null)),
+        ...updateOnControls.map((control) =>
+          control?.valueChanges?.pipe(startWith(() => control?.value))
+        ),
+      ]).pipe(
         takeUntil(this.destroy$),
-        startWith(null),
         distinctUntilChanged(),
+        map(() => previous?.value),
+        tap((data) => {
+          console.log('update teams', data);
+        }),
         pairwise(),
         switchMap(([prev, next]) => {
           if (prev != null && prev !== next) {
