@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.3...v6.88.0-beta.4) (2023-06-23)
+
+
+### Bug Fixes
+
+* mobile selection support ([d8e7c8f](https://github.com/Badminton-Apps/badman/commit/d8e7c8f05f346fca169300cff04164558c21ce89))
+
 ## [6.88.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.2...v6.88.0-beta.3) (2023-06-23)
 
 
