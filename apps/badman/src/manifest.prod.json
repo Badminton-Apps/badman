@@ -1,8 +1,8 @@
 {
   "name": "Badman",
   "short_name": "Badman",
-  "theme_color": "#607d8b",
-  "background_color": "#fafafa",
+  "theme_color": "#212121",
+  "background_color": "#303030",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
