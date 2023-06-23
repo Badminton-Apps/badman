@@ -42,7 +42,7 @@ $theme-success: mat.define-palette(mat.$green-palette);
 $theme-danger: mat.define-palette(mat.$red-palette);
 
 $dark-theme: theme.badman-dark-theme(
-  mat.define-palette(mat.$pink-palette),
+  mat.define-palette(mat.$blue-palette),
   mat.define-palette(mat.$blue-grey-palette),
   $theme-warn,
   $theme-success,
