@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.0...v6.88.0-beta.1) (2023-06-23)
+
+
+### Features
+
+* adding a bit of color ([f4b1ec5](https://github.com/Badminton-Apps/badman/commit/f4b1ec5864d87b6f2cc91980b9dc79fcf72ac4f4))
+* some loading animations and cleanup ([a45e886](https://github.com/Badminton-Apps/badman/commit/a45e8868707b36083120036f70b68d5b1b143724))
+* some more color ([28dc6d4](https://github.com/Badminton-Apps/badman/commit/28dc6d47b23dbbed4d4d9ceca2cb67fe25fe5c8d))
+
 ## [6.88.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.87.1...v6.88.0-beta.0) (2023-06-23)
 
 
