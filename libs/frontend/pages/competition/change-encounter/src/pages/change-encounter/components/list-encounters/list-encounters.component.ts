@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EncounterCompetition } from '@badman/frontend-models';
 import { getCurrentSeasonPeriod } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -17,6 +18,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { Subject, lastValueFrom } from 'rxjs';
 import {
+  delay,
   filter,
   first,
   map,
@@ -42,6 +44,8 @@ import {
     MatDividerModule,
 
     MomentModule,
+
+    LoadingBlockComponent,
   ],
 })
 export class ListEncountersComponent implements OnInit, OnDestroy {
@@ -64,7 +68,8 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -211,6 +216,8 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                 });
               }
             }
+
+            this.changeDetectorRef.detectChanges();
           } else {
             this.formControl?.disable();
           }

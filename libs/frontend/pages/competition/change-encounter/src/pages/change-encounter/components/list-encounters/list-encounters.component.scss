@@ -7,3 +7,10 @@ mat-form-field {
   border-right-width: 2px;
   border-right-style: solid; // mat-color($client-angular-accent, 300);
 }
+
+
+.loading{
+  mat-divider {
+    margin: 1rem 0;
+  }
+}
