@@ -15,6 +15,7 @@ import { filter, map } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
 import { RankingTableComponent } from '../ranking-table';
 import { BetaComponent, ProfileOverviewComponent } from './components';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'badman-landing',
@@ -24,6 +25,7 @@ import { BetaComponent, ProfileOverviewComponent } from './components';
     BetaComponent,
 
     TranslateModule,
+    MatIconModule,
 
     ProfileOverviewComponent,
     UpcomingGamesComponent,

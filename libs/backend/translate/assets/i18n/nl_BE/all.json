@@ -604,6 +604,9 @@
     "single": "Enkel",
     "single-points": "Ranking punten",
     "single-rank": "Ranking plaats",
+    "table": {
+      "title": "Ranking tabel"
+    },
     "trending_down": "Trending down",
     "trending_up": "Trending up",
     "update-happend": "Update plaatsgevonden",

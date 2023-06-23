@@ -604,6 +604,9 @@
     "single": "Simple",
     "single-points": "Simple points",
     "single-rank": "Ranking classement",
+    "table": {
+      "title": "Tableau de classement"
+    },
     "trending_down": "Tendance à la baisse",
     "trending_up": "La tendance est à la hausse",
     "update-happend": "Update plaatsgevonden",
