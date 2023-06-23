@@ -604,6 +604,9 @@
     "single": "Single",
     "single-points": "Ranking points",
     "single-rank": "Ranking place",
+    "table": {
+      "title": "Ranking table"
+    },
     "trending_down": "Trending down",
     "trending_up": "Trending up",
     "update-happend": "Update happened",

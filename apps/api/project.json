@@ -36,8 +36,14 @@
         "webpackConfig": "apps/api/webpack.config.js"
       },
       "configurations": {
-        "development": {},
-        "production": {}
+        "development": {
+          "optimization": false
+        },
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false          
+        }
       }
     },
     "serve": {

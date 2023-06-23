@@ -608,6 +608,9 @@ export type I18nTranslations = {
             "single": string;
             "single-points": string;
             "single-rank": string;
+            "table": {
+                "title": string;
+            };
             "trending_down": string;
             "trending_up": string;
             "update-happend": string;
