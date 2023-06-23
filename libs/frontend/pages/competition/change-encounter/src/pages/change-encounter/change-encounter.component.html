@@ -1,15 +1,4 @@
 <div *ngIf="this.formGroup">
-  <div>
-    <h3>
-      {{ 'all.competition.change-encounter.title' | translate }}
-    </h3>
-  </div>
-
-  <p>{{ 'all.competition.change-encounter.description' | translate }}</p>
-
-  <h4>
-    {{ 'all.competition.change-encounter.choose-date' | translate }}
-  </h4>
   <div class="select-encounter">
     <badman-select-club
       singleClubPermission="change:encounter"
@@ -30,6 +19,7 @@
 
   <div [hidden]="!formGroup.get('team')!.value">
     <h3>
+      <mat-icon color="primary">event</mat-icon>
       {{ 'all.competition.change-encounter.choose-encounter' | translate }}
     </h3>
     <div class="list-encounters">

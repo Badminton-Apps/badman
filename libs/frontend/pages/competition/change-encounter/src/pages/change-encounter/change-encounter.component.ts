@@ -12,6 +12,7 @@ import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
 import { ListEncountersComponent, ShowRequestsComponent } from './components';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'badman-change-encounter',
@@ -23,6 +24,8 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
 
     TranslateModule,
 
+    MatIconModule,
+    
     // Own
     SelectClubComponent,
     SelectTeamComponent,
