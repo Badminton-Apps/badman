@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.87.1...v6.88.0-beta.0) (2023-06-23)
+
+
+### Features
+
+* different components for open/close ([1ed8904](https://github.com/Badminton-Apps/badman/commit/1ed890486b090f4bfb0aa62f23bc896d5119275d))
+* typings for all columns and fields (in preparation of swc) ([6df9998](https://github.com/Badminton-Apps/badman/commit/6df9998e5b8c16c75f0ff5e824f05fe150466fec))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @apollo/server to v4.7.4 [security] ([cc122a5](https://github.com/Badminton-Apps/badman/commit/cc122a5bd9d7f0dc8be2474d601c8c4600090ed6))
+
 ### [6.87.1](https://github.com/Badminton-Apps/badman/compare/v6.87.0...v6.87.1) (2023-06-14)
 
 
