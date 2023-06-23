@@ -117,9 +117,9 @@ export class Game extends Model {
   @Column(DataType.NUMBER)
   order?: number;
 
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  round?: number;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  round?: string;
 
   @Field(() => [RankingPoint], { nullable: true })
   @HasMany(() => RankingPoint, 'gameId')
