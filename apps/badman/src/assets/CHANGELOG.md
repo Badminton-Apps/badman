@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.1...v6.88.0-beta.2) (2023-06-23)
+
+
+### Features
+
+* setting theme color to correct theme color ([d739a46](https://github.com/Badminton-Apps/badman/commit/d739a46b96ffb819998f40ec5fd16d5aa4700d55))
+
+
+### Bug Fixes
+
+* also updating background colors here ([b53b7bb](https://github.com/Badminton-Apps/badman/commit/b53b7bb487fca660846b905e153d82c884ebcc14))
+
 ## [6.88.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.0...v6.88.0-beta.1) (2023-06-23)
 
 
