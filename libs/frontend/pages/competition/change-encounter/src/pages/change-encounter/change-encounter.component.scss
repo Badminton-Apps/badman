@@ -15,25 +15,30 @@ badman-list-encounters {
   flex: 0 0 300px;
 }
 
-.list-encounters{
+.list-encounters {
   flex: 1;
   display: flex;
   flex-direction: row;
 }
 
-.select-encounter{
+.select-encounter {
   flex: 1;
   display: flex;
   flex-direction: row;
   gap: 1rem;
 
+  @media (max-width: 959.98px) {
+    flex-direction: column;
+  }
+
   badman-select-club,
-  badman-select-team{
-    flex: 50%;
+  badman-select-team {
+    flex: 40%;
+  }
+  badman-select-season {
+    flex: 20%;
   }
 }
-
-
 
 h3 {
   display: flex;
