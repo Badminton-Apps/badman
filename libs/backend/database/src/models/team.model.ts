@@ -98,21 +98,21 @@ export class Team extends Model {
   @Field(() => String, { nullable: true })
   @Unique('unique_constraint')
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Field(() => Int, { nullable: false })
   @Column(DataType.NUMBER)
-  season: number;
+  season?: number;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.TIME)
-  preferredTime: Date;
+  preferredTime?: Date;
 
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @Column(DataType.UUIDV4)
-  link: string;
+  link!: string;
 
   @Field(() => String, { nullable: true })
   @Column(
@@ -126,14 +126,14 @@ export class Team extends Model {
       'saturday'
     )
   )
-  preferredDay: string;
+  preferredDay?: string;
 
   @BelongsToMany(() => Location, () => TeamLocationCompetition)
-  locations: Location[];
+  locations?: Location[];
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  abbreviation: string;
+  abbreviation?: string;
 
   @HasOne(() => EventEntry, 'teamId')
   entry?: EventEntry;
@@ -147,37 +147,37 @@ export class Team extends Model {
   @Unique('unique_constraint')
   @Index('club_index')
   @Column(DataType.UUIDV4)
-  clubId: string;
+  clubId?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  slug: string;
+  slug?: string;
 
   @Field(() => [TeamPlayerMembershipType], { nullable: true })
   @BelongsToMany(() => Player, () => TeamPlayerMembership)
-  players: (Player & { TeamPlayerMembership: TeamPlayerMembership })[];
+  players?: (Player & { TeamPlayerMembership: TeamPlayerMembership })[];
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @Column({
     type: DataType.STRING,
   })
-  type: SubEventTypeEnum;
+  type!: SubEventTypeEnum;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'captainId')
-  captain: Player;
+  captain?: Player;
 
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  captainId: string;
+  captainId?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  email: string;
+  email?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  phone: string;
+  phone?: string;
 
   @Field(() => Int, { nullable: true })
   @Unique('unique_constraint')
@@ -185,10 +185,10 @@ export class Team extends Model {
   teamNumber?: number;
 
   @HasMany(() => EncounterCompetition, 'homeTeamId')
-  homeEncounters: EncounterCompetition;
+  homeEncounters?: EncounterCompetition;
 
   @HasMany(() => EncounterCompetition, 'awayTeamId')
-  awayEncounters: EncounterCompetition;
+  awayEncounters?: EncounterCompetition;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {

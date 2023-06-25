@@ -29,7 +29,7 @@ export class Standing extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @BelongsTo(() => EventEntry, 'entryId')
   entry?: EventEntry;
@@ -37,53 +37,53 @@ export class Standing extends Model {
   @ForeignKey(() => EventEntry)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  entryId: string;
+  entryId?: string;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  position: number;
+  position?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  size: number;
+  size?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  points: number;
+  points?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  played: number;
+  played?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  gamesWon: number;
+  gamesWon?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  gamesLost: number;
+  gamesLost?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  setsWon: number;
+  setsWon?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  setsLost: number;
+  setsLost?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  totalPointsWon: number;
+  totalPointsWon?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  totalPointsLost: number;
-
-  @Field(() => Boolean, { nullable: true })
-  @Column(DataType.BOOLEAN)
-  riser: boolean;
+  totalPointsLost?: number;
 
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
-  faller: boolean;
+  riser?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  faller?: boolean;
 
   /**
    * Competition: encounters won

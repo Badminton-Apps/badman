@@ -29,45 +29,45 @@ export class ImporterFile extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique('unique_constraint')
   @Field(() => String, {nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Unique('unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('COMPETITION_CP', 'COMPETITION_XML', 'TOURNAMENT'))
-  type: EventImportType;
+  type?: EventImportType;
 
   @Unique('unique_constraint')
   @Field(() => Date, {nullable: true })
   @Column(DataType.DATE)
-  firstDay: Date;
+  firstDay?: Date;
 
   @Field(() => String, {nullable: true })
   @Column(DataType.STRING)
-  fileLocation: string;
+  fileLocation?: string;
 
   @Field(() => String, {nullable: true })
   @Column(DataType.STRING)
-  dates: string;
+  dates?: string;
 
   @Field(() => String, {nullable: true })
   @Column(DataType.STRING)
-  linkCode: string;
+  linkCode?: string;
 
   @Field(() => String, {nullable: true })
   @Column(DataType.STRING)
-  visualCode: string;
+  visualCode?: string;
 
   @Default(false)
   @Field(() => Boolean, {nullable: true })
   @Column(DataType.BOOLEAN)
-  importing: boolean;
+  importing?: boolean;
 
   @Field(() => Int, {nullable: true })
   @Column(DataType.NUMBER)
-  tournamentNumber: number;
+  tournamentNumber?: number;
 }

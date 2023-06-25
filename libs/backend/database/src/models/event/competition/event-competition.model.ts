@@ -52,7 +52,7 @@ export class EventCompetition extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
@@ -63,16 +63,16 @@ export class EventCompetition extends Model {
   @Unique('EventCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Unique('EventCompetitions_unique_constraint')
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
   @Column(DataType.NUMBER)
-  season: number;
+  season!: number;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  lastSync: Date;
+  lastSync?: Date;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
@@ -102,7 +102,7 @@ export class EventCompetition extends Model {
       linkType: 'competition',
     },
   })
-  comments: Comment[];
+  comments?: Comment[];
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
@@ -119,34 +119,34 @@ export class EventCompetition extends Model {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  subEventCompetitions: SubEventCompetition[];
+  subEventCompetitions?: SubEventCompetition[];
 
   @Field(() => String, { nullable: true })
   @Unique('EventCompetitions_unique_constraint')
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
-  type: LevelType;
+  type!: LevelType;
 
   @Unique('EventCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  visualCode: string;
+  visualCode?: string;
 
   @Default(false)
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
-  started: boolean;
+  started?: boolean;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  slug: string;
+  slug?: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
   @Column(DataType.NUMBER)
-  usedRankingAmount: number;
+  usedRankingAmount!: number;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  usedRankingUnit: 'months' | 'weeks' | 'days';
+  usedRankingUnit!: 'months' | 'weeks' | 'days';
   get usedRanking(): UsedRankingTiming {
     return {
       amount: this.usedRankingAmount,
@@ -156,15 +156,15 @@ export class EventCompetition extends Model {
 
   @Field(() => Boolean)
   @Column(DataType.BOOLEAN)
-  official: boolean;
+  official?: boolean;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  state: string;
+  state?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  country: string;
+  country?: string;
 
   regenerateSlug!: Slugify<EventCompetition>;
 

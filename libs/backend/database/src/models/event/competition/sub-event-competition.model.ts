@@ -58,17 +58,17 @@ export class SubEventCompetition extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @Column(DataType.STRING)
-  name: string;
+  name!: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
-  eventType: SubEventTypeEnum;
+  eventType!: SubEventTypeEnum;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
@@ -94,21 +94,21 @@ export class SubEventCompetition extends Model {
       entryType: 'competition',
     },
   })
-  eventEntries: EventEntry[];
+  eventEntries?: EventEntry[];
 
   @Field(() => [RankingGroup], { nullable: true })
   @BelongsToMany(
     () => RankingGroup,
     () => RankingGroupSubEventCompetitionMembership
   )
-  rankingGroups: RankingGroup[];
+  rankingGroups?: RankingGroup[];
 
   @Field(() => [DrawCompetition], { nullable: true })
   @HasMany(() => DrawCompetition, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  drawCompetitions: DrawCompetition[];
+  drawCompetitions?: DrawCompetition[];
 
   @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
@@ -119,14 +119,14 @@ export class SubEventCompetition extends Model {
 
   @Unique('SubEventCompetitions_unique_constraint')
   @ForeignKey(() => EventCompetition)
-  @Field(() => ID, { nullable: true })
+  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  eventId: string;
+  eventId!: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field(() => ID, { nullable: true })
+  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  visualCode: string;
+  visualCode!: string;
 
   // Belongs to many Group
   getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
@@ -182,7 +182,7 @@ export class SubEventCompetition extends Model {
 @ObjectType({ description: 'A SubEventCompetition' })
 export class SubEventCompetitionAverageLevel {
   @Field(() => String, { nullable: true })
-  gender: 'M' | 'F';
+  gender!: 'M' | 'F';
 
   @Field(() => Int, { nullable: true })
   single?: number;

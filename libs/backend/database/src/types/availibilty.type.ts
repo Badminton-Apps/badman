@@ -3,7 +3,7 @@ import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
 @ObjectType({ description: 'A AvailiblyDay' })
 export class AvailiblyDayType {
   @Field(() => String, { nullable: true })
-  day:
+  day?:
     | 'monday'
     | 'tuesday'
     | 'wednesday'
@@ -12,17 +12,17 @@ export class AvailiblyDayType {
     | 'saturday'
     | 'sunday';
   @Field(() => String, { nullable: true })
-  startTime: string;
+  startTime?: string;
   @Field(() => String, { nullable: true })
-  endTime: string;
+  endTime?: string;
   @Field(() => Int, { nullable: true })
-  courts: number;
+  courts?: number;
 }
 
 @InputType({ description: 'A AvailiblyDay' })
 export class AvailiblyDayInputType {
   @Field(() => String, { nullable: true })
-  day:
+  day?:
     | 'monday'
     | 'tuesday'
     | 'wednesday'
@@ -31,9 +31,9 @@ export class AvailiblyDayInputType {
     | 'saturday'
     | 'sunday';
   @Field(() => String, { nullable: true })
-  startTime: string;
+  startTime?: string;
   @Field(() => String, { nullable: true })
-  endTime: string;
+  endTime?: string;
   @Field(() => Int, { nullable: true })
-  courts: number;
+  courts?: number;
 }

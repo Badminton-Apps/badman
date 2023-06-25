@@ -56,55 +56,55 @@ export class Role extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Index
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Index
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  description: string;
+  description?: string;
 
   @Field(() => Boolean)
   @Column(DataType.BOOLEAN)
-  locked: boolean;
+  locked?: boolean;
 
   @BelongsToMany(() => Claim, () => RoleClaimMembership)
-  claims: (Claim & { RoleClaimMembership: RoleClaimMembership })[];
+  claims?: (Claim & { RoleClaimMembership: RoleClaimMembership })[];
 
   @BelongsToMany(() => Player, () => PlayerRoleMembership)
-  players: (Player & { PlayerClaimMembership: PlayerRoleMembership })[];
+  players?: (Player & { PlayerClaimMembership?: PlayerRoleMembership })[];
 
   @BelongsTo(() => Club, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  club: Club;
+  club?: Club;
 
   @BelongsTo(() => Team, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  team: Team;
+  team?: Team;
 
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition: EventCompetition;
+  competition?: EventCompetition;
 
   @BelongsTo(() => EventTournament, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  tournament: EventTournament;
+  tournament?: EventTournament;
 
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  linkId: string;
+  linkId?: string;
 
   @Field(() => String, { nullable: true })
   @Column(
@@ -116,7 +116,7 @@ export class Role extends Model {
       SecurityType.TOURNAMENT
     )
   )
-  linkType: string;
+  linkType?: string;
 
   // Belongs to many Claim
   getClaims!: BelongsToManyGetAssociationsMixin<Claim>;
@@ -163,7 +163,7 @@ export class RoleUpdateInput extends PartialType(
   InputType
 ) {
   @Field(() => [ClaimUpdateInput])
-  claims: Claim[];
+  claims?: Claim[];
 }
 
 @InputType()

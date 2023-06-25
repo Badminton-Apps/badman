@@ -19,11 +19,11 @@ export class RankingGroupSubEventCompetitionMembership extends Model {
   @ForeignKey(() => SubEventCompetition)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  subEventId: string;
+  subEventId?: string;
 
   @PrimaryKey
   @ForeignKey(() => RankingGroup)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  groupId: string;
+  groupId?: string;
 }

@@ -19,11 +19,11 @@ export class LocationEventTournamentMembership extends Model {
   @ForeignKey(() => EventTournament)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  eventId: string;
+  eventId?: string;
 
   @PrimaryKey
   @ForeignKey(() => Location)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  locationId: string;
+  locationId?: string;
 }

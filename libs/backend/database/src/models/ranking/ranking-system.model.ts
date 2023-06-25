@@ -66,60 +66,60 @@ export class RankingSystem extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
+
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  amountOfLevels!: number;
+
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  procentWinning!: number;
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  procentWinningPlus1!: number;
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  procentLosing!: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  minNumberOfGamesUsedForUpgrade?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  maxDiffLevels?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  maxDiffLevelsHighest?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  latestXGamesToUse?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  maxLevelUpPerChange?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  maxLevelDownPerChange?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  amountOfLevels: number;
+  gamesForInactivty?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  procentWinning: number;
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  procentWinningPlus1: number;
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  procentLosing: number;
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  minNumberOfGamesUsedForUpgrade: number;
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  maxDiffLevels: number;
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  maxDiffLevelsHighest: number;
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  latestXGamesToUse: number;
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  maxLevelUpPerChange: number;
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  maxLevelDownPerChange: number;
-
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  gamesForInactivty: number;
-
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  inactivityAmount: number;
+  inactivityAmount?: number;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  inactivityUnit: 'months' | 'weeks' | 'days';
+  inactivityUnit?: 'months' | 'weeks' | 'days';
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('freeze', 'decrease'))
-  inactiveBehavior: 'freeze' | 'decrease';
+  inactiveBehavior?: 'freeze' | 'decrease';
 
   get inactivity(): RankingTiming {
     return {
@@ -130,14 +130,14 @@ export class RankingSystem extends Model {
   @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  caluclationIntervalLastUpdate: Date;
+  caluclationIntervalLastUpdate?: Date;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.NUMBER)
-  caluclationIntervalAmount: number;
+  caluclationIntervalAmount?: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  calculationIntervalUnit: 'months' | 'weeks' | 'days';
+  calculationIntervalUnit?: 'months' | 'weeks' | 'days';
 
   get calculationInterval(): RankingTiming {
     return {
@@ -148,10 +148,10 @@ export class RankingSystem extends Model {
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  periodAmount: number;
+  periodAmount?: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  periodUnit: 'months' | 'weeks' | 'days';
+  periodUnit?: 'months' | 'weeks' | 'days';
 
   get period(): RankingTiming {
     return {
@@ -162,13 +162,13 @@ export class RankingSystem extends Model {
   @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  updateIntervalAmountLastUpdate: Date;
+  updateIntervalAmountLastUpdate?: Date;
   @Field(() => Date, { nullable: true })
   @Column(DataType.NUMBER)
-  updateIntervalAmount: number;
+  updateIntervalAmount?: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  updateIntervalUnit: 'months' | 'weeks' | 'days';
+  updateIntervalUnit?: 'months' | 'weeks' | 'days';
 
   get updateInterval(): RankingTiming {
     return {
@@ -179,46 +179,46 @@ export class RankingSystem extends Model {
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB', 'VISUAL'))
-  rankingSystem: RankingSystems;
+  rankingSystem?: RankingSystems;
 
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
-  primary: boolean;
+  primary?: boolean;
 
   @Field(() => Boolean, { nullable: true })
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
-  runCurrently: boolean;
+  runCurrently?: boolean;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  runDate: Date;
+  runDate?: Date;
 
   @Field(() => Int, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 1 })
-  differenceForUpgrade: number;
+  differenceForUpgrade?: number;
 
   @Field(() => Int, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 0 })
-  differenceForDowngrade: number;
+  differenceForDowngrade?: number;
 
   @Field(() => String, { nullable: true })
   @Column({
     type: DataType.ENUM('formula', 'tableLFBB', 'tableBVL'),
     defaultValue: 'formula',
   })
-  startingType: StartingType;
+  startingType?: StartingType;
 
   @HasMany(() => RankingPoint, 'systemId')
-  rankingPoints: RankingPoint;
+  rankingPoints?: RankingPoint;
 
   @HasMany(() => RankingPlace, 'systemId')
-  places: RankingPlace;
+  places?: RankingPlace;
 
   @HasMany(() => RankingLastPlace, 'systemId')
-  lastPlaces: RankingLastPlace;
+  lastPlaces?: RankingLastPlace;
 
   @BelongsToMany(() => RankingGroup, () => RankingSystemRankingGroupMembership)
-  rankingGroups: RankingGroup[];
+  rankingGroups?: RankingGroup[];
 
   // Has many RankingPoint
   getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;
@@ -232,15 +232,15 @@ export class RankingSystem extends Model {
   countRankingPoints!: HasManyCountAssociationsMixin;
 
   // Belongs to many Group
-  getRankingGroups: BelongsToManyGetAssociationsMixin<RankingGroup>;
-  setRankingGroups: BelongsToManySetAssociationsMixin<RankingGroup, string>;
-  addRankingGroups: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
+  getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
+  setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
+  addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
   addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
   removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
     RankingGroup,
     string
   >;
-  removeRankingGroups: BelongsToManyRemoveAssociationsMixin<
+  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<
     RankingGroup,
     string
   >;
@@ -259,12 +259,12 @@ export class RankingSystem extends Model {
   hasLastPlaces!: HasManyHasAssociationsMixin<RankingLastPlace, string>;
   countLastPlaces!: HasManyCountAssociationsMixin;
 
-  private _pointsToGoUp: number[];
-  private _pointsWhenWinningAgainst: number[];
-  private _pointsToGoDown: number[];
+  private _pointsToGoUp!: number[];
+  private _pointsWhenWinningAgainst!: number[];
+  private _pointsToGoDown!: number[];
 
-  private _levelArray: number[];
-  private _levelArrayOneMinus: number[];
+  private _levelArray!: number[];
+  private _levelArrayOneMinus!: number[];
 
   @Field(() => [Int], { nullable: true })
   @Column(DataType.VIRTUAL)
@@ -322,7 +322,7 @@ export class RankingSystem extends Model {
     this._pointsWhenWinningAgainst = [];
     this._pointsToGoDown = [];
 
-    this._levelArray.forEach((x) => {
+    this._levelArray?.forEach((x) => {
       if (x === 0) {
         this._pointsWhenWinningAgainst[x] = 50;
       } else {

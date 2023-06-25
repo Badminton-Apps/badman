@@ -62,19 +62,19 @@ export class EventEntry extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @BelongsTo(() => Team, 'teamId')
   team?: Team;
 
   @Column(DataType.STRING)
   @Field(() => Date, { nullable: true })
-  date: Date;
+  date?: Date;
 
   @ForeignKey(() => Team)
   @Field(() => String, { nullable: true })
   @Column(DataType.UUIDV4)
-  teamId: string;
+  teamId?: string;
 
   @BelongsTo(() => Player, 'player1Id')
   player1?: Player;
@@ -82,7 +82,7 @@ export class EventEntry extends Model {
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  player1Id: string;
+  player1Id!: string;
 
   @BelongsTo(() => Player, 'player2Id')
   player2?: Player;
@@ -90,13 +90,13 @@ export class EventEntry extends Model {
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  player2Id: string;
+  player2Id!: string;
 
   @BelongsTo(() => SubEventTournament, {
     foreignKey: 'subEventId',
     constraints: false,
   })
-  subEventTournament: SubEventTournament;
+  subEventTournament?: SubEventTournament;
 
   /**
    * Draw get's deciede upon draw
@@ -113,7 +113,7 @@ export class EventEntry extends Model {
     foreignKey: 'subEventId',
     constraints: false,
   })
-  subEventCompetition: SubEventCompetition;
+  subEventCompetition?: SubEventCompetition;
 
   /**
    * Draw get's deciede upon draw
@@ -126,14 +126,14 @@ export class EventEntry extends Model {
 
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  subEventId: string;
+  subEventId?: string;
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  drawId: string;
+  drawId?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  entryType: string;
+  entryType?: string;
 
   @HasOne(() => Standing)
   standing?: Standing;
@@ -355,20 +355,20 @@ export interface Meta {
 }
 
 export interface EntryTournament {
-  place: number;
+  place?: number;
 }
 
 export interface EntryCompetition {
-  teamIndex: number;
+  teamIndex?: number;
   players: EntryCompetitionPlayer[];
 }
 
 export interface EntryCompetitionPlayer {
   id?: string;
-  single: number;
-  double: number;
-  mix: number;
-  gender: 'M' | 'F';
+  single?: number;
+  double?: number;
+  mix?: number;
+  gender?: 'M' | 'F';
   levelException?: boolean;
   player?: Player;
 }

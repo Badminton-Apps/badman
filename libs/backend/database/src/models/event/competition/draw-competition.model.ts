@@ -54,34 +54,34 @@ export class DrawCompetition extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique('DrawCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Unique('DrawCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  visualCode: string;
+  visualCode?: string;
 
   @Unique('DrawCompetitions_unique_constraint')
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
-  type: DrawType;
+  type!: DrawType;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  size: number;
+  size?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  risers: number;
+  risers?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  fallers: number;
+  fallers?: number;
 
   @Field(() => SubEventCompetition, { nullable: true })
   @BelongsTo(() => SubEventCompetition, {
@@ -94,13 +94,13 @@ export class DrawCompetition extends Model {
   @ForeignKey(() => SubEventCompetition)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  subeventId: string;
+  subeventId?: string;
 
   @HasMany(() => EncounterCompetition, {
     foreignKey: 'drawId',
     onDelete: 'CASCADE',
   })
-  encounterCompetitions: EncounterCompetition[];
+  encounterCompetitions?: EncounterCompetition[];
 
   @HasMany(() => EventEntry, {
     foreignKey: 'drawId',
@@ -109,7 +109,7 @@ export class DrawCompetition extends Model {
       entryType: 'competition',
     },
   })
-  entries: EventEntry[];
+  entries?: EventEntry[];
 
   // Belongs to SubEvent
   getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;

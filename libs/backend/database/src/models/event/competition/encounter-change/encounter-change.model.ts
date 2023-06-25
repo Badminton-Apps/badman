@@ -59,7 +59,7 @@ export class EncounterChange extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
@@ -74,14 +74,14 @@ export class EncounterChange extends Model {
   @ForeignKey(() => EncounterCompetition)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  encounterId: string;
+  encounterId?: string;
 
   @Field(() => [EncounterChangeDate], { nullable: true })
   @HasMany(() => EncounterChangeDate, {
     foreignKey: 'encounterChangeId',
     onDelete: 'CASCADE',
   })
-  dates: EncounterChangeDate[];
+  dates?: EncounterChangeDate[];
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
@@ -153,13 +153,13 @@ export class EncounterChangeUpdateInput extends PartialType(
   InputType
 ) {
   @Field(() => Boolean)
-  home: boolean;
+  home?: boolean;
 
   @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })
-  dates: EncounterChangeDate[];
+  dates?: EncounterChangeDate[];
 
   @Field(() => CommentUpdateInput, { nullable: true })
-  comment: Comment;
+  comment?: Comment;
 }
 
 @InputType()
@@ -168,8 +168,8 @@ export class EncounterChangeNewInput extends PartialType(
   InputType
 ) {
   @Field(() => [EncounterChangeDateNewInput], { nullable: true })
-  dates: EncounterChangeDate[];
+  dates?: EncounterChangeDate[];
 
   @Field(() => CommentNewInput, { nullable: true })
-  comment: Comment;
+  comment?: Comment;
 }

@@ -46,27 +46,27 @@ export class RankingGroup extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @BelongsToMany(
     () => SubEventCompetition,
     () => RankingGroupSubEventCompetitionMembership
   )
-  subEventCompetitions: SubEventCompetition[];
+  subEventCompetitions?: SubEventCompetition[];
 
   @BelongsToMany(
     () => SubEventTournament,
     () => RankingGroupSubEventTournamentMembership
   )
-  subEventTournaments: SubEventTournament[];
+  subEventTournaments?: SubEventTournament[];
 
   @BelongsToMany(() => RankingSystem, () => RankingSystemRankingGroupMembership)
-  rankingSystems: RankingSystem[];
+  rankingSystems?: RankingSystem[];
 
   // Belongs to many SubEventTournament
   getSubEventTournaments!: BelongsToManyGetAssociationsMixin<SubEventTournament>;
