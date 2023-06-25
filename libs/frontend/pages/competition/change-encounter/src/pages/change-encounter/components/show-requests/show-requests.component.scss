@@ -56,7 +56,16 @@ mat-form-field {
   }
 }
 
+.submit {
+  display: flex;
+  gap: 1rem;
+}
+
 .comments {
+  h3 {
+    margin-bottom: 0;
+  }
+
   #body {
     flex-grow: 1;
     display: flex;
@@ -96,5 +105,9 @@ mat-form-field {
         align-items: flex-end;
       }
     }
+  }
+
+  .new-comment mat-form-field {
+    margin-bottom: 1rem;
   }
 }

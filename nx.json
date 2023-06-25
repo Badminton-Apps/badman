@@ -1,8 +1,5 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "badman",
-  "useDaemonProcess": false,
-  "ci": "github",
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx-cloud",
@@ -21,21 +18,40 @@
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ]
     },
     "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js"
+      ]
     },
     "lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json"
+      ]
     },
     "build-storybook": {
-      "inputs": ["default", "^production", "{workspaceRoot}/.storybook/**/*"]
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/.storybook/**/*"
+      ]
     }
   },
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
@@ -71,6 +87,8 @@
       "standalone": true
     }
   },
+  "useDaemonProcess": false,
+  "ci": "github",
   "pluginsConfig": {},
   "defaultProject": "badman"
 }
