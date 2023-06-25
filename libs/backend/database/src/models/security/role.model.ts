@@ -40,6 +40,7 @@ import { Team } from '../team.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
 import { Claim, ClaimUpdateInput } from './claim.model';
 import { PlayerRoleMembership } from './role-player-membership.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -82,25 +83,25 @@ export class Role extends Model {
     foreignKey: 'linkId',
     constraints: false,
   })
-  club?: Club;
+  club?: Relation<Club>;
 
   @BelongsTo(() => Team, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  team?: Team;
+  team?: Relation<Team>;
 
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition?: EventCompetition;
+  competition?: Relation<EventCompetition>;
 
   @BelongsTo(() => EventTournament, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  tournament?: EventTournament;
+  tournament?: Relation<EventTournament>;
 
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
@@ -163,7 +164,7 @@ export class RoleUpdateInput extends PartialType(
   InputType
 ) {
   @Field(() => [ClaimUpdateInput])
-  claims?: Claim[];
+  claims?: Relation<Claim[]>;
 }
 
 @InputType()

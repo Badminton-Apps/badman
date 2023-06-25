@@ -28,6 +28,7 @@ import {
 } from '../event';
 import { Player } from '../player.model';
 import { Club } from '../club.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -54,7 +55,7 @@ export class Notification extends Model {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'sendToId')
-  sendTo?: Player;
+  sendTo?: Relation<Player>;
 
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
@@ -77,28 +78,28 @@ export class Notification extends Model {
     foreignKey: 'linkId',
     constraints: false,
   })
-  encounter?: EncounterCompetition;
+  encounter?: Relation<EncounterCompetition>;
 
   @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition?: EventCompetition;
+  competition?: Relation<EventCompetition>;
 
   @Field(() => EventTournament, { nullable: true })
   @BelongsTo(() => EventTournament, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  tournament?: EventTournament;
+  tournament?: Relation<EventTournament>;
 
   @Field(() => Club, { nullable: true })
   @BelongsTo(() => Club, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  club?: Club;
+  club?: Relation<Club>;
 
   @Field(() => Boolean, { nullable: true, defaultValue: false })
   @Column({ type: DataType.BOOLEAN, defaultValue: false })

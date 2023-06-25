@@ -19,6 +19,7 @@ import {
 import { ClubPlayerMembership } from './club-player-membership.model';
 import { Player } from './player.model';
 import { Team } from './team.model';
+import { Relation } from '../wrapper';
 
 @Table({
   schema: 'public',
@@ -52,7 +53,7 @@ export class TeamPlayerMembership extends Model {
   @Default(TeamMembershipType.REGULAR)
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM(...Object.keys(TeamMembershipType)))
-  membershipType?: TeamMembershipType;
+  membershipType?: Relation<TeamMembershipType>;
 
   @Column(DataType.DATE)
   end?: Date;

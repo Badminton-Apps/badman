@@ -19,6 +19,7 @@ import {
 } from 'sequelize-typescript';
 import { Player } from '../player.model';
 import { RankingSystem } from './ranking-system.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -134,14 +135,14 @@ export class RankingLastPlace extends Model {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
-  player?: Player;
+  player?: Relation<Player>;
 
   @Field(() => RankingSystem, { nullable: true })
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'systemId',
     onDelete: 'CASCADE',
   })
-  rankingSystem?: RankingSystem;
+  rankingSystem?: Relation<RankingSystem>;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;
@@ -158,5 +159,5 @@ export class PagedRankingLastPlaces {
   count?: number;
 
   @Field(() => [RankingLastPlace])
-  rows?: RankingLastPlace[];
+  rows?: Relation<RankingLastPlace[]>;
 }

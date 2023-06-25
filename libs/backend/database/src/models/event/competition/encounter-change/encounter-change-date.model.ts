@@ -24,6 +24,7 @@ import {
 } from 'sequelize-typescript';
 import { ChangeEncounterAvailability } from '@badman/utils';
 import { EncounterChange } from './encounter-change.model';
+import { Relation } from '../../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -50,7 +51,7 @@ export class EncounterChangeDate extends Model {
     foreignKey: 'encounterChangeId',
     onDelete: 'CASCADE',
   })
-  encounterChange?: EncounterChange;
+  encounterChange?: Relation<EncounterChange>;
 
   @ForeignKey(() => EncounterChange)
   @Field(() => ID, { nullable: true })

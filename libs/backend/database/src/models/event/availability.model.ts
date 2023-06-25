@@ -31,6 +31,7 @@ import {
   ExceptionType as AvailabilityExceptionType,
 } from '../../types';
 import { Location } from './location.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -58,19 +59,19 @@ export class Availability extends Model {
   @Column({
     type: DataType.JSON,
   })
-  days?: AvailabilityDay[];
+  days?: Relation<AvailabilityDay[]>;
 
   @Field(() => [AvailabilityExceptionType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  exceptions?: AvailabilityException[];
+  exceptions?: Relation<AvailabilityException[]>;
 
   @BelongsTo(() => Location, {
     foreignKey: 'locationId',
     constraints: false,
   })
-  location?: Location;
+  location?: Relation<Location>;
 
   @ForeignKey(() => Location)
   @Field(() => ID, { nullable: true })
@@ -114,7 +115,7 @@ export class AvailabilityUpdateInput extends PartialType(
   InputType
 ) {
   @Field(() => [AvailiblyDayInputType])
-  days?: AvailabilityDay[];
+  days?: Relation<AvailabilityDay[]>;
 
   @Field(() => [ExceptionInputType])
   exceptions?: AvailabilityException[];
@@ -125,3 +126,5 @@ export class AvailabilityNewInput extends PartialType(
   OmitType(AvailabilityUpdateInput, ['id'] as const),
   InputType
 ) {}
+
+

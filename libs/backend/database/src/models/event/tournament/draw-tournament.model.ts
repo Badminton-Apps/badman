@@ -31,6 +31,7 @@ import { Game } from '../game.model';
 import { Standing } from '../standing.model';
 import { EventEntry } from '../entry.model';
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -70,7 +71,7 @@ export class DrawTournament extends Model {
       linkType: 'tournament',
     },
   })
-  games?: Game[];
+  games?: Relation<Game[]>;
 
   @HasMany(() => EventEntry, {
     foreignKey: 'drawId',
@@ -79,7 +80,7 @@ export class DrawTournament extends Model {
       entryType: 'tournament',
     },
   })
-  eventEntries?: EventEntry[];
+  eventEntries?: Relation<EventEntry[]>;
 
   @Unique('DrawTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
@@ -99,7 +100,7 @@ export class DrawTournament extends Model {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  subEventTournament?: SubEventTournament;
+  subEventTournament?: Relation<SubEventTournament>;
 
   @Unique('DrawTournaments_unique_constraint')
   @ForeignKey(() => SubEventTournament)

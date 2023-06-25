@@ -13,6 +13,7 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import { EventEntry } from './entry.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -32,7 +33,7 @@ export class Standing extends Model {
   id!: string;
 
   @BelongsTo(() => EventEntry, 'entryId')
-  entry?: EventEntry;
+  entry?: Relation<EventEntry>;
 
   @ForeignKey(() => EventEntry)
   @Field(() => ID, { nullable: true })
