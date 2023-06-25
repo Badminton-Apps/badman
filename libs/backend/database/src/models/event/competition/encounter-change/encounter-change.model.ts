@@ -43,6 +43,7 @@ import {
   EncounterChangeDateNewInput,
   EncounterChangeDateUpdateInput,
 } from './encounter-change-date.model';
+import { Relation } from '../../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -69,7 +70,7 @@ export class EncounterChange extends Model {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',
   })
-  encounter?: EncounterCompetition;
+  encounter?: Relation<EncounterCompetition>;
 
   @ForeignKey(() => EncounterCompetition)
   @Field(() => ID, { nullable: true })
@@ -81,7 +82,7 @@ export class EncounterChange extends Model {
     foreignKey: 'encounterChangeId',
     onDelete: 'CASCADE',
   })
-  dates?: EncounterChangeDate[];
+  dates?: Relation<EncounterChangeDate[]>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
@@ -91,7 +92,7 @@ export class EncounterChange extends Model {
       linkType: 'home_comment',
     },
   })
-  homeComments?: Comment[];
+  homeComments?: Relation<Comment[]>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
@@ -101,7 +102,7 @@ export class EncounterChange extends Model {
       linkType: 'away_comment',
     },
   })
-  awayComments?: Comment[];
+  awayComments?: Relation<Comment[]>;
 
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;
@@ -156,10 +157,10 @@ export class EncounterChangeUpdateInput extends PartialType(
   home?: boolean;
 
   @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })
-  dates?: EncounterChangeDate[];
+  dates?: Relation<EncounterChangeDate[]>;
 
   @Field(() => CommentUpdateInput, { nullable: true })
-  comment?: Comment;
+  comment?: Relation<Comment>;
 }
 
 @InputType()
@@ -168,8 +169,8 @@ export class EncounterChangeNewInput extends PartialType(
   InputType
 ) {
   @Field(() => [EncounterChangeDateNewInput], { nullable: true })
-  dates?: EncounterChangeDate[];
+  dates?: Relation<EncounterChangeDate[]>;
 
   @Field(() => CommentNewInput, { nullable: true })
-  comment?: Comment;
+  comment?: Relation<Comment>;
 }

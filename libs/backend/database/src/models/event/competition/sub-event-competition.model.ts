@@ -42,6 +42,7 @@ import { EventEntry } from '../entry.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EventCompetition } from './event-competition.model';
 import { RankingGroupSubEventCompetitionMembership } from './group-subevent-membership.model';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -94,28 +95,28 @@ export class SubEventCompetition extends Model {
       entryType: 'competition',
     },
   })
-  eventEntries?: EventEntry[];
+  eventEntries?: Relation<EventEntry[]>;
 
   @Field(() => [RankingGroup], { nullable: true })
   @BelongsToMany(
     () => RankingGroup,
     () => RankingGroupSubEventCompetitionMembership
   )
-  rankingGroups?: RankingGroup[];
+  rankingGroups?: Relation<RankingGroup[]>;
 
   @Field(() => [DrawCompetition], { nullable: true })
   @HasMany(() => DrawCompetition, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  drawCompetitions?: DrawCompetition[];
+  drawCompetitions?: Relation<DrawCompetition[]>;
 
   @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  eventCompetition?: EventCompetition;
+  eventCompetition?: Relation<EventCompetition>;
 
   @Unique('SubEventCompetitions_unique_constraint')
   @ForeignKey(() => EventCompetition)

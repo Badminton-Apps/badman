@@ -16,6 +16,7 @@ import {
 } from 'sequelize';
 import { Player } from './player.model';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
@@ -35,7 +36,7 @@ export class RequestLink extends Model {
   sub?: string;
 
   @BelongsTo(() => Player, 'playerId')
-  player?: Player;
+  player?: Relation<Player>;
 
   @ForeignKey(() => Player)
   @Index

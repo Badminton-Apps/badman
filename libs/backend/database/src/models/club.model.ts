@@ -58,6 +58,7 @@ import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
+import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
@@ -103,7 +104,7 @@ export class Club extends Model {
 
   @Field(() => [Team], { nullable: true })
   @HasMany(() => Team, 'clubId')
-  teams?: Team[];
+  teams?: Relation<Team[]>;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
@@ -113,19 +114,19 @@ export class Club extends Model {
       linkType: 'club',
     },
   })
-  roles?: Role[];
+  roles?: Relation<Role[]>;
 
   @Field(() => [Player], { nullable: true })
   @BelongsToMany(() => Player, () => ClubPlayerMembership)
-  players?: Player[];
+  players?: Relation<Player[]>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment)
-  comments?: Comment[];
+  comments?: Relation<Comment[]>;
 
   @Field(() => [Location], { nullable: true })
   @HasMany(() => Location)
-  locations?: Location[];
+  locations?: Relation<Location[]>;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)

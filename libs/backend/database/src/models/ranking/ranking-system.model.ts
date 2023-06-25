@@ -46,6 +46,7 @@ import { RankingSystemRankingGroupMembership } from './ranking-group-ranking-sys
 import { RankingLastPlace } from './ranking-last-place.model';
 import { RankingPlace } from './ranking-place.model';
 import { RankingPoint } from './ranking-point.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -209,16 +210,16 @@ export class RankingSystem extends Model {
   startingType?: StartingType;
 
   @HasMany(() => RankingPoint, 'systemId')
-  rankingPoints?: RankingPoint;
+  rankingPoints?: Relation<RankingPoint>;
 
   @HasMany(() => RankingPlace, 'systemId')
-  places?: RankingPlace;
+  places?: Relation<RankingPlace>;
 
   @HasMany(() => RankingLastPlace, 'systemId')
-  lastPlaces?: RankingLastPlace;
+  lastPlaces?: Relation<RankingLastPlace>;
 
   @BelongsToMany(() => RankingGroup, () => RankingSystemRankingGroupMembership)
-  rankingGroups?: RankingGroup[];
+  rankingGroups?: Relation<RankingGroup[]>;
 
   // Has many RankingPoint
   getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;

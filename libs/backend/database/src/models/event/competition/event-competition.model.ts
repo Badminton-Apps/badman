@@ -36,6 +36,7 @@ import {
   PartialType,
 } from '@nestjs/graphql';
 import { Role } from '../../security';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -102,7 +103,7 @@ export class EventCompetition extends Model {
       linkType: 'competition',
     },
   })
-  comments?: Comment[];
+  comments?: Relation<Comment[]>;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
@@ -112,14 +113,14 @@ export class EventCompetition extends Model {
       linkType: 'competition',
     },
   })
-  roles?: Role[];
+  roles?: Relation<Role[]>;
 
   @Field(() => [SubEventCompetition], { nullable: true })
   @HasMany(() => SubEventCompetition, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  subEventCompetitions?: SubEventCompetition[];
+  subEventCompetitions?: Relation<SubEventCompetition[]>;
 
   @Field(() => String, { nullable: true })
   @Unique('EventCompetitions_unique_constraint')

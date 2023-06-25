@@ -63,6 +63,7 @@ import {
 import { ClubPlayerMembershipType } from '../_interception';
 import { Notification, Setting } from './personal';
 import { TeamMembershipType } from '@badman/utils';
+import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
@@ -109,13 +110,13 @@ export class Player extends Model {
 
   @Field(() => [Team], { nullable: true })
   @HasMany(() => Team, 'captainId')
-  myTeams?: Team[];
+  myTeams?: Relation<Team[]>;
 
   @HasMany(() => EventEntry, 'player1Id')
-  entriesP1?: EventEntry[];
+  entriesP1?: Relation<EventEntry[]>;
 
   @HasMany(() => EventEntry, 'player2Id')
-  entriesP2?: EventEntry[];
+  entriesP2?: Relation<EventEntry[]>;
 
   @Field(() => [EventEntry], { nullable: true })
   get entries() {
@@ -161,19 +162,19 @@ export class Player extends Model {
 
   @Field(() => [RankingPlace], { nullable: true })
   @HasMany(() => RankingPlace, 'playerId')
-  rankingPlaces?: RankingPlace[];
+  rankingPlaces?: Relation<RankingPlace[]>;
 
   @Field(() => [RankingLastPlace], { nullable: true })
   @HasMany(() => RankingLastPlace, 'playerId')
-  rankingLastPlaces?: RankingLastPlace[];
+  rankingLastPlaces?: Relation<RankingLastPlace[]>;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, 'playerId')
-  comments?: Comment[];
+  comments?: Relation<Comment[]>;
 
   @Field(() => [Notification], { nullable: true })
   @HasMany(() => Notification, 'sendToId')
-  notifications?: Notification[];
+  notifications?: Relation<Notification[]>;
 
   @Field(() => [Team], { nullable: true })
   @BelongsToMany(() => Team, () => TeamPlayerMembership)
@@ -200,7 +201,7 @@ export class Player extends Model {
 
   @Field(() => Setting, { nullable: true })
   @HasOne(() => Setting)
-  setting?: Setting;
+  setting?: Relation<Setting>;
 
   // Has many RankingPoints
   getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;
@@ -424,7 +425,7 @@ export class PagedPlayer {
   count?: number;
 
   @Field(() => [Player])
-  rows?: Player[];
+  rows?: Relation<Player[]>;
 }
 
 @InputType()
@@ -477,5 +478,5 @@ export class PlayerTeamInput {
   id!: string;
 
   @Field(() => String, { nullable: true })
-  membershipType?: TeamMembershipType;
+  membershipType?: Relation<TeamMembershipType>;
 }

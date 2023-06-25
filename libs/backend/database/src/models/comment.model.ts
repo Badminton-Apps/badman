@@ -28,6 +28,7 @@ import {
   OmitType,
   PartialType,
 } from '@nestjs/graphql';
+import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
@@ -57,7 +58,7 @@ export class Comment extends Model {
   message?: string;
 
   @BelongsTo(() => Player, 'playerId')
-  player?: Player;
+  player?: Relation<Player>;
 
   @ForeignKey(() => Player)
   @Index
@@ -66,7 +67,7 @@ export class Comment extends Model {
   playerId?: string;
 
   @BelongsTo(() => Club, 'clubId')
-  club?: Club;
+  club?: Relation<Club>;
 
   @ForeignKey(() => Club)
   @Index
@@ -78,13 +79,13 @@ export class Comment extends Model {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition?: EventCompetition;
+  competition?: Relation<EventCompetition>;
 
   @BelongsTo(() => EncounterChange, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  encounter?: EncounterChange;
+  encounter?: Relation<EncounterChange>;
 
   @Index('comment_index')
   @Field(() => ID, {nullable: true })

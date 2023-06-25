@@ -52,6 +52,7 @@ import { EncounterCompetition } from './competition/encounter-competition.model'
 import { Court } from './court.model';
 import { GamePlayerMembership } from './game-player.model';
 import { DrawTournament } from './tournament';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -130,14 +131,14 @@ export class Game extends Model {
     foreignKey: 'linkId',
     constraints: false,
   })
-  tournament?: DrawTournament;
+  tournament?: Relation<DrawTournament>;
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition?: EncounterCompetition;
+  competition?: Relation<EncounterCompetition>;
 
   @Index('game_parent_index')
   @Field(() => ID, { nullable: true })
@@ -150,7 +151,7 @@ export class Game extends Model {
   linkType?: string;
 
   @BelongsTo(() => Court, 'courtId')
-  court?: Court;
+  court?: Relation<Court>;
 
   @ForeignKey(() => Court)
   @Field(() => ID, { nullable: true })

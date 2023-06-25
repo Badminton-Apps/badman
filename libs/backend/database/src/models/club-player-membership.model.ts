@@ -22,6 +22,7 @@ import {
   OmitType,
   PartialType,
 } from '@nestjs/graphql';
+import { Relation } from '../wrapper';
 
 @Table({
   schema: 'public',
@@ -53,8 +54,8 @@ export class ClubPlayerMembership extends Model {
   @Column(DataType.UUIDV4)
   clubId?: string;
 
-  club?: Club;
-  player?: Player;
+  club?: Relation<Club>;
+  player?: Relation<Player>;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)

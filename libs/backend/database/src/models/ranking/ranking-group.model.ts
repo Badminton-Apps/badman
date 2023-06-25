@@ -30,6 +30,7 @@ import {
 } from '../event';
 import { RankingSystemRankingGroupMembership } from './ranking-group-ranking-system-membership.model';
 import { RankingSystem } from './ranking-system.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -57,16 +58,16 @@ export class RankingGroup extends Model {
     () => SubEventCompetition,
     () => RankingGroupSubEventCompetitionMembership
   )
-  subEventCompetitions?: SubEventCompetition[];
+  subEventCompetitions?: Relation<SubEventCompetition[]>;
 
   @BelongsToMany(
     () => SubEventTournament,
     () => RankingGroupSubEventTournamentMembership
   )
-  subEventTournaments?: SubEventTournament[];
+  subEventTournaments?: Relation<SubEventTournament[]>;
 
   @BelongsToMany(() => RankingSystem, () => RankingSystemRankingGroupMembership)
-  rankingSystems?: RankingSystem[];
+  rankingSystems?: Relation<RankingSystem[]>;
 
   // Belongs to many SubEventTournament
   getSubEventTournaments!: BelongsToManyGetAssociationsMixin<SubEventTournament>;

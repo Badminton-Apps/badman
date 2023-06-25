@@ -45,6 +45,7 @@ import { Role } from '../../security';
 import { Location } from '../location.model';
 import { LocationEventTournamentMembership } from './location-event-membership.model';
 import { SubEventTournament } from './sub-event-tournament.model';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -100,13 +101,13 @@ export class EventTournament extends Model {
   dates?: string;
 
   @BelongsToMany(() => Location, () => LocationEventTournamentMembership)
-  locations?: Location[];
+  locations?: Relation<Location[]>;
 
   @HasMany(() => SubEventTournament, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  subEventTournaments?: SubEventTournament[];
+  subEventTournaments?: Relation<SubEventTournament[]>;
 
   @Unique('EventTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
@@ -137,7 +138,7 @@ export class EventTournament extends Model {
       linkType: 'tournament',
     },
   })
-  roles?: Role[];
+  roles?: Relation<Role[]>;
 
   regenerateSlug!: Slugify<EventTournament>;
 

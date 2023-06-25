@@ -19,6 +19,7 @@ import {
 import { Game } from '../event';
 import { Player } from '../player.model';
 import { RankingSystem } from './ranking-system.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -43,18 +44,18 @@ export class RankingPoint extends Model {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
-  player?: Player;
+  player?: Relation<Player>;
 
   @Field(() => Game, { nullable: true })
   @BelongsTo(() => Game, 'gameId')
-  game?: Game;
+  game?: Relation<Game>;
 
   @Field(() => RankingSystem, { nullable: true })
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'systemId',
     onDelete: 'CASCADE',
   })
-  system?: RankingSystem;
+  system?: Relation<RankingSystem>;
 
   @ForeignKey(() => RankingSystem)
   @Field(() => Date, { nullable: true })

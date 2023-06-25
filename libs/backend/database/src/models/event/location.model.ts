@@ -53,6 +53,7 @@ import { Court } from './court.model';
 import { EventTournament } from './tournament';
 import { LocationEventTournamentMembership } from './tournament/location-event-membership.model';
 import type { Point } from 'geojson';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -111,16 +112,16 @@ export class Location extends Model {
   coordinates?: Point;
 
   @BelongsToMany(() => Team, () => TeamLocationCompetition)
-  teams?: Team[];
+  teams?: Relation<Team[]>;
 
   @BelongsToMany(() => EventTournament, () => LocationEventTournamentMembership)
-  eventTournaments?: EventTournament[];
+  eventTournaments?: Relation<EventTournament[]>;
 
   @HasMany(() => Court, 'locationId')
   courts?: Court;
 
   @BelongsTo(() => Club, 'clubId')
-  club?: Club;
+  club?: Relation<Club>;
 
   @ForeignKey(() => Club)
   @Index
