@@ -35,113 +35,113 @@ export class RankingLastPlace extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  rankingDate: Date;
+  rankingDate?: Date;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  gender: string;
+  gender?: string;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  singlePoints: number;
+  singlePoints?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  mixPoints: number;
+  mixPoints?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  doublePoints: number;
+  doublePoints?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  singlePointsDowngrade: number;
+  singlePointsDowngrade?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  mixPointsDowngrade: number;
+  mixPointsDowngrade?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  doublePointsDowngrade: number;
+  doublePointsDowngrade?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  singleRank: number;
+  singleRank?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  mixRank: number;
+  mixRank?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  doubleRank: number;
+  doubleRank?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  totalSingleRanking: number;
+  totalSingleRanking?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  totalMixRanking: number;
+  totalMixRanking?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  totalDoubleRanking: number;
+  totalDoubleRanking?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  totalWithinSingleLevel: number;
+  totalWithinSingleLevel?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  totalWithinMixLevel: number;
+  totalWithinMixLevel?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  totalWithinDoubleLevel: number;
+  totalWithinDoubleLevel?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  single: number;
+  single?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  mix: number;
+  mix?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  double: number;
+  double?: number;
 
   @Default(false)
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
-  singleInactive: boolean;
+  singleInactive?: boolean;
   @Default(false)
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
-  mixInactive: boolean;
+  mixInactive?: boolean;
   @Default(false)
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
-  doubleInactive: boolean;
+  doubleInactive?: boolean;
 
   @Unique('unique_constraint')
   @ForeignKey(() => Player)
   @Index('lastPlaces_ranking_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  playerId: string;
+  playerId?: string;
 
   @Unique('unique_constraint')
   @ForeignKey(() => RankingSystem)
   @Index('lastPlaces_ranking_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  systemId: string;
+  systemId?: string;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
-  player: Player;
+  player?: Player;
 
   @Field(() => RankingSystem, { nullable: true })
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'systemId',
     onDelete: 'CASCADE',
   })
-  rankingSystem: RankingSystem;
+  rankingSystem?: RankingSystem;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;
@@ -155,8 +155,8 @@ export class RankingLastPlace extends Model {
 @ObjectType()
 export class PagedRankingLastPlaces {
   @Field(() => Int)
-  count: number;
+  count?: number;
 
   @Field(() => [RankingLastPlace])
-  rows: RankingLastPlace[];
+  rows?: RankingLastPlace[];
 }

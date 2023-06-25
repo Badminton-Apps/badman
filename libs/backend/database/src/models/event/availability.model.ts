@@ -48,34 +48,34 @@ export class Availability extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  season: number;
+  season?: number;
 
   @Field(() => [AvailiblyDayType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  days: AvailabilityDay[];
+  days?: AvailabilityDay[];
 
   @Field(() => [AvailabilityExceptionType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  exceptions: AvailabilityException[];
+  exceptions?: AvailabilityException[];
 
   @BelongsTo(() => Location, {
     foreignKey: 'locationId',
     constraints: false,
   })
-  location: Location;
+  location?: Location;
 
   @ForeignKey(() => Location)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  locationId: string;
+  locationId?: string;
 
   // Belongs to Location
   getLocation!: BelongsToGetAssociationMixin<Location>;
@@ -83,9 +83,9 @@ export class Availability extends Model {
 }
 
 export interface AvailabilityException {
-  start: Date;
-  end: Date;
-  courts: number;
+  start?: Date;
+  end?: Date;
+  courts?: number;
 }
 
 export interface AvailabilityDay {
@@ -97,9 +97,9 @@ export interface AvailabilityDay {
     | 'friday'
     | 'saturday'
     | 'sunday';
-  startTime: string;
-  endTime: string;
-  courts: number;
+  startTime?: string;
+  endTime?: string;
+  courts?: number;
 }
 
 @InputType()
@@ -114,10 +114,10 @@ export class AvailabilityUpdateInput extends PartialType(
   InputType
 ) {
   @Field(() => [AvailiblyDayInputType])
-  days: AvailabilityDay[];
+  days?: AvailabilityDay[];
 
   @Field(() => [ExceptionInputType])
-  exceptions: AvailabilityException[];
+  exceptions?: AvailabilityException[];
 }
 
 @InputType()

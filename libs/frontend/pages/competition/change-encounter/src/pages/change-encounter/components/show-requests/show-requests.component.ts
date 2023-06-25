@@ -40,7 +40,10 @@ import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { Observable, lastValueFrom, of } from 'rxjs';
 import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { DateSelectorComponent } from '../../../../components';
+import {
+  DateSelectorComponent,
+} from '../../../../components';
+import { CommentsComponent } from '../../../../components/comments';
 
 @Component({
   selector: 'badman-show-requests',
@@ -68,6 +71,7 @@ import { DateSelectorComponent } from '../../../../components';
 
     // Own
     DateSelectorComponent,
+    CommentsComponent,
   ],
 })
 export class ShowRequestsComponent implements OnInit {

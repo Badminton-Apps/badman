@@ -29,20 +29,20 @@ export class Assembly extends Model<Assembly> {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => AssemblyType, { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  assembly: AssemblyData;
+  assembly?: AssemblyData;
 
   @Column(DataTypes.TEXT)
-  description: string;
+  description?: string;
 
   @ForeignKey(() => EncounterCompetition)
   @Column(DataTypes.UUIDV4)
-  encounterId: string;
+  encounterId?: string;
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
@@ -54,7 +54,7 @@ export class Assembly extends Model<Assembly> {
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })
   @Column(DataTypes.UUIDV4)
-  teamId: string;
+  teamId?: string;
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, {
@@ -66,7 +66,7 @@ export class Assembly extends Model<Assembly> {
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
   @Column(DataTypes.UUIDV4)
-  captainId: string;
+  captainId?: string;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, {
@@ -78,7 +78,7 @@ export class Assembly extends Model<Assembly> {
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
   @Column(DataTypes.UUIDV4)
-  playerId: string;
+  playerId?: string;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, {

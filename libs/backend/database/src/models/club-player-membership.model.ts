@@ -37,24 +37,24 @@ export class ClubPlayerMembership extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @ForeignKey(() => Player)
   @AllowNull(false)
   @Index('player_club_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  playerId: string;
+  playerId?: string;
 
   @ForeignKey(() => Club)
   @AllowNull(false)
   @Index('player_club_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  clubId: string;
+  clubId?: string;
 
-  club: Club;
-  player: Player;
+  club?: Club;
+  player?: Player;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
@@ -71,7 +71,7 @@ export class ClubPlayerMembership extends Model {
   @AllowNull(false)
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  start: Date;
+  start?: Date;
 }
 
 @InputType()

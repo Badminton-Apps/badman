@@ -11,10 +11,10 @@ export class PlayerRoleMembership extends Model {
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  playerId: string;
+  playerId?: string;
 
   @ForeignKey(() => Role)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  roleId: string;
+  roleId?: string;
 }

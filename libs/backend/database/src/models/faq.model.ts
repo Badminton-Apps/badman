@@ -42,11 +42,11 @@ export class Faq extends Model {
 
   @Field(() => String)
   @Column(DataType.STRING)
-  question: string;
+  question?: string;
 
   @Field(() => String)
   @Column(DataType.STRING)
-  answer: string;
+  answer?: string;
 }
 
 @InputType()

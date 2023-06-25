@@ -47,21 +47,21 @@ export class DrawTournament extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique('DrawTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Unique('DrawTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
-  type: DrawType;
+  type?: DrawType;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  size: number;
+  size?: number;
 
   @HasMany(() => Game, {
     foreignKey: 'linkId',
@@ -70,7 +70,7 @@ export class DrawTournament extends Model {
       linkType: 'tournament',
     },
   })
-  games: Game[];
+  games?: Game[];
 
   @HasMany(() => EventEntry, {
     foreignKey: 'drawId',
@@ -79,20 +79,20 @@ export class DrawTournament extends Model {
       entryType: 'tournament',
     },
   })
-  eventEntries: EventEntry[];
+  eventEntries?: EventEntry[];
 
   @Unique('DrawTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  visualCode: string;
+  visualCode?: string;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  risers: number;
+  risers?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  fallers: number;
+  fallers?: number;
 
   @Field(() => SubEventTournament, { nullable: true })
   @BelongsTo(() => SubEventTournament, {
@@ -105,7 +105,7 @@ export class DrawTournament extends Model {
   @ForeignKey(() => SubEventTournament)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  subeventId: string;
+  subeventId?: string;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;

@@ -22,7 +22,7 @@ export class SequelizeAttachReqToModelMiddleware {
 
     const seq = sequelize as Sequelize & { Cache: Cache };
 
-    if (cache) {
+    if (cache) { 
       this.logger.debug('initialize cache');
       seq['Cache'] = this._cacheManager;
 

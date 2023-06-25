@@ -1,4 +1,4 @@
 export interface RankingPeriod {
-  start: Date;
-  end: Date;
+  start?: Date;
+  end?: Date;
 }

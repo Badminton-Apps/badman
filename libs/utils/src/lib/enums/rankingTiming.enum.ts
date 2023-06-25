@@ -1,4 +1,4 @@
 export interface RankingTiming {
-  amount: number;
-  unit: 'months' | 'weeks' | 'days';
+  amount?: number;
+  unit?: 'months' | 'weeks' | 'days';
 }

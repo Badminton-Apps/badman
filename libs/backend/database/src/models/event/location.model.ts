@@ -69,67 +69,67 @@ export class Location extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  address: string;
+  address?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  street: string;
+  street?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  streetNumber: string;
+  streetNumber?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  postalcode: string;
+  postalcode?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  city: string;
+  city?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  state: string;
+  state?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  phone: string;
+  phone?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  fax: string;
+  fax?: string;
 
   @Column(DataType.GEOMETRY('POINT', 4326))
-  coordinates: Point;
+  coordinates?: Point;
 
   @BelongsToMany(() => Team, () => TeamLocationCompetition)
-  teams: Team[];
+  teams?: Team[];
 
   @BelongsToMany(() => EventTournament, () => LocationEventTournamentMembership)
-  eventTournaments: EventTournament[];
+  eventTournaments?: EventTournament[];
 
   @HasMany(() => Court, 'locationId')
-  courts: Court;
+  courts?: Court;
 
   @BelongsTo(() => Club, 'clubId')
-  club: Club;
+  club?: Club;
 
   @ForeignKey(() => Club)
   @Index
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  clubId: string;
+  clubId?: string;
 
   @HasMany(() => Availability)
-  availabilities: Availability[];
+  availabilities?: Availability[];
 
   // Has many Availability
   getAvailabilities!: HasManyGetAssociationsMixin<Availability>;
@@ -204,10 +204,10 @@ export class Location extends Model {
 @InputType()
 export class PointInput {
   @Field(() => Float)
-  longitude: number;
+  longitude?: number;
 
   @Field(() => Float)
-  latitude: number;
+  latitude?: number;
 }
 
 @InputType()
@@ -216,9 +216,9 @@ export class LocationUpdateInput extends PartialType(
   InputType
 ) {
   @Field(() => PointInput)
-  coordinates: {
-    longitude: number;
-    latitude: number;
+  coordinates?: {
+    longitude?: number;
+    latitude?: number;
   };
 }
 

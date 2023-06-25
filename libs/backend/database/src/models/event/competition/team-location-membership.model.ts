@@ -19,11 +19,11 @@ export class TeamLocationCompetition extends Model {
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  teamId: string;
+  teamId?: string;
 
   @PrimaryKey
   @ForeignKey(() => Location)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  locationId: string;
+  locationId?: string;
 }

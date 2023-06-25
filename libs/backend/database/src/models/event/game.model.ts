@@ -68,15 +68,15 @@ export class Game extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  playedAt: Date;
+  playedAt?: Date;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('S', 'D', 'MX'))
-  gameType: GameType;
+  gameType?: GameType;
 
   @Field(() => String, { nullable: true })
   @Column(
@@ -88,7 +88,7 @@ export class Game extends Model {
       'NO_MATCH'
     )
   )
-  status: GameStatus;
+  status?: GameStatus;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
@@ -130,40 +130,40 @@ export class Game extends Model {
     foreignKey: 'linkId',
     constraints: false,
   })
-  tournament: DrawTournament;
+  tournament?: DrawTournament;
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition: EncounterCompetition;
+  competition?: EncounterCompetition;
 
   @Index('game_parent_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  linkId: string;
+  linkId?: string;
 
   @Index('game_parent_index')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  linkType: string;
+  linkType?: string;
 
   @BelongsTo(() => Court, 'courtId')
-  court: Court;
+  court?: Court;
 
   @ForeignKey(() => Court)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  courtId: string;
+  courtId?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  visualCode: string;
+  visualCode?: string;
 
   @Field(() => [GamePlayerMembershipType], { nullable: true })
   @BelongsToMany(() => Player, () => GamePlayerMembership)
-  players: (Player & { GamePlayerMembership: GamePlayerMembership })[];
+  players?: (Player & { GamePlayerMembership: GamePlayerMembership })[];
 
   @AfterCreate
   @AfterUpdate

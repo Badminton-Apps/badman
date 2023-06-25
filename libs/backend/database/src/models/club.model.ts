@@ -74,14 +74,14 @@ export class Club extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique('club_number_unique')
   @Index
   @AllowNull(false)
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
@@ -94,7 +94,7 @@ export class Club extends Model {
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  abbreviation: string;
+  abbreviation?: string;
 
   @Unique('club_number_unique')
   @Field(() => Int, { nullable: true })
@@ -117,7 +117,7 @@ export class Club extends Model {
 
   @Field(() => [Player], { nullable: true })
   @BelongsToMany(() => Player, () => ClubPlayerMembership)
-  players: Player[];
+  players?: Player[];
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment)
@@ -125,19 +125,19 @@ export class Club extends Model {
 
   @Field(() => [Location], { nullable: true })
   @HasMany(() => Location)
-  locations: Location[];
+  locations?: Location[];
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  slug: string;
+  slug?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  state: string;
+  state?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  country: string;
+  country?: string;
 
   regenerateSlug!: Slugify<Club>;
 

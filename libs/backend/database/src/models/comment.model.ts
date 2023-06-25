@@ -43,7 +43,7 @@ export class Comment extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Date, {nullable: true })
   updatedAt?: Date;
@@ -54,47 +54,47 @@ export class Comment extends Model {
 
   @Field(() => String, {nullable: true })
   @Column(DataType.TEXT)
-  message: string;
+  message?: string;
 
   @BelongsTo(() => Player, 'playerId')
-  player: Player;
+  player?: Player;
 
   @ForeignKey(() => Player)
   @Index
   @Field(() => ID, {nullable: true })
   @Column(DataType.UUIDV4)
-  playerId: string;
+  playerId?: string;
 
   @BelongsTo(() => Club, 'clubId')
-  club: Club;
+  club?: Club;
 
   @ForeignKey(() => Club)
   @Index
   @Field(() => ID, {nullable: true })
   @Column(DataType.UUIDV4)
-  clubId: string;
+  clubId?: string;
 
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition: EventCompetition;
+  competition?: EventCompetition;
 
   @BelongsTo(() => EncounterChange, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  encounter: EncounterChange;
+  encounter?: EncounterChange;
 
   @Index('comment_index')
   @Field(() => ID, {nullable: true })
   @Column(DataType.UUIDV4)
-  linkId: string;
+  linkId?: string;
 
   @Index('comment_index')
   @Field(() => String, {nullable: true })
   @Column(DataType.STRING)
-  linkType: string;
+  linkType?: string;
 
 
   // Belongs to Competition
