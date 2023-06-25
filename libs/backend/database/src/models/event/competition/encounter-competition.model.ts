@@ -35,6 +35,7 @@ import { DrawCompetition } from './draw-competition.model';
 import { EncounterChange } from './encounter-change';
 import { Notification } from '../../personal';
 import { Assembly } from './assembly.model';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -68,14 +69,14 @@ export class EncounterCompetition extends Model {
       linkType: 'competition',
     },
   })
-  games?: Game[];
+  games?: Relation<Game[]>;
 
   @Field(() => DrawCompetition, { nullable: true })
   @BelongsTo(() => DrawCompetition, {
     foreignKey: 'drawId',
     onDelete: 'CASCADE',
   })
-  drawCompetition?: DrawCompetition;
+  drawCompetition?: Relation<DrawCompetition>;
 
   @ForeignKey(() => DrawCompetition)
   @Field(() => ID, { nullable: true })
@@ -84,7 +85,7 @@ export class EncounterCompetition extends Model {
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'homeTeamId')
-  home?: Team;
+  home?: Relation<Team>;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
@@ -97,7 +98,7 @@ export class EncounterCompetition extends Model {
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'awayTeamId')
-  away?: Team;
+  away?: Relation<Team>;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
@@ -118,15 +119,15 @@ export class EncounterCompetition extends Model {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'gameLeaderId')
-  gameLeader?: Player;
+  gameLeader?: Relation<Player>;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'enteredById')
-  enteredBy?: Player;
+  enteredBy?: Relation<Player>;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'acceptedById')
-  acceptedBy?: Player;
+  acceptedBy?: Relation<Player>;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
@@ -158,7 +159,7 @@ export class EncounterCompetition extends Model {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',
   })
-  encounterChange?: EncounterChange;
+  encounterChange?: Relation<EncounterChange>;
 
   @HasMany(() => Notification, {
     foreignKey: 'linkId',
@@ -167,14 +168,14 @@ export class EncounterCompetition extends Model {
       linkType: 'encounter',
     },
   })
-  notifications?: Notification[];
+  notifications?: Relation<Notification[]>;
 
   @Field(() => [Assembly], { nullable: true })
   @HasMany(() => Assembly, {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',
   })
-  assemblies?: Assembly[];
+  assemblies?: Relation<Assembly[]>;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;

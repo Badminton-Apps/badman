@@ -38,6 +38,7 @@ import {
   OmitType,
   PartialType,
 } from '@nestjs/graphql';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -88,7 +89,7 @@ export class DrawCompetition extends Model {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  subEventCompetition?: SubEventCompetition;
+  subEventCompetition?: Relation<SubEventCompetition>;
 
   @Unique('DrawCompetitions_unique_constraint')
   @ForeignKey(() => SubEventCompetition)
@@ -109,7 +110,7 @@ export class DrawCompetition extends Model {
       entryType: 'competition',
     },
   })
-  entries?: EventEntry[];
+  entries?: Relation<EventEntry[]>;
 
   // Belongs to SubEvent
   getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;

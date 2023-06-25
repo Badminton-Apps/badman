@@ -40,6 +40,7 @@ import { GamePlayerMembership } from '../event';
 import { Player } from '../player.model';
 import { RankingLastPlace } from './ranking-last-place.model';
 import { RankingSystem } from './ranking-system.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -170,13 +171,13 @@ export class RankingPlace extends Model {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
-  player?: Player;
+  player?: Relation<Player>;
 
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'systemId',
     onDelete: 'CASCADE',
   })
-  rankingSystem?: RankingSystem;
+  rankingSystem?: Relation<RankingSystem>;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;

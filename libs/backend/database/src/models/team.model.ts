@@ -71,6 +71,7 @@ import { TeamLocationCompetition } from './event/competition/team-location-membe
 import { Player, PlayerTeamInput } from './player.model';
 import { Role } from './security';
 import { TeamPlayerMembership } from './team-player-membership.model';
+import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
@@ -129,18 +130,18 @@ export class Team extends Model {
   preferredDay?: string;
 
   @BelongsToMany(() => Location, () => TeamLocationCompetition)
-  locations?: Location[];
+  locations?: Relation<Location[]>;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   abbreviation?: string;
 
   @HasOne(() => EventEntry, 'teamId')
-  entry?: EventEntry;
+  entry?: Relation<EventEntry>;
 
   @Field(() => Club, { nullable: true })
   @BelongsTo(() => Club, 'clubId')
-  club?: Club;
+  club?: Relation<Club>;
 
   @Field(() => ID, { nullable: true })
   @ForeignKey(() => Club)
@@ -165,7 +166,7 @@ export class Team extends Model {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'captainId')
-  captain?: Player;
+  captain?: Relation<Player>;
 
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
@@ -185,10 +186,10 @@ export class Team extends Model {
   teamNumber?: number;
 
   @HasMany(() => EncounterCompetition, 'homeTeamId')
-  homeEncounters?: EncounterCompetition;
+  homeEncounters?: Relation<EncounterCompetition>;
 
   @HasMany(() => EncounterCompetition, 'awayTeamId')
-  awayEncounters?: EncounterCompetition;
+  awayEncounters?: Relation<EncounterCompetition>;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
@@ -198,7 +199,7 @@ export class Team extends Model {
       linkType: 'team',
     },
   })
-  roles?: Role[];
+  roles?: Relation<Role[]>;
 
   // #region hooks
   @BeforeBulkCreate

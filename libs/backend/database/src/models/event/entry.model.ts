@@ -45,6 +45,7 @@ import {
 } from './competition';
 import { Standing } from './standing.model';
 import { DrawTournament, SubEventTournament } from './tournament';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -65,7 +66,7 @@ export class EventEntry extends Model {
   id!: string;
 
   @BelongsTo(() => Team, 'teamId')
-  team?: Team;
+  team?: Relation<Team>;
 
   @Column(DataType.STRING)
   @Field(() => Date, { nullable: true })
@@ -77,7 +78,7 @@ export class EventEntry extends Model {
   teamId?: string;
 
   @BelongsTo(() => Player, 'player1Id')
-  player1?: Player;
+  player1?: Relation<Player>;
 
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
@@ -85,7 +86,7 @@ export class EventEntry extends Model {
   player1Id!: string;
 
   @BelongsTo(() => Player, 'player2Id')
-  player2?: Player;
+  player2?: Relation<Player>;
 
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
@@ -96,7 +97,7 @@ export class EventEntry extends Model {
     foreignKey: 'subEventId',
     constraints: false,
   })
-  subEventTournament?: SubEventTournament;
+  subEventTournament?: Relation<SubEventTournament>;
 
   /**
    * Draw get's deciede upon draw
@@ -106,14 +107,14 @@ export class EventEntry extends Model {
     foreignKey: 'drawId',
     constraints: false,
   })
-  drawTournament?: DrawTournament;
+  drawTournament?: Relation<DrawTournament>;
 
   @Field(() => SubEventCompetition, { nullable: true })
   @BelongsTo(() => SubEventCompetition, {
     foreignKey: 'subEventId',
     constraints: false,
   })
-  subEventCompetition?: SubEventCompetition;
+  subEventCompetition?: Relation<SubEventCompetition>;
 
   /**
    * Draw get's deciede upon draw
@@ -122,7 +123,7 @@ export class EventEntry extends Model {
     foreignKey: 'drawId',
     constraints: false,
   })
-  drawCompetition?: DrawCompetition;
+  drawCompetition?: Relation<DrawCompetition>;
 
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
@@ -370,5 +371,5 @@ export interface EntryCompetitionPlayer {
   mix?: number;
   gender?: 'M' | 'F';
   levelException?: boolean;
-  player?: Player;
+  player?: Relation<Player>;
 }

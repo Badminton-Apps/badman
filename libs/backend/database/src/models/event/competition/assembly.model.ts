@@ -15,6 +15,7 @@ import { AssemblyType } from '../../../types';
 import { Player } from '../../player.model';
 import { Team } from '../../team.model';
 import { EncounterCompetition } from './encounter-competition.model';
+import { Relation } from '../../../wrapper';
 
 
 @Table({
@@ -49,7 +50,7 @@ export class Assembly extends Model<Assembly> {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',
   })
-  encounterCompetition?: EncounterCompetition;
+  encounterCompetition?: Relation<EncounterCompetition>;
 
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })
@@ -61,7 +62,7 @@ export class Assembly extends Model<Assembly> {
     foreignKey: 'teamId',
     onDelete: 'CASCADE',
   })
-  team?: Team;
+  team?: Relation<Team>;
 
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
@@ -73,7 +74,7 @@ export class Assembly extends Model<Assembly> {
     foreignKey: 'captainId',
     onDelete: 'CASCADE',
   })
-  captain?: Player;
+  captain?: Relation<Player>;
 
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
@@ -85,7 +86,7 @@ export class Assembly extends Model<Assembly> {
     foreignKey: 'playerId',
     onDelete: 'CASCADE',
   })
-  player?: Player;
+  player?: Relation<Player>;
 }
 
 export interface AssemblyData {

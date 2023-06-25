@@ -29,6 +29,7 @@ import {
 import { Game } from './game.model';
 import { Location } from './location.model';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -53,10 +54,10 @@ export class Court extends Model {
   name?: string;
 
   @HasMany(() => Game, 'courtId')
-  games?: Game[];
+  games?: Relation<Game[]>;
 
   @BelongsTo(() => Location, 'locationId')
-  location?: Location;
+  location?: Relation<Location>;
 
   @ForeignKey(() => Location)
   @Unique('unique_constraint')

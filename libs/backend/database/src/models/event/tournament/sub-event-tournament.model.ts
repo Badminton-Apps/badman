@@ -42,6 +42,7 @@ import { RankingGroup } from '../../ranking';
 import { GameType, SubEventTypeEnum } from '@badman/utils';
 import { EventEntry } from '../entry.model';
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -88,21 +89,21 @@ export class SubEventTournament extends Model {
     () => RankingGroup,
     () => RankingGroupSubEventTournamentMembership
   )
-  rankingGroups?: RankingGroup[];
+  rankingGroups?: Relation<RankingGroup[]>;
 
   @Field(() => [DrawTournament], { nullable: true })
   @HasMany(() => DrawTournament, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  drawTournaments?: DrawTournament[];
+  drawTournaments?: Relation<DrawTournament[]>;
 
   @Field(() => EventTournament, { nullable: true })
   @BelongsTo(() => EventTournament, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  event?: EventTournament;
+  event?: Relation<EventTournament>;
 
   @Unique('SubEventTournaments_unique_constraint')
   @ForeignKey(() => EventTournament)
@@ -117,7 +118,7 @@ export class SubEventTournament extends Model {
       entryType: 'tournament',
     },
   })
-  eventEntries?: EventEntry[];
+  eventEntries?: Relation<EventEntry[]>;
 
   // Belongs to many Group
   getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;

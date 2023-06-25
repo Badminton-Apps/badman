@@ -23,6 +23,7 @@ import { NotificationType } from '@badman/utils';
 import { PushSubscription, PushSubscriptionType } from '../../types';
 import { Player } from '../player.model';
 import { AvaliableLanguages } from '@badman/utils';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -51,7 +52,7 @@ export class Setting extends Model {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
-  player?: Player;
+  player?: Relation<Player>;
 
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
