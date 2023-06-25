@@ -12,7 +12,7 @@
           "test",
           "build-storybook"
         ],
-        "accessToken": "MmE5OGUwODQtZmVhZC00ODJmLWFkNTMtOTYyYWE2NDFjYzQ4fHJlYWQtd3JpdGU="
+        "accessToken": "NTM2YmYwOTAtM2NlZC00ZDFmLTkwMDAtNzljM2Y4MDFiMTBmfHJlYWQtd3JpdGU="
       }
     }
   },
@@ -87,8 +87,8 @@
       "standalone": true
     }
   },
-  "useDaemonProcess": false,
   "ci": "github",
-  "pluginsConfig": {},
-  "defaultProject": "badman"
+  "affected": {
+    "defaultBase": "main"
+  }
 }

@@ -12,6 +12,14 @@ import {
 } from 'sequelize-typescript';
 
 import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType
+} from '@nestjs/graphql';
+import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyCountAssociationsMixin,
@@ -32,21 +40,11 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
 } from 'sequelize';
+import { Slugify } from '../../../types';
+import { Role } from '../../security';
 import { Location } from '../location.model';
 import { LocationEventTournamentMembership } from './location-event-membership.model';
 import { SubEventTournament } from './sub-event-tournament.model';
-import { Slugify } from '../../../types';
-import { UsedRankingTiming } from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
-import { Role } from '../../security';
 
 @Table({
   timestamps: true,
@@ -57,7 +55,7 @@ export class EventTournament extends Model {
   constructor(values?: Partial<EventTournament>, options?: BuildOptions) {
     super(values, options);
   }
-
+ 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
@@ -69,25 +67,25 @@ export class EventTournament extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  tournamentNumber: string;
+  tournamentNumber?: string;
 
   @Unique('EventTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Unique('EventTournaments_unique_constraint')
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  firstDay: Date;
+  firstDay?: Date;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  lastSync: Date;
+  lastSync?: Date;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
@@ -99,52 +97,37 @@ export class EventTournament extends Model {
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  dates: string;
+  dates?: string;
 
   @BelongsToMany(() => Location, () => LocationEventTournamentMembership)
-  locations: Location[];
+  locations?: Location[];
 
   @HasMany(() => SubEventTournament, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  subEventTournaments: SubEventTournament[];
+  subEventTournaments?: SubEventTournament[];
 
   @Unique('EventTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  visualCode: string;
+  visualCode?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  slug: string;
-
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
-  usedRankingAmount: number;
-
-  @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('months', 'weeks', 'days'))
-  usedRankingUnit: 'months' | 'weeks' | 'days';
-
-  get usedRankingg(): UsedRankingTiming {
-    return {
-      amount: this.usedRankingAmount,
-      unit: this.usedRankingUnit,
-    };
-  }
+  slug?: string;
 
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
-  official: boolean;
+  official?: boolean;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  state: string;
+  state?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  country: string;
+  country?: string;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {

@@ -15,7 +15,7 @@ export class GamePlayerMembershipType extends IntersectionType(
 ) {
   // TODO: move this to rankingplaces?
   @Field(() => RankingPlace, { nullable: true })
-  rankingPlace: RankingPlace;
+  rankingPlace?: RankingPlace;
 }
 
 @ObjectType()

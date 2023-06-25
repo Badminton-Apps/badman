@@ -11,10 +11,10 @@ export class RankingSystemRankingGroupMembership extends Model {
   @ForeignKey(() => RankingSystem)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  systemId: string;
+  systemId?: string;
 
   @ForeignKey(() => RankingGroup)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  groupId: string;
+  groupId?: string;
 }

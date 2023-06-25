@@ -58,22 +58,22 @@ export class SubEventTournament extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique('SubEventTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Unique('SubEventTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
-  eventType: SubEventTypeEnum;
+  eventType?: SubEventTypeEnum;
 
   @Unique('SubEventTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('S', 'D', 'MX'))
-  gameType: GameType;
+  gameType?: GameType;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
@@ -82,20 +82,20 @@ export class SubEventTournament extends Model {
   @Unique('SubEventTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  visualCode: string;
+  visualCode?: string;
 
   @BelongsToMany(
     () => RankingGroup,
     () => RankingGroupSubEventTournamentMembership
   )
-  rankingGroups: RankingGroup[];
+  rankingGroups?: RankingGroup[];
 
   @Field(() => [DrawTournament], { nullable: true })
   @HasMany(() => DrawTournament, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  drawTournaments: DrawTournament[];
+  drawTournaments?: DrawTournament[];
 
   @Field(() => EventTournament, { nullable: true })
   @BelongsTo(() => EventTournament, {
@@ -108,7 +108,7 @@ export class SubEventTournament extends Model {
   @ForeignKey(() => EventTournament)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  eventId: string;
+  eventId?: string;
 
   @HasMany(() => EventEntry, {
     foreignKey: 'subEventId',
@@ -117,7 +117,7 @@ export class SubEventTournament extends Model {
       entryType: 'tournament',
     },
   })
-  eventEntries: EventEntry[];
+  eventEntries?: EventEntry[];
 
   // Belongs to many Group
   getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;

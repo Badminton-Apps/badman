@@ -26,40 +26,40 @@ export class EntryMetaType {
 @ObjectType({ description: 'A EntryTournament' })
 export class EntryTournamentType {
   @Field(() => Int, { nullable: true })
-  place: number;
+  place?: number;
 }
 
 @ObjectType({ description: 'A EntryCompetition' })
 export class EntryCompetitionType {
   @Field(() => Int, { nullable: true })
-  teamIndex: number;
+  teamIndex?: number;
 
   @Field(() => [EntryCompetitionPlayersType], { nullable: true })
-  players: EntryCompetitionPlayer[];
+  players?: EntryCompetitionPlayer[];
 }
 
 @ObjectType({ description: 'A EntryCompetitionPlayers' })
 export class EntryCompetitionPlayersType {
   @Field(() => ID, { nullable: true })
-  id: string;
+  id?: string;
 
   @Field(() => Int, { nullable: true })
-  single: number;
+  single?: number;
 
   @Field(() => Int, { nullable: true })
-  double: number;
+  double?: number;
 
   @Field(() => Int, { nullable: true })
-  mix: number;
+  mix?: number;
 
   @Field(() => String, { nullable: true })
-  gender: 'M' | 'F';
+  gender?: 'M' | 'F';
 
   @Field(() => Player, { nullable: true })
-  player: Player;
+  player?: Player;
 
   @Field(() => Boolean, { nullable: true })
-  levelException: boolean;
+  levelException?: boolean;
 }
 
 // input type for EntryCmopetitionPlayer

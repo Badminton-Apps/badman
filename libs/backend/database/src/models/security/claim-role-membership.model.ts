@@ -11,10 +11,10 @@ export class RoleClaimMembership extends Model {
   @ForeignKey(() => Role)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  roleId: string;
+  roleId?: string;
 
   @ForeignKey(() => Claim)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  claimId: string;
+  claimId?: string;
 }

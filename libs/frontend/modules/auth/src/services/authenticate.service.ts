@@ -1,11 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import {
-  Inject,
-  Injectable,
-  Injector,
-  PLATFORM_ID,
-  signal,
-} from '@angular/core';
+import { Inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { PopupLoginOptions, RedirectLoginOptions } from '@auth0/auth0-spa-js';
 import { Player } from '@badman/frontend-models';
@@ -81,7 +75,7 @@ export class AuthenticateService {
             this.authService?.isAuthenticated$ ?? of(false),
             of(false)
           )
-        ),
+        )
       );
     } else {
       this.loggedIn$ = of(false);
@@ -96,15 +90,14 @@ export class AuthenticateService {
         switchMap((result) => {
           return (
             this.authService?.user$.pipe(
-              map((user) => ({ ...user, ...new Player(result.data.me) }))
+              map((user) => ({ ...user, ...result.data.me }))
             ) ?? of({})
           );
         }),
         map((result) => {
-          return {
-            ...result,
-            loggedIn: true,
-          } as LoggedinUser;
+          const user = new LoggedinUser(result);
+          user.loggedIn = true;
+          return user;
         })
       );
 
@@ -140,9 +133,16 @@ export class AuthenticateService {
   }
 }
 
-export interface LoggedinUser extends Player {
-  loggedIn: boolean;
-  nickname: string;
-  picture: string;
-  sub: string;
+export class LoggedinUser extends Player {
+  loggedIn = false;
+  nickname?: string;
+  picture?: string;
+
+  constructor(args: Partial<LoggedinUser>) {
+    super(args);
+
+    this.loggedIn = args?.loggedIn ?? false;
+    this.nickname = args?.nickname;
+    this.picture = args?.picture;
+  }
 }

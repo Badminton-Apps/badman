@@ -33,21 +33,21 @@ export class TeamPlayerMembership extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @ForeignKey(() => Player)
   @AllowNull(false)
   @Index('player_team_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  playerId: string;
+  playerId?: string;
 
   @ForeignKey(() => Team)
   @AllowNull(false)
   @Index('player_team_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  teamId: string;
+  teamId?: string;
 
   @Default(TeamMembershipType.REGULAR)
   @Field(() => String, { nullable: true })
@@ -62,7 +62,7 @@ export class TeamPlayerMembership extends Model {
   @Unique('TeamPlayerMemberships_teamId_playerId_unique')
   @AllowNull(false)
   @Column(DataType.DATE)
-  start: Date;
+  start?: Date;
 
   @AfterCreate
   static async checkIfPlayerIsInClub(

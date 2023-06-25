@@ -74,10 +74,10 @@ export class Player extends Model {
     super(values, options);
   }
 
-  @Field(() => Date, {nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field(() => Date, {nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
   @Field(() => ID)
@@ -85,75 +85,75 @@ export class Player extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  email: string;
+  email?: string;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  phone: string;
+  phone?: string;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  gender: 'M' | 'F';
+  gender?: 'M' | 'F';
 
-  @Field(() => Date, {nullable: true })
+  @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  birthDate: Date;
+  birthDate?: Date;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  sub: string;
+  sub?: string;
 
   @Field(() => [Team], { nullable: true })
   @HasMany(() => Team, 'captainId')
-  myTeams: Team[];
+  myTeams?: Team[];
 
   @HasMany(() => EventEntry, 'player1Id')
-  entriesP1: EventEntry[];
+  entriesP1?: EventEntry[];
 
   @HasMany(() => EventEntry, 'player2Id')
-  entriesP2: EventEntry[];
+  entriesP2?: EventEntry[];
 
   @Field(() => [EventEntry], { nullable: true })
   get entries() {
-    return this.entriesP1.concat(this.entriesP2);
+    return this.entriesP1?.concat(this.entriesP2 ?? []) ?? [];
   }
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Unique('unique_constraint')
   @Index
   @Column(DataType.STRING)
-  firstName: string;
+  firstName?: string;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Unique('unique_constraint')
   @Index
   @Column(DataType.STRING)
-  lastName: string;
+  lastName?: string;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.VIRTUAL)
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  @Field(() => Boolean, {nullable: true })
+  @Field(() => Boolean, { nullable: true })
   @Default(false)
   @Column(DataType.BOOLEAN)
-  competitionPlayer: boolean;
+  competitionPlayer?: boolean;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  slug: string;
+  slug?: string;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Unique('unique_constraint')
   @Index
   @Column(DataType.STRING)
-  memberId: string;
+  memberId?: string;
 
   @Field(() => [RankingPoint], { nullable: true })
   @HasMany(() => RankingPoint, 'playerId')
@@ -177,7 +177,7 @@ export class Player extends Model {
 
   @Field(() => [Team], { nullable: true })
   @BelongsToMany(() => Team, () => TeamPlayerMembership)
-  teams: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
+  teams?: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 
   @Field(() => [ClubPlayerMembershipType], { nullable: true })
   @BelongsToMany(() => Club, () => ClubPlayerMembership)
@@ -189,11 +189,11 @@ export class Player extends Model {
 
   @Field(() => [Role], { nullable: true })
   @BelongsToMany(() => Role, () => PlayerRoleMembership)
-  roles?: (Role & { PlayerRoleMembership: PlayerRoleMembership })[];
+  roles?: (Role & { PlayerRoleMembership?: PlayerRoleMembership })[];
 
   @Field(() => [Claim], { nullable: true })
   @BelongsToMany(() => Claim, () => PlayerClaimMembership)
-  claims?: (Claim & { PlayerClaimMembership: PlayerClaimMembership })[];
+  claims?: (Claim & { PlayerClaimMembership?: PlayerClaimMembership })[];
 
   @Field(() => [String], { nullable: true })
   permissions?: string[];
@@ -254,7 +254,7 @@ export class Player extends Model {
   removeClub!: BelongsToManyRemoveAssociationMixin<Club, string>;
   removeClubs!: BelongsToManyRemoveAssociationsMixin<Club, string>;
   hasClub!: BelongsToManyHasAssociationMixin<Club, string>;
-  hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>; 
+  hasClubs!: BelongsToManyHasAssociationsMixin<Club, string>;
   countClub!: BelongsToManyCountAssociationsMixin;
 
   // Belongs to many Claim
@@ -358,10 +358,12 @@ export class Player extends Model {
     });
     claims = [
       ...claims,
-      ...roles.map((r) => r?.claims.map((c) => `${r.linkId}_${c.name}`)).flat(),
-    ];
+      ...roles
+        .map((r) => r?.claims?.map((c) => `${r.linkId}_${c.name}`))
+        .flat(),
+    ].filter((x) => x !== null && x !== undefined);
 
-    return claims;
+    return claims as string[];
   }
 
   getHighsetRanking(system: string, max: number): RankingPlace | null {
@@ -382,10 +384,14 @@ export class Player extends Model {
 
     return {
       single:
-        placesInSystem.sort((a, b) => a.single - b.single)?.[0]?.single || max,
+        placesInSystem.sort((a, b) => (a.single ?? 0) - (b.single ?? 0))?.[0]
+          ?.single || max,
       double:
-        placesInSystem.sort((a, b) => a.double - b.double)?.[0]?.double || max,
-      mix: placesInSystem.sort((a, b) => a.mix - b.mix)?.[0]?.mix || max,
+        placesInSystem.sort((a, b) => (a.double ?? 0) - (b.double ?? 0))?.[0]
+          ?.double || max,
+      mix:
+        placesInSystem.sort((a, b) => (a.mix ?? 0) - (b.mix ?? 0))?.[0]?.mix ||
+        max,
     } as RankingPlace;
   }
 
@@ -415,10 +421,10 @@ export class Player extends Model {
 @ObjectType()
 export class PagedPlayer {
   @Field(() => Int)
-  count: number;
+  count?: number;
 
   @Field(() => [Player])
-  rows: Player[];
+  rows?: Player[];
 }
 
 @InputType()
@@ -456,19 +462,19 @@ export class PlayerRankingType extends PartialType(
   ObjectType
 ) {
   @Field(() => Number)
-  single: number;
+  single?: number;
 
   @Field(() => Number)
-  double: number;
+  double?: number;
 
   @Field(() => Number)
-  mix: number;
+  mix?: number;
 }
 
 @InputType()
 export class PlayerTeamInput {
   @Field(() => String)
-  id: string;
+  id!: string;
 
   @Field(() => String, { nullable: true })
   membershipType?: TeamMembershipType;

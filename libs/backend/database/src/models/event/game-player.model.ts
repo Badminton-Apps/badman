@@ -27,37 +27,37 @@ export class GamePlayerMembership extends Model {
   @ForeignKey(() => Player)
   @Index
   @Column(DataType.UUIDV4)
-  playerId: string;
+  playerId?: string;
 
   @Field(() => ID, { nullable: true })
   @ForeignKey(() => Game)
   @Index
   @Column(DataType.UUIDV4)
-  gameId: string;
+  gameId?: string;
 
   @Field(() => ID, { nullable: true })
   @ForeignKey(() => RankingSystem)
   @Index
   @Column(DataType.UUIDV4)
-  systemId: string;
+  systemId?: string;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  team: number;
+  team?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  player: number;
+  player?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  single: number;
+  single?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  double: number;
+  double?: number;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  mix: number;
+  mix?: number;
 }

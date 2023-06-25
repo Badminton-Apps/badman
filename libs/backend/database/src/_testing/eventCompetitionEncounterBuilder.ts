@@ -8,8 +8,8 @@ export class EncounterCompetitionBuilder {
   private encounter: EncounterCompetition;
 
   private games: GameBuilder[] = [];
-  private homeTeam: TeamBuilder;
-  private awayTeam: TeamBuilder;
+  private homeTeam?: TeamBuilder;
+  private awayTeam?: TeamBuilder;
 
   constructor() {
     this.encounter = new EncounterCompetition();

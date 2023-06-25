@@ -50,35 +50,35 @@ export class Claim extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique('Claims_name_category')
   @Index
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @Index
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  description: string;
+  description?: string;
 
   @Unique('Claims_name_category')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  category: string;
+  category?: string;
 
   @Field(() => String, { nullable: true })
   @Column(
     DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM)
   )
-  type: SecurityType;
+  type?: SecurityType;
 
   @BelongsToMany(() => Player, () => PlayerClaimMembership)
-  players: (Player & { PlayerClaimMembership: PlayerClaimMembership })[];
+  players?: (Player & { PlayerClaimMembership?: PlayerClaimMembership })[];
 
   @BelongsToMany(() => Role, () => RoleClaimMembership)
-  roles: (Role & { RoleClaimMembership: RoleClaimMembership })[];
+  roles?: (Role & { RoleClaimMembership: RoleClaimMembership })[];
 
   // Belongs to many Player
   getPlayers!: BelongsToManyGetAssociationsMixin<Player>;

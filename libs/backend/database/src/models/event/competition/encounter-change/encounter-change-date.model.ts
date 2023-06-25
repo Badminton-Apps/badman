@@ -40,7 +40,7 @@ export class EncounterChangeDate extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
@@ -55,11 +55,11 @@ export class EncounterChangeDate extends Model {
   @ForeignKey(() => EncounterChange)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  encounterChangeId: string;
+  encounterChangeId?: string;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  date: Date;
+  date?: Date;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))

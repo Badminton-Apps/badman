@@ -101,7 +101,14 @@
       </div>
     </form>
 
-    <div class="comments">
+    <badman-comments
+      [clubId]="
+        this.home ? this.encounter.home?.clubId! : this.encounter.away?.clubId!
+      "
+      [encounter]="this.encounter"
+    ></badman-comments>
+
+    <!-- <div class="comments">
       <h3>
         {{ 'all.competition.change-encounter.comments' | translate }}
       </h3>
@@ -141,7 +148,7 @@
           {{ 'all.button.add-comment' | translate }}
         </button>
       </div>
-    </div>
+    </div> -->
   </ng-container>
 </div>
 

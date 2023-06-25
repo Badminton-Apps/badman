@@ -44,7 +44,7 @@ export class Notification extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
@@ -54,61 +54,61 @@ export class Notification extends Model {
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'sendToId')
-  sendTo: Player;
+  sendTo?: Player;
 
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  sendToId: string;
+  sendToId?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  type: string;
+  type?: string;
 
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  linkId: string;
+  linkId?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  linkType: string;
+  linkType?: string;
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  encounter: EncounterCompetition;
+  encounter?: EncounterCompetition;
 
   @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition: EventCompetition;
+  competition?: EventCompetition;
 
   @Field(() => EventTournament, { nullable: true })
   @BelongsTo(() => EventTournament, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  tournament: EventTournament;
+  tournament?: EventTournament;
 
   @Field(() => Club, { nullable: true })
   @BelongsTo(() => Club, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  club: Club;
+  club?: Club;
 
   @Field(() => Boolean, { nullable: true, defaultValue: false })
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
-  read: boolean;
+  read?: boolean;
 
   @Field(() => String, { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  meta: string;
+  meta?: string;
 
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;

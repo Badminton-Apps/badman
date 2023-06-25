@@ -51,15 +51,15 @@ export class EncounterCompetition extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  date: Date;
+  date?: Date;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  originalDate: Date;
+  originalDate?: Date;
 
   @HasMany(() => Game, {
     foreignKey: 'linkId',
@@ -68,7 +68,7 @@ export class EncounterCompetition extends Model {
       linkType: 'competition',
     },
   })
-  games: Game[];
+  games?: Game[];
 
   @Field(() => DrawCompetition, { nullable: true })
   @BelongsTo(() => DrawCompetition, {
@@ -80,77 +80,77 @@ export class EncounterCompetition extends Model {
   @ForeignKey(() => DrawCompetition)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  drawId: string;
+  drawId?: string;
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'homeTeamId')
-  home: Team;
+  home?: Team;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  homeScore: number;
+  homeScore?: number;
 
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  homeTeamId: string;
+  homeTeamId?: string;
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'awayTeamId')
-  away: Team;
+  away?: Team;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  awayScore: number;
+  awayScore?: number;
 
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  awayTeamId: string;
+  awayTeamId?: string;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  synced: Date;
+  synced?: Date;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  visualCode: string;
+  visualCode?: string;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'gameLeaderId')
-  gameLeader: Player;
+  gameLeader?: Player;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'enteredById')
-  enteredBy: Player;
+  enteredBy?: Player;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'acceptedById')
-  acceptedBy: Player;
+  acceptedBy?: Player;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  enteredOn: Date;
+  enteredOn?: Date;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  acceptedOn: Date;
+  acceptedOn?: Date;
 
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
-  accepted: boolean;
+  accepted?: boolean;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  shuttle: string;
+  shuttle?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  startHour: string;
+  startHour?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  endHour: string;
+  endHour?: string;
 
 
   @Field(() => EncounterChange, { nullable: true })
@@ -158,7 +158,7 @@ export class EncounterCompetition extends Model {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',
   })
-  encounterChange: EncounterChange;
+  encounterChange?: EncounterChange;
 
   @HasMany(() => Notification, {
     foreignKey: 'linkId',
@@ -167,14 +167,14 @@ export class EncounterCompetition extends Model {
       linkType: 'encounter',
     },
   })
-  notifications: Notification[];
+  notifications?: Notification[];
 
   @Field(() => [Assembly], { nullable: true })
   @HasMany(() => Assembly, {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',
   })
-  assemblies: Assembly[];
+  assemblies?: Assembly[];
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;

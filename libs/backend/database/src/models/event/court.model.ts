@@ -45,24 +45,24 @@ export class Court extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Unique('unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name: string;
+  name?: string;
 
   @HasMany(() => Game, 'courtId')
-  games: Game[];
+  games?: Game[];
 
   @BelongsTo(() => Location, 'locationId')
-  location: Location;
+  location?: Location;
 
   @ForeignKey(() => Location)
   @Unique('unique_constraint')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  locationId: string;
+  locationId?: string;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;

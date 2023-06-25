@@ -28,20 +28,20 @@ export class RequestLink extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => String, {nullable: true })
   @Column(DataType.STRING)
-  sub: string;
+  sub?: string;
 
   @BelongsTo(() => Player, 'playerId')
-  player: Player;
+  player?: Player;
 
   @ForeignKey(() => Player)
   @Index
   @Field(() => ID, {nullable: true })
   @Column(DataType.UUIDV4)
-  playerId: string;
+  playerId?: string;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;

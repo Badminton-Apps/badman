@@ -35,52 +35,52 @@ export class RankingPoint extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id: string;
+  id!: string;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  points: number;
+  points?: number;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
-  player: Player;
+  player?: Player;
 
   @Field(() => Game, { nullable: true })
   @BelongsTo(() => Game, 'gameId')
-  game: Game;
+  game?: Game;
 
   @Field(() => RankingSystem, { nullable: true })
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'systemId',
     onDelete: 'CASCADE',
   })
-  system: RankingSystem;
+  system?: RankingSystem;
 
   @ForeignKey(() => RankingSystem)
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  rankingDate: Date;
+  rankingDate?: Date;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  differenceInLevel: number;
+  differenceInLevel?: number;
 
   @ForeignKey(() => RankingSystem)
   @Index('point_system_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  systemId: string;
+  systemId?: string;
 
   @ForeignKey(() => Player)
   @Index('point_system_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  playerId: string;
+  playerId?: string;
 
   @ForeignKey(() => Game)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  gameId: string;
+  gameId?: string;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;
