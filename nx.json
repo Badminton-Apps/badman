@@ -88,6 +88,7 @@
     }
   },
   "ci": "github",
+  "defaultProject": "badman",
   "affected": {
     "defaultBase": "main"
   }
