@@ -1,4 +1,3 @@
-<!-- <p>comments works!</p>
 <div class="comments">
   <h3>
     {{ 'all.competition.change-encounter.comments' | translate }}
@@ -8,15 +7,15 @@
     <div
       class="message"
       [ngClass]="{
-        me: comment.player?.id === this.authenticateService.user?.id
+        me: comment.player?.id === user()?.id
       }"
-      *ngFor="let comment of comments"
+      *ngFor="let comment of comments?.()"
     >
       <div class="message-content">
         <label>
           {{ comment.player?.fullName }}
         </label>
-        {{ comment.message }}
+        <span class="message-text">{{ comment.message }}</span>
         <div class="time">
           {{ comment.createdAt | amDateFormat : 'LLL' }}
         </div>
@@ -39,9 +38,4 @@
       {{ 'all.button.add-comment' | translate }}
     </button>
   </div>
-</div> -->
-
-<div>
-  The user:
-  {{ user()?.fullName }}
 </div>

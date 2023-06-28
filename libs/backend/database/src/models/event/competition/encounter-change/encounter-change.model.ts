@@ -104,6 +104,12 @@ export class EncounterChange extends Model {
   })
   awayComments?: Relation<Comment[]>;
 
+
+  // Finished field
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  finished?: boolean;
+
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;
   setEncounter!: BelongsToSetAssociationMixin<EncounterCompetition, string>;

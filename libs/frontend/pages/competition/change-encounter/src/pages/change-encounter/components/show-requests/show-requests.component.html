@@ -2,28 +2,28 @@
   Please select an encounter
 </ng-container>
 
-<div *ngIf="this.requests$ | async as request">
+<div *ngIf="this.requests$ | async as request" class="request">
   <ng-container *ngIf="this.encounter !== null">
     <form [formGroup]="this.formGroupRequest" novalidate (ngSubmit)="save()">
-      <div class="request">
-        <h2>
-          {{ encounter.home!.name }} {{ 'all.competition.vs' | translate }}
-          {{ encounter.away!.name }}
-        </h2>
+      <h2>
+        {{ encounter.home!.name }} {{ 'all.competition.vs' | translate }}
+        {{ encounter.away!.name }}
+      </h2>
 
-        <div class="dates">
-          <h3>
-            <div>
-              {{ 'all.competition.change-encounter.dates' | translate }}
-            </div>
-            <div class="caption">
-              {{
-                'all.competition.change-encounter.disclaimer-submit' | translate
-              }}
-            </div>
-          </h3>
+      <div class="dates">
+        <h3>
+          <div>
+            {{ 'all.competition.change-encounter.dates' | translate }}
+          </div>
+          <div class="caption">
+            {{
+              'all.competition.change-encounter.disclaimer-submit' | translate
+            }}
+          </div>
+        </h3>
 
-          <div class="date-list" formArrayName="dates">
+        <div class="date-list">
+          <ng-container formArrayName="dates">
             <div
               *ngFor="let date of dateControls.controls; let i = index"
               fxLayout="row"
@@ -74,7 +74,7 @@
                 <div *ngIf="!date.get('id')!.value">
                   <button
                     mat-icon-button
-                    (click)="this.removeDate(i)"
+                    (click)="this.removeDate(dateControls, i)"
                     type="button"
                   >
                     <mat-icon>delete</mat-icon>
@@ -82,22 +82,112 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </ng-container>
 
-        <div class="submit">
-          <button mat-stroked-button (click)="this.addDate()" type="button">
-            {{ 'all.competition.change-encounter.add-date' | translate }}
-          </button>
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="this.running"
+          <mat-expansion-panel
+            *ngIf="dateControlsNotAvailible.controls.length > 0"
+            class="mat-elevation-z0"
           >
-            {{ 'all.button.submit' | translate }}
-          </button>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{
+                  dateControlsNotAvailible.controls.length
+                    | i18nPlural
+                      : {
+                          '=1': 'all.competition.change-encounter.show-not-availible.singular',
+                          other:
+                            'all.competition.change-encounter.show-not-availible.plural'
+                        }
+                    | translate
+                      : { count: dateControlsNotAvailible.controls.length }
+                }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="date-list" formArrayName="notAvailibleDates">
+              <div
+                *ngFor="
+                  let date of dateControlsNotAvailible.controls;
+                  let i = index
+                "
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                fxLayoutGap="8px"
+                [formGroupName]="i"
+                class="date-item"
+              >
+                <badman-date-selector
+                  [homeClubId]="encounter.home!.clubId"
+                  [awayClubId]="encounter.away!.clubId"
+                  [homeTeamId]="encounter.home!.id"
+                  [awayTeamId]="encounter.away!.id"
+                  [home]="this.home"
+                  formControlName="date"
+                ></badman-date-selector>
+
+                <mat-form-field>
+                  <mat-label>{{
+                    'all.competition.home' | translate
+                  }}</mat-label>
+                  <mat-select formControlName="availabilityHome" required>
+                    <mat-option value="POSSIBLE">{{
+                      'all.competition.change-encounter.possible' | translate
+                    }}</mat-option>
+                    <mat-option value="NOT_POSSIBLE">{{
+                      'all.competition.change-encounter.not-possible'
+                        | translate
+                    }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>{{
+                    'all.competition.away' | translate
+                  }}</mat-label>
+                  <mat-select formControlName="availabilityAway" required>
+                    <mat-option value="POSSIBLE">{{
+                      'all.competition.change-encounter.possible' | translate
+                    }}</mat-option>
+                    <mat-option value="NOT_POSSIBLE">{{
+                      'all.competition.change-encounter.not-possible'
+                        | translate
+                    }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-checkbox
+                  class="selected"
+                  formControlName="selected"
+                ></mat-checkbox>
+
+                <div class="delete">
+                  <div *ngIf="!date.get('id')!.value">
+                    <button
+                      mat-icon-button
+                      (click)="this.removeDate(dateControlsNotAvailible, i)"
+                      type="button"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
         </div>
+      </div>
+
+      <div class="submit">
+        <button mat-stroked-button (click)="this.addDate()" type="button">
+          {{ 'all.competition.change-encounter.add-date' | translate }}
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="this.running"
+        >
+          {{ 'all.button.submit' | translate }}
+        </button>
       </div>
     </form>
 
@@ -106,6 +196,7 @@
         this.home ? this.encounter.home?.clubId! : this.encounter.away?.clubId!
       "
       [encounter]="this.encounter"
+      [comments]="$any(this.comments)"
     ></badman-comments>
 
     <!-- <div class="comments">
