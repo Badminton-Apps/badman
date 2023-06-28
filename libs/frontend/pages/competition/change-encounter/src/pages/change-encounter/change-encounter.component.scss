@@ -6,19 +6,31 @@
 }
 
 badman-show-requests {
-  border-left-width: 1px;
-  border-left-style: solid;
   flex: 1;
+
+  @media (min-width: 768px) {
+    border-left-width: 1px;
+    border-left-style: solid;
+  }
 }
 
 badman-list-encounters {
   flex: 0 0 300px;
+
+  @media (max-width: 959.98px) {
+    flex: 1;
+  }
 }
 
 .list-encounters {
   flex: 1;
   display: flex;
   flex-direction: row;
+
+  @media (max-width: 959.98px) {
+    flex-direction: column;
+    padding-top: 1rem;
+  }
 }
 
 .select-encounter {

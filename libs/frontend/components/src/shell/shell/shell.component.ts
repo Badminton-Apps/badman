@@ -1,4 +1,10 @@
-import { Component, Inject, isDevMode, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  Inject,
+  isDevMode,
+  PLATFORM_ID,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -79,6 +85,8 @@ import {
   styleUrls: ['./shell.component.scss'],
 })
 export class ShellComponent {
+  breakpointObserver = inject(BreakpointObserver);
+
   loading = false;
   development = isDevMode();
   expanded = {
@@ -99,7 +107,6 @@ export class ShellComponent {
 
   constructor(
     @Inject(GOOGLEADS_CONFIG_TOKEN) public config: GoogleAdsConfiguration,
-    private breakpointObserver: BreakpointObserver,
     @Inject(PLATFORM_ID)
     private platformId: string,
     @Inject(VERSION_INFO)
@@ -211,7 +218,6 @@ export class ShellComponent {
           )
         );
 
-        
       this.canChange$ = combineLatest([
         canAnyEnroll$,
         canviewEnroll$,

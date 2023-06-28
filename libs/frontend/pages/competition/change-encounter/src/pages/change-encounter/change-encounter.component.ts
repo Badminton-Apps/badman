@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -13,6 +13,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
 import { ListEncountersComponent, ShowRequestsComponent } from './components';
 import { MatIconModule } from '@angular/material/icon';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'badman-change-encounter',
@@ -37,6 +40,14 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
 })
 export class ChangeEncounterComponent implements OnInit {
+  breakpointObserver = inject(BreakpointObserver);
+  isHandset = toSignal(
+    this.breakpointObserver
+      .observe(Breakpoints.Handset)
+      .pipe(map((result) => result.matches))
+  );
+
+
   formGroup?: FormGroup;
 
   constructor(private activatedRoute: ActivatedRoute) {}
