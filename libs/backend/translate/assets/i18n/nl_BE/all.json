@@ -124,6 +124,10 @@
       "possible": "Beschikbaar",
       "requested": "Verzoek ingediend",
       "requested-failed": "Verzoek mislukt, contacteer Badminton Vlaanderen indien het probleem aanhoud",
+      "show-not-availible": {
+        "plural": "Er zijn {count} dagen waar een van beide teams niet kan, door hier te klikken kan je deze zien",
+        "singular": "Er is 1 dag waar een van beide teams niet kan, door hier te klikken kan je deze zien"
+      },
       "submit": {
         "description": "Wanneer je op ja klikt, zal de huidige dag vervangen worden door de geselecteerde nieuwe dag, weet je het zeker?",
         "title": "Verzenden"

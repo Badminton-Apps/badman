@@ -128,6 +128,10 @@ export type I18nTranslations = {
                 "possible": string;
                 "requested": string;
                 "requested-failed": string;
+                "show-not-availible": {
+                    "plural": string;
+                    "singular": string;
+                };
                 "submit": {
                     "description": string;
                     "title": string;

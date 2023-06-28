@@ -5,11 +5,10 @@ mat-form-field {
 .selected {
   box-sizing: border-box;
   border-right-width: 2px;
-  border-right-style: solid; // mat-color($client-angular-accent, 300);
+  border-right-style: solid;
 }
 
-
-.loading{
+.loading {
   mat-divider {
     margin: 1rem 0;
   }

@@ -18,10 +18,11 @@
   </div>
 
   <div [hidden]="!formGroup.get('team')!.value">
-    <h3>
+    <h3 *ngIf="!isHandset()">
       <mat-icon color="primary">event</mat-icon>
       {{ 'all.competition.change-encounter.choose-encounter' | translate }}
     </h3>
+
     <div class="list-encounters">
       <badman-list-encounters [group]="formGroup"></badman-list-encounters>
       <badman-show-requests [group]="formGroup"></badman-show-requests>

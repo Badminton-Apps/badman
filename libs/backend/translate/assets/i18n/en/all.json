@@ -124,6 +124,10 @@
       "possible": "Available",
       "requested": "Request submitted",
       "requested-failed": "Request failed, contact Badminton Vlaanderen if the problem persists",
+      "show-not-availible": {
+        "plural": "There are {count} days where one of the two teams is not available, you can see them by clicking here",
+        "singular": "There is 1 day where one of the two teams is unable to attend, by clicking here you can see it"
+      },
       "submit": {
         "description": "When you click yes, the current day will be replaced by the selected new day, are you sure?",
         "title": "Send"

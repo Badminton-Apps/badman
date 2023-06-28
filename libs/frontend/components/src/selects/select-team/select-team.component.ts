@@ -25,7 +25,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import {
@@ -128,9 +127,6 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         distinctUntilChanged(),
         map(() => previous?.value),
-        tap((data) => {
-          console.log('update teams', data);
-        }),
         pairwise(),
         switchMap(([prev, next]) => {
           if (prev != null && prev !== next) {
@@ -315,7 +311,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.group.removeControl(this.controlName);
+    // this.group.removeControl(this.controlName);
 
     this.destroy$.next();
     this.destroy$.complete();

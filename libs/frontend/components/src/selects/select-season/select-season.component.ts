@@ -93,11 +93,18 @@ export class SelectSeasonComponent implements OnInit {
         return;
       }
 
-      if (previous.value instanceof Club) {
-        this._setYears(previous.value);
-      } else {
-        this._setYears({ id: previous.value });
+      const clubId = previous.value?.id ?? previous.value;
+
+      // if the clubId is a uuid continue
+      if (
+        !clubId?.match(/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/)
+      ) {
+        return;
       }
+
+      this._setYears({
+        id: clubId,
+      } as Club);
 
       // update url on change
       if (this.updateUrl) {

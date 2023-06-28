@@ -3,13 +3,11 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-
 @mixin color($theme) {
+  $color-config: mat.get-color-config($theme);
+  $primary: map.get($color-config, 'primary');
+
   badman-list-encounters {
-    $color-config: mat.get-color-config($theme);
-    $primary: map.get($color-config, 'primary');
-
-
     .selected {
       border-right-color: mat.get-color-from-palette($primary, default);
     }
@@ -17,7 +15,12 @@
 }
 
 @mixin typography($theme) {
-  badman-list-encounters {
-    $typography-config: mat.get-typography-config($theme);
+  $typography-config: mat.get-typography-config($theme);
+  // badman-list-encounters {
+
+  // }
+
+  .list-encounter .extra {
+    @include mat.typography-level($typography-config, 'caption');
   }
 }

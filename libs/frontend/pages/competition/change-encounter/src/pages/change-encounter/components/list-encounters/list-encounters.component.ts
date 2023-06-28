@@ -1,3 +1,4 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
@@ -5,7 +6,9 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  inject,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -15,6 +18,7 @@ import {
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EncounterCompetition } from '@badman/frontend-models';
@@ -47,6 +51,7 @@ import {
     MatIconModule,
     MatListModule,
     MatDividerModule,
+    MatSelectModule,
 
     MomentModule,
 
@@ -54,7 +59,16 @@ import {
   ],
 })
 export class ListEncountersComponent implements OnInit, OnDestroy {
+  breakpointObserver = inject(BreakpointObserver);
+  isHandset = toSignal(
+    this.breakpointObserver
+      .observe(Breakpoints.Handset)
+      .pipe(map((result) => result.matches))
+  );
+ 
   destroy$ = new Subject<void>();
+
+
 
   @Input()
   controlName = 'encounter';

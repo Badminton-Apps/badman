@@ -32,7 +32,7 @@ import {
 } from '@nestjs/graphql';
 import { Queue } from 'bull';
 import moment from 'moment';
-import { Transaction } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../../utils';
 
@@ -105,7 +105,13 @@ export class EncounterCompetitionResolver {
   async encounterChange(
     @Parent() encounter: EncounterCompetition
   ): Promise<EncounterChange> {
-    return encounter.getEncounterChange();
+    return encounter.getEncounterChange({
+      where: {
+        finished: {
+          [Op.not]: true,
+        },
+      },
+    });
   }
 
   @ResolveField(() => [Game])
@@ -113,11 +119,11 @@ export class EncounterCompetitionResolver {
     return encounter.getGames();
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => EncounterChange)
   async addChangeEncounter(
     @User() user: Player,
     @Args('data') newChangeEncounter: EncounterChangeNewInput
-  ): Promise<boolean> {
+  ): Promise<EncounterChange> {
     const encounter = await EncounterCompetition.findByPk(
       newChangeEncounter.encounterId
     );
@@ -184,7 +190,9 @@ export class EncounterCompetitionResolver {
         encounter.save({ transaction });
 
         // Destroy the requets
-        await encounterChange.destroy({ transaction });
+        // await encounterChange.destroy({ transaction });
+        encounterChange.finished = true;
+        await encounterChange.save({ transaction });
       } else {
         await this.changeOrUpdate(
           encounterChange,
@@ -212,7 +220,7 @@ export class EncounterCompetitionResolver {
       );
     }
 
-    return true;
+    return encounterChange;
   }
 
   // @Mutation(returns => Boolean)

@@ -7,6 +7,7 @@ import {
   OnInit,
   TemplateRef,
   ViewChild,
+  signal,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -33,17 +34,51 @@ import {
   EncounterChangeDate,
   EncounterCompetition,
 } from '@badman/frontend-models';
-import { ChangeEncounterAvailability } from '@badman/utils';
+import { ChangeEncounterAvailability, sortComments } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { Observable, lastValueFrom, of } from 'rxjs';
 import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
-import {
-  DateSelectorComponent,
-} from '../../../../components';
+import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
+import { MatExpansionModule } from '@angular/material/expansion';
+
+const changeQuery = gql`
+  query EncounterChange($id: ID!) {
+    encounterChange(id: $id) {
+      id
+      accepted
+      dates {
+        id
+        date
+        availabilityHome
+        availabilityAway
+      }
+
+      homeComments {
+        id
+        message
+        player {
+          id
+          fullName
+        }
+        createdAt
+      }
+
+      awayComments {
+        id
+        message
+        player {
+          id
+          fullName
+        }
+        createdAt
+      }
+    }
+  }
+`;
 
 @Component({
   selector: 'badman-show-requests',
@@ -68,6 +103,7 @@ import { CommentsComponent } from '../../../../components/comments';
     MatCheckboxModule,
     MatSelectModule,
     MatProgressBarModule,
+    MatExpansionModule,
 
     // Own
     DateSelectorComponent,
@@ -84,6 +120,7 @@ export class ShowRequestsComponent implements OnInit {
   formGroupRequest!: FormGroup;
   previous?: AbstractControl;
   dateControls = new FormArray<FormGroup>([]);
+  dateControlsNotAvailible = new FormArray<FormGroup>([]);
   commentControl = new FormControl<string>('');
 
   encounter!: EncounterCompetition;
@@ -93,7 +130,7 @@ export class ShowRequestsComponent implements OnInit {
   minDate: Date = new Date('2021-09-01');
   maxDate: Date = new Date('2022-05-01');
 
-  comments: Comment[] = [];
+  comments = signal<Comment[]>([]);
 
   requests$!: Observable<EncounterChange>;
   @ViewChild('confirm', { static: true }) confirmDialog!: TemplateRef<unknown>;
@@ -128,81 +165,52 @@ export class ShowRequestsComponent implements OnInit {
           }
 
           return this._apollo
-            .query<{
+            .watchQuery<{
               encounterChange: EncounterChange;
             }>({
-              query: gql`
-                query EncounterChange($id: ID!) {
-                  encounterChange(id: $id) {
-                    id
-                    accepted
-                    dates {
-                      id
-                      date
-                      availabilityHome
-                      availabilityAway
-                    }
-
-                    homeComments {
-                      id
-                      message
-                      player {
-                        id
-                        fullName
-                      }
-                      createdAt
-                    }
-
-                    awayComments {
-                      id
-                      message
-                      player {
-                        id
-                        fullName
-                      }
-                      createdAt
-                    }
-                  }
-                }
-              `,
+              query: changeQuery,
               variables: {
                 id: encounter?.encounterChange?.id,
               },
             })
-            .pipe(map((x) => new EncounterChange(x.data?.encounterChange)));
+            .valueChanges.pipe(
+              map((x) => new EncounterChange(x.data?.encounterChange))
+            );
         }),
         tap((encounterChange) => {
           this.dateControls = new FormArray<FormGroup>([]);
+          this.dateControlsNotAvailible = new FormArray<FormGroup>([]);
 
           this.formGroupRequest = new FormGroup({
             id: new FormControl(encounterChange?.id),
             dates: this.dateControls,
+            notAvailibleDates: this.dateControlsNotAvailible,
           });
 
-          this.comments = [
-            encounterChange?.homeComments,
-            encounterChange?.awayComments,
-          ]
-            .flat()
-            .filter((x) => x != null)
-            .sort((a, b) => {
-              // show newest on bottom
-              if (!a?.createdAt || !b?.createdAt) {
-                throw new Error('Date is null');
-              }
-
-              return moment(b.createdAt).diff(moment(a.createdAt));
-            }) as Comment[];
+          this.comments.set(
+            (
+              [
+                encounterChange?.homeComments,
+                encounterChange?.awayComments,
+              ] as Comment[]
+            )
+              .flat()
+              .filter((x) => x != null)
+              .sort(sortComments)
+          );
 
           encounterChange?.dates?.map((r) => this._addDateControl(r));
 
-          // Set initial
-          this._updateSelected();
+          // // Set initial
+          // this._updateSelected();
 
-          // Add subscription
-          this.dateControls.valueChanges.subscribe(() =>
-            this._updateSelected()
-          );
+          // // Add subscription
+          // this.dateControls.valueChanges.subscribe(() =>
+          //   this._updateSelected()
+          // );
+          // this.dateControlsNotAvailible.valueChanges.subscribe(() =>
+          //   this._updateSelected()
+          // );
         })
       );
     } else {
@@ -212,7 +220,10 @@ export class ShowRequestsComponent implements OnInit {
 
   addDate() {
     let lastDate = this.encounter.date;
-    const dates = this.dateControls.getRawValue();
+    const dates = [
+      ...this.dateControls.getRawValue(),
+      ...this.dateControlsNotAvailible.getRawValue(),
+    ];
     if (dates && dates.length > 0) {
       lastDate = dates.sort(
         (a: EncounterChangeDate, b: EncounterChangeDate) => {
@@ -239,8 +250,8 @@ export class ShowRequestsComponent implements OnInit {
     this._addDateControl(newDate);
   }
 
-  removeDate(index: number) {
-    this.dateControls.removeAt(index);
+  removeDate(control: FormArray, index: number) {
+    control.removeAt(index);
   }
 
   async save() {
@@ -256,23 +267,23 @@ export class ShowRequestsComponent implements OnInit {
     const change = new EncounterChange();
     change.encounter = this.encounter;
 
-    const dates: EncounterChangeDate[] = this.formGroupRequest
-      .get('dates')
-      ?.getRawValue()
-      ?.map(
-        (d: {
-          availabilityAway: ChangeEncounterAvailability;
-          availabilityHome: ChangeEncounterAvailability;
-          selected: boolean;
-          date: Date;
-        }) =>
-          new EncounterChangeDate({
-            availabilityAway: d?.availabilityAway,
-            availabilityHome: d?.availabilityHome,
-            selected: d?.selected,
-            date: d?.date,
-          })
-      );
+    const dates: EncounterChangeDate[] = [
+      ...(this.formGroupRequest.get('dates')?.getRawValue() ?? []),
+      ...(this.formGroupRequest.get('notAvailibleDates')?.getRawValue() ?? []),
+    ]?.map(
+      (d: {
+        availabilityAway: ChangeEncounterAvailability;
+        availabilityHome: ChangeEncounterAvailability;
+        selected: boolean;
+        date: Date;
+      }) =>
+        new EncounterChangeDate({
+          availabilityAway: d?.availabilityAway,
+          availabilityHome: d?.availabilityHome,
+          selected: d?.selected,
+          date: d?.date,
+        })
+    );
     const ids = dates.map((o) => o.date?.getTime());
     change.dates = dates.filter(
       ({ date }, index) => !ids.includes(date?.getTime(), index + 1)
@@ -313,26 +324,36 @@ export class ShowRequestsComponent implements OnInit {
 
     const success = async () => {
       try {
+        console.log(change);
+
         await lastValueFrom(
-          this._apollo
-            .mutate<{
-              addChangeEncounter: EncounterChange;
-            }>({
-              mutation: gql`
-                mutation AddChangeEncounter($data: EncounterChangeNewInput!) {
-                  addChangeEncounter(data: $data)
+          this._apollo.mutate<{
+            addChangeEncounter: EncounterChange;
+          }>({
+            mutation: gql`
+              mutation AddChangeEncounter($data: EncounterChangeNewInput!) {
+                addChangeEncounter(data: $data) {
+                  id
                 }
-              `,
-              variables: {
-                data: {
-                  accepted: change.accepted,
-                  encounterId: change.encounter?.id,
-                  home: this.home,
-                  dates: change.dates,
+              }
+            `,
+            variables: {
+              data: {
+                accepted: change.accepted,
+                encounterId: change.encounter?.id,
+                home: this.home,
+                dates: change.dates,
+              },
+            },
+            refetchQueries: (result) => [
+              {
+                query: changeQuery,
+                variables: {
+                  id: result.data?.addChangeEncounter?.id,
                 },
               },
-            })
-            .pipe()
+            ],
+          })
         );
 
         // await this._encounterService
@@ -384,6 +405,8 @@ export class ShowRequestsComponent implements OnInit {
   }
 
   private _updateSelected() {
+    return;
+
     const selected = this.dateControls
       .getRawValue()
       .find((r) => r['selected'] == true);
@@ -429,7 +452,18 @@ export class ShowRequestsComponent implements OnInit {
       selected,
     });
 
-    this.dateControls.push(dateControl);
+    // check if the availability is not possible for one of the teams but both filled in
+    if (
+      dateChange.availabilityHome != null &&
+      dateChange.availabilityAway != null &&
+      (dateChange.availabilityHome ==
+        ChangeEncounterAvailability.NOT_POSSIBLE ||
+        dateChange.availabilityAway == ChangeEncounterAvailability.NOT_POSSIBLE)
+    ) {
+      this.dateControlsNotAvailible.push(dateControl);
+    } else {
+      this.dateControls.push(dateControl);
+    }
   }
 
   addComment() {
