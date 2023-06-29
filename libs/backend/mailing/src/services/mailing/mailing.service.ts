@@ -1,4 +1,4 @@
-import { CompileService } from '@badman/backend-compile';
+import { CompileOptions, CompileService } from '@badman/backend-compile';
 import {
   Club,
   Comment,
@@ -8,7 +8,7 @@ import {
   EventTournament,
   Location,
   Player,
-  Team
+  Team,
 } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -20,7 +20,7 @@ import { lastValueFrom } from 'rxjs';
 @Injectable()
 export class MailingService {
   private readonly logger = new Logger(MailingService.name);
-  private _transporter: Transporter;
+  private _transporter?: Transporter;
   private _mailingEnabled = false;
   private initialized = false;
 
@@ -43,9 +43,11 @@ export class MailingService {
       subject: 'Test mail 2',
       template: 'test',
       context: {
-        settingsSlug: glenn.slug,
+        settingsSlug: glenn?.slug,
       },
-    } as MailOptions);
+    } as MailOptions<{
+      settingsSlug: string;
+    }>);
   }
 
   async sendRequestMail(
@@ -70,30 +72,46 @@ export class MailingService {
     const otherTeam = homeTeamRequests ? encounter.away : encounter.home;
     const clubTeam = homeTeamRequests ? encounter.home : encounter.away;
 
+    if (!otherTeam || !clubTeam) {
+      throw new Error('Team not found');
+    }
+
     const sendMail = async (team: Team, captain: Player, template: string) => {
       moment.locale('nl-be');
       const options = {
         from: 'info@badman.app',
         to: team.email,
-        subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name}`,
+        subject: `Verplaatsings aanvraag ${encounter.home?.name} vs ${encounter.away?.name}`,
         template,
         context: {
           captain: captain.toJSON(),
-          otherTeam: otherTeam.toJSON(),
-          clubTeam: clubTeam.toJSON(),
+          otherTeam: otherTeam?.toJSON(),
+          clubTeam: clubTeam?.toJSON(),
           encounter: encounter.toJSON(),
           date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
           settingsSlug: captain.slug,
         },
-      } as MailOptions;
+      } as MailOptions<{
+        captain: Player;
+        otherTeam: Team;
+        clubTeam: Team;
+        encounter: EncounterCompetition;
+        date: string;
+        settingsSlug: string;
+      }>;
 
       await this._sendMail(options);
     };
 
-    // Send mail to the other team
-    await sendMail(otherTeam, otherTeam.captain, 'encounterchange');
-    // Send mail to the requester
-    await sendMail(clubTeam, clubTeam.captain, 'encounterchange-requester');
+    if (otherTeam.captain) {
+      // Send mail to the other team
+      await sendMail(otherTeam, otherTeam.captain, 'encounterchange');
+    }
+
+    if (clubTeam.captain) {
+      // Send mail to the requester
+      await sendMail(clubTeam, clubTeam.captain, 'encounterchange-requester');
+    }
   }
 
   async sendRequestFinishedMail(changeRequest: EncounterChange) {
@@ -112,12 +130,16 @@ export class MailingService {
       ],
     });
 
+    if (!encounter.home || !encounter.away) {
+      throw new Error('Team not found');
+    }
+
     const sendMail = async (team: Team, captain: Player) => {
       moment.locale('nl-be');
       const options = {
         from: 'info@badman.app',
         to: team.email,
-        subject: `Verplaatsings aanvraag ${encounter.home.name} vs ${encounter.away.name} afgewerkt`,
+        subject: `Verplaatsings aanvraag ${encounter.home?.name} vs ${encounter.away?.name} afgewerkt`,
         template: 'encounterchangefinished',
         context: {
           captain: captain.toJSON(),
@@ -126,13 +148,22 @@ export class MailingService {
           newDate: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
           settingsSlug: captain.slug,
         },
-      } as MailOptions;
+      } as MailOptions<{
+        captain: Player;
+        team: Team;
+        encounter: EncounterCompetition;
+        newDate: string;
+        settingsSlug: string;
+      }>;
 
       await this._sendMail(options);
     };
-
-    await sendMail(encounter.home, encounter.home.captain);
-    await sendMail(encounter.away, encounter.away.captain);
+    if (encounter.home.captain) {
+      await sendMail(encounter.home, encounter.home.captain);
+    }
+    if (encounter.away.captain) {
+      await sendMail(encounter.away, encounter.away.captain);
+    }
   }
 
   async sendNotEnterdMail(
@@ -148,7 +179,7 @@ export class MailingService {
     const options = {
       from: 'info@badman.app',
       to: to.email,
-      subject: `Niet ingegeven resultaat ${encounter.home.name} vs ${encounter.away.name}`,
+      subject: `Niet ingegeven resultaat ${encounter.home?.name} vs ${encounter.away?.name}`,
       template: 'notentered',
       context: {
         encounter: encounter.toJSON(),
@@ -157,7 +188,13 @@ export class MailingService {
         date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
         settingsSlug: to.slug,
       },
-    } as MailOptions;
+    } as MailOptions<{
+      encounter: EncounterCompetition;
+      url: string;
+      captain: string;
+      date: string;
+      settingsSlug: string;
+    }>;
 
     await this._sendMail(options);
   }
@@ -175,7 +212,7 @@ export class MailingService {
     const options = {
       from: 'info@badman.app',
       to: to.email,
-      subject: `Niet geaccepteerd resultaat ${encounter.home.name} vs ${encounter.away.name}`,
+      subject: `Niet geaccepteerd resultaat ${encounter.home?.name} vs ${encounter.away?.name}`,
       template: 'notaccepted',
       context: {
         encounter: encounter.toJSON(),
@@ -184,7 +221,13 @@ export class MailingService {
         date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
         settingsSlug: to.slug,
       },
-    } as MailOptions;
+    } as MailOptions<{
+      encounter: EncounterCompetition;
+      url: string;
+      captain: string;
+      date: string;
+      settingsSlug: string;
+    }>;
 
     await this._sendMail(options);
   }
@@ -212,7 +255,12 @@ export class MailingService {
         comments: comments.map((c) => c.toJSON()),
         settingsSlug: to.slug,
       },
-    } as MailOptions;
+    } as MailOptions<{
+      club: Club;
+      locations: Location[];
+      comments: Comment[];
+      settingsSlug: string;
+    }>;
 
     await this._sendMail(options);
   }
@@ -240,8 +288,15 @@ export class MailingService {
         url,
         success,
         user: to.fullName,
+        settingsSlug: to.slug,
       },
-    } as MailOptions;
+    } as MailOptions<{
+      event: EventCompetition;
+      url?: string;
+      success: boolean;
+      user: string;
+      settingsSlug: string;
+    }>;
 
     await this._sendMail(options);
   }
@@ -264,9 +319,15 @@ export class MailingService {
     try {
       this._transporter = nodemailer.createTransport(mailConfig);
 
-      await this._transporter.verify();
+      const verified = await this._transporter.verify();
 
-      this._transporter.use('compile', (mail, callback) => {
+      if (!verified) {
+        this._mailingEnabled = false;
+        this.logger.warn('Mailing disabled due to config setup failing');
+        return;
+      }
+
+      this._transporter.use('compile', (mail: any, callback) => {
         const template = mail.data.template;
         const context = mail.data.context;
         lastValueFrom(
@@ -295,7 +356,7 @@ export class MailingService {
     }
   }
 
-  private async _sendMail(options: MailOptions) {
+  private async _sendMail<T>(options: MailOptions<T>) {
     await this._setupMailing();
 
     // Append subject prefix
@@ -305,11 +366,14 @@ export class MailingService {
 
     try {
       // add clientUrl to context
-      options['context']['clientUrl'] = this.configService.get('CLIENT_URL');
+      options.context.clientUrl = this.configService.get('CLIENT_URL') ?? '';
       if (this._mailingEnabled === false) {
         this.logger.debug('Mailing disabled', { data: options });
         const compiled = await lastValueFrom(
-          this.compileService.toHtml(options.template, options.context)
+          this.compileService.toHtml(
+            options.template,
+            options.context as CompileOptions
+          )
         );
 
         if (process.env.NODE_ENV === 'development') {
@@ -338,7 +402,7 @@ export class MailingService {
         )}, cc: ${cc.join(',')}) `;
       }
 
-      await this._transporter.sendMail(options);
+      await this._transporter?.sendMail(options);
       // this.logger.debug('Message sent: %s', info.messageId);
       // this.logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       this.logger.debug(`Message sent: ${options.subject}, to: ${options.to}`);
@@ -349,11 +413,11 @@ export class MailingService {
   }
 }
 
-interface MailOptions {
+interface MailOptions<T> {
   from: string;
   to: string | string[];
   cc: string | string[];
   subject: string;
   template: string;
-  context: unknown;
+  context: T & { clientUrl: string };
 }

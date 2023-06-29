@@ -1,15 +1,16 @@
 import {
   EventCompetition,
   EventTournament,
+  NotificationOptionsTypes,
   Player,
 } from '@badman/backend-database';
-import * as webPush from 'web-push';
+import { RequestOptions } from 'web-push';
 import { Notifier } from '../notifier.base';
 import { type unitOfTime } from 'moment';
 
 export class EventSyncedSuccessNotifier extends Notifier<
   {
-    event: EventCompetition | EventTournament;
+    event?: EventCompetition | EventTournament;
     success: boolean;
   },
   {
@@ -18,55 +19,93 @@ export class EventSyncedSuccessNotifier extends Notifier<
   }
 > {
   protected linkType = 'event';
-  protected type = 'syncSuccessNotification';
+  protected type: keyof NotificationOptionsTypes = 'syncSuccessNotification';
   protected override allowedInterval = 'minute' as unitOfTime.Diff;
 
   private readonly options = (
-    event: EventCompetition | EventTournament,
-    url: string
+    event?: EventCompetition | EventTournament,
+    url?: string
   ) => {
+    let title = 'Synchronisatie succesvol';
+    let body = 'Synchronisatie succesvol';
+    let actions: { action: string; title: string }[] = [];
+    let data: unknown = {};
+    if (event) {
+      title = `${event.name} succesvol gesynchroniseerd`;
+      body = `${event.name} hebben we succesvol gesynchroniseerd`;
+      actions = [{ action: 'goto', title: 'Ga naar event' }];
+      data = {
+        onActionClick: {
+          default: { operation: 'openWindow', url: url },
+          goto: { operation: 'openWindow', url: url },
+        },
+      };
+    }
+
     return {
       notification: {
-        title: `${event.name} succesvol gesynchroniseerd`,
-        body: `${event.name} hebben we succesvol gesynchroniseerd`,
-        actions: [{ action: 'goto', title: 'Ga naar event' }],
-        data: {
-          onActionClick: {
-            default: { operation: 'openWindow', url: url },
-            goto: { operation: 'openWindow', url: url },
-          },
-        },
+        title,
+        body,
+        actions,
+        data,
       },
-    } as webPush.RequestOptions;
+    } as RequestOptions;
   };
 
   async notifyPush(
     player: Player,
-    data: { event: EventCompetition | EventTournament },
-    args?: { email: string; url: string }
-  ): Promise<void> {
+    data?:
+      | {
+          event?: EventCompetition | EventTournament;
+          success: boolean;
+        }
+      | undefined,
+    args?: { email: string; url: string } | undefined
+  ) {
     this.logger.debug(`Sending Push to ${player.fullName}`);
     await this.pushService.sendNotification(
       player,
-      this.options(data.event, args.url)
+      this.options(data?.event, args?.url)
     );
   }
+
   async notifyEmail(
     player: Player,
-    data: { event: EventCompetition | EventTournament },
-    args?: { email: string; url: string }
+    data?:
+      | {
+          event?: EventCompetition | EventTournament;
+          success: boolean;
+        }
+      | undefined,
+    args?: { email: string; url: string } | undefined
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
+
+    const email = args?.email ?? player.email;
+    if (!email) {
+      this.logger.debug(`No email found for ${player.fullName}`);
+      return;
+    }
+
+    if (!data?.event) {
+      this.logger.debug(`No event found `);
+      return;
+    }
+    
+    if (!player?.slug) {
+      this.logger.debug(`No slug found for ${player.fullName}`);
+      return;
+    }
 
     await this.mailing.sendSyncMail(
       {
         fullName: player.fullName,
-        email: args.email ?? player.email,
+        email,
         slug: player.slug,
       },
-      data.event,
+      data?.event,
       true,
-      args.url
+      args?.url
     );
   }
 
@@ -78,6 +117,6 @@ export class EventSyncedSuccessNotifier extends Notifier<
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
-    return null;
+    return Promise.resolve();
   }
 }

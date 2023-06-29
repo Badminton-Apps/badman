@@ -5,7 +5,10 @@ export class TeamBaseIndexRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { team, teamIndex, meta } = assembly;
 
-    if (team?.teamNumber != 1 && teamIndex < meta?.competition?.teamIndex) {
+    if (
+      team?.teamNumber != 1 &&
+      (teamIndex ?? 0) < (meta?.competition?.teamIndex ?? 0)
+    ) {
       return {
         valid: false,
         errors: [

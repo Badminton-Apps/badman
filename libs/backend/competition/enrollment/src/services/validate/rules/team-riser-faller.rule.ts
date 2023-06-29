@@ -14,6 +14,11 @@ export class TeamRiserFallerRule extends Rule {
     const results = [] as RuleResult[];
 
     for (const { team, previousSeasonTeam, subEvent } of enrollment.teams) {
+      if (!team?.id || !previousSeasonTeam?.entry?.subEventCompetition) {
+        continue;
+      }
+
+
       const errors = [] as EnrollmentValidationError[];
 
       if (!subEvent) {

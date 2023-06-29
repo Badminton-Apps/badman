@@ -17,16 +17,16 @@ import { AssemblyValidationError } from './error.model';
 @InputType()
 export class AssemblyInput {
   @Field(() => ID)
-  encounterId: string;
+  encounterId!: string;
 
   @Field(() => ID)
-  teamId: string;
+  teamId!: string;
 
   @Field(() => ID, { nullable: true })
-  systemId: string;
+  systemId!: string;
 
   @Field(() => ID, { nullable: true })
-  captainId: string;
+  captainId?: string;
 
   @Field(() => ID, { nullable: true })
   single1?: string;
@@ -53,10 +53,10 @@ export class AssemblyInput {
   double4?: string[];
 
   @Field(() => [ID], { nullable: 'itemsAndList' })
-  subtitudes: string[];
+  subtitudes?: string[];
 
   @Field(() => String, { nullable: true })
-  description: string;
+  description?: string;
 }
 
 @ObjectType()
@@ -68,7 +68,7 @@ export class AssemblyOutput {
   warnings?: AssemblyValidationError[];
 
   @Field(() => Boolean, { nullable: true })
-  valid: boolean;
+  valid?: boolean;
 
   @Field(() => Int, { nullable: true })
   baseTeamIndex?: number;
@@ -89,18 +89,18 @@ export class AssemblyOutput {
 
 
 export class AssemblyValidationData {
-  type: SubEventTypeEnum;
-  meta: Meta;
-  otherMeta: Meta[];
-  team: Team;
+  type?: SubEventTypeEnum;
+  meta?: Meta;
+  otherMeta?: Meta[];
+  team?: Team;
 
-  teamIndex: number;
-  teamPlayers: Player[];
+  teamIndex?: number;
+  teamPlayers?: Player[];
 
-  encounter: EncounterCompetition;
-  draw: DrawCompetition;
-  subEvent: SubEventCompetition;
-  event: EventCompetition;
+  encounter?: EncounterCompetition;
+  draw?: DrawCompetition;
+  subEvent?: SubEventCompetition;
+  event?: EventCompetition;
 
   single1?: Player;
   single2?: Player;
@@ -111,5 +111,5 @@ export class AssemblyValidationData {
   double3?: [Player, Player];
   double4?: [Player, Player];
   subtitudes?: Player[];
-  system: RankingSystem;
+  system?: RankingSystem;
 }

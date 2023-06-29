@@ -1,6 +1,10 @@
 import { Player } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import {
+  AssemblyValidationData,
+  AssemblyOutput,
+  AssemblyValidationError,
+} from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -31,10 +35,10 @@ export class PlayerGenderRule extends Rule {
             single3,
             single4,
 
-            ...double1,
-            ...double2,
-            ...double3,
-            ...double4,
+            ...(double1 ?? []),
+            ...(double2 ?? []),
+            ...(double3 ?? []),
+            ...(double4 ?? []),
           ],
           'M'
         )
@@ -48,20 +52,24 @@ export class PlayerGenderRule extends Rule {
             single3,
             single4,
 
-            ...double1,
-            ...double2,
-            ...double3,
-            ...double4,
+            ...(double1 ?? []),
+            ...(double2 ?? []),
+            ...(double3 ?? []),
+            ...(double4 ?? []),
           ],
           'F'
         )
       );
     } else {
-      errors.push(...this._checkGender([single1, single2, ...double1], 'M'));
-      errors.push(...this._checkGender([single3, single4, ...double2], 'F'));
+      errors.push(
+        ...this._checkGender([single1, single2, ...(double1 ?? [])], 'M')
+      );
+      errors.push(
+        ...this._checkGender([single3, single4, ...(double2 ?? [])], 'F')
+      );
 
       // in doubles 3 and 4 we should have a F and M player
-      if (double3[0] && double3[1] && double3[0].gender == double3[1].gender) {
+      if (double3?.[0] && double3?.[1] && double3?.[0].gender == double3?.[1].gender) {
         errors.push({
           message: 'all.competition.team-assembly.errors.player-genders',
           params: {
@@ -80,7 +88,7 @@ export class PlayerGenderRule extends Rule {
         });
       }
 
-      if (double4[0] && double4[1] && double4[0].gender == double4[1].gender) {
+      if (double4?.[0] && double4?.[1] && double4?.[0].gender == double4?.[1].gender) {
         errors.push({
           message: 'all.competition.team-assembly.errors.player-genders',
           params: {
@@ -106,7 +114,10 @@ export class PlayerGenderRule extends Rule {
     };
   }
 
-  private _checkGender(players: Player[], gender: string): AssemblyValidationError[] {
+  private _checkGender(
+    players: (Player | undefined)[],
+    gender: string
+  ): AssemblyValidationError[] {
     const uniquePlayers = [
       ...new Set(players?.filter((p) => p != undefined && p != null)),
     ];

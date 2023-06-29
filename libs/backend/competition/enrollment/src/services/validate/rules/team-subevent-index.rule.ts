@@ -15,10 +15,19 @@ export class TeamSubeventIndexRule extends Rule {
       team,
       previousSeasonTeam,
     } of enrollment.teams) {
+      if (
+        !team?.id ||
+        !subEvent ||
+        !subEvent?.minBaseIndex ||
+        !subEvent?.maxBaseIndex
+      ) {
+        continue;
+      }
+
       const errors = [] as EnrollmentValidationError[];
       const warnings = [] as EnrollmentValidationError[];
       if (
-        baseIndex < subEvent?.minBaseIndex &&
+        (baseIndex ?? 0) < subEvent?.minBaseIndex &&
         !previousSeasonTeam?.entry?.standing?.faller
       ) {
         errors.push({
@@ -31,7 +40,7 @@ export class TeamSubeventIndexRule extends Rule {
       }
 
       if (
-        baseIndex > subEvent?.maxBaseIndex &&
+        (baseIndex ?? 0) > subEvent?.maxBaseIndex &&
         !previousSeasonTeam?.entry?.standing?.riser
       ) {
         errors.push({
