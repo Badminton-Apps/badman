@@ -11,18 +11,20 @@ import { AssemblyValidationService } from './services';
     DatabaseModule,
     CompileModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        view: {
-          root: join(__dirname, 'compile', 'libs', 'assembly'),
-          engine: 'pug',
-        },
-        juice: {
-          webResources: {
-            links: true,
+      useFactory: (configService: ConfigService) => {
+        return {
+          view: {
+            root: join(__dirname, 'compile', 'libs', 'assembly'),
+            engine: 'pug',
           },
-        },
-        debug: configService.get('NODE_ENV') === 'development',
-      }),
+          juice: {
+            webResources: {
+              links: true,
+            },
+          },
+          debug: configService.get('NODE_ENV') === 'development',
+        };
+      },
       inject: [ConfigService],
     }),
   ],

@@ -13,21 +13,25 @@ export class PlayerMinLevelRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
     for (const {
+      system,
       team,
       teamPlayers,
       basePlayers,
       subEvent,
     } of enrollment.teams) {
-      const errors = [] as EnrollmentValidationError[];
-      const warnings = [] as EnrollmentValidationError[];
-
-      if (!subEvent) {
+      if (!subEvent?.maxLevel || !team?.id || !system?.amountOfLevels) {
         continue;
       }
 
+      const errors = [] as EnrollmentValidationError[];
+      const warnings = [] as EnrollmentValidationError[];
+
       if (team?.teamNumber != 1) {
-        for (const player of basePlayers) {
-          if (player.single < subEvent.maxLevel && !player.levelException) {
+        for (const player of basePlayers ?? []) {
+          if (
+            (player.single ?? system.amountOfLevels) < subEvent.maxLevel &&
+            !player.levelException
+          ) {
             errors.push({
               message:
                 'all.competition.team-enrollment.errors.player-min-level',
@@ -43,7 +47,10 @@ export class PlayerMinLevelRule extends Rule {
             });
           }
 
-          if (player.double < subEvent.maxLevel && !player.levelException) {
+          if (
+            (player.double ?? system.amountOfLevels) < subEvent.maxLevel &&
+            !player.levelException
+          ) {
             errors.push({
               message:
                 'all.competition.team-enrollment.errors.player-min-level',
@@ -61,7 +68,7 @@ export class PlayerMinLevelRule extends Rule {
 
           if (
             team?.type === SubEventTypeEnum.MX &&
-            player.mix < subEvent.maxLevel &&
+            (player.mix ?? system.amountOfLevels) < subEvent.maxLevel &&
             !player.levelException
           ) {
             errors.push({
@@ -80,8 +87,11 @@ export class PlayerMinLevelRule extends Rule {
           }
         }
 
-        for (const player of teamPlayers) {
-          if (player.single < subEvent.maxLevel && !player.levelException) {
+        for (const player of teamPlayers ?? []) {
+          if (
+            (player.single ?? system.amountOfLevels) < subEvent.maxLevel &&
+            !player.levelException
+          ) {
             warnings.push({
               message:
                 'all.competition.team-enrollment.errors.player-min-level',
@@ -97,7 +107,10 @@ export class PlayerMinLevelRule extends Rule {
             });
           }
 
-          if (player.double < subEvent.maxLevel && !player.levelException) {
+          if (
+            (player.double ?? system.amountOfLevels) < subEvent.maxLevel &&
+            !player.levelException
+          ) {
             warnings.push({
               message:
                 'all.competition.team-enrollment.errors.player-min-level',
@@ -115,7 +128,7 @@ export class PlayerMinLevelRule extends Rule {
 
           if (
             team?.type === SubEventTypeEnum.MX &&
-            player.mix < subEvent.maxLevel &&
+            (player.mix ?? system.amountOfLevels) < subEvent.maxLevel &&
             !player.levelException
           ) {
             warnings.push({

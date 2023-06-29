@@ -1,6 +1,6 @@
 import { CompileService } from '@badman/backend-compile';
 import { Player, RankingLastPlace, Team } from '@badman/backend-database';
-import { gameLabel, I18nTranslations } from '@badman/utils';
+import { I18nTranslations, gameLabel } from '@badman/utils';
 import {
   Controller,
   Logger,
@@ -9,13 +9,13 @@ import {
   Res,
   StreamableFile,
 } from '@nestjs/common';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { readFile } from 'fs/promises';
 import moment from 'moment-timezone';
 import { I18nService } from 'nestjs-i18n';
 import { lastValueFrom, take } from 'rxjs';
 import { AssemblyValidationData, AssemblyValidationError } from '../models';
 import { AssemblyValidationService } from '../services';
-import { FastifyReply, FastifyRequest } from 'fastify';
 
 type gameType =
   | 'single1'
@@ -46,6 +46,10 @@ export class AssemblyController {
   ) {
     // compile the template that returns a buffer of the pdf
     const pdf$ = await this.getTeamAssemblyPdf(req.body as any);
+
+    if (!pdf$) {
+      throw new Error('Pdf could not be generated');
+    }
 
     // get the buffer from the observable
     const pdf = await lastValueFrom(pdf$);
@@ -98,6 +102,14 @@ export class AssemblyController {
     let awayTeam: Team;
     let isHomeTeam: boolean;
 
+    if (!data?.encounter) {
+      throw new Error('Encounter not found');
+    }
+
+    if (!data?.team) {
+      return;
+    }
+
     if (data.encounter.homeTeamId == input.teamId) {
       homeTeam = data.team;
       awayTeam = await data.encounter.getAway({
@@ -128,31 +140,31 @@ export class AssemblyController {
       `Generating assembly for ${homeTeam.name} vs ${awayTeam.name} on ${date}`
     );
 
-    const indexed = [];
-    const based = [];
+    const indexed: string[] = [];
+    const based: string[] = [];
 
-    const errors = validation.errors.map((error) => {
+    const errors = validation.errors?.map((error) => {
       this.translateGame(error);
       const translated = this.i18nService.translate(error.message, {
         debug: true,
-        args: error.params,
+        args: error.params as never,
       });
       return translated;
     });
 
-    const warnings = validation.warnings.map((warn) => {
+    const warnings = validation.warnings?.map((warn) => {
       this.translateGame(warn);
 
       const translated = this.i18nService.translate(warn.message, {
         debug: true,
-        args: warn.params,
+        args: warn.params as never,
       });
       return translated;
     });
 
     const context = {
       date,
-      baseIndex: data.meta.competition.teamIndex,
+      baseIndex: data.meta?.competition?.teamIndex,
       teamIndex: data.teamIndex,
       homeTeam: homeTeam.name,
       awayTeam: awayTeam.name,
@@ -160,35 +172,35 @@ export class AssemblyController {
       gameLabels: this.getLabels(data),
       doubles: [
         {
-          player1: this._processPlayer(data.double1[0], data, indexed, based),
-          player2: this._processPlayer(data.double1[1], data, indexed, based),
+          player1: this._processPlayer(data, indexed, based, data.double1?.[0]),
+          player2: this._processPlayer(data, indexed, based, data.double1?.[1]),
         },
         {
-          player1: this._processPlayer(data.double2[0], data, indexed, based),
-          player2: this._processPlayer(data.double2[1], data, indexed, based),
+          player1: this._processPlayer(data, indexed, based, data.double2?.[0]),
+          player2: this._processPlayer(data, indexed, based, data.double2?.[1]),
         },
         {
-          player1: this._processPlayer(data.double3[0], data, indexed, based),
-          player2: this._processPlayer(data.double3[1], data, indexed, based),
+          player1: this._processPlayer(data, indexed, based, data.double3?.[0]),
+          player2: this._processPlayer(data, indexed, based, data.double3?.[1]),
         },
         {
-          player1: this._processPlayer(data.double4[0], data, indexed, based),
-          player2: this._processPlayer(data.double4[1], data, indexed, based),
+          player1: this._processPlayer(data, indexed, based, data.double4?.[0]),
+          player2: this._processPlayer(data, indexed, based, data.double4?.[1]),
         },
       ],
       singles: [
-        this._processPlayer(data.single1, data, indexed, based),
-        this._processPlayer(data.single2, data, indexed, based),
-        this._processPlayer(data.single3, data, indexed, based),
-        this._processPlayer(data.single4, data, indexed, based),
+        this._processPlayer(data, indexed, based, data.single1),
+        this._processPlayer(data, indexed, based, data.single2),
+        this._processPlayer(data, indexed, based, data.single3),
+        this._processPlayer(data, indexed, based, data.single4),
       ],
-      subtitudes: data.subtitudes.map((player) =>
-        this._processPlayer(player, data, null, null)
+      subtitudes: data.subtitudes?.map((player) =>
+        this._processPlayer(data, [], [], player)
       ),
       type: data.type,
       event: `${
         data.type === 'M' ? 'Heren' : data.type === 'F' ? 'Dames' : 'Gemengd'
-      } ${data.draw.name}`,
+      } ${data.draw?.name}`,
       isHomeTeam: isHomeTeam,
       validation: {
         ...validation,
@@ -210,26 +222,32 @@ export class AssemblyController {
   }
 
   private translateGame(warn: AssemblyValidationError) {
-    const games = warn?.params?.['game'] as gameType;
+    const params: Record<string, unknown> = (warn.params || {}) as Record<
+      string,
+      unknown
+    >;
+
+    const games = params['game'] as gameType;
     if (games != undefined) {
-      warn.params['game'] = this.i18nService
+      params['game'] = this.i18nService
         .translate(`all.competition.team-assembly.${games}`)
         .toLocaleLowerCase();
     }
 
-    const games1 = warn?.params?.['game1'] as gameType;
+    const games1 = params['game1'] as gameType;
     if (games1 != undefined) {
-      warn.params['game1'] = this.i18nService
+      params['game1'] = this.i18nService
         .translate(`all.competition.team-assembly.${games1}`)
         .toLocaleLowerCase();
     }
 
-    const games2 = warn?.params?.['game2'] as gameType;
+    const games2 = params['game2'] as gameType;
     if (games2 != undefined) {
-      warn.params['game2'] = this.i18nService
+      params['game2'] = this.i18nService
         .translate(`all.competition.team-assembly.${games2}`)
         .toLocaleLowerCase();
     }
+    warn.params = params;
   }
 
   private getLabels(data: AssemblyValidationData): string[] {
@@ -247,7 +265,7 @@ export class AssemblyController {
         } else {
           // omit type number of label
           type test = ReturnType<typeof gameLabel>;
-          type labelType = Exclude<test[number], number>;
+          type labelType = Exclude<test[number], number | undefined>;
 
           labelMessage += this.i18nService.translate(label as labelType);
         }
@@ -259,19 +277,21 @@ export class AssemblyController {
   }
 
   private _processPlayer(
-    player: Player,
     data: AssemblyValidationData,
     indexed: string[],
-    based: string[]
-  ): Partial<Player> & {
-    base: boolean;
-    team: boolean;
-    rankingLastPlace: RankingLastPlace;
-    sum: number;
-    highest: number;
-  } {
-    if (!player || !player.id) {
-      return null;
+    based: string[],
+    player?: Player
+  ):
+    | undefined
+    | (Partial<Player> & {
+        base: boolean;
+        team: boolean;
+        rankingLastPlace: RankingLastPlace;
+        sum: number;
+        highest: number;
+      }) {
+    if (!player?.id) {
+      return;
     }
 
     const prepped = {
@@ -284,7 +304,7 @@ export class AssemblyController {
     };
 
     if (
-      data.meta.competition.players?.map((p) => p.id).indexOf(player.id) !==
+      data.meta?.competition?.players?.map((p) => p.id).indexOf(player.id) !==
         -1 &&
       based &&
       based.indexOf(player.id) === -1
@@ -304,15 +324,15 @@ export class AssemblyController {
 
     if ((player.rankingPlaces?.length ?? 0) > 0) {
       prepped.sum =
-        (player.rankingPlaces[0].single ?? 12) +
-        (player.rankingPlaces[0].double ?? 12) +
-        (data.type === 'MX' ? player.rankingPlaces[0].mix ?? 12 : 0);
+        (player.rankingPlaces?.[0].single ?? 12) +
+        (player.rankingPlaces?.[0].double ?? 12) +
+        (data.type === 'MX' ? player.rankingPlaces?.[0].mix ?? 12 : 0);
 
       prepped.highest =
         Math.min(
-          player.rankingPlaces[0].single ?? 12,
-          player.rankingPlaces[0].double ?? 12,
-          data.type === 'MX' ? player.rankingPlaces[0].mix ?? 12 : 12
+          player.rankingPlaces?.[0].single ?? 12,
+          player.rankingPlaces?.[0].double ?? 12,
+          data.type === 'MX' ? player.rankingPlaces?.[0].mix ?? 12 : 12
         ) ?? 12;
     } else {
       prepped.sum = data.type === 'MX' ? 36 : 24;

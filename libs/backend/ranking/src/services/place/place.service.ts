@@ -99,8 +99,8 @@ export class PlaceService {
         ...options,
         start,
         stop,
-        lastRanking: lastRanking.single,
-        lastRankingInactive: lastRanking.singleInactive,
+        lastRanking: lastRanking.single ?? system.amountOfLevels,
+        lastRankingInactive: lastRanking.singleInactive ?? false,
         gameType: GameType.S,
       });
 
@@ -114,8 +114,8 @@ export class PlaceService {
         ...options,
         start,
         stop,
-        lastRanking: lastRanking.double,
-        lastRankingInactive: lastRanking.doubleInactive,
+        lastRanking: lastRanking.double ?? system.amountOfLevels,
+        lastRankingInactive: lastRanking.doubleInactive ?? false,
         gameType: GameType.D,
       });
 
@@ -129,8 +129,8 @@ export class PlaceService {
         ...options,
         start,
         stop,
-        lastRanking: lastRanking.mix,
-        lastRankingInactive: lastRanking.mixInactive,
+        lastRanking: lastRanking.mix ?? system.amountOfLevels,
+        lastRankingInactive: lastRanking.mixInactive ?? false,
         gameType: GameType.MX,
       });
 
@@ -139,12 +139,12 @@ export class PlaceService {
       newRanking.mixPoints = mix.upgrade;
       newRanking.mixPointsDowngrade = mix.downgrade;
 
-      if (options.updateRanking) {
+      if (options?.updateRanking) {
         // Protections
         this._protectRanking(
           newRanking,
-          system.maxDiffLevels,
-          system.amountOfLevels
+          system.amountOfLevels,
+          system.maxDiffLevels
         );
         newRanking.updatePossible = true;
       }
@@ -164,7 +164,7 @@ export class PlaceService {
       }
     }
 
-    if (options.updateRanking) {
+    if (options?.updateRanking) {
       system.updateIntervalAmountLastUpdate = stop;
     }
 
@@ -210,7 +210,8 @@ export class PlaceService {
 
     const { upgrade, downgrade } = this._calculatePoints(
       system,
-      games?.map((g) => g.rankingPoints?.[0])
+      (games?.map((g) => g.rankingPoints?.[0])?.filter((g) => g != undefined) ??
+        []) as RankingPoint[]
     );
 
     const result = {
@@ -238,7 +239,7 @@ export class PlaceService {
           }
         }
         // if not inactive but not have enough points, you remain the same
-        else if (games.length <= system.gamesForInactivty) {
+        else if (games.length <= (system.gamesForInactivty ?? 0)) {
           level = lastRanking;
         }
       }
@@ -336,6 +337,14 @@ export class PlaceService {
       gameType?: GameType;
     }
   ) {
+    if (
+      !system.inactivityAmount ||
+      !system.inactivityUnit ||
+      !system.gamesForInactivty
+    ) {
+      return false;
+    }
+
     if (gamesAmount <= system.gamesForInactivty) {
       const start = moment(options.stop)
         .subtract(system.inactivityAmount, system.inactivityUnit)
@@ -352,9 +361,17 @@ export class PlaceService {
   }
 
   private _calculatePoints(system: RankingSystem, points: RankingPoint[]) {
+    if (!points.length) {
+      return {
+        upgrade: 0,
+        downgrade: 0,
+      };
+    }
+
     // difference is a negative number when layers are higher
     let pointsForUpgrade = points.filter(
-      (x) => x.differenceInLevel >= system.differenceForUpgrade * -1
+      (x) =>
+        (x.differenceInLevel ?? 0) >= (system.differenceForUpgrade ?? 0) * -1
     );
 
     // Filter out when there is a limit to use
@@ -371,7 +388,8 @@ export class PlaceService {
 
     // difference is a negative number when layers are higher
     let pointsForDowngrade = points.filter(
-      (x) => x.differenceInLevel >= system.differenceForDowngrade * -1
+      (x) =>
+        (x.differenceInLevel ?? 0) >= (system.differenceForDowngrade ?? 0) * -1
     );
 
     // Filter out when there is a limit to use
@@ -395,14 +413,14 @@ export class PlaceService {
   ) {
     const avgPoints = rankingPoints.map((x) => x.points).filter((x) => x === 0);
     const wonPoints = rankingPoints
-      .filter((x) => x.points > 0)
-      .sort((a, b) => b.points - a.points);
+      .filter((x) => (x.points ?? 0) > 0)
+      .sort((a, b) => (b.points ?? 0) - (a.points ?? 0));
     let avg = 0;
 
     wonPoints.forEach((element) => {
       // add new point
       avgPoints.push(element.points);
-      const sum = avgPoints.reduce((a, b) => a + b, 0);
+      const sum = avgPoints.reduce((a, b) => (a ?? 0) + (b ?? 0), 0) ?? 0;
       const gamesToUse = limitMinGames
         ? avgPoints.length < limitMinGames
           ? limitMinGames
@@ -484,14 +502,20 @@ export class PlaceService {
 
   private _protectRanking(
     newRanking: RankingPlace,
-    maxDiffLevels: number,
-    amountOfLevels: number
+    amountOfLevels: number,
+    maxDiffLevels?: number
   ): RankingPlace {
     const highest = Math.min(
-      newRanking.single,
-      newRanking.double,
-      newRanking.mix
+      newRanking.single ?? amountOfLevels,
+      newRanking.double ?? amountOfLevels,
+      newRanking.mix ?? amountOfLevels
     );
+
+    maxDiffLevels = maxDiffLevels ?? 0;
+
+    newRanking.single = newRanking.single ?? amountOfLevels;
+    newRanking.double = newRanking.double ?? amountOfLevels;
+    newRanking.mix = newRanking.mix ?? amountOfLevels;
 
     if (newRanking.single - highest >= maxDiffLevels) {
       newRanking.single = highest + maxDiffLevels;
@@ -502,6 +526,8 @@ export class PlaceService {
     if (newRanking.mix - highest >= maxDiffLevels) {
       newRanking.mix = highest + maxDiffLevels;
     }
+
+    // protect against going to high
 
     if (newRanking.single > amountOfLevels) {
       newRanking.single = amountOfLevels;
