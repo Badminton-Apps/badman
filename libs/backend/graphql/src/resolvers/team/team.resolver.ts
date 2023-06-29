@@ -69,7 +69,9 @@ export class TeamsResolver {
 
   @ResolveField(() => [TeamPlayerMembershipType])
   async players(@Parent() team: Team, @Args() listArgs: ListArgs) {
-    const players = await team.getPlayers(ListArgs.toFindOptions(listArgs));
+    const players = (await team.getPlayers(
+      ListArgs.toFindOptions(listArgs)
+    )) as (Player & { TeamPlayerMembership: TeamPlayerMembership })[];
 
     return players?.map(
       (player: Player & { TeamPlayerMembership: TeamPlayerMembership }) => {
@@ -167,7 +169,7 @@ export class TeamsResolver {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { players, entry, ...teamData } = newTeamData;
       let created = false;
-      let teamDb = null;
+      let teamDb: Team = null;
 
       if (teamData.link) {
         teamDb = await Team.findOne({
@@ -257,7 +259,7 @@ export class TeamsResolver {
         // remove players that are not in the new list
         await Promise.all(
           dbMemberships.map(async (membership) => {
-            const player = newTeamData.players.find(
+            const player = newTeamData.players?.find(
               (p) => p.id === membership.playerId
             );
 
@@ -291,13 +293,17 @@ export class TeamsResolver {
           dbEntry.subEventId = newTeamData.entry.subEventId;
         }
 
-        if (newTeamData.entry.meta.competition.players) {
+        if (newTeamData.entry?.meta?.competition?.players) {
           const system = await RankingSystem.findOne({
             where: {
               primary: true,
             },
             transaction,
           });
+
+          if (!system) {
+            throw new Error('No primary ranking system found');
+          }
 
           const players: EntryCompetitionPlayer[] = [];
           const playerIds =

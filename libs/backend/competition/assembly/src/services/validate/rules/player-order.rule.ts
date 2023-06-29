@@ -1,8 +1,8 @@
 import { Player } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
 import {
-  AssemblyValidationData,
   AssemblyOutput,
+  AssemblyValidationData,
   AssemblyValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
@@ -24,67 +24,68 @@ export class PlayerOrderRule extends Rule {
 
     let errors = [] as AssemblyValidationError[];
 
-    errors.push(
-      this._checkSingle(
-        single1,
-        single2,
-        'single1',
-        'single2',
-        system.amountOfLevels
-      )
+    if (!system?.amountOfLevels) {
+      throw new Error('System is not defined');
+    }
+
+    const s1 = this._checkSingle(
+      single1,
+      single2,
+      'single1',
+      'single2',
+      system.amountOfLevels
     );
-    errors.push(
-      this._checkSingle(
-        single3,
-        single4,
-        'single3',
-        'single4',
-        system.amountOfLevels
-      )
+    if (s1) errors.push(s1);
+   
+    const s3 = this._checkSingle(
+      single3,
+      single4,
+      'single3',
+      'single4',
+      system.amountOfLevels
+    );
+    if (s3) errors.push(s3);
+
+    const d3 = this._checkDouble(
+      double3,
+      double4,
+      type == SubEventTypeEnum.MX ? 'mix3' : 'double3',
+      type == SubEventTypeEnum.MX ? 'mix4' : 'double4',
+      system?.amountOfLevels,
+      type == SubEventTypeEnum.MX ? 'mix' : 'double'
     );
 
-    errors.push(
-      this._checkDouble(
-        double3,
-        double4,
-        type == SubEventTypeEnum.MX ? 'mix3' : 'double3',
-        type == SubEventTypeEnum.MX ? 'mix4' : 'double4',
-        system.amountOfLevels,
-        type == SubEventTypeEnum.MX ? 'mix' : 'double'
-      )
-    );
+    if (d3) errors.push(d3);
 
     if (type !== SubEventTypeEnum.MX) {
-      // double 1 and 2 are males/females doubles so no validation needed
-      errors.push(
-        this._checkDouble(
-          double1,
-          double2,
-          'double1',
-          'double2',
-          system.amountOfLevels
-        )
+      const d1 = this._checkDouble(
+        double1,
+        double2,
+        'double1',
+        'double2',
+        system?.amountOfLevels
+      );
+      if (d1) errors.push(d1);
+
+      const s2 = this._checkSingle(
+        single2,
+        single3,
+        'single2',
+        'single3',
+        system.amountOfLevels
       );
 
-      // Non mixed check 2 with 3
-      errors.push(
-        this._checkSingle(
-          single2,
-          single3,
-          'single2',
-          'single3',
-          system.amountOfLevels
-        )
+      if (s2) errors.push(s2);
+
+      const d2 = this._checkDouble(
+        double2,
+        double3,
+        'double2',
+        'double3',
+        system.amountOfLevels
       );
-      errors.push(
-        this._checkDouble(
-          double2,
-          double3,
-          'double2',
-          'double3',
-          system.amountOfLevels
-        )
-      );
+
+      if (d2) errors.push(d2);
     }
 
     errors = errors.filter((e) => e !== undefined);
@@ -96,13 +97,13 @@ export class PlayerOrderRule extends Rule {
   }
 
   private _checkSingle(
-    player1: Player,
-    player2: Player,
-    game1: string,
-    game2: string,
+    player1?: Player,
+    player2?: Player,
+    game1?: string,
+    game2?: string,
     defaultRanking = 12
-  ): AssemblyValidationError {
-    if (!player1 || !player2) return undefined;
+  ): AssemblyValidationError | undefined {
+    if (!player1 || !player2) return;
 
     const ranking1 = player1?.rankingLastPlaces?.[0]?.single ?? defaultRanking;
     const ranking2 = player2?.rankingLastPlaces?.[0]?.single ?? defaultRanking;
@@ -126,20 +127,26 @@ export class PlayerOrderRule extends Rule {
         },
       };
     }
-    return undefined;
+    return;
   }
 
   private _checkDouble(
-    double1: [Player, Player],
-    double2: [Player, Player],
-    game1: string,
-    game2: string,
+    double1?: [Player | undefined, Player | undefined],
+    double2?: [Player | undefined, Player | undefined],
+    game1?: string,
+    game2?: string,
     defaultRanking = 12,
     type: 'double' | 'mix' = 'double'
-  ): AssemblyValidationError {
-    if (!double1 || !double2) return undefined;
-    if (!double1[0] || !double1[1] || !double2[0] || !double2[1])
-      return undefined;
+  ): AssemblyValidationError | undefined {
+    if (!double1 || !double2) return;
+    if (
+      !double1[0]?.id ||
+      !double1[1]?.id ||
+      !double2[0]?.id ||
+      !double2[1]?.id
+    ) {
+      return;
+    }
 
     let t1p1 = double1?.[0];
     let t1p2 = double1?.[1];

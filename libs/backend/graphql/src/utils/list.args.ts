@@ -14,14 +14,14 @@ export class SortOrderType {
 }
 
 export class SortOrder {
-  field: string;
-  direction: string;
+  field!: string;
+  direction!: string;
 }
 
 @ArgsType()
 export class WhereArgs {
   @Field(() => GraphQLJSONObject, { nullable: true })
-  where: WhereOptions;
+  where?: WhereOptions;
 }
 
 @ArgsType()
@@ -32,7 +32,7 @@ export class ListArgs extends WhereArgs {
 
   @Field(() => Int, { nullable: true })
   @Min(1)
-  take: number;
+  take = 10;
 
   @Field(() => [SortOrderType], { nullable: true })
   order?: SortOrderType[];
