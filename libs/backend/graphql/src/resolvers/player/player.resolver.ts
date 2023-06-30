@@ -2,6 +2,7 @@ import { LoggedInUser, User } from '@badman/backend-authorization';
 import {
   Claim,
   Club,
+  ClubPlayerMembership,
   Game,
   GamePlayerMembership,
   GamePlayerMembershipType,
@@ -62,7 +63,7 @@ export class PlayersResolver {
   }
 
   @Query(() => Player, { nullable: true })
-  async me(@User() user: Player): Promise<Player> {
+  async me(@User() user: Player): Promise<Player | null> {
     if (user?.id) {
       return user;
     } else {
@@ -80,7 +81,7 @@ export class PlayersResolver {
   @ResolveField(() => String)
   async phone(@User() user: Player, @Parent() player: Player) {
     const perm = [`details-any:player`, `${player.id}_details:player`];
-    if (user.hasAnyPermission(perm)) {
+    if (await user.hasAnyPermission(perm)) {
       return player.phone;
     } else {
       throw new UnauthorizedException();
@@ -90,7 +91,7 @@ export class PlayersResolver {
   @ResolveField(() => String)
   async email(@User() user: Player, @Parent() player: Player) {
     const perm = [`details-any:player`, `${player.id}_details:player`];
-    if (user.hasAnyPermission(perm)) {
+    if (await user.hasAnyPermission(perm)) {
       return player.email;
     } else {
       throw new UnauthorizedException();
@@ -100,7 +101,7 @@ export class PlayersResolver {
   @ResolveField(() => String)
   async birthDate(@User() user: Player, @Parent() player: Player) {
     const perm = [`details-any:player`, `${player.id}_details:player`];
-    if (user.hasAnyPermission(perm)) {
+    if (await user.hasAnyPermission(perm)) {
       return player.birthDate;
     } else {
       throw new UnauthorizedException();
@@ -145,6 +146,12 @@ export class PlayersResolver {
           attributes: ['amountOfLevels'],
         });
 
+        if (!system) {
+          throw new NotFoundException(
+            `${RankingSystem.name}: ${place.systemId}`
+          );
+        }
+
         const bestRankingMin2 =
           Math.min(
             place?.single ?? system.amountOfLevels,
@@ -180,6 +187,12 @@ export class PlayersResolver {
         const system = await RankingSystem.findByPk(place.systemId, {
           attributes: ['amountOfLevels'],
         });
+
+        if (!system) {
+          throw new NotFoundException(
+            `${RankingSystem.name}: ${place.systemId}`
+          );
+        }
 
         const bestRankingMin2 =
           Math.min(
@@ -236,7 +249,9 @@ export class PlayersResolver {
       description: 'Include the historical clubs',
     })
     disabled?: boolean
-  ): Promise<Club[]> {
+  ): Promise<
+    (Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined
+  > {
     const args = ListArgs.toFindOptions(listArgs);
 
     return Player.findByPk(player.id, {
@@ -254,7 +269,7 @@ export class PlayersResolver {
           },
         },
       ],
-    }).then((player) => player.clubs);
+    }).then((player) => player?.clubs);
   }
 
   @ResolveField(() => Setting, { nullable: true })
@@ -264,7 +279,7 @@ export class PlayersResolver {
 
   @Mutation(() => Player)
   async createPlayer(@User() user: Player, @Args('data') data: PlayerNewInput) {
-    if (!user.hasAnyPermission(['add:player'])) {
+    if (!await user.hasAnyPermission(['add:player'])) {
       throw new UnauthorizedException(
         `You do not have permission to create a player`
       );
@@ -295,7 +310,7 @@ export class PlayersResolver {
     @User() user: Player,
     @Args('data') data: PlayerUpdateInput
   ) {
-    if (!user.hasAnyPermission([`${data.id}_edit:player`, 'edit-any:player'])) {
+    if (!await user.hasAnyPermission([`${data.id}_edit:player`, 'edit-any:player'])) {
       throw new UnauthorizedException(
         `You do not have permission to edit this player`
       );
@@ -329,7 +344,7 @@ export class PlayersResolver {
     @User() user: Player,
     @Args('id', { type: () => ID }) id: string
   ) {
-    if (!user.hasAnyPermission(['delete:player'])) {
+    if (!await user.hasAnyPermission(['delete:player'])) {
       throw new UnauthorizedException(
         `You do not have permission to delete this player`
       );
@@ -442,8 +457,8 @@ export class PlayersResolver {
         endpoint: subscription.endpoint,
         expirationTime: subscription.expirationTime,
         keys: {
-          p256dh: subscription.keys.p256dh,
-          auth: subscription.keys.auth,
+          p256dh: subscription.keys?.p256dh,
+          auth: subscription.keys?.auth,
         },
       } as PushSubscription);
       settings.changed('pushSubscriptions', true);
@@ -464,6 +479,12 @@ export class GamePlayersResolver extends PlayersResolver {
     const game = await Game.findByPk(player.GamePlayerMembership.gameId, {
       attributes: ['playedAt'],
     });
+
+    if (!game) {
+      throw new NotFoundException(
+        `${Game.name}: ${player.GamePlayerMembership.gameId}`
+      );
+    }
 
     const places = await RankingPlace.findAll({
       where: {
@@ -504,6 +525,12 @@ export class TeamPlayerResolver extends PlayersResolver {
           attributes: ['amountOfLevels'],
         });
 
+        if (!system) {
+          throw new NotFoundException(
+            `${RankingSystem.name}: ${place.systemId}`
+          );
+        }
+
         place.single = place.single ?? system.amountOfLevels;
         place.double = place.double ?? system.amountOfLevels;
         place.mix = place.mix ?? system.amountOfLevels;
@@ -539,6 +566,12 @@ export class TeamPlayerResolver extends PlayersResolver {
         const system = await RankingSystem.findByPk(place.systemId, {
           attributes: ['amountOfLevels'],
         });
+
+        if (!system) {
+          throw new NotFoundException(
+            `${RankingSystem.name}: ${place.systemId}`
+          );
+        }
 
         place.single = place.single ?? system.amountOfLevels;
         place.double = place.double ?? system.amountOfLevels;

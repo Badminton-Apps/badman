@@ -38,10 +38,10 @@ import { ListArgs } from '../../../utils';
 @ObjectType()
 export class PagedEventCompetition {
   @Field(() => Int)
-  count: number;
+  count?: number;
 
   @Field(() => [EventCompetition])
-  rows: EventCompetition[];
+  rows?: EventCompetition[];
 }
 @Resolver(() => EventCompetition)
 export class EventCompetitionResolver {
@@ -109,7 +109,7 @@ export class EventCompetitionResolver {
     @User() user: Player,
     @Args('data') updateEventCompetitionData: EventCompetitionUpdateInput
   ): Promise<EventCompetition> {
-    if (!user.hasAnyPermission([`edit:competition`])) {
+    if (!await user.hasAnyPermission([`edit:competition`])) {
       throw new UnauthorizedException(
         `You do not have permission to add a competition`
       );
@@ -140,6 +140,13 @@ export class EventCompetitionResolver {
           },
           transaction,
         });
+
+        if (!ranking) {
+          throw new NotFoundException(
+            `${RankingSystem.name}: primary system not found`
+          );
+        }
+
         const groups = await ranking.getRankingGroups({
           transaction,
         });
@@ -200,7 +207,7 @@ export class EventCompetitionResolver {
     @Args('id', { type: () => ID }) id: string,
     @Args('year', { type: () => Int }) year: number
   ) {
-    if (!user.hasAnyPermission([`add:competition`])) {
+    if (!await user.hasAnyPermission([`add:competition`])) {
       throw new UnauthorizedException(
         `You do not have permission to add a competition`
       );
@@ -211,8 +218,13 @@ export class EventCompetitionResolver {
         transaction,
         include: [{ model: SubEventCompetition }],
       });
+
+      if (!eventCompetitionDb) {
+        throw new NotFoundException(`${EventCompetition.name}: ${id}`);
+      }
+
       const newName = `${eventCompetitionDb.name
-        .replace(/(\d{4}-\d{4})/gi, '')
+        ?.replace(/(\d{4}-\d{4})/gi, '')
         .trim()} ${year}-${year + 1}`;
 
       const newEventCompetitionDb = new EventCompetition({
@@ -227,7 +239,8 @@ export class EventCompetitionResolver {
         transaction,
       });
       const newSubEvents = [];
-      for (const subEventCompetition of eventCompetitionDb.subEventCompetitions) {
+      for (const subEventCompetition of eventCompetitionDb.subEventCompetitions ??
+        []) {
         const newSubEventCompetitionDb = new SubEventCompetition({
           ...subEventCompetition.toJSON(),
           id: undefined,

@@ -100,7 +100,7 @@ export class EventEntryResolver {
   })
   async enrollmentValidation(
     @Parent() eventEntry: EventEntry
-  ): Promise<TeamEnrollmentOutput> {
+  ): Promise<TeamEnrollmentOutput | null> {
     const team = await eventEntry.getTeam();
     const teamsOfClub = await Team.findAll({
       where: {
@@ -120,14 +120,14 @@ export class EventEntryResolver {
           teamNumber: t.teamNumber,
           basePlayers: t.entry?.meta?.competition?.players,
           players: t.players
-            .filter(
+            ?.filter(
               (p) =>
                 p.TeamPlayerMembership.membershipType ===
                 TeamMembershipType.REGULAR
             )
             .map((p) => p.id),
           backupPlayers: t.players
-            .filter(
+            ?.filter(
               (p) =>
                 p.TeamPlayerMembership.membershipType ===
                 TeamMembershipType.BACKUP
@@ -141,7 +141,7 @@ export class EventEntryResolver {
       EnrollmentValidationService.defaultValidators()
     );
 
-    return validation.teams.find((t) => t.id === team.id);
+    return validation.teams?.find((t) => t.id === team.id) ?? null;
   }
 
   @Mutation(() => Boolean)
@@ -151,7 +151,7 @@ export class EventEntryResolver {
     @Args('season', { type: () => Int }) season: number,
     @Args('email', { type: () => String }) email: string
   ) {
-    if (!user.hasAnyPermission([clubId + '_edit:club', 'edit-any:club'])) {
+    if (!await user.hasAnyPermission([clubId + '_edit:club', 'edit-any:club'])) {
       throw new UnauthorizedException(
         `You do not have permission to enroll a club`
       );
@@ -185,7 +185,7 @@ export class EntryCompetitionPlayersResolver {
   @ResolveField(() => Player)
   async player(
     @Parent() eventEntryPlayer: EntryCompetitionPlayer
-  ): Promise<Player> {
-    return await Player.findByPk(eventEntryPlayer.id);
+  ): Promise<Player | null> {
+    return Player.findByPk(eventEntryPlayer.id);
   }
 }

@@ -32,7 +32,7 @@ export class ListArgs extends WhereArgs {
 
   @Field(() => Int, { nullable: true })
   @Min(1)
-  take = 10;
+  take?: number | null;
 
   @Field(() => [SortOrderType], { nullable: true })
   order?: SortOrderType[];

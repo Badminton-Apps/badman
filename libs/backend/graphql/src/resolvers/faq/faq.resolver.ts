@@ -21,8 +21,8 @@ export class FaqResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Faq)
-  async faq(@Args('id', { type: () => ID }) id: string): Promise<Faq> {
-    return await Faq.findByPk(id);
+  async faq(@Args('id', { type: () => ID }) id: string): Promise<Faq | null> {
+    return Faq.findByPk(id);
   }
 
   @Query(() => [Faq])
@@ -32,7 +32,7 @@ export class FaqResolver {
 
   @Mutation(() => Faq)
   async createFaq(@User() user: Player, @Args('data') data: FaqNewInput) {
-    if (!user.hasAnyPermission(['add:faq'])) {
+    if (!await user.hasAnyPermission(['add:faq'])) {
       throw new UnauthorizedException(
         `You do not have permission to create a faq`
       );
@@ -60,7 +60,7 @@ export class FaqResolver {
 
   @Mutation(() => Faq)
   async updateFaq(@User() user: Player, @Args('data') data: FaqUpdateInput) {
-    if (!user.hasAnyPermission([`edit:faq`])) {
+    if (!await user.hasAnyPermission([`edit:faq`])) {
       throw new UnauthorizedException(
         `You do not have permission to edit this faq`
       );
@@ -94,7 +94,7 @@ export class FaqResolver {
     @User() user: Player,
     @Args('id', { type: () => ID }) id: string
   ) {
-    if (!user.hasAnyPermission([`edit:faq`])) {
+    if (!await user.hasAnyPermission([`edit:faq`])) {
       throw new UnauthorizedException(
         `You do not have permission to delete this faq`
       );
