@@ -180,10 +180,10 @@ export class Team extends Model {
   @Column(DataType.STRING)
   phone?: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
   @Unique('unique_constraint')
   @Column(DataType.NUMBER)
-  teamNumber?: number;
+  teamNumber!: number;
 
   @HasMany(() => EncounterCompetition, 'homeTeamId')
   homeEncounters?: Relation<EncounterCompetition>;

@@ -36,10 +36,10 @@ import { ListArgs } from '../../../utils';
 @ObjectType()
 export class PagedEventTournament {
   @Field(() => Int)
-  count: number;
+  count?: number;
 
   @Field(() => [EventTournament])
-  rows: EventTournament[];
+  rows?: EventTournament[];
 }
 
 @Resolver(() => EventTournament)
@@ -89,7 +89,7 @@ export class EventTournamentResolver {
     @User() user: Player,
     @Args('data') updateEventTournamentData: EventTournamentUpdateInput
   ): Promise<EventTournament> {
-    if (!user.hasAnyPermission([`edit:tournament`])) {
+    if (!await user.hasAnyPermission([`edit:tournament`])) {
       throw new UnauthorizedException(
         `You do not have permission to add a tournament`
       );
@@ -120,6 +120,11 @@ export class EventTournamentResolver {
           },
           transaction,
         });
+
+        if (!ranking) {
+          throw new NotFoundException(`${RankingSystem.name}: primary`);
+        }
+
         const groups = await ranking.getRankingGroups({
           transaction,
         });

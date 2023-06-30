@@ -39,6 +39,7 @@ import {
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
+import { v4 as uuidv4 } from 'uuid';
 
 @Resolver(() => Team)
 export class TeamsResolver {
@@ -86,7 +87,7 @@ export class TeamsResolver {
   @ResolveField(() => String)
   async phone(@User() user: Player, @Parent() team: Team) {
     const perm = [`details-any:team`, `${team.clubId}_details:team`];
-    if (!user.hasAnyPermission(perm)) {
+    if (!await user.hasAnyPermission(perm)) {
       return null;
     }
 
@@ -96,7 +97,7 @@ export class TeamsResolver {
   @ResolveField(() => String)
   async email(@User() user: Player, @Parent() team: Team) {
     const perm = [`details-any:team`, `${team.clubId}_details:team`];
-    if (!user.hasAnyPermission(perm)) {
+    if (!await user.hasAnyPermission(perm)) {
       return null;
     }
 
@@ -144,7 +145,7 @@ export class TeamsResolver {
       }
 
       if (
-        !user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club'])
+        !await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club'])
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`
@@ -169,7 +170,7 @@ export class TeamsResolver {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { players, entry, ...teamData } = newTeamData;
       let created = false;
-      let teamDb: Team = null;
+      let teamDb: Team | null = null;
 
       if (teamData.link) {
         teamDb = await Team.findOne({
@@ -191,6 +192,7 @@ export class TeamsResolver {
         created = true;
       }
 
+    
       if (!created) {
         // update values
         teamDb.name = newTeamData.name;
@@ -198,12 +200,12 @@ export class TeamsResolver {
         teamDb.email = newTeamData.email;
         teamDb.abbreviation = newTeamData.abbreviation;
         teamDb.season = newTeamData.season;
-        teamDb.type = newTeamData.type;
+        teamDb.type = newTeamData.type || teamDb.type;
         teamDb.teamNumber = newTeamData.teamNumber;
         teamDb.captainId = newTeamData.captainId;
         teamDb.preferredDay = newTeamData.preferredDay;
         teamDb.preferredTime = newTeamData.preferredTime;
-        teamDb.link = newTeamData.link;
+        teamDb.link = newTeamData.link ?? uuidv4(),
         await teamDb.save({ transaction });
       }
       if (created) {
@@ -245,6 +247,10 @@ export class TeamsResolver {
                 await membership.save({ transaction });
               }
             } else {
+              if (!teamDb) {
+                throw new BadRequestException('Could not create team');
+              }
+        
               await teamDb.addPlayer(dbPlayer, {
                 through: {
                   membershipType: player.membershipType,
@@ -302,7 +308,7 @@ export class TeamsResolver {
           });
 
           if (!system) {
-            throw new Error('No primary ranking system found');
+            throw new NotFoundException('No primary ranking system found');
           }
 
           const players: EntryCompetitionPlayer[] = [];
@@ -327,6 +333,14 @@ export class TeamsResolver {
           for (const p of newTeamData.entry.meta.competition.players) {
             const player = dbPlayers.find((dbPlayer) => dbPlayer.id === p.id);
             const ranking = rankings.find((r) => r.playerId === p.id);
+
+            if (!player){
+              throw new NotFoundException(`Player ${p.id} not found`);
+            }
+
+            if (!ranking) {
+              throw new NotFoundException(`Ranking for player ${p.id} not found`);
+            }
 
             players.push({
               id: player.id,
@@ -376,7 +390,7 @@ export class TeamsResolver {
       }
 
       if (
-        !user.hasAnyPermission([
+        !await user.hasAnyPermission([
           `${dbTeam.clubId}_edit:location`,
           'edit-any:club',
         ])
@@ -392,10 +406,10 @@ export class TeamsResolver {
         updateTeamData.teamNumber &&
         updateTeamData.teamNumber !== dbTeam.teamNumber
       ) {
-        updateTeamData.name = `${dbTeam.club.name} ${
+        updateTeamData.name = `${dbTeam.club?.name} ${
           updateTeamData.teamNumber
         }${getLetterForRegion(dbTeam.type, 'vl')}`;
-        updateTeamData.abbreviation = `${dbTeam.club.abbreviation} ${
+        updateTeamData.abbreviation = `${dbTeam.club?.abbreviation} ${
           updateTeamData.teamNumber
         }${getLetterForRegion(dbTeam.type, 'vl')}`;
 
@@ -467,7 +481,7 @@ export class TeamsResolver {
       // revert to original name
       if (changedTeams.length > 0) {
         for (const dbCteam of changedTeams) {
-          dbCteam.name = dbCteam.name.replace('_temp', '');
+          dbCteam.name = dbCteam.name?.replace('_temp', '');
           await dbCteam.save({ transaction });
         }
       }
@@ -496,7 +510,7 @@ export class TeamsResolver {
       }
 
       if (
-        !user.hasAnyPermission([
+        !await user.hasAnyPermission([
           `${dbTeam.clubId}_edit:location`,
           'edit-any:club',
         ])
@@ -524,17 +538,17 @@ export class TeamsResolver {
    */
 
   private _setNameAndAbbreviation(team: Team, temp = false) {
-    let prefix = team.club.name;
-    switch (team.club.useForTeamName) {
+    let prefix = team.club?.name;
+    switch (team.club?.useForTeamName) {
       case UseForTeamName.NAME:
       case UseForTeamName.FULL_NAME:
-        prefix = team.club.name;
+        prefix = team.club?.name;
         break;
       case UseForTeamName.ABBREVIATION:
-        prefix = team.club.abbreviation;
+        prefix = team.club?.abbreviation;
         break;
       default:
-        prefix = team.club.name;
+        prefix = team.club?.name;
     }
 
     team.name = `${prefix} ${team.teamNumber}${getLetterForRegion(
@@ -542,7 +556,7 @@ export class TeamsResolver {
       'vl'
     )}${temp ? '_temp' : ''}`;
 
-    team.abbreviation = `${team.club.abbreviation} ${
+    team.abbreviation = `${team.club?.abbreviation} ${
       team.teamNumber
     }${getLetterForRegion(team.type, 'vl')}`;
   }
@@ -561,7 +575,7 @@ export class TeamsResolver {
     }
 
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!user.hasAnyPermission(perm)) {
+    if (!await user.hasAnyPermission(perm)) {
       throw new UnauthorizedException();
     }
 
@@ -591,7 +605,7 @@ export class TeamsResolver {
       throw new NotFoundException(`${Team.name}: ${teamId}`);
     }
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!user.hasAnyPermission(perm)) {
+    if (!await user.hasAnyPermission(perm)) {
       throw new UnauthorizedException();
     }
 
@@ -620,7 +634,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${teamId}`);
       }
 
-      if (!user.hasAnyPermission(perm)) {
+      if (!await user.hasAnyPermission(perm)) {
         throw new UnauthorizedException();
       }
 
@@ -650,7 +664,11 @@ export class TeamsResolver {
         throw new BadRequestException('Player not part of base?');
       }
 
-      meta.competition.players = meta?.competition.players.filter(
+      if (!meta?.competition?.players) {
+        throw new BadRequestException('No players in base?');
+      }
+
+      meta.competition.players = meta?.competition?.players.filter(
         (p) => p.id !== playerId
       );
 
@@ -684,7 +702,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${teamId}`);
       }
 
-      if (!user.hasAnyPermission(perm)) {
+      if (!await user.hasAnyPermission(perm)) {
         throw new UnauthorizedException();
       }
 
@@ -716,7 +734,7 @@ export class TeamsResolver {
         };
       }
 
-      entry.meta?.competition.players.push({
+      entry.meta?.competition?.players.push({
         id: player.id,
         single: -1,
         double: -1,
@@ -754,7 +772,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${teamId}`);
       }
 
-      if (!user.hasAnyPermission(perm)) {
+      if (!await user.hasAnyPermission(perm)) {
         throw new UnauthorizedException();
       }
 
@@ -788,6 +806,11 @@ export class TeamsResolver {
         ...currentPlayer,
         ...playerCompetition,
       };
+
+
+      if (!entry.meta?.competition?.players) {
+        throw new BadRequestException('No players in base?');
+      }
 
       // update the player in the meta
       entry.meta.competition.players = entry.meta.competition.players.map((p) =>
@@ -825,7 +848,7 @@ export class TeamsResolver {
       throw new NotFoundException(`${Team.name}: ${teamId}`);
     }
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!user.hasAnyPermission(perm)) {
+    if (!await user.hasAnyPermission(perm)) {
       throw new UnauthorizedException();
     }
 
@@ -851,7 +874,7 @@ export class TeamsResolver {
       throw new NotFoundException(`${Team.name}: ${teamId}`);
     }
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!user.hasAnyPermission(perm)) {
+    if (!await user.hasAnyPermission(perm)) {
       throw new UnauthorizedException();
     }
 

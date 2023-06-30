@@ -38,10 +38,10 @@ import { ListArgs } from '../../utils';
 @ObjectType()
 export class PagedClub {
   @Field(() => Int)
-  count: number;
+  count?: number;
 
   @Field(() => [Club])
-  rows: Club[];
+  rows?: Club[];
 }
 
 @Resolver(() => Club)
@@ -125,7 +125,7 @@ export class ClubsResolver {
     @User() user: Player,
     @Args('data') newClubData: ClubNewInput
   ) {
-    if (!user.hasAnyPermission(['add:club'])) {
+    if (!(await user.hasAnyPermission(['add:club']))) {
       throw new UnauthorizedException(
         `You do not have permission to add a club`
       );
@@ -152,7 +152,7 @@ export class ClubsResolver {
     @User() user: Player,
     @Args('id', { type: () => ID }) id: string
   ) {
-    if (!user.hasAnyPermission(['remove:club'])) {
+    if (!(await user.hasAnyPermission(['remove:club']))) {
       throw new UnauthorizedException(
         `You do not have permission to add a club`
       );
@@ -186,10 +186,10 @@ export class ClubsResolver {
     @Args('data') updateClubData: ClubUpdateInput
   ) {
     if (
-      !user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${updateClubData.id}_edit:club`,
         'edit-any:club',
-      ])
+      ]))
     ) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`
@@ -237,10 +237,10 @@ export class ClubsResolver {
     @Args('data') addPlayerToClubData: ClubPlayerMembershipNewInput
   ) {
     if (
-      !user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${addPlayerToClubData.clubId}_edit:club`,
         'edit-any:club',
-      ])
+      ]))
     ) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`
@@ -304,10 +304,10 @@ export class ClubsResolver {
     }
 
     if (
-      !user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${membership.clubId}_edit:club`,
         'edit-any:club',
-      ])
+      ]))
     ) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`
@@ -344,10 +344,10 @@ export class ClubsResolver {
     }
 
     if (
-      !user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${membership.clubId}_edit:club`,
         'edit-any:club',
-      ])
+      ]))
     ) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`

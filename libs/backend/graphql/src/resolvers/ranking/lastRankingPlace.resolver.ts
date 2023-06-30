@@ -20,10 +20,10 @@ import { ListArgs } from '../../utils';
 @ObjectType()
 export class PagedLastRankingPlace {
   @Field(() => Int)
-  count: number;
+  count?: number;
 
   @Field(() => [RankingLastPlace])
-  rows: RankingLastPlace[];
+  rows?: RankingLastPlace[];
 }
 
 @Resolver(() => RankingLastPlace)
