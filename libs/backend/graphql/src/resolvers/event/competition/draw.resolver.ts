@@ -75,7 +75,7 @@ export class DrawCompetitionResolver {
     @User() user: Player,
     @Args('data') updateDrawCompetitionData: DrawCompetitionUpdateInput
   ): Promise<DrawCompetition> {
-    if (!user.hasAnyPermission([`edit:competition`])) {
+    if (!await user.hasAnyPermission([`edit:competition`])) {
       throw new UnauthorizedException(
         `You do not have permission to add a competition`
       );
@@ -128,7 +128,7 @@ export class DrawCompetitionResolver {
 
         standings
           .slice(
-            standings.length - updateDrawCompetitionData.fallers,
+            standings.length - (updateDrawCompetitionData.fallers ?? 0),
             standings.length
           )
           .forEach((standing) => (standing.faller = true));

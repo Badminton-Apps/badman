@@ -29,8 +29,7 @@
     "format:write": "nx format:write",
     "format:check": "nx format:write",
     "update": "nx migrate latest",
-    "generate-barrels": "barrelsby --config=barrelsby.config.json",
-    "prepare": "ts-patch install"
+    "generate-barrels": "barrelsby --config=barrelsby.config.json"
   },
   "private": true,
   "dependencies": {
@@ -64,7 +63,6 @@
     "@keyv/redis": "^2.6.1",
     "@logtail/node": "~0.4.0",
     "@logtail/winston": "^0.4.1",
-    "@nestia/core": "^1.4.1",
     "@nestjs/apollo": "^12.0.1",
     "@nestjs/axios": "^3.0.0",
     "@nestjs/bull": "^10.0.0",
@@ -147,7 +145,6 @@
     "socket.io": "^4.6.2",
     "sqlite3": "^5.1.6",
     "tslib": "^2.5.3",
-    "typia": "^4.1.1",
     "uuid": "^9.0.0",
     "web-push": "^3.6.3",
     "web-vitals": "^3.3.2",
@@ -167,8 +164,6 @@
     "@angular/cli": "~16.1.0",
     "@angular/compiler-cli": "16.1.2",
     "@angular/language-service": "16.1.2",
-    "@nestia/e2e": "^0.3.6",
-    "@nestia/sdk": "^1.4.3",
     "@nestjs/schematics": "10.0.1",
     "@nestjs/testing": "10.0.2",
     "@nguniversal/builders": "16.1.0",
@@ -214,7 +209,6 @@
     "jest-environment-jsdom": "29.5.0",
     "jest-environment-node": "^29.5.0",
     "jest-preset-angular": "13.1.1",
-    "nestia": "^4.3.2",
     "ng-packagr": "16.1.0",
     "nx": "16.4.0",
     "nx-cloud": "16.0.5",
@@ -226,8 +220,6 @@
     "supertest": "^6.3.3",
     "swc-loader": "^0.2.3",
     "ts-jest": "29.1.0",
-    "ts-node": "^10.9.1",
-    "ts-patch": "^3.0.1",
     "typescript": "^5.1.6",
     "webpack": "^5.87.0"
   },
@@ -273,14 +265,5 @@
   ],
   "stackblitz": {
     "startCommand": "npm run start:stackblitz"
-  },
-  "nx": {
-    "targets": {
-      "build": {
-        "outputs": [
-          "{projectRoot}/dist"
-        ]
-      }
-    }
   }
 }

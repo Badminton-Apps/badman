@@ -1,7 +1,7 @@
 import { Player } from '@badman/backend-database';
 import { Logger, UnauthorizedException } from '@nestjs/common';
 
-export const canExecute = (
+export const canExecute = async (
   user: Player,
   permissions?: {
     anyPermissions?: string[];
@@ -17,7 +17,7 @@ export const canExecute = (
   }
 
   if (permissions?.anyPermissions && permissions?.anyPermissions.length > 0) {
-    if (!user.hasAnyPermission(permissions.anyPermissions)) {
+    if (!await user.hasAnyPermission(permissions.anyPermissions)) {
       Logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: permissions.anyPermissions,
@@ -32,7 +32,7 @@ export const canExecute = (
   }
 
   if (permissions?.allPermissions && permissions?.allPermissions.length > 0) {
-    if (!user.hasAllPermission(permissions.allPermissions)) {
+    if (!await user.hasAllPermission(permissions.allPermissions)) {
       Logger.warn("User tried something it should't have done", {
         required: {
           allClaim: permissions.allPermissions,

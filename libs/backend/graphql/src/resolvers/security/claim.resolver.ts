@@ -36,7 +36,7 @@ export class ClaimResolver {
     @Args('playerId', { type: () => ID }) playerId: string,
     @Args('active') active: boolean
   ): Promise<boolean> {
-    if (!user.hasAnyPermission([`edit:claims`])) {
+    if (!await user.hasAnyPermission([`edit:claims`])) {
       throw new UnauthorizedException(
         `You do not have permission to edit claims`
       );

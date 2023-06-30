@@ -39,10 +39,10 @@ import { ListArgs } from '../../../utils';
 @ObjectType()
 export class PagedEncounterCompetition {
   @Field(() => Int)
-  count: number;
+  count?: number;
 
   @Field(() => [EncounterCompetition])
-  rows: EncounterCompetition[];
+  rows?: EncounterCompetition[];
 }
 
 @Resolver(() => EncounterCompetition)
@@ -121,15 +121,22 @@ export class EncounterCompetitionResolver {
     const encounter = await EncounterCompetition.findByPk(
       newChangeEncounter.encounterId
     );
+
+    if (!encounter) {
+      throw new NotFoundException(
+        `${EncounterCompetition.name}: ${newChangeEncounter.encounterId}`
+      );
+    }
+
     const team = newChangeEncounter.home
       ? await encounter.getHome()
       : await encounter.getAway();
 
     if (
-      !user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${team.clubId}_change:encounter`,
         'change-any:encounter',
-      ])
+      ]))
     ) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`
@@ -154,10 +161,10 @@ export class EncounterCompetitionResolver {
 
       // Set the state
       if (newChangeEncounter.accepted) {
-        const selectedDates = newChangeEncounter.dates.filter(
+        const selectedDates = newChangeEncounter.dates?.filter(
           (r) => r.selected === true
         );
-        if (selectedDates.length !== 1) {
+        if (selectedDates?.length !== 1) {
           // Multiple dates were selected
           throw new Error('Multiple dates selected');
         }
@@ -208,7 +215,7 @@ export class EncounterCompetitionResolver {
     } else {
       this.notificationService.notifyEncounterChange(
         encounter,
-        newChangeEncounter.home
+        newChangeEncounter.home ?? false
       );
     }
 
@@ -229,18 +236,18 @@ export class EncounterCompetitionResolver {
     encounterChange.accepted = false;
 
     change.dates = change.dates
-      .map((r) => {
+      ?.map((r) => {
         const parsedDate = moment(r.date);
-        r.date = parsedDate.isValid() ? parsedDate.toDate() : null;
+        r.date = parsedDate.isValid() ? parsedDate.toDate() : undefined;
         return r;
       })
-      .filter((r) => r.date !== null);
+      .filter((r) => r.date !== undefined);
 
     // Add new dates
-    for (const date of change.dates) {
+    for (const date of change.dates ?? []) {
       // Check if the encounter has alredy a change for this date
       let encounterChangeDate = existingDates.find(
-        (r) => r.date.getTime() === date.date.getTime()
+        (r) => r.date?.getTime() === date.date?.getTime()
       );
 
       // If not create new one
@@ -264,7 +271,9 @@ export class EncounterCompetitionResolver {
 
     // Remove dates in the change request but not in existing dates
     for (const date of existingDates) {
-      if (!change.dates.find((r) => r.date.getTime() === date.date.getTime())) {
+      if (
+        !change.dates?.find((r) => r.date?.getTime() === date.date?.getTime())
+      ) {
         await date.destroy({ transaction });
       }
     }

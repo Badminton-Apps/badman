@@ -45,6 +45,9 @@ export class RankingPlaceResolver {
       const system = await RankingSystem.findByPk(place.systemId, {
         attributes: ['amountOfLevels'],
       });
+      if (!system) {
+        throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
+      }
 
       place = getRankingWhenNull(place, system.amountOfLevels) as RankingPlace;
     }
@@ -63,6 +66,10 @@ export class RankingPlaceResolver {
         const system = await RankingSystem.findByPk(place.systemId, {
           attributes: ['amountOfLevels'],
         });
+
+        if (!system) {
+          throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
+        }
 
         place = getRankingWhenNull(place, system.amountOfLevels) as RankingPlace;
       }
@@ -90,7 +97,7 @@ export class RankingPlaceResolver {
     updateRankingPlaceData: RankingPlaceUpdateInput
   ) {
     if (
-      !user.hasAnyPermission([
+      !await user.hasAnyPermission([
         `${updateRankingPlaceData.playerId}_edit:player`,
         'edit-any:player',
       ])
@@ -138,7 +145,7 @@ export class RankingPlaceResolver {
     @Args('data') newRankingPlaceData: RankingPlaceNewInput
   ) {
     if (
-      !user.hasAnyPermission([
+      !await user.hasAnyPermission([
         `${newRankingPlaceData.playerId}_edit:player`,
         'edit-any:player',
       ])
@@ -189,7 +196,7 @@ export class RankingPlaceResolver {
     }
 
     if (
-      !user.hasAnyPermission([
+      !await user.hasAnyPermission([
         `${rankingPlace.playerId}_edit:player`,
         'edit-any:player',
       ])
