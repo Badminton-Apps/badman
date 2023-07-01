@@ -22,14 +22,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Sequelize } from 'sequelize-typescript';
 
 import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
+import { AssemblyValidationError } from '../../models';
 import { AssemblyValidationService } from './assembly.service';
 import {
   PlayerCompStatusRule,
   PlayerCompStatusRuleParams,
   PlayerGenderRule,
-  PlayerGenderRulePartnerParams,
-  PlayerGenderRuleParams,
   PlayerGenderRuleIndividualParams,
+  PlayerGenderRulePartnerParams,
   PlayerMaxGamesRule,
   PlayerMaxGamesRuleParams,
   PlayerMinLevelRule,
@@ -44,9 +44,8 @@ import {
   TeamSubeventIndexRule,
   TeamSubeventIndexRuleParams,
   TeamSubsIndexRule,
-  TeamSubsIndexRuleParams,
+  TeamSubsIndexRuleParams
 } from './rules';
-import { AssemblyValidationError } from '../../models';
 
 describe('AssemblyValidationService', () => {
   let service: AssemblyValidationService;
