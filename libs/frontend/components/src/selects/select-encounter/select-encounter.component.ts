@@ -36,6 +36,7 @@ import {
   distinctUntilChanged,
   map,
   of,
+  combineLatest,
   pairwise,
   shareReplay,
   startWith,
@@ -77,6 +78,9 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
   dependsOn = 'team';
 
   @Input()
+  updateOn = ['team'];
+
+  @Input()
   updateUrl = false;
 
   @Input()
@@ -113,10 +117,22 @@ export class SelectEncounterComponent implements OnInit, OnDestroy {
     if (!previous) {
       console.warn(`Dependency ${this.dependsOn} not found`, previous);
     } else {
-      this.encounters$ = previous.valueChanges.pipe(
+      // get all the controls that we need to update on when change
+      const updateOnControls = this.updateOn
+        ?.filter((controlName) => controlName !== this.dependsOn)
+        .map((controlName) => this.group?.get(controlName))
+        .filter((control) => control != null) as FormControl[];
+
+      this.encounters$ = combineLatest([
+        previous.valueChanges.pipe(startWith(null)),
+        ...updateOnControls.map((control) =>
+          control?.valueChanges?.pipe(startWith(() => control?.value))
+        ),
+      ]).pipe(
         takeUntil(this.destroy$),
         startWith(null),
         distinctUntilChanged(),
+        map(() => previous?.value),
         pairwise(),
         switchMap(([prev, next]) => {
           if (prev != null && prev !== next) {

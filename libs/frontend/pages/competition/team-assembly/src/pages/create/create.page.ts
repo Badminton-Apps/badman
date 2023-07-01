@@ -12,6 +12,7 @@ import { AuthenticateService } from '@badman/frontend-auth';
 import {
   SelectClubComponent,
   SelectEncounterComponent,
+  SelectSeasonComponent,
   SelectTeamComponent,
 } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
@@ -38,6 +39,7 @@ import { getCurrentSeason } from '@badman/utils';
     SelectClubComponent,
     SelectTeamComponent,
     SelectEncounterComponent,
+    SelectSeasonComponent,
 
     TranslateModule,
 

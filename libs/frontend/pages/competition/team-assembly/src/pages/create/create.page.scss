@@ -20,6 +20,10 @@ h1 {
     display: flex;
   }
 
+  badman-select-season {
+    max-width: 175px;
+  }
+
   badman-select-club,
   badman-select-team {
     max-width: 20%;
@@ -32,6 +36,7 @@ h1 {
   @media screen and (max-width: 600px) {
     flex-direction: column;
 
+    badman-select-season,
     badman-select-club,
     badman-select-team,
     badman-select-encounter {
