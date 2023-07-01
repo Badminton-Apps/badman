@@ -1,18 +1,28 @@
 /**
  * Converts milliseconds into greater time units as possible
- * @param {int} ms - Amount of time measured in milliseconds
+ * @param {number} ms - Amount of time measured in milliseconds
  * @return {?Object} Reallocated time units. NULL on failure.
  */
-export const timeUnits = (ms) => {
+export const timeUnits = (
+  ms: number
+): {
+  // weeks: number; // Uncomment for weeks
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  ms: number;
+  toString: () => string;
+} | null => {
   if (!Number.isInteger(ms)) {
     return null;
   }
   /**
    * Takes as many whole units from the time pool (ms) as possible
-   * @param {int} msUnit - Size of a single unit in milliseconds
-   * @return {int} Number of units taken from the time pool
+   * @param {number} msUnit - Size of a single unit in milliseconds
+   * @return {number} Number of units taken from the time pool
    */
-  const allocate = (msUnit) => {
+  const allocate = (msUnit: number): number => {
     const units = Math.trunc(ms / msUnit);
     ms -= units * msUnit;
     return units;
@@ -27,8 +37,11 @@ export const timeUnits = (ms) => {
     seconds: allocate(1000),
     ms: ms, // remainder
     toString: () => {
-      return Object.values(timeUnits(ms))
-        .filter((v) => v > 0)
+      const values = timeUnits(ms);
+      if (!values) return '';
+
+      return Object.values(values)
+        .filter((value) => typeof value !== 'function')
         .join(', ');
     },
   };

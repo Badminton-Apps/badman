@@ -1,6 +1,10 @@
 import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import { getBrowser, accepCookies, selectBadmninton } from '@badman/backend-pupeteer';
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  getBrowser,
+  accepCookies,
+  selectBadmninton,
+} from '@badman/backend-pupeteer';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Browser } from 'puppeteer';
 import { Op } from 'sequelize';
 import { getViaRanking, searchPlayer, getRanking } from './pupeteer';
@@ -14,9 +18,9 @@ export class SyncRankingService {
       where: {
         [Op.or]: [
           {
-            single: null, 
+            single: null,
           },
-          { 
+          {
             double: null,
           },
           {
@@ -30,13 +34,19 @@ export class SyncRankingService {
     this.logger.log(`Found ${rankings.length} players with no ranking`);
 
     // return last 10
-    return rankings
+    return rankings;
   }
 
   async syncRanking(playerId: string): Promise<void> {
-    let browser: Browser;
+    let browser: Browser | undefined
 
     const player = await Player.findByPk(playerId);
+
+    if (!player) {
+      throw new NotFoundException(`Player ${playerId} not found`);
+      return;
+    }
+
     this.logger.log(
       `Syncing ranking for ${player.fullName} (${player.memberId})`
     );
@@ -45,6 +55,10 @@ export class SyncRankingService {
         primary: true,
       },
     });
+
+    if (!primary) {
+      throw new NotFoundException('No primary ranking system found');
+    }
 
     if (!player.memberId) {
       this.logger.log(`Player ${player.fullName} has no memberId`);
@@ -80,9 +94,9 @@ export class SyncRankingService {
       // Processing player
       const result = await getViaRanking({ page }, player);
 
-      let single: number;
-      let double: number;
-      let mix: number;
+      let single: number | undefined;
+      let double: number | undefined;
+      let mix: number | undefined;
 
       if (!result) {
         // ranking was not found

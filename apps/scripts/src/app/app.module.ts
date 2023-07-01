@@ -23,6 +23,11 @@ export class ScriptModule implements OnModuleInit {
       const progress = Math.round((index / noRanking.length) * 10000) / 100;
       this.logger.log(`Progress: ${progress}%, ${index} / ${noRanking.length}`);
 
+      if (!player.playerId) {
+        this.logger.log(`No memberId found for player ${player.id}`);
+        continue;
+      }
+
       await this.fill.syncRanking(player.playerId);
     }
   }

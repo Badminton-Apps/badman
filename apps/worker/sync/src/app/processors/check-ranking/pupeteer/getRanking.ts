@@ -3,24 +3,31 @@ import { Page } from 'puppeteer';
 
 export async function getRanking(
   pupeteer: {
-    page: Page;
-    timeout?: number;
+    page: Page | null;
+    timeout: number;
   } = {
     page: null,
     timeout: 5000,
   }
 ) {
   const { page, timeout } = pupeteer;
-  let single: number = undefined;
-  let double: number = undefined;
-  let mix: number = undefined;
-  
+
+  if (!page) {
+    throw new Error('No page provided');
+  }
+
+  let single: number | undefined = undefined;
+  let double: number | undefined = undefined;
+  let mix: number | undefined = undefined;
+
   {
     const targetPage = page;
     const selector = ["#mediaContentSubinfo > ul > li > span[title='Single']"];
     const element = await waitForSelector(selector, targetPage, timeout);
     const text = await element.evaluate((node) => node.textContent);
-    single = parseInt(text);
+    if (text) {
+      single = parseInt(text);
+    }
   }
 
   {
@@ -28,7 +35,9 @@ export async function getRanking(
     const selector = ["#mediaContentSubinfo > ul > li > span[title='Double']"];
     const element = await waitForSelector(selector, targetPage, timeout);
     const text = await element.evaluate((node) => node.textContent);
-    double = parseInt(text);
+    if (text) {
+      double = parseInt(text);
+    }
   }
 
   {
@@ -36,7 +45,9 @@ export async function getRanking(
     const selector = ["#mediaContentSubinfo > ul > li > span[title='Mixed']"];
     const element = await waitForSelector(selector, targetPage, timeout);
     const text = await element.evaluate((node) => node.textContent);
-    mix = parseInt(text);
+    if (text) {
+      mix = parseInt(text);
+    }
   }
 
   return {

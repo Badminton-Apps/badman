@@ -4,7 +4,7 @@ import { Page } from 'puppeteer';
 
 export async function enterEditMode(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -13,9 +13,12 @@ export async function enterEditMode(
   encounter: EncounterCompetition
 ) {
   const { page } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const matchId = encounter.visualCode;
   const eventId =
-    encounter.drawCompetition.subEventCompetition.eventCompetition.visualCode;
+    encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
 
   {
     const targetPage = page;

@@ -74,7 +74,7 @@ export class SyncDateProcessor {
         const bodyPut = parser.parse(resultPut.data).Result as Result;
         if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
           this.logger.error(options);
-          throw new Error(bodyPut.Error.Message);
+          throw new Error(bodyPut.Error?.Message);
         }
       } else {
         this.logger.debug(options);
@@ -82,7 +82,7 @@ export class SyncDateProcessor {
       encounter.synced = new Date();
     } catch (error) {
       this.logger.error(error);
-      encounter.synced = null;
+      encounter.synced = undefined;
     } finally {
       await encounter.save();
     }

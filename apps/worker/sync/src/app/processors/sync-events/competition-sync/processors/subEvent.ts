@@ -14,7 +14,7 @@ import {
 } from '@badman/backend-visual';
 
 import { LevelType, SubEventTypeEnum } from '@badman/utils';
-import { Logger } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 
 export interface SubEventStepData {
   subEvent: SubEventCompetition;
@@ -22,14 +22,18 @@ export interface SubEventStepData {
 }
 
 export class CompetitionSyncSubEventProcessor extends StepProcessor {
-  public event: EventCompetition;
-  public existed: boolean;
+  public event?: EventCompetition;
+  public existed?: boolean;
 
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
+    if (!options) {
+      options = {};
+    }
+
     options.logger =
       options.logger || new Logger(CompetitionSyncSubEventProcessor.name);
     super(options);
@@ -37,7 +41,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
 
   public async process(): Promise<SubEventStepData[]> {
     if (!this.event) {
-      throw new Error('No Event');
+      throw new NotFoundException(`${EventCompetition.name} not found`);
     }
 
     const subEvents = await this.event.getSubEventCompetitions({
@@ -59,7 +63,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       const dbSubEvents = subEvents.filter(
         (r) => r.visualCode === `${xmlEvent.Code}`
       );
-      let dbSubEvent: SubEventCompetition = null;
+      let dbSubEvent: SubEventCompetition | null = null;
 
       if (dbSubEvents.length === 1) {
         dbSubEvent = dbSubEvents[0];
@@ -86,13 +90,14 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
         }
 
         // Hopefully with this we can link with the correct subEvent so our link isn't lost
-        dbSubEvent = subEvents.find(
-          (r) =>
-            r.name?.toLowerCase()?.trim() ===
-              xmlEvent.Name.replace(/[ABCDE]+$/gm, '')
-                .trim()
-                ?.toLowerCase() && r.eventType === type
-        );
+        dbSubEvent =
+          subEvents.find(
+            (r) =>
+              r.name?.toLowerCase()?.trim() ===
+                xmlEvent.Name.replace(/[ABCDE]+$/gm, '')
+                  .trim()
+                  ?.toLowerCase() && r.eventType === type
+          ) ?? null;
       }
 
       if (!dbSubEvent) {
@@ -144,7 +149,9 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
     return returnSubEvents;
   }
 
-  private getEventType(xmlEvent: XmlTournamentEvent): SubEventTypeEnum {
+  private getEventType(
+    xmlEvent: XmlTournamentEvent
+  ): SubEventTypeEnum | undefined {
     switch (xmlEvent.GenderID) {
       case XmlGenderID.Male:
       case XmlGenderID.Boy:

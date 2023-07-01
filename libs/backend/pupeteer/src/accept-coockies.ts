@@ -3,14 +3,19 @@ import { waitForSelectors } from './shared';
 
 export async function accepCookies(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
     timeout: 5000,
-  }
+  },
 ) {
   const { page, timeout } = pupeteer;
+
+  if (!page) {
+    throw new Error('No page provided');
+  }
+
   {
     const targetPage = page;
     const promises = [];

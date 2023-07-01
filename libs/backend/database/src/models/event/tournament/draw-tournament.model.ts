@@ -87,13 +87,15 @@ export class DrawTournament extends Model {
   @Column(DataType.STRING)
   visualCode?: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  risers?: number;
+  risers!: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  fallers?: number;
+  fallers!: number;
 
   @Field(() => SubEventTournament, { nullable: true })
   @BelongsTo(() => SubEventTournament, {

@@ -14,7 +14,7 @@ export interface EntryStepData {
 }
 
 export class CompetitionSyncEntryProcessor extends StepProcessor {
-  public draws: DrawStepData[];
+  public draws?: DrawStepData[];
   private _entries: EntryStepData[] = [];
 
   constructor(
@@ -22,12 +22,16 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
-    options.logger = options.logger || new Logger(CompetitionSyncEntryProcessor.name);
+    if (!options) {
+      options = {};
+    }
+    options.logger =
+      options.logger || new Logger(CompetitionSyncEntryProcessor.name);
     super(options);
   }
 
   public async process(): Promise<EntryStepData[]> {
-    await runParrallel(this.draws.map((e) => this._processEntries(e)));
+    await runParrallel(this.draws?.map((e) => this._processEntries(e)) ?? []);
     return this._entries;
   }
 
@@ -93,12 +97,17 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         transaction: this.transaction,
       });
 
-      let entry = subEventEntries.find(
-        (r) =>
+      let entry = subEventEntries.find((r) => {
+        if (!r.team) {
+          return false;
+        }
+
+        return (
           r.team.teamNumber === teamNumber &&
           r.team.clubId === club?.id &&
           r.team.type === teamType
-      );
+        );
+      });
 
       if (!club) {
         this.logger.warn(`Club not found ${clubName}`);
@@ -131,23 +140,22 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         if (clubTeams?.length > 0) {
           team = clubTeams[0];
         } else {
-          let link: string;
+          let link: string | null = null;
+          
           if (foundTeams?.length > 0) {
             link = foundTeams[0].link;
           }
-
 
           team = new Team({
             type: teamType,
             teamNumber: +teamNumber,
             season: event.season,
             clubId: club?.id,
-            link: link,
+            link: link ?? '',
           });
           await team.save({ transaction: this.transaction });
 
           // check if the found team
-         
         }
       }
 
@@ -184,9 +192,9 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
     // remove entries where the team is of the wrong season
     for (const entry of entries) {
-      if (entry.team.season !== event.season) {
+      if (entry.team?.season !== event.season) {
         this.logger.log(
-          `Team existed multiple times ${entry.team.name} (${entry.team.season})`
+          `Team existed multiple times ${entry.team?.name} (${entry.team?.season})`
         );
         await entry.destroy({ transaction: this.transaction });
 
@@ -202,7 +210,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
       if (entries.length > 1) {
         this.logger.log(
-          `Team existed multiple times ${entries[0].entry.team.name}`
+          `Team existed multiple times ${entries[0].entry.team?.name}`
         );
 
         // remove all but the first entry

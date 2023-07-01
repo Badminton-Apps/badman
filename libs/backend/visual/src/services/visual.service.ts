@@ -223,7 +223,7 @@ export class VisualService {
       useCache
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
-    return parsed.TournamentMatch.MatchDate;
+    return parsed.TournamentMatch?.MatchDate;
   }
 
   async changeDate(tourneyId: string, encounterId: string, newDate: Date) {
@@ -260,7 +260,7 @@ export class VisualService {
       const bodyPut = parser.parse(resultPut.data).Result as XmlResult;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
         this.logger.error(options);
-        throw new Error(bodyPut.Error.Message);
+        throw new Error(bodyPut.Error?.Message);
       }
 
       await this._cacheManager.del(`${VisualService.CACHE_KEY}:${url}`);
@@ -360,7 +360,7 @@ export class VisualService {
     return result.data;
   }
 
-  private _asArray(obj) {
+  private _asArray(obj: unknown | unknown[]) {
     return Array.isArray(obj) ? obj : [obj];
   }
 }

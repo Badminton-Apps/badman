@@ -9,9 +9,13 @@ import { StepOptions, StepProcessor } from '../../../../processing';
 import { Logger } from '@nestjs/common';
 
 export class CompetitionSyncCleanupProcessor extends StepProcessor {
-  public event: EventCompetition;
+  public event?: EventCompetition;
 
   constructor(options?: StepOptions) {
+    if (!options) {
+      options = {};
+    }
+    
     options.logger = options.logger || new Logger(CompetitionSyncCleanupProcessor.name);
     super(options);
   }
