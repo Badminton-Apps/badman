@@ -20,7 +20,6 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthenticateService } from '@badman/frontend-auth';
 import { Club, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
