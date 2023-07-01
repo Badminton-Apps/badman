@@ -14,16 +14,16 @@ type SubEventSortInput = Partial<{
 }>;
 
 export const isFirstHigher = (
-  subEvent1: SubEventSortInput,
-  subEvent2: SubEventSortInput
+  subEvent1?: SubEventSortInput,
+  subEvent2?: SubEventSortInput
 ) => {
   if (
-    !subEvent1.eventCompetition ||
-    !subEvent1.eventCompetition.type ||
-    !subEvent1.level ||
-    !subEvent2.eventCompetition ||
-    !subEvent2.eventCompetition.type ||
-    !subEvent2.level
+    !subEvent1?.eventCompetition ||
+    !subEvent1?.eventCompetition.type ||
+    !subEvent1?.level ||
+    !subEvent2?.eventCompetition ||
+    !subEvent2?.eventCompetition.type ||
+    !subEvent2?.level
   ) {
     return 'same';
   }

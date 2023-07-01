@@ -20,10 +20,10 @@ import { ListArgs } from '../../../utils';
 @ObjectType()
 export class PagedEncounterChange {
   @Field(() => Int)
-  count: number;
+  count?: number;
 
   @Field(() => [EncounterChange])
-  rows: EncounterChange[];
+  rows?: EncounterChange[];
 }
 
 @Resolver(() => EncounterChange)

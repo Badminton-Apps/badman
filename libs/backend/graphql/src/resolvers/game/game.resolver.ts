@@ -44,24 +44,31 @@ export class GamesResolver {
   }
 
   @ResolveField(() => EncounterCompetition)
-  async competition(@Parent() game: Game): Promise<EncounterCompetition> {
+  async competition(
+    @Parent() game: Game
+  ): Promise<EncounterCompetition | null> {
     if (game.linkType == 'competition') {
       return game.getCompetition();
     }
+    return null;
   }
 
   @ResolveField(() => DrawTournament)
-  async tournament(@Parent() game: Game): Promise<DrawTournament> {
+  async tournament(@Parent() game: Game): Promise<DrawTournament | null> {
     if (game.linkType == 'tournament') {
       return game.getTournament();
     }
+
+    return null;
   }
 
   @ResolveField(() => [GamePlayerMembershipType])
   async players(
     @Parent() game: Game
   ): Promise<(Player & GamePlayerMembership)[][]> {
-    const players = await game.getPlayers();
+    const players = (await game.getPlayers()) as (Player & {
+      GamePlayerMembership: GamePlayerMembership;
+    })[];
 
     return players?.map(
       (gamePlayer: Player & { GamePlayerMembership: GamePlayerMembership }) => {

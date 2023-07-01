@@ -1,4 +1,4 @@
-import { Player, Notification } from '@badman/backend-database';
+import { Player, Notification, NotificationOptionsTypes } from '@badman/backend-database';
 import { MailingService } from '@badman/backend-mailing';
 import { NotificationType } from '@badman/utils';
 import { Logger } from '@nestjs/common';
@@ -8,7 +8,7 @@ import moment from 'moment';
 
 export abstract class Notifier<T, A = { email: string }> {
   protected readonly logger = new Logger(Notifier.name);
-  protected abstract type: string;
+  protected abstract type: keyof NotificationOptionsTypes;
   protected abstract linkType: string;
   protected allowedInterval: unitOfTime.Diff = 'day';
 
@@ -17,14 +17,14 @@ export abstract class Notifier<T, A = { email: string }> {
     protected pushService: PushService
   ) {}
 
-  abstract notifyPush(player: Player, data: T, args?: A): Promise<void>;
-  abstract notifyEmail(player: Player, data: T, args?: A): Promise<void>;
-  abstract notifySms(player: Player, data: T, args?: A): Promise<void>;
+  abstract notifyPush(player: Player, data?: T, args?: A): Promise<void>;
+  abstract notifyEmail(player: Player, data?: T, args?: A): Promise<void>;
+  abstract notifySms(player: Player, data?: T, args?: A): Promise<void>;
 
   async notify(
     player: Player,
-    linkId: string,
-    data: T,
+    linkId?: string,
+    data?: T,
     args?: A,
     force?: {
       email?: boolean;
@@ -37,6 +37,12 @@ export abstract class Notifier<T, A = { email: string }> {
       return;
     }
     const settings = await player.getSetting();
+
+    if (!settings) {
+      this.logger.warn(`Player ${player.fullName} has no settings`);
+      return;
+    }
+
     const type = settings?.[this.type] as NotificationType;
 
     if (!type || !force) {

@@ -1,4 +1,8 @@
-import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import {
+  AssemblyValidationData,
+  AssemblyOutput,
+  AssemblyValidationError,
+} from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -27,11 +31,11 @@ export class PlayerCompStatusRule extends Rule {
       single2,
       single3,
       single4,
-      ...double1,
-      ...double2,
-      ...double3,
-      ...double4,
-      ...subtitudes,
+      ...(double1 ?? []),
+      ...(double2 ?? []),
+      ...(double3 ?? []),
+      ...(double4 ?? []),
+      ...(subtitudes ?? []),
     ]) {
       if (!player) {
         continue;
@@ -45,7 +49,7 @@ export class PlayerCompStatusRule extends Rule {
             player: {
               id: player?.id,
               fullName: player?.fullName,
-            }
+            },
           },
         });
       }

@@ -1,6 +1,7 @@
 import {
   EventCompetition,
   EventTournament,
+  NotificationOptionsTypes,
   Player,
 } from '@badman/backend-database';
 import * as webPush from 'web-push';
@@ -13,10 +14,11 @@ export class EventSyncedFailedNotifier extends Notifier<
   },
   {
     email: string;
+    slug: string;
   }
 > {
   protected linkType = 'event';
-  protected type = 'syncSuccessNotification';
+  protected type: keyof NotificationOptionsTypes = 'syncSuccessNotification';
 
   private readonly options = (event: EventCompetition | EventTournament) => {
     const notification = {
@@ -42,15 +44,30 @@ export class EventSyncedFailedNotifier extends Notifier<
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
+    const email = args?.email ?? player.email;
+    if (!email) {
+      this.logger.debug(`No email found for ${player.fullName}`);
+      return;
+    }
+
+    if (!data?.event) {
+      this.logger.debug(`No event found `);
+      return;
+    }
+
+    if (!player?.slug) {
+      this.logger.debug(`No slug found for ${player.fullName}`);
+      return;
+    }
 
     await this.mailing.sendSyncMail(
       {
         fullName: player.fullName,
-        email: args.email ?? player.email,
+        email,
         slug: player.slug,
       },
-      data.event,
-      false,
+      data?.event,
+      false
     );
   }
 
@@ -62,6 +79,6 @@ export class EventSyncedFailedNotifier extends Notifier<
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
-    return null;
+    return Promise.resolve();
   }
 }

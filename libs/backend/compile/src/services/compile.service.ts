@@ -43,17 +43,17 @@ import { I18nTranslations } from '@badman/utils';
 export class CompileService implements CompileInterface, OnModuleInit {
   private readonly logger = new Logger(CompileService.name);
 
-  static browserInstance$ = new BehaviorSubject<Browser>(null);
+  static browserInstance$ = new BehaviorSubject<Browser | null>(null);
   static stopBrowserRefresh$ = new Subject<void>();
   static lastActivity = new BehaviorSubject<number>(0);
 
-  get browser$(): Observable<Browser> {
+  get browser$(): Observable<Browser | null> {
     if (CompileService.browserInstance$.value === null) {
       this._startBrowserRefresh();
     }
 
     return CompileService.browserInstance$.pipe(
-      filter((browser: Browser) => browser !== null),
+      filter((browser: Browser | null) => browser !== null),
       shareReplay(1),
       tap(() => {
         this.logger.debug('Browser activity');
@@ -152,38 +152,43 @@ export class CompileService implements CompileInterface, OnModuleInit {
   private toPdf(html: string, options?: CompileOptions): Observable<Buffer> {
     // Create an observable that converts the html to pdf
     return this.browser$.pipe(
-      mergeMap((browser: Browser) =>
-        from(browser.newPage()).pipe(
-          tap(() => this.logger.debug('Page created')),
-          mergeMap((page: Page) =>
-            // Wait for the page to load before generating the pdf
-            from(page.setContent(html)).pipe(
-              //  wait for tailwind script to be loaded
-              mergeMap(() => page.waitForFunction('window.tailwind')),
-              tap(() => this.logger.debug('Html set to page')),
-              mergeMap(() =>
-                from(
+      mergeMap((browser) =>
+        {
+          if (browser === null) {
+            throw new Error('Browser not available');
+          }
+
+          return from(browser.newPage()).pipe(
+            tap(() => this.logger.debug('Page created')),
+            mergeMap((page: Page) =>
+              // Wait for the page to load before generating the pdf
+              from(page.setContent(html)).pipe(
+                //  wait for tailwind script to be loaded
+                mergeMap(() => page.waitForFunction('window.tailwind')),
+                tap(() => this.logger.debug('Html set to page')),
+                mergeMap(() => from(
                   page.pdf({
                     format: options?.pdf?.format ?? 'A4',
                     landscape: options?.pdf?.landscape ?? false,
                     printBackground: options?.pdf?.printBackground ?? true,
                   })
                 )
-              ),
-              tap((pdf) => {
-                if ((this.moduleOptions.debug ?? false) === true) {
-                  // write file in original folder before juice so we can test
-                  writeFile(
-                    join(this.moduleOptions.view.root, 'generated.pdf'),
-                    pdf
-                  );
-                }
-              }),
-              tap(() => this.logger.debug('Pdf generated')),
-              finalize(() => page.close())
+                ),
+                tap((pdf) => {
+                  if ((this.moduleOptions.debug ?? false) === true) {
+                    // write file in original folder before juice so we can test
+                    writeFile(
+                      join(this.moduleOptions.view.root, 'generated.pdf'),
+                      pdf
+                    );
+                  }
+                }),
+                tap(() => this.logger.debug('Pdf generated')),
+                finalize(() => page.close())
+              )
             )
-          )
-        )
+          );
+        }
       )
     );
   }

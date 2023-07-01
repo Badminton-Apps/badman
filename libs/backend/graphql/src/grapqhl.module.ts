@@ -1,13 +1,12 @@
 import {
   ApolloServerPluginLandingPageLocalDefault,
-  ApolloServerPluginLandingPageProductionDefault
+  ApolloServerPluginLandingPageProductionDefault,
 } from '@apollo/server/plugin/landingPage/default';
 import { AuthorizationModule } from '@badman/backend-authorization';
 import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GqlModuleOptions, GraphQLModule } from '@nestjs/graphql';
-
 
 import OperationRegistry from '@apollo/server-plugin-operation-registry';
 
@@ -23,7 +22,7 @@ import {
   PlayerResolverModule,
   RankingResolverModule,
   SecurityResolverModule,
-  TeamResolverModule
+  TeamResolverModule,
 } from './resolvers';
 
 @Module({
@@ -37,7 +36,7 @@ import {
           playground: false,
           debug: true,
           autoSchemaFile: true,
-          context: ({ req }) => ({ req }),
+          context: ({ req }: { req: any }) => ({ req }),
           plugins: [
             OperationRegistry({
               forbidUnregisteredOperations: true,
@@ -49,7 +48,6 @@ import {
                   footer: false,
                 })
               : ApolloServerPluginLandingPageLocalDefault({ footer: true }),
-            
           ],
         } as Omit<GqlModuleOptions, 'driver'>;
       },

@@ -1,7 +1,6 @@
 import {
-  Player,
-  PlayerUpdateInput,
   EntryCompetitionPlayer,
+  PlayerUpdateInput,
   RankingSystem,
   SubEventCompetition,
   Team,
@@ -21,14 +20,13 @@ import { EnrollmentValidationError } from './error.model';
 @InputType()
 export class EnrollmentInput {
   @Field(() => [EnrollmentInputTeam], { nullable: true })
-  teams: EnrollmentInputTeam[];
+  teams?: EnrollmentInputTeam[];
 
   @Field(() => ID, { nullable: true })
   systemId?: string;
 
   @Field(() => Int, { nullable: true })
   season?: number;
-  
 }
 
 @InputType()
@@ -61,20 +59,20 @@ export class PlayerRankingType extends PartialType(
   ObjectType
 ) {
   @Field(() => Number)
-  single: number;
+  single?: number;
 
   @Field(() => Number)
-  double: number;
+  double?: number;
 
   @Field(() => Number)
-  mix: number;
+  mix?: number;
 }
 
 // Team outut info
 @ObjectType()
 export class TeamEnrollmentOutput {
   @Field(() => ID)
-  id: string;
+  id!: string;
 
   @Field(() => ID, { nullable: true })
   linkId?: string;
@@ -86,10 +84,10 @@ export class TeamEnrollmentOutput {
   baseIndex?: number;
 
   @Field(() => Boolean)
-  isNewTeam: boolean;
+  isNewTeam?: boolean;
 
   @Field(() => Boolean)
-  possibleOldTeam: boolean;
+  possibleOldTeam?: boolean;
 
   @Field(() => Int, { nullable: true })
   maxLevel?: number;
@@ -107,7 +105,7 @@ export class TeamEnrollmentOutput {
   warnings?: EnrollmentValidationError[];
 
   @Field(() => Boolean)
-  valid: boolean;
+  valid?: boolean;
 }
 
 export type RuleResult = {
@@ -119,23 +117,23 @@ export type RuleResult = {
 
 //  validation data
 export class EnrollmentValidationData {
-  teams: EnrollmentValidationTeam[];
+  teams!: EnrollmentValidationTeam[];
 }
 
 export class EnrollmentValidationTeam {
-  team: Partial<Team>;
-  previousSeasonTeam: Partial<Team>;
+  team?: Partial<Team>;
+  previousSeasonTeam?: Partial<Team>;
 
-  isNewTeam: boolean;
-  possibleOldTeam: boolean;
+  isNewTeam?: boolean;
+  possibleOldTeam?: boolean;
 
-  teamIndex: number;
-  teamPlayers: EntryCompetitionPlayer[];
-  backupPlayers: EntryCompetitionPlayer[];
+  teamIndex?: number;
+  teamPlayers?: EntryCompetitionPlayer[];
+  backupPlayers?: EntryCompetitionPlayer[];
 
-  baseIndex: number;
-  basePlayers: EntryCompetitionPlayer[];
+  baseIndex?: number;
+  basePlayers?: EntryCompetitionPlayer[];
 
-  subEvent: SubEventCompetition;
-  system: RankingSystem;
+  subEvent?: SubEventCompetition;
+  system?: RankingSystem;
 }

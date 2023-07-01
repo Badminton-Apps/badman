@@ -3,6 +3,7 @@ import {
   EntryCompetitionPlayer,
   EventCompetition,
   EventEntry,
+  Meta,
   Player,
   RankingLastPlace,
   RankingPlace,
@@ -18,7 +19,11 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';
-import { AssemblyValidationData, AssemblyOutput } from '../../models';
+import {
+  AssemblyValidationData,
+  AssemblyOutput,
+  AssemblyValidationError,
+} from '../../models';
 import {
   PlayerCompStatusRule,
   PlayerGenderRule,
@@ -66,16 +71,25 @@ export class AssemblyValidationService {
     const idSubs = subtitudes?.filter((p) => p !== undefined && p !== null);
 
     const encounter = await EncounterCompetition.findByPk(encounterId);
+
+    if (!encounter) {
+      throw new Error('Encounter not found');
+    }
+
     const team = await Team.findByPk(teamId, {
       attributes: ['id', 'name', 'type', 'teamNumber', 'clubId'],
     });
 
+    if (!team) {
+      throw new Error('Team not found');
+    }
+
     // Get the event info
-    const draw = await encounter.getDrawCompetition({
+    const draw = await encounter?.getDrawCompetition({
       attributes: ['id', 'name', 'subeventId'],
     });
 
-    const subEvent = await draw.getSubEventCompetition({
+    const subEvent = await draw?.getSubEventCompetition({
       attributes: [
         'id',
         'eventId',
@@ -85,14 +99,18 @@ export class AssemblyValidationService {
         'maxLevel',
       ],
     });
-    const event = await subEvent.getEventCompetition({
+    const event = await subEvent?.getEventCompetition({
       attributes: ['id', 'usedRankingUnit', 'usedRankingAmount', 'season'],
     });
+
+    if (!event) {
+      throw new Error('Event not found');
+    }
 
     const sameYearSubEvents = await EventCompetition.findAll({
       attributes: ['id'],
       where: {
-        season: event.season,
+        season: event?.season,
       },
       include: [
         {
@@ -103,13 +121,13 @@ export class AssemblyValidationService {
       ],
     });
 
-    const type = team.type;
+    const type = team?.type;
 
     // find all same type team's ids for fetching the etnries
     const clubTeams = await Team.findAll({
       attributes: ['id', 'name', 'teamNumber'],
       where: {
-        clubId: team.clubId,
+        clubId: team?.clubId,
         type: type,
       },
     });
@@ -129,7 +147,10 @@ export class AssemblyValidationService {
     // or where the subevent is the same as the entry where the team is playing
     const filteredMemberships = memberships?.filter((m) => {
       const t = clubTeams.find((t) => t.id === m.teamId);
-      return t.teamNumber <= team.teamNumber || m.subEventId == subEvent.id;
+      return (
+        (t?.teamNumber ?? 0) <= (team.teamNumber ?? 0) ||
+        m.subEventId == subEvent?.id
+      );
     });
 
     const system =
@@ -137,8 +158,23 @@ export class AssemblyValidationService {
         ? await RankingSystem.findByPk(systemId)
         : await RankingSystem.findOne({ where: { primary: true } });
 
+    if (!system) {
+      throw new Error('System not found');
+    }
+
     // Filter out this team's meta
-    const meta = filteredMemberships?.find((m) => m.teamId == teamId)?.meta;
+    let meta = filteredMemberships?.find((m) => m.teamId == teamId)?.meta;
+
+    // If  meta is found, create a new one
+    if (!meta) {
+      meta = {};
+    }
+
+    if (!meta?.competition) {
+      meta.competition = {
+        players: [],
+      };
+    }
 
     meta.competition.players = getBestPlayers(
       team.type,
@@ -146,14 +182,14 @@ export class AssemblyValidationService {
     ) as EntryCompetitionPlayer[];
 
     // Other teams meta
-    const otherMeta = filteredMemberships
+    const otherMeta = (filteredMemberships
       ?.filter((m) => m.teamId !== teamId)
-      ?.map((m) => m.meta);
+      ?.map((m) => m.meta) ?? []) as Meta[];
 
-    const year = event.season;
+    const year = event?.season;
     const usedRankingDate = moment();
     usedRankingDate.set('year', year);
-    usedRankingDate.set(event.usedRankingUnit, event.usedRankingAmount);
+    usedRankingDate.set(event?.usedRankingUnit, event?.usedRankingAmount);
 
     // get first and last of the month
     const startRanking = moment(usedRankingDate).startOf('month');
@@ -265,9 +301,9 @@ export class AssemblyValidationService {
       otherMeta,
 
       teamIndex: titularsTeam.index,
-      teamPlayers: titularsTeam.players?.map((p) =>
+      teamPlayers: (titularsTeam.players?.map((p) =>
         players.find((pl) => pl.id === p.id)
-      ),
+      ) ?? []) as Player[],
 
       encounter,
       draw,
@@ -338,17 +374,17 @@ export class AssemblyValidationService {
     const errors = results
       ?.map((r) => r.errors)
       ?.flat(1)
-      ?.filter((e) => !!e);
+      ?.filter((e) => !!e) as AssemblyValidationError[];
     const warnings = results
       ?.map((r) => r.warnings)
       ?.flat(1)
-      ?.filter((e) => !!e);
+      ?.filter((e) => !!e) as AssemblyValidationError[];
 
     return {
       valid: errors.length === 0,
       errors: errors,
       warnings: warnings,
-      systemId: assembly.system.id,
+      systemId: assembly.system?.id,
       titularsIndex: assembly.teamIndex,
       titularsPlayerData: assembly.teamPlayers,
       baseTeamIndex: assembly.meta?.competition?.teamIndex,

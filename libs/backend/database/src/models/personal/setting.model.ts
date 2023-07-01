@@ -133,3 +133,10 @@ export class SettingNewInput extends PartialType(
   OmitType(SettingUpdateInput, ['id'] as const),
   InputType
 ) {}
+
+export class NotificationOptionsTypes extends OmitType(Setting, [
+  'id',
+  'language',
+  'player',
+  'pushSubscriptions',
+] as const) {}

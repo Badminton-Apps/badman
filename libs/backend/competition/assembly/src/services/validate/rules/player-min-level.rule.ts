@@ -5,6 +5,7 @@ import { Rule } from './_rule.base';
 export class PlayerMinLevelRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
+      system,
       team,
       single1,
       single2,
@@ -22,18 +23,26 @@ export class PlayerMinLevelRule extends Rule {
     const errors = [] as AssemblyValidationError[];
     let valid = true;
 
-    if (team.teamNumber != 1) {
+    if (!system?.amountOfLevels) {
+      throw new Error('System has no amount of levels');
+    }
+
+    if (!subEvent?.maxLevel) {
+      throw new Error('Subevent has no max level');
+    }
+
+    if (team?.teamNumber != 1) {
       const uniquePlayers = new Set([
         single1,
         single2,
         single3,
         single4,
-        ...double1,
-        ...double2,
-        ...double3,
-        ...double4,
+        ...(double1 ?? []),
+        ...(double2 ?? []),
+        ...(double3 ?? []),
+        ...(double4 ?? []),
 
-        ...subtitudes,
+        ...(subtitudes ?? []),
       ]);
 
       for (const player of uniquePlayers) {
@@ -42,6 +51,10 @@ export class PlayerMinLevelRule extends Rule {
         if (!ranking) {
           continue;
         }
+
+        ranking.single = ranking.single ?? system.amountOfLevels;
+        ranking.double = ranking.double ?? system.amountOfLevels;
+        ranking.mix = ranking.mix ?? system.amountOfLevels;
 
         if (ranking.single < subEvent.maxLevel) {
           valid = false;

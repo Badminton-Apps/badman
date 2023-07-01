@@ -31,10 +31,10 @@ import { Geometry } from 'geojson';
 @ObjectType()
 export class Coordinates {
   @Field(() => Float)
-  latitude: number;
+  latitude?: number;
 
   @Field(() => Float)
-  longitude: number;
+  longitude?: number;
 }
 
 @Resolver(() => Location)
@@ -46,10 +46,8 @@ export class LocationResolver {
   @Query(() => Location)
   async location(
     @Args('id', { type: () => ID }) id: string
-  ): Promise<Location> {
-    const test = await Location.findByPk(id);
-
-    return test;
+  ): Promise<Location | null> {
+    return Location.findByPk(id);
   }
 
   @Query(() => [Location])
@@ -60,8 +58,8 @@ export class LocationResolver {
   @ResolveField(() => Coordinates, { nullable: true })
   coordinates(@Parent() location: Location): Coordinates {
     return {
-      latitude: location.coordinates.coordinates[1],
-      longitude: location.coordinates.coordinates[0],
+      latitude: location.coordinates?.coordinates[1],
+      longitude: location.coordinates?.coordinates[0],
     };
   }
 
@@ -94,7 +92,7 @@ export class LocationResolver {
       }
 
       if (
-        !user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club'])
+        !await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club'])
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`
@@ -142,7 +140,7 @@ export class LocationResolver {
       }
 
       if (
-        !user.hasAnyPermission([
+        !await user.hasAnyPermission([
           `${dbLocation.clubId}_edit:location`,
           'edit-any:club',
         ])

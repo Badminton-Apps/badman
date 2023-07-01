@@ -10,6 +10,7 @@ concurrency:
 
 env:
   NODE_ENV: '20.1'
+  NX_NON_NATIVE_HASHER: 'true'
 
 jobs:
   main:

@@ -116,7 +116,7 @@ export class PointsService {
     const rankings: RankingPoint[] = [];
     // ignore these types
     if (game.winner === 0 || game.winner === 7 || game.winner === 6) {
-      return;
+      return [];
     }
 
     // ignore WO's
@@ -124,7 +124,7 @@ export class PointsService {
       (game.set1Team1 ?? null) === null &&
       (game.set1Team2 ?? null) === null
     ) {
-      return;
+      return [];
     }
 
     const gamePlayesr = (await game.getPlayers({
@@ -353,10 +353,18 @@ export class PointsService {
 
   private _getPointsForGame(
     game: Game,
-    player1Team1: Player,
-    player1Team2: Player,
-    player2Team1: Player,
-    player2Team2: Player,
+    player1Team1:
+      | (Player & { GamePlayerMembership: GamePlayerMembership })
+      | undefined,
+    player1Team2:
+      | (Player & { GamePlayerMembership: GamePlayerMembership })
+      | undefined,
+    player2Team1:
+      | (Player & { GamePlayerMembership: GamePlayerMembership })
+      | undefined,
+    player2Team2:
+      | (Player & { GamePlayerMembership: GamePlayerMembership })
+      | undefined,
     system: RankingSystem
   ) {
     const points = {
@@ -365,6 +373,12 @@ export class PointsService {
       player1Team2Points: null,
       player2Team2Points: null,
       differenceInLevel: 0,
+    } as {
+      player1Team1Points: number | null;
+      player2Team1Points: number | null;
+      player1Team2Points: number | null;
+      player2Team2Points: number | null;
+      differenceInLevel: number;
     };
 
     let levelP1T1 = system.amountOfLevels;
@@ -384,7 +398,7 @@ export class PointsService {
     const rankingPlayer1Team2 = player1Team2?.rankingPlaces?.[0] ?? maxRanking;
     const rankingPlayer2Team2 = player2Team2?.rankingPlaces?.[0] ?? maxRanking;
 
-    let pointsFrom: string;
+    let pointsFrom: 'single' | 'mix' | 'double' | undefined = undefined;
 
     switch (game.gameType) {
       case GameType.S:
@@ -397,27 +411,32 @@ export class PointsService {
         pointsFrom = 'mix';
         break;
     }
+
+    if (pointsFrom === undefined) {
+      throw new Error('No pointsFrom');
+    }
+
     if (rankingPlayer1Team2) {
       levelP1T2 = parseInt(
-        rankingPlayer1Team2[pointsFrom] ?? system.amountOfLevels,
+        `${rankingPlayer1Team2[pointsFrom] ?? system.amountOfLevels}`,
         10
       );
     }
     if (rankingPlayer2Team2) {
       levelP2T2 = parseInt(
-        rankingPlayer2Team2[pointsFrom] ?? system.amountOfLevels,
+        `${rankingPlayer2Team2[pointsFrom] ?? system.amountOfLevels}`,
         10
       );
     }
     if (rankingPlayer1Team1) {
       levelP1T1 = parseInt(
-        rankingPlayer1Team1[pointsFrom] ?? system.amountOfLevels,
+        `${rankingPlayer1Team1[pointsFrom] ?? system.amountOfLevels}`,
         10
       );
     }
     if (rankingPlayer2Team1) {
       levelP2T1 = parseInt(
-        rankingPlayer2Team1[pointsFrom] ?? system.amountOfLevels,
+        `${rankingPlayer2Team1[pointsFrom] ?? system.amountOfLevels}`,
         10
       );
     }

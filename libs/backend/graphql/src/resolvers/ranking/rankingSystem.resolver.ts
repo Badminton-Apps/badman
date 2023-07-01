@@ -77,7 +77,7 @@ export class RankingSystemResolver {
     @User() user: Player,
     @Args('data') updateRankingSystemData: RankingSystemUpdateInput
   ) {
-    if (!user.hasAnyPermission(['edit:ranking'])) {
+    if (!await user.hasAnyPermission(['edit:ranking'])) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`
       );
@@ -131,7 +131,7 @@ export class RankingSystemResolver {
     @Args('rankingSystemId', { type: () => ID }) rankingSystemId: string,
     @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string
   ) {
-    if (!user.hasAnyPermission(['edit:ranking'])) {
+    if (!await user.hasAnyPermission(['edit:ranking'])) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`
       );
@@ -148,7 +148,7 @@ export class RankingSystemResolver {
       }
 
       const dbGroup = await RankingGroup.findByPk(rankingGroupId);
-      if (!dbSystem) {
+      if (!dbGroup) {
         throw new NotFoundException(`${RankingGroup.name}: ${rankingGroupId}`);
       }
 
@@ -175,7 +175,7 @@ export class RankingSystemResolver {
     @Args('rankingSystemId', { type: () => ID }) rankingSystemId: string,
     @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string
   ) {
-    if (!user.hasAnyPermission(['edit:ranking'])) {
+    if (!await user.hasAnyPermission(['edit:ranking'])) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`
       );
@@ -192,9 +192,10 @@ export class RankingSystemResolver {
       }
 
       const dbGroup = await RankingGroup.findByPk(rankingGroupId);
-      if (!dbSystem) {
+      if (!dbGroup) {
         throw new NotFoundException(`${RankingGroup.name}: ${rankingGroupId}`);
       }
+
 
       await dbSystem.removeRankingGroup(dbGroup, {
         transaction,
