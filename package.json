@@ -6,7 +6,7 @@
     "ng": "nx",
     "postinstall": "node ./scripts/post-install.js",
     "start": "nx serve",
-    "build": "nx exec -- nx build",
+    "build": "nx build",
     "test": "nx test",
     "dev:ssr": "nx serve-ssr badman",
     "serve:ssr": "node dist/badman/server/main.js",
