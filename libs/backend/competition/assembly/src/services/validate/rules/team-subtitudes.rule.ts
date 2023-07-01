@@ -5,6 +5,14 @@ import {
   AssemblyValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
+import { Player } from '@badman/backend-database';
+
+export type TeamSubsIndexRuleParams = {
+  subtitute: {
+    player: Partial<Player>;
+    sum: number;
+  };
+};
 
 /**
  * Checks if the substitudes are not better then players from active team (titulars)
@@ -12,7 +20,7 @@ import { Rule } from './_rule.base';
 export class TeamSubsIndexRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { meta, type, team, subtitudes, system } = assembly;
-    const warnings = [] as AssemblyValidationError[];
+    const warnings = [] as AssemblyValidationError<TeamSubsIndexRuleParams>[];
 
     if (!system?.amountOfLevels) {
       throw new Error('System is not defined');

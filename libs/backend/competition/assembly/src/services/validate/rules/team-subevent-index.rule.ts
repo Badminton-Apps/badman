@@ -1,5 +1,15 @@
-import { AssemblyValidationData, AssemblyOutput } from '../../../models';
+import {
+  AssemblyValidationData,
+  AssemblyOutput,
+  AssemblyValidationError,
+} from '../../../models';
 import { Rule } from './_rule.base';
+
+export type TeamSubeventIndexRuleParams = {
+  teamIndex: number;
+  minIndex: number;
+  maxIndex: number;
+};
 
 export class TeamSubeventIndexRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
@@ -21,7 +31,7 @@ export class TeamSubeventIndexRule extends Rule {
               maxIndex: subEvent.maxBaseIndex,
             },
           },
-        ],
+        ] as AssemblyValidationError<TeamSubeventIndexRuleParams>[],
       };
     }
 
