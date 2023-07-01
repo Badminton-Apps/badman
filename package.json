@@ -167,15 +167,15 @@
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.3",
     "@nguniversal/builders": "16.1.0",
-    "@nx/angular": "16.4.0",
-    "@nx/cypress": "16.4.0",
-    "@nx/eslint-plugin": "16.4.0",
-    "@nx/jest": "16.4.0",
-    "@nx/js": "16.4.0",
-    "@nx/linter": "16.4.0",
-    "@nx/nest": "16.4.0",
-    "@nx/node": "16.4.0",
-    "@nx/workspace": "16.4.0",
+    "@nx/angular": "16.4.2",
+    "@nx/cypress": "16.4.2",
+    "@nx/eslint-plugin": "16.4.2",
+    "@nx/jest": "16.4.2",
+    "@nx/js": "16.4.2",
+    "@nx/linter": "16.4.2",
+    "@nx/nest": "16.4.2",
+    "@nx/node": "16.4.2",
+    "@nx/workspace": "16.4.2",
     "@prettier/plugin-pug": "^2.5.1",
     "@schematics/angular": "16.1.1",
     "@swc/cli": "^0.1.62",
@@ -211,7 +211,7 @@
     "jest-environment-node": "^29.5.0",
     "jest-preset-angular": "13.1.1",
     "ng-packagr": "16.1.0",
-    "nx": "16.4.0",
+    "nx": "16.4.2",
     "nx-cloud": "16.0.5",
     "postcss": "^8.4.24",
     "postcss-import": "^15.1.0",
@@ -268,3 +268,4 @@
     "startCommand": "npm run start:stackblitz"
   }
 }
+
