@@ -1,7 +1,7 @@
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
 import { GameExportService } from '../../services';
 import * as XLSX from 'xlsx';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply } from 'fastify';
 
 @Controller('twizzit')
 export class TwizzitController {
