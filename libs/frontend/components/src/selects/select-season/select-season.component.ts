@@ -26,7 +26,7 @@ import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map } from 'rxjs';
+import { map, startWith } from 'rxjs';
 
 @Component({
   selector: 'badman-select-season',
@@ -87,13 +87,13 @@ export class SelectSeasonComponent implements OnInit {
       this.group.addControl(this.controlName, this.control);
     }
 
-    this.group.valueChanges.subscribe((value) => {
-      const previous = this.group?.get(this.dependsOn);
-      if (!previous) {
-        return;
-      }
+    const previous = this.group?.get(this.dependsOn);
+    if (!previous) {
+      return;
+    }
 
-      const clubId = previous.value?.id ?? previous.value;
+    previous.valueChanges.pipe(startWith(previous.value)).subscribe((value) => {
+      const clubId = value?.id ?? value;
 
       // if the clubId is a uuid continue
       if (

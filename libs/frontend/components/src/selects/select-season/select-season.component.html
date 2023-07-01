@@ -4,7 +4,7 @@
     <mat-label>Season</mat-label>
     <mat-select formControlName="season">
       <mat-option *ngFor="let season of this.seasons()" [value]="season">
-        {{ season }}
+        {{ season }} - {{ season + 1 }}
       </mat-option>
     </mat-select>
   </mat-form-field>
