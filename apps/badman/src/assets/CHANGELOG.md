@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.7...v6.88.0-beta.8) (2023-07-01)
+
+
+### Features
+
+* adding season to assembly ([4eb03f1](https://github.com/Badminton-Apps/badman/commit/4eb03f1ed0bf5b7a426b0564c438fbaaeb9fa94f))
+
 ## [6.88.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.6...v6.88.0-beta.7) (2023-07-01)
 
 ## [6.88.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.5...v6.88.0-beta.6) (2023-07-01)
