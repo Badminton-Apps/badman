@@ -26,9 +26,9 @@ export interface EncounterStepOptions {
 }
 
 export class CompetitionSyncEncounterProcessor extends StepProcessor {
-  public event: EventCompetition;
-  public draws: DrawStepData[];
-  public entries: EntryStepData[];
+  public event?: EventCompetition;
+  public draws?: DrawStepData[];
+  public entries?: EntryStepData[];
   private _dbEncounters: EncounterStepData[] = [];
   private encounterOptions: EncounterStepOptions;
 
@@ -37,6 +37,9 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions & EncounterStepOptions
   ) {
+    if (!options) {
+      options = {};
+    }
     options.logger =
       options.logger || new Logger(CompetitionSyncEncounterProcessor.name);
     super(options);
@@ -45,11 +48,16 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EncounterStepData[]> {
-    await runParrallel(this.draws.map((e) => this._processEncounters(e)));
+    await runParrallel(this.draws?.map((e) => this._processEncounters(e)) ?? []);
     return this._dbEncounters;
   }
 
   private async _processEncounters({ draw, internalId }: DrawStepData) {
+    if (!this.event?.season){
+      throw new Error('No event');
+    }
+
+    
     const encounters = await draw.getEncounterCompetitions({
       transaction: this.transaction,
     });
@@ -72,7 +80,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       const dbEncounters = encounters.filter(
         (r) => r.visualCode === `${xmlTeamMatch.Code}`
       );
-      let dbEncounter: EncounterCompetition = null;
+      let dbEncounter: EncounterCompetition | null = null;
 
       if (dbEncounters.length === 1) {
         dbEncounter = dbEncounters[0];
@@ -85,10 +93,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         await this._destroyEncounters(rest);
       }
 
-      const team1 = this.entries.find(
+      const team1 = this.entries?.find(
         (e) => e.teamName == xmlTeamMatch?.Team1?.Name
       )?.entry?.team;
-      const team2 = this.entries.find(
+      const team2 = this.entries?.find(
         (e) => e.teamName == xmlTeamMatch?.Team2?.Name
       )?.entry?.team;
 
@@ -107,7 +115,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
             e.homeTeamId === team1?.id &&
             e.awayTeamId === team2?.id &&
             e.drawId === draw.id
-        );
+        ) || null;
 
         if (!dbEncounter) {
           dbEncounter = await new EncounterCompetition({

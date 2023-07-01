@@ -3,7 +3,7 @@ import { waitForSelectors } from '@badman/backend-pupeteer';
 
 export async function enterGameLeader(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -16,6 +16,9 @@ export async function enterGameLeader(
   }
 
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const selector = `#matchfield_2`;
   {
     const targetPage = page;
@@ -26,7 +29,7 @@ export async function enterGameLeader(
 
 export async function enterShuttle(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -39,6 +42,9 @@ export async function enterShuttle(
   }
 
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const selector = `#matchfield_4`;
   {
     const targetPage = page;
@@ -49,7 +55,7 @@ export async function enterShuttle(
 
 export async function enterStartHour(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -62,6 +68,9 @@ export async function enterStartHour(
   }
 
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const selector = `#matchfield_5`;
   {
     const targetPage = page;
@@ -71,7 +80,7 @@ export async function enterStartHour(
 }
 export async function enterEndHour(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -84,6 +93,9 @@ export async function enterEndHour(
   }
 
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const selector = `#matchfield_6`;
   {
     const targetPage = page;

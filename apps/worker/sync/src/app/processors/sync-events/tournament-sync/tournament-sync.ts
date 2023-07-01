@@ -18,8 +18,8 @@ import { EventTournament } from '@badman/backend-database';
 export class TournamentSyncer {
   private readonly logger = new Logger(TournamentSyncer.name);
 
-  protected visualTournament: XmlTournament;
-  protected transaction: Transaction;
+  protected visualTournament?: XmlTournament;
+  protected transaction?: Transaction;
 
   public readonly processor: Processor;
 
@@ -33,16 +33,16 @@ export class TournamentSyncer {
   readonly STEP_POINT = 'point';
   readonly STEP_STANDING = 'standing';
 
-  private _eventStep: TournamentSyncEventProcessor;
-  private _subEventStep: TournamentSyncSubEventProcessor;
-  private _rankingStep: TournamentSyncRankingProcessor;
-  private _drawStep: TournamentSyncDrawProcessor;
-  private _playerStep: TournamentSyncPlayerProcessor;
-  private _gameStep: TournamentSyncGameProcessor;
-  private _pointStep: TournamentSyncPointProcessor;
-  private _standingStep: TournamentSyncStandingProcessor;
+  private _eventStep!: TournamentSyncEventProcessor;
+  private _subEventStep!: TournamentSyncSubEventProcessor;
+  private _rankingStep!: TournamentSyncRankingProcessor;
+  private _drawStep!: TournamentSyncDrawProcessor;
+  private _playerStep!: TournamentSyncPlayerProcessor;
+  private _gameStep!: TournamentSyncGameProcessor;
+  private _pointStep!: TournamentSyncPointProcessor;
+  private _standingStep!: TournamentSyncStandingProcessor;
 
-  private event: EventTournament;
+  private event!: EventTournament;
 
   constructor(
     private visualService: VisualService,
@@ -56,7 +56,7 @@ export class TournamentSyncer {
       ...this.options,
     };
 
-    this.processor = new Processor(null, { logger: this.logger });
+    this.processor = new Processor(undefined, { logger: this.logger });
 
     this.processor.addStep(this.getEvent());
     this.processor.addStep(this.addSubEvents());
@@ -77,7 +77,7 @@ export class TournamentSyncer {
     const options = {
       logger: this.logger,
       transaction: args.transaction,
-      lastRun: args.options.lastRun as Date,
+      lastRun: args.options?.lastRun as Date,
     };
 
     this._eventStep = new TournamentSyncEventProcessor(
@@ -110,7 +110,7 @@ export class TournamentSyncer {
       this.visualService,
       {
         ...options,
-        newGames: this.options.newGames,
+        newGames: this.options?.newGames,
       }
     );
 
@@ -120,7 +120,7 @@ export class TournamentSyncer {
     );
     this._standingStep = new TournamentSyncStandingProcessor({
       ...options,
-      newGames: this.options.newGames,
+      newGames: this.options?.newGames,
     });
 
     await this.processor.process();

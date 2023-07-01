@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { Transaction } from 'sequelize';
 export class StepProcessor {
   protected readonly transaction?: Transaction;
-  protected readonly logger?: Logger;
+  protected readonly logger!: Logger;
   protected readonly lastRun?: Date;
 
   constructor(options?: StepOptions) {

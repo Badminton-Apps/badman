@@ -6,21 +6,29 @@ import {
 } from '@badman/backend-database';
 import { StepOptions, StepProcessor } from '../../../../processing';
 
-import { Logger } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { SubEventStepData } from './subEvent';
 import { runParrallel } from '@badman/utils';
 
 export class TournamentSyncRankingProcessor extends StepProcessor {
-  public event: EventTournament;
-  public subEvents: SubEventStepData[];
+  public event?: EventTournament;
+  public subEvents?: SubEventStepData[];
 
   constructor(options?: StepOptions) {
+    if (!options) {
+      options = {};
+    }
+
     options.logger =
       options.logger || new Logger(TournamentSyncRankingProcessor.name);
     super(options);
   }
 
   public async process() {
+    if (!this.event) {
+      throw new NotFoundException(`${EventTournament.name} not found`);
+    }
+
     const primary = await RankingSystem.findOne({
       where: { primary: true },
       transaction: this.transaction,
@@ -38,12 +46,11 @@ export class TournamentSyncRankingProcessor extends StepProcessor {
       return;
     }
 
-    
     this.event.official = true;
     await this.event.save({ transaction: this.transaction });
 
     await runParrallel(
-      this.subEvents.map((e) => this._addRankingGroups(e, groups))
+      this.subEvents?.map((e) => this._addRankingGroups(e, groups)) ?? []
     );
   }
 

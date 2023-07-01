@@ -18,7 +18,7 @@ export interface DrawStepData {
 }
 
 export class CompetitionSyncDrawProcessor extends StepProcessor {
-  public subEvents: SubEventStepData[];
+  public subEvents?: SubEventStepData[];
   private _dbDraws: DrawStepData[] = [];
 
   constructor(
@@ -26,13 +26,17 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
+    if (!options) {
+      options = {};
+    }
+
     options.logger =
       options.logger || new Logger(CompetitionSyncDrawProcessor.name);
     super(options);
   }
 
   public async process(): Promise<DrawStepData[]> {
-    await runParrallel(this.subEvents.map((e) => this._processDraws(e)));
+    await runParrallel(this.subEvents?.map((e) => this._processDraws(e)) ?? []);
     return this._dbDraws;
   }
 

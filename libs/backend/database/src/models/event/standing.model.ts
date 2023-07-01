@@ -48,67 +48,80 @@ export class Standing extends Model {
   @Column(DataType.NUMBER)
   size?: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  points?: number;
+  points!: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  played?: number;
+  played!: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  gamesWon?: number;
-  @Field(() => Int, { nullable: true })
+  gamesWon!: number;
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  gamesLost?: number;
+  gamesLost!: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  setsWon?: number;
-  @Field(() => Int, { nullable: true })
+  setsWon!: number;
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  setsLost?: number;
+  setsLost!: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  totalPointsWon?: number;
+  totalPointsWon!: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  totalPointsLost?: number;
+  totalPointsLost!: number;
 
-  @Field(() => Boolean, { nullable: true })
+  @Field(() => Boolean)
+  @Default(false)
   @Column(DataType.BOOLEAN)
-  riser?: boolean;
+  riser!: boolean;
 
-  @Field(() => Boolean, { nullable: true })
+  @Field(() => Boolean)
+  @Default(false)
   @Column(DataType.BOOLEAN)
-  faller?: boolean;
+  faller!: boolean;
 
   /**
    * Competition: encounters won
    * Tournament: Ignored
    */
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  won?: number;
+  won!: number;
 
   /**
    * Competition: encounters draw
    * Tournament: Ignored
    */
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  tied?: number;
+  tied!: number;
 
   /**
    * Competition: encounters lost
    * Tournament: Ignored
    */
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  lost?: number;
+  lost!: number;
 
   restartCount() {
     this.position = 0;

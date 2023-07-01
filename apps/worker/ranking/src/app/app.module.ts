@@ -5,7 +5,7 @@ import { RankingModule } from '@badman/backend-ranking';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import versionPackage from '../version.json';
-import { SimulationProcessor, SimulationV2Processor } from './processors';
+import { SimulationProcessor } from './processors';
 
 @Module({
   imports: [
@@ -18,6 +18,6 @@ import { SimulationProcessor, SimulationV2Processor } from './processors';
     DatabaseModule,
     RankingModule,
   ],
-  providers: [SimulationProcessor, SimulationV2Processor],
+  providers: [SimulationProcessor],
 })
 export class WorkerRankingModule {}

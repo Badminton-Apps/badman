@@ -70,9 +70,6 @@
       "@badman/backend-ranking": [
         "libs/backend/ranking/src/index.ts"
       ],
-      "@badman/backend-ranking-calc": [
-        "libs/backend/ranking-calc/src/index.ts"
-      ],
       "@badman/backend-search": [
         "libs/backend/search/src/index.ts"
       ],

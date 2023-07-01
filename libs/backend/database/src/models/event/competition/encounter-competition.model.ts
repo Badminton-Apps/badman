@@ -87,9 +87,10 @@ export class EncounterCompetition extends Model {
   @BelongsTo(() => Team, 'homeTeamId')
   home?: Relation<Team>;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  homeScore?: number;
+  homeScore!: number;
 
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })
@@ -100,9 +101,10 @@ export class EncounterCompetition extends Model {
   @BelongsTo(() => Team, 'awayTeamId')
   away?: Relation<Team>;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
+  @Default(0)
   @Column(DataType.NUMBER)
-  awayScore?: number;
+  awayScore!: number;
 
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })

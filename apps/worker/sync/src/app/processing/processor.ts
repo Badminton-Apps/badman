@@ -73,13 +73,13 @@ export class Processor {
       this.logger.log(
         `Finished step ${name}, time: ${timeUnits(
           new Date().getTime() - start
-        ).toString()}`
+        )?.toString()}`
       );
     }
     this.logger.log(
       `Finished processing, time: ${timeUnits(
         new Date().getTime() - totalStart
-      ).toString()}`
+      )?.toString()}`
     );
   }
 }

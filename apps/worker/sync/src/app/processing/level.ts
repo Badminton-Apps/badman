@@ -36,6 +36,11 @@ export class RankingProcessor {
 
     for (const instance of singleNullInstances) {
       const system = systems.find((r) => r.id === instance.systemId);
+
+      if (!system) {
+        throw new Error(`No system found for rankingPlace ${instance.id}`);
+      }
+
       const place = await RankingPlace.findOne({
         attributes: ['id', 'single', 'singleInactive'],
         where: {
@@ -73,13 +78,24 @@ export class RankingProcessor {
         transaction: options.transaction,
       });
 
+      if (!player) {
+        throw new Error(`No player found for rankingPlace ${instance.id}`);
+      }
+
       instance.single = place?.single;
-      instance.singleInactive =
-        (player.games?.length ?? 0) < system.gamesForInactivty;
+      if (system.gamesForInactivty) {
+        instance.singleInactive =
+          (player.games?.length ?? 0) < system.gamesForInactivty;
+      }
     }
 
     for (const instance of doubleNullInstances) {
       const system = systems.find((r) => r.id === instance.systemId);
+
+      if (!system) {
+        throw new Error(`No system found for rankingPlace ${instance.id}`);
+      }
+
       const place = await RankingPlace.findOne({
         attributes: ['id', 'double', 'doubleInactive'],
         where: {
@@ -118,12 +134,18 @@ export class RankingProcessor {
       });
 
       instance.double = place?.double;
-      instance.doubleInactive =
-        (player.games?.length ?? 0) < system.gamesForInactivty;
+      if (system.gamesForInactivty) {
+        instance.doubleInactive =
+          (player?.games?.length ?? 0) < system.gamesForInactivty;
+      }
     }
 
     for (const instance of mixNullInstances) {
       const system = systems.find((r) => r.id === instance.systemId);
+
+      if (!system) {
+        throw new Error(`No system found for rankingPlace ${instance.id}`);
+      }
       const place = await RankingPlace.findOne({
         attributes: ['id', 'mix', 'mixInactive'],
         where: {
@@ -162,8 +184,10 @@ export class RankingProcessor {
       });
 
       instance.mix = place?.mix;
-      instance.mixInactive =
-        (player.games?.length ?? 0) < system.gamesForInactivty;
+      if (system.gamesForInactivty) {
+        instance.mixInactive =
+          (player?.games?.length ?? 0) < system.gamesForInactivty;
+      }
     }
   }
 
@@ -189,12 +213,19 @@ export class RankingProcessor {
     }
 
     return Promise.all(
-      rankingPoints.map((rankingPoint) =>
-        this._protect(
-          rankingPoint,
-          rankingSystems.find((r) => r.id === rankingPoint.systemId)
-        )
-      )
+      rankingPoints.map((rankingPoint) => {
+        const usedSystem = rankingSystems?.find(
+          (r) => r.id === rankingPoint.systemId
+        );
+
+        if (!usedSystem) {
+          throw new Error(
+            `No system found for rankingPoint ${rankingPoint.id}`
+          );
+        }
+
+        return this._protect(rankingPoint, usedSystem);
+      })
     );
   }
 
@@ -212,14 +243,14 @@ export class RankingProcessor {
       rankingPoint.mix
     );
 
-    if (rankingPoint.single - highest >= rankingSystem.maxDiffLevels) {
-      rankingPoint.single = highest + rankingSystem.maxDiffLevels;
+    if (rankingPoint.single - highest >= (rankingSystem.maxDiffLevels ?? 0)) {
+      rankingPoint.single = highest + (rankingSystem.maxDiffLevels ?? 0);
     }
-    if (rankingPoint.double - highest >= rankingSystem.maxDiffLevels) {
-      rankingPoint.double = highest + rankingSystem.maxDiffLevels;
+    if (rankingPoint.double - highest >= (rankingSystem.maxDiffLevels ?? 0)) {
+      rankingPoint.double = highest + (rankingSystem.maxDiffLevels ?? 0);
     }
-    if (rankingPoint.mix - highest >= rankingSystem.maxDiffLevels) {
-      rankingPoint.mix = highest + rankingSystem.maxDiffLevels;
+    if (rankingPoint.mix - highest >= (rankingSystem.maxDiffLevels ?? 0)) {
+      rankingPoint.mix = highest + (rankingSystem.maxDiffLevels ?? 0);
     }
 
     // if (rankingPoints.single - highestRanking.single > rankingSystem.maxDiffLevelsHighest) {

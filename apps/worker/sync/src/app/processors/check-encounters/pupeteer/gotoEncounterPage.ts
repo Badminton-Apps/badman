@@ -4,7 +4,7 @@ import { Page } from 'puppeteer';
 
 export async function gotoEncounterPage(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -13,9 +13,13 @@ export async function gotoEncounterPage(
   encounter: EncounterCompetition
 ) {
   const { page } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const matchId = encounter.visualCode;
   const eventId =
-    encounter.drawCompetition.subEventCompetition.eventCompetition.visualCode;
+    encounter.drawCompetition?.subEventCompetition?.eventCompetition
+      ?.visualCode;
   const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
   {
