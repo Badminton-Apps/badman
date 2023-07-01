@@ -3,7 +3,7 @@ import { waitForSelectors } from '@badman/backend-pupeteer';
 
 export async function enterScores(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -14,6 +14,9 @@ export async function enterScores(
   matchId: string
 ) {
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const selector = `#match_${matchId}_set_${set}`;
   {
     const targetPage = page;

@@ -1,6 +1,10 @@
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { PointsService } from '@badman/backend-ranking';
-import { VisualService, XmlTournament, XmlTournamentTypeID } from '@badman/backend-visual';
+import {
+  VisualService,
+  XmlTournament,
+  XmlTournamentTypeID,
+} from '@badman/backend-visual';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
@@ -17,7 +21,7 @@ import { EventCompetition, EventTournament } from '@badman/backend-database';
 export class SyncEventsProcessor {
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
-  private lastRun: Date;
+  private lastRun?: Date;
 
   private readonly logger = new Logger(SyncEventsProcessor.name);
   private formats = [
@@ -147,7 +151,8 @@ export class SyncEventsProcessor {
         const transaction = await this._sequelize.transaction();
 
         try {
-          let resultData: { event: EventCompetition | EventTournament } = null;
+          let resultData: { event: EventCompetition | EventTournament } | null =
+            null;
           if (
             xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
             xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament

@@ -5,7 +5,7 @@ import moment from 'moment';
 
 export async function detailAccepted(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -15,10 +15,13 @@ export async function detailAccepted(
     logger?: Logger;
   }
 ) {
-  const { logger } = args;
+  const { logger } = args || {};
   logger?.verbose('detailAccepted');
   const timeFinder = /(\d{1,2}-\d{1,2}-\d{4} \d{1,2}:\d{1,2})/gim;
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const selector = `.content .wrapper--legacy tbody`;
   {
     const targetPage = page;
@@ -28,17 +31,17 @@ export async function detailAccepted(
 
     // find if a row has header 'Teamwedstrijd bevestigd' and td with 'Ja'
     let hasAccepted = false;
-    let acceptedOn: Date;
-    let acceptedBy: string;
+    let acceptedOn: Date | null = null;
+    const acceptedBy: string | null = null;
     for (const row of rows) {
-      const th = await row.$('th'); 
+      const th = await row.$('th');
       if (th) {
         // logger.verbose(`Processing row`);
-        const thTxt = await th.evaluate((el) => el.textContent);
+        const thTxt = (await th.evaluate((el) => el.textContent)) || '';
         if (thTxt.indexOf('Teamwedstrijd bevestigd') !== -1) {
           const td = await row.$('td');
           if (td) {
-            const tdTxt = await td.evaluate((el) => el.textContent);
+            const tdTxt = (await td.evaluate((el) => el.textContent)) || '';
             // logger.verbose(`Processing td: ${text}`);
             if (tdTxt !== 'Nee') {
               hasAccepted = true;

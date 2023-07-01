@@ -21,8 +21,8 @@ import { EventCompetition } from '@badman/backend-database';
 export class CompetitionSyncer {
   private readonly logger = new Logger(CompetitionSyncer.name);
 
-  protected visualTournament: XmlTournament;
-  protected transaction: Transaction;
+  protected visualTournament?: XmlTournament;
+  protected transaction?: Transaction;
 
   public readonly processor: Processor;
 
@@ -38,19 +38,19 @@ export class CompetitionSyncer {
   readonly STEP_STANDING = 'standing';
   readonly STEP_CLEANUP = 'cleanup';
 
-  private _eventStep: CompetitionSyncEventProcessor;
-  private _subEventStep: CompetitionSyncSubEventProcessor;
-  private _rankingStep: CompetitionSyncRankingProcessor;
-  private _drawStep: CompetitionSyncDrawProcessor;
-  private _entryStep: CompetitionSyncEntryProcessor;
-  private _encounterStep: CompetitionSyncEncounterProcessor;
-  private _playerStep: CompetitionSyncPlayerProcessor;
-  private _gameStep: CompetitionSyncGameProcessor;
-  private _pointStep: CompetitionSyncPointProcessor;
-  private _standingStep: CompetitionSyncStandingProcessor;
-  private _cleanupStep: CompetitionSyncCleanupProcessor;
+  private _eventStep!: CompetitionSyncEventProcessor;
+  private _subEventStep!: CompetitionSyncSubEventProcessor;
+  private _rankingStep!: CompetitionSyncRankingProcessor;
+  private _drawStep!: CompetitionSyncDrawProcessor;
+  private _entryStep!: CompetitionSyncEntryProcessor;
+  private _encounterStep!: CompetitionSyncEncounterProcessor;
+  private _playerStep!: CompetitionSyncPlayerProcessor;
+  private _gameStep!: CompetitionSyncGameProcessor;
+  private _pointStep!: CompetitionSyncPointProcessor;
+  private _standingStep!: CompetitionSyncStandingProcessor;
+  private _cleanupStep!: CompetitionSyncCleanupProcessor;
 
-  private event: EventCompetition;
+  private event!: EventCompetition;
 
   constructor(
     private visualService: VisualService,
@@ -64,7 +64,7 @@ export class CompetitionSyncer {
       ...this.options,
     };
 
-    this.processor = new Processor(null, { logger: this.logger });
+    this.processor = new Processor(undefined, { logger: this.logger });
 
     this.processor.addStep(this.getEvent());
     this.processor.addStep(this.addSubEvents());
@@ -87,7 +87,7 @@ export class CompetitionSyncer {
   }) {
     const options = {
       transaction: args.transaction,
-      lastRun: args.options.lastRun as Date,
+      lastRun: args.options?.lastRun as Date,
     };
 
     this._eventStep = new CompetitionSyncEventProcessor(
@@ -119,7 +119,7 @@ export class CompetitionSyncer {
     this._encounterStep = new CompetitionSyncEncounterProcessor(
       args.xmlTournament,
       this.visualService,
-      { ...options, newGames: this.options.newGames }
+      { ...options, newGames: this.options?.newGames }
     );
 
     this._playerStep = new CompetitionSyncPlayerProcessor(
@@ -141,7 +141,7 @@ export class CompetitionSyncer {
 
     this._standingStep = new CompetitionSyncStandingProcessor({
       ...options,
-      newGames: this.options.newGames,
+      newGames: this.options?.newGames,
     });
 
     this._cleanupStep = new CompetitionSyncCleanupProcessor({

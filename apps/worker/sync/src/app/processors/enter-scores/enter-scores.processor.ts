@@ -28,8 +28,8 @@ import {
 })
 export class EnterScoresProcessor {
   private readonly logger = new Logger(EnterScoresProcessor.name);
-  private readonly _username: string;
-  private readonly _password: string;
+  private readonly _username?: string;
+  private readonly _password?: string;
 
   constructor(configService: ConfigService) {
     this._username = configService.get('VR_API_SCORE_USER');
@@ -40,6 +40,11 @@ export class EnterScoresProcessor {
 
   @Process(Sync.EnterScores)
   async enterScores(job: Job<{ encounterId: string }>) {
+    if (!this._username || !this._password) {
+      this.logger.error('No username or password found');
+      return;
+    }
+
     this.logger.log('Syncing encounters');
     const encounterId = job.data.encounterId;
 
@@ -48,6 +53,12 @@ export class EnterScoresProcessor {
 
     try {
       const page = await browser.newPage();
+
+      if (!page) {
+        this.logger.error('No page found');
+        return;
+      }
+
       page.setDefaultTimeout(10000);
       await page.setViewport({ width: 1691, height: 1337 });
 
@@ -98,6 +109,11 @@ export class EnterScoresProcessor {
         ],
       });
 
+      if (!encounter) {
+        this.logger.error(`Encounter ${encounterId} not found`);
+        return;
+      }
+
       this.logger.log(`Entering scores for ${encounter.visualCode}`);
 
       await accepCookies({ page });
@@ -110,7 +126,12 @@ export class EnterScoresProcessor {
       this.logger.debug(`Clearing fields`);
       await clearFields({ page });
 
-      for (const game of encounter.games) {
+      for (const game of encounter.games ?? []) {
+        if (!game?.visualCode) {
+          this.logger.error(`Game ${game.order} has no visualCode, skipping`);
+          continue;
+        }
+
         this.logger.debug(`Processing game ${game.order}`);
         const t1p1 = game.players?.find(
           (p) =>
@@ -118,6 +139,12 @@ export class EnterScoresProcessor {
             p.GamePlayerMembership.player === 1
         );
         if (t1p1) {
+          if (!t1p1.memberId) {
+            this.logger.error(
+              `Player ${t1p1.fullName} has no memberId, skipping`
+            );
+            continue;
+          }
           await selectPlayer({ page }, t1p1.memberId, 't1p1', game.visualCode);
         }
 
@@ -127,6 +154,12 @@ export class EnterScoresProcessor {
             p.GamePlayerMembership.player === 2
         );
         if (t1p2) {
+          if (!t1p2.memberId) {
+            this.logger.error(
+              `Player ${t1p2.fullName} has no memberId, skipping`
+            );
+            continue;
+          }
           await selectPlayer({ page }, t1p2.memberId, 't1p2', game.visualCode);
         }
 
@@ -136,6 +169,12 @@ export class EnterScoresProcessor {
             p.GamePlayerMembership.player === 1
         );
         if (t2p1) {
+          if (!t2p1.memberId) {
+            this.logger.error(
+              `Player ${t2p1.fullName} has no memberId, skipping`
+            );
+            continue;
+          }
           await selectPlayer({ page }, t2p1.memberId, 't2p1', game.visualCode);
         }
 
@@ -145,6 +184,12 @@ export class EnterScoresProcessor {
             p.GamePlayerMembership.player === 2
         );
         if (t2p2) {
+          if (!t2p2.memberId) {
+            this.logger.error(
+              `Player ${t2p2.fullName} has no memberId, skipping`
+            );
+            continue;
+          }
           await selectPlayer({ page }, t2p2.memberId, 't2p2', game.visualCode);
         }
 
@@ -176,19 +221,27 @@ export class EnterScoresProcessor {
         }
       }
 
-      this.logger.debug(
-        `Entering game leader ${encounter.gameLeader?.fullName}`
-      );
-      await enterGameLeader({ page }, encounter.gameLeader?.fullName);
+      if (encounter.gameLeader?.fullName) {
+        this.logger.debug(
+          `Entering game leader ${encounter.gameLeader?.fullName}`
+        );
+        await enterGameLeader({ page }, encounter.gameLeader?.fullName);
+      }
 
-      this.logger.debug(`Entering shuttle ${encounter.shuttle}`);
-      await enterShuttle({ page }, encounter.shuttle);
+      if (encounter.shuttle) {
+        this.logger.debug(`Entering shuttle ${encounter.shuttle}`);
+        await enterShuttle({ page }, encounter.shuttle);
+      }
 
-      this.logger.debug(`Entering start hour ${encounter.startHour}`);
-      await enterStartHour({ page }, encounter.startHour);
+      if (encounter.startHour) {
+        this.logger.debug(`Entering start hour ${encounter.startHour}`);
+        await enterStartHour({ page }, encounter.startHour);
+      }
 
-      this.logger.debug(`Entering end hour ${encounter.endHour}`);
-      await enterEndHour({ page }, encounter.endHour);
+      if (encounter.endHour) {
+        this.logger.debug(`Entering end hour ${encounter.endHour}`);
+        await enterEndHour({ page }, encounter.endHour);
+      }
 
       // await browser.close();
     } catch (error) {

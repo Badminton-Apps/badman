@@ -38,8 +38,13 @@ export class WrongDatesService {
         const subEvent = await draw.getSubEventCompetition();
         const event = await subEvent.getEventCompetition();
 
-        if (event.visualCode === null) {
+        if (!event.visualCode) {
           this.logger.error(`No visual code found for ${event?.name}`);
+          return;
+        }
+
+        if (!encounter.visualCode) {
+          this.logger.error(`No visual code found for ${encounter?.id}`);
           return;
         }
 

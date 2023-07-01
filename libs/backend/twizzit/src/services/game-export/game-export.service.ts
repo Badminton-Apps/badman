@@ -27,7 +27,7 @@ export class GameExportService {
     });
 
     const encounters = await EncounterCompetition.findAll({
-      attributes: ['id', 'date'],
+      attributes: ['id', 'date', 'homeScore', 'awayScore'],
       where: {
         date: {
           [Op.between]: [
@@ -87,7 +87,7 @@ export class GameExportService {
         Resource: null,
         'Part (%)': null,
         Omschrijving: null,
-        Score: null,
+        Score: `${game.homeScore} - ${game.awayScore}`,
         'Score details': null,
       };
     });

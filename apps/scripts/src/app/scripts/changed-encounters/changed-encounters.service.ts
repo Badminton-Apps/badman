@@ -31,7 +31,7 @@ export class ChangedEncountersService {
           attributes: ['id'],
           model: EncounterChange,
           required: true,
-        }, 
+        },
       ],
     });
 
@@ -40,7 +40,7 @@ export class ChangedEncountersService {
       `home,away,link\n` +
       encounters
         .map((encounter) => {
-          return `${encounter.home.name},${encounter.away.name},https://badman.app/competition/change-encounter?club=${encounter.home.clubId}&team=${encounter.home.id}&encounter=${encounter.id}`;
+          return `${encounter.home?.name},${encounter.away?.name},https://badman.app/competition/change-encounter?club=${encounter.home?.clubId}&team=${encounter.home?.id}&encounter=${encounter.id}`;
         })
         .join('\n');
     const fileName = `${season}-changed-encounters.csv`;
