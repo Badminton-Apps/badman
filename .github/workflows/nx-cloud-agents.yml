@@ -135,7 +135,7 @@ jobs:
               - name: Cache Nx
       - name: Use the node_modules nx cache if available [npm]
         if: steps.package_manager.outputs.name == 'npm'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules/.cache/nx
           key: cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-${{ hashFiles('**/package-lock.json') }}
@@ -158,7 +158,7 @@ jobs:
       
       - name: Use the node_modules nx cache if available [pnpm]
         if: steps.package_manager.outputs.name == 'pnpm'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules/.cache/nx
           key: cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -181,7 +181,7 @@ jobs:
 
       - name: Use the node_modules nx cache if available [yarn]
         if: steps.package_manager.outputs.name == 'yarn' && startsWith(steps.versions.outputs.yarn_version, '1.')
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules/.cache/nx
           key: cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -203,7 +203,7 @@ jobs:
             ${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-berry-
       - name: Use the node_modules nx cache if available [yarn berry]
         if: steps.package_manager.outputs.name == 'yarn' && !startsWith(steps.versions.outputs.yarn_version, '1.')
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: node_modules/.cache/nx
           key: cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-berry-${{ hashFiles('**/yarn.lock') }}
