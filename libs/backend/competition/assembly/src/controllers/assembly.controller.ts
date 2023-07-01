@@ -221,7 +221,7 @@ export class AssemblyController {
       .pipe(take(1));
   }
 
-  private translateGame(warn: AssemblyValidationError) {
+  private translateGame(warn: AssemblyValidationError<unknown>) {
     const params: Record<string, unknown> = (warn.params || {}) as Record<
       string,
       unknown

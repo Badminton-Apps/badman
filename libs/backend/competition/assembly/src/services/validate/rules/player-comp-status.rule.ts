@@ -1,9 +1,14 @@
+import { Player } from '@badman/backend-database';
 import {
   AssemblyValidationData,
   AssemblyOutput,
   AssemblyValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
+
+export type PlayerCompStatusRuleParams = {
+  player: Partial<Player>;
+};
 
 /**
  * Checks if all players have the competition status active
@@ -22,7 +27,7 @@ export class PlayerCompStatusRule extends Rule {
       subtitudes,
     } = assembly;
 
-    const errors = [] as AssemblyValidationError[];
+    const errors = [] as AssemblyValidationError<PlayerCompStatusRuleParams>[];
     let valid = true;
 
     // If any of the players has competitionPlayer on false, the assembly is not valid

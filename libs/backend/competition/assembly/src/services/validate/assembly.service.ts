@@ -374,11 +374,11 @@ export class AssemblyValidationService {
     const errors = results
       ?.map((r) => r.errors)
       ?.flat(1)
-      ?.filter((e) => !!e) as AssemblyValidationError[];
+      ?.filter((e) => !!e) as AssemblyValidationError<unknown>[];
     const warnings = results
       ?.map((r) => r.warnings)
       ?.flat(1)
-      ?.filter((e) => !!e) as AssemblyValidationError[];
+      ?.filter((e) => !!e) as AssemblyValidationError<unknown>[];
 
     return {
       valid: errors.length === 0,

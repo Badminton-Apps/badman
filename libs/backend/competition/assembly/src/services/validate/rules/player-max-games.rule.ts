@@ -7,6 +7,11 @@ import {
 } from '../../../models';
 import { Rule } from './_rule.base';
 
+export type PlayerMaxGamesRuleParams = {
+  player: Partial<Player>;
+  max: number;
+}
+
 export class PlayerMaxGamesRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
@@ -21,7 +26,7 @@ export class PlayerMaxGamesRule extends Rule {
       type,
     } = assembly;
 
-    const errors = [] as AssemblyValidationError[];
+    const errors = [] as AssemblyValidationError<PlayerMaxGamesRuleParams>[];
 
     // Check if a player has max 1 single game and 2 double game
 

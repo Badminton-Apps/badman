@@ -1,6 +1,17 @@
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import {
+  AssemblyValidationData,
+  AssemblyOutput,
+  AssemblyValidationError,
+} from '../../../models';
 import { Rule } from './_rule.base';
+import { Player } from '@badman/backend-database';
+
+export type PlayerMinLevelRuleParams = {
+  player: Partial<Player> & { ranking: number };
+  minLevel: number;
+  rankingType: 'single' | 'double' | 'mix';
+};
 
 export class PlayerMinLevelRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
@@ -20,7 +31,7 @@ export class PlayerMinLevelRule extends Rule {
       subEvent,
     } = assembly;
 
-    const errors = [] as AssemblyValidationError[];
+    const errors = [] as AssemblyValidationError<PlayerMinLevelRuleParams>[];
     let valid = true;
 
     if (!system?.amountOfLevels) {

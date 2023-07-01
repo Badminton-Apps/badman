@@ -62,10 +62,10 @@ export class AssemblyInput {
 @ObjectType()
 export class AssemblyOutput {
   @Field(() => [AssemblyValidationError], { nullable: 'itemsAndList' })
-  errors?: AssemblyValidationError[];
+  errors?: AssemblyValidationError<unknown>[];
 
   @Field(() => [AssemblyValidationError], { nullable: 'itemsAndList' })
-  warnings?: AssemblyValidationError[];
+  warnings?: AssemblyValidationError<unknown>[];
 
   @Field(() => Boolean, { nullable: true })
   valid?: boolean;
