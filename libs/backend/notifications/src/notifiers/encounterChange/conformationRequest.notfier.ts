@@ -1,11 +1,11 @@
-import { EncounterCompetition, Player } from '@badman/backend-database';
+import { EncounterCompetition, NotificationOptionsTypes, Player } from '@badman/backend-database';
 import { Notifier } from '../notifier.base';
 
 export class CompetitionEncounterChangeConformationRequestNotifier extends Notifier<{
   encounter: EncounterCompetition;
 }> {
   protected linkType = 'encounterCompetition';
-  protected type = 'encounterChangeConformationNotification';
+  protected type: keyof NotificationOptionsTypes ='encounterChangeConformationNotification';
   
   notifyPush(
     player: Player,
@@ -15,7 +15,7 @@ export class CompetitionEncounterChangeConformationRequestNotifier extends Notif
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
-    return null;
+    return Promise.resolve();
   }
   notifyEmail(
     player: Player,
@@ -25,7 +25,7 @@ export class CompetitionEncounterChangeConformationRequestNotifier extends Notif
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
-    return null;
+    return Promise.resolve();
   }
   notifySms(
     player: Player,
@@ -35,6 +35,6 @@ export class CompetitionEncounterChangeConformationRequestNotifier extends Notif
     args?: { email: string }
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
-    return null;
+    return Promise.resolve();
   }
 }

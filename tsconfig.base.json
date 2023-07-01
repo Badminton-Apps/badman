@@ -166,7 +166,9 @@
       "@badman/utils": [
         "libs/utils/src/index.ts"
       ]
-    }
+    },
+    "strictNullChecks": true,
+    "strict": true
   },
   "exclude": [
     "node_modules",

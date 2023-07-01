@@ -34,7 +34,7 @@ export class NotificationResolver {
   @Query(() => Notification)
   async notification(
     @Args('id', { type: () => ID }) id: string
-  ): Promise<Notification> {
+  ): Promise<Notification | null> {
     return await Notification.findByPk(id);
   }
 

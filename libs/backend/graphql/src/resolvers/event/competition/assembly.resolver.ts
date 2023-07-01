@@ -11,7 +11,7 @@ import {
   RankingSystem,
 } from '@badman/backend-database';
 import { sortPlayers } from '@badman/utils';
-import { Logger } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -53,6 +53,12 @@ export class AssemblyResolver {
     });
 
     const system = await RankingSystem.findByPk(assembly.systemId);
+
+    if (!system) {
+      throw new NotFoundException(
+        `${RankingSystem.name}: ${assembly.systemId}`
+      );
+    }
 
     return p
       .map((player) => ({
@@ -121,17 +127,17 @@ export class AssemblyResolver {
           teamId: assembly.teamId,
           playerId: user.id,
           assembly: {
-            single1: assembly?.single1 || null,
-            single2: assembly?.single2 || null,
-            single3: assembly?.single3 || null,
-            single4: assembly?.single4 || null,
+            single1: assembly?.single1 || undefined,
+            single2: assembly?.single2 || undefined,
+            single3: assembly?.single3 || undefined,
+            single4: assembly?.single4 || undefined,
             double1: assembly?.double1 || [],
             double2: assembly?.double2 || [],
             double3: assembly?.double3 || [],
             double4: assembly?.double4 || [],
             subtitudes: assembly?.subtitudes || [],
           },
-        },
+        } as Assembly,
       });
 
       if (!created) {
@@ -142,10 +148,10 @@ export class AssemblyResolver {
           teamId: assembly.teamId,
           playerId: user.id,
           assembly: {
-            single1: assembly?.single1 || null,
-            single2: assembly?.single2 || null,
-            single3: assembly?.single3 || null,
-            single4: assembly?.single4 || null,
+            single1: assembly?.single1 || undefined,
+            single2: assembly?.single2 || undefined,
+            single3: assembly?.single3 || undefined,
+            single4: assembly?.single4 || undefined,
             double1: assembly?.double1 || [],
             double2: assembly?.double2 || [],
             double3: assembly?.double3 || [],

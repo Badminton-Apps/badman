@@ -41,7 +41,7 @@ export class AppController {
     args: {
       job: string;
       queue: typeof SimulationQueue | typeof SyncQueue;
-      jobArgs: unknown;
+      jobArgs: { [key: string]: unknown };
       removeOnComplete: boolean;
       removeOnFail: boolean;
     }
@@ -53,7 +53,7 @@ export class AppController {
       hasPerm: user.hasAnyPermission(['change:job']),
     });
 
-    if (!user.hasAnyPermission(['change:job'])) {
+    if (!(await user.hasAnyPermission(['change:job']))) {
       throw new UnauthorizedException('You do not have permission to do this');
     }
 
@@ -85,6 +85,10 @@ export class AppController {
     this.logger.debug('Generating CP');
     try {
       const fileLoc = await this.cpGen.generateCpFile(query.eventId);
+      if (!fileLoc) {
+        throw new HttpException('Could not generate CP', 500);
+      }
+
       const file = createReadStream(fileLoc);
       const extension = extname(fileLoc);
       const fileName = basename(fileLoc, extension);
@@ -94,7 +98,7 @@ export class AppController {
       );
 
       res.type(extension).send(file);
-    } catch (e) {
+    } catch (e: any) {
       this.logger.error(e?.process?.message ?? e.message);
       throw e;
     }
