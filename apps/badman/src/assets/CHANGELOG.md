@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.5](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.4...v6.88.0-beta.5) (2023-07-01)
+
+
+### Features
+
+* mobile "support" for change encounters ([5d899b9](https://github.com/Badminton-Apps/badman/commit/5d899b957295237082625f4cff726a5ae2de4f12))
+* Season select shows 2 years ([143caa4](https://github.com/Badminton-Apps/badman/commit/143caa4b7ded867d44db1f181d87f21a3f2cf3de))
+* typings for validation errors ([88f2fbe](https://github.com/Badminton-Apps/badman/commit/88f2fbe280b00db42fd1c6b967727274c6cb9beb))
+
+
+### Bug Fixes
+
+* **deps:** update dependency fast-xml-parser to v4.2.5 [security] ([fc80f1a](https://github.com/Badminton-Apps/badman/commit/fc80f1ac50069ac2bb67bfe90e6958562a9d78b7))
+* should have taken up full width ([fc7abb5](https://github.com/Badminton-Apps/badman/commit/fc7abb56cb85a4bb4e5d720da75218b12df712a6))
+
 ## [6.88.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.3...v6.88.0-beta.4) (2023-06-23)
 
 
