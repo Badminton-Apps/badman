@@ -10,6 +10,9 @@ export class TeamSubEventRule extends Rule {
     const results = [] as RuleResult[];
 
     for (const { subEvent, team } of enrollment.teams) {
+      if (!team?.id) {
+        continue;
+      }
       const errors = [] as EnrollmentValidationError[];
       if (!subEvent) {
         errors.push({

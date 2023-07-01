@@ -12,7 +12,44 @@ export class PlannerService {
       },
     });
 
-    const clubs = {};
+    const clubs: {
+      [key: string]: {
+        name?: string;
+        locations?: {
+          id: string;
+          name?: string;
+          address?: string;
+          street?: string;
+          streetNumber?: string;
+          zip?: string;
+          city?: string;
+          country?: string;
+          availability?: {
+            id?: string;
+            day?: string;
+            time?: string;
+          }[];
+        }[];
+        teams?: {
+          id?: string;
+          name?: string;
+          event?: {
+            id?: string;
+            name?: string;
+          };
+          subEvent?: {
+            id?: string;
+            name?: string;
+          };
+          draw?: {
+            id?: string;
+            name?: string;
+          };
+          preferredDay?: string;
+          preferredTime?: Date;
+        }[];
+      };
+    } = {};
 
     for (const event of events) {
       const subEvent = await event.getSubEventCompetitions();
@@ -21,6 +58,10 @@ export class PlannerService {
         for (const entry of entries) {
           const team = await entry.getTeam();
           const draw = await entry.getDrawCompetition();
+
+          if (!team?.clubId) {
+            continue;
+          }
 
           const teaminfo = {
             id: team?.id,
@@ -59,20 +100,22 @@ export class PlannerService {
                   city: l.city,
                   state: l.state,
                   availabilities: [
-                    l.availabilities.map((a) => {
+                    l.availabilities?.map((a) => {
                       return {
                         id: a.id,
                         day: a.days?.filter((d) => d.day != null),
-                        exceptions: a.exceptions?.filter((e) => e.courts != null),
+                        exceptions: a.exceptions?.filter(
+                          (e) => e.courts != null
+                        ),
                       };
                     }),
                   ],
-                };
+                } 
               }),
               teams: [teaminfo],
             };
           } else {
-            clubs[team.clubId].teams.push(teaminfo);
+            clubs[team.clubId]?.teams?.push(teaminfo);
           }
         }
       }

@@ -7,6 +7,7 @@ import {
   Player,
 } from '@badman/backend-database';
 import {
+  BadRequestException,
   Logger,
   NotFoundException,
   UnauthorizedException,
@@ -56,6 +57,14 @@ export class CommentResolver {
   ): Promise<Comment> {
     const transaction = await this._sequelize.transaction();
     try {
+      if (!newCommentData?.linkType) {
+        throw new BadRequestException(`linkType is required`);
+      }
+
+      if (!newCommentData?.linkId) {
+        throw new BadRequestException(`linkId is required`);
+      }
+
       const link = await this.getLink(
         newCommentData.linkType,
         newCommentData.linkId
@@ -123,6 +132,14 @@ export class CommentResolver {
         throw new UnauthorizedException(
           `You do not have permission to edit this comment`
         );
+      }
+
+      if (!updateCommentData?.linkType) {
+        throw new BadRequestException(`linkType is required`);
+      }
+
+      if (!updateCommentData?.linkId) {
+        throw new BadRequestException(`linkId is required`);
       }
 
       const link = await this.getLink(

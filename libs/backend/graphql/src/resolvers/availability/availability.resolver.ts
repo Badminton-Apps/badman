@@ -34,8 +34,8 @@ export class AvailabilitysResolver {
   @Query(() => Availability)
   async availability(
     @Args('id', { type: () => ID }) id: string
-  ): Promise<Availability> {
-    return await Availability.findByPk(id);
+  ): Promise<Availability | null> {
+    return Availability.findByPk(id);
   }
 
   @Query(() => [Availability])
@@ -51,15 +51,16 @@ export class AvailabilitysResolver {
   // }
 
   @ResolveField(() => [ExceptionType])
-  async exceptions(
-    @Parent() availability: Availability
-  ): Promise<AvailabilityException[]> {
+  async exceptions(@Parent() availability: Availability) {
     return availability.exceptions?.map((e) => {
-      return {
-        ...e,
-        start: new Date(e.start),
-        end: new Date(e.end),
-      };
+      if (e.start && e.end) {
+        return {
+          ...e,
+          start: new Date(e.start),
+          end: new Date(e.end),
+        } as AvailabilityException;
+      }
+      return;
     });
   }
 
@@ -84,10 +85,10 @@ export class AvailabilitysResolver {
       }
 
       if (
-        !user.hasAnyPermission([
+        !(await user.hasAnyPermission([
           `${dbLocation.clubId}_edit:location`,
           'edit-any:club',
-        ])
+        ]))
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`
@@ -135,10 +136,10 @@ export class AvailabilitysResolver {
       }
 
       if (
-        !user.hasAnyPermission([
-          `${dbAvailability.location.clubId}_edit:location`,
+        !(await user.hasAnyPermission([
+          `${dbAvailability.location?.clubId}_edit:location`,
           'edit-any:club',
-        ])
+        ]))
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`

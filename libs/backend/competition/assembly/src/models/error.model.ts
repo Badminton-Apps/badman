@@ -6,7 +6,7 @@ import { GraphQLJSONObject } from 'graphql-type-json';
 @ObjectType()
 export class AssemblyValidationError {
   @Field(() => String, { nullable: true })
-  message: PathImpl2<I18nTranslations>;
+  message!: PathImpl2<I18nTranslations>;
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   params?: unknown;
