@@ -326,22 +326,22 @@ export class RankingController {
     response.header('Access-Control-Expose-Headers', 'Content-Disposition');
 
     if (files.length > 1) {
-      const exportedfiles = files.map((file) => {
-        const outputFile = join(this._resultFolder, `${file}.csv`);
-        return {
-          path: outputFile,
-          name: `${file}.csv`,
-        };
-      });
+      // const exportedfiles = files.map((file) => {
+      //   const outputFile = join(this._resultFolder, `${file}.csv`);
+      //   return {
+      //     path: outputFile,
+      //     name: `${file}.csv`,
+      //   };
+      // });
 
       response.header('Content-Type', 'application/zip');
       response.header(
         'Content-Disposition',
         `attachment; filename="${filename}.zip"`
       );
-      const zip = archiver('zip', {
-        zlib: { level: 9 },
-      });
+      // const zip = archiver('zip', {
+      //   zlib: { level: 9 },
+      // });
       // this probably won't work
       throw new Error("This probably won't work");
       // zip.pipe(response); // res is a writable stream
