@@ -7,6 +7,7 @@ import {
   EncounterChangeNewInput,
   EncounterCompetition,
   Game,
+  Comment,
   Player,
   Team,
 } from '@badman/backend-database';
@@ -228,6 +229,34 @@ export class EncounterCompetitionResolver {
     }
 
     return encounterChange;
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  async homeComments(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<Comment[]> {
+    return encounter.getHomeComments();
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  async awayComments(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<Comment[]> {
+    return encounter.getAwayComments();
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  async homeCommentsChange(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<Comment[]> {
+    return encounter.getHomeComments();
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  async awayCommentsChange(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<Comment[]> {
+    return encounter.getAwayComments();
   }
 
   // @Mutation(returns => Boolean)
