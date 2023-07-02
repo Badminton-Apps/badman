@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.8...v6.88.0-beta.9) (2023-07-02)
+
+
+### Features
+
+* comments are now on competition level ([3a233f8](https://github.com/Badminton-Apps/badman/commit/3a233f84da4f90acee4d60ed25b317198d5f0fa8))
+* Competition to event selection ([e93cb21](https://github.com/Badminton-Apps/badman/commit/e93cb21e42755bfb1e397d7126a3f78486fba592))
+
+
+### Bug Fixes
+
+* **deps:** update dependency conventional-changelog to v4 ([f96235e](https://github.com/Badminton-Apps/badman/commit/f96235e5465c0854a01737e7d5a4ea3e6cb2a2d8))
+* **deps:** update dependency graphql to v16.7.1 ([d7d8220](https://github.com/Badminton-Apps/badman/commit/d7d8220cdbce0191b94653e1ef26015888a28375))
+
 ## [6.88.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.7...v6.88.0-beta.8) (2023-07-01)
 
 
