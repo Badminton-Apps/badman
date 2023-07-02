@@ -215,6 +215,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
               return [0, 1, 2, 3, 4, 5].includes(r.date.getMonth());
             });
 
+
             const params = this.activatedRoute.snapshot.queryParams;
 
             if (params && params['encounter']) {

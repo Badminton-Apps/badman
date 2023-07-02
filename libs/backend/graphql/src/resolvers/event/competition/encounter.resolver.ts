@@ -1,13 +1,13 @@
 import { User } from '@badman/backend-authorization';
 import {
   Assembly,
+  Comment,
   DrawCompetition,
   EncounterChange,
   EncounterChangeDate,
   EncounterChangeNewInput,
   EncounterCompetition,
   Game,
-  Comment,
   Player,
   Team,
 } from '@badman/backend-database';
@@ -33,7 +33,7 @@ import {
 } from '@nestjs/graphql';
 import { Queue } from 'bull';
 import moment from 'moment';
-import { Op, Transaction } from 'sequelize';
+import { Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../../utils';
 
@@ -106,13 +106,7 @@ export class EncounterCompetitionResolver {
   async encounterChange(
     @Parent() encounter: EncounterCompetition
   ): Promise<EncounterChange> {
-    return encounter.getEncounterChange({
-      where: {
-        finished: {
-          [Op.not]: true,
-        },
-      },
-    });
+    return encounter.getEncounterChange();
   }
 
   @ResolveField(() => [Game])
@@ -199,7 +193,7 @@ export class EncounterCompetitionResolver {
 
         // Destroy the requets
         // await encounterChange.destroy({ transaction });
-        encounterChange.finished = true;
+        encounterChange.accepted = true;
         await encounterChange.save({ transaction });
       } else {
         await this.changeOrUpdate(

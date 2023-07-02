@@ -6,17 +6,28 @@ module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.addColumn(
+
+        // set all current accepted to true
+        await queryInterface.sequelize.query(
+          `UPDATE "event"."EncounterChanges" SET "accepted" = true`,
+          { transaction: t }
+        );
+
+        // set default column value to false
+        await queryInterface.changeColumn(
           {
             tableName: 'EncounterChanges',
             schema: 'event',
           },
-          'finished',
+          'accepted',
           {
             type: sequelize.DataTypes.BOOLEAN,
-            allowNull: true,
+            allowNull: false,
+            defaultValue: false,
           },
-          { transaction: t }
+          {
+            transaction: t,
+          }
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -28,16 +39,20 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.removeColumn(
+        await queryInterface.changeColumn(
           {
             tableName: 'EncounterChanges',
             schema: 'event',
           },
-          'finished',
-          { transaction: t }
+          'accepted',
+          {
+            type: sequelize.DataTypes.BOOLEAN,
+            allowNull: true,
+          },
+          {
+            transaction: t,
+          }
         );
-
-       
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

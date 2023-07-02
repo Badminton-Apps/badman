@@ -45,7 +45,7 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
 
-const changeQuery = gql`
+const CHANGE_QUERY = gql`
   query EncounterChange($id: ID!) {
     encounterChange(id: $id) {
       id
@@ -140,6 +140,8 @@ export class ShowRequestsComponent implements OnInit {
         }),
         filter((value) => value !== null),
         switchMap((encounter: EncounterCompetition) => {
+          console.log(encounter?.encounterChange?.id)
+
           if (encounter?.encounterChange?.id == undefined) {
             return of(new EncounterChange());
           }
@@ -148,7 +150,7 @@ export class ShowRequestsComponent implements OnInit {
             .watchQuery<{
               encounterChange: EncounterChange;
             }>({
-              query: changeQuery,
+              query: CHANGE_QUERY,
               variables: {
                 id: encounter?.encounterChange?.id,
               },
@@ -169,16 +171,6 @@ export class ShowRequestsComponent implements OnInit {
 
           encounterChange?.dates?.map((r) => this._addDateControl(r));
 
-          // // Set initial
-          // this._updateSelected();
-
-          // // Add subscription
-          // this.dateControls.valueChanges.subscribe(() =>
-          //   this._updateSelected()
-          // );
-          // this.dateControlsNotAvailible.valueChanges.subscribe(() =>
-          //   this._updateSelected()
-          // );
         })
       );
     } else {
@@ -313,7 +305,7 @@ export class ShowRequestsComponent implements OnInit {
             },
             refetchQueries: (result) => [
               {
-                query: changeQuery,
+                query: CHANGE_QUERY,
                 variables: {
                   id: result.data?.addChangeEncounter?.id,
                 },

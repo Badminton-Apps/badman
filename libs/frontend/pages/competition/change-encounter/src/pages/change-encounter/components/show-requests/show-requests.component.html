@@ -41,30 +41,38 @@
                 formControlName="date"
               ></badman-date-selector>
 
-              <mat-form-field>
-                <mat-label>{{ 'all.competition.home' | translate }}</mat-label>
-                <mat-select formControlName="availabilityHome" required>
-                  <mat-option value="POSSIBLE">{{
-                    'all.competition.change-encounter.possible' | translate
-                  }}</mat-option>
-                  <mat-option value="NOT_POSSIBLE">{{
-                    'all.competition.change-encounter.not-possible' | translate
-                  }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field>
-                <mat-label>{{ 'all.competition.away' | translate }}</mat-label>
-                <mat-select formControlName="availabilityAway" required>
-                  <mat-option value="POSSIBLE">{{
-                    'all.competition.change-encounter.possible' | translate
-                  }}</mat-option>
-                  <mat-option value="NOT_POSSIBLE">{{
-                    'all.competition.change-encounter.not-possible' | translate
-                  }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-
+              <div class="availability">
+                <mat-form-field>
+                  <mat-label>{{
+                    'all.competition.home' | translate
+                  }}</mat-label>
+                  <mat-select formControlName="availabilityHome" required>
+                    <mat-option value="POSSIBLE">{{
+                      'all.competition.change-encounter.possible' | translate
+                    }}</mat-option>
+                    <mat-option value="NOT_POSSIBLE">{{
+                      'all.competition.change-encounter.not-possible'
+                        | translate
+                    }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="availability">
+                <mat-form-field>
+                  <mat-label>{{
+                    'all.competition.away' | translate
+                  }}</mat-label>
+                  <mat-select formControlName="availabilityAway" required>
+                    <mat-option value="POSSIBLE">{{
+                      'all.competition.change-encounter.possible' | translate
+                    }}</mat-option>
+                    <mat-option value="NOT_POSSIBLE">{{
+                      'all.competition.change-encounter.not-possible'
+                        | translate
+                    }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
               <mat-checkbox
                 class="selected"
                 formControlName="selected"
@@ -124,35 +132,38 @@
                   formControlName="date"
                 ></badman-date-selector>
 
-                <mat-form-field>
-                  <mat-label>{{
-                    'all.competition.home' | translate
-                  }}</mat-label>
-                  <mat-select formControlName="availabilityHome" required>
-                    <mat-option value="POSSIBLE">{{
-                      'all.competition.change-encounter.possible' | translate
-                    }}</mat-option>
-                    <mat-option value="NOT_POSSIBLE">{{
-                      'all.competition.change-encounter.not-possible'
-                        | translate
-                    }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-label>{{
-                    'all.competition.away' | translate
-                  }}</mat-label>
-                  <mat-select formControlName="availabilityAway" required>
-                    <mat-option value="POSSIBLE">{{
-                      'all.competition.change-encounter.possible' | translate
-                    }}</mat-option>
-                    <mat-option value="NOT_POSSIBLE">{{
-                      'all.competition.change-encounter.not-possible'
-                        | translate
-                    }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
+                <div class="availability">
+                  <mat-form-field>
+                    <mat-label>{{
+                      'all.competition.home' | translate
+                    }}</mat-label>
+                    <mat-select formControlName="availabilityHome" required>
+                      <mat-option value="POSSIBLE">{{
+                        'all.competition.change-encounter.possible' | translate
+                      }}</mat-option>
+                      <mat-option value="NOT_POSSIBLE">{{
+                        'all.competition.change-encounter.not-possible'
+                          | translate
+                      }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="availability">
+                  <mat-form-field>
+                    <mat-label>{{
+                      'all.competition.away' | translate
+                    }}</mat-label>
+                    <mat-select formControlName="availabilityAway" required>
+                      <mat-option value="POSSIBLE">{{
+                        'all.competition.change-encounter.possible' | translate
+                      }}</mat-option>
+                      <mat-option value="NOT_POSSIBLE">{{
+                        'all.competition.change-encounter.not-possible'
+                          | translate
+                      }}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
 
                 <mat-checkbox
                   class="selected"
@@ -197,48 +208,6 @@
       "
       [encounter]="this.encounter"
     ></badman-comments>
-
-    <!-- <div class="comments">
-      <h3>
-        {{ 'all.competition.change-encounter.comments' | translate }}
-      </h3>
-
-      <div id="body">
-        <div
-          class="message"
-          [ngClass]="{
-            me: comment.player?.id === this.authenticateService.user?.id
-          }"
-          *ngFor="let comment of comments"
-        >
-          <div class="message-content">
-            <label>
-              {{ comment.player?.fullName }}
-            </label>
-            {{ comment.message }}
-            <div class="time">
-              {{ comment.createdAt | amDateFormat : 'LLL' }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="new-comment">
-        <mat-form-field>
-          <mat-label>{{
-            'all.competition.change-encounter.comment' | translate
-          }}</mat-label>
-          <textarea
-            matInput
-            [formControl]="this.commentControl"
-            rows="5"
-          ></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="primary" (click)="addComment()">
-          {{ 'all.button.add-comment' | translate }}
-        </button>
-      </div>
-    </div> -->
   </ng-container>
 </div>
 

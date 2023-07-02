@@ -23,7 +23,6 @@ export class EncounterCompetition {
   showingForHomeTeam?: boolean;
   encounterChange?: EncounterChange;
 
-  finished = true;
 
   constructor(args?: Partial<EncounterCompetition>) {
     this.id = args?.id;
@@ -68,8 +67,6 @@ export class EncounterCompetition {
     this.homeTeamId = args?.homeTeamId;
     this.awayTeamId = args?.awayTeamId;
 
-    if (this.encounterChange && this.encounterChange.accepted != true) {
-      this.finished = false;
-    }
+   
   }
 }
