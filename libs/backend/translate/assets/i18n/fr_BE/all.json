@@ -125,8 +125,8 @@
       "requested": "Demande soumise",
       "requested-failed": "La demande a échoué, contactez Badminton Vlaanderen si le problème persiste.",
       "show-not-availible": {
-        "plural": "Il y a {count} jours où l'une des deux équipes n'est pas disponible, vous pouvez les voir en cliquant ici",
-        "singular": "Il y a 1 jour où l'une des deux équipes n'est pas présente, en cliquant ici vous pouvez le voir"
+        "plural": "Il y a {count} jours où l'une des équipes n'est pas disponible. Cliquez ici pour voir ces jours.",
+        "singular": "En cliquant ici, vous pouvez voir le jour où une équipe n'est pas disponible."
       },
       "submit": {
         "description": "Lorsque vous cliquez sur \"oui\", le jour actuel sera remplacé par le nouveau jour sélectionné, êtes-vous sûr ?",
