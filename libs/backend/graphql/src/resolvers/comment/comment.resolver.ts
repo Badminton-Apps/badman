@@ -3,6 +3,7 @@ import {
   CommentNewInput,
   CommentUpdateInput,
   EncounterChange,
+  EncounterCompetition,
   EventCompetition,
   Player,
 } from '@badman/backend-database';
@@ -24,6 +25,7 @@ import {
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
+import { Transaction } from 'sequelize';
 
 @Resolver(() => Comment)
 export class CommentResolver {
@@ -90,18 +92,31 @@ export class CommentResolver {
         },
       });
 
-      if (link instanceof EventCompetition) {
-        await link.addComment(comment, { transaction });
-      } else if (link instanceof EncounterChange) {
-        const encounter = await link.getEncounter();
-        const home = await encounter.getHome();
-        const away = await encounter.getAway();
+      switch (newCommentData.linkType) {
+        case 'competition':
+          if (!(link instanceof EventCompetition)) {
+            throw new BadRequestException(`linkType is not competition`);
+          }
+          await link.addComment(comment, { transaction });
+          break;
+        case 'encounterChange':
+          if (!(link instanceof EncounterCompetition)) {
+            throw new BadRequestException(
+              `linkType is not home_comment_chamge`
+            );
+          }
+          await this.encounterChangeComment(link, comment, user, transaction);
+          break;
 
-        if (home.clubId === comment.clubId) {
-          await link.addHomeComment(comment, { transaction });
-        } else if (away.clubId === comment.clubId) {
-          await link.addAwayComment(comment, { transaction });
-        }
+        case 'encounter':
+          if (!(link instanceof EncounterCompetition)) {
+            throw new BadRequestException(
+              `linkType is not home_comment_chamge`
+            );
+          }
+          await this.encounterComment(link, comment, user, transaction);
+          break;
+      
       }
 
       await transaction.commit();
@@ -178,9 +193,72 @@ export class CommentResolver {
       case 'competition':
         return EventCompetition.findByPk(linkId);
       case 'encounterChange':
-        return EncounterChange.findByPk(linkId);
+        return EncounterCompetition.findByPk(linkId);
       default:
         throw new NotFoundException(`${linkType}: ${linkId}`);
+    }
+  }
+
+  private async encounterChangeComment(
+    link: EncounterCompetition,
+    comment: Comment,
+    user: Player,
+    transaction: Transaction
+  ) {
+    const home = await link.getHome();
+    const away = await link.getAway();
+
+    if (
+      !(await user.hasAnyPermission([
+        `${home.clubId}_change:encounter`,
+        `${away.clubId}_change:encounter`,
+        'change-any:encounter',
+      ]))
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this comment`
+      );
+    }
+
+    if (home.clubId === comment.clubId) {
+      await link.addHomeCommentsChange(comment, { transaction });
+    } else if (away.clubId === comment.clubId) {
+      await link.addAwayCommentsChange(comment, { transaction });
+    } else {
+      throw new BadRequestException(
+        `clubId: ${comment.clubId} is not home or away`
+      );
+    }
+  }
+  private async encounterComment(
+    link: EncounterCompetition,
+    comment: Comment,
+    user: Player,
+    transaction: Transaction
+  ) {
+    const home = await link.getHome();
+    const away = await link.getAway();
+
+    if (
+      !(await user.hasAnyPermission([
+        `${home.clubId}_change:encounter`,
+        `${away.clubId}_change:encounter`,
+        'change-any:encounter',
+      ]))
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this comment`
+      );
+    }
+
+    if (home.clubId === comment.clubId) {
+      await link.addHomeComment(comment, { transaction });
+    } else if (away.clubId === comment.clubId) {
+      await link.addAwayComment(comment, { transaction });
+    } else {
+      throw new BadRequestException(
+        `clubId: ${comment.clubId} is not home or away`
+      );
     }
   }
 }

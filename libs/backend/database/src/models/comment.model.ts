@@ -18,7 +18,7 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { EncounterChange } from './event';
+import { EncounterChange, EncounterCompetition } from './event';
 import { Club } from './club.model';
 import {
   Field,
@@ -46,14 +46,13 @@ export class Comment extends Model {
   @Column(DataType.UUIDV4)
   id!: string;
 
-  @Field(() => Date, {nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field(() => Date, {nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
-
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.TEXT)
   message?: string;
 
@@ -62,7 +61,7 @@ export class Comment extends Model {
 
   @ForeignKey(() => Player)
   @Index
-  @Field(() => ID, {nullable: true })
+  @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   playerId?: string;
 
@@ -71,7 +70,7 @@ export class Comment extends Model {
 
   @ForeignKey(() => Club)
   @Index
-  @Field(() => ID, {nullable: true })
+  @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   clubId?: string;
 
@@ -81,22 +80,21 @@ export class Comment extends Model {
   })
   competition?: Relation<EventCompetition>;
 
-  @BelongsTo(() => EncounterChange, {
+  @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  encounter?: Relation<EncounterChange>;
+  encounter?: Relation<EncounterCompetition>;
 
   @Index('comment_index')
-  @Field(() => ID, {nullable: true })
+  @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   linkId?: string;
 
   @Index('comment_index')
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   linkType?: string;
-
 
   // Belongs to Competition
   getCompetition!: BelongsToGetAssociationMixin<EventCompetition>;

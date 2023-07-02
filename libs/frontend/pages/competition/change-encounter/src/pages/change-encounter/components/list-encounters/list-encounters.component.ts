@@ -68,8 +68,6 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
  
   destroy$ = new Subject<void>();
 
-
-
   @Input()
   controlName = 'encounter';
 

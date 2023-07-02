@@ -2,9 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  Injector,
   Input,
+  OnChanges,
+  OnInit,
+  Signal,
   inject,
-  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -18,8 +21,22 @@ import { sortComments } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { of } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
+import { catchError, take, map, switchMap, startWith } from 'rxjs/operators';
+
+const COMMENTS_QUERY = gql`
+  query GetEncounterComments($where: JSONObject) {
+    comments(where: $where) {
+      id
+      message
+      player {
+        id
+        fullName
+      }
+      createdAt
+    }
+  }
+`;
 
 @Component({
   selector: 'badman-comments',
@@ -40,19 +57,22 @@ import { catchError, take } from 'rxjs/operators';
     MatInputModule,
   ],
 })
-export class CommentsComponent {
+export class CommentsComponent implements OnInit, OnChanges {
   // injects
   private userService = inject(AuthenticateService);
   private apollo = inject(Apollo);
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
+  private injector = inject(Injector);
 
   // signals
   user = toSignal(this.userService.user$);
+  comments!: Signal<Comment[] | undefined>;
 
-  @Input()
-  comments = signal<Comment[]>([]);
+  //
+  update$ = new Subject<void>();
 
+  // inputs
   @Input({ required: true })
   clubId!: string;
 
@@ -61,6 +81,40 @@ export class CommentsComponent {
 
   // forms
   commentControl = new FormControl<string>('');
+
+  ngOnInit(): void {
+    this.comments = toSignal(
+      this.update$.pipe(
+        startWith(null),
+        switchMap(
+          () =>
+            this.apollo.watchQuery<{
+              comments: Comment[];
+            }>({
+              query: COMMENTS_QUERY,
+              variables: {
+                where: {
+                  linkId: this.encounter?.id,
+                  linkType: {
+                    $or: ['home_comment_change', 'away_comment_change'],
+                  },
+                },
+              },
+            }).valueChanges
+        ),
+        map((result) =>
+          result.data.comments?.map((c) => new Comment(c))?.sort(sortComments)
+        )
+      ),
+      {
+        injector: this.injector,
+      }
+    );
+  }
+
+  ngOnChanges(): void {
+    this.update$.next();
+  }
 
   addComment() {
     this.apollo
@@ -83,11 +137,24 @@ export class CommentsComponent {
         variables: {
           data: {
             message: this.commentControl.value,
-            linkId: this.encounter?.encounterChange?.id,
+            linkId: this.encounter?.id,
             linkType: 'encounterChange',
             clubId: this.clubId,
           },
         },
+        refetchQueries: [
+          {
+            query: COMMENTS_QUERY,
+            variables: {
+              where: {
+                linkId: this.encounter?.id,
+                linkType: {
+                  $or: ['home_comment_change', 'away_comment_change'],
+                },
+              },
+            },
+          },
+        ],
       })
       .pipe(
         take(1),
@@ -108,9 +175,6 @@ export class CommentsComponent {
             }
           );
           this.commentControl.setValue('');
-          this.comments.set(
-            [...this.comments(), result.data.addComment].sort(sortComments)
-          );
         }
       });
   }
