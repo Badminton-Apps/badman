@@ -59,7 +59,7 @@ module.exports = {
     });
   },
 
-  down: async (queryInterface) => {
+  down: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         const comments = await queryInterface.sequelize.query(
@@ -67,19 +67,29 @@ module.exports = {
           { type: sequelize.QueryTypes.SELECT, transaction: t }
         );
 
+        console.log(`Found ${comments?.length} comments`);
+
         const encounters = await queryInterface.sequelize.query(
           `SELECT * FROM "event"."EncounterCompetitions" where id in ('${comments
             ?.map((comment) => comment.linkId)
-            .join('\',\'')}')`,
+            .join("','")}')`,
           { type: sequelize.QueryTypes.SELECT, transaction: t }
         );
 
-        const [encounterChanges] = await queryInterface.sequelize.query(
+        console.log(`Found ${encounters?.length} encounters`);
+
+        if (encounters?.length === 0) {
+          return;
+        }
+
+        const encounterChanges = await queryInterface.sequelize.query(
           `SELECT * FROM "event"."EncounterChanges" where "encounterId" in ('${encounters
             ?.map((encounter) => encounter.id)
-            .join('\',\'')}')`,
+            .join("','")}')`,
           { type: sequelize.QueryTypes.SELECT, transaction: t }
         );
+
+        console.log(`Found ${encounterChanges?.length} encounter changes`);
 
         // update the comments to use the encounterChangeId instead of the encounterId
         for (const comment of comments?.filter(

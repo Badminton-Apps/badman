@@ -1,5 +1,13 @@
 :host {
-  padding: 16px;
+  display: block;
+
+  @media (min-width: 768px) {
+    padding-left: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    padding-top: 1rem;
+  }
 }
 
 h2,
@@ -15,7 +23,6 @@ h3 {
     flex-direction: row;
   }
 }
-
 
 form {
   display: flex;
@@ -34,10 +41,21 @@ form {
     flex-direction: row;
     gap: 1rem;
     align-items: center;
+    // flex-wrap: wrap;
 
     badman-date-selector {
       flex: 40%;
+
+      // @media screen and (max-width: 768px) {
+      //   flex: 100%;
+      // }
     }
+
+    // .availability {
+    //   @media screen and (max-width: 768px) {
+    //     flex: 1 1 50%;
+    //   }
+    // }
 
     .selected {
       flex: 8%;

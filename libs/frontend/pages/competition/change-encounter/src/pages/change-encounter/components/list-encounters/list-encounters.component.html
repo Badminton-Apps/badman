@@ -60,7 +60,7 @@
       [ngClass]="{ selected: this.formControl.value?.id === option?.id }"
     >
       <mat-icon matListItemIcon>{{
-        option.finished ? 'done' : 'info'
+        option?.encounterChange?.accepted ?? true ? 'done' : 'info'
       }}</mat-icon>
       <h3 matListItemTitle>
         {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
@@ -85,7 +85,7 @@
       [ngClass]="{ selected: this.formControl.value?.id === option?.id }"
     >
       <mat-icon matListItemIcon>{{
-        option.finished ? 'done' : 'info'
+        option?.encounterChange?.accepted ?? true ? 'done' : 'info'
       }}</mat-icon>
       <h3 matListItemTitle>
         {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
