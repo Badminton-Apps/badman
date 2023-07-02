@@ -23,18 +23,22 @@
     </div>
     <div class="spacer"></div>
     <div *ngIf="this.data.home">
-      <button mat-icon-button [matMenuTriggerFor]="appMenu">
-        <mat-icon>calendar_today</mat-icon>
-      </button>
-      <mat-menu #appMenu="matMenu">
-        <div
-          (click)="$event.stopPropagation()"
-          (keydown)="$event.stopPropagation()"
-        >
-          <!-- <mat-calendar #calendar [formControl]="this.manualControl">
-          </mat-calendar> -->
-        </div>
-      </mat-menu>
+      <mat-form-field>
+        <mat-label>{{
+          'competition.change-encounter.choose-date' | translate
+        }}</mat-label>
+        <input
+          matInput
+          [ngxMatDatetimePicker]="openPicker"
+          placeholder="Choose a date"
+          [formControl]="manualControl"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="$any(openPicker)"
+        ></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
+      </mat-form-field>
     </div>
   </div>
   <div class="botton-row">

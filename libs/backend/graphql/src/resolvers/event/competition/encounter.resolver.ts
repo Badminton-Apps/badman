@@ -194,15 +194,19 @@ export class EncounterCompetitionResolver {
         // Destroy the requets
         // await encounterChange.destroy({ transaction });
         encounterChange.accepted = true;
-        await encounterChange.save({ transaction });
       } else {
-        await this.changeOrUpdate(
-          encounterChange,
-          newChangeEncounter,
-          transaction,
-          dates
-        );
+        encounterChange.accepted = false;
       }
+      await encounterChange.save({ transaction });
+      this.logger.debug(`Change encounter ${encounter.id}: ${encounterChange.accepted}`);
+
+      await this.changeOrUpdate(
+        encounterChange,
+        newChangeEncounter,
+        transaction,
+        dates
+      );
+
 
       // find if any date was selected
       await transaction.commit();
@@ -264,8 +268,6 @@ export class EncounterCompetitionResolver {
     transaction: Transaction,
     existingDates: EncounterChangeDate[]
   ) {
-    encounterChange.accepted = false;
-
     change.dates = change.dates
       ?.map((r) => {
         const parsedDate = moment(r.date);

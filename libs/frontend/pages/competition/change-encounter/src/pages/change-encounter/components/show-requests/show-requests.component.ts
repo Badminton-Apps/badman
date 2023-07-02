@@ -140,8 +140,6 @@ export class ShowRequestsComponent implements OnInit {
         }),
         filter((value) => value !== null),
         switchMap((encounter: EncounterCompetition) => {
-          console.log(encounter?.encounterChange?.id)
-
           if (encounter?.encounterChange?.id == undefined) {
             return of(new EncounterChange());
           }
