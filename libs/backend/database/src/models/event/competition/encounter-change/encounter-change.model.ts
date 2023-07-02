@@ -58,7 +58,8 @@ export class EncounterChange extends Model {
   @Column(DataType.UUIDV4)
   id!: string;
 
-  @Field(() => Boolean, { nullable: true })
+  @Field(() => Boolean)
+  @Default(false)
   @Column(DataType.BOOLEAN)
   accepted?: boolean;
 
@@ -80,11 +81,6 @@ export class EncounterChange extends Model {
   })
   dates?: Relation<EncounterChangeDate[]>;
 
-  // Finished field
-  @Field(() => Boolean, { nullable: true })
-  @Column(DataType.BOOLEAN)
-  finished?: boolean;
-
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;
   setEncounter!: BelongsToSetAssociationMixin<EncounterCompetition, string>;
@@ -99,8 +95,6 @@ export class EncounterChange extends Model {
   hasDate!: HasManyHasAssociationMixin<EncounterChangeDate, string>;
   hasDates!: HasManyHasAssociationsMixin<EncounterChangeDate, string>;
   countDates!: HasManyCountAssociationsMixin;
-
-
 }
 
 @InputType()
