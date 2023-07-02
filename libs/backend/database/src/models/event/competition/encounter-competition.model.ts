@@ -28,14 +28,15 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+import { Relation } from '../../../wrapper';
+import { Comment } from '../../comment.model';
+import { Notification } from '../../personal';
 import { Player } from '../../player.model';
 import { Team } from '../../team.model';
 import { Game } from '../game.model';
+import { Assembly } from './assembly.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EncounterChange } from './encounter-change';
-import { Notification } from '../../personal';
-import { Assembly } from './assembly.model';
-import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -155,7 +156,6 @@ export class EncounterCompetition extends Model {
   @Column(DataType.STRING)
   endHour?: string;
 
-
   @Field(() => EncounterChange, { nullable: true })
   @HasOne(() => EncounterChange, {
     foreignKey: 'encounterId',
@@ -178,6 +178,46 @@ export class EncounterCompetition extends Model {
     onDelete: 'CASCADE',
   })
   assemblies?: Relation<Assembly[]>;
+
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'home_comment',
+    },
+  })
+  homeComments?: Relation<Comment[]>;
+
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'away_comment',
+    },
+  })
+  awayComments?: Relation<Comment[]>;
+
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'home_comment_change',
+    },
+  })
+  homeCommentsChange?: Relation<Comment[]>;
+
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'away_comment_change',
+    },
+  })
+  awayCommentsChange?: Relation<Comment[]>;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;
@@ -220,4 +260,48 @@ export class EncounterCompetition extends Model {
   hasAssembly!: HasManyHasAssociationMixin<Assembly, string>;
   hasAssemblies!: HasManyHasAssociationsMixin<Assembly, string>;
   countAssemblies!: HasManyCountAssociationsMixin;
+
+  // Has many HomeComment
+  getHomeComments!: HasManyGetAssociationsMixin<Comment>;
+  setHomeComments!: HasManySetAssociationsMixin<Comment, string>;
+  addHomeComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addHomeComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeHomeComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeHomeComments!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasHomeComment!: HasManyHasAssociationMixin<Comment, string>;
+  hasHomeComments!: HasManyHasAssociationsMixin<Comment, string>;
+  countHomeComments!: HasManyCountAssociationsMixin;
+
+  // Has many AwayComment
+  getAwayComments!: HasManyGetAssociationsMixin<Comment>;
+  setAwayComments!: HasManySetAssociationsMixin<Comment, string>;
+  addAwayComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addAwayComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeAwayComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeAwayComments!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasAwayComment!: HasManyHasAssociationMixin<Comment, string>;
+  hasAwayComments!: HasManyHasAssociationsMixin<Comment, string>;
+  countAwayComments!: HasManyCountAssociationsMixin;
+
+  // Has many HomeCommentsChange
+  getHomeCommentsChanges!: HasManyGetAssociationsMixin<Comment>;
+  setHomeCommentsChanges!: HasManySetAssociationsMixin<Comment, string>;
+  addHomeCommentsChanges!: HasManyAddAssociationsMixin<Comment, string>;
+  addHomeCommentsChange!: HasManyAddAssociationMixin<Comment, string>;
+  removeHomeCommentsChange!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeHomeCommentsChanges!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasHomeCommentsChange!: HasManyHasAssociationMixin<Comment, string>;
+  hasHomeCommentsChanges!: HasManyHasAssociationsMixin<Comment, string>;
+  countHomeCommentsChanges!: HasManyCountAssociationsMixin;
+
+  // Has many AwayCommentsChange
+  getAwayCommentsChanges!: HasManyGetAssociationsMixin<Comment>;
+  setAwayCommentsChanges!: HasManySetAssociationsMixin<Comment, string>;
+  addAwayCommentsChanges!: HasManyAddAssociationsMixin<Comment, string>;
+  addAwayCommentsChange!: HasManyAddAssociationMixin<Comment, string>;
+  removeAwayCommentsChange!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeAwayCommentsChanges!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasAwayCommentsChange!: HasManyHasAssociationMixin<Comment, string>;
+  hasAwayCommentsChanges!: HasManyHasAssociationsMixin<Comment, string>;
+  countAwayCommentsChanges!: HasManyCountAssociationsMixin;
 }

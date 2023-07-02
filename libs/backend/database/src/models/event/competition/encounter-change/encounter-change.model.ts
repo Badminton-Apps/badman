@@ -32,11 +32,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import {
-  Comment,
-  CommentNewInput,
-  CommentUpdateInput,
-} from '../../../comment.model';
+
 import { EncounterCompetition } from '../encounter-competition.model';
 import {
   EncounterChangeDate,
@@ -84,27 +80,6 @@ export class EncounterChange extends Model {
   })
   dates?: Relation<EncounterChangeDate[]>;
 
-  @Field(() => [Comment], { nullable: true })
-  @HasMany(() => Comment, {
-    foreignKey: 'linkId',
-    constraints: false,
-    scope: {
-      linkType: 'home_comment',
-    },
-  })
-  homeComments?: Relation<Comment[]>;
-
-  @Field(() => [Comment], { nullable: true })
-  @HasMany(() => Comment, {
-    foreignKey: 'linkId',
-    constraints: false,
-    scope: {
-      linkType: 'away_comment',
-    },
-  })
-  awayComments?: Relation<Comment[]>;
-
-
   // Finished field
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
@@ -125,38 +100,12 @@ export class EncounterChange extends Model {
   hasDates!: HasManyHasAssociationsMixin<EncounterChangeDate, string>;
   countDates!: HasManyCountAssociationsMixin;
 
-  // Has many HomeComment
-  getHomeComments!: HasManyGetAssociationsMixin<Comment>;
-  setHomeComments!: HasManySetAssociationsMixin<Comment, string>;
-  addHomeComments!: HasManyAddAssociationsMixin<Comment, string>;
-  addHomeComment!: HasManyAddAssociationMixin<Comment, string>;
-  removeHomeComment!: HasManyRemoveAssociationMixin<Comment, string>;
-  removeHomeComments!: HasManyRemoveAssociationsMixin<Comment, string>;
-  hasHomeComment!: HasManyHasAssociationMixin<Comment, string>;
-  hasHomeComments!: HasManyHasAssociationsMixin<Comment, string>;
-  countHomeComments!: HasManyCountAssociationsMixin;
 
-  // Has many AwayComment
-  getAwayComments!: HasManyGetAssociationsMixin<Comment>;
-  setAwayComments!: HasManySetAssociationsMixin<Comment, string>;
-  addAwayComments!: HasManyAddAssociationsMixin<Comment, string>;
-  addAwayComment!: HasManyAddAssociationMixin<Comment, string>;
-  removeAwayComment!: HasManyRemoveAssociationMixin<Comment, string>;
-  removeAwayComments!: HasManyRemoveAssociationsMixin<Comment, string>;
-  hasAwayComment!: HasManyHasAssociationMixin<Comment, string>;
-  hasAwayComments!: HasManyHasAssociationsMixin<Comment, string>;
-  countAwayComments!: HasManyCountAssociationsMixin;
 }
 
 @InputType()
 export class EncounterChangeUpdateInput extends PartialType(
-  OmitType(EncounterChange, [
-    'createdAt',
-    'updatedAt',
-    'dates',
-    'homeComments',
-    'awayComments',
-  ] as const),
+  OmitType(EncounterChange, ['createdAt', 'updatedAt', 'dates'] as const),
   InputType
 ) {
   @Field(() => Boolean)
@@ -164,19 +113,13 @@ export class EncounterChangeUpdateInput extends PartialType(
 
   @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })
   dates?: Relation<EncounterChangeDate[]>;
-
-  @Field(() => CommentUpdateInput, { nullable: true })
-  comment?: Relation<Comment>;
 }
 
 @InputType()
 export class EncounterChangeNewInput extends PartialType(
-  OmitType(EncounterChangeUpdateInput, ['id', 'dates', 'comment'] as const),
+  OmitType(EncounterChangeUpdateInput, ['id', 'dates'] as const),
   InputType
 ) {
   @Field(() => [EncounterChangeDateNewInput], { nullable: true })
   dates?: Relation<EncounterChangeDate[]>;
-
-  @Field(() => CommentNewInput, { nullable: true })
-  comment?: Relation<Comment>;
 }

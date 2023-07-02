@@ -1,8 +1,4 @@
-import {
-  Comment,
-  EncounterChange,
-  EncounterChangeDate,
-} from '@badman/backend-database';
+import { EncounterChange, EncounterChangeDate } from '@badman/backend-database';
 import { Logger, NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -54,19 +50,5 @@ export class EncounterChangeCompetitionResolver {
     @Parent() encounterChange: EncounterChange
   ): Promise<EncounterChangeDate[]> {
     return encounterChange.getDates();
-  }
-
-  @ResolveField(() => [Comment], { nullable: true })
-  async homeComments(
-    @Parent() encounterChange: EncounterChange
-  ): Promise<Comment[]> {
-    return encounterChange.getHomeComments();
-  }
-
-  @ResolveField(() => [Comment], { nullable: true })
-  async awayComments(
-    @Parent() encounterChange: EncounterChange
-  ): Promise<Comment[]> {
-    return encounterChange.getAwayComments();
   }
 }

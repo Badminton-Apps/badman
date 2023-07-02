@@ -21,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -34,16 +35,15 @@ import {
   EncounterChangeDate,
   EncounterCompetition,
 } from '@badman/frontend-models';
-import { ChangeEncounterAvailability, sortComments } from '@badman/utils';
+import { ChangeEncounterAvailability } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { Observable, lastValueFrom, of } from 'rxjs';
-import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
-import { MatExpansionModule } from '@angular/material/expansion';
 
 const changeQuery = gql`
   query EncounterChange($id: ID!) {
@@ -55,26 +55,6 @@ const changeQuery = gql`
         date
         availabilityHome
         availabilityAway
-      }
-
-      homeComments {
-        id
-        message
-        player {
-          id
-          fullName
-        }
-        createdAt
-      }
-
-      awayComments {
-        id
-        message
-        player {
-          id
-          fullName
-        }
-        createdAt
       }
     }
   }
@@ -186,18 +166,6 @@ export class ShowRequestsComponent implements OnInit {
             dates: this.dateControls,
             notAvailibleDates: this.dateControlsNotAvailible,
           });
-
-          this.comments.set(
-            (
-              [
-                encounterChange?.homeComments,
-                encounterChange?.awayComments,
-              ] as Comment[]
-            )
-              .flat()
-              .filter((x) => x != null)
-              .sort(sortComments)
-          );
 
           encounterChange?.dates?.map((r) => this._addDateControl(r));
 
@@ -324,8 +292,6 @@ export class ShowRequestsComponent implements OnInit {
 
     const success = async () => {
       try {
-        console.log(change);
-
         await lastValueFrom(
           this._apollo.mutate<{
             addChangeEncounter: EncounterChange;
@@ -404,28 +370,28 @@ export class ShowRequestsComponent implements OnInit {
     }
   }
 
-  private _updateSelected() {
-    return;
+  // private _updateSelected() {
+  //   return;
 
-    const selected = this.dateControls
-      .getRawValue()
-      .find((r) => r['selected'] == true);
+  //   const selected = this.dateControls
+  //     .getRawValue()
+  //     .find((r) => r['selected'] == true);
 
-    for (const control of this.dateControls.controls) {
-      control.get('selected')?.disable({ emitEvent: false });
+  //   for (const control of this.dateControls.controls) {
+  //     control.get('selected')?.disable({ emitEvent: false });
 
-      if (
-        (selected == null ||
-          selected?.['date'] == control.get('date')?.value) &&
-        control.get('availabilityHome')?.value ==
-          ChangeEncounterAvailability.POSSIBLE &&
-        control.get('availabilityAway')?.value ==
-          ChangeEncounterAvailability.POSSIBLE
-      ) {
-        control.get('selected')?.enable({ emitEvent: false });
-      }
-    }
-  }
+  //     if (
+  //       (selected == null ||
+  //         selected?.['date'] == control.get('date')?.value) &&
+  //       control.get('availabilityHome')?.value ==
+  //         ChangeEncounterAvailability.POSSIBLE &&
+  //       control.get('availabilityAway')?.value ==
+  //         ChangeEncounterAvailability.POSSIBLE
+  //     ) {
+  //       control.get('selected')?.enable({ emitEvent: false });
+  //     }
+  //   }
+  // }
 
   private _addDateControl(dateChange: EncounterChangeDate) {
     const id = new FormControl(dateChange?.id);
@@ -464,50 +430,5 @@ export class ShowRequestsComponent implements OnInit {
     } else {
       this.dateControls.push(dateControl);
     }
-  }
-
-  addComment() {
-    this._apollo
-      .mutate({
-        mutation: gql`
-          mutation AddChangeEncounterComment($data: CommentNewInput!) {
-            addComment(data: $data) {
-              id
-            }
-          }
-        `,
-        variables: {
-          data: {
-            message: this.commentControl.value,
-            linkId: this.encounter?.encounterChange?.id,
-            linkType: 'encounterChange',
-            clubId: this.home
-              ? this.encounter?.home?.clubId
-              : this.encounter?.away?.clubId,
-          },
-        },
-      })
-      .pipe(
-        take(1),
-        catchError((err) => {
-          console.error(err);
-          return of(null);
-        })
-      )
-      .subscribe((result) => {
-        if (result) {
-          this._snackBar.open(
-            this._translate.instant(
-              'competition.change-encounter.comment-added'
-            ),
-            'OK',
-            {
-              duration: 4000,
-            }
-          );
-          this.commentControl.setValue('');
-          this._cd.detectChanges();
-        }
-      });
   }
 }
