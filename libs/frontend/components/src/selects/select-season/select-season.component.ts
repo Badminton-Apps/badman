@@ -20,7 +20,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Club, Team } from '@badman/frontend-models';
+import { Club, EventCompetition, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -58,6 +58,9 @@ export class SelectSeasonComponent implements OnInit {
   dependsOn = 'club';
 
   @Input()
+  type: 'event' | 'club' = 'club';
+
+  @Input()
   updateUrl = false;
 
   @Input()
@@ -87,40 +90,78 @@ export class SelectSeasonComponent implements OnInit {
     }
 
     const previous = this.group?.get(this.dependsOn);
-    if (!previous) {
-      return;
+    if (previous && this.type === 'club') {
+      previous.valueChanges
+        .pipe(startWith(previous.value))
+        .subscribe((value) => {
+          const clubId = value?.id ?? value;
+
+          // if the clubId is a uuid continue
+          if (
+            !clubId?.match(
+              /^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/
+            )
+          ) {
+            return;
+          }
+
+          this._setYearsForClub({
+            id: clubId,
+          } as Club);
+
+          // update url on change
+          if (this.updateUrl) {
+            this.control.valueChanges.subscribe((value) => {
+              this.router.navigate([], {
+                relativeTo: this.activatedRoute,
+                queryParams: {
+                  [this.controlName]: value,
+                },
+                queryParamsHandling: 'merge',
+              });
+            });
+          }
+        });
     }
 
-    previous.valueChanges.pipe(startWith(previous.value)).subscribe((value) => {
-      const clubId = value?.id ?? value;
-
-      // if the clubId is a uuid continue
-      if (
-        !clubId?.match(/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/)
-      ) {
-        return;
-      }
-
-      this._setYears({
-        id: clubId,
-      } as Club);
-
-      // update url on change
-      if (this.updateUrl) {
-        this.control.valueChanges.subscribe((value) => {
-          this.router.navigate([], {
-            relativeTo: this.activatedRoute,
-            queryParams: {
-              [this.controlName]: value,
-            },
-            queryParamsHandling: 'merge',
-          });
-        });
-      }
-    });
+    if (!previous && this.type === 'event') {
+      this._setYearsForEventCompetition();
+    }
   }
 
-  private _setYears(club: Club) {
+  private _setYearsForEventCompetition() {
+    this.seasons = toSignal(
+      this.apollo
+        .query<{
+          eventCompetitionSeasons: number[];
+        }>({
+          query: gql`
+            query CompetitionYearsCompetition {
+              eventCompetitionSeasons
+            }
+          `,
+        })
+        .pipe(
+          transferState(
+            `eventCompetitions-seasons`,
+            this.stateTransfer,
+            this.platformId
+          ),
+          map((result) => {
+            if (!result?.data.eventCompetitionSeasons) {
+              throw new Error('No teams');
+            }
+            return result.data.eventCompetitionSeasons;
+          })
+        ),
+      {
+        initialValue: [getCurrentSeason()],
+        injector: this.injector,
+      }
+    );
+  }
+
+  private _setYearsForClub(club: Club) {
     this.seasons = toSignal(
       this.apollo
         .query<{

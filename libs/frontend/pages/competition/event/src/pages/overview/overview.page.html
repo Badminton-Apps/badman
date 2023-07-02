@@ -29,15 +29,7 @@
 </badman-page-header>
 
 <form [formGroup]="filter" class="filter">
-  <!-- year selection -->
-  <mat-form-field *ngIf="this.seasons">
-    <mat-label>Season</mat-label>
-    <mat-select formControlName="season">
-      <mat-option *ngFor="let season of this.seasons()" [value]="season">
-        {{ season }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  <badman-select-season type="event" [group]="filter"></badman-select-season>
 </form>
 
 <badman-competition-events [filter]="this.filter" />
