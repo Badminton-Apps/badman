@@ -3,7 +3,9 @@ import { inject } from '@angular/core';
 import { AppRouter } from './server/trpc/routers';
 
 export const { provideTrpcClient, TrpcClient } = createTrpcClient<AppRouter>({
-  url: 'http://localhost:4200/api/trpc',
+  url: import.meta.env.PROD
+    ? 'https://badman-meta.vercel.app/services/trpc'
+    : 'http://localhost:4200/services/trpc',
 });
 
 export function injectTrpcClient() {
