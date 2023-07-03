@@ -162,7 +162,8 @@
       ],
       "@badman/utils": [
         "libs/utils/src/index.ts"
-      ]
+      ],
+      "@badman/prisma": ["libs/prisma/src/index.ts"]
     },
     "strictNullChecks": true,
     "strict": true
