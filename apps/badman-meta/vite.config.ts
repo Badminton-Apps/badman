@@ -30,6 +30,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       analog({
+        apiPrefix: 'services',
         nitro,
       }),
       tsConfigPaths({
