@@ -15,7 +15,9 @@ import { injectTrpcClient } from '../../../trpc-client';
     <h3>Player</h3>
 
     <ng-container *ngIf="player$ | async as player">
-      <h4>{{ player.firstName }}, {{ player.lastName }}</h4>
+      <h4>
+        {{ player.firstName }}, {{ player.lastName }} ({{ player.memberId }})
+      </h4>
     </ng-container>
   `,
 })
