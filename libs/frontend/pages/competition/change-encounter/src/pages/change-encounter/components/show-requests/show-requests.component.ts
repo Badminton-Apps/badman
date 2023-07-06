@@ -44,6 +44,7 @@ import { Observable, lastValueFrom, of } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
+import { RequestDateComponent } from '../request-date/request-date.component';
 
 const CHANGE_QUERY = gql`
   query EncounterChange($id: ID!) {
@@ -88,6 +89,7 @@ const CHANGE_QUERY = gql`
     // Own
     DateSelectorComponent,
     CommentsComponent,
+    RequestDateComponent,
   ],
 })
 export class ShowRequestsComponent implements OnInit {
@@ -263,21 +265,6 @@ export class ShowRequestsComponent implements OnInit {
         this.running = false;
         return;
       }
-      // else if (
-      //   change.awayComment == null ||
-      //   (change.awayComment?.message?.length ?? 0) < 15
-      // ) {
-      //   // away team can have no dates but with a comment of at least to 15 characters
-      //   this._snackBar.open(
-      //     this._translate.instant(
-      //       'competition.change-encounter.errors.select-one-date-or-comment'
-      //     ),
-      //     'OK',
-      //     { duration: 4000 }
-      //   );
-      //   this.running = false;
-      //   return;
-      // }
     }
 
     const success = async () => {
@@ -360,28 +347,6 @@ export class ShowRequestsComponent implements OnInit {
     }
   }
 
-  // private _updateSelected() {
-  //   return;
-
-  //   const selected = this.dateControls
-  //     .getRawValue()
-  //     .find((r) => r['selected'] == true);
-
-  //   for (const control of this.dateControls.controls) {
-  //     control.get('selected')?.disable({ emitEvent: false });
-
-  //     if (
-  //       (selected == null ||
-  //         selected?.['date'] == control.get('date')?.value) &&
-  //       control.get('availabilityHome')?.value ==
-  //         ChangeEncounterAvailability.POSSIBLE &&
-  //       control.get('availabilityAway')?.value ==
-  //         ChangeEncounterAvailability.POSSIBLE
-  //     ) {
-  //       control.get('selected')?.enable({ emitEvent: false });
-  //     }
-  //   }
-  // }
 
   private _addDateControl(dateChange: EncounterChangeDate) {
     const id = new FormControl(dateChange?.id);

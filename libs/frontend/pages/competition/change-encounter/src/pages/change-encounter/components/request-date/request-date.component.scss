@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+
+  gap: 1rem;
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+  }
+}
+
+.availability {
+  flex: 0 1 175px;
+}
+
+.delete,
+.selected {
+  flex: 0 1 40px;
+  display: flex;
+  justify-content: center;
+}
+
+badman-date-selector {
+  flex: 1;
+  @media (max-width: 768px) {
+    flex: 1 1 100%;
+  }
+}
