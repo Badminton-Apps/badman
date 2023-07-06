@@ -24,72 +24,14 @@
 
         <div class="date-list">
           <ng-container formArrayName="dates">
-            <div
+            <badman-request-date
+              [group]="date"
               *ngFor="let date of dateControls.controls; let i = index"
-              fxLayout="row"
-              fxLayoutAlign="start center"
-              fxLayoutGap="8px"
-              [formGroupName]="i"
-              class="date-item"
-            >
-              <badman-date-selector
-                [homeClubId]="encounter.home!.clubId"
-                [awayClubId]="encounter.away!.clubId"
-                [homeTeamId]="encounter.home!.id"
-                [awayTeamId]="encounter.away!.id"
-                [home]="this.home"
-                formControlName="date"
-              ></badman-date-selector>
+              [encounter]="this.encounter"
+              [home]="this.home"
+              (removeDate)="this.removeDate(dateControls, i)"
+            ></badman-request-date>
 
-              <div class="availability">
-                <mat-form-field>
-                  <mat-label>{{
-                    'all.competition.home' | translate
-                  }}</mat-label>
-                  <mat-select formControlName="availabilityHome" required>
-                    <mat-option value="POSSIBLE">{{
-                      'all.competition.change-encounter.possible' | translate
-                    }}</mat-option>
-                    <mat-option value="NOT_POSSIBLE">{{
-                      'all.competition.change-encounter.not-possible'
-                        | translate
-                    }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-              <div class="availability">
-                <mat-form-field>
-                  <mat-label>{{
-                    'all.competition.away' | translate
-                  }}</mat-label>
-                  <mat-select formControlName="availabilityAway" required>
-                    <mat-option value="POSSIBLE">{{
-                      'all.competition.change-encounter.possible' | translate
-                    }}</mat-option>
-                    <mat-option value="NOT_POSSIBLE">{{
-                      'all.competition.change-encounter.not-possible'
-                        | translate
-                    }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-              <mat-checkbox
-                class="selected"
-                formControlName="selected"
-              ></mat-checkbox>
-
-              <div class="delete">
-                <div *ngIf="!date.get('id')!.value">
-                  <button
-                    mat-icon-button
-                    (click)="this.removeDate(dateControls, i)"
-                    type="button"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              </div>
-            </div>
           </ng-container>
 
           <mat-expansion-panel
@@ -112,76 +54,16 @@
               </mat-panel-title>
             </mat-expansion-panel-header>
             <div class="date-list" formArrayName="notAvailibleDates">
-              <div
+              <badman-request-date
+                [group]="date"
                 *ngFor="
                   let date of dateControlsNotAvailible.controls;
                   let i = index
                 "
-                fxLayout="row"
-                fxLayoutAlign="start center"
-                fxLayoutGap="8px"
-                [formGroupName]="i"
-                class="date-item"
-              >
-                <badman-date-selector
-                  [homeClubId]="encounter.home!.clubId"
-                  [awayClubId]="encounter.away!.clubId"
-                  [homeTeamId]="encounter.home!.id"
-                  [awayTeamId]="encounter.away!.id"
-                  [home]="this.home"
-                  formControlName="date"
-                ></badman-date-selector>
-
-                <div class="availability">
-                  <mat-form-field>
-                    <mat-label>{{
-                      'all.competition.home' | translate
-                    }}</mat-label>
-                    <mat-select formControlName="availabilityHome" required>
-                      <mat-option value="POSSIBLE">{{
-                        'all.competition.change-encounter.possible' | translate
-                      }}</mat-option>
-                      <mat-option value="NOT_POSSIBLE">{{
-                        'all.competition.change-encounter.not-possible'
-                          | translate
-                      }}</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div class="availability">
-                  <mat-form-field>
-                    <mat-label>{{
-                      'all.competition.away' | translate
-                    }}</mat-label>
-                    <mat-select formControlName="availabilityAway" required>
-                      <mat-option value="POSSIBLE">{{
-                        'all.competition.change-encounter.possible' | translate
-                      }}</mat-option>
-                      <mat-option value="NOT_POSSIBLE">{{
-                        'all.competition.change-encounter.not-possible'
-                          | translate
-                      }}</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-
-                <mat-checkbox
-                  class="selected"
-                  formControlName="selected"
-                ></mat-checkbox>
-
-                <div class="delete">
-                  <div *ngIf="!date.get('id')!.value">
-                    <button
-                      mat-icon-button
-                      (click)="this.removeDate(dateControlsNotAvailible, i)"
-                      type="button"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                </div>
-              </div>
+                [encounter]="this.encounter"
+                [home]="this.home"
+                (removeDate)="this.removeDate(dateControlsNotAvailible, i)"
+              ></badman-request-date>
             </div>
           </mat-expansion-panel>
         </div>
