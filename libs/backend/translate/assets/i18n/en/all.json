@@ -122,6 +122,7 @@
       },
       "not-possible": "Not available",
       "possible": "Available",
+      "re-open": "The previous request has been completed, you can reopen it and then the originally proposed data will be visible again. The new request is only resent once you clicked submit after reopening",
       "requested": "Request submitted",
       "requested-failed": "Request failed, contact Badminton Vlaanderen if the problem persists",
       "show-not-availible": {

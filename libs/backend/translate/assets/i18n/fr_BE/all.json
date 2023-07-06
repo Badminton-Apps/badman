@@ -122,6 +122,7 @@
       },
       "not-possible": "Non disponible",
       "possible": "Disponible",
+      "re-open": "La demande précédente est terminée, vous pouvez la rouvrir et les données initialement proposées seront à nouveau visibles. La nouvelle demande n'est renvoyée qu'une fois que vous avez cliqué sur soumettre après la réouverture",
       "requested": "Demande soumise",
       "requested-failed": "La demande a échoué, contactez Badminton Vlaanderen si le problème persiste.",
       "show-not-availible": {
