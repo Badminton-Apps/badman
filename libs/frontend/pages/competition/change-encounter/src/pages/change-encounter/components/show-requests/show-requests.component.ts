@@ -167,10 +167,10 @@ export class ShowRequestsComponent implements OnInit {
             id: new FormControl(encounterChange?.id),
             dates: this.dateControls,
             notAvailibleDates: this.dateControlsNotAvailible,
+            accepted: new FormControl(encounterChange?.accepted),
           });
 
           encounterChange?.dates?.map((r) => this._addDateControl(r));
-
         })
       );
     } else {
@@ -347,6 +347,13 @@ export class ShowRequestsComponent implements OnInit {
     }
   }
 
+  reOpen() {
+    this.formGroupRequest.get('accepted')?.setValue(false);
+    for (const control of this.dateControls.controls) {
+      control.get('selected')?.setValue(false);
+    }
+    
+  }
 
   private _addDateControl(dateChange: EncounterChangeDate) {
     const id = new FormControl(dateChange?.id);
