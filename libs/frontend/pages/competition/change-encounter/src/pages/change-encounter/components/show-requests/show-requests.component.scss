@@ -24,10 +24,12 @@ h3 {
   }
 }
 
-form {
+form,
+.already-accepted {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  flex: 1;
 }
 
 .date-list {
@@ -39,6 +41,7 @@ form {
   }
 
 .submit {
+  flex: 1;
   display: flex;
   gap: 1rem;
 }

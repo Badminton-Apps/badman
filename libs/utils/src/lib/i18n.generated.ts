@@ -126,6 +126,7 @@ export type I18nTranslations = {
                 };
                 "not-possible": string;
                 "possible": string;
+                "re-open": string;
                 "requested": string;
                 "requested-failed": string;
                 "show-not-availible": {
