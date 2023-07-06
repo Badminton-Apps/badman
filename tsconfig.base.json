@@ -11,134 +11,70 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2017",
-      "dom"
-    ],
+    "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": "./",
     "paths": {
-      "*": [
-        "./types/*"
-      ],
+      "*": ["./types/*"],
       "@badman/backend-assembly": [
         "libs/backend/competition/assembly/src/index.ts"
       ],
       "@badman/backend-authorization": [
         "libs/backend/authorization/src/index.ts"
       ],
-      "@badman/backend-cache": [
-        "libs/backend/cache/src/index.ts"
-      ],
-      "@badman/backend-cluster": [
-        "libs/backend/cluster/src/index.ts"
-      ],
-      "@badman/backend-compile": [
-        "libs/backend/compile/src/index.ts"
-      ],
-      "@badman/backend-database": [
-        "libs/backend/database/src/index.ts"
-      ],
+      "@badman/backend-cache": ["libs/backend/cache/src/index.ts"],
+      "@badman/backend-cluster": ["libs/backend/cluster/src/index.ts"],
+      "@badman/backend-compile": ["libs/backend/compile/src/index.ts"],
+      "@badman/backend-database": ["libs/backend/database/src/index.ts"],
       "@badman/backend-enrollment": [
         "libs/backend/competition/enrollment/src/index.ts"
       ],
-      "@badman/backend-generator": [
-        "libs/backend/generator/src/index.ts"
-      ],
-      "@badman/backend-graphql": [
-        "libs/backend/graphql/src/index.ts"
-      ],
-      "@badman/backend-health": [
-        "libs/backend/health/src/index.ts"
-      ],
-      "@badman/backend-logging": [
-        "libs/backend/logging/src/index.ts"
-      ],
-      "@badman/backend-mailing": [
-        "libs/backend/mailing/src/index.ts"
-      ],
+      "@badman/backend-generator": ["libs/backend/generator/src/index.ts"],
+      "@badman/backend-graphql": ["libs/backend/graphql/src/index.ts"],
+      "@badman/backend-health": ["libs/backend/health/src/index.ts"],
+      "@badman/backend-logging": ["libs/backend/logging/src/index.ts"],
+      "@badman/backend-mailing": ["libs/backend/mailing/src/index.ts"],
+      "@badman/backend-micro": ["libs/backend/micro/src/index.ts"],
       "@badman/backend-notifications": [
         "libs/backend/notifications/src/index.ts"
       ],
-      "@badman/backend-pupeteer": [
-        "libs/backend/pupeteer/src/index.ts"
-      ],
-      "@badman/backend-queue": [
-        "libs/backend/queue/src/index.ts"
-      ],
-      "@badman/backend-ranking": [
-        "libs/backend/ranking/src/index.ts"
-      ],
-      "@badman/backend-search": [
-        "libs/backend/search/src/index.ts"
-      ],
-      "@badman/backend-translate": [
-        "libs/backend/translate/src/index.ts"
-      ],
-      "@badman/backend-twizzit": [
-        "libs/backend/twizzit/src/index.ts"
-      ],
-      "@badman/backend-visual": [
-        "libs/backend/visual/src/index.ts"
-      ],
-      "@badman/backend/comp-tet": [
-        "libs/backend/comp-tet/src/index.ts"
-      ],
-      "@badman/frontend-auth": [
-        "libs/frontend/modules/auth/src/index.ts"
-      ],
+      "@badman/backend-pupeteer": ["libs/backend/pupeteer/src/index.ts"],
+      "@badman/backend-queue": ["libs/backend/queue/src/index.ts"],
+      "@badman/backend-ranking": ["libs/backend/ranking/src/index.ts"],
+      "@badman/backend-search": ["libs/backend/search/src/index.ts"],
+      "@badman/backend-translate": ["libs/backend/translate/src/index.ts"],
+      "@badman/backend-twizzit": ["libs/backend/twizzit/src/index.ts"],
+      "@badman/backend-visual": ["libs/backend/visual/src/index.ts"],
+      "@badman/backend/comp-tet": ["libs/backend/comp-tet/src/index.ts"],
+      "@badman/frontend-auth": ["libs/frontend/modules/auth/src/index.ts"],
       "@badman/frontend-change-encounter": [
         "libs/frontend/pages/competition/change-encounter/src/index.ts"
       ],
-      "@badman/frontend-club": [
-        "libs/frontend/pages/club/src/index.ts"
-      ],
+      "@badman/frontend-club": ["libs/frontend/pages/club/src/index.ts"],
       "@badman/frontend-competition": [
         "libs/frontend/pages/competition/event/src/index.ts"
       ],
-      "@badman/frontend-components": [
-        "libs/frontend/components/src/index.ts"
-      ],
-      "@badman/frontend-cp": [
-        "libs/frontend/modules/cp/src/index.ts"
-      ],
-      "@badman/frontend-general": [
-        "libs/frontend/pages/general/src/index.ts"
-      ],
+      "@badman/frontend-components": ["libs/frontend/components/src/index.ts"],
+      "@badman/frontend-cp": ["libs/frontend/modules/cp/src/index.ts"],
+      "@badman/frontend-general": ["libs/frontend/pages/general/src/index.ts"],
       "@badman/frontend-graphql": [
         "libs/frontend/modules/graphql/src/index.ts"
       ],
       "@badman/frontend-html-injects": [
         "libs/frontend/modules/html-injects/src/index.ts"
       ],
-      "@badman/frontend-jobs": [
-        "libs/frontend/modules/jobs/src/index.ts"
-      ],
-      "@badman/frontend-models": [
-        "libs/frontend/models/src/index.ts"
-      ],
+      "@badman/frontend-jobs": ["libs/frontend/modules/jobs/src/index.ts"],
+      "@badman/frontend-models": ["libs/frontend/models/src/index.ts"],
       "@badman/frontend-notifications": [
         "libs/frontend/pages/notifications/src/index.ts"
       ],
-      "@badman/frontend-pdf": [
-        "libs/frontend/modules/pdf/src/index.ts"
-      ],
-      "@badman/frontend-player": [
-        "libs/frontend/pages/player/src/index.ts"
-      ],
-      "@badman/frontend-ranking": [
-        "libs/frontend/pages/ranking/src/index.ts"
-      ],
-      "@badman/frontend-role": [
-        "libs/frontend/pages/role/src/index.ts"
-      ],
-      "@badman/frontend-seo": [
-        "libs/frontend/modules/seo/src/index.ts"
-      ],
-      "@badman/frontend-team": [
-        "libs/frontend/pages/team/src/index.ts"
-      ],
+      "@badman/frontend-pdf": ["libs/frontend/modules/pdf/src/index.ts"],
+      "@badman/frontend-player": ["libs/frontend/pages/player/src/index.ts"],
+      "@badman/frontend-ranking": ["libs/frontend/pages/ranking/src/index.ts"],
+      "@badman/frontend-role": ["libs/frontend/pages/role/src/index.ts"],
+      "@badman/frontend-seo": ["libs/frontend/modules/seo/src/index.ts"],
+      "@badman/frontend-team": ["libs/frontend/pages/team/src/index.ts"],
       "@badman/frontend-team-assembly": [
         "libs/frontend/pages/competition/team-assembly/src/index.ts"
       ],
@@ -154,21 +90,12 @@
       "@badman/frontend-twizzit": [
         "libs/frontend/modules/twizzit/src/index.ts"
       ],
-      "@badman/frontend-utils": [
-        "libs/frontend/modules/utils/src/index.ts"
-      ],
-      "@badman/frontend-vitals": [
-        "libs/frontend/modules/vitals/src/index.ts"
-      ],
-      "@badman/utils": [
-        "libs/utils/src/index.ts"
-      ]
+      "@badman/frontend-utils": ["libs/frontend/modules/utils/src/index.ts"],
+      "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],
+      "@badman/utils": ["libs/utils/src/index.ts"]
     },
     "strictNullChecks": true,
     "strict": true
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }
