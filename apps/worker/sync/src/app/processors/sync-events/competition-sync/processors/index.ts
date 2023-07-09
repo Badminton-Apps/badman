@@ -2,6 +2,7 @@
 export * from './cleanup';
 export * from './draw';
 export * from './encounter';
+export * from './encounter-location';
 export * from './entry';
 export * from './event';
 export * from './game';

@@ -48,16 +48,17 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EncounterStepData[]> {
-    await runParrallel(this.draws?.map((e) => this._processEncounters(e)) ?? []);
+    await runParrallel(
+      this.draws?.map((e) => this._processEncounters(e)) ?? []
+    );
     return this._dbEncounters;
   }
 
   private async _processEncounters({ draw, internalId }: DrawStepData) {
-    if (!this.event?.season){
+    if (!this.event?.season) {
       throw new Error('No event');
     }
 
-    
     const encounters = await draw.getEncounterCompetitions({
       transaction: this.transaction,
     });
@@ -110,12 +111,13 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
       if (!dbEncounter) {
         // FInd one with same teams
-        dbEncounter = encounters.find(
-          (e) =>
-            e.homeTeamId === team1?.id &&
-            e.awayTeamId === team2?.id &&
-            e.drawId === draw.id
-        ) || null;
+        dbEncounter =
+          encounters.find(
+            (e) =>
+              e.homeTeamId === team1?.id &&
+              e.awayTeamId === team2?.id &&
+              e.drawId === draw.id
+          ) || null;
 
         if (!dbEncounter) {
           dbEncounter = await new EncounterCompetition({

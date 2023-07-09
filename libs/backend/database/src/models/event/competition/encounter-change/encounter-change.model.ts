@@ -33,13 +33,13 @@ import {
   Table,
 } from 'sequelize-typescript';
 
+import { Relation } from '../../../../wrapper';
 import { EncounterCompetition } from '../encounter-competition.model';
 import {
   EncounterChangeDate,
   EncounterChangeDateNewInput,
   EncounterChangeDateUpdateInput,
 } from './encounter-change-date.model';
-import { Relation } from '../../../../wrapper';
 
 @Table({
   timestamps: true,

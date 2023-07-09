@@ -7,6 +7,7 @@ import {
   CompetitionSyncCleanupProcessor,
   CompetitionSyncDrawProcessor,
   CompetitionSyncEncounterProcessor,
+  CompetitionSyncEncounterLocationProcessor,
   CompetitionSyncEventProcessor,
   CompetitionSyncGameProcessor,
   CompetitionSyncPlayerProcessor,
@@ -32,6 +33,7 @@ export class CompetitionSyncer {
   readonly STEP_DRAW = 'draw';
   readonly STEP_ENTRY = 'entry';
   readonly STEP_ENCOUNTER = 'encounter';
+  readonly STEP_ENCOUNTER_LOCATION = 'encounter_location';
   readonly STEP_PLAYER = 'player';
   readonly STEP_GAME = 'game';
   readonly STEP_POINT = 'point';
@@ -44,6 +46,7 @@ export class CompetitionSyncer {
   private _drawStep!: CompetitionSyncDrawProcessor;
   private _entryStep!: CompetitionSyncEntryProcessor;
   private _encounterStep!: CompetitionSyncEncounterProcessor;
+  private _encounterLocationStep!: CompetitionSyncEncounterLocationProcessor;
   private _playerStep!: CompetitionSyncPlayerProcessor;
   private _gameStep!: CompetitionSyncGameProcessor;
   private _pointStep!: CompetitionSyncPointProcessor;
@@ -72,6 +75,7 @@ export class CompetitionSyncer {
     this.processor.addStep(this.addDraws());
     this.processor.addStep(this.addEntries());
     this.processor.addStep(this.addEncounters());
+    this.processor.addStep(this.addEncounterLocations());
     this.processor.addStep(this.addPlayers());
     this.processor.addStep(this.addGames());
     this.processor.addStep(this.addPoints());
@@ -122,6 +126,10 @@ export class CompetitionSyncer {
       { ...options, newGames: this.options?.newGames }
     );
 
+    this._encounterLocationStep = new CompetitionSyncEncounterLocationProcessor({
+      ...options,
+    });
+
     this._playerStep = new CompetitionSyncPlayerProcessor(
       args.xmlTournament,
       this.visualService,
@@ -150,7 +158,7 @@ export class CompetitionSyncer {
 
     await this.processor.process();
     return {
-      event: this.event
+      event: this.event,
     };
   }
 
@@ -169,6 +177,7 @@ export class CompetitionSyncer {
       this._pointStep.event = data.event;
       this._cleanupStep.event = data.event;
       this._rankingStep.event = data.event;
+      this._encounterLocationStep.event = data.event;
 
       return data;
     });
@@ -226,7 +235,15 @@ export class CompetitionSyncer {
       // Pass data to other steps
       this._gameStep.encounters = data;
       this._standingStep.encounters = data;
+      this._encounterLocationStep.encounters = data;
       return data;
+    });
+  }
+
+  protected addEncounterLocations(): ProcessStep<unknown> {
+    return new ProcessStep<unknown>(this.STEP_ENCOUNTER_LOCATION, async () => {
+      // Process step
+      await this._encounterLocationStep.process();
     });
   }
 

@@ -1,4 +1,8 @@
-import { EncounterChange, EncounterChangeDate } from '@badman/backend-database';
+import {
+  EncounterChange,
+  EncounterChangeDate,
+  Location,
+} from '@badman/backend-database';
 import { Logger, NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -50,5 +54,19 @@ export class EncounterChangeCompetitionResolver {
     @Parent() encounterChange: EncounterChange
   ): Promise<EncounterChangeDate[]> {
     return encounterChange.getDates();
+  }
+}
+
+@Resolver(() => EncounterChangeDate)
+export class EncounterChangeDateCompetitionResolver {
+  private readonly logger = new Logger(
+    EncounterChangeDateCompetitionResolver.name
+  );
+
+  @ResolveField(() => Location)
+  async dates(
+    @Parent() encounterChangeDate: EncounterChangeDate
+  ): Promise<Location> {
+    return encounterChangeDate.getLocation();
   }
 }

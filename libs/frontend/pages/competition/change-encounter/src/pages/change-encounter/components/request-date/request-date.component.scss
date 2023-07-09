@@ -23,6 +23,7 @@
 
 badman-date-selector {
   flex: 1;
+  max-width: 300px;
   @media (max-width: 768px) {
     flex: 1 1 100%;
   }
