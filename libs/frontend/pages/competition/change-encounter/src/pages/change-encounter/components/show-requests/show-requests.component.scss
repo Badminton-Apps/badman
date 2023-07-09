@@ -30,6 +30,7 @@ form,
   flex-direction: column;
   gap: 1rem;
   flex: 1;
+  max-width: 750px;
 }
 
 .date-list {
@@ -37,8 +38,7 @@ form,
   flex-direction: column;
   gap: 1rem;
   padding: 1rem 0;
-
-  }
+}
 
 .submit {
   flex: 1;

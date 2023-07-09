@@ -264,6 +264,7 @@ export class CalendarComponent implements OnInit {
                 rows {
                   id
                   date
+                  locationId
                   encounterChange {
                     accepted
                     dates {
@@ -420,7 +421,7 @@ export class CalendarComponent implements OnInit {
             encounter: e,
             color: this.teamColors.get(e.home?.id ?? ''),
             startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
+            locationId: e.locationId,
             requested: false,
             removed: !!e.encounterChange,
             ownTeam: this.data.home,
@@ -454,7 +455,7 @@ export class CalendarComponent implements OnInit {
             },
             color: this.teamColors.get(e.home?.id ?? '') ?? '',
             startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
+            locationId: e.locationId,
             requested: true,
             removed: false,
             ownTeam: this.data.home,
@@ -472,7 +473,7 @@ export class CalendarComponent implements OnInit {
             encounter: e,
             color: this.teamColors.get(e.home?.id ?? ''),
             startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
+            locationId: e.locationId,
             requested: false,
             removed: !!e.encounterChange,
             ownTeam: !this.data.home,
@@ -505,7 +506,7 @@ export class CalendarComponent implements OnInit {
             },
             color: this.teamColors.get(e.home?.id ?? '') ?? '',
             startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
+            locationId: e.locationId,
             requested: true,
             removed: false,
             ownTeam: !this.data.home,
@@ -609,7 +610,7 @@ export class CalendarComponent implements OnInit {
     this.generateCalendarDays();
   }
 
-  public selectDay(d?: Date, time?: string) {
+  public selectDay(d?: Date, time?: string, locationId?: string) {
     const date = moment(d);
 
     if (time) {
@@ -650,8 +651,9 @@ export class CalendarDay {
   public remainingCourts?: Map<number, number>;
   public totalCourts?: Map<number, number>;
   public locations?: {
-    id: number;
+    id?: string;
     name?: string;
+    showNumber: number;
     availibility: {
       startTime?: string;
       totalCourts: number;
@@ -673,7 +675,7 @@ export class CalendarDay {
   otherEvents: {
     id: string;
     encounter: EncounterCompetition;
-    locationId?: number;
+    locationId?: string;
     startTime?: string;
     color?: string;
     removed: boolean;
@@ -739,7 +741,8 @@ export class CalendarDay {
         });
 
         this.locations.push({
-          id: loc[0],
+          showNumber: loc[0],
+          id: loc[1].id,
           name: loc[1].name,
           availibility: av,
         });
@@ -753,9 +756,9 @@ export class CalendarDay {
       this.addEvent(event, visibleTeams);
     }
     for (const event of awayEvents ?? []) {
-      if (!event?.locationId) {
-        throw new Error('LocationId is required');
-      }
+      // if (!event?.locationId) {
+      //   throw new Error('LocationId is required');
+      // }
       if (
         event.encounter?.home?.id &&
         visibleTeams?.includes(event.encounter?.home?.id)
@@ -836,7 +839,7 @@ export class CalendarDay {
 interface DayEvent {
   id: string;
   encounter: EncounterCompetition;
-  locationId?: number | undefined;
+  locationId?: string | undefined;
   startTime?: string | undefined;
   color?: string | undefined;
   removed: boolean;

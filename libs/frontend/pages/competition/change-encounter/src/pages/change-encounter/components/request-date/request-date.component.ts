@@ -55,8 +55,6 @@ export class RequestDateComponent implements OnInit {
           startWith(this.group.get('availabilityHome')?.value)
         ) ?? of(false),
     ]).subscribe(([availabilityAway, availabilityHome]) => {
-      console.log(availabilityAway, availabilityHome);
-
       if (availabilityAway && availabilityHome) {
         this.group.get('selected')?.enable();
       } else {

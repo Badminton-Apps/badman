@@ -25,7 +25,7 @@
     <div *ngIf="this.data.home">
       <mat-form-field>
         <mat-label>{{
-          'competition.change-encounter.choose-date' | translate
+          'all.competition.change-encounter.choose-date' | translate
         }}</mat-label>
         <input
           matInput
@@ -102,10 +102,10 @@
               *ngIf="av.remainingEncounters > 0 || this.data.home"
               class="location picable"
               fxFlex
-              (click)="selectDay(row.date, av.startTime)"
+              (click)="selectDay(row.date, av.startTime, loc.id)"
               matTooltip="Pick this moment"
             >
-              <span class="id">{{ loc.id }}</span>
+              <span class="id">{{ loc.showNumber }}</span>
               <span class="time">{{ av.startTime }} - </span>
               <span class="courts">
                 {{
@@ -126,7 +126,7 @@
               class="location"
               fxFlex
             >
-              <span class="id">{{ loc.id }}</span>
+              <span class="id">{{ loc.showNumber }}</span>
               <span class="time">{{ av.startTime }} - </span>
               <span class="courts">
                 {{

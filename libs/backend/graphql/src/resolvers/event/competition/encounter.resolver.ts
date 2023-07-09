@@ -9,6 +9,7 @@ import {
   EncounterCompetition,
   Game,
   Player,
+  Location,
   Team,
 } from '@badman/backend-database';
 import { NotificationService } from '@badman/backend-notifications';
@@ -83,6 +84,14 @@ export class EncounterCompetitionResolver {
   ): Promise<DrawCompetition> {
     return encounter.getDrawCompetition();
   }
+
+  @ResolveField(() => Location)
+  async location(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<Location> {
+    return encounter.getLocation();
+  }
+
 
   @ResolveField(() => Team)
   async home(@Parent() encounter: EncounterCompetition): Promise<Team> {

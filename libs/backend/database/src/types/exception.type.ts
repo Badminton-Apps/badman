@@ -7,7 +7,7 @@ import {
   PartialType,
 } from '@nestjs/graphql';
 
-@ObjectType({ description: 'An Exception' })
+@ObjectType({ description: 'An Exception'})
 export class ExceptionType {
   @Field(() => Date, { nullable: true })
   start?: Date;
