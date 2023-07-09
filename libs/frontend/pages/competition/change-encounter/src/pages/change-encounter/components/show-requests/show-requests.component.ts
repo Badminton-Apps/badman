@@ -54,6 +54,7 @@ const CHANGE_QUERY = gql`
       dates {
         id
         date
+        locationId
         availabilityHome
         availabilityAway
       }
@@ -130,6 +131,7 @@ export class ShowRequestsComponent implements OnInit {
     this.previous = this.group.get(this.dependsOn) ?? undefined;
     if (this.previous) {
       this.requests$ = this.previous.valueChanges.pipe(
+        filter((value) => value !== null),
         tap((encounter) => {
           this.encounter = encounter;
           this.running = false;
@@ -142,6 +144,8 @@ export class ShowRequestsComponent implements OnInit {
         }),
         filter((value) => value !== null),
         switchMap((encounter: EncounterCompetition) => {
+          console.log(encounter);
+
           if (encounter?.encounterChange?.id == undefined) {
             return of(new EncounterChange());
           }
@@ -299,9 +303,7 @@ export class ShowRequestsComponent implements OnInit {
           })
         );
 
-        // await this._encounterService
-        //   .addEncounterChange(change, this.home)
-        //   .toPromise();
+      
         const teamControl = this.group.get('team');
         if (!teamControl) {
           throw new Error('Team control not found');
@@ -361,6 +363,7 @@ export class ShowRequestsComponent implements OnInit {
     const availabilityAway = new FormControl(dateChange.availabilityAway);
     const selected = new FormControl(false);
     const date = new FormControl(dateChange.date);
+    const locationId = new FormControl(dateChange.locationId);
 
     if (dateChange.id) {
       date.disable();
@@ -378,6 +381,7 @@ export class ShowRequestsComponent implements OnInit {
       availabilityHome,
       availabilityAway,
       selected,
+      locationId,
     });
 
     // check if the availability is not possible for one of the teams but both filled in

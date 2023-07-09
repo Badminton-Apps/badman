@@ -6,7 +6,6 @@
   }
 }
 
-.locations,
 .roles,
 .teams,
 .country {
@@ -16,7 +15,14 @@
   flex: 1 1 auto;
 }
 
-badman-club-edit-role{
+.locations {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1 1 auto;
+}
+
+badman-club-edit-role {
   display: flex;
   flex-direction: column;
 }

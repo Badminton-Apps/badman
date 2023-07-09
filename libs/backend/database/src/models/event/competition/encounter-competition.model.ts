@@ -37,6 +37,7 @@ import { Game } from '../game.model';
 import { Assembly } from './assembly.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EncounterChange } from './encounter-change';
+import { Location } from '../location.model';
 
 @Table({
   timestamps: true,
@@ -163,6 +164,18 @@ export class EncounterCompetition extends Model {
   })
   encounterChange?: Relation<EncounterChange>;
 
+  @Field(() => Location, { nullable: true })
+  @BelongsTo(() => Location, {
+    foreignKey: 'locationId',
+    onDelete: 'CASCADE',
+  })
+  location?: Relation<Location>;
+
+  @ForeignKey(() => Location)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  locationId?: string;
+
   @HasMany(() => Notification, {
     foreignKey: 'linkId',
     constraints: false,
@@ -178,6 +191,7 @@ export class EncounterCompetition extends Model {
     onDelete: 'CASCADE',
   })
   assemblies?: Relation<Assembly[]>;
+
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
@@ -245,6 +259,10 @@ export class EncounterCompetition extends Model {
   // Has one EncounterChange
   getEncounterChange!: HasOneGetAssociationMixin<EncounterChange>;
   setEncounterChange!: HasOneSetAssociationMixin<EncounterChange, string>;
+
+  // Has one Location
+  getLocation!: BelongsToGetAssociationMixin<Location>;
+  setLocation!: BelongsToSetAssociationMixin<Location, string>;
 
   // Belongs to GameLeader
   getGameLeader!: BelongsToGetAssociationMixin<Player>;

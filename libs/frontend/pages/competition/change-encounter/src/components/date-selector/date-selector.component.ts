@@ -219,7 +219,7 @@ export class DateSelectorComponent
 
   setDescribedByIds(ids: string[]) {
     const controlElement = this._elementRef.nativeElement.querySelector(
-      '.app-date-selector-container'
+      '.date-selector-container'
     );
     if (controlElement) {
       controlElement.setAttribute('aria-describedby', ids.join(' '));

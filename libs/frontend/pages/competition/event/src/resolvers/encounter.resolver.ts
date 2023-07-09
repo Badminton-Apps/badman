@@ -64,6 +64,10 @@ export class EncounterResolver {
                   mix
                 }
               }
+              location {
+                id
+                name
+              }
             }
           }
         `,
@@ -72,7 +76,11 @@ export class EncounterResolver {
         },
       })
       .pipe(
-        transferState(`encounterKey-${encounterId}`, this.stateTransfer, this.platformId),
+        transferState(
+          `encounterKey-${encounterId}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           if (!result?.data.encounterCompetition) {
             throw new Error('No encounter found!');
