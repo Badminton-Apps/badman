@@ -262,7 +262,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe((dialogResult) => {
-      console.log(dialogResult);
       if (!dialogResult) {
         return;
       }

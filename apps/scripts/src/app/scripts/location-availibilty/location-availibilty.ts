@@ -223,5 +223,8 @@ export class CreateLocationAvailibiltyRunner {
     }
 
     await transaction.commit();
+
+
+    this.logger.verbose(`Done`);
   }
 }

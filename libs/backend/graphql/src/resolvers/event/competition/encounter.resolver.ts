@@ -164,10 +164,10 @@ export class EncounterCompetitionResolver {
         encounterChange = new EncounterChange({
           encounterId: encounter.id,
         });
+        await encounterChange.save({ transaction });
       }
 
       const dates = await encounterChange.getDates();
-      await encounterChange.save({ transaction });
 
       // Set the state
       if (newChangeEncounter.accepted) {
@@ -199,9 +199,6 @@ export class EncounterCompetitionResolver {
 
         // Save cahnges
         encounter.save({ transaction });
-
-        // Destroy the requets
-        // await encounterChange.destroy({ transaction });
         encounterChange.accepted = true;
       } else {
         encounterChange.accepted = false;
@@ -306,6 +303,8 @@ export class EncounterCompetitionResolver {
       } else {
         encounterChangeDate.availabilityAway = date.availabilityAway;
       }
+
+      encounterChangeDate.locationId = date.locationId;
 
       // Save the date
       await encounterChangeDate.save({ transaction });

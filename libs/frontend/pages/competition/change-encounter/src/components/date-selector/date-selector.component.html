@@ -6,5 +6,5 @@
   (click)="onClick()"
   [class.disabled]="this.disabled"
 >
-  {{ dateControl.value | amDateFormat : 'llll' }}
+  {{ dateControl.value.date | amDateFormat : 'llll' }}
 </div>

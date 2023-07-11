@@ -5,7 +5,7 @@
     [homeTeamId]="encounter.home!.id"
     [awayTeamId]="encounter.away!.id"
     [home]="this.home"
-    formControlName="date"
+    formControlName="calendar"
   ></badman-date-selector>
 
   <mat-form-field class="availability">
@@ -31,13 +31,24 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-checkbox class="selected" formControlName="selected"> </mat-checkbox>
+  <div class="actions">
+    <mat-checkbox class="selected" formControlName="selected"> </mat-checkbox>
 
-  <div class="delete">
-    <div *ngIf="!group.get('id')!.value">
+    <div class="delete" *ngIf="!group.get('id')!.value">
       <button mat-icon-button (click)="removeDate.next()" type="button">
         <mat-icon>delete</mat-icon>
       </button>
+    </div>
+
+    <div
+      class="changed-location"
+      *ngIf="
+        encounter.locationId &&
+        this.group.get('calendar')?.value?.locationId &&
+        encounter.locationId !== this.group.get('calendar')?.value?.locationId
+      "
+    >
+      <mat-icon color="warn">warning</mat-icon>
     </div>
   </div>
 </ng-container>

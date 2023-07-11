@@ -45,8 +45,6 @@ export class LoggingModule {
         WinstonModule.forRootAsync({
           imports: [ConfigModule],
           useFactory: (configService: ConfigService) => {
-            console.log(configService.get('NODE_ENV'));
-
             if (configService.get('NODE_ENV') === 'production') {
               const token = configService.get('LOGTAIL_TOKEN');
               if (!token) {
