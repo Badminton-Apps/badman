@@ -109,7 +109,7 @@ export class EventCompetitionResolver {
     @User() user: Player,
     @Args('data') updateEventCompetitionData: EventCompetitionUpdateInput
   ): Promise<EventCompetition> {
-    if (!await user.hasAnyPermission([`edit:competition`])) {
+    if (!(await user.hasAnyPermission([`edit:competition`]))) {
       throw new UnauthorizedException(
         `You do not have permission to add a competition`
       );
@@ -128,7 +128,10 @@ export class EventCompetitionResolver {
         );
       }
 
-      if (eventCompetitionDb.official !== updateEventCompetitionData.official) {
+      if (
+        updateEventCompetitionData &&
+        eventCompetitionDb.official !== updateEventCompetitionData.official
+      ) {
         const subEvents = await eventCompetitionDb.getSubEventCompetitions({
           transaction,
         });
@@ -207,7 +210,7 @@ export class EventCompetitionResolver {
     @Args('id', { type: () => ID }) id: string,
     @Args('year', { type: () => Int }) year: number
   ) {
-    if (!await user.hasAnyPermission([`add:competition`])) {
+    if (!(await user.hasAnyPermission([`add:competition`]))) {
       throw new UnauthorizedException(
         `You do not have permission to add a competition`
       );
