@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -24,7 +31,7 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, Subject, combineLatest, lastValueFrom, of } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -139,10 +146,12 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       this.auth.user$ ?? of(null),
     ]).pipe(
       takeUntil(this.destroy$),
-      map(
-        ([loggedIn, user]) =>
-          loggedIn && this.player.sub === null && user.id === null
-      )
+      tap(([loggedIn, user]) => {
+        console.log('loggedIn', loggedIn);
+        console.log('user', user);
+        console.log('can', loggedIn && !user.id);
+      }),
+      map(([loggedIn, user]) => loggedIn && !user.id)
     );
   }
 
@@ -173,7 +182,11 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       })
       .pipe(
         map((result) => result.data.player.teams?.map((t) => new Team(t))),
-        transferState(`teamsPlayer-${this.player.id}`, this.stateTransfer, this.platformId)
+        transferState(
+          `teamsPlayer-${this.player.id}`,
+          this.stateTransfer,
+          this.platformId
+        )
       );
   }
 
@@ -227,7 +240,11 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        transferState(`rankingPlayer-${this.player.id}`, this.stateTransfer, this.platformId),
+        transferState(
+          `rankingPlayer-${this.player.id}`,
+          this.stateTransfer,
+          this.platformId
+        ),
         map((result) => {
           if ((result?.data?.player?.rankingLastPlaces ?? []).length > 0) {
             const findPrimary = result?.data.player.rankingLastPlaces.find(
