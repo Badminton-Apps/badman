@@ -6,10 +6,13 @@
       [updateUrl]="true"
       [group]="this.formGroup"
     ></badman-select-club>
-    <badman-has-claim [any]="['change-any:encounter']">
-      <badman-select-season [updateUrl]="true" [group]="this.formGroup">
-      </badman-select-season>
-    </badman-has-claim>
+    <badman-select-season
+      [updateUrl]="true"
+      [group]="this.formGroup"
+      *ngIf="this.canSelectSeason()"
+    >
+    </badman-select-season>
+
     <badman-select-team
       [group]="this.formGroup"
       [updateOn]="['club', 'season']"
