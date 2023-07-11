@@ -129,7 +129,7 @@ export class EventCompetitionResolver {
       }
 
       if (
-        updateEventCompetitionData &&
+        updateEventCompetitionData.official &&
         eventCompetitionDb.official !== updateEventCompetitionData.official
       ) {
         const subEvents = await eventCompetitionDb.getSubEventCompetitions({
