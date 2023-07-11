@@ -14,11 +14,24 @@
   flex: 0 1 175px;
 }
 
-.delete,
-.selected {
-  flex: 0 1 40px;
+// .delete,
+// .selected {
+//   flex: 0 1 40px;
+//   display: flex;
+//   justify-content: center;
+// }
+
+$icon-size: 40px;
+$icon-amount: 3;
+$gap: 0.5rem;
+
+.actions {
+  flex: 0 1 calc(#{$icon-size} * #{$icon-amount} + (#{$gap} * #{$icon-amount}));
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+  gap: $gap;
 }
 
 badman-date-selector {

@@ -114,6 +114,7 @@ export type I18nTranslations = {
                 };
                 "choose-date": string;
                 "choose-encounter": string;
+                "choose-location": string;
                 "choose-team": string;
                 "comment": string;
                 "comments": string;
@@ -138,6 +139,10 @@ export type I18nTranslations = {
                     "title": string;
                 };
                 "title": string;
+                "warnings": {
+                    "location-change": string;
+                    "selected-different-location": string;
+                };
             };
             "draw": {
                 "encounters": string;

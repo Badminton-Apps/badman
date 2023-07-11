@@ -110,6 +110,7 @@
       },
       "choose-date": "Pick a date",
       "choose-encounter": "Pick an encounter",
+      "choose-location": "Select location",
       "choose-team": "Pick a team",
       "comment": "Comments",
       "comments": "Comments",
@@ -133,7 +134,11 @@
         "description": "When you click yes, the current day will be replaced by the selected new day, are you sure?",
         "title": "Send"
       },
-      "title": "Encounters"
+      "title": "Encounters",
+      "warnings": {
+        "location-change": "Change of location",
+        "selected-different-location": "A different location has been chosen, but due to limitations in external systems, these locations must be updated manually. Please note that this may take several days."
+      }
     },
     "draw": {
       "encounters": "Encounters",

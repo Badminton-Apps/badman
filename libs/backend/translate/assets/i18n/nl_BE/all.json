@@ -110,6 +110,7 @@
       },
       "choose-date": "Kies een datum",
       "choose-encounter": "Kies een ontmoeting",
+      "choose-location": "Kies locatie",
       "choose-team": "Kies een ploeg",
       "comment": "Opmerking",
       "comments": "Opmerkingen",
@@ -133,7 +134,11 @@
         "description": "Wanneer je op ja klikt, zal de huidige dag vervangen worden door de geselecteerde nieuwe dag, weet je het zeker?",
         "title": "Verzenden"
       },
-      "title": "Speelmomenten"
+      "title": "Speelmomenten",
+      "warnings": {
+        "location-change": "Verandering van locatie",
+        "selected-different-location": "Er is een andere locatie gekozen, maar vanwege beperkingen in externe systemen moeten deze locaties handmatig worden bijgewerkt. Houd er rekening mee dat dit enkele dagen kan duren."
+      }
     },
     "draw": {
       "encounters": "Ontmoetingen",
