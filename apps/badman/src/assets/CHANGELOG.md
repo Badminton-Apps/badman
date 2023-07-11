@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.12](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.11...v6.88.0-beta.12) (2023-07-11)
+
+
+### Features
+
+* adding badman project as meta ([7426af9](https://github.com/Badminton-Apps/badman/commit/7426af9144b58272cf45d9d3037fe1990d7157b1))
+* adding location to encounter / encounter change. ([1d62e16](https://github.com/Badminton-Apps/badman/commit/1d62e169f2f414001fa2035775427287608f1c7c))
+* adding selection of location ([7f16564](https://github.com/Badminton-Apps/badman/commit/7f165645b489678fd6744d422a3f736f6111d11b))
+* adding some starter code for splitting up code in to micro services ([ddd61d0](https://github.com/Badminton-Apps/badman/commit/ddd61d0f6f1d91036836a0322ee5234e4840c0bd))
+* disclaimer and re-opening ([c042e3d](https://github.com/Badminton-Apps/badman/commit/c042e3d00c810412e96012b1c575e99774ea26bd))
+* moving request date to own component ([eeae225](https://github.com/Badminton-Apps/badman/commit/eeae225536f133c6b4fcce02acbc9b7c4f198ba9))
+
+
+### Bug Fixes
+
+* show season in beta ([ecaa90a](https://github.com/Badminton-Apps/badman/commit/ecaa90a289c2273a7bc56909359bfffde6741c54))
+* simple start ([ff82941](https://github.com/Badminton-Apps/badman/commit/ff82941652bf091d3742ba992e9c7217373d6faf))
+
 ## [6.88.0-beta.11](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.10...v6.88.0-beta.11) (2023-07-02)
 
 
