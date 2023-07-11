@@ -33,6 +33,16 @@
       "localRoot": "${workspaceFolder}/apps/worker/ranking",
       "remoteRoot": "/usr/src",
       "restart": true
+    },
+    {
+      "name": "Scripts",
+      "type": "node",
+      "request": "attach",
+      "port": 9240,
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}/apps/scripts",
+      "remoteRoot": "/usr/src",
+      "restart": true
     }
   ]
 }

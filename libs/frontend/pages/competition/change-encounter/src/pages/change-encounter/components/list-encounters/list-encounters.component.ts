@@ -65,7 +65,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
       .observe(Breakpoints.Handset)
       .pipe(map((result) => result.matches))
   );
- 
+
   destroy$ = new Subject<void>();
 
   @Input()
@@ -135,8 +135,11 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                     encounterCompetitions: { rows: EncounterCompetition[] };
                   }>({
                     query: gql`
-                      query GetEncounterQuery($where: JSONObject) {
-                        encounterCompetitions(where: $where) {
+                      query ListEncounterQuery(
+                        $where: JSONObject
+                        $order: [SortOrderType!]
+                      ) {
+                        encounterCompetitions(where: $where, order: $order) {
                           rows {
                             id
                             date
@@ -159,6 +162,10 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                               id
                               subeventId
                             }
+                            location {
+                              id
+                              name
+                            }
                           }
                         }
                       }
@@ -173,6 +180,13 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                           $between: getCurrentSeasonPeriod(season),
                         },
                       },
+                      // For easy viewing in network tab
+                      order: [
+                        {
+                          field: 'date',
+                          direction: 'desc',
+                        },
+                      ],
                     },
                   })
                 ),
@@ -214,7 +228,6 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
 
               return [0, 1, 2, 3, 4, 5].includes(r.date.getMonth());
             });
-
 
             const params = this.activatedRoute.snapshot.queryParams;
 
