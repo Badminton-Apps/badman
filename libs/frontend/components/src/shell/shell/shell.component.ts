@@ -149,7 +149,7 @@ export class ShellComponent {
             });
         });
 
-      const canAnyEnroll$ = this.auth.hasClaim$('*_enlist:team');
+      const canAnyEnroll$ = this.auth.hasClaim$('enlist-any:team');
       const canviewEnroll$ = this.auth.hasClaim$('*_enlist:team');
 
       const openEnrollments = this.apollo
@@ -218,13 +218,16 @@ export class ShellComponent {
           )
         );
 
+      const canAnyChange$ = this.auth.hasClaim$('change-any:encounter');
+      const canviewChange$ = this.auth.hasClaim$('*change:encounter');
+
       this.canChange$ = combineLatest([
-        canAnyEnroll$,
-        canviewEnroll$,
+        canAnyChange$,
+        canviewChange$,
         openChangeEncounter,
       ]).pipe(
-        map(([canAnyEnroll, canViewEnroll, openChangeEncounter]) => {
-          return canAnyEnroll || (canViewEnroll && openChangeEncounter);
+        map(([canAnyChange, canViewChange, openChangeEncounter]) => {
+          return canAnyChange || (canViewChange && openChangeEncounter);
         })
       );
 
