@@ -1,21 +1,23 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Inject, OnInit, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
+import { ClaimService } from '@badman/frontend-auth';
 import {
   HasClaimComponent,
   SelectClubComponent,
   SelectSeasonComponent,
   SelectTeamComponent,
 } from '@badman/frontend-components';
+import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
-import { ListEncountersComponent, ShowRequestsComponent } from './components';
-import { MatIconModule } from '@angular/material/icon';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { ListEncountersComponent, ShowRequestsComponent } from './components';
 
 @Component({
   selector: 'badman-change-encounter',
@@ -28,7 +30,7 @@ import { map } from 'rxjs';
     TranslateModule,
 
     MatIconModule,
-    
+
     // Own
     SelectClubComponent,
     SelectTeamComponent,
@@ -47,10 +49,25 @@ export class ChangeEncounterComponent implements OnInit {
       .pipe(map((result) => result.matches))
   );
 
+  hasPermission = toSignal(
+    this.claimService.hasAnyClaims$(['change-any:encounter'])
+  );
+
+  canSelectSeason = computed(
+    () => this.hasPermission() || this.versionInfo.beta
+  );
 
   formGroup?: FormGroup;
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    @Inject(VERSION_INFO)
+    private versionInfo: {
+      beta: boolean;
+      version: string;
+    },
+    private claimService: ClaimService
+  ) {}
 
   ngOnInit(): void {
     const querySeason = parseInt(

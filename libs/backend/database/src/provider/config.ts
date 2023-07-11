@@ -15,11 +15,12 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
     const models = Object.values(sequelizeModels).filter(
       (m) => m.prototype instanceof Model
     ) as ModelCtor[];
-    const logging = this.configService.get('DB_LOGGING') === 'true';
+    const logging = this.configService.get<boolean>('DB_LOGGING')
+      ? console.log
+      : false;
     const dialect = this.configService.get('DB_DIALECT');
 
     let options: SequelizeModuleOptions = {
-      models,
       logging,
     };
 
@@ -34,6 +35,11 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
         username: this.configService.get('DB_USER'),
         password: this.configService.get('DB_PASSWORD'),
         database: this.configService.get('DB_DATABASE'),
+        ssl: this.configService.get<boolean>('DB_SSL'),
+
+        dialectOptions: {
+          ssl: this.configService.get<boolean>('DB_SSL'),
+        },
       };
     } else if (!dialect || dialect === 'sqlite') {
       options = {
@@ -42,6 +48,10 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
         storage: this.configService.get('DB_STORAGE') ?? 'database.sqlite',
       };
     }
+
+    console.log(options);
+
+    options.models = models;
 
     return options;
   }

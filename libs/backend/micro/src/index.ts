@@ -1,1 +1,1 @@
-export * from './lib/micro.module';
+export * from './micro.module';
