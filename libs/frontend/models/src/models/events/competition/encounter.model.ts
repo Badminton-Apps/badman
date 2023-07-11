@@ -38,11 +38,13 @@ export class EncounterCompetition {
 
     this.assemblies = args?.assemblies?.map((a) => new Assembly(a)) ?? [];
     this.drawId = args?.drawId;
-    this.locationId = args?.locationId;
+    this.locationId = args?.locationId || args?.location?.id;
     this.location =
       (args?.location ?? null) != null
         ? new Location(args?.location)
         : undefined;
+
+
     this.games = args?.games
       ?.map((g) => new Game(g))
       ?.sort((a, b) => {

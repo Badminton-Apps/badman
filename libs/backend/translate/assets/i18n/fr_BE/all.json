@@ -110,6 +110,7 @@
       },
       "choose-date": "Choisir une date",
       "choose-encounter": "Choisir une réunion",
+      "choose-location": "Choisissez l'emplacement",
       "choose-team": "Choisir une équipe",
       "comment": "Remarque",
       "comments": "Notes",
@@ -133,7 +134,11 @@
         "description": "Lorsque vous cliquez sur \"oui\", le jour actuel sera remplacé par le nouveau jour sélectionné, êtes-vous sûr ?",
         "title": "Expédition"
       },
-      "title": "Moments de jeu"
+      "title": "Moments de jeu",
+      "warnings": {
+        "location-change": "Changement de lieu",
+        "selected-different-location": "Un emplacement différent a été choisi, mais en raison des limitations des systèmes externes, ces emplacements doivent être mis à jour manuellement. Veuillez noter que cela peut prendre plusieurs jours."
+      }
     },
     "draw": {
       "encounters": "Réunions",

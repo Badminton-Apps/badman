@@ -21,6 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent } from '@badman/frontend-components';
@@ -64,13 +65,15 @@ import { v4 } from 'uuid';
     MatFormFieldModule,
     MatDatepickerModule,
     MatMenuModule,
+    MatSelectModule,
 
     // Own
     HasClaimComponent,
   ],
 })
 export class CalendarComponent implements OnInit {
-  manualControl: FormControl;
+  manualDateControl: FormControl;
+  manualLocationControl: FormControl;
   calendar?: CalendarDay[];
   public locations: Map<number, Location> = new Map();
   public monthNames!: string[];
@@ -102,14 +105,14 @@ export class CalendarComponent implements OnInit {
       awayTeamId: string;
       homeTeamId: string;
       date?: Date;
+      locationId?: string;
       home?: boolean;
     },
     private apollo: Apollo
   ) {
-    this.manualControl = new FormControl(data?.date);
-    this.manualControl.valueChanges.subscribe((date) => {
-      this.selectDay(date);
-    });
+    this.manualDateControl = new FormControl(data?.date);
+    this.manualLocationControl = new FormControl(data?.locationId);
+
     this.firstDayOfMonth = moment(data.date);
     if (!this.firstDayOfMonth.isValid()) {
       this.firstDayOfMonth = moment();
@@ -623,7 +626,10 @@ export class CalendarComponent implements OnInit {
       date.set('minute', +minute);
     }
 
-    this.dialogRef.close(date.toDate());
+    this.dialogRef.close({
+      date: date.toDate(),
+      locationId: locationId,
+    });
   }
 
   private _genGridTemplateColumns(hasActivityOnDay: {
@@ -750,9 +756,9 @@ export class CalendarDay {
     }
 
     for (const event of homeEvents ?? []) {
-      if (!event?.locationId) {
-        throw new Error('LocationId is required');
-      }
+      // if (!event?.locationId) {
+      //   throw new Error('LocationId is required');
+      // }
       this.addEvent(event, visibleTeams);
     }
     for (const event of awayEvents ?? []) {
@@ -774,9 +780,14 @@ export class CalendarDay {
       return;
     }
 
-    const locationIndex = this.locations.findIndex(
+    let locationIndex = this.locations.findIndex(
       (l) => l.id === event.locationId
     );
+
+    // if location is not found, use first location
+    if (locationIndex == -1) {
+      locationIndex = 0
+    }
 
     const skipRemaining = !!event.encounter?.encounterChange || event.requested;
 

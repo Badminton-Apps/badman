@@ -91,13 +91,20 @@
   ></badman-comments>
 </div>
 
-<ng-template #confirm>
+<ng-template #confirm let-data>
   <h2 matDialogTitle>
     {{ 'all.competition.change-encounter.submit.title' | translate }}
   </h2>
   <mat-dialog-content>
     <p>
       {{ 'all.competition.change-encounter.submit.description' | translate }}
+    </p>
+
+    <p *ngIf="data.changedLocation">
+      {{
+        'all.competition.change-encounter.warnings.selected-different-location'
+          | translate
+      }}
     </p>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
