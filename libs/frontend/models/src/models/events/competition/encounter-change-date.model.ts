@@ -6,6 +6,7 @@ export class EncounterChangeDate {
   availabilityHome?: ChangeEncounterAvailability;
   availabilityAway?: ChangeEncounterAvailability;
   selected?: boolean;
+  locationId?: string;
 
   constructor(args?: Partial<EncounterChangeDate>) {
     this.id = args?.id;
@@ -13,5 +14,6 @@ export class EncounterChangeDate {
     this.availabilityHome = args?.availabilityHome;
     this.availabilityAway = args?.availabilityAway;
     this.selected = args?.selected;
+    this.locationId = args?.locationId;
   }
 }

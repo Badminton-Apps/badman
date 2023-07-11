@@ -17,6 +17,12 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - '5672:5672'
+    restart: unless-stopped
+
   redis:
     image: 'redis:alpine'
     ports:

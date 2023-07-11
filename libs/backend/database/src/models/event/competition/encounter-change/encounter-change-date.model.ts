@@ -1,3 +1,4 @@
+import { ChangeEncounterAvailability } from '@badman/utils';
 import {
   Field,
   ID,
@@ -22,9 +23,9 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { ChangeEncounterAvailability } from '@badman/utils';
-import { EncounterChange } from './encounter-change.model';
 import { Relation } from '../../../../wrapper';
+import { Location } from '../../location.model';
+import { EncounterChange } from './encounter-change.model';
 
 @Table({
   timestamps: true,
@@ -70,9 +71,24 @@ export class EncounterChangeDate extends Model {
   @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))
   availabilityAway?: ChangeEncounterAvailability;
 
+  @BelongsTo(() => Location, {
+    foreignKey: 'locationId',
+    onDelete: 'CASCADE',
+  })
+  location?: Relation<Location>;
+
+  @ForeignKey(() => Location)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  locationId?: string;
+
   // Belongs to EncounterChange
   getEncounterChange!: BelongsToGetAssociationMixin<EncounterChange>;
   setEncounterChange!: BelongsToSetAssociationMixin<EncounterChange, string>;
+
+  // Has one Location
+  getLocation!: BelongsToGetAssociationMixin<Location>;
+  setLocation!: BelongsToSetAssociationMixin<Location, string>;
 }
 
 @InputType()
@@ -81,6 +97,7 @@ export class EncounterChangeDateUpdateInput extends PartialType(
     'createdAt',
     'updatedAt',
     'encounterChange',
+    'location',
   ] as const),
   InputType
 ) {}

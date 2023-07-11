@@ -1,0 +1,54 @@
+<ng-container [formGroup]="this.group">
+  <badman-date-selector
+    [homeClubId]="encounter.home!.clubId"
+    [awayClubId]="encounter.away!.clubId"
+    [homeTeamId]="encounter.home!.id"
+    [awayTeamId]="encounter.away!.id"
+    [home]="this.home"
+    formControlName="calendar"
+  ></badman-date-selector>
+
+  <mat-form-field class="availability">
+    <mat-label>{{ 'all.competition.home' | translate }}</mat-label>
+    <mat-select formControlName="availabilityHome" required>
+      <mat-option value="POSSIBLE">{{
+        'all.competition.change-encounter.possible' | translate
+      }}</mat-option>
+      <mat-option value="NOT_POSSIBLE">{{
+        'all.competition.change-encounter.not-possible' | translate
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="availability">
+    <mat-label>{{ 'all.competition.away' | translate }}</mat-label>
+    <mat-select formControlName="availabilityAway" required>
+      <mat-option value="POSSIBLE">{{
+        'all.competition.change-encounter.possible' | translate
+      }}</mat-option>
+      <mat-option value="NOT_POSSIBLE">{{
+        'all.competition.change-encounter.not-possible' | translate
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="actions">
+    <mat-checkbox class="selected" formControlName="selected"> </mat-checkbox>
+
+    <div class="delete" *ngIf="!group.get('id')!.value">
+      <button mat-icon-button (click)="removeDate.next()" type="button">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+
+    <div
+      class="changed-location"
+      *ngIf="
+        encounter.locationId &&
+        this.group.get('calendar')?.value?.locationId &&
+        encounter.locationId !== this.group.get('calendar')?.value?.locationId
+      "
+    >
+      <mat-icon color="warn">warning</mat-icon>
+    </div>
+  </div>
+</ng-container>

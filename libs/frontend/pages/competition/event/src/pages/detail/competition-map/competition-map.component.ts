@@ -220,8 +220,6 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
           return;
         }
 
-        console.log('setting sub events');
-
         this.subEvents.set(
           (this.eventCompetition?.()?.subEventCompetitions?.map(
             (subEvent) => subEvent.id

@@ -3,7 +3,7 @@
   width: 100%;
 }
 
-.app-date-selector-container {
+.date-selector-container {
   border-bottom-style: solid;
   border-bottom-width: 1px;
   cursor: pointer;
@@ -19,7 +19,7 @@ span {
 }
 
 .disabled {
-  &.app-date-selector-container {
+  &.date-selector-container {
     border-bottom-style: solid;
     border-bottom-width: 1px;
     cursor: default;

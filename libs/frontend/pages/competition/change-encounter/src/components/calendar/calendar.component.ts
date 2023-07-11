@@ -21,6 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent } from '@badman/frontend-components';
@@ -64,13 +65,15 @@ import { v4 } from 'uuid';
     MatFormFieldModule,
     MatDatepickerModule,
     MatMenuModule,
+    MatSelectModule,
 
     // Own
     HasClaimComponent,
   ],
 })
 export class CalendarComponent implements OnInit {
-  manualControl: FormControl;
+  manualDateControl: FormControl;
+  manualLocationControl: FormControl;
   calendar?: CalendarDay[];
   public locations: Map<number, Location> = new Map();
   public monthNames!: string[];
@@ -102,14 +105,14 @@ export class CalendarComponent implements OnInit {
       awayTeamId: string;
       homeTeamId: string;
       date?: Date;
+      locationId?: string;
       home?: boolean;
     },
     private apollo: Apollo
   ) {
-    this.manualControl = new FormControl(data?.date);
-    this.manualControl.valueChanges.subscribe((date) => {
-      this.selectDay(date);
-    });
+    this.manualDateControl = new FormControl(data?.date);
+    this.manualLocationControl = new FormControl(data?.locationId);
+
     this.firstDayOfMonth = moment(data.date);
     if (!this.firstDayOfMonth.isValid()) {
       this.firstDayOfMonth = moment();
@@ -264,6 +267,7 @@ export class CalendarComponent implements OnInit {
                 rows {
                   id
                   date
+                  locationId
                   encounterChange {
                     accepted
                     dates {
@@ -420,7 +424,7 @@ export class CalendarComponent implements OnInit {
             encounter: e,
             color: this.teamColors.get(e.home?.id ?? ''),
             startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
+            locationId: e.locationId,
             requested: false,
             removed: !!e.encounterChange,
             ownTeam: this.data.home,
@@ -454,7 +458,7 @@ export class CalendarComponent implements OnInit {
             },
             color: this.teamColors.get(e.home?.id ?? '') ?? '',
             startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
+            locationId: e.locationId,
             requested: true,
             removed: false,
             ownTeam: this.data.home,
@@ -472,7 +476,7 @@ export class CalendarComponent implements OnInit {
             encounter: e,
             color: this.teamColors.get(e.home?.id ?? ''),
             startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
+            locationId: e.locationId,
             requested: false,
             removed: !!e.encounterChange,
             ownTeam: !this.data.home,
@@ -505,7 +509,7 @@ export class CalendarComponent implements OnInit {
             },
             color: this.teamColors.get(e.home?.id ?? '') ?? '',
             startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
+            locationId: e.locationId,
             requested: true,
             removed: false,
             ownTeam: !this.data.home,
@@ -609,7 +613,7 @@ export class CalendarComponent implements OnInit {
     this.generateCalendarDays();
   }
 
-  public selectDay(d?: Date, time?: string) {
+  public selectDay(d?: Date, time?: string, locationId?: string) {
     const date = moment(d);
 
     if (time) {
@@ -622,7 +626,10 @@ export class CalendarComponent implements OnInit {
       date.set('minute', +minute);
     }
 
-    this.dialogRef.close(date.toDate());
+    this.dialogRef.close({
+      date: date.toDate(),
+      locationId: locationId,
+    });
   }
 
   private _genGridTemplateColumns(hasActivityOnDay: {
@@ -650,8 +657,9 @@ export class CalendarDay {
   public remainingCourts?: Map<number, number>;
   public totalCourts?: Map<number, number>;
   public locations?: {
-    id: number;
+    id?: string;
     name?: string;
+    showNumber: number;
     availibility: {
       startTime?: string;
       totalCourts: number;
@@ -673,7 +681,7 @@ export class CalendarDay {
   otherEvents: {
     id: string;
     encounter: EncounterCompetition;
-    locationId?: number;
+    locationId?: string;
     startTime?: string;
     color?: string;
     removed: boolean;
@@ -739,7 +747,8 @@ export class CalendarDay {
         });
 
         this.locations.push({
-          id: loc[0],
+          showNumber: loc[0],
+          id: loc[1].id,
           name: loc[1].name,
           availibility: av,
         });
@@ -747,15 +756,15 @@ export class CalendarDay {
     }
 
     for (const event of homeEvents ?? []) {
-      if (!event?.locationId) {
-        throw new Error('LocationId is required');
-      }
+      // if (!event?.locationId) {
+      //   throw new Error('LocationId is required');
+      // }
       this.addEvent(event, visibleTeams);
     }
     for (const event of awayEvents ?? []) {
-      if (!event?.locationId) {
-        throw new Error('LocationId is required');
-      }
+      // if (!event?.locationId) {
+      //   throw new Error('LocationId is required');
+      // }
       if (
         event.encounter?.home?.id &&
         visibleTeams?.includes(event.encounter?.home?.id)
@@ -771,9 +780,14 @@ export class CalendarDay {
       return;
     }
 
-    const locationIndex = this.locations.findIndex(
+    let locationIndex = this.locations.findIndex(
       (l) => l.id === event.locationId
     );
+
+    // if location is not found, use first location
+    if (locationIndex == -1) {
+      locationIndex = 0
+    }
 
     const skipRemaining = !!event.encounter?.encounterChange || event.requested;
 
@@ -836,7 +850,7 @@ export class CalendarDay {
 interface DayEvent {
   id: string;
   encounter: EncounterCompetition;
-  locationId?: number | undefined;
+  locationId?: string | undefined;
   startTime?: string | undefined;
   color?: string | undefined;
   removed: boolean;

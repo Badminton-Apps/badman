@@ -43,16 +43,16 @@ const selector = 'badman-date-selector';
     { provide: MatFormFieldControl, useExisting: DateSelectorComponent },
   ],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-
-    MomentModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MomentModule],
 })
 export class DateSelectorComponent
-  implements ControlValueAccessor, MatFormFieldControl<Moment>, OnDestroy
+  implements
+    ControlValueAccessor,
+    MatFormFieldControl<{
+      date: Moment;
+      locationId: string;
+    }>,
+    OnDestroy
 {
   static nextId = 0;
   private _placeholder?: string;
@@ -132,16 +132,20 @@ export class DateSelectorComponent
   }
 
   @Input()
-  get value(): Moment | null {
+  get value(): {
+    date: Moment;
+    locationId: string;
+  } | null {
     if (this.dateControl.valid) {
       return this.dateControl.value;
     }
     return null;
   }
 
-  set value(dateInput: Moment | null) {
-    const date = dateInput || moment();
-    this.dateControl.setValue(date);
+  set value(dateInput: { date: Moment; locationId: string } | null) {
+    const date = dateInput?.date || moment();
+    this.dateControl.setValue({ date, locationId: dateInput?.locationId });
+
     this.stateChanges.next();
   }
 
@@ -183,7 +187,7 @@ export class DateSelectorComponent
       return;
     }
 
-    const date = moment(this.value);
+    const date = moment(this.value?.date);
 
     this._dialog
       .open(CalendarComponent, {
@@ -194,13 +198,22 @@ export class DateSelectorComponent
           awayTeamId: this.awayTeamId,
           homeTeamId: this.homeTeamId,
           date,
+          locationId: this.value?.locationId,
           home: this.home,
         },
       })
       .afterClosed()
       .subscribe((result) => {
-        if (result) {
-          this.value = moment(result);
+        if (!result) {
+          return;
+        }
+
+        const { date, locationId } = result;
+        if (date) {
+          this.value = {
+            date: moment(date),
+            locationId,
+          };
           this._handleInput();
         }
       });
@@ -219,7 +232,7 @@ export class DateSelectorComponent
 
   setDescribedByIds(ids: string[]) {
     const controlElement = this._elementRef.nativeElement.querySelector(
-      '.app-date-selector-container'
+      '.date-selector-container'
     );
     if (controlElement) {
       controlElement.setAttribute('aria-describedby', ids.join(' '));
@@ -230,7 +243,12 @@ export class DateSelectorComponent
     this.dateControl.markAsTouched();
   }
 
-  writeValue(date: Moment | null): void {
+  writeValue(
+    date: {
+      date: Moment;
+      locationId: string;
+    } | null
+  ): void {
     this.value = date;
   }
 
