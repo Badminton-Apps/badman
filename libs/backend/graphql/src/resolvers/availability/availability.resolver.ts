@@ -50,18 +50,16 @@ export class AvailabilitysResolver {
   //   return availability.days;
   // }
 
-  @ResolveField(() => [ExceptionType])
+  @ResolveField(() => [ExceptionType], { nullable: true })
   async exceptions(@Parent() availability: Availability) {
-    return availability.exceptions?.map((e) => {
-      if (e.start && e.end) {
-        return {
-          ...e,
-          start: new Date(e.start),
-          end: new Date(e.end),
-        } as AvailabilityException;
-      }
-      return;
-    });
+    // return availability.exceptions and map the start en end as date
+    return availability.exceptions
+      ?.filter((exception) => exception && exception.start && exception.end)
+      ?.map((exception) => ({
+        ...exception,
+        start: new Date(exception.start as Date),
+        end: new Date(exception.end as Date),
+      }));
   }
 
   @Mutation(() => Availability)

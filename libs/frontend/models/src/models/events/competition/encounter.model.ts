@@ -1,5 +1,6 @@
 import { Game } from '../../game.model';
 import { Team } from '../../team.model';
+import { Location } from '../../location.model';
 import { Assembly } from './assembly.model';
 import { DrawCompetition } from './draw.model';
 import { EncounterChange } from './encounter-change.model';
@@ -16,13 +17,14 @@ export class EncounterCompetition {
   home?: Team;
   away?: Team;
   drawId?: string;
+  locationId?: string;
+  location?: Location;
 
   homeTeamId?: string;
   awayTeamId?: string;
 
   showingForHomeTeam?: boolean;
   encounterChange?: EncounterChange;
-
 
   constructor(args?: Partial<EncounterCompetition>) {
     this.id = args?.id;
@@ -36,6 +38,13 @@ export class EncounterCompetition {
 
     this.assemblies = args?.assemblies?.map((a) => new Assembly(a)) ?? [];
     this.drawId = args?.drawId;
+    this.locationId = args?.locationId || args?.location?.id;
+    this.location =
+      (args?.location ?? null) != null
+        ? new Location(args?.location)
+        : undefined;
+
+
     this.games = args?.games
       ?.map((g) => new Game(g))
       ?.sort((a, b) => {
@@ -66,7 +75,5 @@ export class EncounterCompetition {
 
     this.homeTeamId = args?.homeTeamId;
     this.awayTeamId = args?.awayTeamId;
-
-   
   }
 }
