@@ -22,7 +22,7 @@
       </mat-chip-listbox>
     </div>
     <div class="spacer"></div>
-    <div  class="manual-selection" *ngIf="this.data.home">
+    <div class="manual-selection" *ngIf="this.data.home">
       <mat-form-field *ngIf="this.locations">
         <mat-label>{{
           'all.competition.change-encounter.choose-location' | translate
@@ -268,7 +268,7 @@
     </div>
   </div>
   <div class="sidebar" *ngIf="this.data.home">
-    <div class="home-teams">
+    <div class="home-teams" *ngIf="this.homeTeams?.length">
       <div class="show">
         <button
           mat-stroked-button
@@ -293,7 +293,7 @@
       </div>
     </div>
 
-    <div class="away-teams">
+    <div class="away-teams" *ngIf="this.awayTeams?.length">
       <div class="show">
         <button
           mat-stroked-button
@@ -319,7 +319,7 @@
     </div>
   </div>
   <div class="sidebar" *ngIf="!this.data.home">
-    <div class="home-teams">
+    <div class="home-teams" *ngIf="this.awayTeams?.length">
       <div class="show">
         <button
           mat-stroked-button
@@ -344,7 +344,7 @@
       </div>
     </div>
 
-    <div class="away-teams">
+    <div class="away-teams" *ngIf="this.homeTeams?.length">
       <div class="show">
         <button
           mat-stroked-button
