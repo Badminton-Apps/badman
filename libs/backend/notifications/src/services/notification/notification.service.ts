@@ -18,6 +18,7 @@ import {
   CompetitionEncounterNotEnteredNotifier,
   EventSyncedSuccessNotifier,
   EventSyncedFailedNotifier,
+  CompetitionEncounterChangeFinishRequestNotifier,
 } from '../../notifiers';
 import { PushService } from '../push';
 import { ConfigService } from '@nestjs/config';
@@ -55,6 +56,10 @@ export class NotificationService {
       ],
     });
 
+    // just make sure the teams are loaded
+    encounter.home = homeTeam;
+    encounter.away = awayTeam;
+
     const newReqTeam = homeTeamRequests ? homeTeam : awayTeam;
     const confReqTeam = homeTeamRequests ? awayTeam : homeTeam;
 
@@ -72,7 +77,7 @@ export class NotificationService {
       notifierNew.notify(
         newReqTeam.captain,
         encounter.id,
-        { encounter },
+        { encounter, isHome: homeTeamRequests },
         { email: newReqTeam.email }
       );
     }
@@ -81,17 +86,21 @@ export class NotificationService {
       notifierConform.notify(
         confReqTeam.captain,
         encounter.id,
-        { encounter },
+        { encounter, isHome: !homeTeamRequests },
         { email: confReqTeam.email }
       );
     }
   }
 
-  async notifyEncounterChangeFinished(encounter: EncounterCompetition) {
-    const notifierFinished = new CompetitionEncounterChangeNewRequestNotifier(
-      this.mailing,
-      this.push
-    );
+  async notifyEncounterChangeFinished(
+    encounter: EncounterCompetition,
+    locationHasChanged: boolean
+  ) {
+    const notifierFinished =
+      new CompetitionEncounterChangeFinishRequestNotifier(
+        this.mailing,
+        this.push
+      );
     const homeTeam = await encounter.getHome({
       include: [
         {
@@ -109,11 +118,15 @@ export class NotificationService {
       ],
     });
 
+    // just make sure the teams are loaded
+    encounter.home = homeTeam;
+    encounter.away = awayTeam;
+
     if (homeTeam.captain && homeTeam.email) {
       notifierFinished.notify(
         homeTeam.captain,
         encounter.id,
-        { encounter },
+        { encounter, locationHasChanged, isHome: true },
         { email: homeTeam.email }
       );
     }
@@ -122,7 +135,7 @@ export class NotificationService {
       notifierFinished.notify(
         awayTeam.captain,
         encounter.id,
-        { encounter },
+        { encounter, locationHasChanged, isHome: false },
         { email: awayTeam.email }
       );
     }

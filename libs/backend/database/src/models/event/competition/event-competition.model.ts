@@ -95,6 +95,10 @@ export class EventCompetition extends Model {
   @Column(DataType.DATE)
   changeCloseRequestDate?: Date;
 
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  contactEmail?: string;
+
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
     foreignKey: 'linkId',

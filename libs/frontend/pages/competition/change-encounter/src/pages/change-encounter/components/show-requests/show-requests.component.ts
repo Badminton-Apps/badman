@@ -230,11 +230,23 @@ export class ShowRequestsComponent implements OnInit {
   }
 
   async save() {
+    console.log('save', this.formGroupRequest.valid);
+
     if (this.running) {
       return;
     }
 
     if (!this.formGroupRequest.valid) {
+      this._snackBar.open(
+        this._translate.instant('competition.change-encounter.errors.invalid'),
+        'OK',
+        {
+          duration: 4000,
+        }
+      );
+
+      this.formGroupRequest.markAllAsTouched();
+
       return;
     }
 
@@ -353,7 +365,6 @@ export class ShowRequestsComponent implements OnInit {
 
     if (change.accepted) {
       const changed = change.dates.find((r) => r.selected == true);
-      console.log(changed?.locationId, this.encounter?.location?.id);
       const dialog = this._dialog.open(this.confirmDialog, {
         data: {
           changedLocation: changed?.locationId != this.encounter?.location?.id,

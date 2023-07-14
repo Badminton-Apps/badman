@@ -1,12 +1,30 @@
-p
-  | Beste #{captain.fullName}, 
-  br
-  br
-  |   De verplaatsing aanvraag voor de wedstrijd op 
-  strong #{date}
-  | tegen
-  strong #{otherTeam.name}
-  | is aangevraagd.
-p
-  a(href=`${clientUrl}/competition/change-encounter?club=${otherTeam.clubId}&team=${otherTeam.id}&encounter=${encounter.id}`)
-    | Ga naar aanvraag
+extends ../../layouts/layout.pug
+
+block title
+  h1.text-center
+    | Verplaatsing aangevraagd
+    
+block content
+  p.text-center
+    p
+      | Beste #{ captain },
+      br
+      br
+      | Wij willen u graag informeren dat te wijziging van aankomende wedstrijd tussen #{ encounter.home.name } en #{ encounter.away.name } is aangevraagd.
+    p
+      if isHome
+        a(
+          href=`${clientUrl}/competition/change-encounter?club=${encounter.home.clubId}&team=${encounter.home.id}&encounter=${encounter.id}&season=${season}`
+        )
+          | Klik hier om het verzoek te bekijken
+      else
+        a(
+          href=`${clientUrl}/competition/change-encounter?club=${encounter.away.clubId}&team=${encounter.away.id}&encounter=${encounter.id}&season=${season}`
+        )
+          | Klik hier om het verzoek te bekijken
+
+    br
+    br
+    | Met vriendelijke groet,
+    br
+    | Badman

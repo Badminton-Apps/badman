@@ -118,6 +118,7 @@
       "description": "Clause de non-responsabilité : Il s'agit d'une version initiale du module de déplacement des réunions. Des améliorations seront apportées périodiquement.",
       "disclaimer-submit": "Lorsque les deux équipes sont disponibles, la date peut être choisie à l'aide de la case à cocher, puis en cliquant sur envoyer.",
       "errors": {
+        "invalid": "Veuillez compléter toutes les disponibilités avant d'envoyer",
         "select-one-date": "Veuillez sélectionner au moins 1 jour",
         "select-one-date-or-comment": "Veuillez commenter (au moins 15 caractères) ou choisir une date."
       },
