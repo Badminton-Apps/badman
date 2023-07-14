@@ -28,7 +28,7 @@ type gameType =
   | 'double4';
 
 @Controller({
-  path: 'pdf',
+  path: 'pdf/assembly',
 })
 export class AssemblyController {
   private readonly logger = new Logger(AssemblyController.name);
@@ -39,7 +39,7 @@ export class AssemblyController {
     private readonly i18nService: I18nService<I18nTranslations>
   ) {}
 
-  @Post('team-assembly')
+  @Post('team')
   async teamAssembly(
     @Req() req: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply
