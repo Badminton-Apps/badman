@@ -5,6 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 import { EncounterCompetition } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateSelectorComponent } from '../../../../components';
@@ -25,6 +27,7 @@ import { combineLatest, of, startWith } from 'rxjs';
     MatIconModule,
     MatButtonModule,
     MatCheckboxModule,
+    MatTooltipModule,
   ],
   templateUrl: './request-date.component.html',
   styleUrls: ['./request-date.component.scss'],

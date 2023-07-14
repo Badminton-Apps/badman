@@ -42,6 +42,10 @@
 
     <div
       class="changed-location"
+      [matTooltip]="
+        'all.competition.change-encounter.warnings.location-change'
+          | translate
+      "
       *ngIf="
         encounter.locationId &&
         this.group.get('calendar')?.value?.locationId &&
