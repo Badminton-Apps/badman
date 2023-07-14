@@ -146,11 +146,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       this.auth.user$ ?? of(null),
     ]).pipe(
       takeUntil(this.destroy$),
-      tap(([loggedIn, user]) => {
-        console.log('loggedIn', loggedIn);
-        console.log('user', user);
-        console.log('can', loggedIn && !user.id);
-      }),
+
       map(([loggedIn, user]) => loggedIn && !user.id)
     );
   }
