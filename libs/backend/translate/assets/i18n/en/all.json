@@ -136,6 +136,8 @@
       },
       "title": "Encounters",
       "warnings": {
+        "closed": "Requesting competitions has ended, you can only process existing requests",
+        "closing": "Requesting new data closes {period}",
         "location-change": "Change of location",
         "selected-different-location": "A different location has been chosen, but due to limitations in external systems, these locations must be updated manually. Please note that this may take several days."
       }

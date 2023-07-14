@@ -67,18 +67,34 @@
           </div>
         </div>
 
-        <div class="submit">
-          <button mat-stroked-button (click)="this.addDate()" type="button">
-            {{ 'all.competition.change-encounter.add-date' | translate }}
-          </button>
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="this.running"
-          >
-            {{ 'all.button.submit' | translate }}
-          </button>
+        <div class="submit" *ngIf="this.requestClosing">
+          <div>
+            <button
+              mat-stroked-button
+              (click)="this.addDate()"
+              type="button"
+              [disabled]="this.requestClosed"
+            >
+              {{ 'all.competition.change-encounter.add-date' | translate }}
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="this.running"
+            >
+              {{ 'all.button.submit' | translate }}
+            </button>
+          </div>
+          <div *ngIf="!this.requestClosed" class="caption">
+            {{
+              'all.competition.change-encounter.warnings.closing'
+                | translate
+                  : {
+                      period: requestClosing | amCalendar
+                    }
+            }}
+          </div>
         </div>
       </ng-container>
     </form>
