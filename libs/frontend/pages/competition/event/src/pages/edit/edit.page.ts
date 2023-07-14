@@ -33,9 +33,10 @@ import { SeoService } from '@badman/frontend-seo';
 import { SecurityType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, map, shareReplay } from 'rxjs';
+import { BehaviorSubject, map, shareReplay, lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { EventCompetitionLevelFieldsComponent } from './components';
+import { EVENT_QUERY } from '../../resolvers';
 
 const roleQuery = gql`
   query GetRoles($where: JSONObject) {
@@ -141,6 +142,7 @@ export class EditPageComponent implements OnInit {
         Validators.min(2000),
         Validators.max(3000),
       ]),
+      contactEmail: new FormControl(event.contactEmail, Validators.required),
 
       usedRankingUnit: new FormControl(event.usedRankingUnit, [
         Validators.required,
@@ -198,5 +200,46 @@ export class EditPageComponent implements OnInit {
             });
         }
       });
+  }
+
+  async save() {
+    const eventCompetition = new EventCompetition({
+      ...this.eventCompetition,
+      ...this.formGroup.value,
+    });
+
+    await lastValueFrom(
+      this.apollo.mutate<{ updateEventCompetition: Partial<EventCompetition> }>(
+        {
+          mutation: gql`
+            mutation UpdateEventCompetition(
+              $data: EventCompetitionUpdateInput!
+            ) {
+              updateEventCompetition(data: $data) {
+                id
+              }
+            }
+          `,
+          variables: {
+            data: {
+              id: eventCompetition.id,
+              name: eventCompetition.name,
+              season: eventCompetition.season,
+              contactEmail: eventCompetition.contactEmail,
+            },
+          },
+          refetchQueries: [
+            {
+              query: EVENT_QUERY,
+              variables: {
+                id: eventCompetition.id,
+              },
+            },
+          ],
+        }
+      )
+    );
+
+    this.saved$.next(this.saved$.value + 1);
   }
 }

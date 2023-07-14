@@ -45,7 +45,7 @@ export abstract class Notifier<T, A = { email: string }> {
 
     const type = settings?.[this.type] as NotificationType;
 
-    if (!type || !force) {
+    if (!type && !force) {
       this.logger.debug(
         `Notification ${this.type} disabled for ${player.fullName}`
       );

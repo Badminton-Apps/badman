@@ -118,6 +118,7 @@
       "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "errors": {
+        "invalid": "Gelieve alle beschikbaarheid aan te vullen voor het versturen",
         "select-one-date": "Gelieve minsten 1 dag te selecteren",
         "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
       },

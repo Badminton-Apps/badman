@@ -118,6 +118,7 @@
       "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied.",
       "disclaimer-submit": "Once both teams are available, the selected day can be chosen in the checkbox by then clicking on send",
       "errors": {
+        "invalid": "Please complete all availability before sending",
         "select-one-date": "Please select at least 1 day",
         "select-one-date-or-comment": "Please comment (at least 15 characters) or choose a date."
       },
