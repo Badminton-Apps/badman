@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { IPdfConfig } from '../interfaces';
 import { PDF_CONFIG } from '../pdf.module';
 @Injectable({
@@ -30,7 +30,7 @@ export class PdfService {
 
     subtitudes: string[];
   }) {
-    return this.httpClient.post(`${this.config.api}/team-assembly`, input, {
+    return this.httpClient.post(`${this.config.api}/assembly/team`, input, {
       responseType: 'blob',
     });
   }
