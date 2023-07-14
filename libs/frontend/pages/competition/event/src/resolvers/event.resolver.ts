@@ -29,6 +29,7 @@ export class EventResolver {
               closeDate
               changeOpenDate
               changeCloseDate
+              changeCloseRequestDate
               visualCode
               official
               lastSync
