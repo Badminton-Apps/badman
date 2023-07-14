@@ -161,6 +161,13 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                             drawCompetition {
                               id
                               subeventId
+                              subEventCompetition {
+                                id
+                                eventCompetition {
+                                  id
+                                  changeCloseRequestDate
+                                }
+                              }
                             }
                             location {
                               id

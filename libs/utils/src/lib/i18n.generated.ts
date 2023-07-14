@@ -140,6 +140,8 @@ export type I18nTranslations = {
                 };
                 "title": string;
                 "warnings": {
+                    "closed": string;
+                    "closing": string;
                     "location-change": string;
                     "selected-different-location": string;
                 };
