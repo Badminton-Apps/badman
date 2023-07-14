@@ -1,0 +1,10 @@
+{
+	"nodes":[
+		{"type":"file","file":"docs/Types/Club.md","id":"3b6f8264b09defa6","x":-500,"y":134,"width":400,"height":400},
+		{"type":"file","file":"docs/Types/Player.md","id":"c7497d58750b29a3","x":-500,"y":-200,"width":400,"height":220},
+		{"id":"67c88d5f49314d3b","x":360,"y":-200,"width":440,"height":240,"type":"file","file":"docs/Types/Assembly.md"}
+	],
+	"edges":[
+		{"id":"312e97b3edcdaebe","fromNode":"c7497d58750b29a3","fromSide":"bottom","toNode":"3b6f8264b09defa6","toSide":"top"}
+	]
+}
