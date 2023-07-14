@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.15](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.14...v6.88.0-beta.15) (2023-07-14)
+
+
+### Features
+
+* disable requesting new dates when date is passed ([1facb45](https://github.com/Badminton-Apps/badman/commit/1facb458694bf6c1fe6902e0fa300c13b6383cd3))
+* mailing upgrade ([1219470](https://github.com/Badminton-Apps/badman/commit/1219470af141b1692ea3ef3aef85b9335bc47263))
+* moving compile to shared pupeteer library ([962e241](https://github.com/Badminton-Apps/badman/commit/962e241e1c519b1277cc54ef27d64c767cc41ef1))
+* pupeteer upgraded to library ([09f557c](https://github.com/Badminton-Apps/badman/commit/09f557c2acec764dfde54bbd25b19f11ff7c9936))
+* tooltip for change location ([718092d](https://github.com/Badminton-Apps/badman/commit/718092d8e718b09c2fab34b532ff272d680279d5))
+
+
+### Bug Fixes
+
+* fetch close request date ([1dad383](https://github.com/Badminton-Apps/badman/commit/1dad383ba33a97463aba3134e87f9ae4f6a524a8))
+* only show buttons when loading is finished ([c8c2c28](https://github.com/Badminton-Apps/badman/commit/c8c2c2854820fc4fe3f900b4cdc63a85241c9b06))
+* ranking breakdown page was broken ([4ada7fc](https://github.com/Badminton-Apps/badman/commit/4ada7fcbd8550c00bbf165a779e48f7573fd0292))
+* removing unneeded console.log ([9b082dd](https://github.com/Badminton-Apps/badman/commit/9b082dd912aeed8627785bfd101d7b88482b4413))
+
 ## [6.88.0-beta.14](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.13...v6.88.0-beta.14) (2023-07-11)
 
 
