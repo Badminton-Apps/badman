@@ -1,3 +1,51 @@
+<ng-container *ngIf="this.formGroup" [formGroup]="this.formGroup">
+  <h3>General</h3>
+  <div class="general">
+    <div class="name">
+      <mat-form-field>
+        <mat-label>Naam</mat-label>
+        <input matInput formControlName="name" [required]="true" />
+      </mat-form-field>
+    </div>
+
+    <div class="contact">
+      <mat-form-field>
+        <mat-label>Season</mat-label>
+        <input matInput formControlName="season" [required]="true" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Contact</mat-label>
+        <input matInput formControlName="contactEmail" [required]="true" />
+      </mat-form-field>
+    </div>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="this.save()">
+        {{ 'all.button.save' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <h3>Sub events</h3>
+
+  <div
+    *ngFor="let subEvent of eventCompetition.subEventCompetitions; index as i"
+  >
+    <badman-event-competition-level-fields
+      [type]="eventCompetition.type"
+      [subEvent]="subEvent"
+      [formGroup]="$any(this.formGroup.get('subEvents'))?.at(i)"
+    ></badman-event-competition-level-fields>
+  </div>
+
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="this.save()">
+      {{ 'all.button.save' | translate }}
+    </button>
+  </div>
+</ng-container>
+
 <badman-has-claim [any]="[eventCompetition.id + '_edit:role', 'edit-any:club']">
   <h2>
     Roles
@@ -16,29 +64,3 @@
     </ng-container>
   </div>
 </badman-has-claim>
-
-<ng-container *ngIf="this.formGroup">
-  <!-- <badman-has-claim [any]="['edit:competition']">
-    <badman-event-competition-fields
-      [event]="event"
-      [formGroup]="this.formGroup"
-    ></badman-event-competition-fields>
-    <div noPerm>{{ event.name }}</div>
-  </badman-has-claim> -->
-
-  <div class="mat-subheading-1">Sub events</div>
-
-  <div
-    *ngFor="let subEvent of eventCompetition.subEventCompetitions; index as i"
-  >
-    <badman-event-competition-level-fields
-      [type]="eventCompetition.type"
-      [subEvent]="subEvent"
-      [formGroup]="$any(this.formGroup.get('subEvents'))?.at(i)"
-    ></badman-event-competition-level-fields>
-  </div>
-
-  <!-- <button mat-button (click)="this.newSubEvent(event)">
-    {{ 'button.create' | translate }}
-  </button> -->
-</ng-container>

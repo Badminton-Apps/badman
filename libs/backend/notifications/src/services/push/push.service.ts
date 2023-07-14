@@ -1,11 +1,11 @@
 import { Player } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as webPush from 'web-push';
 import {
-  setVapidDetails,
-  sendNotification,
   RequestOptions,
   WebPushError,
+  setVapidDetails
 } from 'web-push';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class PushService {
 
     for (const sub of settings.pushSubscriptions) {
       try {
-        await sendNotification(sub, JSON.stringify(data));
+        await webPush.sendNotification(sub, JSON.stringify(data));
         this.logger.debug(`Sent push notification to ${sub.endpoint}`);
       } catch (error) {
         if (error instanceof WebPushError && error.statusCode === 410) {

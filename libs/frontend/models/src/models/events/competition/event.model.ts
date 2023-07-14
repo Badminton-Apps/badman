@@ -5,6 +5,7 @@ import { SubEventCompetition } from './sub-event.model';
 
 export class EventCompetition extends Event {
   season?: number;
+  contactEmail?: string;
   subEventCompetitions?: SubEventCompetition[];
   comments?: Comment[];
   type?: LevelType;
@@ -16,6 +17,7 @@ export class EventCompetition extends Event {
   constructor({ ...args }: Partial<EventCompetition>) {
     super(args);
     this.season = args.season;
+    this.contactEmail = args.contactEmail;
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
     this.changeOpenDate = args.changeOpenDate

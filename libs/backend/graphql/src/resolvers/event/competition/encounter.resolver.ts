@@ -153,6 +153,7 @@ export class EncounterCompetitionResolver {
     }
     const transaction = await this._sequelize.transaction();
     let encounterChange: EncounterChange;
+    let locationHasChanged = false;
 
     try {
       // Check if encounter has change
@@ -183,6 +184,12 @@ export class EncounterCompetitionResolver {
         }
         // Set date to the selected date
         encounter.date = selectedDates[0].date;
+
+        // Set location to the selected location
+        if (encounter.locationId != selectedDates[0].locationId) {
+          encounter.locationId = selectedDates[0].locationId;
+          locationHasChanged = true;
+        }
 
         // Accept
         await this.syncQueue.add(
@@ -252,7 +259,12 @@ export class EncounterCompetitionResolver {
 
     // Notify the user
     if (newChangeEncounter.accepted) {
-      this.notificationService.notifyEncounterChangeFinished(encounter);
+      this.notificationService.notifyEncounterChangeFinished(encounter, locationHasChanged);
+
+      // check if the location has changed
+      if (locationHasChanged) {
+        // this.notificationService.notifyEncounterLocationChanged(encounter);
+      }
     } else {
       this.notificationService.notifyEncounterChange(
         encounter,

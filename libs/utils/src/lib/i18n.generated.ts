@@ -122,6 +122,7 @@ export type I18nTranslations = {
                 "description": string;
                 "disclaimer-submit": string;
                 "errors": {
+                    "invalid": string;
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
