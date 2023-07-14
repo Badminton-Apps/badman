@@ -136,6 +136,8 @@
       },
       "title": "Speelmomenten",
       "warnings": {
+        "closed": "Het aanvragen van wedstrijden is afgelopen, je kan nog enkel bestaande aanvragen afwerken",
+        "closing": "Het aanvragen van nieuwe data sluit {period}",
         "location-change": "Verandering van locatie",
         "selected-different-location": "Er is een andere locatie gekozen, maar vanwege beperkingen in externe systemen moeten deze locaties handmatig worden bijgewerkt. Houd er rekening mee dat dit enkele dagen kan duren."
       }

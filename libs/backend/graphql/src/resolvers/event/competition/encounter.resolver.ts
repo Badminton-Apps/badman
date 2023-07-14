@@ -11,6 +11,8 @@ import {
   Player,
   Location,
   Team,
+  SubEventCompetition,
+  EventCompetition,
 } from '@badman/backend-database';
 import { NotificationService } from '@badman/backend-notifications';
 import { Sync, SyncQueue } from '@badman/backend-queue';
@@ -33,7 +35,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Queue } from 'bull';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../../utils';
@@ -86,12 +88,9 @@ export class EncounterCompetitionResolver {
   }
 
   @ResolveField(() => Location)
-  async location(
-    @Parent() encounter: EncounterCompetition
-  ): Promise<Location> {
+  async location(@Parent() encounter: EncounterCompetition): Promise<Location> {
     return encounter.getLocation();
   }
-
 
   @ResolveField(() => Team)
   async home(@Parent() encounter: EncounterCompetition): Promise<Team> {
@@ -204,15 +203,44 @@ export class EncounterCompetitionResolver {
         encounterChange.accepted = false;
       }
       await encounterChange.save({ transaction });
-      this.logger.debug(`Change encounter ${encounter.id}: ${encounterChange.accepted}`);
+      this.logger.debug(
+        `Change encounter ${encounter.id}: ${encounterChange.accepted}`
+      );
+
+      const draw = await encounter.getDrawCompetition({
+        attributes: ['id'],
+        include: [
+          {
+            model: SubEventCompetition,
+            attributes: ['id'],
+            include: [
+              {
+                model: EventCompetition,
+                attributes: ['id', 'changeCloseRequestDate'],
+              },
+            ],
+          },
+        ],
+      });
+
+      // can request new dates in timezone europe/brussels
+
+      const canRequestNewDates = moment
+        .tz('europe/brussels')
+        .isBefore(
+          moment.tz(
+            draw?.subEventCompetition?.eventCompetition?.changeCloseRequestDate,
+            'europe/brussels'
+          )
+        );
 
       await this.changeOrUpdate(
         encounterChange,
         newChangeEncounter,
         transaction,
-        dates
+        dates,
+        canRequestNewDates
       );
-
 
       // find if any date was selected
       await transaction.commit();
@@ -272,7 +300,8 @@ export class EncounterCompetitionResolver {
     encounterChange: EncounterChange,
     change: EncounterChangeNewInput,
     transaction: Transaction,
-    existingDates: EncounterChangeDate[]
+    existingDates: EncounterChangeDate[],
+    canRequestNewDates: boolean
   ) {
     change.dates = change.dates
       ?.map((r) => {
@@ -288,6 +317,10 @@ export class EncounterCompetitionResolver {
       let encounterChangeDate = existingDates.find(
         (r) => r.date?.getTime() === date.date?.getTime()
       );
+
+      if (!encounterChangeDate && !canRequestNewDates) {
+        throw new Error('Cannot request new dates');
+      }
 
       // If not create new one
       if (!encounterChangeDate) {

@@ -113,6 +113,9 @@ export class ShowRequestsComponent implements OnInit {
   minDate: Date = new Date('2021-09-01');
   maxDate: Date = new Date('2022-05-01');
 
+  requestClosed = false;
+  requestClosing!: moment.Moment;
+
   comments = signal<Comment[]>([]);
 
   requests$!: Observable<EncounterChange>;
@@ -132,8 +135,14 @@ export class ShowRequestsComponent implements OnInit {
     if (this.previous) {
       this.requests$ = this.previous.valueChanges.pipe(
         filter((value) => value !== null),
-        tap((encounter) => {
+        tap((encounter: EncounterCompetition) => {
           this.encounter = encounter;
+          this.requestClosing = moment(
+            encounter?.drawCompetition?.subEventCompetition?.eventCompetition
+              ?.changeCloseRequestDate
+          );
+          this.requestClosed = moment().isAfter(this.requestClosing);
+
           this.running = false;
 
           if (encounter == null) {
