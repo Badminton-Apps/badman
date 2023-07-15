@@ -7,7 +7,6 @@ import {
   OnInit,
   PLATFORM_ID,
   Signal,
-  TransferState,
   computed,
   effect,
   inject,
@@ -37,9 +36,8 @@ import {
   SelectSeasonComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { Club, EventCompetition, Player, Team } from '@badman/frontend-models';
+import { Club, EventCompetition, Player } from '@badman/frontend-models';
 import { TwizzitService } from '@badman/frontend-twizzit';
-import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
