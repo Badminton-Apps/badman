@@ -8,7 +8,7 @@ import {
   XmlTeamMatch,
   XmlTournament,
 } from '@badman/backend-visual';
-import { runParrallel } from '@badman/utils';
+import { runParallel } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import moment from 'moment-timezone';
 import { Op } from 'sequelize';
@@ -48,7 +48,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EncounterStepData[]> {
-    await runParrallel(
+    await runParallel(
       this.draws?.map((e) => this._processEncounters(e)) ?? []
     );
     return this._dbEncounters;
