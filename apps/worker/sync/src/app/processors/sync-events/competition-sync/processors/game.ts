@@ -13,7 +13,7 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from '@badman/backend-visual';
-import { GameStatus, GameType, runParrallel } from '@badman/utils';
+import { GameStatus, GameType, runParallel } from '@badman/utils';
 import { Logger, NotFoundException } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -73,7 +73,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       return [];
     }
 
-    await runParrallel(promisses);
+    await runParallel(promisses);
 
     return this._games;
   }
