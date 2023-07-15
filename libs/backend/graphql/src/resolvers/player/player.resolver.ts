@@ -254,22 +254,15 @@ export class PlayersResolver {
   > {
     const args = ListArgs.toFindOptions(listArgs);
 
-    return Player.findByPk(player.id, {
-      include: [
-        {
-          model: Club,
-          required: false,
-          where: args.where,
-          limit: args.limit,
-          order: args.order,
-          through: {
-            where: {
-              end: disabled ? { [Op.ne]: null } : { [Op.eq]: null },
-            },
-          },
-        },
-      ],
-    }).then((player) => player?.clubs);
+    return player.getClubs({
+      ...args,
+      where: {
+        ...args.where,
+        '$ClubPlayerMembership.end$': disabled
+          ? { [Op.ne]: null }
+          : { [Op.eq]: null },
+      },
+    });
   }
 
   @ResolveField(() => Setting, { nullable: true })
