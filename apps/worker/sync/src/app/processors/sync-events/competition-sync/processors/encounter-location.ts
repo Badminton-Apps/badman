@@ -5,7 +5,7 @@ import {
   Location,
   Team,
 } from '@badman/backend-database';
-import { runParrallel } from '@badman/utils';
+import { runParallel } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import moment from 'moment';
 import { StepOptions, StepProcessor } from '../../../../processing';
@@ -87,7 +87,7 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    await runParrallel(
+    await runParallel(
       clubs.map((club) =>
         this._processEncountersForClub(clubEncounterMap[club.id] ?? [], club)
       )

@@ -1,6 +1,6 @@
 import { Club, EventEntry, Team } from '@badman/backend-database';
 import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
-import { runParrallel, teamValues } from '@badman/utils';
+import { runParallel, teamValues } from '@badman/utils';
 import { isArray } from 'class-validator';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
@@ -31,7 +31,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EntryStepData[]> {
-    await runParrallel(this.draws?.map((e) => this._processEntries(e)) ?? []);
+    await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? []);
     return this._entries;
   }
 
