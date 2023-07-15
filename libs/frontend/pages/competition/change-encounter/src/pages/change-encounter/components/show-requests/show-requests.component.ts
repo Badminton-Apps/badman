@@ -139,7 +139,7 @@ export class ShowRequestsComponent implements OnInit {
           this.encounter = encounter;
           this.requestClosing = moment(
             encounter?.drawCompetition?.subEventCompetition?.eventCompetition
-              ?.changeCloseRequestDate
+              ?.changeCloseDate
           );
           this.requestClosed = moment().isAfter(this.requestClosing);
 
