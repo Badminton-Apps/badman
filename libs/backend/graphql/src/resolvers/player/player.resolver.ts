@@ -248,20 +248,20 @@ export class PlayersResolver {
       nullable: true,
       description: 'Include the historical clubs',
     })
-    disabled?: boolean
+    historical?: boolean
   ): Promise<
     (Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined
   > {
     const args = ListArgs.toFindOptions(listArgs);
 
+    if (!historical) {
+      args.where = {
+        ...args.where,
+        '$ClubPlayerMembership.end$': null,
+      };
+    }
     return player.getClubs({
       ...args,
-      where: {
-        ...args.where,
-        '$ClubPlayerMembership.end$': disabled
-          ? { [Op.ne]: null }
-          : { [Op.eq]: null },
-      },
     });
   }
 

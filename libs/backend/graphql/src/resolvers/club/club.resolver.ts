@@ -23,7 +23,6 @@ import {
   Args,
   Field,
   ID,
-  Info,
   Int,
   Mutation,
   ObjectType,
@@ -51,13 +50,7 @@ export class ClubsResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Club)
-  // @cacheControl({ maxAge: 60 })
-  async club(
-    @Args('id', { type: () => ID }) id: string,
-    @Info() info: any
-  ): Promise<Club> {
-    // set cache
-    info.cacheControl.setCacheHint({ maxAge: 60, scope: 'PRIVATE' });
+  async club(@Args('id', { type: () => ID }) id: string): Promise<Club> {
     // get club
     const club = IsUUID(id)
       ? await Club.findByPk(id)
@@ -117,7 +110,19 @@ export class ClubsResolver {
     @Parent() club: Club,
     @Args() listArgs: ListArgs
   ): Promise<Player[]> {
-    return club.getPlayers(ListArgs.toFindOptions(listArgs));
+    const options = ListArgs.toFindOptions(listArgs);
+
+    options.where = {
+      ...options.where,
+      '$ClubPlayerMembership.end$': null,
+    };
+
+    const players = await club.getPlayers(options);
+    const distinctPlayers = players.filter(
+      (player, index, self) =>
+        index === self.findIndex((p) => p.id === player.id)
+    );
+    return distinctPlayers;
   }
 
   @Mutation(() => Club)
@@ -369,8 +374,8 @@ export class ClubsResolver {
         throw new NotFoundException(`${Player.name}: ${membership.playerId}`);
       }
 
-      // Remove player from club
-      await club.removePlayer(player, { transaction });
+      // remove membership
+      await membership.destroy({ transaction });
 
       // Commit transaction
       await transaction.commit();

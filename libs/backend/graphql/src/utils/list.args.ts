@@ -42,7 +42,7 @@ export class ListArgs extends WhereArgs {
       limit: args.take,
       offset: args.skip,
       where: queryFixer(args.where),
-      order: args.order?.map(({ field, direction }) => [field, direction]),
+      order: args.order?.map(({ field, direction }) => [field, direction]) ?? [],
     } as FindOptions;
   }
 }
