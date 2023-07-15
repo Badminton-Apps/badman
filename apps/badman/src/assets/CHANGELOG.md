@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.16](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.15...v6.88.0-beta.16) (2023-07-15)
+
+
+### Bug Fixes
+
+* if sets were empty this would break the sync ([6736d78](https://github.com/Badminton-Apps/badman/commit/6736d78ddfb9b6ae8b27bbaf159be02e6badb727))
+* typo in function name ([b3a0e52](https://github.com/Badminton-Apps/badman/commit/b3a0e529e85872b10937d3f9be0483ed47b7432e))
+
 ## [6.88.0-beta.15](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.14...v6.88.0-beta.15) (2023-07-14)
 
 
