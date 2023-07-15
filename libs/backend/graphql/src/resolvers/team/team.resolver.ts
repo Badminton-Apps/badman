@@ -87,7 +87,7 @@ export class TeamsResolver {
   @ResolveField(() => String)
   async phone(@User() user: Player, @Parent() team: Team) {
     const perm = [`details-any:team`, `${team.clubId}_details:team`];
-    if (!await user.hasAnyPermission(perm)) {
+    if (!(await user.hasAnyPermission(perm))) {
       return null;
     }
 
@@ -95,9 +95,22 @@ export class TeamsResolver {
   }
 
   @ResolveField(() => String)
+  async abbreviation(@User() user: Player, @Parent() team: Team) {
+    if (team.abbreviation) {
+      return team.abbreviation;
+    }
+
+    // if the team does not have an abbreviation, generate one
+    await Team.generateAbbreviation(team);
+    await team.save();
+
+    return team.abbreviation;
+  }
+
+  @ResolveField(() => String)
   async email(@User() user: Player, @Parent() team: Team) {
     const perm = [`details-any:team`, `${team.clubId}_details:team`];
-    if (!await user.hasAnyPermission(perm)) {
+    if (!(await user.hasAnyPermission(perm))) {
       return null;
     }
 
@@ -145,7 +158,10 @@ export class TeamsResolver {
       }
 
       if (
-        !await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club'])
+        !(await user.hasAnyPermission([
+          `${dbClub.id}_edit:location`,
+          'edit-any:club',
+        ]))
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`
@@ -192,7 +208,6 @@ export class TeamsResolver {
         created = true;
       }
 
-    
       if (!created) {
         // update values
         teamDb.name = newTeamData.name;
@@ -205,8 +220,8 @@ export class TeamsResolver {
         teamDb.captainId = newTeamData.captainId;
         teamDb.preferredDay = newTeamData.preferredDay;
         teamDb.preferredTime = newTeamData.preferredTime;
-        teamDb.link = newTeamData.link ?? uuidv4(),
-        await teamDb.save({ transaction });
+        (teamDb.link = newTeamData.link ?? uuidv4()),
+          await teamDb.save({ transaction });
       }
       if (created) {
         await teamDb.setClub(dbClub, { transaction });
@@ -250,7 +265,7 @@ export class TeamsResolver {
               if (!teamDb) {
                 throw new BadRequestException('Could not create team');
               }
-        
+
               await teamDb.addPlayer(dbPlayer, {
                 through: {
                   membershipType: player.membershipType,
@@ -334,12 +349,14 @@ export class TeamsResolver {
             const player = dbPlayers.find((dbPlayer) => dbPlayer.id === p.id);
             const ranking = rankings.find((r) => r.playerId === p.id);
 
-            if (!player){
+            if (!player) {
               throw new NotFoundException(`Player ${p.id} not found`);
             }
 
             if (!ranking) {
-              throw new NotFoundException(`Ranking for player ${p.id} not found`);
+              throw new NotFoundException(
+                `Ranking for player ${p.id} not found`
+              );
             }
 
             players.push({
@@ -390,10 +407,10 @@ export class TeamsResolver {
       }
 
       if (
-        !await user.hasAnyPermission([
+        !(await user.hasAnyPermission([
           `${dbTeam.clubId}_edit:location`,
           'edit-any:club',
-        ])
+        ]))
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`
@@ -510,10 +527,10 @@ export class TeamsResolver {
       }
 
       if (
-        !await user.hasAnyPermission([
+        !(await user.hasAnyPermission([
           `${dbTeam.clubId}_edit:location`,
           'edit-any:club',
-        ])
+        ]))
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`
@@ -575,7 +592,7 @@ export class TeamsResolver {
     }
 
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!await user.hasAnyPermission(perm)) {
+    if (!(await user.hasAnyPermission(perm))) {
       throw new UnauthorizedException();
     }
 
@@ -605,7 +622,7 @@ export class TeamsResolver {
       throw new NotFoundException(`${Team.name}: ${teamId}`);
     }
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!await user.hasAnyPermission(perm)) {
+    if (!(await user.hasAnyPermission(perm))) {
       throw new UnauthorizedException();
     }
 
@@ -634,7 +651,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${teamId}`);
       }
 
-      if (!await user.hasAnyPermission(perm)) {
+      if (!(await user.hasAnyPermission(perm))) {
         throw new UnauthorizedException();
       }
 
@@ -702,7 +719,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${teamId}`);
       }
 
-      if (!await user.hasAnyPermission(perm)) {
+      if (!(await user.hasAnyPermission(perm))) {
         throw new UnauthorizedException();
       }
 
@@ -772,7 +789,7 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${teamId}`);
       }
 
-      if (!await user.hasAnyPermission(perm)) {
+      if (!(await user.hasAnyPermission(perm))) {
         throw new UnauthorizedException();
       }
 
@@ -806,7 +823,6 @@ export class TeamsResolver {
         ...currentPlayer,
         ...playerCompetition,
       };
-
 
       if (!entry.meta?.competition?.players) {
         throw new BadRequestException('No players in base?');
@@ -848,7 +864,7 @@ export class TeamsResolver {
       throw new NotFoundException(`${Team.name}: ${teamId}`);
     }
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!await user.hasAnyPermission(perm)) {
+    if (!(await user.hasAnyPermission(perm))) {
       throw new UnauthorizedException();
     }
 
@@ -874,7 +890,7 @@ export class TeamsResolver {
       throw new NotFoundException(`${Team.name}: ${teamId}`);
     }
     const perm = [`${team.clubId}_edit:team`, 'edit-any:club'];
-    if (!await user.hasAnyPermission(perm)) {
+    if (!(await user.hasAnyPermission(perm))) {
       throw new UnauthorizedException();
     }
 
