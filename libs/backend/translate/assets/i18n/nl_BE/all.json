@@ -147,6 +147,7 @@
       "warnings": {
         "base": "{player.fullName} is basisspeler van een ander team",
         "base-subevent": "{player.fullName} is basisspeler van een ander team in dezelfde reeks",
+        "better-meta": "{player.fullName} is beter dan een van de basis spelers, pas op dat je de teamindex niet overschrijdt",
         "min-level": "Toegelaten klassement is {maxLevel} terwijl {player.fullName} {level} is in {type} ",
         "other-gender": "{player.fullName} is een {playerGender}, maar het team is voor de {teamType}"
       }

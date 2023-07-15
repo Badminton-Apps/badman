@@ -42,6 +42,7 @@
             >
             <mat-icon
               *ngIf="element?.[team.name ?? ''].canPlay === canPlay.Maybe"
+              [matTooltip]="element?.[team.name ?? ''].reason"
               class="maybe"
               >warning</mat-icon
             >

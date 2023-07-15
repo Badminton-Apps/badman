@@ -398,20 +398,57 @@ export class ClubAssemblyComponent implements OnInit {
       };
     }
 
+    // if player is part of meta competition, he can't play in any teams with a higher number
+
+    const teamWhereBase = otherTeams?.find((t) =>
+      t.entry?.meta?.competition?.players?.find((p) => p.id == player.id)
+    );
+
+    if (teamWhereBase) {
+      if ((team.teamNumber ?? 0) > (teamWhereBase?.teamNumber ?? 0)) {
+        return {
+          canPlay: CanPlay.No,
+          reason: this.translateService.instant(
+            'all.competition.club-assembly.warnings.base',
+            {
+              player,
+            }
+          ),
+        };
+      }
+
+      // if the player is part of the base, all teams of that same subevent he can't play in
+      if (
+        team.id != teamWhereBase.id &&
+        teamWhereBase.entry?.subEventCompetition?.id ==
+          team.entry?.subEventCompetition?.id
+      ) {
+        return {
+          canPlay: CanPlay.No,
+          reason: this.translateService.instant(
+            'all.competition.club-assembly.warnings.base-subevent',
+            {
+              player,
+            }
+          ),
+        };
+      }
+    }
+
     // check if the player has any ranking lower then the event
     const ranking = player.rankingPlaces?.[0];
     if (ranking) {
       const event = team.entry?.subEventCompetition;
-      if (event) {
-        const single = ranking.single ?? 12;
-        const double = ranking.double ?? 12;
-        const mix = ranking.mix ?? 12;
+      const single = ranking.single ?? 12;
+      const double = ranking.double ?? 12;
+      const mix = ranking.mix ?? 12;
+      const minLevel = Math.min(
+        single ?? 12,
+        double ?? 12,
+        team.type == SubEventTypeEnum.MX ? mix : 12
+      );
 
-        const minLevel = Math.min(
-          single ?? 12,
-          double ?? 12,
-          team.type == SubEventTypeEnum.MX ? mix : 12
-        );
+      if (event) {
         const types = [];
 
         if (single == minLevel && single < (event.maxLevel ?? 12)) {
@@ -451,42 +488,31 @@ export class ClubAssemblyComponent implements OnInit {
           };
         }
       }
-    }
 
-    // if player is part of meta competition, he can't play in any teams with a higher number
-
-    const teamWhereBase = otherTeams?.find((t) =>
-      t.entry?.meta?.competition?.players?.find((p) => p.id == player.id)
-    );
-
-    if (teamWhereBase) {
-      if ((team.teamNumber ?? 0) > (teamWhereBase?.teamNumber ?? 0)) {
-        return {
-          canPlay: CanPlay.No,
-          reason: this.translateService.instant(
-            'all.competition.club-assembly.warnings.base',
-            {
-              player,
-            }
-          ),
-        };
-      }
-
-      // if the player is part of the base, all teams of that same subevent he can't play in
       if (
-        team.id != teamWhereBase.id &&
-        teamWhereBase.entry?.subEventCompetition?.id ==
-          team.entry?.subEventCompetition?.id
+        !team.entry?.meta?.competition?.players?.find((p) => p.id == player.id)
       ) {
-        return {
-          canPlay: CanPlay.No,
-          reason: this.translateService.instant(
-            'all.competition.club-assembly.warnings.base-subevent',
-            {
-              player,
-            }
-          ),
-        };
+        // check if the player is better then any of the meta players (if he is not part of the meta)
+        for (const entryPlayer of team.entry?.meta?.competition?.players ??
+          []) {
+          const entryMin = Math.min(
+            entryPlayer.single ?? 12,
+            entryPlayer.double ?? 12,
+            team.type == SubEventTypeEnum.MX ? entryPlayer.mix : 12
+          );
+
+          if (minLevel < entryMin) {
+            return {
+              canPlay: CanPlay.Maybe,
+              reason: this.translateService.instant(
+                'all.competition.club-assembly.warnings.better-meta',
+                {
+                  player,
+                }
+              ),
+            };
+          }
+        }
       }
     }
 

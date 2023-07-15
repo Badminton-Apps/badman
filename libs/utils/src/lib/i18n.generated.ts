@@ -151,6 +151,7 @@ export type I18nTranslations = {
                 "warnings": {
                     "base": string;
                     "base-subevent": string;
+                    "better-meta": string;
                     "min-level": string;
                     "other-gender": string;
                 };
