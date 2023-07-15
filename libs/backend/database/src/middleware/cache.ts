@@ -50,7 +50,7 @@ export class SequelizeAttachReqToModelMiddleware {
 
       seq.addHook('afterCreate', 'afterCreateCache', async (instance) => {
         if (!(instance instanceof Model)) return;
-        const cacheKey = `${prefix}instance.constructor.name}:${instance.id}`;
+        const cacheKey = `${prefix}${instance.constructor.name}:${instance.id}`;
         await seq['Cache'].set(cacheKey, instance.toJSON(), TTL);
       });
 
