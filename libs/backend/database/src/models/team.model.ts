@@ -206,23 +206,25 @@ export class Team extends Model {
   static async setAbbriviations(instances: Team[], options: CreateOptions) {
     for (const instance of instances ?? []) {
       await this.setAbbriviation(instance, options);
+      await this.generateAbbreviation(instance, options);
     }
   }
 
   @BeforeCreate
   static async setAbbriviation(instance: Team, options: CreateOptions) {
     if (instance.isNewRecord) {
+      await this.generateName(instance, options);
       await this.generateAbbreviation(instance, options);
     }
   }
 
-  static async generateAbbreviation(
+  static async generateName(
     instance: Team,
-    options: CreateOptions,
+    options?: CreateOptions,
     club?: Club
   ) {
     club =
-      club ?? (await instance.getClub({ transaction: options.transaction }));
+      club ?? (await instance.getClub({ transaction: options?.transaction }));
 
     switch (club?.useForTeamName ?? UseForTeamName.NAME) {
       case UseForTeamName.FULL_NAME:
@@ -243,6 +245,19 @@ export class Team extends Model {
         }${getLetterForRegion(instance.type, 'vl')}`;
         break;
     }
+  }
+
+  static async generateAbbreviation(
+    instance: Team,
+    options?: CreateOptions,
+    club?: Club
+  ) {
+    club =
+      club ?? (await instance.getClub({ transaction: options?.transaction }));
+
+    instance.abbreviation = `${club.abbreviation} ${
+      instance.teamNumber
+    }${getLetterForRegion(instance.type, 'vl')}`;
   }
   // #endregion
 

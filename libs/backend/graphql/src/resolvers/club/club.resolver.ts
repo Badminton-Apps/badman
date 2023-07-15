@@ -217,7 +217,7 @@ export class ClubsResolver {
         });
         this.logger.debug(`updating teams ${teams.length}`);
         for (const team of teams) {
-          await Team.generateAbbreviation(team, { transaction });
+          await Team.generateName(team, { transaction });
           await team.save({ transaction });
         }
       }
