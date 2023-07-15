@@ -143,6 +143,14 @@
         "selected-different-location": "Er is een andere locatie gekozen, maar vanwege beperkingen in externe systemen moeten deze locaties handmatig worden bijgewerkt. Houd er rekening mee dat dit enkele dagen kan duren."
       }
     },
+    "club-assembly": {
+      "warnings": {
+        "base": "{player.fullName} is basisspeler van een ander team",
+        "base-subevent": "{player.fullName} is basisspeler van een ander team in dezelfde reeks",
+        "min-level": "Toegelaten klassement is {maxLevel} terwijl {player.fullName} {level} is in {type} ",
+        "other-gender": "{player.fullName} is een {playerGender}, maar het team voor de {teamType} is"
+      }
+    },
     "draw": {
       "encounters": "Ontmoetingen",
       "title": "Poule"
@@ -447,6 +455,10 @@
       "F": "Dames",
       "M": "Heren",
       "MX": "Gemengd"
+    },
+    "longs": {
+      "F": "Vrouw",
+      "M": "Man"
     },
     "male": "Man",
     "males": "Heren",

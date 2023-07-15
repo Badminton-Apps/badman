@@ -143,6 +143,14 @@
         "selected-different-location": "Un emplacement différent a été choisi, mais en raison des limitations des systèmes externes, ces emplacements doivent être mis à jour manuellement. Veuillez noter que cela peut prendre plusieurs jours."
       }
     },
+    "club-assembly": {
+      "warnings": {
+        "base": "{player.fullName} est le premier joueur d'une autre équipe",
+        "base-subevent": "{player.fullName} est le premier joueur d'une autre équipe dans la même série",
+        "min-level": "Le classement autorisé est {maxLevel} tandis que {player.fullName} est{level} dans {type} ",
+        "other-gender": "{player.fullName} est un {playerGender}, mais l'équipe pour le {teamType} est"
+      }
+    },
     "draw": {
       "encounters": "Réunions",
       "title": "Piscine"
@@ -447,6 +455,10 @@
       "F": "Femmes",
       "M": "Hommes",
       "MX": "Mixte"
+    },
+    "longs": {
+      "F": "Femme",
+      "M": "Homme"
     },
     "male": "Homme",
     "males": "Hommes",

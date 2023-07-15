@@ -46,7 +46,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
     const subEventEntries = await subEvent.getEventEntries({
-      include: [{ model: Team }],
+      // include: [{ model: Team }],
       transaction: this.transaction,
     });
 
@@ -97,18 +97,6 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         transaction: this.transaction,
       });
 
-      let entry = subEventEntries.find((r) => {
-        if (!r.team) {
-          return false;
-        }
-
-        return (
-          r.team.teamNumber === teamNumber &&
-          r.team.clubId === club?.id &&
-          r.team.type === teamType
-        );
-      });
-
       if (!club) {
         this.logger.warn(`Club not found ${clubName}`);
         continue;
@@ -141,7 +129,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
           team = clubTeams[0];
         } else {
           let link: string | null = null;
-          
+
           if (foundTeams?.length > 0) {
             link = foundTeams[0].link;
           }
@@ -159,16 +147,18 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         }
       }
 
-      await draw.getEntries({
-        transaction: this.transaction,
-      });
+      let entry = subEventEntries.find((r) => r.teamId === team?.id);
+
+      // await draw.getEntries({
+      //   transaction: this.transaction,
+      // });
 
       if (!entry) {
         this.logger.warn(`Teams entry not found ${team.name}`);
         entry = await new EventEntry({
           teamId: team.id,
           subEventId: subEvent.id,
-          date: new Date(event.season, 0, 1),
+          date: new Date(event.season, 0, 1)
         }).save({ transaction: this.transaction });
       }
 
