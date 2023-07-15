@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.19](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.18...v6.88.0-beta.19) (2023-07-15)
+
+
+### Features
+
+* generate abbreviation correclty ([cc91cc9](https://github.com/Badminton-Apps/badman/commit/cc91cc919552479e4cec5f659d5bb45fdfea9085))
+
+
+### Bug Fixes
+
+* constructor was missing something ([60caa7a](https://github.com/Badminton-Apps/badman/commit/60caa7a7d644c23454191f653290b1b038859a1d))
+
 ## [6.88.0-beta.18](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.17...v6.88.0-beta.18) (2023-07-15)
 
 
