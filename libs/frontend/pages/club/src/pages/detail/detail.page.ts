@@ -54,6 +54,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubCompetitionComponent } from './club-competition/club-competition.component';
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
+import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
 
 @Component({
   selector: 'badman-club-detail',
@@ -76,10 +77,12 @@ import { ClubTeamsComponent } from './club-teams/club-teams.component';
     PageHeaderComponent,
     HasClaimComponent,
     LoadingBlockComponent,
+    SelectSeasonComponent,
+
     ClubPlayersComponent,
     ClubTeamsComponent,
     ClubCompetitionComponent,
-    SelectSeasonComponent,
+    ClubAssemblyComponent,
 
     // Material Modules
     MatButtonToggleModule,

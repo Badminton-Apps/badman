@@ -1,10 +1,10 @@
 import moment from 'moment';
 
-export const getCurrentSeasonPeriod = (year?: number) => {
-  if (!year) {
-    year = getCurrentSeason();
+export const getCurrentSeasonPeriod = (season?: number) => {
+  if (!season) {
+    season = getCurrentSeason();
   }
-  return [`${year}-08-01`, `${year + 1}-07-01`];
+  return [`${season}-08-01`, `${season + 1}-07-01`];
 };
 
 export const getCurrentSeason = (inputDate?: Date | moment.Moment) => {

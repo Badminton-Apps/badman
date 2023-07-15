@@ -147,6 +147,14 @@ export type I18nTranslations = {
                     "selected-different-location": string;
                 };
             };
+            "club-assembly": {
+                "warnings": {
+                    "base": string;
+                    "base-subevent": string;
+                    "min-level": string;
+                    "other-gender": string;
+                };
+            };
             "draw": {
                 "encounters": string;
                 "title": string;
@@ -451,6 +459,10 @@ export type I18nTranslations = {
                 "F": string;
                 "M": string;
                 "MX": string;
+            };
+            "longs": {
+                "F": string;
+                "M": string;
             };
             "male": string;
             "males": string;

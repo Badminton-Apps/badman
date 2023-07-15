@@ -30,7 +30,7 @@ import { SubEventTypeEnum, getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
-import { delay, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-club-teams',

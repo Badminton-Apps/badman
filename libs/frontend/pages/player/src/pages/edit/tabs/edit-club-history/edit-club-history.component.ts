@@ -40,11 +40,15 @@ export class EditClubHistoryComponent implements OnInit {
   clubs$!: Observable<Club[]>;
 
   fetchPlayer = gql`
-    query ClubHistory($playerId: ID!, $includeHistorical: Boolean) {
+    query ClubHistory(
+      $playerId: ID!
+      $includeHistorical: Boolean
+      $order: [SortOrderType!]
+    ) {
       player(id: $playerId) {
         id
         fullName
-        clubs(includeHistorical: $includeHistorical) {
+        clubs(includeHistorical: $includeHistorical, order: $order) {
           id
           fullName
           clubMembership {
@@ -74,7 +78,7 @@ export class EditClubHistoryComponent implements OnInit {
           query: this.fetchPlayer,
           variables: {
             playerId: this.player.id,
-            includeHistorical: true,
+            includeHistorical: true
           },
         })
       ),
