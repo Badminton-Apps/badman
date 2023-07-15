@@ -30,7 +30,7 @@ import { SubEventTypeEnum, getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { delay, map, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-club-teams',
@@ -64,7 +64,7 @@ export class ClubTeamsComponent implements OnInit {
 
   // signals
   teams?: Signal<Team[] | undefined>;
-  loading = signal(false);
+  loading = signal(true);
 
   // Inputs
   @Input({ required: true }) clubId?: string;
