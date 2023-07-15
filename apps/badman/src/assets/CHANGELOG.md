@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.18](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.17...v6.88.0-beta.18) (2023-07-15)
+
+
+### Features
+
+* add check if player is better then base team ([9de0306](https://github.com/Badminton-Apps/badman/commit/9de03065c755fcd5a42e9706e3e6c5436e47c30a))
+
 ## [6.88.0-beta.17](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.16...v6.88.0-beta.17) (2023-07-15)
 
 
