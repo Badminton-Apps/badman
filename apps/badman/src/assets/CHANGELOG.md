@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.17](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.16...v6.88.0-beta.17) (2023-07-15)
+
+
+### Features
+
+* assembly matrix ([363da12](https://github.com/Badminton-Apps/badman/commit/363da128fb2dd7bb3d7f12132cee87474ed48cdc))
+* showing closing date ([4a32887](https://github.com/Badminton-Apps/badman/commit/4a32887cbe343864e356a6fac4a8f336d323e067))
+
+
+### Bug Fixes
+
+* include historical clubs ([5083ba4](https://github.com/Badminton-Apps/badman/commit/5083ba43c084c79c8f7bb8820257661e4ea93647))
+* possible that club was empty so link broke ([599531a](https://github.com/Badminton-Apps/badman/commit/599531a971257fb29409cc3eeea732cc60d841ed))
+
 ## [6.88.0-beta.16](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.15...v6.88.0-beta.16) (2023-07-15)
 
 
