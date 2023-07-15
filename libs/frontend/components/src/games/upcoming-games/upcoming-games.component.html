@@ -57,6 +57,7 @@
   <ng-container *ngIf="upcoming.showingForHomeTeam">
     <!-- link to hometeam -->
     <a
+      *ngIf="upcoming?.home?.club?.slug"
       [routerLink]="[
         '/club',
         upcoming.home.club.slug,
