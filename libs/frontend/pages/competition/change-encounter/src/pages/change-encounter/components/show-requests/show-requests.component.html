@@ -87,13 +87,13 @@
             </button>
           </div>
           <div *ngIf="!this.requestClosed" class="caption">
-            {{
-              'all.competition.change-encounter.warnings.closing'
-                | translate
-                  : {
-                      period: requestClosing | amCalendar
-                    }
-            }}
+            <p>
+              {{
+                'all.competition.change-encounter.warnings.closing' | translate
+              }} <strong class="warning">{{
+                requestClosing | amCalendar
+              }}</strong>
+            </p>
           </div>
         </div>
       </ng-container>

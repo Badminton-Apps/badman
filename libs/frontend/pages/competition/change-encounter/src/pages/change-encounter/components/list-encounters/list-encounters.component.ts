@@ -166,6 +166,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                                 eventCompetition {
                                   id
                                   changeCloseRequestDate
+                                  changeCloseDate
                                 }
                               }
                             }

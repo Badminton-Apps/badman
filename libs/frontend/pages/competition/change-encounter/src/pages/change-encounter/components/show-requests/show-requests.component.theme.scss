@@ -11,6 +11,7 @@
     $background: map.get($color-config, 'background');
     $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
     $isDark: map.get($color-config, 'is-dark');
+    $warn-palette: map.get($theme, 'warn');
 
     .comments {
       .message-content {
@@ -24,6 +25,10 @@
           color: mat.get-color-from-palette($foreground, 'secondary-text');
         }
       }
+    }
+
+    .warning {
+      color: mat.get-color-from-palette($warn-palette, 300);
     }
   }
 }

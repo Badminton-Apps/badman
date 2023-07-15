@@ -138,7 +138,7 @@
       "title": "Moments de jeu",
       "warnings": {
         "closed": "La demande de concours est terminée, vous ne pouvez traiter que les demandes existantes",
-        "closing": "La demande de nouvelles données se termine dans {period}",
+        "closing": "La date limite d'envoi et de traitement des candidatures est",
         "location-change": "Changement de lieu",
         "selected-different-location": "Un emplacement différent a été choisi, mais en raison des limitations des systèmes externes, ces emplacements doivent être mis à jour manuellement. Veuillez noter que cela peut prendre plusieurs jours."
       }
