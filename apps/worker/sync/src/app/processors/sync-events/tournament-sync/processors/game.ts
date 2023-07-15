@@ -13,7 +13,7 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from '@badman/backend-visual';
-import { GameStatus, runParrallel } from '@badman/utils';
+import { GameStatus, runParallel } from '@badman/utils';
 import { Logger, NotFoundException } from '@nestjs/common';
 import moment from 'moment-timezone';
 import { Op } from 'sequelize';
@@ -33,7 +33,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   public subEvents?: SubEventStepData[];
   public event?: EventStepData;
   private _games: Game[] = [];
-  private _system?: RankingSystem;
+  private _system?: RankingSystem | null;
 
   private gameOptions: GameStepOptions;
 
@@ -54,15 +54,14 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   }
 
   public async process(): Promise<Game[]> {
-    this._system =
-      (await RankingSystem.findOne({
-        where: {
-          primary: true,
-        },
-        transaction: this.transaction,
-      })) ?? undefined;
+    this._system = await RankingSystem.findOne({
+      where: {
+        primary: true,
+      },
+      transaction: this.transaction,
+    });
 
-    await runParrallel(
+    await runParallel(
       this.draws?.map((e) => this._processSubevent(e.draw, e.internalId)) ?? []
     );
 
@@ -108,6 +107,11 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         playedAt < this.lastRun
       ) {
         continue;
+      }
+
+      
+      if (!xmlMatch.Sets) {
+        xmlMatch.Sets = { Set: [] };
       }
 
       // check if the xmlMatch?.Sets?.Set is an array
@@ -261,6 +265,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
       const gp = new GamePlayerMembership({
@@ -292,6 +297,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
       const gp = new GamePlayerMembership({
@@ -322,6 +328,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
       const gp = new GamePlayerMembership({
@@ -352,6 +359,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
       const gp = new GamePlayerMembership({
