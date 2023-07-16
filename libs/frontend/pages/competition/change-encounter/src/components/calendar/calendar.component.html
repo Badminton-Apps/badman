@@ -251,10 +251,16 @@
                 "
                 [matTooltipDisabled]="!calEvent.requested"
               >
-                <ng-container *ngIf="calEvent.ownTeam">
+                <ng-container *ngIf="calEvent.ownTeam && !calEvent.weAreAway">
                   {{ calEvent?.encounter?.home?.abbreviation }}
                   {{ 'all.competition.vs-short' | translate }}
                   {{ calEvent?.encounter?.away?.name }}
+                </ng-container>
+
+                <ng-container *ngIf="calEvent.ownTeam && calEvent.weAreAway">
+                  {{ calEvent?.encounter?.away?.abbreviation }}
+                  {{ 'all.competition.vs-short' | translate }}
+                  {{ calEvent?.encounter?.home?.name }}
                 </ng-container>
 
                 <ng-container *ngIf="!calEvent.ownTeam">

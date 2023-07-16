@@ -79,8 +79,8 @@ export class CalendarComponent implements OnInit {
   public monthNames!: string[];
   public weekDayNames!: string[];
 
-  private homeEncounters: EncounterCompetition[] = [];
-  private awayEncounters: EncounterCompetition[] = [];
+  private homeTeamEncounters: EncounterCompetition[] = [];
+  private awayTeamEncounters: EncounterCompetition[] = [];
   public homeTeams: Team[] = [];
   public awayTeams: Team[] = [];
 
@@ -149,11 +149,13 @@ export class CalendarComponent implements OnInit {
 
     this.setColors(this.homeTeams);
 
-    this.homeEncounters = await this._getEncoutners(
-      this.homeTeams?.map((t) => t.id)
+    this.homeTeamEncounters = await this._getEncoutners(
+      this.homeTeams?.map((t) => t.id),
+      true
     );
-    this.awayEncounters = await this._getEncoutners(
-      this.awayTeams?.map((t) => t.id)
+    this.awayTeamEncounters = await this._getEncoutners(
+      this.awayTeams?.map((t) => t.id),
+      true
     );
 
     this.setColors([...this.homeTeams, ...this.awayTeams]);
@@ -267,8 +269,11 @@ export class CalendarComponent implements OnInit {
         }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetEncountersForTeams($where: JSONObject) {
-              encounterCompetitions(where: $where) {
+            query GetEncountersForTeams(
+              $where: JSONObject
+              $order: [SortOrderType!]
+            ) {
+              encounterCompetitions(where: $where, order: $order) {
                 count
                 rows {
                   id
@@ -290,6 +295,9 @@ export class CalendarComponent implements OnInit {
                   away {
                     id
                     name
+                    abbreviation
+                    teamNumber
+                    type
                   }
                 }
               }
@@ -327,7 +335,10 @@ export class CalendarComponent implements OnInit {
       }
     }
 
-    return encounters;
+    // sort by date newest first
+    return encounters?.sort((a, b) => {
+      return moment(a.date).diff(moment(b.date));
+    });
   }
 
   private setColors(teams: Team[]) {
@@ -420,7 +431,7 @@ export class CalendarComponent implements OnInit {
     // Loop through the encounters
     for (let i = 0; i < weeks * 7; i++) {
       // Find any encounters on day
-      const homeEnc = this.homeEncounters
+      const homeEnc = this.homeTeamEncounters
         .filter((e) => {
           return moment(e.date).isSame(day, 'day');
         })
@@ -438,7 +449,7 @@ export class CalendarComponent implements OnInit {
         });
 
       // Find any encounters requestd for day
-      this.homeEncounters
+      this.homeTeamEncounters
         ?.map((e) => {
           return e.encounterChange?.dates?.map((d) => {
             return {
@@ -472,10 +483,11 @@ export class CalendarComponent implements OnInit {
         });
 
       // Find any encounters on day
-      const awayEnc = this.awayEncounters
+      const awayEnc = this.awayTeamEncounters
         .filter((e) => {
           return moment(e.date).isSame(day, 'day');
         })
+
         .map((e) => {
           return {
             id: v4(),
@@ -489,7 +501,8 @@ export class CalendarComponent implements OnInit {
           };
         });
 
-      this.awayEncounters
+      // Find any encounters requestd for day
+      this.awayTeamEncounters
         ?.map((e) => {
           return e.encounterChange?.dates?.map((d) => {
             return {
@@ -693,6 +706,7 @@ export class CalendarDay {
     removed: boolean;
     requested: boolean;
     ownTeam?: boolean;
+    weAreAway?: boolean;
   }[] = [];
 
   public getDateString() {
@@ -701,8 +715,8 @@ export class CalendarDay {
 
   constructor(
     date?: moment.Moment,
-    homeEvents?: DayEvent[],
-    awayEvents?: DayEvent[],
+    homeTeamEvents?: DayEvent[],
+    awayTeamEvents?: DayEvent[],
     locations?: Map<number, Location>,
     visibleTeams?: string[]
   ) {
@@ -761,22 +775,41 @@ export class CalendarDay {
       }
     }
 
-    for (const event of homeEvents ?? []) {
-      // if (!event?.locationId) {
-      //   throw new Error('LocationId is required');
-      // }
+    for (const event of homeTeamEvents ?? []) {
       this.addEvent(event, visibleTeams);
     }
-    for (const event of awayEvents ?? []) {
-      // if (!event?.locationId) {
-      //   throw new Error('LocationId is required');
-      // }
+
+    // filter out if the game where the awayteam plays against the hometeam
+    awayTeamEvents = awayTeamEvents?.filter((e) => {
+      return !homeTeamEvents?.find((h) => {
+        return h.encounter?.id === e.encounter?.id;
+      });
+    });
+
+    for (const event of awayTeamEvents ?? []) {
       if (
         event.encounter?.home?.id &&
         visibleTeams?.includes(event.encounter?.home?.id)
       ) {
         this.hasSomeActivity = true;
-        this.otherEvents.push(event);
+        this.otherEvents.push({ ...event, weAreAway: false });
+      }
+    }
+
+    // get all homeEvents played at another location
+    const homeEventsAway = homeTeamEvents?.filter((e) => {
+      return (
+        e.locationId && !this.locations?.find((l) => l.id === e.locationId)
+      );
+    });
+
+    for (const event of homeEventsAway ?? []) {
+      if (
+        event.encounter?.away?.id &&
+        visibleTeams?.includes(event.encounter?.away?.id)
+      ) {
+        this.hasSomeActivity = true;
+        this.otherEvents.push({ ...event, weAreAway: true });
       }
     }
   }
