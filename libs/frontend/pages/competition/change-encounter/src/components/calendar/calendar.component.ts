@@ -795,7 +795,7 @@ export class CalendarDay {
     if (locationIndex >= 0) {
       const availibilityIndex = this.locations[
         locationIndex
-      ].availibility?.findIndex((a) => a.startTime === event.startTime);
+      ]?.availibility?.findIndex((a) => a.startTime === event.startTime);
 
       if (availibilityIndex >= 0) {
         if (!skipRemaining) {
