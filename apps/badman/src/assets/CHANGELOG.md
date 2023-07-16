@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.20](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.19...v6.88.0-beta.20) (2023-07-16)
+
+
+### Bug Fixes
+
+* if missing availibility could cause calendar not loading ([64762de](https://github.com/Badminton-Apps/badman/commit/64762de146acf677a5f6949be7d9c1a0c2b372df))
+
 ## [6.88.0-beta.19](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.18...v6.88.0-beta.19) (2023-07-15)
 
 
