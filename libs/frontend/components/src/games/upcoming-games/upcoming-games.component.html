@@ -54,7 +54,9 @@
     -
   </span>
 
-  <ng-container *ngIf="upcoming.showingForHomeTeam">
+  <ng-container
+    *ngIf="upcoming.showingForHomeTeam && upcoming?.home?.club?.slug"
+  >
     <!-- link to hometeam -->
     <a
       [routerLink]="[
@@ -66,7 +68,9 @@
       >{{ upcoming.home?.abbreviation }}</a
     >
   </ng-container>
-  <ng-container *ngIf="!upcoming.showingForHomeTeam">
+  <ng-container
+    *ngIf="!upcoming.showingForHomeTeam && upcoming?.away?.club?.slug"
+  >
     <a
       [routerLink]="[
         '/club',
@@ -80,7 +84,9 @@
 
   <span>&nbsp;{{ 'all.competition.vs' | translate }}&nbsp;</span>
 
-  <ng-container *ngIf="upcoming.showingForHomeTeam">
+  <ng-container
+    *ngIf="upcoming.showingForHomeTeam && upcoming?.away?.club?.slug"
+  >
     <a
       [routerLink]="[
         '/club',
@@ -92,7 +98,9 @@
     >
   </ng-container>
 
-  <ng-container *ngIf="!upcoming.showingForHomeTeam">
+  <ng-container
+    *ngIf="!upcoming.showingForHomeTeam && upcoming?.home?.club?.slug"
+  >
     <a
       [routerLink]="[
         '/club',
