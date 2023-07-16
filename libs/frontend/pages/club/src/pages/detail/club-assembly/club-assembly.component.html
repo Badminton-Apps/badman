@@ -20,6 +20,10 @@
         {{ 'all.club.titles.teams' | translate }}
       </h3>
     </div>
+
+    <p>{{'all.competition.club-assembly.description' | translate}}</p>
+    <p class="caption">{{'all.competition.club-assembly.note' | translate}}</p>
+
     <div class="player-teams-table">
       <table mat-table [dataSource]="this.players() ?? []">
         <ng-container matColumnDef="player">

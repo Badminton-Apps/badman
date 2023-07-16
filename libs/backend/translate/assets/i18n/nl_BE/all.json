@@ -144,6 +144,8 @@
       }
     },
     "club-assembly": {
+      "description": "Hier is een overzichtsmatrix waarin wordt aangegeven welke spelers in welk team mogen spelen. Elk icoontje dat niet groen is, bevat een tooltip met aanvullende informatie.",
+      "note": "Deze functie is momenteel in de testfase, dus we raden aan om dubbel te controleren en eventuele fouten door te geven.",
       "warnings": {
         "base": "{player.fullName} is basisspeler van een ander team",
         "base-subevent": "{player.fullName} is basisspeler van een ander team in dezelfde reeks",
