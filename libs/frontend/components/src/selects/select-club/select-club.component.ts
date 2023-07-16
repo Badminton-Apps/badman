@@ -213,7 +213,8 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       this.#clubs
         .pipe(
           filter((r) => r != null),
-          take(1)
+          take(1),
+          takeUntil(this.destroy$)
         )
         .subscribe(() => {
           this.selectClub(this.control?.value, false);
