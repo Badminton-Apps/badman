@@ -144,6 +144,8 @@
       }
     },
     "club-assembly": {
+      "description": "Voici une matrice récapitulative indiquant quels joueurs sont autorisés à jouer dans quelle équipe. Chaque icône qui n'est pas verte contient une infobulle avec des informations supplémentaires.",
+      "note": "Cette fonctionnalité étant actuellement en phase de test, nous vous recommandons de vérifier et de signaler toute erreur.",
       "warnings": {
         "base": "{player.fullName} est le premier joueur d'une autre équipe",
         "base-subevent": "{player.fullName} est le premier joueur d'une autre équipe dans la même série",

@@ -148,6 +148,8 @@ export type I18nTranslations = {
                 };
             };
             "club-assembly": {
+                "description": string;
+                "note": string;
                 "warnings": {
                     "base": string;
                     "base-subevent": string;
