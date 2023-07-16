@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.21](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.20...v6.88.0-beta.21) (2023-07-16)
+
+
+### Features
+
+* faster calc when the player is part of the base ([656e454](https://github.com/Badminton-Apps/badman/commit/656e454f4fc46a5bf2c729d8c5ab48a1e44b9770))
+* showing when the player is part of the base ([d01170f](https://github.com/Badminton-Apps/badman/commit/d01170fb85eca16811a4d101bca42af203f508df))
+
+
+### Bug Fixes
+
+* cache TTL wasn't persisting ([1106a6c](https://github.com/Badminton-Apps/badman/commit/1106a6cc521dbced58279d24319a6e1480dc73bc))
+* gender wasn't loaded, so it gave wrong results ([fc5fb2c](https://github.com/Badminton-Apps/badman/commit/fc5fb2c14cccbf7fdb5ade5c84589f3527912643))
+* only check level against own gender ([7766784](https://github.com/Badminton-Apps/badman/commit/7766784d08ee8b008f1169828fb5a04e8be44c92))
+
 ## [6.88.0-beta.20](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.19...v6.88.0-beta.20) (2023-07-16)
 
 
