@@ -49,6 +49,7 @@ type PlayerRow = {
   [key: string]: {
     canPlay: CanPlay;
     reason?: string;
+    base?: boolean;
   };
 };
 
@@ -140,6 +141,7 @@ export class ClubAssemblyComponent implements OnInit {
                           single
                           double
                           mix
+                          gender
                         }
                       }
                     }
@@ -362,6 +364,7 @@ export class ClubAssemblyComponent implements OnInit {
   ): {
     canPlay: CanPlay;
     reason?: string;
+    base?: boolean;
   } {
     // We can't play in other gender's team
     if (player.gender == 'M' && team.type == SubEventTypeEnum.F) {
@@ -400,14 +403,15 @@ export class ClubAssemblyComponent implements OnInit {
 
     // if player is part of meta competition, he can't play in any teams with a higher number
 
-    const teamWhereBase = otherTeams?.find((t) =>
+    const teamsWherePlayerIsBase = otherTeams?.find((t) =>
       t.entry?.meta?.competition?.players?.find(
         (p) => p.id == player.id && p.gender == player.gender
       )
     );
 
-    if (teamWhereBase) {
-      if ((team.teamNumber ?? 0) > (teamWhereBase?.teamNumber ?? 0)) {
+
+    if (teamsWherePlayerIsBase) {
+      if ((team.teamNumber ?? 0) > (teamsWherePlayerIsBase?.teamNumber ?? 0)) {
         return {
           canPlay: CanPlay.No,
           reason: this.translateService.instant(
@@ -421,8 +425,8 @@ export class ClubAssemblyComponent implements OnInit {
 
       // if the player is part of the base, all teams of that same subevent he can't play in
       if (
-        team.id != teamWhereBase.id &&
-        teamWhereBase.entry?.subEventCompetition?.id ==
+        team.id != teamsWherePlayerIsBase.id &&
+        teamsWherePlayerIsBase.entry?.subEventCompetition?.id ==
           team.entry?.subEventCompetition?.id
       ) {
         return {
@@ -497,13 +501,14 @@ export class ClubAssemblyComponent implements OnInit {
         // check if the player is better then any of the meta players (if he is not part of the meta)
         for (const entryPlayer of team.entry?.meta?.competition?.players ??
           []) {
-          const entryMin = Math.min(
-            entryPlayer.single ?? 12,
-            entryPlayer.double ?? 12,
-            team.type == SubEventTypeEnum.MX ? entryPlayer.mix : 12
-          );
+          const entrySum =
+            entryPlayer.single +
+            entryPlayer.double +
+            (team.type == SubEventTypeEnum.MX ? entryPlayer.mix : 0);
+          const playerSum =
+            single + double + (team.type == SubEventTypeEnum.MX ? mix : 0);
 
-          if (minLevel < entryMin) {
+          if (playerSum < entrySum && entryPlayer.gender == player.gender) {
             return {
               canPlay: CanPlay.Maybe,
               reason: this.translateService.instant(
@@ -518,8 +523,17 @@ export class ClubAssemblyComponent implements OnInit {
       }
     }
 
+    const base =
+      (team.entry?.meta?.competition?.players?.findIndex(
+        (p) => p.id == player.id
+      ) ?? -1) > -1;
+
     return {
       canPlay: CanPlay.Yes,
+      base,
+      reason: base
+        ? this.translateService.instant(`all.player.base`)
+        : undefined,
     };
   }
 }
