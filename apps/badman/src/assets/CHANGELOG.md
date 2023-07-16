@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.26](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.25...v6.88.0-beta.26) (2023-07-16)
+
+
+### Features
+
+* including awy games ([dd3f2c2](https://github.com/Badminton-Apps/badman/commit/dd3f2c2620d5ced157fdb24de2626d3001761c6d))
+
 ## [6.88.0-beta.25](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.24...v6.88.0-beta.25) (2023-07-16)
 
 
