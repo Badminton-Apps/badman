@@ -91,6 +91,9 @@ export class CalendarComponent implements OnInit {
   public firstDayOfMonth: moment.Moment;
   private season: number;
 
+  minDate!: Date;
+  maxDate!: Date;
+
   private teamColors = new Map<string, string>();
 
   public gridTemplateColumns = '';
@@ -130,6 +133,9 @@ export class CalendarComponent implements OnInit {
       weekdays[6],
       weekdays[0],
     ];
+
+    this.minDate = moment([this.season, 8, 1]).toDate();
+    this.maxDate = moment([this.season + 1, 4, 31]).toDate();
   }
 
   ngOnInit(): void {
@@ -786,7 +792,7 @@ export class CalendarDay {
 
     // if location is not found, use first location
     if (locationIndex == -1) {
-      locationIndex = 0
+      locationIndex = 0;
     }
 
     const skipRemaining = !!event.encounter?.encounterChange || event.requested;
