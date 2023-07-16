@@ -44,6 +44,8 @@
           matInput
           [ngxMatDatetimePicker]="openPicker"
           placeholder="Choose a date"
+          [min]="this.minDate"
+          [max]="this.maxDate"
           [formControl]="manualDateControl"
         />
         <mat-datepicker-toggle
