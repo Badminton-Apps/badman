@@ -401,7 +401,9 @@ export class ClubAssemblyComponent implements OnInit {
     // if player is part of meta competition, he can't play in any teams with a higher number
 
     const teamWhereBase = otherTeams?.find((t) =>
-      t.entry?.meta?.competition?.players?.find((p) => p.id == player.id)
+      t.entry?.meta?.competition?.players?.find(
+        (p) => p.id == player.id && p.gender == player.gender
+      )
     );
 
     if (teamWhereBase) {
