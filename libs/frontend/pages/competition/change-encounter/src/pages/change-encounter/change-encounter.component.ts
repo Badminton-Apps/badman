@@ -1,6 +1,14 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  computed,
+  inject,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,8 +23,8 @@ import {
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import moment from 'moment';
-import { map } from 'rxjs';
+import { Subject } from 'rxjs';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { ListEncountersComponent, ShowRequestsComponent } from './components';
 
 @Component({
@@ -40,8 +48,11 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
     HasClaimComponent,
   ],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangeEncounterComponent implements OnInit {
+export class ChangeEncounterComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   breakpointObserver = inject(BreakpointObserver);
   isHandset = toSignal(
     this.breakpointObserver
@@ -70,18 +81,24 @@ export class ChangeEncounterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const querySeason = parseInt(
-      this.activatedRoute.snapshot.queryParams['season'],
-      10
-    );
-    const season = isNaN(querySeason) ? getCurrentSeason() : querySeason;
+    this.activatedRoute.queryParamMap
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((params) => {
+        const season = isNaN(parseInt(params?.get('season') || ''))
+          ? getCurrentSeason()
+          : params?.get('season');
 
-    this.formGroup = new FormGroup({
-      season: new FormControl(season),
-      mayRankingDate: new FormControl(moment(`${season}-05-15`).toDate()),
-      club: new FormControl(),
-      team: new FormControl(),
-      encounter: new FormControl(),
-    });
+        this.formGroup = new FormGroup({
+          season: new FormControl(season),
+          club: new FormControl(),
+          team: new FormControl(),
+          encounter: new FormControl(),
+        });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

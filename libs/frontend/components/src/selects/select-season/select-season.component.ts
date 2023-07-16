@@ -118,13 +118,7 @@ export class SelectSeasonComponent implements OnInit, OnDestroy {
             this.control.valueChanges
               .pipe(takeUntil(this.destroy$))
               .subscribe((value) => {
-                this.router.navigate([], {
-                  relativeTo: this.activatedRoute,
-                  queryParams: {
-                    [this.controlName]: value,
-                  },
-                  queryParamsHandling: 'merge',
-                });
+                this._updateUrl(value, false);
               });
           }
         });
@@ -209,6 +203,39 @@ export class SelectSeasonComponent implements OnInit, OnDestroy {
         injector: this.injector,
       }
     );
+  }
+
+  private _updateUrl(value: string, removeOtherParams = false) {
+    if (this.updateUrl && value) {
+      const queryParams: { [key: string]: string | undefined } = {
+        [this.controlName]: value,
+      };
+
+      if (removeOtherParams) {
+        queryParams[this.dependsOn] = undefined;
+      }
+
+      // check if the current url is the same as the new url
+      // if so, don't navigate
+      const currentUrl = this.router.url;
+      const newUrl = this.router
+        .createUrlTree([], {
+          relativeTo: this.activatedRoute,
+          queryParams,
+          queryParamsHandling: 'merge',
+        })
+        .toString();
+
+      if (currentUrl == newUrl) {
+        return;
+      }
+
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams,
+        queryParamsHandling: 'merge',
+      });
+    }
   }
 
   ngOnDestroy() {
