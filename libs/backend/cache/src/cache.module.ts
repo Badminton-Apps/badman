@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { redisStore } from 'cache-manager-redis-store';
 
+export const CACHE_TTL = 60 * 60 * 24 * 7; // 1 week
+
 @Module({
   imports: [
     nestCache.registerAsync({
@@ -15,13 +17,14 @@ import { redisStore } from 'cache-manager-redis-store';
               host: configService.get('REDIS_HOST'),
               port: configService.get<number>('REDIS_PORT'),
             },
+            ttl: CACHE_TTL,
             password: configService.get('REDIS_PASSWORD'),
             database: configService.get<number>('CACHE_DB') ?? 0,
           })) as unknown as CacheStore;
 
           return {
             store: redis,
-            ttl: 60 * 60 * 24 * 7,
+            ttl: CACHE_TTL,
           };
         } else {
           return {
