@@ -1,10 +1,10 @@
+import { CACHE_TTL } from '@badman/backend-cache';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import { Model, Sequelize } from 'sequelize-typescript';
 
-const TTL = 60 * 60 * 24 * 7; // 1 week
 
 @Injectable()
 export class SequelizeAttachReqToModelMiddleware {
@@ -44,20 +44,20 @@ export class SequelizeAttachReqToModelMiddleware {
         for (const result of results) {
           if (!(result instanceof Model)) continue;
           const cacheKey = `${prefix}${result.constructor.name}:${result.id}`;
-          await seq['Cache'].set(cacheKey, result.toJSON(), TTL);
+          await seq['Cache'].set(cacheKey, result.toJSON(), CACHE_TTL);
         }
       });
 
       seq.addHook('afterCreate', 'afterCreateCache', async (instance) => {
         if (!(instance instanceof Model)) return;
         const cacheKey = `${prefix}${instance.constructor.name}:${instance.id}`;
-        await seq['Cache'].set(cacheKey, instance.toJSON(), TTL);
+        await seq['Cache'].set(cacheKey, instance.toJSON(), CACHE_TTL);
       });
 
       seq.addHook('afterUpdate', 'afterUpdateCache', async (instance) => {
         if (!(instance instanceof Model)) return;
         const cacheKey = `${prefix}${instance.constructor.name}:${instance.id}`;
-        await seq['Cache'].set(cacheKey, instance.toJSON(), TTL);
+        await seq['Cache'].set(cacheKey, instance.toJSON(), CACHE_TTL);
       });
 
       seq.addHook('afterDestroy', 'afterDestroyCache', async (instance) => {
@@ -71,7 +71,7 @@ export class SequelizeAttachReqToModelMiddleware {
         for (const result of results) {
           if (!(result instanceof Model)) continue;
           const cacheKey = `${prefix}${result.constructor.name}:${result.id}`;
-          await seq['Cache'].set(cacheKey, result.toJSON(), TTL);
+          await seq['Cache'].set(cacheKey, result.toJSON(), CACHE_TTL);
         }
       });
 
@@ -83,7 +83,7 @@ export class SequelizeAttachReqToModelMiddleware {
           for (const instance of instances) {
             if (!(instance instanceof Model)) continue;
             const cacheKey = `${prefix}${instance.constructor.name}:${instance.id}`;
-            await seq['Cache'].set(cacheKey, instance.toJSON(), TTL);
+            await seq['Cache'].set(cacheKey, instance.toJSON(), CACHE_TTL);
           }
         }
       );
@@ -96,7 +96,7 @@ export class SequelizeAttachReqToModelMiddleware {
           for (const instance of instances) {
             if (!(instance instanceof Model)) continue;
             const cacheKey = `${prefix}${instance.constructor.name}:${instance.id}`;
-            await seq['Cache'].set(cacheKey, instance.toJSON(), TTL);
+            await seq['Cache'].set(cacheKey, instance.toJSON(), CACHE_TTL);
           }
         }
       );
