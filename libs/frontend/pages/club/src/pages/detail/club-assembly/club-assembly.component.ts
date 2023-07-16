@@ -366,6 +366,20 @@ export class ClubAssemblyComponent implements OnInit {
     reason?: string;
     base?: boolean;
   } {
+    const base =
+      (team.entry?.meta?.competition?.players?.findIndex(
+        (p) => p.id == player.id
+      ) ?? -1) > -1;
+
+    // base players can play in their own team
+    if (base) {
+      return {
+        canPlay: CanPlay.Yes,
+        base,
+        reason: this.translateService.instant(`all.player.base`),
+      };
+    }
+
     // We can't play in other gender's team
     if (player.gender == 'M' && team.type == SubEventTypeEnum.F) {
       return {
@@ -408,7 +422,6 @@ export class ClubAssemblyComponent implements OnInit {
         (p) => p.id == player.id && p.gender == player.gender
       )
     );
-
 
     if (teamsWherePlayerIsBase) {
       if ((team.teamNumber ?? 0) > (teamsWherePlayerIsBase?.teamNumber ?? 0)) {
@@ -523,17 +536,8 @@ export class ClubAssemblyComponent implements OnInit {
       }
     }
 
-    const base =
-      (team.entry?.meta?.competition?.players?.findIndex(
-        (p) => p.id == player.id
-      ) ?? -1) > -1;
-
     return {
       canPlay: CanPlay.Yes,
-      base,
-      reason: base
-        ? this.translateService.instant(`all.player.base`)
-        : undefined,
     };
   }
 }
