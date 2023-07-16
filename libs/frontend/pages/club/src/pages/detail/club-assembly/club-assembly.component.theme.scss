@@ -6,6 +6,7 @@
 @mixin color($theme) {
   badman-club-assembly {
     $color-config: mat.get-color-config($theme);
+    $primary-palette: map.get($theme, primary);
     $danger-palette: map.get($theme, danger);
     $warn-palette: map.get($theme, 'warn');
     $success-palette: map.get($theme, success);
@@ -21,6 +22,10 @@
       }
       .yes {
         color: mat.get-color-from-palette($success-palette, 300);
+      }
+      .base {
+        color: mat.get-color-from-palette($primary-palette, 300);
+
       }
       .na {
         @if ($isDark) {
