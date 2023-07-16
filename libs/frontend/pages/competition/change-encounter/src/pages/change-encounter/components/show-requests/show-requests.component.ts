@@ -110,9 +110,6 @@ export class ShowRequestsComponent implements OnInit {
   home!: boolean;
   running = false;
 
-  minDate: Date = new Date('2021-09-01');
-  maxDate: Date = new Date('2022-05-01');
-
   requestClosed = false;
   requestClosing!: moment.Moment;
 
