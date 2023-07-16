@@ -135,7 +135,7 @@ export class CalendarComponent implements OnInit {
     ];
 
     this.minDate = moment([this.season, 8, 1]).toDate();
-    this.maxDate = moment([this.season + 1, 4, 31]).toDate();
+    this.maxDate = moment([this.season + 1, 5, 31]).toDate();
   }
 
   ngOnInit(): void {
