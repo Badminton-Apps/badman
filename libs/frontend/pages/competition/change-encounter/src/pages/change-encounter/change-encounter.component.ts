@@ -81,20 +81,18 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.queryParamMap
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe((params) => {
-        const season = isNaN(parseInt(params?.get('season') || ''))
-          ? getCurrentSeason()
-          : params?.get('season');
+    const params = this.activatedRoute.snapshot.queryParamMap;
 
-        this.formGroup = new FormGroup({
-          season: new FormControl(season),
-          club: new FormControl(),
-          team: new FormControl(),
-          encounter: new FormControl(),
-        });
-      });
+    const season = isNaN(parseInt(params?.get('season') || ''))
+      ? getCurrentSeason()
+      : params?.get('season');
+
+    this.formGroup = new FormGroup({
+      season: new FormControl(season),
+      club: new FormControl(),
+      team: new FormControl(),
+      encounter: new FormControl(),
+    });
   }
 
   ngOnDestroy(): void {
