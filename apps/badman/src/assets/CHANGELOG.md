@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.23](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.22...v6.88.0-beta.23) (2023-07-16)
+
+
+### Features
+
+* limiting date selection ([a60255d](https://github.com/Badminton-Apps/badman/commit/a60255d56491c8283709ab45b365c8201044045c))
+
+
+### Bug Fixes
+
+* destroy subscriptions on component destroy ([7a0d340](https://github.com/Badminton-Apps/badman/commit/7a0d3402340f4928c457dc52cf0aed43ccd3ed4e))
+* don't reload when not needed ([eaad7e5](https://github.com/Badminton-Apps/badman/commit/eaad7e543fb67d6bc2b0e9c645c23b63b8957561))
+* upcomming games when one tema is unkown ([40716a8](https://github.com/Badminton-Apps/badman/commit/40716a8fc0d645425bfd0291aeefd54aaf058f55))
+
 ## [6.88.0-beta.22](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.21...v6.88.0-beta.22) (2023-07-16)
 
 
