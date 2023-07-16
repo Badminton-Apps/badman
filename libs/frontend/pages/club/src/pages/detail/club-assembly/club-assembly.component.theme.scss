@@ -25,7 +25,6 @@
       }
       .base {
         color: mat.get-color-from-palette($primary-palette, 300);
-
       }
       .na {
         @if ($isDark) {
@@ -41,5 +40,9 @@
 @mixin typography($theme) {
   badman-club-assembly {
     $typography-config: mat.get-typography-config($theme);
+
+    .caption {
+      @include mat.typography-level($typography-config, 'caption');
+    }
   }
 }
