@@ -1,4 +1,4 @@
-import { Slugify } from '../../../types';
+import { AvailabilityExceptionInputType, AvailabilityExceptionType, Slugify } from '../../../types';
 import {
   BuildOptions,
   HasManyAddAssociationMixin,
@@ -37,6 +37,7 @@ import {
 } from '@nestjs/graphql';
 import { Role } from '../../security';
 import { Relation } from '../../../wrapper';
+import { AvailabilityException } from '../availability.model';
 
 @Table({
   timestamps: true,
@@ -171,6 +172,12 @@ export class EventCompetition extends Model {
   @Column(DataType.STRING)
   country?: string;
 
+  @Field(() => [AvailabilityExceptionType], { nullable: true })
+  @Column({
+    type: DataType.JSON,
+  })
+  exceptions?: Relation<AvailabilityException[]>;
+
   regenerateSlug!: Slugify<EventCompetition>;
 
   // Has many SubEvent
@@ -235,10 +242,14 @@ export class EventCompetitionUpdateInput extends PartialType(
     'updatedAt',
     'comments',
     'subEventCompetitions',
-    'roles'
+    'roles',
+    'exceptions',
   ] as const),
   InputType
-) {}
+) {
+  @Field(() => [AvailabilityExceptionInputType])
+  exceptions?: AvailabilityException[];
+}
 
 @InputType()
 export class EventCompetitionNewInput extends PartialType(

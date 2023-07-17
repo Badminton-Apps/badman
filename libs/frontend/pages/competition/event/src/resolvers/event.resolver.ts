@@ -21,6 +21,11 @@ export const EVENT_QUERY = gql`
       official
       lastSync
       contactEmail
+      exceptions {
+        start
+        end
+        courts
+      }
       subEventCompetitions {
         id
         name

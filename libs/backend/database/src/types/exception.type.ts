@@ -8,7 +8,7 @@ import {
 } from '@nestjs/graphql';
 
 @ObjectType({ description: 'An Exception'})
-export class ExceptionType {
+export class AvailabilityExceptionType {
   @Field(() => Date, { nullable: true })
   start?: Date;
   @Field(() => Date, { nullable: true })
@@ -17,7 +17,7 @@ export class ExceptionType {
   courts?: number;
 }
 @InputType()
-export class ExceptionInputType extends PartialType(
-  OmitType(ExceptionType, [] as const),
+export class AvailabilityExceptionInputType extends PartialType(
+  OmitType(AvailabilityExceptionType, [] as const),
   InputType
 ) {}
