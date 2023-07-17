@@ -15,6 +15,13 @@
   flex: 1 1 auto;
 }
 
+.exception {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex: 1 1 auto;
+}
+
 .subEvents {
   display: flex;
   flex-direction: row;
