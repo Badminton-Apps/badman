@@ -1,13 +1,12 @@
+import { User } from '@badman/backend-authorization';
 import {
   Availability,
-  AvailabilityException,
+  AvailabilityExceptionType,
   AvailabilityNewInput,
   AvailabilityUpdateInput,
-  ExceptionType,
   Location,
   Player,
 } from '@badman/backend-database';
-import { User } from '@badman/backend-authorization';
 import {
   Logger,
   NotFoundException,
@@ -50,7 +49,7 @@ export class AvailabilitysResolver {
   //   return availability.days;
   // }
 
-  @ResolveField(() => [ExceptionType], { nullable: true })
+  @ResolveField(() => [AvailabilityExceptionType], { nullable: true })
   async exceptions(@Parent() availability: Availability) {
     // return availability.exceptions and map the start en end as date
     return availability.exceptions

@@ -1,5 +1,6 @@
 import { User } from '@badman/backend-authorization';
 import {
+  AvailabilityExceptionType,
   Comment,
   DrawCompetition,
   EncounterCompetition,
@@ -102,6 +103,18 @@ export class EventCompetitionResolver {
     @Args() listArgs: ListArgs
   ): Promise<Comment[]> {
     return event.getComments(ListArgs.toFindOptions(listArgs));
+  }
+
+  @ResolveField(() => [AvailabilityExceptionType], { nullable: true })
+  async exceptions(@Parent() event: EventCompetition) {
+    // return availability.exceptions and map the start en end as date
+    return event.exceptions
+      ?.filter((exception) => exception && exception.start && exception.end)
+      ?.map((exception) => ({
+        ...exception,
+        start: new Date(exception.start as Date),
+        end: new Date(exception.end as Date),
+      }));
   }
 
   @Mutation(() => EventCompetition)

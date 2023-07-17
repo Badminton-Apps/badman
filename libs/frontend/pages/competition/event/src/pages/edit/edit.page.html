@@ -27,6 +27,68 @@
     </div>
   </div>
 
+  <h3>
+    Exceptions
+    <button mat-icon-button (click)="addException()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </h3>
+  <ng-container formArrayName="exceptions">
+    <div
+      *ngFor="let day of this.exceptions.controls; index as i"
+      [formGroupName]="i"
+      class="exception"
+    >
+      <div class="day">
+        <mat-form-field>
+          <mat-label>{{ 'all.input.date-range' | translate }}</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input
+              matStartDate
+              formControlName="start"
+              placeholder="Start date"
+            />
+            <input matEndDate formControlName="end" placeholder="End date" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+      <div class="courts">
+        <div>
+          <mat-form-field>
+            <mat-label
+              >{{ 'all.competition.team-enrollment.locations.availible-courts' |
+              translate }}</mat-label
+            >
+            <input
+              matInput
+              type="number"
+              formControlName="courts"
+              alt="courts"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="delete">
+        <button mat-icon-button (click)="removeException(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="add">
+      <div class="actions">
+        <button mat-raised-button color="primary" (click)="this.save()">
+          {{ 'all.button.save' | translate }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+
   <h3>Sub events</h3>
 
   <div
