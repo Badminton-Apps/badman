@@ -82,7 +82,7 @@ export class SelectSeasonComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<string>;
+      this.control = this.group?.get(this.controlName) as FormControl<number>;
     }
 
     if (!this.control) {
