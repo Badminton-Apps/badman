@@ -11,6 +11,8 @@ export class CopyAvailibiltyRunner {
   async process() {
     const transaction = await this._sequelize.transaction();
 
+    this.logger.verbose(`Starting copy`);
+
     const season2022 = await Availability.findAll({
       where: {
         season: 2022,
