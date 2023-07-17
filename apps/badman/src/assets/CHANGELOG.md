@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.28](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.27...v6.88.0-beta.28) (2023-07-17)
+
+
+### Features
+
+* show full game with time for other games ([739677d](https://github.com/Badminton-Apps/badman/commit/739677d3b573207af56d7c6017736d1f24e3b175))
+
 ## [6.88.0-beta.27](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.26...v6.88.0-beta.27) (2023-07-17)
 
 
