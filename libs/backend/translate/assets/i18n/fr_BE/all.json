@@ -142,7 +142,7 @@
         "closing": "La date limite d'envoi et de traitement des candidatures est",
         "home-accept": "L'équipe à domicile ne peut effectuer qu'un mouvement",
         "location-change": "Changement de lieu",
-        "missing-availability": "Les deux équipes doivent choisir leur disponibilité.",
+        "missing-availability": "Les deux équipes doivent être disponibles.",
         "selected-different-location": "Un emplacement différent a été choisi, mais en raison des limitations des systèmes externes, ces emplacements doivent être mis à jour manuellement. Veuillez noter que cela peut prendre plusieurs jours."
       }
     },
@@ -563,13 +563,6 @@
     "october": "Octobre",
     "september": "Septembre"
   },
-  "notifications": {
-    "noNotifications": "Aucune notification",
-    "types": {
-      "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie.",
-      "encounterNotEnteredNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie."
-    }
-  },
   "permission": {
     "no-perm": "Vous ne disposez pas de droits d'édition suffisants pour cette"
   },
@@ -701,6 +694,9 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Le club<strong> {club.name}</strong> a été enregistré avec succès",
+        "encounterChangeConformationNotification": "Nouvelle demande de déplacement pour<strong>{encounter.home.name}</strong> contre<strong>{encounter.away.name}</strong>",
+        "encounterChangeFinishedNotification": "Application {encounter.home.name} contre {encounter.away.name} mouvement",
+        "encounterChangeNewNotification": "Nouvelle demande de déplacement pour<strong>{encounter.home.name}</strong> contre<strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> de <strong>{encounter.date}</strong> n'a pas encore été confirmé.",
         "encounterNotEnteredNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> de <strong>{encounter.date}</strong> n'a pas encore été saisi.",
         "syncFailedNotification": "La synchronisation de l'événement <strong>{event.name}</strong> a échoué",

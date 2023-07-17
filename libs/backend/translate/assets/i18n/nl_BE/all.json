@@ -142,7 +142,7 @@
         "closing": "De deadline voor het versturen en afwerken van aanvragen is",
         "home-accept": "De thuisploeg kan enkel een verplaatsing afronden",
         "location-change": "Verandering van locatie",
-        "missing-availability": "Beide ploegen moeten hun beschikbaarheid kiezen.",
+        "missing-availability": "Beide ploegen moeten op beschikbaar staan.",
         "selected-different-location": "Er is een andere locatie gekozen, maar vanwege beperkingen in externe systemen moeten deze locaties handmatig worden bijgewerkt. Houd er rekening mee dat dit enkele dagen kan duren."
       }
     },
@@ -563,13 +563,6 @@
     "october": "Oktober",
     "september": "September"
   },
-  "notifications": {
-    "noNotifications": "Geen notificaties",
-    "types": {
-      "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven.",
-      "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven."
-    }
-  },
   "permission": {
     "no-perm": "Je hebt onvoldoende bewerkingsrechten hiervoor"
   },
@@ -701,6 +694,9 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Club<strong> {club.name}</strong> is succesvol ingeschreven",
+        "encounterChangeConformationNotification": "Nieuwe verplaatsingsaanvraag voor<strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong>",
+        "encounterChangeFinishedNotification": "Wedstrijd <strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong> is verplaats",
+        "encounterChangeNewNotification": "Nieuwe verplaatsingsaanvraag voor<strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> van <strong>{encounter.date}</strong> is nog niet bevestigd.",
         "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> van <strong>{encounter.date}</strong> is nog niet ingegeven.",
         "syncFailedNotification": "Sync van event <strong>{event.name}</strong> is mislukt",

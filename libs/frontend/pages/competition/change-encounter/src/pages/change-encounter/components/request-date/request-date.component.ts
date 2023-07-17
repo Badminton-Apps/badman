@@ -10,7 +10,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { EncounterCompetition } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateSelectorComponent } from '../../../../components';
-import { combineLatest, of, startWith } from 'rxjs';
+import { combineLatest, of } from 'rxjs';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-request-date',
@@ -49,16 +50,16 @@ export class RequestDateComponent implements OnInit {
 
   ngOnInit() {
     combineLatest([
-      this.group
-        .get('availabilityAway')
-        ?.valueChanges.pipe(
-          startWith(this.group.get('availabilityAway')?.value)
-        ) ?? of(false),
-      this.group
-        .get('availabilityHome')
-        ?.valueChanges.pipe(
-          startWith(this.group.get('availabilityHome')?.value)
-        ) ?? of(false),
+      this.group.get('availabilityAway')?.valueChanges.pipe(
+        startWith(this.group.get('availabilityAway')?.value),
+        distinctUntilChanged(),
+        map((value) => value == 'POSSIBLE')
+      ) ?? of(false),
+      this.group.get('availabilityHome')?.valueChanges.pipe(
+        startWith(this.group.get('availabilityHome')?.value),
+        distinctUntilChanged(),
+        map((value) => value == 'POSSIBLE')
+      ) ?? of(false),
     ]).subscribe(([availabilityAway, availabilityHome]) => {
       if (availabilityAway && availabilityHome) {
         if (this.home) {

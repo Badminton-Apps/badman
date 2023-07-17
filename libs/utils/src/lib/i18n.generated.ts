@@ -567,13 +567,6 @@ export type I18nTranslations = {
             "october": string;
             "september": string;
         };
-        "notifications": {
-            "noNotifications": string;
-            "types": {
-                "encounterNotAcceptedNotification": string;
-                "encounterNotEnteredNotification": string;
-            };
-        };
         "permission": {
             "no-perm": string;
         };
@@ -705,6 +698,9 @@ export type I18nTranslations = {
                 };
                 "messages": {
                     "clubEnrollmentNotification": string;
+                    "encounterChangeConformationNotification": string;
+                    "encounterChangeFinishedNotification": string;
+                    "encounterChangeNewNotification": string;
                     "encounterNotAcceptedNotification": string;
                     "encounterNotEnteredNotification": string;
                     "syncFailedNotification": string;
