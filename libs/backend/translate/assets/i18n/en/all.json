@@ -142,7 +142,7 @@
         "closing": "The deadline for sending and processing applications is",
         "home-accept": "The home team can only complete a move",
         "location-change": "Change of location",
-        "missing-availability": "Both teams must choose their availability.",
+        "missing-availability": "Both teams must be available.",
         "selected-different-location": "A different location has been chosen, but due to limitations in external systems, these locations must be updated manually. Please note that this may take several days."
       }
     },
@@ -563,13 +563,6 @@
     "october": "October",
     "september": "September"
   },
-  "notifications": {
-    "noNotifications": "No notifications",
-    "types": {
-      "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> has not yet been entered.",
-      "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> on <strong>{encounter.date}</strong> has not yet been entered."
-    }
-  },
   "permission": {
     "no-perm": "You do not have insufficient rights for this"
   },
@@ -701,6 +694,9 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Club<strong> {club.name}</strong> has been successfully registered",
+        "encounterChangeConformationNotification": "New move request for<strong>{encounter.home.name}</strong> against<strong>{encounter.away.name}</strong>",
+        "encounterChangeFinishedNotification": "Request {encounter.home.name} against {encounter.away.name} move",
+        "encounterChangeNewNotification": "New move request for<strong>{encounter.home.name}</strong> against<strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> of <strong>{encounter.date}</strong> has not yet been confirmed.",
         "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> of <strong>{encounter.date}</strong> has not yet been entered.",
         "syncFailedNotification": "Sync for event <strong>{event.name}</strong> failed",
