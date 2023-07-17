@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.30](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.29...v6.88.0-beta.30) (2023-07-17)
+
+
+### Features
+
+* adding exceptions to events ([0d0cf88](https://github.com/Badminton-Apps/badman/commit/0d0cf887c683cbe91d42a1ced5e331a755ed7097))
+* override exptions in calendar ([5fb09e9](https://github.com/Badminton-Apps/badman/commit/5fb09e9a3883c3e0b5911d52b8c94204b735bf5a))
+
 ## [6.88.0-beta.29](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.28...v6.88.0-beta.29) (2023-07-17)
 
 
