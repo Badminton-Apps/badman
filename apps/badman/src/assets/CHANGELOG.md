@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.88.0-beta.29](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.28...v6.88.0-beta.29) (2023-07-17)
+
+
+### Features
+
+* disabeling when no more place ([56ff131](https://github.com/Badminton-Apps/badman/commit/56ff1319f2f9f3fac9b31280f984ca6ff66c291e))
+* error message ([5d930dd](https://github.com/Badminton-Apps/badman/commit/5d930ddac73aff83a64aad658ac5419bc42ceab3))
+* only home team can accept ([f9b162d](https://github.com/Badminton-Apps/badman/commit/f9b162d1a6b9a3b2b2d4a09c4854128c92457eab))
+
+
+### Bug Fixes
+
+* better processing of  the availiblty ([986099f](https://github.com/Badminton-Apps/badman/commit/986099f4478646dcef2c426b7adf60a4a8e491d1))
+* change requests should be cleared ([60d81ec](https://github.com/Badminton-Apps/badman/commit/60d81ecac96e9c4f435a4bf2f91a3472d636936e))
+* flooring the courts ([57d6d8a](https://github.com/Badminton-Apps/badman/commit/57d6d8a741f5694f057ed4c08f1847e156a69d77))
+
 ## [6.88.0-beta.28](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.27...v6.88.0-beta.28) (2023-07-17)
 
 
