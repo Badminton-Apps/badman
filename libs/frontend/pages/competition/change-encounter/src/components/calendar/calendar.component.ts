@@ -356,6 +356,8 @@ export class CalendarComponent implements OnInit {
     end: moment.Moment
   ) {
     this.encounters.clear();
+    this.changeRequests.clear();
+    
     const teams = [
       ...(this.homeTeams?.map((t) => t.id) ?? []),
       ...(this.awayTeams?.map((t) => t.id) ?? []),
