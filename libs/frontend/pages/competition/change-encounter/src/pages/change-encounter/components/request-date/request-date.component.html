@@ -32,7 +32,9 @@
   </mat-form-field>
 
   <div class="actions">
-    <mat-checkbox class="selected" formControlName="selected"> </mat-checkbox>
+    <div [matTooltip]="tootltipSelected ?? '' | translate">
+      <mat-checkbox class="selected" formControlName="selected"> </mat-checkbox>
+    </div>
 
     <div class="delete" *ngIf="!group.get('id')!.value">
       <button mat-icon-button (click)="removeDate.next()" type="button">
@@ -43,8 +45,7 @@
     <div
       class="changed-location"
       [matTooltip]="
-        'all.competition.change-encounter.warnings.location-change'
-          | translate
+        'all.competition.change-encounter.warnings.location-change' | translate
       "
       *ngIf="
         encounter.locationId &&

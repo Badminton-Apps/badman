@@ -144,7 +144,9 @@ export type I18nTranslations = {
                 "warnings": {
                     "closed": string;
                     "closing": string;
+                    "home-accept": string;
                     "location-change": string;
+                    "missing-availability": string;
                     "selected-different-location": string;
                 };
             };

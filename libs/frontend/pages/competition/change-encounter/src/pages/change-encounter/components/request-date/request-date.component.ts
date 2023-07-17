@@ -45,6 +45,8 @@ export class RequestDateComponent implements OnInit {
   @Output()
   removeDate = new EventEmitter<void>();
 
+  tootltipSelected?: string;
+
   ngOnInit() {
     combineLatest([
       this.group
@@ -59,9 +61,18 @@ export class RequestDateComponent implements OnInit {
         ) ?? of(false),
     ]).subscribe(([availabilityAway, availabilityHome]) => {
       if (availabilityAway && availabilityHome) {
-        this.group.get('selected')?.enable();
+        if (this.home) {
+          this.group.get('selected')?.enable();
+          this.tootltipSelected = undefined;
+        } else {
+          this.group.get('selected')?.disable();
+          this.tootltipSelected =
+            'all.competition.change-encounter.warnings.home-accept';
+        }
       } else {
         this.group.get('selected')?.disable();
+        this.tootltipSelected =
+          'all.competition.change-encounter.warnings.missing-availability';
       }
     });
   }
