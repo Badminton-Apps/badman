@@ -28,6 +28,7 @@ import { HasClaimComponent } from '@badman/frontend-components';
 import {
   EncounterChangeDate,
   EncounterCompetition,
+  EventCompetition,
   Location,
   Team,
 } from '@badman/frontend-models';
@@ -110,6 +111,7 @@ export class CalendarComponent implements OnInit {
   public homeTeamsIds: string[] = [];
   public awayTeamsIds: string[] = [];
   public locations: Location[] = [];
+  private event?: EventCompetition;
 
   public loadingCal = true;
 
@@ -205,7 +207,10 @@ export class CalendarComponent implements OnInit {
     }
     const end = this.firstDayOfMonth.clone().add(weeks, 'weeks');
 
+    await this._loadEvent();
     this._loadAvailiblilyBetween(start, end);
+
+    // Get the encounters, and use the first home encounter to
     await this._loadEncountersBetween(start, end);
 
     this._generateCalendarDays(weeks);
@@ -291,6 +296,29 @@ export class CalendarComponent implements OnInit {
         }
       }
     }
+
+    if (this.event?.exceptions) {
+      for (const exception of this.event?.exceptions ?? []) {
+        const start = moment(exception.start);
+        const end = moment(exception.end);
+
+        // for each day in the exception
+        // push the exception to the exceptions map
+        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, 'day')) {
+          const format = day.format('YYYY-MM-DD');
+
+          // clear out the exceptions
+          this.exceptions.set(format, []);
+
+          for (const location of this.locations) {
+            this.exceptions.get(format)?.push({
+              locationId: location.id ?? '',
+              courts: exception.courts ?? 0,
+            });
+          }
+        }
+      }
+    }
   }
 
   private _genGridTemplateColumns() {
@@ -357,7 +385,7 @@ export class CalendarComponent implements OnInit {
   ) {
     this.encounters.clear();
     this.changeRequests.clear();
-    
+
     const teams = [
       ...(this.homeTeams?.map((t) => t.id) ?? []),
       ...(this.awayTeams?.map((t) => t.id) ?? []),
@@ -519,6 +547,49 @@ export class CalendarComponent implements OnInit {
         this.changeRequests.get(date)?.push({ request: request, encounter });
       }
     }
+  }
+
+  private async _loadEvent() {
+    // get the first encounter of the home team
+    this.event = await lastValueFrom(
+      this.apollo
+        .query<{
+          team: Partial<Team>;
+        }>({
+          fetchPolicy: 'cache-first',
+          query: gql`
+            query GetHomeTeamsEvent($id: ID!) {
+              team(id: $id) {
+                id
+                entry {
+                  id
+                  subEventCompetition {
+                    id
+                    eventCompetition {
+                      id
+                      exceptions {
+                        courts
+                        end
+                        start
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            id: this.data.homeTeamId,
+          },
+        })
+        .pipe(
+          map(
+            (x) =>
+              new Team(x.data.team)?.entry?.subEventCompetition
+                ?.eventCompetition
+          )
+        )
+    );
   }
 
   private async _getTeams(clubid: string) {
