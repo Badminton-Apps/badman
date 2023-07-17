@@ -140,7 +140,9 @@
       "warnings": {
         "closed": "La demande de concours est terminée, vous ne pouvez traiter que les demandes existantes",
         "closing": "La date limite d'envoi et de traitement des candidatures est",
+        "home-accept": "L'équipe à domicile ne peut effectuer qu'un mouvement",
         "location-change": "Changement de lieu",
+        "missing-availability": "Les deux équipes doivent choisir leur disponibilité.",
         "selected-different-location": "Un emplacement différent a été choisi, mais en raison des limitations des systèmes externes, ces emplacements doivent être mis à jour manuellement. Veuillez noter que cela peut prendre plusieurs jours."
       }
     },
