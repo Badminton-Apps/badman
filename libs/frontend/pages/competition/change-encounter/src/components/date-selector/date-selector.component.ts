@@ -191,7 +191,8 @@ export class DateSelectorComponent
 
     this._dialog
       .open(CalendarComponent, {
-        width: '80vw',
+        width: '95vw',
+        maxWidth: '95vw',
         data: {
           homeClubId: this.homeClubId,
           awayClubId: this.awayClubId,
@@ -201,6 +202,7 @@ export class DateSelectorComponent
           locationId: this.value?.locationId,
           home: this.home,
         },
+        
       })
       .afterClosed()
       .subscribe((result) => {
