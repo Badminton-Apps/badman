@@ -683,7 +683,11 @@ export class CalendarComponent implements OnInit {
         this.translate.instant(
           'all.competition.change-encounter.calendar.no-space'
         ),
-        'Ok'
+        'Ok',
+        {
+          // duration: 4000,
+          panelClass: 'error',
+        }
       );
       return;
     }
