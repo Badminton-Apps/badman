@@ -82,10 +82,8 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.queryParamMap;
-
-    const season = isNaN(parseInt(params?.get('season') || ''))
-      ? getCurrentSeason()
-      : params?.get('season');
+    const parsed = parseInt(params?.get('season') || '');
+    const season = isNaN(parsed) ? getCurrentSeason() : parsed;
 
     this.formGroup = new FormGroup({
       season: new FormControl(season),
