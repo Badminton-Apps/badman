@@ -22,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent } from '@badman/frontend-components';
 import {
@@ -31,7 +32,7 @@ import {
   Team,
 } from '@badman/frontend-models';
 import { getCurrentSeason, sortTeams } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
@@ -61,6 +62,7 @@ import { randomLightColor } from 'seed-to-color';
     MatFormFieldModule,
     MatDatepickerModule,
     MatSelectModule,
+    MatSnackBarModule,
 
     // own
     HasClaimComponent,
@@ -135,6 +137,8 @@ export class CalendarComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<CalendarComponent>,
     private ref: ChangeDetectorRef,
+    private snack: MatSnackBar,
+    private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       homeClubId: string;
@@ -666,8 +670,23 @@ export class CalendarComponent implements OnInit {
     this._loadMonth();
   }
 
-  public selectDay(d?: Date, time?: string, locationId?: string) {
+  public selectDay(
+    d?: Date,
+    time?: string,
+    locationId?: string,
+    space?: number
+  ) {
     const date = moment(d);
+
+    if ((space ?? 0) <= 0) {
+      this.snack.open(
+        this.translate.instant(
+          'all.competition.change-encounter.calendar.no-space'
+        ),
+        'Ok'
+      );
+      return;
+    }
 
     if (time) {
       // splite time to hour and minute
@@ -760,7 +779,10 @@ export class CalendarComponent implements OnInit {
             }
           }
 
-          dayInfo.locations[infoIndex].space -= 1;
+          dayInfo.locations[infoIndex].space = Math.max(
+            0,
+            dayInfo.locations[infoIndex].space - 1
+          );
         }
       }
     }

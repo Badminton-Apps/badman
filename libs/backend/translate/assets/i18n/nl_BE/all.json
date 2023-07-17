@@ -102,6 +102,7 @@
     "change-encounter": {
       "add-date": "Voeg datum toe",
       "calendar": {
+        "no-space": "Geen plaats meer.",
         "option": "{amount} in optie",
         "other-games": "Andere ontmoetingen die dag",
         "remaining": "nog {amount} mogelijk",

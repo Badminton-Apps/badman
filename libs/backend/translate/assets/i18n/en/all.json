@@ -102,6 +102,7 @@
     "change-encounter": {
       "add-date": "Add date",
       "calendar": {
+        "no-space": "No more room.",
         "option": "{amount} optional",
         "other-games": "Other encounters that day",
         "remaining": "still {amount} possible",
