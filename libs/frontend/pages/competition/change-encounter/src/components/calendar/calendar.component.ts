@@ -90,6 +90,13 @@ export class CalendarComponent implements OnInit {
       courts: number;
     }[]
   > = new Map();
+  public exceptions: Map<
+    string,
+    {
+      locationId: string;
+      courts: number;
+    }[]
+  > = new Map();
 
   public changeRequests: Map<
     string,
@@ -188,6 +195,10 @@ export class CalendarComponent implements OnInit {
     const weeks = this._getWeeksInView();
     // Get first day of month
     const start = this.firstDayOfMonth.clone();
+    // Go back untill we get to the first day of the week
+    while (start.day() != 1) {
+      start.subtract(1, 'day');
+    }
     const end = this.firstDayOfMonth.clone().add(weeks, 'weeks');
 
     this._loadAvailiblilyBetween(start, end);
@@ -226,6 +237,7 @@ export class CalendarComponent implements OnInit {
 
   private _loadAvailiblilyBetween(start: moment.Moment, end: moment.Moment) {
     this.availibilities.clear();
+    this.exceptions.clear();
 
     for (const location of this.locations) {
       const availibilities = location.availibilities?.filter((a) => {
@@ -238,9 +250,6 @@ export class CalendarComponent implements OnInit {
 
       for (const availibility of availibilities) {
         for (const aDay of availibility.days) {
-          // day.day  is a weekday
-          // day.courts is the amount of courts
-
           for (let day = start.clone(); day.isBefore(end); day.add(1, 'day')) {
             const wDay = moment(day);
             const format = wDay.format('YYYY-MM-DD');
@@ -257,6 +266,22 @@ export class CalendarComponent implements OnInit {
                 time: aDay.startTime ?? '',
                 courts: aDay.courts ?? 0,
               });
+            }
+
+            for (const exception of availibility.exceptions) {
+              const start = moment(exception.start);
+              const end = moment(exception.end);
+
+              if (wDay.isBetween(start, end, 'day', '[]')) {
+                if (!this.exceptions.has(format)) {
+                  this.exceptions.set(format, []);
+                }
+
+                this.exceptions.get(format)?.push({
+                  locationId: location.id ?? '',
+                  courts: exception.courts ?? 0,
+                });
+              }
             }
           }
         }
@@ -677,33 +702,40 @@ export class CalendarComponent implements OnInit {
       other: [],
     };
 
-    const dateF = moment(date).format('YYYY-MM-DD');
+    const format = moment(date).format('YYYY-MM-DD');
 
-    const encounters = this.encounters.get(dateF);
-    const changeRequests = this.changeRequests.get(dateF);
-    const availibilities = this.availibilities.get(dateF);
+    const encounters = this.encounters.get(format);
+    const changeRequests = this.changeRequests.get(format);
+    const availibilities = this.availibilities.get(format);
+    const exceptions = this.exceptions.get(format);
 
-    if (!encounters && !changeRequests) {
+    if (!encounters && !changeRequests && !availibilities) {
       return dayInfo;
     }
 
     if (availibilities) {
       for (const availibility of availibilities) {
-        if (this.data.locationId === availibility.locationId) {
-          // find location id
+        dayInfo.locations.push({
+          space: Math.floor(availibility.courts / 2),
+          time: availibility.time,
+          locationId: availibility.locationId,
+          locationIndex:
+            this.locations.findIndex((l) => l.id === availibility.locationId) +
+            1,
+          encounters: [],
+          removed: [],
+          requested: [],
+        });
+      }
 
-          dayInfo.locations.push({
-            space: availibility.courts / 2,
-            time: availibility.time,
-            locationId: availibility.locationId,
-            locationIndex:
-              this.locations.findIndex(
-                (l) => l.id === availibility.locationId
-              ) + 1,
-            encounters: [],
-            removed: [],
-            requested: [],
-          });
+      for (const exception of exceptions ?? []) {
+        // find availibility for location
+        const availibility = dayInfo.locations.find(
+          (l) => l.locationId === exception.locationId
+        );
+
+        if (availibility) {
+          availibility.space = Math.floor(exception.courts / 2);
         }
       }
     }
@@ -727,6 +759,7 @@ export class CalendarComponent implements OnInit {
               dayInfo.locations[infoIndex].encounters.push(encounter);
             }
           }
+
           dayInfo.locations[infoIndex].space -= 1;
         }
       }
