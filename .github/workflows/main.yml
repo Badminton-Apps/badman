@@ -24,6 +24,7 @@ jobs:
   merge-dev-into-main:
     name: Merge Dev into Main
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: ${{ inputs.prod-release }}
     permissions:
       contents: write
@@ -60,6 +61,7 @@ jobs:
         npx nx affected --target=lint --parallel=3
         npx nx affected --target=test --parallel=3 --ci --code-coverage
         # npx nx affected --target=server
+      timeout: 15
 
   agents:
     name: Nx Cloud - Agents
@@ -70,6 +72,7 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
+      timeout: 15
 
   release:
     runs-on: ubuntu-latest
