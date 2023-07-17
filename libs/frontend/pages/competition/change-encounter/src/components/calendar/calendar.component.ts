@@ -166,7 +166,6 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('Yepp');
     this._setupCalendar();
   }
 
@@ -738,8 +737,6 @@ export class CalendarComponent implements OnInit {
       const infoIndex = dayInfo.locations.findIndex(
         (l) => l.locationId === request?.request?.locationId
       );
-
-      console.log(dateF, 'request', request, encounters);
 
       if (infoIndex >= 0) {
         dayInfo.locations[infoIndex].requested.push(request.encounter);
