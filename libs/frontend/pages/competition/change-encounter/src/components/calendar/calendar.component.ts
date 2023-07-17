@@ -280,17 +280,16 @@ export class CalendarComponent implements OnInit {
 
       const date = moment(day.date).format('YYYY-MM-DD');
       const enc = this.encounters.get(date);
+      const locations = day.info.locations;
 
-      if (enc) {
+      if (
+        enc?.some(
+          (e) => this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId)
+        ) ||
+        locations?.length > 0
+      ) {
         // if any of the teams is visible
-        if (
-          enc.some(
-            (e) =>
-              this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId)
-          )
-        ) {
-          hasActivityOnDay[weekdayName] = true;
-        }
+        hasActivityOnDay[weekdayName] = true;
       }
     }
 

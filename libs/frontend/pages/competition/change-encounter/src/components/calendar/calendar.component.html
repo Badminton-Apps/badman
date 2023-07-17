@@ -204,6 +204,7 @@
             'all.competition.change-encounter.calendar.other-games' | translate
           }}</small>
           <div class="event-name" *ngFor="let enc of dayInfo.other">
+            {{ enc?.date | date : 'HH:mm' }} -
             {{ enc?.home?.name }}
             {{ 'all.competition.vs-short' | translate }}
             {{ enc?.away?.name }}
