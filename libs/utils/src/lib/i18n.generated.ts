@@ -106,6 +106,7 @@ export type I18nTranslations = {
             "change-encounter": {
                 "add-date": string;
                 "calendar": {
+                    "no-space": string;
                     "option": string;
                     "other-games": string;
                     "remaining": string;

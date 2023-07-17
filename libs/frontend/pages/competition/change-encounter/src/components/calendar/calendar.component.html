@@ -61,7 +61,8 @@
           this.selectDay(
             manualDateControl.value,
             undefined,
-            manualLocationControl.value
+            manualLocationControl.value,
+            9999
           )
         "
       >
@@ -116,7 +117,8 @@
         <div
           *ngFor="let loc of dayInfo.locations"
           class="location picable"
-          (click)="selectDay(row.date, loc.time, loc.locationId)"
+          
+          (click)="selectDay(row.date, loc.time, loc.locationId, loc.space)"
         >
           <span class="id">{{ loc.locationIndex }}</span>
           <span class="time">{{ loc.time }} - </span>

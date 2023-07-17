@@ -102,6 +102,7 @@
     "change-encounter": {
       "add-date": "Ajouter une date",
       "calendar": {
+        "no-space": "Plus de pièces.",
         "option": "{amount} facultatif",
         "other-games": "Autres rencontres ce jour-là",
         "remaining": "encore {amount} possible",
