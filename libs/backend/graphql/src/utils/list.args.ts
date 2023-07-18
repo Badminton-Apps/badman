@@ -6,22 +6,22 @@ import { queryFixer } from './queryFixer';
 
 @InputType()
 export class SortOrderType {
-  @Field()
+  @Field(() => String)
   field!: string;
 
-  @Field()
+  @Field(() => String)
   direction!: string;
 }
 
 export class SortOrder {
-  field: string;
-  direction: string;
+  field!: string;
+  direction!: string;
 }
 
 @ArgsType()
 export class WhereArgs {
   @Field(() => GraphQLJSONObject, { nullable: true })
-  where: WhereOptions;
+  where?: WhereOptions;
 }
 
 @ArgsType()
@@ -32,7 +32,7 @@ export class ListArgs extends WhereArgs {
 
   @Field(() => Int, { nullable: true })
   @Min(1)
-  take: number;
+  take?: number | null;
 
   @Field(() => [SortOrderType], { nullable: true })
   order?: SortOrderType[];
@@ -42,7 +42,7 @@ export class ListArgs extends WhereArgs {
       limit: args.take,
       offset: args.skip,
       where: queryFixer(args.where),
-      order: args.order?.map(({ field, direction }) => [field, direction]),
+      order: args.order?.map(({ field, direction }) => [field, direction]) ?? [],
     } as FindOptions;
   }
 }

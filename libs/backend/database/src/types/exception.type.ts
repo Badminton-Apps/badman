@@ -1,16 +1,23 @@
-import { Field, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import {
+  Field,
+  InputType,
+  Int,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 
-@ObjectType({ description: 'An Exception' })
-export class ExceptionType {
-  @Field({ nullable: true })
-  start: Date;
-  @Field({ nullable: true })
-  end: Date;
-  @Field({ nullable: true })
-  courts: number;
+@ObjectType({ description: 'An Exception'})
+export class AvailabilityExceptionType {
+  @Field(() => Date, { nullable: true })
+  start?: Date;
+  @Field(() => Date, { nullable: true })
+  end?: Date;
+  @Field(() => Int, { nullable: true })
+  courts?: number;
 }
 @InputType()
-export class ExceptionInputType extends PartialType(
-  OmitType(ExceptionType, [] as const),
+export class AvailabilityExceptionInputType extends PartialType(
+  OmitType(AvailabilityExceptionType, [] as const),
   InputType
 ) {}

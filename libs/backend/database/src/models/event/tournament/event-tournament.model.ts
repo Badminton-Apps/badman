@@ -12,6 +12,14 @@ import {
 } from 'sequelize-typescript';
 
 import {
+  Field,
+  ID,
+  InputType,
+  ObjectType,
+  OmitType,
+  PartialType
+} from '@nestjs/graphql';
+import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
   BelongsToManyCountAssociationsMixin,
@@ -32,20 +40,12 @@ import {
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
 } from 'sequelize';
+import { Slugify } from '../../../types';
+import { Role } from '../../security';
 import { Location } from '../location.model';
 import { LocationEventTournamentMembership } from './location-event-membership.model';
 import { SubEventTournament } from './sub-event-tournament.model';
-import { Slugify } from '../../../types';
-import { UsedRankingTiming } from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
-import { Role } from '../../security';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -56,94 +56,79 @@ export class EventTournament extends Model {
   constructor(values?: Partial<EventTournament>, options?: BuildOptions) {
     super(values, options);
   }
-
-  @Field({ nullable: true })
+ 
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
-  @Column
-  tournamentNumber: string;
-
-  @Unique('EventTournaments_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  name: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  tournamentNumber?: string;
 
   @Unique('EventTournaments_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  firstDay: Date;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  name?: string;
 
-  @Field({ nullable: true })
-  @Column
-  lastSync: Date;
+  @Unique('EventTournaments_unique_constraint')
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  firstDay?: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  lastSync?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   openDate?: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   closeDate?: Date;
 
-  @Field({ nullable: true })
-  @Column
-  dates: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  dates?: string;
 
   @BelongsToMany(() => Location, () => LocationEventTournamentMembership)
-  locations: Location[];
+  locations?: Relation<Location[]>;
 
   @HasMany(() => SubEventTournament, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  subEventTournaments: SubEventTournament[];
+  subEventTournaments?: Relation<SubEventTournament[]>;
 
   @Unique('EventTournaments_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  visualCode: string;
-
-  @Field({ nullable: true })
-  @Column
-  slug: string;
-
-  @Field({ nullable: true })
-  @Column
-  usedRankingAmount: number;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  visualCode?: string;
 
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('months', 'weeks', 'days'))
-  usedRankingUnit: 'months' | 'weeks' | 'days';
+  @Column(DataType.STRING)
+  slug?: string;
 
-  get usedRankingg(): UsedRankingTiming {
-    return {
-      amount: this.usedRankingAmount,
-      unit: this.usedRankingUnit,
-    };
-  }
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  official?: boolean;
 
-  @Field()
-  @Column
-  official: boolean;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  state?: string;
 
-  @Field({ nullable: true })
-  @Column
-  state: string;
-
-  @Field({ nullable: true })
-  @Column
-  country: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  country?: string;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
@@ -153,7 +138,7 @@ export class EventTournament extends Model {
       linkType: 'tournament',
     },
   })
-  roles?: Role[];
+  roles?: Relation<Role[]>;
 
   regenerateSlug!: Slugify<EventTournament>;
 

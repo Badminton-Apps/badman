@@ -18,6 +18,9 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
+    if (!options) {
+      options = {};
+    }
     options.logger =
       options.logger || new Logger(CompetitionSyncEventProcessor.name);
     super(options);

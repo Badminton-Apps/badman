@@ -7,6 +7,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -55,8 +56,8 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { Slugify } from '../types';
 import { TeamPlayerMembershipType } from '../_interception';
+import { Slugify } from '../types';
 import { Club } from './club.model';
 import {
   EncounterCompetition,
@@ -68,8 +69,9 @@ import {
 } from './event';
 import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 import { Player, PlayerTeamInput } from './player.model';
-import { TeamPlayerMembership } from './team-player-membership.model';
 import { Role } from './security';
+import { TeamPlayerMembership } from './team-player-membership.model';
+import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
@@ -81,37 +83,37 @@ export class Team extends Model {
     super(values, options);
   }
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Column
+  @Column(DataType.UUIDV4)
   id!: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Unique('unique_constraint')
-  @Column
-  name: string;
+  @Column(DataType.STRING)
+  name?: string;
 
-  @Field({ nullable: false })
-  @Column
-  season: number;
+  @Field(() => Int, { nullable: false })
+  @Column(DataType.NUMBER)
+  season?: number;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.TIME)
-  preferredTime: Date;
+  preferredTime?: Date;
 
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
-  @Column
-  link: string;
+  @Column(DataType.UUIDV4)
+  link!: string;
 
   @Field(() => String, { nullable: true })
   @Column(
@@ -125,69 +127,69 @@ export class Team extends Model {
       'saturday'
     )
   )
-  preferredDay: string;
+  preferredDay?: string;
 
   @BelongsToMany(() => Location, () => TeamLocationCompetition)
-  locations: Location[];
+  locations?: Relation<Location[]>;
 
-  @Field({ nullable: true })
-  @Column
-  abbreviation: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  abbreviation?: string;
 
   @HasOne(() => EventEntry, 'teamId')
-  entry?: EventEntry;
+  entry?: Relation<EventEntry>;
 
   @Field(() => Club, { nullable: true })
   @BelongsTo(() => Club, 'clubId')
-  club?: Club;
+  club?: Relation<Club>;
 
-  @Field({ nullable: true })
+  @Field(() => ID, { nullable: true })
   @ForeignKey(() => Club)
   @Unique('unique_constraint')
   @Index('club_index')
-  @Column
-  clubId: string;
+  @Column(DataType.UUIDV4)
+  clubId?: string;
 
-  @Field({ nullable: true })
-  @Column
-  slug: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  slug?: string;
 
   @Field(() => [TeamPlayerMembershipType], { nullable: true })
   @BelongsToMany(() => Player, () => TeamPlayerMembership)
-  players: (Player & { TeamPlayerMembership: TeamPlayerMembership })[];
+  players?: (Player & { TeamPlayerMembership: TeamPlayerMembership })[];
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @Column({
     type: DataType.STRING,
   })
-  type: SubEventTypeEnum;
+  type!: SubEventTypeEnum;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'captainId')
-  captain: Player;
+  captain?: Relation<Player>;
 
-  @Field({ nullable: true })
-  @Column
-  captainId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  captainId?: string;
 
-  @Field({ nullable: true })
-  @Column
-  email: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  email?: string;
 
-  @Field({ nullable: true })
-  @Column
-  phone: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  phone?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Int)
   @Unique('unique_constraint')
-  @Column
-  teamNumber?: number;
+  @Column(DataType.NUMBER)
+  teamNumber!: number;
 
   @HasMany(() => EncounterCompetition, 'homeTeamId')
-  homeEncounters: EncounterCompetition;
+  homeEncounters?: Relation<EncounterCompetition>;
 
   @HasMany(() => EncounterCompetition, 'awayTeamId')
-  awayEncounters: EncounterCompetition;
+  awayEncounters?: Relation<EncounterCompetition>;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
@@ -197,30 +199,32 @@ export class Team extends Model {
       linkType: 'team',
     },
   })
-  roles?: Role[];
+  roles?: Relation<Role[]>;
 
   // #region hooks
   @BeforeBulkCreate
   static async setAbbriviations(instances: Team[], options: CreateOptions) {
     for (const instance of instances ?? []) {
       await this.setAbbriviation(instance, options);
+      await this.generateAbbreviation(instance, options);
     }
   }
 
   @BeforeCreate
   static async setAbbriviation(instance: Team, options: CreateOptions) {
     if (instance.isNewRecord) {
+      await this.generateName(instance, options);
       await this.generateAbbreviation(instance, options);
     }
   }
 
-  static async generateAbbreviation(
+  static async generateName(
     instance: Team,
-    options: CreateOptions,
+    options?: CreateOptions,
     club?: Club
   ) {
     club =
-      club ?? (await instance.getClub({ transaction: options.transaction }));
+      club ?? (await instance.getClub({ transaction: options?.transaction }));
 
     switch (club?.useForTeamName ?? UseForTeamName.NAME) {
       case UseForTeamName.FULL_NAME:
@@ -241,6 +245,19 @@ export class Team extends Model {
         }${getLetterForRegion(instance.type, 'vl')}`;
         break;
     }
+  }
+
+  static async generateAbbreviation(
+    instance: Team,
+    options?: CreateOptions,
+    club?: Club
+  ) {
+    club =
+      club ?? (await instance.getClub({ transaction: options?.transaction }));
+
+    instance.abbreviation = `${club.abbreviation} ${
+      instance.teamNumber
+    }${getLetterForRegion(instance.type, 'vl')}`;
   }
   // #endregion
 

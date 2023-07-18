@@ -2,10 +2,13 @@
 </badman-beta>
 
 <div class="content">
-  <div *ngIf="this.user$ | async as user">
+  <ng-container *ngIf="this.user$ | async as user">
     <ng-container *ngIf="user.loggedIn && ((teams$ | async) ?? []) as teams">
       <section class="upcoming-games">
-        <h3>{{"all.game.upcoming.title" | translate}}</h3>
+        <h3>
+          <mat-icon color="primary">calendar_month</mat-icon>
+          {{ 'all.game.upcoming.title' | translate }}
+        </h3>
 
         <badman-upcoming-games
           *ngIf="teams.length > 0"
@@ -14,7 +17,13 @@
         ></badman-upcoming-games>
       </section>
     </ng-container>
-  </div>
+  </ng-container>
 
-  <badman-ranking-table></badman-ranking-table>
+  <section class="ranking">
+    <h3>
+      <mat-icon color="primary">show_chart</mat-icon>
+      {{ 'all.ranking.table.title' | translate }}
+    </h3>
+    <badman-ranking-table></badman-ranking-table>
+  </section>
 </div>

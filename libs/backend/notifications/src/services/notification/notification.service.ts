@@ -18,6 +18,7 @@ import {
   CompetitionEncounterNotEnteredNotifier,
   EventSyncedSuccessNotifier,
   EventSyncedFailedNotifier,
+  CompetitionEncounterChangeFinishRequestNotifier,
 } from '../../notifiers';
 import { PushService } from '../push';
 import { ConfigService } from '@nestjs/config';
@@ -55,6 +56,10 @@ export class NotificationService {
       ],
     });
 
+    // just make sure the teams are loaded
+    encounter.home = homeTeam;
+    encounter.away = awayTeam;
+
     const newReqTeam = homeTeamRequests ? homeTeam : awayTeam;
     const confReqTeam = homeTeamRequests ? awayTeam : homeTeam;
 
@@ -68,26 +73,34 @@ export class NotificationService {
         this.push
       );
 
-    notifierNew.notify(
-      newReqTeam.captain,
-      encounter.id,
-      { encounter },
-      { email: newReqTeam.email }
-    );
+    if (newReqTeam.captain && newReqTeam.email) {
+      notifierNew.notify(
+        newReqTeam.captain,
+        encounter.id,
+        { encounter, isHome: homeTeamRequests },
+        { email: newReqTeam.email }
+      );
+    }
 
-    notifierConform.notify(
-      confReqTeam.captain,
-      encounter.id,
-      { encounter },
-      { email: confReqTeam.email }
-    );
+    if (confReqTeam.captain && confReqTeam.email) {
+      notifierConform.notify(
+        confReqTeam.captain,
+        encounter.id,
+        { encounter, isHome: !homeTeamRequests },
+        { email: confReqTeam.email }
+      );
+    }
   }
 
-  async notifyEncounterChangeFinished(encounter: EncounterCompetition) {
-    const notifierFinished = new CompetitionEncounterChangeNewRequestNotifier(
-      this.mailing,
-      this.push
-    );
+  async notifyEncounterChangeFinished(
+    encounter: EncounterCompetition,
+    locationHasChanged: boolean
+  ) {
+    const notifierFinished =
+      new CompetitionEncounterChangeFinishRequestNotifier(
+        this.mailing,
+        this.push
+      );
     const homeTeam = await encounter.getHome({
       include: [
         {
@@ -105,19 +118,27 @@ export class NotificationService {
       ],
     });
 
-    notifierFinished.notify(
-      homeTeam.captain,
-      encounter.id,
-      { encounter },
-      { email: homeTeam.email }
-    );
+    // just make sure the teams are loaded
+    encounter.home = homeTeam;
+    encounter.away = awayTeam;
 
-    notifierFinished.notify(
-      awayTeam.captain,
-      encounter.id,
-      { encounter },
-      { email: awayTeam.email }
-    );
+    if (homeTeam.captain && homeTeam.email) {
+      notifierFinished.notify(
+        homeTeam.captain,
+        encounter.id,
+        { encounter, locationHasChanged, isHome: true },
+        { email: homeTeam.email }
+      );
+    }
+
+    if (awayTeam.captain && awayTeam.email) {
+      notifierFinished.notify(
+        awayTeam.captain,
+        encounter.id,
+        { encounter, locationHasChanged, isHome: false },
+        { email: awayTeam.email }
+      );
+    }
   }
 
   async notifyEncounterNotEntered(encounter: EncounterCompetition) {
@@ -137,16 +158,19 @@ export class NotificationService {
 
     // Property was loaded when sending notification
     const eventId =
-      encounter.drawCompetition.subEventCompetition.eventCompetition.visualCode;
+      encounter.drawCompetition?.subEventCompetition?.eventCompetition
+        ?.visualCode;
     const matchId = encounter.visualCode;
     const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
-    notifierNotEntered.notify(
-      homeTeam.captain,
-      encounter.id,
-      { encounter },
-      { email: homeTeam.email, url }
-    );
+    if (homeTeam.captain && homeTeam.email) {
+      notifierNotEntered.notify(
+        homeTeam.captain,
+        encounter.id,
+        { encounter },
+        { email: homeTeam.email, url }
+      );
+    }
   }
 
   async notifyEncounterNotAccepted(encounter: EncounterCompetition) {
@@ -165,16 +189,18 @@ export class NotificationService {
 
     // Property was loaded when sending notification
     const eventId =
-      encounter.drawCompetition.subEventCompetition.eventCompetition.visualCode;
+      encounter.drawCompetition?.subEventCompetition?.eventCompetition;
     const matchId = encounter.visualCode;
     const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
-    notifierNotAccepted.notify(
-      awayTeam.captain,
-      encounter.id,
-      { encounter },
-      { email: awayTeam.email, url }
-    );
+    if (awayTeam.captain && awayTeam.email) {
+      notifierNotAccepted.notify(
+        awayTeam.captain,
+        encounter.id,
+        { encounter },
+        { email: awayTeam.email, url }
+      );
+    }
   }
 
   async notifySyncFinished(
@@ -191,12 +217,14 @@ export class NotificationService {
     const user = await Player.findByPk(userId);
     const url = `${this.configService.get('CLIENT_URL')}/events/${event?.id}`;
 
-    notifierSyncFinished.notify(
-      user,
-      event.id,
-      { event, success },
-      { email: user?.email, url }
-    );
+    if (user?.email && event?.id && url && user?.slug) {
+      notifierSyncFinished.notify(
+        user,
+        event?.id,
+        { event, success },
+        { email: user?.email, url, slug: user?.slug }
+      );
+    }
   }
 
   async notifyEnrollment(
@@ -211,6 +239,10 @@ export class NotificationService {
     );
 
     const user = await Player.findByPk(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
     const club = await Club.findByPk(clubId, {
       include: [
         {
@@ -241,6 +273,10 @@ export class NotificationService {
       ],
     });
 
+    if (!club) {
+      throw new Error('Club not found');
+    }
+
     const locations = await club.getLocations({
       include: [{ model: Availability, where: { year: season } }],
     });
@@ -248,9 +284,9 @@ export class NotificationService {
     // eventEntries->subEventIds
     const eventEntries = new Set(
       club.teams
-        .map((team) => team?.entry)
-        .map((eventEntry) => eventEntry?.subEventCompetition)
-        .map((subEvent) => subEvent?.eventId)
+        ?.map((team) => team?.entry)
+        ?.map((eventEntry) => eventEntry?.subEventCompetition)
+        ?.map((subEvent) => subEvent?.eventId)
     );
 
     const comments = await club.getComments({
@@ -270,7 +306,7 @@ export class NotificationService {
 
     const ids = club?.teams
       ?.map((team) =>
-        team.entry.meta.competition.players.map((player) => player.id)
+        team?.entry?.meta?.competition?.players.map((player) => player.id)
       )
       .flat();
 
@@ -281,28 +317,30 @@ export class NotificationService {
       },
     });
 
-    club.teams.map((team) => {
+    club.teams?.map((team) => {
       const basePlayers = {
-        ...team.entry.meta.competition.players.map((player) => {
+        ...team?.entry?.meta?.competition?.players.map((player) => {
           const basePlayer = players.find((p) => p.id === player.id);
           return {
-            ...basePlayer.toJSON(),
+            ...basePlayer?.toJSON(),
             ...player,
           };
         }),
       };
 
-      Object.assign(team.entry.meta.competition, { players: basePlayers });
+      Object.assign(team?.entry?.meta?.competition ?? {}, {
+        players: basePlayers,
+      });
     });
 
-    club.teams = club.teams?.sort(sortTeams);
+    club.teams = club?.teams?.sort(sortTeams);
     const url = `${this.configService.get('CLIENT_URL')}/club/${club.id}`;
 
     notifierEnrollment.notify(
       user,
       clubId,
       { club, locations, comments },
-      { email: email || user.email, url },
+      { email: email || user.email || '', url },
       {
         email: true,
       }

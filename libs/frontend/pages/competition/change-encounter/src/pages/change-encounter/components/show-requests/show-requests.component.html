@@ -1,156 +1,126 @@
-<div *ngIf="this.requests$ | async as request">
+<ng-container *ngIf="this.previous?.value === null">
+  Please select an encounter
+</ng-container>
+
+<div *ngIf="this.requests$ | async as request" class="request">
   <ng-container *ngIf="this.encounter !== null">
     <form [formGroup]="this.formGroupRequest" novalidate (ngSubmit)="save()">
-      <div class="request">
-        <h2>
-          {{ encounter.home!.name }} {{ 'all.competition.vs' | translate }}
-          {{ encounter.away!.name }}
-        </h2>
+      <h2>
+        {{ encounter.home!.name }} {{ 'all.competition.vs' | translate }}
+        {{ encounter.away!.name }}
+      </h2>
 
+      <ng-container
+        *ngIf="!this.formGroupRequest.get('accepted')?.value; else accepted"
+      >
+        <div class="caption">
+          <p>
+            {{
+              'all.competition.change-encounter.disclaimer-submit' | translate
+            }}
+          </p>
+        </div>
         <div class="dates">
-          <h3>
-            <div>
-              {{ 'all.competition.change-encounter.dates' | translate }}
-            </div>
-            <div class="caption">
-              {{
-                'all.competition.change-encounter.disclaimer-submit' | translate
-              }}
-            </div>
-          </h3>
-
-          <div class="date-list" formArrayName="dates">
-            <div
-              *ngFor="let date of dateControls.controls; let i = index"
-              fxLayout="row"
-              fxLayoutAlign="start center"
-              fxLayoutGap="8px"
-              [formGroupName]="i"
-              class="date-item"
-            >
-              <badman-date-selector
-                [homeClubId]="encounter.home!.clubId"
-                [awayClubId]="encounter.away!.clubId"
-                [homeTeamId]="encounter.home!.id"
-                [awayTeamId]="encounter.away!.id"
+          <div class="date-list">
+            <ng-container formArrayName="dates">
+              <badman-request-date
+                [group]="date"
+                *ngFor="let date of dateControls.controls; let i = index"
+                [encounter]="this.encounter"
                 [home]="this.home"
-                formControlName="date"
-              ></badman-date-selector>
+                (removeDate)="this.removeDate(dateControls, i)"
+              ></badman-request-date>
+            </ng-container>
 
-              <!-- <mat-form-field fxFlex="22">
-                <mat-label>{{
-                  'all.competition.change-encounter.home' | translate
-                }}</mat-label>
-                <mat-select formControlName="availabilityHome" required>
-                  <mat-option value="POSSIBLE">{{
-                    'all.competition.change-encounter.possible' | translate
-                  }}</mat-option>
-                  <mat-option value="NOT_POSSIBLE">{{
-                    'all.competition.change-encounter.not-possible' | translate
-                  }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field fxFlex="22">
-                <mat-label>{{
-                  'all.competition.change-encounter.away' | translate
-                }}</mat-label>
-                <mat-select formControlName="availabilityAway" required>
-                  <mat-option value="POSSIBLE">{{
-                    'all.competition.change-encounter.possible' | translate
-                  }}</mat-option>
-                  <mat-option value="NOT_POSSIBLE">{{
-                    'all.competition.change-encounter.not-possible' | translate
-                  }}</mat-option>
-                </mat-select>
-              </mat-form-field> -->
-
-              <mat-checkbox
-                class="selected"
-                formControlName="selected"
-              ></mat-checkbox>
-
-              <div class="delete">
-                <div *ngIf="!date.get('id')!.value">
-                  <button
-                    mat-icon-button
-                    (click)="this.removeDate(i)"
-                    type="button"
-                  >
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
+            <mat-expansion-panel
+              *ngIf="dateControlsNotAvailible.controls.length > 0"
+              class="mat-elevation-z0"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{
+                    dateControlsNotAvailible.controls.length
+                      | i18nPlural
+                        : {
+                            '=1': 'all.competition.change-encounter.show-not-availible.singular',
+                            other:
+                              'all.competition.change-encounter.show-not-availible.plural'
+                          }
+                      | translate
+                        : { count: dateControlsNotAvailible.controls.length }
+                  }}
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="date-list" formArrayName="notAvailibleDates">
+                <badman-request-date
+                  [group]="date"
+                  *ngFor="
+                    let date of dateControlsNotAvailible.controls;
+                    let i = index
+                  "
+                  [encounter]="this.encounter"
+                  [home]="this.home"
+                  (removeDate)="this.removeDate(dateControlsNotAvailible, i)"
+                ></badman-request-date>
               </div>
-            </div>
+            </mat-expansion-panel>
           </div>
         </div>
 
-        <div class="submit">
-          <button mat-stroked-button (click)="this.addDate()" type="button">
-            {{ 'all.competition.change-encounter.add-date' | translate }}
-          </button>
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="this.running"
-          >
-            {{ 'all.button.submit' | translate }}
-          </button>
-        </div>
-      </div>
-      <div class="comments">
-        <h3>
-          {{ 'all.competition.change-encounter.comments' | translate }}
-        </h3>
-
-        <div id="body">
-          <div
-            class="message"
-            [ngClass]="{
-              me: comment.player?.id === this.authenticateService.user?.id
-            }"
-            *ngFor="let comment of comments"
-          >
-            <div class="message-content">
-              <label>
-                {{ comment.player?.fullName }}
-              </label>
-              {{ comment.message }}
-              <div class="time">
-                {{ comment.createdAt | amDateFormat : 'LLL' }}
-              </div>
-            </div>
+        <div class="submit" *ngIf="this.requestClosing">
+          <div>
+            <button
+              mat-stroked-button
+              (click)="this.addDate()"
+              type="button"
+              [disabled]="this.requestClosed"
+            >
+              {{ 'all.competition.change-encounter.add-date' | translate }}
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="this.running"
+            >
+              {{ 'all.button.submit' | translate }}
+            </button>
+          </div>
+          <div *ngIf="!this.requestClosed" class="caption">
+            <p>
+              {{
+                'all.competition.change-encounter.warnings.closing' | translate
+              }} <strong class="warning">{{
+                requestClosing | amCalendar
+              }}</strong>
+            </p>
           </div>
         </div>
-
-        <div>
-          <mat-form-field>
-            <mat-label>{{
-              'all.competition.change-encounter.comment' | translate
-            }}</mat-label>
-            <textarea
-              matInput
-              [formControl]="this.commentControl"
-              rows="5"
-            ></textarea>
-          </mat-form-field>
-          <button mat-raised-button color="primary" (click)="send()">
-            {{ 'all.button.add-comment' | translate }}
-          </button>
-        </div>
-      </div>
+      </ng-container>
     </form>
   </ng-container>
+  <badman-comments
+    [clubId]="
+      this.home ? this.encounter.home?.clubId! : this.encounter.away?.clubId!
+    "
+    [encounter]="this.encounter"
+  ></badman-comments>
 </div>
 
-<ng-template #confirm>
+<ng-template #confirm let-data>
   <h2 matDialogTitle>
     {{ 'all.competition.change-encounter.submit.title' | translate }}
   </h2>
   <mat-dialog-content>
     <p>
       {{ 'all.competition.change-encounter.submit.description' | translate }}
+    </p>
+
+    <p *ngIf="data.changedLocation">
+      {{
+        'all.competition.change-encounter.warnings.selected-different-location'
+          | translate
+      }}
     </p>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
@@ -161,4 +131,17 @@
       {{ 'all.button.yes' | translate }}
     </button>
   </mat-dialog-actions>
+</ng-template>
+
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"> ></mat-progress-bar>
+</ng-template>
+
+<ng-template #accepted>
+  <div class="already-accepted">
+    <div class="caption">
+      <p>{{ 'all.competition.change-encounter.re-open' | translate }}</p>
+      <button mat-stroked-button (click)="reOpen()">Re-open</button>
+    </div>
+  </div>
 </ng-template>

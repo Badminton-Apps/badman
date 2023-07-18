@@ -2,6 +2,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -39,6 +40,7 @@ import { GamePlayerMembership } from '../event';
 import { Player } from '../player.model';
 import { RankingLastPlace } from './ranking-last-place.model';
 import { RankingSystem } from './ranking-system.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -54,98 +56,98 @@ export class RankingPlace extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @Unique('unique_constraint')
   @Index({
     name: 'ranking_index',
     using: 'BTREE',
   })
-  @Field({ nullable: true })
-  @Column
-  rankingDate: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  rankingDate?: Date;
 
-  @Field({ nullable: true })
-  @Column
-  gender: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  gender?: string;
 
-  @Field({ nullable: true })
-  @Column
-  singlePoints: number;
-  @Field({ nullable: true })
-  @Column
-  mixPoints: number;
-  @Field({ nullable: true })
-  @Column
-  doublePoints: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  singlePoints?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  mixPoints?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  doublePoints?: number;
 
-  @Field({ nullable: true })
-  @Column
-  singlePointsDowngrade: number;
-  @Field({ nullable: true })
-  @Column
-  mixPointsDowngrade: number;
-  @Field({ nullable: true })
-  @Column
-  doublePointsDowngrade: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  singlePointsDowngrade?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  mixPointsDowngrade?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  doublePointsDowngrade?: number;
 
-  @Field({ nullable: true })
-  @Column
-  singleRank: number;
-  @Field({ nullable: true })
-  @Column
-  mixRank: number;
-  @Field({ nullable: true })
-  @Column
-  doubleRank: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  singleRank?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  mixRank?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  doubleRank?: number;
 
-  @Field({ nullable: true })
-  @Column
-  totalSingleRanking: number;
-  @Field({ nullable: true })
-  @Column
-  totalMixRanking: number;
-  @Field({ nullable: true })
-  @Column
-  totalDoubleRanking: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  totalSingleRanking?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  totalMixRanking?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  totalDoubleRanking?: number;
 
-  @Field({ nullable: true })
-  @Column
-  totalWithinSingleLevel: number;
-  @Field({ nullable: true })
-  @Column
-  totalWithinMixLevel: number;
-  @Field({ nullable: true })
-  @Column
-  totalWithinDoubleLevel: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  totalWithinSingleLevel?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  totalWithinMixLevel?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  totalWithinDoubleLevel?: number;
 
-  @Field({ nullable: true })
-  @Column
-  single: number;
-  @Field({ nullable: true })
-  @Column
-  mix: number;
-  @Field({ nullable: true })
-  @Column
-  double: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  single?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  mix?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  double?: number;
 
   @Default(false)
-  @Field({ nullable: true })
-  @Column
-  singleInactive: boolean;
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  singleInactive?: boolean;
   @Default(false)
-  @Field({ nullable: true })
-  @Column
-  mixInactive: boolean;
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  mixInactive?: boolean;
   @Default(false)
-  @Field({ nullable: true })
-  @Column
-  doubleInactive: boolean;
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  doubleInactive?: boolean;
 
-  @Field({ nullable: true })
-  @Column
-  updatePossible: boolean;
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  updatePossible?: boolean;
 
   @Unique('unique_constraint')
   @ForeignKey(() => Player)
@@ -153,9 +155,9 @@ export class RankingPlace extends Model {
     name: 'ranking_index',
     using: 'BTREE',
   })
-  @Field({ nullable: true })
-  @Column
-  playerId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  playerId?: string;
 
   @Unique('unique_constraint')
   @ForeignKey(() => RankingSystem)
@@ -163,19 +165,19 @@ export class RankingPlace extends Model {
     name: 'ranking_index',
     using: 'BTREE',
   })
-  @Field({ nullable: true })
-  @Column
-  systemId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  systemId?: string;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
-  player: Player;
+  player?: Relation<Player>;
 
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'systemId',
     onDelete: 'CASCADE',
   })
-  rankingSystem: RankingSystem;
+  rankingSystem?: Relation<RankingSystem>;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;
@@ -314,8 +316,8 @@ export class RankingPlace extends Model {
      
 
       const filter: {
-        playerId: string;
-        systemId: string;
+        playerId?: string;
+        systemId?: string;
         rankingDate?: unknown;
       } = {
         playerId: r.playerId,

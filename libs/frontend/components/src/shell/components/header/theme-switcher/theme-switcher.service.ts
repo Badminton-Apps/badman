@@ -1,5 +1,6 @@
 import { DOCUMENT, isPlatformServer } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Meta } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ export class ThemeSwitcherService {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    @Inject(PLATFORM_ID) private _platformId: string
+    @Inject(PLATFORM_ID) private _platformId: string,
+    private meta: Meta
   ) {}
 
   get currentActive() {
@@ -39,6 +41,11 @@ export class ThemeSwitcherService {
     this.colorScheme = scheme;
     // Save prefers-color-scheme to localStorage
     localStorage.setItem('prefers-color', scheme);
+    
+    this.meta.updateTag({
+      name: 'theme-color',
+      content: this.colorScheme === 'dark' ? '#212121' : '#fafafa',
+    });
   }
 
   _getColorScheme() {
@@ -47,7 +54,9 @@ export class ThemeSwitcherService {
       return;
     }
 
-    const localStorageColorScheme = localStorage.getItem('prefers-color') as 'dark' | 'light'
+    const localStorageColorScheme = localStorage.getItem('prefers-color') as
+      | 'dark'
+      | 'light';
     // Check if any prefers-color-scheme is stored in localStorage
     if (localStorageColorScheme) {
       // Save prefers-color-scheme from localStorage
@@ -75,6 +84,4 @@ export class ThemeSwitcherService {
     // Remove the old color-scheme class
     this.document.body.classList.add(this.colorSchemePrefix + this.colorScheme);
   }
-
- 
 }

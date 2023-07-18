@@ -1,6 +1,14 @@
 import { Player } from '@badman/backend-database';
-import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import {
+  AssemblyValidationData,
+  AssemblyOutput,
+  AssemblyValidationError,
+} from '../../../models';
 import { Rule } from './_rule.base';
+
+export type TeamClubBaseRuleParams = {
+  player: Partial<Player>;
+};
 
 export class TeamClubBaseRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
@@ -25,23 +33,24 @@ export class TeamClubBaseRule extends Rule {
           single3,
           single4,
 
-          ...double1,
-          ...double2,
-          ...double3,
-          ...double4,
+          ...(double1 ?? []),
+          ...(double2 ?? []),
+          ...(double3 ?? []),
+          ...(double4 ?? []),
         ].filter((p) => p != undefined)
       ),
-    ];
+    ] as Player[];
 
     const playersWarn = [
-      ...new Set([...subtitudes].filter((p) => p != undefined)),
+      ...new Set([...(subtitudes ?? [])].filter((p) => p != undefined)),
     ];
 
-    const errors = [] as AssemblyValidationError[];
-    const warnings = [] as AssemblyValidationError[];
+    const errors = [] as AssemblyValidationError<TeamClubBaseRuleParams>[];
+    const warnings = [] as AssemblyValidationError<TeamClubBaseRuleParams>[];
 
-    for (const oMeta of otherMeta) {
-      const metaPlayers = oMeta?.competition?.players?.map((p) => p.id);
+    for (const oMeta of otherMeta ?? []) {
+      const metaPlayers =
+        (oMeta?.competition?.players?.map((p) => p.id) as string[]) ?? [];
       if (metaPlayers) {
         errors.push(...this.checkGroup(playersError, metaPlayers));
         warnings.push(...this.checkGroup(playersWarn, metaPlayers));
@@ -56,7 +65,9 @@ export class TeamClubBaseRule extends Rule {
   }
 
   private checkGroup(players: Player[], otherPlayers: string[]) {
-    const errors = [] as AssemblyValidationError[];
+    const errors = [] as AssemblyValidationError<{
+      player: Partial<Player>;
+    }>[];
     for (const player of players) {
       if (otherPlayers.includes(player.id)) {
         errors.push({

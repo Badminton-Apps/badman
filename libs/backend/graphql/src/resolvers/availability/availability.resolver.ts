@@ -1,13 +1,12 @@
+import { User } from '@badman/backend-authorization';
 import {
   Availability,
-  AvailabilityException,
+  AvailabilityExceptionType,
   AvailabilityNewInput,
   AvailabilityUpdateInput,
-  ExceptionType,
   Location,
   Player,
 } from '@badman/backend-database';
-import { User } from '@badman/backend-authorization';
 import {
   Logger,
   NotFoundException,
@@ -34,8 +33,8 @@ export class AvailabilitysResolver {
   @Query(() => Availability)
   async availability(
     @Args('id', { type: () => ID }) id: string
-  ): Promise<Availability> {
-    return await Availability.findByPk(id);
+  ): Promise<Availability | null> {
+    return Availability.findByPk(id);
   }
 
   @Query(() => [Availability])
@@ -50,17 +49,16 @@ export class AvailabilitysResolver {
   //   return availability.days;
   // }
 
-  @ResolveField(() => [ExceptionType])
-  async exceptions(
-    @Parent() availability: Availability
-  ): Promise<AvailabilityException[]> {
-    return availability.exceptions?.map((e) => {
-      return {
-        ...e,
-        start: new Date(e.start),
-        end: new Date(e.end),
-      };
-    });
+  @ResolveField(() => [AvailabilityExceptionType], { nullable: true })
+  async exceptions(@Parent() availability: Availability) {
+    // return availability.exceptions and map the start en end as date
+    return availability.exceptions
+      ?.filter((exception) => exception && exception.start && exception.end)
+      ?.map((exception) => ({
+        ...exception,
+        start: new Date(exception.start as Date),
+        end: new Date(exception.end as Date),
+      }));
   }
 
   @Mutation(() => Availability)
@@ -84,10 +82,10 @@ export class AvailabilitysResolver {
       }
 
       if (
-        !user.hasAnyPermission([
+        !(await user.hasAnyPermission([
           `${dbLocation.clubId}_edit:location`,
           'edit-any:club',
-        ])
+        ]))
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`
@@ -135,10 +133,10 @@ export class AvailabilitysResolver {
       }
 
       if (
-        !user.hasAnyPermission([
-          `${dbAvailability.location.clubId}_edit:location`,
+        !(await user.hasAnyPermission([
+          `${dbAvailability.location?.clubId}_edit:location`,
           'edit-any:club',
-        ])
+        ]))
       ) {
         throw new UnauthorizedException(
           `You do not have permission to add a competition`

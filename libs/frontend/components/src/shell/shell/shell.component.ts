@@ -1,4 +1,10 @@
-import { Component, Inject, isDevMode, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  Inject,
+  isDevMode,
+  PLATFORM_ID,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -25,7 +31,7 @@ import {
   SwUpdate,
   VersionReadyEvent,
 } from '@angular/service-worker';
-import { AuthenticateService } from '@badman/frontend-auth';
+import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import {
   GOOGLEADS_CONFIG_TOKEN,
   GoogleAdsConfiguration,
@@ -34,8 +40,8 @@ import {
 import { Banner } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { iif, Observable, of } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { HasClaimComponent } from '../../has-claim';
 import {
@@ -79,6 +85,8 @@ import {
   styleUrls: ['./shell.component.scss'],
 })
 export class ShellComponent {
+  breakpointObserver = inject(BreakpointObserver);
+
   loading = false;
   development = isDevMode();
   expanded = {
@@ -95,10 +103,10 @@ export class ShellComponent {
   );
 
   canEnroll$!: Observable<boolean>;
+  canChange$!: Observable<boolean>;
 
   constructor(
     @Inject(GOOGLEADS_CONFIG_TOKEN) public config: GoogleAdsConfiguration,
-    private breakpointObserver: BreakpointObserver,
     @Inject(PLATFORM_ID)
     private platformId: string,
     @Inject(VERSION_INFO)
@@ -110,7 +118,8 @@ export class ShellComponent {
     private router: Router,
     updates: SwUpdate,
     snackBar: MatSnackBar,
-    private authService: AuthenticateService
+    private authService: AuthenticateService,
+    private auth: ClaimService
   ) {
     this.banner = new Banner(
       config.publisherId,
@@ -140,41 +149,87 @@ export class ShellComponent {
             });
         });
 
-      this.canEnroll$ = this.authService.loggedIn$?.pipe(
-        switchMap((loggedIn) =>
-          iif(
-            () => loggedIn,
-            this.apollo
-              .query<{
-                eventTournaments: { count: number };
-                eventCompetitions: { count: number };
-              }>({
-                query: gql`
-                  # we request only first one, because if it's more that means it's open
-                  query CanEnroll($where: JSONObject) {
-                    eventCompetitions(take: 1, where: $where) {
-                      count
-                    }
-                  }
-                `,
-                variables: {
-                  where: {
-                    openDate: { $lte: new Date().toISOString() },
-                    closeDate: { $gte: new Date().toISOString() },
-                  },
-                },
-              })
-              .pipe(
-                map(
-                  (events) =>
-                    (events?.data?.eventTournaments?.count ?? 0) != 0 ||
-                    (events?.data?.eventCompetitions?.count ?? 0) != 0
-                )
-              ),
-            of(false)
+      const canAnyEnroll$ = this.auth.hasClaim$('enlist-any:team');
+      const canviewEnroll$ = this.auth.hasClaim$('*_enlist:team');
+
+      const openEnrollments = this.apollo
+        .query<{
+          eventTournaments: { count: number };
+          eventCompetitions: { count: number };
+        }>({
+          query: gql`
+            # we request only first one, because if it's more that means it's open
+            query CanEnroll($where: JSONObject) {
+              eventCompetitions(take: 1, where: $where) {
+                count
+              }
+            }
+          `,
+          variables: {
+            where: {
+              openDate: { $lte: new Date().toISOString() },
+              closeDate: { $gte: new Date().toISOString() },
+            },
+          },
+        })
+        .pipe(
+          map(
+            (events) =>
+              (events?.data?.eventTournaments?.count ?? 0) != 0 ||
+              (events?.data?.eventCompetitions?.count ?? 0) != 0
           )
-        )
-      ) as Observable<boolean>;
+        );
+
+      this.canEnroll$ = combineLatest([
+        canAnyEnroll$,
+        canviewEnroll$,
+        openEnrollments,
+      ]).pipe(
+        map(([canAnyEnroll, canViewEnroll, openEnrollments]) => {
+          return canAnyEnroll || (canViewEnroll && openEnrollments);
+        })
+      );
+
+      const openChangeEncounter = this.apollo
+        .query<{
+          eventTournaments: { count: number };
+          eventCompetitions: { count: number };
+        }>({
+          query: gql`
+            # we request only first one, because if it's more that means it's open
+            query CanChange($where: JSONObject) {
+              eventCompetitions(take: 1, where: $where) {
+                count
+              }
+            }
+          `,
+          variables: {
+            where: {
+              changeOpenDate: { $lte: new Date().toISOString() },
+              changeCloseDate: { $gte: new Date().toISOString() },
+            },
+          },
+        })
+        .pipe(
+          map(
+            (events) =>
+              (events?.data?.eventTournaments?.count ?? 0) != 0 ||
+              (events?.data?.eventCompetitions?.count ?? 0) != 0
+          )
+        );
+
+      const canAnyChange$ = this.auth.hasClaim$('change-any:encounter');
+      const canviewChange$ = this.auth.hasClaim$('*change:encounter');
+
+      this.canChange$ = combineLatest([
+        canAnyChange$,
+        canviewChange$,
+        openChangeEncounter,
+      ]).pipe(
+        map(([canAnyChange, canViewChange, openChangeEncounter]) => {
+          return canAnyChange || (canViewChange && openChangeEncounter);
+        })
+      );
 
       this.router.events.subscribe((event: Event) => {
         switch (true) {

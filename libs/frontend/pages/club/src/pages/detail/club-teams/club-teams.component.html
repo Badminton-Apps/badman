@@ -1,7 +1,10 @@
 <ng-container *ngIf="this.teams && !this.loading()">
   <section class="teams">
     <div class="title">
-      <h3>{{ 'all.club.titles.teams' | translate }}</h3>
+      <h3>
+        <mat-icon color="primary">groups</mat-icon>
+        {{ 'all.club.titles.teams' | translate }}
+      </h3>
       <badman-has-claim [any]="['edit-any:club', this.clubId + '_edit:club']">
         <button mat-icon-button (click)="this.addTeam()">
           <mat-icon>add</mat-icon>
@@ -48,7 +51,10 @@
 
   <section class="games" *ngIf="(teams() ?? []).length > 0">
     <section class="recent-games">
-      <h3>{{ 'all.game.recent.title' | translate }}</h3>
+      <h3>
+        <mat-icon color="primary">history</mat-icon>
+        {{ 'all.game.recent.title' | translate }}
+      </h3>
       <badman-recent-games
         *ngIf="isClient"
         [clubId]="clubId"
@@ -57,7 +63,10 @@
     </section>
 
     <section class="upcoming-games">
-      <h3>{{ 'all.game.upcoming.title' | translate }}</h3>
+      <h3>
+        <mat-icon color="primary">calendar_month</mat-icon>
+        {{ 'all.game.upcoming.title' | translate }}
+      </h3>
       <badman-upcoming-games
         [clubid]="clubId"
         [teams]="teams() ?? []"
@@ -68,7 +77,10 @@
 
 <ng-container *ngIf="this.loading()">
   <section class="teams">
-    <h3>{{ 'all.club.titles.teams' | translate }}</h3>
+    <h3>
+      <mat-icon color="primary">groups</mat-icon>
+      {{ 'all.club.titles.teams' | translate }}
+    </h3>
     <badman-loading-block
       [items]="9"
       height="74px"
@@ -79,7 +91,10 @@
 
   <section class="games">
     <section class="recent-games">
-      <h3>{{ 'all.game.recent.title' | translate }}</h3>
+      <h3>
+        <mat-icon color="primary">history</mat-icon>
+        {{ 'all.game.recent.title' | translate }}
+      </h3>
       <badman-loading-block
         height="24px"
         subHeight="12px"
@@ -88,7 +103,10 @@
       />
     </section>
     <section class="upcoming-games">
-      <h3>{{ 'all.game.upcoming.title' | translate }}</h3>
+      <h3>
+        <mat-icon color="primary">calendar_month</mat-icon>
+        {{ 'all.game.upcoming.title' | translate }}
+      </h3>
       <badman-loading-block
         height="24px"
         subHeight="12px"

@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-
+import { ConfigService } from '@nestjs/config';
 import { ModuleMetadata, FactoryProvider } from '@nestjs/common';
 import { Type } from '@nestjs/common';
 import { Options as JuiceOptions } from 'juice';
@@ -78,7 +78,7 @@ export interface CompileModuleRegisterAsyncOptions
   isGlobal?: boolean;
   useClass?: Type<CompileOptionsFactory>;
   useExisting?: Type<CompileOptionsFactory>;
-  useFactory?: (...args: unknown[]) => CompileModuleOptions;
+  useFactory?: (config: ConfigService) => CompileModuleOptions;
   inject?: FactoryProvider['inject'];
 }
 

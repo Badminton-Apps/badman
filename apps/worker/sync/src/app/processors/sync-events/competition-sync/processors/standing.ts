@@ -9,34 +9,40 @@ import {
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { DrawStepData } from './draw';
 import { EncounterStepData } from './encounter';
-import { runParrallel, sortStanding } from '@badman/utils';
+import { runParallel, sortStanding } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 
 export interface StandingStepOptions {
   newGames?: boolean;
 }
 export class CompetitionSyncStandingProcessor extends StepProcessor {
-  public draws: DrawStepData[];
-  public encounters: EncounterStepData[];
-  public games: Game[];
+  public draws?: DrawStepData[];
+  public encounters?: EncounterStepData[];
+  public games?: Game[];
 
   private standingOptions: StandingStepOptions;
 
   constructor(options?: StepOptions & StandingStepOptions) {
-    options.logger = options.logger || new Logger(CompetitionSyncStandingProcessor.name);
+    if (!options) {
+      options = {};
+    }
+
+    options.logger =
+      options.logger || new Logger(CompetitionSyncStandingProcessor.name);
     super(options);
 
     this.standingOptions = options || {};
   }
 
   public async process(): Promise<void> {
-    await runParrallel(
-      this.draws.map((e) => {
-        const filtered = this.encounters
-          .filter((g) => g.encounter.drawId === e.draw.id)
-          ?.map((r) => r.encounter);
+    await runParallel(
+      this.draws?.map((e) => {
+        const filtered =
+          this.encounters
+            ?.filter((g) => g.encounter.drawId === e.draw.id)
+            ?.map((r) => r.encounter) ?? [];
         return this._processEncounters(e.draw, filtered);
-      })
+      }) ?? []
     );
   }
 
@@ -67,6 +73,10 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
       const homeTeam = teams.find((t) => t.id === encounter.homeTeamId);
       const awayTeam = teams.find((t) => t.id === encounter.awayTeamId);
 
+      if (!homeTeam || !awayTeam) {
+        continue;
+      }
+
       const homeStanding = standings.get(homeTeam.id);
       const awayStanding = standings.get(awayTeam.id);
 
@@ -75,9 +85,13 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         continue;
       }
 
+      if (!homeStanding || !awayStanding) {
+        continue;
+      }
+
       // We played 1 encounter
-      homeStanding.played++;
-      awayStanding.played++;
+      homeStanding.played = (homeStanding.played ?? 0) + 1;
+      awayStanding.played = (awayStanding.played ?? 0) + 1;
 
       if (encounter.homeScore > encounter.awayScore) {
         homeStanding.won++;
@@ -100,9 +114,8 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         awayStanding.points++;
       }
 
-      const encoutnerGames = this.games.filter(
-        (g) => g.linkId === encounter.id
-      );
+      const encoutnerGames =
+        this.games?.filter((g) => g.linkId === encounter.id) ?? [];
 
       for (const game of encoutnerGames ?? []) {
         if (game.winner == 1) {
@@ -113,65 +126,65 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
           homeStanding.gamesLost++;
         }
 
-        if (game.set1Team1 > game.set1Team2) {
+        if ((game.set1Team1 ?? 0) > (game.set1Team2 ?? 0)) {
           homeStanding.setsWon++;
           awayStanding.setsLost++;
 
-          homeStanding.totalPointsWon += game.set1Team1;
-          homeStanding.totalPointsLost += game.set1Team2;
+          homeStanding.totalPointsWon += game.set1Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set1Team2 ?? 0;
 
-          awayStanding.totalPointsLost += game.set1Team1;
-          awayStanding.totalPointsWon += game.set1Team2;
-        } else if (game.set1Team1 < game.set1Team2) {
+          awayStanding.totalPointsLost += game.set1Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set1Team2 ?? 0;
+        } else if ((game.set1Team1 ?? 0) < (game.set1Team2 ?? 0)) {
           homeStanding.setsLost++;
           awayStanding.setsWon++;
 
-          homeStanding.totalPointsWon += game.set1Team1;
-          homeStanding.totalPointsLost += game.set1Team2;
+          homeStanding.totalPointsWon += game.set1Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set1Team2 ?? 0;
 
-          awayStanding.totalPointsLost += game.set1Team1;
-          awayStanding.totalPointsWon += game.set1Team2;
+          awayStanding.totalPointsLost += game.set1Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set1Team2 ?? 0;
         }
 
-        if (game.set2Team1 > game.set2Team2) {
+        if ((game.set2Team1 ?? 0) > (game.set2Team2 ?? 0)) {
           homeStanding.setsWon++;
           awayStanding.setsLost++;
 
-          homeStanding.totalPointsWon += game.set2Team1;
-          homeStanding.totalPointsLost += game.set2Team2;
+          homeStanding.totalPointsWon += game.set2Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set2Team2 ?? 0;
 
-          awayStanding.totalPointsLost += game.set2Team1;
-          awayStanding.totalPointsWon += game.set2Team2;
-        } else if (game.set2Team1 < game.set2Team2) {
+          awayStanding.totalPointsLost += game.set2Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set2Team2 ?? 0;
+        } else if ((game.set2Team1 ?? 0) < (game.set2Team2 ?? 0)) {
           homeStanding.setsLost++;
           awayStanding.setsWon++;
 
-          homeStanding.totalPointsWon += game.set2Team1;
-          homeStanding.totalPointsLost += game.set2Team2;
+          homeStanding.totalPointsWon += game.set2Team1 ?? 0;
+          homeStanding.totalPointsLost += game.set2Team2 ?? 0;
 
-          awayStanding.totalPointsLost += game.set2Team1;
-          awayStanding.totalPointsWon += game.set2Team2;
+          awayStanding.totalPointsLost += game.set2Team1 ?? 0;
+          awayStanding.totalPointsWon += game.set2Team2 ?? 0;
         }
 
         if ((game.set3Team1 ?? 0) !== 0 && (game.set3Team2 ?? 0) !== 0) {
-          if (game.set3Team1 > game.set3Team2) {
+          if ((game.set3Team1 ?? 0) > (game.set3Team2 ?? 0)) {
             homeStanding.setsWon++;
             awayStanding.setsLost++;
 
-            homeStanding.totalPointsWon += game.set3Team1;
-            homeStanding.totalPointsLost += game.set3Team2;
+            homeStanding.totalPointsWon += game.set3Team1 ?? 0;
+            homeStanding.totalPointsLost += game.set3Team2 ?? 0;
 
-            awayStanding.totalPointsLost += game.set3Team1;
-            awayStanding.totalPointsWon += game.set3Team2;
-          } else if (game.set3Team1 < game.set3Team2) {
+            awayStanding.totalPointsLost += game.set3Team1 ?? 0;
+            awayStanding.totalPointsWon += game.set3Team2 ?? 0;
+          } else if ((game.set3Team1 ?? 0) < (game.set3Team2 ?? 0)) {
             homeStanding.setsLost++;
             awayStanding.setsWon++;
 
-            homeStanding.totalPointsWon += game.set3Team1;
-            homeStanding.totalPointsLost += game.set3Team2;
+            homeStanding.totalPointsWon += game.set3Team1 ?? 0;
+            homeStanding.totalPointsLost += game.set3Team2 ?? 0;
 
-            awayStanding.totalPointsLost += game.set3Team1;
-            awayStanding.totalPointsWon += game.set3Team2;
+            awayStanding.totalPointsLost += game.set3Team1 ?? 0;
+            awayStanding.totalPointsWon += game.set3Team2 ?? 0;
           }
         }
       }
@@ -189,9 +202,9 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         acc.faller = false;
 
         // Calculate if the team is promoted or relegated based on the position and the draw's amount of risers/fallers
-        if (position <= draw.risers) {
+        if (position <= (draw.risers ?? 0)) {
           acc.riser = true;
-        } else if (position > standings.size - draw.fallers) {
+        } else if (position > standings.size - (draw.fallers ?? 0)) {
           acc.faller = true;
         }
 
@@ -232,9 +245,13 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
   ) {
     const teams = new Map<string, Team>();
 
-    await runParrallel(
+    await runParallel(
       encounters.map(async (e) => {
         try {
+          if (!e.homeTeamId || !e.awayTeamId) {
+            return;
+          }
+
           if (!teams.has(e.homeTeamId) && e.homeTeamId) {
             const homeTeam = await e.getHome({
               transaction: this.transaction,
@@ -277,7 +294,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
   private async _getStanding(draw: DrawCompetition, teams: Team[]) {
     const teamStandings = new Map<string, Standing>();
 
-    await runParrallel(
+    await runParallel(
       teams.map(async (team) => {
         teamStandings.set(team.id, await this._standingTeam(draw, team));
       })

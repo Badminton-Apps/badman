@@ -26,7 +26,7 @@ export class FixGendersRunner {
 
     // corret gender for incorrect places
     for (const place of lastplaces) {
-      place.gender = place.player.gender;
+      place.gender = place.player?.gender;
       await place.save({ transaction, hooks: false });
     }
 
@@ -42,7 +42,7 @@ export class FixGendersRunner {
 
     // corret gender for incorrect places
     for (const place of places) {
-      place.gender = place.player.gender;
+      place.gender = place.player?.gender;
       await place.save({ transaction, hooks: false });
     }
 

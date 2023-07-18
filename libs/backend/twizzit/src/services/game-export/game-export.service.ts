@@ -27,7 +27,7 @@ export class GameExportService {
     });
 
     const encounters = await EncounterCompetition.findAll({
-      attributes: ['id', 'date'],
+      attributes: ['id', 'date', 'homeScore', 'awayScore'],
       where: {
         date: {
           [Op.between]: [
@@ -79,15 +79,26 @@ export class GameExportService {
         Type: 'Competitie',
         Seizoen: `${year}-${parseInt(`${year}`) + 1}`,
         Datum: moment.tz(game.date, 'Europe/Brussels').format('DD/MM/YYYY'),
-        'Start tijdstip': moment.tz(game.date, 'Europe/Brussels').format('HH:mm'),
-        'Eind tijdstip': moment.tz(game.date, 'Europe/Brussels').add(2, 'hours').format('HH:mm'),
-        'Tijdstip afspraak': moment.tz(game.date, 'Europe/Brussels').subtract(15, 'minute').format('HH:mm'),
+        'Start tijdstip': moment
+          .tz(game.date, 'Europe/Brussels')
+          .format('HH:mm'),
+        'Eind tijdstip': moment
+          .tz(game.date, 'Europe/Brussels')
+          .add(2, 'hours')
+          .format('HH:mm'),
+        'Tijdstip afspraak': moment
+          .tz(game.date, 'Europe/Brussels')
+          .subtract(15, 'minute')
+          .format('HH:mm'),
         Thuisteam: homeTeam.name,
         Uitteam: awayTeam.name,
         Resource: null,
         'Part (%)': null,
         Omschrijving: null,
-        Score: null,
+        Score:
+          game.homeScore && game.awayScore
+            ? `${game.homeScore} - ${game.awayScore}`
+            : null,
         'Score details': null,
       };
     });

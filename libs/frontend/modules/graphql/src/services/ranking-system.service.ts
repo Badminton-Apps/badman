@@ -14,6 +14,7 @@ const WATCH_SYSTEM_KEY = 'system.id';
 export class RankingSystemService {
   public watchSysem$ = new BehaviorSubject<RankingSystem | null>(null);
 
+
   constructor(
     private apollo: Apollo,
     @Inject(PLATFORM_ID) private platformId: string,

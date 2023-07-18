@@ -64,7 +64,7 @@ export class ClubTeamsComponent implements OnInit {
 
   // signals
   teams?: Signal<Team[] | undefined>;
-  loading = signal(false);
+  loading = signal(true);
 
   // Inputs
   @Input({ required: true }) clubId?: string;

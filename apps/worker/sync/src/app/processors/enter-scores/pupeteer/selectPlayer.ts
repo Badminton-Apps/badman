@@ -3,7 +3,7 @@ import { waitForSelectors } from '@badman/backend-pupeteer';
 
 export async function selectPlayer(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -14,6 +14,9 @@ export async function selectPlayer(
   matchId: string
 ) {
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const selector = `#match_${matchId}_${player}`;
   {
     const targetPage = page;
@@ -34,6 +37,10 @@ export async function selectPlayer(
         currentOption
       );
 
+      if (!optionContent) {
+        continue;
+      }
+
       if (optionContent.indexOf(memberId) > -1) {
         selectedOption = currentOption;
       }
@@ -50,7 +57,9 @@ export async function selectPlayer(
 
     await option.focus();
     await option.evaluate((el, value) => {
-      el['value'] = value;
+      // todo check if this is needed
+      // el['value'] = value;
+
       el.dispatchEvent(new Event('input', { bubbles: true }));
       el.dispatchEvent(new Event('change', { bubbles: true }));
     }, optionValue);

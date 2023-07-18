@@ -2,6 +2,11 @@ import { Player } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as webPush from 'web-push';
+import {
+  RequestOptions,
+  WebPushError,
+  setVapidDetails
+} from 'web-push';
 
 @Injectable()
 export class PushService {
@@ -9,20 +14,20 @@ export class PushService {
   private isPushEnabled = false;
 
   constructor(configSerice: ConfigService) {
-    if (
-      configSerice.get('VAPID_PUBLIC_KEY') &&
-      configSerice.get('VAPID_PRIVATE_KEY')
-    ) {
-      webPush.setVapidDetails(
+    const publicVapidKey = configSerice.get('VAPID_PUBLIC_KEY');
+    const privateVapidKey = configSerice.get('VAPID_PRIVATE_KEY');
+
+    if (publicVapidKey && privateVapidKey) {
+      setVapidDetails(
         'mailto:info@badman.app',
-        configSerice.get('VAPID_PUBLIC_KEY'),
-        configSerice.get('VAPID_PRIVATE_KEY')
+        publicVapidKey,
+        privateVapidKey
       );
       this.isPushEnabled = true;
     }
   }
 
-  async sendNotification(player: Player, data: webPush.RequestOptions) {
+  async sendNotification(player: Player, data: RequestOptions) {
     if (!this.isPushEnabled) {
       return;
     }
@@ -34,7 +39,7 @@ export class PushService {
         await webPush.sendNotification(sub, JSON.stringify(data));
         this.logger.debug(`Sent push notification to ${sub.endpoint}`);
       } catch (error) {
-        if (error.statusCode === 410) {
+        if (error instanceof WebPushError && error.statusCode === 410) {
           // Remove unused subscription
           settings.pushSubscriptions = settings.pushSubscriptions.filter(
             (s) => s.endpoint !== sub.endpoint

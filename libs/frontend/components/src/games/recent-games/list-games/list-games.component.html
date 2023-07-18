@@ -17,14 +17,15 @@
   </mat-button-toggle-group>
 </form>
 
-<ng-container *ngIf="recentGames$ | async as games;">
+<ng-container *ngIf="recentGames$ | async as games">
   <div
     class="game"
     *ngFor="let game of games"
     [ngClass]="{
       double: game.gameType === 'D',
       mix: game.gameType === 'MX',
-      single: game.gameType === 'S'
+      single: game.gameType === 'S',
+      wonByPlayer: getWonStatusForPlayer(game)
     }"
   >
     <div class="game__extra" *ngIf="getExtra(game) as extra">
@@ -34,7 +35,13 @@
       <div>{{ game?.playedAt | amDateFormat : 'llll' }}</div>
     </div>
     <div class="game__play">
-      <div class="team team1" [ngClass]="{ won: game.winner === 1 }">
+      <div
+        class="team team1"
+        [ngClass]="{
+          won: game.winner === 1,
+          isTeamOfPlayer: this.isTeamOfPlayer(game, 1)
+        }"
+      >
         <div class="player" *ngIf="this.getPlayer(game, 1, 1) as p1t1">
           <a [routerLink]="['/player', p1t1?.id]"
             >{{ p1t1?.fullName }}
@@ -79,7 +86,13 @@
           {{ game.set3Team1 }} - {{ game.set3Team2 }}
         </div>
       </div>
-      <div class="team team2" [ngClass]="{ won: game.winner === 2 }">
+      <div
+        class="team team2"
+        [ngClass]="{
+          won: game.winner === 2,
+          isTeamOfPlayer: this.isTeamOfPlayer(game, 2)
+        }"
+      >
         <div class="player" *ngIf="this.getPlayer(game, 1, 2) as p1t2">
           <a [routerLink]="['/player', p1t2?.id]">
             <ng-container *ngIf="this.getRanking(game, p1t2) as ranking"

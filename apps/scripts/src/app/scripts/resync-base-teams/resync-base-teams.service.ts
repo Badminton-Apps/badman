@@ -9,6 +9,7 @@ import * as XLSX from 'xlsx';
 import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize';
 import moment from 'moment';
+import { sortComments, sortPlaces } from '@badman/utils';
 
 @Injectable()
 export class ResyncBaseTeamsService {
@@ -18,7 +19,7 @@ export class ResyncBaseTeamsService {
   constructor(private _sequelize: Sequelize) {}
 
   async resyncBaseTeams() {
-    const transaction = await this._sequelize.transaction(); 
+    const transaction = await this._sequelize.transaction();
 
     try {
       this.logger.log('Starting resync');
@@ -34,7 +35,7 @@ export class ResyncBaseTeamsService {
 
   private async setPlayerIndexes(transaction?: Transaction) {
     const workbook = XLSX.readFile('./Lijst_index_seizoen_2022-2023.xlsx');
-    const rows = XLSX.utils.sheet_to_json(
+    const rows = XLSX.utils.sheet_to_json<Row>(
       workbook.Sheets[workbook.SheetNames[0]]
     );
 
@@ -44,6 +45,10 @@ export class ResyncBaseTeamsService {
       },
       transaction,
     });
+
+    if (!primarySystem) {
+      throw new Error('No primary ranking system found');
+    }
 
     for (const row of rows) {
       let p = await Player.findOne({
@@ -78,18 +83,24 @@ export class ResyncBaseTeamsService {
         transaction,
       });
 
-      const place = await p.getRankingPlaces({
+      const places = await p.getRankingPlaces({
         where: {
           systemId: primarySystem.id,
           rankingDate: this.rankingDate,
         },
       });
 
-      if (place.length > 0) {
-        place[0].single = row['Klassement enkel'];
-        place[0].double = row['Klassement dubbel'];
-        place[0].mix = row['Klassement gemengd'];
-        await place[0].save({ transaction });
+      if (places.length > 0) {
+        // get last place
+        const place = places.sort(sortPlaces)?.[0];
+        if (!place) {
+          throw new Error('No place found');
+        }
+
+        place.single = row['Klassement enkel'];
+        place.double = row['Klassement dubbel'];
+        place.mix = row['Klassement gemengd'];
+        await place.save({ transaction });
       } else {
         if (p.competitionPlayer) {
           const rankingPlace = new RankingPlace({
@@ -103,8 +114,6 @@ export class ResyncBaseTeamsService {
           await rankingPlace.save({ transaction });
         }
       }
-
-    
     }
   }
 
@@ -141,4 +150,14 @@ export class ResyncBaseTeamsService {
       }
     }
   }
+}
+
+interface Row {
+  Lidnummer: string;
+  Voornaam: string;
+  Achternaam: string;
+  Type: string;
+  'Klassement enkel': number;
+  'Klassement dubbel': number;
+  'Klassement gemengd': number;
 }

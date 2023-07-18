@@ -4,7 +4,7 @@ import { Page } from 'puppeteer';
 
 export async function getViaRanking(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -13,6 +13,9 @@ export async function getViaRanking(
   player: Player
 ) {
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const url = `https://www.toernooi.nl/ranking/`;
   let count = 0;
 
@@ -49,7 +52,7 @@ export async function getViaRanking(
     const targetPage = page;
     const selector = ['#cphPage_cphPage_cphPage_tbxFind'];
     const element = await waitForSelector(selector, targetPage, timeout);
-    await element.type(player.memberId);
+    await element.type(player.memberId ?? '');
   }
 
   {

@@ -26,6 +26,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
 import {
   HasClaimComponent,
+  OpenCloseChangeEncounterDateDialogComponent,
   OpenCloseDateDialogComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
@@ -210,10 +211,14 @@ export class DetailPageComponent implements OnInit {
     ]);
   }
 
-  setOpenClose() {
+  setOpenCloseEnrollents() {
     // open dialog
     const ref = this.dialog.open(OpenCloseDateDialogComponent, {
-      data: { event: this.eventCompetition },
+      data: {
+        openDate: this.eventCompetition.openDate,
+        closeDate: this.eventCompetition.closeDate,
+        title: 'all.competition.menu.open_close_enrollments',
+      },
       width: '400px',
     });
 
@@ -238,6 +243,56 @@ export class DetailPageComponent implements OnInit {
                 id: this.eventCompetition.id,
                 openDate: this.eventCompetition.openDate,
                 closeDate: this.eventCompetition.closeDate,
+              },
+            },
+          })
+          .subscribe(() => {
+            this.matSnackBar.open(
+              `Competition ${this.eventCompetition.name} open/close dates updated`,
+              'Close',
+              {
+                duration: 2000,
+              }
+            );
+          });
+      }
+    });
+  }
+
+  setOpenCloseChangeEncounters() {
+    // open dialog
+    const ref = this.dialog.open(OpenCloseChangeEncounterDateDialogComponent, {
+      data: {
+        openDate: this.eventCompetition.changeOpenDate,
+        closeDate: this.eventCompetition.changeCloseDate,
+        requestDate: this.eventCompetition.changeCloseRequestDate,
+      },
+      width: '400px',
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        this.eventCompetition.changeOpenDate = result.openDate;
+        this.eventCompetition.changeCloseDate = result.closeDate;
+        this.eventCompetition.changeCloseRequestDate = result.requestDate;
+
+        this.apollo
+          .mutate({
+            mutation: gql`
+              mutation UpdateEventCompetition(
+                $data: EventCompetitionUpdateInput!
+              ) {
+                updateEventCompetition(data: $data) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              data: {
+                id: this.eventCompetition.id,
+                changeOpenDate: this.eventCompetition.changeOpenDate,
+                changeCloseDate: this.eventCompetition.changeCloseDate,
+                changeCloseRequestDate: this.eventCompetition.changeCloseRequestDate,
               },
             },
           })

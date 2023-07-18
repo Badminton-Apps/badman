@@ -1,9 +1,9 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType({ description: 'A AvailiblyDay' })
 export class AvailiblyDayType {
-  @Field({ nullable: true })
-  day:
+  @Field(() => String, { nullable: true })
+  day?:
     | 'monday'
     | 'tuesday'
     | 'wednesday'
@@ -11,18 +11,18 @@ export class AvailiblyDayType {
     | 'friday'
     | 'saturday'
     | 'sunday';
-  @Field({ nullable: true })
-  startTime: string;
-  @Field({ nullable: true })
-  endTime: string;
-  @Field({ nullable: true })
-  courts: number;
+  @Field(() => String, { nullable: true })
+  startTime?: string;
+  @Field(() => String, { nullable: true })
+  endTime?: string;
+  @Field(() => Int, { nullable: true })
+  courts?: number;
 }
 
 @InputType({ description: 'A AvailiblyDay' })
 export class AvailiblyDayInputType {
-  @Field({ nullable: true })
-  day:
+  @Field(() => String, { nullable: true })
+  day?:
     | 'monday'
     | 'tuesday'
     | 'wednesday'
@@ -30,10 +30,10 @@ export class AvailiblyDayInputType {
     | 'friday'
     | 'saturday'
     | 'sunday';
-  @Field({ nullable: true })
-  startTime: string;
-  @Field({ nullable: true })
-  endTime: string;
-  @Field({ nullable: true })
-  courts: number;
+  @Field(() => String, { nullable: true })
+  startTime?: string;
+  @Field(() => String, { nullable: true })
+  endTime?: string;
+  @Field(() => Int, { nullable: true })
+  courts?: number;
 }

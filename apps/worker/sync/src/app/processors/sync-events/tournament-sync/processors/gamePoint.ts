@@ -11,17 +11,23 @@ import { StepOptions, StepProcessor } from '../../../../processing';
 import { Logger } from '@nestjs/common';
 
 export class TournamentSyncPointProcessor extends StepProcessor {
-  public event: EventTournament;
+  public event?: EventTournament;
 
   constructor(private pointService: PointsService, options?: StepOptions) {
-    options.logger = options.logger || new Logger(TournamentSyncPointProcessor.name);
+    if (!options) {
+      options = {};
+    }
+
+    options.logger =
+      options.logger || new Logger(TournamentSyncPointProcessor.name);
     super(options);
   }
 
   public async process(): Promise<void> {
-    const subEvents = await this.event.getSubEventTournaments({
-      transaction: this.transaction,
-    });
+    const subEvents =
+      (await this.event?.getSubEventTournaments({
+        transaction: this.transaction,
+      })) ?? [];
     let totalGames = 0;
     let totalWithoutPoints = 0;
 
@@ -31,7 +37,7 @@ export class TournamentSyncPointProcessor extends StepProcessor {
         transaction: this.transaction,
       });
       for (const group of groups) {
-        for (const rankingSystem of group.rankingSystems) {
+        for (const rankingSystem of group.rankingSystems ?? []) {
           const draws = await subEvent.getDrawTournaments({
             transaction: this.transaction,
           });
@@ -69,7 +75,7 @@ export class TournamentSyncPointProcessor extends StepProcessor {
           });
 
           const gamesWithoutPoints = games.filter(
-            (game) => game.rankingPoints.length === 0
+            (game) => game.rankingPoints?.length === 0
           );
 
           if (gamesWithoutPoints.length > 0) {

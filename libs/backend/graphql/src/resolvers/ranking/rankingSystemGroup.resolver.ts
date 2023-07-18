@@ -82,7 +82,7 @@ export class RankingGroupsResolver {
     @Args('tournaments', { type: () => [ID], nullable: true })
     tournaments: string[]
   ) {
-    if (!user.hasAnyPermission(['add:event'])) {
+    if (!await user.hasAnyPermission(['add:event'])) {
       throw new UnauthorizedException(
         `You do not have permission to add subevents to a ranking group`
       );
@@ -134,7 +134,7 @@ export class RankingGroupsResolver {
     @Args('tournaments', { type: () => [ID], nullable: true })
     tournaments: string[]
   ) {
-    if (!user.hasAnyPermission(['remove:event'])) {
+    if (!await user.hasAnyPermission(['remove:event'])) {
       throw new UnauthorizedException(
         `You do not have permission to remove subevents to a ranking group`
       );
@@ -206,6 +206,9 @@ export class RankingGroupsResolver {
       );
       if (remaining.length === 0) {
         const event = await EventCompetition.findByPk(eventId);
+        if (!event) {
+          throw new NotFoundException(`${EventCompetition.name}: ${eventId}`);
+        }
         event.official = false;
         await event.save({ transaction });
       }
@@ -241,6 +244,9 @@ export class RankingGroupsResolver {
       );
       if (remaining.length === 0) {
         const event = await EventTournament.findByPk(eventId);
+        if (!event) {
+          throw new NotFoundException(`${EventCompetition.name}: ${eventId}`);
+        }
         event.official = false;
         await event.save({ transaction });
       }
