@@ -4,7 +4,7 @@ import { Logger } from '@nestjs/common';
 
 export async function hasTime(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -14,9 +14,12 @@ export async function hasTime(
     logger?: Logger;
   }
 ) {
-  const { logger } = args;
+  const { logger } = args || {};
   logger?.verbose('checkTime');
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const selector = `.content .wrapper--legacy tbody`;
   {
     const targetPage = page;
@@ -31,11 +34,11 @@ export async function hasTime(
       if (header) {
         // logger.verbose(`Processing row`);
         const text = await header.evaluate((el) => el.textContent);
-        if (text.indexOf('Tijdstip') !== -1) {
+        if (text?.indexOf('Tijdstip') !== -1) {
           const td = await row.$('td');
           if (td) {
             const text = await td.evaluate((el) => el.textContent);
-            if (text.length > 0) {
+            if ((text?.length ?? 0) > 0) {
               hasTime = true;
             }
           }

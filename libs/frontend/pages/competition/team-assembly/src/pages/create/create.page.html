@@ -2,14 +2,19 @@
 
 <ng-container *ngIf="this.formGroup">
   <section class="select-encounter">
+    <badman-select-season
+      [group]="formGroup"
+      [updateUrl]="true"
+    ></badman-select-season>
+
     <badman-select-club
-      [needsPermission]="false"
       [group]="formGroup"
       [updateUrl]="true"
     ></badman-select-club>
 
     <badman-select-team
       [updateUrl]="true"
+      [updateOn]="['club', 'season']"
       [group]="formGroup"
     ></badman-select-team>
 
@@ -64,8 +69,12 @@
       </div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button [matDialogClose]="true">{{'all.button.add' | translate}}</button>
-      <button mat-button matDialogClose color="primary">{{'all.button.cancel' | translate}}</button>
+      <button mat-button [matDialogClose]="true">
+        {{'all.button.add' | translate}}
+      </button>
+      <button mat-button matDialogClose color="primary">
+        {{'all.button.cancel' | translate}}
+      </button>
     </mat-dialog-actions>
   </ng-template>
 </ng-container>

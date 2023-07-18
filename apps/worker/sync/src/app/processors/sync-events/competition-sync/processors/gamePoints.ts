@@ -13,32 +13,39 @@ import { StepOptions, StepProcessor } from '../../../../processing';
 import { Logger } from '@nestjs/common';
 
 export class CompetitionSyncPointProcessor extends StepProcessor {
-  public event: EventCompetition;
+  public event?: EventCompetition;
 
   constructor(private pointService: PointsService, options?: StepOptions) {
+    if (!options) {
+      options = {};
+    }
     options.logger =
       options.logger || new Logger(CompetitionSyncPointProcessor.name);
     super(options);
   }
 
   public async process(): Promise<void> {
-    const subEvents = await this.event.getSubEventCompetitions({
-      transaction: this.transaction,
-    });
+    const subEvents =
+      (await this.event?.getSubEventCompetitions({
+        transaction: this.transaction,
+      })) ?? [];
     let totalGames = 0;
     let totalWithoutPoints = 0;
 
     for (const subEvent of subEvents) {
       const index = subEvents.indexOf(subEvent);
       const progress = (index / subEvents.length) * 100;
-      this.logger.debug(`Syncing points for ${subEvent.name} (${progress.toFixed(2)}%)`);
+      this.logger.debug(
+        `Syncing points for ${subEvent.name} (${progress.toFixed(2)}%)`
+      );
 
       const groups = await subEvent.getRankingGroups({
         include: [{ model: RankingSystem }],
         transaction: this.transaction,
       });
+
       for (const group of groups) {
-        for (const rankingSystem of group.rankingSystems) {
+        for (const rankingSystem of group.rankingSystems ?? []) {
           const encounters = (
             await subEvent.getDrawCompetitions({
               include: [{ model: EncounterCompetition }],
@@ -81,7 +88,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
           });
 
           const gamesWithoutPoints = games.filter(
-            (game) => game.rankingPoints.length === 0
+            (game) => game.rankingPoints?.length === 0
           );
 
           if (gamesWithoutPoints.length > 0) {

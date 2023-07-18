@@ -5355,7 +5355,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: null,
+      memberId: undefined,
     };
   }
   if (
@@ -5365,7 +5365,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: null,
+      memberId: undefined,
     };
   }
   if (
@@ -5375,7 +5375,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: null,
+      memberId: undefined,
     };
   }
   if (
@@ -5385,7 +5385,7 @@ export const correctWrongPlayers = (player: {
   ) {
     return {
       ...player,
-      memberId: null,
+      memberId: undefined,
     };
   }
   if (

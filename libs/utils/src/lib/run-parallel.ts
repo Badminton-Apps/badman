@@ -1,4 +1,4 @@
-export async function runParrallel<T>(
+export async function runParallel<T>(
   promises: Promise<T>[],
   parallelism = 10
 ): Promise<T[]> {

@@ -24,7 +24,7 @@ export class ImageController {
   @Get('/')
   async getImage(
     @Res() res: FastifyReply,
-    @Query() query: { title: string; description }
+    @Query() query: { title: string; description: string }
   ) {
     const title = this.formatTitle(query.title);
     const description = query.description;
@@ -68,17 +68,28 @@ export class ImageController {
     res.type('image/png').send(image);
   }
 
-  private getMaxNextLine(input, maxChars = 17) {
+  private getMaxNextLine(input: string, maxChars = 17) {
     // Split the string into an array of words.
     const allWords = input.split(' ');
     // Find the index in the words array at which we should stop or we will exceed
     // maximum characters.
-    const lineIndex = allWords.reduce((prev, cur, index) => {
-      if (prev?.done) return prev;
-      const endLastWord = prev?.position || 0;
-      const position = endLastWord + 1 + cur.length;
-      return position >= maxChars ? { done: true, index } : { position, index };
-    });
+    // Find the index in the words array at which we should stop or we will exceed
+    const lineIndex = allWords.reduce(
+      (
+        prev: { done: boolean; index: number; position?: number | undefined },
+        cur: string,
+        index: number
+      ): { done: boolean; index: number; position?: number | undefined } => {
+        if (prev?.done) return prev;
+        const endLastWord: number = prev?.position || 0;
+        const position: number = endLastWord + 1 + cur.length;
+        return position >= maxChars
+          ? { done: true, index }
+          : { done: false, position, index };
+      },
+      { done: false, index: -1, position: undefined }
+    );
+
     // Using the index, build a string for this line ...
     const line = allWords.slice(0, lineIndex.index).join(' ');
     // And determine what's left.
@@ -87,7 +98,7 @@ export class ImageController {
     return { line, remainingChars };
   }
 
-  private formatTitle(title) {
+  private formatTitle(title: string) {
     let output = [];
     // If the title is 40 characters or longer, look to add ellipses at the end of
     // the second line.

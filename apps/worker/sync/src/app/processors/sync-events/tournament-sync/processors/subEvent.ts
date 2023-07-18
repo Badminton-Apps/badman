@@ -24,8 +24,8 @@ export interface SubEventStepData {
 }
 
 export class TournamentSyncSubEventProcessor extends StepProcessor {
-  public event: EventTournament;
-  public existed: boolean;
+  public event?: EventTournament;
+  public existed?: boolean;
 
   // Temporary argument
 
@@ -34,6 +34,10 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
+    if (!options) {
+      options = {};
+    }
+
     options.logger =
       options.logger || new Logger(TournamentSyncSubEventProcessor.name);
     super(options);
@@ -64,7 +68,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       const dbSubEvents = subEvents.filter(
         (r) => r.visualCode === `${xmlEvent.Code}`
       );
-      let dbSubEvent: SubEventTournament = null;
+      let dbSubEvent: SubEventTournament | null = null;
 
       if (dbSubEvents.length === 1) {
         dbSubEvent = dbSubEvents[0];
@@ -170,7 +174,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
     return returnSubEvents;
   }
 
-  private getGameType(xmlEvent: XmlTournamentEvent): GameType {
+  private getGameType(xmlEvent: XmlTournamentEvent): GameType | undefined {
     switch (xmlEvent.GameTypeID) {
       case XmlGameTypeID.Doubles:
         // Stupid fix but should work
@@ -189,7 +193,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
     }
   }
 
-  private getEventType(xmlEvent: XmlTournamentEvent): SubEventTypeEnum {
+  private getEventType(xmlEvent: XmlTournamentEvent): SubEventTypeEnum | undefined {
     switch (xmlEvent.GenderID) {
       case XmlGenderID.Male:
       case XmlGenderID.Boy:

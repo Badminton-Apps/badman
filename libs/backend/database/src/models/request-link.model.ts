@@ -16,6 +16,7 @@ import {
 } from 'sequelize';
 import { Player } from './player.model';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
@@ -27,21 +28,21 @@ export class RequestLink extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
-  @Column
-  sub: string;
+  @Field(() => String, {nullable: true })
+  @Column(DataType.STRING)
+  sub?: string;
 
   @BelongsTo(() => Player, 'playerId')
-  player: Player;
+  player?: Relation<Player>;
 
   @ForeignKey(() => Player)
   @Index
-  @Field({ nullable: true })
-  @Column
-  playerId: string;
+  @Field(() => ID, {nullable: true })
+  @Column(DataType.UUIDV4)
+  playerId?: string;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;

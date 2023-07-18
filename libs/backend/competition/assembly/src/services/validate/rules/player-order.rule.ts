@@ -1,11 +1,31 @@
 import { Player } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
 import {
-  AssemblyValidationData,
   AssemblyOutput,
+  AssemblyValidationData,
   AssemblyValidationError,
 } from '../../../models';
 import { Rule } from './_rule.base';
+
+export type PlayerOrderRuleSingleParams = {
+  player1: Partial<Player> & { ranking: number };
+  player2: Partial<Player> & { ranking: number };
+  game1: string;
+  game2: string;
+};
+
+export type PlayerOrderRuleDoubleParams = {
+  team1player1: Partial<Player> & { ranking: number };
+  team1player2: Partial<Player> & { ranking: number };
+  team2player1: Partial<Player> & { ranking: number };
+  team2player2: Partial<Player> & { ranking: number };
+  game1: string;
+  game2: string;
+};
+
+export type PlayerOrderRuleParams =
+  | PlayerOrderRuleSingleParams
+  | PlayerOrderRuleDoubleParams;
 
 export class PlayerOrderRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
@@ -22,69 +42,73 @@ export class PlayerOrderRule extends Rule {
       system,
     } = assembly;
 
-    let errors = [] as AssemblyValidationError[];
+    let errors = [] as AssemblyValidationError<PlayerOrderRuleParams>[];
 
-    errors.push(
-      this._checkSingle(
-        single1,
-        single2,
-        'single1',
-        'single2',
-        system.amountOfLevels
-      )
+    if (!system?.amountOfLevels) {
+      throw new Error('System is not defined');
+    }
+
+    const s1 = this._checkSingle(
+      'single1',
+      'single2',
+      system.amountOfLevels,
+      single1,
+      single2
     );
-    errors.push(
-      this._checkSingle(
-        single3,
-        single4,
-        'single3',
-        'single4',
-        system.amountOfLevels
-      )
+    if (s1) errors.push(s1);
+
+    const s3 = this._checkSingle(
+      'single3',
+      'single4',
+      system.amountOfLevels,
+      single3,
+      single4
+    );
+    if (s3) errors.push(s3);
+
+    const d3 = this._checkDouble(
+      type == SubEventTypeEnum.MX ? 'mix3' : 'double3',
+      type == SubEventTypeEnum.MX ? 'mix4' : 'double4',
+      system?.amountOfLevels,
+      type == SubEventTypeEnum.MX ? 'mix' : 'double',
+      double3,
+      double4
     );
 
-    errors.push(
-      this._checkDouble(
-        double3,
-        double4,
-        type == SubEventTypeEnum.MX ? 'mix3' : 'double3',
-        type == SubEventTypeEnum.MX ? 'mix4' : 'double4',
-        system.amountOfLevels,
-        type == SubEventTypeEnum.MX ? 'mix' : 'double'
-      )
-    );
+    if (d3) errors.push(d3);
 
     if (type !== SubEventTypeEnum.MX) {
-      // double 1 and 2 are males/females doubles so no validation needed
-      errors.push(
-        this._checkDouble(
-          double1,
-          double2,
-          'double1',
-          'double2',
-          system.amountOfLevels
-        )
+      const d1 = this._checkDouble(
+        'double1',
+        'double2',
+        system?.amountOfLevels,
+        'double',
+        double1,
+        double2
+      );
+      if (d1) errors.push(d1);
+
+      const s2 = this._checkSingle(
+        'single2',
+        'single3',
+
+        system.amountOfLevels,
+        single2,
+        single3
       );
 
-      // Non mixed check 2 with 3
-      errors.push(
-        this._checkSingle(
-          single2,
-          single3,
-          'single2',
-          'single3',
-          system.amountOfLevels
-        )
+      if (s2) errors.push(s2);
+
+      const d2 = this._checkDouble(
+        'double2',
+        'double3',
+        system.amountOfLevels,
+        'double',
+        double2,
+        double3
       );
-      errors.push(
-        this._checkDouble(
-          double2,
-          double3,
-          'double2',
-          'double3',
-          system.amountOfLevels
-        )
-      );
+
+      if (d2) errors.push(d2);
     }
 
     errors = errors.filter((e) => e !== undefined);
@@ -96,13 +120,13 @@ export class PlayerOrderRule extends Rule {
   }
 
   private _checkSingle(
-    player1: Player,
-    player2: Player,
     game1: string,
     game2: string,
-    defaultRanking = 12
-  ): AssemblyValidationError {
-    if (!player1 || !player2) return undefined;
+    defaultRanking = 12,
+    player1?: Player,
+    player2?: Player
+  ): AssemblyValidationError<PlayerOrderRuleSingleParams> | undefined {
+    if (!player1 || !player2) return;
 
     const ranking1 = player1?.rankingLastPlaces?.[0]?.single ?? defaultRanking;
     const ranking2 = player2?.rankingLastPlaces?.[0]?.single ?? defaultRanking;
@@ -126,20 +150,26 @@ export class PlayerOrderRule extends Rule {
         },
       };
     }
-    return undefined;
+    return;
   }
 
   private _checkDouble(
-    double1: [Player, Player],
-    double2: [Player, Player],
     game1: string,
     game2: string,
     defaultRanking = 12,
-    type: 'double' | 'mix' = 'double'
-  ): AssemblyValidationError {
-    if (!double1 || !double2) return undefined;
-    if (!double1[0] || !double1[1] || !double2[0] || !double2[1])
-      return undefined;
+    type: 'double' | 'mix' = 'double',
+    double1?: [Player | undefined, Player | undefined] | undefined,
+    double2?: [Player | undefined, Player | undefined] | undefined
+  ): AssemblyValidationError<PlayerOrderRuleDoubleParams> | undefined {
+    if (!double1 || !double2) return;
+    if (
+      !double1[0]?.id ||
+      !double1[1]?.id ||
+      !double2[0]?.id ||
+      !double2[1]?.id
+    ) {
+      return;
+    }
 
     let t1p1 = double1?.[0];
     let t1p2 = double1?.[1];

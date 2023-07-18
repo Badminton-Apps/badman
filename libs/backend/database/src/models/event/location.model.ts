@@ -53,6 +53,7 @@ import { Court } from './court.model';
 import { EventTournament } from './tournament';
 import { LocationEventTournamentMembership } from './tournament/location-event-membership.model';
 import type { Point } from 'geojson';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -68,68 +69,68 @@ export class Location extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
-  @Column
-  name: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  name?: string;
 
-  @Field({ nullable: true })
-  @Column
-  address: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  address?: string;
 
-  @Field({ nullable: true })
-  @Column
-  street: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  street?: string;
 
-  @Field({ nullable: true })
-  @Column
-  streetNumber: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  streetNumber?: string;
 
-  @Field({ nullable: true })
-  @Column
-  postalcode: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  postalcode?: string;
 
-  @Field({ nullable: true })
-  @Column
-  city: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  city?: string;
 
-  @Field({ nullable: true })
-  @Column
-  state: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  state?: string;
 
-  @Field({ nullable: true })
-  @Column
-  phone: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  phone?: string;
 
-  @Field({ nullable: true })
-  @Column
-  fax: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  fax?: string;
 
   @Column(DataType.GEOMETRY('POINT', 4326))
-  coordinates: Point;
+  coordinates?: Point;
 
   @BelongsToMany(() => Team, () => TeamLocationCompetition)
-  teams: Team[];
+  teams?: Relation<Team[]>;
 
   @BelongsToMany(() => EventTournament, () => LocationEventTournamentMembership)
-  eventTournaments: EventTournament[];
+  eventTournaments?: Relation<EventTournament[]>;
 
   @HasMany(() => Court, 'locationId')
-  courts: Court;
+  courts?: Court;
 
   @BelongsTo(() => Club, 'clubId')
-  club: Club;
+  club?: Relation<Club>;
 
   @ForeignKey(() => Club)
   @Index
-  @Field({ nullable: true })
-  @Column
-  clubId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  clubId?: string;
 
   @HasMany(() => Availability)
-  availabilities: Availability[];
+  availabilities?: Availability[];
 
   // Has many Availability
   getAvailabilities!: HasManyGetAssociationsMixin<Availability>;
@@ -204,10 +205,10 @@ export class Location extends Model {
 @InputType()
 export class PointInput {
   @Field(() => Float)
-  longitude: number;
+  longitude?: number;
 
   @Field(() => Float)
-  latitude: number;
+  latitude?: number;
 }
 
 @InputType()
@@ -216,9 +217,9 @@ export class LocationUpdateInput extends PartialType(
   InputType
 ) {
   @Field(() => PointInput)
-  coordinates: {
-    longitude: number;
-    latitude: number;
+  coordinates?: {
+    longitude?: number;
+    latitude?: number;
   };
 }
 

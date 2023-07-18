@@ -6,7 +6,7 @@ export async function getBrowser(headless = true) {
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
-      '--single-process',
+      // '--single-process',
       '--disable-dev-shm-usage',
     ],
   });
@@ -14,7 +14,7 @@ export async function getBrowser(headless = true) {
 
 export async function selectBadmninton(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -22,6 +22,10 @@ export async function selectBadmninton(
   }
 ) {
   const { page, timeout } = pupeteer;
+
+  if (!page) {
+    throw new Error('No page provided');
+  }
 
   {
     const targetPage = page;
@@ -38,7 +42,7 @@ export async function selectBadmninton(
 export async function waitForSelector(
   selector: string[] | string,
   frame: Page,
-  timeout: number,
+  timeout?: number,
   options: {
     visible?: boolean;
   } = {
@@ -46,7 +50,7 @@ export async function waitForSelector(
   }
 ) {
   if (selector instanceof Array) {
-    let element: ElementHandle<Element> = null;
+    let element: ElementHandle<Element> | null = null;
     for (const part of selector) {
       if (!element) {
         element = await frame.waitForSelector(part, {
@@ -63,7 +67,7 @@ export async function waitForSelector(
         await element.evaluateHandle((el) =>
           el.shadowRoot ? el.shadowRoot : el
         )
-      ).asElement() as ElementHandle<Element>;
+    ).asElement() as ElementHandle<Element>;
     }
     if (!element) {
       throw new Error('Could not find element: ' + selector.join('|'));
@@ -77,22 +81,22 @@ export async function waitForSelector(
   return element;
 }
 
-export async function waitForElement(step, frame: Page, timeout: number) {
-  const count = step.count || 1;
-  const operator = step.operator || '>=';
-  const comp = {
-    '==': (a, b) => a === b,
-    '>=': (a, b) => a >= b,
-    '<=': (a, b) => a <= b,
-  };
-  const compFn = comp[operator];
-  await waitForFunction(async () => {
-    const elements = await querySelectorsAll(step.selectors, frame);
-    return compFn(elements.length, count);
-  }, timeout);
-}
+// export async function waitForElement(step, frame: Page, timeout: number) {
+//   const count = step.count || 1;
+//   const operator = step.operator || '>=';
+//   const comp = {
+//     '==': (a, b) => a === b,
+//     '>=': (a, b) => a >= b,
+//     '<=': (a, b) => a <= b,
+//   };
+//   const compFn = comp[operator];
+//   await waitForFunction(async () => {
+//     const elements = await querySelectorsAll(step.selectors, frame);
+//     return compFn(elements.length, count);
+//   }, timeout);
+// }
 
-export async function querySelectorsAll(selectors, frame) {
+export async function querySelectorsAll(selectors: string[], frame: Page) {
   for (const selector of selectors) {
     const result = await querySelectorAll(selector, frame);
     if (result.length) {
@@ -102,9 +106,12 @@ export async function querySelectorsAll(selectors, frame) {
   return [];
 }
 
-export async function querySelectorAll(selector, frame) {
+export async function querySelectorAll(
+  selector: string | string[],
+  frame: Page
+) {
   if (selector instanceof Array) {
-    let elements = [];
+    let elements: ElementHandle<Element>[] = [];
     let i = 0;
     for (const part of selector) {
       if (i === 0) {
@@ -123,7 +130,7 @@ export async function querySelectorAll(selector, frame) {
       for (const el of elements) {
         const newEl = (
           await el.evaluateHandle((el) => (el.shadowRoot ? el.shadowRoot : el))
-        ).asElement();
+        ).asElement() as ElementHandle<Element>;
         if (newEl) {
           tmpElements.push(newEl);
         }
@@ -140,7 +147,7 @@ export async function querySelectorAll(selector, frame) {
   return element;
 }
 
-export async function waitForFunction(fn, timeout) {
+export async function waitForFunction(fn: () => unknown, timeout: number) {
   let isActive = true;
   setTimeout(() => {
     isActive = false;
@@ -158,7 +165,7 @@ export async function waitForFunction(fn, timeout) {
 export async function waitForSelectors(
   selectors: string[][],
   frame: Page,
-  timeout: number
+  timeout?: number
 ) {
   for (const selector of selectors) {
     try {

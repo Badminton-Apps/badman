@@ -1,5 +1,5 @@
-import { Field } from '@nestjs/graphql';
-import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { Field, ID } from '@nestjs/graphql';
+import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { Player } from '../player.model';
 import { Claim } from './claim.model';
 
@@ -9,12 +9,12 @@ import { Claim } from './claim.model';
 })
 export class PlayerClaimMembership extends Model {
   @ForeignKey(() => Player)
-  @Field({ nullable: true })
-  @Column
-  playerId: number;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  playerId?: string;
 
   @ForeignKey(() => Claim)
-  @Field({ nullable: true })
-  @Column
-  claimId: number;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  claimId?: string;
 }

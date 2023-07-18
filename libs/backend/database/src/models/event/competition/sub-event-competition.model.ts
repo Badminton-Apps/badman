@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -42,6 +42,7 @@ import { EventEntry } from '../entry.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EventCompetition } from './event-competition.model';
 import { RankingGroupSubEventCompetitionMembership } from './group-subevent-membership.model';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -57,33 +58,33 @@ export class SubEventCompetition extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  name: string;
+  @Field(() => String)
+  @Column(DataType.STRING)
+  name!: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   @Column(DataType.ENUM('M', 'F', 'MX', 'MINIBAD'))
-  eventType: SubEventTypeEnum;
+  eventType!: SubEventTypeEnum;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   level?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   maxLevel?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   minBaseIndex?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   maxBaseIndex?: number;
 
   @Field(() => [EventEntry], { nullable: true })
@@ -94,39 +95,39 @@ export class SubEventCompetition extends Model {
       entryType: 'competition',
     },
   })
-  eventEntries: EventEntry[];
+  eventEntries?: Relation<EventEntry[]>;
 
   @Field(() => [RankingGroup], { nullable: true })
   @BelongsToMany(
     () => RankingGroup,
     () => RankingGroupSubEventCompetitionMembership
   )
-  rankingGroups: RankingGroup[];
+  rankingGroups?: Relation<RankingGroup[]>;
 
   @Field(() => [DrawCompetition], { nullable: true })
   @HasMany(() => DrawCompetition, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  drawCompetitions: DrawCompetition[];
+  drawCompetitions?: Relation<DrawCompetition[]>;
 
   @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  eventCompetition?: EventCompetition;
+  eventCompetition?: Relation<EventCompetition>;
 
   @Unique('SubEventCompetitions_unique_constraint')
   @ForeignKey(() => EventCompetition)
-  @Field({ nullable: true })
-  @Column
-  eventId: string;
+  @Field(() => ID)
+  @Column(DataType.UUIDV4)
+  eventId!: string;
 
   @Unique('SubEventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  visualCode: string;
+  @Field(() => ID)
+  @Column(DataType.UUIDV4)
+  visualCode!: string;
 
   // Belongs to many Group
   getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
@@ -182,20 +183,20 @@ export class SubEventCompetition extends Model {
 @ObjectType({ description: 'A SubEventCompetition' })
 export class SubEventCompetitionAverageLevel {
   @Field(() => String, { nullable: true })
-  gender: 'M' | 'F';
+  gender!: 'M' | 'F';
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   single?: number;
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   singleCount?: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   double?: number;
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   doubleCount?: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   mix?: number;
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   mixCount?: number;
 }

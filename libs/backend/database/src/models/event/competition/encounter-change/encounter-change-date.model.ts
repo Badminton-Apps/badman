@@ -1,3 +1,4 @@
+import { ChangeEncounterAvailability } from '@badman/utils';
 import {
   Field,
   ID,
@@ -22,7 +23,8 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { ChangeEncounterAvailability } from '@badman/utils';
+import { Relation } from '../../../../wrapper';
+import { Location } from '../../location.model';
 import { EncounterChange } from './encounter-change.model';
 
 @Table({
@@ -39,27 +41,27 @@ export class EncounterChangeDate extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
   selected?: boolean;
 
   @BelongsTo(() => EncounterChange, {
     foreignKey: 'encounterChangeId',
     onDelete: 'CASCADE',
   })
-  encounterChange?: EncounterChange;
+  encounterChange?: Relation<EncounterChange>;
 
   @ForeignKey(() => EncounterChange)
-  @Field({ nullable: true })
-  @Column
-  encounterChangeId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  encounterChangeId?: string;
 
-  @Field({ nullable: true })
-  @Column
-  date: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  date?: Date;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))
@@ -69,9 +71,24 @@ export class EncounterChangeDate extends Model {
   @Column(DataType.ENUM('POSSIBLE', 'NOT_POSSIBLE'))
   availabilityAway?: ChangeEncounterAvailability;
 
+  @BelongsTo(() => Location, {
+    foreignKey: 'locationId',
+    onDelete: 'CASCADE',
+  })
+  location?: Relation<Location>;
+
+  @ForeignKey(() => Location)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  locationId?: string;
+
   // Belongs to EncounterChange
   getEncounterChange!: BelongsToGetAssociationMixin<EncounterChange>;
   setEncounterChange!: BelongsToSetAssociationMixin<EncounterChange, string>;
+
+  // Has one Location
+  getLocation!: BelongsToGetAssociationMixin<Location>;
+  setLocation!: BelongsToSetAssociationMixin<Location, string>;
 }
 
 @InputType()
@@ -80,6 +97,7 @@ export class EncounterChangeDateUpdateInput extends PartialType(
     'createdAt',
     'updatedAt',
     'encounterChange',
+    'location',
   ] as const),
   InputType
 ) {}

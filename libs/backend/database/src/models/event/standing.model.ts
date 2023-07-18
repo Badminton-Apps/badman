@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { BuildOptions } from 'sequelize';
 import {
   BelongsTo,
@@ -13,6 +13,7 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import { EventEntry } from './entry.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -28,86 +29,99 @@ export class Standing extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @BelongsTo(() => EventEntry, 'entryId')
-  entry?: EventEntry;
+  entry?: Relation<EventEntry>;
 
   @ForeignKey(() => EventEntry)
-  @Field({ nullable: true })
-  @Column
-  entryId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  entryId?: string;
 
-  @Field({ nullable: true })
-  @Column
-  position: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  position?: number;
 
-  @Field({ nullable: true })
-  @Column
-  size: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  size?: number;
 
-  @Field({ nullable: true })
-  @Column
-  points: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  points!: number;
 
-  @Field({ nullable: true })
-  @Column
-  played: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  played!: number;
 
-  @Field({ nullable: true })
-  @Column
-  gamesWon: number;
-  @Field({ nullable: true })
-  @Column
-  gamesLost: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  gamesWon!: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  gamesLost!: number;
 
-  @Field({ nullable: true })
-  @Column
-  setsWon: number;
-  @Field({ nullable: true })
-  @Column
-  setsLost: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  setsWon!: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  setsLost!: number;
 
-  @Field({ nullable: true })
-  @Column
-  totalPointsWon: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  totalPointsWon!: number;
 
-  @Field({ nullable: true })
-  @Column
-  totalPointsLost: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  totalPointsLost!: number;
 
-  @Field({ nullable: true })
-  @Column
-  riser: boolean;
+  @Field(() => Boolean)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  riser!: boolean;
 
-  @Field({ nullable: true })
-  @Column
-  faller: boolean;
+  @Field(() => Boolean)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  faller!: boolean;
 
   /**
    * Competition: encounters won
    * Tournament: Ignored
    */
-  @Field({ nullable: true })
-  @Column
-  won?: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  won!: number;
 
   /**
    * Competition: encounters draw
    * Tournament: Ignored
    */
-  @Field({ nullable: true })
-  @Column
-  tied?: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  tied!: number;
 
   /**
    * Competition: encounters lost
    * Tournament: Ignored
    */
-  @Field({ nullable: true })
-  @Column
-  lost?: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  lost!: number;
 
   restartCount() {
     this.position = 0;

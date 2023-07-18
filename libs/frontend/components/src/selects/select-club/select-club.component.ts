@@ -213,7 +213,8 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       this.#clubs
         .pipe(
           filter((r) => r != null),
-          take(1)
+          take(1),
+          takeUntil(this.destroy$)
         )
         .subscribe(() => {
           this.selectClub(this.control?.value, false);
@@ -254,6 +255,21 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       if (removeOtherParams) {
         queryParams['team'] = undefined;
         queryParams['encounter'] = undefined;
+      }
+
+      // check if the current url is the same as the new url
+      // if so, don't navigate
+      const currentUrl = this.router.url;
+      const newUrl = this.router
+        .createUrlTree([], {
+          relativeTo: this.activatedRoute,
+          queryParams,
+          queryParamsHandling: 'merge',
+        })
+        .toString();
+
+      if (currentUrl == newUrl) {
+        return;
       }
 
       this.router.navigate([], {

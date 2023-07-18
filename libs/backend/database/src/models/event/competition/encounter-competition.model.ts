@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -28,13 +28,16 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+import { Relation } from '../../../wrapper';
+import { Comment } from '../../comment.model';
+import { Notification } from '../../personal';
 import { Player } from '../../player.model';
 import { Team } from '../../team.model';
 import { Game } from '../game.model';
+import { Assembly } from './assembly.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EncounterChange } from './encounter-change';
-import { Notification } from '../../personal';
-import { Assembly } from './assembly.model';
+import { Location } from '../location.model';
 
 @Table({
   timestamps: true,
@@ -50,16 +53,16 @@ export class EncounterCompetition extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
-  @Column
-  date: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  date?: Date;
 
-  @Field({ nullable: true })
-  @Column
-  originalDate: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  originalDate?: Date;
 
   @HasMany(() => Game, {
     foreignKey: 'linkId',
@@ -68,97 +71,110 @@ export class EncounterCompetition extends Model {
       linkType: 'competition',
     },
   })
-  games: Game[];
+  games?: Relation<Game[]>;
 
   @Field(() => DrawCompetition, { nullable: true })
   @BelongsTo(() => DrawCompetition, {
     foreignKey: 'drawId',
     onDelete: 'CASCADE',
   })
-  drawCompetition?: DrawCompetition;
+  drawCompetition?: Relation<DrawCompetition>;
 
   @ForeignKey(() => DrawCompetition)
-  @Field({ nullable: true })
-  @Column
-  drawId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  drawId?: string;
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'homeTeamId')
-  home: Team;
+  home?: Relation<Team>;
 
-  @Field({ nullable: true })
-  @Column
-  homeScore: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  homeScore!: number;
 
   @ForeignKey(() => Team)
-  @Field({ nullable: true })
-  @Column
-  homeTeamId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  homeTeamId?: string;
 
   @Field(() => Team, { nullable: true })
   @BelongsTo(() => Team, 'awayTeamId')
-  away: Team;
+  away?: Relation<Team>;
 
-  @Field({ nullable: true })
-  @Column
-  awayScore: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  awayScore!: number;
 
   @ForeignKey(() => Team)
-  @Field({ nullable: true })
-  @Column
-  awayTeamId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  awayTeamId?: string;
 
-  @Field({ nullable: true })
-  @Column
-  synced: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  synced?: Date;
 
-  @Field({ nullable: true })
-  @Column
-  visualCode: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  visualCode?: string;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'gameLeaderId')
-  gameLeader: Player;
+  gameLeader?: Relation<Player>;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'enteredById')
-  enteredBy: Player;
+  enteredBy?: Relation<Player>;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'acceptedById')
-  acceptedBy: Player;
+  acceptedBy?: Relation<Player>;
 
   @Field(() => Date, { nullable: true })
-  @Column
-  enteredOn: Date;
+  @Column(DataType.DATE)
+  enteredOn?: Date;
 
   @Field(() => Date, { nullable: true })
-  @Column
-  acceptedOn: Date;
+  @Column(DataType.DATE)
+  acceptedOn?: Date;
 
   @Field(() => Boolean, { nullable: true })
-  @Column
-  accepted: boolean;
+  @Column(DataType.BOOLEAN)
+  accepted?: boolean;
 
-  @Field({ nullable: true })
-  @Column
-  shuttle: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  shuttle?: string;
 
-  @Field({ nullable: true })
-  @Column
-  startHour: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  startHour?: string;
 
-  @Field({ nullable: true })
-  @Column
-  endHour: string;
-
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  endHour?: string;
 
   @Field(() => EncounterChange, { nullable: true })
   @HasOne(() => EncounterChange, {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',
   })
-  encounterChange: EncounterChange;
+  encounterChange?: Relation<EncounterChange>;
+
+  @Field(() => Location, { nullable: true })
+  @BelongsTo(() => Location, {
+    foreignKey: 'locationId',
+    onDelete: 'CASCADE',
+  })
+  location?: Relation<Location>;
+
+  @ForeignKey(() => Location)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  locationId?: string;
 
   @HasMany(() => Notification, {
     foreignKey: 'linkId',
@@ -167,14 +183,55 @@ export class EncounterCompetition extends Model {
       linkType: 'encounter',
     },
   })
-  notifications: Notification[];
+  notifications?: Relation<Notification[]>;
 
   @Field(() => [Assembly], { nullable: true })
   @HasMany(() => Assembly, {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',
   })
-  assemblies: Assembly[];
+  assemblies?: Relation<Assembly[]>;
+
+
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'home_comment',
+    },
+  })
+  homeComments?: Relation<Comment[]>;
+
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'away_comment',
+    },
+  })
+  awayComments?: Relation<Comment[]>;
+
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'home_comment_change',
+    },
+  })
+  homeCommentsChange?: Relation<Comment[]>;
+
+  @Field(() => [Comment], { nullable: true })
+  @HasMany(() => Comment, {
+    foreignKey: 'linkId',
+    constraints: false,
+    scope: {
+      linkType: 'away_comment_change',
+    },
+  })
+  awayCommentsChange?: Relation<Comment[]>;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;
@@ -203,6 +260,10 @@ export class EncounterCompetition extends Model {
   getEncounterChange!: HasOneGetAssociationMixin<EncounterChange>;
   setEncounterChange!: HasOneSetAssociationMixin<EncounterChange, string>;
 
+  // Has one Location
+  getLocation!: BelongsToGetAssociationMixin<Location>;
+  setLocation!: BelongsToSetAssociationMixin<Location, string>;
+
   // Belongs to GameLeader
   getGameLeader!: BelongsToGetAssociationMixin<Player>;
   setGameLeader!: BelongsToSetAssociationMixin<Player, string>;
@@ -217,4 +278,48 @@ export class EncounterCompetition extends Model {
   hasAssembly!: HasManyHasAssociationMixin<Assembly, string>;
   hasAssemblies!: HasManyHasAssociationsMixin<Assembly, string>;
   countAssemblies!: HasManyCountAssociationsMixin;
+
+  // Has many HomeComment
+  getHomeComments!: HasManyGetAssociationsMixin<Comment>;
+  setHomeComments!: HasManySetAssociationsMixin<Comment, string>;
+  addHomeComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addHomeComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeHomeComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeHomeComments!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasHomeComment!: HasManyHasAssociationMixin<Comment, string>;
+  hasHomeComments!: HasManyHasAssociationsMixin<Comment, string>;
+  countHomeComments!: HasManyCountAssociationsMixin;
+
+  // Has many AwayComment
+  getAwayComments!: HasManyGetAssociationsMixin<Comment>;
+  setAwayComments!: HasManySetAssociationsMixin<Comment, string>;
+  addAwayComments!: HasManyAddAssociationsMixin<Comment, string>;
+  addAwayComment!: HasManyAddAssociationMixin<Comment, string>;
+  removeAwayComment!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeAwayComments!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasAwayComment!: HasManyHasAssociationMixin<Comment, string>;
+  hasAwayComments!: HasManyHasAssociationsMixin<Comment, string>;
+  countAwayComments!: HasManyCountAssociationsMixin;
+
+  // Has many HomeCommentsChange
+  getHomeCommentsChanges!: HasManyGetAssociationsMixin<Comment>;
+  setHomeCommentsChanges!: HasManySetAssociationsMixin<Comment, string>;
+  addHomeCommentsChanges!: HasManyAddAssociationsMixin<Comment, string>;
+  addHomeCommentsChange!: HasManyAddAssociationMixin<Comment, string>;
+  removeHomeCommentsChange!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeHomeCommentsChanges!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasHomeCommentsChange!: HasManyHasAssociationMixin<Comment, string>;
+  hasHomeCommentsChanges!: HasManyHasAssociationsMixin<Comment, string>;
+  countHomeCommentsChanges!: HasManyCountAssociationsMixin;
+
+  // Has many AwayCommentsChange
+  getAwayCommentsChanges!: HasManyGetAssociationsMixin<Comment>;
+  setAwayCommentsChanges!: HasManySetAssociationsMixin<Comment, string>;
+  addAwayCommentsChanges!: HasManyAddAssociationsMixin<Comment, string>;
+  addAwayCommentsChange!: HasManyAddAssociationMixin<Comment, string>;
+  removeAwayCommentsChange!: HasManyRemoveAssociationMixin<Comment, string>;
+  removeAwayCommentsChanges!: HasManyRemoveAssociationsMixin<Comment, string>;
+  hasAwayCommentsChange!: HasManyHasAssociationMixin<Comment, string>;
+  hasAwayCommentsChanges!: HasManyHasAssociationsMixin<Comment, string>;
+  countAwayCommentsChanges!: HasManyCountAssociationsMixin;
 }

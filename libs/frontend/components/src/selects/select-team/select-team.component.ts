@@ -25,12 +25,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import {
   Observable,
   Subject,
+  combineLatest,
   concatMap,
   distinctUntilChanged,
   map,
@@ -76,6 +76,9 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   dependsOn = 'club';
 
   @Input()
+  updateOn = ['club'];
+
+  @Input()
   updateUrl = false;
 
   @Input()
@@ -108,10 +111,21 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
     if (!previous) {
       console.warn(`Dependency ${this.dependsOn} not found`, previous);
     } else {
-      this.teams$ = previous.valueChanges.pipe(
+      // get all the controls that we need to update on when change
+      const updateOnControls = this.updateOn
+        ?.filter((controlName) => controlName !== this.dependsOn)
+        .map((controlName) => this.group?.get(controlName))
+        .filter((control) => control != null) as FormControl[];
+
+      this.teams$ = combineLatest([
+        previous.valueChanges.pipe(startWith(null)),
+        ...updateOnControls.map((control) =>
+          control?.valueChanges?.pipe(startWith(() => control?.value))
+        ),
+      ]).pipe(
         takeUntil(this.destroy$),
-        startWith(null),
         distinctUntilChanged(),
+        map(() => previous?.value),
         pairwise(),
         switchMap(([prev, next]) => {
           if (prev != null && prev !== next) {
@@ -212,10 +226,26 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         queryParams['encounter'] = undefined;
       }
 
+      // check if the current url is the same as the new url
+      // if so, don't navigate
+      const currentUrl = this.router.url;
+      const newUrl = this.router
+        .createUrlTree([], {
+          relativeTo: this.activatedRoute,
+          queryParams,
+          queryParamsHandling: 'merge',
+        })
+        .toString();
+
+      if (currentUrl == newUrl) {
+        return;
+      }
+
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams,
         queryParamsHandling: 'merge',
+        
       });
     }
   }
@@ -296,7 +326,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.group.removeControl(this.controlName);
+    // this.group.removeControl(this.controlName);
 
     this.destroy$.next();
     this.destroy$.complete();

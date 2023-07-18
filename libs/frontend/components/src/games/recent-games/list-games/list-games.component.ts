@@ -6,6 +6,7 @@ import {
   ElementRef,
   Inject,
   Input,
+  OnDestroy,
   OnInit,
   PLATFORM_ID,
   TransferState,
@@ -25,13 +26,18 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { Game, GamePlayer } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
+import {
+  GameBreakdownType,
+  GameType,
+  getGameResultType,
+  sortGames,
+} from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
-import { map, startWith, tap } from 'rxjs/operators';
+import { map, startWith, tap, takeUntil } from 'rxjs/operators';
 import { LoadingBlockComponent } from '../../../loading-block';
 
 @Component({
@@ -58,7 +64,8 @@ import { LoadingBlockComponent } from '../../../loading-block';
   styleUrls: ['./list-games.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListGamesComponent implements OnInit, AfterViewInit {
+export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   @Input() playerId?: string;
 
   filter: FormGroup<{
@@ -243,6 +250,20 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
     return player?.[this.getGameType(game.gameType ?? GameType.S)];
   }
 
+  getWonStatusForPlayer(game: Game) {
+    return (
+      (game.winner == 1 && this.isTeamOfPlayer(game, 1)) ||
+      (game.winner == 2 && this.isTeamOfPlayer(game, 2))
+    );
+  }
+
+  isTeamOfPlayer(game: Game, team: number) {
+    return game.players
+      ?.filter((p) => p.team == team)
+      ?.map((p) => p.id)
+      ?.includes(this.playerId);
+  }
+
   getPoints(game: Game, team: number) {
     let t1 = this.getPlayer(game, 1, team);
     if (!t1) {
@@ -315,7 +336,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     combineLatest([
-      this.loadMore$,
+      this.loadMore$, 
       this.filter.valueChanges.pipe(
         startWith(this.filter.value),
         // reset the page when the filter changes
@@ -325,32 +346,38 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
           return this.recentGames$.next([]);
         })
       ),
-    ]).subscribe(([, filter]) => {
-      if (this.endOfList) {
-        return;
-      }
-      // Increment the current page and load the next batch of items
-      this.currentPage++;
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([, filter]) => {
+        if (this.endOfList) {
+          return;
+        }
+        // Increment the current page and load the next batch of items
+        this.currentPage++;
 
-      this._loadRecentGamesForPlayer(
-        this.playerId ?? '',
-        this.currentPage,
-        filter
-      ).subscribe((games) => {
-        // Add the new items to the existing list
-        const currentGames = this.recentGames$.getValue();
-        this.recentGames$.next([...currentGames, ...games]);
+        this._loadRecentGamesForPlayer(
+          this.playerId ?? '',
+          this.currentPage,
+          filter
+        )
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((games) => {
+            // Add the new items to the existing list
+            const currentGames = this.recentGames$.getValue();
+            this.recentGames$.next([...currentGames, ...games].sort(sortGames));
+          });
       });
-    });
 
     // Load the first batch of items
     this._loadRecentGamesForPlayer(
       this.playerId ?? '',
       this.currentPage,
       this.filter.value
-    ).subscribe((games) => {
-      this.recentGames$.next(games);
-    });
+    )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((games) => {
+        this.recentGames$.next(games);
+      });
   }
 
   private getGameType(type: GameType) {
@@ -362,5 +389,10 @@ export class ListGamesComponent implements OnInit, AfterViewInit {
       case GameType.MX:
         return 'mix';
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

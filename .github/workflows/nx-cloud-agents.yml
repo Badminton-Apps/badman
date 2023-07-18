@@ -96,10 +96,10 @@ jobs:
       # Set node/npm/yarn versions using volta, with optional overrides provided by the consumer
       - uses: volta-cli/action@v4
         with:
-          node-version: "${{ inputs.node-version }}"
-          npm-version: "${{ inputs.npm-version }}"
-          yarn-version: "${{ inputs.yarn-version }}"
-          package-json-path: "${{ inputs.working-directory || github.workspace }}/package.json"
+          node-version: '${{ inputs.node-version }}'
+          npm-version: '${{ inputs.npm-version }}'
+          yarn-version: '${{ inputs.yarn-version }}'
+          package-json-path: '${{ inputs.working-directory || github.workspace }}/package.json'
 
       # Install pnpm with exact version provided by consumer or fallback to latest
       - name: Install PNPM
@@ -132,6 +132,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-
 
+              - name: Cache Nx
+      - name: Use the node_modules nx cache if available [npm]
+        if: steps.package_manager.outputs.name == 'npm'
+        uses: actions/cache@v3
+        with:
+          path: node_modules/.cache/nx
+          key: cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}
+
       - name: Get pnpm cache directory path
         if: steps.package_manager.outputs.name == 'pnpm'
         id: pnpm-cache-dir-path
@@ -145,6 +155,15 @@ jobs:
           key: ${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-
+      
+      - name: Use the node_modules nx cache if available [pnpm]
+        if: steps.package_manager.outputs.name == 'pnpm'
+        uses: actions/cache@v3
+        with:
+          path: node_modules/.cache/nx
+          key: cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}
 
       - name: Get yarn cache directory path [yarn 1.x]
         if: steps.package_manager.outputs.name == 'yarn' && startsWith(steps.versions.outputs.yarn_version, '1.')
@@ -160,6 +179,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-
 
+      - name: Use the node_modules nx cache if available [yarn]
+        if: steps.package_manager.outputs.name == 'yarn' && startsWith(steps.versions.outputs.yarn_version, '1.')
+        uses: actions/cache@v3
+        with:
+          path: node_modules/.cache/nx
+          key: cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-
+
       - name: Get yarn cache directory path [yarn berry]
         if: steps.package_manager.outputs.name == 'yarn' && !startsWith(steps.versions.outputs.yarn_version, '1.')
         id: yarn-berry-cache-dir-path
@@ -173,6 +201,14 @@ jobs:
           key: ${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-berry-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-berry-
+      - name: Use the node_modules nx cache if available [yarn berry]
+        if: steps.package_manager.outputs.name == 'yarn' && !startsWith(steps.versions.outputs.yarn_version, '1.')
+        uses: actions/cache@v3
+        with:
+          path: node_modules/.cache/nx
+          key: cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-berry-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            cache-nx-${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-yarn-berry-
 
       - name: Process environment-variables
         if: ${{ inputs.environment-variables != '' }}

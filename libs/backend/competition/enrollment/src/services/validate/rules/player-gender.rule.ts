@@ -20,23 +20,35 @@ export class PlayerGenderRule extends Rule {
       team,
       backupPlayers,
     } of enrollment.teams) {
+      if (!team?.id) {
+        continue;
+      }
+
       const errors = [] as EnrollmentValidationError[];
       const warnings = [] as EnrollmentValidationError[];
 
       if (team?.type == SubEventTypeEnum.M) {
         errors.push(
-          ...this._checkGender([...teamPlayers, ...basePlayers], 'M', team)
+          ...this._checkGender(
+            [...(teamPlayers ?? []), ...(basePlayers ?? [])],
+            'M',
+            team
+          )
         );
       } else if (team?.type == SubEventTypeEnum.F) {
         errors.push(
-          ...this._checkGender([...teamPlayers, ...basePlayers], 'F', team)
+          ...this._checkGender(
+            [...(teamPlayers ?? []), ...(basePlayers ?? [])],
+            'F',
+            team
+          )
         );
       }
 
       if (team?.type == SubEventTypeEnum.M) {
-        warnings.push(...this._checkGender(backupPlayers, 'M', team));
+        warnings.push(...this._checkGender(backupPlayers ?? [], 'M', team));
       } else if (team?.type == SubEventTypeEnum.F) {
-        warnings.push(...this._checkGender(backupPlayers, 'F', team));
+        warnings.push(...this._checkGender(backupPlayers ?? [], 'F', team));
       }
 
       results.push({
@@ -65,7 +77,7 @@ export class PlayerGenderRule extends Rule {
         params: {
           player: {
             id: p?.id,
-            fullName: p?.player.fullName,
+            fullName: p?.player?.fullName,
             gender: p?.gender,
           },
           gender,

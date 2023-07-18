@@ -29,6 +29,7 @@ import {
 import { Game } from './game.model';
 import { Location } from './location.model';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -44,25 +45,25 @@ export class Court extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @Unique('unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  name: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  name?: string;
 
   @HasMany(() => Game, 'courtId')
-  games: Game[];
+  games?: Relation<Game[]>;
 
   @BelongsTo(() => Location, 'locationId')
-  location: Location;
+  location?: Relation<Location>;
 
   @ForeignKey(() => Location)
   @Unique('unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  locationId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  locationId?: string;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;

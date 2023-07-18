@@ -1,21 +1,27 @@
 import { EventCompetition, Player } from '@badman/backend-database';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService, XmlGenderID, XmlTournament } from '@badman/backend-visual';
 import {
-  correctWrongPlayers,
-} from '../../../../utils';
+  VisualService,
+  XmlGenderID,
+  XmlTournament,
+} from '@badman/backend-visual';
+import { correctWrongPlayers } from '../../../../utils';
 import { Logger } from '@nestjs/common';
 
 export class CompetitionSyncPlayerProcessor extends StepProcessor {
-  public event: EventCompetition;
+  public event?: EventCompetition;
 
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
-    options.logger = options.logger || new Logger(CompetitionSyncPlayerProcessor.name);
+    if (!options) {
+      options = {};
+    }
+    options.logger =
+      options.logger || new Logger(CompetitionSyncPlayerProcessor.name);
     super(options);
   }
 
@@ -30,7 +36,7 @@ export class CompetitionSyncPlayerProcessor extends StepProcessor {
 
       return {
         player: correctWrongPlayers({
-          memberId: xmlPlayer?.MemberID ? `${xmlPlayer?.MemberID}` : null,
+          memberId: xmlPlayer?.MemberID ? `${xmlPlayer?.MemberID}` : undefined,
           firstName: xmlPlayer.Firstname,
           lastName: xmlPlayer.Lastname,
           gender:
@@ -55,9 +61,9 @@ export class CompetitionSyncPlayerProcessor extends StepProcessor {
     });
 
     for (const xmlPlayer of visualPlayers) {
-      let foundPlayer = players.find(
-        (r) => r.memberId === `${xmlPlayer?.player?.memberId}`
-      );
+      let foundPlayer =
+        players.find((r) => r.memberId === `${xmlPlayer?.player?.memberId}`) ??
+        null;
       let memberId = xmlPlayer?.xmlMemberId;
 
       if (!foundPlayer) {

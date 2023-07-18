@@ -1,6 +1,7 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ID } from '@nestjs/graphql';
 import {
   Column,
+  DataType,
   ForeignKey,
   Model,
   PrimaryKey,
@@ -16,13 +17,13 @@ import { EventTournament } from './event-tournament.model';
 export class LocationEventTournamentMembership extends Model {
   @PrimaryKey
   @ForeignKey(() => EventTournament)
-  @Field({ nullable: true })
-  @Column
-  eventId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  eventId?: string;
 
   @PrimaryKey
   @ForeignKey(() => Location)
-  @Field({ nullable: true })
-  @Column
-  locationId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  locationId?: string;
 }

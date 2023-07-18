@@ -1,6 +1,5 @@
 export enum Simulation {
   Start = 'StartSimulation',
-  StartV2 = 'StartSimulationV2',
 }
 
 export interface SimulationV2Job {

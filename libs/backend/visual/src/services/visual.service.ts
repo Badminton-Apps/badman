@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import axiosRetry from 'axios-retry';
 import { XMLParser } from 'fast-xml-parser';
 
-import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axiosRateLimit from 'axios-rate-limit';
 import { Moment } from 'moment';
@@ -17,6 +17,8 @@ import {
   XmlTournamentEvent,
 } from '../utils';
 import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CACHE_TTL } from '@badman/backend-cache';
 
 @Injectable()
 export class VisualService {
@@ -222,7 +224,7 @@ export class VisualService {
       useCache
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
-    return parsed.TournamentMatch.MatchDate;
+    return parsed.TournamentMatch?.MatchDate;
   }
 
   async changeDate(tourneyId: string, encounterId: string, newDate: Date) {
@@ -259,7 +261,7 @@ export class VisualService {
       const bodyPut = parser.parse(resultPut.data).Result as XmlResult;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
         this.logger.error(options);
-        throw new Error(bodyPut.Error.Message);
+        throw new Error(bodyPut.Error?.Message);
       }
 
       await this._cacheManager.del(`${VisualService.CACHE_KEY}:${url}`);
@@ -350,7 +352,7 @@ export class VisualService {
     await this._cacheManager.set(
       `${VisualService.CACHE_KEY}:${url}`,
       result.data,
-      60 * 60 * 24 * 7
+      CACHE_TTL
     );
 
     const t1 = performance.now();
@@ -359,7 +361,7 @@ export class VisualService {
     return result.data;
   }
 
-  private _asArray(obj) {
+  private _asArray(obj: unknown | unknown[]) {
     return Array.isArray(obj) ? obj : [obj];
   }
 }

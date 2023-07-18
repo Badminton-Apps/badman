@@ -3,7 +3,7 @@ import { waitForSelectors } from './shared';
 
 export async function signIn(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -13,6 +13,10 @@ export async function signIn(
   password: string
 ) {
   const { page, timeout } = pupeteer;
+
+  if (!page) {
+    throw new Error('No page provided');
+  }
 
   // LOGIN
   {

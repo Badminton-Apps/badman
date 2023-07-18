@@ -1,8 +1,4 @@
-import {
-  RankingSystem,
-  Game,
-  Player,
-} from '@badman/backend-database';
+import { RankingSystem, Game, Player } from '@badman/backend-database';
 import { GameType } from '@badman/utils';
 
 export class PointCalculator {
@@ -21,6 +17,12 @@ export class PointCalculator {
       player1Team2Points: null,
       player2Team2Points: null,
       differenceInLevel: 0,
+    } as {
+      player1Team1Points: number | null;
+      player2Team1Points: number | null;
+      player1Team2Points: number | null;
+      player2Team2Points: number | null;
+      differenceInLevel: number ;
     };
 
     let levelP1T1 = this._type.amountOfLevels;
@@ -44,7 +46,7 @@ export class PointCalculator {
     const rankingPlayer2Team2 =
       player2Team2.rankingLastPlaces?.[0] ?? maxRanking;
 
-    let pointsFrom: string;
+    let pointsFrom: 'single' | 'mix' | 'double' | undefined = undefined;
 
     switch (game.gameType) {
       case GameType.S:
@@ -57,17 +59,22 @@ export class PointCalculator {
         pointsFrom = 'mix';
         break;
     }
+
+    if (pointsFrom === undefined) {
+      throw new Error('No pointsFrom');
+    }
+
     if (rankingPlayer1Team2) {
-      levelP1T2 = parseInt(rankingPlayer1Team2[pointsFrom], 10);
+      levelP1T2 = parseInt(`${rankingPlayer1Team2[pointsFrom]}`, 10);
     }
     if (rankingPlayer2Team2) {
-      levelP2T2 = parseInt(rankingPlayer2Team2[pointsFrom], 10);
+      levelP2T2 = parseInt(`${rankingPlayer2Team2[pointsFrom]}`, 10);
     }
     if (rankingPlayer1Team1) {
-      levelP1T1 = parseInt(rankingPlayer1Team1[pointsFrom], 10);
+      levelP1T1 = parseInt(`${rankingPlayer1Team1[pointsFrom]}`, 10);
     }
     if (rankingPlayer2Team1) {
-      levelP2T1 = parseInt(rankingPlayer2Team1[pointsFrom], 10);
+      levelP2T1 = parseInt(`${rankingPlayer2Team1[pointsFrom]}`, 10);
     }
 
     if (game.gameType === GameType.S) {

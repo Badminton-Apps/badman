@@ -2,10 +2,13 @@ import {
   Comment,
   CommentNewInput,
   CommentUpdateInput,
+  EncounterChange,
+  EncounterCompetition,
   EventCompetition,
   Player,
 } from '@badman/backend-database';
 import {
+  BadRequestException,
   Logger,
   NotFoundException,
   UnauthorizedException,
@@ -22,6 +25,7 @@ import {
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
+import { Transaction } from 'sequelize';
 
 @Resolver(() => Comment)
 export class CommentResolver {
@@ -55,6 +59,14 @@ export class CommentResolver {
   ): Promise<Comment> {
     const transaction = await this._sequelize.transaction();
     try {
+      if (!newCommentData?.linkType) {
+        throw new BadRequestException(`linkType is required`);
+      }
+
+      if (!newCommentData?.linkId) {
+        throw new BadRequestException(`linkId is required`);
+      }
+
       const link = await this.getLink(
         newCommentData.linkType,
         newCommentData.linkId
@@ -80,7 +92,32 @@ export class CommentResolver {
         },
       });
 
-      await link.addComment(comment, { transaction });
+      switch (newCommentData.linkType) {
+        case 'competition':
+          if (!(link instanceof EventCompetition)) {
+            throw new BadRequestException(`linkType is not competition`);
+          }
+          await link.addComment(comment, { transaction });
+          break;
+        case 'encounterChange':
+          if (!(link instanceof EncounterCompetition)) {
+            throw new BadRequestException(
+              `linkType is not home_comment_chamge`
+            );
+          }
+          await this.encounterChangeComment(link, comment, user, transaction);
+          break;
+
+        case 'encounter':
+          if (!(link instanceof EncounterCompetition)) {
+            throw new BadRequestException(
+              `linkType is not home_comment_chamge`
+            );
+          }
+          await this.encounterComment(link, comment, user, transaction);
+          break;
+      
+      }
 
       await transaction.commit();
       return comment;
@@ -110,6 +147,14 @@ export class CommentResolver {
         throw new UnauthorizedException(
           `You do not have permission to edit this comment`
         );
+      }
+
+      if (!updateCommentData?.linkType) {
+        throw new BadRequestException(`linkType is required`);
+      }
+
+      if (!updateCommentData?.linkId) {
+        throw new BadRequestException(`linkId is required`);
       }
 
       const link = await this.getLink(
@@ -147,8 +192,73 @@ export class CommentResolver {
     switch (linkType) {
       case 'competition':
         return EventCompetition.findByPk(linkId);
+      case 'encounterChange':
+        return EncounterCompetition.findByPk(linkId);
       default:
         throw new NotFoundException(`${linkType}: ${linkId}`);
+    }
+  }
+
+  private async encounterChangeComment(
+    link: EncounterCompetition,
+    comment: Comment,
+    user: Player,
+    transaction: Transaction
+  ) {
+    const home = await link.getHome();
+    const away = await link.getAway();
+
+    if (
+      !(await user.hasAnyPermission([
+        `${home.clubId}_change:encounter`,
+        `${away.clubId}_change:encounter`,
+        'change-any:encounter',
+      ]))
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this comment`
+      );
+    }
+
+    if (home.clubId === comment.clubId) {
+      await link.addHomeCommentsChange(comment, { transaction });
+    } else if (away.clubId === comment.clubId) {
+      await link.addAwayCommentsChange(comment, { transaction });
+    } else {
+      throw new BadRequestException(
+        `clubId: ${comment.clubId} is not home or away`
+      );
+    }
+  }
+  private async encounterComment(
+    link: EncounterCompetition,
+    comment: Comment,
+    user: Player,
+    transaction: Transaction
+  ) {
+    const home = await link.getHome();
+    const away = await link.getAway();
+
+    if (
+      !(await user.hasAnyPermission([
+        `${home.clubId}_change:encounter`,
+        `${away.clubId}_change:encounter`,
+        'change-any:encounter',
+      ]))
+    ) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this comment`
+      );
+    }
+
+    if (home.clubId === comment.clubId) {
+      await link.addHomeComment(comment, { transaction });
+    } else if (away.clubId === comment.clubId) {
+      await link.addAwayComment(comment, { transaction });
+    } else {
+      throw new BadRequestException(
+        `clubId: ${comment.clubId} is not home or away`
+      );
     }
   }
 }

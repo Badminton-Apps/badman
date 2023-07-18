@@ -66,9 +66,7 @@
           </button>
         </badman-has-claim> -->
 
-        <badman-has-claim
-          [any]="['delete:player']"
-        >
+        <badman-has-claim [any]="['delete:player']">
           <button mat-menu-item (click)="this.removePlayer()">
             <mat-icon>delete</mat-icon>
             <span>{{'all.player.menu.delete' | translate}}</span>
@@ -81,13 +79,19 @@
 
 <section class="games">
   <section class="recent-games">
-    <h3>{{"all.game.recent.title" | translate}}</h3>
+    <h3>
+      <mat-icon color="primary">history</mat-icon>
+      {{"all.game.recent.title" | translate}}
+    </h3>
 
     <badman-recent-games [playerId]="this.player.id"></badman-recent-games>
   </section>
 
   <section class="upcoming-games">
-    <h3>{{"all.game.upcoming.title" | translate}}</h3>
+    <h3>
+      <mat-icon color="primary">calendar_month</mat-icon>
+      {{ 'all.game.upcoming.title' | translate }}
+    </h3>
 
     <ng-container *ngIf="(teams$ | async) ?? [] as teams">
       <badman-upcoming-games

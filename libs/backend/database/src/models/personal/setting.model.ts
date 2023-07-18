@@ -23,6 +23,7 @@ import { NotificationType } from '@badman/utils';
 import { PushSubscription, PushSubscriptionType } from '../../types';
 import { Player } from '../player.model';
 import { AvaliableLanguages } from '@badman/utils';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -40,23 +41,23 @@ export class Setting extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @Field(() => String, { nullable: true })
   @Column({
     type: DataType.STRING,
   })
-  language: AvaliableLanguages;
+  language?: AvaliableLanguages;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
-  player: Player;
+  player?: Relation<Player>;
 
   @ForeignKey(() => Player)
-  @Field({ nullable: true })
-  @Column
-  playerId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  playerId?: string;
 
   @Field(() => PushSubscriptionType, { nullable: true })
   @Column({
@@ -69,56 +70,57 @@ export class Setting extends Model {
     type: DataType.INTEGER,
     defaultValue: NotificationType.NONE,
   })
-  encounterNotEnteredNotification: NotificationType;
+  encounterNotEnteredNotification!: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
     defaultValue: NotificationType.NONE,
   })
-  encounterNotAcceptedNotification: NotificationType;
+  encounterNotAcceptedNotification!: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
     defaultValue: NotificationType.NONE,
   })
-  encounterChangeNewNotification: NotificationType;
+  encounterChangeNewNotification!: NotificationType;
+
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
     defaultValue: NotificationType.NONE,
   })
-  encounterChangeConformationNotification: NotificationType;
+  encounterChangeConformationNotification!: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
     defaultValue: NotificationType.NONE,
   })
-  encounterChangeFinishedNotification: NotificationType;
+  encounterChangeFinishedNotification!: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
     defaultValue: NotificationType.NONE,
   })
-  syncSuccessNotification: NotificationType;
+  syncSuccessNotification!: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
     defaultValue: NotificationType.NONE,
   })
-  syncFailedNotification: NotificationType;
+  syncFailedNotification!: NotificationType;
 
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
     defaultValue: NotificationType.EMAIL,
   })
-  clubEnrollmentNotification: NotificationType;
+  clubEnrollmentNotification!: NotificationType;
 }
 
 @InputType()
@@ -132,3 +134,10 @@ export class SettingNewInput extends PartialType(
   OmitType(SettingUpdateInput, ['id'] as const),
   InputType
 ) {}
+
+export class NotificationOptionsTypes extends OmitType(Setting, [
+  'id',
+  'language',
+  'player',
+  'pushSubscriptions',
+] as const) {}

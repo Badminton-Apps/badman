@@ -102,6 +102,7 @@
     "change-encounter": {
       "add-date": "Voeg datum toe",
       "calendar": {
+        "no-space": "Geen plaats meer.",
         "option": "{amount} in optie",
         "other-games": "Andere ontmoetingen die dag",
         "remaining": "nog {amount} mogelijk",
@@ -110,6 +111,7 @@
       },
       "choose-date": "Kies een datum",
       "choose-encounter": "Kies een ontmoeting",
+      "choose-location": "Kies locatie",
       "choose-team": "Kies een ploeg",
       "comment": "Opmerking",
       "comments": "Opmerkingen",
@@ -117,18 +119,43 @@
       "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "errors": {
+        "invalid": "Gelieve alle beschikbaarheid aan te vullen voor het versturen",
         "select-one-date": "Gelieve minsten 1 dag te selecteren",
         "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
       },
       "not-possible": "Niet beschikbaar",
       "possible": "Beschikbaar",
+      "re-open": "De vorige aanvraag is afgewerkt, je kan deze heropenen en dan zal de oorspronkelijk voorgestelde data opnieuw zichtbaar zijn. De nieuwe aanvraag is pas opnieuw verstuurd eenmaal je op verzenden hebt geklikt na het het her-openen",
       "requested": "Verzoek ingediend",
       "requested-failed": "Verzoek mislukt, contacteer Badminton Vlaanderen indien het probleem aanhoud",
+      "show-not-availible": {
+        "plural": "Er zijn {count} dagen waarop een van de teams niet beschikbaar is. Klik hier om deze dagen te bekijken.",
+        "singular": "Als je hier klikt, kun je de dag zien waarop een team niet beschikbaar is."
+      },
       "submit": {
         "description": "Wanneer je op ja klikt, zal de huidige dag vervangen worden door de geselecteerde nieuwe dag, weet je het zeker?",
         "title": "Verzenden"
       },
-      "title": "Speelmomenten"
+      "title": "Speelmomenten",
+      "warnings": {
+        "closed": "Het aanvragen van wedstrijden is afgelopen, je kan nog enkel bestaande aanvragen afwerken",
+        "closing": "De deadline voor het versturen en afwerken van aanvragen is",
+        "home-accept": "De thuisploeg kan enkel een verplaatsing afronden",
+        "location-change": "Verandering van locatie",
+        "missing-availability": "Beide ploegen moeten op beschikbaar staan.",
+        "selected-different-location": "Er is een andere locatie gekozen, maar vanwege beperkingen in externe systemen moeten deze locaties handmatig worden bijgewerkt. Houd er rekening mee dat dit enkele dagen kan duren."
+      }
+    },
+    "club-assembly": {
+      "description": "Hier is een overzichtsmatrix waarin wordt aangegeven welke spelers in welk team mogen spelen. Elk icoontje dat niet groen is, bevat een tooltip met aanvullende informatie.",
+      "note": "Deze functie is momenteel in de testfase, dus we raden aan om dubbel te controleren en eventuele fouten door te geven.",
+      "warnings": {
+        "base": "{player.fullName} is basisspeler van een ander team",
+        "base-subevent": "{player.fullName} is basisspeler van een ander team in dezelfde reeks",
+        "better-meta": "{player.fullName} is beter dan een van de basis spelers, pas op dat je de teamindex niet overschrijdt",
+        "min-level": "Toegelaten klassement is {maxLevel} terwijl {player.fullName} {level} is in {type} ",
+        "other-gender": "{player.fullName} is een {playerGender}, maar het team is voor de {teamType}"
+      }
     },
     "draw": {
       "encounters": "Ontmoetingen",
@@ -141,10 +168,23 @@
     "map": {
       "title": "Kaart"
     },
+    "menu": {
+      "download-cp": "Download cp file",
+      "open_close_change-encounters": "Open/sluit verplaatsen ontmoetingen",
+      "open_close_enrollments": "Open/sluit Inschrijvingen"
+    },
     "national": "Nationaal",
     "no-more-encounters": "Geen ontmoetingen meer",
     "no-more-games": "Geen wedstrijden meer",
     "note": "opmerking: wijzigingen worden ogenblikkelijk opgeslagen",
+    "open-close": {
+      "close-accept-requests": "Sluiting acceptatie",
+      "close-enrollment": "Sluiting",
+      "close-new-requets": "Sluiting nieuwe aanvragen",
+      "hint": "",
+      "open-enrollment": "Datum opening",
+      "open-requests": "Datum opening"
+    },
     "prov": "Provinciaal",
     "subevent": {
       "max": "Max klassement",
@@ -422,6 +462,10 @@
       "M": "Heren",
       "MX": "Gemengd"
     },
+    "longs": {
+      "F": "Vrouw",
+      "M": "Man"
+    },
     "male": "Man",
     "males": "Heren",
     "mix": "Gemengd",
@@ -519,13 +563,6 @@
     "october": "Oktober",
     "september": "September"
   },
-  "notifications": {
-    "noNotifications": "Geen notificaties",
-    "types": {
-      "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven.",
-      "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven."
-    }
-  },
   "permission": {
     "no-perm": "Je hebt onvoldoende bewerkingsrechten hiervoor"
   },
@@ -591,6 +628,9 @@
     "single": "Enkel",
     "single-points": "Ranking punten",
     "single-rank": "Ranking plaats",
+    "table": {
+      "title": "Ranking tabel"
+    },
     "trending_down": "Trending down",
     "trending_up": "Trending up",
     "update-happend": "Update plaatsgevonden",
@@ -654,6 +694,9 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Club<strong> {club.name}</strong> is succesvol ingeschreven",
+        "encounterChangeConformationNotification": "Nieuwe verplaatsingsaanvraag voor<strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong>",
+        "encounterChangeFinishedNotification": "Wedstrijd <strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong> is verplaats",
+        "encounterChangeNewNotification": "Nieuwe verplaatsingsaanvraag voor<strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> van <strong>{encounter.date}</strong> is nog niet bevestigd.",
         "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> van <strong>{encounter.date}</strong> is nog niet ingegeven.",
         "syncFailedNotification": "Sync van event <strong>{event.name}</strong> is mislukt",

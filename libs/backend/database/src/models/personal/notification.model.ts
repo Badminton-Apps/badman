@@ -28,6 +28,7 @@ import {
 } from '../event';
 import { Player } from '../player.model';
 import { Club } from '../club.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -43,73 +44,72 @@ export class Notification extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'sendToId')
-  sendTo: Player;
+  sendTo?: Relation<Player>;
 
-  @Field({ nullable: true })
-  @Column
-  sendToId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  sendToId?: string;
 
-  @Field({ nullable: true })
-  @Column
-  type: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  type?: string;
 
-  @Field({ nullable: true })
-  @Column
-  linkId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  linkId?: string;
 
-  @Field({ nullable: true })
-  @Column
-  linkType: string;
-
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  linkType?: string;
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  encounter: EncounterCompetition;
+  encounter?: Relation<EncounterCompetition>;
 
   @Field(() => EventCompetition, { nullable: true })
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition: EventCompetition;
+  competition?: Relation<EventCompetition>;
 
   @Field(() => EventTournament, { nullable: true })
   @BelongsTo(() => EventTournament, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  tournament: EventTournament;
+  tournament?: Relation<EventTournament>;
 
   @Field(() => Club, { nullable: true })
   @BelongsTo(() => Club, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  club: Club;
+  club?: Relation<Club>;
 
-  @Field({ nullable: true, defaultValue: false })
-  @Column({ defaultValue: false })
-  read: boolean;
+  @Field(() => Boolean, { nullable: true, defaultValue: false })
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  read?: boolean;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  meta: string;
+  meta?: string;
 
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;

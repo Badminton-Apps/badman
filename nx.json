@@ -1,8 +1,5 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "badman",
-  "useDaemonProcess": false,
-  "ci": "github",
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx-cloud",
@@ -15,7 +12,7 @@
           "test",
           "build-storybook"
         ],
-        "accessToken": "MmE5OGUwODQtZmVhZC00ODJmLWFkNTMtOTYyYWE2NDFjYzQ4fHJlYWQtd3JpdGU="
+        "accessToken": "NTM2YmYwOTAtM2NlZC00ZDFmLTkwMDAtNzljM2Y4MDFiMTBmfHJlYWQtd3JpdGU="
       }
     }
   },
@@ -31,7 +28,13 @@
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
     },
     "build-storybook": {
-      "inputs": ["default", "^production", "{workspaceRoot}/.storybook/**/*"]
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/.storybook/**/*",
+        "{projectRoot}/.storybook/**/*",
+        "{projectRoot}/tsconfig.storybook.json"
+      ]
     }
   },
   "namedInputs": {
@@ -43,7 +46,9 @@
       "!{projectRoot}/jest.config.[jt]s",
       "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/.storybook/**/*",
-      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)"
+      "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
+      "!{projectRoot}/tsconfig.storybook.json",
+      "!{projectRoot}/src/test-setup.[jt]s"
     ],
     "sharedGlobals": []
   },
@@ -71,6 +76,9 @@
       "standalone": true
     }
   },
-  "pluginsConfig": {},
-  "defaultProject": "badman"
+  "ci": "github",
+  "defaultProject": "badman",
+  "affected": {
+    "defaultBase": "main"
+  }
 }

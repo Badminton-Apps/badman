@@ -102,6 +102,7 @@
     "change-encounter": {
       "add-date": "Ajouter une date",
       "calendar": {
+        "no-space": "Plus de pièces.",
         "option": "{amount} facultatif",
         "other-games": "Autres rencontres ce jour-là",
         "remaining": "encore {amount} possible",
@@ -110,6 +111,7 @@
       },
       "choose-date": "Choisir une date",
       "choose-encounter": "Choisir une réunion",
+      "choose-location": "Choisissez l'emplacement",
       "choose-team": "Choisir une équipe",
       "comment": "Remarque",
       "comments": "Notes",
@@ -117,18 +119,43 @@
       "description": "Clause de non-responsabilité : Il s'agit d'une version initiale du module de déplacement des réunions. Des améliorations seront apportées périodiquement.",
       "disclaimer-submit": "Lorsque les deux équipes sont disponibles, la date peut être choisie à l'aide de la case à cocher, puis en cliquant sur envoyer.",
       "errors": {
+        "invalid": "Veuillez compléter toutes les disponibilités avant d'envoyer",
         "select-one-date": "Veuillez sélectionner au moins 1 jour",
         "select-one-date-or-comment": "Veuillez commenter (au moins 15 caractères) ou choisir une date."
       },
       "not-possible": "Non disponible",
       "possible": "Disponible",
+      "re-open": "La demande précédente est terminée, vous pouvez la rouvrir et les données initialement proposées seront à nouveau visibles. La nouvelle demande n'est renvoyée qu'une fois que vous avez cliqué sur soumettre après la réouverture",
       "requested": "Demande soumise",
       "requested-failed": "La demande a échoué, contactez Badminton Vlaanderen si le problème persiste.",
+      "show-not-availible": {
+        "plural": "Il y a {count} jours où l'une des équipes n'est pas disponible. Cliquez ici pour voir ces jours.",
+        "singular": "En cliquant ici, vous pouvez voir le jour où une équipe n'est pas disponible."
+      },
       "submit": {
         "description": "Lorsque vous cliquez sur \"oui\", le jour actuel sera remplacé par le nouveau jour sélectionné, êtes-vous sûr ?",
         "title": "Expédition"
       },
-      "title": "Moments de jeu"
+      "title": "Moments de jeu",
+      "warnings": {
+        "closed": "La demande de concours est terminée, vous ne pouvez traiter que les demandes existantes",
+        "closing": "La date limite d'envoi et de traitement des candidatures est",
+        "home-accept": "L'équipe à domicile ne peut effectuer qu'un mouvement",
+        "location-change": "Changement de lieu",
+        "missing-availability": "Les deux équipes doivent être disponibles.",
+        "selected-different-location": "Un emplacement différent a été choisi, mais en raison des limitations des systèmes externes, ces emplacements doivent être mis à jour manuellement. Veuillez noter que cela peut prendre plusieurs jours."
+      }
+    },
+    "club-assembly": {
+      "description": "Voici une matrice récapitulative indiquant quels joueurs sont autorisés à jouer dans quelle équipe. Chaque icône qui n'est pas verte contient une infobulle avec des informations supplémentaires.",
+      "note": "Cette fonctionnalité étant actuellement en phase de test, nous vous recommandons de vérifier et de signaler toute erreur.",
+      "warnings": {
+        "base": "{player.fullName} est le premier joueur d'une autre équipe",
+        "base-subevent": "{player.fullName} est le premier joueur d'une autre équipe dans la même série",
+        "better-meta": "{player.fullName} est meilleur qu'un des joueurs de base, attention à ne pas dépasser l'index de l'équipe",
+        "min-level": "Le classement autorisé est {maxLevel} tandis que {player.fullName} est{level} dans {type} ",
+        "other-gender": "{player.fullName} est un {playerGender}, mais l'équipe pour le {teamType} est"
+      }
     },
     "draw": {
       "encounters": "Réunions",
@@ -141,10 +168,23 @@
     "map": {
       "title": "Carte"
     },
+    "menu": {
+      "download-cp": "Télécharger le fichier CP",
+      "open_close_change-encounters": "Ouvrir/fermer les rencontres de déménagement",
+      "open_close_enrollments": "Ouvrir/fermer les inscriptions"
+    },
     "national": "Nationales",
     "no-more-encounters": "Plus de rencontres",
     "no-more-games": "Plus de games",
     "note": "note : les modifications sont enregistrées immédiatement",
+    "open-close": {
+      "close-accept-requests": "Acceptation de la clôture",
+      "close-enrollment": "Fermeture",
+      "close-new-requets": "Clôture des nouvelles demandes",
+      "hint": "",
+      "open-enrollment": "Date d'ouverture",
+      "open-requests": "Date d'ouverture"
+    },
     "prov": "Provinciale",
     "subevent": {
       "max": "Classement maximal",
@@ -422,6 +462,10 @@
       "M": "Hommes",
       "MX": "Mixte"
     },
+    "longs": {
+      "F": "Femme",
+      "M": "Homme"
+    },
     "male": "Homme",
     "males": "Hommes",
     "mix": "Mixte",
@@ -519,13 +563,6 @@
     "october": "Octobre",
     "september": "Septembre"
   },
-  "notifications": {
-    "noNotifications": "Aucune notification",
-    "types": {
-      "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie.",
-      "encounterNotEnteredNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie."
-    }
-  },
   "permission": {
     "no-perm": "Vous ne disposez pas de droits d'édition suffisants pour cette"
   },
@@ -591,6 +628,9 @@
     "single": "Simple",
     "single-points": "Simple points",
     "single-rank": "Ranking classement",
+    "table": {
+      "title": "Tableau de classement"
+    },
     "trending_down": "Tendance à la baisse",
     "trending_up": "La tendance est à la hausse",
     "update-happend": "Update plaatsgevonden",
@@ -654,6 +694,9 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Le club<strong> {club.name}</strong> a été enregistré avec succès",
+        "encounterChangeConformationNotification": "Nouvelle demande de déplacement pour<strong>{encounter.home.name}</strong> contre<strong>{encounter.away.name}</strong>",
+        "encounterChangeFinishedNotification": "Application {encounter.home.name} contre {encounter.away.name} mouvement",
+        "encounterChangeNewNotification": "Nouvelle demande de déplacement pour<strong>{encounter.home.name}</strong> contre<strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> de <strong>{encounter.date}</strong> n'a pas encore été confirmé.",
         "encounterNotEnteredNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> de <strong>{encounter.date}</strong> n'a pas encore été saisi.",
         "syncFailedNotification": "La synchronisation de l'événement <strong>{event.name}</strong> a échoué",

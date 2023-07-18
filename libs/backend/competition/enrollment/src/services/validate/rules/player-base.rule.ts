@@ -16,7 +16,11 @@ export class PlayerBaseRule extends Rule {
 
     // Count the occurrences of each player in basePlayers arrays per type of team
     for (const { basePlayers, team } of enrollment.teams) {
-      for (const player of basePlayers) {
+      for (const player of basePlayers ?? []) {
+        if (!player.id || !team?.type) {
+          continue;
+        }
+
         const countMap =
           playerCountMap.get(player.id) || new Map<SubEventTypeEnum, number>();
         const count = countMap.get(team.type) || 0;
@@ -27,17 +31,25 @@ export class PlayerBaseRule extends Rule {
 
     // Check if a player doesn't exist in 2 base teams of the same type
     for (const { team, basePlayers } of enrollment.teams) {
+      if (!team?.id) {
+        continue;
+      }
+
       const errors = [] as EnrollmentValidationError[];
 
-      for (const player of basePlayers) {
+      for (const player of basePlayers ?? []) {
+        if (!player.id || !team?.type) {
+          continue;
+        }
+
         const countMap = playerCountMap.get(player.id);
-        if (countMap && countMap.get(team.type) > 1) {
+        if (countMap && (countMap.get(team.type) ?? 0) > 1) {
           // find all teams that have this player in basePlayers of the same type
           const otherTeams = enrollment.teams.filter(
             (t) =>
-              t.team.id != team.id &&
-              t.team.type === team.type &&
-              t.basePlayers.includes(player)
+              t.team?.id != team.id &&
+              t.team?.type === team.type &&
+              t.basePlayers?.includes(player)
           );
 
           // generate the error message for each team

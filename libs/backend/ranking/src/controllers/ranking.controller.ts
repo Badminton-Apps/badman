@@ -1,6 +1,6 @@
 import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
 import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply } from 'fastify';
 import fs, {
   existsSync,
   mkdirSync,
@@ -31,14 +31,18 @@ export class RankingController {
   }
 
   @Get('export')
-  async export(@Res() response: FastifyReply, @Query() query: { systems: string }) {
+  async export(
+    @Res() response: FastifyReply,
+    @Query() query: { systems: string }
+  ) {
     const systemsIds: string[] = query.systems.split(',');
 
-    const files = [];
+    const files: string[] = [];
     for (const system of systemsIds) {
-      const fileNameSafe = (
-        await RankingSystem.findByPk(system, { attributes: ['name'] })
-      )?.name.replace(/[/\\?%*:|"<>]/g, '-');
+      const fileNameSafe =
+        (
+          await RankingSystem.findByPk(system, { attributes: ['name'] })
+        )?.name?.replace(/[/\\?%*:|"<>]/g, '-') || 'unknown';
 
       const endDate = moment(
         await RankingPlace.max('rankingDate', {
@@ -85,9 +89,9 @@ export class RankingController {
             ranking.mix
           },${ranking.mixPoints},${ranking.mixPointsDowngrade},${
             ranking.mixInactive
-          },${ranking.rankingDate.toISOString()},${ranking.player.firstName} ${
-            ranking.player.lastName
-          },${ranking.player.gender},${ranking.player.memberId}`
+          },${endDate.toISOString()},${ranking.player?.firstName} ${
+            ranking.player?.lastName
+          },${ranking.player?.gender},${ranking.player?.memberId}`
       );
 
       const outputFile = join(this._resultFolder, `${fileNameSafe}.csv`);
@@ -115,11 +119,11 @@ export class RankingController {
   ) {
     const systemsIds: string[] = query.systems.split(',');
 
-    const files = [];
+    const files: string[] = [];
     for (const system of systemsIds) {
       const fileNameSafe = (
         await RankingSystem.findByPk(system, { attributes: ['name'] })
-      )?.name.replace(/[/\\?%*:|"<>]/g, '-');
+      )?.name?.replace(/[/\\?%*:|"<>]/g, '-') || 'unknown';
 
       const endDate = moment(
         await RankingPlace.max('rankingDate', {
@@ -159,17 +163,17 @@ export class RankingController {
       });
 
       const mapped = results
-        .filter((ranking: RankingPlace) => ranking.player.memberId !== null)
+        .filter((ranking: RankingPlace) => ranking.player?.memberId !== null)
         .filter(
           (ranking: RankingPlace) =>
-            ranking.player.memberId[0] === '5' ||
-            ranking.player.memberId[0] === '3'
+            ranking.player?.memberId?.[0] === '5' ||
+            ranking.player?.memberId?.[0] === '3'
         )
         .map((ranking: RankingPlace) => {
           const lines = [];
-          const baseinfo = `${ranking.player.memberId},${
-            ranking.player.firstName
-          } ${ranking.player.lastName},${ranking.player.gender},${
+          const baseinfo = `${ranking.player?.memberId},${
+            ranking.player?.firstName
+          } ${ranking.player?.lastName},${ranking.player?.gender},${
             ranking.single
           },${ranking.double},${ranking.mix},${moment(
             ranking.rankingDate
@@ -218,11 +222,12 @@ export class RankingController {
   ) {
     const systemsIds: string[] = query.systems.split(',');
 
-    const files = [];
+    const files: string[] = [];
     for (const system of systemsIds) {
-      const fileNameSafe = (
-        await RankingSystem.findByPk(system, { attributes: ['name'] })
-      )?.name.replace(/[/\\?%*:|"<>]/g, '-');
+      const fileNameSafe =
+        (
+          await RankingSystem.findByPk(system, { attributes: ['name'] })
+        )?.name?.replace(/[/\\?%*:|"<>]/g, '-') ?? 'unknown';
 
       const endDate = moment(
         await RankingPlace.max('rankingDate', {
@@ -262,17 +267,17 @@ export class RankingController {
       });
 
       const mapped = results
-        .filter((ranking: RankingPlace) => ranking.player.memberId !== null)
+        .filter((ranking: RankingPlace) => ranking.player?.memberId !== null)
         .filter(
           (ranking: RankingPlace) =>
-            ranking.player.memberId[0] !== '5' &&
-            ranking.player.memberId[0] !== '3'
+            ranking.player?.memberId?.[0] !== '5' &&
+            ranking.player?.memberId?.[0] !== '3'
         )
         .map((ranking: RankingPlace) => {
           const lines = [];
-          const baseinfo = `${ranking.player.memberId},${
-            ranking.player.firstName
-          } ${ranking.player.lastName},${ranking.player.gender},${
+          const baseinfo = `${ranking.player?.memberId},${
+            ranking.player?.firstName
+          } ${ranking.player?.lastName},${ranking.player?.gender},${
             ranking.single
           },${ranking.double},${ranking.mix},${moment(
             ranking.rankingDate
@@ -321,31 +326,31 @@ export class RankingController {
     response.header('Access-Control-Expose-Headers', 'Content-Disposition');
 
     if (files.length > 1) {
-      const exportedfiles = files.map((file) => {
-        const outputFile = join(this._resultFolder, `${file}.csv`);
-        return {
-          path: outputFile,
-          name: `${file}.csv`,
-        };
-      });
+      // const exportedfiles = files.map((file) => {
+      //   const outputFile = join(this._resultFolder, `${file}.csv`);
+      //   return {
+      //     path: outputFile,
+      //     name: `${file}.csv`,
+      //   };
+      // });assembly.service.spec.ts:306:27 
 
       response.header('Content-Type', 'application/zip');
       response.header(
         'Content-Disposition',
         `attachment; filename="${filename}.zip"`
       );
-      const zip = archiver('zip', {
-        zlib: { level: 9 },
-      });
-      // this probably won't work 
-      throw new Error('This probably won\'t work');
-      zip.pipe(response); // res is a writable stream
+      // const zip = archiver('zip', {
+      //   zlib: { level: 9 },
+      // });
+      // this probably won't work
+      throw new Error("This probably won't work");
+      // zip.pipe(response); // res is a writable stream
 
-      for (const file of exportedfiles) {
-        zip.append(fs.createReadStream(file.path), { name: file.name });
-      }
+      // for (const file of exportedfiles) {
+      //   zip.append(fs.createReadStream(file.path), { name: file.name });
+      // }
 
-      zip.finalize();
+      // zip.finalize();
     } else {
       response.header('Content-Type', 'text/csv');
       response.header(

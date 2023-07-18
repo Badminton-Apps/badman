@@ -33,8 +33,7 @@ export class CheckEncounterProcessor {
   @Process(Sync.CheckEncounters)
   async syncEncounters(): Promise<void> {
     this.logger.log('Syncing encounters');
-    let browser: Browser;
-
+    let browser: Browser | undefined;
     try {
       const encounters = await EncounterCompetition.findAndCountAll({
         attributes: ['id', 'visualCode', 'date', 'homeTeamId', 'awayTeamId'],
@@ -97,11 +96,9 @@ export class CheckEncounterProcessor {
         let chunksProcessed = 0;
         for (const chunk of chunks) {
           this.logger.debug(
-            `Processing chunk of ${chunk.length} encounters, ${
+            `Processing cthunk of ${chunk.length} encounters, ${
               encounters.count - encountersProcessed
-            } encounter left, ${
-              chunks.length - chunksProcessed
-            } chunks left`
+            } encounter left, ${chunks.length - chunksProcessed} chunks left`
           );
           // Close browser if any
           if (browser) {

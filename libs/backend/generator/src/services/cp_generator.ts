@@ -23,11 +23,17 @@ import { I18nService } from 'nestjs-i18n';
 import { resolve } from 'path';
 import path = require('path');
 
+type StageNames = 'Main Draw' | 'Reserves' | 'Uitloten';
+
 @Injectable()
 export class CpGeneratorService {
   private readonly logger = new Logger(CpGeneratorService.name);
-  private connection;
-  private stages = [
+  private connection: any;
+  private stages: {
+    name: StageNames;
+    displayOrder: number;
+    stagetype: number;
+  }[] = [
     { name: 'Main Draw', displayOrder: 1, stagetype: 1 },
     { name: 'Reserves', displayOrder: 9998, stagetype: 9998 },
     { name: 'Uitloten', displayOrder: 9999, stagetype: 9999 },
@@ -220,7 +226,9 @@ export class CpGeneratorService {
           `SELECT @@Identity AS id`
         );
         const responseStage = stageRes[0];
-        event[stage.name] = responseStage.id;
+
+        // check if the event has the name
+        if (stage.name) event[stage.name] = responseStage.id;
       }
       eventList.set(subEvent.id, event);
     }
@@ -253,10 +261,14 @@ export class CpGeneratorService {
         const team = await entry.getTeam();
         const club = await team.getClub();
 
+        if (!club) {
+          continue;
+        }
+
         if (!clubList.has(club.id)) {
           // Insert club into cp file
           const queryClub = `INSERT INTO Club(name, clubId, country, abbreviation) VALUES ("${this._sqlEscaped(
-            club.name
+            club.name || ''
           )}", "${club.clubId}", 19, "${club.abbreviation}")`;
           // this.logger.verbose(`Query: ${queryClub}`);
           const clubRes = await this.connection.execute(
@@ -297,8 +309,8 @@ export class CpGeneratorService {
       const locations = await dbClub.getLocations();
       for (const location of locations) {
         const queryLocation = `INSERT INTO Location(name, address, postalcode, city, phone, clubid) VALUES ("${this._sqlEscaped(
-          location.name
-        )}", "${this._sqlEscaped(location.street)} ${
+          location.name || ''
+        )}", "${this._sqlEscaped(location.street || '')} ${
           location.streetNumber
         }", "${location.postalcode}", "${location.city}", "${
           location.phone
@@ -367,7 +379,7 @@ export class CpGeneratorService {
         const club = await team.getClub();
 
         if (clubs.has(club.id)) {
-          const index = entry.meta.competition.teamIndex;
+          const index = entry.meta?.competition?.teamIndex;
           const internalClubId = clubs.get(club.id)?.cpId;
           const captain = await team.getCaptain();
           const teamLocations = await team.getLocations();
@@ -399,7 +411,7 @@ export class CpGeneratorService {
               queryTeam,
               `SELECT @@Identity AS id`
             );
-            const response = teamRes[0]; 
+            const response = teamRes[0];
             teamList.set(team.id, {
               cpId: response.id,
               dbTeam: team,
@@ -448,10 +460,14 @@ export class CpGeneratorService {
     for (const [, { dbTeam, dbEntry }] of teams) {
       const players = [...(dbEntry?.meta?.competition?.players ?? [])];
 
+      if (!dbTeam.clubId) {
+        throw new Error(`Team ${dbTeam.name} has no club`);
+      }
+
       if (playersPerClub.has(dbTeam.clubId)) {
         //  add players to existing list if they are not already in there
 
-        const existingPlayers = playersPerClub.get(dbTeam.clubId);
+        const existingPlayers = playersPerClub.get(dbTeam.clubId) ?? [];
         for (const player of players) {
           if (!existingPlayers.find((p) => p.id === player.id)) {
             existingPlayers.push(player);
@@ -509,7 +525,13 @@ export class CpGeneratorService {
       const players = [...(dbEntry?.meta?.competition?.players ?? [])];
 
       const query = players?.map((p) => {
-        const player = playerList.get(p.id);
+        if (!p?.id) {
+          this.logger.error(
+            `Team ${dbTeam.name}(${dbTeam.id}) has invalid players`
+          );
+        }
+
+        const player = playerList.get(p.id ?? '');
 
         if (!player?.cpId) {
           this.logger.error(
@@ -518,7 +540,7 @@ export class CpGeneratorService {
         }
 
         return [
-          `INSERT INTO TeamPlayer(team, player, status) VALUES (${cpId}, ${player.cpId}, 1)`,
+          `INSERT INTO TeamPlayer(team, player, status) VALUES (${cpId}, ${player?.cpId}, 1)`,
         ];
       });
       queries.push(...query.flat());
@@ -549,16 +571,20 @@ export class CpGeneratorService {
     >
   ) {
     for (const [, { cpId, dbEntry }] of teams) {
+      if (!dbEntry?.subEventId) {
+        throw new Error(`Entry ${dbEntry?.id} has no subEventId`);
+      }
+
       const subEvent = events.get(dbEntry.subEventId);
 
-      const entryQuery = `INSERT INTO Entry(event, team) VALUES ("${subEvent.cpId}", "${cpId}")`;
+      const entryQuery = `INSERT INTO Entry(event, team) VALUES ("${subEvent?.cpId}", "${cpId}")`;
       // this.logger.verbose(`Query: ${entryQuery}`);
       const entryRes = await this.connection.execute(
         entryQuery,
         `SELECT @@Identity AS id`
       );
 
-      const stageQuery = `INSERT INTO stageentry(entry, stage) VALUES (${entryRes[0].id}, ${subEvent['Main Draw']})`;
+      const stageQuery = `INSERT INTO stageentry(entry, stage) VALUES (${entryRes[0].id}, ${subEvent?.['Main Draw']})`;
       // this.logger.verbose(`Query: ${stageQuery}`);
       await this.connection.execute(stageQuery);
     }
@@ -639,7 +665,7 @@ export class CpGeneratorService {
         },
       });
 
-      for (const team of validation.teams) {
+      for (const team of validation.teams ?? []) {
         try {
           if (!team) {
             continue;
@@ -659,17 +685,21 @@ export class CpGeneratorService {
           );
 
           memos.set(teaminput.cpId, {
-            errors: team.errors?.map((e) => {
+            errors: (team.errors?.map((e) => {
+              if (!e.message) {
+                return '';
+              }
+
               const message: string = this.i18nService.translate(e.message, {
-                args: e.params,
+                args: e.params as never,
                 lang: 'nl_BE',
               });
 
               // replace all html tags with nothing
 
               return this._sqlEscaped(message.replace(/<[^>]*>?/gm, ''));
-            }),
-            comments: comments.map((c) => c.message),
+            }) ?? []) as string[],
+            comments: comments?.map((c) => `${c.message}`),
           });
         } catch (e) {
           this.logger.verbose(
@@ -707,9 +737,9 @@ export class CpGeneratorService {
         memo += '\n\n';
       }
 
-      if (value.errors?.length > 0) {
+      if ((value?.errors?.length ?? 0) > 0) {
         memo += `--==[Fouten]==--\n`;
-        memo += value.errors.join('\n');
+        memo += value.errors?.join('\n');
         memo += '\n\n';
       }
 
@@ -732,12 +762,12 @@ export class CpGeneratorService {
     }
   }
 
-  private _sqlEscaped(str: string) {
+  private _sqlEscaped(str?: string) {
     str = str?.replace(/"/g, "'")?.trim();
     return str;
   }
 
-  private _getDayOfWeek(day: string) {
+  private _getDayOfWeek(day?: string) {
     if (!day) {
       return 'NULL';
     }
@@ -762,7 +792,7 @@ export class CpGeneratorService {
     }
   }
 
-  private _getGender(gender: string) {
+  private _getGender(gender?: string) {
     if (!gender) {
       return 'NULL';
     }

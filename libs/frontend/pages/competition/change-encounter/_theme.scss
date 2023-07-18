@@ -1,5 +1,7 @@
-@use './src/pages/change-encounter/change-encounter.component.theme.scss' as change-encounter;
-@use './src/components/date-selector/date-selector.component.theme.scss' as date-selector;
+@use './src/pages/change-encounter/change-encounter.component.theme.scss' as
+  change-encounter;
+@use './src/components/date-selector/date-selector.component.theme.scss' as
+  date-selector;
 @use './src/components/calendar/calendar.component.theme.scss' as calendar;
 @mixin theme($theme) {
   @include change-encounter.theme($theme);

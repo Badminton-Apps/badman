@@ -2,11 +2,10 @@
   "name": "backend-authorization",
   "$schema": "..\\..\\..\\enode_modules\\nx\\schemas\\project-schema.json",
   "sourceRoot": "libs/backend/authorization/src",
-
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/js:swc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/authorization",
@@ -16,7 +15,6 @@
         "assets": ["libs/backend-authorization/*.md"]
       }
     },
-    
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],

@@ -106,6 +106,7 @@ export type I18nTranslations = {
             "change-encounter": {
                 "add-date": string;
                 "calendar": {
+                    "no-space": string;
                     "option": string;
                     "other-games": string;
                     "remaining": string;
@@ -114,6 +115,7 @@ export type I18nTranslations = {
                 };
                 "choose-date": string;
                 "choose-encounter": string;
+                "choose-location": string;
                 "choose-team": string;
                 "comment": string;
                 "comments": string;
@@ -121,18 +123,43 @@ export type I18nTranslations = {
                 "description": string;
                 "disclaimer-submit": string;
                 "errors": {
+                    "invalid": string;
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
                 "not-possible": string;
                 "possible": string;
+                "re-open": string;
                 "requested": string;
                 "requested-failed": string;
+                "show-not-availible": {
+                    "plural": string;
+                    "singular": string;
+                };
                 "submit": {
                     "description": string;
                     "title": string;
                 };
                 "title": string;
+                "warnings": {
+                    "closed": string;
+                    "closing": string;
+                    "home-accept": string;
+                    "location-change": string;
+                    "missing-availability": string;
+                    "selected-different-location": string;
+                };
+            };
+            "club-assembly": {
+                "description": string;
+                "note": string;
+                "warnings": {
+                    "base": string;
+                    "base-subevent": string;
+                    "better-meta": string;
+                    "min-level": string;
+                    "other-gender": string;
+                };
             };
             "draw": {
                 "encounters": string;
@@ -145,10 +172,23 @@ export type I18nTranslations = {
             "map": {
                 "title": string;
             };
+            "menu": {
+                "download-cp": string;
+                "open_close_change-encounters": string;
+                "open_close_enrollments": string;
+            };
             "national": string;
             "no-more-encounters": string;
             "no-more-games": string;
             "note": string;
+            "open-close": {
+                "close-accept-requests": string;
+                "close-enrollment": string;
+                "close-new-requets": string;
+                "hint": string;
+                "open-enrollment": string;
+                "open-requests": string;
+            };
             "prov": string;
             "subevent": {
                 "max": string;
@@ -426,6 +466,10 @@ export type I18nTranslations = {
                 "M": string;
                 "MX": string;
             };
+            "longs": {
+                "F": string;
+                "M": string;
+            };
             "male": string;
             "males": string;
             "mix": string;
@@ -523,13 +567,6 @@ export type I18nTranslations = {
             "october": string;
             "september": string;
         };
-        "notifications": {
-            "noNotifications": string;
-            "types": {
-                "encounterNotAcceptedNotification": string;
-                "encounterNotEnteredNotification": string;
-            };
-        };
         "permission": {
             "no-perm": string;
         };
@@ -595,6 +632,9 @@ export type I18nTranslations = {
             "single": string;
             "single-points": string;
             "single-rank": string;
+            "table": {
+                "title": string;
+            };
             "trending_down": string;
             "trending_up": string;
             "update-happend": string;
@@ -658,6 +698,9 @@ export type I18nTranslations = {
                 };
                 "messages": {
                     "clubEnrollmentNotification": string;
+                    "encounterChangeConformationNotification": string;
+                    "encounterChangeFinishedNotification": string;
+                    "encounterChangeNewNotification": string;
                     "encounterNotAcceptedNotification": string;
                     "encounterNotEnteredNotification": string;
                     "syncFailedNotification": string;

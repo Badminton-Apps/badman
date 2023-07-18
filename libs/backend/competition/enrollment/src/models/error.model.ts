@@ -6,7 +6,7 @@ import { GraphQLJSONObject } from 'graphql-type-json';
 @ObjectType()
 export class EnrollmentValidationError {
   @Field(() => String, { nullable: true })
-  message: PathImpl2<I18nTranslations>;
+  message?: PathImpl2<I18nTranslations>;
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   params?: unknown;
@@ -15,7 +15,7 @@ export class EnrollmentValidationError {
 @ObjectType()
 export class TeamInfo {
   @Field(() => String, { nullable: true })
-  message: PathImpl2<I18nTranslations>;
+  message?: PathImpl2<I18nTranslations>;
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   params?: unknown;

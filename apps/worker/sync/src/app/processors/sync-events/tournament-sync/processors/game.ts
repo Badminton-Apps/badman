@@ -1,5 +1,6 @@
 import {
   DrawTournament,
+  EventTournament,
   Game,
   GamePlayerMembership,
   Player,
@@ -12,8 +13,8 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from '@badman/backend-visual';
-import { GameStatus, runParrallel } from '@badman/utils';
-import { Logger } from '@nestjs/common';
+import { GameStatus, runParallel } from '@badman/utils';
+import { Logger, NotFoundException } from '@nestjs/common';
 import moment from 'moment-timezone';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
@@ -27,12 +28,12 @@ export interface GameStepOptions {
 }
 
 export class TournamentSyncGameProcessor extends StepProcessor {
-  public players: Map<string, Player>;
-  public draws: DrawStepData[];
-  public subEvents: SubEventStepData[];
-  public event: EventStepData;
+  public players?: Map<string, Player>;
+  public draws?: DrawStepData[];
+  public subEvents?: SubEventStepData[];
+  public event?: EventStepData;
   private _games: Game[] = [];
-  private _system: RankingSystem;
+  private _system?: RankingSystem | null;
 
   private gameOptions: GameStepOptions;
 
@@ -41,6 +42,10 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions & GameStepOptions
   ) {
+    if (!options) {
+      options = {};
+    }
+
     options.logger =
       options.logger || new Logger(TournamentSyncGameProcessor.name);
     super(options);
@@ -56,21 +61,25 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    await runParrallel(
-      this.draws.map((e) => this._processSubevent(e.draw, e.internalId))
+    await runParallel(
+      this.draws?.map((e) => this._processSubevent(e.draw, e.internalId)) ?? []
     );
 
     return this._games;
   }
 
   private async _processSubevent(draw: DrawTournament, internalId: number) {
+    if (!this.event?.event) {
+      throw new NotFoundException(`${EventTournament.name} not found`);
+    }
+
     const games = await draw.getGames({
       transaction: this.transaction,
       // include: [Player]
     });
-    const subEvent = this.subEvents.find(
+    const subEvent = this.subEvents?.find(
       (sub) => draw.subeventId === sub.subEvent.id
-    ).subEvent;
+    )?.subEvent;
 
     const isLastWeek = moment()
       .subtract(2, 'week')
@@ -91,8 +100,23 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           : this.event.event.firstDay;
 
       // Check if encounter was before last run, skip if only process new events
-      if (this.gameOptions.newGames && playedAt < this.lastRun) {
+      if (
+        this.gameOptions.newGames &&
+        playedAt &&
+        this.lastRun &&
+        playedAt < this.lastRun
+      ) {
         continue;
+      }
+
+      
+      if (!xmlMatch.Sets) {
+        xmlMatch.Sets = { Set: [] };
+      }
+
+      // check if the xmlMatch?.Sets?.Set is an array
+      if (!Array.isArray(xmlMatch?.Sets?.Set)) {
+        xmlMatch.Sets.Set = [xmlMatch.Sets.Set];
       }
 
       let gameStatus = GameStatus.NORMAL;
@@ -137,7 +161,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           round: xmlMatch.RoundName,
           order: xmlMatch.MatchOrder,
           winner: xmlMatch.Winner,
-          gameType: subEvent.gameType,
+          gameType: subEvent?.gameType,
           visualCode: xmlMatch.Code,
           linkId: draw.id,
           linkType: 'tournament',
@@ -227,6 +251,10 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     const t2p1 = this._getPlayer(xmlMatch?.Team2?.Player1);
     const t2p2 = this._getPlayer(xmlMatch?.Team2?.Player2);
 
+    if (!this._system) {
+      throw new Error('No ranking system');
+    }
+
     if (t1p1) {
       const rankingt1p1 = await t1p1.getRankingPlaces({
         where: {
@@ -237,6 +265,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
       const gp = new GamePlayerMembership({
@@ -244,9 +273,9 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         playerId: t1p1.id,
         team: 1,
         player: 1,
-        single: rankingt1p1.length > 0 ? rankingt1p1[0].single : null,
-        double: rankingt1p1.length > 0 ? rankingt1p1[0].double : null,
-        mix: rankingt1p1.length > 0 ? rankingt1p1[0].mix : null,
+        single: rankingt1p1.length > 0 ? rankingt1p1[0].single : undefined,
+        double: rankingt1p1.length > 0 ? rankingt1p1[0].double : undefined,
+        mix: rankingt1p1.length > 0 ? rankingt1p1[0].mix : undefined,
         systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
@@ -268,6 +297,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
       const gp = new GamePlayerMembership({
@@ -275,9 +305,9 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         playerId: t1p2.id,
         team: 1,
         player: 2,
-        single: rankingt1p2.length > 0 ? rankingt1p2[0].single : null,
-        double: rankingt1p2.length > 0 ? rankingt1p2[0].double : null,
-        mix: rankingt1p2.length > 0 ? rankingt1p2[0].mix : null,
+        single: rankingt1p2.length > 0 ? rankingt1p2[0].single : undefined,
+        double: rankingt1p2.length > 0 ? rankingt1p2[0].double : undefined,
+        mix: rankingt1p2.length > 0 ? rankingt1p2[0].mix : undefined,
         systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
@@ -298,6 +328,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
       const gp = new GamePlayerMembership({
@@ -305,9 +336,9 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         playerId: t2p1.id,
         team: 2,
         player: 1,
-        single: rankingtt2p1.length > 0 ? rankingtt2p1[0].single : null,
-        double: rankingtt2p1.length > 0 ? rankingtt2p1[0].double : null,
-        mix: rankingtt2p1.length > 0 ? rankingtt2p1[0].mix : null,
+        single: rankingtt2p1.length > 0 ? rankingtt2p1[0].single : undefined,
+        double: rankingtt2p1.length > 0 ? rankingtt2p1[0].double : undefined,
+        mix: rankingtt2p1.length > 0 ? rankingtt2p1[0].mix : undefined,
         systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
@@ -328,6 +359,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
       const gp = new GamePlayerMembership({
@@ -335,9 +367,9 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         playerId: t2p2.id,
         team: 2,
         player: 2,
-        single: rankingtt2p2.length > 0 ? rankingtt2p2[0].single : null,
-        double: rankingtt2p2.length > 0 ? rankingtt2p2[0].double : null,
-        mix: rankingtt2p2.length > 0 ? rankingtt2p2[0].mix : null,
+        single: rankingtt2p2.length > 0 ? rankingtt2p2[0].single : undefined,
+        double: rankingtt2p2.length > 0 ? rankingtt2p2[0].double : undefined,
+        mix: rankingtt2p2.length > 0 ? rankingtt2p2[0].mix : undefined,
         systemId: this._system.id,
       });
       gamePlayers.push(gp.toJSON());
@@ -351,7 +383,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     return gamePlayers;
   }
 
-  private _getPlayer(player: XmlPlayer) {
+  private _getPlayer(player?: XmlPlayer) {
     let key = player?.MemberID;
     if (!key) {
       key = `${player?.Firstname} ${player?.Lastname}`;
@@ -361,16 +393,16 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       return null;
     }
 
-    let returnPlayer = this.players.get(key);
+    let returnPlayer = this.players?.get(key);
 
     if ((returnPlayer ?? null) == null && (player ?? null) != null) {
       // Search our map for unkowns
       const corrected = correctWrongPlayers({
-        firstName: player.Firstname,
-        lastName: player.Lastname,
+        firstName: player?.Firstname,
+        lastName: player?.Lastname,
       });
 
-      returnPlayer = [...this.players.values()].find(
+      returnPlayer = [...(this.players?.values() ?? [])].find(
         (p) =>
           (p.firstName === corrected.firstName &&
             p.lastName === corrected.lastName) ||

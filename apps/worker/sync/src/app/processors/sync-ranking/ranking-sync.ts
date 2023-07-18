@@ -13,7 +13,7 @@ import { XMLParser } from 'fast-xml-parser';
 
 import moment, { Moment } from 'moment';
 import { Op, Transaction } from 'sequelize';
-import { Processor, ProcessStep } from '../../processing';
+import { ProcessStep, Processor } from '../../processing';
 import { correctWrongPlayers } from '../../utils';
 interface RankingStepData {
   visualCode: string;
@@ -53,7 +53,7 @@ export class RankingSyncer {
     private readonly _visualService: VisualService,
     private readonly rankingQ: Queue
   ) {
-    this.processor = new Processor(null, { logger: this.logger });
+    this.processor = new Processor(undefined, { logger: this.logger });
     this.xmlParser = new XMLParser();
 
     this.processor.addStep(this.getRankings());
@@ -68,9 +68,12 @@ export class RankingSyncer {
   }
 
   protected getRankings(): ProcessStep<RankingStepData> {
+    // (args: {    transaction: Transaction;    start: Date;}) => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; lastDate: Date; }>'
+    // (args?: unknown)                                        => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; lastDate: Date; }>'
+
     return new ProcessStep(
       this.STEP_RANKING,
-      async (args: { transaction: Transaction; start: Date }) => {
+      async (args?: { transaction?: Transaction; start?: Date }) => {
         const rankingDetail = await this._visualService.getRanking(false);
 
         const system = await RankingSystem.findOne({
@@ -78,11 +81,11 @@ export class RankingSyncer {
             name: rankingDetail[0].Name,
             rankingSystem: RankingSystems.VISUAL,
           },
-          transaction: args.transaction,
+          transaction: args?.transaction ?? undefined,
         });
 
         // Default sync 1 week
-        const lastDate = args.start
+        const lastDate = args?.start
           ? moment(args.start)
           : moment().subtract(1, 'week');
 
@@ -93,32 +96,40 @@ export class RankingSyncer {
           lastDate: lastDate.toDate(),
         };
       }
-    );
+    ) as ProcessStep<RankingStepData>;
   }
 
   protected getCategories(): ProcessStep<CategoriesStepData[]> {
     return new ProcessStep(this.STEP_CATEGORIES, async () => {
-      const ranking: { visualCode: string; system: RankingSystem } =
+      const ranking: { visualCode: string; system: RankingSystem } | undefined =
         this.processor.getData<RankingStepData>(this.STEP_RANKING);
+
+      if (!ranking?.visualCode) {
+        throw new Error('No ranking found');
+      }
 
       const categories = await this._visualService.getCategories(
         ranking.visualCode
       );
 
-      return categories.map((c) => {
+      return categories?.map((c) => {
         return {
           code: c.Code,
           name: c.Name,
         };
-      });
+      }) as CategoriesStepData[];
     });
   }
 
-  protected getPublications(): ProcessStep<PublicationStepData> {
+  protected getPublications() {
     return new ProcessStep(this.STEP_PUBLICATIONS, async () => {
       const ranking = this.processor.getData<RankingStepData>(
         this.STEP_RANKING
       );
+
+      if (!ranking?.visualCode) {
+        throw new Error('No ranking found');
+      }
 
       const publications = await this._visualService.getPublications(
         ranking.visualCode,
@@ -126,7 +137,7 @@ export class RankingSyncer {
       );
 
       let pubs = publications
-        .filter((publication) => publication.Visible)
+        ?.filter((publication) => publication.Visible)
         .map((publication) => {
           const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
           let canUpdate = false;
@@ -162,12 +173,12 @@ export class RankingSyncer {
             date: momentDate,
           } as VisualPublication;
         });
-      pubs = pubs.sort((a, b) => a.date.diff(b.date));
+      pubs = pubs?.sort((a, b) => a.date.diff(b.date));
 
       return {
         visiblePublications: pubs,
         hiddenPublications: publications
-          .filter((publication) => publication.Visible == false)
+          ?.filter((publication) => publication.Visible == false)
           ?.map((publication) => {
             const momentDate = moment(
               publication.PublicationDate,
@@ -188,34 +199,45 @@ export class RankingSyncer {
         );
 
         const { visiblePublications } =
-          this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS);
+          this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ??
+          {};
 
         const categories = this.processor.getData<CategoriesStepData[]>(
           this.STEP_CATEGORIES
         );
 
+        if (!ranking?.visualCode) {
+          throw new Error('No ranking found');
+        }
+
         const pointsForCategory = async (
           publication: VisualPublication,
-          category: string,
+          category: string | null,
           places: Map<string, RankingPlace>,
           newPlayers: Map<string, Player>,
           type: 'single' | 'double' | 'mix',
           gender: 'M' | 'F'
         ) => {
+          if (!category) {
+            this.logger.error(`No category defined?`);
+
+            return;
+          }
+
           const rankingPoints = await this._visualService.getPoints(
             ranking.visualCode,
             publication.code,
             category
           );
 
-          const memberIds = rankingPoints.map(
+          const memberIds = rankingPoints?.map(
             (points) =>
               correctWrongPlayers({ memberId: `${points.Player1.MemberID}` })
                 .memberId
           );
 
           this.logger.debug(
-            `Getting ${memberIds.length} players for ${publication.name} ${type} ${gender}`
+            `Getting ${memberIds?.length} players for ${publication.name} ${type} ${gender}`
           );
 
           const players = await Player.findAll({
@@ -238,11 +260,18 @@ export class RankingSyncer {
             transaction: args.transaction,
           });
 
-          for (const points of rankingPoints) {
+          for (const points of rankingPoints ?? []) {
             const memberId = correctWrongPlayers({
               memberId: `${points.Player1.MemberID}`,
             }).memberId;
             let foundPlayer = players.find((p) => p.memberId === memberId);
+
+            if (!memberId) {
+              this.logger.error(
+                `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`
+              );
+              continue;
+            }
 
             if (foundPlayer == null) {
               foundPlayer = newPlayers.get(memberId);
@@ -262,14 +291,31 @@ export class RankingSyncer {
                 })
               );
               players.push(foundPlayer);
+
+              if (!foundPlayer.memberId) {
+                this.logger.error(
+                  `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`
+                );
+                continue;
+              }
+
               newPlayers.set(foundPlayer.memberId, foundPlayer);
+            }
+
+            if (!foundPlayer.id) {
+              this.logger.error(
+                `No id found for ${points.Player1.Name} ${points.Player1.MemberID}`
+              );
+              continue;
             }
 
             // Check if other publication has create the ranking place
             if (places.has(foundPlayer.id)) {
-              places.get(foundPlayer.id)[type] = points.Level;
-              places.get(foundPlayer.id)[`${type}Points`] = points.Totalpoints;
-              places.get(foundPlayer.id)[`${type}Rank`] = points.Rank;
+              const place = places.get(foundPlayer.id) as RankingPlace;
+
+              place[type] = points.Level;
+              place[`${type}Points`] = points.Totalpoints;
+              place[`${type}Rank`] = points.Rank;
             } else {
               places.set(
                 foundPlayer.id,
@@ -305,7 +351,7 @@ export class RankingSyncer {
           }
         };
 
-        for (const publication of visiblePublications) {
+        for (const publication of visiblePublications ?? []) {
           const rankingPlaces = new Map<string, RankingPlace>();
           const newPlayers = new Map<string, Player>();
 
@@ -330,7 +376,8 @@ export class RankingSyncer {
             );
             await pointsForCategory(
               publication,
-              categories.find((category) => category.name === 'HE/SM').code,
+              categories?.find((category) => category.name === 'HE/SM')?.code ??
+                null,
               rankingPlaces,
               newPlayers,
               'single',
@@ -338,7 +385,8 @@ export class RankingSyncer {
             );
             await pointsForCategory(
               publication,
-              categories.find((category) => category.name === 'DE/SD').code,
+              categories?.find((category) => category.name === 'DE/SD')?.code ??
+                null,
               rankingPlaces,
               newPlayers,
               'single',
@@ -350,7 +398,8 @@ export class RankingSyncer {
             );
             await pointsForCategory(
               publication,
-              categories.find((category) => category.name === 'HD/DM').code,
+              categories?.find((category) => category.name === 'HD/DM')?.code ??
+                null,
               rankingPlaces,
               newPlayers,
               'double',
@@ -358,7 +407,8 @@ export class RankingSyncer {
             );
             await pointsForCategory(
               publication,
-              categories.find((category) => category.name === 'DD').code,
+              categories?.find((category) => category.name === 'DD')?.code ??
+                null,
               rankingPlaces,
               newPlayers,
               'double',
@@ -370,7 +420,8 @@ export class RankingSyncer {
             );
             await pointsForCategory(
               publication,
-              categories.find((category) => category.name === 'GD H/DX M').code,
+              categories?.find((category) => category.name === 'GD H/DX M')
+                ?.code ?? null,
               rankingPlaces,
               newPlayers,
               'mix',
@@ -378,7 +429,8 @@ export class RankingSyncer {
             );
             await pointsForCategory(
               publication,
-              categories.find((category) => category.name === 'GD D/DX D').code,
+              categories?.find((category) => category.name === 'GD D/DX D')
+                ?.code ?? null,
               rankingPlaces,
               newPlayers,
               'mix',
@@ -429,19 +481,25 @@ export class RankingSyncer {
       this.STEP_REMOVED,
       async (args: { transaction: Transaction }) => {
         const { hiddenPublications } =
-          this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS);
+          this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ??
+          {};
 
-        const ranking: {
-          visualCode: string;
-          system: RankingSystem;
-          lastDate: Date;
-        } = this.processor.getData<RankingStepData>(this.STEP_RANKING);
+        if (hiddenPublications == null) {
+          return;
+        }
+
+        const { visualCode, system, lastDate } =
+          this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
+
+        if (visualCode) {
+          throw new Error('No ranking found');
+        }
 
         for (const publication of hiddenPublications) {
           const points = await RankingPlace.count({
             where: {
               rankingDate: publication.toDate(),
-              systemId: ranking.system.id,
+              systemId: system?.id,
             },
             transaction: args.transaction,
           });
@@ -455,7 +513,7 @@ export class RankingSyncer {
             await RankingPlace.destroy({
               where: {
                 rankingDate: publication.toDate(),
-                systemId: ranking.system.id,
+                systemId: system?.id,
               },
               transaction: args.transaction,
             });
@@ -469,12 +527,12 @@ export class RankingSyncer {
     return new ProcessStep(
       this.STEP_QUEUE,
       async (args: { transaction: Transaction }) => {
-        const ranking: {
-          system: RankingSystem;
-        } = this.processor.getData<RankingStepData>(this.STEP_RANKING);
+        const { system } =
+          this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
 
         const { visiblePublications } =
-          this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS);
+          this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ??
+          {};
 
         // For now we only check if it's the last update
 
@@ -490,7 +548,7 @@ export class RankingSyncer {
         const playersWithMissingRankings = await RankingPlace.findAll({
           where: {
             rankingDate: lastPublication.date.toDate(),
-            systemId: ranking.system.id,
+            systemId: system?.id,
             [Op.or]: [{ single: null }, { double: null }, { mix: null }],
             transaction: args.transaction,
           },

@@ -1,6 +1,7 @@
 import { User } from '@badman/backend-authorization';
 import {
   Assembly,
+  Comment,
   DrawCompetition,
   EncounterChange,
   EncounterChangeDate,
@@ -8,7 +9,10 @@ import {
   EncounterCompetition,
   Game,
   Player,
+  Location,
   Team,
+  SubEventCompetition,
+  EventCompetition,
 } from '@badman/backend-database';
 import { NotificationService } from '@badman/backend-notifications';
 import { Sync, SyncQueue } from '@badman/backend-queue';
@@ -22,6 +26,7 @@ import {
   Args,
   Field,
   ID,
+  Int,
   Mutation,
   ObjectType,
   Parent,
@@ -30,18 +35,18 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Queue } from 'bull';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../../utils';
 
 @ObjectType()
 export class PagedEncounterCompetition {
-  @Field()
-  count: number;
+  @Field(() => Int)
+  count?: number;
 
   @Field(() => [EncounterCompetition])
-  rows: EncounterCompetition[];
+  rows?: EncounterCompetition[];
 }
 
 @Resolver(() => EncounterCompetition)
@@ -82,6 +87,11 @@ export class EncounterCompetitionResolver {
     return encounter.getDrawCompetition();
   }
 
+  @ResolveField(() => Location)
+  async location(@Parent() encounter: EncounterCompetition): Promise<Location> {
+    return encounter.getLocation();
+  }
+
   @ResolveField(() => Team)
   async home(@Parent() encounter: EncounterCompetition): Promise<Team> {
     return encounter.getHome();
@@ -112,23 +122,30 @@ export class EncounterCompetitionResolver {
     return encounter.getGames();
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => EncounterChange)
   async addChangeEncounter(
     @User() user: Player,
     @Args('data') newChangeEncounter: EncounterChangeNewInput
-  ): Promise<boolean> {
+  ): Promise<EncounterChange> {
     const encounter = await EncounterCompetition.findByPk(
       newChangeEncounter.encounterId
     );
+
+    if (!encounter) {
+      throw new NotFoundException(
+        `${EncounterCompetition.name}: ${newChangeEncounter.encounterId}`
+      );
+    }
+
     const team = newChangeEncounter.home
       ? await encounter.getHome()
       : await encounter.getAway();
 
     if (
-      !user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${team.clubId}_change:encounter`,
         'change-any:encounter',
-      ])
+      ]))
     ) {
       throw new UnauthorizedException(
         `You do not have permission to edit this club`
@@ -136,6 +153,7 @@ export class EncounterCompetitionResolver {
     }
     const transaction = await this._sequelize.transaction();
     let encounterChange: EncounterChange;
+    let locationHasChanged = false;
 
     try {
       // Check if encounter has change
@@ -146,17 +164,17 @@ export class EncounterCompetitionResolver {
         encounterChange = new EncounterChange({
           encounterId: encounter.id,
         });
+        await encounterChange.save({ transaction });
       }
 
       const dates = await encounterChange.getDates();
-      await encounterChange.save({ transaction });
 
       // Set the state
       if (newChangeEncounter.accepted) {
-        const selectedDates = newChangeEncounter.dates.filter(
+        const selectedDates = newChangeEncounter.dates?.filter(
           (r) => r.selected === true
         );
-        if (selectedDates.length !== 1) {
+        if (selectedDates?.length !== 1) {
           // Multiple dates were selected
           throw new Error('Multiple dates selected');
         }
@@ -166,6 +184,12 @@ export class EncounterCompetitionResolver {
         }
         // Set date to the selected date
         encounter.date = selectedDates[0].date;
+
+        // Set location to the selected location
+        if (encounter.locationId != selectedDates[0].locationId) {
+          encounter.locationId = selectedDates[0].locationId;
+          locationHasChanged = true;
+        }
 
         // Accept
         await this.syncQueue.add(
@@ -181,17 +205,49 @@ export class EncounterCompetitionResolver {
 
         // Save cahnges
         encounter.save({ transaction });
-
-        // Destroy the requets
-        await encounterChange.destroy({ transaction });
+        encounterChange.accepted = true;
       } else {
-        await this.changeOrUpdate(
-          encounterChange,
-          newChangeEncounter,
-          transaction,
-          dates
-        );
+        encounterChange.accepted = false;
       }
+      await encounterChange.save({ transaction });
+      this.logger.debug(
+        `Change encounter ${encounter.id}: ${encounterChange.accepted}`
+      );
+
+      const draw = await encounter.getDrawCompetition({
+        attributes: ['id'],
+        include: [
+          {
+            model: SubEventCompetition,
+            attributes: ['id'],
+            include: [
+              {
+                model: EventCompetition,
+                attributes: ['id', 'changeCloseRequestDate'],
+              },
+            ],
+          },
+        ],
+      });
+
+      // can request new dates in timezone europe/brussels
+
+      const canRequestNewDates = moment
+        .tz('europe/brussels')
+        .isBefore(
+          moment.tz(
+            draw?.subEventCompetition?.eventCompetition?.changeCloseRequestDate,
+            'europe/brussels'
+          )
+        );
+
+      await this.changeOrUpdate(
+        encounterChange,
+        newChangeEncounter,
+        transaction,
+        dates,
+        canRequestNewDates
+      );
 
       // find if any date was selected
       await transaction.commit();
@@ -203,15 +259,48 @@ export class EncounterCompetitionResolver {
 
     // Notify the user
     if (newChangeEncounter.accepted) {
-      this.notificationService.notifyEncounterChangeFinished(encounter);
+      this.notificationService.notifyEncounterChangeFinished(encounter, locationHasChanged);
+
+      // check if the location has changed
+      if (locationHasChanged) {
+        // this.notificationService.notifyEncounterLocationChanged(encounter);
+      }
     } else {
       this.notificationService.notifyEncounterChange(
         encounter,
-        newChangeEncounter.home
+        newChangeEncounter.home ?? false
       );
     }
 
-    return true;
+    return encounterChange;
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  async homeComments(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<Comment[]> {
+    return encounter.getHomeComments();
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  async awayComments(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<Comment[]> {
+    return encounter.getAwayComments();
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  async homeCommentsChange(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<Comment[]> {
+    return encounter.getHomeComments();
+  }
+
+  @ResolveField(() => [Comment], { nullable: true })
+  async awayCommentsChange(
+    @Parent() encounter: EncounterCompetition
+  ): Promise<Comment[]> {
+    return encounter.getAwayComments();
   }
 
   // @Mutation(returns => Boolean)
@@ -223,24 +312,27 @@ export class EncounterCompetitionResolver {
     encounterChange: EncounterChange,
     change: EncounterChangeNewInput,
     transaction: Transaction,
-    existingDates: EncounterChangeDate[]
+    existingDates: EncounterChangeDate[],
+    canRequestNewDates: boolean
   ) {
-    encounterChange.accepted = false;
-
     change.dates = change.dates
-      .map((r) => {
+      ?.map((r) => {
         const parsedDate = moment(r.date);
-        r.date = parsedDate.isValid() ? parsedDate.toDate() : null;
+        r.date = parsedDate.isValid() ? parsedDate.toDate() : undefined;
         return r;
       })
-      .filter((r) => r.date !== null);
+      .filter((r) => r.date !== undefined);
 
     // Add new dates
-    for (const date of change.dates) {
+    for (const date of change.dates ?? []) {
       // Check if the encounter has alredy a change for this date
       let encounterChangeDate = existingDates.find(
-        (r) => r.date.getTime() === date.date.getTime()
+        (r) => r.date?.getTime() === date.date?.getTime()
       );
+
+      if (!encounterChangeDate && !canRequestNewDates) {
+        throw new Error('Cannot request new dates');
+      }
 
       // If not create new one
       if (!encounterChangeDate) {
@@ -257,13 +349,17 @@ export class EncounterCompetitionResolver {
         encounterChangeDate.availabilityAway = date.availabilityAway;
       }
 
+      encounterChangeDate.locationId = date.locationId;
+
       // Save the date
       await encounterChangeDate.save({ transaction });
     }
 
     // Remove dates in the change request but not in existing dates
     for (const date of existingDates) {
-      if (!change.dates.find((r) => r.date.getTime() === date.date.getTime())) {
+      if (
+        !change.dates?.find((r) => r.date?.getTime() === date.date?.getTime())
+      ) {
         await date.destroy({ transaction });
       }
     }

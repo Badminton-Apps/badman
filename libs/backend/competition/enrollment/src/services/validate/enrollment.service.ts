@@ -14,6 +14,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   EnrollmentOutput,
   EnrollmentValidationData,
+  EnrollmentValidationError,
   TeamEnrollmentOutput,
 } from '../../models';
 import {
@@ -45,8 +46,16 @@ export class EnrollmentValidationService {
     const system = systemId
       ? await RankingSystem.findByPk(systemId)
       : await RankingSystem.findOne({ where: { primary: true } });
+    if (!system) {
+      throw new Error('No ranking system found');
+    }
+
     season = season ?? getCurrentSeason();
     let previousSeasonTeams: Team[] = [];
+
+    if (!teams) {
+      throw new Error('No teams found');
+    }
 
     const teamIdIds = teams.map((t) => t.link);
 
@@ -151,9 +160,15 @@ export class EnrollmentValidationService {
     });
 
     return {
-      teams: teams.map((t) => {
+      teams: teams?.map((t) => {
+        if (!t.type) {
+          throw new Error('No type found');
+        }
+
         const playersForTeam = this.getPlayers(
-          [t.players, t.backupPlayers, t.basePlayers].flat(1),
+          [t.players ?? [], t.backupPlayers ?? [], t.basePlayers ?? []]?.flat(
+            1
+          ),
           dbPlayers,
           dbPlayersEntry,
           system
@@ -226,6 +241,10 @@ export class EnrollmentValidationService {
     const teams: TeamEnrollmentOutput[] = [];
 
     for (const team of enrollment.teams) {
+      if (!team.team?.id) {
+        continue;
+      }
+
       const ruleResults = results?.map((r) =>
         r?.find((t) => t.teamId === team.team?.id)
       );
@@ -247,14 +266,14 @@ export class EnrollmentValidationService {
           index ===
           self.findIndex((e) => JSON.stringify(e) === JSON.stringify(error))
         );
-      });
+      }) as EnrollmentValidationError[];
 
       const uniqueWarnings = warnings.filter((warning, index, self) => {
         return (
           index ===
           self.findIndex((w) => JSON.stringify(w) === JSON.stringify(warning))
         );
-      });
+      }) as EnrollmentValidationError[];
 
       teams.push({
         id: team.team?.id,
@@ -305,6 +324,10 @@ export class EnrollmentValidationService {
     withoutRanking: Player[],
     system?: RankingSystem
   ): EntryCompetitionPlayer[] {
+    if (!system) {
+      throw new Error('No ranking system provided');
+    }
+
     const stringPlayerIds = players.filter(
       (p) => !instanceOfEntryCompetitionPlayer(p)
     ) as string[];
@@ -337,6 +360,10 @@ export class EnrollmentValidationService {
       }
 
       const dbPlayer = withRanking.find((p) => p.id === id);
+      if (!dbPlayer) {
+        throw new Error(`Player with id ${id} not found`);
+      }
+
       const ranking =
         dbPlayer?.rankingPlaces?.[0] ??
         new RankingPlace({
@@ -371,7 +398,7 @@ export class EnrollmentValidationService {
 }
 
 class EnrollmentInput {
-  teams: EnrollmentInputTeam[];
+  teams?: EnrollmentInputTeam[];
   systemId?: string;
   season?: number;
 }
@@ -386,7 +413,7 @@ class EnrollmentInputTeam extends PartialType(
 }
 
 const instanceOfEntryCompetitionPlayer = (
-  obj: EntryCompetitionPlayer | string
+  obj: EntryCompetitionPlayer | string | undefined
 ): obj is EntryCompetitionPlayer => {
   return typeof obj !== 'string';
 };

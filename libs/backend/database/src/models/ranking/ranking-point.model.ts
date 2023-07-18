@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -19,6 +19,7 @@ import {
 import { Game } from '../event';
 import { Player } from '../player.model';
 import { RankingSystem } from './ranking-system.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -34,53 +35,53 @@ export class RankingPoint extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
-  @Column
-  points: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  points?: number;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'playerId')
-  player: Player;
+  player?: Relation<Player>;
 
   @Field(() => Game, { nullable: true })
   @BelongsTo(() => Game, 'gameId')
-  game: Game;
+  game?: Relation<Game>;
 
   @Field(() => RankingSystem, { nullable: true })
   @BelongsTo(() => RankingSystem, {
     foreignKey: 'systemId',
     onDelete: 'CASCADE',
   })
-  system: RankingSystem;
+  system?: Relation<RankingSystem>;
 
   @ForeignKey(() => RankingSystem)
-  @Field({ nullable: true })
-  @Column
-  rankingDate: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  rankingDate?: Date;
 
-  @Field({ nullable: true })
-  @Column
-  differenceInLevel: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  differenceInLevel?: number;
 
   @ForeignKey(() => RankingSystem)
   @Index('point_system_index')
-  @Field({ nullable: true })
-  @Column
-  systemId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  systemId?: string;
 
   @ForeignKey(() => Player)
   @Index('point_system_index')
-  @Field({ nullable: true })
-  @Column
-  playerId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  playerId?: string;
 
   @ForeignKey(() => Game)
-  @Field({ nullable: true })
-  @Column
-  gameId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  gameId?: string;
 
   // Belongs to Player
   getPlayer!: BelongsToGetAssociationMixin<Player>;

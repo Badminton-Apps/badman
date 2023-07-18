@@ -1,3 +1,4 @@
+import { SecurityType } from '@badman/utils';
 import {
   Field,
   ID,
@@ -26,21 +27,20 @@ import {
   Column,
   DataType,
   Default,
-  ForeignKey,
   Index,
   IsUUID,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from 'sequelize-typescript';
-import { SecurityType } from '@badman/utils';
 import { Club } from '../club.model';
+import { EventCompetition, EventTournament } from '../event';
 import { Player } from '../player.model';
+import { Team } from '../team.model';
 import { RoleClaimMembership } from './claim-role-membership.model';
 import { Claim, ClaimUpdateInput } from './claim.model';
 import { PlayerRoleMembership } from './role-player-membership.model';
-import { EventCompetition, EventTournament } from '../event';
-import { Team } from '../team.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -56,58 +56,58 @@ export class Role extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @Index
-  @Field({ nullable: true })
-  @Column
-  name: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  name?: string;
 
   @Index
-  @Field({ nullable: true })
-  @Column
-  description: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  description?: string;
 
-  @Field()
-  @Column
-  locked: boolean;
+  @Field(() => Boolean)
+  @Column(DataType.BOOLEAN)
+  locked?: boolean;
 
   @BelongsToMany(() => Claim, () => RoleClaimMembership)
-  claims: (Claim & { RoleClaimMembership: RoleClaimMembership })[];
+  claims?: (Claim & { RoleClaimMembership: RoleClaimMembership })[];
 
   @BelongsToMany(() => Player, () => PlayerRoleMembership)
-  players: (Player & { PlayerClaimMembership: PlayerRoleMembership })[];
+  players?: (Player & { PlayerClaimMembership?: PlayerRoleMembership })[];
 
   @BelongsTo(() => Club, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  club: Club;
+  club?: Relation<Club>;
 
   @BelongsTo(() => Team, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  team: Team;
+  team?: Relation<Team>;
 
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition: EventCompetition;
+  competition?: Relation<EventCompetition>;
 
   @BelongsTo(() => EventTournament, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  tournament: EventTournament;
+  tournament?: Relation<EventTournament>;
 
-  @Field({ nullable: true })
-  @Column
-  linkId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  linkId?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(
     DataType.ENUM(
       SecurityType.GLOBAL,
@@ -117,7 +117,7 @@ export class Role extends Model {
       SecurityType.TOURNAMENT
     )
   )
-  linkType: string;
+  linkType?: string;
 
   // Belongs to many Claim
   getClaims!: BelongsToManyGetAssociationsMixin<Claim>;
@@ -164,7 +164,7 @@ export class RoleUpdateInput extends PartialType(
   InputType
 ) {
   @Field(() => [ClaimUpdateInput])
-  claims: Claim[];
+  claims?: Relation<Claim[]>;
 }
 
 @InputType()
