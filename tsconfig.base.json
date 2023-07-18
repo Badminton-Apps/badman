@@ -14,7 +14,7 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
       "*": ["./types/*"],
       "@badman/backend-assembly": [
@@ -35,15 +35,13 @@
       "@badman/backend-health": ["libs/backend/health/src/index.ts"],
       "@badman/backend-logging": ["libs/backend/logging/src/index.ts"],
       "@badman/backend-mailing": ["libs/backend/mailing/src/index.ts"],
+      "@badman/backend-micro": ["libs/backend/micro/src/index.ts"],
       "@badman/backend-notifications": [
         "libs/backend/notifications/src/index.ts"
       ],
       "@badman/backend-pupeteer": ["libs/backend/pupeteer/src/index.ts"],
       "@badman/backend-queue": ["libs/backend/queue/src/index.ts"],
       "@badman/backend-ranking": ["libs/backend/ranking/src/index.ts"],
-      "@badman/backend-ranking-calc": [
-        "libs/backend/ranking-calc/src/index.ts"
-      ],
       "@badman/backend-search": ["libs/backend/search/src/index.ts"],
       "@badman/backend-translate": ["libs/backend/translate/src/index.ts"],
       "@badman/backend-twizzit": ["libs/backend/twizzit/src/index.ts"],
@@ -95,7 +93,9 @@
       "@badman/frontend-utils": ["libs/frontend/modules/utils/src/index.ts"],
       "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],
       "@badman/utils": ["libs/utils/src/index.ts"]
-    }
+    },
+    "strictNullChecks": true,
+    "strict": true
   },
   "exclude": ["node_modules", "tmp"]
 }

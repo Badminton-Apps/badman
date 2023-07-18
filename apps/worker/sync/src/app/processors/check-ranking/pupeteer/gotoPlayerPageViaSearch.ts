@@ -4,7 +4,7 @@ import { Page } from 'puppeteer';
 
 export async function searchPlayer(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -13,6 +13,9 @@ export async function searchPlayer(
   player: Player
 ) {
   const { page, } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
   const url = `https://www.toernooi.nl/find/player?q=`;
   const suggestions: string[] = [];
 
@@ -28,7 +31,7 @@ export async function searchPlayer(
     for (const option of options) {
       // get href of the option
       const href = await option.evaluate((node) => node.getAttribute('href'));
-      suggestions.push(href);
+      suggestions.push(href ?? '');
     }
   }
 

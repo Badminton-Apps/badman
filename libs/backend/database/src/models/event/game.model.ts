@@ -1,5 +1,5 @@
 // import { SocketEmitter, EVENTS } from '../../../sockets';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -52,6 +52,7 @@ import { EncounterCompetition } from './competition/encounter-competition.model'
 import { Court } from './court.model';
 import { GamePlayerMembership } from './game-player.model';
 import { DrawTournament } from './tournament';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -67,16 +68,16 @@ export class Game extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
-  @Column
-  playedAt: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  playedAt?: Date;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('S', 'D', 'MX'))
-  gameType: GameType;
+  gameType?: GameType;
 
   @Field(() => String, { nullable: true })
   @Column(
@@ -88,37 +89,37 @@ export class Game extends Model {
       'NO_MATCH'
     )
   )
-  status: GameStatus;
+  status?: GameStatus;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set1Team1?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set1Team2?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set2Team1?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set2Team2?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set3Team1?: number;
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   set3Team2?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   winner?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   order?: number;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   round?: string;
 
   @Field(() => [RankingPoint], { nullable: true })
@@ -130,40 +131,40 @@ export class Game extends Model {
     foreignKey: 'linkId',
     constraints: false,
   })
-  tournament: DrawTournament;
+  tournament?: Relation<DrawTournament>;
 
   @Field(() => EncounterCompetition, { nullable: true })
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition: EncounterCompetition;
+  competition?: Relation<EncounterCompetition>;
 
   @Index('game_parent_index')
-  @Field({ nullable: true })
-  @Column
-  linkId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  linkId?: string;
 
   @Index('game_parent_index')
-  @Field({ nullable: true })
-  @Column
-  linkType: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  linkType?: string;
 
   @BelongsTo(() => Court, 'courtId')
-  court: Court;
+  court?: Relation<Court>;
 
   @ForeignKey(() => Court)
-  @Field({ nullable: true })
-  @Column
-  courtId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  courtId?: string;
 
-  @Field({ nullable: true })
-  @Column
-  visualCode: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  visualCode?: string;
 
   @Field(() => [GamePlayerMembershipType], { nullable: true })
   @BelongsToMany(() => Player, () => GamePlayerMembership)
-  players: (Player & { GamePlayerMembership: GamePlayerMembership })[];
+  players?: (Player & { GamePlayerMembership: GamePlayerMembership })[];
 
   @AfterCreate
   @AfterUpdate

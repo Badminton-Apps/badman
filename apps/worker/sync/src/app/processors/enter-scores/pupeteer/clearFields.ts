@@ -3,7 +3,7 @@ import { waitForSelectors } from '@badman/backend-pupeteer';
 
 export async function clearFields(
   pupeteer: {
-    page: Page;
+    page: Page | null;
     timeout?: number;
   } = {
     page: null,
@@ -11,6 +11,10 @@ export async function clearFields(
   }
 ) {
   const { page, timeout } = pupeteer;
+  if (!page) {
+    throw new Error('No page provided');
+  }
+
   {
     const targetPage = page;
     await targetPage.evaluate(

@@ -32,11 +32,8 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import {
-  Comment,
-  CommentNewInput,
-  CommentUpdateInput,
-} from '../../../comment.model';
+
+import { Relation } from '../../../../wrapper';
 import { EncounterCompetition } from '../encounter-competition.model';
 import {
   EncounterChangeDate,
@@ -58,50 +55,31 @@ export class EncounterChange extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Boolean)
+  @Default(false)
+  @Column(DataType.BOOLEAN)
   accepted?: boolean;
 
   @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'encounterId',
     onDelete: 'CASCADE',
   })
-  encounter?: EncounterCompetition;
+  encounter?: Relation<EncounterCompetition>;
 
   @ForeignKey(() => EncounterCompetition)
-  @Field({ nullable: true })
-  @Column
-  encounterId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  encounterId?: string;
 
   @Field(() => [EncounterChangeDate], { nullable: true })
   @HasMany(() => EncounterChangeDate, {
     foreignKey: 'encounterChangeId',
     onDelete: 'CASCADE',
   })
-  dates: EncounterChangeDate[];
-
-  @Field(() => [Comment], { nullable: true })
-  @HasMany(() => Comment, {
-    foreignKey: 'linkId',
-    constraints: false,
-    scope: {
-      linkType: 'home_comment',
-    },
-  })
-  homeComments?: Comment[];
-
-  @Field(() => [Comment], { nullable: true })
-  @HasMany(() => Comment, {
-    foreignKey: 'linkId',
-    constraints: false,
-    scope: {
-      linkType: 'away_comment',
-    },
-  })
-  awayComments?: Comment[];
+  dates?: Relation<EncounterChangeDate[]>;
 
   // Belongs to Encounter
   getEncounter!: BelongsToGetAssociationMixin<EncounterCompetition>;
@@ -117,59 +95,25 @@ export class EncounterChange extends Model {
   hasDate!: HasManyHasAssociationMixin<EncounterChangeDate, string>;
   hasDates!: HasManyHasAssociationsMixin<EncounterChangeDate, string>;
   countDates!: HasManyCountAssociationsMixin;
-
-  // Has many HomeComment
-  getHomeComments!: HasManyGetAssociationsMixin<Comment>;
-  setHomeComments!: HasManySetAssociationsMixin<Comment, string>;
-  addHomeComments!: HasManyAddAssociationsMixin<Comment, string>;
-  addHomeComment!: HasManyAddAssociationMixin<Comment, string>;
-  removeHomeComment!: HasManyRemoveAssociationMixin<Comment, string>;
-  removeHomeComments!: HasManyRemoveAssociationsMixin<Comment, string>;
-  hasHomeComment!: HasManyHasAssociationMixin<Comment, string>;
-  hasHomeComments!: HasManyHasAssociationsMixin<Comment, string>;
-  countHomeComments!: HasManyCountAssociationsMixin;
-
-  // Has many AwayComment
-  getAwayComments!: HasManyGetAssociationsMixin<Comment>;
-  setAwayComments!: HasManySetAssociationsMixin<Comment, string>;
-  addAwayComments!: HasManyAddAssociationsMixin<Comment, string>;
-  addAwayComment!: HasManyAddAssociationMixin<Comment, string>;
-  removeAwayComment!: HasManyRemoveAssociationMixin<Comment, string>;
-  removeAwayComments!: HasManyRemoveAssociationsMixin<Comment, string>;
-  hasAwayComment!: HasManyHasAssociationMixin<Comment, string>;
-  hasAwayComments!: HasManyHasAssociationsMixin<Comment, string>;
-  countAwayComments!: HasManyCountAssociationsMixin;
 }
 
 @InputType()
 export class EncounterChangeUpdateInput extends PartialType(
-  OmitType(EncounterChange, [
-    'createdAt',
-    'updatedAt',
-    'dates',
-    'homeComments',
-    'awayComments',
-  ] as const),
+  OmitType(EncounterChange, ['createdAt', 'updatedAt', 'dates'] as const),
   InputType
 ) {
-  @Field()
-  home: boolean;
+  @Field(() => Boolean)
+  home?: boolean;
 
   @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })
-  dates: EncounterChangeDate[];
-
-  @Field(() => CommentUpdateInput, { nullable: true })
-  comment: Comment;
+  dates?: Relation<EncounterChangeDate[]>;
 }
 
 @InputType()
 export class EncounterChangeNewInput extends PartialType(
-  OmitType(EncounterChangeUpdateInput, ['id', 'dates', 'comment'] as const),
+  OmitType(EncounterChangeUpdateInput, ['id', 'dates'] as const),
   InputType
 ) {
   @Field(() => [EncounterChangeDateNewInput], { nullable: true })
-  dates: EncounterChangeDate[];
-
-  @Field(() => CommentNewInput, { nullable: true })
-  comment: Comment;
+  dates?: Relation<EncounterChangeDate[]>;
 }

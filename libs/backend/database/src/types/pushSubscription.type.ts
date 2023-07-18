@@ -8,34 +8,30 @@ import {
 
 @ObjectType({ description: 'An Exception' })
 export class PushSubscriptionKeysType {
-  @Field({ nullable: true })
-  p256dh: string;
-  @Field({ nullable: true })
-  auth: string;
+  @Field(() => String, { nullable: true })
+  p256dh?: string;
+  @Field(() => String, { nullable: true })
+  auth?: string;
 }
-
 
 @ObjectType({ description: 'An Exception' })
 export class PushSubscriptionType {
-  @Field({ nullable: true })
-  endpoint: string;
-  @Field({ nullable: true })
-  expirationTime: string;
+  @Field(() => String, { nullable: true })
+  endpoint?: string;
+  @Field(() => String, { nullable: true })
+  expirationTime?: string;
 
   @Field(() => PushSubscriptionKeysType, { nullable: true })
-  keys: PushSubscriptionKeys;
+  keys?: PushSubscriptionKeys;
 }
-
 
 @InputType()
 export class PushSubscriptionInputType extends PartialType(
-  OmitType(PushSubscriptionType, [
-    'keys'
-  ] as const),
+  OmitType(PushSubscriptionType, ['keys'] as const),
   InputType
 ) {
   @Field(() => PushSubscriptionKeysInputType, { nullable: true })
-  keys: PushSubscriptionKeys;
+  keys?: PushSubscriptionKeys;
 }
 
 @InputType()
@@ -43,7 +39,6 @@ export class PushSubscriptionKeysInputType extends PartialType(
   OmitType(PushSubscriptionKeysType, [] as const),
   InputType
 ) {}
-
 
 export interface PushSubscription {
   endpoint: string;

@@ -14,20 +14,25 @@ export class TeamOrderRule extends Rule {
     for (const type of Object.values(SubEventTypeEnum)) {
       // get all teams of this type
       const teams = enrollment.teams.filter(
-        (team) => team.team.type === type && team.subEvent
+        (team) => team.team?.type === type && team.subEvent
       );
 
       // sort teams by teamIndex
-      teams.sort((a, b) => a.teamIndex - b.teamIndex);
+      teams.sort((a, b) => (a.teamIndex ?? 0) - (b.teamIndex ?? 0));
 
       // iterate over teams
       for (const teamEnrollment of teams) {
+        if (!teamEnrollment?.team?.id) {
+          continue;
+        }
+
         const errors = [] as EnrollmentValidationError[];
         const warnings = [] as EnrollmentValidationError[];
 
         // find higher teams
         const higherTeams = teams?.filter(
-          (t) => t.team.teamNumber < teamEnrollment.team.teamNumber
+          (t) =>
+            (t?.team?.teamNumber ?? 0) < (teamEnrollment?.team?.teamNumber ?? 0)
         );
 
         for (const higherTeam of higherTeams) {
@@ -48,7 +53,7 @@ export class TeamOrderRule extends Rule {
 
           if (
             subEventDiff == 'same' &&
-            teamEnrollment.baseIndex < higherTeam.baseIndex
+            (teamEnrollment.baseIndex ?? 0) < (higherTeam.baseIndex ?? 0)
           ) {
             warnings.push({
               message:

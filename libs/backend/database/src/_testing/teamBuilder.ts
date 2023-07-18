@@ -11,7 +11,7 @@ export class TeamBuilder {
 
   private players: PlayerBuilder[] = [];
   private entries: EventCompetitionEntryBuilder[] = [];
-  private club: ClubBuilder;
+  private club?: ClubBuilder;
 
   constructor(type: SubEventTypeEnum) {
     this.team = new Team({

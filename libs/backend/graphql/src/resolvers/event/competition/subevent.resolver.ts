@@ -9,12 +9,7 @@ import {
   SubEventCompetitionAverageLevel,
 } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import {
-  CACHE_MANAGER,
-  Inject,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Logger, NotFoundException } from '@nestjs/common';
 import {
   Args,
   ID,
@@ -25,6 +20,8 @@ import {
 } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CACHE_TTL } from '@badman/backend-cache';
 
 @Resolver(() => SubEventCompetition)
 export class SubEventCompetitionResolver {
@@ -144,6 +141,12 @@ export class SubEventCompetitionResolver {
       },
     });
 
+    if (!primarySystem) {
+      throw new NotFoundException(
+        `${RankingSystem.name}: primary ranking system not found`
+      );
+    }
+
     // skip male average calculation if the event is female only
     if (subEvent.eventType !== SubEventTypeEnum.F) {
       // Get the current ranking place for the players
@@ -167,7 +170,7 @@ export class SubEventCompetitionResolver {
     }
 
     // Cache this for a week
-    await this._cacheManager.set(cacheKey, avagrages, 60 * 60 * 24 * 7);
+    await this._cacheManager.set(cacheKey, avagrages, CACHE_TTL);
     return avagrages;
   }
 
@@ -193,10 +196,13 @@ export class SubEventCompetitionResolver {
     // calculate average level of single
     let singleMales = 0;
     const averageLevelSingleMale = rankingPlacesMale.reduce((acc, cur) => {
+      if (!cur?.playerId) {
+        throw new NotFoundException('No Player id');
+      }
       if (!cur?.single) {
         return acc;
       }
-      const count = countPerMale.get(cur.playerId);
+      const count = countPerMale.get(cur.playerId) || 0;
       singleMales += count;
       return acc + cur.single * count;
     }, 0);
@@ -204,10 +210,13 @@ export class SubEventCompetitionResolver {
     // calculate average level of double
     let doubleMales = 0;
     const averageLevelDoubleMale = rankingPlacesMale.reduce((acc, cur) => {
+      if (!cur?.playerId) {
+        throw new NotFoundException('No Player id');
+      }
       if (!cur?.double) {
         return acc;
       }
-      const count = countPerMale.get(cur.playerId);
+      const count = countPerMale.get(cur.playerId) || 0;
       doubleMales += count;
       return acc + cur.double * count;
     }, 0);
@@ -215,10 +224,13 @@ export class SubEventCompetitionResolver {
     // calculate average level of mix
     let mixMales = 0;
     const averageLevelMixedMale = rankingPlacesMale.reduce((acc, cur) => {
+      if (!cur?.playerId) {
+        throw new NotFoundException('No Player id');
+      }
       if (!cur?.mix) {
         return acc;
       }
-      const count = countPerMale.get(cur.playerId);
+      const count = countPerMale.get(cur.playerId) || 0;
       mixMales += count;
       return acc + cur.mix * count;
     }, 0);
@@ -255,30 +267,41 @@ export class SubEventCompetitionResolver {
 
     let singleFemales = 0;
     const averageLevelSingleFemale = rankingPlacesFemale.reduce((acc, cur) => {
+      if (!cur?.playerId) {
+        throw new NotFoundException('No Player id');
+      }
+
       if (!cur?.single) {
         return acc;
       }
-      const count = countPerFemale.get(cur.playerId);
+      const count = countPerFemale.get(cur.playerId) || 0;
       singleFemales += count;
       return acc + cur.single * count;
     }, 0);
 
     let doubleFemales = 0;
     const averageLevelDoubleFemale = rankingPlacesFemale.reduce((acc, cur) => {
+      if (!cur?.playerId) {
+        throw new NotFoundException('No Player id');
+      }
+
       if (!cur?.double) {
         return acc;
       }
-      const count = countPerFemale.get(cur.playerId);
+      const count = countPerFemale.get(cur.playerId) || 0;
       doubleFemales += count;
       return acc + cur.double * count;
     }, 0);
 
     let mixFemales = 0;
     const averageLevelMixedFemale = rankingPlacesFemale.reduce((acc, cur) => {
+      if (!cur?.playerId) {
+        throw new NotFoundException('No Player id');
+      }
       if (!cur?.mix) {
         return acc;
       }
-      const count = countPerFemale.get(cur.playerId);
+      const count = countPerFemale.get(cur.playerId) || 0;
       mixFemales += count;
       return acc + cur.mix * count;
     }, 0);

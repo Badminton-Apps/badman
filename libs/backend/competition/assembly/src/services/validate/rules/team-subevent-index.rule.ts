@@ -1,11 +1,25 @@
-import { AssemblyValidationData, AssemblyOutput } from '../../../models';
+import {
+  AssemblyValidationData,
+  AssemblyOutput,
+  AssemblyValidationError,
+} from '../../../models';
 import { Rule } from './_rule.base';
+
+export type TeamSubeventIndexRuleParams = {
+  teamIndex: number;
+  minIndex: number;
+  maxIndex: number;
+};
 
 export class TeamSubeventIndexRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { teamIndex: baseTeamIndex, subEvent } = assembly;
 
-    if (baseTeamIndex < subEvent.minBaseIndex) {
+    if (!subEvent?.minBaseIndex) {
+      throw new Error('Subevent is not defined');
+    }
+
+    if ((baseTeamIndex ?? 0) < subEvent.minBaseIndex) {
       return {
         valid: false,
         errors: [
@@ -17,7 +31,7 @@ export class TeamSubeventIndexRule extends Rule {
               maxIndex: subEvent.maxBaseIndex,
             },
           },
-        ],
+        ] as AssemblyValidationError<TeamSubeventIndexRuleParams>[],
       };
     }
 

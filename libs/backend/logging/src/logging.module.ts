@@ -45,10 +45,13 @@ export class LoggingModule {
         WinstonModule.forRootAsync({
           imports: [ConfigModule],
           useFactory: (configService: ConfigService) => {
-            console.log(configService.get('NODE_ENV'));
-
             if (configService.get('NODE_ENV') === 'production') {
-              const logtail = new Logtail(configService.get('LOGTAIL_TOKEN'), {
+              const token = configService.get('LOGTAIL_TOKEN');
+              if (!token) {
+                throw new Error('LOGTAIL_TOKEN is not defined in .env file');
+              }
+
+              const logtail = new Logtail(token, {
                 endpoint: 'https://in.logtail.com',
               });
               return {
@@ -82,18 +85,14 @@ export class LoggingModule {
                   nestWinstonModuleUtilities.format.nestLike('Badman', {
                     colors: true,
                     prettyPrint: true,
-                    
                   })
                 ),
                 transports: [
                   new transports.Console(),
                   new transports.File({
-                    filename: `info-${config.name}.log`,
+                    filename: `info-${config?.name}.log`,
                     level: 'silly',
-                    format: combine(
-                      timestamp(),
-                      logFileFormat
-                    ),
+                    format: combine(timestamp(), logFileFormat),
                     options: { flags: 'w' },
                   }),
                 ],

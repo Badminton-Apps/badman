@@ -46,6 +46,7 @@ import { RankingSystemRankingGroupMembership } from './ranking-group-ranking-sys
 import { RankingLastPlace } from './ranking-last-place.model';
 import { RankingPlace } from './ranking-place.model';
 import { RankingPoint } from './ranking-point.model';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -65,61 +66,61 @@ export class RankingSystem extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @Unique
-  @Field({ nullable: true })
-  @Column
-  name: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  name?: string;
 
-  @Field({ nullable: true })
-  @Column
-  amountOfLevels: number;
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  amountOfLevels!: number;
 
-  @Field({ nullable: true })
-  @Column
-  procentWinning: number;
-  @Field({ nullable: true })
-  @Column
-  procentWinningPlus1: number;
-  @Field({ nullable: true })
-  @Column
-  procentLosing: number;
-  @Field({ nullable: true })
-  @Column
-  minNumberOfGamesUsedForUpgrade: number;
-  @Field({ nullable: true })
-  @Column
-  maxDiffLevels: number;
-  @Field({ nullable: true })
-  @Column
-  maxDiffLevelsHighest: number;
-  @Field({ nullable: true })
-  @Column
-  latestXGamesToUse: number;
-  @Field({ nullable: true })
-  @Column
-  maxLevelUpPerChange: number;
-  @Field({ nullable: true })
-  @Column
-  maxLevelDownPerChange: number;
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  procentWinning!: number;
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  procentWinningPlus1!: number;
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  procentLosing!: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  minNumberOfGamesUsedForUpgrade?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  maxDiffLevels?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  maxDiffLevelsHighest?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  latestXGamesToUse?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  maxLevelUpPerChange?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  maxLevelDownPerChange?: number;
 
-  @Field({ nullable: true })
-  @Column
-  gamesForInactivty: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  gamesForInactivty?: number;
 
-  @Field({ nullable: true })
-  @Column
-  inactivityAmount: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  inactivityAmount?: number;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  inactivityUnit: 'months' | 'weeks' | 'days';
+  inactivityUnit?: 'months' | 'weeks' | 'days';
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('freeze', 'decrease'))
-  inactiveBehavior: 'freeze' | 'decrease';
+  inactiveBehavior?: 'freeze' | 'decrease';
 
   get inactivity(): RankingTiming {
     return {
@@ -128,16 +129,16 @@ export class RankingSystem extends Model {
     };
   }
   @Default(new Date('2016-08-31T22:00:00.000Z'))
-  @Field({ nullable: true })
-  @Column
-  caluclationIntervalLastUpdate: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  caluclationIntervalLastUpdate?: Date;
 
-  @Field({ nullable: true })
-  @Column
-  caluclationIntervalAmount: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  caluclationIntervalAmount?: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  calculationIntervalUnit: 'months' | 'weeks' | 'days';
+  calculationIntervalUnit?: 'months' | 'weeks' | 'days';
 
   get calculationInterval(): RankingTiming {
     return {
@@ -146,12 +147,12 @@ export class RankingSystem extends Model {
     };
   }
 
-  @Field({ nullable: true })
-  @Column
-  periodAmount: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  periodAmount?: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  periodUnit: 'months' | 'weeks' | 'days';
+  periodUnit?: 'months' | 'weeks' | 'days';
 
   get period(): RankingTiming {
     return {
@@ -160,15 +161,15 @@ export class RankingSystem extends Model {
     };
   }
   @Default(new Date('2016-08-31T22:00:00.000Z'))
-  @Field({ nullable: true })
-  @Column
-  updateIntervalAmountLastUpdate: Date;
-  @Field({ nullable: true })
-  @Column
-  updateIntervalAmount: number;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  updateIntervalAmountLastUpdate?: Date;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  updateIntervalAmount?: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  updateIntervalUnit: 'months' | 'weeks' | 'days';
+  updateIntervalUnit?: 'months' | 'weeks' | 'days';
 
   get updateInterval(): RankingTiming {
     return {
@@ -179,46 +180,46 @@ export class RankingSystem extends Model {
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB', 'VISUAL'))
-  rankingSystem: RankingSystems;
+  rankingSystem?: RankingSystems;
 
-  @Field({ nullable: true })
-  @Column
-  primary: boolean;
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  primary?: boolean;
 
-  @Field({ nullable: true })
-  @Column({ defaultValue: false })
-  runCurrently: boolean;
+  @Field(() => Boolean, { nullable: true })
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  runCurrently?: boolean;
 
-  @Field({ nullable: true })
-  @Column
-  runDate: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  runDate?: Date;
 
-  @Field({ nullable: true })
-  @Column({ defaultValue: 1 })
-  differenceForUpgrade: number;
+  @Field(() => Int, { nullable: true })
+  @Column({ type: DataType.NUMBER, defaultValue: 1 })
+  differenceForUpgrade?: number;
 
-  @Field({ nullable: true })
-  @Column({ defaultValue: 0 })
-  differenceForDowngrade: number;
+  @Field(() => Int, { nullable: true })
+  @Column({ type: DataType.NUMBER, defaultValue: 0 })
+  differenceForDowngrade?: number;
 
   @Field(() => String, { nullable: true })
   @Column({
     type: DataType.ENUM('formula', 'tableLFBB', 'tableBVL'),
     defaultValue: 'formula',
   })
-  startingType: StartingType;
+  startingType?: StartingType;
 
   @HasMany(() => RankingPoint, 'systemId')
-  rankingPoints: RankingPoint;
+  rankingPoints?: Relation<RankingPoint>;
 
   @HasMany(() => RankingPlace, 'systemId')
-  places: RankingPlace;
+  places?: Relation<RankingPlace>;
 
   @HasMany(() => RankingLastPlace, 'systemId')
-  lastPlaces: RankingLastPlace;
+  lastPlaces?: Relation<RankingLastPlace>;
 
   @BelongsToMany(() => RankingGroup, () => RankingSystemRankingGroupMembership)
-  rankingGroups: RankingGroup[];
+  rankingGroups?: Relation<RankingGroup[]>;
 
   // Has many RankingPoint
   getRankingPoints!: HasManyGetAssociationsMixin<RankingPoint>;
@@ -232,15 +233,15 @@ export class RankingSystem extends Model {
   countRankingPoints!: HasManyCountAssociationsMixin;
 
   // Belongs to many Group
-  getRankingGroups: BelongsToManyGetAssociationsMixin<RankingGroup>;
-  setRankingGroups: BelongsToManySetAssociationsMixin<RankingGroup, string>;
-  addRankingGroups: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
+  getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
+  setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
+  addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
   addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
   removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
     RankingGroup,
     string
   >;
-  removeRankingGroups: BelongsToManyRemoveAssociationsMixin<
+  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<
     RankingGroup,
     string
   >;
@@ -259,12 +260,12 @@ export class RankingSystem extends Model {
   hasLastPlaces!: HasManyHasAssociationsMixin<RankingLastPlace, string>;
   countLastPlaces!: HasManyCountAssociationsMixin;
 
-  private _pointsToGoUp: number[];
-  private _pointsWhenWinningAgainst: number[];
-  private _pointsToGoDown: number[];
+  private _pointsToGoUp!: number[];
+  private _pointsWhenWinningAgainst!: number[];
+  private _pointsToGoDown!: number[];
 
-  private _levelArray: number[];
-  private _levelArrayOneMinus: number[];
+  private _levelArray!: number[];
+  private _levelArrayOneMinus!: number[];
 
   @Field(() => [Int], { nullable: true })
   @Column(DataType.VIRTUAL)
@@ -322,7 +323,7 @@ export class RankingSystem extends Model {
     this._pointsWhenWinningAgainst = [];
     this._pointsToGoDown = [];
 
-    this._levelArray.forEach((x) => {
+    this._levelArray?.forEach((x) => {
       if (x === 0) {
         this._pointsWhenWinningAgainst[x] = 50;
       } else {

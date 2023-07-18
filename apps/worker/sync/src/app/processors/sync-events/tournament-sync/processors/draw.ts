@@ -9,8 +9,8 @@ import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
 import { VisualService, XmlDrawTypeID, XmlTournament } from '@badman/backend-visual';
 import { SubEventStepData } from './subEvent';
-import { DrawType, runParrallel } from '@badman/utils';
-import { Logger } from '@nestjs/common';
+import { DrawType, runParallel } from '@badman/utils';
+import { Logger, NotFoundException } from '@nestjs/common';
 
 export interface DrawStepData {
   draw: DrawTournament;
@@ -18,8 +18,8 @@ export interface DrawStepData {
 }
 
 export class TournamentSyncDrawProcessor extends StepProcessor {
-  public event: EventTournament;
-  public subEvents: SubEventStepData[];
+  public event?: EventTournament;
+  public subEvents?: SubEventStepData[];
   private _dbDraws: DrawStepData[] = [];
 
   constructor(
@@ -27,12 +27,16 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options: StepOptions
   ) {
+    if (!options) {
+      options = {};
+    }
+    
     options.logger = options.logger || new Logger(TournamentSyncDrawProcessor.name);
     super(options);
   }
 
   public async process(): Promise<DrawStepData[]> {
-    await runParrallel(this.subEvents.map((e) => this._processDraws(e)));
+    await runParallel(this.subEvents?.map((e) => this._processDraws(e)) ?? []);
     return this._dbDraws;
   }
 
@@ -43,6 +47,10 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
     subEvent: SubEventTournament;
     internalId: number;
   }) {
+    if (!this.event) {
+      throw new NotFoundException(`${EventTournament.name} not found`);
+    }
+    
     const draws = await subEvent.getDrawTournaments({
       transaction: this.transaction,
     });

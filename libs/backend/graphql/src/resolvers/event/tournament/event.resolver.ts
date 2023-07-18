@@ -8,25 +8,26 @@ import {
   RankingGroup,
   RankingPoint,
   RankingSystem,
-  SubEventTournament
+  SubEventTournament,
 } from '@badman/backend-database';
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
 import { IsUUID } from '@badman/utils';
 import {
   Logger,
   NotFoundException,
-  UnauthorizedException
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   Args,
   Field,
   ID,
+  Int,
   Mutation,
   ObjectType,
   Parent,
   Query,
   ResolveField,
-  Resolver
+  Resolver,
 } from '@nestjs/graphql';
 import { Op, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
@@ -34,11 +35,11 @@ import { ListArgs } from '../../../utils';
 
 @ObjectType()
 export class PagedEventTournament {
-  @Field()
-  count: number;
+  @Field(() => Int)
+  count?: number;
 
   @Field(() => [EventTournament])
-  rows: EventTournament[];
+  rows?: EventTournament[];
 }
 
 @Resolver(() => EventTournament)
@@ -88,7 +89,7 @@ export class EventTournamentResolver {
     @User() user: Player,
     @Args('data') updateEventTournamentData: EventTournamentUpdateInput
   ): Promise<EventTournament> {
-    if (!user.hasAnyPermission([`edit:tournament`])) {
+    if (!await user.hasAnyPermission([`edit:tournament`])) {
       throw new UnauthorizedException(
         `You do not have permission to add a tournament`
       );
@@ -119,6 +120,11 @@ export class EventTournamentResolver {
           },
           transaction,
         });
+
+        if (!ranking) {
+          throw new NotFoundException(`${RankingSystem.name}: primary`);
+        }
+
         const groups = await ranking.getRankingGroups({
           transaction,
         });

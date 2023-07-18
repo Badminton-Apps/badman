@@ -1,4 +1,4 @@
-import { Slugify } from '../../../types';
+import { AvailabilityExceptionInputType, AvailabilityExceptionType, Slugify } from '../../../types';
 import {
   BuildOptions,
   HasManyAddAssociationMixin,
@@ -30,11 +30,14 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
 } from '@nestjs/graphql';
 import { Role } from '../../security';
+import { Relation } from '../../../wrapper';
+import { AvailabilityException } from '../availability.model';
 
 @Table({
   timestamps: true,
@@ -50,36 +53,52 @@ export class EventCompetition extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
   @Unique('EventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  name: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  name?: string;
 
   @Unique('EventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  season: number;
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  season!: number;
 
-  @Field({ nullable: true })
-  @Column
-  lastSync: Date;
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  lastSync?: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   openDate?: Date;
 
-  @Field({ nullable: true })
-  @Column
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
   closeDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  changeOpenDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  changeCloseDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @Column(DataType.DATE)
+  changeCloseRequestDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  contactEmail?: string;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
@@ -89,7 +108,7 @@ export class EventCompetition extends Model {
       linkType: 'competition',
     },
   })
-  comments: Comment[];
+  comments?: Relation<Comment[]>;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
@@ -99,41 +118,41 @@ export class EventCompetition extends Model {
       linkType: 'competition',
     },
   })
-  roles?: Role[];
+  roles?: Relation<Role[]>;
 
   @Field(() => [SubEventCompetition], { nullable: true })
   @HasMany(() => SubEventCompetition, {
     foreignKey: 'eventId',
     onDelete: 'CASCADE',
   })
-  subEventCompetitions: SubEventCompetition[];
+  subEventCompetitions?: Relation<SubEventCompetition[]>;
 
   @Field(() => String, { nullable: true })
   @Unique('EventCompetitions_unique_constraint')
   @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
-  type: LevelType;
+  type!: LevelType;
 
   @Unique('EventCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  visualCode: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  visualCode?: string;
 
   @Default(false)
-  @Field({ nullable: true })
-  @Column
-  started: boolean;
-
-  @Field({ nullable: true })
-  @Column
-  slug: string;
-
-  @Field({ nullable: true })
-  @Column
-  usedRankingAmount: number;
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  started?: boolean;
 
   @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  slug?: string;
+
+  @Field(() => Int)
+  @Column(DataType.NUMBER)
+  usedRankingAmount!: number;
+
+  @Field(() => String)
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  usedRankingUnit: 'months' | 'weeks' | 'days';
+  usedRankingUnit!: 'months' | 'weeks' | 'days';
   get usedRanking(): UsedRankingTiming {
     return {
       amount: this.usedRankingAmount,
@@ -141,17 +160,23 @@ export class EventCompetition extends Model {
     };
   }
 
-  @Field()
-  @Column
-  official: boolean;
+  @Field(() => Boolean)
+  @Column(DataType.BOOLEAN)
+  official?: boolean;
 
-  @Field({ nullable: true })
-  @Column
-  state: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  state?: string;
 
-  @Field({ nullable: true })
-  @Column
-  country: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  country?: string;
+
+  @Field(() => [AvailabilityExceptionType], { nullable: true })
+  @Column({
+    type: DataType.JSON,
+  })
+  exceptions?: Relation<AvailabilityException[]>;
 
   regenerateSlug!: Slugify<EventCompetition>;
 
@@ -217,10 +242,14 @@ export class EventCompetitionUpdateInput extends PartialType(
     'updatedAt',
     'comments',
     'subEventCompetitions',
-    'roles'
+    'roles',
+    'exceptions',
   ] as const),
   InputType
-) {}
+) {
+  @Field(() => [AvailabilityExceptionInputType])
+  exceptions?: AvailabilityException[];
+}
 
 @InputType()
 export class EventCompetitionNewInput extends PartialType(

@@ -1,15 +1,4 @@
 <div *ngIf="this.formGroup">
-  <div>
-    <h3>
-      {{ 'all.competition.change-encounter.title' | translate }}
-    </h3>
-  </div>
-
-  <p>{{ 'all.competition.change-encounter.description' | translate }}</p>
-
-  <h4>
-    {{ 'all.competition.change-encounter.choose-date' | translate }}
-  </h4>
   <div class="select-encounter">
     <badman-select-club
       singleClubPermission="change:encounter"
@@ -17,16 +6,26 @@
       [updateUrl]="true"
       [group]="this.formGroup"
     ></badman-select-club>
+    <badman-select-season
+      [updateUrl]="true"
+      [group]="this.formGroup"
+      *ngIf="this.canSelectSeason()"
+    >
+    </badman-select-season>
+
     <badman-select-team
       [group]="this.formGroup"
+      [updateOn]="['club', 'season']"
       [updateUrl]="true"
     ></badman-select-team>
   </div>
 
   <div [hidden]="!formGroup.get('team')!.value">
-    <h3>
+    <h3 *ngIf="!isHandset()">
+      <mat-icon color="primary">event</mat-icon>
       {{ 'all.competition.change-encounter.choose-encounter' | translate }}
     </h3>
+
     <div class="list-encounters">
       <badman-list-encounters [group]="formGroup"></badman-list-encounters>
       <badman-show-requests [group]="formGroup"></badman-show-requests>

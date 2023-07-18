@@ -18,7 +18,7 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { EncounterChange } from './event';
+import { EncounterChange, EncounterCompetition } from './event';
 import { Club } from './club.model';
 import {
   Field,
@@ -28,6 +28,7 @@ import {
   OmitType,
   PartialType,
 } from '@nestjs/graphql';
+import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
@@ -42,60 +43,58 @@ export class Comment extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
-  @Field({ nullable: true })
+  @Field(() => Date, { nullable: true })
   createdAt?: Date;
 
-
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.TEXT)
-  message: string;
+  message?: string;
 
   @BelongsTo(() => Player, 'playerId')
-  player: Player;
+  player?: Relation<Player>;
 
   @ForeignKey(() => Player)
   @Index
-  @Field({ nullable: true })
-  @Column
-  playerId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  playerId?: string;
 
   @BelongsTo(() => Club, 'clubId')
-  club: Club;
+  club?: Relation<Club>;
 
   @ForeignKey(() => Club)
   @Index
-  @Field({ nullable: true })
-  @Column
-  clubId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  clubId?: string;
 
   @BelongsTo(() => EventCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  competition: EventCompetition;
+  competition?: Relation<EventCompetition>;
 
-  @BelongsTo(() => EncounterChange, {
+  @BelongsTo(() => EncounterCompetition, {
     foreignKey: 'linkId',
     constraints: false,
   })
-  encounter: EncounterChange;
+  encounter?: Relation<EncounterCompetition>;
 
   @Index('comment_index')
-  @Field({ nullable: true })
-  @Column
-  linkId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  linkId?: string;
 
   @Index('comment_index')
-  @Field({ nullable: true })
-  @Column
-  linkType: string;
-
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  linkType?: string;
 
   // Belongs to Competition
   getCompetition!: BelongsToGetAssociationMixin<EventCompetition>;

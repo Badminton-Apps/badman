@@ -30,7 +30,8 @@ import { DrawType } from '@badman/utils';
 import { Game } from '../game.model';
 import { Standing } from '../standing.model';
 import { EventEntry } from '../entry.model';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -46,22 +47,22 @@ export class DrawTournament extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @Unique('DrawTournaments_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  name: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  name?: string;
 
   @Unique('DrawTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
-  type: DrawType;
+  type?: DrawType;
 
-  @Field({ nullable: true })
-  @Column
-  size: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  size?: number;
 
   @HasMany(() => Game, {
     foreignKey: 'linkId',
@@ -70,7 +71,7 @@ export class DrawTournament extends Model {
       linkType: 'tournament',
     },
   })
-  games: Game[];
+  games?: Relation<Game[]>;
 
   @HasMany(() => EventEntry, {
     foreignKey: 'drawId',
@@ -79,33 +80,35 @@ export class DrawTournament extends Model {
       entryType: 'tournament',
     },
   })
-  eventEntries: EventEntry[];
+  eventEntries?: Relation<EventEntry[]>;
 
   @Unique('DrawTournaments_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  visualCode: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  visualCode?: string;
 
-  @Field({ nullable: true })
-  @Column
-  risers: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  risers!: number;
 
-  @Field({ nullable: true })
-  @Column
-  fallers: number;
+  @Field(() => Int)
+  @Default(0)
+  @Column(DataType.NUMBER)
+  fallers!: number;
 
   @Field(() => SubEventTournament, { nullable: true })
   @BelongsTo(() => SubEventTournament, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  subEventTournament?: SubEventTournament;
+  subEventTournament?: Relation<SubEventTournament>;
 
   @Unique('DrawTournaments_unique_constraint')
   @ForeignKey(() => SubEventTournament)
-  @Field({ nullable: true })
-  @Column
-  subeventId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  subeventId?: string;
 
   // Has many Game
   getGames!: HasManyGetAssociationsMixin<Game>;

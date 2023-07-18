@@ -33,10 +33,12 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
 } from '@nestjs/graphql';
+import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -52,54 +54,54 @@ export class DrawCompetition extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
-
-  @Unique('DrawCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  name: string;
-
-  @Unique('DrawCompetitions_unique_constraint')
-  @Field({ nullable: true })
-  @Column
-  visualCode: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @Unique('DrawCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  name?: string;
+
+  @Unique('DrawCompetitions_unique_constraint')
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  visualCode?: string;
+
+  @Unique('DrawCompetitions_unique_constraint')
+  @Field(() => String)
   @Column(DataType.ENUM('KO', 'POULE', 'QUALIFICATION'))
-  type: DrawType;
+  type!: DrawType;
 
-  @Field({ nullable: true })
-  @Column
-  size: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  size?: number;
 
-  @Field({ nullable: true })
-  @Column
-  risers: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  risers?: number;
 
-  @Field({ nullable: true })
-  @Column
-  fallers: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  fallers?: number;
 
   @Field(() => SubEventCompetition, { nullable: true })
   @BelongsTo(() => SubEventCompetition, {
     foreignKey: 'subeventId',
     onDelete: 'CASCADE',
   })
-  subEventCompetition?: SubEventCompetition;
+  subEventCompetition?: Relation<SubEventCompetition>;
 
   @Unique('DrawCompetitions_unique_constraint')
   @ForeignKey(() => SubEventCompetition)
-  @Field({ nullable: true })
-  @Column
-  subeventId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  subeventId?: string;
 
   @HasMany(() => EncounterCompetition, {
     foreignKey: 'drawId',
     onDelete: 'CASCADE',
   })
-  encounterCompetitions: EncounterCompetition[];
+  encounterCompetitions?: EncounterCompetition[];
 
   @HasMany(() => EventEntry, {
     foreignKey: 'drawId',
@@ -108,7 +110,7 @@ export class DrawCompetition extends Model {
       entryType: 'competition',
     },
   })
-  entries: EventEntry[];
+  entries?: Relation<EventEntry[]>;
 
   // Belongs to SubEvent
   getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;

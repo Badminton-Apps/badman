@@ -1,5 +1,14 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  inject,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -9,7 +18,9 @@ import {
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EncounterCompetition } from '@badman/frontend-models';
 import { getCurrentSeasonPeriod } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -40,11 +51,21 @@ import {
     MatIconModule,
     MatListModule,
     MatDividerModule,
+    MatSelectModule,
 
     MomentModule,
+
+    LoadingBlockComponent,
   ],
 })
 export class ListEncountersComponent implements OnInit, OnDestroy {
+  breakpointObserver = inject(BreakpointObserver);
+  isHandset = toSignal(
+    this.breakpointObserver
+      .observe(Breakpoints.Handset)
+      .pipe(map((result) => result.matches))
+  );
+
   destroy$ = new Subject<void>();
 
   @Input()
@@ -64,7 +85,8 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -100,21 +122,24 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
               this.formControl?.enable();
             }
 
-            const contrl = this.group.get('year');
+            const contrl = this.group.get('season');
             if (!contrl) {
-              throw new Error('year is not in formGroup');
+              throw new Error('season is not in formGroup');
             }
 
             const encounters = await lastValueFrom(
               contrl.valueChanges.pipe(
                 startWith(contrl.value),
-                switchMap((year) =>
+                switchMap((season) =>
                   this.apollo.query<{
                     encounterCompetitions: { rows: EncounterCompetition[] };
                   }>({
                     query: gql`
-                      query GetEncounterQuery($where: JSONObject) {
-                        encounterCompetitions(where: $where) {
+                      query ListEncounterQuery(
+                        $where: JSONObject
+                        $order: [SortOrderType!]
+                      ) {
+                        encounterCompetitions(where: $where, order: $order) {
                           rows {
                             id
                             date
@@ -136,6 +161,18 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                             drawCompetition {
                               id
                               subeventId
+                              subEventCompetition {
+                                id
+                                eventCompetition {
+                                  id
+                                  changeCloseRequestDate
+                                  changeCloseDate
+                                }
+                              }
+                            }
+                            location {
+                              id
+                              name
                             }
                           }
                         }
@@ -148,9 +185,16 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                           awayTeamId: teamId,
                         },
                         date: {
-                          $between: getCurrentSeasonPeriod(year),
+                          $between: getCurrentSeasonPeriod(season),
                         },
                       },
+                      // For easy viewing in network tab
+                      order: [
+                        {
+                          field: 'date',
+                          direction: 'desc',
+                        },
+                      ],
                     },
                   })
                 ),
@@ -211,6 +255,8 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                 });
               }
             }
+
+            this.changeDetectorRef.detectChanges();
           } else {
             this.formControl?.disable();
           }

@@ -10,13 +10,17 @@ import { correctWrongPlayers } from '../../../../utils';
 import { Logger } from '@nestjs/common';
 
 export class TournamentSyncPlayerProcessor extends StepProcessor {
-  public event: EventTournament;
+  public event?: EventTournament;
 
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
+    if (!options) {
+      options = {};
+    }
+
     options.logger =
       options.logger || new Logger(TournamentSyncPlayerProcessor.name);
     super(options);
@@ -33,7 +37,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
 
       return {
         player: correctWrongPlayers({
-          memberId: xmlPlayer?.MemberID ? `${xmlPlayer?.MemberID}` : null,
+          memberId: xmlPlayer?.MemberID ? `${xmlPlayer?.MemberID}` : undefined,
           firstName: xmlPlayer.Firstname,
           lastName: xmlPlayer.Lastname,
           gender:
@@ -58,9 +62,9 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
     });
 
     for (const xmlPlayer of visualPlayers) {
-      let foundPlayer = players.find(
-        (r) => r.memberId === `${xmlPlayer?.player?.memberId}`
-      );
+      let foundPlayer =
+        players.find((r) => r.memberId === `${xmlPlayer?.player?.memberId}`) ??
+        null;
       let memberId = xmlPlayer?.xmlMemberId;
 
       if (!foundPlayer) {

@@ -7,6 +7,9 @@
   badman-list-games {
     $color-config: mat.get-color-config($theme);
     $primary: map.get($color-config, 'primary');
+    $success: map.get($theme, success);
+    $danger: map.get($theme, danger);
+
     $foreground: map.get($color-config, 'foreground');
     $background: map.get($color-config, 'background');
     $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
@@ -14,6 +17,31 @@
 
     .game {
       border-color: $border-color;
+
+      &.wonByPlayer {
+        .team.isTeamOfPlayer {
+          .game__points {
+            @if ($isDark) {
+              color: mat.get-color-from-palette($success, 200);
+            } @else {
+              color: mat.get-color-from-palette($success, 500);
+            }
+          }
+        }
+      }
+
+      &:not(.wonByPlayer) {
+        .team.isTeamOfPlayer {
+          .game__points {
+
+            @if ($isDark) {
+              color: mat.get-color-from-palette($danger, 200);
+            } @else {
+              color: mat.get-color-from-palette($danger, 500);
+            }
+          }
+        }
+      }
     }
 
     .game__extra,

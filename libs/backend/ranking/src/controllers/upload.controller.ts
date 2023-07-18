@@ -93,7 +93,9 @@ export class UploadRankingController {
     const players = new Map<string, MembersRolePerGroupData>();
 
     workbook.SheetNames.forEach((sheetName) => {
-      const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      const data = XLSX.utils.sheet_to_json<bbfRating>(
+        workbook.Sheets[sheetName]
+      );
       for (const row of data) {
         let player = players.get(row['P1Memberid']);
 
@@ -138,7 +140,7 @@ export class UploadRankingController {
 
   private readExportMemebrs(workbook: XLSX.WorkBook) {
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(firstSheet);
+    const data = XLSX.utils.sheet_to_json<exportMembers>(firstSheet);
 
     return data?.map((row) => {
       // combine lastname 2, middlename and lastname to a single last name
@@ -159,4 +161,26 @@ export class UploadRankingController {
       } as MembersRolePerGroupData;
     });
   }
+}
+
+interface bbfRating {
+  P1Memberid: string;
+  P1Firstname: string;
+  P1Lastname: string;
+  P1Middlename: string;
+  P1Lastname2: string;
+  Level: number;
+  Points: number;
+}
+
+interface exportMembers {
+  memberid: string;
+  firstname: string;
+  lastname: string;
+  middlename: string;
+  lastname2: string;
+  PlayerLevelSingle: number;
+  PlayerLevelDouble: number;
+  PlayerLevelMixed: number;
+  TypeName: string;
 }

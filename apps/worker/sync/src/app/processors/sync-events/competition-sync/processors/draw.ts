@@ -9,7 +9,7 @@ import { StepProcessor, StepOptions } from '../../../../processing';
 import { VisualService, XmlDrawTypeID, XmlTournament } from '@badman/backend-visual';
 
 import { SubEventStepData } from './subEvent';
-import { DrawType, runParrallel } from '@badman/utils';
+import { DrawType, runParallel } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 
 export interface DrawStepData {
@@ -18,7 +18,7 @@ export interface DrawStepData {
 }
 
 export class CompetitionSyncDrawProcessor extends StepProcessor {
-  public subEvents: SubEventStepData[];
+  public subEvents?: SubEventStepData[];
   private _dbDraws: DrawStepData[] = [];
 
   constructor(
@@ -26,13 +26,17 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
     protected readonly visualService: VisualService,
     options?: StepOptions
   ) {
+    if (!options) {
+      options = {};
+    }
+
     options.logger =
       options.logger || new Logger(CompetitionSyncDrawProcessor.name);
     super(options);
   }
 
   public async process(): Promise<DrawStepData[]> {
-    await runParrallel(this.subEvents.map((e) => this._processDraws(e)));
+    await runParallel(this.subEvents?.map((e) => this._processDraws(e)) ?? []);
     return this._dbDraws;
   }
 

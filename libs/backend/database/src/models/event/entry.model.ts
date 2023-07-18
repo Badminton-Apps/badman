@@ -1,3 +1,4 @@
+import { getIndexFromPlayers } from '@badman/utils';
 import { NotFoundException } from '@nestjs/common';
 import {
   Field,
@@ -33,7 +34,6 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { getIndexFromPlayers, SubEventTypeEnum } from '@badman/utils';
 import { EntryMetaType } from '../../types';
 import { Player } from '../player.model';
 import { RankingPlace, RankingSystem } from '../ranking';
@@ -45,6 +45,7 @@ import {
 } from './competition';
 import { Standing } from './standing.model';
 import { DrawTournament, SubEventTournament } from './tournament';
+import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -61,42 +62,42 @@ export class EventEntry extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
   @BelongsTo(() => Team, 'teamId')
-  team?: Team;
+  team?: Relation<Team>;
 
-  @Column
-  @Field({ nullable: true })
-  date: Date;
+  @Column(DataType.DATE)
+  @Field(() => Date, { nullable: true })
+  date?: Date;
 
   @ForeignKey(() => Team)
-  @Field({ nullable: true })
-  @Column
-  teamId: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.UUIDV4)
+  teamId?: string;
 
   @BelongsTo(() => Player, 'player1Id')
-  player1?: Player;
+  player1?: Relation<Player>;
 
   @ForeignKey(() => Player)
-  @Field({ nullable: true })
-  @Column
-  player1Id: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  player1Id!: string;
 
   @BelongsTo(() => Player, 'player2Id')
-  player2?: Player;
+  player2?: Relation<Player>;
 
   @ForeignKey(() => Player)
-  @Field({ nullable: true })
-  @Column
-  player2Id: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  player2Id!: string;
 
   @BelongsTo(() => SubEventTournament, {
     foreignKey: 'subEventId',
     constraints: false,
   })
-  subEventTournament: SubEventTournament;
+  subEventTournament?: Relation<SubEventTournament>;
 
   /**
    * Draw get's deciede upon draw
@@ -106,14 +107,14 @@ export class EventEntry extends Model {
     foreignKey: 'drawId',
     constraints: false,
   })
-  drawTournament?: DrawTournament;
+  drawTournament?: Relation<DrawTournament>;
 
   @Field(() => SubEventCompetition, { nullable: true })
   @BelongsTo(() => SubEventCompetition, {
     foreignKey: 'subEventId',
     constraints: false,
   })
-  subEventCompetition: SubEventCompetition;
+  subEventCompetition?: Relation<SubEventCompetition>;
 
   /**
    * Draw get's deciede upon draw
@@ -122,18 +123,18 @@ export class EventEntry extends Model {
     foreignKey: 'drawId',
     constraints: false,
   })
-  drawCompetition?: DrawCompetition;
+  drawCompetition?: Relation<DrawCompetition>;
 
-  @Field({ nullable: true })
-  @Column
-  subEventId: string;
-  @Field({ nullable: true })
-  @Column
-  drawId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  subEventId?: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  drawId?: string;
 
-  @Field({ nullable: true })
-  @Column
-  entryType: string;
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  entryType?: string;
 
   @HasOne(() => Standing)
   standing?: Standing;
@@ -269,7 +270,8 @@ export class EventEntry extends Model {
             ((r?.double ?? -1) == -1 ? ranking?.double : r?.double) ??
             dbSystem.amountOfLevels,
           mix:
-            ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
+            ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ??
+            dbSystem.amountOfLevels,
         };
       }
     );
@@ -354,20 +356,20 @@ export interface Meta {
 }
 
 export interface EntryTournament {
-  place: number;
+  place?: number;
 }
 
 export interface EntryCompetition {
-  teamIndex: number;
+  teamIndex?: number;
   players: EntryCompetitionPlayer[];
 }
 
 export interface EntryCompetitionPlayer {
   id?: string;
-  single: number;
-  double: number;
-  mix: number;
-  gender: 'M' | 'F';
+  single?: number;
+  double?: number;
+  mix?: number;
+  gender?: 'M' | 'F';
   levelException?: boolean;
-  player?: Player;
+  player?: Relation<Player>;
 }

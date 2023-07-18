@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 
-export const queryFixer = (input) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const queryFixer = (input: any) => {
   if (input === null || input === undefined) {
     return input;
   }

@@ -1,13 +1,14 @@
 import {
   EncounterChange,
   EncounterChangeDate,
-  Comment,
+  Location,
 } from '@badman/backend-database';
 import { Logger, NotFoundException } from '@nestjs/common';
 import {
   Args,
   Field,
   ID,
+  Int,
   ObjectType,
   Parent,
   Query,
@@ -18,11 +19,11 @@ import { ListArgs } from '../../../utils';
 
 @ObjectType()
 export class PagedEncounterChange {
-  @Field()
-  count: number;
+  @Field(() => Int)
+  count?: number;
 
   @Field(() => [EncounterChange])
-  rows: EncounterChange[];
+  rows?: EncounterChange[];
 }
 
 @Resolver(() => EncounterChange)
@@ -54,18 +55,18 @@ export class EncounterChangeCompetitionResolver {
   ): Promise<EncounterChangeDate[]> {
     return encounterChange.getDates();
   }
+}
 
-  @ResolveField(() => [Comment], { nullable: true })
-  async homeComments(
-    @Parent() encounterChange: EncounterChange
-  ): Promise<Comment[]> {
-    return encounterChange.getHomeComments();
-  }
+@Resolver(() => EncounterChangeDate)
+export class EncounterChangeDateCompetitionResolver {
+  private readonly logger = new Logger(
+    EncounterChangeDateCompetitionResolver.name
+  );
 
-  @ResolveField(() => [Comment], { nullable: true })
-  async awayComments(
-    @Parent() encounterChange: EncounterChange
-  ): Promise<Comment[]> {
-    return encounterChange.getAwayComments();
+  @ResolveField(() => Location)
+  async dates(
+    @Parent() encounterChangeDate: EncounterChangeDate
+  ): Promise<Location> {
+    return encounterChangeDate.getLocation();
   }
 }

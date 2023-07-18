@@ -17,8 +17,18 @@
     flex-direction: column;
   }
 
-
-  badman-ranking-table {
+  .ranking {
     flex: 1 1 auto;
   }
+
+  .upcoming-games {
+    min-width: 300px;
+  }
 }
+
+h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+ 

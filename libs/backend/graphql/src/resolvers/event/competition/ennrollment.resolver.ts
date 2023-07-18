@@ -45,7 +45,7 @@ export class EnrollmentResolver {
     @Args('teamId') teamId: string,
     @Args('subEventId') subEventId: string
   ) {
-    if (!user.hasAnyPermission([`edit:competition`])) {
+    if (!await user.hasAnyPermission([`edit:competition`])) {
       throw new UnauthorizedException(
         `You do not have permission to add a competition`
       );
@@ -68,7 +68,7 @@ export class EnrollmentResolver {
         );
       }
 
-      if (team.season !== subEvent.eventCompetition.season) {
+      if (team.season !== subEvent.eventCompetition?.season) {
         throw new Error(`The team and the subEvent are not in the same season`);
       }
 

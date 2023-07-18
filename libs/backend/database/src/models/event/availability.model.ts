@@ -2,6 +2,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -24,11 +25,12 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import {
+  AvailabilityExceptionInputType,
+  AvailabilityExceptionType,
   AvailiblyDayInputType,
   AvailiblyDayType,
-  ExceptionInputType,
-  ExceptionType as AvailabilityExceptionType,
 } from '../../types';
+import { Relation } from '../../wrapper';
 import { Location } from './location.model';
 
 @Table({
@@ -46,35 +48,35 @@ export class Availability extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
-  @Column
-  id: string;
+  @Column(DataType.UUIDV4)
+  id!: string;
 
-  @Field({ nullable: true })
-  @Column
-  season: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  season?: number;
 
   @Field(() => [AvailiblyDayType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  days: AvailabilityDay[];
+  days?: Relation<AvailabilityDay[]>;
 
   @Field(() => [AvailabilityExceptionType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  exceptions: AvailabilityException[];
+  exceptions?: Relation<AvailabilityException[]>;
 
   @BelongsTo(() => Location, {
     foreignKey: 'locationId',
     constraints: false,
   })
-  location: Location;
+  location?: Relation<Location>;
 
   @ForeignKey(() => Location)
-  @Field({ nullable: true })
-  @Column
-  locationId: string;
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  locationId?: string;
 
   // Belongs to Location
   getLocation!: BelongsToGetAssociationMixin<Location>;
@@ -82,9 +84,9 @@ export class Availability extends Model {
 }
 
 export interface AvailabilityException {
-  start: Date;
-  end: Date;
-  courts: number;
+  start?: Date;
+  end?: Date;
+  courts?: number;
 }
 
 export interface AvailabilityDay {
@@ -96,9 +98,9 @@ export interface AvailabilityDay {
     | 'friday'
     | 'saturday'
     | 'sunday';
-  startTime: string;
-  endTime: string;
-  courts: number;
+  startTime?: string;
+  endTime?: string;
+  courts?: number;
 }
 
 @InputType()
@@ -113,10 +115,10 @@ export class AvailabilityUpdateInput extends PartialType(
   InputType
 ) {
   @Field(() => [AvailiblyDayInputType])
-  days: AvailabilityDay[];
+  days?: Relation<AvailabilityDay[]>;
 
-  @Field(() => [ExceptionInputType])
-  exceptions: AvailabilityException[];
+  @Field(() => [AvailabilityExceptionInputType])
+  exceptions?: AvailabilityException[];
 }
 
 @InputType()
@@ -124,3 +126,5 @@ export class AvailabilityNewInput extends PartialType(
   OmitType(AvailabilityUpdateInput, ['id'] as const),
   InputType
 ) {}
+
+

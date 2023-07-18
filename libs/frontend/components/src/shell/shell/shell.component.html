@@ -68,7 +68,7 @@
               >
                 <a
                   mat-list-item
-                  *ngIf="this.canEnroll$ | async"
+                  *ngIf="this.canChange$ | async"
                   [routerLink]="['/competition', 'change-encounter']"
                   >{{
                     'all.shell.sidebar.competition.change-encounter' | translate

@@ -8,6 +8,7 @@ import {
   Args,
   Field,
   ID,
+  Int,
   ObjectType,
   Parent,
   Query,
@@ -18,11 +19,11 @@ import { ListArgs } from '../../utils';
 
 @ObjectType()
 export class PagedLastRankingPlace {
-  @Field()
-  count: number;
+  @Field(() => Int)
+  count?: number;
 
   @Field(() => [RankingLastPlace])
-  rows: RankingLastPlace[];
+  rows?: RankingLastPlace[];
 }
 
 @Resolver(() => RankingLastPlace)
