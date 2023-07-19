@@ -22,10 +22,12 @@ import {
 } from '@badman/frontend-components';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { getCurrentSeason } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { ListEncountersComponent, ShowRequestsComponent } from './components';
+import { SeoService } from '@badman/frontend-seo';
+import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
   selector: 'badman-change-encounter',
@@ -54,6 +56,10 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   breakpointObserver = inject(BreakpointObserver);
+  private seoService = inject(SeoService);
+  private breadcrumbsService = inject(BreadcrumbService);
+  translateService = inject(TranslateService);
+
   isHandset = toSignal(
     this.breakpointObserver
       .observe(Breakpoints.Handset)
@@ -91,6 +97,24 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
       team: new FormControl(),
       encounter: new FormControl(),
     });
+
+    const changeEncounterKey = 'all.competition.change-encounter.title';
+
+    this.translateService
+      .get([changeEncounterKey])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        this.seoService.update({
+          title: result[changeEncounterKey],
+          description: result[changeEncounterKey],
+          type: 'website',
+          keywords: ['club', 'badminton'],
+        });
+        this.breadcrumbsService.set(
+          'competition/change-encounter',
+          changeEncounterKey
+        );
+      });
   }
 
   ngOnDestroy(): void {
