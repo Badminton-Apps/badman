@@ -93,6 +93,8 @@
     "start": "Date de début",
     "titles": {
       "players": "Joueurs",
+      "plural": "Clubs",
+      "single": "Club",
       "teams": "Équipes"
     }
   },
@@ -136,7 +138,7 @@
         "description": "Lorsque vous cliquez sur \"oui\", le jour actuel sera remplacé par le nouveau jour sélectionné, êtes-vous sûr ?",
         "title": "Expédition"
       },
-      "title": "Moments de jeu",
+      "title": "Déplacer la rencontre",
       "warnings": {
         "closed": "La demande de concours est terminée, vous ne pouvez traiter que les demandes existantes",
         "closing": "La date limite d'envoi et de traitement des candidatures est",
@@ -563,6 +565,13 @@
     "october": "Octobre",
     "september": "Septembre"
   },
+  "notifications": {
+    "noNotifications": "Aucune notification",
+    "types": {
+      "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie.",
+      "encounterNotEnteredNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> sur <strong>{encounter.date}</strong> n'a pas encore été saisie."
+    }
+  },
   "permission": {
     "no-perm": "Vous ne disposez pas de droits d'édition suffisants pour cette"
   },
@@ -572,6 +581,7 @@
     "select-encounter": "Choisir une réunion",
     "select-end-time": "Heure de fin",
     "select-event-competition": "Sélectionnez la ligue",
+    "select-season": "La saison",
     "select-start-time": "Heure de début",
     "select-subevent-competition": "Sélectionnez la série",
     "select-team": "Choisir une équipe",
@@ -595,6 +605,7 @@
       "edit": "Modifier"
     },
     "no-memberid": "Numéro de membre inconnu",
+    "no-players": "Aucun joueur",
     "regular": "Joueur régulier",
     "search": {
       "create": "Ajouter un nouveau joueur",
@@ -694,9 +705,9 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Le club<strong> {club.name}</strong> a été enregistré avec succès",
-        "encounterChangeConformationNotification": "Nouvelle demande de déplacement pour<strong>{encounter.home.name}</strong> contre<strong>{encounter.away.name}</strong>",
+        "encounterChangeConformationNotification": "Nouvelle demande de déplacement pour <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong>",
         "encounterChangeFinishedNotification": "Application {encounter.home.name} contre {encounter.away.name} mouvement",
-        "encounterChangeNewNotification": "Nouvelle demande de déplacement pour<strong>{encounter.home.name}</strong> contre<strong>{encounter.away.name}</strong>",
+        "encounterChangeNewNotification": "Nouvelle demande de déplacement pour <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> de <strong>{encounter.date}</strong> n'a pas encore été confirmé.",
         "encounterNotEnteredNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> de <strong>{encounter.date}</strong> n'a pas encore été saisi.",
         "syncFailedNotification": "La synchronisation de l'événement <strong>{event.name}</strong> a échoué",
@@ -819,6 +830,20 @@
     "liga": "",
     "load-more": "Charger plus",
     "note": "note : les modifications sont enregistrées immédiatement",
+    "overview": {
+      "date": "Date",
+      "menu": {
+        "add-event": "Ajouter un tournoi",
+        "delete": "Enlever",
+        "edit": "Modifier",
+        "set-open-close": "Modifier les dates d'ouverture/fermeture",
+        "sync": "Synchronisation"
+      },
+      "name": "Nom",
+      "nothing-found": "Nous n'avons pas trouvé de tournois avec le filtre \"{filter}\"",
+      "official": "Officiellement",
+      "only-official": "Officiel seulement"
+    },
     "prov": "",
     "subevent": {
       "max": "Classement maximal",

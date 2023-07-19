@@ -15,7 +15,7 @@
         *ngIf="options.length === 0"
         [disabled]="true"
       >
-        No players found
+        {{'all.player.no-players' | translate}} found
       </mat-option>
 
       <mat-option *ngFor="let option of options" [value]="option">

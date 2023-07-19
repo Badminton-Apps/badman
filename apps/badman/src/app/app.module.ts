@@ -85,11 +85,17 @@ const APP_ROUTES: Routes = [
     path: 'competition',
     loadChildren: () =>
       import('@badman/frontend-competition').then((m) => m.CompetitionModule),
+    data: {
+      breadcrumb: 'all.competition.title',
+    },
   },
   {
     path: 'tournament',
     loadChildren: () =>
       import('@badman/frontend-tournament').then((m) => m.TournamentModule),
+    data: {
+      breadcrumb: 'all.tournament.title',
+    },
   },
   {
     path: 'notifications',

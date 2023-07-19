@@ -15,7 +15,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
-import { AuthenticateService, NotificationService } from '@badman/frontend-auth';
+import {
+  AuthenticateService,
+  NotificationService,
+} from '@badman/frontend-auth';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import { LanguageComponent } from '@badman/frontend-translation';
 import { ThemeSwitcherComponent } from '../theme-switcher';
@@ -60,13 +63,10 @@ export class NotificationComponent {
   getParams(notification: Notification) {
     switch (notification.type) {
       case 'encounterNotEnteredNotification':
-        return {
-          encounter: {
-            ...notification.encounter,
-            date: moment(notification.encounter?.date).format('YYYY-MM-DD'),
-          },
-        };
       case 'encounterNotAccepted':
+      case 'encounterChangeConformationNotification':
+      case 'encounterChangeNewNotification':
+      case 'encounterChangeFinishedNotification':
         return {
           encounter: {
             ...notification.encounter,

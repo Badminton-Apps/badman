@@ -30,6 +30,7 @@ const QUERY = gql`
         competition {
           id
           name
+          
         }
         tournament {
           id
