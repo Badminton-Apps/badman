@@ -1,5 +1,5 @@
 <section class="standing" *ngIf="this.drawTournament">
-  <h3>Standing</h3>
+  <h3>{{'all.event.standing.title' | translate}}</h3>
   <badman-standing
     [type]="'players'"
     [entries]="drawTournament.eventEntries!"

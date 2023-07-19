@@ -97,6 +97,8 @@ export type I18nTranslations = {
             "start": string;
             "titles": {
                 "players": string;
+                "plural": string;
+                "single": string;
                 "teams": string;
             };
         };
@@ -567,6 +569,13 @@ export type I18nTranslations = {
             "october": string;
             "september": string;
         };
+        "notifications": {
+            "noNotifications": string;
+            "types": {
+                "encounterNotAcceptedNotification": string;
+                "encounterNotEnteredNotification": string;
+            };
+        };
         "permission": {
             "no-perm": string;
         };
@@ -576,6 +585,7 @@ export type I18nTranslations = {
             "select-encounter": string;
             "select-end-time": string;
             "select-event-competition": string;
+            "select-season": string;
             "select-start-time": string;
             "select-subevent-competition": string;
             "select-team": string;
@@ -599,6 +609,7 @@ export type I18nTranslations = {
                 "edit": string;
             };
             "no-memberid": string;
+            "no-players": string;
             "regular": string;
             "search": {
                 "create": string;
@@ -823,6 +834,20 @@ export type I18nTranslations = {
             "liga": string;
             "load-more": string;
             "note": string;
+            "overview": {
+                "date": string;
+                "menu": {
+                    "add-event": string;
+                    "delete": string;
+                    "edit": string;
+                    "set-open-close": string;
+                    "sync": string;
+                };
+                "name": string;
+                "nothing-found": string;
+                "official": string;
+                "only-official": string;
+            };
             "prov": string;
             "subevent": {
                 "max": string;
