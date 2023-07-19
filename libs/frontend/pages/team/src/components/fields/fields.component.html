@@ -25,7 +25,7 @@
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>Number</mat-label>
+          <mat-label>{{ 'all.club.number' | translate }}</mat-label>
           <mat-select formControlName="teamNumber">
             <mat-option *ngFor="let tn of this.options" [value]="tn">{{
               tn

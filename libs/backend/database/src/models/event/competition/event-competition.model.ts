@@ -247,7 +247,7 @@ export class EventCompetitionUpdateInput extends PartialType(
   ] as const),
   InputType
 ) {
-  @Field(() => [AvailabilityExceptionInputType])
+  @Field(() => [AvailabilityExceptionInputType], { nullable: true })
   exceptions?: AvailabilityException[];
 }
 
