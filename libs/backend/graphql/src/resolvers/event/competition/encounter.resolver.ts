@@ -259,7 +259,10 @@ export class EncounterCompetitionResolver {
 
     // Notify the user
     if (newChangeEncounter.accepted) {
-      this.notificationService.notifyEncounterChangeFinished(encounter, locationHasChanged);
+      this.notificationService.notifyEncounterChangeFinished(
+        encounter,
+        locationHasChanged
+      );
 
       // check if the location has changed
       if (locationHasChanged) {
