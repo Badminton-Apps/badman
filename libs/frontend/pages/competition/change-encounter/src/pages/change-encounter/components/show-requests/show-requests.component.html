@@ -1,5 +1,5 @@
 <ng-container *ngIf="this.previous?.value === null">
-  Please select an encounter
+  {{'all.competition.change-encounter.choose-encounter' | translate}}
 </ng-container>
 
 <div *ngIf="this.requests$ | async as request" class="request">
