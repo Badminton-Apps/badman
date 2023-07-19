@@ -77,7 +77,8 @@ export class MailingService {
       ],
     });
 
-    const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
+    const eventCompetition = event?.subEventCompetition
+      ?.eventCompetition as EventCompetition;
 
     moment.locale('nl-be');
     const options = {
@@ -134,7 +135,8 @@ export class MailingService {
       ],
     });
 
-    const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
+    const eventCompetition = event?.subEventCompetition
+      ?.eventCompetition as EventCompetition;
     moment.locale('nl-be');
     const options = {
       from: 'info@badman.app',
@@ -176,7 +178,7 @@ export class MailingService {
   ) {
     if (!encounter.home || !encounter.away) {
       throw new Error('Team not found');
-    } 
+    }
     // fetch event
     const event = await encounter.getDrawCompetition({
       attributes: ['id'],
@@ -194,7 +196,8 @@ export class MailingService {
       ],
     });
 
-    const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
+    const eventCompetition = event?.subEventCompetition
+      ?.eventCompetition as EventCompetition;
 
     // mail to captain
     moment.locale('nl-be');
@@ -227,27 +230,56 @@ export class MailingService {
     }>;
 
     await this._sendMail(options);
+  }
 
-    if (isChangedLocation) {
-      //  mail to reponsible
-      moment.locale('nl-be');
-      const optionsMailResp = {
-        from: 'info@badman.app',
-        to: eventCompetition.contactEmail,
-        subject: `Verplaatsings ${encounter.home?.name} en ${encounter.away?.name} heeft andere locatie`,
-        template: 'location-change',
-        context: {
-          encounter: {
-            ...encounter.toJSON(),
-            location: encounter.location?.toJSON(),
-          },
+  async sendLocationChangedMail(
+    encounter: EncounterCompetition
+  ) {
+    // fetch event
+    const event = await encounter.getDrawCompetition({
+      attributes: ['id'],
+      include: [
+        {
+          model: SubEventCompetition,
+          attributes: ['id'],
+          include: [
+            {
+              model: EventCompetition,
+              attributes: ['id', 'slug', 'visualCode', 'season', 'name'],
+            },
+          ],
         },
-      } as MailOptions<{
-        encounter: EncounterCompetition;
-      }>;
+      ],
+    });
 
-      await this._sendMail(optionsMailResp);
-    }
+    const location = await encounter.getLocation();
+
+
+    const eventCompetition = event?.subEventCompetition
+      ?.eventCompetition as EventCompetition;
+
+    //  mail to reponsible
+    moment.locale('nl-be');
+    const optionsMailResp = {
+      from: 'info@badman.app',
+      to: eventCompetition.contactEmail,
+      subject: `Verplaatsings ${encounter.home?.name} en ${encounter.away?.name} heeft andere locatie`,
+      template: 'location-change',
+      context: {
+        encounter: {
+          ...encounter.toJSON(),
+          home: encounter.home?.toJSON(),
+          away: encounter.away?.toJSON(),
+          location: location?.toJSON(),
+        },
+        event: eventCompetition.toJSON(),
+      },
+    } as MailOptions<{
+      encounter: EncounterCompetition;
+      event: EventCompetition;
+    }>;
+
+    await this._sendMail(optionsMailResp);
   }
 
   async sendNotEnterdMail(

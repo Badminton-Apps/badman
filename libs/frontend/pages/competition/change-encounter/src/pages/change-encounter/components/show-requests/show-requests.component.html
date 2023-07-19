@@ -1,5 +1,5 @@
 <ng-container *ngIf="this.previous?.value === null">
-  {{'all.competition.change-encounter.choose-encounter' | translate}}
+  {{ 'all.competition.change-encounter.choose-encounter' | translate }}
 </ng-container>
 
 <div *ngIf="this.requests$ | async as request" class="request">
@@ -90,21 +90,20 @@
             <p>
               {{
                 'all.competition.change-encounter.warnings.closing' | translate
-              }} <strong class="warning">{{
-                requestClosing | amCalendar
-              }}</strong>
+              }}
+              <strong class="warning">{{ requestClosing | amCalendar }}</strong>
             </p>
           </div>
         </div>
       </ng-container>
     </form>
+    <badman-comments
+      [clubId]="
+        this.home ? this.encounter.home?.clubId! : this.encounter.away?.clubId!
+      "
+      [encounter]="this.encounter"
+    ></badman-comments>
   </ng-container>
-  <badman-comments
-    [clubId]="
-      this.home ? this.encounter.home?.clubId! : this.encounter.away?.clubId!
-    "
-    [encounter]="this.encounter"
-  ></badman-comments>
 </div>
 
 <ng-template #confirm let-data>

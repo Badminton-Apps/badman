@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.89.3-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.89.2...v6.89.3-beta.0) (2023-07-19)
+
+
+### Bug Fixes
+
+* clear selection upon change ([4a33a37](https://github.com/Badminton-Apps/badman/commit/4a33a37c37af55afd9803150be8666de014b6ecb))
+* location change wouldn't be mailed to contact ([8688a53](https://github.com/Badminton-Apps/badman/commit/8688a537fa210b0f732e22501cab8a5a4fcb923e))
+
 ### [6.89.2](https://github.com/Badminton-Apps/badman/compare/v6.89.1...v6.89.2) (2023-07-19)
 
 

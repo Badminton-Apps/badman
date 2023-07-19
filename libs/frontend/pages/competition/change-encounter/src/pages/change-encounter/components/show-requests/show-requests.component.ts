@@ -131,7 +131,6 @@ export class ShowRequestsComponent implements OnInit {
     this.previous = this.group.get(this.dependsOn) ?? undefined;
     if (this.previous) {
       this.requests$ = this.previous.valueChanges.pipe(
-        filter((value) => value !== null),
         tap((encounter: EncounterCompetition) => {
           this.encounter = encounter;
           this.requestClosing = moment(
