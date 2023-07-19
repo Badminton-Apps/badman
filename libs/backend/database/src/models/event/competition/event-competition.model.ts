@@ -1,4 +1,13 @@
-import { AvailabilityExceptionInputType, AvailabilityExceptionType, Slugify } from '../../../types';
+import { LevelType, UsedRankingTiming } from '@badman/utils';
+import {
+  Field,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BuildOptions,
   HasManyAddAssociationMixin,
@@ -23,21 +32,16 @@ import {
   TableOptions,
   Unique,
 } from 'sequelize-typescript';
-import { LevelType, UsedRankingTiming } from '@badman/utils';
+import {
+  AvailabilityExceptionInputType,
+  AvailabilityExceptionType,
+  Slugify,
+} from '../../../types';
+import { Relation } from '../../../wrapper';
+import { Role } from '../../security';
+import { AvailabilityException } from '../availability.model';
 import { Comment } from './../../comment.model';
 import { SubEventCompetition } from './sub-event-competition.model';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
-import { Role } from '../../security';
-import { Relation } from '../../../wrapper';
-import { AvailabilityException } from '../availability.model';
 
 @Table({
   timestamps: true,
