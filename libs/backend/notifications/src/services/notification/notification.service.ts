@@ -139,6 +139,10 @@ export class NotificationService {
         { email: awayTeam.email }
       );
     }
+
+    if (locationHasChanged) {
+      await this.mailing.sendLocationChangedMail(encounter);
+    }
   }
 
   async notifyEncounterNotEntered(encounter: EncounterCompetition) {
