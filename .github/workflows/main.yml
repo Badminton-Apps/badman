@@ -189,5 +189,5 @@ jobs:
 
           # check if the affected projects contains worker-sync
           if [[ $affectedProjects == *"worker-sync"* ]]; then
-            curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_API_HOOK }}
+            curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_SYNC_HOOK }}
           fi
