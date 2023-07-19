@@ -304,7 +304,11 @@ export class CalendarComponent implements OnInit {
 
         // for each day in the exception
         // push the exception to the exceptions map
-        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, 'day')) {
+        for (
+          let day = start.clone();
+          day.isSameOrBefore(end);
+          day.add(1, 'day')
+        ) {
           const format = day.format('YYYY-MM-DD');
 
           // clear out the exceptions
@@ -798,7 +802,8 @@ export class CalendarComponent implements OnInit {
       other: [],
     };
 
-    const format = moment(date).format('YYYY-MM-DD');
+    const day = moment(date);
+    const format = day.format('YYYY-MM-DD');
 
     const encounters = this.encounters.get(format);
     const changeRequests = this.changeRequests.get(format);
@@ -806,6 +811,14 @@ export class CalendarComponent implements OnInit {
     const exceptions = this.exceptions.get(format);
 
     if (!encounters && !changeRequests && !availibilities) {
+      return dayInfo;
+    }
+
+    // only load availibility stating from 1st of september untill last of may
+    if (
+      (day.month() < 8 && day.year() == this.season) ||
+      (day.month() > 4 && day.year() == this.season + 1)
+    ) {
       return dayInfo;
     }
 
