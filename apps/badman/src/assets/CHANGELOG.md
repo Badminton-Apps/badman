@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.89.0](https://github.com/Badminton-Apps/badman/compare/v6.88.0...v6.89.0) (2023-07-19)
+
+
+### Features
+
+* showing full name ([a9dc327](https://github.com/Badminton-Apps/badman/commit/a9dc327ec2df2f0f4b0975e7acbe05d6a2ea5cda))
+* translation update ([43e0479](https://github.com/Badminton-Apps/badman/commit/43e0479b88ca98049ec803dc19d9f54a451b33e4))
+
+
+### Bug Fixes
+
+* not being able to save close/open dates ([3abddac](https://github.com/Badminton-Apps/badman/commit/3abddac74dcd62ca2e09d24bd6d0bc701304e316))
+
 ## [6.88.0](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.30...v6.88.0) (2023-07-18)
 
 ## [6.88.0-beta.30](https://github.com/Badminton-Apps/badman/compare/v6.88.0-beta.29...v6.88.0-beta.30) (2023-07-17)
