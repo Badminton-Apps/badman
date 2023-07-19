@@ -77,7 +77,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release
-    needs: [main]
+    needs: [main, agents]
     if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
 
     # output new version

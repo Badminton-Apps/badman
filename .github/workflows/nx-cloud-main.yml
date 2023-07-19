@@ -123,12 +123,22 @@ jobs:
       #     main-branch-name: ${{ inputs.main-branch-name }}
       - name: set SHAs
         run: |
-          TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          # run code only on main branch
+          if [ "${{ inputs.main-branch-name == 'main' }}" == "true" ]; then
+            #  get last major tag (not including beta)
+            TAG_VERSION=$(git describe --match 'v*' --exclude='*beta*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          else
+            # get last tag
+            TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
+          fi
+
           echo "Found tag: $TAG_VERSION"
           LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
           echo "Found hash: $LAST_TAG_HASH"
+
           # Set NX_BASE to the last tag
           echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
+
           # Set NX_HEAD to the current commit
           echo "NX_HEAD=origin/${{inputs.main-branch-name}}" >> $GITHUB_ENV
 
@@ -324,6 +334,7 @@ jobs:
         if: ${{ inputs.output-affected-projects == true}}
         id: outputAffectedProjects
         run: |
+          # get affected projects
           affectedProjects=$(npx nx print-affected --select=projects --type=app)
           echo affectedProjects $affectedProjects
           echo "affectedProjects=$affectedProjects" >> $GITHUB_OUTPUT
