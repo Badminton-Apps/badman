@@ -1,4 +1,8 @@
-import { Player, Notification, NotificationOptionsTypes } from '@badman/backend-database';
+import {
+  Player,
+  Notification,
+  NotificationOptionsTypes,
+} from '@badman/backend-database';
 import { MailingService } from '@badman/backend-mailing';
 import { NotificationType } from '@badman/utils';
 import { Logger } from '@nestjs/common';

@@ -3,15 +3,20 @@ extends ../../layouts/layout.pug
 block title
   h1.text-center
     | Andere locatie
-    
+
 block content
-  p.text-center 
+  p.text-center
     p
       | Beste,
       br
       br
-      | De ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name } gaat nu door op:
-      br
-      | #{ encounter.location.name }
+      | De ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name } gaat nu door in
+      strong #{ encounter.location.name }
     p
-      smalll Deze ontmoeting is deel van de competitie #{ event.name }.
+      smalll Deze ontmoeting is deel van de competitie #{' '}
+      a(href=`${clientUrl}/competition/${event.id}`) #{ event.name }.
+
+    p
+      a(
+        href=`https://www.toernooi.nl/sport/teammatch.aspx?id=${event.visualCode}&match=${encounter.visualCode}`
+      ) Link naar visual.
