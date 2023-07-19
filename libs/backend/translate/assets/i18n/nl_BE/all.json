@@ -8,13 +8,13 @@
       "title": "Voeg (fictieve) wedstrijd toe",
       "won": "Team 1 Gewonnen?"
     },
-    "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met mimum {corrected} wedstrijden.",
+    "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met minimum {corrected} wedstrijden.",
     "date": "Datum",
     "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
     "downgrade": "Downgrade",
     "drops-next-period": "Telt niet meer mee in volgende periode",
     "evolution": "Evolutie",
-    "hint": "Klik op een ranking voor simulatie en analyse",
+    "hint": "Klik op een klassement voor simulatie en analyse",
     "ignored": "Niet meegeteld",
     "includeOutOfScope": "Out of scope",
     "lostGames": {
@@ -36,7 +36,7 @@
     "points": "Punten",
     "pointsPerGame": "Punten per wedstrijd",
     "prevPeriod": "Vorige periode",
-    "removed-games": "Wedstrijden van vorige periode dat niet meer meetellen",
+    "removed-games": "Wedstrijden van vorige periode die niet meer meetellen",
     "team": "Team",
     "title": "Level breakdown",
     "untill": "tot",
@@ -72,7 +72,7 @@
     "yes": "Ja"
   },
   "club": {
-    "current": "Huidig club",
+    "current": "Huidige club",
     "delete": {
       "player": {
         "description": "Weet u zeker dat je deze speler wilt verwijderen?",
@@ -89,10 +89,12 @@
       "twizzit": "Twizzit overview"
     },
     "new-team": "Nieuwe ploeg",
-    "number": "club nummer",
+    "number": "clubnummer",
     "start": "Begindatum",
     "titles": {
       "players": "Spelers",
+      "plural": "Clubs",
+      "single": "Club",
       "teams": "Teams"
     }
   },
@@ -119,26 +121,26 @@
       "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "errors": {
-        "invalid": "Gelieve alle beschikbaarheid aan te vullen voor het versturen",
-        "select-one-date": "Gelieve minsten 1 dag te selecteren",
+        "invalid": "Gelieve alle beschikbaarheid aan te vullen voor het versturen.",
+        "select-one-date": "Gelieve minstens 1 dag te selecteren.",
         "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
       },
       "not-possible": "Niet beschikbaar",
       "possible": "Beschikbaar",
-      "re-open": "De vorige aanvraag is afgewerkt, je kan deze heropenen en dan zal de oorspronkelijk voorgestelde data opnieuw zichtbaar zijn. De nieuwe aanvraag is pas opnieuw verstuurd eenmaal je op verzenden hebt geklikt na het het her-openen",
+      "re-open": "De vorige aanvraag is afgewerkt, je kan deze heropenen en dan zullen de oorspronkelijk voorgestelde data opnieuw zichtbaar zijn. De nieuwe aanvraag is pas opnieuw verstuurd eenmaal je op verzenden hebt geklikt na het het heropenen.",
       "requested": "Verzoek ingediend",
-      "requested-failed": "Verzoek mislukt, contacteer Badminton Vlaanderen indien het probleem aanhoud",
+      "requested-failed": "Verzoek mislukt, contacteer Badminton Vlaanderen indien het probleem aanhoud.",
       "show-not-availible": {
-        "plural": "Er zijn {count} dagen waarop een van de teams niet beschikbaar is. Klik hier om deze dagen te bekijken.",
+        "plural": "Er zijn {count} dagen waarop één van de teams niet beschikbaar is. Klik hier om deze dagen te bekijken.",
         "singular": "Als je hier klikt, kun je de dag zien waarop een team niet beschikbaar is."
       },
       "submit": {
         "description": "Wanneer je op ja klikt, zal de huidige dag vervangen worden door de geselecteerde nieuwe dag, weet je het zeker?",
         "title": "Verzenden"
       },
-      "title": "Speelmomenten",
+      "title": "Verplaats ontmoeting",
       "warnings": {
-        "closed": "Het aanvragen van wedstrijden is afgelopen, je kan nog enkel bestaande aanvragen afwerken",
+        "closed": "Het aanvragen van verplaatsingen van ontmoetingen is afgelopen, je kan enkel nog bestaande aanvragen afwerken.",
         "closing": "De deadline voor het versturen en afwerken van aanvragen is",
         "home-accept": "De thuisploeg kan enkel een verplaatsing afronden",
         "location-change": "Verandering van locatie",
@@ -150,9 +152,9 @@
       "description": "Hier is een overzichtsmatrix waarin wordt aangegeven welke spelers in welk team mogen spelen. Elk icoontje dat niet groen is, bevat een tooltip met aanvullende informatie.",
       "note": "Deze functie is momenteel in de testfase, dus we raden aan om dubbel te controleren en eventuele fouten door te geven.",
       "warnings": {
-        "base": "{player.fullName} is basisspeler van een ander team",
-        "base-subevent": "{player.fullName} is basisspeler van een ander team in dezelfde reeks",
-        "better-meta": "{player.fullName} is beter dan een van de basis spelers, pas op dat je de teamindex niet overschrijdt",
+        "base": "{player.fullName} is basisspeler van een ander team.",
+        "base-subevent": "{player.fullName} is basisspeler van een ander team in dezelfde afdeling.",
+        "better-meta": "{player.fullName} is beter dan één van de basisspelers, pas op dat je de ploegindex niet overschrijdt.",
         "min-level": "Toegelaten klassement is {maxLevel} terwijl {player.fullName} {level} is in {type} ",
         "other-gender": "{player.fullName} is een {playerGender}, maar het team is voor de {teamType}"
       }
@@ -171,12 +173,12 @@
     "menu": {
       "download-cp": "Download cp file",
       "open_close_change-encounters": "Open/sluit verplaatsen ontmoetingen",
-      "open_close_enrollments": "Open/sluit Inschrijvingen"
+      "open_close_enrollments": "Open/sluit inschrijvingen"
     },
     "national": "Nationaal",
     "no-more-encounters": "Geen ontmoetingen meer",
     "no-more-games": "Geen wedstrijden meer",
-    "note": "opmerking: wijzigingen worden ogenblikkelijk opgeslagen",
+    "note": "opmerking: wijzigingen worden onmiddelijk opgeslagen",
     "open-close": {
       "close-accept-requests": "Sluiting acceptatie",
       "close-enrollment": "Sluiting",
@@ -208,7 +210,7 @@
       "double4": "Dubbel 4",
       "download": "Download",
       "errors": {
-        "already": "Speler al als titualris aanwezig.",
+        "already": "Speler al als titularis aanwezig.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is basisspeler van een ander team",
         "comp-status": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "none": "Geen fouten gevonden",
@@ -217,16 +219,16 @@
         "player-gender": "<strong>{player.fullName}</strong> is een {player.gender} maar een {gender} was verwacht",
         "player-genders": "<strong>{player1.fullName}</strong> ({player1.gender}) en {player2.gender} ({player2gender}) zijn niet het correcte geslacht voor <strong>{game}</strong>",
         "player-max-double-games": "<strong>{player.fullName}</strong> mag maximaal {max} dubbels spelen",
-        "player-max-mix-games": "<strong>{player.fullName}</strong> mag maximaal {max} gemengde dubbels spelen",
-        "player-max-mixed-games": "<strong>{player.fullName}</strong> kan maar een maximum van {max} mix wedstrijden spelen",
+        "player-max-mix-games": "<strong>{player.fullName}</strong> mag maximaal {max} gemengd dubbels spelen",
+        "player-max-mixed-games": "<strong>{player.fullName}</strong> kan maar een maximum van {max} gemengd dubbel wedstrijd spelen",
         "player-max-single-games": "<strong>{player.fullName}</strong> mag maximaal {max} enkels spelen",
-        "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
+        "player-min-level": "<strong>{player.fullName}</strong> heeft een discipline-index van <strong>{player.ranking}</strong> in {rankingType} en mag minimaal <strong>{minLevel}</strong> zijn.",
         "player-order-doubles": "<strong>{team2player1.fullName}</strong> en <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> hebben een beter gecombineerd klassement dan <strong>{team1player1.fullName}</strong> en <strong>{team1player2.fullName}</strong> in <strong>{game1}</strong>.",
         "player-order-highest": "<strong>{team2player1.fullName}</strong> of <strong>{team2player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter individueel klassement dan <strong>{team1player1.fullName}</strong> of <strong>{team1player2.fullName}</strong> in <strong>{game1}</strong>",
         "player-order-single": "<strong>{player2.fullName}</strong> in <strong>{game2}</strong> heeft een beter klassement dan <strong>{player1.fullName}</strong> in <strong>{game1}</strong>",
         "players-above-lower": "Paar met hogere opstellingsindex staat voor dit paar opgesteld.",
         "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
-        "team-to-strong": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen",
+        "team-to-strong": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen.",
         "title": "Fouten",
         "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen."
       },
@@ -246,7 +248,7 @@
       "single3": "Enkel 3",
       "single4": "Enkel 4",
       "substitude": "Invallers",
-      "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
+      "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn.",
       "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
       "title": "Ploegopstelling",
       "warnings": {
@@ -264,21 +266,21 @@
       },
       "enrollments": "Inschrijvingen",
       "errors": {
-        "already": "Speler al als titualris aanwezig.",
+        "already": "Speler al als titularis aanwezig.",
         "base-other-team": "<strong>{player.fullName}</strong> is ook basisspeler in een ander team",
         "comp-status-base": "Basisspeler <strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "faller": "Het team moet degraderen, maar staat niet in een lagere afdeling ingeschreven",
-        "first-team-index": "Een eerste ploeg die gedaald is, mag tijdens het seizoen geen team met ploegindex opstellen die lager is dan hun basisindex",
+        "first-team-index": "Een eerste ploeg die gedaald is, mag tijdens het seizoen geen team met ploegindex opstellen die lager is dan hun ploegindex van de basisspelers.",
         "no-subevent": "Gelieve een afdeling te kiezen",
         "none": "Geen fouten gevonden",
         "player-gender": "<strong>{player.fullName}</strong> is een <strong>{player.gender}</strong> maar een <strong>{gender}</strong> was verwacht",
-        "player-min-level": "<strong>{player.fullName}</strong> heeft een index van <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> en mag minimaal <strong>{minLevel}</strong> zijn.",
-        "player-subevent": "<strong>{player.fullName}</strong> is deel van het basis team <strong>{team.name}</strong> dat ook in <strong>{subEvent.name}</strong> speelt",
-        "riser": "Het team moet promoveren, maar staat niet in een hogere afdeling ingeschreven",
-        "team-index": "Sterkste opstelling opstelling is niet mogelijk. De team index is <strong>{teamIndex}</strong> en de index van het basis team is <strong>{baseIndex}</strong>.",
+        "player-min-level": "<strong>{player.fullName}</strong> heeft een discipline-index van <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> en mag minimaal <strong>{minLevel}</strong> zijn.",
+        "player-subevent": "<strong>{player.fullName}</strong> is deel van de basisploeg <strong>{team.name}</strong> dat ook in <strong>{subEvent.name}</strong> speelt",
+        "riser": "Het team moet promoveren, maar staat niet in een hogere afdeling ingeschreven.",
+        "team-index": "Sterkste opstelling opstellen is niet mogelijk. De ploegindex is <strong>{teamIndex}</strong> en de index van de basisploeg is <strong>{baseIndex}</strong>.",
         "team-order": "Team <strong>{team.name}</strong> zit in een lagere afdeling maar heeft een lager teamnummer",
-        "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere index in dezelfde afdeling, maar heeft een lager teamnummer",
+        "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere ploegindex in dezelfde afdeling, maar heeft een lager teamnummer",
         "team-to-strong": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen",
         "team-to-week": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet boven de grens van de afdeling <strong>{maxIndex}</strong> komen",
         "title": "Fouten"
@@ -301,7 +303,7 @@
         "team": "",
         "title": "Mogelijke titularissen"
       },
-      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten we toe tussentijds op te slaan indien er nog onzekerheden zijn over je basisspelers",
+      "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten we toe tussentijds op te slaan indien er nog onzekerheden zijn over je basisspelers.",
       "select-club": "Selecteer club",
       "select-events": "Selecteer onderdelen",
       "select-location": "Selecteer locaties",
@@ -315,7 +317,7 @@
         "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
         "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
         "transfer-teams": "Zet teams over (optioneel)",
-        "transfer-teams-description": "Als je wilt je team(s) overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de teamnummers in volgende stap nog wijzigen"
+        "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de teamnummers in volgende stap nog wijzigen."
       },
       "title": "Team inschrijvingen",
       "validations": "Validaties",
@@ -327,7 +329,7 @@
     "title": "Competitie",
     "type": "Type",
     "vs": "tegen",
-    "vs-short": "vs"
+    "vs-short": "vs."
   },
   "countries": {
     "be": {
@@ -369,7 +371,7 @@
       "totalPoints": "Punten",
       "won": "Gewonnen"
     },
-    "type": "Event type",
+    "type": "Soort evenement",
     "types": {
       "competition": "Competitie",
       "tournament": "Toernooien"
@@ -386,10 +388,10 @@
     },
     "legend": "Legende",
     "overview": {
-      "description": "Wanneer je in de zoekbalk een speler opzoekt, kom je op een pagina terecht waarin je allerhande informatie kan zien over een speler zijn resultaten en daaraan gekoppelde klassement en ranking. Hieronder worden alle onderdelen van deze pagina uitgelegd.",
+      "description": "Wanneer je in de zoekbalk een speler opzoekt, kom je op een pagina terecht waarin je allerhande informatie kan zien over een speler zijn resultaten en het daaraan gekoppelde klassement en ranking. Hieronder worden alle onderdelen van deze pagina uitgelegd.",
       "evolution-1": "Op de evolutie grafiek rechts zie je hoe een speler evolueert doorheen de gesimuleerde jaren. De periode aangeduid met een stippenlijn, is een periode waar de simulaties nog aan het stabiliseren zijn, dus deze periode is minder accuraat.",
       "evolution-2": "Tevens is per maand van klassementswijziging het gemiddelde voor stijgen als het gemiddelde voor dalen zichtbaar door met je muis over het cirkeltje horende bij de maand te bewegen",
-      "game-result": "Voor een speler worden al zijn resultaten weergeven (toernooi/competitie), wanneer deze gespeeld is, wat de setstanden waren, welke klassement de spelers waren op het moment van de wedstrijd en wie de winnaar was (in het vet aangeduid).",
+      "game-result": "Voor een speler worden al zijn resultaten weergeven (toernooi/competitie), wanneer deze gespeeld is, wat de setstanden waren, welk klassement de spelers waren op het moment van de wedstrijd en wie de winnaar was (in het vet aangeduid).",
       "levels": "Rechtsboven krijg je de klassementen van de persoon die je aan het opzoeken bent. Als je met je muis over een klassement beweegt (of op je GSM bij lang induwen) dan zie je de rangschikking van de speler binnen zijn eigen klassement, alsook zijn positie binnen de totale Belgische ranking.",
       "title": "Overzicht per speler"
     },
@@ -400,7 +402,7 @@
         "points-needed-up": "Grenswaarde voor stijgen",
         "points-won": "Punten gewonnen tegen dit niveau"
       },
-      "title": "Punten tabel"
+      "title": "Puntentabel"
     },
     "ranking": {
       "description": "Wanner je linksboven op de categorie ranking klikt, dan krijg je de ranking binnen je klassement samen met je klassement per discipline en per geslacht te zien, samen met het klassement van de speler. Sorteren op aflopende totale ranking binnen een discipline gebeurt door op deze discipline te klikken (of op je GSM bij lang induwen.) Standaard wordt de top 15 gegeven, maar dit kan je onderaan de pagina wijzigen. Je kan ook naar de volgende pagina doorklikken met de volgende spelers binnen de ranking. De discipline zelf kan je ook onderaan selecteren",
@@ -413,7 +415,7 @@
     }
   },
   "game": {
-    "bye": "bye",
+    "bye": "Bye",
     "order": {
       "double": "",
       "female": "",
@@ -424,7 +426,7 @@
     },
     "points": "punten",
     "recent": {
-      "title": "Recente wedstrijden"
+      "title": "Recente ontmoetingen"
     },
     "title": "Wedstrijden",
     "types": {
@@ -451,7 +453,7 @@
     },
     "unkown": "Onbekende speler",
     "upcoming": {
-      "title": "Komende wedstrijden"
+      "title": "Komende ontmoetingen"
     }
   },
   "gender": {
@@ -488,9 +490,9 @@
     "date-range": "Periode",
     "day": "Speelmoment",
     "email": "e-mail",
-    "end-hour": "Eind uur",
+    "end-hour": "Einduur",
     "error": {
-      "email": "Gelieve een correct email adres in te vullen",
+      "email": "Gelieve een correct e-mailadres in te vullen",
       "required": "Verplicht"
     },
     "fax": "Fax",
@@ -498,7 +500,7 @@
     "fullName": "Volledige naam",
     "gender": "Geslacht",
     "hour": "Speeluur",
-    "lastname": "Achteraam",
+    "lastname": "Achternaam",
     "latitude": "Breedtegraad",
     "longitude": "Lengtegraad",
     "memberId": "Lidnummer",
@@ -508,7 +510,7 @@
     "required": "Velden met een sterretje (*) zijn verplicht",
     "select": "Selecteer",
     "shuttle": "Shuttle",
-    "start-hour": "Start uur",
+    "start-hour": "Startuur",
     "state": "Provincie",
     "street": "Straat",
     "streetnumber": "Huisnummer",
@@ -529,7 +531,7 @@
     "add-exception": "Voeg uitzondering toe",
     "days": "Speeldagen",
     "exceptions": "Uitzonderingen",
-    "hint": "Je kan hieronder periodes toevoegen waarin de zaal niet (of verminderd) beschikbaar is, hiervoor moet je telkens een begin en een eind datum kiezen. Indien deze dezelfde is, kies dan gewoon 2x dezelfde dag.\n\nAls je een verminderd aantal velden hebt, kan je deze instellen door op het icoontje rechts te klikken",
+    "hint": "Je kan hieronder periodes toevoegen waarin de zaal niet (of verminderd) beschikbaar is, hiervoor moet je telkens een begin- en een einddatum kiezen. Indien deze dezelfde is, kies dan 2x dezelfde dag.\n\nAls je een verminderd aantal velden hebt, kan je deze instellen door op het icoontje rechts te klikken",
     "title": "Locatie(s)"
   },
   "management": {
@@ -540,7 +542,7 @@
     "force": "Forceer",
     "games-to-use": "Matchen te gebruiken",
     "import": "Importeer",
-    "new-system": "Nieuw Systeem",
+    "new-system": "Nieuw systeem",
     "number-short": "Nr.",
     "procent-losing-short": "% Verlies",
     "procent-winning-short": "% Win",
@@ -563,16 +565,24 @@
     "october": "Oktober",
     "september": "September"
   },
+  "notifications": {
+    "noNotifications": "Geen notificaties",
+    "types": {
+      "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven.",
+      "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> op <strong>{encounter.date}</strong> is nog niet ingegeven."
+    }
+  },
   "permission": {
     "no-perm": "Je hebt onvoldoende bewerkingsrechten hiervoor"
   },
   "pickers": {
-    "end-time": "",
+    "end-time": "Eindtijd",
     "select-club": "Kies een club",
     "select-encounter": "Kies een ontmoeting",
-    "select-end-time": "Eind tijd",
+    "select-end-time": "Eindtijd",
     "select-event-competition": "Selecteer competitie",
-    "select-start-time": "Start tijd",
+    "select-season": "Seizoen",
+    "select-start-time": "Starttijd",
     "select-subevent-competition": "Selecteer afdeling",
     "select-team": "Kies een ploeg",
     "select-team-groups": {
@@ -582,10 +592,10 @@
       "NATIONAL": "Nationaal"
     },
     "select-year": "Kies een competitieseizoen",
-    "start-time": ""
+    "start-time": "Starttijd"
   },
   "player": {
-    "backup": "Reserve speler",
+    "backup": "Reservespeler",
     "base": "Basisspeler",
     "claimed": "Claimed",
     "menu": {
@@ -595,6 +605,7 @@
       "edit": "Bewerken"
     },
     "no-memberid": "Onbekend lidnummer",
+    "no-players": "Geen spelers",
     "regular": "Vaste speler",
     "search": {
       "create": "Voeg een nieuwe speler toe",
@@ -604,7 +615,7 @@
     "title": "Spelers"
   },
   "points": {
-    "title": "Punten tabel"
+    "title": "Puntentabel"
   },
   "ranking": {
     "add-ranking": "Voeg ranking toe",
@@ -631,8 +642,8 @@
     "table": {
       "title": "Ranking tabel"
     },
-    "trending_down": "Trending down",
-    "trending_up": "Trending up",
+    "trending_down": "Neerwaartse trend",
+    "trending_up": "Stijgende trend",
     "update-happend": "Update plaatsgevonden",
     "updates": "Updates",
     "upload": {
@@ -662,7 +673,7 @@
       }
     },
     "roles": {
-      "locked": "Voorgedefinieerde rol van het systeem (kan niet bewerkt worden, enkel mensen toevoegen en verwijderen, min 1)"
+      "locked": "Voorgedefinieerde rol van het systeem (kan niet bewerkt worden, enkel mensen toevoegen en verwijderen, min. 1)"
     }
   },
   "settings": {
@@ -686,17 +697,17 @@
         "conformationNotification": "Bevestiging aanvraag",
         "finishedNotification": "Verplaatsing afgewerkt",
         "newNotification": "Nieuwe aanvraag",
-        "title": "Verplaatsings aanvragen"
+        "title": "Verplaatsingsaanvragen"
       },
       "enrollment": {
-        "clubenrollment": "Ploeg inschrijvingen",
+        "clubenrollment": "Ploeginschrijvingen",
         "title": "Inschrijvingen"
       },
       "messages": {
         "clubEnrollmentNotification": "Club<strong> {club.name}</strong> is succesvol ingeschreven",
-        "encounterChangeConformationNotification": "Nieuwe verplaatsingsaanvraag voor<strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong>",
+        "encounterChangeConformationNotification": "Nieuwe verplaatsingsaanvraag voor <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong>",
         "encounterChangeFinishedNotification": "Wedstrijd <strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong> is verplaats",
-        "encounterChangeNewNotification": "Nieuwe verplaatsingsaanvraag voor<strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong>",
+        "encounterChangeNewNotification": "Nieuwe verplaatsingsaanvraag voor <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> van <strong>{encounter.date}</strong> is nog niet bevestigd.",
         "encounterNotEnteredNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> van <strong>{encounter.date}</strong> is nog niet ingegeven.",
         "syncFailedNotification": "Sync van event <strong>{event.name}</strong> is mislukt",
@@ -764,7 +775,7 @@
     "prefferd": {
       "title": "Voorkeurs speelmoment"
     },
-    "team-index": "Team index",
+    "team-index": "Teamindex",
     "teams": "Teams",
     "title": {
       "base-fields": "Algemene info",
@@ -792,10 +803,10 @@
       "title": "Afdeling"
     },
     "usedForTeam": {
-      "description": "Team namen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",
-      "example": "Vorbeeld: {teamName}",
+      "description": "Teamnamen worden automatisch gegenereerd, selecteer welke prefix je wilt gebruiken",
+      "example": "Voorbeeld: {teamName}",
       "select": "Team prefix",
-      "title": "Team namen"
+      "title": "Teamnamen"
     }
   },
   "themes": {
@@ -818,7 +829,21 @@
     "last-updated": "Gewijzigd op",
     "liga": "",
     "load-more": "Meer laden",
-    "note": "opmerking: wijzigingen worden ogenblikkelijk opgeslagen",
+    "note": "opmerking: wijzigingen worden onmiddelijk opgeslagen",
+    "overview": {
+      "date": "Datum",
+      "menu": {
+        "add-event": "Voeg toernooi toe",
+        "delete": "Verwijderen",
+        "edit": "Bewerken",
+        "set-open-close": "Wijzig open / sluiten data",
+        "sync": "Synchroniseer"
+      },
+      "name": "Naam",
+      "nothing-found": "We hebben geen toernooien gevonden met de filter \"{filter}\"",
+      "official": "Officieel",
+      "only-official": "Alleen officiele"
+    },
     "prov": "",
     "subevent": {
       "max": "Max klassement",
