@@ -20,7 +20,7 @@
       <ng-container *ngIf="user?.clubs && (user.clubs?.length ?? 0) > 1">
         <mat-list-item (click)="expanded.club = !expanded.club">
           <div class="expandable-item">
-            <div>Clubs</div>
+            <div>{{ 'all.club.titles.plural' | translate }}</div>
             <mat-icon *ngIf="!expanded.club">expand_more</mat-icon>
             <mat-icon *ngIf="expanded.club">expand_less</mat-icon>
           </div>

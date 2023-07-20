@@ -93,6 +93,8 @@
     "start": "Start date",
     "titles": {
       "players": "Players",
+      "plural": "Clubs",
+      "single": "Club",
       "teams": "Teams"
     }
   },
@@ -102,6 +104,7 @@
     "change-encounter": {
       "add-date": "Add date",
       "calendar": {
+        "no-space": "No more room.",
         "option": "{amount} optional",
         "other-games": "Other encounters that day",
         "remaining": "still {amount} possible",
@@ -110,18 +113,21 @@
       },
       "choose-date": "Pick a date",
       "choose-encounter": "Pick an encounter",
+      "choose-location": "Select location",
       "choose-team": "Pick a team",
-      "comment": "Comments",
+      "comment": "Comment",
       "comments": "Comments",
       "dates": "Dates",
       "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied.",
       "disclaimer-submit": "Once both teams are available, the selected day can be chosen in the checkbox by then clicking on send",
       "errors": {
+        "invalid": "Please complete all availability before sending",
         "select-one-date": "Please select at least 1 day",
         "select-one-date-or-comment": "Please comment (at least 15 characters) or choose a date."
       },
       "not-possible": "Not available",
       "possible": "Available",
+      "re-open": "The previous request has been completed, you can reopen it and then the originally proposed data will be visible again. The new request is only resent once you clicked submit after reopening",
       "requested": "Request submitted",
       "requested-failed": "Request failed, contact Badminton Vlaanderen if the problem persists",
       "show-not-availible": {
@@ -132,7 +138,26 @@
         "description": "When you click yes, the current day will be replaced by the selected new day, are you sure?",
         "title": "Send"
       },
-      "title": "Encounters"
+      "title": "Move encounter",
+      "warnings": {
+        "closed": "Requesting competitions has ended, you can only process existing requests",
+        "closing": "The deadline for sending and processing applications is",
+        "home-accept": "The home team can only complete a move",
+        "location-change": "Change of location",
+        "missing-availability": "Both teams must be available.",
+        "selected-different-location": "A different location has been chosen, but due to limitations in external systems, these locations must be updated manually. Please note that this may take several days."
+      }
+    },
+    "club-assembly": {
+      "description": "Here is a summary matrix showing which players are allowed to play on which team. Each icon that is not green contains a tooltip with additional information.",
+      "note": "This feature is currently in the testing phase, so we recommend double-checking and reporting any errors.",
+      "warnings": {
+        "base": "{player.fullName} is starting player of another team",
+        "base-subevent": "{player.fullName} is starting player of another team in the same series",
+        "better-meta": "{player.fullName} is better than one of the base players, be careful not to exceed the team index",
+        "min-level": "Allowed ranking is {maxLevel} while {player.fullName} is{level} in {type} ",
+        "other-gender": "{player.fullName} is a {playerGender}, but the team is for the {teamType}"
+      }
     },
     "draw": {
       "encounters": "Encounters",
@@ -439,6 +464,10 @@
       "M": "Male",
       "MX": "Mixed"
     },
+    "longs": {
+      "F": "Woman",
+      "M": "Man"
+    },
     "male": "Male",
     "males": "Men",
     "mix": "Mixed",
@@ -552,6 +581,7 @@
     "select-encounter": "Pick an encounter",
     "select-end-time": "End time",
     "select-event-competition": "Select League",
+    "select-season": "Season",
     "select-start-time": "Start time",
     "select-subevent-competition": "Select series",
     "select-team": "Pick a team",
@@ -575,6 +605,7 @@
       "edit": "Edit"
     },
     "no-memberid": "Unknown member id",
+    "no-players": "No Players",
     "regular": "Regular player",
     "search": {
       "create": "Add new player",
@@ -674,6 +705,9 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Club<strong> {club.name}</strong> has been successfully registered",
+        "encounterChangeConformationNotification": "New displacement request for <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong>",
+        "encounterChangeFinishedNotification": "Request {encounter.home.name} against {encounter.away.name} move",
+        "encounterChangeNewNotification": "New displacement request for <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> of <strong>{encounter.date}</strong> has not yet been confirmed.",
         "encounterNotEnteredNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> of <strong>{encounter.date}</strong> has not yet been entered.",
         "syncFailedNotification": "Sync for event <strong>{event.name}</strong> failed",
@@ -796,6 +830,20 @@
     "liga": "",
     "load-more": "load more",
     "note": "note: Changes are saved directly",
+    "overview": {
+      "date": "Date",
+      "menu": {
+        "add-event": "Add tournament",
+        "delete": "Remove",
+        "edit": "Edit",
+        "set-open-close": "Change open/close dates",
+        "sync": "Synchronize"
+      },
+      "name": "Name",
+      "nothing-found": "We did not find any tournaments with the filter \"{filter}\"",
+      "official": "Officially",
+      "only-official": "Official only"
+    },
     "prov": "",
     "subevent": {
       "max": "Max level",

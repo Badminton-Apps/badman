@@ -25,13 +25,13 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import {
+  AvailabilityExceptionInputType,
+  AvailabilityExceptionType,
   AvailiblyDayInputType,
   AvailiblyDayType,
-  ExceptionInputType,
-  ExceptionType as AvailabilityExceptionType,
 } from '../../types';
-import { Location } from './location.model';
 import { Relation } from '../../wrapper';
+import { Location } from './location.model';
 
 @Table({
   timestamps: true,
@@ -117,7 +117,7 @@ export class AvailabilityUpdateInput extends PartialType(
   @Field(() => [AvailiblyDayInputType])
   days?: Relation<AvailabilityDay[]>;
 
-  @Field(() => [ExceptionInputType])
+  @Field(() => [AvailabilityExceptionInputType])
   exceptions?: AvailabilityException[];
 }
 

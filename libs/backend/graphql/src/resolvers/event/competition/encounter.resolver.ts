@@ -9,7 +9,10 @@ import {
   EncounterCompetition,
   Game,
   Player,
+  Location,
   Team,
+  SubEventCompetition,
+  EventCompetition,
 } from '@badman/backend-database';
 import { NotificationService } from '@badman/backend-notifications';
 import { Sync, SyncQueue } from '@badman/backend-queue';
@@ -32,7 +35,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Queue } from 'bull';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../../utils';
@@ -82,6 +85,11 @@ export class EncounterCompetitionResolver {
     @Parent() encounter: EncounterCompetition
   ): Promise<DrawCompetition> {
     return encounter.getDrawCompetition();
+  }
+
+  @ResolveField(() => Location)
+  async location(@Parent() encounter: EncounterCompetition): Promise<Location> {
+    return encounter.getLocation();
   }
 
   @ResolveField(() => Team)
@@ -145,6 +153,7 @@ export class EncounterCompetitionResolver {
     }
     const transaction = await this._sequelize.transaction();
     let encounterChange: EncounterChange;
+    let locationHasChanged = false;
 
     try {
       // Check if encounter has change
@@ -155,10 +164,10 @@ export class EncounterCompetitionResolver {
         encounterChange = new EncounterChange({
           encounterId: encounter.id,
         });
+        await encounterChange.save({ transaction });
       }
 
       const dates = await encounterChange.getDates();
-      await encounterChange.save({ transaction });
 
       // Set the state
       if (newChangeEncounter.accepted) {
@@ -176,6 +185,12 @@ export class EncounterCompetitionResolver {
         // Set date to the selected date
         encounter.date = selectedDates[0].date;
 
+        // Set location to the selected location
+        if (encounter.locationId != selectedDates[0].locationId) {
+          encounter.locationId = selectedDates[0].locationId;
+          locationHasChanged = true;
+        }
+
         // Accept
         await this.syncQueue.add(
           Sync.ChangeDate,
@@ -190,23 +205,49 @@ export class EncounterCompetitionResolver {
 
         // Save cahnges
         encounter.save({ transaction });
-
-        // Destroy the requets
-        // await encounterChange.destroy({ transaction });
         encounterChange.accepted = true;
       } else {
         encounterChange.accepted = false;
       }
       await encounterChange.save({ transaction });
-      this.logger.debug(`Change encounter ${encounter.id}: ${encounterChange.accepted}`);
+      this.logger.debug(
+        `Change encounter ${encounter.id}: ${encounterChange.accepted}`
+      );
+
+      const draw = await encounter.getDrawCompetition({
+        attributes: ['id'],
+        include: [
+          {
+            model: SubEventCompetition,
+            attributes: ['id'],
+            include: [
+              {
+                model: EventCompetition,
+                attributes: ['id', 'changeCloseRequestDate'],
+              },
+            ],
+          },
+        ],
+      });
+
+      // can request new dates in timezone europe/brussels
+
+      const canRequestNewDates = moment
+        .tz('europe/brussels')
+        .isBefore(
+          moment.tz(
+            draw?.subEventCompetition?.eventCompetition?.changeCloseRequestDate,
+            'europe/brussels'
+          )
+        );
 
       await this.changeOrUpdate(
         encounterChange,
         newChangeEncounter,
         transaction,
-        dates
+        dates,
+        canRequestNewDates
       );
-
 
       // find if any date was selected
       await transaction.commit();
@@ -218,7 +259,15 @@ export class EncounterCompetitionResolver {
 
     // Notify the user
     if (newChangeEncounter.accepted) {
-      this.notificationService.notifyEncounterChangeFinished(encounter);
+      this.notificationService.notifyEncounterChangeFinished(
+        encounter,
+        locationHasChanged
+      );
+
+      // check if the location has changed
+      if (locationHasChanged) {
+        // this.notificationService.notifyEncounterLocationChanged(encounter);
+      }
     } else {
       this.notificationService.notifyEncounterChange(
         encounter,
@@ -266,7 +315,8 @@ export class EncounterCompetitionResolver {
     encounterChange: EncounterChange,
     change: EncounterChangeNewInput,
     transaction: Transaction,
-    existingDates: EncounterChangeDate[]
+    existingDates: EncounterChangeDate[],
+    canRequestNewDates: boolean
   ) {
     change.dates = change.dates
       ?.map((r) => {
@@ -283,6 +333,10 @@ export class EncounterCompetitionResolver {
         (r) => r.date?.getTime() === date.date?.getTime()
       );
 
+      if (!encounterChangeDate && !canRequestNewDates) {
+        throw new Error('Cannot request new dates');
+      }
+
       // If not create new one
       if (!encounterChangeDate) {
         encounterChangeDate = new EncounterChangeDate({
@@ -297,6 +351,8 @@ export class EncounterCompetitionResolver {
       } else {
         encounterChangeDate.availabilityAway = date.availabilityAway;
       }
+
+      encounterChangeDate.locationId = date.locationId;
 
       // Save the date
       await encounterChangeDate.save({ transaction });

@@ -18,6 +18,7 @@ import {
 } from '../utils';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CACHE_TTL } from '@badman/backend-cache';
 
 @Injectable()
 export class VisualService {
@@ -351,7 +352,7 @@ export class VisualService {
     await this._cacheManager.set(
       `${VisualService.CACHE_KEY}:${url}`,
       result.data,
-      60 * 60 * 24 * 7
+      CACHE_TTL
     );
 
     const t1 = performance.now();

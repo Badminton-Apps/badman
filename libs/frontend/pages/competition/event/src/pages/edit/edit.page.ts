@@ -20,6 +20,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
@@ -33,9 +36,16 @@ import { SeoService } from '@badman/frontend-seo';
 import { SecurityType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, map, shareReplay } from 'rxjs';
+import { BehaviorSubject, map, shareReplay, lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { EventCompetitionLevelFieldsComponent } from './components';
+import { EVENT_QUERY } from '../../resolvers';
+
+export type LocationExceptionType = FormGroup<{
+  start: FormControl<Date | undefined>;
+  end: FormControl<Date | undefined>;
+  courts: FormControl<number | undefined>;
+}>;
 
 const roleQuery = gql`
   query GetRoles($where: JSONObject) {
@@ -65,6 +75,8 @@ const roleQuery = gql`
     MatButtonModule,
     MatInputModule,
     ReactiveFormsModule,
+    MatDatepickerModule,
+    MatSnackBarModule,
 
     // Own modules
     PageHeaderComponent,
@@ -76,6 +88,7 @@ const roleQuery = gql`
 })
 export class EditPageComponent implements OnInit {
   private injector = inject(Injector);
+  private snackBar = inject(MatSnackBar);
   public securityTypes: typeof SecurityType = SecurityType;
 
   roles?: Signal<Role[] | undefined>;
@@ -86,6 +99,7 @@ export class EditPageComponent implements OnInit {
   saved$ = new BehaviorSubject(0);
 
   formGroup: FormGroup = new FormGroup({});
+  exceptions!: FormArray<LocationExceptionType>;
 
   constructor(
     private seoService: SeoService,
@@ -133,6 +147,16 @@ export class EditPageComponent implements OnInit {
   }
 
   private setupFormGroup(event: EventCompetition) {
+    this.exceptions = new FormArray(
+      event.exceptions?.map((exception) => {
+        return new FormGroup({
+          start: new FormControl(exception.start, Validators.required),
+          end: new FormControl(exception.end, Validators.required),
+          courts: new FormControl(exception.courts),
+        });
+      }) ?? []
+    ) as FormArray<LocationExceptionType>;
+
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),
@@ -141,6 +165,7 @@ export class EditPageComponent implements OnInit {
         Validators.min(2000),
         Validators.max(3000),
       ]),
+      contactEmail: new FormControl(event.contactEmail, Validators.required),
 
       usedRankingUnit: new FormControl(event.usedRankingUnit, [
         Validators.required,
@@ -150,6 +175,8 @@ export class EditPageComponent implements OnInit {
         Validators.min(1),
         Validators.max(52),
       ]),
+
+      exceptions: this.exceptions,
 
       subEvents: new FormArray(
         event.subEventCompetitions?.map((subEvent) => {
@@ -198,5 +225,66 @@ export class EditPageComponent implements OnInit {
             });
         }
       });
+  }
+
+  async save() {
+    const eventCompetition = new EventCompetition({
+      ...this.eventCompetition,
+      ...this.formGroup.value,
+    });
+
+    await lastValueFrom(
+      this.apollo.mutate<{ updateEventCompetition: Partial<EventCompetition> }>(
+        {
+          mutation: gql`
+            mutation UpdateEventCompetition(
+              $data: EventCompetitionUpdateInput!
+            ) {
+              updateEventCompetition(data: $data) {
+                id
+              }
+            }
+          `,
+          variables: {
+            data: {
+              id: eventCompetition.id,
+              name: eventCompetition.name,
+              season: eventCompetition.season,
+              contactEmail: eventCompetition.contactEmail,
+              exceptions:
+                eventCompetition.exceptions?.filter((e) => e.start && e.end) ??
+                [],
+            },
+          },
+          refetchQueries: [
+            {
+              query: EVENT_QUERY,
+              variables: {
+                id: eventCompetition.id,
+              },
+            },
+          ],
+        }
+      )
+    );
+
+    this.saved$.next(this.saved$.value + 1);
+    this.snackBar.open('Saved', undefined, {
+      duration: 2000,
+    });
+  }
+
+  addException() {
+    this.exceptions.push(
+      new FormGroup({
+        start: new FormControl(),
+        end: new FormControl(),
+        courts: new FormControl(0),
+      }) as LocationExceptionType
+    );
+  }
+
+  removeException(index: number) {
+    this.exceptions.removeAt(index);
   }
 }

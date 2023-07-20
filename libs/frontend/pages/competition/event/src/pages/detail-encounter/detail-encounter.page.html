@@ -23,6 +23,14 @@
       </mat-menu>
     </badman-has-claim>
   </div>
+
+  <div subTitle>
+    <mat-chip-listbox>
+      <mat-chip *ngIf="encounterCompetition.location?.name">
+        {{encounterCompetition.location?.name}}</mat-chip
+      >
+    </mat-chip-listbox>
+  </div>
 </badman-page-header>
 
 <div

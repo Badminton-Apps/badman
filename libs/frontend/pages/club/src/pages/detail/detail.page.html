@@ -73,8 +73,15 @@
   <mat-tab label="Teams">
     <badman-club-teams [clubId]="this.club.id" [filter]="this.filter" />
   </mat-tab>
+  <mat-tab label="Assembly matrix">
+    <ng-template matTabContent>
+      <badman-club-assembly [clubId]="this.club.id" [filter]="this.filter" />
+    </ng-template>
+  </mat-tab>
   <mat-tab label="Players">
-    <badman-club-players [clubId]="this.club.id" [filter]="this.filter" />
+    <ng-template matTabContent>
+      <badman-club-players [clubId]="this.club.id" [filter]="this.filter" />
+    </ng-template>
   </mat-tab>
   <mat-tab
     [label]="'all.competition.team-enrollment.title' | translate"

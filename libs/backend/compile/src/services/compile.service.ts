@@ -4,29 +4,33 @@ import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import consolidate from 'consolidate';
 import juice from 'juice';
 import {
-  asapScheduler,
   BehaviorSubject,
+  Observable,
   Subject,
+  asapScheduler,
   bindNodeCallback,
   from,
   interval,
-  Observable,
+  lastValueFrom,
   of,
 } from 'rxjs';
 import {
-  finalize,
-  takeUntil,
-  mergeMap,
-  switchMap,
-  startWith,
-  shareReplay,
   filter,
+  mergeMap,
+  shareReplay,
+  startWith,
+  switchMap,
   take,
+  takeUntil,
   tap,
 } from 'rxjs/operators';
 
+import { getBrowser } from '@badman/backend-pupeteer';
+import { I18nTranslations } from '@badman/utils';
 import { writeFile } from 'fs/promises';
-import puppeteer, { Browser, Page } from 'puppeteer';
+import momentTz from 'moment-timezone';
+import { I18nService } from 'nestjs-i18n';
+import { Browser } from 'puppeteer';
 import { Readable } from 'stream';
 import { COMPILE_OPTIONS_TOKEN } from '../constants';
 import {
@@ -35,9 +39,6 @@ import {
   CompileOptions,
   ViewOptions,
 } from '../interfaces';
-import momentTz from 'moment-timezone';
-import { I18nService } from 'nestjs-i18n';
-import { I18nTranslations } from '@badman/utils';
 
 @Injectable()
 export class CompileService implements CompileInterface, OnModuleInit {
@@ -101,11 +102,7 @@ export class CompileService implements CompileInterface, OnModuleInit {
         takeUntil(CompileService.stopBrowserRefresh$),
         switchMap(() => {
           this.logger.debug('Creating browser');
-          return from(
-            puppeteer.launch({
-              args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            })
-          );
+          return from(getBrowser());
         })
       )
       .subscribe((browser: Browser) => {
@@ -123,14 +120,14 @@ export class CompileService implements CompileInterface, OnModuleInit {
 
   toReadable(template: string, options?: CompileOptions): Observable<Readable> {
     return this.toHtml(template, options).pipe(
-      mergeMap((html: string) => this.toPdf(html, options)),
+      mergeMap((html: string) => from(this.toPdf(html, options))),
       mergeMap((pdf: Buffer) => of(Readable.from(pdf)))
     );
   }
 
   toBuffer(template: string, options?: CompileOptions): Observable<Buffer> {
     return this.toHtml(template, options).pipe(
-      mergeMap((html: string) => this.toPdf(html, options))
+      mergeMap((html: string) => from(this.toPdf(html, options)))
     );
   }
 
@@ -149,48 +146,50 @@ export class CompileService implements CompileInterface, OnModuleInit {
     );
   }
 
-  private toPdf(html: string, options?: CompileOptions): Observable<Buffer> {
-    // Create an observable that converts the html to pdf
-    return this.browser$.pipe(
-      mergeMap((browser) =>
-        {
-          if (browser === null) {
-            throw new Error('Browser not available');
-          }
+  private async toPdf(html: string, options?: CompileOptions): Promise<Buffer> {
+    this.logger.debug('Generating pdf from html');
+    const browser = await lastValueFrom(this.browser$.pipe(take(1)));
 
-          return from(browser.newPage()).pipe(
-            tap(() => this.logger.debug('Page created')),
-            mergeMap((page: Page) =>
-              // Wait for the page to load before generating the pdf
-              from(page.setContent(html)).pipe(
-                //  wait for tailwind script to be loaded
-                mergeMap(() => page.waitForFunction('window.tailwind')),
-                tap(() => this.logger.debug('Html set to page')),
-                mergeMap(() => from(
-                  page.pdf({
-                    format: options?.pdf?.format ?? 'A4',
-                    landscape: options?.pdf?.landscape ?? false,
-                    printBackground: options?.pdf?.printBackground ?? true,
-                  })
-                )
-                ),
-                tap((pdf) => {
-                  if ((this.moduleOptions.debug ?? false) === true) {
-                    // write file in original folder before juice so we can test
-                    writeFile(
-                      join(this.moduleOptions.view.root, 'generated.pdf'),
-                      pdf
-                    );
-                  }
-                }),
-                tap(() => this.logger.debug('Pdf generated')),
-                finalize(() => page.close())
-              )
-            )
-          );
-        }
-      )
-    );
+    if (browser === null) {
+      throw new Error('Browser not available');
+    }
+
+    const page = await browser.newPage();
+
+    if (!page) {
+      throw new Error('Page not available');
+    }
+
+    this.logger.debug('Page created');
+
+    /* Wait for the page to load before generating the pdf*/
+    await page.setContent(html, {
+      waitUntil: 'networkidle0',
+    });
+
+    this.logger.debug('Page content set');
+
+    /* Wait for the page to load before generating the pdf*/
+    await page.waitForFunction('window.tailwind');
+
+    this.logger.debug('Generating pdf');
+
+    const pdf = await page.pdf({
+      format: options?.pdf?.format ?? 'A4',
+      landscape: options?.pdf?.landscape ?? false,
+      printBackground: options?.pdf?.printBackground ?? true,
+    });
+
+    if ((this.moduleOptions.debug ?? false) === true) {
+      // write file in original folder before juice so we can test
+      writeFile(join(this.moduleOptions.view.root, 'generated.pdf'), pdf);
+    }
+
+    this.logger.debug('Pdf generated');
+
+    await page.close();
+
+    return pdf;
   }
 
   private getTemplatePath(
