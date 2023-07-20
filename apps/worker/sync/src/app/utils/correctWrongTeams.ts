@@ -32,6 +32,10 @@ export const correctWrongTeams = (team: {
     team.name = team.name.replace('Nivelles', 'BC Nivellois');
     return team;
   }
+  if (team.name?.indexOf('Fz Forza Webacsa') > -1) {
+    team.name = team.name.replace('Fz Forza Webacsa', 'Webacsa');
+    return team;
+  }
 
   return team;
 };
