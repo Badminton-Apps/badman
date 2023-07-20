@@ -74,7 +74,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       const { clubName, teamNumber, teamType } = teamValues(
         correctWrongTeams({ name: item })?.name
       );
-      const club = await Club.findOne({
+      const clubs = await Club.findAll({
         where: {
           [Op.or]: [
             {
@@ -96,6 +96,18 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         },
         transaction: this.transaction,
       });
+      
+      let club: Club | undefined;
+
+      if (clubs.length === 1) {
+        club = clubs[0];
+      } else if (clubs.length > 1) {
+        // try find club from same state
+        club = clubs.find((r) => r.state === event.state);
+      } else {
+        this.logger.warn(`Club not found ${clubName}`);
+        continue;
+      }
 
       if (!club) {
         this.logger.warn(`Club not found ${clubName}`);
