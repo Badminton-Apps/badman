@@ -160,6 +160,11 @@ export class CheckEncounterProcessor {
       `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, ( ${url} )`
     );
 
+    if (hoursPassed > 240){
+      this.logger.debug(`Encounter ${encounter.visualCode} is older than 10 days, skipping`);
+      return;
+    }
+
     if (!entered && hoursPassed > 24) {
       this.notificationService.notifyEncounterNotEntered(encounter);
     } else if (!accepted && hoursPassed > 48) {
