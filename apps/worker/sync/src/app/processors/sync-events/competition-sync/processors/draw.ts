@@ -88,7 +88,6 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
         dbDraw = new DrawCompetition({
           visualCode: `${xmlDraw.Code}`,
           subeventId: subEvent.id,
-          name: xmlDraw.Name,
           type:
             xmlDraw.TypeID === XmlDrawTypeID.Elimination
               ? DrawType.KO
@@ -100,6 +99,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
       }
       // update the draw
       dbDraw.size = xmlDraw.Size;
+      dbDraw.name = xmlDraw.Name;
 
       await dbDraw.save({ transaction: this.transaction });
 
