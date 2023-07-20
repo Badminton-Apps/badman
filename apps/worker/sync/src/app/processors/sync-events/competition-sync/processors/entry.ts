@@ -1,6 +1,6 @@
 import { Club, EventEntry, Team } from '@badman/backend-database';
 import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
-import { teamValues } from '@badman/utils';
+import { runParallel, teamValues } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import { isArray } from 'class-validator';
 import { Op } from 'sequelize';
@@ -10,7 +10,7 @@ import { DrawStepData } from './draw';
 
 export interface EntryStepData {
   entry: EventEntry;
-  teamName: string;
+  xmlTeamName: string;
 }
 
 export class CompetitionSyncEntryProcessor extends StepProcessor {
@@ -31,10 +31,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EntryStepData[]> {
-    // await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? [], 1);
-    for (const draw of this.draws ?? []) {
-      await this._processEntries(draw);
-    }
+    await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? []);
 
     return this._entries;
   }
@@ -108,7 +105,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       });
 
       entry.team = teams;
-      this._entries.push({ entry, teamName: item });
+      this._entries.push({ entry, xmlTeamName: item });
     }
 
     const entries = await draw.getEntries({
@@ -234,17 +231,22 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     }
 
     // find the team where the season is the same
-    const teamsForSeason = teams.find((r) => r.season === season);
+    const teamsForSeason = teams.filter((r) => r.season === season);
 
-    if (!teamsForSeason?.id) {
-      // create new team with previous season
-      return await new Team({
-        clubId: teamsForSeason?.clubId,
-        teamNumber,
-        type: teamType,
-        season: season,
-        link: teamsForSeason?.link,
-      }).save({ transaction: this.transaction });
+    if (teamsForSeason.length === 1) {
+      return teamsForSeason[0];
+    } else if (teamsForSeason.length > 1) {
+      // check if any team has the correct name
+      const team = teamsForSeason.find(
+        (r) => (r.name?.indexOf(clubName) ?? -1) > -1
+      );
+      if (team) {
+        return team;
+      }
+
+      this.logger.warn(
+        `Multiple teams found ${clubName} ${teamNumber} ${teamType}`
+      );
     }
   }
 }

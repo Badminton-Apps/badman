@@ -48,9 +48,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EncounterStepData[]> {
-    await runParallel(
-      this.draws?.map((e) => this._processEncounters(e)) ?? []
-    );
+    await runParallel(this.draws?.map((e) => this._processEncounters(e)) ?? []);
     return this._dbEncounters;
   }
 
@@ -95,10 +93,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       }
 
       const team1 = this.entries?.find(
-        (e) => e.teamName == xmlTeamMatch?.Team1?.Name
+        (e) => e.xmlTeamName == xmlTeamMatch?.Team1?.Name
       )?.entry?.team;
       const team2 = this.entries?.find(
-        (e) => e.teamName == xmlTeamMatch?.Team2?.Name
+        (e) => e.xmlTeamName == xmlTeamMatch?.Team2?.Name
       )?.entry?.team;
 
       if (!team1) {
@@ -156,6 +154,13 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     // Remove draw that are not in the xml
     const removedEncounters = encounters.filter((e) => e.visualCode == null);
+    // remove wrong encounters
+    for (const encounter of encounters) {
+      if (!this._dbEncounters.find((e) => e.encounter.id === encounter.id)) {
+        this.logger.log(`Enocunter existed but was removed`);
+        removedEncounters.push(encounter);
+      }
+    }
 
     await this._destroyEncounters(removedEncounters);
   }
