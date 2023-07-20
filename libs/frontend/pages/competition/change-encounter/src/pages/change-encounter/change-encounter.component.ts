@@ -1,21 +1,33 @@
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  computed,
+  inject,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
+import { ClaimService } from '@badman/frontend-auth';
 import {
   HasClaimComponent,
   SelectClubComponent,
   SelectSeasonComponent,
   SelectTeamComponent,
 } from '@badman/frontend-components';
+import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { getCurrentSeason } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
-import moment from 'moment';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { ListEncountersComponent, ShowRequestsComponent } from './components';
-import { MatIconModule } from '@angular/material/icon';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
+import { SeoService } from '@badman/frontend-seo';
+import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
   selector: 'badman-change-encounter',
@@ -28,7 +40,7 @@ import { map } from 'rxjs';
     TranslateModule,
 
     MatIconModule,
-    
+
     // Own
     SelectClubComponent,
     SelectTeamComponent,
@@ -38,33 +50,75 @@ import { map } from 'rxjs';
     HasClaimComponent,
   ],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangeEncounterComponent implements OnInit {
+export class ChangeEncounterComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   breakpointObserver = inject(BreakpointObserver);
+  private seoService = inject(SeoService);
+  private breadcrumbsService = inject(BreadcrumbService);
+  translateService = inject(TranslateService);
+
   isHandset = toSignal(
     this.breakpointObserver
       .observe(Breakpoints.Handset)
       .pipe(map((result) => result.matches))
   );
 
+  hasPermission = toSignal(
+    this.claimService.hasAnyClaims$(['change-any:encounter'])
+  );
+
+  canSelectSeason = computed(
+    () => this.hasPermission() || this.versionInfo.beta
+  );
 
   formGroup?: FormGroup;
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    @Inject(VERSION_INFO)
+    private versionInfo: {
+      beta: boolean;
+      version: string;
+    },
+    private claimService: ClaimService
+  ) {}
 
   ngOnInit(): void {
-    const querySeason = parseInt(
-      this.activatedRoute.snapshot.queryParams['season'],
-      10
-    );
-    const season = isNaN(querySeason) ? getCurrentSeason() : querySeason;
+    const params = this.activatedRoute.snapshot.queryParamMap;
+    const parsed = parseInt(params?.get('season') || '');
+    const season = isNaN(parsed) ? getCurrentSeason() : parsed;
 
     this.formGroup = new FormGroup({
       season: new FormControl(season),
-      mayRankingDate: new FormControl(moment(`${season}-05-15`).toDate()),
       club: new FormControl(),
       team: new FormControl(),
       encounter: new FormControl(),
     });
+
+    const changeEncounterKey = 'all.competition.change-encounter.title';
+
+    this.translateService
+      .get([changeEncounterKey])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        this.seoService.update({
+          title: result[changeEncounterKey],
+          description: result[changeEncounterKey],
+          type: 'website',
+          keywords: ['club', 'badminton'],
+        });
+        this.breadcrumbsService.set(
+          'competition/change-encounter',
+          changeEncounterKey
+        );
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

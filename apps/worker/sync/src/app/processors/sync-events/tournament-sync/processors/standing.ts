@@ -8,7 +8,7 @@ import { DrawStepData } from './draw';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { Logger, NotFoundException } from '@nestjs/common';
-import { runParrallel } from '@badman/utils';
+import { runParallel } from '@badman/utils';
 import { EncounterStepData } from '../../competition-sync/processors';
 
 export interface StandingStepOptions {
@@ -35,7 +35,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
   }
 
   public async process(): Promise<void> {
-    await runParrallel(
+    await runParallel(
       this.draws?.map((e) => {
         const filtered =
           this.games?.filter((g) => g.linkId === e.draw.id) ?? [];

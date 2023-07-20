@@ -20,21 +20,10 @@
           }}</span>
         </div>
 
-        <badman-has-claim [any]="['edit-any:club']" *ngIf="this.whenTeamEdit">
-          <button
-            mat-icon-button
-            aria-label="edit team"
-            class="edit-button"
-            (click)="this.editTeam(team)"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-        </badman-has-claim>
-
         <!-- allow editing if the entry is empty -->
         <badman-has-claim
-          [any]="[this.clubId + '_edit:club']"
-          *ngIf="!team.entry?.subEventCompetition?.id"
+          [any]="[this.clubId + '_edit:club', 'edit-any:club']"
+          *ngIf="this.whenTeamEdit"
         >
           <button
             mat-icon-button
