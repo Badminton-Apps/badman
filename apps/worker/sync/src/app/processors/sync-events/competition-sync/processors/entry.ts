@@ -1,6 +1,6 @@
 import { Club, EventEntry, Team } from '@badman/backend-database';
 import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
-import { runParallel, teamValues } from '@badman/utils';
+import { SubEventTypeEnum, runParallel, teamValues } from '@badman/utils';
 import { isArray } from 'class-validator';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
@@ -74,103 +74,29 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       const { clubName, teamNumber, teamType } = teamValues(
         correctWrongTeams({ name: item })?.name
       );
-      const clubs = await Club.findAll({
-        where: {
-          [Op.or]: [
-            {
-              name: {
-                [Op.iLike]: clubName,
-              },
-            },
-            {
-              fullName: {
-                [Op.iLike]: clubName,
-              },
-            },
-            {
-              abbreviation: {
-                [Op.iLike]: clubName,
-              },
-            },
-          ],
-        },
-        transaction: this.transaction,
-      });
-      
-      let club: Club | undefined;
 
-      if (clubs.length === 1) {
-        club = clubs[0];
-      } else if (clubs.length > 1) {
-        // try find club from same state
-        club = clubs.find((r) => r.state === event.state);
-      } else {
-        this.logger.warn(`Club not found ${clubName}`);
-        continue;
-      }
+      const club = await this._getClub(clubName, event.state);
 
       if (!club) {
-        this.logger.warn(`Club not found ${clubName}`);
+        this.logger.warn(`Club not found ${clubName} ${event.state}`);
         continue;
       }
 
-      const where: { [key: string]: unknown } = {
-        teamNumber: +teamNumber,
-        type: teamType,
-        clubId: club.id,
-      };
-
-      const foundTeams = await Team.findAll({
-        where,
-        transaction: this.transaction,
-      });
-
-      let team = foundTeams.find((r) => r.season === event.season);
-
-      if (!team) {
-        const clubTeams = await club.getTeams({
-          where: {
-            type: teamType,
-            teamNumber: +teamNumber,
-            season: event.season,
-          },
-          transaction: this.transaction,
-        });
-
-        if (clubTeams?.length > 0) {
-          team = clubTeams[0];
-        } else {
-          let link: string | null = null;
-
-          if (foundTeams?.length > 0) {
-            link = foundTeams[0].link;
-          }
-
-          team = new Team({
-            type: teamType,
-            teamNumber: +teamNumber,
-            season: event.season,
-            clubId: club?.id,
-            link: link ?? '',
-          });
-          await team.save({ transaction: this.transaction });
-
-          // check if the found team
-        }
-      }
+      const team = await this._getTeam(
+        club,
+        teamNumber,
+        teamType,
+        event.season
+      );
 
       let entry = subEventEntries.find((r) => r.teamId === team?.id);
-
-      // await draw.getEntries({
-      //   transaction: this.transaction,
-      // });
 
       if (!entry) {
         this.logger.warn(`Teams entry not found ${team.name}`);
         entry = await new EventEntry({
           teamId: team.id,
           subEventId: subEvent.id,
-          date: new Date(event.season, 0, 1)
+          date: new Date(event.season, 0, 1),
         }).save({ transaction: this.transaction });
       }
 
@@ -224,5 +150,82 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         }
       }
     }
+  }
+
+  private async _getClub(clubName: string, state?: string) {
+    const clubs = await Club.findAll({
+      where: {
+        [Op.or]: [
+          {
+            name: {
+              [Op.iLike]: clubName,
+            },
+          },
+          {
+            fullName: {
+              [Op.iLike]: clubName,
+            },
+          },
+          {
+            abbreviation: {
+              [Op.iLike]: clubName,
+            },
+          },
+        ],
+      },
+      transaction: this.transaction,
+    });
+    let club: Club | undefined;
+
+    if (clubs.length === 1) {
+      club = clubs[0];
+    } else if (clubs.length > 1) {
+      // try find club from same state
+      club = clubs.find((r) => r.state === state);
+      this.logger.debug(
+        `Multiple clubs found ${clubName}, picking the club with state ${state}, club's state ${club?.state}`
+      );
+    } else {
+      this.logger.warn(`Club not found ${clubName}`);
+    }
+
+    return club;
+  }
+
+  private async _getTeam(
+    club: Club,
+    teamNumber: number,
+    teamType: SubEventTypeEnum,
+    season: number
+  ) {
+    const clubTeams = await club.getTeams({
+      transaction: this.transaction,
+    });
+
+    // try find for current season
+    let team = clubTeams.find(
+      (r) =>
+        r.teamNumber === teamNumber &&
+        r.type === teamType &&
+        r.season === season
+    );
+
+    if (!team?.id) {
+      // try find for previous season sorted with highest season first
+      const preSeason = clubTeams
+        .filter((r) => r.teamNumber === teamNumber && r.type === teamType)
+        ?.sort((a, b) => (b.season ?? 0) - (a.season ?? 0));
+
+      // create new team with previous season
+      team = await new Team({
+        clubId: club.id,
+        teamNumber,
+        type: teamType,
+        season: season,
+        link: preSeason?.[0]?.link,
+      }).save({ transaction: this.transaction });
+    }
+
+    return team;
   }
 }
