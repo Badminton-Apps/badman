@@ -1,12 +1,12 @@
 import { Club, EventEntry, Team } from '@badman/backend-database';
 import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
-import { SubEventTypeEnum, runParallel, teamValues } from '@badman/utils';
+import { teamValues } from '@badman/utils';
+import { Logger } from '@nestjs/common';
 import { isArray } from 'class-validator';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
 import { correctWrongTeams } from '../../../../utils';
 import { DrawStepData } from './draw';
-import { Logger } from '@nestjs/common';
 
 export interface EntryStepData {
   entry: EventEntry;
@@ -31,7 +31,11 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EntryStepData[]> {
-    await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? []);
+    // await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? [], 1);
+    for (const draw of this.draws ?? []) {
+      await this._processEntries(draw);
+    }
+
     return this._entries;
   }
 
@@ -126,9 +130,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     // remove all entries that don't exist in _entries
     for (const entry of entries) {
       if (!this._entries.find((e) => e.entry.id === entry.id)) {
-        this.logger.log(
-          `Entry existed but was removed`
-        );
+        this.logger.log(`Entry existed but was removed`);
         await entry.destroy({ transaction: this.transaction });
       }
     }
@@ -155,7 +157,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     }
   }
 
-  private async _getClubs(clubName: string, state?: string) {
+  private async _getPossibleClubs(clubName: string, state?: string) {
     const clubs = await Club.findAll({
       where: {
         [Op.or]: [
@@ -207,7 +209,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       correctWrongTeams({ name: item })?.name
     );
 
-    const clubs = await this._getClubs(clubName, state);
+    const clubs = await this._getPossibleClubs(clubName, state);
 
     if (!clubs) {
       this.logger.warn(`Club not found ${clubName} ${state}`);
@@ -225,7 +227,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
     // find the team where the id is in the teamIds
     if ((teamIds?.length ?? 0) > 0) {
-      const team = teams.find((r) => teamIds?.includes(r.link));
+      const team = teams.find((r) => teamIds?.includes(r.id));
       if (team) {
         return team;
       }
