@@ -71,45 +71,39 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     );
 
     for (const item of teams) {
-      const { clubName, teamNumber, teamType } = teamValues(
-        correctWrongTeams({ name: item })?.name
+      const teams = await this._getTeam(
+        item,
+        event.season,
+        event.state,
+        subEventEntries.map((r) => r.teamId ?? '') ?? []
       );
 
-      const club = await this._getClub(clubName, event.state);
-
-      if (!club) {
-        this.logger.warn(`Club not found ${clubName} ${event.state}`);
+      if (!teams) {
+        this.logger.warn(`Team not found ${item}`);
         continue;
       }
 
-      const team = await this._getTeam(
-        club,
-        teamNumber,
-        teamType,
-        event.season
-      );
-
-      let entry = subEventEntries.find((r) => r.teamId === team?.id);
+      let entry = subEventEntries.find((r) => r.teamId === teams?.id);
 
       if (!entry) {
-        this.logger.warn(`Teams entry not found ${team.name}`);
+        this.logger.warn(`Teams entry not found ${teams.name}`);
         entry = await new EventEntry({
-          teamId: team.id,
+          teamId: teams.id,
           subEventId: subEvent.id,
           date: new Date(event.season, 0, 1),
         }).save({ transaction: this.transaction });
       }
 
-      this.logger.debug(`Processing entry ${item} - ${team.name}`);
+      this.logger.debug(`Processing entry ${item} - ${teams.name}`);
 
       await entry.setDrawCompetition(draw, {
         transaction: this.transaction,
       });
-      await entry.setTeam(team, {
+      await entry.setTeam(teams, {
         transaction: this.transaction,
       });
 
-      entry.team = team;
+      entry.team = teams;
       this._entries.push({ entry, teamName: item });
     }
 
@@ -152,7 +146,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     }
   }
 
-  private async _getClub(clubName: string, state?: string) {
+  private async _getClubs(clubName: string, state?: string) {
     const clubs = await Club.findAll({
       where: {
         [Op.or]: [
@@ -175,57 +169,71 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       },
       transaction: this.transaction,
     });
-    let club: Club | undefined;
 
     if (clubs.length === 1) {
-      club = clubs[0];
+      return [clubs[0]];
     } else if (clubs.length > 1) {
       // try find club from same state
-      club = clubs.find((r) => r.state === state);
-      this.logger.debug(
-        `Multiple clubs found ${clubName}, picking the club with state ${state}, club's state ${club?.state}`
-      );
+      const club = clubs.find((r) => r.state === state);
+      if (club) {
+        this.logger.debug(
+          `Multiple clubs found ${clubName}, picking the club with state ${state}, club's state ${club?.state}`
+        );
+        return [club];
+      }
     } else {
       this.logger.warn(`Club not found ${clubName}`);
     }
 
-    return club;
+    return clubs;
   }
 
   private async _getTeam(
-    club: Club,
-    teamNumber: number,
-    teamType: SubEventTypeEnum,
-    season: number
+    item: string,
+    season: number,
+    state?: string,
+    teamIds?: string[]
   ) {
-    const clubTeams = await club.getTeams({
+    const { clubName, teamNumber, teamType } = teamValues(
+      correctWrongTeams({ name: item })?.name
+    );
+
+    const clubs = await this._getClubs(clubName, state);
+
+    if (!clubs) {
+      this.logger.warn(`Club not found ${clubName} ${state}`);
+      return;
+    }
+
+    const teams = await Team.findAll({
+      where: {
+        clubId: clubs.map((r) => r.id),
+        teamNumber,
+        type: teamType,
+      },
       transaction: this.transaction,
     });
 
-    // try find for current season
-    let team = clubTeams.find(
-      (r) =>
-        r.teamNumber === teamNumber &&
-        r.type === teamType &&
-        r.season === season
-    );
+    // find the team where the id is in the teamIds
+    if ((teamIds?.length ?? 0) > 0) {
+      const team = teams.find((r) => teamIds?.includes(r.link));
+      if (team) {
+        return team;
+      }
+    }
 
-    if (!team?.id) {
-      // try find for previous season sorted with highest season first
-      const preSeason = clubTeams
-        .filter((r) => r.teamNumber === teamNumber && r.type === teamType)
-        ?.sort((a, b) => (b.season ?? 0) - (a.season ?? 0));
+    // find the team where the season is the same
+    const teamsForSeason = teams.find((r) => r.season === season);
 
+    if (!teamsForSeason?.id) {
       // create new team with previous season
-      team = await new Team({
-        clubId: club.id,
+      return await new Team({
+        clubId: teamsForSeason?.clubId,
         teamNumber,
         type: teamType,
         season: season,
-        link: preSeason?.[0]?.link,
+        link: teamsForSeason?.link,
       }).save({ transaction: this.transaction });
     }
-
-    return team;
   }
 }
