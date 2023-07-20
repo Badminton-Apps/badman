@@ -8,7 +8,7 @@ import { StepOptions, StepProcessor } from '../../../../processing';
 
 import { Logger, NotFoundException } from '@nestjs/common';
 import { SubEventStepData } from './subEvent';
-import { runParrallel } from '@badman/utils';
+import { runParallel } from '@badman/utils';
 
 export class TournamentSyncRankingProcessor extends StepProcessor {
   public event?: EventTournament;
@@ -49,7 +49,7 @@ export class TournamentSyncRankingProcessor extends StepProcessor {
     this.event.official = true;
     await this.event.save({ transaction: this.transaction });
 
-    await runParrallel(
+    await runParallel(
       this.subEvents?.map((e) => this._addRankingGroups(e, groups)) ?? []
     );
   }

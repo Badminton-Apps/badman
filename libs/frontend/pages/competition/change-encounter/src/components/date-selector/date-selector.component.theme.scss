@@ -12,7 +12,7 @@
     $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
     $isDark: map.get($color-config, 'is-dark');
 
-    .app-date-selector-container {
+    .date-selector-container {
       border-color: $border-color;
     }
 
@@ -23,7 +23,7 @@
         color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
       }
 
-      &.app-date-selector-container {
+      &.date-selector-container {
         border-color: $border-color;
         cursor: default;
       }

@@ -96,7 +96,7 @@ export class CheckEncounterProcessor {
         let chunksProcessed = 0;
         for (const chunk of chunks) {
           this.logger.debug(
-            `Processing chunk of ${chunk.length} encounters, ${
+            `Processing cthunk of ${chunk.length} encounters, ${
               encounters.count - encountersProcessed
             } encounter left, ${chunks.length - chunksProcessed} chunks left`
           );

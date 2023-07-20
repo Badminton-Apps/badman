@@ -97,6 +97,8 @@ export type I18nTranslations = {
             "start": string;
             "titles": {
                 "players": string;
+                "plural": string;
+                "single": string;
                 "teams": string;
             };
         };
@@ -106,6 +108,7 @@ export type I18nTranslations = {
             "change-encounter": {
                 "add-date": string;
                 "calendar": {
+                    "no-space": string;
                     "option": string;
                     "other-games": string;
                     "remaining": string;
@@ -114,6 +117,7 @@ export type I18nTranslations = {
                 };
                 "choose-date": string;
                 "choose-encounter": string;
+                "choose-location": string;
                 "choose-team": string;
                 "comment": string;
                 "comments": string;
@@ -121,11 +125,13 @@ export type I18nTranslations = {
                 "description": string;
                 "disclaimer-submit": string;
                 "errors": {
+                    "invalid": string;
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
                 "not-possible": string;
                 "possible": string;
+                "re-open": string;
                 "requested": string;
                 "requested-failed": string;
                 "show-not-availible": {
@@ -137,6 +143,25 @@ export type I18nTranslations = {
                     "title": string;
                 };
                 "title": string;
+                "warnings": {
+                    "closed": string;
+                    "closing": string;
+                    "home-accept": string;
+                    "location-change": string;
+                    "missing-availability": string;
+                    "selected-different-location": string;
+                };
+            };
+            "club-assembly": {
+                "description": string;
+                "note": string;
+                "warnings": {
+                    "base": string;
+                    "base-subevent": string;
+                    "better-meta": string;
+                    "min-level": string;
+                    "other-gender": string;
+                };
             };
             "draw": {
                 "encounters": string;
@@ -443,6 +468,10 @@ export type I18nTranslations = {
                 "M": string;
                 "MX": string;
             };
+            "longs": {
+                "F": string;
+                "M": string;
+            };
             "male": string;
             "males": string;
             "mix": string;
@@ -556,6 +585,7 @@ export type I18nTranslations = {
             "select-encounter": string;
             "select-end-time": string;
             "select-event-competition": string;
+            "select-season": string;
             "select-start-time": string;
             "select-subevent-competition": string;
             "select-team": string;
@@ -579,6 +609,7 @@ export type I18nTranslations = {
                 "edit": string;
             };
             "no-memberid": string;
+            "no-players": string;
             "regular": string;
             "search": {
                 "create": string;
@@ -678,6 +709,9 @@ export type I18nTranslations = {
                 };
                 "messages": {
                     "clubEnrollmentNotification": string;
+                    "encounterChangeConformationNotification": string;
+                    "encounterChangeFinishedNotification": string;
+                    "encounterChangeNewNotification": string;
                     "encounterNotAcceptedNotification": string;
                     "encounterNotEnteredNotification": string;
                     "syncFailedNotification": string;
@@ -800,6 +834,20 @@ export type I18nTranslations = {
             "liga": string;
             "load-more": string;
             "note": string;
+            "overview": {
+                "date": string;
+                "menu": {
+                    "add-event": string;
+                    "delete": string;
+                    "edit": string;
+                    "set-open-close": string;
+                    "sync": string;
+                };
+                "name": string;
+                "nothing-found": string;
+                "official": string;
+                "only-official": string;
+            };
             "prov": string;
             "subevent": {
                 "max": string;

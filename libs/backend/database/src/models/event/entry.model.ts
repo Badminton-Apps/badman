@@ -68,7 +68,7 @@ export class EventEntry extends Model {
   @BelongsTo(() => Team, 'teamId')
   team?: Relation<Team>;
 
-  @Column(DataType.STRING)
+  @Column(DataType.DATE)
   @Field(() => Date, { nullable: true })
   date?: Date;
 

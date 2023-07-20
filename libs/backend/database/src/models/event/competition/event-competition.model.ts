@@ -1,4 +1,13 @@
-import { Slugify } from '../../../types';
+import { LevelType, UsedRankingTiming } from '@badman/utils';
+import {
+  Field,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BuildOptions,
   HasManyAddAssociationMixin,
@@ -23,20 +32,16 @@ import {
   TableOptions,
   Unique,
 } from 'sequelize-typescript';
-import { LevelType, UsedRankingTiming } from '@badman/utils';
+import {
+  AvailabilityExceptionInputType,
+  AvailabilityExceptionType,
+  Slugify,
+} from '../../../types';
+import { Relation } from '../../../wrapper';
+import { Role } from '../../security';
+import { AvailabilityException } from '../availability.model';
 import { Comment } from './../../comment.model';
 import { SubEventCompetition } from './sub-event-competition.model';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
-import { Role } from '../../security';
-import { Relation } from '../../../wrapper';
 
 @Table({
   timestamps: true,
@@ -94,6 +99,10 @@ export class EventCompetition extends Model {
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   changeCloseRequestDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  contactEmail?: string;
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
@@ -167,6 +176,12 @@ export class EventCompetition extends Model {
   @Column(DataType.STRING)
   country?: string;
 
+  @Field(() => [AvailabilityExceptionType], { nullable: true })
+  @Column({
+    type: DataType.JSON,
+  })
+  exceptions?: Relation<AvailabilityException[]>;
+
   regenerateSlug!: Slugify<EventCompetition>;
 
   // Has many SubEvent
@@ -231,10 +246,14 @@ export class EventCompetitionUpdateInput extends PartialType(
     'updatedAt',
     'comments',
     'subEventCompetitions',
-    'roles'
+    'roles',
+    'exceptions',
   ] as const),
   InputType
-) {}
+) {
+  @Field(() => [AvailabilityExceptionInputType], { nullable: true })
+  exceptions?: AvailabilityException[];
+}
 
 @InputType()
 export class EventCompetitionNewInput extends PartialType(

@@ -1,5 +1,6 @@
 import { User } from '@badman/backend-authorization';
 import {
+  AvailabilityExceptionType,
   Comment,
   DrawCompetition,
   EncounterCompetition,
@@ -104,12 +105,24 @@ export class EventCompetitionResolver {
     return event.getComments(ListArgs.toFindOptions(listArgs));
   }
 
+  @ResolveField(() => [AvailabilityExceptionType], { nullable: true })
+  async exceptions(@Parent() event: EventCompetition) {
+    // return availability.exceptions and map the start en end as date
+    return event.exceptions
+      ?.filter((exception) => exception && exception.start && exception.end)
+      ?.map((exception) => ({
+        ...exception,
+        start: new Date(exception.start as Date),
+        end: new Date(exception.end as Date),
+      }));
+  }
+
   @Mutation(() => EventCompetition)
   async updateEventCompetition(
     @User() user: Player,
     @Args('data') updateEventCompetitionData: EventCompetitionUpdateInput
   ): Promise<EventCompetition> {
-    if (!await user.hasAnyPermission([`edit:competition`])) {
+    if (!(await user.hasAnyPermission([`edit:competition`]))) {
       throw new UnauthorizedException(
         `You do not have permission to add a competition`
       );
@@ -128,7 +141,10 @@ export class EventCompetitionResolver {
         );
       }
 
-      if (eventCompetitionDb.official !== updateEventCompetitionData.official) {
+      if (
+        updateEventCompetitionData.official &&
+        eventCompetitionDb.official !== updateEventCompetitionData.official
+      ) {
         const subEvents = await eventCompetitionDb.getSubEventCompetitions({
           transaction,
         });
@@ -207,7 +223,7 @@ export class EventCompetitionResolver {
     @Args('id', { type: () => ID }) id: string,
     @Args('year', { type: () => Int }) year: number
   ) {
-    if (!await user.hasAnyPermission([`add:competition`])) {
+    if (!(await user.hasAnyPermission([`add:competition`]))) {
       throw new UnauthorizedException(
         `You do not have permission to add a competition`
       );

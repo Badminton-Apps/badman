@@ -226,10 +226,26 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         queryParams['encounter'] = undefined;
       }
 
+      // check if the current url is the same as the new url
+      // if so, don't navigate
+      const currentUrl = this.router.url;
+      const newUrl = this.router
+        .createUrlTree([], {
+          relativeTo: this.activatedRoute,
+          queryParams,
+          queryParamsHandling: 'merge',
+        })
+        .toString();
+
+      if (currentUrl == newUrl) {
+        return;
+      }
+
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams,
         queryParamsHandling: 'merge',
+        
       });
     }
   }

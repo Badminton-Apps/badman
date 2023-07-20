@@ -15,6 +15,13 @@
   flex: 1 1 auto;
 }
 
+.exception {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex: 1 1 auto;
+}
+
 .subEvents {
   display: flex;
   flex-direction: row;
@@ -26,4 +33,29 @@
     flex-direction: column;
     gap: 1rem;
   }
+}
+
+.general {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1 1 auto;
+
+  .name {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex: 1 1 auto;
+  }
+
+  .contact {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex: 1 1 auto;
+  }
+}
+
+mat-form-field {
+  flex: 1 1 auto;
 }

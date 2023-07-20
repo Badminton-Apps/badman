@@ -24,10 +24,13 @@ h3 {
   }
 }
 
-form {
+form,
+.already-accepted {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  flex: 1;
+  max-width: 750px;
 }
 
 .date-list {
@@ -35,45 +38,18 @@ form {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem 0;
+}
 
-  .date-item {
+.submit {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  > div{
     display: flex;
     flex-direction: row;
     gap: 1rem;
     align-items: center;
-    // flex-wrap: wrap;
-
-    badman-date-selector {
-      flex: 40%;
-
-      // @media screen and (max-width: 768px) {
-      //   flex: 100%;
-      // }
-    }
-
-    // .availability {
-    //   @media screen and (max-width: 768px) {
-    //     flex: 1 1 50%;
-    //   }
-    // }
-
-    .selected {
-      flex: 8%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .delete {
-      flex: 8%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
   }
-}
 
-.submit {
-  display: flex;
-  gap: 1rem;
 }

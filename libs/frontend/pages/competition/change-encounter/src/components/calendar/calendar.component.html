@@ -14,24 +14,39 @@
       </div>
     </div>
     <div class="locations" fxLayoutAlign="center center">
-      <mat-chip-listbox aria-label="Locatin selection">
-        <mat-chip *ngFor="let loc of locations | keyvalue">
-          <mat-chip-avatar>{{ loc.key }}</mat-chip-avatar>
-          {{ loc.value.name }}</mat-chip
+      <mat-chip-listbox aria-label="Location selection">
+        <mat-chip *ngFor="let loc of locations; let i = index">
+          <mat-chip-avatar>{{ i + 1 }}</mat-chip-avatar>
+          {{ loc.name }}</mat-chip
         >
       </mat-chip-listbox>
     </div>
     <div class="spacer"></div>
-    <div *ngIf="this.data.home">
+    <div class="manual-selection" *ngIf="this.data.home">
+      <mat-form-field *ngIf="this.locations">
+        <mat-label>{{
+          'all.competition.change-encounter.choose-location' | translate
+        }}</mat-label>
+        <mat-select [formControl]="manualLocationControl">
+          <mat-option
+            *ngFor="let location of this.locations"
+            [value]="location.id"
+            >{{ location.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+
       <mat-form-field>
         <mat-label>{{
-          'competition.change-encounter.choose-date' | translate
+          'all.competition.change-encounter.choose-date' | translate
         }}</mat-label>
         <input
           matInput
           [ngxMatDatetimePicker]="openPicker"
           placeholder="Choose a date"
-          [formControl]="manualControl"
+          [min]="this.minDate"
+          [max]="this.maxDate"
+          [formControl]="manualDateControl"
         />
         <mat-datepicker-toggle
           matSuffix
@@ -39,6 +54,20 @@
         ></mat-datepicker-toggle>
         <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
       </mat-form-field>
+
+      <button
+        mat-icon-button
+        (click)="
+          this.selectDay(
+            manualDateControl.value,
+            undefined,
+            manualLocationControl.value,
+            9999
+          )
+        "
+      >
+        <mat-icon>check</mat-icon>
+      </button>
     </div>
   </div>
   <div class="botton-row">
@@ -64,7 +93,7 @@
 
 <div class="calendar">
   <div
-    *ngIf="calendar; else loading"
+    *ngIf="!this.loadingCal; else loading"
     class="calendar-table"
     [ngStyle]="{ 'grid-template-columns': gridTemplateColumns }"
   >
@@ -72,261 +101,182 @@
       {{ weekDay | titlecase }}
     </div>
 
-    <div
-      *ngFor="let row of calendar"
-      class="calendar-day"
-      [ngClass]="{ 'past-date': row.isPastDate, today: row.isToday }"
-    >
+    <div *ngFor="let row of days" class="calendar-day">
       <div class="calendar-day-header">
         <div fxFlex>
           <div class="selection">
-            <span class="day">{{ row.date?.getDate() }}</span>
-            <span
-              class="momth"
-              *ngIf="row.isToday || row.date?.getDate() === 1"
-            >
-              {{ monthNames[row.date?.getMonth() ?? 0] | titlecase }}</span
+            <span class="day">{{ row.date.getDate() }}</span>
+            <span class="momth" *ngIf="row.date?.getDate() === 1">
+              {{ monthNames[row.date.getMonth()] | titlecase }}</span
             >
           </div>
         </div>
       </div>
 
-      <div class="calendar-day-content">
+      <div class="calendar-day-content" *ngIf="row.info as dayInfo">
         <div
-          *ngFor="let loc of row.locations"
-          fxLayout="column"
-          fxLayoutGap="5px"
+          *ngFor="let loc of dayInfo.locations"
+          class="location picable"
+          
+          (click)="selectDay(row.date, loc.time, loc.locationId, loc.space)"
         >
-          <div *ngFor="let av of loc.availibility" fxLayout="column">
-            <div
-              *ngIf="av.remainingEncounters > 0 || this.data.home"
-              class="location picable"
-              fxFlex
-              (click)="selectDay(row.date, av.startTime)"
-              matTooltip="Pick this moment"
-            >
-              <span class="id">{{ loc.id }}</span>
-              <span class="time">{{ av.startTime }} - </span>
-              <span class="courts">
-                {{
-                  'all.competition.change-encounter.calendar.remaining'
-                    | translate : { amount: av.remainingEncounters }
-                }}
-                <ng-container *ngIf="av.option">
-                  ({{
-                    'all.competition.change-encounter.calendar.option'
-                      | translate : { amount: av.option }
-                  }})
-                </ng-container>
-              </span>
-            </div>
-
-            <div
-              *ngIf="av.remainingEncounters <= 0 && !this.data.home"
-              class="location"
-              fxFlex
-            >
-              <span class="id">{{ loc.id }}</span>
-              <span class="time">{{ av.startTime }} - </span>
-              <span class="courts">
-                {{
-                  'all.competition.change-encounter.calendar.remaining'
-                    | translate : { amount: av.remainingEncounters }
-                }}
-                <ng-container *ngIf="av.option">
-                  ({{
-                    'all.competition.change-encounter.calendar.option'
-                      | translate : { amount: av.option }
-                  }})
-                </ng-container>
-              </span>
-            </div>
-
-            <div
-              role="button"
-              class="event"
-              *ngFor="let calEvent of av.events"
-              [matTooltip]="
-                'all.competition.change-encounter.calendar.removed' | translate
-              "
-              [matTooltipDisabled]="!calEvent.removed"
-              [ngClass]="{
-                removed: calEvent.removed
-              }"
-            >
+          <span class="id">{{ loc.locationIndex }}</span>
+          <span class="time">{{ loc.time }} - </span>
+          <span class="courts">
+            {{
+              'all.competition.change-encounter.calendar.remaining'
+                | translate : { amount: loc.space }
+            }}
+            <span *ngIf="loc.requested?.length">
+              ({{
+                'all.competition.change-encounter.calendar.option'
+                  | translate : { amount: loc.requested.length }
+              }})
+            </span>
+          </span>
+          <div class="event">
+            <div class="home-event" *ngFor="let enc of loc.encounters">
               <div class="event-team">
                 <div
-                  [ngStyle]="{ 'border-color': calEvent.color }"
+                  [ngStyle]="{
+                    'border-color': this.teamColors.get(enc.homeTeamId ?? '')
+                  }"
                   class="event-color"
                 ></div>
               </div>
-              <span fxFlex>
-                <span
-                  class="event-name"
-                  fxFlex="0 1 auto"
-                  [matTooltip]="
-                    'all.competition.change-encounter.calendar.requested'
-                      | translate
-                  "
-                  [matTooltipDisabled]="!calEvent.requested"
-                >
-                  <ng-container *ngIf="calEvent.ownTeam">
-                    {{ calEvent?.encounter?.home?.abbreviation }}
-                    {{ 'all.competition.vs-short' | translate }}
-                    {{ calEvent?.encounter?.away?.name }}
-                  </ng-container>
+              <span class="event-name">
+                {{ enc?.home?.name }}
+                {{ 'all.competition.vs-short' | translate }}
+                {{ enc?.away?.name }}
+              </span>
+            </div>
+          </div>
+          <div class="event removed">
+            <div
+              class="home-event"
+              *ngFor="let enc of loc.removed"
+              [matTooltip]="
+                'all.competition.change-encounter.calendar.removed' | translate
+              "
+            >
+              <div class="event-team">
+                <div
+                  [ngStyle]="{
+                    'border-color': this.teamColors.get(enc.homeTeamId ?? '')
+                  }"
+                  class="event-color"
+                ></div>
+              </div>
+              <span class="event-name">
+                {{ enc?.home?.name }}
+                {{ 'all.competition.vs-short' | translate }}
+                {{ enc?.away?.name }}
+              </span>
+            </div>
+          </div>
 
-                  <ng-container *ngIf="!calEvent.ownTeam">
-                    {{ calEvent?.encounter?.home?.name }}
-                  </ng-container>
-
-                  <span *ngIf="calEvent.requested">*</span>
-                </span>
+          <div class="event requested">
+            <div
+              class="home-event"
+              *ngFor="let enc of loc.requested"
+              [matTooltip]="
+                'all.competition.change-encounter.calendar.requested'
+                  | translate
+              "
+            >
+              <div class="event-team">
+                <div
+                  [ngStyle]="{
+                    'border-color': this.teamColors.get(enc.homeTeamId ?? '')
+                  }"
+                  class="event-color"
+                ></div>
+              </div>
+              <span class="event-name">
+                {{ enc?.home?.name }}
+                {{ 'all.competition.vs-short' | translate }}
+                {{ enc?.away?.name }}*
               </span>
             </div>
           </div>
         </div>
 
-        <small *ngIf="row.otherEvents.length > 0">{{
-          'all.competition.change-encounter.calendar.other-games' | translate
-        }}</small>
-        <div
-          *ngFor="let calEvent of row.otherEvents"
-          fxLayout="column"
-          fxLayoutGap="5px"
-        >
-          <div
-            fxFlex
-            fxLayoutGap="3px"
-            class="event"
-            [matTooltip]="
-              'all.competition.change-encounter.calendar.removed' | translate
-            "
-            [matTooltipDisabled]="!calEvent.removed"
-            [ngClass]="{
-              removed: calEvent.removed
-            }"
-          >
-            <div class="event-team">
-              <div
-                [ngStyle]="{ 'border-color': calEvent.color }"
-                class="event-color"
-              ></div>
-            </div>
-            <span fxFlex>
-              <span
-                class="event-name"
-                fxFlex="0 1 auto"
-                [matTooltip]="
-                  'all.competition.change-encounter.calendar.requested'
-                    | translate
-                "
-                [matTooltipDisabled]="!calEvent.requested"
-              >
-                <ng-container *ngIf="calEvent.ownTeam">
-                  {{ calEvent?.encounter?.home?.abbreviation }}
-                  {{ 'all.competition.vs-short' | translate }}
-                  {{ calEvent?.encounter?.away?.name }}
-                </ng-container>
-
-                <ng-container *ngIf="!calEvent.ownTeam">
-                  {{ calEvent?.encounter?.home?.name }}
-                </ng-container>
-
-                <span *ngIf="calEvent.requested">*</span>
-              </span>
-            </span>
+        <div class="event other-events">
+          <small *ngIf="dayInfo.other.length > 0">{{
+            'all.competition.change-encounter.calendar.other-games' | translate
+          }}</small>
+          <div class="event-name" *ngFor="let enc of dayInfo.other">
+            {{ enc?.date | date : 'HH:mm' }} -
+            {{ enc?.home?.name }}
+            {{ 'all.competition.vs-short' | translate }}
+            {{ enc?.away?.name }}
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="sidbar" *ngIf="this.data.home">
-    <div>
-      <div fxLayout="row" fxLayoutGap="6px">
-        <button
-          mat-stroked-button
-          (click)="showAllTeams(this.homeTeams, this.data.homeClubId)"
-        >
-          Show all
-        </button>
-        <button mat-stroked-button (click)="hideAllTeams(this.data.homeClubId)">
-          Hide all
-        </button>
-      </div>
-      <div *ngFor="let team of this.homeTeams">
-        <mat-checkbox
-          (change)="changeVisibleTeams($event, team.id!, this.data.homeClubId)"
-          [checked]="visibleTeams?.[this.data.homeClubId]?.includes(team.id ?? '')"
-          >{{ team.name }}</mat-checkbox
-        >
-      </div>
+
+  <div class="sidebar">
+    <div
+      class="home-teams"
+      *ngIf="this.data.home ? this.homeTeams : this.awayTeams as teams"
+    >
+      <ng-container
+        *ngIf="
+          this.data.home ? this.data.homeClubId : this.data.awayClubId as clubId
+        "
+      >
+        <div class="show">
+          <button mat-stroked-button (click)="showAllTeams(teams, clubId)">
+            Show all
+          </button>
+          <button mat-stroked-button (click)="hideAllTeams(clubId)">
+            Hide all
+          </button>
+        </div>
+        <div class="teams">
+          <div *ngFor="let team of teams">
+            <mat-checkbox
+              (change)="changeVisibleTeams($event, team.id!, clubId)"
+              [checked]="visibleTeams?.[clubId]?.includes(team.id ?? '')"
+              >{{ team.name }}</mat-checkbox
+            >
+          </div>
+        </div>
+      </ng-container>
     </div>
 
-    <div>
-      <div fxLayout="row" fxLayoutGap="6px">
-        <button
-          mat-stroked-button
-          (click)="showAllTeams(this.awayTeams, this.data.awayClubId)"
-        >
-          Show all
-        </button>
-        <button mat-stroked-button (click)="hideAllTeams(this.data.awayClubId)">
-          Hide all
-        </button>
-      </div>
-      <div *ngFor="let team of this.awayTeams">
-        <mat-checkbox
-          (change)="changeVisibleTeams($event, team.id!, this.data.awayClubId)"
-          [checked]="visibleTeams?.[this.data.awayClubId]?.includes(team.id ?? '')"
-          >{{ team.name }}</mat-checkbox
-        >
-      </div>
-    </div>
-  </div>
-  <div class="sidbar" *ngIf="!this.data.home">
-    <div>
-      <div fxLayout="row" fxLayoutGap="6px">
-        <button
-          mat-stroked-button
-          (click)="showAllTeams(this.awayTeams, this.data.awayClubId)"
-        >
-          Show all
-        </button>
-        <button mat-stroked-button (click)="hideAllTeams(this.data.awayClubId)">
-          Hide all
-        </button>
-      </div>
-      <div *ngFor="let team of this.awayTeams">
-        <mat-checkbox
-          (change)="changeVisibleTeams($event, team.id!, this.data.awayClubId)"
-          [checked]="visibleTeams?.[this.data.awayClubId]?.includes(team.id ?? '')"
-          >{{ team.name }}</mat-checkbox
-        >
-      </div>
-    </div>
-    <div>
-      <div fxLayout="row" fxLayoutGap="6px">
-        <button
-          mat-stroked-button
-          (click)="showAllTeams(this.homeTeams, this.data.homeClubId)"
-        >
-          Show all
-        </button>
-        <button mat-stroked-button (click)="hideAllTeams(this.data.homeClubId)">
-          Hide all
-        </button>
-      </div>
-      <div *ngFor="let team of this.homeTeams">
-        <mat-checkbox
-          (change)="changeVisibleTeams($event, team.id!, this.data.homeClubId)"
-          [checked]="visibleTeams?.[this.data.homeClubId]?.includes(team.id ?? '')"
-          >{{ team.name }}</mat-checkbox
-        >
-      </div>
+    <div
+      class="away-teams"
+      *ngIf="this.data.home ? this.awayTeams : this.homeTeams as teams"
+    >
+      <ng-container
+        *ngIf="
+          this.data.home ? this.data.awayClubId : this.data.homeClubId as clubId
+        "
+      >
+        <div class="show">
+          <button mat-stroked-button (click)="showAllTeams(teams, clubId)">
+            Show all
+          </button>
+          <button mat-stroked-button (click)="hideAllTeams(clubId)">
+            Hide all
+          </button>
+        </div>
+        <div class="teams">
+          <div *ngFor="let team of teams">
+            <mat-checkbox
+              (change)="changeVisibleTeams($event, team.id!, clubId)"
+              [checked]="visibleTeams?.[clubId]?.includes(team.id ?? '')"
+              >{{ team.name }}</mat-checkbox
+            >
+          </div>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>
+
 <ng-template #loading>
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-template>

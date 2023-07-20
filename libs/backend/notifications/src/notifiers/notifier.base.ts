@@ -1,4 +1,8 @@
-import { Player, Notification, NotificationOptionsTypes } from '@badman/backend-database';
+import {
+  Player,
+  Notification,
+  NotificationOptionsTypes,
+} from '@badman/backend-database';
 import { MailingService } from '@badman/backend-mailing';
 import { NotificationType } from '@badman/utils';
 import { Logger } from '@nestjs/common';
@@ -45,7 +49,7 @@ export abstract class Notifier<T, A = { email: string }> {
 
     const type = settings?.[this.type] as NotificationType;
 
-    if (!type || !force) {
+    if (!type && !force) {
       this.logger.debug(
         `Notification ${this.type} disabled for ${player.fullName}`
       );

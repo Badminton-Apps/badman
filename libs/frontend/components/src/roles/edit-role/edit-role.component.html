@@ -44,7 +44,7 @@
       <mat-list>
         <ng-container *ngIf="!((this.role()?.players?.length ?? 0) > 0)">
           <mat-list-item>
-            <div class="no-players">No players</div>
+            <div class="no-players">{{'all.player.no-players' | translate}}</div>
           </mat-list-item>
         </ng-container>
 

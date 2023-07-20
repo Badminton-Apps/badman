@@ -8,6 +8,7 @@ import {
   EventTournament,
   Location,
   Player,
+  SubEventCompetition,
   Team,
 } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
@@ -50,120 +51,235 @@ export class MailingService {
     }>);
   }
 
-  async sendRequestMail(
-    changeRequest: EncounterChange,
-    homeTeamRequests: boolean
+  async sendNewRequestMail(
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    encounter: EncounterCompetition,
+    isHome: boolean
   ) {
-    const encounter = await changeRequest.getEncounter({
+    // fetch event
+    const event = await encounter.getDrawCompetition({
+      attributes: ['id'],
       include: [
         {
-          model: Team,
-          as: 'home',
-          include: [{ model: Player, as: 'captain' }],
-        },
-        {
-          model: Team,
-          as: 'away',
-          include: [{ model: Player, as: 'captain' }],
+          model: SubEventCompetition,
+          attributes: ['id'],
+          include: [
+            {
+              model: EventCompetition,
+              attributes: ['id', 'season'],
+            },
+          ],
         },
       ],
     });
 
-    const otherTeam = homeTeamRequests ? encounter.away : encounter.home;
-    const clubTeam = homeTeamRequests ? encounter.home : encounter.away;
+    const eventCompetition = event?.subEventCompetition
+      ?.eventCompetition as EventCompetition;
 
-    if (!otherTeam || !clubTeam) {
-      throw new Error('Team not found');
-    }
-
-    const sendMail = async (team: Team, captain: Player, template: string) => {
-      moment.locale('nl-be');
-      const options = {
-        from: 'info@badman.app',
-        to: team.email,
-        subject: `Verplaatsings aanvraag ${encounter.home?.name} vs ${encounter.away?.name}`,
-        template,
-        context: {
-          captain: captain.toJSON(),
-          otherTeam: otherTeam?.toJSON(),
-          clubTeam: clubTeam?.toJSON(),
-          encounter: encounter.toJSON(),
-          date: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
-          settingsSlug: captain.slug,
+    moment.locale('nl-be');
+    const options = {
+      from: 'info@badman.app',
+      to: to.email,
+      subject: `Aanvraag voor ontmoeting tussen ${encounter.home?.name} en ${encounter.away?.name}`,
+      template: 'encounterchange',
+      context: {
+        captain: to.fullName,
+        isHome,
+        season: eventCompetition.season,
+        encounter: {
+          ...encounter.toJSON(),
+          home: encounter.home?.toJSON(),
+          away: encounter.away?.toJSON(),
         },
-      } as MailOptions<{
-        captain: Player;
-        otherTeam: Team;
-        clubTeam: Team;
-        encounter: EncounterCompetition;
-        date: string;
-        settingsSlug: string;
-      }>;
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      captain: string;
+      isHome: boolean;
+      season: number;
+      isChangedLocation: boolean;
+      encounter: EncounterCompetition;
+      settingsSlug: string;
+    }>;
 
-      await this._sendMail(options);
-    };
-
-    if (otherTeam.captain) {
-      // Send mail to the other team
-      await sendMail(otherTeam, otherTeam.captain, 'encounterchange');
-    }
-
-    if (clubTeam.captain) {
-      // Send mail to the requester
-      await sendMail(clubTeam, clubTeam.captain, 'encounterchange-requester');
-    }
+    await this._sendMail(options);
   }
 
-  async sendRequestFinishedMail(changeRequest: EncounterChange) {
-    const encounter = await changeRequest.getEncounter({
+  async sendConformationRequestMail(
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    encounter: EncounterCompetition,
+    isHome: boolean
+  ) {
+    // fetch event
+    const event = await encounter.getDrawCompetition({
+      attributes: ['id'],
       include: [
         {
-          model: Team,
-          as: 'home',
-          include: [{ model: Player, as: 'captain' }],
-        },
-        {
-          model: Team,
-          as: 'away',
-          include: [{ model: Player, as: 'captain' }],
+          model: SubEventCompetition,
+          attributes: ['id'],
+          include: [
+            {
+              model: EventCompetition,
+              attributes: ['id', 'season'],
+            },
+          ],
         },
       ],
     });
 
+    const eventCompetition = event?.subEventCompetition
+      ?.eventCompetition as EventCompetition;
+    moment.locale('nl-be');
+    const options = {
+      from: 'info@badman.app',
+      to: to.email,
+      subject: `Aanvraag voor ontmoeting tussen ${encounter.home?.name} en ${encounter.away?.name}`,
+      template: 'encounterchange',
+      context: {
+        captain: to.fullName,
+        isHome,
+        season: eventCompetition.season,
+        encounter: {
+          ...encounter.toJSON(),
+          home: encounter.home?.toJSON(),
+          away: encounter.away?.toJSON(),
+        },
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      captain: string;
+      isHome: boolean;
+      season: number;
+      isChangedLocation: boolean;
+      encounter: EncounterCompetition;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
+  async sendRequestFinishedMail(
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    encounter: EncounterCompetition,
+    isHome: boolean,
+    isChangedLocation: boolean
+  ) {
     if (!encounter.home || !encounter.away) {
       throw new Error('Team not found');
     }
-
-    const sendMail = async (team: Team, captain: Player) => {
-      moment.locale('nl-be');
-      const options = {
-        from: 'info@badman.app',
-        to: team.email,
-        subject: `Verplaatsings aanvraag ${encounter.home?.name} vs ${encounter.away?.name} afgewerkt`,
-        template: 'encounterchangefinished',
-        context: {
-          captain: captain.toJSON(),
-          team: team.toJSON(),
-          encounter: encounter.toJSON(),
-          newDate: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
-          settingsSlug: captain.slug,
+    // fetch event
+    const event = await encounter.getDrawCompetition({
+      attributes: ['id'],
+      include: [
+        {
+          model: SubEventCompetition,
+          attributes: ['id'],
+          include: [
+            {
+              model: EventCompetition,
+              attributes: ['id', 'season'],
+            },
+          ],
         },
-      } as MailOptions<{
-        captain: Player;
-        team: Team;
-        encounter: EncounterCompetition;
-        newDate: string;
-        settingsSlug: string;
-      }>;
+      ],
+    });
 
-      await this._sendMail(options);
-    };
-    if (encounter.home.captain) {
-      await sendMail(encounter.home, encounter.home.captain);
-    }
-    if (encounter.away.captain) {
-      await sendMail(encounter.away, encounter.away.captain);
-    }
+    const eventCompetition = event?.subEventCompetition
+      ?.eventCompetition as EventCompetition;
+
+    // mail to captain
+    moment.locale('nl-be');
+    const options = {
+      from: 'info@badman.app',
+      to: to.email,
+      subject: `Verplaatsings aanvraag ${encounter.home?.name} en ${encounter.away?.name} afgewerkt`,
+      template: 'encounterchangefinished',
+      context: {
+        captain: to.fullName,
+        isHome,
+        isChangedLocation,
+        season: eventCompetition.season,
+        encounter: {
+          ...encounter.toJSON(),
+          home: encounter.home.toJSON(),
+          away: encounter.away.toJSON(),
+        },
+        newDate: moment(encounter.date).tz('Europe/Brussels').format('LLLL'),
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      captain: string;
+      isHome: boolean;
+      season: number;
+      isChangedLocation: boolean;
+      encounter: EncounterCompetition;
+      newDate: string;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
+  async sendLocationChangedMail(
+    encounter: EncounterCompetition
+  ) {
+    // fetch event
+    const event = await encounter.getDrawCompetition({
+      attributes: ['id'],
+      include: [
+        {
+          model: SubEventCompetition,
+          attributes: ['id'],
+          include: [
+            {
+              model: EventCompetition,
+              attributes: ['id', 'slug', 'visualCode', 'season', 'name'],
+            },
+          ],
+        },
+      ],
+    });
+
+    const location = await encounter.getLocation();
+
+
+    const eventCompetition = event?.subEventCompetition
+      ?.eventCompetition as EventCompetition;
+
+    //  mail to reponsible
+    moment.locale('nl-be');
+    const optionsMailResp = {
+      from: 'info@badman.app',
+      to: eventCompetition.contactEmail,
+      subject: `Verplaatsings ${encounter.home?.name} en ${encounter.away?.name} heeft andere locatie`,
+      template: 'location-change',
+      context: {
+        encounter: {
+          ...encounter.toJSON(),
+          home: encounter.home?.toJSON(),
+          away: encounter.away?.toJSON(),
+          location: location?.toJSON(),
+        },
+        event: eventCompetition.toJSON(),
+      },
+    } as MailOptions<{
+      encounter: EncounterCompetition;
+      event: EventCompetition;
+    }>;
+
+    await this._sendMail(optionsMailResp);
   }
 
   async sendNotEnterdMail(

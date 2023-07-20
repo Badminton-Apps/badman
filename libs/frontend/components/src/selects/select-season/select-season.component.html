@@ -1,7 +1,7 @@
 <ng-container *ngIf="this.group" [formGroup]="group">
   <!-- year selection -->
   <mat-form-field *ngIf="this.seasons">
-    <mat-label>Season</mat-label>
+    <mat-label>{{'all.pickers.select-season' | translate}}</mat-label>
     <mat-select formControlName="season">
       <mat-option *ngFor="let season of this.seasons()" [value]="season">
         {{ season }} - {{ season + 1 }}

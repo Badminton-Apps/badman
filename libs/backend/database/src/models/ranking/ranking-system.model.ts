@@ -133,7 +133,7 @@ export class RankingSystem extends Model {
   @Column(DataType.DATE)
   caluclationIntervalLastUpdate?: Date;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
   caluclationIntervalAmount?: number;
   @Field(() => String, { nullable: true })
@@ -164,7 +164,7 @@ export class RankingSystem extends Model {
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   updateIntervalAmountLastUpdate?: Date;
-  @Field(() => Date, { nullable: true })
+  @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
   updateIntervalAmount?: number;
   @Field(() => String, { nullable: true })

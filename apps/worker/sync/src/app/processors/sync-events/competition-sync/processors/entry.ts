@@ -1,6 +1,6 @@
 import { Club, EventEntry, Team } from '@badman/backend-database';
 import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
-import { runParrallel, teamValues } from '@badman/utils';
+import { runParallel, teamValues } from '@badman/utils';
 import { isArray } from 'class-validator';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
@@ -31,7 +31,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EntryStepData[]> {
-    await runParrallel(this.draws?.map((e) => this._processEntries(e)) ?? []);
+    await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? []);
     return this._entries;
   }
 
@@ -46,7 +46,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
     const subEventEntries = await subEvent.getEventEntries({
-      include: [{ model: Team }],
+      // include: [{ model: Team }],
       transaction: this.transaction,
     });
 
@@ -95,30 +95,6 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
           ],
         },
         transaction: this.transaction,
-      });
-
-      let club: Club | undefined;
-
-      if (clubs.length === 1) {
-        club = clubs[0];
-      } else if (clubs.length > 1) {
-        // try find club from same state
-        club = clubs.find((r) => r.state === event.state);
-      } else {
-        this.logger.warn(`Club not found ${clubName}`);
-        continue;
-      }
-
-      let entry = subEventEntries.find((r) => {
-        if (!r.team) {
-          return false;
-        }
-
-        return (
-          r.team.teamNumber === teamNumber &&
-          r.team.clubId === club?.id &&
-          r.team.type === teamType
-        );
       });
 
       if (!club) {
@@ -171,16 +147,18 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         }
       }
 
-      await draw.getEntries({
-        transaction: this.transaction,
-      });
+      let entry = subEventEntries.find((r) => r.teamId === team?.id);
+
+      // await draw.getEntries({
+      //   transaction: this.transaction,
+      // });
 
       if (!entry) {
         this.logger.warn(`Teams entry not found ${team.name}`);
         entry = await new EventEntry({
           teamId: team.id,
           subEventId: subEvent.id,
-          date: new Date(event.season, 0, 1),
+          date: new Date(event.season, 0, 1)
         }).save({ transaction: this.transaction });
       }
 

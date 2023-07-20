@@ -7,7 +7,6 @@ import {
   OnInit,
   PLATFORM_ID,
   Signal,
-  TransferState,
   computed,
   effect,
   inject,
@@ -37,9 +36,8 @@ import {
   SelectSeasonComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { Club, EventCompetition, Player, Team } from '@badman/frontend-models';
+import { Club, EventCompetition, Player } from '@badman/frontend-models';
 import { TwizzitService } from '@badman/frontend-twizzit';
-import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
@@ -56,6 +54,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubCompetitionComponent } from './club-competition/club-competition.component';
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
+import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
 
 @Component({
   selector: 'badman-club-detail',
@@ -78,10 +77,12 @@ import { ClubTeamsComponent } from './club-teams/club-teams.component';
     PageHeaderComponent,
     HasClaimComponent,
     LoadingBlockComponent,
+    SelectSeasonComponent,
+
     ClubPlayersComponent,
     ClubTeamsComponent,
     ClubCompetitionComponent,
-    SelectSeasonComponent,
+    ClubAssemblyComponent,
 
     // Material Modules
     MatButtonToggleModule,

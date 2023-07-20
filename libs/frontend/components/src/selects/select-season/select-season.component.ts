@@ -4,6 +4,7 @@ import {
   Inject,
   Injector,
   Input,
+  OnDestroy,
   OnInit,
   PLATFORM_ID,
   Signal,
@@ -20,12 +21,13 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Club, EventCompetition, Team } from '@badman/frontend-models';
+import { Club, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, startWith } from 'rxjs';
+import { Subject, startWith } from 'rxjs';
+import { takeUntil, map } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-select-season',
@@ -45,7 +47,9 @@ import { map, startWith } from 'rxjs';
   templateUrl: './select-season.component.html',
   styleUrls: ['./select-season.component.scss'],
 })
-export class SelectSeasonComponent implements OnInit {
+export class SelectSeasonComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+
   injector = inject(Injector);
 
   @Input()
@@ -78,7 +82,7 @@ export class SelectSeasonComponent implements OnInit {
 
   ngOnInit() {
     if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<string>;
+      this.control = this.group?.get(this.controlName) as FormControl<number>;
     }
 
     if (!this.control) {
@@ -92,7 +96,7 @@ export class SelectSeasonComponent implements OnInit {
     const previous = this.group?.get(this.dependsOn);
     if (previous && this.type === 'club') {
       previous.valueChanges
-        .pipe(startWith(previous.value))
+        .pipe(startWith(previous.value), takeUntil(this.destroy$))
         .subscribe((value) => {
           const clubId = value?.id ?? value;
 
@@ -111,15 +115,11 @@ export class SelectSeasonComponent implements OnInit {
 
           // update url on change
           if (this.updateUrl) {
-            this.control.valueChanges.subscribe((value) => {
-              this.router.navigate([], {
-                relativeTo: this.activatedRoute,
-                queryParams: {
-                  [this.controlName]: value,
-                },
-                queryParamsHandling: 'merge',
+            this.control.valueChanges
+              .pipe(takeUntil(this.destroy$))
+              .subscribe((value) => {
+                this._updateUrl(value, false);
               });
-            });
           }
         });
     }
@@ -203,5 +203,43 @@ export class SelectSeasonComponent implements OnInit {
         injector: this.injector,
       }
     );
+  }
+
+  private _updateUrl(value: string, removeOtherParams = false) {
+    if (this.updateUrl && value) {
+      const queryParams: { [key: string]: string | undefined } = {
+        [this.controlName]: value,
+      };
+
+      if (removeOtherParams) {
+        queryParams[this.dependsOn] = undefined;
+      }
+
+      // check if the current url is the same as the new url
+      // if so, don't navigate
+      const currentUrl = this.router.url;
+      const newUrl = this.router
+        .createUrlTree([], {
+          relativeTo: this.activatedRoute,
+          queryParams,
+          queryParamsHandling: 'merge',
+        })
+        .toString();
+
+      if (currentUrl == newUrl) {
+        return;
+      }
+
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams,
+        queryParamsHandling: 'merge',
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

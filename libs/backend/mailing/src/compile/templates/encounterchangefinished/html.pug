@@ -1,12 +1,36 @@
-p
-  | Beste #{captain.fullName}, 
-  br
-  br
-  |   De verplaatsing tegen 
-  strong #{otherTeam.name}
-  |  is verplaatst naar 
-  strong #{newDate}
-  | .
-p
-  a(href=`${clientUrl}/competition/change-encounter?club=${otherTeam.clubId}&team=${otherTeam.id}&encounter=${encounter.id}`)
-    | Ga naar aanvraag
+extends ../../layouts/layout.pug
+
+block title
+  h1.text-center
+    | Verplaatsing afgwerkt
+
+block content
+  p.text-center
+    p
+      | Beste #{ captain },
+      br
+      br
+      | Wij willen u graag informeren over een wijziging met betrekking tot de aankomende ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name }. De ontmoeting is verplaatst naar #{ newDate }.
+    p
+      if isHome
+        a(
+          href=`${clientUrl}/competition/change-encounter?club=${encounter.home.clubId}&team=${encounter.home.id}&encounter=${encounter.id}&season=${season}`
+        )
+          | Klik hier om uw verzoek te her-openen
+      else
+        a(
+          href=`${clientUrl}/competition/change-encounter?club=${encounter.away.clubId}&team=${encounter.away.id}&encounter=${encounter.id}&season=${season}`
+        )
+          | Klik hier om uw verzoek te her-openen
+
+    if isChangedLocation
+    p
+      | Er is een andere locatie gekozen, maar vanwege beperkingen in externe systemen moeten deze locaties handmatig worden bijgewerkt. Houd er rekening mee dat dit enkele dagen kan duren.
+      br 
+      br 
+      | Dank u voor uw begrip.
+
+    br
+    | Met vriendelijke groet,
+    br
+    | Badman

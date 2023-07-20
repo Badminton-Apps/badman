@@ -1,5 +1,5 @@
 import { EncounterCompetition } from '@badman/backend-database';
-import { runParrallel } from '@badman/utils';
+import { runParallel } from '@badman/utils';
 import { Page } from 'puppeteer';
 
 export async function gotoEncounterPage(
@@ -27,7 +27,7 @@ export async function gotoEncounterPage(
     const promises = [];
     promises.push(targetPage.waitForNavigation());
     await targetPage.goto(url);
-    await runParrallel(promises);
+    await runParallel(promises);
   }
   return url;
 }

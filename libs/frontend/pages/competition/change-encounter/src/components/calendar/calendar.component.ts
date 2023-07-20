@@ -19,37 +19,37 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent } from '@badman/frontend-components';
-import { EncounterCompetition, Location, Team } from '@badman/frontend-models';
 import {
-  getCurrentSeason,
-  getCurrentSeasonPeriod,
-  sortTeams,
-} from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+  EncounterChangeDate,
+  EncounterCompetition,
+  EventCompetition,
+  Location,
+  Team,
+} from '@badman/frontend-models';
+import { getCurrentSeason, sortTeams } from '@badman/utils';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
-import { forkJoin, lastValueFrom, map } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
-import { v4 } from 'uuid';
 
 @Component({
   selector: 'badman-calendar',
-  templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TranslateModule,
     RouterModule,
+    ReactiveFormsModule,
+    FormsModule,
 
+    TranslateModule,
     NgxMatDatetimePickerModule,
 
     // Material
@@ -60,41 +60,87 @@ import { v4 } from 'uuid';
     MatTooltipModule,
     MatCheckboxModule,
     MatProgressBarModule,
-    MatChipsModule,
     MatFormFieldModule,
     MatDatepickerModule,
-    MatMenuModule,
+    MatSelectModule,
+    MatSnackBarModule,
 
-    // Own
+    // own
     HasClaimComponent,
   ],
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnInit {
-  manualControl: FormControl;
-  calendar?: CalendarDay[];
-  public locations: Map<number, Location> = new Map();
+  manualDateControl: FormControl;
+  manualLocationControl: FormControl;
+
+  public firstDayOfMonth: moment.Moment;
+  private season: number;
   public monthNames!: string[];
   public weekDayNames!: string[];
+  public minDate!: Date;
+  public maxDate!: Date;
+  public gridTemplateColumns = '';
 
-  private homeEncounters: EncounterCompetition[] = [];
-  private awayEncounters: EncounterCompetition[] = [];
+  public encounters: Map<string, EncounterCompetition[]> = new Map();
+  public availibilities: Map<
+    string,
+    {
+      locationId: string;
+      time: string;
+      courts: number;
+    }[]
+  > = new Map();
+  public exceptions: Map<
+    string,
+    {
+      locationId: string;
+      courts: number;
+    }[]
+  > = new Map();
+
+  public changeRequests: Map<
+    string,
+    { request: EncounterChangeDate; encounter: EncounterCompetition }[]
+  > = new Map();
+  public teamColors = new Map<string, string>();
   public homeTeams: Team[] = [];
   public awayTeams: Team[] = [];
+  public homeTeamsIds: string[] = [];
+  public awayTeamsIds: string[] = [];
+  public locations: Location[] = [];
+  private event?: EventCompetition;
+
+  public loadingCal = true;
+
+  public days!: {
+    date: Date;
+    info: {
+      locations: {
+        space: number;
+        time: string;
+        locationId: string;
+        locationIndex: number;
+
+        encounters: EncounterCompetition[];
+        removed: EncounterCompetition[];
+        requested: EncounterCompetition[];
+      }[];
+      other: EncounterCompetition[];
+    };
+  }[];
 
   public visibleTeams?: {
     [key: string]: string[];
   };
 
-  public firstDayOfMonth: moment.Moment;
-  private season: number;
-
-  private teamColors = new Map<string, string>();
-
-  public gridTemplateColumns = '';
-
   constructor(
     public dialogRef: MatDialogRef<CalendarComponent>,
     private ref: ChangeDetectorRef,
+    private snack: MatSnackBar,
+    private translate: TranslateService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       homeClubId: string;
@@ -102,14 +148,14 @@ export class CalendarComponent implements OnInit {
       awayTeamId: string;
       homeTeamId: string;
       date?: Date;
+      locationId?: string;
       home?: boolean;
     },
     private apollo: Apollo
   ) {
-    this.manualControl = new FormControl(data?.date);
-    this.manualControl.valueChanges.subscribe((date) => {
-      this.selectDay(date);
-    });
+    this.manualDateControl = new FormControl(data?.date);
+    this.manualLocationControl = new FormControl(data?.locationId);
+
     this.firstDayOfMonth = moment(data.date);
     if (!this.firstDayOfMonth.isValid()) {
       this.firstDayOfMonth = moment();
@@ -127,6 +173,9 @@ export class CalendarComponent implements OnInit {
       weekdays[6],
       weekdays[0],
     ];
+
+    this.minDate = moment([this.season, 8, 1]).toDate();
+    this.maxDate = moment([this.season + 1, 5, 31]).toDate();
   }
 
   ngOnInit(): void {
@@ -138,25 +187,450 @@ export class CalendarComponent implements OnInit {
     this.homeTeams = await this._getTeams(this.data.homeClubId);
     this.awayTeams = await this._getTeams(this.data.awayClubId);
 
-    this.setColors(this.homeTeams);
+    this.homeTeamsIds = this.homeTeams.map((t) => t.id ?? '');
+    this.awayTeamsIds = this.awayTeams.map((t) => t.id ?? '');
 
-    this.homeEncounters = await this._getEncoutners(
-      this.homeTeams?.map((t) => t.id)
+    this._setColors(this.homeTeams);
+    this._showVisible([...this.homeTeams, ...this.awayTeams]);
+    this._loadMonth();
+  }
+
+  private async _loadMonth() {
+    this.loadingCal = true;
+
+    const weeks = this._getWeeksInView();
+    // Get first day of month
+    const start = this.firstDayOfMonth.clone();
+    // Go back untill we get to the first day of the week
+    while (start.day() != 1) {
+      start.subtract(1, 'day');
+    }
+    const end = this.firstDayOfMonth.clone().add(weeks, 'weeks');
+
+    await this._loadEvent();
+    this._loadAvailiblilyBetween(start, end);
+
+    // Get the encounters, and use the first home encounter to
+    await this._loadEncountersBetween(start, end);
+
+    this._generateCalendarDays(weeks);
+    this._genGridTemplateColumns();
+
+    this.loadingCal = false;
+    this.ref.detectChanges();
+  }
+
+  private _generateCalendarDays(weeks: number): void {
+    // Reset calendar
+    const days = [];
+
+    // Get first day of month
+    const day = this.firstDayOfMonth.clone();
+
+    // Go back untill we get to the first day of the week
+    while (day.day() != 1) {
+      day.subtract(1, 'day');
+    }
+
+    for (let i = 0; i < weeks * 7; i++) {
+      days.push({
+        date: day.clone().toDate(),
+        info: this._getDayInfo(day.clone().toDate()),
+      });
+
+      day.add(1, 'days');
+    }
+
+    this.days = days;
+  }
+
+  private _loadAvailiblilyBetween(start: moment.Moment, end: moment.Moment) {
+    this.availibilities.clear();
+    this.exceptions.clear();
+
+    for (const location of this.locations) {
+      const availibilities = location.availibilities?.filter((a) => {
+        return a.season === this.season;
+      });
+
+      if (!availibilities) {
+        continue;
+      }
+
+      for (const availibility of availibilities) {
+        for (const aDay of availibility.days) {
+          for (let day = start.clone(); day.isBefore(end); day.add(1, 'day')) {
+            const wDay = moment(day);
+            const format = wDay.format('YYYY-MM-DD');
+
+            if (
+              wDay.locale('en').format('dddd').toLocaleLowerCase() === aDay.day
+            ) {
+              if (!this.availibilities.has(format)) {
+                this.availibilities.set(format, []);
+              }
+
+              this.availibilities.get(format)?.push({
+                locationId: location.id ?? '',
+                time: aDay.startTime ?? '',
+                courts: aDay.courts ?? 0,
+              });
+            }
+
+            for (const exception of availibility.exceptions) {
+              const start = moment(exception.start);
+              const end = moment(exception.end);
+
+              if (wDay.isBetween(start, end, 'day', '[]')) {
+                if (!this.exceptions.has(format)) {
+                  this.exceptions.set(format, []);
+                }
+
+                this.exceptions.get(format)?.push({
+                  locationId: location.id ?? '',
+                  courts: exception.courts ?? 0,
+                });
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (this.event?.exceptions) {
+      for (const exception of this.event?.exceptions ?? []) {
+        const start = moment(exception.start);
+        const end = moment(exception.end);
+
+        // for each day in the exception
+        // push the exception to the exceptions map
+        for (
+          let day = start.clone();
+          day.isSameOrBefore(end);
+          day.add(1, 'day')
+        ) {
+          const format = day.format('YYYY-MM-DD');
+
+          // clear out the exceptions
+          this.exceptions.set(format, []);
+
+          for (const location of this.locations) {
+            this.exceptions.get(format)?.push({
+              locationId: location.id ?? '',
+              courts: exception.courts ?? 0,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  private _genGridTemplateColumns() {
+    const hasActivityOnDay = this.weekDayNames.reduce((acc, day) => {
+      acc[day.toLocaleLowerCase()] = false;
+      return acc;
+    }, {} as { [key: string]: boolean });
+
+    for (const day of this.days) {
+      const weekdayName = moment(day.date).format('dddd').toLocaleLowerCase();
+
+      // if we already have activity on this day, skip
+      if (hasActivityOnDay[weekdayName]) {
+        continue;
+      }
+
+      const date = moment(day.date).format('YYYY-MM-DD');
+      const enc = this.encounters.get(date);
+      const locations = day.info.locations;
+
+      if (
+        enc?.some(
+          (e) => this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId)
+        ) ||
+        locations?.length > 0
+      ) {
+        // if any of the teams is visible
+        hasActivityOnDay[weekdayName] = true;
+      }
+    }
+
+    // Devide occuping space for each day
+    const gridTemplate: string[] = [];
+
+    for (const day of this.weekDayNames) {
+      if (hasActivityOnDay[day]) {
+        gridTemplate.push(`1fr`);
+      } else {
+        gridTemplate.push(`0.50fr`);
+      }
+    }
+
+    this.gridTemplateColumns = gridTemplate.join(' ');
+  }
+
+  private _getWeeksInView() {
+    const day = this.firstDayOfMonth.clone();
+
+    // Get the last day of the month
+    const lastday = this.firstDayOfMonth.clone().endOf('month');
+
+    // Go forward untill we get to the last day of the week
+    const daysBetween = lastday.diff(day, 'days');
+
+    // Calculate amount of weeks we need to display
+    const weeks = Math.ceil(daysBetween / 7);
+
+    return weeks;
+  }
+
+  private async _loadEncountersBetween(
+    start: moment.Moment,
+    end: moment.Moment
+  ) {
+    this.encounters.clear();
+    this.changeRequests.clear();
+
+    const teams = [
+      ...(this.homeTeams?.map((t) => t.id) ?? []),
+      ...(this.awayTeams?.map((t) => t.id) ?? []),
+    ];
+
+    // get all encounters where any of the teams is home or away
+
+    const homeEncounters = await lastValueFrom(
+      this.apollo
+        .query<{
+          encounterCompetitions: {
+            count: number;
+            rows: Partial<EncounterCompetition>[];
+          };
+        }>({
+          fetchPolicy: 'cache-first',
+          query: gql`
+            query GetHomeEncountersForTeams(
+              $where: JSONObject
+              $order: [SortOrderType!]
+            ) {
+              encounterCompetitions(where: $where, order: $order) {
+                count
+                rows {
+                  id
+                  date
+                  locationId
+                  homeTeamId
+                  awayTeamId
+                  encounterChange {
+                    accepted
+                    dates {
+                      locationId
+                      date
+                    }
+                  }
+                  home {
+                    id
+                    name
+                  }
+                  away {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            where: {
+              date: {
+                $between: [start.toDate(), end.toDate()],
+              },
+              homeTeamId: {
+                $in: teams,
+              },
+            },
+          },
+        })
+        .pipe(
+          map((x) => {
+            return {
+              total: x.data.encounterCompetitions?.count,
+              encounters:
+                x.data.encounterCompetitions?.rows?.map((e) => {
+                  return new EncounterCompetition(e);
+                }) ?? [],
+            };
+          })
+        )
     );
-    this.awayEncounters = await this._getEncoutners(
-      this.awayTeams?.map((t) => t.id)
+    const awayEncounters = await lastValueFrom(
+      this.apollo
+        .query<{
+          encounterCompetitions: {
+            count: number;
+            rows: Partial<EncounterCompetition>[];
+          };
+        }>({
+          fetchPolicy: 'cache-first',
+          query: gql`
+            query GetHomeEncountersForTeams(
+              $where: JSONObject
+              $order: [SortOrderType!]
+            ) {
+              encounterCompetitions(where: $where, order: $order) {
+                count
+                rows {
+                  id
+                  date
+                  locationId
+                  homeTeamId
+                  awayTeamId
+                  encounterChange {
+                    accepted
+                    dates {
+                      locationId
+                      date
+                    }
+                  }
+                  home {
+                    id
+                    name
+                  }
+                  away {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            where: {
+              date: {
+                $between: [start.toDate(), end.toDate()],
+              },
+              awayTeamId: {
+                $in: teams,
+              },
+              id: {
+                $notIn: homeEncounters.encounters.map((e) => e.id),
+              },
+            },
+          },
+        })
+        .pipe(
+          map((x) => {
+            return {
+              total: x.data.encounterCompetitions?.count,
+              encounters:
+                x.data.encounterCompetitions?.rows?.map((e) => {
+                  return new EncounterCompetition(e);
+                }) ?? [],
+            };
+          })
+        )
     );
 
-    this.setColors([...this.homeTeams, ...this.awayTeams]);
-    this.showVisible([...this.homeTeams, ...this.awayTeams]);
+    for (const encounter of [
+      ...homeEncounters.encounters,
+      ...awayEncounters.encounters,
+    ]) {
+      const date = moment(encounter.date).format('YYYY-MM-DD');
 
-    this.generateCalendarDays();
+      if (!this.encounters.has(date)) {
+        this.encounters.set(date, []);
+      }
+
+      this.encounters.get(date)?.push(encounter);
+
+      for (const request of encounter.encounterChange?.dates ?? []) {
+        const date = moment(request.date).format('YYYY-MM-DD');
+
+        if (!this.changeRequests.has(date)) {
+          this.changeRequests.set(date, []);
+        }
+
+        this.changeRequests.get(date)?.push({ request: request, encounter });
+      }
+    }
+  }
+
+  private async _loadEvent() {
+    // get the first encounter of the home team
+    this.event = await lastValueFrom(
+      this.apollo
+        .query<{
+          team: Partial<Team>;
+        }>({
+          fetchPolicy: 'cache-first',
+          query: gql`
+            query GetHomeTeamsEvent($id: ID!) {
+              team(id: $id) {
+                id
+                entry {
+                  id
+                  subEventCompetition {
+                    id
+                    eventCompetition {
+                      id
+                      exceptions {
+                        courts
+                        end
+                        start
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            id: this.data.homeTeamId,
+          },
+        })
+        .pipe(
+          map(
+            (x) =>
+              new Team(x.data.team)?.entry?.subEventCompetition
+                ?.eventCompetition
+          )
+        )
+    );
+  }
+
+  private async _getTeams(clubid: string) {
+    return lastValueFrom(
+      this.apollo
+        .query<{ club: { teams: Team[] } }>({
+          fetchPolicy: 'cache-first',
+          query: gql`
+            query GetClubTeams($clubId: ID!, $season: Int!) {
+              club(id: $clubId) {
+                id
+                teams(where: { season: $season }) {
+                  id
+                  name
+                  type
+                  teamNumber
+                  abbreviation
+                }
+              }
+            }
+          `,
+          variables: {
+            clubId: clubid,
+            season: this.season,
+          },
+        })
+        .pipe(
+          map((result) => {
+            return result.data?.club.teams?.map((team) => new Team(team));
+          }),
+          map((teams) => teams.sort(sortTeams))
+        )
+    );
   }
 
   private async _getLocations() {
-    const locations: Map<number, Location> = new Map();
-
-    const loc = await lastValueFrom(
+    return await lastValueFrom(
       this.apollo
         .query<{ club: { locations: Location[] } }>({
           fetchPolicy: 'cache-first',
@@ -199,128 +673,9 @@ export class CalendarComponent implements OnInit {
           })
         )
     );
-
-    let index = 0;
-    for (const location of loc) {
-      locations.set(++index, location);
-    }
-
-    return locations;
   }
 
-  private async _getTeams(clubid: string) {
-    return lastValueFrom(
-      this.apollo
-        .query<{ club: { teams: Team[] } }>({
-          fetchPolicy: 'cache-first',
-          query: gql`
-            query GetClubTeams($clubId: ID!, $season: Int!) {
-              club(id: $clubId) {
-                id
-                teams(where: { season: $season }) {
-                  id
-                  name
-                  type
-                  teamNumber
-                  abbreviation
-                }
-              }
-            }
-          `,
-          variables: {
-            clubId: clubid,
-            season: this.season,
-          },
-        })
-        .pipe(
-          map((result) => {
-            return result.data?.club.teams?.map((team) => new Team(team));
-          }),
-          map((teams) => teams.sort(sortTeams))
-        )
-    );
-  }
-
-  private async _getEncoutners(
-    teamIds?: (string | undefined)[],
-    showAway = false
-  ) {
-    const encounters: EncounterCompetition[] = [];
-
-    // load teams parallel
-    const teamEncounter$ = teamIds?.map((team) => {
-      return this.apollo
-        .query<{
-          encounterCompetitions: {
-            count: number;
-            rows: Partial<EncounterCompetition>[];
-          };
-        }>({
-          fetchPolicy: 'cache-first',
-          query: gql`
-            query GetEncountersForTeams($where: JSONObject) {
-              encounterCompetitions(where: $where) {
-                count
-                rows {
-                  id
-                  date
-                  encounterChange {
-                    accepted
-                    dates {
-                      date
-                    }
-                  }
-                  home {
-                    id
-                    name
-                    teamNumber
-                    abbreviation
-                    type
-                  }
-                  away {
-                    id
-                    name
-                  }
-                }
-              }
-            }
-          `,
-          variables: {
-            where: {
-              date: {
-                $between: getCurrentSeasonPeriod(this.season),
-              },
-              $or: {
-                homeTeamId: team,
-                awayTeamId: showAway ? team : undefined,
-              },
-            },
-          },
-        })
-        .pipe(
-          map((x) => {
-            return {
-              total: x.data.encounterCompetitions?.count,
-              encounters:
-                x.data.encounterCompetitions?.rows?.map((e) => {
-                  return new EncounterCompetition(e);
-                }) ?? [],
-            };
-          })
-        );
-    });
-
-    if (teamEncounter$) {
-      const result = await lastValueFrom(forkJoin(teamEncounter$));
-      for (const e of result) {
-        encounters.push(...(e.encounters?.map((e) => e) ?? []));
-      }
-    }
-
-    return encounters;
-  }
-
-  private setColors(teams: Team[]) {
+  private _setColors(teams: Team[]) {
     for (const team of teams) {
       this.teamColors.set(
         team?.id ?? '',
@@ -329,7 +684,7 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  private showVisible(teams: Team[]) {
+  private _showVisible(teams: Team[]) {
     const homeTeamsStorage = localStorage
       .getItem(`visible_teams_${this.data.homeClubId}`)
       ?.split(',');
@@ -376,180 +731,181 @@ export class CalendarComponent implements OnInit {
     };
   }
 
-  private generateCalendarDays(): void {
-    // Reset calendar
-    const calendar: CalendarDay[] = [];
-
-    // Get first day of month
-    const day = this.firstDayOfMonth.clone();
-
-    // Go back untill we get to the first day of the week
-    while (day.day() != 1) {
-      day.subtract(1, 'day');
-    }
-
-    // Get the last day of the month
-    const lastday = this.firstDayOfMonth.clone().endOf('month');
-
-    // Go forward untill we get to the last day of the week
-    const daysBetween = lastday.diff(day, 'days');
-
-    // Calculate amount of weeks we need to display
-    const weeks = Math.ceil(daysBetween / 7);
-
-    const hasActivityOnDay = {
-      '1': false,
-      '2': false,
-      '3': false,
-      '4': false,
-      '5': false,
-      '6': false,
-      '7': false,
-    };
-
-    // Loop through the encounters
-    for (let i = 0; i < weeks * 7; i++) {
-      // Find any encounters on day
-      const homeEnc = this.homeEncounters
-        .filter((e) => {
-          return moment(e.date).isSame(day, 'day');
-        })
-        .map((e) => {
-          return {
-            id: v4(),
-            encounter: e,
-            color: this.teamColors.get(e.home?.id ?? ''),
-            startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
-            requested: false,
-            removed: !!e.encounterChange,
-            ownTeam: this.data.home,
-          };
-        });
-
-      // Find any encounters requestd for day
-      this.homeEncounters
-        ?.map((e) => {
-          return e.encounterChange?.dates?.map((d) => {
-            return {
-              id: v4(),
-              ...e,
-              date: d.date,
-            } as EncounterCompetition;
-          });
-        })
-        ?.flat()
-        ?.filter((e) => {
-          return moment(e?.date).isSame(day, 'day');
-        })
-        ?.map((e) => {
-          if (!e) {
-            return;
-          }
-          homeEnc.push({
-            id: v4(),
-            encounter: {
-              ...e,
-              encounterChange: undefined,
-            },
-            color: this.teamColors.get(e.home?.id ?? '') ?? '',
-            startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
-            requested: true,
-            removed: false,
-            ownTeam: this.data.home,
-          });
-        });
-
-      // Find any encounters on day
-      const awayEnc = this.awayEncounters
-        .filter((e) => {
-          return moment(e.date).isSame(day, 'day');
-        })
-        .map((e) => {
-          return {
-            id: v4(),
-            encounter: e,
-            color: this.teamColors.get(e.home?.id ?? ''),
-            startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
-            requested: false,
-            removed: !!e.encounterChange,
-            ownTeam: !this.data.home,
-          };
-        });
-
-      this.awayEncounters
-        ?.map((e) => {
-          return e.encounterChange?.dates?.map((d) => {
-            return {
-              id: v4(),
-              ...e,
-              date: d.date,
-            } as EncounterCompetition;
-          });
-        })
-        ?.flat()
-        ?.filter((e) => {
-          return moment(e?.date).isSame(day, 'day');
-        })
-        ?.map((e) => {
-          if (!e) {
-            return;
-          }
-          awayEnc.push({
-            id: v4(),
-            encounter: {
-              ...e,
-              encounterChange: undefined,
-            },
-            color: this.teamColors.get(e.home?.id ?? '') ?? '',
-            startTime: moment(e.date).format('HH:mm'),
-            locationId: 1,
-            requested: true,
-            removed: false,
-            ownTeam: !this.data.home,
-          });
-        });
-
-      const calDay = new CalendarDay(
-        day.clone(),
-        homeEnc,
-        awayEnc,
-        this.locations,
-        [
-          ...(this.visibleTeams?.[this.data.homeClubId] ?? []),
-          ...(this.visibleTeams?.[this.data.awayClubId] ?? []),
-        ]
-      );
-      calendar.push(calDay);
-
-      const isoDay = `${day.isoWeekday()}` as keyof typeof hasActivityOnDay;
-      hasActivityOnDay[isoDay] =
-        (hasActivityOnDay[isoDay] || calDay.hasSomeActivity) ?? false;
-
-      day.add(1, 'days');
-    }
-
-    this.gridTemplateColumns = this._genGridTemplateColumns(hasActivityOnDay);
-
-    this.calendar = calendar;
-    this.ref.detectChanges();
-  }
-
   public increaseMonth() {
     this.firstDayOfMonth.add(1, 'month');
-    this.generateCalendarDays();
+
+    this._loadMonth();
   }
 
   public decreaseMonth() {
     this.firstDayOfMonth.subtract(1, 'month');
-    this.generateCalendarDays();
+    this._loadMonth();
   }
 
   public setCurrentMonth() {
     this.firstDayOfMonth.set('month', moment().get('month'));
-    this.generateCalendarDays();
+    this._loadMonth();
+  }
+
+  public selectDay(
+    d?: Date,
+    time?: string,
+    locationId?: string,
+    space?: number
+  ) {
+    const date = moment(d);
+
+    if ((space ?? 0) <= 0) {
+      this.snack.open(
+        this.translate.instant(
+          'all.competition.change-encounter.calendar.no-space'
+        ),
+        'Ok',
+        {
+          // duration: 4000,
+          panelClass: 'error',
+        }
+      );
+      return;
+    }
+
+    if (time) {
+      // splite time to hour and minute
+      const timeSplit = time?.split(':');
+      const hour = timeSplit?.[0]?.trim() ?? '00';
+      const minute = timeSplit?.[1]?.trim() ?? '00';
+
+      date.set('hour', +hour);
+      date.set('minute', +minute);
+    }
+
+    this.dialogRef.close({
+      date: date.toDate(),
+      locationId: locationId,
+    });
+  }
+
+  private _getDayInfo(date: Date) {
+    const dayInfo: {
+      locations: {
+        space: number;
+        time: string;
+        locationId: string;
+        locationIndex: number;
+        encounters: EncounterCompetition[];
+        removed: EncounterCompetition[];
+        requested: EncounterCompetition[];
+      }[];
+      other: EncounterCompetition[];
+    } = {
+      locations: [],
+      other: [],
+    };
+
+    const day = moment(date);
+    const format = day.format('YYYY-MM-DD');
+
+    const encounters = this.encounters.get(format);
+    const changeRequests = this.changeRequests.get(format);
+    const availibilities = this.availibilities.get(format);
+    const exceptions = this.exceptions.get(format);
+
+    if (!encounters && !changeRequests && !availibilities) {
+      return dayInfo;
+    }
+
+    // only load availibility stating from 1st of september untill last of may
+    if (
+      (day.month() < 8 && day.year() == this.season) ||
+      (day.month() > 4 && day.year() == this.season + 1)
+    ) {
+      return dayInfo;
+    }
+
+    if (availibilities) {
+      for (const availibility of availibilities) {
+        dayInfo.locations.push({
+          space: Math.floor(availibility.courts / 2),
+          time: availibility.time,
+          locationId: availibility.locationId,
+          locationIndex:
+            this.locations.findIndex((l) => l.id === availibility.locationId) +
+            1,
+          encounters: [],
+          removed: [],
+          requested: [],
+        });
+      }
+
+      for (const exception of exceptions ?? []) {
+        // find availibility for location
+        const availibility = dayInfo.locations.find(
+          (l) => l.locationId === exception.locationId
+        );
+
+        if (availibility) {
+          availibility.space = Math.floor(exception.courts / 2);
+        }
+      }
+    }
+
+    if (encounters) {
+      for (const encounter of encounters) {
+        const infoIndex = dayInfo.locations.findIndex(
+          (l) => l.locationId === encounter.locationId
+        );
+
+        if (infoIndex >= 0) {
+          // if there is an request
+          if (
+            encounter.encounterChange &&
+            !encounter.encounterChange.accepted
+          ) {
+            dayInfo.locations[infoIndex].removed.push(encounter);
+          } else {
+            // if the home team is visible
+            if (this._isVisible(encounter.homeTeamId)) {
+              dayInfo.locations[infoIndex].encounters.push(encounter);
+            }
+          }
+
+          dayInfo.locations[infoIndex].space = Math.max(
+            0,
+            dayInfo.locations[infoIndex].space - 1
+          );
+        }
+      }
+    }
+
+    for (const request of changeRequests ?? []) {
+      const infoIndex = dayInfo.locations.findIndex(
+        (l) => l.locationId === request?.request?.locationId
+      );
+
+      if (infoIndex >= 0) {
+        dayInfo.locations[infoIndex].requested.push(request.encounter);
+      }
+    }
+
+    // filter out encounters that are not for the selected teams
+    if (encounters) {
+      dayInfo.other = encounters.filter(
+        (e) =>
+          // exclude all encouters where it is the hometeam
+          !this.homeTeamsIds.includes(e.homeTeamId ?? '') &&
+          // others should be visible
+          (this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId))
+      );
+    }
+
+    return dayInfo;
+  }
+
+  private _isVisible(teamId?: string) {
+    return (
+      this.visibleTeams?.[this.data.homeClubId]?.includes(teamId ?? '') ||
+      this.visibleTeams?.[this.data.awayClubId]?.includes(teamId ?? '')
+    );
   }
 
   public changeVisibleTeams(
@@ -578,7 +934,7 @@ export class CalendarComponent implements OnInit {
       this.visibleTeams?.[clubId]?.join(',') ?? ''
     );
 
-    this.generateCalendarDays();
+    this._loadMonth();
   }
 
   public showAllTeams(teams: Team[], clubId: string) {
@@ -597,7 +953,7 @@ export class CalendarComponent implements OnInit {
       this.visibleTeams?.[clubId]?.join(',')
     );
 
-    this.generateCalendarDays();
+    this._loadMonth();
   }
 
   public hideAllTeams(clubId: string) {
@@ -606,240 +962,6 @@ export class CalendarComponent implements OnInit {
     }
     this.visibleTeams[clubId] = [];
     localStorage.setItem(`visible_teams_${clubId}`, '');
-    this.generateCalendarDays();
+    this._loadMonth();
   }
-
-  public selectDay(d?: Date, time?: string) {
-    const date = moment(d);
-
-    if (time) {
-      // splite time to hour and minute
-      const timeSplit = time?.split(':');
-      const hour = timeSplit?.[0]?.trim() ?? '00';
-      const minute = timeSplit?.[1]?.trim() ?? '00';
-
-      date.set('hour', +hour);
-      date.set('minute', +minute);
-    }
-
-    this.dialogRef.close(date.toDate());
-  }
-
-  private _genGridTemplateColumns(hasActivityOnDay: {
-    [key: string]: boolean;
-  }) {
-    // Devide occuping space for each day
-    const gridTemplate: string[] = [];
-
-    for (const day of [...Array(7).keys()]) {
-      if (hasActivityOnDay[day + 1]) {
-        gridTemplate.push(`1fr`);
-      } else {
-        gridTemplate.push(`0.60fr`);
-      }
-    }
-
-    return gridTemplate.join(' ');
-  }
-}
-
-export class CalendarDay {
-  public date?: Date;
-  public isPastDate?: boolean;
-  public isToday?: boolean;
-  public remainingCourts?: Map<number, number>;
-  public totalCourts?: Map<number, number>;
-  public locations?: {
-    id: number;
-    name?: string;
-    availibility: {
-      startTime?: string;
-      totalCourts: number;
-      remainingEncounters: number;
-      option: number;
-      events: {
-        id: string;
-        encounter: EncounterCompetition;
-        color?: string;
-        removed: boolean;
-        requested: boolean;
-        ownTeam?: boolean;
-      }[];
-    }[];
-  }[];
-
-  public hasSomeActivity?: boolean = false;
-
-  otherEvents: {
-    id: string;
-    encounter: EncounterCompetition;
-    locationId?: number;
-    startTime?: string;
-    color?: string;
-    removed: boolean;
-    requested: boolean;
-    ownTeam?: boolean;
-  }[] = [];
-
-  public getDateString() {
-    return this.date?.toISOString().split('T')[0];
-  }
-
-  constructor(
-    date?: moment.Moment,
-    homeEvents?: DayEvent[],
-    awayEvents?: DayEvent[],
-    locations?: Map<number, Location>,
-    visibleTeams?: string[]
-  ) {
-    if (!date) {
-      throw new Error('Date is required');
-    }
-    this.locations = [];
-
-    this.date = date.toDate();
-    this.isPastDate = date.isBefore();
-    this.isToday = date.isSame(moment(), 'day');
-
-    for (const loc of locations ?? []) {
-      for (const availability of loc[1].availibilities ?? []) {
-        const availibilityDays = availability.days.filter(
-          (day) =>
-            date.locale('en').format('dddd').toLocaleLowerCase() === day.day
-        );
-
-        if (availibilityDays.length > 0) {
-          this.hasSomeActivity = true;
-        }
-
-        const av =
-          availibilityDays.map((day) => {
-            let courts =
-              availability.exceptions.find((exception) =>
-                date.isBetween(exception.start, exception.end, 'day', '[]')
-              )?.courts ??
-              day.courts ??
-              0;
-
-            // use 2 courts for each encounter, if uneven skip last court
-            if (courts % 2 != 0) {
-              courts--;
-            }
-            return {
-              startTime: day.startTime,
-              totalCourts: day.courts ?? 0,
-              remainingEncounters: courts / 2,
-              option: 0,
-              events: [],
-            };
-          }) ?? [];
-
-        av.sort((a, b) => {
-          return a.startTime?.localeCompare(b.startTime ?? '') ?? 0;
-        });
-
-        this.locations.push({
-          id: loc[0],
-          name: loc[1].name,
-          availibility: av,
-        });
-      }
-    }
-
-    for (const event of homeEvents ?? []) {
-      if (!event?.locationId) {
-        throw new Error('LocationId is required');
-      }
-      this.addEvent(event, visibleTeams);
-    }
-    for (const event of awayEvents ?? []) {
-      if (!event?.locationId) {
-        throw new Error('LocationId is required');
-      }
-      if (
-        event.encounter?.home?.id &&
-        visibleTeams?.includes(event.encounter?.home?.id)
-      ) {
-        this.hasSomeActivity = true;
-        this.otherEvents.push(event);
-      }
-    }
-  }
-
-  private addEvent(event: DayEvent, visibleTeams?: string[]) {
-    if (!this.locations) {
-      return;
-    }
-
-    const locationIndex = this.locations.findIndex(
-      (l) => l.id === event.locationId
-    );
-
-    const skipRemaining = !!event.encounter?.encounterChange || event.requested;
-
-    // Update the location availibility
-    if (locationIndex >= 0) {
-      const availibilityIndex = this.locations[
-        locationIndex
-      ].availibility?.findIndex((a) => a.startTime === event.startTime);
-
-      if (availibilityIndex >= 0) {
-        if (!skipRemaining) {
-          this.locations[locationIndex].availibility[availibilityIndex]
-            .remainingEncounters--;
-        } else if (event.requested) {
-          this.locations[locationIndex].availibility[availibilityIndex]
-            .option++;
-        }
-
-        if (
-          this.locations[locationIndex].availibility[availibilityIndex]
-            .remainingEncounters < 0
-        ) {
-          this.locations[locationIndex].availibility[
-            availibilityIndex
-          ].remainingEncounters = 0;
-        }
-
-        if (!event.encounter?.home?.id) {
-          throw new Error('Home team is required');
-        }
-
-        if (visibleTeams?.includes(event.encounter?.home?.id)) {
-          this.locations[locationIndex].availibility[
-            availibilityIndex
-          ].events?.push(event);
-        }
-      } else {
-        if (!event.encounter?.home?.id) {
-          throw new Error('away team is required');
-        }
-
-        if (!visibleTeams?.includes(event.encounter?.home?.id)) {
-          return;
-        }
-
-        this.hasSomeActivity = true;
-        // We have no availibility for this time
-        this.locations[locationIndex]?.availibility?.push({
-          startTime: event.startTime,
-          totalCourts: 0,
-          remainingEncounters: 0,
-          option: 0,
-          events: [event],
-        });
-      }
-    }
-  }
-}
-
-interface DayEvent {
-  id: string;
-  encounter: EncounterCompetition;
-  locationId?: number | undefined;
-  startTime?: string | undefined;
-  color?: string | undefined;
-  removed: boolean;
-  requested: boolean;
-  ownTeam?: boolean | undefined;
 }

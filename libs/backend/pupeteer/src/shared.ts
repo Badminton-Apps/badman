@@ -6,7 +6,7 @@ export async function getBrowser(headless = true) {
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
-      '--single-process',
+      // '--single-process',
       '--disable-dev-shm-usage',
     ],
   });

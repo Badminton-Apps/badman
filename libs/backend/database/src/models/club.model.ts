@@ -165,7 +165,7 @@ export class Club extends Model {
   static async setTeamName(instance: Club, options: SaveOptions) {
     const teams = await instance.getTeams({ transaction: options.transaction });
     for (const team of teams) {
-      await Team.generateAbbreviation(team, {}, instance);
+      await Team.generateName(team, {}, instance);
       await team.save({ transaction: options.transaction });
     }
   }

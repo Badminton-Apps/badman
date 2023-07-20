@@ -21,6 +21,7 @@ import {
 import { ListArgs } from '../../../utils';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { CACHE_TTL } from '@badman/backend-cache';
 
 @Resolver(() => SubEventCompetition)
 export class SubEventCompetitionResolver {
@@ -169,7 +170,7 @@ export class SubEventCompetitionResolver {
     }
 
     // Cache this for a week
-    await this._cacheManager.set(cacheKey, avagrages, 60 * 60 * 24 * 7);
+    await this._cacheManager.set(cacheKey, avagrages, CACHE_TTL);
     return avagrages;
   }
 

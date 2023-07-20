@@ -86,6 +86,7 @@ export class Setting extends Model {
   })
   encounterChangeNewNotification!: NotificationType;
 
+
   @Field(() => Int)
   @Column({
     type: DataType.INTEGER,
