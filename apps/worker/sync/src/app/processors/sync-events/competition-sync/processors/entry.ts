@@ -123,6 +123,15 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         this._entries = this._entries.filter((e) => e.entry.id !== entry.id);
       }
     }
+    // remove all entries that don't exist in _entries
+    for (const entry of entries) {
+      if (!this._entries.find((e) => e.entry.id === entry.id)) {
+        this.logger.log(
+          `Entry existed but was removed`
+        );
+        await entry.destroy({ transaction: this.transaction });
+      }
+    }
 
     // remove all entries where a team is defined multiple times
     const uniqueIds = new Set(this._entries.map((e) => e.entry.teamId));
