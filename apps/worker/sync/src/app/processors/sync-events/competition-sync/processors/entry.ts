@@ -117,7 +117,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     for (const entry of entries) {
       if (entry.team?.season !== event.season) {
         this.logger.log(
-          `Team existed multiple times ${entry.team?.name} (${entry.team?.season})`
+          `Team existed multiple season ${entry.team?.name} (${entry.team?.season})`
         );
         await entry.destroy({ transaction: this.transaction });
 
@@ -129,29 +129,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       if (!this._entries.find((e) => e.entry.id === entry.id)) {
         this.logger.log(`Entry existed but was removed`);
         await entry.destroy({ transaction: this.transaction });
-        
+
         this._entries = this._entries.filter((e) => e.entry.id !== entry.id);
-      }
-    }
-
-    // remove all entries where a team is defined multiple times
-    const uniqueIds = new Set(this._entries.map((e) => e.entry.teamId));
-
-    for (const teamId of uniqueIds) {
-      const entries = this._entries.filter((e) => e.entry.teamId === teamId);
-
-      if (entries.length > 1) {
-        this.logger.log(
-          `Team existed multiple times ${entries[0].entry.team?.name}`
-        );
-
-        // remove all but the first entry
-        for (const entry of entries.slice(1)) {
-          await entry.entry.destroy({ transaction: this.transaction });
-          this._entries = this._entries.filter(
-            (e) => e.entry.id !== entry.entry.id
-          );
-        }
       }
     }
   }
@@ -204,9 +183,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     state?: string,
     teamIds?: string[]
   ) {
-    const { clubName, teamNumber, teamType } = teamValues(
-      correctWrongTeams({ name: item })?.name
-    );
+    const name = correctWrongTeams({ name: item })?.name;
+    const { clubName, teamNumber, teamType } = teamValues(name);
 
     const clubs = await this._getPossibleClubs(clubName, state);
 
@@ -223,6 +201,12 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       },
       transaction: this.transaction,
     });
+
+    // try and find with the exact name
+    const team = teams.find((r) => r.name === name);
+    if (team) {
+      return team;
+    }
 
     // find the team where the id is in the teamIds
     if ((teamIds?.length ?? 0) > 0) {
