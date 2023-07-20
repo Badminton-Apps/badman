@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.89.8-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.89.8-beta.0...v6.89.8-beta.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* remove wrong entries ([ec7a863](https://github.com/Badminton-Apps/badman/commit/ec7a86352b7613b1c37c6f6c28b3dc7f517c0060))
+* update draw size on sync ([7e06348](https://github.com/Badminton-Apps/badman/commit/7e06348e2240c9292c8be6ca8d0faef35d598f9a))
+
 ### [6.89.8-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.89.7...v6.89.8-beta.0) (2023-07-20)
 
 
