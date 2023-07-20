@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.89.8-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.89.8-beta.2...v6.89.8-beta.3) (2023-07-20)
+
+
+### Bug Fixes
+
+* more finetuning on finding a team ([10c5b0d](https://github.com/Badminton-Apps/badman/commit/10c5b0d98f621e712b7a93e1ad9345c19e053e74))
+
+### [6.89.8-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.89.8-beta.1...v6.89.8-beta.2) (2023-07-20)
+
+
+### Bug Fixes
+
+* finding team should have been on id not link ([0401599](https://github.com/Badminton-Apps/badman/commit/040159996bb7f48b1e527d8f5e77dc76921a7058))
+* finding team should have been on id not link ([92c40df](https://github.com/Badminton-Apps/badman/commit/92c40dfccdcb799800ad55b92f4d8810fbaabe23))
+
+### [6.89.8-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.89.8-beta.0...v6.89.8-beta.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* remove wrong entries ([ec7a863](https://github.com/Badminton-Apps/badman/commit/ec7a86352b7613b1c37c6f6c28b3dc7f517c0060))
+* update draw size on sync ([7e06348](https://github.com/Badminton-Apps/badman/commit/7e06348e2240c9292c8be6ca8d0faef35d598f9a))
+
+### [6.89.8-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.89.7...v6.89.8-beta.0) (2023-07-20)
+
+
+### Bug Fixes
+
+* the state code doesn't work for liga ([e53fa39](https://github.com/Badminton-Apps/badman/commit/e53fa393e0728bdc9c09c86b4ce123c354ebac93))
+
 ### [6.89.7](https://github.com/Badminton-Apps/badman/compare/v6.89.7-beta.0...v6.89.7) (2023-07-20)
 
 ### [6.89.7-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.89.6...v6.89.7-beta.0) (2023-07-20)

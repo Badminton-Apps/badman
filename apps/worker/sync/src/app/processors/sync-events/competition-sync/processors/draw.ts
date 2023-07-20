@@ -6,7 +6,11 @@ import {
 } from '@badman/backend-database';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import { VisualService, XmlDrawTypeID, XmlTournament } from '@badman/backend-visual';
+import {
+  VisualService,
+  XmlDrawTypeID,
+  XmlTournament,
+} from '@badman/backend-visual';
 
 import { SubEventStepData } from './subEvent';
 import { DrawType, runParallel } from '@badman/utils';
@@ -81,11 +85,9 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
       }
 
       if (!dbDraw) {
-        dbDraw = await new DrawCompetition({
+        dbDraw = new DrawCompetition({
           visualCode: `${xmlDraw.Code}`,
           subeventId: subEvent.id,
-          name: xmlDraw.Name,
-          size: xmlDraw.Size,
           type:
             xmlDraw.TypeID === XmlDrawTypeID.Elimination
               ? DrawType.KO
@@ -93,8 +95,13 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
                 xmlDraw.TypeID === XmlDrawTypeID.FullRoundRobin
               ? DrawType.POULE
               : DrawType.QUALIFICATION,
-        }).save({ transaction: this.transaction });
+        });
       }
+      // update the draw
+      dbDraw.size = xmlDraw.Size;
+      dbDraw.name = xmlDraw.Name;
+
+      await dbDraw.save({ transaction: this.transaction });
 
       this._dbDraws.push({
         draw: dbDraw,
