@@ -31,7 +31,11 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EntryStepData[]> {
-    await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? []);
+    // await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? [], 1);
+    for (const draw of this.draws ?? []) {
+      await this._processEntries(draw);
+    }
+
     return this._entries;
   }
 
@@ -155,7 +159,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     }
   }
 
-  private async _getClubs(clubName: string, state?: string) {
+  private async _getPossibleClubs(clubName: string, state?: string) {
     const clubs = await Club.findAll({
       where: {
         [Op.or]: [
@@ -207,7 +211,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       correctWrongTeams({ name: item })?.name
     );
 
-    const clubs = await this._getClubs(clubName, state);
+    const clubs = await this._getPossibleClubs(clubName, state);
 
     if (!clubs) {
       this.logger.warn(`Club not found ${clubName} ${state}`);
@@ -225,7 +229,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
     // find the team where the id is in the teamIds
     if ((teamIds?.length ?? 0) > 0) {
-      const team = teams.find((r) => teamIds?.includes(r.link));
+      const team = teams.find((r) => teamIds?.includes(r.id));
       if (team) {
         return team;
       }
