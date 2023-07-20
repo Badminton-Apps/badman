@@ -202,12 +202,6 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    // try and find with the exact name
-    const team = teams.find((r) => r.name === name);
-    if (team) {
-      return team;
-    }
-
     // find the team where the id is in the teamIds
     if ((teamIds?.length ?? 0) > 0) {
       const team = teams.find((r) => teamIds?.includes(r.id));
@@ -216,23 +210,28 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       }
     }
 
-    // find the team where the season is the same
+    // try and find with the exact name
     const teamsForSeason = teams.filter((r) => r.season === season);
+    const teamsForSeasonAndname = teamsForSeason.filter((r) => r.name === name);
+    if (teamsForSeasonAndname.length === 1) {
+      return teamsForSeasonAndname[0];
+    }
 
     if (teamsForSeason.length === 1) {
       return teamsForSeason[0];
-    } else if (teamsForSeason.length > 1) {
-      // check if any team has the correct name
-      const team = teamsForSeason.find(
-        (r) => (r.name?.indexOf(clubName) ?? -1) > -1
-      );
-      if (team) {
-        return team;
-      }
-
-      this.logger.warn(
-        `Multiple teams found ${clubName} ${teamNumber} ${teamType}`
-      );
     }
+
+    const teamsWithSameName = teams?.filter((r) => r.name === name);
+    if (teamsWithSameName?.length === 1) {
+      return new Team({
+        type: teamType,
+        teamNumber: +teamNumber,
+        season: season,
+        clubId: teamsWithSameName[0].clubId,
+        link: teamsWithSameName[0].link,
+      }).save({ transaction: this.transaction });
+    }
+
+    this.logger.warn(`Team not found ${clubName} ${teamNumber} ${teamType}`);
   }
 }
