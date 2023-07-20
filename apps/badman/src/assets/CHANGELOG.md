@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.89.8-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.89.7...v6.89.8-beta.0) (2023-07-20)
+
+
+### Bug Fixes
+
+* the state code doesn't work for liga ([e53fa39](https://github.com/Badminton-Apps/badman/commit/e53fa393e0728bdc9c09c86b4ce123c354ebac93))
+
 ### [6.89.7](https://github.com/Badminton-Apps/badman/compare/v6.89.7-beta.0...v6.89.7) (2023-07-20)
 
 ### [6.89.7-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.89.6...v6.89.7-beta.0) (2023-07-20)
