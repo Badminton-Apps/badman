@@ -51,6 +51,10 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
+    const drawEntries = await draw.getEntries({
+      transaction: this.transaction,
+    });
+
     const xmlDraw = await this.visualService.getDraw(
       this.visualTournament.Code,
       internalId
@@ -76,6 +80,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         item,
         event.season,
         event.state,
+        drawEntries?.map((r) => r.teamId ?? '') ?? [],
         subEventEntries.map((r) => r.teamId ?? '') ?? []
       );
 
@@ -181,7 +186,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     item: string,
     season: number,
     state?: string,
-    teamIds?: string[]
+    drawTeamIds?: string[],
+    subEventTeamIds?: string[]
   ) {
     const name = correctWrongTeams({ name: item })?.name;
     const { clubName, teamNumber, teamType } = teamValues(name);
@@ -202,11 +208,11 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    // find the team where the id is in the teamIds
-    if ((teamIds?.length ?? 0) > 0) {
-      const team = teams.find((r) => teamIds?.includes(r.id));
-      if (team) {
-        return team;
+    // find the team where the id is in the draw
+    if ((drawTeamIds?.length ?? 0) > 0) {
+      const t = teams.filter((r) => drawTeamIds?.includes(r.id));
+      if (t.length === 1) {
+        return t[0];
       }
     }
 
@@ -215,6 +221,14 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     const teamsForSeasonAndname = teamsForSeason.filter((r) => r.name === name);
     if (teamsForSeasonAndname.length === 1) {
       return teamsForSeasonAndname[0];
+    }
+
+    // find the team where the id is in the subEvent
+    if ((subEventTeamIds?.length ?? 0) > 0) {
+      const t = teams.filter((r) => subEventTeamIds?.includes(r.id));
+      if (t.length === 1) {
+        return t[0];
+      }
     }
 
     if (teamsForSeason.length === 1) {
