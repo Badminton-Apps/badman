@@ -4,14 +4,13 @@
     *ngFor="let upcoming of this.upcomingEncounters$ | async"
   >
     <span matListItemTitle>{{ upcoming?.date | amDateFormat : 'llll' }}</span>
-    <span matListItemLine>
-      <ng-container
+    <span matListItemLine
+      ><ng-container
         *ngIf="this.hasHomeTeam"
         [ngTemplateOutlet]="hasHome"
         [ngTemplateOutletContext]="{ upcoming: upcoming }"
-      ></ng-container>
-
-      <ng-container
+      ></ng-container
+      ><ng-container
         *ngIf="!this.hasHomeTeam"
         [ngTemplateOutlet]="noHome"
         [ngTemplateOutletContext]="{ upcoming: upcoming }"
@@ -38,10 +37,9 @@
 </ng-template>
 
 <ng-template #noHome let-upcoming="upcoming">
-  <span>
-    {{ upcoming.home?.name }}
-    <span translate="all.competition.vs"></span>
-    {{ upcoming.away?.name }}
+  <span
+    >{{ upcoming.home?.name }}<span translate="all.competition.vs"></span
+    >{{ upcoming.away?.name }}
   </span>
 </ng-template>
 
@@ -53,12 +51,9 @@
     }}
     -
   </span>
-
   <ng-container
     *ngIf="upcoming.showingForHomeTeam && upcoming?.home?.club?.slug"
-  >
-    <!-- link to hometeam -->
-    <a
+    ><a
       [routerLink]="[
         '/club',
         upcoming.home.club.slug,
@@ -70,8 +65,7 @@
   </ng-container>
   <ng-container
     *ngIf="!upcoming.showingForHomeTeam && upcoming?.away?.club?.slug"
-  >
-    <a
+    ><a
       [routerLink]="[
         '/club',
         upcoming.away.club.slug,
@@ -86,8 +80,7 @@
 
   <ng-container
     *ngIf="upcoming.showingForHomeTeam && upcoming?.away?.club?.slug"
-  >
-    <a
+    ><a
       [routerLink]="[
         '/club',
         upcoming.away.club.slug,
@@ -100,8 +93,7 @@
 
   <ng-container
     *ngIf="!upcoming.showingForHomeTeam && upcoming?.home?.club?.slug"
-  >
-    <a
+    ><a
       [routerLink]="[
         '/club',
         upcoming.home.club.slug,
