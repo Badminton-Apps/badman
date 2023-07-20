@@ -129,6 +129,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       if (!this._entries.find((e) => e.entry.id === entry.id)) {
         this.logger.log(`Entry existed but was removed`);
         await entry.destroy({ transaction: this.transaction });
+        
+        this._entries = this._entries.filter((e) => e.entry.id !== entry.id);
       }
     }
 
