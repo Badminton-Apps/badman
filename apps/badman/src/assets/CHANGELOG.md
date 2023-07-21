@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.89.13](https://github.com/Badminton-Apps/badman/compare/v6.89.12...v6.89.13) (2023-07-21)
+
+
+### Bug Fixes
+
+* change query to fetch between days ([5ea388c](https://github.com/Badminton-Apps/badman/commit/5ea388ca84a96c8fb0980a3565b414ab6297ca38))
+
 ### [6.89.12](https://github.com/Badminton-Apps/badman/compare/v6.89.11...v6.89.12) (2023-07-20)
 
 
