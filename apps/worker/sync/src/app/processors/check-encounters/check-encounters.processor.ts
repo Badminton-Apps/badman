@@ -35,11 +35,16 @@ export class CheckEncounterProcessor {
     this.logger.log('Syncing encounters');
     let browser: Browser | undefined;
     try {
+      // get all encounters that are not accepted yet within the last 14 days
+
       const encounters = await EncounterCompetition.findAndCountAll({
         attributes: ['id', 'visualCode', 'date', 'homeTeamId', 'awayTeamId'],
         where: {
           date: {
-            [Op.lte]: new Date(),
+            [Op.between]: [
+              moment().subtract(14, 'days').toDate(),
+              moment().toDate(),
+            ]
           },
           acceptedOn: null,
           visualCode: {
@@ -158,12 +163,7 @@ export class CheckEncounterProcessor {
     const hoursPassed = moment().diff(encounter.date, 'hour');
     this.logger.debug(
       `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, ( ${url} )`
-    );
-
-    if (hoursPassed > 240){
-      this.logger.debug(`Encounter ${encounter.visualCode} is older than 10 days, skipping`);
-      return;
-    }
+    )
 
     if (!entered && hoursPassed > 24) {
       this.notificationService.notifyEncounterNotEntered(encounter);
