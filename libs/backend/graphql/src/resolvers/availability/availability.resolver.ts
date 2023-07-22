@@ -1,7 +1,7 @@
 import { User } from '@badman/backend-authorization';
 import {
   Availability,
-  AvailabilityExceptionType,
+  ExceptionType,
   AvailabilityNewInput,
   AvailabilityUpdateInput,
   Location,
@@ -49,7 +49,7 @@ export class AvailabilitysResolver {
   //   return availability.days;
   // }
 
-  @ResolveField(() => [AvailabilityExceptionType], { nullable: true })
+  @ResolveField(() => [ExceptionType], { nullable: true })
   async exceptions(@Parent() availability: Availability) {
     // return availability.exceptions and map the start en end as date
     return availability.exceptions
