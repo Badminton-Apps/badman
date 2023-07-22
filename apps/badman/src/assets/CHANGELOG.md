@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.90.0](https://github.com/Badminton-Apps/badman/compare/v6.89.13...v6.90.0) (2023-07-22)
+
+
+### Features
+
+* adding day events per info ([0e3eeb2](https://github.com/Badminton-Apps/badman/commit/0e3eeb2acba5259fad098b652aa13e5ff8fcda38))
+
 ### [6.89.13](https://github.com/Badminton-Apps/badman/compare/v6.89.12...v6.89.13) (2023-07-21)
 
 
