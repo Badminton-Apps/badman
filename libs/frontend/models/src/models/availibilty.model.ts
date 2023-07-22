@@ -4,7 +4,7 @@ export class Availability {
   id?: string;
   season?: number;
   days: AvailabilityDay[];
-  exceptions: AvailabilityException[];
+  exceptions: Exception[];
   location?: Location;
   locationId?: string;
 
@@ -13,21 +13,33 @@ export class Availability {
     this.season = args?.season;
     this.days = args?.days?.map((d) => new AvailabilityDay(d)) || [];
     this.exceptions =
-      args?.exceptions?.map((e) => new AvailabilityException(e)) || [];
+      args?.exceptions?.map((e) => new Exception(e)) || [];
     this.location = args?.location;
     this.locationId = args?.locationId;
   }
 }
 
-export class AvailabilityException {
+export class Exception {
   start?: Date;
   end?: Date;
   courts?: number;
 
-  constructor(args?: Partial<AvailabilityException>) {
+  constructor(args?: Partial<Exception>) {
     this.start = args?.start ? new Date(args.start) : undefined;
     this.end = args?.end ? new Date(args.end) : undefined;
     this.courts = args?.courts;
+  }
+}
+
+export class InfoEvent {
+  start?: Date;
+  end?: Date;
+  name?: string;
+
+  constructor(args?: Partial<InfoEvent>) {
+    this.start = args?.start ? new Date(args.start) : undefined;
+    this.end = args?.end ? new Date(args.end) : undefined;
+    this.name = args?.name;
   }
 }
 

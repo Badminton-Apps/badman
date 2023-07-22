@@ -1,6 +1,6 @@
 import { User } from '@badman/backend-authorization';
 import {
-  AvailabilityExceptionType,
+  ExceptionType,
   Comment,
   DrawCompetition,
   EncounterCompetition,
@@ -12,6 +12,7 @@ import {
   RankingPoint,
   RankingSystem,
   SubEventCompetition,
+  InfoEventType,
 } from '@badman/backend-database';
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
 import { IsUUID } from '@badman/utils';
@@ -105,7 +106,7 @@ export class EventCompetitionResolver {
     return event.getComments(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [AvailabilityExceptionType], { nullable: true })
+  @ResolveField(() => [ExceptionType], { nullable: true })
   async exceptions(@Parent() event: EventCompetition) {
     // return availability.exceptions and map the start en end as date
     return event.exceptions
@@ -114,6 +115,18 @@ export class EventCompetitionResolver {
         ...exception,
         start: new Date(exception.start as Date),
         end: new Date(exception.end as Date),
+      }));
+  }
+
+  @ResolveField(() => [InfoEventType], { nullable: true })
+  async infoEvents(@Parent() event: EventCompetition) {
+    // return availability.exceptions and map the start en end as date
+    return event.infoEvents
+      ?.filter((info) => info && info.start && info.end)
+      ?.map((info) => ({
+        ...info,
+        start: new Date(info.start as Date),
+        end: new Date(info.end as Date),
       }));
   }
 
