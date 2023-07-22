@@ -26,7 +26,7 @@ import {
 } from 'sequelize-typescript';
 import {
   AvailabilityExceptionInputType,
-  AvailabilityExceptionType,
+  ExceptionType,
   AvailiblyDayInputType,
   AvailiblyDayType,
 } from '../../types';
@@ -61,7 +61,7 @@ export class Availability extends Model {
   })
   days?: Relation<AvailabilityDay[]>;
 
-  @Field(() => [AvailabilityExceptionType], { nullable: true })
+  @Field(() => [ExceptionType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })

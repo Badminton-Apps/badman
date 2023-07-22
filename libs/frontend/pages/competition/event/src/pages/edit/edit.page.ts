@@ -41,10 +41,16 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { EventCompetitionLevelFieldsComponent } from './components';
 import { EVENT_QUERY } from '../../resolvers';
 
-export type LocationExceptionType = FormGroup<{
+export type ExceptionType = FormGroup<{
   start: FormControl<Date | undefined>;
   end: FormControl<Date | undefined>;
   courts: FormControl<number | undefined>;
+}>;
+
+export type InfoEventType = FormGroup<{
+  start: FormControl<Date | undefined>;
+  end: FormControl<Date | undefined>;
+  name: FormControl<string | undefined>;
 }>;
 
 const roleQuery = gql`
@@ -99,7 +105,8 @@ export class EditPageComponent implements OnInit {
   saved$ = new BehaviorSubject(0);
 
   formGroup: FormGroup = new FormGroup({});
-  exceptions!: FormArray<LocationExceptionType>;
+  exceptions!: FormArray<ExceptionType>;
+  infoEvents!: FormArray<InfoEventType>;
 
   constructor(
     private seoService: SeoService,
@@ -155,7 +162,16 @@ export class EditPageComponent implements OnInit {
           courts: new FormControl(exception.courts),
         });
       }) ?? []
-    ) as FormArray<LocationExceptionType>;
+    ) as FormArray<ExceptionType>;
+    this.infoEvents = new FormArray(
+      event.infoEvents?.map((infoEvent) => {
+        return new FormGroup({
+          start: new FormControl(infoEvent.start, Validators.required),
+          end: new FormControl(infoEvent.end, Validators.required),
+          name: new FormControl(infoEvent.name),
+        });
+      }) ?? []
+    ) as FormArray<InfoEventType>;
 
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
@@ -177,6 +193,7 @@ export class EditPageComponent implements OnInit {
       ]),
 
       exceptions: this.exceptions,
+      infoEvents: this.infoEvents,
 
       subEvents: new FormArray(
         event.subEventCompetitions?.map((subEvent) => {
@@ -254,6 +271,9 @@ export class EditPageComponent implements OnInit {
               exceptions:
                 eventCompetition.exceptions?.filter((e) => e.start && e.end) ??
                 [],
+              infoEvents:
+                eventCompetition.infoEvents?.filter((e) => e.start && e.end) ??
+                [],
             },
           },
           refetchQueries: [
@@ -280,11 +300,25 @@ export class EditPageComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         courts: new FormControl(0),
-      }) as LocationExceptionType
+      }) as ExceptionType
     );
   }
 
   removeException(index: number) {
     this.exceptions.removeAt(index);
+  }
+
+  addInfoEvent() {
+    this.infoEvents.push(
+      new FormGroup({
+        start: new FormControl(),
+        end: new FormControl(),
+        name: new FormControl(),
+      }) as InfoEventType
+    );
+  }
+
+  removeInfoEvent(index: number) {
+    this.infoEvents.removeAt(index);
   }
 }

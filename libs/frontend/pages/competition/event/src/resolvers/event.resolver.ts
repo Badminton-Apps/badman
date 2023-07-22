@@ -26,6 +26,11 @@ export const EVENT_QUERY = gql`
         end
         courts
       }
+      infoEvents {
+        start
+        end
+        name
+      }
       subEventCompetitions {
         id
         name

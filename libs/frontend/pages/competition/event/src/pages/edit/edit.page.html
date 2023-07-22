@@ -89,6 +89,67 @@
     </div>
   </ng-container>
 
+  <h3>
+    Info
+    <button mat-icon-button (click)="addInfoEvent()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </h3>
+  <ng-container formArrayName="infoEvents">
+    <div
+      *ngFor="let day of this.infoEvents.controls; index as i"
+      [formGroupName]="i"
+      class="infoEvents"
+    >
+      <div class="day">
+        <mat-form-field>
+          <mat-label>{{ 'all.input.date-range' | translate }}</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input
+              matStartDate
+              formControlName="start"
+              placeholder="Start date"
+            />
+            <input matEndDate formControlName="end" placeholder="End date" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+      <div class="name">
+        <div>
+          <mat-form-field>
+            <mat-label
+              >{{'all.input.name' | translate}}</mat-label
+            >
+            <input
+              matInput
+              formControlName="name"
+              alt="name"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="delete">
+        <button mat-icon-button (click)="removeInfoEvent(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="add">
+      <div class="actions">
+        <button mat-raised-button color="primary" (click)="this.save()">
+          {{ 'all.button.save' | translate }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+
+
   <h3>Sub events</h3>
 
   <div
