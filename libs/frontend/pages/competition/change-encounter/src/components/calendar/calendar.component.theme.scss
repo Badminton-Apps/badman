@@ -30,6 +30,11 @@
 @mixin typography($theme) {
   badman-calendar {
     $typography-config: mat.get-typography-config($theme);
+
+    .day-event,
+    .calendar-day-header {
+      @include mat.typography-level($typography-config, 'caption');
+    }
   }
 }
 

@@ -114,10 +114,19 @@
       </div>
 
       <div class="calendar-day-content" *ngIf="row.info as dayInfo">
+        <div class="day-events">
+          <div
+            class="day-event"
+            *ngFor="let info of dayInfo.dayEvents"
+            [ngStyle]="{ 'background-color': info.color }"
+          >
+            {{ info.name }}
+          </div>
+        </div>
+
         <div
           *ngFor="let loc of dayInfo.locations"
           class="location picable"
-          
           (click)="selectDay(row.date, loc.time, loc.locationId, loc.space)"
         >
           <span class="id">{{ loc.locationIndex }}</span>
