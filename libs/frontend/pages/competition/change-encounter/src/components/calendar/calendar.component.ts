@@ -93,6 +93,7 @@ export class CalendarComponent implements OnInit {
       courts: number;
     }[]
   > = new Map();
+
   public exceptions: Map<
     string,
     {
@@ -100,6 +101,7 @@ export class CalendarComponent implements OnInit {
       courts: number;
     }[]
   > = new Map();
+  public dayEvents: Map<string, string[]> = new Map();
 
   public changeRequests: Map<
     string,
@@ -129,6 +131,7 @@ export class CalendarComponent implements OnInit {
         requested: EncounterCompetition[];
       }[];
       other: EncounterCompetition[];
+      dayEvents: { color: string; name: string }[];
     };
   }[];
 
@@ -209,6 +212,7 @@ export class CalendarComponent implements OnInit {
 
     await this._loadEvent();
     this._loadAvailiblilyBetween(start, end);
+    this._loadDayEvents();
 
     // Get the encounters, and use the first home encounter to
     await this._loadEncountersBetween(start, end);
@@ -320,6 +324,33 @@ export class CalendarComponent implements OnInit {
               courts: exception.courts ?? 0,
             });
           }
+        }
+      }
+    }
+  }
+
+  private _loadDayEvents() {
+    this.dayEvents.clear();
+
+    if (this.event?.infoEvents) {
+      for (const event of this.event?.infoEvents ?? []) {
+        const start = moment(event.start);
+        const end = moment(event.end);
+
+        // for each day in the exception
+        // push the exception to the exceptions map
+        for (
+          let day = start.clone();
+          day.isSameOrBefore(end);
+          day.add(1, 'day')
+        ) {
+          const format = day.format('YYYY-MM-DD');
+
+          if (!this.dayEvents.has(format)) {
+            this.dayEvents.set(format, []);
+          }
+
+          this.dayEvents.get(format)?.push(event.name ?? '');
         }
       }
     }
@@ -576,6 +607,11 @@ export class CalendarComponent implements OnInit {
                         end
                         start
                       }
+                      infoEvents {
+                        name
+                        end
+                        start
+                      }
                     }
                   }
                 }
@@ -796,8 +832,10 @@ export class CalendarComponent implements OnInit {
         removed: EncounterCompetition[];
         requested: EncounterCompetition[];
       }[];
+      dayEvents: { color: string; name: string }[];
       other: EncounterCompetition[];
     } = {
+      dayEvents: [],
       locations: [],
       other: [],
     };
@@ -810,9 +848,7 @@ export class CalendarComponent implements OnInit {
     const availibilities = this.availibilities.get(format);
     const exceptions = this.exceptions.get(format);
 
-    if (!encounters && !changeRequests && !availibilities) {
-      return dayInfo;
-    }
+
 
     // only load availibility stating from 1st of september untill last of may
     if (
@@ -821,6 +857,16 @@ export class CalendarComponent implements OnInit {
     ) {
       return dayInfo;
     }
+
+    if (this.dayEvents.has(format)) {
+      for (const name of this.dayEvents.get(format) ?? []) {
+        dayInfo.dayEvents.push({
+          name,
+          color: `#${randomLightColor(name)}`,
+        });
+      }
+    }
+
 
     if (availibilities) {
       for (const availibility of availibilities) {
@@ -897,6 +943,8 @@ export class CalendarComponent implements OnInit {
           (this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId))
       );
     }
+
+ 
 
     return dayInfo;
   }

@@ -34,7 +34,9 @@ import {
 } from 'sequelize-typescript';
 import {
   AvailabilityExceptionInputType,
-  AvailabilityExceptionType,
+  ExceptionType,
+  InfoEventInputType,
+  InfoEventType,
   Slugify,
 } from '../../../types';
 import { Relation } from '../../../wrapper';
@@ -176,11 +178,17 @@ export class EventCompetition extends Model {
   @Column(DataType.STRING)
   country?: string;
 
-  @Field(() => [AvailabilityExceptionType], { nullable: true })
+  @Field(() => [ExceptionType], { nullable: true })
   @Column({
     type: DataType.JSON,
   })
-  exceptions?: Relation<AvailabilityException[]>;
+  exceptions?: Relation<EventException[]>;
+
+  @Field(() => [InfoEventType], { nullable: true })
+  @Column({
+    type: DataType.JSON,
+  })
+  infoEvents?: Relation<InfoEvent[]>;
 
   regenerateSlug!: Slugify<EventCompetition>;
 
@@ -248,11 +256,15 @@ export class EventCompetitionUpdateInput extends PartialType(
     'subEventCompetitions',
     'roles',
     'exceptions',
+    'infoEvents',
   ] as const),
   InputType
 ) {
   @Field(() => [AvailabilityExceptionInputType], { nullable: true })
   exceptions?: AvailabilityException[];
+
+  @Field(() => [InfoEventInputType], { nullable: true })
+  infoEvents?: InfoEvent[];
 }
 
 @InputType()
@@ -260,3 +272,15 @@ export class EventCompetitionNewInput extends PartialType(
   OmitType(EventCompetitionUpdateInput, ['id'] as const),
   InputType
 ) {}
+
+export interface EventException {
+  start?: Date;
+  end?: Date;
+  courts?: number;
+}
+
+export interface InfoEvent {
+  start?: Date;
+  end?: Date;
+  name?: string;
+}

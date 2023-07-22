@@ -2,7 +2,7 @@ import { EventType, LevelType, sortSubEvents } from '@badman/utils';
 import { Comment } from '../../comment.model';
 import { Event } from '../event.model';
 import { SubEventCompetition } from './sub-event.model';
-import { AvailabilityException } from '../../availibilty.model';
+import { Exception, InfoEvent } from '../../availibilty.model';
 
 export class EventCompetition extends Event {
   season?: number;
@@ -11,7 +11,8 @@ export class EventCompetition extends Event {
   comments?: Comment[];
   type?: LevelType;
 
-  exceptions?: AvailabilityException[];
+  exceptions?: Exception[];
+  infoEvents?: InfoEvent[]
 
   changeOpenDate?: Date;
   changeCloseDate?: Date;
@@ -23,7 +24,8 @@ export class EventCompetition extends Event {
     this.contactEmail = args.contactEmail;
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
-    this.exceptions = args?.exceptions?.map((e) => new AvailabilityException(e));
+    this.exceptions = args?.exceptions?.map((e) => new Exception(e));
+    this.infoEvents = args?.infoEvents?.map((e) => new InfoEvent(e));
     this.changeOpenDate = args.changeOpenDate
       ? new Date(args.changeOpenDate)
       : undefined;
