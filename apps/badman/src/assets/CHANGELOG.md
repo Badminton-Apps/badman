@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.91.0](https://github.com/Badminton-Apps/badman/compare/v6.91.0-beta.1...v6.91.0) (2023-07-24)
+
+
+### Bug Fixes
+
+* undershoot is the more correct term ([fa89963](https://github.com/Badminton-Apps/badman/commit/fa89963113fa54de5930f9aeb48ba0a81c5933f0))
+
 ## [6.91.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.91.0-beta.0...v6.91.0-beta.1) (2023-07-24)
 
 ## [6.91.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.90.0...v6.91.0-beta.0) (2023-07-24)
