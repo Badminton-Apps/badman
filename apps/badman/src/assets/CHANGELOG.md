@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.91.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.91.0-beta.0...v6.91.0-beta.1) (2023-07-24)
+
+## [6.91.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.90.0...v6.91.0-beta.0) (2023-07-24)
+
+
+### Features
+
+* adding notifications when entering comment ([5204c70](https://github.com/Badminton-Apps/badman/commit/5204c709989e6577456d9ad1114348d894071932))
+* less frequent notification ([3a17fd5](https://github.com/Badminton-Apps/badman/commit/3a17fd570026b1598b0b4fc6604b05d617083631))
+
+
+### Bug Fixes
+
+* adding subscription when there was no user should return ([6cab00c](https://github.com/Badminton-Apps/badman/commit/6cab00c0a484adc06b2d6c12fdfdba4905d743e9))
+
 ## [6.90.0](https://github.com/Badminton-Apps/badman/compare/v6.89.13...v6.90.0) (2023-07-22)
 
 
