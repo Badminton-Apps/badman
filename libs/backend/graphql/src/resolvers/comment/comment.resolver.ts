@@ -1,12 +1,13 @@
+import { User } from '@badman/backend-authorization';
 import {
   Comment,
   CommentNewInput,
   CommentUpdateInput,
-  EncounterChange,
   EncounterCompetition,
   EventCompetition,
   Player,
 } from '@badman/backend-database';
+import { NotificationService } from '@badman/backend-notifications';
 import {
   BadRequestException,
   Logger,
@@ -22,16 +23,19 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
-import { User } from '@badman/backend-authorization';
-import { ListArgs } from '../../utils';
 import { Transaction } from 'sequelize';
+import { Sequelize } from 'sequelize-typescript';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => Comment)
 export class CommentResolver {
   private readonly logger = new Logger(CommentResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private notificationService: NotificationService
+  ) {}
+
   @Query(() => Comment)
   async comment(@Args('id', { type: () => ID }) id: string): Promise<Comment> {
     const comment = await Comment.findByPk(id);
@@ -116,7 +120,6 @@ export class CommentResolver {
           }
           await this.encounterComment(link, comment, user, transaction);
           break;
-      
       }
 
       await transaction.commit();
@@ -229,6 +232,12 @@ export class CommentResolver {
         `clubId: ${comment.clubId} is not home or away`
       );
     }
+
+    // send notification
+    this.notificationService.notifyEncounterChange(
+      link,
+      home.clubId === comment.clubId
+    );
   }
   private async encounterComment(
     link: EncounterCompetition,

@@ -154,7 +154,7 @@
       "warnings": {
         "base": "{player.fullName} est le premier joueur d'une autre équipe",
         "base-subevent": "{player.fullName} est le premier joueur d'une autre équipe dans la même série",
-        "better-meta": "{player.fullName} est meilleur qu'un des joueurs de base, attention à ne pas dépasser l'index de l'équipe",
+        "better-meta": "{player.fullName} est meilleur que l'un des joueurs de départ, veillez à ne pas sous-évaluer l'indice d'équipe.",
         "min-level": "Le classement autorisé est {maxLevel} tandis que {player.fullName} est{level} dans {type} ",
         "other-gender": "{player.fullName} est un {playerGender}, mais l'équipe pour le {teamType} est"
       }
