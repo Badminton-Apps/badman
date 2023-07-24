@@ -1,12 +1,13 @@
+import { User } from '@badman/backend-authorization';
 import {
   Comment,
   CommentNewInput,
   CommentUpdateInput,
-  EncounterChange,
   EncounterCompetition,
   EventCompetition,
   Player,
 } from '@badman/backend-database';
+import { NotificationService } from '@badman/backend-notifications';
 import {
   BadRequestException,
   Logger,
@@ -22,11 +23,9 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Sequelize } from 'sequelize-typescript';
-import { User } from '@badman/backend-authorization';
-import { ListArgs } from '../../utils';
 import { Transaction } from 'sequelize';
-import { NotificationService } from '@badman/backend-notifications';
+import { Sequelize } from 'sequelize-typescript';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => Comment)
 export class CommentResolver {
