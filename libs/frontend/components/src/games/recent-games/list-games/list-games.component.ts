@@ -85,12 +85,11 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
     choices: FormControl<string[] | null>;
   }>;
 
-  currentPage = 1;
   itemsPerPage = 10;
   endOfList = false;
 
   recentGames$ = new BehaviorSubject<Game[]>([]); // start with an empty list
-  loadMore$ = new Subject<void>();
+  currentPage$ = new BehaviorSubject<number>(1);
 
   @ViewChild('bottomObserver', { static: false }) bottomObserver!: ElementRef;
 
@@ -116,7 +115,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           // The bottom of the current list is visible, load more items
-          this.loadMore$.next();
+          this.currentPage$.next(this.currentPage$.getValue() + 1);
         }
       });
     }, options);
@@ -351,12 +350,12 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     combineLatest([
-      this.loadMore$,
+      this.currentPage$,
       this.filter.valueChanges.pipe(
         startWith(this.filter.value),
         // reset the page when the filter changes
         tap(() => {
-          this.currentPage = 1;
+          this.currentPage$.next(1);
           this.endOfList = false;
           return this.recentGames$.next([]);
         })
@@ -367,15 +366,10 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
         takeUntil(this.destroy$),
         filter(() => !this.endOfList),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        switchMap(([, filter]) =>
-          this._loadRecentGamesForPlayer(
-            this.playerId ?? '',
-            this.currentPage,
-            filter
-          )
-        ),
+        switchMap(([page, filter]) =>
+          this._loadRecentGamesForPlayer(this.playerId ?? '', page, filter)
+        )
         // Increment the page number for the next request
-        tap(() => this.currentPage++)
       )
       .subscribe((games) => {
         // Add the new items to the existing list
