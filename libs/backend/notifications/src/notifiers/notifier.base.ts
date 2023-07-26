@@ -26,7 +26,7 @@ export abstract class Notifier<T, A = { email: string }> {
   abstract notifySms(player: Player, data?: T, args?: A): Promise<void>;
 
   async notify(
-    player: Player,
+    player?: Player,
     linkId?: string,
     data?: T,
     args?: A,
@@ -40,7 +40,7 @@ export abstract class Notifier<T, A = { email: string }> {
       this.logger.warn(`Player not found`);
       return;
     }
-    const settings = await player.getSetting();
+    const settings = await player?.getSetting();
 
     if (!settings) {
       this.logger.warn(`Player ${player.fullName} has no settings`);
