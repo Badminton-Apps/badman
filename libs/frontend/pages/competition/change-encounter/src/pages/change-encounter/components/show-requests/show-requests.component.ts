@@ -335,7 +335,7 @@ export class ShowRequestsComponent implements OnInit {
         this.group.get(this.dependsOn)?.setValue(null);
         this._snackBar.open(
           await this._translate.instant(
-            'competition.change-encounter.requested'
+            'all.competition.change-encounter.requested'
           ),
           'OK',
           {
@@ -346,7 +346,7 @@ export class ShowRequestsComponent implements OnInit {
         console.error(error);
         this._snackBar.open(
           await this._translate.instant(
-            'competition.change-encounter.requested-failed'
+            'all.competition.change-encounter.requested-failed'
           ),
           'OK',
           {
