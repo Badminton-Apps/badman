@@ -219,7 +219,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   private _updateUrl(teamId: string, removeOtherParams = false) {
     if (this.updateUrl && teamId) {
       const queryParams: { [key: string]: string | undefined } = {
-        team: teamId,
+        [this.controlName]: teamId,
       };
 
       if (removeOtherParams) {

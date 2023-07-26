@@ -3,7 +3,7 @@
     <!-- year selection -->
     <mat-form-field>
       <mat-label>{{ 'all.pickers.select-encounter' | translate }}</mat-label>
-      <mat-select [formControl]="this.formControl">
+      <mat-select [formControl]="this.control">
         <mat-option
           class="list-encounter"
           *ngFor="let option of this.encountersSem1"
@@ -56,8 +56,8 @@
   >
     <mat-list-item
       *ngFor="let option of this.encountersSem1"
-      (click)="this.formControl.setValue(option)"
-      [ngClass]="{ selected: this.formControl.value?.id === option?.id }"
+      (click)="selectEncounter(option)"
+      [ngClass]="{ selected: this.control.value?.id === option?.id }"
     >
       <mat-icon matListItemIcon>{{
         option?.encounterChange?.accepted ?? true ? 'done' : 'info'
@@ -81,8 +81,8 @@
 
     <mat-list-item
       *ngFor="let option of this.encountersSem2"
-      (click)="this.formControl.setValue(option)"
-      [ngClass]="{ selected: this.formControl.value?.id === option?.id }"
+      (click)="selectEncounter(option)"
+      [ngClass]="{ selected: this.control.value?.id === option?.id }"
     >
       <mat-icon matListItemIcon>{{
         option?.encounterChange?.accepted ?? true ? 'done' : 'info'
