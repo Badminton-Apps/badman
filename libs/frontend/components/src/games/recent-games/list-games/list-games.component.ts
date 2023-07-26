@@ -36,8 +36,21 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
-import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
-import { map, startWith, tap, takeUntil } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  Subject,
+  combineLatest,
+  distinctUntilChanged,
+} from 'rxjs';
+import {
+  map,
+  startWith,
+  tap,
+  takeUntil,
+  shareReplay,
+  switchMap,
+  filter,
+} from 'rxjs/operators';
 import { LoadingBlockComponent } from '../../../loading-block';
 
 @Component({
@@ -116,6 +129,8 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
     page: number,
     filter?: Partial<{ choices: string[] | null }>
   ) {
+    console.log(page);
+
     return this.apollo
       .query<{
         player: {
@@ -336,7 +351,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     combineLatest([
-      this.loadMore$, 
+      this.loadMore$,
       this.filter.valueChanges.pipe(
         startWith(this.filter.value),
         // reset the page when the filter changes
@@ -347,36 +362,25 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
         })
       ),
     ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([, filter]) => {
-        if (this.endOfList) {
-          return;
-        }
-        // Increment the current page and load the next batch of items
-        this.currentPage++;
-
-        this._loadRecentGamesForPlayer(
-          this.playerId ?? '',
-          this.currentPage,
-          filter
-        )
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((games) => {
-            // Add the new items to the existing list
-            const currentGames = this.recentGames$.getValue();
-            this.recentGames$.next([...currentGames, ...games].sort(sortGames));
-          });
-      });
-
-    // Load the first batch of items
-    this._loadRecentGamesForPlayer(
-      this.playerId ?? '',
-      this.currentPage,
-      this.filter.value
-    )
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        shareReplay(1),
+        takeUntil(this.destroy$),
+        filter(() => !this.endOfList),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        switchMap(([, filter]) =>
+          this._loadRecentGamesForPlayer(
+            this.playerId ?? '',
+            this.currentPage,
+            filter
+          )
+        ),
+        // Increment the page number for the next request
+        tap(() => this.currentPage++)
+      )
       .subscribe((games) => {
-        this.recentGames$.next(games);
+        // Add the new items to the existing list
+        const currentGames = this.recentGames$.getValue();
+        this.recentGames$.next([...currentGames, ...games].sort(sortGames));
       });
   }
 
