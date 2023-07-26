@@ -157,11 +157,6 @@ export class SelectClubComponent implements OnInit, OnDestroy {
                   this.useAutocomplete = false;
                 }
 
-                if (filtered.length == 1) {
-                  this.control?.disable();
-                  this.control?.setValue(filtered[0].id);
-                }
-
                 return of({
                   rows: filtered,
                   count: filtered.length,
@@ -183,21 +178,28 @@ export class SelectClubComponent implements OnInit, OnDestroy {
 
           if (paramClubId) {
             this.selectClub(paramClubId, false);
-            return;
+          } else if (rows?.length == 1 && this.autoSelect) {
+            this.selectClub(rows[0].id, false);
           }
-
           // if no club is selected and the user has clubs, pick the first one
-          if (user?.clubs && this.autoSelect) {
+          else if (user?.clubs && this.autoSelect) {
             const clubIds = user?.clubs
               ?.filter((c) => c.clubMembership?.end == null)
               ?.map((r) => r.id);
 
             if (clubIds) {
-              this.selectClub(
-                this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null,
-                false
-              );
+              const foundClub =
+                this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null;
+
+              if (foundClub) {
+                this.selectClub(foundClub, false);
+              }
             }
+          }
+
+          // disable if there is only one club
+          if (rows.length == 1) {
+            this.control?.disable();
           }
         }
       });
@@ -249,7 +251,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
   private _updateUrl(clubId: string, removeOtherParams = false) {
     if (this.updateUrl && clubId) {
       const queryParams: { [key: string]: string | undefined } = {
-        club: clubId,
+        [this.controlName]: clubId,
       };
 
       if (removeOtherParams) {

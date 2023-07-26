@@ -28,9 +28,11 @@
     </h3>
 
     <div class="list-encounters">
-      <badman-list-encounters [group]="formGroup"></badman-list-encounters>
+      <badman-list-encounters
+        [updateUrl]="true"
+        [group]="formGroup"
+      ></badman-list-encounters>
       <badman-show-requests [group]="formGroup"></badman-show-requests>
     </div>
   </div>
 </div>
-
