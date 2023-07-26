@@ -21,13 +21,13 @@ import {
   SelectTeamComponent,
 } from '@badman/frontend-components';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
+import { SeoService } from '@badman/frontend-seo';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
-import { ListEncountersComponent, ShowRequestsComponent } from './components';
-import { SeoService } from '@badman/frontend-seo';
+import { map, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { ListEncountersComponent, ShowRequestsComponent } from './components';
 
 @Component({
   selector: 'badman-change-encounter',
