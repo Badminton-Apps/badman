@@ -1,6 +1,6 @@
 {
   "name": "badman-mono",
-  "version": "6.91.2",
+  "version": "6.91.3",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
