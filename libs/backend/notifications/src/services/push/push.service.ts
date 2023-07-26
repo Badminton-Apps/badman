@@ -2,11 +2,7 @@ import { Player } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as webPush from 'web-push';
-import {
-  RequestOptions,
-  WebPushError,
-  setVapidDetails
-} from 'web-push';
+import { RequestOptions, WebPushError, setVapidDetails } from 'web-push';
 
 @Injectable()
 export class PushService {
@@ -27,12 +23,17 @@ export class PushService {
     }
   }
 
-  async sendNotification(player: Player, data: RequestOptions) {
+  async sendNotification(player?: Player, data?: RequestOptions) {
     if (!this.isPushEnabled) {
       return;
     }
 
-    const settings = await player.getSetting();
+    const settings = await player?.getSetting();
+
+    if (!settings) {
+      this.logger.warn(`Player ${player?.fullName} has no settings`);
+      return;
+    }
 
     for (const sub of settings.pushSubscriptions) {
       try {
@@ -46,7 +47,7 @@ export class PushService {
           );
           settings.changed('pushSubscriptions', true);
           this.logger.debug(
-            `Removed subscription for player ${player.fullName} (${sub.endpoint})`
+            `Removed subscription for player ${player?.fullName} (${sub.endpoint})`
           );
           await settings.save();
         } else {
