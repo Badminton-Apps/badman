@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.91.4](https://github.com/Badminton-Apps/badman/compare/v6.91.3...v6.91.4) (2023-07-27)
+
+
+### Bug Fixes
+
+* showing for hometeam wasn't filled in ([b4f10e4](https://github.com/Badminton-Apps/badman/commit/b4f10e481fafe899400bcb92e0c2f4d52dd594cb))
+
 ### [6.91.3](https://github.com/Badminton-Apps/badman/compare/v6.91.2...v6.91.3) (2023-07-26)
 
 
