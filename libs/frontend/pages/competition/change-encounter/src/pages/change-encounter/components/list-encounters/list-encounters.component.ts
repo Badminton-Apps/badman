@@ -301,7 +301,13 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
 
             return a.date.getTime() - b.date.getTime();
           })
-        )
+        ),
+        map((e) => {
+          return e?.map((r) => {
+            r.showingForHomeTeam = r.home?.id === teamId;
+            return r;
+          });
+        })
       );
   }
 
