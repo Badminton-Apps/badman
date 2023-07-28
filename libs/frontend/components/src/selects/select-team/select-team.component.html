@@ -4,6 +4,7 @@
     <mat-select
       [formControl]="control"
       required
+      [multiple]="this.multiple"
       (selectionChange)="this.selectTeam($event)"
     >
       <ng-container *ngIf="this.teams$ | async as teams">

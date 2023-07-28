@@ -92,6 +92,8 @@
     "number": "club number",
     "start": "Start date",
     "titles": {
+      "encounters": "Encounters",
+      "matrix": "Assembly matrix",
       "players": "Players",
       "plural": "Clubs",
       "single": "Club",

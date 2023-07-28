@@ -92,6 +92,8 @@
     "number": "numéro de club",
     "start": "Date de début",
     "titles": {
+      "encounters": "Rencontres",
+      "matrix": "Matrice de configuration",
       "players": "Joueurs",
       "plural": "Clubs",
       "single": "Club",
