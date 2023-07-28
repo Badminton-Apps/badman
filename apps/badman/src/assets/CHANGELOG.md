@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.92.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.91.4...v6.92.0-beta.0) (2023-07-28)
+
+
+### Features
+
+* adding encounteroveriw pt1 ([0364407](https://github.com/Badminton-Apps/badman/commit/036440762c7fba3995fa95dc501782e0d1db2629))
+
+
+### Bug Fixes
+
+* require login ([bd04d98](https://github.com/Badminton-Apps/badman/commit/bd04d984d3215fccc307d208364df01e65cd34a9))
+
 ### [6.91.4](https://github.com/Badminton-Apps/badman/compare/v6.91.3...v6.91.4) (2023-07-27)
 
 

@@ -40,7 +40,7 @@ import {
   startWith,
   switchMap,
   take,
-  takeUntil,
+  takeUntil
 } from 'rxjs';
 
 @Component({
@@ -69,7 +69,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
   @Input()
   controlName = 'team';
 
-  @Input()
+  @Input({ required: true })
   group!: FormGroup;
 
   @Input()
@@ -80,6 +80,12 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
 
   @Input()
   updateUrl = false;
+
+  @Input()
+  multiple = false;
+
+  @Input()
+  autoSelect: 'user' | 'all' = 'user';
 
   @Input()
   control = new FormControl();
@@ -101,13 +107,15 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
     }
 
     if (!this.control) {
-      this.control = new FormControl<string | null>(null);
+      this.control = new FormControl<string[] | null>(null);
     }
 
     if (this.group) {
       this.group.addControl(this.controlName, this.control);
     }
+
     const previous = this.group?.get(this.dependsOn);
+
     if (!previous) {
       console.warn(`Dependency ${this.dependsOn} not found`, previous);
     } else {
@@ -126,11 +134,12 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         distinctUntilChanged(),
         map(() => previous?.value),
+        startWith(previous?.value),
         pairwise(),
         switchMap(([prev, next]) => {
           if (prev != null && prev !== next) {
             // Reset the team on club change
-            this.control.setValue(null);
+            this.control.setValue(this.multiple ? [] : null);
           }
 
           // Check if the next is a UUID
@@ -160,43 +169,58 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
       this.teams$
         ?.pipe(
           concatMap((teams) =>
-            // if authenticated, find where the user is captain
-            this.authenticateService.user$.pipe(
-              switchMap((user) => {
-                if (!user?.id) {
-                  return of(undefined);
-                }
-                return this._findTeamsWhereUserIsCaptain(user?.id);
-              }),
-              map((teamsUser) => ({
-                teams,
-                teamsUser: teamsUser?.[0],
-              })),
-              take(1)
-            )
+            this.autoSelect === 'user'
+              ? // if authenticated, find where the user is captain
+                this.authenticateService.user$.pipe(
+                  switchMap((user) => {
+                    if (!user?.id) {
+                      return of(undefined);
+                    }
+                    return this._findTeamsWhereUserIsCaptain(user?.id);
+                  }),
+                  map((teamsUser) => ({
+                    teams,
+                    teamsUser: teamsUser?.[0],
+                  })),
+                  take(1)
+                )
+              : of({
+                  teams,
+                  teamsUser: undefined,
+                })
           )
         )
         .subscribe(({ teams, teamsUser }) => {
-          let foundTeam: Team | undefined = undefined;
+          let foundTeam: Team[] | undefined = undefined;
           const teamId =
             this.activatedRoute.snapshot?.queryParamMap?.get('team');
+
           const allTeams = teams
             ?.map((group) => group.teams)
             ?.reduce((acc, teams) => acc.concat(teams), []);
 
           if (teamId && teams.length > 0) {
             // Check all groups if the team is in there
-            foundTeam = allTeams?.find((team) => team.id == teamId);
+            foundTeam = allTeams?.filter((team) => team.id == teamId);
+          } else if (this.autoSelect === 'user') {
+            foundTeam = teams
+              ?.map((group) => group.teams)
+              ?.reduce((acc, teams) => acc.concat(teams), [])
+              ?.filter((team) => team.id == teamsUser);
+          } else if (this.autoSelect === 'all') {
+            foundTeam = allTeams;
           }
 
-          if (foundTeam == null && teamsUser) {
-            // Check if the user is captain of a team
-            foundTeam = allTeams?.find((team) => team.id == teamsUser);
-          }
-
-          if (foundTeam && foundTeam.id) {
-            this.control.setValue(foundTeam.id, { onlySelf: true });
-            this._updateUrl(foundTeam.id);
+          if (foundTeam && foundTeam.length > 0) {
+            this.control.setValue(
+              this.multiple
+                ? foundTeam.map((team) => team.id ?? '')
+                : foundTeam[0].id ?? ''
+            );
+            this._updateUrl(
+              foundTeam.map((team) => team.id ?? ''),
+              true
+            );
           }
         });
     }
@@ -213,13 +237,16 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this._updateUrl(id, true);
+    // add id to the control
+    const newIds = this.multiple ? [...(this.control.value ?? []), id] : [id];
+
+    this._updateUrl(newIds, true);
   }
 
-  private _updateUrl(teamId: string, removeOtherParams = false) {
-    if (this.updateUrl && teamId) {
+  private _updateUrl(teamIds: string[], removeOtherParams = false) {
+    if (this.updateUrl && teamIds?.length) {
       const queryParams: { [key: string]: string | undefined } = {
-        [this.controlName]: teamId,
+        [this.controlName]: teamIds.join(','),
       };
 
       if (removeOtherParams) {
@@ -245,7 +272,6 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         relativeTo: this.activatedRoute,
         queryParams,
         queryParamsHandling: 'merge',
-        
       });
     }
   }

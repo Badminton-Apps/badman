@@ -1,0 +1,67 @@
+<badman-select-team
+  [group]="filter"
+  controlName="teams"
+  [multiple]="true"
+  autoSelect="all"
+></badman-select-team>
+
+<ng-container *ngIf="this.encounters; else loadingPlayers">
+  <section class="encounters">
+    <h3>{{ 'all.club.titles.encounters' | translate }}</h3>
+    <mat-nav-list role="list">
+      <mat-list-item
+        role="listitem"
+        *ngFor="let encounter of this.encounters()"
+        [routerLink]="[
+          '/',
+          'competition',
+          encounter.drawCompetition?.subEventCompetition?.eventId,
+          'draw',
+          encounter.drawCompetition?.id,
+          'encounter',
+          encounter.id
+        ]"
+      >
+        <span matListItemTitle>
+          <span
+            class="home"
+            [ngClass]="{
+              won: (encounter.homeScore ?? 0) > (encounter.awayScore ?? 0),
+              draw: (encounter.homeScore ?? 0) === (encounter.awayScore ?? 0),
+              lost: (encounter.homeScore ?? 0) < (encounter.awayScore ?? 0)
+            }"
+            >{{ encounter.home?.name }}</span
+          >&nbsp;<span>{{ 'all.competition.vs-short' | translate }}</span
+          >&nbsp;<span
+            class="away"
+            [ngClass]="{
+              won: (encounter.awayScore ?? 0) > (encounter.homeScore ?? 0),
+              draw: (encounter.awayScore ?? 0) === (encounter.homeScore ?? 0),
+              lost: (encounter.awayScore ?? 0) < (encounter.homeScore ?? 0)
+            }"
+            >{{ encounter.away?.name }}</span
+          >
+          <span
+            *ngIf="
+              (encounter.homeScore ?? -1) >= 0 && (encounter.awayScore ?? -1) >= 0
+            "
+            >&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span
+          >
+        </span>
+        <span matListItemLine>{{ encounter?.date | amDateFormat : 'llll' }}</span>
+      </mat-list-item>
+    </mat-nav-list>
+  </section>
+</ng-container>
+
+<ng-template #loadingPlayers>
+  <section class="players">
+    <h3>{{ 'all.club.titles.encounters' | translate }}</h3>
+    <badman-loading-block
+      [items]="25"
+      height="74px"
+      width="250px"
+      direction="row"
+    />
+  </section>
+</ng-template>

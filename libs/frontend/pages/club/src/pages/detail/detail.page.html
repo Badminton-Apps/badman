@@ -70,17 +70,25 @@
   [selectedIndex]="currentTab()"
   (selectedIndexChange)="setTab($event)"
 >
-  <mat-tab label="Teams">
+  <mat-tab [label]="'all.club.titles.teams' | translate">
     <badman-club-teams [clubId]="this.club.id" [filter]="this.filter" />
   </mat-tab>
-  <mat-tab label="Assembly matrix">
+  <mat-tab [label]="'all.club.titles.matrix' | translate">
     <ng-template matTabContent>
       <badman-club-assembly [clubId]="this.club.id" [filter]="this.filter" />
     </ng-template>
   </mat-tab>
-  <mat-tab label="Players">
+  <mat-tab [label]="'all.club.titles.players' | translate">
     <ng-template matTabContent>
       <badman-club-players [clubId]="this.club.id" [filter]="this.filter" />
+    </ng-template>
+  </mat-tab>
+  <mat-tab
+    [label]="'all.club.titles.encounters' | translate"
+    *ngIf="this.canSelectSeason()"
+  >
+    <ng-template matTabContent>
+      <badman-club-encounters [clubId]="this.club.id" [filter]="this.filter" />
     </ng-template>
   </mat-tab>
   <mat-tab
