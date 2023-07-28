@@ -2,7 +2,7 @@
   <section class="teams">
     <h3>
       <mat-icon color="primary">groups</mat-icon>
-      {{ 'all.club.titles.teams' | translate }}
+      {{ 'all.club.titles.matrix' | translate }}
     </h3>
     <mat-progress-bar
       *ngIf="loading"
@@ -21,8 +21,10 @@
       </h3>
     </div>
 
-    <p>{{'all.competition.club-assembly.description' | translate}}</p>
-    <p class="caption">{{'all.competition.club-assembly.note' | translate}}</p>
+    <p>{{ 'all.competition.club-assembly.description' | translate }}</p>
+    <p class="caption">
+      {{ 'all.competition.club-assembly.note' | translate }}
+    </p>
 
     <div class="player-teams-table">
       <table mat-table [dataSource]="this.players() ?? []">

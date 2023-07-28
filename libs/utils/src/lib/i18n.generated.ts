@@ -96,6 +96,8 @@ export type I18nTranslations = {
             "number": string;
             "start": string;
             "titles": {
+                "encounters": string;
+                "matrix": string;
                 "players": string;
                 "plural": string;
                 "single": string;

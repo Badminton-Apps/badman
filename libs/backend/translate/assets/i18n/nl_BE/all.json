@@ -92,6 +92,8 @@
     "number": "clubnummer",
     "start": "Begindatum",
     "titles": {
+      "encounters": "Ontmoetingen",
+      "matrix": "Opstellings matrix",
       "players": "Spelers",
       "plural": "Clubs",
       "single": "Club",

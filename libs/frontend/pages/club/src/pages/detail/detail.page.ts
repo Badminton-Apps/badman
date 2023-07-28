@@ -55,6 +55,8 @@ import { ClubCompetitionComponent } from './club-competition/club-competition.co
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
 import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
+import { ClubEncountersComponent } from './club-encounters/club-encounters.component';
+import { VERSION_INFO } from '@badman/frontend-html-injects';
 
 @Component({
   selector: 'badman-club-detail',
@@ -83,6 +85,7 @@ import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
     ClubTeamsComponent,
     ClubCompetitionComponent,
     ClubAssemblyComponent,
+    ClubEncountersComponent,
 
     // Material Modules
     MatButtonToggleModule,
@@ -100,6 +103,11 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   // Injectors
   authService = inject(ClaimService);
   injector = inject(Injector);
+  private claimService = inject(ClaimService);
+  private versionInfo: {
+    beta: boolean;
+    version: string;
+  } = inject(VERSION_INFO);
 
   // signals
   seasons?: Signal<number[]>;
@@ -129,6 +137,15 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   get isClient(): boolean {
     return isPlatformBrowser(this.platformId);
   }
+
+  hasPermission = toSignal(
+    this.claimService.hasAnyClaims$(['change-any:encounter'])
+  );
+
+
+  canSelectSeason = computed(
+    () => this.hasPermission() || this.versionInfo.beta
+  );
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
