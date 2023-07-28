@@ -58,6 +58,13 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
   breakpointObserver = inject(BreakpointObserver);
   private seoService = inject(SeoService);
   private breadcrumbsService = inject(BreadcrumbService);
+  private activatedRoute = inject(ActivatedRoute);
+  private claimService = inject(ClaimService);
+  private versionInfo: {
+    beta: boolean;
+    version: string;
+  } = inject(VERSION_INFO);
+
   translateService = inject(TranslateService);
 
   isHandset = toSignal(
@@ -75,16 +82,6 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
   );
 
   formGroup?: FormGroup;
-
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    @Inject(VERSION_INFO)
-    private versionInfo: {
-      beta: boolean;
-      version: string;
-    },
-    private claimService: ClaimService
-  ) {}
 
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.queryParamMap;
