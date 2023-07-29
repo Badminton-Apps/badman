@@ -2,7 +2,7 @@ import {
   DrawTournament,
   EventEntry,
   Game,
-  SubEventTournament,
+  SubEventTournament
 } from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
 import {

@@ -5,6 +5,7 @@ import {
   OnInit,
   Signal,
   TemplateRef,
+  computed,
   effect,
   inject,
   signal,
@@ -43,6 +44,8 @@ import { filter, map, startWith, take } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
+import { CompetitionEncountersComponent } from './competition-encounters/competition-encounters.component';
+import { VERSION_INFO } from '@badman/frontend-html-injects';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -78,16 +81,28 @@ import { CompetitionMapComponent } from './competition-map';
     HasClaimComponent,
     CompetitionEnrollmentsComponent,
     CompetitionMapComponent,
+    CompetitionEncountersComponent,
   ],
 })
 export class DetailPageComponent implements OnInit {
   // injectors
   authService = inject(ClaimService);
   injector = inject(Injector);
+  private claimService = inject(ClaimService);
+  private versionInfo: {
+    beta: boolean;
+    version: string;
+  } = inject(VERSION_INFO);
 
   // signals
   canViewEnrollments?: Signal<boolean | undefined>;
   currentTab = signal(0);
+
+  hasPermission = toSignal(this.claimService.hasAnyClaims$(['edit-any:club']));
+
+  canViewEncounter = computed(
+    () => this.hasPermission() || this.versionInfo.beta
+  );
 
   copyYearControl = new FormControl();
 
@@ -292,7 +307,8 @@ export class DetailPageComponent implements OnInit {
                 id: this.eventCompetition.id,
                 changeOpenDate: this.eventCompetition.changeOpenDate,
                 changeCloseDate: this.eventCompetition.changeCloseDate,
-                changeCloseRequestDate: this.eventCompetition.changeCloseRequestDate,
+                changeCloseRequestDate:
+                  this.eventCompetition.changeCloseRequestDate,
               },
             },
           })
