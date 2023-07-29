@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.93.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.92.0...v6.93.0-beta.0) (2023-07-29)
+
+
+### Features
+
+* adding filters for location change ([16db088](https://github.com/Badminton-Apps/badman/commit/16db0883ea0279cfdf18be143c424827f258029e))
+* butons for all / none ([8a967b5](https://github.com/Badminton-Apps/badman/commit/8a967b55e1cba8de4bccbf4f02ff43d655b72ca0))
+
+
+### Bug Fixes
+
+* hide scores if both are 0 ([9fbafd6](https://github.com/Badminton-Apps/badman/commit/9fbafd61d5c74e15c4580586d22b0cea58abb7c2))
+* should speed up the teams fetching ([2f7144d](https://github.com/Badminton-Apps/badman/commit/2f7144d46c1478ce4252c77f25babc37ebfd82e0))
+
 ## [6.92.0](https://github.com/Badminton-Apps/badman/compare/v6.92.0-beta.0...v6.92.0) (2023-07-28)
 
 ## [6.92.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.91.4...v6.92.0-beta.0) (2023-07-28)
