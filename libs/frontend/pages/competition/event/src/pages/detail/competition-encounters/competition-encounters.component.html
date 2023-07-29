@@ -1,33 +1,24 @@
 <div class="filters">
-  <div class="filters-team">
-    <badman-select-team
-      [group]="filter"
-      controlName="teams"
-      [multiple]="true"
-      autoSelect="all"
-    ></badman-select-team>
-  </div>
-
   <div class="filters-encounter" [formGroup]="filter">
     <mat-slide-toggle formControlName="changedDate">{{
-      'all.club.encounters.change-date' | translate
+      'all.competition.encounters.change-date' | translate
     }}</mat-slide-toggle>
     <mat-slide-toggle formControlName="changedLocation">{{
-      'all.club.encounters.change-location' | translate
-    }}</mat-slide-toggle>
-    <mat-slide-toggle formControlName="onlyHomeGames">{{
-      'all.club.encounters.home-games' | translate
+      'all.competition.encounters.change-location' | translate
     }}</mat-slide-toggle>
   </div>
 </div>
 
-<ng-container *ngIf="this.filter.get('changedLocation')?.value">
-  {{ 'all.club.encounters.change-location-note' | translate }}
-</ng-container>
+<p class="filters-notes">
+  <ng-container *ngIf="this.filter.get('changedLocation')?.value">
+    {{ 'all.competition.encounters.change-location-note' | translate }}
+  </ng-container>
+</p>
 
 <ng-container *ngIf="this.encounters">
   <section class="encounters">
-    <h3>{{ 'all.club.titles.encounters' | translate }}</h3>
+    <h3>{{ 'all.competition.encounters.title' | translate }}</h3>
+
     <div class="loading">
       <mat-progress-bar
         *ngIf="this.loading()"
@@ -35,6 +26,7 @@
         mode="indeterminate"
       ></mat-progress-bar>
     </div>
+
     <mat-nav-list role="list">
       <mat-list-item
         role="listitem"
@@ -79,6 +71,15 @@
           encounter?.date | amDateFormat : 'llll'
         }}</span>
       </mat-list-item>
+
+      <!-- no encounters -->
+      <ng-container *ngIf="this.encounters()?.length === 0">
+        <span
+          matListItemLine
+          class="no-more-encounters"
+          translate="all.competition.encounters.no-more"
+        ></span>
+      </ng-container>
     </mat-nav-list>
   </section>
 </ng-container>

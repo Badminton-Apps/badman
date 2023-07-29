@@ -5,15 +5,15 @@
 
 @use './competition-enrollments/competition-enrollments.component.theme.scss' as
   competition-enrollments;
-
-  @use './competition-map/competition-map.component.theme.scss' as
-  competition-map;
-
+@use './competition-map/competition-map.component.theme.scss' as competition-map;
+@use './competition-encounters/competition-encounters.component.theme.scss' as
+  competition-encounters;
 
 @mixin color($theme) {
   badman-competition-detail {
     @include competition-enrollments.color($theme);
     @include competition-map.color($theme);
+    @include competition-encounters.color($theme);
 
     $color-config: mat.get-color-config($theme);
     // Background color
@@ -43,6 +43,7 @@
 @mixin typography($theme) {
   @include competition-enrollments.typography($theme);
   @include competition-map.typography($theme);
+  @include competition-encounters.typography($theme);
 
   $typography-config: mat.get-typography-config($theme);
   badman-competition-detail {
