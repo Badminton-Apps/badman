@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.93.0](https://github.com/Badminton-Apps/badman/compare/v6.93.0-beta.0...v6.93.0) (2023-07-29)
+
+
+### Bug Fixes
+
+* if no user is found, skip adding push ([f041c34](https://github.com/Badminton-Apps/badman/commit/f041c3430961cd871a04cf665f90fa4d6a423378))
+* only setting club if the club is found ([15a88b3](https://github.com/Badminton-Apps/badman/commit/15a88b3b500713daaa47879b4cd9ba9226bb49c2))
+* should be any change-encounter permission ([e329945](https://github.com/Badminton-Apps/badman/commit/e3299454158cabff9bb1c976116565170a1cbbd3))
+
 ## [6.93.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.92.0...v6.93.0-beta.0) (2023-07-29)
 
 
