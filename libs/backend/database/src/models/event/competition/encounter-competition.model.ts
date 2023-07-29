@@ -176,6 +176,18 @@ export class EncounterCompetition extends Model {
   @Column(DataType.UUIDV4)
   locationId?: string;
 
+  @Field(() => Location, { nullable: true })
+  @BelongsTo(() => Location, {
+    foreignKey: 'originalLocationId',
+    onDelete: 'CASCADE',
+  })
+  originalLocation?: Relation<Location>;
+
+  @ForeignKey(() => Location)
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  originalLocationId?: string;
+
   @HasMany(() => Notification, {
     foreignKey: 'linkId',
     constraints: false,

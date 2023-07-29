@@ -187,6 +187,12 @@ export class EncounterCompetitionResolver {
 
         // Set location to the selected location
         if (encounter.locationId != selectedDates[0].locationId) {
+          // store the original location
+          if (encounter.originalLocationId === null) {
+            encounter.originalLocationId = encounter.locationId;
+          }
+
+          // set the new location
           encounter.locationId = selectedDates[0].locationId;
           locationHasChanged = true;
         }
@@ -267,6 +273,7 @@ export class EncounterCompetitionResolver {
       // check if the location has changed
       if (locationHasChanged) {
         // this.notificationService.notifyEncounterLocationChanged(encounter);
+
       }
     } else {
       this.notificationService.notifyEncounterChange(
@@ -352,6 +359,7 @@ export class EncounterCompetitionResolver {
         encounterChangeDate.availabilityAway = date.availabilityAway;
       }
 
+     
       encounterChangeDate.locationId = date.locationId;
 
       // Save the date
