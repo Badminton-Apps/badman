@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.94.2-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.94.1...v6.94.2-beta.0) (2023-07-29)
+
+
+### Bug Fixes
+
+* moving fonts to styles ([45c1207](https://github.com/Badminton-Apps/badman/commit/45c120794440d114673e3b8dbb0d4de08244fd6e))
+
 ### [6.94.1](https://github.com/Badminton-Apps/badman/compare/v6.94.0...v6.94.1) (2023-07-29)
 
 
