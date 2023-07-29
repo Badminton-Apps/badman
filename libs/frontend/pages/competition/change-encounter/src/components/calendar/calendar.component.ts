@@ -185,6 +185,16 @@ export class CalendarComponent implements OnInit {
     this._setupCalendar();
   }
 
+  filterDate = (d: Date | null): boolean => {
+    if (!d) {
+      return false;
+    }
+    
+    // filter out dates that are in the exception list
+    const format = moment(d).format('YYYY-MM-DD');
+    return !this.exceptions.has(format);
+  };
+
   private async _setupCalendar() {
     this.locations = await this._getLocations();
     this.homeTeams = await this._getTeams(this.data.homeClubId);
@@ -848,8 +858,6 @@ export class CalendarComponent implements OnInit {
     const availibilities = this.availibilities.get(format);
     const exceptions = this.exceptions.get(format);
 
-
-
     // only load availibility stating from 1st of september untill last of may
     if (
       (day.month() < 8 && day.year() == this.season) ||
@@ -866,7 +874,6 @@ export class CalendarComponent implements OnInit {
         });
       }
     }
-
 
     if (availibilities) {
       for (const availibility of availibilities) {
@@ -943,8 +950,6 @@ export class CalendarComponent implements OnInit {
           (this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId))
       );
     }
-
- 
 
     return dayInfo;
   }
