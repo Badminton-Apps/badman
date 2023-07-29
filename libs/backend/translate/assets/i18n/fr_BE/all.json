@@ -171,6 +171,14 @@
       "encounters": "Réunions",
       "title": "Piscine"
     },
+    "encounters": {
+      "change-date": "Date de modification",
+      "change-location": "Changement de lieu",
+      "change-location-note": "L'option de filtrage des changements de lieu ne fonctionne que pour les matches reprogrammés après le 30/07.",
+      "home-games": "Matchs à domicile uniquement",
+      "no-more": "Plus de rencontres",
+      "title": "Réunions"
+    },
     "home": "Accueil",
     "last-updated": "Modifié le",
     "liga": "Ligue",
@@ -184,7 +192,6 @@
       "open_close_enrollments": "Ouvrir/fermer les inscriptions"
     },
     "national": "Nationales",
-    "no-more-encounters": "Plus de rencontres",
     "no-more-games": "Plus de games",
     "note": "note : les modifications sont enregistrées immédiatement",
     "open-close": {

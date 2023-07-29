@@ -175,6 +175,14 @@ export type I18nTranslations = {
                 "encounters": string;
                 "title": string;
             };
+            "encounters": {
+                "change-date": string;
+                "change-location": string;
+                "change-location-note": string;
+                "home-games": string;
+                "no-more": string;
+                "title": string;
+            };
             "home": string;
             "last-updated": string;
             "liga": string;
@@ -188,7 +196,6 @@ export type I18nTranslations = {
                 "open_close_enrollments": string;
             };
             "national": string;
-            "no-more-encounters": string;
             "no-more-games": string;
             "note": string;
             "open-close": {

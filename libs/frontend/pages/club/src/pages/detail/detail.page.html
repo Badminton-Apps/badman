@@ -85,7 +85,7 @@
   </mat-tab>
   <mat-tab
     [label]="'all.club.titles.encounters' | translate"
-    *ngIf="this.canSelectSeason()"
+    *ngIf="this.canViewEncounter()"
   >
     <ng-template matTabContent>
       <badman-club-encounters [clubId]="this.club.id" [filter]="this.filter" />

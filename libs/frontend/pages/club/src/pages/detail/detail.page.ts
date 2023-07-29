@@ -139,11 +139,11 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   }
 
   hasPermission = toSignal(
-    this.claimService.hasAnyClaims$(['change-any:encounter'])
+    this.claimService.hasAnyClaims$(['edit-any:club'])
   );
 
 
-  canSelectSeason = computed(
+  canViewEncounter = computed(
     () => this.hasPermission() || this.versionInfo.beta
   );
 

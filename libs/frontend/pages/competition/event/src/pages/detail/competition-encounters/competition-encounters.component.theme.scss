@@ -1,0 +1,24 @@
+// info: https://material.angular.io/guide/theming-your-components
+
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+  badman-event-encounters {
+    $color-config: mat.get-color-config($theme);
+    $foreground: map.get($color-config, 'foreground');
+    $isDark: map.get($color-config, 'is-dark');
+
+    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+  }
+}
+
+@mixin typography($theme) {
+  badman-event-encounters {
+    $typography-config: mat.get-typography-config($theme);
+
+    .filters-notes {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+  }
+}
