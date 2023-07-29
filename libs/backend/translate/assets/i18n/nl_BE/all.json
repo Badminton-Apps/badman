@@ -171,6 +171,14 @@
       "encounters": "Ontmoetingen",
       "title": "Poule"
     },
+    "encounters": {
+      "change-date": "Gewijzigde datum",
+      "change-location": "Gewijzigde locatie",
+      "change-location-note": "De optie tot het filteren van locatie wijzigingen werkt enkel voor wedstrijden verlegd na 30/07",
+      "home-games": "Alleen thuiswedstrijden",
+      "no-more": "Geen ontmoetingen meer",
+      "title": "Ontmoetingen"
+    },
     "home": "Thuis",
     "last-updated": "Gewijzigd op",
     "liga": "Liga",
@@ -184,7 +192,6 @@
       "open_close_enrollments": "Open/sluit inschrijvingen"
     },
     "national": "Nationaal",
-    "no-more-encounters": "Geen ontmoetingen meer",
     "no-more-games": "Geen wedstrijden meer",
     "note": "opmerking: wijzigingen worden onmiddelijk opgeslagen",
     "open-close": {
