@@ -434,11 +434,11 @@ export class PlayersResolver {
     @User() user: Player,
     @Args('subscription') subscription: PushSubscriptionInputType
   ): Promise<boolean> {
-    if (!user) {
+    if (!user || !user?.id) {
       return false;
     }
 
-    let settings = await user.getSetting();
+    let settings = await user?.getSetting();
 
     if (!settings) {
       settings = new Setting({

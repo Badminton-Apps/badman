@@ -7,6 +7,8 @@
 @use './club-teams/club-teams.component.theme.scss' as club-teams;
 @use './club-competition/club-competition.component.theme.scss' as club-competition;
 @use './club-assembly/club-assembly.component.theme.scss' as club-assembly;
+@use './club-encounters/club-encounters.component.theme.scss' as club-encounters;
+
 
 @mixin color($theme) {
   badman-club-detail {
@@ -14,6 +16,7 @@
     @include club-teams.color($theme);
     @include club-competition.color($theme);
     @include club-assembly.color($theme);
+    @include club-encounters.color($theme);
 
     $color-config: mat.get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
@@ -29,6 +32,7 @@
     @include club-teams.typography($theme);
     @include club-competition.typography($theme);
     @include club-assembly.typography($theme);
+    @include club-encounters.typography($theme);
 
     $typography-config: mat.get-typography-config($theme);
 

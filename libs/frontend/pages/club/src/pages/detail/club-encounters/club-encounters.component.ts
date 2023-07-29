@@ -10,8 +10,9 @@ import {
   inject,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { RouterModule } from '@angular/router';
 import {
@@ -30,12 +31,14 @@ import { MomentModule } from 'ngx-moment';
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     SelectTeamComponent,
     LoadingBlockComponent,
     RouterModule,
     TranslateModule,
     MomentModule,
 
+    MatSlideToggleModule,
     MatListModule,
   ],
   templateUrl: './club-encounters.component.html',
@@ -58,26 +61,39 @@ export class ClubEncountersComponent implements OnInit {
   @Input() filter!: FormGroup;
 
   ngOnInit(): void {
-    if (!this.filter) {
-      this.filter = new FormGroup({
-        club: new FormControl(this.clubId),
-        season: new FormControl(getCurrentSeason()),
-        teams: new FormControl(),
-      });
-    }
-
-    if (this.filter.get('club')?.value !== this.clubId) {
-      this.filter.get('club')?.setValue(this.clubId);
-    }
-
-    if (!this.filter.get('teams')?.value) {
-      this.filter.addControl('teams', new FormControl([]));
-    }
+    this._setupFilter();
 
     this.encounters = toSignal(
       this.filter?.valueChanges?.pipe(
         startWith(this.filter.value ?? {}),
         switchMap((filter) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const where: Record<string, any> = {
+            $or: [
+              {
+                homeTeamId: {
+                  $in: filter.teams,
+                },
+              },
+            ],
+          };
+
+          if (!filter.onlyHomeGames) {
+            where['$or'].push({
+              awayTeamId: {
+                $in: filter.teams,
+              },
+            });
+          }
+
+          if (filter.changedDate) {
+            where['originalDate'] = { $ne: null };
+          }
+
+          if (filter.changedLocation) {
+            where['originalLocationId'] = { $ne: null };
+          }
+
           return this.apollo.watchQuery<{
             encounterCompetitions: {
               count: number;
@@ -114,20 +130,7 @@ export class ClubEncountersComponent implements OnInit {
               }
             `,
             variables: {
-              where: {
-                $or: [
-                  {
-                    homeTeamId: {
-                      $in: filter.teams,
-                    },
-                  },
-                  {
-                    awayTeamId: {
-                      $in: filter.teams,
-                    },
-                  },
-                ],
-              },
+              where,
             },
           }).valueChanges;
         }),
@@ -140,5 +143,41 @@ export class ClubEncountersComponent implements OnInit {
       ),
       { injector: this.injector }
     );
+  }
+
+  private _setupFilter() {
+    if (!this.filter) {
+      this.filter = new FormGroup({
+        club: new FormControl(this.clubId),
+        season: new FormControl(getCurrentSeason()),
+        teams: new FormControl(),
+        onlyHomeGames: new FormControl(true),
+        changedDate: new FormControl(false),
+        changedLocation: new FormControl(false),
+      });
+    }
+    if (this.filter.get('club')?.value !== this.clubId) {
+      this.filter.get('club')?.setValue(this.clubId);
+    }
+
+    if (!this.filter.get('teams')?.value) {
+      this.filter.addControl('teams', new FormControl([]));
+    }
+
+    if (!this.filter.get('season')?.value) {
+      this.filter.addControl('season', new FormControl(getCurrentSeason()));
+    }
+
+    if (!this.filter.get('changedDate')?.value) {
+      this.filter.addControl('changedDate', new FormControl(false));
+    }
+
+    if (!this.filter.get('changedLocation')?.value) {
+      this.filter.addControl('changedLocation', new FormControl(false));
+    }
+
+    if (!this.filter.get('onlyHomeGames')?.value) {
+      this.filter.addControl('onlyHomeGames', new FormControl(true));
+    }
   }
 }
