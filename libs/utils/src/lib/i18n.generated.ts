@@ -87,6 +87,12 @@ export type I18nTranslations = {
                     "title": string;
                 };
             };
+            "encounters": {
+                "change-date": string;
+                "change-location": string;
+                "change-location-note": string;
+                "home-games": string;
+            };
             "end": string;
             "menu": {
                 "add-player": string;
