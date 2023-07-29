@@ -13,6 +13,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { RouterModule } from '@angular/router';
@@ -20,16 +21,17 @@ import {
   LoadingBlockComponent,
   SelectTeamComponent,
 } from '@badman/frontend-components';
-import { EncounterCompetition } from '@badman/frontend-models';
-import { getCurrentSeason } from '@badman/utils';
+import {
+  EncounterCompetition,
+  EventCompetition,
+} from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { MomentModule } from 'ngx-moment';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'badman-club-encounters',
+  selector: 'badman-competition-encounters',
   standalone: true,
   imports: [
     CommonModule,
@@ -44,10 +46,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatListModule,
     MatProgressBarModule,
   ],
-  templateUrl: './club-encounters.component.html',
-  styleUrls: ['./club-encounters.component.scss'],
+  templateUrl: './competition-encounters.component.html',
+  styleUrls: ['./competition-encounters.component.scss'],
 })
-export class ClubEncountersComponent implements OnInit {
+export class CompetitionEncountersComponent implements OnInit {
   // injects
   apollo = inject(Apollo);
   injector = inject(Injector);
@@ -60,7 +62,7 @@ export class ClubEncountersComponent implements OnInit {
   loading = signal(true);
 
   // Inputs
-  @Input({ required: true }) clubId?: string;
+  @Input({ required: true }) eventId?: string;
 
   @Input() filter!: FormGroup;
 
@@ -75,23 +77,7 @@ export class ClubEncountersComponent implements OnInit {
         startWith(this.filter.value ?? {}),
         switchMap((filter) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const where: Record<string, any> = {
-            $or: [
-              {
-                homeTeamId: {
-                  $in: filter.teams,
-                },
-              },
-            ],
-          };
-
-          if (!filter.onlyHomeGames) {
-            where['$or'].push({
-              awayTeamId: {
-                $in: filter.teams,
-              },
-            });
-          }
+          const where: Record<string, any> = {};
 
           if (filter.changedDate) {
             where['originalDate'] = { $ne: null };
@@ -102,34 +88,32 @@ export class ClubEncountersComponent implements OnInit {
           }
 
           return this.apollo.watchQuery<{
-            encounterCompetitions: {
-              count: number;
-              rows: Partial<EncounterCompetition>[];
-            };
+            eventCompetition: Partial<EventCompetition>;
           }>({
             query: gql`
-              query GetTeamEncounters($where: JSONObject) {
-                encounterCompetitions(where: $where) {
-                  count
-                  rows {
+              query GetEventEncounters(
+                $id: ID!
+                $where: JSONObject
+              ) {
+                eventCompetition(id: $id) {
+                  id
+                  subEventCompetitions {
                     id
-                    date
-                    home {
+                    drawCompetitions {
                       id
-                      name
-                    }
-                    away {
-                      id
-                      name
-                    }
-                    homeScore
-                    awayScore
-                    drawCompetition {
-                      id
-                      subEventCompetition {
+                      encounterCompetitions(where: $where) {
                         id
-                        eventType
-                        eventId
+                        date
+                        home {
+                          id
+                          name
+                        }
+                        away {
+                          id
+                          name
+                        }
+                        homeScore
+                        awayScore
                       }
                     }
                   }
@@ -137,15 +121,18 @@ export class ClubEncountersComponent implements OnInit {
               }
             `,
             variables: {
+              id: this.eventId,
               where,
             },
           }).valueChanges;
         }),
-        map((result) => {
-          return result?.data?.encounterCompetitions.rows;
-        }),
-        map((encounters) =>
-          encounters?.map((encounter) => new EncounterCompetition(encounter))
+        map((result) => new EventCompetition(result?.data?.eventCompetition)),
+        map((event) =>
+          event.subEventCompetitions
+            ?.map((s) => s.drawCompetitions ?? [])
+            ?.map((d) => d?.map((d) => d.encounterCompetitions ?? []))
+            ?.flat(2)
+            ?.filter((e) => !!e) ?? []
         ),
         tap(() => {
           this.loading.set(false);
@@ -158,24 +145,13 @@ export class ClubEncountersComponent implements OnInit {
   private _setupFilter() {
     if (!this.filter) {
       this.filter = new FormGroup({
-        club: new FormControl(this.clubId),
-        season: new FormControl(getCurrentSeason()),
-        teams: new FormControl(),
-        onlyHomeGames: new FormControl(true),
+        event: new FormControl(this.eventId),
         changedDate: new FormControl(false),
         changedLocation: new FormControl(false),
       });
     }
-    if (this.filter.get('club')?.value !== this.clubId) {
-      this.filter.get('club')?.setValue(this.clubId);
-    }
-
-    if (!this.filter.get('teams')?.value) {
-      this.filter.addControl('teams', new FormControl([]));
-    }
-
-    if (!this.filter.get('season')?.value) {
-      this.filter.addControl('season', new FormControl(getCurrentSeason()));
+    if (this.filter.get('event')?.value !== this.eventId) {
+      this.filter.get('event')?.setValue(this.eventId);
     }
 
     if (!this.filter.get('changedDate')?.value) {
@@ -184,10 +160,6 @@ export class ClubEncountersComponent implements OnInit {
 
     if (!this.filter.get('changedLocation')?.value) {
       this.filter.addControl('changedLocation', new FormControl(false));
-    }
-
-    if (!this.filter.get('onlyHomeGames')?.value) {
-      this.filter.addControl('onlyHomeGames', new FormControl(true));
     }
   }
 }
