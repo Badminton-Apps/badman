@@ -8,13 +8,15 @@
       (selectionChange)="this.selectTeam($event)"
     >
       <ng-container *ngIf="this.teams$ | async as teams">
-        <button mat-button (click)="selectAll(teams)">
-          {{ 'all.button.all' | translate }}
-        </button>
-        <button mat-button (click)="deselectAll()">
-          {{ 'all.button.none' | translate }}
-        </button>
-
+        <ng-container *ngIf="this.multiple">
+          <button mat-button (click)="selectAll(teams)">
+            {{ 'all.button.all' | translate }}
+          </button>
+          <button mat-button (click)="deselectAll()">
+            {{ 'all.button.none' | translate }}
+          </button>
+        </ng-container>
+        
         <mat-optgroup
           *ngFor="let group of teams"
           [label]="'all.pickers.select-team-groups.' + group.type | translate"
