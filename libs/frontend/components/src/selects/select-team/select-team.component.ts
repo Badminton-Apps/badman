@@ -20,6 +20,8 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
@@ -40,7 +42,7 @@ import {
   startWith,
   switchMap,
   take,
-  takeUntil
+  takeUntil,
 } from 'rxjs';
 
 @Component({
@@ -57,6 +59,7 @@ import {
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatButtonModule,
     MatAutocompleteModule,
     MatSelectModule,
   ],
@@ -349,6 +352,16 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
           return result.data.teams?.map((team) => team?.id);
         })
       );
+  }
+
+  selectAll(options: { type: string; teams: Team[] }[]) {
+    this.control.setValue(
+      options.map((option) => option.teams?.map((team) => team.id)).flat()
+    );
+  }
+
+  deselectAll() {
+    this.control.setValue([]);
   }
 
   ngOnDestroy() {
