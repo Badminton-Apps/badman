@@ -22,12 +22,7 @@
           "apps/badman/src/manifest.prod.json",
           "apps/badman/src/robots.txt",
           "apps/badman/src/sitemap.xml",
-          "apps/badman/src/ads.txt",
-          {
-            "glob": "**/*",
-            "input": "node_modules/@builder.io/partytown/lib",
-            "output": "/~partytown"
-          }
+          "apps/badman/src/ads.txt"
         ],
         "allowedCommonJsDependencies": [
           "moment",
@@ -47,7 +42,6 @@
           "node_modules/@fontsource/roboto/400.css",
           "node_modules/@fontsource/roboto/500.css",
           "node_modules/material-icons/iconfont/material-icons.css"
-
         ],
         "scripts": ["node_modules/apexcharts/dist/apexcharts.js"],
         "serviceWorker": true,

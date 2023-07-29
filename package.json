@@ -57,7 +57,6 @@
     "@apollo/utils.keyvadapter": "^3.0.0",
     "@as-integrations/fastify": "^2.0.0",
     "@auth0/auth0-angular": "2.1.0",
-    "@builder.io/partytown": "^0.8.0",
     "@fast-csv/parse": "^4.3.6",
     "@fontsource/roboto": "^5.0.3",
     "@keyv/redis": "^2.6.1",
