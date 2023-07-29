@@ -23,7 +23,7 @@ export const GOOGLEANALYTICS_CONFIG_TOKEN =
 export type GoogleAnalyticsConfiguration = Readonly<{
   enabled: boolean;
   tag: string;
-  scriptType?: "text/partytown" | "text/javascript" | string;
+  scriptType?:  "text/javascript" | string;
 }>;
 
 @NgModule({})
