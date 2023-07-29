@@ -46,6 +46,7 @@
           placeholder="Choose a date"
           [min]="this.minDate"
           [max]="this.maxDate"
+          [ngxMatDatetimePickerFilter]="filterDate"
           [formControl]="manualDateControl"
         />
         <mat-datepicker-toggle
