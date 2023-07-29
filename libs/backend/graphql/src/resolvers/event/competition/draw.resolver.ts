@@ -65,9 +65,10 @@ export class DrawCompetitionResolver {
 
   @ResolveField(() => [EncounterCompetition])
   async encounterCompetitions(
-    @Parent() draw: DrawCompetition
+    @Parent() draw: DrawCompetition,
+    @Args() listArgs: ListArgs
   ): Promise<EncounterCompetition[]> {
-    return draw.getEncounterCompetitions();
+    return draw.getEncounterCompetitions(ListArgs.toFindOptions(listArgs));
   }
 
   @Mutation(() => DrawCompetition)

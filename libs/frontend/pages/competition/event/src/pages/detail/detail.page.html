@@ -142,11 +142,19 @@
     </ng-template>
   </mat-tab>
   <mat-tab
+    [label]="'all.club.titles.encounters' | translate"
+    *ngIf="this.canViewEncounter()"
+  >
+    <ng-template matTabContent>
+      <badman-competition-encounters [eventId]="this.eventCompetition.id" />
+    </ng-template>
+  </mat-tab>
+  <mat-tab
     [label]="'all.competition.team-enrollment.title' | translate"
     *ngIf="this.canViewEnrollments?.()"
   >
     <ng-template matTabContent>
-      <badman-competition-enrollments [eventId]="eventCompetition.id" />
+      <badman-competition-enrollments [eventId]="this.eventCompetition.id" />
     </ng-template>
   </mat-tab>
 </mat-tab-group>
