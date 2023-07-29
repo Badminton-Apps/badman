@@ -177,10 +177,15 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           const paramClubId = params.get('club');
 
           if (paramClubId) {
-            this.selectClub(paramClubId, false);
+            const foundClub = rows?.find((r) => r.id == paramClubId)?.id ?? null;
+            this.selectClub(foundClub, false);
+
           } else if (rows?.length == 1 && this.autoSelect) {
             this.selectClub(rows[0].id, false);
           }
+
+
+
           // if no club is selected and the user has clubs, pick the first one
           else if (user?.clubs && this.autoSelect) {
             const clubIds = user?.clubs
