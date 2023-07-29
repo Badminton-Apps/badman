@@ -19,6 +19,9 @@ export class EncounterCompetition {
   drawId?: string;
   locationId?: string;
   location?: Location;
+  originalLocationId?: Date;
+  originalLocation?: Location;
+
 
   homeTeamId?: string;
   awayTeamId?: string;

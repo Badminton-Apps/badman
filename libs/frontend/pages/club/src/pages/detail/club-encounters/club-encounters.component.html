@@ -1,9 +1,29 @@
-<badman-select-team
-  [group]="filter"
-  controlName="teams"
-  [multiple]="true"
-  autoSelect="all"
-></badman-select-team>
+<div class="filters">
+  <div class="filters-team">
+    <badman-select-team
+      [group]="filter"
+      controlName="teams"
+      [multiple]="true"
+      autoSelect="all"
+    ></badman-select-team>
+  </div>
+
+  <div class="filters-encounter" [formGroup]="filter">
+    <mat-slide-toggle formControlName="changedDate">{{
+      'all.club.encounters.change-date' | translate
+    }}</mat-slide-toggle>
+    <mat-slide-toggle formControlName="changedLocation">{{
+      'all.club.encounters.change-location' | translate
+    }}</mat-slide-toggle>
+    <mat-slide-toggle formControlName="onlyHomeGames">{{
+      'all.club.encounters.home-games' | translate
+    }}</mat-slide-toggle>
+  </div>
+</div>
+
+<p class="filters-notes">
+  {{ 'all.club.encounters.change-location-note' | translate }}
+</p>
 
 <ng-container *ngIf="this.encounters; else loadingPlayers">
   <section class="encounters">
@@ -43,12 +63,14 @@
           >
           <span
             *ngIf="
-              (encounter.homeScore ?? -1) >= 0 && (encounter.awayScore ?? -1) >= 0
+              (encounter.homeScore ?? -1) > 0 && (encounter.awayScore ?? -1) > 0
             "
             >&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span
           >
         </span>
-        <span matListItemLine>{{ encounter?.date | amDateFormat : 'llll' }}</span>
+        <span matListItemLine>{{
+          encounter?.date | amDateFormat : 'llll'
+        }}</span>
       </mat-list-item>
     </mat-nav-list>
   </section>

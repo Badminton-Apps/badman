@@ -83,6 +83,12 @@
         "title": "Team verwijderen"
       }
     },
+    "encounters": {
+      "change-date": "Gewijzigde datum",
+      "change-location": "Gewijzigde locatie",
+      "change-location-note": "De optie tot het filteren van locatie wijzigingen werkt enkel voor wedstrijden verlegd na 30/07",
+      "home-games": "Alleen thuiswedstrijden"
+    },
     "end": "Einde",
     "menu": {
       "add-player": "Voeg speler toe",

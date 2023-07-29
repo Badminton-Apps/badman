@@ -26,7 +26,7 @@ import {
 } from '@badman/frontend-components';
 import { Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { SubEventTypeEnum, getCurrentSeason } from '@badman/utils';
+import { SubEventTypeEnum, getCurrentSeason, sortTeams } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
@@ -95,8 +95,8 @@ export class ClubTeamsComponent implements OnInit {
         switchMap((filter) => {
           return this.apollo.watchQuery<{ teams: Partial<Team>[] }>({
             query: gql`
-              query Teams($order: [SortOrderType!], $teamsWhere: JSONObject) {
-                teams(order: $order, where: $teamsWhere) {
+              query Teams($teamsWhere: JSONObject) {
+                teams(where: $teamsWhere) {
                   id
                   name
                   slug
@@ -126,16 +126,6 @@ export class ClubTeamsComponent implements OnInit {
                 season: filter?.season,
                 type: filter?.choices,
               },
-              order: [
-                {
-                  field: 'type',
-                  direction: 'desc',
-                },
-                {
-                  field: 'teamNumber',
-                  direction: 'asc',
-                },
-              ],
             },
           }).valueChanges;
         }),
@@ -150,6 +140,7 @@ export class ClubTeamsComponent implements OnInit {
           }
           return result.data.teams?.map((team) => new Team(team));
         }),
+        map((teams) => teams.sort(sortTeams)),
         tap(() => {
           this.loading.set(false);
         })

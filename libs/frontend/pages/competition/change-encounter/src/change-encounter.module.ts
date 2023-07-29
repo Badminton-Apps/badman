@@ -16,7 +16,7 @@ import { AuthGuard } from '@badman/frontend-auth';
         canActivate: [AuthGuard],
         data: {
           claims: {
-            any: ['[:id]_change:encounter', 'change-any:encounter'],
+            any: ['*_change:encounter', 'change-any:encounter'],
           },
         },
       },
