@@ -234,8 +234,11 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
           (value, index, self) =>
             self.findIndex((m) => m.id === value.id) === index
         )
-      ),
-      // trying
+      )
+    );
+
+    // TODO: Implement in above pipe, once rxjs stops doing weird
+    search$.pipe(
       tap((result) => {
         // if only one result, select it
         if (result?.length === 1) {
