@@ -1,4 +1,4 @@
-<mat-form-field >
+<mat-form-field>
   <mat-label>{{ this.label ?? 'search.player' | translate }}</mat-label>
   <input
     type="text"
@@ -6,7 +6,12 @@
     [formControl]="formControl"
     [matAutocomplete]="auto"
   />
-  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    [displayWith]="displayFn"
+    [autoSelectActiveOption]="true"
+    [autoActiveFirstOption]="true"
+  >
     <ng-container *ngIf="this.filteredOptions$ | async as options">
       <mat-option *ngFor="let option of options" [value]="option">
         <span>{{ option.fullName }}</span
@@ -15,3 +20,4 @@
     </ng-container>
   </mat-autocomplete>
 </mat-form-field>
+
