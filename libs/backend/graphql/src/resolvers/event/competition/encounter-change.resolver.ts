@@ -22,7 +22,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { ListArgs } from '../../../utils';
 
 import { User } from '@badman/backend-authorization';
