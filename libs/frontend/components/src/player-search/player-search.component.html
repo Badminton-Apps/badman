@@ -6,11 +6,15 @@
       matInput
       [formControl]="formControl"
       [matAutocomplete]="auto"
+      (blur)="this.inputBlur()"
     />
     <mat-autocomplete
+      autoActiveFirstOption
+      autoSelectActiveOption
+      (optionActivated)="this.optionActivated($event)"
       #auto="matAutocomplete"
       [displayWith]="displayFn"
-      (optionSelected)="selectedPlayer($event)"
+      (optionSelected)="this.selectedPlayer($event)"
     >
       <ng-container *ngIf="this.filteredOptions$ | async as options">
         <mat-option
