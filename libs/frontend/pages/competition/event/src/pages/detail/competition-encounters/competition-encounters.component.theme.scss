@@ -4,7 +4,7 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  badman-event-encounters {
+  badman-competition-encounters {
     $color-config: mat.get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
     $isDark: map.get($color-config, 'is-dark');
@@ -14,7 +14,7 @@
 }
 
 @mixin typography($theme) {
-  badman-event-encounters {
+  badman-competition-encounters {
     $typography-config: mat.get-typography-config($theme);
 
     .filters-notes {

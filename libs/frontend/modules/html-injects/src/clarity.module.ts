@@ -29,7 +29,7 @@ const CLARITY_CONFIG_TOKEN = new InjectionToken<ClarityConfiguration>(
 export type ClarityConfiguration = Readonly<{
   enabled: boolean;
   projectId: string;
-  scriptType?: "text/partytown" | "text/javascript" | string;
+  scriptType?:  "text/javascript" | string;
 }>;
 
 @NgModule({})

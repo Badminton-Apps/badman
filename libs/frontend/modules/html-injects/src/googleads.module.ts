@@ -25,7 +25,7 @@ export type GoogleAdsConfiguration = Readonly<{
     sidebar: number;
     beta: number
   };
-  scriptType?: "text/partytown" | "text/javascript" | string;
+  scriptType?:  "text/javascript" | string;
 }>;
 
 @NgModule({})

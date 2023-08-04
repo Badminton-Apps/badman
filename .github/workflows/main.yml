@@ -57,9 +57,9 @@ jobs:
       parallel-commands: |
         npx nx-cloud record -- npx nx workspace-lint
       parallel-commands-on-agents: |
-        npx nx affected --target=build --parallel=3 --configuration production 
-        npx nx affected --target=lint --parallel=3 --configuration production
-        npx nx affected --target=test --parallel=3 --configuration production --ci --code-coverage
+        npx nx affected --target=build --parallel=3 --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
+        npx nx affected --target=lint --parallel=3 --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
+        npx nx affected --target=test --parallel=3 --configuration ${{ inputs.prod-release && 'production' || 'beta'}}  --ci --code-coverage
         # npx nx affected --target=server
       timeout: 15
 

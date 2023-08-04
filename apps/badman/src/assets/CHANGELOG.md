@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.95.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.95.0-beta.0...v6.95.0-beta.1) (2023-08-04)
+
+
+### Features
+
+* cancel request ([346fd93](https://github.com/Badminton-Apps/badman/commit/346fd930731c0d299167c6b0850dad264232b886))
+
+
+### Bug Fixes
+
+* don't go past the comp period ([0a7b98a](https://github.com/Badminton-Apps/badman/commit/0a7b98a0ba48b0439a0611bae2d219231a875131))
+* login show popup ([cdcd0f8](https://github.com/Badminton-Apps/badman/commit/cdcd0f807d7cab0a6962310d71be268098bc95ad))
+* spacing between team names and VS ([2c0044e](https://github.com/Badminton-Apps/badman/commit/2c0044e041b50d51a7f00c92394c8e9ca4552c1d))
+
+## [6.95.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.94.2-beta.0...v6.95.0-beta.0) (2023-08-02)
+
+
+### Features
+
+* removing partytown (not using it) ([0f49491](https://github.com/Badminton-Apps/badman/commit/0f49491415ae10d42098b85e8092e0c8bb23eb05))
+
+
+### Bug Fixes
+
+* apply theme styling ([9eb5db3](https://github.com/Badminton-Apps/badman/commit/9eb5db39806bb52b2089db3378f87f0a1358bee9))
+* Rxjs doing weird, temporary workaround ([31dd756](https://github.com/Badminton-Apps/badman/commit/31dd7562a1c1ac7d901ecfc13dd3e2429f5cbe08))
+* should hopefully help fixing the player selection not working ([f93569f](https://github.com/Badminton-Apps/badman/commit/f93569fdd4075a56a073edeb1bfd82d39f45df87))
+
+### [6.94.2-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.94.1...v6.94.2-beta.0) (2023-07-29)
+
+
+### Bug Fixes
+
+* moving fonts to styles ([45c1207](https://github.com/Badminton-Apps/badman/commit/45c120794440d114673e3b8dbb0d4de08244fd6e))
+
 ### [6.94.1](https://github.com/Badminton-Apps/badman/compare/v6.94.0...v6.94.1) (2023-07-29)
 
 
