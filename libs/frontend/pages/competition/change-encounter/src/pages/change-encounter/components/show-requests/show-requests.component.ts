@@ -35,7 +35,10 @@ import {
   EncounterChangeDate,
   EncounterCompetition,
 } from '@badman/frontend-models';
-import { ChangeEncounterAvailability } from '@badman/utils';
+import {
+  ChangeEncounterAvailability,
+  getCurrentSeasonPeriod,
+} from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -208,17 +211,23 @@ export class ShowRequestsComponent implements OnInit {
         .reduce((a, b) => (a > b ? a : b)) as Date;
     }
 
-    const newDate = new EncounterChangeDate({
-      date: moment(lastDate).add(1, 'week').toDate(),
+    let newDate = moment(lastDate).add(1, 'week');
+    const period = getCurrentSeasonPeriod()?.map((d) => moment(d));
+    if (newDate.isAfter(period[1])) {
+      newDate = period[1].subtract(1, 'day');
+    }
+
+    const newChange = new EncounterChangeDate({
+      date: newDate.toDate(),
     });
 
     if (this.home) {
-      newDate.availabilityHome = ChangeEncounterAvailability.POSSIBLE;
+      newChange.availabilityHome = ChangeEncounterAvailability.POSSIBLE;
     } else {
-      newDate.availabilityAway = ChangeEncounterAvailability.POSSIBLE;
+      newChange.availabilityAway = ChangeEncounterAvailability.POSSIBLE;
     }
 
-    this._addDateControl(newDate);
+    this._addDateControl(newChange);
   }
 
   removeDate(control: FormArray, index: number) {
