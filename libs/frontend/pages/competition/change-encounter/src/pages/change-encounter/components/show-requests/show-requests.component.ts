@@ -235,8 +235,6 @@ export class ShowRequestsComponent implements OnInit {
   }
 
   async save() {
-    console.log('save', this.formGroupRequest.valid);
-
     if (this.running) {
       return;
     }
@@ -386,6 +384,36 @@ export class ShowRequestsComponent implements OnInit {
 
     this.running = false;
     this._cd.detectChanges();
+  }
+
+  async cancel() {
+    await lastValueFrom(
+      this._apollo.mutate<{
+        addChangeEncounter: EncounterChange;
+      }>({
+        mutation: gql`
+          mutation UpdateChangeEncounter($data: EncounterChangeUpdateInput!) {
+            updateEncounterChange(data: $data) {
+              accepted
+            }
+          }
+        `,
+        variables: {
+          data: {
+            id: this.encounter.encounterChange?.id,
+            accepted: true,
+          },
+        },
+        refetchQueries: () => [
+          {
+            query: CHANGE_QUERY,
+            variables: {
+              id: this.encounter.encounterChange?.id,
+            },
+          },
+        ],
+      })
+    );
   }
 
   reOpen() {
