@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
+  MatAutocompleteActivatedEvent,
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
@@ -26,21 +27,21 @@ import { Club, Player } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import {
-  lastValueFrom,
-  merge,
   Observable,
-  of,
   ReplaySubject,
   Subject,
+  lastValueFrom,
+  merge,
+  of,
 } from 'rxjs';
 import {
   debounceTime,
   filter,
+  tap,
   map,
   startWith,
   switchMap,
   takeUntil,
-  tap,
 } from 'rxjs/operators';
 import { PlayerFieldsComponent } from '../fields';
 
@@ -104,6 +105,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
   ignorePlayersIds?: string[] = [];
 
   formControl!: FormControl;
+  activeValue?: Player;
 
   filteredOptions$!: Observable<Player[]>;
   clear$: ReplaySubject<Player[]> = new ReplaySubject(0);
@@ -226,13 +228,23 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
           return of([]);
         }
       }),
-      // Distinct by id
       map((result) =>
+        // Distinct by id
         result?.filter(
           (value, index, self) =>
             self.findIndex((m) => m.id === value.id) === index
         )
       )
+    );
+
+    // TODO: Implement in above pipe, once rxjs stops doing weird
+    search$.pipe(
+      tap((result) => {
+        // if only one result, select it
+        if (result?.length === 1) {
+          this._selectPlayer(result[0]);
+        }
+      })
     );
 
     this.filteredOptions$ = merge(search$, this.clear$);
@@ -344,6 +356,17 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
         });
     } else {
       this._selectPlayer(event.option.value);
+    }
+  }
+
+  optionActivated(event: MatAutocompleteActivatedEvent) {
+    this.activeValue = event.option?.value;
+  }
+
+  inputBlur() {
+    if (this.activeValue) {
+      this._selectPlayer(this.activeValue);
+      this.activeValue = undefined;
     }
   }
 
