@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.95.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.95.0-beta.0...v6.95.0-beta.1) (2023-08-04)
+
+
+### Features
+
+* cancel request ([346fd93](https://github.com/Badminton-Apps/badman/commit/346fd930731c0d299167c6b0850dad264232b886))
+
+
+### Bug Fixes
+
+* don't go past the comp period ([0a7b98a](https://github.com/Badminton-Apps/badman/commit/0a7b98a0ba48b0439a0611bae2d219231a875131))
+* login show popup ([cdcd0f8](https://github.com/Badminton-Apps/badman/commit/cdcd0f807d7cab0a6962310d71be268098bc95ad))
+* spacing between team names and VS ([2c0044e](https://github.com/Badminton-Apps/badman/commit/2c0044e041b50d51a7f00c92394c8e9ca4552c1d))
+
 ## [6.95.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.94.2-beta.0...v6.95.0-beta.0) (2023-08-02)
 
 
