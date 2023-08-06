@@ -83,9 +83,9 @@ export class PlayersResolver {
     const perm = [`details-any:player`, `${player.id}_details:player`];
     if (await user.hasAnyPermission(perm)) {
       return player.phone;
-    } else {
-      throw new UnauthorizedException();
     }
+
+    return null;
   }
 
   @ResolveField(() => String)
@@ -93,9 +93,8 @@ export class PlayersResolver {
     const perm = [`details-any:player`, `${player.id}_details:player`];
     if (player.id == user.id || (await user.hasAnyPermission(perm))) {
       return player.email;
-    } else {
-      return null;
     }
+    return null;
   }
 
   @ResolveField(() => String)
@@ -103,9 +102,8 @@ export class PlayersResolver {
     const perm = [`details-any:player`, `${player.id}_details:player`];
     if (player.id == user.id || (await user.hasAnyPermission(perm))) {
       return player.birthDate;
-    } else {
-      return null;
     }
+    return null;
   }
 
   @ResolveField(() => [Claim])
