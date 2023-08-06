@@ -12,7 +12,8 @@
         "tsConfig": "libs/backend/twizzit/tsconfig.lib.json",
         "packageJson": "libs/backend/twizzit/package.json",
         "main": "libs/backend/twizzit/src/index.ts",
-        "assets": ["libs/backend-twizzit/*.md"]
+        "assets": ["libs/backend-twizzit/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

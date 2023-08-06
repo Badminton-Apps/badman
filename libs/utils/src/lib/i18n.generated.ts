@@ -52,6 +52,7 @@ export type I18nTranslations = {
             "add": string;
             "add-comment": string;
             "add-location": string;
+            "agree": string;
             "all": string;
             "cancel": string;
             "close": string;
@@ -59,6 +60,7 @@ export type I18nTranslations = {
             "delete": string;
             "detail": string;
             "done": string;
+            "download": string;
             "edit": string;
             "merge-accounts": string;
             "next": string;
@@ -169,6 +171,7 @@ export type I18nTranslations = {
                     "better-meta": string;
                     "min-level": string;
                     "other-gender": string;
+                    "title": string;
                 };
             };
             "draw": {

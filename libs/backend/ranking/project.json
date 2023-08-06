@@ -11,7 +11,8 @@
         "outputPath": "dist/libs/backend/ranking",
         "tsConfig": "libs/backend/ranking/tsconfig.lib.json",
         "packageJson": "libs/backend/ranking/package.json",
-        "main": "libs/backend/ranking/src/index.ts"
+        "main": "libs/backend/ranking/src/index.ts",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

@@ -11,7 +11,8 @@
         "outputPath": "dist/libs/backend/competition/assembly",
         "tsConfig": "libs/backend/competition/assembly/tsconfig.lib.json",
         "packageJson": "libs/backend/competition/assembly/package.json",
-        "main": "libs/backend/competition/assembly/src/index.ts"
+        "main": "libs/backend/competition/assembly/src/index.ts",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

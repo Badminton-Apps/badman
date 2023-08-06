@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,8 +18,20 @@ import { SubEventType, TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom } from 'rxjs';
+import { map, pairwise, startWith, take } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
+import {
+  PLAYERS_CONTROL,
+  TeamFieldComponent,
+  TeamPlayersComponent,
+} from '../../components';
+import { transferState } from '@badman/frontend-utils';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogModel,
+} from '@badman/frontend-components';
+import { MatDialog } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   templateUrl: './edit.page.html',
@@ -30,6 +48,7 @@ import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
     MatButtonModule,
     MatMenuModule,
     MatSnackBarModule,
+    MatProgressBarModule,
 
     // My Modules
     TeamFieldComponent,
@@ -50,7 +69,10 @@ export class EditPageComponent implements OnInit {
     private breadcrumbsService: BreadcrumbService,
     private snackBar: MatSnackBar,
     private apollo: Apollo,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog,
+    private stateTransfer: TransferState,
+    @Inject(PLATFORM_ID) private platformId: string
   ) {}
 
   ngOnInit(): void {
@@ -71,21 +93,62 @@ export class EditPageComponent implements OnInit {
 
     if (!this.group) {
       this.group = this.fb.group({
+        id: this.fb.control(this.team.id),
+        clubId: this.fb.control(this.team.clubId),
         teamNumber: this.fb.control(this.team.teamNumber),
         type: this.fb.control(this.team.type),
         captainId: this.fb.control(this.team.captainId),
         phone: this.fb.control(this.team.phone),
         email: this.fb.control(this.team.email),
         season: this.fb.control(this.team.season),
+        preferredDay: this.fb.control(this.team.preferredDay),
+        preferredTime: this.fb.control(this.team.preferredTime),
+        [PLAYERS_CONTROL]: this.fb.array(this.team.players ?? []),
       });
     }
 
-    if (!this.group.get('players')) {
-      this.group.addControl('players', this.fb.array(this.team.players ?? []));
-    }
+    this._listenForPlayers();
   }
 
-  teamUpdated() {
+  private _listenForPlayers() {
+    this.group
+      ?.get(PLAYERS_CONTROL)
+      ?.valueChanges.pipe(
+        startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []),
+        pairwise()
+      )
+      .subscribe(([prev, curr]: [TeamPlayer[], TeamPlayer[]]) => {
+        if (!prev || !curr) {
+          return;
+        }
+
+        // filter out the new players
+        const newPlayers = curr.filter(
+          (c) => !prev.some((p) => p?.id === c?.id)
+        );
+
+        // filter out the removed players
+        const removedPlayers = prev.filter(
+          (p) => !curr.some((c) => c?.id === p?.id)
+        );
+
+        // if there are new players
+        for (const player of newPlayers) {
+          if (player) {
+            this.playerAdded(player);
+          }
+        }
+
+        // if there are removed players
+        for (const player of removedPlayers) {
+          if (player) {
+            this.playerRemoved(player);
+          }
+        }
+      });
+  }
+
+  saveTeam() {
     const data = this.group?.value;
 
     return this.apollo
@@ -105,6 +168,8 @@ export class EditPageComponent implements OnInit {
             captainId: data.captainId,
             phone: data.phone,
             email: data.email,
+            preferredDay: data.preferredDay,
+            preferredTime: data.preferredTime,
           },
         },
         refetchQueries: () => ['Team', 'Teams'],
@@ -198,5 +263,44 @@ export class EditPageComponent implements OnInit {
           panelClass: 'success',
         });
       });
+  }
+
+  removeTeam() {
+    const dialogData = new ConfirmDialogModel(
+      'all.club.delete.team.title',
+      'all.club.delete.team.description'
+    );
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: dialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((dialogResult) => {
+      if (!dialogResult) {
+        return;
+      }
+
+      this.apollo
+        .mutate({
+          mutation: gql`
+            mutation DeleteTeam($id: ID!) {
+              deleteTeam(id: $id)
+            }
+          `,
+          variables: {
+            id: this.team.id,
+          },
+          refetchQueries: ['Teams'],
+        })
+        .subscribe(() => {
+          this.snackBar.open('Deleted', undefined, {
+            duration: 1000,
+            panelClass: 'success',
+          });
+
+          // redirect to club
+        });
+    });
   }
 }

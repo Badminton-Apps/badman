@@ -10,7 +10,8 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/modules/pdf/tsconfig.lib.json",
-        "project": "libs/frontend/modules/pdf/ng-package.json"
+        "project": "libs/frontend/modules/pdf/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {
         "production": {

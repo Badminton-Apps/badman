@@ -10,7 +10,8 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/modules/auth/tsconfig.lib.json",
-        "project": "libs/frontend/modules/auth/ng-package.json"
+        "project": "libs/frontend/modules/auth/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {
         "production": {
