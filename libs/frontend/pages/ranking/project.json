@@ -10,7 +10,8 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/pages/ranking/tsconfig.lib.json",
-        "project": "libs/frontend/pages/ranking/ng-package.json"
+        "project": "libs/frontend/pages/ranking/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {
         "production": {

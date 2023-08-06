@@ -11,7 +11,8 @@
         "outputPath": "dist/libs/backend/queue",
         "tsConfig": "libs/backend/queue/tsconfig.lib.json",
         "packageJson": "libs/backend/queue/package.json",
-        "main": "libs/backend/queue/src/index.ts"
+        "main": "libs/backend/queue/src/index.ts",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
