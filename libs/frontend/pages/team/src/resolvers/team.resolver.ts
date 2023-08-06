@@ -23,6 +23,30 @@ export class TeamResolver {
             team(id: $id) {
               id
               name
+              slug
+              teamNumber
+              season
+              captainId
+              type
+              clubId
+              email
+              phone
+              preferredDay
+              preferredTime
+              entry {
+                id
+                date
+                subEventCompetition {
+                  id
+                  name
+                }
+              }
+              players {
+                id
+                fullName
+                membershipType
+                teamId
+              }
             }
           }
         `,
