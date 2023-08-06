@@ -30,7 +30,7 @@
         [class.spinner]="this.pdfLoading"
         [disabled]="this.pdfLoading"
       >
-        Download
+        {{'all.button.download' | translate}}
       </button>
       <ng-container *ngIf="this.authenticate.loggedIn">
         <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -45,7 +45,7 @@
             (click)="this.save()"
           >
             <mat-icon>save</mat-icon>
-            Save
+            {{'all.button.save' | translate}}
           </button>
         </mat-menu></ng-container
       >
@@ -70,7 +70,7 @@
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button [matDialogClose]="true">
-        {{'all.button.add' | translate}}
+        {{'all.button.agree' | translate}}
       </button>
       <button mat-button matDialogClose color="primary">
         {{'all.button.cancel' | translate}}

@@ -48,6 +48,7 @@
     "add": "Add",
     "add-comment": "Send comment",
     "add-location": "Add Location",
+    "agree": "Ok",
     "all": "All",
     "cancel": "Cancel",
     "close": "Close",
@@ -55,6 +56,7 @@
     "delete": "Delete",
     "detail": "Details",
     "done": "Done",
+    "download": "Download",
     "edit": "Edit",
     "merge-accounts": "Combine accounts",
     "next": "Next",
@@ -164,7 +166,8 @@
         "base-subevent": "{player.fullName} is starting player of another team in the same series",
         "better-meta": "{player.fullName} is better than one of the starting players, be careful not to undershoot the team index.",
         "min-level": "Allowed ranking is {maxLevel} while {player.fullName} is{level} in {type} ",
-        "other-gender": "{player.fullName} is a {playerGender}, but the team is for the {teamType}"
+        "other-gender": "{player.fullName} is a {playerGender}, but the team is for the {teamType}",
+        "title": "Problems were found with your assembly"
       }
     },
     "draw": {
