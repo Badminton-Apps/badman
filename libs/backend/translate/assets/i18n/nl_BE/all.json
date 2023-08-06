@@ -48,6 +48,7 @@
     "add": "Voeg toe",
     "add-comment": "Verstuur opmerking",
     "add-location": "Voeg locatie toe",
+    "agree": "Ok",
     "all": "Alles",
     "cancel": "Annuleren",
     "close": "Sluiten",
@@ -55,6 +56,7 @@
     "delete": "Verwijderen",
     "detail": "Details",
     "done": "Klaar",
+    "download": "Download",
     "edit": "Bewerken",
     "merge-accounts": "Combineer accounts",
     "next": "Volgende",
@@ -164,7 +166,8 @@
         "base-subevent": "{player.fullName} is basisspeler van een ander team in dezelfde afdeling.",
         "better-meta": "{player.fullName} is beter dan één van de basisspelers, pas op dat je de ploegindex niet onderschrijdt.",
         "min-level": "Toegelaten klassement is {maxLevel} terwijl {player.fullName} {level} is in {type} ",
-        "other-gender": "{player.fullName} is een {playerGender}, maar het team is voor de {teamType}"
+        "other-gender": "{player.fullName} is een {playerGender}, maar het team is voor de {teamType}",
+        "title": "Er zijn problemen gevonden met je opstelling"
       }
     },
     "draw": {
