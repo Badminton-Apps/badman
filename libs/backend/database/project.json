@@ -11,7 +11,8 @@
         "outputPath": "dist/libs/backend/database",
         "tsConfig": "libs/backend/database/tsconfig.lib.json",
         "packageJson": "libs/backend/database/package.json",
-        "main": "libs/backend/database/src/index.ts"
+        "main": "libs/backend/database/src/index.ts",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

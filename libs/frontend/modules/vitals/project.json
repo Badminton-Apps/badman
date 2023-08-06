@@ -10,7 +10,8 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/modules/vitals/tsconfig.lib.json",
-        "project": "libs/frontend/modules/vitals/ng-package.json"
+        "project": "libs/frontend/modules/vitals/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {
         "production": {
