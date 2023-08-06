@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.96.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.95.0...v6.96.0-beta.0) (2023-08-06)
+
+
+### Features
+
+* team edit on edit page ([e84ef88](https://github.com/Badminton-Apps/badman/commit/e84ef88866c16637f8c7659676149c79d5037e8b))
+* translate some labels in team assembly ([918181f](https://github.com/Badminton-Apps/badman/commit/918181f8ff00fcf8c60a5071597902a754679d65))
+
+
+### Bug Fixes
+
+* assigning team captain ([7f2c443](https://github.com/Badminton-Apps/badman/commit/7f2c4433186815747ff55546a3d1fa41d742bcd1))
+* **deps:** update dependency puppeteer to v21 ([1ac0fc2](https://github.com/Badminton-Apps/badman/commit/1ac0fc23c652191c8659ddaadee7061abe218de6))
+* filter was renamed ([64d05ee](https://github.com/Badminton-Apps/badman/commit/64d05ee07933e466158e33e1e08f27af6f613d8b))
+* styling in new version is applied correctly ([3f069a8](https://github.com/Badminton-Apps/badman/commit/3f069a8b1ccb61331579ec6d9eda63fbe8fc6130))
+
 ## [6.95.0](https://github.com/Badminton-Apps/badman/compare/v6.95.0-beta.1...v6.95.0) (2023-08-04)
 
 ## [6.95.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.95.0-beta.0...v6.95.0-beta.1) (2023-08-04)
