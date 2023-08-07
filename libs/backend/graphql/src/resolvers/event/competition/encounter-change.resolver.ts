@@ -193,7 +193,11 @@ export class EncounterChangeCompetitionResolver {
           encounter.locationId = selectedDates[0].locationId;
           locationHasChanged = true;
         }
-
+        
+        // Save cahnges
+        // Must be before Sync Queue is triggered (othrwise wrong date is passed)
+        await encounter.save({ transaction });
+       
         // Accept
         await this.syncQueue.add(
           Sync.ChangeDate,
@@ -206,8 +210,6 @@ export class EncounterChangeCompetitionResolver {
           }
         );
 
-        // Save cahnges
-        encounter.save({ transaction });
         encounterChange.accepted = true;
       } else {
         encounterChange.accepted = false;
