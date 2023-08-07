@@ -10,7 +10,8 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/pages/competition/team-enrollment/tsconfig.lib.json",
-        "project": "libs/frontend/pages/competition/team-enrollment/ng-package.json"
+        "project": "libs/frontend/pages/competition/team-enrollment/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {
         "production": {

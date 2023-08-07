@@ -228,8 +228,10 @@ export class CompileService implements CompileInterface, OnModuleInit {
 
   private prepareHtmlTemplate(html: string): string {
     if ((this.moduleOptions.debug ?? false) === true) {
+      const path = join(this.moduleOptions.view.root, 'un_juiced.html');
+      this.logger.debug(`Writing html to file ${path}`);
       // write file in original folder before juice so we can test
-      writeFile(join(this.moduleOptions.view.root, 'un_juiced.html'), html);
+      writeFile(path, html);
     }
 
     const juiced = juice(html, this.moduleOptions.juice);

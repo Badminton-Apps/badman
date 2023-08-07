@@ -12,7 +12,8 @@
         "tsConfig": "libs/backend/micro/tsconfig.lib.json",
         "packageJson": "libs/backend/micro/package.json",
         "main": "libs/backend/micro/src/index.ts",
-        "assets": ["libs/backend/micro/*.md"]
+        "assets": ["libs/backend/micro/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "publish": {

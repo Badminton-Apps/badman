@@ -28,8 +28,6 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
-mat.$theme-ignore-duplication-warnings: true;
-
 $theme-warn: mat.define-palette(mat.$orange-palette);
 $theme-success: mat.define-palette(mat.$green-palette);
 $theme-danger: mat.define-palette(mat.$red-palette);
@@ -69,7 +67,6 @@ $light-theme: theme.badman-light-theme(
 @include frontend-role.theme($dark-theme);
 @include frontend-team.theme($dark-theme);
 @include frontend-general.theme($dark-theme);
-@include mat.legacy-button-theme($dark-theme);
 
 .color-scheme-light {
   @include mat.all-component-colors($light-theme);
@@ -87,8 +84,6 @@ $light-theme: theme.badman-light-theme(
   @include frontend-team.colors($light-theme);
   @include frontend-components.colors($light-theme);
   @include frontend-general.colors($light-theme);
-
-  @include mat.legacy-button-color($light-theme);
 }
 
 /* You can add global styles to this file, and also import other style files */
