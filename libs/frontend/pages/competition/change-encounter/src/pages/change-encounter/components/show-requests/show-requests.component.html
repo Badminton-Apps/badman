@@ -85,6 +85,15 @@
             >
               {{ 'all.button.submit' | translate }}
             </button>
+            <button
+              mat-stroked-button
+              color="secondary"
+              type="button"
+              (click)="this.cancel()"
+              [disabled]="this.running"
+            >
+              {{ 'all.button.cancel' | translate }}
+            </button>
           </div>
           <div *ngIf="!this.requestClosed" class="caption">
             <p>

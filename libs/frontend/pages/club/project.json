@@ -10,7 +10,8 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/pages/club/tsconfig.lib.json",
-        "project": "libs/frontend/pages/club/ng-package.json"
+        "project": "libs/frontend/pages/club/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": true
       },
       "configurations": {
         "production": {
