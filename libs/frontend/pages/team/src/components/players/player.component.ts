@@ -82,6 +82,8 @@ export class TeamPlayersComponent implements OnInit {
       this.wherePlayer['gender'] =
         this.group?.value.type === 'MX' ? undefined : this.group?.value.type;
     }
+
+    console.log(this.control.value);
   }
 
   async playerAdded(player: Player) {

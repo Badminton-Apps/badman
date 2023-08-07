@@ -102,7 +102,7 @@ export class EncounterChangeUpdateInput extends PartialType(
   OmitType(EncounterChange, ['createdAt', 'updatedAt', 'dates'] as const),
   InputType
 ) {
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   home?: boolean;
 
   @Field(() => [EncounterChangeDateUpdateInput], { nullable: true })

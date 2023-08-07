@@ -12,7 +12,8 @@
         "tsConfig": "libs/backend/authorization/tsconfig.lib.json",
         "packageJson": "libs/backend/authorization/package.json",
         "main": "libs/backend/authorization/src/index.ts",
-        "assets": ["libs/backend-authorization/*.md"]
+        "assets": ["libs/backend-authorization/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

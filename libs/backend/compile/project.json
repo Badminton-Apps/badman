@@ -11,7 +11,8 @@
         "outputPath": "dist/libs/backend/compile",
         "tsConfig": "libs/backend/compile/tsconfig.lib.json",
         "packageJson": "libs/backend/compile/package.json",
-        "main": "libs/backend/compile/src/index.ts"
+        "main": "libs/backend/compile/src/index.ts",
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

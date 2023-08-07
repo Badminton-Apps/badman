@@ -48,6 +48,7 @@
     "add": "Ajouter",
     "add-comment": "Envoyer un commentaire",
     "add-location": "Ajouter un emplacement",
+    "agree": "Ok",
     "all": "Tout",
     "cancel": "Annuler",
     "close": "Fermer",
@@ -55,6 +56,7 @@
     "delete": "Retirer",
     "detail": "Détails",
     "done": "Prêt",
+    "download": "Téléchargez",
     "edit": "Modifier",
     "merge-accounts": "Combiner les comptes",
     "next": "Suivant",
@@ -164,7 +166,8 @@
         "base-subevent": "{player.fullName} est le premier joueur d'une autre équipe dans la même série",
         "better-meta": "{player.fullName} est meilleur que l'un des joueurs de départ, veillez à ne pas sous-évaluer l'indice d'équipe.",
         "min-level": "Le classement autorisé est {maxLevel} tandis que {player.fullName} est{level} dans {type} ",
-        "other-gender": "{player.fullName} est un {playerGender}, mais l'équipe pour le {teamType} est"
+        "other-gender": "{player.fullName} est un {playerGender}, mais l'équipe pour le {teamType} est",
+        "title": "Des problèmes ont été trouvés avec votre configuration"
       }
     },
     "draw": {

@@ -12,7 +12,8 @@
         "tsConfig": "libs/backend/cluster/tsconfig.lib.json",
         "packageJson": "libs/backend/cluster/package.json",
         "main": "libs/backend/cluster/src/index.ts",
-        "assets": ["libs/backend/cluster/*.md"]
+        "assets": ["libs/backend/cluster/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "publish": {

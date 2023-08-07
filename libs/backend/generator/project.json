@@ -12,7 +12,8 @@
         "tsConfig": "libs/backend/generator/tsconfig.lib.json",
         "packageJson": "libs/backend/generator/package.json",
         "main": "libs/backend/generator/src/index.ts",
-        "assets": ["libs/backend-generator/*.md"]
+        "assets": ["libs/backend-generator/*.md"],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {
