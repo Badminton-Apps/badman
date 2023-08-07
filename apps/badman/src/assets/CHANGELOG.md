@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.96.1](https://github.com/Badminton-Apps/badman/compare/v6.96.0...v6.96.1) (2023-08-07)
+
+
+### Bug Fixes
+
+* save encounter before sending the sync request ([b048331](https://github.com/Badminton-Apps/badman/commit/b0483317764f6a7ce2ec9fc9e067542183662d73))
+* save encounter before syncing ([c88de7e](https://github.com/Badminton-Apps/badman/commit/c88de7ee675c69e3cc90baf6b730d54a8a19bbd3))
+
 ## [6.96.0](https://github.com/Badminton-Apps/badman/compare/v6.96.0-beta.0...v6.96.0) (2023-08-06)
 
 ## [6.96.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.95.0...v6.96.0-beta.0) (2023-08-06)
