@@ -196,6 +196,8 @@ export class EncounterCompetitionResolver {
           encounter.locationId = selectedDates[0].locationId;
           locationHasChanged = true;
         }
+        
+        await encounter.save({ transaction });
 
         // Accept
         await this.syncQueue.add(
@@ -210,7 +212,6 @@ export class EncounterCompetitionResolver {
         );
 
         // Save cahnges
-        encounter.save({ transaction });
         encounterChange.accepted = true;
       } else {
         encounterChange.accepted = false;
