@@ -1,6 +1,6 @@
 {
   "name": "badman_scripts",
-  "version": "6.96.0",
+  "version": "6.96.1",
   "license": "MIT",
   "scripts": {
     "create-release": "node ./standard-version.js"
