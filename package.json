@@ -237,18 +237,6 @@
     "node-adodb": "github:nuintun/node-adodb"
   },
   "overrides": {
-    "@angular-devkit/build-angular": {
-      "@angular/localize": "16.1.8"
-    },
-    "jest-preset-angular": {
-      "@angular/core": "^16.0.0",
-      "@angular/platform-browser-dynamic": "^16.0.0",
-      "@angular/compiler-cli": "^16.0.0",
-      "@angular-devkit/build-angular": "^16.0.0"
-    },
-    "nest-winston": {
-      "@nestjs/common": "^5.0.0 || ^6.6.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0"
-    },
     "consolidate": {
       "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
       "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
