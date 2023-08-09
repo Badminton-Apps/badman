@@ -164,8 +164,8 @@
     "@angular-eslint/eslint-plugin-template": "16.0.1",
     "@angular-eslint/template-parser": "16.0.1",
     "@angular/cli": "~16.1.0",
-    "@angular/compiler-cli": "16.1.2",
-    "@angular/language-service": "16.1.2",
+    "@angular/compiler-cli": "16.1.8",
+    "@angular/language-service": "16.1.8",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.3",
     "@nguniversal/builders": "16.1.2",
@@ -238,7 +238,7 @@
   },
   "overrides": {
     "@angular-devkit/build-angular": {
-      "@angular/localize": "16.0.3"
+      "@angular/localize": "16.1.8"
     },
     "jest-preset-angular": {
       "@angular/core": "^16.0.0",
