@@ -168,7 +168,7 @@
     "@angular/language-service": "16.1.2",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.3",
-    "@nguniversal/builders": "16.1.0",
+    "@nguniversal/builders": "16.1.2",
     "@nx/angular": "16.6.0",
     "@nx/cypress": "16.6.0",
     "@nx/eslint-plugin": "16.6.0",
