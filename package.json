@@ -156,7 +156,7 @@
     "zone.js": "0.13.1"
   },
   "devDependencies": {
-    "@angular-devkit/architect": "0.1601.1",
+    "@angular-devkit/architect": "0.1601.8",
     "@angular-devkit/build-angular": "~16.1.0",
     "@angular-devkit/core": "~16.1.0",
     "@angular-devkit/schematics": "~16.1.0",
@@ -181,7 +181,7 @@
     "@nx/web": "16.6.0",
     "@nx/workspace": "16.6.0",
     "@prettier/plugin-pug": "^2.5.1",
-    "@schematics/angular": "16.1.1",
+    "@schematics/angular": "16.1.8",
     "@storybook/addon-essentials": "7.1.0",
     "@storybook/angular": "7.1.0",
     "@storybook/core-server": "7.1.0",
