@@ -89,7 +89,8 @@
       "change-date": "Modified date",
       "change-location": "Modified location",
       "change-location-note": "Location change filtering option works only for encounters rescheduled after 30/07",
-      "home-games": "Home games only"
+      "home-games": "Home games only",
+      "open-requests": "Open transfer requests"
     },
     "end": "End",
     "menu": {
