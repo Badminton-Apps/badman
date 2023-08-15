@@ -94,6 +94,7 @@ export type I18nTranslations = {
                 "change-location": string;
                 "change-location-note": string;
                 "home-games": string;
+                "open-requests": string;
             };
             "end": string;
             "menu": {
