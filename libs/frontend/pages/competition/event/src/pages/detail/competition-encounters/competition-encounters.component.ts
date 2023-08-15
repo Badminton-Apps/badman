@@ -91,10 +91,7 @@ export class CompetitionEncountersComponent implements OnInit {
             eventCompetition: Partial<EventCompetition>;
           }>({
             query: gql`
-              query GetEventEncounters(
-                $id: ID!
-                $where: JSONObject
-              ) {
+              query GetEventEncounters($id: ID!, $where: JSONObject) {
                 eventCompetition(id: $id) {
                   id
                   subEventCompetitions {
@@ -114,6 +111,10 @@ export class CompetitionEncountersComponent implements OnInit {
                         }
                         homeScore
                         awayScore
+                        encounterChange {
+                          id
+                          accepted
+                        }
                       }
                     }
                   }
@@ -127,16 +128,26 @@ export class CompetitionEncountersComponent implements OnInit {
           }).valueChanges;
         }),
         map((result) => new EventCompetition(result?.data?.eventCompetition)),
-        map((event) =>
-          event.subEventCompetitions
-            ?.map((s) => s.drawCompetitions ?? [])
-            ?.map((d) => d?.map((d) => d.encounterCompetitions ?? []))
-            ?.flat(2)
-            ?.filter((e) => !!e) ?? []
+        map(
+          (event) =>
+            event.subEventCompetitions
+              ?.map((s) => s.drawCompetitions ?? [])
+              ?.map((d) => d?.map((d) => d.encounterCompetitions ?? []))
+              ?.flat(2)
+              ?.filter((e) => !!e) ?? []
+        ),
+        map((encounters) =>
+          // if the change is not null and not accepted
+          encounters?.filter((encounter) =>
+            this.filter?.value?.openEncounters ?? false
+              ? encounter.encounterChange?.id != null &&
+                !encounter.encounterChange?.accepted
+              : true
+          )
         ),
         tap(() => {
           this.loading.set(false);
-        }),
+        })
       ),
       { injector: this.injector }
     );
@@ -160,6 +171,10 @@ export class CompetitionEncountersComponent implements OnInit {
 
     if (!this.filter.get('changedLocation')?.value) {
       this.filter.addControl('changedLocation', new FormControl(false));
+    }
+
+    if (!this.filter.get('openEncounters')?.value) {
+      this.filter.addControl('openEncounters', new FormControl(false));
     }
   }
 }
