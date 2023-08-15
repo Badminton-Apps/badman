@@ -132,6 +132,10 @@ export class ClubEncountersComponent implements OnInit {
                         eventId
                       }
                     }
+                    encounterChange {
+                      id
+                      accepted
+                    }
                   }
                 }
               }
@@ -147,9 +151,18 @@ export class ClubEncountersComponent implements OnInit {
         map((encounters) =>
           encounters?.map((encounter) => new EncounterCompetition(encounter))
         ),
+        map((encounters) =>
+          // if the change is not null and not accepted
+          encounters?.filter((encounter) =>
+            this.filter?.value?.openEncounters ?? false
+              ? encounter.encounterChange?.id != null &&
+                !encounter.encounterChange?.accepted
+              : true
+          )
+        ),
         tap(() => {
           this.loading.set(false);
-        }),
+        })
       ),
       { injector: this.injector }
     );
@@ -164,6 +177,7 @@ export class ClubEncountersComponent implements OnInit {
         onlyHomeGames: new FormControl(true),
         changedDate: new FormControl(false),
         changedLocation: new FormControl(false),
+        openEncounters: new FormControl(false),
       });
     }
     if (this.filter.get('club')?.value !== this.clubId) {
@@ -188,6 +202,10 @@ export class ClubEncountersComponent implements OnInit {
 
     if (!this.filter.get('onlyHomeGames')?.value) {
       this.filter.addControl('onlyHomeGames', new FormControl(true));
+    }
+
+    if (!this.filter.get('openEncounters')?.value) {
+      this.filter.addControl('openEncounters', new FormControl(false));
     }
   }
 }

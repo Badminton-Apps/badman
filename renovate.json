@@ -6,6 +6,7 @@
   ],
   "semanticCommits": "enabled",
   "dependencyDashboardApproval": true,
+  "rebaseWhen": "auto",
   "baseBranches": ["develop"],
   "labels": ["dependencies"],
   "packageRules": [

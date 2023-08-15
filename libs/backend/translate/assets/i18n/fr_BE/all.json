@@ -89,7 +89,8 @@
       "change-date": "Date de modification",
       "change-location": "Changement de lieu",
       "change-location-note": "L'option de filtrage des changements de lieu ne fonctionne que pour les matches reprogrammés après le 30/07.",
-      "home-games": "Matchs à domicile uniquement"
+      "home-games": "Matchs à domicile uniquement",
+      "open-requests": "Ouvrir les demandes de transfert"
     },
     "end": "Fin",
     "menu": {
@@ -180,6 +181,7 @@
       "change-location-note": "L'option de filtrage des changements de lieu ne fonctionne que pour les matches reprogrammés après le 30/07.",
       "home-games": "Matchs à domicile uniquement",
       "no-more": "Plus de rencontres",
+      "open-requests": "Ouvrir les demandes de transfert",
       "title": "Réunions"
     },
     "home": "Accueil",
