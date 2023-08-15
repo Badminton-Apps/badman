@@ -181,6 +181,7 @@
       "change-location-note": "Location change filtering option works only for encounters rescheduled after 30/07",
       "home-games": "Home games only",
       "no-more": "No more encounters",
+      "open-requests": "Open transfer requests",
       "title": "Encounters"
     },
     "home": "Home",
