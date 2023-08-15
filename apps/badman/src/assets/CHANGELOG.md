@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.97.0](https://github.com/Badminton-Apps/badman/compare/v6.96.1...v6.97.0) (2023-08-15)
+
+
+### Features
+
+* filter for open requests for clubs ([fa9f306](https://github.com/Badminton-Apps/badman/commit/fa9f306b7ac83aed983dd629bbcdaaa8554c58c9))
+* open requests for competition ([d3182c2](https://github.com/Badminton-Apps/badman/commit/d3182c23efe58daf2a1e4fff700692b072a3eed6))
+
+
+### Bug Fixes
+
+* **deps:** removing unused overrides ([3845c4e](https://github.com/Badminton-Apps/badman/commit/3845c4edfbe2e804d63e64b9f4c6acccc37132d6))
+* **deps:** update angular monorepo to v16.1.8 ([dc7a67e](https://github.com/Badminton-Apps/badman/commit/dc7a67eacaac6bb004b1a6e786995361551e00c9))
+* **deps:** update angularmaterial monorepo to v16.1.7 ([ca08877](https://github.com/Badminton-Apps/badman/commit/ca088775c24701ffc09a23d79650067b956efb24))
+* **deps:** update dependency @angular/google-maps to v16.1.7 ([76b6cae](https://github.com/Badminton-Apps/badman/commit/76b6caeb6f76dc802f7c063c4a3cc721da08a695))
+* **deps:** update dependency @nestjs/schedule to v3.0.2 ([129759f](https://github.com/Badminton-Apps/badman/commit/129759f94d6e4c34584865c8ca504b3fe0079bbe))
+* **deps:** update dependency @vercel/analytics to v1.0.2 ([cebe9ae](https://github.com/Badminton-Apps/badman/commit/cebe9aeeab572dd4e04c95c53856f3f21561c764))
+* **deps:** update package-lock file ([cf9825e](https://github.com/Badminton-Apps/badman/commit/cf9825ee4df8fef654ecb8f84c9d077e77f4fce2))
+* **deps:** updated lock file ([feb7a15](https://github.com/Badminton-Apps/badman/commit/feb7a15584b71bd123410c97906490f999523971))
+
 ### [6.96.1](https://github.com/Badminton-Apps/badman/compare/v6.96.0...v6.96.1) (2023-08-07)
 
 
