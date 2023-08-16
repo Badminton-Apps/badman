@@ -36,7 +36,7 @@ import {
           playground: false,
           debug: true,
           autoSchemaFile: true,
-          context: ({ req }: { req: any }) => ({ req }),
+          context: ({ req }: { req: unknown }) => ({ req }),
           plugins: [
             OperationRegistry({
               forbidUnregisteredOperations: true,
