@@ -34,17 +34,17 @@ import {
 
         if (process.env.NODE_ENV === 'development') {
           plugins.push(
-            ApolloServerPluginLandingPageLocalDefault({ footer: true })
+            ApolloServerPluginLandingPageLocalDefault({ footer: false })
+          );
+        } else {
+          plugins.push(
+            ApolloServerPluginLandingPageProductionDefault({ footer: true })
           );
           plugins.push(ApolloServerPluginSchemaReporting());
           plugins.push(
             OperationRegistry({
               forbidUnregisteredOperations: true,
             })
-          );
-        } else {
-          plugins.push(
-            ApolloServerPluginLandingPageProductionDefault({ footer: false })
           );
         }
 
