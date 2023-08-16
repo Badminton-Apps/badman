@@ -24,12 +24,15 @@ import {
   SecurityResolverModule,
   TeamResolverModule,
 } from './resolvers';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
-      useFactory: async () => {
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
         const plugins = [];
 
         if (process.env.NODE_ENV === 'development') {
@@ -38,7 +41,10 @@ import {
           );
         } else {
           plugins.push(
-            ApolloServerPluginLandingPageProductionDefault({ footer: true })
+            ApolloServerPluginLandingPageProductionDefault({
+              graphRef: config.get<string>('APOLLO_GRAPH_REF'),
+              footer: true,
+            })
           );
           plugins.push(ApolloServerPluginSchemaReporting());
           plugins.push(
