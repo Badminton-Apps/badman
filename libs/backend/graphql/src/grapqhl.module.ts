@@ -42,12 +42,11 @@ import {
               forbidUnregisteredOperations: true,
             }),
             // Install a landing page plugin based on NODE_ENV
-            process.env.NODE_ENV === 'production'
-              ? ApolloServerPluginLandingPageProductionDefault({
-                  graphRef: configService.get('GRAPH_REF'),
+            process.env.NODE_ENV === 'development'
+              ? ApolloServerPluginLandingPageLocalDefault({ footer: true })
+              : ApolloServerPluginLandingPageProductionDefault({
                   footer: false,
-                })
-              : ApolloServerPluginLandingPageLocalDefault({ footer: true }),
+                }),
           ],
         } as Omit<GqlModuleOptions, 'driver'>;
       },
