@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.97.4-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.97.3...v6.97.4-beta.0) (2023-08-16)
+
+
+### Bug Fixes
+
+* assembly shouldn't be checked with no players present ([f7e5cdd](https://github.com/Badminton-Apps/badman/commit/f7e5cdd2c4b6df67f92de22bc791bfa2be7bd50e))
+* limit club query to 30 results ([06cb94a](https://github.com/Badminton-Apps/badman/commit/06cb94a9cc8659eb40c6709aec58ea467b602388))
+* limit search to 30 results ([7499532](https://github.com/Badminton-Apps/badman/commit/7499532c3d295b2fdf1e882a21a9db9ca613ba0c))
+* link to apollo graph ([9f844f5](https://github.com/Badminton-Apps/badman/commit/9f844f5e2b895c9a0f4a3793e140724cf69589c5))
+* skip assembly check if no players are added ([ee6fa80](https://github.com/Badminton-Apps/badman/commit/ee6fa806ecb58ffcecc72bda5c530a796cbfba94))
+
 ### [6.97.3](https://github.com/Badminton-Apps/badman/compare/v6.97.2...v6.97.3) (2023-08-16)
 
 
