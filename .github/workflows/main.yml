@@ -172,11 +172,13 @@ jobs:
           git config --local user.name "Badman Releaser"
       - name: Merge main back to develop
         run: |
+          git fetch --unshallow
           git checkout develop
           git pull
-          # git merge --no-ff origin/main -m "chore(release): ${{ needs.release.outputs.NEW_VERSION }}"
-          git merge --no-ff origin/main
+          git merge --no-ff origin/main -m "chore(release): ${{ needs.release.outputs.NEW_VERSION }}"
+          # git merge --no-ff main -m "Merging main into develop"
           git push
+          
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
           # read the affected projects from the main job
