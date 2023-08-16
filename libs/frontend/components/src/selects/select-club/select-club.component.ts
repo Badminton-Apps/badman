@@ -297,7 +297,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       }>({
         query: gql`
           query GetClubs {
-            clubs {
+            clubs(limit: 30) {
               count
               rows {
                 id
