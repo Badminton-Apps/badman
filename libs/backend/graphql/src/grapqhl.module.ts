@@ -5,10 +5,10 @@ import {
 import { AuthorizationModule } from '@badman/backend-authorization';
 import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GqlModuleOptions, GraphQLModule } from '@nestjs/graphql';
 
 import OperationRegistry from '@apollo/server-plugin-operation-registry';
+import { ApolloServerPluginSchemaReporting } from '@apollo/server/plugin/schemaReporting';
 
 import {
   AvailabilityModule,
@@ -29,25 +29,31 @@ import {
   imports: [
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: async () => {
+        const plugins = [];
+
+        if (process.env.NODE_ENV === 'development') {
+          plugins.push(
+            ApolloServerPluginLandingPageLocalDefault({ footer: false })
+          );
+        } else {
+          plugins.push(
+            ApolloServerPluginLandingPageProductionDefault({ footer: true })
+          );
+          plugins.push(ApolloServerPluginSchemaReporting());
+          plugins.push(
+            OperationRegistry({
+              forbidUnregisteredOperations: true,
+            })
+          );
+        }
+
         return {
           playground: false,
           debug: true,
           autoSchemaFile: true,
           context: ({ req }: { req: unknown }) => ({ req }),
-          plugins: [
-            OperationRegistry({
-              forbidUnregisteredOperations: true,
-            }),
-            // Install a landing page plugin based on NODE_ENV
-            process.env.NODE_ENV === 'development'
-              ? ApolloServerPluginLandingPageLocalDefault({ footer: true })
-              : ApolloServerPluginLandingPageProductionDefault({
-                  footer: false,
-                }),
-          ],
+          plugins,
         } as Omit<GqlModuleOptions, 'driver'>;
       },
     }),
