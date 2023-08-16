@@ -197,7 +197,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
             .query<{ players: { rows: Player[] } }>({
               query: gql`
                 query GetPlayers($where: JSONObject, $personal: Boolean!) {
-                  players(where: $where) {
+                  players(where: $where, limit: 30) {
                     rows {
                       id
                       slug
