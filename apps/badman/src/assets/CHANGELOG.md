@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.97.1](https://github.com/Badminton-Apps/badman/compare/v6.97.0...v6.97.1) (2023-08-16)
+
+
+### Bug Fixes
+
+* graph ref now fully stored in environment variables ([a6da7fd](https://github.com/Badminton-Apps/badman/commit/a6da7fd4b65942b0b48a5b10abb619f55a557627))
+* unkown is better then any ([40fcef1](https://github.com/Badminton-Apps/badman/commit/40fcef16bbcd806b0a9e839af4777b22f341ddfe))
+
 ## [6.97.0](https://github.com/Badminton-Apps/badman/compare/v6.96.1...v6.97.0) (2023-08-15)
 
 
