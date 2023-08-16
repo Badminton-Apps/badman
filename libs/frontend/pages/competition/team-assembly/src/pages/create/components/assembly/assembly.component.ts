@@ -846,7 +846,15 @@ export class AssemblyComponent implements OnInit, OnDestroy {
       !this.double4.length &&
       !this.substitutes.length
     ) {
-      return;
+      return of({
+        baseTeamIndex: 0,
+        baseTeamPlayers: [],
+        titularsIndex: 0,
+        titularsPlayers: [],
+        errors: [],
+        warnings: [],
+        valid: true,
+      } as ValidationResult);
     }
 
     return this.apollo
