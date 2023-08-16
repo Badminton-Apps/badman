@@ -36,7 +36,7 @@ import {
           playground: false,
           debug: true,
           autoSchemaFile: true,
-          context: ({ req }: { req: any }) => ({ req }),
+          context: ({ req }: { req: unknown }) => ({ req }),
           plugins: [
             OperationRegistry({
               forbidUnregisteredOperations: true,
@@ -44,7 +44,7 @@ import {
             // Install a landing page plugin based on NODE_ENV
             process.env.NODE_ENV === 'production'
               ? ApolloServerPluginLandingPageProductionDefault({
-                  graphRef: `${configService.get('GRAPH_REF')}@main`,
+                  graphRef: configService.get('GRAPH_REF'),
                   footer: false,
                 })
               : ApolloServerPluginLandingPageLocalDefault({ footer: true }),
