@@ -186,8 +186,8 @@ export class RisersFallersDialogComponent implements OnInit, OnDestroy {
           this.cache.modify({
             id: `DrawCompetition:${result.data.updateDrawCompetition.id}`,
             fields: {
-              risers: () => result.data?.updateDrawCompetition.risers,
-              fallers: () => result.data?.updateDrawCompetition.fallers,
+              risers: () => result.data?.updateDrawCompetition.risers ?? 0,
+              fallers: () => result.data?.updateDrawCompetition.fallers ?? 0,
             },
           });
         });
