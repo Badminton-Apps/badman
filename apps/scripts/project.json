@@ -15,7 +15,7 @@
         "main": "apps/scripts/src/main.ts",
         "tsConfig": "apps/scripts/tsconfig.app.json",
         "assets": ["apps/scripts/src/assets"],
-        "webpackConfig": "apps/api/webpack.config.js"
+        "webpackConfig": "apps/scripts/webpack.config.js"
       },
       "configurations": {
         "development": {},
@@ -37,10 +37,10 @@
       },
       "configurations": {
         "development": {
-          "buildTarget": "api:build:development"
+          "buildTarget": "scripts:build:development"
         },
         "production": {
-          "buildTarget": "api:build:production"
+          "buildTarget": "scripts:build:production"
         }
       }
     },
