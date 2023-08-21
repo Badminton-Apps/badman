@@ -1,6 +1,6 @@
 {
   "name": "badman-mono",
-  "version": "6.97.4-beta.0",
+  "version": "6.98.0",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -256,4 +256,3 @@
     "startCommand": "npm run start:stackblitz"
   }
 }
-
