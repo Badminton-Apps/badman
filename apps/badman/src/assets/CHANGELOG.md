@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.98.0](https://github.com/Badminton-Apps/badman/compare/v6.97.4-beta.0...v6.98.0) (2023-08-21)
+
+
+### Features
+
+* adding usage reporting ([5d96046](https://github.com/Badminton-Apps/badman/commit/5d96046ed022a90ea1c28d0f053f2a722c11307e))
+* script for detecting changed encounters ([2deb630](https://github.com/Badminton-Apps/badman/commit/2deb6309ccb050fd03ed64924e72876df3b085c6))
+
+
+### Bug Fixes
+
+* encounter selection would fail ([216f948](https://github.com/Badminton-Apps/badman/commit/216f9487e4d2dc4f555c6c49008d8ceb50bff393))
+
 ### [6.97.4-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.97.3...v6.97.4-beta.0) (2023-08-16)
 
 
