@@ -9,6 +9,7 @@ import { GqlModuleOptions, GraphQLModule } from '@nestjs/graphql';
 
 import OperationRegistry from '@apollo/server-plugin-operation-registry';
 import { ApolloServerPluginSchemaReporting } from '@apollo/server/plugin/schemaReporting';
+import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
 
 import {
   AvailabilityModule,
@@ -24,12 +25,15 @@ import {
   SecurityResolverModule,
   TeamResolverModule,
 } from './resolvers';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
-      useFactory: async () => {
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
         const plugins = [];
 
         if (process.env.NODE_ENV === 'development') {
@@ -38,12 +42,20 @@ import {
           );
         } else {
           plugins.push(
-            ApolloServerPluginLandingPageProductionDefault({ footer: true })
+            ApolloServerPluginLandingPageProductionDefault({
+              graphRef: config.get<string>('APOLLO_GRAPH_REF'),
+              footer: true,
+            })
           );
           plugins.push(ApolloServerPluginSchemaReporting());
           plugins.push(
             OperationRegistry({
               forbidUnregisteredOperations: true,
+            })
+          );
+          plugins.push(
+            ApolloServerPluginUsageReporting({
+              sendVariableValues: { all: true },
             })
           );
         }
