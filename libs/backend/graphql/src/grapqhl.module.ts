@@ -9,6 +9,7 @@ import { GqlModuleOptions, GraphQLModule } from '@nestjs/graphql';
 
 import OperationRegistry from '@apollo/server-plugin-operation-registry';
 import { ApolloServerPluginSchemaReporting } from '@apollo/server/plugin/schemaReporting';
+import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
 
 import {
   AvailabilityModule,
@@ -50,6 +51,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           plugins.push(
             OperationRegistry({
               forbidUnregisteredOperations: true,
+            })
+          );
+          plugins.push(
+            ApolloServerPluginUsageReporting({
+              sendVariableValues: { all: true },
             })
           );
         }
