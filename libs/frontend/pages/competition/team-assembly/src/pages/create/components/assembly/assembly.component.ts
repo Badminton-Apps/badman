@@ -834,6 +834,29 @@ export class AssemblyComponent implements OnInit, OnDestroy {
   }
 
   private _checkAssembly() {
+    // ignore if no players are selected
+    if (
+      !this.single1.length &&
+      !this.single2.length &&
+      !this.single3.length &&
+      !this.single4.length &&
+      !this.double1.length &&
+      !this.double2.length &&
+      !this.double3.length &&
+      !this.double4.length &&
+      !this.substitutes.length
+    ) {
+      return of({
+        baseTeamIndex: 0,
+        baseTeamPlayers: [],
+        titularsIndex: 0,
+        titularsPlayers: [],
+        errors: [],
+        warnings: [],
+        valid: true,
+      } as ValidationResult);
+    }
+
     return this.apollo
       .query<{ assemblyValidation: ValidationResult }>({
         query: gql`
