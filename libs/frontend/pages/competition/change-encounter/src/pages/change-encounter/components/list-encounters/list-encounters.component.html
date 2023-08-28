@@ -24,7 +24,11 @@
           >
         </mat-option>
         <mat-divider></mat-divider>
-        <mat-option *ngFor="let option of this.encountersSem2" [value]="option">
+        <mat-option
+          class="list-encounter"
+          *ngFor="let option of this.encountersSem2"
+          [value]="option"
+        >
           <span class="team">
             {{
               option.showingForHomeTeam ? option.away!.name : option.home!.name
