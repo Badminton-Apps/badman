@@ -27,13 +27,13 @@
   <!-- slide toggles for Update Visual, Update badman, Close change request -->
   <div *ngIf="updateBadman">
     <mat-slide-toggle [formControl]="updateBadman">{{
-      'all.competition.change-encounter.update-visual' | translate
+      'all.competition.change-encounter.update-badman' | translate
     }}</mat-slide-toggle>
   </div>
 
   <div *ngIf="updateVisual">
     <mat-slide-toggle [formControl]="updateVisual">{{
-      'all.competition.change-encounter.update-badman' | translate
+      'all.competition.change-encounter.update-visual' | translate
     }}</mat-slide-toggle>
   </div>
 

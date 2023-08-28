@@ -441,21 +441,18 @@ export class ShowRequestsComponent implements OnInit {
 
     ref.afterClosed().subscribe((result) => {
       if (result) {
-        console.log(result);
-        return;
-
         this.apollo
           .mutate({
             mutation: gql`
               mutation ChangeDate(
-                $changeDateId: ID!
+                $id: ID!
                 $date: DateTime!
                 $updateBadman: Boolean!
                 $updateVisual: Boolean!
                 $closeChangeRequests: Boolean!
               ) {
                 changeDate(
-                  id: $changeDateId
+                  id: $id
                   date: $date
                   updateBadman: $updateBadman
                   updateVisual: $updateVisual
@@ -464,13 +461,11 @@ export class ShowRequestsComponent implements OnInit {
               }
             `,
             variables: {
-              data: {
-                id: this.encounter.id,
-                date: result.openDate,
-                updateBadman: result.updateBadman,
-                updateVisual: result.updateVisual,
-                closeChangeRequests: result.closeChangeRequests,
-              },
+              id: this.encounter.id,
+              date: result.openDate,
+              updateBadman: result.updateBadman,
+              updateVisual: result.updateVisual,
+              closeChangeRequests: result.closeChangeRequests,
             },
           })
           .subscribe(() => {
