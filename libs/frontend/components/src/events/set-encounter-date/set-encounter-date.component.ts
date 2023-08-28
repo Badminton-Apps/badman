@@ -56,7 +56,7 @@ export class SetEncounterDateDialogComponent implements OnInit {
   ngOnInit(): void {
     this.dateControl = new FormControl(this.data.date);
     this.updateBadman = new FormControl(true);
-    this.updateVisual = new FormControl(true);
+    this.updateVisual = new FormControl(false);
     this.closeChangeRequest = new FormControl(true);
   }
 
