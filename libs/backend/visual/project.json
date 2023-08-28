@@ -12,8 +12,7 @@
         "tsConfig": "libs/backend/visual/tsconfig.lib.json",
         "packageJson": "libs/backend/visual/package.json",
         "main": "libs/backend/visual/src/index.ts",
-        "assets": ["libs/backend-visual/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": ["libs/backend-visual/*.md"]
       }
     },
     "lint": {

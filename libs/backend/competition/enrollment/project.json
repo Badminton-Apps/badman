@@ -12,8 +12,7 @@
         "tsConfig": "libs/backend/competition/enrollment/tsconfig.lib.json",
         "packageJson": "libs/backend/competition/enrollment/package.json",
         "main": "libs/backend/competition/enrollment/src/index.ts",
-        "assets": ["libs/backend/competition/enrollment/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": ["libs/backend/competition/enrollment/*.md"]
       }
     },
     "publish": {

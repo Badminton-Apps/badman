@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.99.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.98.0...v6.99.0-beta.0) (2023-08-28)
+
+
+### Features
+
+* allowing changing of date ([f1c1457](https://github.com/Badminton-Apps/badman/commit/f1c145775ad2ceb597190a2646f64a25ab08ff67))
+* showing all encounters for a team (even when out of season) ([83a89fe](https://github.com/Badminton-Apps/badman/commit/83a89fee3900c8a1f8637ef2036d9c79d00c5214))
+* update visual's encounter with script ([05e05a6](https://github.com/Badminton-Apps/badman/commit/05e05a6bf0e28512f5d52f1a6ab39f08a87d111a))
+
+
+### Bug Fixes
+
+* formatting for mobile ([08ff74e](https://github.com/Badminton-Apps/badman/commit/08ff74eadcbb2d3d661a7da1661c63770600a6e2))
+* moving to sync queue ([710287e](https://github.com/Badminton-Apps/badman/commit/710287e622112bd3ffb2ad5a6f822abfc7ce6ae3))
+
 ## [6.98.0](https://github.com/Badminton-Apps/badman/compare/v6.97.4-beta.0...v6.98.0) (2023-08-21)
 
 

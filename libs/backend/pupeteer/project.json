@@ -12,8 +12,7 @@
         "tsConfig": "libs/backend/pupeteer/tsconfig.lib.json",
         "packageJson": "libs/backend/pupeteer/package.json",
         "main": "libs/backend/pupeteer/src/index.ts",
-        "assets": ["libs/backend/pupeteer/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": ["libs/backend/pupeteer/*.md"]
       }
     },
     "publish": {

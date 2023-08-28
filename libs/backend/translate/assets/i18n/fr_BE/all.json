@@ -126,6 +126,7 @@
       "choose-encounter": "Choisir une réunion",
       "choose-location": "Choisissez l'emplacement",
       "choose-team": "Choisir une équipe",
+      "close-change-request": "Fermer l'application ouverte",
       "comment": "Remarque",
       "comments": "Notes",
       "dates": "Données",
@@ -150,6 +151,8 @@
         "title": "Expédition"
       },
       "title": "Déplacer la rencontre",
+      "update-badman": "Mise à jour badman",
+      "update-visual": "Mise à jour Visual",
       "warnings": {
         "closed": "La demande de concours est terminée, vous ne pouvez traiter que les demandes existantes",
         "closing": "La date limite d'envoi et de traitement des candidatures est",
@@ -193,6 +196,7 @@
     },
     "menu": {
       "download-cp": "Télécharger le fichier CP",
+      "new-date": "Nouvelle date",
       "open_close_change-encounters": "Ouvrir/fermer les rencontres de déménagement",
       "open_close_enrollments": "Ouvrir/fermer les inscriptions"
     },

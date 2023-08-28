@@ -10,7 +10,9 @@ RUN apk add --no-cache --virtual .build-deps \
 	pango-dev \
 	giflib-dev
 RUN npm ci
-RUN npm run build api:build -- --configuration=production
+# Get the configuration from the environment variables
+ARG CONFIGURATION=production
+RUN npm run build api:build -- --configuration=$CONFIGURATION
 
 # Production stage
 FROM node:20-alpine As production
