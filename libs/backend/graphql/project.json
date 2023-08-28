@@ -11,8 +11,7 @@
         "outputPath": "dist/libs/backend/graphql",
         "tsConfig": "libs/backend/graphql/tsconfig.lib.json",
         "packageJson": "libs/backend/graphql/package.json",
-        "main": "libs/backend/graphql/src/index.ts",
-        "updateBuildableProjectDepsInPackageJson": true
+        "main": "libs/backend/graphql/src/index.ts"
       }
     },
     "lint": {

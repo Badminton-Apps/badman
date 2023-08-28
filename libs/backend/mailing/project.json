@@ -11,8 +11,7 @@
         "outputPath": "dist/libs/backend/mailing",
         "tsConfig": "libs/backend/mailing/tsconfig.lib.json",
         "packageJson": "libs/backend/mailing/package.json",
-        "main": "libs/backend/mailing/src/index.ts",
-        "updateBuildableProjectDepsInPackageJson": true
+        "main": "libs/backend/mailing/src/index.ts"
       }
     },
     "lint": {

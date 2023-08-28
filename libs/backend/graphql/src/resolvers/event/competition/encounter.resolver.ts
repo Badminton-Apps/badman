@@ -1,3 +1,4 @@
+import { User } from '@badman/backend-authorization';
 import {
   Assembly,
   Comment,
@@ -6,14 +7,20 @@ import {
   EncounterCompetition,
   Game,
   Location,
+  Player,
   Team,
 } from '@badman/backend-database';
-import { NotFoundException } from '@nestjs/common';
+import {
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   Args,
   Field,
   ID,
   Int,
+  Mutation,
   ObjectType,
   Parent,
   Query,
@@ -21,6 +28,9 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
+import { InjectQueue } from '@nestjs/bull';
+import { Sync, SyncQueue } from '@badman/backend-queue';
+import { Queue } from 'bull';
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -33,7 +43,9 @@ export class PagedEncounterCompetition {
 
 @Resolver(() => EncounterCompetition)
 export class EncounterCompetitionResolver {
+  private readonly logger = new Logger(EncounterCompetitionResolver.name);
 
+  constructor(@InjectQueue(SyncQueue) private syncQueue: Queue) {}
 
   @Query(() => EncounterCompetition)
   async encounterCompetition(
@@ -126,8 +138,52 @@ export class EncounterCompetitionResolver {
     return encounter.getAwayComments();
   }
 
-  // @Mutation(returns => Boolean)
-  // async removeEncounterCompetition(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
+  @Mutation(() => Boolean)
+  async changeDate(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string,
+    @Args('date') date: Date,
+
+    @Args('updateBadman') updateBadman: boolean,
+    @Args('updateVisual') updateVisual: boolean,
+    @Args('closeChangeRequests') closeChangeRequests: boolean
+  ) {
+    const encounter = await EncounterCompetition.findByPk(id);
+
+    if (!encounter) {
+      throw new NotFoundException(`${EncounterCompetition.name}: ${id}`);
+    }
+
+    if (!(await user.hasAnyPermission(['change-any:encounter']))) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this encounter`
+      );
+    }
+
+    if (updateBadman) {
+      await encounter.update({ date: date });
+    }
+
+    if (updateVisual) {
+      await this.syncQueue.add(
+        Sync.ChangeDate,
+        {
+          encounterId: encounter.id,
+        },
+        {
+          removeOnComplete: true,
+          removeOnFail: false,
+        }
+      );
+    }
+
+    if (closeChangeRequests) {
+      const change = await encounter.getEncounterChange();
+      if (change) {
+        await change.update({ accepted: true });
+      }
+    }
+
+    return true;
+  }
 }

@@ -11,8 +11,7 @@
         "outputPath": "dist/libs/backend/notifications",
         "tsConfig": "libs/backend/notifications/tsconfig.lib.json",
         "packageJson": "libs/backend/notifications/package.json",
-        "main": "libs/backend/notifications/src/index.ts",
-        "updateBuildableProjectDepsInPackageJson": true
+        "main": "libs/backend/notifications/src/index.ts"
       }
     },
     "lint": {

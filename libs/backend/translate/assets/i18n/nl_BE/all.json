@@ -126,6 +126,7 @@
       "choose-encounter": "Kies een ontmoeting",
       "choose-location": "Kies locatie",
       "choose-team": "Kies een ploeg",
+      "close-change-request": "Sluit openstaande aanvraag",
       "comment": "Opmerking",
       "comments": "Opmerkingen",
       "dates": "Data",
@@ -150,6 +151,8 @@
         "title": "Verzenden"
       },
       "title": "Verplaats ontmoeting",
+      "update-badman": "Update badman",
+      "update-visual": "Update Visual",
       "warnings": {
         "closed": "Het aanvragen van verplaatsingen van ontmoetingen is afgelopen, je kan enkel nog bestaande aanvragen afwerken.",
         "closing": "De deadline voor het versturen en afwerken van aanvragen is",
@@ -193,6 +196,7 @@
     },
     "menu": {
       "download-cp": "Download cp file",
+      "new-date": "Nieuwe datum",
       "open_close_change-encounters": "Open/sluit verplaatsen ontmoetingen",
       "open_close_enrollments": "Open/sluit inschrijvingen"
     },

@@ -10,8 +10,7 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/pages/tournament/tsconfig.lib.json",
-        "project": "libs/frontend/pages/tournament/ng-package.json",
-        "updateBuildableProjectDepsInPackageJson": true
+        "project": "libs/frontend/pages/tournament/ng-package.json"
       },
       "configurations": {
         "production": {
