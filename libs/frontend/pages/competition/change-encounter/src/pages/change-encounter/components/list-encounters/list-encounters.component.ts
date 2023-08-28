@@ -22,7 +22,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EncounterCompetition } from '@badman/frontend-models';
-import { getCurrentSeasonPeriod } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
@@ -138,26 +137,29 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
 
             // Check if the next is a UUID
             if (next && next.length === 36) {
-              return this._loadTeams(next, this.group?.get('season')?.value);
+              return this._loadTeams(next);
             } else {
               return of([]);
             }
           })
         )
         .subscribe((encounters) => {
-          this.encountersSem1 = encounters.filter((r) => {
-            if (!r.date) {
-              throw new Error('No date');
-            }
-            return [8, 9, 10, 11, 12].includes(r.date.getMonth());
-          });
-          this.encountersSem2 = encounters.filter((r) => {
-            if (!r.date) {
-              throw new Error('No date');
-            }
+          // the encoutners should be devided in 2 years,
+          // semester 1 = lowest year
+          // semester 2 = highest year
 
-            return [0, 1, 2, 3, 4, 5].includes(r.date.getMonth());
-          });
+          // get the lowest year
+          const lowestYear = Math.min(
+            ...encounters.map((r) => r.date?.getFullYear() || 0)
+          );
+
+          this.encountersSem1 = encounters.filter(
+            (r) => r.date?.getFullYear() === lowestYear
+          );
+
+          this.encountersSem2 = encounters.filter(
+            (r) => r.date?.getFullYear() !== lowestYear
+          );       
 
           const params = this.activatedRoute.snapshot.queryParams;
 
@@ -219,7 +221,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _loadTeams(teamId: string, season?: number) {
+  private _loadTeams(teamId: string) {
     return this.apollo
       .query<{
         encounterCompetitions: { rows: EncounterCompetition[] };
@@ -273,9 +275,6 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
             $or: {
               homeTeamId: teamId,
               awayTeamId: teamId,
-            },
-            date: {
-              $between: getCurrentSeasonPeriod(season),
             },
           },
           // For easy viewing in network tab

@@ -94,6 +94,12 @@
             >
               {{ 'all.button.cancel' | translate }}
             </button>
+
+            <badman-has-claim [any]="['change-any:encounter']">
+              <button (click)="this.changeDate()" type="button" mat-stroked-button>
+                Change date
+              </button>
+            </badman-has-claim>
           </div>
           <div *ngIf="!this.requestClosed" class="caption">
             <p>
