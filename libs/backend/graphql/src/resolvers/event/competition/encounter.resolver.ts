@@ -179,11 +179,9 @@ export class EncounterCompetitionResolver {
 
     if (closeChangeRequests) {
       const change = await encounter.getEncounterChange();
-      if (!change) {
-        throw new Error(`Encounter has no change request`);
+      if (change) {
+        await change.update({ accepted: true });
       }
-
-      await change.update({ accepted: true });
     }
 
     return true;
