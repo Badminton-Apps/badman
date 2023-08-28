@@ -130,6 +130,7 @@ export type I18nTranslations = {
                 "choose-encounter": string;
                 "choose-location": string;
                 "choose-team": string;
+                "close-change-request": string;
                 "comment": string;
                 "comments": string;
                 "dates": string;
@@ -154,6 +155,8 @@ export type I18nTranslations = {
                     "title": string;
                 };
                 "title": string;
+                "update-badman": string;
+                "update-visual": string;
                 "warnings": {
                     "closed": string;
                     "closing": string;
@@ -197,6 +200,7 @@ export type I18nTranslations = {
             };
             "menu": {
                 "download-cp": string;
+                "new-date": string;
                 "open_close_change-encounters": string;
                 "open_close_enrollments": string;
             };

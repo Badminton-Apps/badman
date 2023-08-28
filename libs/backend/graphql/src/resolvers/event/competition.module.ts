@@ -15,6 +15,7 @@ import {
 } from './competition';
 import { CacheModule } from '@badman/backend-cache';
 import { EnrollmentModule } from '@badman/backend-enrollment';
+import { VisualModule } from '@badman/backend-visual';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { EnrollmentModule } from '@badman/backend-enrollment';
     EnrollmentModule,
     RankingModule,
     CacheModule,
+    VisualModule,
   ],
   providers: [
     EventCompetitionResolver,
