@@ -1,3 +1,4 @@
+import { User } from '@badman/backend-authorization';
 import {
   Assembly,
   Comment,
@@ -6,14 +7,21 @@ import {
   EncounterCompetition,
   Game,
   Location,
+  Player,
   Team,
 } from '@badman/backend-database';
-import { NotFoundException } from '@nestjs/common';
+import { VisualService } from '@badman/backend-visual';
+import {
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import {
   Args,
   Field,
   ID,
   Int,
+  Mutation,
   ObjectType,
   Parent,
   Query,
@@ -33,7 +41,9 @@ export class PagedEncounterCompetition {
 
 @Resolver(() => EncounterCompetition)
 export class EncounterCompetitionResolver {
+  private readonly logger = new Logger(EncounterCompetitionResolver.name);
 
+  constructor(private readonly visualService: VisualService) {}
 
   @Query(() => EncounterCompetition)
   async encounterCompetition(
@@ -126,8 +136,67 @@ export class EncounterCompetitionResolver {
     return encounter.getAwayComments();
   }
 
-  // @Mutation(returns => Boolean)
-  // async removeEncounterCompetition(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
+  @Mutation(() => Boolean)
+  async changeDate(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string,
+    @Args('date') date: Date,
+
+    @Args('updateBadman') updateBadman: boolean,
+    @Args('updateVisual') updateVisual: boolean,
+    @Args('closeChangeRequests') closeChangeRequests: boolean
+  ) {
+    const encounter = await EncounterCompetition.findByPk(id);
+
+    if (!encounter) {
+      throw new NotFoundException(`${EncounterCompetition.name}: ${id}`);
+    }
+
+    if (!(await user.hasAnyPermission(['change-any:encounter']))) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this encounter`
+      );
+    }
+
+    if (updateBadman) {
+      await encounter.update({ date: date });
+    }
+
+    if (updateVisual) {
+      const draw = await encounter.getDrawCompetition({
+        attributes: ['id'],
+      });
+      const subEvent = await draw.getSubEventCompetition({
+        attributes: ['id'],
+      });
+      const event = await subEvent.getEventCompetition({
+        attributes: ['id', 'visualCode'],
+      });
+
+      if (!event.visualCode) {
+        throw new Error(`Event has no visual code`);
+      }
+
+      if (!encounter.visualCode) {
+        throw new Error(`Encounter has no visual code`);
+      }
+
+      await this.visualService.changeDate(
+        event.visualCode,
+        encounter.visualCode,
+        date
+      );
+    }
+
+    if (closeChangeRequests) {
+      const change = await encounter.getEncounterChange();
+      if (!change) {
+        throw new Error(`Encounter has no change request`);
+      }
+
+      await change.update({ accepted: true });
+    }
+
+    return true;
+  }
 }

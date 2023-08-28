@@ -48,6 +48,10 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
 import { RequestDateComponent } from '../request-date/request-date.component';
+import {
+  HasClaimComponent,
+  SetEncounterDateDialogComponent,
+} from '@badman/frontend-components';
 
 const CHANGE_QUERY = gql`
   query EncounterChange($id: ID!) {
@@ -94,6 +98,7 @@ const CHANGE_QUERY = gql`
     DateSelectorComponent,
     CommentsComponent,
     RequestDateComponent,
+    HasClaimComponent,
   ],
 })
 export class ShowRequestsComponent implements OnInit {
@@ -122,12 +127,12 @@ export class ShowRequestsComponent implements OnInit {
   @ViewChild('confirm', { static: true }) confirmDialog!: TemplateRef<unknown>;
 
   constructor(
-    private _apollo: Apollo,
-    private _dialog: MatDialog,
-    private _snackBar: MatSnackBar,
-    private _cd: ChangeDetectorRef,
-    private _translate: TranslateService,
-    public authenticateService: AuthenticateService
+    private readonly apollo: Apollo,
+    private readonly dialog: MatDialog,
+    private readonly snackBar: MatSnackBar,
+    private readonly changeDetector: ChangeDetectorRef,
+    private readonly translate: TranslateService,
+    public readonly authenticateService: AuthenticateService
   ) {}
 
   async ngOnInit() {
@@ -145,7 +150,7 @@ export class ShowRequestsComponent implements OnInit {
           this.running = false;
 
           if (encounter == null) {
-            this._cd.detectChanges();
+            this.changeDetector.detectChanges();
           } else {
             this.home = this.group.get('team')?.value == encounter?.home?.id;
           }
@@ -160,7 +165,7 @@ export class ShowRequestsComponent implements OnInit {
             );
           }
 
-          return this._apollo
+          return this.apollo
             .watchQuery<{
               encounterChange: EncounterChange;
             }>({
@@ -240,8 +245,8 @@ export class ShowRequestsComponent implements OnInit {
     }
 
     if (!this.formGroupRequest.valid) {
-      this._snackBar.open(
-        this._translate.instant('competition.change-encounter.errors.invalid'),
+      this.snackBar.open(
+        this.translate.instant('competition.change-encounter.errors.invalid'),
         'OK',
         {
           duration: 4000,
@@ -287,8 +292,8 @@ export class ShowRequestsComponent implements OnInit {
     if (change.dates == null || (change.dates?.length ?? 0) == 0) {
       if (this.home) {
         // hometeam always needs to add at least one date
-        this._snackBar.open(
-          this._translate.instant(
+        this.snackBar.open(
+          this.translate.instant(
             'competition.change-encounter.errors.select-one-date'
           ),
           'OK',
@@ -304,7 +309,7 @@ export class ShowRequestsComponent implements OnInit {
     const success = async () => {
       try {
         await lastValueFrom(
-          this._apollo.mutate<{
+          this.apollo.mutate<{
             addChangeEncounter: EncounterChange;
           }>({
             mutation: gql`
@@ -340,8 +345,8 @@ export class ShowRequestsComponent implements OnInit {
 
         teamControl.setValue(teamControl.value);
         this.group.get(this.dependsOn)?.setValue(null);
-        this._snackBar.open(
-          await this._translate.instant(
+        this.snackBar.open(
+          await this.translate.instant(
             'all.competition.change-encounter.requested'
           ),
           'OK',
@@ -351,8 +356,8 @@ export class ShowRequestsComponent implements OnInit {
         );
       } catch (error) {
         console.error(error);
-        this._snackBar.open(
-          await this._translate.instant(
+        this.snackBar.open(
+          await this.translate.instant(
             'all.competition.change-encounter.requested-failed'
           ),
           'OK',
@@ -362,13 +367,13 @@ export class ShowRequestsComponent implements OnInit {
         );
       } finally {
         this.running = false;
-        this._cd.detectChanges();
+        this.changeDetector.detectChanges();
       }
     };
 
     if (change.accepted) {
       const changed = change.dates.find((r) => r.selected == true);
-      const dialog = this._dialog.open(this.confirmDialog, {
+      const dialog = this.dialog.open(this.confirmDialog, {
         data: {
           changedLocation: changed?.locationId != this.encounter?.location?.id,
         },
@@ -383,12 +388,12 @@ export class ShowRequestsComponent implements OnInit {
     }
 
     this.running = false;
-    this._cd.detectChanges();
+    this.changeDetector.detectChanges();
   }
 
   async cancel() {
     await lastValueFrom(
-      this._apollo.mutate<{
+      this.apollo.mutate<{
         addChangeEncounter: EncounterChange;
       }>({
         mutation: gql`
@@ -414,6 +419,9 @@ export class ShowRequestsComponent implements OnInit {
         ],
       })
     );
+
+    this.formGroupRequest.get('accepted')?.setValue(true);
+    this.changeDetector.detectChanges();
   }
 
   reOpen() {
@@ -421,6 +429,57 @@ export class ShowRequestsComponent implements OnInit {
     for (const control of this.dateControls.controls) {
       control.get('selected')?.setValue(false);
     }
+  }
+  changeDate() {
+    // open dialog
+    const ref = this.dialog.open(SetEncounterDateDialogComponent, {
+      data: {
+        date: this.encounter.date,
+      },
+      width: '400px',
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log(result);
+        return;
+
+        this.apollo
+          .mutate({
+            mutation: gql`
+              mutation ChangeDate(
+                $changeDateId: ID!
+                $date: DateTime!
+                $updateBadman: Boolean!
+                $updateVisual: Boolean!
+                $closeChangeRequests: Boolean!
+              ) {
+                changeDate(
+                  id: $changeDateId
+                  date: $date
+                  updateBadman: $updateBadman
+                  updateVisual: $updateVisual
+                  closeChangeRequests: $closeChangeRequests
+                )
+              }
+            `,
+            variables: {
+              data: {
+                id: this.encounter.id,
+                date: result.openDate,
+                updateBadman: result.updateBadman,
+                updateVisual: result.updateVisual,
+                closeChangeRequests: result.closeChangeRequests,
+              },
+            },
+          })
+          .subscribe(() => {
+            this.snackBar.open(`Dates updated`, 'Close', {
+              duration: 2000,
+            });
+          });
+      }
+    });
   }
 
   private _addDateControl(dateChange: EncounterChangeDate) {

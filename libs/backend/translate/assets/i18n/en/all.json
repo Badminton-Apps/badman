@@ -126,6 +126,7 @@
       "choose-encounter": "Pick an encounter",
       "choose-location": "Select location",
       "choose-team": "Pick a team",
+      "close-change-request": "Close open requests",
       "comment": "Comment",
       "comments": "Comments",
       "dates": "Dates",
@@ -150,6 +151,8 @@
         "title": "Send"
       },
       "title": "Move encounter",
+      "update-badman": "Update badman",
+      "update-visual": "Update Visual",
       "warnings": {
         "closed": "Requesting competitions has ended, you can only process existing requests",
         "closing": "The deadline for sending and processing applications is",
@@ -193,6 +196,7 @@
     },
     "menu": {
       "download-cp": "Download cp file",
+      "new-date": "New date",
       "open_close_change-encounters": "Open/close move encounters",
       "open_close_enrollments": "Open/Close Enrollments"
     },
