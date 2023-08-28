@@ -79,6 +79,8 @@ export class EncounterChangeCompetitionResolver {
     return encounterChange.getDates();
   }
 
+  
+
   @Mutation(() => EncounterChange)
   async updateEncounterChange(
     @User() user: Player,
@@ -112,7 +114,7 @@ export class EncounterChangeCompetitionResolver {
       ]))
     ) {
       throw new UnauthorizedException(
-        `You do not have permission to edit this club`
+        `You do not have permission to edit this encounter`
       );
     }
 
@@ -145,7 +147,7 @@ export class EncounterChangeCompetitionResolver {
       ]))
     ) {
       throw new UnauthorizedException(
-        `You do not have permission to edit this club`
+        `You do not have permission to edit this encounter`
       );
     }
     const transaction = await this._sequelize.transaction();

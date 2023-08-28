@@ -227,15 +227,15 @@ export class VisualService {
     return parsed.TournamentMatch?.MatchDate;
   }
 
-  async changeDate(tourneyId: string, encounterId: string, newDate: Date) {
+  async changeDate(tourneyId: string, matchId: string, newDate: Date) {
     const url = `${this._configService.get(
       'VR_API'
-    )}/Tournament/${tourneyId}/Match/${encounterId}/Date`;
+    )}/Tournament/${tourneyId}/Match/${matchId}/Date`;
 
     const body = `
     <TournamentMatch>
         <TournamentID>${tourneyId}</TournamentID>
-        <MatchID>${encounterId}</MatchID>
+        <MatchID>${matchId}</MatchID>
         <MatchDate>${moment(newDate)
           .tz('Europe/Brussels')
           .format(VisualService.visualFormat)}</MatchDate>
@@ -256,13 +256,13 @@ export class VisualService {
 
     if (this._configService.get('NODE_ENV') === 'production') {
       const resultPut = await axios(options);
-      const parser = new XMLParser();
+      const parser = new XMLParser(); 
 
       const bodyPut = parser.parse(resultPut.data).Result as XmlResult;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
         this.logger.error(options);
         throw new Error(bodyPut.Error?.Message);
-      }
+      } 
 
       await this._cacheManager.del(`${VisualService.CACHE_KEY}:${url}`);
     } else {
