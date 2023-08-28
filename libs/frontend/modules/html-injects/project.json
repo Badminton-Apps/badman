@@ -10,8 +10,7 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/modules/html-injects/tsconfig.lib.json",
-        "project": "libs/frontend/modules/html-injects/ng-package.json",
-        "updateBuildableProjectDepsInPackageJson": true
+        "project": "libs/frontend/modules/html-injects/ng-package.json"
       },
       "configurations": {
         "production": {

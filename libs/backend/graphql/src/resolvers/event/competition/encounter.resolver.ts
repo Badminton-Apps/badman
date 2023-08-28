@@ -10,7 +10,6 @@ import {
   Player,
   Team,
 } from '@badman/backend-database';
-import { VisualService } from '@badman/backend-visual';
 import {
   Logger,
   NotFoundException,
@@ -29,6 +28,9 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
+import { InjectQueue } from '@nestjs/bull';
+import { Sync, SyncQueue } from '@badman/backend-queue';
+import { Queue } from 'bull';
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -43,7 +45,7 @@ export class PagedEncounterCompetition {
 export class EncounterCompetitionResolver {
   private readonly logger = new Logger(EncounterCompetitionResolver.name);
 
-  constructor(private readonly visualService: VisualService) {}
+  constructor(@InjectQueue(SyncQueue) private syncQueue: Queue) {}
 
   @Query(() => EncounterCompetition)
   async encounterCompetition(
@@ -163,28 +165,15 @@ export class EncounterCompetitionResolver {
     }
 
     if (updateVisual) {
-      const draw = await encounter.getDrawCompetition({
-        attributes: ['id'],
-      });
-      const subEvent = await draw.getSubEventCompetition({
-        attributes: ['id'],
-      });
-      const event = await subEvent.getEventCompetition({
-        attributes: ['id', 'visualCode'],
-      });
-
-      if (!event.visualCode) {
-        throw new Error(`Event has no visual code`);
-      }
-
-      if (!encounter.visualCode) {
-        throw new Error(`Encounter has no visual code`);
-      }
-
-      await this.visualService.changeDate(
-        event.visualCode,
-        encounter.visualCode,
-        date
+      await this.syncQueue.add(
+        Sync.ChangeDate,
+        {
+          encounterId: encounter.id,
+        },
+        {
+          removeOnComplete: true,
+          removeOnFail: false,
+        }
       );
     }
 
