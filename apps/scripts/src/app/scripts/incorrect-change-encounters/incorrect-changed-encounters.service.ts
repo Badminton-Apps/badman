@@ -1,9 +1,13 @@
 import {
+  DrawCompetition,
   EncounterChange,
   EncounterChangeDate,
   EncounterCompetition,
+  EventCompetition,
+  SubEventCompetition,
   Team,
 } from '@badman/backend-database';
+import { VisualService } from '@badman/backend-visual';
 import { ChangeEncounterAvailability } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
@@ -12,6 +16,8 @@ import * as XLSX from 'xlsx';
 
 @Injectable()
 export class IncorrectEncountersService {
+  constructor(private readonly visualService: VisualService) {}
+
   private readonly logger = new Logger(IncorrectEncountersService.name);
 
   async getIncorrectEncountersService(season: number) {
@@ -19,31 +25,7 @@ export class IncorrectEncountersService {
     const startDate = moment([season, 8, 1]).toDate();
     const endDate = moment([season + 1, 7, 1]).toDate();
 
-    const encounters = await EncounterCompetition.findAll({
-      attributes: ['id', 'date', 'originalDate', 'accepted'],
-      where: {
-        originalDate: {
-          [Op.ne]: null,
-        },
-        date: {
-          [Op.between]: [startDate, endDate],
-        },
-      },
-      include: [
-        { attributes: ['id', 'name', 'clubId'], model: Team, as: 'home' },
-        { attributes: ['id', 'name', 'clubId'], model: Team, as: 'away' },
-        {
-          attributes: ['id'],
-          model: EncounterChange,
-          include: [
-            {
-              model: EncounterChangeDate,
-            },
-          ],
-          required: true,
-        },
-      ],
-    });
+    const encounters = await this.getChangeEncounters(startDate, endDate);
 
     let indexWithMostColumns = 0;
     let maxColumns = 0;
@@ -61,12 +43,6 @@ export class IncorrectEncountersService {
         'Suggestions',
       ],
       ...encounters.map((encounter) => {
-        const dates = encounter.encounterChange?.dates?.filter(
-          (d) =>
-            d.availabilityAway === ChangeEncounterAvailability.POSSIBLE &&
-            d.availabilityHome === ChangeEncounterAvailability.POSSIBLE
-        );
-
         // Home team
         const home = encounter.home?.name ?? '';
         // Away team
@@ -95,14 +71,19 @@ export class IncorrectEncountersService {
         const originalDate = new Date(encounter.originalDate).toLocaleString();
 
         // Probably wrong
-        const probablyWrong = moment(encounter.date).isSame(encounter.originalDate, 'minute');
+        const probablyWrong = moment(encounter.date).isSame(
+          encounter.originalDate,
+          'minute'
+        );
 
         // Dates
-        const datesCount = dates?.length ?? 0;
+        const datesCount = encounter.encounterChange?.dates?.length ?? 0;
 
         // Suggestions
         const suggestions =
-          dates?.map((d) => new Date(d.date!).toLocaleString()) ?? [];
+          encounter.encounterChange?.dates?.map((d) =>
+            new Date(d.date!).toLocaleString()
+          ) ?? [];
 
         if (suggestions.length > maxColumns) {
           maxColumns = suggestions.length;
@@ -112,7 +93,7 @@ export class IncorrectEncountersService {
         return [
           home,
           away,
-          encounter.accepted,
+          encounter.encounterChange?.accepted ?? false,
           link,
           currentDate,
           originalDate,
@@ -149,5 +130,113 @@ export class IncorrectEncountersService {
     XLSX.writeFile(wb, fileName);
 
     this.logger.log(`Found ${encounters.length} changed encounters`);
+  }
+
+  private async getChangeEncounters(startDate: Date, endDate: Date) {
+    return EncounterCompetition.findAll({
+      attributes: ['id', 'date', 'originalDate', 'visualCode'],
+      where: {
+        originalDate: {
+          [Op.ne]: null,
+        },
+        date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      include: [
+        { attributes: ['id', 'name', 'clubId'], model: Team, as: 'home' },
+        { attributes: ['id', 'name', 'clubId'], model: Team, as: 'away' },
+        {
+          attributes: ['id'],
+          model: DrawCompetition,
+          include: [
+            {
+              attributes: ['id'],
+              model: SubEventCompetition,
+              include: [
+                {
+                  attributes: ['id', 'visualCode'],
+                  model: EventCompetition,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          attributes: ['id', 'accepted'],
+          model: EncounterChange,
+          include: [
+            {
+              model: EncounterChangeDate,
+              where: {
+                availabilityAway: ChangeEncounterAvailability.POSSIBLE,
+                availabilityHome: ChangeEncounterAvailability.POSSIBLE,
+              },
+            },
+          ],
+          required: true,
+        },
+      ],
+    });
+  }
+
+  async sendEncountersToVisual(season: number) {
+    const startDate = moment([season, 8, 1]).toDate();
+    const endDate = moment([season + 1, 7, 1]).toDate();
+
+    const encounters = await this.getChangeEncounters(startDate, endDate);
+
+    // send to visual
+    this.logger.log(`Loaded ${encounters.length} changed encounters`);
+
+    // filter out probably wrong
+    // filter out # dates === 1
+
+    const filtered = encounters.filter(
+      (encounter) =>
+        moment(encounter.date).isSame(encounter.originalDate, 'minute') &&
+        encounter.encounterChange?.dates?.length === 1 &&
+        encounter.encounterChange?.accepted
+    );
+
+    this.logger.log(`Sending ${filtered.length} changed encounters to visual`);
+
+    for (const encounter of filtered) {
+      if (
+        !encounter?.drawCompetition?.subEventCompetition?.eventCompetition
+          ?.visualCode
+      ) {
+        this.logger.error(`No visual code found for encounter ${encounter.id}`);
+        continue;
+      }
+
+      // get first suggestion
+      const firstSuggestion = encounter.encounterChange?.dates?.[0]?.date;
+
+      if (!firstSuggestion) {
+        this.logger.error(
+          `No first suggestion found for encounter ${encounter.id}`
+        );
+        continue;
+      }
+
+      if (!encounter.visualCode) {
+        this.logger.error(`No visual code found for encounter ${encounter.id}`);
+        continue;
+      }
+
+      try {
+        // send to visual
+        await this.visualService.changeDate(
+          encounter.drawCompetition.subEventCompetition.eventCompetition
+            .visualCode,
+          encounter.visualCode,
+          firstSuggestion
+        );
+      } catch (e) {
+        this.logger.error(`Error sending encounter ${encounter.id} to visual`);
+        this.logger.error(e);
+      }
+    }
   }
 }
