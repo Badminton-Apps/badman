@@ -11,8 +11,7 @@
       "tsConfig": "libs/frontend/modules/utils/tsconfig.lib.json",
       "options": {
         "tsConfig": "libs/frontend/modules/utils/tsconfig.lib.json",
-        "project": "libs/frontend/modules/utils/ng-package.json",
-        "updateBuildableProjectDepsInPackageJson": true
+        "project": "libs/frontend/modules/utils/ng-package.json"
       },
       "configurations": {
         "production": {

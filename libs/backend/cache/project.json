@@ -12,8 +12,7 @@
         "tsConfig": "libs/backend/cache/tsconfig.lib.json",
         "packageJson": "libs/backend/cache/package.json",
         "main": "libs/backend/cache/src/index.ts",
-        "assets": ["libs/backend/cache/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": ["libs/backend/cache/*.md"]
       }
     },
     "publish": {

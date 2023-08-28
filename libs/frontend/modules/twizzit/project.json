@@ -10,8 +10,7 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/modules/twizzit/tsconfig.lib.json",
-        "project": "libs/frontend/modules/twizzit/ng-package.json",
-        "updateBuildableProjectDepsInPackageJson": true
+        "project": "libs/frontend/modules/twizzit/ng-package.json"
       },
       "configurations": {
         "production": {

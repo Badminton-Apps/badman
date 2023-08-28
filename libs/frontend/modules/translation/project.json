@@ -10,8 +10,7 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/modules/translation/tsconfig.lib.json",
-        "project": "libs/frontend/modules/translation/ng-package.json",
-        "updateBuildableProjectDepsInPackageJson": true
+        "project": "libs/frontend/modules/translation/ng-package.json"
       },
       "configurations": {
         "production": {

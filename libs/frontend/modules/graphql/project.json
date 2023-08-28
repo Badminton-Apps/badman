@@ -10,8 +10,7 @@
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
         "tsConfig": "libs/frontend/modules/graphql/tsconfig.lib.json",
-        "project": "libs/frontend/modules/graphql/ng-package.json",
-        "updateBuildableProjectDepsInPackageJson": true
+        "project": "libs/frontend/modules/graphql/ng-package.json"
       },
       "configurations": {
         "production": {
