@@ -159,7 +159,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
 
           this.encountersSem2 = encounters.filter(
             (r) => r.date?.getFullYear() !== lowestYear
-          );       
+          );
 
           const params = this.activatedRoute.snapshot.queryParams;
 
@@ -236,6 +236,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                 id
                 date
                 originalDate
+                visualCode
                 home {
                   id
                   name
@@ -253,12 +254,14 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
                 drawCompetition {
                   id
                   subeventId
+                  visualCode
                   subEventCompetition {
                     id
                     eventCompetition {
                       id
                       changeCloseRequestDate
                       changeCloseDate
+                      visualCode
                     }
                   }
                 }
