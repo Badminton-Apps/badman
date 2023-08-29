@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.101.0](https://github.com/Badminton-Apps/badman/compare/v6.100.0...v6.101.0) (2023-08-29)
+
+
+### Features
+
+* moving the indicator to the right ([18d1bde](https://github.com/Badminton-Apps/badman/commit/18d1bded3aaeca675eb5988e3700417c3006d597))
+
 ## [6.100.0](https://github.com/Badminton-Apps/badman/compare/v6.99.0...v6.100.0) (2023-08-29)
 
 
