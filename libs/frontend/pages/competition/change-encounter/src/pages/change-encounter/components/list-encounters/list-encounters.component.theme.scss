@@ -9,7 +9,7 @@
 
   badman-list-encounters {
     .selected {
-      border-right-color: mat.get-color-from-palette($primary, default);
+      border-left-color: mat.get-color-from-palette($primary, default);
     }
   }
 }
