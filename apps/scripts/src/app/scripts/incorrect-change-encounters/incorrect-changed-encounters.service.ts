@@ -189,17 +189,32 @@ export class IncorrectEncountersService {
     // send to visual
     this.logger.log(`Loaded ${encounters.length} changed encounters`);
 
-    // filter out probably wrong
-    // filter out # dates === 1
+    const filtered = encounters.filter((encounter) => {
+      const date = moment(encounter.date);
+      const dates = encounter.encounterChange?.dates?.map((d) =>
+        moment(d.date)
+      );
 
-    const filtered = encounters.filter(
-      (encounter) =>
-        moment(encounter.date).isSame(encounter.originalDate, 'minute') &&
-        encounter.encounterChange?.dates?.length === 1 &&
-        encounter.encounterChange?.accepted
-    );
+      if (!dates) {
+        return false;
+      }
+
+      return !dates.some((d) => d.isSame(date, 'minute'));
+    });
 
     this.logger.log(`Sending ${filtered.length} changed encounters to visual`);
+    const data: any[][] = [
+      [
+        'Id',
+        'Home Team',
+        'Away Team',
+        'Link',
+        'Current date',
+        'Moved',
+        '# Dates',
+        'Suggestion(s)',
+      ],
+    ]; // Array to hold Excel data
 
     for (const encounter of filtered) {
       if (
@@ -210,33 +225,151 @@ export class IncorrectEncountersService {
         continue;
       }
 
-      // get first suggestion
-      const firstSuggestion = encounter.encounterChange?.dates?.[0]?.date;
-
-      if (!firstSuggestion) {
-        this.logger.error(
-          `No first suggestion found for encounter ${encounter.id}`
-        );
-        continue;
-      }
-
       if (!encounter.visualCode) {
         this.logger.error(`No visual code found for encounter ${encounter.id}`);
         continue;
       }
 
       try {
-        // send to visual
-        await this.visualService.changeDate(
-          encounter.drawCompetition.subEventCompetition.eventCompetition
-            .visualCode,
-          encounter.visualCode,
-          firstSuggestion
+        if ((encounter.encounterChange?.dates?.length ?? 0) > 1) {
+          this.logger.log(
+            `encounter ${encounter.home?.name} vs ${
+              encounter.away?.name
+            } on ${moment(encounter.date).format(
+              'DD-MM-YYYY HH:mm'
+            )} has multiple dates`
+          );
+
+          data.push(this.addRowWithMultipleDates(encounter));
+
+          continue;
+        }
+        // get first suggestion
+        const firstSuggestion = encounter.encounterChange?.dates?.[0]?.date;
+
+        if (!firstSuggestion) {
+          this.logger.error(
+            `No first suggestion found for encounter ${encounter.id}`
+          );
+          continue;
+        }
+
+        this.logger.log(
+          `Sending encounter ${encounter.home?.name} vs ${
+            encounter.away?.name
+          } from ${moment(encounter.date).format(
+            'DD-MM-YYYY HH:mm'
+          )} to date ${moment(firstSuggestion).format('DD-MM-YYYY HH:mm')}`
         );
+
+        data.push(this.addRowWithOneDate(encounter));
+      
+        // // send to visual
+        // await this.visualService.changeDate(
+        //   encounter.drawCompetition.subEventCompetition.eventCompetition
+        //     .visualCode,
+        //   encounter.visualCode,
+        //   firstSuggestion
+        // );
+
+        // // update badman
+        // await encounter.update({ date: firstSuggestion });
       } catch (e) {
         this.logger.error(`Error sending encounter ${encounter.id} to visual`);
         this.logger.error(e);
       }
     }
+
+    await this.generateExcelFile(data, season);
+  }
+
+  // 2 methods for adding rows to an excel file, one is for adding the row with multiple dates,
+  // the other is for adding the row where there was only one date
+
+  private addRowWithMultipleDates(encounter: EncounterCompetition) {
+    // Link
+    const link = {
+      t: 'external',
+      v: `open in badman`,
+      l: {
+        Target: `https://badman.app/competition/change-encounter?club=${encounter.home?.clubId}&team=${encounter.home?.id}&encounter=${encounter.id}`,
+        Tooltip: `Open in Badman`,
+      },
+    };
+
+    // Assuming you want to add data to the array 'data' in this format
+    return [
+      encounter.id,
+      encounter.home?.name,
+      encounter.away?.name,
+      link,
+      moment(encounter.date).format('DD-MM-YYYY HH:mm'),
+      'NO',
+      encounter.encounterChange?.dates?.length ?? 0,
+      ...(encounter.encounterChange?.dates?.map((d) =>
+        moment(d.date).format('DD-MM-YYYY HH:mm')
+      ) ?? []),
+    ];
+  }
+
+  private addRowWithOneDate(encounter: EncounterCompetition) {
+    // Link
+    const link = {
+      t: 'external',
+      v: `open in badman`,
+      l: {
+        Target: `https://badman.app/competition/change-encounter?club=${encounter.home?.clubId}&team=${encounter.home?.id}&encounter=${encounter.id}`,
+        Tooltip: `Open in Badman`,
+      },
+    };
+
+    // Assuming you want to add data to the array 'data' in this format
+    return [
+      encounter.id,
+      encounter.home?.name,
+      encounter.away?.name,
+      link,
+      moment(encounter.date).format('DD-MM-YYYY HH:mm'),
+      'YES',
+      encounter.encounterChange?.dates?.length ?? 0,
+      ...(encounter.encounterChange?.dates?.map((d) =>
+        moment(d.date).format('DD-MM-YYYY HH:mm')
+      ) ?? []),
+    ];
+  }
+
+  private async generateExcelFile(data: any[][], season: number) {
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+
+    // Find the row with the most columns
+    let indexWithMostColumns = 0;
+    let maxColumns = 0;
+    data.forEach((row, index) => {
+      if (row.length > maxColumns) {
+        maxColumns = row.length;
+        indexWithMostColumns = index;
+      }
+    });
+
+    // Autosize columns
+    const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
+      data.reduce(
+        (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
+        0
+      )
+    );
+    ws['!cols'] = columnSizes.map((width) => ({ width }));
+
+    // Enable filtering
+    ws['!autofilter'] = {
+      ref: XLSX.utils.encode_range(
+        XLSX.utils.decode_range(ws['!ref'] as string)
+      ),
+    };
+
+    XLSX.utils.book_append_sheet(wb, ws, 'Encounter Data');
+    const fileName = `${season}-incorrect-changed-encounters.xlsx`;
+    XLSX.writeFile(wb, fileName);
   }
 }
