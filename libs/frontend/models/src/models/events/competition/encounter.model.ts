@@ -10,6 +10,7 @@ export class EncounterCompetition {
   date?: Date;
   originalDate?: Date;
   drawCompetition?: DrawCompetition;
+  visualCode?: string;
   assemblies: Assembly[];
   games?: Game[];
   homeScore?: number;
@@ -41,6 +42,7 @@ export class EncounterCompetition {
 
     this.assemblies = args?.assemblies?.map((a) => new Assembly(a)) ?? [];
     this.drawId = args?.drawId;
+    this.visualCode = args?.visualCode;
     this.locationId = args?.locationId || args?.location?.id;
     this.location =
       (args?.location ?? null) != null
