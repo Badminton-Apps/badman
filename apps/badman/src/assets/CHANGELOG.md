@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.100.0](https://github.com/Badminton-Apps/badman/compare/v6.99.0...v6.100.0) (2023-08-29)
+
+
+### Features
+
+* adding link to encounter in visual ([b151c61](https://github.com/Badminton-Apps/badman/commit/b151c61c809bfe44bf305ef36e1541c38e9b2b03))
+
 ## [6.99.0](https://github.com/Badminton-Apps/badman/compare/v6.99.0-beta.0...v6.99.0) (2023-08-28)
 
 
