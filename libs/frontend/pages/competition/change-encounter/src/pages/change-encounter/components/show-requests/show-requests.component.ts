@@ -52,6 +52,7 @@ import {
   HasClaimComponent,
   SetEncounterDateDialogComponent,
 } from '@badman/frontend-components';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const CHANGE_QUERY = gql`
   query EncounterChange($id: ID!) {
@@ -93,6 +94,7 @@ const CHANGE_QUERY = gql`
     MatSelectModule,
     MatProgressBarModule,
     MatExpansionModule,
+    MatTooltipModule,
 
     // Own
     DateSelectorComponent,
