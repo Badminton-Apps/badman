@@ -59,6 +59,7 @@
     "
   >
     <mat-list-item
+    
       *ngFor="let option of this.encountersSem1"
       (click)="selectEncounter(option)"
       [ngClass]="{ selected: this.control.value?.id === option?.id }"
