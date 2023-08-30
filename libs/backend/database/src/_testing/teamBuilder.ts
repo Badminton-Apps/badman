@@ -25,13 +25,16 @@ export class TeamBuilder {
 
   WithName(name: string): TeamBuilder {
     this.team.name = name;
-
     return this;
   }
 
   WithTeamNumber(number: number): TeamBuilder {
     this.team.teamNumber = number;
+    return this;
+  }
 
+  WithSeason(season: number): TeamBuilder {
+    this.team.season = season;
     return this;
   }
 
