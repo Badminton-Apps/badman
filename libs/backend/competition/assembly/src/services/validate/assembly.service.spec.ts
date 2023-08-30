@@ -5,6 +5,7 @@ import {
   DrawCompetitionBuilder,
   EncounterCompetition,
   EncounterCompetitionBuilder,
+  EventCompetition,
   EventCompetitionBuilder,
   EventCompetitionEntryBuilder,
   Player,
@@ -51,6 +52,7 @@ describe('AssemblyValidationService', () => {
   let service: AssemblyValidationService;
   let system: RankingSystem;
   let draw: DrawCompetition;
+  let event: EventCompetition;
   let subEvent: SubEventCompetition;
   let encounter: EncounterCompetition;
   let module: TestingModule;
@@ -84,9 +86,10 @@ describe('AssemblyValidationService', () => {
       .WithName('Test SubEvent')
       .WithIndex(53, 70)
       .WitnMaxLevel(6);
+
     const encounterBuilder = EncounterCompetitionBuilder.Create();
 
-    await EventCompetitionBuilder.Create()
+    event = await EventCompetitionBuilder.Create()
       .WithYear(2020)
       .WithUsedRanking({ amount: 4, unit: 'months' })
       .WithName('Test Event')
@@ -1262,9 +1265,11 @@ describe('AssemblyValidationService', () => {
 
       const teamAB = TeamBuilder.Create(SubEventTypeEnum.M)
         .WithTeamNumber(1)
+        .WithSeason(event.season)
         .WithName('team 1');
       const teamBB = TeamBuilder.Create(SubEventTypeEnum.M)
         .WithTeamNumber(2)
+        .WithSeason(event.season)
         .WithName('team 2');
 
       await ClubBuilder.Create()

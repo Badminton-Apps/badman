@@ -49,7 +49,11 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
       };
     }
 
-    console.log(options);
+    // log the options when in development
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log(options);
+    }
 
     options.models = models;
 
