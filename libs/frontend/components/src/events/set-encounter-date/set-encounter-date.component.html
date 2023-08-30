@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>
   {{ 'all.competition.menu.new-date' | translate }}
 </h2>
-<mat-dialog-content class="testing">
+<mat-dialog-content class="change-date">
   <!-- date time picker -->
   <div *ngIf="dateControl">
     <mat-form-field>
@@ -16,10 +16,10 @@
         "
         [formControl]="dateControl"
       />
-      <mat-datepicker-toggle
+      <ngx-mat-datepicker-toggle
         matSuffix
         [for]="$any(openPicker)"
-      ></mat-datepicker-toggle>
+      ></ngx-mat-datepicker-toggle>
       <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
     </mat-form-field>
   </div>

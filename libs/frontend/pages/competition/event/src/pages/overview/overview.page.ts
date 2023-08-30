@@ -16,11 +16,13 @@ import {
 } from '@badman/frontend-components';
 import { JobsService } from '@badman/frontend-jobs';
 import { getCurrentSeason } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { lastValueFrom } from 'rxjs';
 import { filter, map, take } from 'rxjs/operators';
 import { CompetitionEventsComponent } from './competition-events/competition-events.component';
+import { SeoService } from '@badman/frontend-seo';
+import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
   selector: 'badman-competition-overview',
@@ -56,6 +58,9 @@ export class OverviewPageComponent implements OnInit {
 
   formBuilder = inject(FormBuilder);
   jobsService = inject(JobsService);
+  seoService = inject(SeoService);
+  translate = inject(TranslateService);
+  breadcrumbsService = inject(BreadcrumbService);
 
   dialog = inject(MatDialog);
   snackBar = inject(MatSnackBar);
@@ -81,6 +86,19 @@ export class OverviewPageComponent implements OnInit {
       .subscribe((tabindex) => {
         this.currentTab.set(parseInt(tabindex, 10));
       });
+
+    this.translate.get(['all.competition.title']).subscribe((translations) => {
+      this.seoService.update({
+        title: translations['all.competition.title'],
+        description: translations['all.competition.title'],
+        type: 'website',
+        keywords: ['event', 'competition', 'badminton'],
+      });
+      this.breadcrumbsService.set(
+        'competition',
+        translations['all.competition.title']
+      );
+    });
   }
 
   async addEvent() {

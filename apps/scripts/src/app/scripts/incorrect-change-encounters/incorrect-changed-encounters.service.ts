@@ -20,118 +20,6 @@ export class IncorrectEncountersService {
 
   private readonly logger = new Logger(IncorrectEncountersService.name);
 
-  async getIncorrectEncountersService(season: number) {
-    this.logger.debug('getIncorrectEncountersService');
-    const startDate = moment([season, 8, 1]).toDate();
-    const endDate = moment([season + 1, 7, 1]).toDate();
-
-    const encounters = await this.getChangeEncounters(startDate, endDate);
-
-    let indexWithMostColumns = 0;
-    let maxColumns = 0;
-
-    const data = [
-      [
-        'Home Team',
-        'Away Team',
-        'Accepted',
-        'link',
-        'Current date',
-        'Original date',
-        'Probably wrong',
-        '# Dates',
-        'Suggestions',
-      ],
-      ...encounters.map((encounter) => {
-        // Home team
-        const home = encounter.home?.name ?? '';
-        // Away team
-        const away = encounter.away?.name ?? '';
-
-        // Link
-        const link = {
-          t: 'external',
-          v: `open in badman`,
-          l: {
-            Target: `http://localhost:3000/competition/change-encounter?club=${encounter.home?.clubId}&team=${encounter.home?.id}&encounter=${encounter.id}`,
-            Tooltip: `Open in Badman`,
-          },
-        };
-
-        // Current date
-        if (!encounter.date) {
-          throw new Error('No date found');
-        }
-        const currentDate = new Date(encounter.date).toLocaleString();
-
-        // Original date
-        if (!encounter.originalDate) {
-          throw new Error('No original date found');
-        }
-        const originalDate = new Date(encounter.originalDate).toLocaleString();
-
-        // Probably wrong
-        const probablyWrong = moment(encounter.date).isSame(
-          encounter.originalDate,
-          'minute'
-        );
-
-        // Dates
-        const datesCount = encounter.encounterChange?.dates?.length ?? 0;
-
-        // Suggestions
-        const suggestions =
-          encounter.encounterChange?.dates?.map((d) =>
-            new Date(d.date!).toLocaleString()
-          ) ?? [];
-
-        if (suggestions.length > maxColumns) {
-          maxColumns = suggestions.length;
-          indexWithMostColumns = encounters.indexOf(encounter) + 1;
-        }
-
-        return [
-          home,
-          away,
-          encounter.encounterChange?.accepted ?? false,
-          link,
-          currentDate,
-          originalDate,
-          probablyWrong,
-          datesCount,
-          ...suggestions,
-        ];
-      }),
-    ];
-
-    const ws = XLSX.utils.aoa_to_sheet(data);
-
-    // Autosize columns
-    const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
-      data.reduce(
-        (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
-        0
-      )
-    );
-    ws['!cols'] = columnSizes.map((width) => ({ width }));
-
-    // Enable filtering
-    ws['!autofilter'] = {
-      ref: XLSX.utils.encode_range(
-        XLSX.utils.decode_range(ws['!ref'] as string)
-      ),
-    };
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    const fileName = `${season}-incorrect-changed-encounters.xlsx`;
-
-    // Save the Excel file
-    XLSX.writeFile(wb, fileName);
-
-    this.logger.log(`Found ${encounters.length} changed encounters`);
-  }
-
   private async getChangeEncounters(startDate: Date, endDate: Date) {
     return EncounterCompetition.findAll({
       attributes: ['id', 'date', 'originalDate', 'visualCode'],
@@ -263,7 +151,7 @@ export class IncorrectEncountersService {
         );
 
         data.push(this.addRowWithOneDate(encounter));
-      
+
         // // send to visual
         // await this.visualService.changeDate(
         //   encounter.drawCompetition.subEventCompetition.eventCompetition
@@ -277,9 +165,9 @@ export class IncorrectEncountersService {
       } catch (e) {
         this.logger.error(`Error sending encounter ${encounter.id} to visual`);
         this.logger.error(e);
-      }
+      } 
     }
-
+ 
     await this.generateExcelFile(data, season);
   }
 
@@ -368,8 +256,8 @@ export class IncorrectEncountersService {
       ),
     };
 
-    XLSX.utils.book_append_sheet(wb, ws, 'Encounter Data');
-    const fileName = `${season}-incorrect-changed-encounters.xlsx`;
+    XLSX.utils.book_append_sheet(wb, ws, 'Encounter Data na sync');
+    const fileName = `${season}-incorrect-changed-encounters-pt2.xlsx`;
     XLSX.writeFile(wb, fileName);
   }
 }
