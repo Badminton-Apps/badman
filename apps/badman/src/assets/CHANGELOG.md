@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.102.0](https://github.com/Badminton-Apps/badman/compare/v6.101.0...v6.102.0) (2023-08-30)
+
+
+### Features
+
+* adding SEO to competition ([bef31c2](https://github.com/Badminton-Apps/badman/commit/bef31c257c3c8ae56d9cfb20813fd4af9d27fa6c))
+
+
+### Bug Fixes
+
+* background went missing for date picker ([a9b19a8](https://github.com/Badminton-Apps/badman/commit/a9b19a88123ea8b40f95f73ce241801fd85d0d4c))
+* changing numbers must filter on own season ([37369e9](https://github.com/Badminton-Apps/badman/commit/37369e90d29045fc783b3539f53466951220ad5c))
+* tests where season filter was added, should now also include season ([b479e14](https://github.com/Badminton-Apps/badman/commit/b479e149f89955e849e9d3fbc91dbace67b0e93d))
+* we can filter on season to improve performance ([7028d2e](https://github.com/Badminton-Apps/badman/commit/7028d2e2bdd501e10da7331baf4212add2fee6eb))
+
 ## [6.101.0](https://github.com/Badminton-Apps/badman/compare/v6.100.0...v6.101.0) (2023-08-29)
 
 
