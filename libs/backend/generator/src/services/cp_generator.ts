@@ -48,7 +48,7 @@ export class CpGeneratorService {
   public async generateCpFile(eventId: string) {
     let ADODB = null;
     try {
-      ADODB = require('node-adodb');
+      ADODB = require('node-adodb'); 
     } catch (er) {
       this.logger.warn(`ADODB not found`);
       return;
@@ -96,7 +96,7 @@ export class CpGeneratorService {
       `libs/backend/generator/assets/empty.cp`
     );
     const destination = path.join(
-      process.cwd(),
+      process.cwd(), 
       `libs/backend/generator/assets/${event.name}.cp`
     );
 
