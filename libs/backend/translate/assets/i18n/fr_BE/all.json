@@ -195,10 +195,19 @@
       "title": "Carte"
     },
     "menu": {
+      "actions": "Actions",
+      "averages": "Niveau moyen",
+      "copy": "Copie",
+      "dates": "Modifier les dates",
+      "download-base-players": "Télécharger les lecteurs de base",
       "download-cp": "Télécharger le fichier CP",
+      "make-official": "Officialiser le tournoi",
       "new-date": "Nouvelle date",
       "open_close_change-encounters": "Ouvrir/fermer les rencontres de déménagement",
-      "open_close_enrollments": "Ouvrir/fermer les inscriptions"
+      "open_close_enrollments": "Ouvrir/fermer les inscriptions",
+      "reports": "Rapports",
+      "sync": "Synchronisation",
+      "unmake-official": "Organiser un tournoi non officiel"
     },
     "national": "Nationales",
     "no-more-games": "Plus de games",

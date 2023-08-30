@@ -70,6 +70,7 @@
         "libs/frontend/pages/notifications/src/index.ts"
       ],
       "@badman/frontend-pdf": ["libs/frontend/modules/pdf/src/index.ts"],
+      "@badman/frontend-excel": ["libs/frontend/modules/excel/src/index.ts"],
       "@badman/frontend-player": ["libs/frontend/pages/player/src/index.ts"],
       "@badman/frontend-ranking": ["libs/frontend/pages/ranking/src/index.ts"],
       "@badman/frontend-role": ["libs/frontend/pages/role/src/index.ts"],

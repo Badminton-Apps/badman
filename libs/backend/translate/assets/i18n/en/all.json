@@ -195,10 +195,19 @@
       "title": "Map"
     },
     "menu": {
+      "actions": "Actions",
+      "averages": "Average level",
+      "copy": "Copy",
+      "dates": "Change dates",
+      "download-base-players": "Download base players",
       "download-cp": "Download cp file",
+      "make-official": "Make official tournament",
       "new-date": "New date",
       "open_close_change-encounters": "Open/close move encounters",
-      "open_close_enrollments": "Open/Close Enrollments"
+      "open_close_enrollments": "Open/Close Enrollments",
+      "reports": "Reports",
+      "sync": "Sync",
+      "unmake-official": "Make unofficial tournament"
     },
     "national": "National",
     "no-more-games": "No more games",

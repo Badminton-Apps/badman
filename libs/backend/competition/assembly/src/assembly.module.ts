@@ -3,7 +3,7 @@ import { DatabaseModule } from '@badman/backend-database';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { AssemblyController, AssemblyExportController } from './controllers';
+import { AssemblyController } from './controllers';
 import { AssemblyExportService, AssemblyValidationService } from './services';
 
 @Module({
@@ -30,6 +30,6 @@ import { AssemblyExportService, AssemblyValidationService } from './services';
   ],
   providers: [AssemblyValidationService, AssemblyExportService],
   exports: [AssemblyValidationService],
-  controllers: [AssemblyController, AssemblyExportController],
+  controllers: [AssemblyController],
 })
 export class AssemblyModule {}
