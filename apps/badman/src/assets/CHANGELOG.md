@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.103.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.102.0...v6.103.0-beta.0) (2023-08-30)
+
+
+### Features
+
+* download excel base teams ([f9129c0](https://github.com/Badminton-Apps/badman/commit/f9129c0487f627b608961dfc0f7a0f59d0da6408))
+
+
+### Bug Fixes
+
+* **deps:** update dependency @angular/google-maps to v16.2.1 ([edf1688](https://github.com/Badminton-Apps/badman/commit/edf16883884c2fa0d3b8b5f26aa0eff0d10f166d))
+* **deps:** update dependency @angular/pwa to ~16.2.0 ([869fd6d](https://github.com/Badminton-Apps/badman/commit/869fd6deab400eaef195b12543a4a62ab068fd7d))
+* **deps:** update dependency graphql to v16.8.0 ([38bd25c](https://github.com/Badminton-Apps/badman/commit/38bd25c07ba9b371513f09dfcb8601f20e0a964f))
+
 ## [6.102.0](https://github.com/Badminton-Apps/badman/compare/v6.101.0...v6.102.0) (2023-08-30)
 
 
