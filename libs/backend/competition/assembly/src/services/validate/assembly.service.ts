@@ -129,6 +129,7 @@ export class AssemblyValidationService {
       where: {
         clubId: team?.clubId,
         type: type,
+        season: event?.season,
       },
     });
 

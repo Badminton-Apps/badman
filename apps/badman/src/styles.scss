@@ -22,6 +22,7 @@
 @use '../../../libs/frontend/pages/role/theme' as frontend-role;
 @use '../../../libs/frontend/pages/team/theme' as frontend-team;
 @use '../../../libs/frontend/pages/general/theme' as frontend-general;
+@use './date-picker.theme.scss' as datepicker;
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -68,6 +69,9 @@ $light-theme: theme.badman-light-theme(
 @include frontend-team.theme($dark-theme);
 @include frontend-general.theme($dark-theme);
 
+// Temp fix
+@include datepicker.fix-datepicker($dark-theme);
+
 .color-scheme-light {
   @include mat.all-component-colors($light-theme);
   @include root-theme.color($light-theme);
@@ -84,6 +88,9 @@ $light-theme: theme.badman-light-theme(
   @include frontend-team.colors($light-theme);
   @include frontend-components.colors($light-theme);
   @include frontend-general.colors($light-theme);
+
+  // Temp fix
+  @include datepicker.fix-datepicker($light-theme);
 }
 
 /* You can add global styles to this file, and also import other style files */
