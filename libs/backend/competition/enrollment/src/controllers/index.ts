@@ -1,3 +1,3 @@
 // start:ng42.barrel
-export * from './pdf.controller';
+export * from './excel.controller';
 // end:ng42.barrel

@@ -46,6 +46,7 @@ import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
 import { CompetitionEncountersComponent } from './competition-encounters/competition-encounters.component';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
+import { ExcelService } from '@badman/frontend-excel';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -119,7 +120,8 @@ export class DetailPageComponent implements OnInit {
     private dialog: MatDialog,
     private matSnackBar: MatSnackBar,
     private jobsService: JobsService,
-    private cpService: CpService
+    private cpService: CpService,
+    private excelService: ExcelService
   ) {}
 
   ngOnInit(): void {
@@ -352,6 +354,7 @@ export class DetailPageComponent implements OnInit {
             duration: 2000,
           }
         );
+        this.eventCompetition.official = offical;
       });
   }
 
@@ -367,6 +370,12 @@ export class DetailPageComponent implements OnInit {
 
   async downloadCpFile() {
     await lastValueFrom(this.cpService.downloadCp(this.eventCompetition));
+  }
+
+  async downloadBasePlayers() {
+    await lastValueFrom(
+      this.excelService.getBaseplayersEnrollment(this.eventCompetition)
+    );
   }
 
   setTab(index: number) {
