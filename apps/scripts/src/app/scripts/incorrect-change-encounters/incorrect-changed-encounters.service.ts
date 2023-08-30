@@ -161,13 +161,13 @@ export class IncorrectEncountersService {
         // );
 
         // // update badman
-        await encounter.update({ date: firstSuggestion });
+        // await encounter.update({ date: firstSuggestion });
       } catch (e) {
         this.logger.error(`Error sending encounter ${encounter.id} to visual`);
         this.logger.error(e);
       } 
     }
-
+ 
     await this.generateExcelFile(data, season);
   }
 
