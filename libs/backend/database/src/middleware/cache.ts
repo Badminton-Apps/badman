@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import { Model, Sequelize } from 'sequelize-typescript';
 
-
 @Injectable()
 export class SequelizeAttachReqToModelMiddleware {
   private readonly logger = new Logger(
@@ -22,7 +21,7 @@ export class SequelizeAttachReqToModelMiddleware {
 
     const seq = sequelize as Sequelize & { Cache: Cache };
 
-    if (cache) { 
+    if (cache) {
       this.logger.debug('initialize cache');
       seq['Cache'] = this._cacheManager;
 
@@ -125,8 +124,9 @@ export class SequelizeAttachReqToModelMiddleware {
         //     }
         //     await seq['Cache'].set(cacheKey, JSON.stringify(options), TTL);
       });
-
-      console.log('cache enabled');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('cache enabled');
+      }
     }
   }
 }
