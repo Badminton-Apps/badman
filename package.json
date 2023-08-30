@@ -180,7 +180,7 @@
     "@nx/storybook": "16.7.4",
     "@nx/web": "16.7.4",
     "@nx/workspace": "16.7.4",
-    "@prettier/plugin-pug": "^2.5.1",
+    "@prettier/plugin-pug": "^3.0.0",
     "@schematics/angular": "16.2.0",
     "@storybook/addon-essentials": "7.3.1",
     "@storybook/angular": "7.3.1",
