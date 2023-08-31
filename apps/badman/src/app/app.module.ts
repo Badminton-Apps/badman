@@ -37,6 +37,7 @@ import { ShellComponent } from '@badman/frontend-components';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
 import { CpModule } from '@badman/frontend-cp';
+import { ExcelModule } from '@badman/frontend-excel';
 
 const APP_ROUTES: Routes = [
   {
@@ -165,6 +166,9 @@ const APP_ROUTES: Routes = [
     }),
     PdfModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/pdf`,
+    }),
+    ExcelModule.forRoot({
+      api: `${environment.api}/${environment.apiVersion}/excel`,
     }),
     TwizzitModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/twizzit`,

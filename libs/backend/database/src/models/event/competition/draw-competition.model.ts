@@ -60,7 +60,7 @@ export class DrawCompetition extends Model {
   @Unique('DrawCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name?: string;
+  name!: string;
 
   @Unique('DrawCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })

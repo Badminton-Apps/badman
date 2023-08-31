@@ -14,7 +14,13 @@
         "outputPath": "dist/apps/scripts",
         "main": "apps/scripts/src/main.ts",
         "tsConfig": "apps/scripts/tsconfig.app.json",
-        "assets": ["apps/scripts/src/assets"],
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "libs/backend/translate/assets",
+            "output": "assets"
+          }
+        ],
         "webpackConfig": "apps/scripts/webpack.config.js"
       },
       "configurations": {

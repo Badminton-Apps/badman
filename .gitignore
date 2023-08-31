@@ -53,6 +53,7 @@ assembly.html
 *.cp
 !empty.cp
 *.ldb
+*.csv
 *.xlsx
 
 .obsidian/workspace.json
