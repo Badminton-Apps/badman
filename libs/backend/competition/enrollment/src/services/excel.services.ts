@@ -8,7 +8,12 @@ import * as XLSX from 'xlsx';
 export class ExcelService {
   async GetEnrollment(eventId: string) {
     const event = await EventCompetition.findByPk(eventId);
-    const subEvents = await event?.getSubEventCompetitions();
+    const subEvents = await event?.getSubEventCompetitions({
+      order: [
+        ['eventType', 'ASC'],
+        ['level', 'ASC'],
+      ],
+    });
 
     const data: any[][] = [
       [
@@ -31,9 +36,11 @@ export class ExcelService {
       const draws = await subEvent?.getDrawCompetitions();
 
       for (const draw of draws ?? []) {
-        const entries = await draw?.getEntries();
+        const entries = await draw?.getEntries({
+          include: [{ model: Team }],
+          order: [['team', 'name', 'ASC']],
+        });
         for (const entry of entries) {
-          const team = await entry.getTeam();
           let firstTime = true;
 
           for (const meta of entry.meta?.competition?.players ?? []) {
@@ -43,10 +50,14 @@ export class ExcelService {
               continue;
             }
 
+            if (!entry.team) {
+              throw new Error('Entry has no team');
+            }
+
             data.push(
               this.getPlayerEntry(
                 player,
-                team,
+                entry.team,
                 meta?.single ?? 0,
                 meta?.double ?? 0,
                 meta?.mix ?? 0,
