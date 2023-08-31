@@ -195,10 +195,19 @@
       "title": "Kaart"
     },
     "menu": {
+      "actions": "Acties",
+      "averages": "Gemiddeld level",
+      "copy": "Kopieer",
+      "dates": "Wijzig datums",
+      "download-base-players": "Download basis spelers",
       "download-cp": "Download cp file",
+      "make-official": "Maak officieel toernooi",
       "new-date": "Nieuwe datum",
       "open_close_change-encounters": "Open/sluit verplaatsen ontmoetingen",
-      "open_close_enrollments": "Open/sluit inschrijvingen"
+      "open_close_enrollments": "Open/sluit inschrijvingen",
+      "reports": "Rapporten",
+      "sync": "Sync",
+      "unmake-official": "Maak onofficieel toernooi"
     },
     "national": "Nationaal",
     "no-more-games": "Geen wedstrijden meer",

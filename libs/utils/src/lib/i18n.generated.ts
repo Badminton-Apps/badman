@@ -199,10 +199,19 @@ export type I18nTranslations = {
                 "title": string;
             };
             "menu": {
+                "actions": string;
+                "averages": string;
+                "copy": string;
+                "dates": string;
+                "download-base-players": string;
                 "download-cp": string;
+                "make-official": string;
                 "new-date": string;
                 "open_close_change-encounters": string;
                 "open_close_enrollments": string;
+                "reports": string;
+                "sync": string;
+                "unmake-official": string;
             };
             "national": string;
             "no-more-games": string;
