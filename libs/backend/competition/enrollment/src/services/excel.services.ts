@@ -1,5 +1,5 @@
 import { EventCompetition, Player, Team } from '@badman/backend-database';
-import { SubEventTypeEnum } from '@badman/utils';
+import { SubEventTypeEnum, sortPlayers } from '@badman/utils';
 import { Injectable } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 
@@ -19,16 +19,16 @@ export class ExcelService {
       [
         'Naam',
         'Voornaam',
+        'Lidnummer',
         'Geslacht',
         'Ploeg',
         'Enkel',
         'Dubbel',
         'Gemengd',
-        'Reeks',
         'Afdeling',
+        'Reeks',
         'Somindex gemengde competitie',
         'Somindex heren-/damescompetitie',
-        'Ploegindex',
       ],
     ]; // Array to hold Excel data
 
@@ -41,9 +41,9 @@ export class ExcelService {
           order: [['team', 'name', 'ASC']],
         });
         for (const entry of entries) {
-          let firstTime = true;
-
-          for (const meta of entry.meta?.competition?.players ?? []) {
+          for (const meta of entry.meta?.competition?.players?.sort(
+            sortPlayers
+          ) ?? []) {
             const player = await Player.findByPk(meta.id);
 
             if (!player) {
@@ -64,11 +64,9 @@ export class ExcelService {
                 subEvent.name,
                 draw.name,
                 subEvent.eventType == SubEventTypeEnum.MX,
-                firstTime ? entry.meta?.competition?.teamIndex : undefined
+                entry.meta?.competition?.teamIndex
               )
             );
-
-            firstTime = false;
           }
         }
       }
@@ -123,16 +121,16 @@ export class ExcelService {
     return [
       player.lastName,
       player.firstName,
-      player.gender,
-      team.name,
+      player.memberId,
+      player.gender === 'M' ? 'M' : 'V',
+      `${team.name} (${teamIndex})`,
       single,
       double,
       mix,
       subEventName,
-      drawName,
+      drawName.replace(subEventName, '').replace('-', '').trim(),
       mixed ? single + double + mix : '',
       mixed ? '' : single + double,
-      teamIndex,
     ];
   }
 }
