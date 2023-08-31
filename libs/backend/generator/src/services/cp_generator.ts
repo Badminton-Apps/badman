@@ -23,8 +23,15 @@ import { I18nService } from 'nestjs-i18n';
 import { resolve } from 'path';
 import path = require('path');
 
-type AdodbType = typeof import('node-adodb');
-type AdobdbOpen = ReturnType<typeof import('node-adodb').open>;
+export interface open {
+  query<T>(sql: string): Promise<T>;
+  execute<T>(sql: string, scalar?: string): Promise<T>;
+  transaction<T>(sql: string[]): Promise<T>;
+  schema<T>(type: number, criteria?: any[], id?: string): Promise<T>;
+}
+
+type AdodbType = any; //typeof import('node-adodb');
+type AdobdbOpen = open // ReturnType<typeof import('node-adodb').open>;
 type Identity = { id: number }[];
 
 type StageNames = 'Main Draw' | 'Reserves' | 'Uitloten';
