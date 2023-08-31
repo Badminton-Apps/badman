@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.103.0](https://github.com/Badminton-Apps/badman/compare/v6.103.0-beta.0...v6.103.0) (2023-08-31)
+
+
+### Features
+
+* other sorting and things ([6ca41bc](https://github.com/Badminton-Apps/badman/commit/6ca41bc2cfbf9a31abafe4bfe4ddac6241d46c73))
+* script for exporting encounters with locations ([23b1c44](https://github.com/Badminton-Apps/badman/commit/23b1c44f194d783f03decdcdaa11a932ec2a0592))
+* sorting on event and teamname ([18f3547](https://github.com/Badminton-Apps/badman/commit/18f3547c540bd6731be5709646d5c3584ac2fc16))
+
 ## [6.103.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.102.0...v6.103.0-beta.0) (2023-08-30)
 
 
