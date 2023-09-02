@@ -19,14 +19,13 @@ import { RankingSystemService } from '@badman/frontend-graphql';
 import { EncounterCompetition, Player } from '@badman/frontend-models';
 import { PdfService } from '@badman/frontend-pdf';
 import { SeoService } from '@badman/frontend-seo';
+import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AssemblyComponent } from './components';
-import { get } from 'http';
-import { getCurrentSeason } from '@badman/utils';
 
 @Component({
   selector: 'badman-assembly-create',

@@ -222,8 +222,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
 
   type?: string;
 
-  teamIndex = 0;
-  teamNumber = 0;
+  team?: Team;
   club!: string;
 
   entry?: EventEntry;
@@ -442,6 +441,8 @@ export class AssemblyComponent implements OnInit, OnDestroy {
       this._sortLists();
       this._updateWherePlayer();
       this._setTranslations();
+
+      this.team = team;
 
       // Trigger form change
       this.updatedAssembly$.next(true);
@@ -686,7 +687,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
   changeTeam() {
     this.dialog.open(EditDialogComponent, {
       data: {
-        teamId: this.group.get('team')?.value,
+        team: this.team,
       },
 
       width: '100%',
@@ -715,6 +716,15 @@ export class AssemblyComponent implements OnInit, OnDestroy {
                 team(id: $id) {
                   id
                   captainId
+                  clubId
+                  teamNumber
+                  type
+                  captainId
+                  phone
+                  email
+                  season
+                  preferredDay
+                  preferredTime
                   players {
                     ...TeamPlayerInfo
                   }
