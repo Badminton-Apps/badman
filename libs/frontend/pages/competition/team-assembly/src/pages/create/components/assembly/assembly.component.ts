@@ -238,6 +238,14 @@ export class AssemblyComponent implements OnInit, OnDestroy {
 
   notSmallScreen = true;
 
+  isException(id?: string) {
+    if (!id) {
+      return false;
+    }
+    
+    return this.team?.entry?.meta?.competition?.players?.find((p) => p.id === id)?.levelException ?? false;
+  }
+
   constructor(
     private apollo: Apollo,
     private systemService: RankingSystemService,
@@ -727,6 +735,17 @@ export class AssemblyComponent implements OnInit, OnDestroy {
                   preferredTime
                   players {
                     ...TeamPlayerInfo
+                  }
+                  entry {
+                    id
+                    meta {
+                      competition {
+                        players {
+                          id
+                          levelException
+                        }
+                      }
+                    }
                   }
                 }
               }

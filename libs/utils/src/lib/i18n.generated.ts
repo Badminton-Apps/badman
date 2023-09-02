@@ -270,6 +270,7 @@ export type I18nTranslations = {
                     "to-much": string;
                 };
                 "info": string;
+                "level-exemption": string;
                 "mix1": string;
                 "mix2": string;
                 "mix3": string;

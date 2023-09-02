@@ -10,6 +10,15 @@
   </mat-icon>
   <div>
     {{ player.fullName }}
+    <ng-container *ngIf="levelException">
+      <span
+        class="level-exception"
+        [matTooltip]="
+          'all.competition.team-assembly.level-exemption' | translate
+        "
+        ><mat-icon>lock</mat-icon></span
+      >
+    </ng-container>
     <span class="ranking">
       {{ ranking }}
     </span>

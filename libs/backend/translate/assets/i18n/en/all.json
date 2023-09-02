@@ -266,6 +266,7 @@
         "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single."
       },
       "info": "Remarks concerning the team assembly",
+      "level-exemption": "Player is exempt from ranking restrictions",
       "mix1": "Men doubles",
       "mix2": "Women doubles",
       "mix3": "Mixed 1",

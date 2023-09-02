@@ -30,6 +30,9 @@ export class TeamAssemblyPlayerComponent implements OnInit {
 
   ranking!: string;
 
+  @Input()
+  levelException?: boolean;
+
   ngOnInit() {
     if (!this.showType) {
       if (this.eventType == 'M' || this.eventType == 'F') {
