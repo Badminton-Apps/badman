@@ -1,37 +1,40 @@
 mixin singlePlayer(player, type, game)
-  .flex.h-full.items-center.border-black.border-solid.border.border-r-0.justify-center(
-    class={ 'border-b': game == 4, 'border-b-0': game != 4, 'border-t-2': game == 1 }
+  .flex.h-full.items-center.border-black.border.border-r-0.justify-center(
+    class={ "border-b": game == 4, "border-b-0": game != 4, "border-t-2": game == 1 }
   ) #{ gameLabels[game + 3] }
   if player == null || player == undefined
     +emptyPlayer(false)(
       class!=attributes.class,
-      class={ 'border-t-2': game == 1, 'border-t-0': game }
+      class={ "border-t-2": game == 1, "border-t-0": game }
     )
   else
     +player(false, player, type)(
       class!=attributes.class,
-      class={ 'border-t-2': game == 1, 'border-t-0': game != 1 }
+      class={ "border-t-2": game == 1, "border-t-0": game != 1 }
     )
 
 mixin doublePlayer(double, type, game)
-  .flex.h-full.items-center.border-black.row-span-2.border-solid.border.border-r-0.border-b-0.justify-center(
-    class={ 'border-t-0': game == 1 }
+  .flex.h-full.items-center.border-black.row-span-2.border.border-r-0.border-b-0.justify-center(
+    class={ "border-t-0": game == 1 }
   ) #{ gameLabels[game-1] }
   if double == null || double == undefined
-    +emptyPlayer(true)(class!=attributes.class)
-    +emptyPlayer(false)(class!=attributes.class, class={ 'border-b-0': game == 4 })
+    +emptyPlayer(true).top-double-player(class!=attributes.class)
+    +emptyPlayer(false).top-double-player(
+      class!=attributes.class,
+      class={ "border-b-0": game == 4 }
+    )
   else
     if double.player1 == null  || double.player1 == undefined
-      +emptyPlayer(true)(class!=attributes.class)
+      +emptyPlayer(true).top-double-player(class!=attributes.class)
     else
-      +player(true, double.player1, type)(class!=attributes.class)
+      +player(true, double.player1, type).top-double-player(class!=attributes.class)
 
     if double.player2 == null  || double.player2 == undefined
-      +emptyPlayer(false)(class!=attributes.class, class={ 'border-b-0': game == 4 })
+      +emptyPlayer(false)(class!=attributes.class, class={ "border-b-0": game == 4 })
     else
       +player(false, double.player2, type)(
         class!=attributes.class,
-        class={ 'border-b-0': game == 4 }
+        class={ "border-b-0": game == 4 }
       )
 
 mixin subPlayer(player)
@@ -40,21 +43,21 @@ mixin subPlayer(player)
   else
     +player(false, player, 'sub')(class!=attributes.class)
 
-mixin emptyPlayer(dashed)
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) 
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) 
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) 
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) 
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) 
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) 
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) 
+mixin emptyPlayer(ignored)
+  //- Adding a class border-bottom-dashed if dashed is true
+  div(class!=attributes.class)
+  div(class!=attributes.class) 
+  div(class!=attributes.class) 
+  div(class!=attributes.class) 
+  div(class!=attributes.class) 
+  div(class!=attributes.class) 
+  div(class!=attributes.class) 
 
-mixin player(dashed, player, type)
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) #{ player.fullName }
-  div(
-    class!=attributes.class,
-    class={ 'border-bottom-dashed': dashed, 'flex place-content-around': type == 'sub' }
-  )
+mixin player(ignored, player, type)
+  div(class!=attributes.class) #{ player.fullName }
+    if player.exception
+      i.pl-1.fas.fa-lock.text-gray-600
+  div(class!=attributes.class)
     if type == 'sub'
       div #{ player.rankingLastPlace.single }
       div #{ player.rankingLastPlace.double }
@@ -65,14 +68,14 @@ mixin player(dashed, player, type)
       | #{ player.rankingLastPlace.double }
     else if type == 'mix'
       | #{ player.rankingLastPlace.mix }
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) #{ player.memberId }
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) #{ player.sum }
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) #{ player.highest }
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed }) 
+  div(class!=attributes.class) #{ player.memberId }
+  div(class!=attributes.class) #{ player.sum }
+  div(class!=attributes.class) #{ player.highest }
+  div(class!=attributes.class) 
     |
     |
     if player.team
       i.fas.fa-check
-  div(class!=attributes.class, class={ 'border-bottom-dashed': dashed })
+  div(class!=attributes.class)
     if player.base
       i.fas.fa-check

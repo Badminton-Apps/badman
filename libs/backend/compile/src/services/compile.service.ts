@@ -178,6 +178,9 @@ export class CompileService implements CompileInterface, OnModuleInit {
       format: options?.pdf?.format ?? 'A4',
       landscape: options?.pdf?.landscape ?? false,
       printBackground: options?.pdf?.printBackground ?? true,
+      scale: options?.pdf?.scale ?? 1,
+      preferCSSPageSize: options?.pdf?.preferCSSPageSize ?? true,
+      
     });
 
     if ((this.moduleOptions.debug ?? false) === true) {

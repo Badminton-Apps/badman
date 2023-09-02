@@ -266,6 +266,7 @@
         "to-much": "Le joueur peut jouer un maximum de 2 doubles (mixtes) et 1 simple."
       },
       "info": "Notes sur la composition",
+      "level-exemption": "Le joueur est exempté des restrictions de classement",
       "mix1": "Doubles hommes",
       "mix2": "Double pour les femmes",
       "mix3": "Double 1",
