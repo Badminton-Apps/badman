@@ -1,14 +1,14 @@
 //- Basic html template with tailwind
 doctype html
-html(lang='en')
+html(lang="en")
   head
-    meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-    meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
-    script(src='https://cdn.tailwindcss.com')
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    meta(http-equiv="Content-Type", content="text/html; charset=utf-8")
+    script(src="https://cdn.tailwindcss.com")
     link(
-      rel='stylesheet',
-      href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css'
+      rel="stylesheet",
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
     )
     title
       block title
@@ -16,11 +16,23 @@ html(lang='en')
     block style
 
     //- Create stylesheet for a4 format
-    style(type='text/css').
+    style(type="text/css").
       .page {
         size: A4 landscape;
         margin: 0;
       }
+
+    //- Load tailwind configuration
+    script.
+      tailwind.config = {
+        theme: {
+          extend: {
+            screens: {
+              print: { raw: "print" },
+            },
+          },
+        },
+      };
 
   body
     .page

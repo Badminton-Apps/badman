@@ -6,9 +6,12 @@ include ../../mixins/signatures.pug
 include ../../mixins/validations.pug
 
 block style
-  style(type='text/css').
-    .border-bottom-dashed {
+  style(type="text/css").
+    .top-double-player {
       border-bottom-style: dashed;
+      border-right-style: solid;
+      border-left-style: solid;
+      border-top-style: solid;
     }
 
 block title
@@ -23,13 +26,18 @@ block content
     +players(singles, doubles, type)
     +subtitudes(subtitudes)
 
+    if exception
+      .text-xs
+        i.pr-1.fas.fa-lock.text-gray-600
+        span #{ exception }
+
     //- Signatures
     +signatures(logo)
 
     //- Errors
     if validation.errors && validation.errors.length > 0
-      +validations(validation.errors).text-red-500(class='max-w-[450px]')
+      +validations(validation.errors).text-red-500(class="max-w-[450px]")
 
     //- Warnings
     if validation.warnings && validation.warnings.length > 0
-      +validations(validation.warnings).text-yellow-500(class='max-w-[450px]')
+      +validations(validation.warnings).text-yellow-500(class="max-w-[450px]")

@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
@@ -72,7 +78,8 @@ export class CreatePageComponent implements OnInit {
     private pdfService: PdfService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    public authenticate: AuthenticateService
+    public authenticate: AuthenticateService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -213,6 +220,7 @@ export class CreatePageComponent implements OnInit {
 
         // Reset loading
         this.pdfLoading = false;
+        this.changeDetectorRef.detectChanges();
       });
   }
 

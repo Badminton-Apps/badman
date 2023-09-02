@@ -207,8 +207,20 @@ export class AssemblyController {
         errors,
         warnings,
       },
+      exception: null,
       logo: `data:image/png;base64, ${logo}`,
     };
+
+    // check if any player has an exception
+    if (
+      context.singles?.find((p) => p?.exception) ||
+      context.doubles?.find((p) => p?.player1?.exception) ||
+      context.doubles?.find((p) => p?.player2?.exception)
+    ) {
+      context.exception = this.i18nService.translate(
+        'all.competition.team-assembly.level-exemption'
+      );
+    }
 
     return this.compileService
       .toBuffer('assembly', {
@@ -286,6 +298,7 @@ export class AssemblyController {
     | (Partial<Player> & {
         base: boolean;
         team: boolean;
+        exception: boolean;
         rankingLastPlace: RankingLastPlace;
         sum: number;
         highest: number;
@@ -298,6 +311,7 @@ export class AssemblyController {
       ...player.toJSON(),
       base: false,
       team: false,
+      exception: false,
       rankingLastPlace: null,
       sum: 0,
       highest: 0,
@@ -344,6 +358,10 @@ export class AssemblyController {
       player.rankingLastPlaces?.[0]?.double ?? 12,
       data.type === 'MX' ? player.rankingLastPlaces?.[0]?.mix ?? 12 : 12
     );
+
+    prepped.exception = data.meta?.competition?.players?.find(
+      (p) => p.id === player.id
+    )?.levelException;
 
     // if a ranking is not availible use 2 higher then the best ranking but cannot be higher then 12
     // if the best ranking is higher then 12 use 12
