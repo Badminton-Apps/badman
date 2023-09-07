@@ -1,5 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
+import { MultipartFields } from '@fastify/multipart';
 
 export const File = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext) => {
@@ -19,5 +20,5 @@ export interface MultipartFile {
   filename: string;
   encoding: string;
   mimetype: string;
-  fields: import("@fastify/multipart").MultipartFields;
+  fields: MultipartFields;
 }

@@ -228,21 +228,17 @@ export class UpdateRankingService {
       return;
     }
 
-    const players = await Player.findAll({
-      where: {
-        id: idd,
+    await Player.update(
+      {
+        competitionPlayer: status,
       },
-      transaction,
-    });
-
-    if (players.length === 0) {
-      return;
-    }
-
-    for (const player of players) {
-      player.competitionPlayer = status;
-      await player.save({ transaction });
-    }
+      {
+        where: {
+          id: idd,
+        },
+        transaction,
+      }
+    );
   }
 }
 
