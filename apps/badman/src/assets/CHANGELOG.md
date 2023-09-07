@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.104.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.103.0...v6.104.0-beta.0) (2023-09-07)
+
+
+### Features
+
+* adding player exception ([bc2d1d1](https://github.com/Badminton-Apps/badman/commit/bc2d1d150d75ee07a4f49b49e72852d565cb83a1))
+
+
+### Bug Fixes
+
+* assembly not rendering properly ([de39eab](https://github.com/Badminton-Apps/badman/commit/de39eab2beea0638ff639c6a9848581d1ac8ee6f))
+* edit team from assembly ([15a0771](https://github.com/Badminton-Apps/badman/commit/15a0771d6c51e53b638f4e90643b9e8bf7a217bc))
+* only allow change encounters when you have permissions ([175fb49](https://github.com/Badminton-Apps/badman/commit/175fb494f2934cbc977beacf3e645e9d20ba7e72))
+
 ## [6.103.0](https://github.com/Badminton-Apps/badman/compare/v6.103.0-beta.0...v6.103.0) (2023-08-31)
 
 
