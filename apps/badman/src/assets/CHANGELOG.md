@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.104.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.0...v6.104.0-beta.1) (2023-09-07)
+
+
+### Features
+
+* update ranking faster ([fc593d9](https://github.com/Badminton-Apps/badman/commit/fc593d904249a237d2f173118f450af80e16d9d6))
+* updated the ranking upload code to support fastify ([6316698](https://github.com/Badminton-Apps/badman/commit/631669853c187b452847cff0c5573efa79525338))
+
 ## [6.104.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.103.0...v6.104.0-beta.0) (2023-09-07)
 
 
