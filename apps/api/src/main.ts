@@ -13,15 +13,21 @@ import {
 } from '@nestjs/platform-fastify';
 
 import { AppModule, RedisIoAdapter } from './app';
+import fmp = require('@fastify/multipart');
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({
+      bodyLimit: 10048576,
+    }),
     {
       bufferLogs: true,
     }
   );
+
+  app.register(fmp);
+
   const configService = app.get<ConfigService>(ConfigService);
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   const redisHost = configService.get('REDIS_HOST');
