@@ -11,6 +11,8 @@ import * as XLSX from 'xlsx';
 import { MembersRolePerGroupData, UpdateRankingService } from '../services';
 import { File, MultipartFile } from '../utils/file.decorator';
 import { UploadGuard } from '../utils/upload.guard';
+import { MultipartValue } from '@fastify/multipart';
+import moment from 'moment';
 
 @Controller('ranking/upload')
 export class UploadRankingController {
@@ -44,24 +46,24 @@ export class UploadRankingController {
 
   @Post('process')
   @UseGuards(UploadGuard)
-  async process(
-    @UploadedFile() file: MultipartFile,
-    @Body()
-    {
-      updateCompStatus,
-      updateRanking,
-      rankingDate,
-      removeAllRanking,
-      rankingSystemId,
-    }: {
-      rankingDate: Date;
-      updateCompStatus: boolean;
-      updateRanking?: boolean;
-      removeAllRanking: boolean;
-      rankingSystemId: string;
-    }
-  ) {
+  async process(@File() file: MultipartFile) {
     const mappedData = await this._readFile(file);
+
+    const updateCompStatus =
+      (file.fields['updateCompStatus'] as MultipartValue)?.value === 'true';
+    const updateRanking =
+      (file.fields['updateRanking'] as MultipartValue)?.value === 'true';
+    const rankingDate = moment(
+      (file.fields['rankingDate'] as MultipartValue)?.value as string
+    );
+    const removeAllRanking =
+      (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
+    const rankingSystemId = (file.fields['rankingSystemId'] as MultipartValue)
+      ?.value as string;
+
+    if (updateRanking && !rankingDate.isValid()) {
+      throw new Error('Invalid ranking date');
+    }
 
     // filter out competition members
     const filteredData = mappedData.filter(
@@ -71,7 +73,7 @@ export class UploadRankingController {
     await this._updateRankingService.processFileUpload(filteredData, {
       updateCompStatus,
       updateRanking,
-      rankingDate,
+      rankingDate: rankingDate.toDate(),
       removeAllRanking,
       rankingSystemId,
     });
