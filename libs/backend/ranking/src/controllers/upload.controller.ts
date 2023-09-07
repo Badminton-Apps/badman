@@ -4,12 +4,13 @@ import {
   Logger,
   Post,
   UploadedFile,
-  UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import 'multer';
 import * as XLSX from 'xlsx';
 import { MembersRolePerGroupData, UpdateRankingService } from '../services';
+import { File, MultipartFile } from '../utils/file.decorator';
+import { UploadGuard } from '../utils/upload.guard';
 
 @Controller('ranking/upload')
 export class UploadRankingController {
@@ -18,9 +19,9 @@ export class UploadRankingController {
   constructor(private _updateRankingService: UpdateRankingService) {}
 
   @Post('preview')
-  @UseInterceptors(FileInterceptor('file'))
-  async preview(@UploadedFile() file: Express.Multer.File) {
-    const mappedData = this._readFile(file);
+  @UseGuards(UploadGuard)
+  async preview(@File() file: MultipartFile) {
+    const mappedData = await this._readFile(file);
 
     // filter out competition members
     const filteredData = mappedData.filter(
@@ -30,6 +31,7 @@ export class UploadRankingController {
     // Get headers
     const headerRow = [
       'memberId',
+      'role',
       'firstName',
       'lastName',
       'single',
@@ -41,9 +43,9 @@ export class UploadRankingController {
   }
 
   @Post('process')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(UploadGuard)
   async process(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: MultipartFile,
     @Body()
     {
       updateCompStatus,
@@ -59,7 +61,7 @@ export class UploadRankingController {
       rankingSystemId: string;
     }
   ) {
-    const mappedData = this._readFile(file);
+    const mappedData = await this._readFile(file);
 
     // filter out competition members
     const filteredData = mappedData.filter(
@@ -77,8 +79,9 @@ export class UploadRankingController {
     return { message: 'File processed successfully' };
   }
 
-  private _readFile(file: Express.Multer.File) {
-    const workbook = XLSX.read(file.buffer);
+  private async _readFile(file: MultipartFile) {
+    const buffer = await file.toBuffer();
+    const workbook = XLSX.read(buffer);
 
     // if data hase multiple sheets use bbfRating
     if (workbook.SheetNames?.[0] == 'HE-SM') {
