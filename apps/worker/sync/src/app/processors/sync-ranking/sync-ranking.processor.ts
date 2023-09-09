@@ -33,14 +33,20 @@ export class SyncRankingProcessor {
 
     const transaction = await this._sequelize.transaction();
 
-    await this._rankingSync.process({
-      transaction,
-      ...job.data,
-    });
+    try {
+      await this._rankingSync.process({
+        transaction,
+        ...job.data,
+      });
 
-    this.logger.debug('Commiting');
+      this.logger.debug('Commiting');
 
-    await transaction.commit();
-    this.logger.debug('Syncing Ranking done');
+      await transaction.commit();
+      this.logger.debug('Syncing Ranking done');
+    } catch (error) {
+      this.logger.error('Rolling back');
+      await transaction.rollback();
+      throw error;
+    }
   }
 }
