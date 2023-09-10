@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.104.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.2...v6.104.0-beta.3) (2023-09-10)
+
+
+### Features
+
+* allowing creation of new players via upload dialog ([fe8e9d3](https://github.com/Badminton-Apps/badman/commit/fe8e9d385abe63a6085c5ea822816dcb69686851))
+
 ## [6.104.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.1...v6.104.0-beta.2) (2023-09-09)
 
 
