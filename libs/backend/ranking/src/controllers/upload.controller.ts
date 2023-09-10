@@ -61,6 +61,9 @@ export class UploadRankingController {
     const rankingSystemId = (file.fields['rankingSystemId'] as MultipartValue)
       ?.value as string;
 
+    const createNewPlayers =
+      (file.fields['createNewPlayers'] as MultipartValue)?.value === 'true';
+
     if (updateRanking && !rankingDate.isValid()) {
       throw new Error('Invalid ranking date');
     }
@@ -76,6 +79,7 @@ export class UploadRankingController {
       rankingDate: rankingDate.toDate(),
       removeAllRanking,
       rankingSystemId,
+      createNewPlayers,
     });
 
     return { message: 'File processed successfully' };

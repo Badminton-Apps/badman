@@ -65,6 +65,7 @@ export class UploadRankingDialogComponent {
   competitionStatus = false;
   removeAllRanking = false;
   updateRanking = false;
+  createNewPlayers = true;
   rankingDate = new Date();
 
   constructor(
@@ -141,6 +142,7 @@ export class UploadRankingDialogComponent {
     formData.append('rankingSystemId', this.data.rankingSystem.id);
     formData.append('updateCompStatus', this.competitionStatus.toString());
     formData.append('removeAllRanking', this.removeAllRanking.toString());
+    formData.append('createNewPlayers', this.createNewPlayers.toString());
     formData.append('rankingDate', this.rankingDate.toISOString());
     formData.append('updateRanking', this.updateRanking.toString());
 

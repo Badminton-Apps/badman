@@ -682,6 +682,7 @@
     "updates": "Updates",
     "upload": {
       "comp-status": "Définissez tous les joueurs de la \"Ligue\" selon le document actuel",
+      "create-new-players": "Créer de nouveaux joueurs",
       "description": "<p>Chargez le <strong>exportMembersRoleGroup</strong> du fichier Excel <strong>BBF+Rating</strong>  <br /><small>Remarque : cela peut prendre du temps<small></p>",
       "hint": "Faites glisser votre fichier ici",
       "preview": "Exemples de dates",

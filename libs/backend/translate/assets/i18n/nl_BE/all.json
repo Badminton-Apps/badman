@@ -682,6 +682,7 @@
     "updates": "Updates",
     "upload": {
       "comp-status": "Zet alle 'Competitie' spelers volgens huidig document",
+      "create-new-players": "Maak nieuwe spelers aan",
       "description": "<p>Upload the <strong>exportMembersRoleGroup</strong> of <strong>BBF+Rating</strong> excel file <br /><small>Note: this might take a wile<small></p>",
       "hint": "Sleep je file hier",
       "preview": "Voorbeeld data",

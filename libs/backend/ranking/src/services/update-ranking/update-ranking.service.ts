@@ -16,11 +16,14 @@ export class UpdateRankingService {
       updateCompStatus?: boolean | string;
       removeAllRanking?: boolean | string;
       updateRanking?: boolean | string;
+      createNewPlayers?: boolean | string;
       rankingDate?: Date;
       rankingSystemId?: string;
     } = {
       updateCompStatus: false,
       removeAllRanking: false,
+      updateRanking: false,
+      createNewPlayers: false,
     }
   ) {
     if (!options.rankingDate) {
@@ -74,6 +77,38 @@ export class UpdateRankingService {
       const distinctPlayers = dataPlayers.filter(
         (p, i, a) => a.findIndex((t) => t.memberId === p.memberId) === i
       );
+
+      // find all players that are not in the database
+      const newPlayers = data.filter(
+        (d) => !dataPlayers.find((p) => p.memberId === d.memberId)
+      );
+
+      // Create new players
+      this._logger.debug(`Create new players: ${options.createNewPlayers}`);
+
+      if (newPlayers.length > 0 && options.createNewPlayers == true) {
+        await Player.bulkCreate(
+          newPlayers?.map((newp) => {
+            return {
+              memberId: newp.memberId,
+              firstName: newp.firstName,
+              lastName: newp.lastName,
+            } as Partial<Player>;
+          }),
+          { transaction }
+        );
+
+        // Get all new players from the database and add them to the distinct players
+        const newPlayersFromDb = await Player.findAll({
+          attributes: ['id', 'memberId', 'competitionPlayer', 'gender'],
+          where: {
+            memberId: newPlayers.map((p) => p.memberId),
+          },
+          transaction,
+        });
+
+        distinctPlayers.push(...newPlayersFromDb);
+      }
 
       // Update comp status
       this._logger.debug(
