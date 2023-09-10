@@ -686,6 +686,7 @@ export type I18nTranslations = {
             "updates": string;
             "upload": {
                 "comp-status": string;
+                "create-new-players": string;
                 "description": string;
                 "hint": string;
                 "preview": string;
