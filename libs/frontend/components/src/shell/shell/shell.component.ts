@@ -118,7 +118,6 @@ export class ShellComponent {
     private router: Router,
     updates: SwUpdate,
     snackBar: MatSnackBar,
-    private authService: AuthenticateService,
     private auth: ClaimService
   ) {
     this.banner = new Banner(

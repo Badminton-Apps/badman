@@ -4,12 +4,15 @@ import {
   Logger,
   Post,
   UploadedFile,
-  UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import 'multer';
 import * as XLSX from 'xlsx';
 import { MembersRolePerGroupData, UpdateRankingService } from '../services';
+import { File, MultipartFile } from '../utils/file.decorator';
+import { UploadGuard } from '../utils/upload.guard';
+import { MultipartValue } from '@fastify/multipart';
+import moment from 'moment';
 
 @Controller('ranking/upload')
 export class UploadRankingController {
@@ -18,9 +21,9 @@ export class UploadRankingController {
   constructor(private _updateRankingService: UpdateRankingService) {}
 
   @Post('preview')
-  @UseInterceptors(FileInterceptor('file'))
-  async preview(@UploadedFile() file: Express.Multer.File) {
-    const mappedData = this._readFile(file);
+  @UseGuards(UploadGuard)
+  async preview(@File() file: MultipartFile) {
+    const mappedData = await this._readFile(file, 10);
 
     // filter out competition members
     const filteredData = mappedData.filter(
@@ -30,6 +33,7 @@ export class UploadRankingController {
     // Get headers
     const headerRow = [
       'memberId',
+      'role',
       'firstName',
       'lastName',
       'single',
@@ -37,48 +41,50 @@ export class UploadRankingController {
       'mixed',
     ];
     // Return the first 10 rows
-    return [headerRow, ...filteredData.slice(0, 10)];
+    return [headerRow, ...filteredData];
   }
 
   @Post('process')
-  @UseInterceptors(FileInterceptor('file'))
-  async process(
-    @UploadedFile() file: Express.Multer.File,
-    @Body()
-    {
-      updateCompStatus,
-      updateRanking,
-      rankingDate,
-      removeAllRanking,
-      rankingSystemId,
-    }: {
-      rankingDate: Date;
-      updateCompStatus: boolean;
-      updateRanking?: boolean;
-      removeAllRanking: boolean;
-      rankingSystemId: string;
-    }
-  ) {
-    const mappedData = this._readFile(file);
+  @UseGuards(UploadGuard)
+  async process(@File() file: MultipartFile) {
+    const mappedData = await this._readFile(file);
 
-    // filter out competition members
-    const filteredData = mappedData.filter(
-      (row) => row.role === 'Competitiespeler'
+    const updateCompStatus =
+      (file.fields['updateCompStatus'] as MultipartValue)?.value === 'true';
+    const updateRanking =
+      (file.fields['updateRanking'] as MultipartValue)?.value === 'true';
+    const rankingDate = moment(
+      (file.fields['rankingDate'] as MultipartValue)?.value as string
     );
+    const removeAllRanking =
+      (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
+    const rankingSystemId = (file.fields['rankingSystemId'] as MultipartValue)
+      ?.value as string;
 
-    await this._updateRankingService.processFileUpload(filteredData, {
+    const createNewPlayers =
+      (file.fields['createNewPlayers'] as MultipartValue)?.value === 'true';
+
+    if (updateRanking && !rankingDate.isValid()) {
+      throw new Error('Invalid ranking date');
+    }
+
+    await this._updateRankingService.processFileUpload(mappedData, {
       updateCompStatus,
       updateRanking,
-      rankingDate,
+      rankingDate: rankingDate.toDate(),
       removeAllRanking,
       rankingSystemId,
+      createNewPlayers,
     });
 
     return { message: 'File processed successfully' };
   }
 
-  private _readFile(file: Express.Multer.File) {
-    const workbook = XLSX.read(file.buffer);
+  private async _readFile(file: MultipartFile, rows: number | undefined = undefined) {
+    const workbook = XLSX.read(await file.toBuffer(), {
+      dense: true,
+      sheetRows: rows,
+    });
 
     // if data hase multiple sheets use bbfRating
     if (workbook.SheetNames?.[0] == 'HE-SM') {
