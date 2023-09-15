@@ -36,9 +36,10 @@ export class AssemblyMessageComponent implements OnInit {
       this._getRequiredGender(),
       this._getPlayers(),
       this._getIndex(),
+      this._getMax(),
       this._getMaxLevel(),
     ]).pipe(
-      map(([game1, game2, gender, players, index, maxLevel]) => {
+      map(([game1, game2, gender, players, index, minMax, maxLevel]) => {
         const params: {
           [key: string]: unknown;
         } = {};
@@ -53,6 +54,10 @@ export class AssemblyMessageComponent implements OnInit {
 
         if (gender) {
           params['gender'] = gender;
+        }
+
+        if (minMax?.['max']) {
+          params['max'] = minMax?.['max'];
         }
 
         return { ...params, ...players, ...index, ...maxLevel };
@@ -151,6 +156,19 @@ export class AssemblyMessageComponent implements OnInit {
       }
 
       params['player'] = player;
+    }
+
+    return of(params);
+  }
+
+  private _getMax() {
+    const params: {
+      [key: string]: unknown;
+    } = {};
+
+    if (this.validation?.params?.['max']) {
+      const max = this.validation?.params?.['max'] as ValidationPlayer;
+      params['max'] = max;
     }
 
     return of(params);

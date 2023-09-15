@@ -270,6 +270,7 @@ export type I18nTranslations = {
                     "to-much": string;
                 };
                 "info": string;
+                "level-exemption": string;
                 "mix1": string;
                 "mix2": string;
                 "mix3": string;
@@ -685,6 +686,7 @@ export type I18nTranslations = {
             "updates": string;
             "upload": {
                 "comp-status": string;
+                "create-new-players": string;
                 "description": string;
                 "hint": string;
                 "preview": string;

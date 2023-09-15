@@ -2,47 +2,47 @@ include ./row.pug
 
 mixin players(singles, doubles, type)
   .grid.text-xs(
-    class='grid-cols-[45px_30px_5fr_1.2fr_2fr_2fr_2fr_2fr_2fr] grid-rows-[1fr_repeat(12,26px)]'
+    class="grid-cols-[45px_30px_5fr_1.2fr_2fr_2fr_2fr_2fr_2fr] grid-rows-[1fr_repeat(12,26px)]"
   )
-    .col-span-2.border.p-1.border-black
-    .border-y.p-1.border-r.border-black Naam
-    .border-y.p-1.border-r.border-black Klas.
+    .col-span-2.p-1.border.border-black.border-solid
+    .p-1.border.border-l-0.border-black.border-solid Naam
+    .p-1.border.border-l-0.border-black.border-solid Klas.
       br/
-      .text-gray-500.italic(class='text-[0.8em]')
+      .text-gray-500.italic(class="text-[0.8em]")
         | (huidig)
-    .border-y.p-1.border-r.border-black Lidnr.
-    .border-y.p-1.border-r.border-black
+    .p-1.border.border-l-0.border-black.border-solid Lidnr.
+    .p-1.border.border-l-0.border-black.border-solid
       | Som index
       br/
-      .text-gray-500.italic(class='text-[0.8em]')
+      .text-gray-500.italic(class="text-[0.8em]")
         | (mei vorig seizoen)
-    .border-y.p-1.border-r.border-black
+    .p-1.border.border-l-0.border-black.border-solid
       | Hoogste klas.
       br/
-      .text-gray-500.italic(class='text-[0.8em]')
+      .text-gray-500.italic(class="text-[0.8em]")
         | (mei vorig seizoen)
-    .border-y.p-1.border-r.border-black
+    .p-1.border.border-l-0.border-black.border-solid
       | Titularis
       br/
-      .text-gray-500.italic(class='text-[0.8em]')
-        | (titularis telt mee)
-    .border-y.p-1.border-r.border-black
+      .text-gray-500.italic(class="text-[0.8em]")
+      | (titularis telt mee)
+    .p-1.border.border-l-0.border-black.border-solid
       | Basisspeler
       br/
-      .text-gray-500.italic(class='text-[0.8em]')
+      .text-gray-500.italic(class="text-[0.8em]")
         | (mei vorig seizoen)
 
     .col-start-2.row-start-2.border-solid.border-black.border.border-t-0.flex(
-      class='row-end-[14]'
+      class="row-end-[14]"
     )
-      .text-center.leading-6.m-auto(class='max-w-[1em] text-[2em]') T I T U L A R I S S E N
+      .text-center.leading-6.m-auto(class="max-w-[1em] text-[2em]") T I T U L A R I S S E N
 
     each double, index in doubles
       //- if type == mix then double 3 and 4 are mixed
       if type == 'MX' && (index == 2 || index == 3)
-        +doublePlayer(double, 'mix', index +1).p-1.border.border-solid.border-l-0.border-t-0.border-black.flex.h-full.items-center
+        +doublePlayer(double, 'mix', index +1).p-1.border.border-black.border-l-0.border-t-0
       else
-        +doublePlayer(double, 'double', index +1).p-1.border.border-solid.border-l-0.border-t-0.border-black.flex.h-full.items-center
+        +doublePlayer(double, 'double', index +1).p-1.border.border-black.border-l-0.border-t-0
 
     each player, index in singles
-      +singlePlayer(player, 'single', index + 1).p-1.border.border-solid.border-l-0.border-black.flex.h-full.items-center
+      +singlePlayer(player, 'single', index + 1).p-1.border.border-black.border-l-0

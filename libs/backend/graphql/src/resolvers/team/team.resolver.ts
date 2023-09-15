@@ -835,10 +835,7 @@ export class TeamsResolver {
         p.id === playerCompetition.id ? updatedPlayer : p
       );
 
-      for (const player of entry.meta.competition.players) {
-        this.logger.debug(`${player.id} - ${player.levelException}`);
-      }
-
+      // create a new meta object to trigger the update
       entry.meta = {
         ...entry.meta,
       };
