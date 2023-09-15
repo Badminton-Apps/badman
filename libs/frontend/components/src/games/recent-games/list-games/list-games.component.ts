@@ -50,6 +50,7 @@ import {
   shareReplay,
   switchMap,
   filter,
+  mergeMap,
 } from 'rxjs/operators';
 import { LoadingBlockComponent } from '../../../loading-block';
 
@@ -128,7 +129,6 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
     page: number,
     filter?: Partial<{ choices: string[] | null }>
   ) {
-    console.log(page);
 
     return this.apollo
       .query<{
@@ -366,7 +366,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
         takeUntil(this.destroy$),
         filter(() => !this.endOfList),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        switchMap(([page, filter]) =>
+        mergeMap(([page, filter]) =>
           this._loadRecentGamesForPlayer(this.playerId ?? '', page, filter)
         )
         // Increment the page number for the next request
