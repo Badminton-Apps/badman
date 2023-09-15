@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
@@ -19,14 +25,13 @@ import { RankingSystemService } from '@badman/frontend-graphql';
 import { EncounterCompetition, Player } from '@badman/frontend-models';
 import { PdfService } from '@badman/frontend-pdf';
 import { SeoService } from '@badman/frontend-seo';
+import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AssemblyComponent } from './components';
-import { get } from 'http';
-import { getCurrentSeason } from '@badman/utils';
 
 @Component({
   selector: 'badman-assembly-create',
@@ -73,7 +78,8 @@ export class CreatePageComponent implements OnInit {
     private pdfService: PdfService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    public authenticate: AuthenticateService
+    public authenticate: AuthenticateService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -214,6 +220,7 @@ export class CreatePageComponent implements OnInit {
 
         // Reset loading
         this.pdfLoading = false;
+        this.changeDetectorRef.detectChanges();
       });
   }
 

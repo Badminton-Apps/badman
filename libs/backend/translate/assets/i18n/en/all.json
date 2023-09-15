@@ -266,6 +266,7 @@
         "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single."
       },
       "info": "Remarks concerning the team assembly",
+      "level-exemption": "Player is exempt from ranking restrictions",
       "mix1": "Men doubles",
       "mix2": "Women doubles",
       "mix3": "Mixed 1",
@@ -681,6 +682,7 @@
     "updates": "Updates",
     "upload": {
       "comp-status": "Set all 'Competition' players according to current document",
+      "create-new-players": "Create new players",
       "description": "<p>Upload the <strong>exportMembersRoleGroup</strong> of <strong>BBF+Rating</strong> excel file <br /><small>Note: this might take a wile<small></p>",
       "hint": "Drag your file here",
       "preview": "Preview data",

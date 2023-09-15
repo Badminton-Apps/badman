@@ -266,6 +266,7 @@
         "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen."
       },
       "info": "Opmerkingen bij opstelling",
+      "level-exemption": "Speler is vrijgesteld van de ranking restricties",
       "mix1": "Heren Dubbel",
       "mix2": "Dames Dubbel",
       "mix3": "Gemengd 1",
@@ -681,6 +682,7 @@
     "updates": "Updates",
     "upload": {
       "comp-status": "Zet alle 'Competitie' spelers volgens huidig document",
+      "create-new-players": "Maak nieuwe spelers aan",
       "description": "<p>Upload the <strong>exportMembersRoleGroup</strong> of <strong>BBF+Rating</strong> excel file <br /><small>Note: this might take a wile<small></p>",
       "hint": "Sleep je file hier",
       "preview": "Voorbeeld data",

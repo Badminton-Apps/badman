@@ -222,8 +222,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
 
   type?: string;
 
-  teamIndex = 0;
-  teamNumber = 0;
+  team?: Team;
   club!: string;
 
   entry?: EventEntry;
@@ -238,6 +237,14 @@ export class AssemblyComponent implements OnInit, OnDestroy {
   endRanking?: Moment;
 
   notSmallScreen = true;
+
+  isException(id?: string) {
+    if (!id) {
+      return false;
+    }
+    
+    return this.team?.entry?.meta?.competition?.players?.find((p) => p.id === id)?.levelException ?? false;
+  }
 
   constructor(
     private apollo: Apollo,
@@ -442,6 +449,8 @@ export class AssemblyComponent implements OnInit, OnDestroy {
       this._sortLists();
       this._updateWherePlayer();
       this._setTranslations();
+
+      this.team = team;
 
       // Trigger form change
       this.updatedAssembly$.next(true);
@@ -686,7 +695,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
   changeTeam() {
     this.dialog.open(EditDialogComponent, {
       data: {
-        teamId: this.group.get('team')?.value,
+        team: this.team,
       },
 
       width: '100%',
@@ -715,8 +724,28 @@ export class AssemblyComponent implements OnInit, OnDestroy {
                 team(id: $id) {
                   id
                   captainId
+                  clubId
+                  teamNumber
+                  type
+                  captainId
+                  phone
+                  email
+                  season
+                  preferredDay
+                  preferredTime
                   players {
                     ...TeamPlayerInfo
+                  }
+                  entry {
+                    id
+                    meta {
+                      competition {
+                        players {
+                          id
+                          levelException
+                        }
+                      }
+                    }
                   }
                 }
               }

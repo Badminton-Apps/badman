@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.104.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.3...v6.104.0-beta.4) (2023-09-15)
+
+
+### Features
+
+* updated sheetjs package + member id now in slug ([4b5bac4](https://github.com/Badminton-Apps/badman/commit/4b5bac42d58a2ec0a616f4431f01d351e74337e3))
+
+
+### Bug Fixes
+
+* loading correct last games ([d0c5630](https://github.com/Badminton-Apps/badman/commit/d0c5630a6edeeedc8c90b66d304e7f1be8c52dc8))
+* sort encounters ([8e206b7](https://github.com/Badminton-Apps/badman/commit/8e206b7b28223688359eda90a3286742f41d5e38))
+
+## [6.104.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.2...v6.104.0-beta.3) (2023-09-10)
+
+
+### Features
+
+* allowing creation of new players via upload dialog ([fe8e9d3](https://github.com/Badminton-Apps/badman/commit/fe8e9d385abe63a6085c5ea822816dcb69686851))
+
+## [6.104.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.1...v6.104.0-beta.2) (2023-09-09)
+
+
+### Bug Fixes
+
+* rollback when commit failed ([524a584](https://github.com/Badminton-Apps/badman/commit/524a584167bcff480d78e5877286e47a512a87de))
+
+## [6.104.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.0...v6.104.0-beta.1) (2023-09-07)
+
+
+### Features
+
+* update ranking faster ([fc593d9](https://github.com/Badminton-Apps/badman/commit/fc593d904249a237d2f173118f450af80e16d9d6))
+* updated the ranking upload code to support fastify ([6316698](https://github.com/Badminton-Apps/badman/commit/631669853c187b452847cff0c5573efa79525338))
+
+## [6.104.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.103.0...v6.104.0-beta.0) (2023-09-07)
+
+
+### Features
+
+* adding player exception ([bc2d1d1](https://github.com/Badminton-Apps/badman/commit/bc2d1d150d75ee07a4f49b49e72852d565cb83a1))
+
+
+### Bug Fixes
+
+* assembly not rendering properly ([de39eab](https://github.com/Badminton-Apps/badman/commit/de39eab2beea0638ff639c6a9848581d1ac8ee6f))
+* edit team from assembly ([15a0771](https://github.com/Badminton-Apps/badman/commit/15a0771d6c51e53b638f4e90643b9e8bf7a217bc))
+* only allow change encounters when you have permissions ([175fb49](https://github.com/Badminton-Apps/badman/commit/175fb494f2934cbc977beacf3e645e9d20ba7e72))
+
 ## [6.103.0](https://github.com/Badminton-Apps/badman/compare/v6.103.0-beta.0...v6.103.0) (2023-08-31)
 
 

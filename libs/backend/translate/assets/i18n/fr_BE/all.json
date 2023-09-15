@@ -266,6 +266,7 @@
         "to-much": "Le joueur peut jouer un maximum de 2 doubles (mixtes) et 1 simple."
       },
       "info": "Notes sur la composition",
+      "level-exemption": "Le joueur est exempté des restrictions de classement",
       "mix1": "Doubles hommes",
       "mix2": "Double pour les femmes",
       "mix3": "Double 1",
@@ -681,6 +682,7 @@
     "updates": "Updates",
     "upload": {
       "comp-status": "Définissez tous les joueurs de la \"Ligue\" selon le document actuel",
+      "create-new-players": "Créer de nouveaux joueurs",
       "description": "<p>Chargez le <strong>exportMembersRoleGroup</strong> du fichier Excel <strong>BBF+Rating</strong>  <br /><small>Remarque : cela peut prendre du temps<small></p>",
       "hint": "Faites glisser votre fichier ici",
       "preview": "Exemples de dates",

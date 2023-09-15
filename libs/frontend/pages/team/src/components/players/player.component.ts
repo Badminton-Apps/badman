@@ -17,7 +17,6 @@ import { Player, TeamPlayer } from '@badman/frontend-models';
 import { TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 
-
 export const PLAYERS_CONTROL = 'players';
 
 @Component({
@@ -82,8 +81,6 @@ export class TeamPlayersComponent implements OnInit {
       this.wherePlayer['gender'] =
         this.group?.value.type === 'MX' ? undefined : this.group?.value.type;
     }
-
-    console.log(this.control.value);
   }
 
   async playerAdded(player: Player) {

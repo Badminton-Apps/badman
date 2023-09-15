@@ -18,6 +18,7 @@ export class PlayerMinLevelRule extends Rule {
     const {
       system,
       team,
+      meta,
       single1,
       single2,
       single3,
@@ -63,11 +64,14 @@ export class PlayerMinLevelRule extends Rule {
           continue;
         }
 
+        const metaPlayer = meta?.competition?.players.find((p) => p.id === player.id);
+
+
         ranking.single = ranking.single ?? system.amountOfLevels;
         ranking.double = ranking.double ?? system.amountOfLevels;
         ranking.mix = ranking.mix ?? system.amountOfLevels;
 
-        if (ranking.single < subEvent.maxLevel) {
+        if (ranking.single < subEvent.maxLevel && !metaPlayer?.levelException) {
           valid = false;
           errors.push({
             message: 'all.competition.team-assembly.errors.player-min-level',
@@ -83,7 +87,7 @@ export class PlayerMinLevelRule extends Rule {
           });
         }
 
-        if (ranking.double < subEvent.maxLevel) {
+        if (ranking.double < subEvent.maxLevel && !metaPlayer?.levelException) {
           valid = false;
           errors.push({
             message: 'all.competition.team-assembly.errors.player-min-level',
@@ -99,7 +103,7 @@ export class PlayerMinLevelRule extends Rule {
           });
         }
 
-        if (type === SubEventTypeEnum.MX && ranking.mix < subEvent.maxLevel) {
+        if (type === SubEventTypeEnum.MX && ranking.mix < subEvent.maxLevel && !metaPlayer?.levelException) {
           valid = false;
           errors.push({
             message: 'all.competition.team-assembly.errors.player-min-level',
