@@ -216,7 +216,12 @@ export class UpdateRankingService {
           place.mix = d.mixed || place.mix;
           place.mixPoints = d.mixedPoints || place.mixPoints;
 
-          toUpdate.push(place);
+          if (place.changed()) {
+            this._logger.verbose(
+              `Update ranking place for player: ${player.id}`
+            );
+            toUpdate.push(place);
+          }
         }
 
         this._logger.debug(`Update ${toUpdate.length} places`);

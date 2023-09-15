@@ -31,7 +31,7 @@ export class DatabaseModule implements OnModuleInit {
   onModuleInit() {
     this.logger.debug('initialize addons');
     slugifyModel(Player as unknown as Model, {
-      source: ['firstName', 'lastName'],
+      source: ['firstName', 'lastName', 'memberId'],
     });
     slugifyModel(EventCompetition as unknown as Model, {
       source: ['name'],
