@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.104.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.3...v6.104.0-beta.4) (2023-09-15)
+
+
+### Features
+
+* updated sheetjs package + member id now in slug ([4b5bac4](https://github.com/Badminton-Apps/badman/commit/4b5bac42d58a2ec0a616f4431f01d351e74337e3))
+
+
+### Bug Fixes
+
+* loading correct last games ([d0c5630](https://github.com/Badminton-Apps/badman/commit/d0c5630a6edeeedc8c90b66d304e7f1be8c52dc8))
+* sort encounters ([8e206b7](https://github.com/Badminton-Apps/badman/commit/8e206b7b28223688359eda90a3286742f41d5e38))
+
 ## [6.104.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.2...v6.104.0-beta.3) (2023-09-10)
 
 
