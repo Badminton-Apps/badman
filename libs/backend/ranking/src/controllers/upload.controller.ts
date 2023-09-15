@@ -23,7 +23,7 @@ export class UploadRankingController {
   @Post('preview')
   @UseGuards(UploadGuard)
   async preview(@File() file: MultipartFile) {
-    const mappedData = await this._readFile(file);
+    const mappedData = await this._readFile(file, 10);
 
     // filter out competition members
     const filteredData = mappedData.filter(
@@ -41,7 +41,7 @@ export class UploadRankingController {
       'mixed',
     ];
     // Return the first 10 rows
-    return [headerRow, ...filteredData.slice(0, 10)];
+    return [headerRow, ...filteredData];
   }
 
   @Post('process')
@@ -68,12 +68,7 @@ export class UploadRankingController {
       throw new Error('Invalid ranking date');
     }
 
-    // filter out competition members
-    const filteredData = mappedData.filter(
-      (row) => row.role === 'Competitiespeler'
-    );
-
-    await this._updateRankingService.processFileUpload(filteredData, {
+    await this._updateRankingService.processFileUpload(mappedData, {
       updateCompStatus,
       updateRanking,
       rankingDate: rankingDate.toDate(),
@@ -85,9 +80,11 @@ export class UploadRankingController {
     return { message: 'File processed successfully' };
   }
 
-  private async _readFile(file: MultipartFile) {
-    const buffer = await file.toBuffer();
-    const workbook = XLSX.read(buffer);
+  private async _readFile(file: MultipartFile, rows: number | undefined = undefined) {
+    const workbook = XLSX.read(await file.toBuffer(), {
+      dense: true,
+      sheetRows: rows,
+    });
 
     // if data hase multiple sheets use bbfRating
     if (workbook.SheetNames?.[0] == 'HE-SM') {
