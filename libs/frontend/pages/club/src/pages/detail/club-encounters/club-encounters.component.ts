@@ -21,7 +21,7 @@ import {
   SelectTeamComponent,
 } from '@badman/frontend-components';
 import { EncounterCompetition } from '@badman/frontend-models';
-import { getCurrentSeason } from '@badman/utils';
+import { getCurrentSeason, sortEncounters } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, startWith, switchMap, tap } from 'rxjs/operators';
@@ -151,6 +151,7 @@ export class ClubEncountersComponent implements OnInit {
         map((encounters) =>
           encounters?.map((encounter) => new EncounterCompetition(encounter))
         ),
+        map((encounters) => encounters?.sort(sortEncounters)),
         map((encounters) =>
           // if the change is not null and not accepted
           encounters?.filter((encounter) =>
