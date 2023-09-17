@@ -39,4 +39,4 @@ COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 EXPOSE 4000
 # Start the server using the production build
-CMD [ "dumb-init", "node", "--max-old-space-size=$MAX_OLD_SPACE_SIZE", "./dist/apps/worker/sync/main.js"]
+CMD [ "dumb-init", "node", "--max-old-space-size=${MAX_OLD_SPACE_SIZE}", "./dist/apps/worker/sync/main.js"]
