@@ -23,7 +23,7 @@ ENV NODE_ENV=production \
 
 # get port from arg with default value 5000
 ARG PORT=5000
-# get max-old-space-size from arg with default value 512
+# get max-old-space-size from arg with default value 512 (not used yet)
 ARG MAX_OLD_SPACE_SIZE=512
 
 RUN apk add --no-cache \
@@ -41,4 +41,4 @@ COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 
 EXPOSE $PORT
-CMD [ "dumb-init", "node", "--max-old-space-size=${MAX_OLD_SPACE_SIZE}", "./dist/apps/api/main.js"]
+CMD [ "dumb-init", "node", "--max-old-space-size=512", "./dist/apps/api/main.js"]
