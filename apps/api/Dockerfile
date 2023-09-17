@@ -41,4 +41,4 @@ COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 
 EXPOSE $PORT
-CMD [ "dumb-init", "node", "--max-old-space-size=$MAX_OLD_SPACE_SIZE", "./dist/apps/api/main.js"]
+CMD [ "dumb-init", "node", "--max-old-space-size=${MAX_OLD_SPACE_SIZE}", "./dist/apps/api/main.js"]
