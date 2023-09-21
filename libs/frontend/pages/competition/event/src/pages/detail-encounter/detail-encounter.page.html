@@ -6,6 +6,16 @@
       <mat-icon>star_outline</mat-icon>
     </button>
 
+    <a
+      mat-icon-button
+      target="_blank"
+      *ngIf="eventCompetition.visualCode && encounterCompetition.visualCode"
+      [href]="'https://www.toernooi.nl/sport/teammatch.aspx?id='+this.eventCompetition.visualCode + '&match=' + this.encounterCompetition.visualCode"
+      [matTooltip]="'all.button.open-in-new-tab' | translate"
+    >
+      <mat-icon>open_in_new</mat-icon>
+    </a>
+
     <badman-has-claim [any]="['edit:competition']">
       <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
         <mat-icon>more_vert</mat-icon>
@@ -16,6 +26,14 @@
           <mat-icon>edit</mat-icon>
           <span>Edit</span>
         </button>
+
+        <button mat-menu-item (click)="syncNotifications()">
+          <mat-icon>sync</mat-icon>
+          <span>Check notifications</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
         <button mat-menu-item>
           <mat-icon>delete</mat-icon>
           <span>Delete</span>

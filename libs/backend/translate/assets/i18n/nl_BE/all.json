@@ -391,6 +391,7 @@
     "wednesday": "Woensdag"
   },
   "event": {
+    "checkEncounterForFilledIn": "Stuur notificaties wanneer de wedstrijd niet ingevuld of bevestigd is",
     "last-sync": "Laatste update",
     "standing": {
       "games": "Wedstrijden",
