@@ -391,6 +391,7 @@
     "wednesday": "Wednesday"
   },
   "event": {
+    "checkEncounterForFilledIn": "Send notifications when encounter is not entered or confirmed",
     "last-sync": "Last sync",
     "standing": {
       "games": "Games",
