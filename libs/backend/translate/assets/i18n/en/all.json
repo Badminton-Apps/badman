@@ -93,6 +93,10 @@
       "open-requests": "Open transfer requests"
     },
     "end": "End",
+    "membership-types": {
+      "loan": "Player on loan",
+      "normal": "Main club"
+    },
     "menu": {
       "add-player": "Add Player",
       "twizzit": "Twizzit overview"
