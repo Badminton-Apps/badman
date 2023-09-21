@@ -35,6 +35,9 @@
                 routerLinkActive="active"
               >
                 {{ club.name }}
+                <small class="loan" *ngIf="club.clubMembership?.membershipType === 'LOAN'">{{
+                  'all.club.membership-types.loan' | translate
+                }}</small>
               </a>
             </mat-nav-list>
           </mat-nav-list>
