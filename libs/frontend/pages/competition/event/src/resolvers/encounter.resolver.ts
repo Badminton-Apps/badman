@@ -26,6 +26,7 @@ export class EncounterResolver {
               homeScore
               awayScore
               date
+              visualCode
               drawCompetition {
                 subEventCompetition {
                   eventType

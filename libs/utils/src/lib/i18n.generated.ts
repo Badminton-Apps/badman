@@ -395,6 +395,7 @@ export type I18nTranslations = {
             "wednesday": string;
         };
         "event": {
+            "checkEncounterForFilledIn": string;
             "last-sync": string;
             "standing": {
                 "games": string;
