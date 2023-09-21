@@ -40,6 +40,7 @@ import { BehaviorSubject, map, shareReplay, lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { EventCompetitionLevelFieldsComponent } from './components';
 import { EVENT_QUERY } from '../../resolvers';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 export type ExceptionType = FormGroup<{
   start: FormControl<Date | undefined>;
@@ -83,6 +84,7 @@ const roleQuery = gql`
     ReactiveFormsModule,
     MatDatepickerModule,
     MatSnackBarModule,
+    MatSlideToggleModule,
 
     // Own modules
     PageHeaderComponent,
@@ -182,6 +184,9 @@ export class EditPageComponent implements OnInit {
         Validators.max(3000),
       ]),
       contactEmail: new FormControl(event.contactEmail, Validators.required),
+      checkEncounterForFilledIn: new FormControl(
+        event.checkEncounterForFilledIn
+      ),
 
       usedRankingUnit: new FormControl(event.usedRankingUnit, [
         Validators.required,
@@ -268,6 +273,7 @@ export class EditPageComponent implements OnInit {
               name: eventCompetition.name,
               season: eventCompetition.season,
               contactEmail: eventCompetition.contactEmail,
+              checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
               exceptions:
                 eventCompetition.exceptions?.filter((e) => e.start && e.end) ??
                 [],
