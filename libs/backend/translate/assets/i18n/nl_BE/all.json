@@ -93,6 +93,10 @@
       "open-requests": "Openstaande verplaatsingsaanvragen"
     },
     "end": "Einde",
+    "membership-types": {
+      "loan": "Uitgeleende speler",
+      "normal": "Hoofdclub"
+    },
     "menu": {
       "add-player": "Voeg speler toe",
       "twizzit": "Twizzit overview"

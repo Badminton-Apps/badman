@@ -25,8 +25,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import { Club } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
+import { ClubMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
+import moment from 'moment';
 import {
   BehaviorSubject,
   Observable,
@@ -177,19 +179,22 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           const paramClubId = params.get('club');
 
           if (paramClubId) {
-            const foundClub = rows?.find((r) => r.id == paramClubId)?.id ?? null;
+            const foundClub =
+              rows?.find((r) => r.id == paramClubId)?.id ?? null;
             this.selectClub(foundClub, false);
-
           } else if (rows?.length == 1 && this.autoSelect) {
             this.selectClub(rows[0].id, false);
           }
 
-
-
           // if no club is selected and the user has clubs, pick the first one
           else if (user?.clubs && this.autoSelect) {
             const clubIds = user?.clubs
-              ?.filter((c) => c.clubMembership?.end == null)
+              ?.filter(
+                (c) =>
+                  moment(c.clubMembership?.start).isBefore(moment()) &&
+                  c.clubMembership?.end == null &&
+                  c.clubMembership?.membershipType == ClubMembershipType.NORMAL
+              )
               ?.map((r) => r.id);
 
             if (clubIds) {

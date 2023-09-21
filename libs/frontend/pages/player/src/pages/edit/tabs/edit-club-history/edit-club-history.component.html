@@ -20,8 +20,21 @@
       >{{ 'all.club.end' | translate }}:
       {{ club.clubMembership?.end | amLocal | amDateFormat : 'LL' }}
     </span>
-    <span matListItemLine *ngIf="!club.clubMembership?.end">{{
-      'all.club.current' | translate
-    }}</span>
+    <span
+      matListItemLine
+      *ngIf="
+        !club.clubMembership?.end &&
+        club.clubMembership?.membershipType === 'NORMAL'
+      "
+      >{{ 'all.club.current' | translate }}</span
+    >
+    <span
+      matListItemLine
+      *ngIf="
+        !club.clubMembership?.end &&
+        club.clubMembership?.membershipType === 'LOAN'
+      "
+      >{{ 'all.club.membership-types.loan' | translate }}</span
+    >
   </mat-list-item>
 </mat-list>

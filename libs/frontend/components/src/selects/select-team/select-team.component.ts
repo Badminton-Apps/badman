@@ -253,7 +253,6 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
       };
 
       if (removeOtherParams) {
-        console.log('remove other params');
         queryParams['encounter'] = undefined;
       }
 

@@ -16,10 +16,12 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SelectClubComponent } from '@badman/frontend-components';
 import { Club } from '@badman/frontend-models';
+import { ClubMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -28,17 +30,20 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
+    TranslateModule,
+
     MatDialogModule,
-    SelectClubComponent,
     MatSlideToggleModule,
     MatTooltipModule,
     MatInputModule,
     MatButtonModule,
-    FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    TranslateModule,
     MatDatepickerModule,
+    MatSelectModule,
+
+    SelectClubComponent,
   ],
 })
 export class EditClubHistoryDialogComponent implements OnInit {
@@ -46,6 +51,7 @@ export class EditClubHistoryDialogComponent implements OnInit {
   membershipFormGroup: FormGroup = new FormGroup({});
 
   currentClub?: boolean;
+  types = Object.keys(ClubMembershipType) as ClubMembershipType[];
 
   constructor(
     private dialogRef: MatDialogRef<EditClubHistoryDialogComponent>,
@@ -61,12 +67,20 @@ export class EditClubHistoryDialogComponent implements OnInit {
       [Validators.required]
     );
     const endControl = new FormControl(this.data.club?.clubMembership?.end);
+    const membershipTypeControl = new FormControl(
+      this.data.club?.clubMembership?.membershipType,
+      [Validators.required]
+    );
 
     this.currentClub = this.data.club?.clubMembership?.end === undefined;
 
     this.clubFormGroup.addControl('club', clubControl);
     this.membershipFormGroup.addControl('start', startControl);
     this.membershipFormGroup.addControl('end', endControl);
+    this.membershipFormGroup.addControl(
+      'membershipType',
+      membershipTypeControl
+    );
   }
 
   toggleCurrentClub() {
