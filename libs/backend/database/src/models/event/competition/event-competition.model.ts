@@ -178,6 +178,10 @@ export class EventCompetition extends Model {
   @Column(DataType.STRING)
   country?: string;
 
+  @Field(() => Boolean, { nullable: true })
+  @Column(DataType.BOOLEAN)
+  checkEncounterForFilledIn?: boolean;
+
   @Field(() => [ExceptionType], { nullable: true })
   @Column({
     type: DataType.JSON,
