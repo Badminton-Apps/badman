@@ -87,16 +87,30 @@ export class UpdateRankingService {
       this._logger.debug(`Create new players: ${options.createNewPlayers}`);
 
       if (newPlayers.length > 0 && options.createNewPlayers == true) {
-        await Player.bulkCreate(
-          newPlayers?.map((newp) => {
-            return {
-              memberId: newp.memberId,
-              firstName: newp.firstName,
-              lastName: newp.lastName,
-            } as Partial<Player>;
-          }),
-          { transaction }
-        );
+        this._logger.debug(`Create ${newPlayers.length} new players`);
+
+        const chunkSize = 100;
+        const chunks = [];
+        for (let i = 0; i < newPlayers.length; i += chunkSize) {
+          chunks.push(newPlayers.slice(i, i + chunkSize));
+        }
+        
+        let playersProcessed = 0;
+        for (const chunk of chunks) {
+          playersProcessed += chunk.length;
+          this._logger.verbose(`Processing ${playersProcessed} of ${newPlayers.length} players`);
+
+          await Player.bulkCreate(
+            chunk?.map((newp) => {
+              return {
+                memberId: newp.memberId,
+                firstName: newp.firstName,
+                lastName: newp.lastName,
+              } as Partial<Player>;
+            }), 
+            { transaction }
+          );
+        }
 
         // Get all new players from the database and add them to the distinct players
         const newPlayersFromDb = await Player.findAll({

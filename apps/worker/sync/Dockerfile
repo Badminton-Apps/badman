@@ -20,7 +20,9 @@ ENV NODE_ENV=production \
     TZ="Europe/Brussels" \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-
+    
+# get max-old-space-size from arg with default value 512 (not used yet)
+ARG MAX_OLD_SPACE_SIZE=512
 
 RUN apk add --no-cache \
     dumb-init \
@@ -37,4 +39,4 @@ COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 EXPOSE 4000
 # Start the server using the production build
-CMD [ "dumb-init", "node", "./dist/apps/worker/sync/main.js"]
+CMD [ "dumb-init", "node", "--max-old-space-size=512", "./dist/apps/worker/sync/main.js"]
