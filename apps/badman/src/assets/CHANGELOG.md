@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.105.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.105.0-beta.1...v6.105.0-beta.2) (2023-09-17)
+
+## [6.105.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.105.0-beta.0...v6.105.0-beta.1) (2023-09-17)
+
+
+### Bug Fixes
+
+* commands here should use `{` ([996f26a](https://github.com/Badminton-Apps/badman/commit/996f26ac626c9eea408868b65bb1a62283b26a9d))
+
+## [6.105.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.104.0...v6.105.0-beta.0) (2023-09-17)
+
+
+### Features
+
+* process players in chunks for better perforamnce in large sets ([fa27ed3](https://github.com/Badminton-Apps/badman/commit/fa27ed31c71d1bc7cacf6faabcb0e5be46d299a9))
+
 ## [6.104.0](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.4...v6.104.0) (2023-09-15)
 
 ## [6.104.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.104.0-beta.3...v6.104.0-beta.4) (2023-09-15)
