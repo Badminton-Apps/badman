@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.106.0](https://github.com/Badminton-Apps/badman/compare/v6.105.0...v6.106.0) (2023-09-21)
+
+
+### Features
+
+* add toggle to enable/disable checking of notifications ([b94d41f](https://github.com/Badminton-Apps/badman/commit/b94d41fc6e4ef353a15625f1377d15255611b082))
+* sync check for comments ([3faff49](https://github.com/Badminton-Apps/badman/commit/3faff49170f8e3d78b5cbcc356f326a2be375625))
+
 ## [6.105.0](https://github.com/Badminton-Apps/badman/compare/v6.105.0-beta.2...v6.105.0) (2023-09-21)
 
 
