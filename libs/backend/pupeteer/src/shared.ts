@@ -67,7 +67,7 @@ export async function waitForSelector(
         await element.evaluateHandle((el) =>
           el.shadowRoot ? el.shadowRoot : el
         )
-    ).asElement() as ElementHandle<Element>;
+      ).asElement() as ElementHandle<Element>;
     }
     if (!element) {
       throw new Error('Could not find element: ' + selector.join('|'));
@@ -96,9 +96,13 @@ export async function waitForSelector(
 //   }, timeout);
 // }
 
-export async function querySelectorsAll(selectors: string[], frame: Page) {
+export async function querySelectorsAll(
+  selectors: string[],
+  frame: Page,
+  timeout?: number
+) {
   for (const selector of selectors) {
-    const result = await querySelectorAll(selector, frame);
+    const result = await querySelectorAll(selector, frame, timeout);
     if (result.length) {
       return result;
     }
@@ -108,7 +112,8 @@ export async function querySelectorsAll(selectors: string[], frame: Page) {
 
 export async function querySelectorAll(
   selector: string | string[],
-  frame: Page
+  frame: Page,
+  timeout?: number
 ) {
   if (selector instanceof Array) {
     let elements: ElementHandle<Element>[] = [];

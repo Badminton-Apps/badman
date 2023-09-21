@@ -15,10 +15,47 @@ import { Browser, Page } from 'puppeteer';
 import { Op } from 'sequelize';
 import {
   detailAccepted,
+  detailComment,
   detailEntered,
   gotoEncounterPage,
   hasTime,
 } from './pupeteer';
+import { Job } from 'bull';
+
+const includes = [
+  {
+    model: Team,
+    as: 'home',
+    attributes: ['id', 'name'],
+  },
+  {
+    model: Team,
+    as: 'away',
+    attributes: ['id', 'name'],
+  },
+  {
+    required: true,
+    attributes: ['id'],
+    model: DrawCompetition,
+    include: [
+      {
+        required: true,
+        attributes: ['id'],
+        model: SubEventCompetition,
+        include: [
+          {
+            required: true,
+            attributes: ['id', 'visualCode'],
+            model: EventCompetition,
+            where: {
+              checkEncounterForFilledIn: true,
+            },
+          },
+        ],
+      },
+    ],
+  },
+];
 
 @Processor({
   name: SyncQueue,
@@ -44,47 +81,14 @@ export class CheckEncounterProcessor {
             [Op.between]: [
               moment().subtract(14, 'days').toDate(),
               moment().toDate(),
-            ]
+            ],
           },
           acceptedOn: null,
           visualCode: {
             [Op.ne]: null,
           },
         },
-        include: [
-          {
-            model: Team,
-            as: 'home',
-            attributes: ['id', 'name'],
-          },
-          {
-            model: Team,
-            as: 'away',
-            attributes: ['id', 'name'],
-          },
-          {
-            required: true,
-            attributes: ['id'],
-            model: DrawCompetition,
-            include: [
-              {
-                required: true,
-                attributes: ['id'],
-                model: SubEventCompetition,
-                include: [
-                  {
-                    required: true,
-                    attributes: ['id', 'visualCode'],
-                    model: EventCompetition,
-                    where: {
-                      checkEncounterForFilledIn: true,
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
+        include: includes,
       });
 
       if (encounters.count > 0) {
@@ -142,7 +146,44 @@ export class CheckEncounterProcessor {
     }
   }
 
-  private async syncEncounter(encounter: EncounterCompetition, page: Page) {
+  @Process(Sync.CheckEncounter)
+  async acceptDate(job: Job<{ encounterId: string }>) {
+    const encounter = await EncounterCompetition.findByPk(
+      job.data.encounterId,
+      {
+        include: includes,
+      }
+    );
+
+    if (!encounter) {
+      this.logger.error(`Encounter ${job.data.encounterId} not found`);
+      return;
+    }
+    // Create browser
+    const browser = await getBrowser(false);
+    try {
+      const page = await browser.newPage();
+      page.setDefaultTimeout(10000);
+      await page.setViewport({ width: 1691, height: 1337 });
+
+      // Accept cookies
+      await accepCookies({ page });
+
+      // Processing encounters
+      await this.syncEncounter(encounter, page);
+    } catch (error) {
+      this.logger.error(error);
+    } finally {
+      // Close browser
+      if (browser) {
+        browser.close();
+      }
+
+      this.logger.log('Synced encounters');
+    }
+  }
+
+  async syncEncounter(encounter: EncounterCompetition, page: Page) {
     this.logger.debug(`Syncing encounter ${encounter.visualCode}`);
     const url = await gotoEncounterPage({ page }, encounter);
 
@@ -159,26 +200,48 @@ export class CheckEncounterProcessor {
       { page },
       { logger: this.logger }
     );
+    const { hasComment } = await detailComment(
+      { page },
+      { logger: this.logger }
+    );
 
     const hoursPassed = moment().diff(encounter.date, 'hour');
     this.logger.debug(
-      `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, ( ${url} )`
-    )
+      `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`
+    );
 
-    if (!entered && hoursPassed > 24) {
+    if (!entered && hoursPassed > 24 && !hasComment) {
       this.notificationService.notifyEncounterNotEntered(encounter);
-    } else if (!accepted && hoursPassed > 48) {
+    } else if (!accepted && hoursPassed > 48 && !hasComment) {
       this.notificationService.notifyEncounterNotAccepted(encounter);
     }
 
     // Update our local data
     if (entered) {
-      encounter.enteredOn = moment(enteredOn ?? '2000-08-27').toDate();
+      const enteredMoment = moment(enteredOn);
+
+      if (!enteredMoment.isValid()) {
+        this.logger.error(
+          `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`
+        );
+        return;
+      }
+
+      encounter.enteredOn = enteredMoment.toDate();
       await encounter.save();
     }
 
     if (accepted) {
-      encounter.acceptedOn = moment(acceptedOn ?? '2000-08-27').toDate();
+      const acceptedMoment = moment(acceptedOn);
+
+      if (!acceptedMoment.isValid()) {
+        this.logger.error(
+          `Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`
+        );
+        return;
+      }
+
+      encounter.acceptedOn = acceptedMoment.toDate();
       encounter.accepted = true;
       await encounter.save();
     }
