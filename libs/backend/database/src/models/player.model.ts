@@ -462,13 +462,13 @@ export class PlayerRankingType extends PartialType(
   OmitType(PlayerUpdateInput, ['sub', 'permissions'] as const),
   ObjectType
 ) {
-  @Field(() => Number)
+  @Field(() => Number, {nullable: true})
   single?: number;
 
-  @Field(() => Number)
+  @Field(() => Number, {nullable: true})
   double?: number;
 
-  @Field(() => Number)
+  @Field(() => Number, {nullable: true})
   mix?: number;
 }
 
