@@ -33,4 +33,16 @@ export class JobsService {
       removeOnFail: true,
     });
   }
+
+  checkNotifications(args: { id: string | string[] }) {
+    return this.http.post(`${this.config.api}/queue-job`, {
+      queue: 'sync',
+      job: 'CheckEncounter',
+      jobArgs: {
+        encounterId: args.id,
+      },
+      removeOnComplete: true,
+      removeOnFail: true,
+    });
+  }
 }

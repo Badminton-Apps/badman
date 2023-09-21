@@ -17,6 +17,7 @@ export class EventCompetition extends Event {
   changeOpenDate?: Date;
   changeCloseDate?: Date;
   changeCloseRequestDate?: Date;
+  checkEncounterForFilledIn?: boolean;
 
   constructor({ ...args }: Partial<EventCompetition>) {
     super(args);
@@ -24,6 +25,7 @@ export class EventCompetition extends Event {
     this.contactEmail = args.contactEmail;
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
+    this.checkEncounterForFilledIn = args.checkEncounterForFilledIn;
     this.exceptions = args?.exceptions?.map((e) => new Exception(e));
     this.infoEvents = args?.infoEvents?.map((e) => new InfoEvent(e));
     this.changeOpenDate = args.changeOpenDate
