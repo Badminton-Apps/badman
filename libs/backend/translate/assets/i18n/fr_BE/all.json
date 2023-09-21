@@ -391,6 +391,7 @@
     "wednesday": "Mercredi"
   },
   "event": {
+    "checkEncounterForFilledIn": "Envoyer des notifications lorsque le match n'est pas saisi ou confirmé",
     "last-sync": "Dernière mise à jour",
     "standing": {
       "games": "Correspondances",
