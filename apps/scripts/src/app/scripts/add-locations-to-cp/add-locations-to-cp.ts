@@ -13,6 +13,26 @@ import { CpClub, CpLocation } from './clubs-locations';
 export class AddLocationsId {
   private readonly logger = new Logger(AddLocationsId.name);
 
+  /*
+  // await this.fixer.encountersWithLocations(
+    //   '2625c52f-fae4-4a81-87ed-6819f44f1dcf',
+    //   cpClubsVlaamse,
+    //   cpLocationsVlaamse
+    // );
+
+    // await this.fixer.encountersWithLocations(
+    //   '9d79c7bb-608d-4d32-964a-91def2b96ac2',
+    //   cpClubsLimburg,
+    //   cpLocationsLimburg
+    // );
+
+    // await this.fixer.encountersWithLocations(
+    //   'd6f78a29-0c03-44f9-b2bc-81d5f79ff2f7',
+    //   cpClubsVvbbc,
+    //   cpLocationsVvbbc
+    // );
+     */
+
   public async encountersWithLocations(
     eventId: string,
     cpClubs: CpClub[],
@@ -123,7 +143,9 @@ export class AddLocationsId {
       const plannedTime = moment(teamMatch.plannedtime, 'DD-MM-YYYY HH:mm:ss');
 
       if (!plannedTime.isSame(encounter[0].date, 'minute')) {
-        this.logger.warn(`Planned is not the same ${teamMatch.plannedtime} - ${encounter[0].date}`);
+        this.logger.warn(
+          `Planned is not the same ${teamMatch.plannedtime} - ${encounter[0].date}`
+        );
       }
 
       const locationsForClub = cplocations.filter(

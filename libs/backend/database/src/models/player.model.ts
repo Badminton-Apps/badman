@@ -182,7 +182,7 @@ export class Player extends Model {
 
   @Field(() => [ClubPlayerMembershipType], { nullable: true })
   @BelongsToMany(() => Club, () => ClubPlayerMembership)
-  clubs?: (Club & { ClubMembership: ClubPlayerMembership })[];
+  clubs?: (Club & { ClubPlayerMembership: ClubPlayerMembership })[];
 
   @Field(() => [Game], { nullable: true })
   @BelongsToMany(() => Game, () => GamePlayerMembership)

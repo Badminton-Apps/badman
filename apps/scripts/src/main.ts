@@ -10,3 +10,5 @@ async function bootstrap() {
   await NestFactory.createApplicationContext(ScriptModule);
 }
 bootstrap();
+
+// write log to file
