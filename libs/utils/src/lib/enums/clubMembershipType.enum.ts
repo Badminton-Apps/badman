@@ -1,4 +1,4 @@
-export enum ClubMembershipEnum {
-  NORMAL,
-  LOAN, // Must be extended each year
+export enum ClubMembershipType {
+  NORMAL = 'NORMAL',
+  LOAN = 'LOAN',
 }

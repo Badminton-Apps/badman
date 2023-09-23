@@ -93,6 +93,10 @@
       "open-requests": "Ouvrir les demandes de transfert"
     },
     "end": "Fin",
+    "membership-types": {
+      "loan": "Joueur prêté",
+      "normal": "Club principal"
+    },
     "menu": {
       "add-player": "Ajouter un joueur",
       "twizzit": "Présentation de Twizzit"
