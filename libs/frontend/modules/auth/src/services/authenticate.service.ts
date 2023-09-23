@@ -13,7 +13,14 @@ import {
   merge,
   of,
 } from 'rxjs';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import {
+  map,
+  shareReplay,
+  switchMap,
+  tap,
+  catchError,
+  timeout,
+} from 'rxjs/operators';
 
 const PROFILE_QUERY = gql`
   query GetProfile {
@@ -74,7 +81,9 @@ export class AuthenticateService {
         switchMap((online) =>
           iif(
             () => online,
-            this.authService?.isAuthenticated$ ?? of(false),
+            this.authService?.isAuthenticated$.pipe(
+              catchError(() => of(false))
+            ) ?? of(false),
             of(false)
           )
         )
@@ -92,6 +101,7 @@ export class AuthenticateService {
         switchMap((result) => {
           return (
             this.authService?.user$.pipe(
+              // return null if there is an error
               map((user) => ({ ...user, ...result.data.me }))
             ) ?? of({})
           );
