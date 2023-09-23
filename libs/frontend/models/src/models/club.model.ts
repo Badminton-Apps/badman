@@ -2,7 +2,7 @@ import { Team } from './team.model';
 import { Player } from './player.model';
 import { Role } from './security';
 import { Location } from './location.model';
-import { UseForTeamName } from '@badman/utils';
+import { ClubMembershipType, UseForTeamName } from '@badman/utils';
 import { Comment } from './comment.model';
 
 export class Club {
@@ -60,6 +60,7 @@ export class ClubMembership {
   active?: boolean;
   clubId?: string;
   playerId?: string;
+  membershipType?: ClubMembershipType;
 
   constructor({ ...args }: Partial<ClubMembership>) {
     this.id = args.id;
@@ -68,5 +69,6 @@ export class ClubMembership {
     this.active = args.active;
     this.clubId = args.clubId;
     this.playerId = args.playerId;
+    this.membershipType = args?.membershipType as ClubMembershipType;
   }
 }

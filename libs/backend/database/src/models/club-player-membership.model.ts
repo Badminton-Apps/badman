@@ -11,6 +11,7 @@ import {
   Default,
   AllowNull,
 } from 'sequelize-typescript';
+import { ClubMembershipType } from '@badman/utils';
 import { BuildOptions } from 'sequelize';
 import { Club } from './club.model';
 import { Player } from './player.model';
@@ -27,7 +28,7 @@ import { Relation } from '../wrapper';
 @Table({
   schema: 'public',
 })
-@ObjectType({ description: 'A TeamPlayerMembership' })
+@ObjectType({ description: 'A ClubPlayerMembership' })
 export class ClubPlayerMembership extends Model {
   constructor(values?: Partial<ClubPlayerMembership>, options?: BuildOptions) {
     super(values, options);
@@ -65,6 +66,11 @@ export class ClubPlayerMembership extends Model {
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
   active?: boolean;
+
+  @Default(ClubMembershipType.NORMAL)
+  @Field(() => String, { nullable: true })
+  @Column(DataType.ENUM(...Object.keys(ClubMembershipType)))
+  membershipType?: Relation<ClubMembershipType>;
 
   // Below is a hacky way to make the Unique across FK's + start
   // issue: (https://github.com/sequelize/sequelize/issues/12988)

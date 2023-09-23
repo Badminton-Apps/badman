@@ -97,6 +97,10 @@ export type I18nTranslations = {
                 "open-requests": string;
             };
             "end": string;
+            "membership-types": {
+                "loan": string;
+                "normal": string;
+            };
             "menu": {
                 "add-player": string;
                 "twizzit": string;
