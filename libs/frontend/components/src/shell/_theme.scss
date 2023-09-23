@@ -1,5 +1,6 @@
 @use './shell/shell.component.theme.scss' as shell;
 
+@use './components/sidebar/user-shortcuts/user-shortcuts.component.theme.scss' as user-shortcuts;
 @use './components/header/search-box/search-box.component.theme.scss' as search-box;
 @use './components/header/logo/logo.component.theme.scss' as logo;
 @use './components/header/notifications/notifications.component.theme.scss' as notifications;
@@ -8,6 +9,7 @@
   @include shell.theme($theme);
 
   @include search-box.theme($theme);
+  @include user-shortcuts.theme($theme);
   @include logo.theme($theme);
   @include notifications.theme($theme);
 }
@@ -16,6 +18,7 @@
   @include shell.typography($theme);
 
   @include search-box.typography($theme);
+  @include user-shortcuts.typography($theme);
   @include logo.typography($theme);
   @include notifications.typography($theme);
 }
@@ -24,6 +27,8 @@
   @include shell.color($theme);
 
   @include search-box.color($theme);
+  @include user-shortcuts.color($theme);
   @include logo.color($theme);
   @include notifications.color($theme);
 }
+ 
