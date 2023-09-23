@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.107.0](https://github.com/Badminton-Apps/badman/compare/v6.106.0...v6.107.0) (2023-09-23)
+
+
+### Features
+
+* adding loans to club types ([5899d84](https://github.com/Badminton-Apps/badman/commit/5899d8478d939ad544b92d3d0948a4568da93504))
+* sync players code ([7f57d30](https://github.com/Badminton-Apps/badman/commit/7f57d305e2d5fadecc62115713a3a8fd472695d0))
+
+
+### Bug Fixes
+
+* typo ([c1c7d12](https://github.com/Badminton-Apps/badman/commit/c1c7d1289c0024a3ec51ba5a6f15f028c8e12a13))
+
 ## [6.106.0](https://github.com/Badminton-Apps/badman/compare/v6.105.0...v6.106.0) (2023-09-21)
 
 
