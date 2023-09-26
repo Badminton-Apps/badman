@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
   FormArray,
@@ -49,6 +49,12 @@ export class TeamPlayersComponent implements OnInit {
 
   @Input()
   controlName = PLAYERS_CONTROL;
+
+  @Output()
+  typeChanged = new EventEmitter<{
+    player: TeamPlayer;
+    type: TeamMembershipType;
+  }>();
 
   types = Object.keys(TeamMembershipType) as TeamMembershipType[];
 
@@ -118,6 +124,10 @@ export class TeamPlayersComponent implements OnInit {
 
     if (player !== undefined && player !== null && fc) {
       fc.value[index].type = type;
+      this.typeChanged.emit({
+        player,
+        type: type.value,
+      });
     }
   }
 }
