@@ -8,30 +8,29 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import {
+  ConfirmDialogComponent,
+  ConfirmDialogModel,
+} from '@badman/frontend-components';
 import { Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { SubEventType, TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom } from 'rxjs';
-import { map, pairwise, startWith, take } from 'rxjs/operators';
+import { pairwise, startWith } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import {
   PLAYERS_CONTROL,
   TeamFieldComponent,
   TeamPlayersComponent,
 } from '../../components';
-import { transferState } from '@badman/frontend-utils';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogModel,
-} from '@badman/frontend-components';
-import { MatDialog } from '@angular/material/dialog';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   templateUrl: './edit.page.html',
