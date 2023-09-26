@@ -5,7 +5,10 @@
       [teamNumbers]="this.data.teamNumbers"
     ></badman-team-fields>
 
-    <badman-team-player [group]="this.group"></badman-team-player>
+    <badman-team-player
+      (typeChanged)="playerMembershipTypeChanged($event)"
+      [group]="this.group"
+    ></badman-team-player>
   </div>
 </div>
 <mat-dialog-actions align="end">
