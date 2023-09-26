@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.107.1](https://github.com/Badminton-Apps/badman/compare/v6.107.0...v6.107.1) (2023-09-26)
+
+
+### Bug Fixes
+
+* type change of players not saving ([ad9c4ae](https://github.com/Badminton-Apps/badman/commit/ad9c4aead9769432cde6a6d3e98b09704e18b036))
+
 ## [6.107.0](https://github.com/Badminton-Apps/badman/compare/v6.106.0...v6.107.0) (2023-09-23)
 
 
