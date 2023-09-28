@@ -83,6 +83,9 @@ export class RankingSyncer {
           },
           transaction: args?.transaction ?? undefined,
         });
+        if (system == null) {
+          throw new Error('No ranking system found');
+        }
 
         // Default sync 1 week
         const lastDate = args?.start
@@ -122,72 +125,86 @@ export class RankingSyncer {
   }
 
   protected getPublications() {
-    return new ProcessStep(this.STEP_PUBLICATIONS, async () => {
-      const ranking = this.processor.getData<RankingStepData>(
-        this.STEP_RANKING
-      );
+    return new ProcessStep(
+      this.STEP_PUBLICATIONS,
+      async (args: { transaction: Transaction }) => {
+        const ranking = this.processor.getData<RankingStepData>(
+          this.STEP_RANKING
+        );
 
-      if (!ranking?.visualCode) {
-        throw new Error('No ranking found');
-      }
+        if (!ranking?.visualCode) {
+          throw new Error('No ranking found');
+        }
 
-      const publications = await this._visualService.getPublications(
-        ranking.visualCode,
-        false
-      );
+        const publications = await this._visualService.getPublications(
+          ranking.visualCode,
+          false
+        );
 
-      let pubs = publications
-        ?.filter((publication) => publication.Visible)
-        .map((publication) => {
-          const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
-          let canUpdate = false;
-
-          if (this.updateMonths.includes(momentDate.month())) {
-            const firstMondayOfMonth = momentDate.clone().date(1).day(8);
-            if (firstMondayOfMonth.date() > 7) {
-              firstMondayOfMonth.day(-6);
-            }
-
-            // Create some margin
-            const margin = firstMondayOfMonth.clone().add(2, 'days');
-            canUpdate =
-              momentDate.isSame(firstMondayOfMonth) ||
-              momentDate.isBetween(firstMondayOfMonth, margin);
-          }
-
-          if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
-            canUpdate = true;
-          }
-          if (this.fuckedDatesBads.includes(momentDate.toISOString())) {
-            canUpdate = false;
-          }
-
-          return {
-            usedForUpdate: canUpdate,
-            code: publication.Code,
-            name: publication.Name,
-            year: publication.Year,
-            week: publication.Week,
-            publicationDate: publication.PublicationDate,
-            visible: publication.Visible,
-            date: momentDate,
-          } as VisualPublication;
-        });
-      pubs = pubs?.sort((a, b) => a.date.diff(b.date));
-
-      return {
-        visiblePublications: pubs,
-        hiddenPublications: publications
-          ?.filter((publication) => publication.Visible == false)
-          ?.map((publication) => {
+        let pubs = publications
+          ?.filter((publication) => publication.Visible)
+          .map((publication) => {
             const momentDate = moment(
               publication.PublicationDate,
               'YYYY-MM-DD'
             );
-            return momentDate;
-          }),
-      };
-    });
+            let canUpdate = false;
+
+            if (this.updateMonths.includes(momentDate.month())) {
+              const firstMondayOfMonth = momentDate.clone().date(1).day(8);
+              if (firstMondayOfMonth.date() > 7) {
+                firstMondayOfMonth.day(-6);
+              }
+
+              // Create some margin
+              const margin = firstMondayOfMonth.clone().add(2, 'days');
+              canUpdate =
+                momentDate.isSame(firstMondayOfMonth) ||
+                momentDate.isBetween(firstMondayOfMonth, margin);
+            }
+
+            if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
+              canUpdate = true;
+            }
+            if (this.fuckedDatesBads.includes(momentDate.toISOString())) {
+              canUpdate = false;
+            }
+
+            return {
+              usedForUpdate: canUpdate,
+              code: publication.Code,
+              name: publication.Name,
+              year: publication.Year,
+              week: publication.Week,
+              publicationDate: publication.PublicationDate,
+              visible: publication.Visible,
+              date: momentDate,
+            } as VisualPublication;
+          });
+        pubs = pubs?.sort((a, b) => a.date.diff(b.date));
+
+        // get latest publication
+        const last = pubs?.slice(-1)?.[0];
+        if (last) {
+          // store the latest publication in the calculationIntervalLastUpdate
+          ranking.system.caluclationIntervalLastUpdate = last.date.toDate();
+          await ranking.system.save({ transaction: args.transaction });
+        }
+
+        return {
+          visiblePublications: pubs,
+          hiddenPublications: publications
+            ?.filter((publication) => publication.Visible == false)
+            ?.map((publication) => {
+              const momentDate = moment(
+                publication.PublicationDate,
+                'YYYY-MM-DD'
+              );
+              return momentDate;
+            }),
+        };
+      }
+    );
   }
 
   protected getPoints(): ProcessStep {
