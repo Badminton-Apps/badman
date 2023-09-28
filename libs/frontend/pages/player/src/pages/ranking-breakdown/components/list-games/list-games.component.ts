@@ -77,6 +77,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
   gameBreakdown: GameBreakdown[] = [];
 
   displayedColumns: string[] = [
+    'count',
     'dropsNextPeriod',
     'date',
     'team',
