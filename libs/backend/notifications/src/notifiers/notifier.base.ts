@@ -63,6 +63,7 @@ export abstract class Notifier<T, A = { email: string }> {
         linkType: this.linkType,
         type: this.type,
       },
+      order: [['createdAt', 'DESC']],
     });
 
     if (notification) {
