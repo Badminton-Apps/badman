@@ -18,7 +18,8 @@ import { correctWrongPlayers } from '../../utils';
 interface RankingStepData {
   visualCode: string;
   system: RankingSystem;
-  lastDate: Date;
+  startDate: Date;
+  stopDate?: Date;
 }
 
 interface PublicationStepData {
@@ -68,12 +69,16 @@ export class RankingSyncer {
   }
 
   protected getRankings(): ProcessStep<RankingStepData> {
-    // (args: {    transaction: Transaction;    start: Date;}) => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; lastDate: Date; }>'
-    // (args?: unknown)                                        => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; lastDate: Date; }>'
+    // (args: {    transaction: Transaction;    start: Date;}) => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; start: Date; }>'
+    // (args?: unknown)                                        => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; start: Date; }>'
 
     return new ProcessStep(
       this.STEP_RANKING,
-      async (args?: { transaction?: Transaction; start?: Date }) => {
+      async (args?: {
+        transaction?: Transaction;
+        start?: Date;
+        stop?: Date;
+      }) => {
         const rankingDetail = await this._visualService.getRanking(false);
 
         const system = await RankingSystem.findOne({
@@ -83,20 +88,21 @@ export class RankingSyncer {
           },
           transaction: args?.transaction ?? undefined,
         });
-        if (system == null) {
-          throw new Error('No ranking system found');
-        }
 
         // Default sync 1 week
-        const lastDate = args?.start
+        const startDate = args?.start
           ? moment(args.start)
           : moment().subtract(1, 'week');
+
+        // Default sync 1 week
+        const stop = args?.stop ? moment(args.stop) : undefined;
 
         return {
           stop: system == null,
           system,
           visualCode: rankingDetail[0].Code,
-          lastDate: lastDate.toDate(),
+          startDate: startDate.toDate(),
+          stopDate: stop?.toDate(),
         };
       }
     ) as ProcessStep<RankingStepData>;
@@ -382,7 +388,10 @@ export class RankingSyncer {
           const rankingPlaces = new Map<string, RankingPlace>();
           const newPlayers = new Map<string, Player>();
 
-          if (publication.date.isAfter(ranking.lastDate)) {
+          if (
+            publication.date.isAfter(ranking.startDate) &&
+            (!ranking.stopDate || publication.date.isBefore(ranking.stopDate))
+          ) {
             if (publication.usedForUpdate) {
               this.logger.log(`Updating ranking on ${publication.date}`);
             }
