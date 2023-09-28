@@ -4,7 +4,7 @@ export const getCurrentSeasonPeriod = (season?: number) => {
   if (!season) {
     season = getCurrentSeason();
   }
-  return [`${season}-09-01`, `${season + 1}-05-01`];
+  return [`${season}-09-01`, `${season + 1}-05-01`] as const;
 };
 
 export const getCurrentSeason = (inputDate?: Date | moment.Moment) => {
