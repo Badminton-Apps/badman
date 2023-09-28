@@ -6,8 +6,8 @@ import packages from '../version.json';
 export const environment = {
   production: false,
   apiVersion: 'v1',
-  api: 'http://localhost:5000',
-  graphql: 'http://localhost:5000/graphql',
+  api: '/api',
+  graphql: '/graphql',
   adsense: {
     adClient: 'ca-pub-2426855871474715',
     show: false,
