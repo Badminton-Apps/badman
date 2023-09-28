@@ -1,6 +1,10 @@
-import { EncounterCompetition, NotificationOptionsTypes, Player } from '@badman/backend-database';
-import { Notifier } from '../notifier.base';
+import {
+  EncounterCompetition,
+  NotificationOptionsTypes,
+  Player,
+} from '@badman/backend-database';
 import * as webPush from 'web-push';
+import { Notifier } from '../notifier.base';
 
 export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
   {
@@ -12,7 +16,9 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
   }
 > {
   protected linkType = 'encounterCompetition';
-  protected type: keyof NotificationOptionsTypes ='encounterNotEnteredNotification';
+  protected type: keyof NotificationOptionsTypes =
+    'encounterNotEnteredNotification';
+  protected allowedAmount = 1;
 
   private readonly options = (url: string, encounter: EncounterCompetition) => {
     return {
@@ -40,7 +46,7 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
     if (!args?.url) {
       throw new Error('No url provided');
     }
-    
+
     await this.pushService.sendNotification(
       player,
       this.options(args?.url, data.encounter)
@@ -63,7 +69,6 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
       this.logger.debug(`No slug found for ${player.fullName}`);
       return;
     }
-
 
     if (!args?.url) {
       throw new Error('No url provided');
