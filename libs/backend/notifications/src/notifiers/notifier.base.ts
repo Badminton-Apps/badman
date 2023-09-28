@@ -16,6 +16,7 @@ export abstract class Notifier<T, A = { email: string }> {
   protected abstract linkType: string;
   protected allowedInterval: unitOfTime.Diff = 'day';
   protected allowedIntervalUnit = 1;
+  protected allowedAmount?: number = undefined;
 
   constructor(
     protected mailing: MailingService,
@@ -66,6 +67,14 @@ export abstract class Notifier<T, A = { email: string }> {
       },
       order: [['createdAt', 'DESC']],
     });
+    const totalAmount = await Notification.count({
+      where: {
+        sendToId: player.id,
+        linkId,
+        linkType: this.linkType,
+        type: this.type,
+      },
+    });
 
     if (notification) {
       const lastSend = moment(notification.createdAt);
@@ -76,6 +85,13 @@ export abstract class Notifier<T, A = { email: string }> {
           `Notification already sent to ${player.fullName} in the last ${
             this.allowedInterval
           } (send on: ${lastSend.format('DD-MM-YYYY HH:mm:ss')})`
+        );
+        return;
+      }
+
+      if (this.allowedAmount && totalAmount >= this.allowedAmount) {
+        this.logger.debug(
+          `Notification already sent to ${player.fullName} enough (${totalAmount}) times`
         );
         return;
       }
