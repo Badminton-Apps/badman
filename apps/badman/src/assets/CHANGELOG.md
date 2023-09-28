@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.108.0](https://github.com/Badminton-Apps/badman/compare/v6.107.1...v6.108.0) (2023-09-28)
+
+
+### Features
+
+* allow interval amount to be configured ([0cbab87](https://github.com/Badminton-Apps/badman/commit/0cbab87748618abfabdb27ef3c0ad3bebbb66287))
+* alow notification amount ([7a454b8](https://github.com/Badminton-Apps/badman/commit/7a454b8a85012e92dae7eead49dc019a5faa8686))
+
+
+### Bug Fixes
+
+* should sort by create date so we get last instance of the notification ([b8b6e3c](https://github.com/Badminton-Apps/badman/commit/b8b6e3c390b4ef0d6a32a278b97f3e24ad6479eb))
+
 ### [6.107.1](https://github.com/Badminton-Apps/badman/compare/v6.107.0...v6.107.1) (2023-09-26)
 
 
