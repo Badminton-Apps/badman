@@ -485,13 +485,6 @@ export class TeamsResolver {
         }
       }
 
-      this.logger.debug('updateTeamData', {
-        newTeam: {
-          ...dbTeam.toJSON(),
-          ...updateTeamData,
-        },
-      });
-
       await dbTeam.update(
         { ...dbTeam.toJSON(), ...updateTeamData },
         { transaction }
