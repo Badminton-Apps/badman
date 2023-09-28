@@ -18,7 +18,8 @@ import { correctWrongPlayers } from '../../utils';
 interface RankingStepData {
   visualCode: string;
   system: RankingSystem;
-  lastDate: Date;
+  startDate: Date;
+  stopDate?: Date;
 }
 
 interface PublicationStepData {
@@ -68,12 +69,16 @@ export class RankingSyncer {
   }
 
   protected getRankings(): ProcessStep<RankingStepData> {
-    // (args: {    transaction: Transaction;    start: Date;}) => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; lastDate: Date; }>'
-    // (args?: unknown)                                        => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; lastDate: Date; }>'
+    // (args: {    transaction: Transaction;    start: Date;}) => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; start: Date; }>'
+    // (args?: unknown)                                        => Promise<{ stop: boolean; system: RankingSystem | null; visualCode: any; start: Date; }>'
 
     return new ProcessStep(
       this.STEP_RANKING,
-      async (args?: { transaction?: Transaction; start?: Date }) => {
+      async (args?: {
+        transaction?: Transaction;
+        start?: Date;
+        stop?: Date;
+      }) => {
         const rankingDetail = await this._visualService.getRanking(false);
 
         const system = await RankingSystem.findOne({
@@ -85,15 +90,19 @@ export class RankingSyncer {
         });
 
         // Default sync 1 week
-        const lastDate = args?.start
+        const startDate = args?.start
           ? moment(args.start)
           : moment().subtract(1, 'week');
+
+        // Default sync 1 week
+        const stop = args?.stop ? moment(args.stop) : undefined;
 
         return {
           stop: system == null,
           system,
           visualCode: rankingDetail[0].Code,
-          lastDate: lastDate.toDate(),
+          startDate: startDate.toDate(),
+          stopDate: stop?.toDate(),
         };
       }
     ) as ProcessStep<RankingStepData>;
@@ -122,72 +131,96 @@ export class RankingSyncer {
   }
 
   protected getPublications() {
-    return new ProcessStep(this.STEP_PUBLICATIONS, async () => {
-      const ranking = this.processor.getData<RankingStepData>(
-        this.STEP_RANKING
-      );
+    return new ProcessStep(
+      this.STEP_PUBLICATIONS,
+      async (args: { transaction: Transaction }) => {
+        const ranking = this.processor.getData<RankingStepData>(
+          this.STEP_RANKING
+        );
 
-      if (!ranking?.visualCode) {
-        throw new Error('No ranking found');
-      }
+        if (!ranking?.visualCode) {
+          throw new Error('No ranking found');
+        }
 
-      const publications = await this._visualService.getPublications(
-        ranking.visualCode,
-        false
-      );
+        const publications = await this._visualService.getPublications(
+          ranking.visualCode,
+          false
+        );
 
-      let pubs = publications
-        ?.filter((publication) => publication.Visible)
-        .map((publication) => {
-          const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
-          let canUpdate = false;
-
-          if (this.updateMonths.includes(momentDate.month())) {
-            const firstMondayOfMonth = momentDate.clone().date(1).day(8);
-            if (firstMondayOfMonth.date() > 7) {
-              firstMondayOfMonth.day(-6);
-            }
-
-            // Create some margin
-            const margin = firstMondayOfMonth.clone().add(2, 'days');
-            canUpdate =
-              momentDate.isSame(firstMondayOfMonth) ||
-              momentDate.isBetween(firstMondayOfMonth, margin);
-          }
-
-          if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
-            canUpdate = true;
-          }
-          if (this.fuckedDatesBads.includes(momentDate.toISOString())) {
-            canUpdate = false;
-          }
-
-          return {
-            usedForUpdate: canUpdate,
-            code: publication.Code,
-            name: publication.Name,
-            year: publication.Year,
-            week: publication.Week,
-            publicationDate: publication.PublicationDate,
-            visible: publication.Visible,
-            date: momentDate,
-          } as VisualPublication;
-        });
-      pubs = pubs?.sort((a, b) => a.date.diff(b.date));
-
-      return {
-        visiblePublications: pubs,
-        hiddenPublications: publications
-          ?.filter((publication) => publication.Visible == false)
-          ?.map((publication) => {
+        let pubs = publications
+          ?.filter((publication) => publication.Visible)
+          .map((publication) => {
             const momentDate = moment(
               publication.PublicationDate,
               'YYYY-MM-DD'
             );
-            return momentDate;
-          }),
-      };
-    });
+            let canUpdate = false;
+
+            if (this.updateMonths.includes(momentDate.month())) {
+              const firstMondayOfMonth = momentDate.clone().date(1).day(8);
+              if (firstMondayOfMonth.date() > 7) {
+                firstMondayOfMonth.day(-6);
+              }
+
+              // Create some margin
+              const margin = firstMondayOfMonth.clone().add(2, 'days');
+              canUpdate =
+                momentDate.isSame(firstMondayOfMonth) ||
+                momentDate.isBetween(firstMondayOfMonth, margin);
+            }
+
+            if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
+              canUpdate = true;
+            }
+            if (this.fuckedDatesBads.includes(momentDate.toISOString())) {
+              canUpdate = false;
+            }
+
+            return {
+              usedForUpdate: canUpdate,
+              code: publication.Code,
+              name: publication.Name,
+              year: publication.Year,
+              week: publication.Week,
+              publicationDate: publication.PublicationDate,
+              visible: publication.Visible,
+              date: momentDate,
+            } as VisualPublication;
+          });
+        pubs = pubs?.sort((a, b) => a.date.diff(b.date));
+
+        // get latest publication
+        const last = pubs?.slice(-1)?.[0];
+        if (last) {
+          // store the latest publication in the calculationIntervalLastUpdate
+          ranking.system.caluclationIntervalLastUpdate = last.date.toDate();
+        }
+
+        const lastUpdate = pubs?.filter((r) => r.usedForUpdate)?.slice(-1)?.[0];
+        if (lastUpdate) {
+          // store the latest publication in the calculationIntervalLastUpdate
+          ranking.system.updateIntervalAmountLastUpdate =
+            lastUpdate.date.toDate();
+        }
+
+        if (last || lastUpdate) {
+          await ranking.system.save({ transaction: args.transaction });
+        }
+
+        return {
+          visiblePublications: pubs,
+          hiddenPublications: publications
+            ?.filter((publication) => publication.Visible == false)
+            ?.map((publication) => {
+              const momentDate = moment(
+                publication.PublicationDate,
+                'YYYY-MM-DD'
+              );
+              return momentDate;
+            }),
+        };
+      }
+    );
   }
 
   protected getPoints(): ProcessStep {
@@ -355,21 +388,13 @@ export class RankingSyncer {
           const rankingPlaces = new Map<string, RankingPlace>();
           const newPlayers = new Map<string, Player>();
 
-          if (publication.date.isAfter(ranking.lastDate)) {
+          if (
+            publication.date.isAfter(ranking.startDate) &&
+            (!ranking.stopDate || publication.date.isBefore(ranking.stopDate))
+          ) {
             if (publication.usedForUpdate) {
               this.logger.log(`Updating ranking on ${publication.date}`);
             }
-
-            this.logger.debug(
-              'Removing old points for date (voiding collision)'
-            );
-            await RankingPlace.destroy({
-              where: {
-                rankingDate: publication.date.toDate(),
-                systemId: ranking.system.id,
-              },
-              transaction: args.transaction,
-            });
 
             this.logger.debug(
               `Getting single levels for ${publication.date.format('LLL')}`
@@ -449,27 +474,34 @@ export class RankingSyncer {
               });
             }
 
-            this.logger.debug(`Creating ranking places`);
-
             const instances = Array.from(rankingPlaces).map(([, place]) =>
               place.toJSON()
             );
 
+            this.logger.debug(
+              `Creating/updating ${instances.length} ranking places`
+            );
+
             await RankingPlace.bulkCreate(instances, {
-              ignoreDuplicates: true,
+              updateOnDuplicate: [
+                'updatePossible',
+                'single',
+                'singlePoints',
+                'singleRank',
+                'double',
+                'doublePoints',
+                'doubleRank',
+                'mix',
+                'mixPoints',
+                'mixRank',
+              ],
               transaction: args.transaction,
               returning: false,
             });
 
-            this.logger.debug(`RankingPlace were created`);
-
-            ranking.system.caluclationIntervalLastUpdate =
-              publication.date.toDate();
-            if (publication.usedForUpdate) {
-              ranking.system.updateIntervalAmountLastUpdate =
-                publication.date.toDate();
-            }
-            await ranking.system.save({ transaction: args.transaction });
+            this.logger.verbose(
+              `Finished processing ${instances.length} ranking places`
+            );
           }
         }
       }
@@ -480,44 +512,50 @@ export class RankingSyncer {
     return new ProcessStep(
       this.STEP_REMOVED,
       async (args: { transaction: Transaction }) => {
-        const { hiddenPublications } =
-          this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ??
-          {};
+        try {
+          const { hiddenPublications } =
+            this.processor.getData<PublicationStepData>(
+              this.STEP_PUBLICATIONS
+            ) ?? {};
 
-        if (hiddenPublications == null) {
-          return;
-        }
+          if (hiddenPublications == null) {
+            return;
+          }
 
-        const { visualCode, system, lastDate } =
-          this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
+          const { visualCode, system } =
+            this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
 
-        if (visualCode) {
-          throw new Error('No ranking found');
-        }
+          if (!visualCode) {
+            throw new Error('No ranking found');
+          }
 
-        for (const publication of hiddenPublications) {
-          const points = await RankingPlace.count({
-            where: {
-              rankingDate: publication.toDate(),
-              systemId: system?.id,
-            },
-            transaction: args.transaction,
-          });
-
-          if (points > 0) {
-            this.logger.log(
-              `Removing points for ${publication.format(
-                'LLL'
-              )} because it is not visible anymore`
-            );
-            await RankingPlace.destroy({
+          for (const publication of hiddenPublications) {
+            const points = await RankingPlace.count({
               where: {
                 rankingDate: publication.toDate(),
                 systemId: system?.id,
               },
               transaction: args.transaction,
             });
+
+            if (points > 0) {
+              this.logger.log(
+                `Removing points for ${publication.format(
+                  'LLL'
+                )} because it is not visible anymore`
+              );
+              await RankingPlace.destroy({
+                where: {
+                  rankingDate: publication.toDate(),
+                  systemId: system?.id,
+                },
+                transaction: args.transaction,
+              });
+            }
           }
+        } catch (e) {
+          this.logger.error('Error', e);
+          throw e;
         }
       }
     );
