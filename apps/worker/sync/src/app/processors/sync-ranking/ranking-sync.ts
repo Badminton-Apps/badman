@@ -472,26 +472,23 @@ export class RankingSyncer {
             this.logger.debug(
               `Creating/updating ${instances.length} ranking places`
             );
-            // chunk the instances in batches of 100
-            for (let i = 0; i < instances.length; i += 1000) {
-              this.logger.verbose(`procssing batch ${i} / ${instances.length}`);
-              await RankingPlace.bulkCreate(instances.slice(i, i + 100), {
-                updateOnDuplicate: [
-                  'updatePossible',
-                  'single',
-                  'singlePoints',
-                  'singleRank',
-                  'double',
-                  'doublePoints',
-                  'doubleRank',
-                  'mix',
-                  'mixPoints',
-                  'mixRank',
-                ],
-                transaction: args.transaction,
-                returning: false,
-              });
-            }
+
+            await RankingPlace.bulkCreate(instances, {
+              updateOnDuplicate: [
+                'updatePossible',
+                'single',
+                'singlePoints',
+                'singleRank',
+                'double',
+                'doublePoints',
+                'doubleRank',
+                'mix',
+                'mixPoints',
+                'mixRank',
+              ],
+              transaction: args.transaction,
+              returning: false,
+            });
 
             this.logger.verbose(
               `Finished processing ${instances.length} ranking places`
@@ -515,8 +512,6 @@ export class RankingSyncer {
           if (hiddenPublications == null) {
             return;
           }
-
-          const test = this.processor.getData(this.STEP_RANKING) ?? {};
 
           const { visualCode, system } =
             this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
