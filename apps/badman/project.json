@@ -125,7 +125,8 @@
           "browserTarget": "badman:build:production"
         },
         "development": {
-          "browserTarget": "badman:build:development"
+          "browserTarget": "badman:build:development",
+          "proxyConfig": "apps/badman/proxy.conf.json"
         },
         "beta": {
           "browserTarget": "badman:build:beta"
