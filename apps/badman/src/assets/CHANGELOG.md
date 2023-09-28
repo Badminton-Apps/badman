@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.109.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.109.0-beta.1...v6.109.0-beta.2) (2023-09-28)
+
+
+### Features
+
+* adding game count to breakdown ([3cad99c](https://github.com/Badminton-Apps/badman/commit/3cad99c42fa8551e6b253563b056565fb4b9b356))
+
+
+### Bug Fixes
+
+* allowing start/stop dates for sync ([41efec5](https://github.com/Badminton-Apps/badman/commit/41efec522a913ab44488cc89d113abf90ba4814e))
+
 ## [6.109.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.109.0-beta.0...v6.109.0-beta.1) (2023-09-28)
 
 
