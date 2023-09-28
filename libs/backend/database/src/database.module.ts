@@ -4,7 +4,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { slugifyModel } from 'sequelize-slugify';
 import { Model } from 'sequelize-typescript';
-import { SequelizeAttachReqToModelMiddleware } from './middleware';
 import {
   Club,
   EventCompetition,
@@ -23,7 +22,7 @@ import { SequelizeConfigProvider } from './provider';
     ConfigModule,
     CacheModule,
   ],
-  providers: [SequelizeAttachReqToModelMiddleware],
+  providers: [],
 })
 export class DatabaseModule implements OnModuleInit {
   private readonly logger = new Logger(DatabaseModule.name);
