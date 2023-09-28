@@ -15,6 +15,7 @@ export abstract class Notifier<T, A = { email: string }> {
   protected abstract type: keyof NotificationOptionsTypes;
   protected abstract linkType: string;
   protected allowedInterval: unitOfTime.Diff = 'day';
+  protected allowedIntervalUnit = 1;
 
   constructor(
     protected mailing: MailingService,
@@ -68,7 +69,9 @@ export abstract class Notifier<T, A = { email: string }> {
 
     if (notification) {
       const lastSend = moment(notification.createdAt);
-      if (moment().diff(lastSend, this.allowedInterval) < 1) {
+      if (
+        moment().diff(lastSend, this.allowedInterval) < this.allowedIntervalUnit
+      ) {
         this.logger.debug(
           `Notification already sent to ${player.fullName} in the last ${
             this.allowedInterval
