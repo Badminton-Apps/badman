@@ -378,17 +378,6 @@ export class RankingSyncer {
             }
 
             this.logger.debug(
-              'Removing old points for date (voiding collision)'
-            );
-            await RankingPlace.destroy({
-              where: {
-                rankingDate: publication.date.toDate(),
-                systemId: ranking.system.id,
-              },
-              transaction: args.transaction,
-            });
-
-            this.logger.debug(
               `Getting single levels for ${publication.date.format('LLL')}`
             );
             await pointsForCategory(
@@ -473,7 +462,17 @@ export class RankingSyncer {
             );
 
             await RankingPlace.bulkCreate(instances, {
-              ignoreDuplicates: true,
+              updateOnDuplicate: [
+                'single',
+                'double',
+                'mix',
+                'singlePoints',
+                'doublePoints',
+                'mixPoints',
+                'singleRank',
+                'doubleRank',
+                'mixRank',
+              ],
               transaction: args.transaction,
               returning: false,
             });
