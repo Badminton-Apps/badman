@@ -67,10 +67,19 @@
 </form>
 
 <mat-table #breakdownTable [dataSource]="dataSource">
+  <!-- Game count -->
+  <ng-container matColumnDef="count">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let game; let i = index">
+      #{{ i + 1 }}
+    </mat-cell>
+  </ng-container>
+
   <!-- Drops next period -->
   <ng-container matColumnDef="dropsNextPeriod">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let game">
+      <!-- show game number -->
       <div
         *ngIf="game?.dropsNextPeriod"
         class="drops"
@@ -259,6 +268,14 @@
 </div>
 
 <mat-table [dataSource]="dataSourceRemoved">
+   <!-- Game count -->
+   <ng-container matColumnDef="count">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let game; let i = index">
+      #{{ i + 1 }}
+    </mat-cell>
+  </ng-container>
+
   <!-- dropsNextPeriod Column -->
   <ng-container matColumnDef="dropsNextPeriod">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>

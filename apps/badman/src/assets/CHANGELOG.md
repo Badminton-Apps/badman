@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.109.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.109.0-beta.1...v6.109.0-beta.2) (2023-09-28)
+
+
+### Features
+
+* adding game count to breakdown ([3cad99c](https://github.com/Badminton-Apps/badman/commit/3cad99c42fa8551e6b253563b056565fb4b9b356))
+
+
+### Bug Fixes
+
+* allowing start/stop dates for sync ([41efec5](https://github.com/Badminton-Apps/badman/commit/41efec522a913ab44488cc89d113abf90ba4814e))
+
+## [6.109.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.109.0-beta.0...v6.109.0-beta.1) (2023-09-28)
+
+
+### Bug Fixes
+
+* simpeler save last update dates ([b571590](https://github.com/Badminton-Apps/badman/commit/b571590dd888323895de40fe259ea10a2516a980))
+* spacing on list ([b257dce](https://github.com/Badminton-Apps/badman/commit/b257dce7ff77f016d5152c12d8630bda04a35495))
+
+## [6.109.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.108.0...v6.109.0-beta.0) (2023-09-28)
+
+
+### Features
+
+* store latest update into db ([89c5cd1](https://github.com/Badminton-Apps/badman/commit/89c5cd100731dd0e9a7218694207a0dae650a261))
+
+
+### Bug Fixes
+
+* export season period array as const ([dfcae01](https://github.com/Badminton-Apps/badman/commit/dfcae0101a6aca2c99250ccbc00334642fbb7190))
+* temp disable Victor League competition sync ([99ac686](https://github.com/Badminton-Apps/badman/commit/99ac68653650b677ba1431f384afa7778114e48a))
+* update values on duplicate instead of removing ([3ed1d75](https://github.com/Badminton-Apps/badman/commit/3ed1d751a4c91dc0d15e457e7c1437a59810afec))
+
 ## [6.108.0](https://github.com/Badminton-Apps/badman/compare/v6.107.1...v6.108.0) (2023-09-28)
 
 

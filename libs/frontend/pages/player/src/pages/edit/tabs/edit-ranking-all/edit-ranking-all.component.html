@@ -4,8 +4,7 @@
       <mat-expansion-panel *ngFor="let group of this.allPlaces$ | async">
         <mat-expansion-panel-header>
           <mat-panel-title>
-            <ng-container *ngIf="group[0]">
-              {{ group[0].rankingDate | date }} - {{ group[0].single }} -
+            <ng-container *ngIf="group[0]">{{ group[0].rankingDate | date }} - {{ group[0].single }} -
               {{ group[0].double }} - {{ group[0].mix }}
             </ng-container>
             <ng-container *ngIf="!group[0]">{{
@@ -24,8 +23,7 @@
               [matTooltip]="'all.ranking.update-happend' | translate"
               matTooltipPosition="left"
               [matTooltipDisabled]="!place.updatePossible"
-            >
-              {{ place.rankingDate | date }}
+            >{{ place.rankingDate | date }}
               <ng-container *ngIf="place.updatePossible">*</ng-container>
             </span>
             <span
