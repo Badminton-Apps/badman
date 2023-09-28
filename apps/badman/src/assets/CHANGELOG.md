@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.109.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.109.0-beta.0...v6.109.0-beta.1) (2023-09-28)
+
+
+### Bug Fixes
+
+* simpeler save last update dates ([b571590](https://github.com/Badminton-Apps/badman/commit/b571590dd888323895de40fe259ea10a2516a980))
+* spacing on list ([b257dce](https://github.com/Badminton-Apps/badman/commit/b257dce7ff77f016d5152c12d8630bda04a35495))
+
 ## [6.109.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.108.0...v6.109.0-beta.0) (2023-09-28)
 
 
