@@ -188,6 +188,16 @@ export class RankingSyncer {
         if (last) {
           // store the latest publication in the calculationIntervalLastUpdate
           ranking.system.caluclationIntervalLastUpdate = last.date.toDate();
+        }
+
+        const lastUpdate = pubs?.filter((r) => r.usedForUpdate)?.slice(-1)?.[0];
+        if (lastUpdate) {
+          // store the latest publication in the calculationIntervalLastUpdate
+          ranking.system.updateIntervalAmountLastUpdate =
+            lastUpdate.date.toDate();
+        }
+
+        if (last || lastUpdate) {
           await ranking.system.save({ transaction: args.transaction });
         }
 
@@ -455,37 +465,37 @@ export class RankingSyncer {
               });
             }
 
-            this.logger.debug(`Creating ranking places`);
-
             const instances = Array.from(rankingPlaces).map(([, place]) =>
               place.toJSON()
             );
 
-            await RankingPlace.bulkCreate(instances, {
-              updateOnDuplicate: [
-                'single',
-                'double',
-                'mix',
-                'singlePoints',
-                'doublePoints',
-                'mixPoints',
-                'singleRank',
-                'doubleRank',
-                'mixRank',
-              ],
-              transaction: args.transaction,
-              returning: false,
-            });
-
-            this.logger.debug(`RankingPlace were created`);
-
-            ranking.system.caluclationIntervalLastUpdate =
-              publication.date.toDate();
-            if (publication.usedForUpdate) {
-              ranking.system.updateIntervalAmountLastUpdate =
-                publication.date.toDate();
+            this.logger.debug(
+              `Creating/updating ${instances.length} ranking places`
+            );
+            // chunk the instances in batches of 100
+            for (let i = 0; i < instances.length; i += 1000) {
+              this.logger.verbose(`procssing batch ${i} / ${instances.length}`);
+              await RankingPlace.bulkCreate(instances.slice(i, i + 100), {
+                updateOnDuplicate: [
+                  'updatePossible',
+                  'single',
+                  'singlePoints',
+                  'singleRank',
+                  'double',
+                  'doublePoints',
+                  'doubleRank',
+                  'mix',
+                  'mixPoints',
+                  'mixRank',
+                ],
+                transaction: args.transaction,
+                returning: false,
+              });
             }
-            await ranking.system.save({ transaction: args.transaction });
+
+            this.logger.verbose(
+              `Finished processing ${instances.length} ranking places`
+            );
           }
         }
       }
@@ -496,44 +506,52 @@ export class RankingSyncer {
     return new ProcessStep(
       this.STEP_REMOVED,
       async (args: { transaction: Transaction }) => {
-        const { hiddenPublications } =
-          this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ??
-          {};
+        try {
+          const { hiddenPublications } =
+            this.processor.getData<PublicationStepData>(
+              this.STEP_PUBLICATIONS
+            ) ?? {};
 
-        if (hiddenPublications == null) {
-          return;
-        }
+          if (hiddenPublications == null) {
+            return;
+          }
 
-        const { visualCode, system, lastDate } =
-          this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
+          const test = this.processor.getData(this.STEP_RANKING) ?? {};
 
-        if (visualCode) {
-          throw new Error('No ranking found');
-        }
+          const { visualCode, system } =
+            this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
 
-        for (const publication of hiddenPublications) {
-          const points = await RankingPlace.count({
-            where: {
-              rankingDate: publication.toDate(),
-              systemId: system?.id,
-            },
-            transaction: args.transaction,
-          });
+          if (!visualCode) {
+            throw new Error('No ranking found');
+          }
 
-          if (points > 0) {
-            this.logger.log(
-              `Removing points for ${publication.format(
-                'LLL'
-              )} because it is not visible anymore`
-            );
-            await RankingPlace.destroy({
+          for (const publication of hiddenPublications) {
+            const points = await RankingPlace.count({
               where: {
                 rankingDate: publication.toDate(),
                 systemId: system?.id,
               },
               transaction: args.transaction,
             });
+
+            if (points > 0) {
+              this.logger.log(
+                `Removing points for ${publication.format(
+                  'LLL'
+                )} because it is not visible anymore`
+              );
+              await RankingPlace.destroy({
+                where: {
+                  rankingDate: publication.toDate(),
+                  systemId: system?.id,
+                },
+                transaction: args.transaction,
+              });
+            }
           }
+        } catch (e) {
+          this.logger.error('Error', e);
+          throw e;
         }
       }
     );
