@@ -21,6 +21,7 @@ export const EVENT_QUERY = gql`
       official
       lastSync
       contactEmail
+      teamMatcher
       checkEncounterForFilledIn
       exceptions {
         start
