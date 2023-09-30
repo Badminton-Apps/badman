@@ -1,16 +1,16 @@
 import { DatabaseModule } from '@badman/backend-database';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AssignClubToPlayers } from './scripts/assign-clubs-to-players/assign-clubs-to-players';
+import { ExportBBFPlayers } from './scripts/expot-ranking/exort-ranking';
 
 @Module({
-  providers: [AssignClubToPlayers],
+  providers: [ExportBBFPlayers],
   imports: [ConfigModule.forRoot(), DatabaseModule],
 })
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
   
-  constructor(private fixer: AssignClubToPlayers) {}
+  constructor(private fixer: ExportBBFPlayers) {}
 
   async onModuleInit() {
     this.logger.log('Running script');

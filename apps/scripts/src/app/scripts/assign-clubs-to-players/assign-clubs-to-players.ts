@@ -51,8 +51,8 @@ export class AssignClubToPlayers {
     try {
       this.logger.verbose(`Fixing clubs for players`);
 
-      const clubs = await this.loadClubs(transaction);
-      const players = await this.loadPlayers(transaction);
+      const clubs = await this.loadClubs(season, transaction);
+      const players = await this.loadPlayers(season, transaction);
 
       // Transfers are already in the Player list, so we need to update the active club for the player
       await this.processPlayersClubs(season, players, clubs, transaction);
@@ -286,10 +286,12 @@ export class AssignClubToPlayers {
     }
   }
 
-  async loadClubs(transaction: Transaction) {
+  async loadClubs(season: number, transaction: Transaction) {
     this.logger.verbose(`Loading clubs`);
     const clubsxlsx = xlsx.readFile(
-      'apps/scripts/src/app/scripts/assign-clubs-to-players/Clubs 2023-2024.xlsx'
+      `apps/scripts/src/app/scripts/assign-clubs-to-players/Clubs ${season}-${
+        season + 1
+      }.xlsx`
     );
     const clubsSheet = clubsxlsx.Sheets[clubsxlsx.SheetNames[0]];
     let clubsJson = xlsx.utils.sheet_to_json<{
@@ -344,10 +346,10 @@ export class AssignClubToPlayers {
     return clubMap;
   }
 
-  async loadPlayers(transaction: Transaction) {
+  async loadPlayers(season: number, transaction: Transaction) {
     this.logger.verbose(`Loading players`);
     const playersxlsx = xlsx.readFile(
-      'apps/scripts/src/app/scripts/assign-clubs-to-players/Players 2023-2024.xlsx'
+      `apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`
     );
     const playersSheet = playersxlsx.Sheets[playersxlsx.SheetNames[0]];
     let playersJson = xlsx.utils.sheet_to_json<{
@@ -357,7 +359,9 @@ export class AssignClubToPlayers {
       firstname: string;
     }>(playersSheet);
 
-    playersJson = playersJson?.filter((c) => c.memberid != null);
+    playersJson = playersJson?.filter(
+      (c) => c.memberid != null && c.memberid != '' && c.memberid != undefined
+    );
 
     const players = await Player.findAll({
       attributes: ['id', 'firstName', 'lastName', 'memberId'],
