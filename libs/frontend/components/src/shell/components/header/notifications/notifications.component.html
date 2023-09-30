@@ -10,6 +10,8 @@
       matBadgeSize="small"
       [matBadge]="unread()?.length"
       [matBadgeHidden]="unread()?.length === 0"
+      [attr.aria-hidden]="unread()?.length === 0"
+      aria-hidden="false"
       matBadgeColor="warn"
       >notifications</mat-icon
     >
