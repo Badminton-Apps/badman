@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.110.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.109.1...v6.110.0-beta.0) (2023-09-30)
+
+
+### Features
+
+* loading improvements + showing player's club ([80a5005](https://github.com/Badminton-Apps/badman/commit/80a5005b48abe264889e03bf4ee4e3d0d1526837))
+* more improvements on the loading of data ([7de59ad](https://github.com/Badminton-Apps/badman/commit/7de59adca65f275db39a85791e08c07cd7089922))
+* reworked the breakdown to be more reliable performance ([2dcbb8d](https://github.com/Badminton-Apps/badman/commit/2dcbb8d1693ccc483d0a7a9cb70a7aea4e96db9f))
+* some styling for detail-encounter ([5b86539](https://github.com/Badminton-Apps/badman/commit/5b86539dad5fede1a6776ae2bcec29280e58f7c9))
+* syncing now with config, allows LFBB and victor league to be included ([cc87617](https://github.com/Badminton-Apps/badman/commit/cc8761713927d98879c938d5e2e6eb436002c724))
+
+
+### Bug Fixes
+
+* fix for warning caused by angular-material ([3c7f1e1](https://github.com/Badminton-Apps/badman/commit/3c7f1e1ebce141acd48fb94f3e35bcc061b7fba0))
+* link the volumes to local disk ([4e63742](https://github.com/Badminton-Apps/badman/commit/4e63742b65362648d6e0b91da1ff82d849ff36c5))
+* loading observer should be above loading block ([b53f337](https://github.com/Badminton-Apps/badman/commit/b53f337608f0f1b933abb1c66f0d02ebcd08e9cd))
+* navigating would lock some components ([487739f](https://github.com/Badminton-Apps/badman/commit/487739f5a0aaef10151dc8b81f14ce6e491099a2))
+* skipping the game if there was no game ([2cf4a46](https://github.com/Badminton-Apps/badman/commit/2cf4a46f8c7bd2edafecb7cde78f2fdb904e86bb))
+* temp workaround, but still not ideal ([24f4188](https://github.com/Badminton-Apps/badman/commit/24f41885a0d9d937cd3365ed430de5f5c4fccc4c))
+* this way if the team get's created with number 1 ([04ecd21](https://github.com/Badminton-Apps/badman/commit/04ecd21145e9da79859b89183dc2f21081dc8bd0))
+* width should be set higher up ([5325328](https://github.com/Badminton-Apps/badman/commit/5325328fbda65758d5df154b431cafd5621d22bb))
+
 ### [6.109.1](https://github.com/Badminton-Apps/badman/compare/v6.109.0...v6.109.1) (2023-09-28)
 
 
