@@ -371,7 +371,9 @@ export class ListGamesComponent
 
     if (game.competition) {
       title += game.competition.drawCompetition?.name;
-      title += ` • ${game.competition.home?.name} vs ${game.competition.away?.name}`;
+      if (game.competition.home?.name && game.competition.away?.name) {
+        title += ` • ${game.competition.home?.name} vs ${game.competition.away?.name}`;
+      }
       link = [
         '/competition',
         game.competition.drawCompetition?.subEventCompetition?.eventId ?? '',
