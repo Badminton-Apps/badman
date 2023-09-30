@@ -2,12 +2,16 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   OnDestroy,
-  OnInit,
   PLATFORM_ID,
+  Signal,
   TransferState,
+  computed,
+  effect,
+  inject,
+  signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -15,13 +19,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
-import {
-  ActivatedRoute,
-  ParamMap,
-  Params,
-  Router,
-  RouterModule,
-} from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { Game, Player, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
@@ -29,11 +27,11 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
-import { Observable, Subject, combineLatest } from 'rxjs';
+import { Subject, combineLatest, of } from 'rxjs';
 import {
   distinctUntilChanged,
   map,
-  shareReplay,
+  startWith,
   switchMap,
   takeUntil,
   tap,
@@ -67,23 +65,24 @@ import { RankingEvolutionComponent } from './components/ranking-evolution';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
-  loadingGames = false;
-  player!: Player;
+export class RankingBreakdownPageComponent implements OnDestroy {
+  // Dependencies
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private breadcrumbService = inject(BreadcrumbService);
+  private seoService = inject(SeoService);
+  private systemService = inject(RankingSystemService);
+  private apollo = inject(Apollo);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject(PLATFORM_ID);
 
-  updateUsersTrigger = new Subject<void>();
+  // route
+  queryParams = toSignal(this.route.queryParamMap);
+  routeParams = toSignal(this.route.paramMap);
+  routeData = toSignal(this.route.data);
 
-  destroy$ = new Subject<void>();
-
-  data$!: Observable<{
-    games: Game[];
-    type: string;
-  }>;
-
-  games$!: Observable<Game[]>;
-  system$!: Observable<RankingSystem | null>;
-
-  period = new FormGroup({
+  // filters
+  periodFilter = new FormGroup({
     start: new FormControl(),
     end: new FormControl(),
     game: new FormControl(),
@@ -91,171 +90,105 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
   });
 
   gameFilter = new FormGroup({
-    gameType: new FormControl(),
-    period: this.period,
-    includedIgnored: new FormControl(false),
-    includedUpgrade: new FormControl(true),
-    includedDowngrade: new FormControl(true),
-    includeOutOfScope: new FormControl(false),
+    gameType: new FormControl(this.routeParams()?.get('type')),
+    period: this.periodFilter,
+    includedIgnored: new FormControl(
+      this.routeParams()?.get('includedIgnored') ?? false
+    ),
+    includedUpgrade: new FormControl(
+      this.routeParams()?.get('includedUpgrade') ?? true
+    ),
+    includedDowngrade: new FormControl(
+      this.routeParams()?.get('includedDowngrade') ?? true
+    ),
+    includeOutOfScope: new FormControl(
+      this.routeParams()?.get('includeOutOfScope') ?? false
+    ),
   });
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private seoService: SeoService,
-    private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private systemService: RankingSystemService,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {}
+  // Signals
+  system = toSignal(this._getSystem());
+  games = toSignal(this._loadGames());
+  loadingGames = signal(true);
 
-  ngOnInit(): void {
-    this.route.data.pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.player = data['player'];
-      this.seoService.update({
-        title: `Ranking breakdown ${this.player.fullName}`,
-        description: `Ranking breakdown ${this.player.fullName}`,
-        type: 'website',
-        keywords: ['ranking', 'breakdown', 'player', 'badminton'],
+  // Computed
+  player: Signal<Player> = computed(() => this.routeData()?.['player']);
+  id = computed(() => this.routeParams()?.get('id'));
+
+  // specific computed value so the effect only triggers when the end date changes
+  periodEndRoute = computed(() => this.routeParams()?.get('end'));
+
+  // Destroy
+  destroy$ = new Subject<void>();
+
+  // Games
+  constructor() {
+    this.seoService.update({
+      title: `Ranking breakdown ${this.player().fullName}`,
+      description: `Ranking breakdown ${this.player().fullName}`,
+      type: 'website',
+      keywords: ['ranking', 'breakdown', 'player', 'badminton'],
+    });
+    this.breadcrumbService.set('player/:id', this.player().fullName);
+
+    effect(
+      () => {
+        if (!this.player()) {
+          return;
+        }
+
+        if (!this.system()) {
+          return;
+        }
+
+        this._loadPeriodFilter();
+      },
+      {
+        allowSignalWrites: true,
+      }
+    );
+
+    this.gameFilter.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this._updateUrl();
       });
-      this.breadcrumbsService.set('player/:id', this.player.fullName);
+  }
 
-      const routeParam$ = this.route.paramMap.pipe(
-        distinctUntilChanged(),
-        shareReplay(1)
+  private _loadPeriodFilter() {
+    const end = this.periodEndRoute() ?? null;
+
+    // Default we take next update interval, if no end is given
+    const endPeriod =
+      (end ?? null) == null
+        ? moment(this.system()?.caluclationIntervalLastUpdate)
+        : moment(end);
+    const startPeriod = endPeriod
+      .clone()
+      .subtract(this.system()?.periodAmount, this.system()?.periodUnit);
+    const gamePeriod = startPeriod
+      .clone()
+      .subtract(
+        this.system()?.updateIntervalAmount,
+        this.system()?.updateIntervalUnit
       );
-      const queryParam$ = this.route.queryParams.pipe(
-        distinctUntilChanged(),
-        shareReplay(1)
+
+    const nextPeriod = startPeriod
+      .clone()
+      .add(
+        this.system()?.caluclationIntervalAmount,
+        this.system()?.calculationIntervalUnit
       );
 
-      // Load query filters and update the form
-      this._loadFilters(routeParam$, queryParam$)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(() => {
-          // load system
-          this.system$ = this._loadSystem().pipe(
-            tap((system) => {
-              if (system == null) {
-                return;
-              }
-              const end = null;
-
-              // Default we take next update interval, if no end is given
-              const endPeriod =
-                (end ?? null) == null
-                  ? moment(system.caluclationIntervalLastUpdate)
-                  : moment(end);
-              const startPeriod = endPeriod
-                .clone()
-                .subtract(system.periodAmount, system.periodUnit);
-              const gamePeriod = startPeriod
-                .clone()
-                .subtract(
-                  system.updateIntervalAmount,
-                  system.updateIntervalUnit
-                );
-
-              const nextPeriod = startPeriod
-                .clone()
-                .add(
-                  system.caluclationIntervalAmount,
-                  system.calculationIntervalUnit
-                );
-
-              this.period.setValue({
-                start: startPeriod,
-                end: endPeriod,
-                game: gamePeriod,
-                next: nextPeriod,
-              });
-            })
-          );
-
-          this.games$ = this._loadGames();
-        });
-
-      // if the filters change, we need to update the query params
-      this.gameFilter.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((filters) => {
-          const queryParams: Params = {};
-
-          queryParams['includedIgnored'] = filters['includedIgnored']
-            ? true
-            : undefined;
-          queryParams['includedUpgrade'] = filters['includedUpgrade']
-            ? undefined
-            : false;
-          queryParams['includedDowngrade'] = filters['includedDowngrade']
-            ? undefined
-            : false;
-          queryParams['includeOutOfScope'] = filters['includeOutOfScope']
-            ? true
-            : undefined;
-
-          const commands =
-            filters['gameType'] !== this.route.snapshot.paramMap.get('type')
-              ? ['..', `${filters['gameType']}`]
-              : [];
-
-          // only navigate if the filters are different
-          if (
-            JSON.stringify(this.route.snapshot.queryParams) ===
-            JSON.stringify(queryParams)
-          ) {
-            return;
-          }
-
-          // update the query params
-          this.router.navigate(commands, {
-            relativeTo: this.route,
-            queryParams,
-          });
-        });
+    this.periodFilter.setValue({
+      start: startPeriod,
+      end: endPeriod,
+      game: gamePeriod,
+      next: nextPeriod,
     });
   }
 
-  private _loadFilters(
-    routeParam$: Observable<ParamMap>,
-    queryParam$: Observable<Params>
-  ) {
-    // Get params on startup
-    return combineLatest([routeParam$, queryParam$]).pipe(
-      takeUntil(this.destroy$),
-      tap(([params, queries]) => {
-        const filters: { [key: string]: unknown } = {};
-
-        if (params.get('type')) {
-          filters['gameType'] = params.get('type');
-        } else {
-          throw new Error('No type given');
-        }
-
-        if (queries['includedIgnored']) {
-          filters['includedIgnored'] = queries['includedIgnored'] == 'true';
-        }
-        if (queries['includedUpgrade']) {
-          filters['includedUpgrade'] = queries['includedUpgrade'] == 'true';
-        }
-        if (queries['includedDowngrade']) {
-          filters['includedDowngrade'] = queries['includedDowngrade'] == 'true';
-        }
-        if (queries['includeOutOfScope']) {
-          filters['includeOutOfScope'] = queries['includeOutOfScope'] == 'true';
-        }
-
-        this.gameFilter.patchValue(filters);
-      }),
-      shareReplay(1),
-      distinctUntilChanged((a, b) => {
-        return JSON.stringify(a) === JSON.stringify(b);
-      })
-    );
-  }
-
-  private _loadSystem() {
+  private _getSystem() {
     return this.systemService.getPrimarySystemsWhere().pipe(
       switchMap((query) =>
         this.apollo
@@ -289,11 +222,13 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
           })
           .pipe(
             transferState('primarySystem', this.stateTransfer, this.platformId),
-            map((x) =>
-              x?.data.rankingSystems[0]
-                ? new RankingSystem(x.data.rankingSystems[0])
-                : null
-            )
+            map((x) => {
+              if (!x?.data?.rankingSystems?.length) {
+                throw new Error('No ranking system found');
+              }
+
+              return new RankingSystem(x.data.rankingSystems[0]);
+            })
           )
       )
     );
@@ -301,76 +236,116 @@ export class RankingBreakdownPageComponent implements OnInit, OnDestroy {
 
   private _loadGames() {
     return combineLatest([
-      this.system$,
-      this.gameFilter.valueChanges,
-      this.period.valueChanges,
+      this.gameFilter
+        .get('gameType')
+        ?.valueChanges.pipe(startWith(this.gameFilter.value.gameType)) ??
+        of(null),
+      this.periodFilter.get('start')?.valueChanges ?? of(null),
+      this.periodFilter.get('end')?.valueChanges ?? of(null),
     ]).pipe(
-      tap(() => (this.loadingGames = true)),
-      takeUntil(this.destroy$),
-      switchMap(([system, gameFilter, period]) => {
-        const type = gameFilter.gameType;
-        const end = period.end;
-        const start = period.game;
-
-        return this.apollo
-          .query<{ player: Player }>({
-            fetchPolicy: 'no-cache',
-            query: gql`
-              query PlayerGames(
-                $where: JSONObject
-                $playerId: ID!
-                $rankingType: ID!
-              ) {
-                player(id: $playerId) {
+      distinctUntilChanged(),
+      tap(() => this.loadingGames.set(true)),
+      switchMap(([gameType, start, end]) =>
+        this.apollo.query<{ player: Player }>({
+          fetchPolicy: 'no-cache',
+          query: gql`
+            query PlayerGames(
+              $where: JSONObject
+              $playerId: ID!
+              $rankingType: ID!
+            ) {
+              player(id: $playerId) {
+                id
+                games(where: $where) {
                   id
-                  games(where: $where) {
+                  playedAt
+                  winner
+                  status
+                  players {
                     id
-                    playedAt
-                    winner
-                    status
-                    players {
-                      id
-                      team
-                      player
-                      fullName
-                      single
-                      double
-                      mix
-                    }
-                    rankingPoints(where: { systemId: $rankingType }) {
-                      id
-                      differenceInLevel
-                      playerId
-                      points
-                    }
+                    team
+                    player
+                    fullName
+                    single
+                    double
+                    mix
+                  }
+                  rankingPoints(where: { systemId: $rankingType }) {
+                    id
+                    differenceInLevel
+                    playerId
+                    points
                   }
                 }
               }
-            `,
-            variables: {
-              where: {
-                gameType:
-                  type == 'single' ? 'S' : type == 'double' ? 'D' : 'MX',
-                playedAt: {
-                  $between: [start, end],
-                },
+            }
+          `,
+          variables: {
+            where: {
+              gameType:
+                gameType == 'single' ? 'S' : gameType == 'double' ? 'D' : 'MX',
+              playedAt: {
+                $between: [start, end],
               },
-              playerId: this.player.id,
-              rankingType: system?.id,
             },
-          })
-          .pipe(
-            map((x) => x.data.player.games?.map((g) => new Game(g)) ?? []),
-            map((games) =>
-              games.filter((game) => (game.rankingPoints?.length ?? 0) > 0)
-            )
-          );
-      }),
-      tap(() => (this.loadingGames = false))
+            playerId: this.player().id,
+            rankingType: this.system()?.id,
+          },
+        })
+      ),
+      map((x) => x.data.player.games?.map((g) => new Game(g)) ?? []),
+      map((games) =>
+        games.filter((game) => (game.rankingPoints?.length ?? 0) > 0)
+      ),
+      tap(() => this.loadingGames.set(false))
     );
   }
 
-  ngOnDestroy(): void {
+  private _updateUrl() {
+    const queryParams: { [key: string]: string | boolean | null | undefined } =
+      {
+        includedIgnored: this.gameFilter.value.includedIgnored
+          ? true
+          : undefined,
+        includedUpgrade: this.gameFilter.value.includedUpgrade
+          ? undefined
+          : false,
+        includedDowngrade: this.gameFilter.value.includedDowngrade
+          ? undefined
+          : false,
+        includeOutOfScope: this.gameFilter.value.includeOutOfScope
+          ? true
+          : undefined,
+      };
+
+    const url =
+      this.gameFilter.value.gameType !== this.routeParams()?.get('type')
+        ? ['..', `${this.gameFilter.value.gameType}`]
+        : [];
+
+    // check if the current url is the same as the new url
+    // if so, don't navigate
+    const currentUrl = this.router.url;
+    const newUrl = this.router
+      .createUrlTree(url, {
+        relativeTo: this.route,
+        queryParams,
+        queryParamsHandling: 'merge',
+      })
+      .toString();
+
+    if (currentUrl == newUrl) {
+      return;
+    }
+
+    this.router.navigate(url, {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
