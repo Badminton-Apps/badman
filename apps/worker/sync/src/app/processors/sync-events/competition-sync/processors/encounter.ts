@@ -69,7 +69,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     )) as XmlTeamMatch[];
 
     for (const xmlTeamMatch of visualMatches) {
-      if (!xmlTeamMatch) {
+      if (!xmlTeamMatch?.Team1?.Name || !xmlTeamMatch?.Team2?.Name) {
         continue;
       }
 

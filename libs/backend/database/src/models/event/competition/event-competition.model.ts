@@ -152,6 +152,10 @@ export class EventCompetition extends Model {
   @Column(DataType.STRING)
   slug?: string;
 
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  teamMatcher?: string;
+
   @Field(() => Int)
   @Column(DataType.NUMBER)
   usedRankingAmount!: number;

@@ -157,10 +157,10 @@ export class SyncEventsProcessor {
             xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
             xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
           ) {
-            // National is a bit different have to lookinto, temp skip
-            if (xmlTournament?.Name?.includes('Victor League')) {
-              continue;
-            }
+            // // National is a bit different have to lookinto, temp skip
+            // if (xmlTournament?.Name?.includes('Victor League')) {
+            //   continue;
+            // }
 
             if (!job.data?.skip?.includes('competition')) {
               resultData = (await this._competitionSync.process({
