@@ -1,9 +1,9 @@
 <badman-page-header>
-  <div avatar>{{ this.club.abbreviation }}</div>
-  <div title>{{this.club.name}}</div>
+  <div avatar>{{ this.club().abbreviation }}</div>
+  <div title>{{this.club().name}}</div>
 
   <div subTitle>
-    <div class="clubId">{{this.club.clubId}}</div>
+    <div class="clubId">{{this.club().clubId}}</div>
   </div>
 
   <div actions>
@@ -16,8 +16,8 @@
     </button>
 
     <mat-menu #menu="matMenu">
-      <badman-has-claim [any]="['edit-any:club', this.club.id + '_edit:club']">
-        <button mat-menu-item [routerLink]="['..', this.club.id, 'edit']">
+      <badman-has-claim [any]="['edit-any:club', this.club().id + '_edit:club']">
+        <button mat-menu-item [routerLink]="['..', this.club().id, 'edit']">
           <mat-icon>edit</mat-icon>
           <span>{{'all.button.edit' | translate}}</span>
         </button>
@@ -71,16 +71,16 @@
   (selectedIndexChange)="setTab($event)"
 >
   <mat-tab [label]="'all.club.titles.teams' | translate">
-    <badman-club-teams [clubId]="this.club.id" [filter]="this.filter" />
+    <badman-club-teams [clubId]="this.club().id" [filter]="this.filter" />
   </mat-tab>
   <mat-tab [label]="'all.club.titles.matrix' | translate">
     <ng-template matTabContent>
-      <badman-club-assembly [clubId]="this.club.id" [filter]="this.filter" />
+      <badman-club-assembly [clubId]="this.club().id" [filter]="this.filter" />
     </ng-template>
   </mat-tab>
   <mat-tab [label]="'all.club.titles.players' | translate">
     <ng-template matTabContent>
-      <badman-club-players [clubId]="this.club.id" [filter]="this.filter" />
+      <badman-club-players [clubId]="this.club().id" [filter]="this.filter" />
     </ng-template>
   </mat-tab>
   <mat-tab
@@ -88,7 +88,7 @@
     *ngIf="this.canViewEncounter()"
   >
     <ng-template matTabContent>
-      <badman-club-encounters [clubId]="this.club.id" [filter]="this.filter" />
+      <badman-club-encounters [clubId]="this.club().id" [filter]="this.filter" />
     </ng-template>
   </mat-tab>
   <mat-tab
@@ -96,7 +96,7 @@
     *ngIf="this.canViewEnrollments?.()"
   >
     <ng-template matTabContent>
-      <badman-club-competition [clubId]="this.club.id" [filter]="this.filter" />
+      <badman-club-competition [clubId]="this.club().id" [filter]="this.filter" />
     </ng-template>
   </mat-tab>
 </mat-tab-group>
