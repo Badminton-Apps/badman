@@ -8,7 +8,7 @@ const replacers = [
   ['Fz Forza Webacsa', 'Webacsa'],
   ['De Voskes BC', 'BC De Voskes'],
   ['RBC VERVIERS', 'ROYAL BADMINTON CLUB VERVIERS'],
-  ['BC GRACE', 'BC Grâce']
+  ['BC GRACE', 'BC Grâce 1'],
 ];
 
 export const correctWrongTeams = (team: { 
@@ -24,9 +24,9 @@ export const correctWrongTeams = (team: {
   for (const [from, to] of replacers) {
     if (team.name.indexOf(from) > -1) {
       team.name = team.name.replace(from, to);
-      return team;
     }
   }
 
   return team;
 };
+ 
