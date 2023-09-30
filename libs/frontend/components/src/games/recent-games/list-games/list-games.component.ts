@@ -6,9 +6,11 @@ import {
   ElementRef,
   Inject,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
+  SimpleChanges,
   TransferState,
   ViewChild,
 } from '@angular/core';
@@ -43,14 +45,13 @@ import {
   distinctUntilChanged,
 } from 'rxjs';
 import {
-  map,
-  startWith,
-  tap,
-  takeUntil,
-  shareReplay,
-  switchMap,
   filter,
+  map,
   mergeMap,
+  shareReplay,
+  startWith,
+  takeUntil,
+  tap,
 } from 'rxjs/operators';
 import { LoadingBlockComponent } from '../../../loading-block';
 
@@ -78,7 +79,9 @@ import { LoadingBlockComponent } from '../../../loading-block';
   styleUrls: ['./list-games.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ListGamesComponent
+  implements OnInit, AfterViewInit, OnDestroy, OnChanges
+{
   private destroy$ = new Subject<void>();
   @Input() playerId?: string;
 
@@ -105,6 +108,36 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  ngOnInit() {
+    combineLatest([
+      this.currentPage$,
+      this.filter.valueChanges.pipe(
+        startWith(this.filter.value),
+        // reset the page when the filter changes
+        tap(() => {
+          this.currentPage$.next(1);
+          this.endOfList = false;
+          return this.recentGames$.next([]);
+        })
+      ),
+    ])
+      .pipe(
+        shareReplay(1),
+        takeUntil(this.destroy$),
+        filter(() => !this.endOfList),
+        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+        mergeMap(([page, filter]) =>
+          this._loadRecentGamesForPlayer(this.playerId ?? '', page, filter)
+        )
+        // Increment the page number for the next request
+      )
+      .subscribe((games) => {
+        // Add the new items to the existing list
+        const currentGames = this.recentGames$.getValue();
+        this.recentGames$.next([...currentGames, ...games].sort(sortGames));
+      });
+  }
+
   ngAfterViewInit() {
     const options = {
       root: null,
@@ -124,12 +157,29 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
     observer.observe(this.bottomObserver.nativeElement);
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      !changes['playerId']?.currentValue ||
+      !changes['playerId']?.previousValue
+    ) {
+      return;
+    }
+
+    // Reset the list when the playerId changes
+    if (
+      changes['playerId'].currentValue !== changes['playerId'].previousValue
+    ) {
+      this.endOfList = false;
+      this.recentGames$.next([]);
+      this.currentPage$.next(1);
+    }
+  }
+
   private _loadRecentGamesForPlayer(
     playerId: string,
     page: number,
     filter?: Partial<{ choices: string[] | null }>
   ) {
-
     return this.apollo
       .query<{
         player: {
@@ -346,36 +396,6 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnDestroy {
       title,
       link,
     };
-  }
-
-  ngOnInit() {
-    combineLatest([
-      this.currentPage$,
-      this.filter.valueChanges.pipe(
-        startWith(this.filter.value),
-        // reset the page when the filter changes
-        tap(() => {
-          this.currentPage$.next(1);
-          this.endOfList = false;
-          return this.recentGames$.next([]);
-        })
-      ),
-    ])
-      .pipe(
-        shareReplay(1),
-        takeUntil(this.destroy$),
-        filter(() => !this.endOfList),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        mergeMap(([page, filter]) =>
-          this._loadRecentGamesForPlayer(this.playerId ?? '', page, filter)
-        )
-        // Increment the page number for the next request
-      )
-      .subscribe((games) => {
-        // Add the new items to the existing list
-        const currentGames = this.recentGames$.getValue();
-        this.recentGames$.next([...currentGames, ...games].sort(sortGames));
-      });
   }
 
   private getGameType(type: GameType) {
