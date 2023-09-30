@@ -119,23 +119,25 @@ export class SearchBoxComponent implements OnInit {
     this.formControl.setValue(null);
     this.clear$.next([]);
 
-    const config = {
-      onSameUrlNavigation: 'reload',
-    } as NavigationExtras;
-
     switch (event.option.value.__typename) {
       case 'Player':
-        this.router.navigate(['/player', event.option.value.slug], config);
+        this._navigate(['/player', event.option.value.slug]);
         break;
       case 'EventCompetition':
-        this.router.navigate(['/competition', event.option.value.slug], config);
+        this._navigate(['/competition', event.option.value.slug]);
         break;
       case 'EventTournament':
-        this.router.navigate(['/tournament', event.option.value.slug], config);
+        this._navigate(['/tournament', event.option.value.slug]);
         break;
       case 'Club':
-        this.router.navigate(['/club', event.option.value.slug], config);
+        this._navigate(['/club', event.option.value.slug]);
         break;
     }
+  }
+
+  private _navigate(urlToNavigateTo: string[]) {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(urlToNavigateTo);
+    });
   }
 }
