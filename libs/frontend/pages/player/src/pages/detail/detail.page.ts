@@ -1,21 +1,24 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Inject,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
   TransferState,
+  computed,
+  effect,
+  inject,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterModule, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import {
   ConfirmDialogComponent,
@@ -31,7 +34,7 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, Subject, combineLatest, lastValueFrom, of } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -61,7 +64,28 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   ],
 })
 export class DetailPageComponent implements OnInit, OnDestroy {
-  player!: Player;
+  // Dependencies
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private breadcrumbService = inject(BreadcrumbService);
+  private seoService = inject(SeoService);
+  private apollo = inject(Apollo);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject(PLATFORM_ID);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+  private translate = inject(TranslateService);
+  private claim = inject(ClaimService);
+  private auth = inject(AuthenticateService);
+
+  // route
+  queryParams = toSignal(this.route.queryParamMap);
+  routeParams = toSignal(this.route.paramMap);
+  routeData = toSignal(this.route.data);
+
+  player = computed(() => this.routeData()?.['player'] as Player);
+  club = computed(() => this.player().clubs?.[0]);
+
   initials?: string;
 
   destroy$ = new Subject<void>();
@@ -78,34 +102,24 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   hasMenu$?: Observable<boolean>;
   canClaim$?: Observable<boolean>;
 
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private breadcrumbsService: BreadcrumbService,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private apollo: Apollo,
-    private translate: TranslateService,
-    private claim: ClaimService,
-    private auth: AuthenticateService,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {}
+  constructor() {
+    effect(() => {
+      this.teams$ = this._loadTeamsForPlayer();
+      this.rankingPlaces$ = this._loadRankingForPlayer();
+    });
+  }
 
   ngOnInit(): void {
     combineLatest([
-      this.route.data,
       this.translate.get('all.ranking.single'),
       this.translate.get('all.ranking.double'),
       this.translate.get('all.ranking.mix'),
     ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([data, single, double, mix]) => {
-        this.player = data['player'];
-        const lastNames = `${this.player.lastName}`.split(' ');
+      .subscribe(([single, double, mix]) => {
+        const lastNames = `${this.player().lastName}`.split(' ');
         if ((lastNames ?? []).length > 0) {
-          this.initials = `${this.player.firstName?.[0]}${
+          this.initials = `${this.player().firstName?.[0]}${
             lastNames?.[lastNames.length - 1][0]
           }`.toUpperCase();
         }
@@ -115,29 +129,26 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         this.tooltip.mix = mix;
 
         this.seoService.update({
-          title: `${this.player.fullName}`,
-          description: `Player ${this.player.fullName}`,
+          title: `${this.player().fullName}`,
+          description: `Player ${this.player().fullName}`,
           type: 'website',
           keywords: ['player', 'badminton'],
         });
-        this.breadcrumbsService.set('player/:id', this.player.fullName);
-
-        this.teams$ = this._loadTeamsForPlayer();
-        this.rankingPlaces$ = this._loadRankingForPlayer();
+        this.breadcrumbService.set('player/:id', this.player().fullName);
       });
 
     this.hasMenu$ = combineLatest([
       this.auth.loggedIn$ ?? of(false),
       this.claim.hasAnyClaims$([
         'edit-any:player',
-        this.player.id + '_edit:player',
+        this.player().id + '_edit:player',
         'change:job',
       ]),
     ]).pipe(
       takeUntil(this.destroy$),
       map(
         ([loggedIn, hasClaim]) =>
-          loggedIn && (hasClaim || this.player.sub === null)
+          loggedIn && (hasClaim || this.player().sub === null)
       )
     );
 
@@ -168,18 +179,19 @@ export class DetailPageComponent implements OnInit, OnDestroy {
               teams {
                 id
                 clubId
+                slug
               }
             }
           }
         `,
         variables: {
-          playerId: this.player.id,
+          playerId: this.player().id,
         },
       })
       .pipe(
         map((result) => result.data.player.teams?.map((t) => new Team(t))),
         transferState(
-          `teamsPlayer-${this.player.id}`,
+          `teamsPlayer-${this.player().id}`,
           this.stateTransfer,
           this.platformId
         )
@@ -197,7 +209,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           }
         `,
         variables: {
-          playerId: this.player.id,
+          playerId: this.player().id,
         },
       })
     );
@@ -232,12 +244,12 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           }
         `,
         variables: {
-          playerId: this.player.id,
+          playerId: this.player().id,
         },
       })
       .pipe(
         transferState(
-          `rankingPlayer-${this.player.id}`,
+          `rankingPlayer-${this.player().id}`,
           this.stateTransfer,
           this.platformId
         ),
@@ -287,7 +299,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
             }
           `,
           variables: {
-            id: this.player.id,
+            id: this.player().id,
           },
           refetchQueries: ['Teams'],
         })

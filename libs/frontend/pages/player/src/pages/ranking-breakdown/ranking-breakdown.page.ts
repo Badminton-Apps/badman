@@ -112,7 +112,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
   loadingGames = signal(true);
 
   // Computed
-  player: Signal<Player> = computed(() => this.routeData()?.['player']);
+  player = computed(() => this.routeData()?.['player'] as Player);
   id = computed(() => this.routeParams()?.get('id'));
 
   // specific computed value so the effect only triggers when the end date changes

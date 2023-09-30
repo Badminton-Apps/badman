@@ -22,7 +22,7 @@
 @mixin typography($theme) {
   badman-player-detail {
     $typography-config: mat.get-typography-config($theme);
-    .memberId {
+    .sub-text {
       @include mat.typography-level($typography-config, 'caption');
     }
 

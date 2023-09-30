@@ -29,6 +29,8 @@ export class PlayerResolver {
               competitionPlayer
               clubs {
                 id
+                slug
+                name
               }
             }
           }
