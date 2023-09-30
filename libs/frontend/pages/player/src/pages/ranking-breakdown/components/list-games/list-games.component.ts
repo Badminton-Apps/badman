@@ -151,6 +151,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
           };
         }, distinctUntilChanged())
       )
+      .pipe(takeUntil(this.destroyed))
       .subscribe(() => {
         this.fillGames();
       });
@@ -433,6 +434,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
         },
       })
       .afterClosed()
+      .pipe(takeUntil(this.destroyed))
       .subscribe((game: Game) => {
         if (game) {
           this.games.push(game);

@@ -8,7 +8,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { merge, Observable, ReplaySubject } from 'rxjs';
@@ -119,20 +119,22 @@ export class SearchBoxComponent implements OnInit {
     this.formControl.setValue(null);
     this.clear$.next([]);
 
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.router.onSameUrlNavigation = 'reload';
+    const config = {
+      onSameUrlNavigation: 'reload',
+    } as NavigationExtras;
+
     switch (event.option.value.__typename) {
       case 'Player':
-        this.router.navigate(['/player', event.option.value.slug]);
+        this.router.navigate(['/player', event.option.value.slug], config);
         break;
       case 'EventCompetition':
-        this.router.navigate(['/competition', event.option.value.slug]);
+        this.router.navigate(['/competition', event.option.value.slug], config);
         break;
       case 'EventTournament':
-        this.router.navigate(['/tournament', event.option.value.slug]);
+        this.router.navigate(['/tournament', event.option.value.slug], config);
         break;
       case 'Club':
-        this.router.navigate(['/club', event.option.value.slug]);
+        this.router.navigate(['/club', event.option.value.slug], config);
         break;
     }
   }
