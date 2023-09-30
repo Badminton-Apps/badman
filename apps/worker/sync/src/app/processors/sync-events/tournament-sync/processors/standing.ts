@@ -8,7 +8,7 @@ import { DrawStepData } from './draw';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
 import { Logger, NotFoundException } from '@nestjs/common';
-import { runParallel } from '@badman/utils';
+import { GameStatus, runParallel } from '@badman/utils';
 import { EncounterStepData } from '../../competition-sync/processors';
 
 export interface StandingStepOptions {
@@ -65,6 +65,13 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     }
 
     for (const game of games) {
+      if (
+        game.status == GameStatus.WALKOVER ||
+        game.status == GameStatus.NO_MATCH
+      ) {
+        continue;
+      }
+
       const playert1p1 = game.players?.find(
         (e) =>
           e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1

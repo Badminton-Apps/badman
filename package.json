@@ -88,7 +88,7 @@
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "@socket.io/redis-adapter": "^8.2.1",
-    "@types/marked": "^5.0.2",
+    "@types/marked": "^4.3.0",
     "@vercel/analytics": "^1.0.1",
     "apexcharts": "^3.41.0",
     "apollo-angular": "^5.0.0",
