@@ -1,8 +1,16 @@
 <badman-page-header>
   <div avatar>{{ this.initials }}</div>
-  <div title>{{player.fullName}}</div>
+  <div title>{{this.player().fullName}}</div>
   <div subTitle>
-    <div class="memberId">{{player.memberId}}</div>
+    <div class="sub-text">
+      <ng-container
+        ><a [routerLink]="['/', 'club', this.club()?.slug]"
+          >{{this.club()?.name}}</a
+        ></ng-container
+      ><ng-container *ngIf="this.club()?.name && this.player()?.memberId">
+        - </ng-container
+      >{{this.player().memberId}}
+    </div>
     <ng-container *ngIf="this.rankingPlaces$ | async as ranking">
       <mat-chip-listbox>
         <mat-chip
@@ -53,7 +61,7 @@
         </button>
 
         <badman-has-claim
-          [any]="['edit-any:player', this.player.id + '_edit:player']"
+          [any]="['edit-any:player', this.player().id + '_edit:player']"
         >
           <button mat-menu-item [routerLink]="'edit'">
             <mat-icon>edit</mat-icon>
@@ -84,7 +92,7 @@
       {{"all.game.recent.title" | translate}}
     </h3>
 
-    <badman-recent-games [playerId]="this.player.id"></badman-recent-games>
+    <badman-recent-games [playerId]="this.player().id"></badman-recent-games>
   </section>
 
   <section class="upcoming-games">
@@ -96,7 +104,7 @@
     <ng-container *ngIf="(teams$ | async) ?? [] as teams">
       <badman-upcoming-games
         *ngIf="teams.length>0"
-        [clubid]="this.player.clubs?.[0]?.id"
+        [clubid]="club()?.id"
         [teams]="teams"
       ></badman-upcoming-games>
     </ng-container>
