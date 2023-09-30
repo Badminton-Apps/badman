@@ -36,6 +36,7 @@ import { lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
+  selector: 'badman-detail-encounter',
   templateUrl: './detail-encounter.page.html',
   styleUrls: ['./detail-encounter.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
