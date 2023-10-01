@@ -8,6 +8,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import xlsx from 'xlsx';
 import { CpClub, CpLocation } from './clubs-locations';
+import { autoFilter, autoSize } from '../../../shared/excel';
 
 @Injectable()
 export class AddLocationsId {
@@ -198,31 +199,8 @@ export class AddLocationsId {
     const ws = xlsx.utils.aoa_to_sheet(data);
     const wb = xlsx.utils.book_new();
 
-    // Find the row with the most columns
-    let indexWithMostColumns = 0;
-    let maxColumns = 0;
-    data.forEach((row, index) => {
-      if (row.length > maxColumns) {
-        maxColumns = row.length;
-        indexWithMostColumns = index;
-      }
-    });
-
-    // Autosize columns
-    const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
-      data.reduce(
-        (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
-        0
-      )
-    );
-    ws['!cols'] = columnSizes.map((width) => ({ width }));
-
-    // Enable filtering
-    ws['!autofilter'] = {
-      ref: xlsx.utils.encode_range(
-        xlsx.utils.decode_range(ws['!ref'] as string)
-      ),
-    };
+    autoSize(ws);
+    autoFilter(ws);
 
     xlsx.utils.book_append_sheet(wb, ws, 'Encounter Data na sync');
     const fileName = `apps/scripts/src/app/scripts/add-locations-to-cp/export-encounters-and-locations-${event?.name}.xlsx`;
