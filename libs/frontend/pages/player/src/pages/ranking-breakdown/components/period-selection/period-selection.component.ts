@@ -50,10 +50,6 @@ export class PeriodSelectionComponent {
   dateClass: MatCalendarCellClassFunction<Moment> = (cellDate, view) => {
     // Only highligh dates inside the month view.
     if (view === 'month') {
-      if (cellDate.isAfter(this.system.caluclationIntervalLastUpdate)) {
-        return '';
-      }
-
       // is first monday of the month
       let isFirstMonday = cellDate.clone().set('date', 1).isoWeekday(8);
 
