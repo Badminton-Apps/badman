@@ -207,7 +207,6 @@ export class PointsService {
         })
       );
     }
-
     if (player2Team1 && player2Team1.id && player2Team1Points != null) {
       rankings.push(
         new RankingPoint({
@@ -220,7 +219,6 @@ export class PointsService {
         })
       );
     }
-
     if (player2Team2 && player2Team2.id && player2Team2Points != null) {
       rankings.push(
         new RankingPoint({
@@ -235,13 +233,30 @@ export class PointsService {
     }
 
     if (rankings.length > 0 && createRankingPoints) {
-      await RankingPoint.bulkCreate(
-        rankings.map((r) => r.toJSON()),
-        {
-          returning: false,
-          transaction: options?.transaction,
+      // get existing ranking points
+      const points = await RankingPoint.findAll({
+        where: {
+          gameId: game.id,
+          systemId: system.id,
+        },
+        transaction,
+      });
+
+      for (const ranking of rankings) {
+        // find if there is already a ranking point for this player
+        const existing = points.find((p) => p.playerId === ranking.playerId);
+        // update points and difference in level
+        if (existing) {
+          existing.points = ranking.points;
+          existing.differenceInLevel = ranking.differenceInLevel;
+          //  if any changes, save
+          if (existing.changed()) {
+            await existing.save({ transaction });
+          }
+        } else {
+          await ranking.save({ transaction });
         }
-      );
+      }
     }
 
     return rankings;

@@ -196,15 +196,15 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           game.status = gameStatus;
         }
       }
-      await game.save({ transaction: this.transaction });
-      await GamePlayerMembership.destroy({
-        where: { gameId: game.id },
-        transaction: this.transaction,
-      });
+
+      if (game.changed()) {
+        await game.save({ transaction: this.transaction });
+      }
+      
       const memberships = await this._createGamePlayers(xmlMatch, game);
       await GamePlayerMembership.bulkCreate(memberships, {
         transaction: this.transaction,
-        ignoreDuplicates: true,
+        updateOnDuplicate: ['single', 'double', 'mix'],
       });
     }
 

@@ -30,7 +30,6 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
         transaction: this.transaction,
       })) ?? [];
     let totalGames = 0;
-    let totalWithoutPoints = 0;
 
     for (const subEvent of subEvents) {
       const index = subEvents.indexOf(subEvent);
@@ -87,30 +86,23 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
             transaction: this.transaction,
           });
 
-          const gamesWithoutPoints = games.filter(
-            (game) => game.rankingPoints?.length === 0
-          );
-
-          if (gamesWithoutPoints.length > 0) {
-            for (const game of gamesWithoutPoints) {
-              await this.pointService.createRankingPointforGame(
-                rankingSystem,
-                game,
-                {
-                  createRankingPoints: true,
-                  transaction: this.transaction,
-                }
-              );
-            }
+          for (const game of games) {
+            await this.pointService.createRankingPointforGame(
+              rankingSystem,
+              game,
+              {
+                createRankingPoints: true,
+                transaction: this.transaction,
+              }
+            );
           }
 
           totalGames += games.length;
-          totalWithoutPoints += gamesWithoutPoints.length;
         }
       }
     }
     this.logger.debug(
-      `${totalGames} games found, ${totalWithoutPoints} without points`
+      `${totalGames} games found`
     );
   }
 }
