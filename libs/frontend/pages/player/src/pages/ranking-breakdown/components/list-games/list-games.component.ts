@@ -332,8 +332,8 @@ export class ListGamesComponent implements OnInit, OnDestroy {
           ? this.system.minNumberOfGamesUsedForUpgrade ?? 0
           : devideUpgrade;
 
-      const avgUpgrade = totalPoints / devideUpgradeCorrected;
-      const avgDowngrade = totalPoints / devideDowngrade;
+      const avgUpgrade = Math.ceil(totalPoints / devideUpgradeCorrected);
+      const avgDowngrade = Math.ceil(totalPoints / devideDowngrade);
 
       if (
         avgUpgrade >
