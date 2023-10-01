@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.110.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.0...v6.110.0-beta.1) (2023-10-01)
+
+
+### Features
+
+* always recalculate points (in case of changes) ([73a258e](https://github.com/Badminton-Apps/badman/commit/73a258eb1025812f2c51ebe8c18aae7398e543b7))
+* button to go directly to last update ([1d355d2](https://github.com/Badminton-Apps/badman/commit/1d355d2daf741dd2e999780538c0fca98c230fa5))
+* ceil to top ([fea40f6](https://github.com/Badminton-Apps/badman/commit/fea40f678b7fcdd86ef00b0948caa95b49bab1bc))
+* convert difference to decimal ([6ea069f](https://github.com/Badminton-Apps/badman/commit/6ea069fdeaf51891340e1d36d9226d44bd7aab1f))
+* don't show points if none are known ([d43c147](https://github.com/Badminton-Apps/badman/commit/d43c14796176aa80ea337203e890a88cb254387e))
+* downgrade calculated ([97021c3](https://github.com/Badminton-Apps/badman/commit/97021c38d14976df162d142ecd350d2c59fa5782))
+* export ranking ([529c1aa](https://github.com/Badminton-Apps/badman/commit/529c1aa3e315987a490e423c74b43fbe67995dfc))
+* keep showing the udpates ([bf86cfd](https://github.com/Badminton-Apps/badman/commit/bf86cfd2a669a132fe2a6b971dc735904e9196a9))
+* move the most used actions to the main menu ([9b3c460](https://github.com/Badminton-Apps/badman/commit/9b3c46031eb14dcd801ddddafb9543777d74be89))
+* removing of events ([2d45c4d](https://github.com/Badminton-Apps/badman/commit/2d45c4da76cd987d2d498ed4b0e13c7ced88bdff))
+* save end date in url ([f596833](https://github.com/Badminton-Apps/badman/commit/f596833a81e2c2afbed0d4d2c5c2b4af07c2e7b9))
+* shared excel functions ([e1d244d](https://github.com/Badminton-Apps/badman/commit/e1d244d7bf545570fc121bfe3a6b6f4c8c98801e))
+
+
+### Bug Fixes
+
+* also fetch games that just were dropped ([5589206](https://github.com/Badminton-Apps/badman/commit/55892066fe2b8eaac9c53f8f056b1f1d7013c3db))
+* close menu on selection ([6a4c022](https://github.com/Badminton-Apps/badman/commit/6a4c022b29e63bf532c59b243c781ef7c8f8d93d))
+
 ## [6.110.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.109.1...v6.110.0-beta.0) (2023-09-30)
 
 
