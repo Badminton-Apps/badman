@@ -40,9 +40,8 @@ import { MomentModule } from 'ngx-moment';
 })
 export class PeriodSelectionComponent {
   @Input() period!: FormGroup;
-
   @Input() system!: RankingSystem;
-  
+
   @ViewChild(MatMenuTrigger) trigger?: MatMenuTrigger;
 
   updates: Moment[] = [];
@@ -75,6 +74,10 @@ export class PeriodSelectionComponent {
     return '';
   };
 
+  lastUpdate() {
+    this.customPeriod(moment(this.system.caluclationIntervalLastUpdate));
+  }
+
   customPeriod(targetDate: Moment | null) {
     if (!targetDate) {
       return;
@@ -93,7 +96,10 @@ export class PeriodSelectionComponent {
 
     const nextPeriod = startPeriod
       .clone()
-      .add(this.system.caluclationIntervalAmount, this.system.calculationIntervalUnit);
+      .add(
+        this.system.caluclationIntervalAmount,
+        this.system.calculationIntervalUnit
+      );
 
     this.period?.patchValue({
       start: startPeriod,
