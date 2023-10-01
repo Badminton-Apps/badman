@@ -239,7 +239,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
         .get('gameType')
         ?.valueChanges.pipe(startWith(this.gameFilter.value.gameType)) ??
         of(null),
-      this.periodFilter.get('start')?.valueChanges ?? of(null),
+      this.periodFilter.get('game')?.valueChanges ?? of(null),
       this.periodFilter.get('end')?.valueChanges ?? of(null),
     ]).pipe(
       distinctUntilChanged(),
