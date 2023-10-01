@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -8,7 +8,7 @@ import {
 } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { RankingSystem } from '@badman/frontend-models';
@@ -42,6 +42,8 @@ export class PeriodSelectionComponent {
   @Input() period!: FormGroup;
 
   @Input() system!: RankingSystem;
+  
+  @ViewChild(MatMenuTrigger) trigger?: MatMenuTrigger;
 
   updates: Moment[] = [];
   minDateInUpdate?: Moment;
@@ -99,5 +101,7 @@ export class PeriodSelectionComponent {
       game: gamePeriod,
       next: nextPeriod,
     });
+
+    this.trigger?.closeMenu();
   }
 }
