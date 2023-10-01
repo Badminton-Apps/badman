@@ -4,7 +4,6 @@ import {
   Component,
   OnDestroy,
   PLATFORM_ID,
-  Signal,
   TransferState,
   computed,
   effect,
@@ -116,7 +115,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
   id = computed(() => this.routeParams()?.get('id'));
 
   // specific computed value so the effect only triggers when the end date changes
-  periodEndRoute = computed(() => this.routeParams()?.get('end'));
+  periodEndRoute = computed(() => this.queryParams()?.get('end'));
 
   // Destroy
   destroy$ = new Subject<void>();
@@ -302,6 +301,10 @@ export class RankingBreakdownPageComponent implements OnDestroy {
   }
 
   private _updateUrl() {
+    const systemLastUpdate = moment(
+      this.system()?.caluclationIntervalLastUpdate
+    );
+
     const queryParams: { [key: string]: string | boolean | null | undefined } =
       {
         includedIgnored: this.gameFilter.value.includedIgnored
@@ -316,6 +319,9 @@ export class RankingBreakdownPageComponent implements OnDestroy {
         includeOutOfScope: this.gameFilter.value.includeOutOfScope
           ? true
           : undefined,
+        end: systemLastUpdate.isSame(this.periodFilter.value.end, 'day')
+          ? null
+          : this.periodFilter.value.end?.format('YYYY-MM-DD'),
       };
 
     const url =
