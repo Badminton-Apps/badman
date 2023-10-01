@@ -22,7 +22,6 @@
       "one": "1 lost game",
       "other": "{count} lost games."
     },
-    "nextPeriod": "Next period",
     "no-tean": "No team",
     "noGames": "No Games",
     "notUsed": "Not used",
@@ -32,14 +31,22 @@
       "one": "One game",
       "other": "{count} games"
     },
-    "period": "Period",
+    "period": {
+      "next": "Next period",
+      "previous": "Previous period",
+      "title": "Period"
+    },
     "points": "Points",
     "pointsPerGame": "Points per game",
-    "prevPeriod": "Previous period",
     "removed-games": "Games of previous period that are removed",
     "team": "Team",
     "title": "Level breakdown",
     "untill": "Until",
+    "update": {
+      "last": "Latest update",
+      "point": "Points update",
+      "ranking": "Ranking update"
+    },
     "upgrade": "Upgrade",
     "usedForDowngrade": "Used for up- and downgrade",
     "usedForUpgrade": "Used for upgrade"

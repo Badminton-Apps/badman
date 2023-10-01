@@ -1,4 +1,4 @@
-<label>{{ 'all.breakdown.period' | translate }}</label>
+<label>{{ 'all.breakdown.period.title' | translate }}</label>
 <div class="items">
   <div class="period">
     {{ period.value.start | amDateFormat : 'DD MMM YYYY' }} -
@@ -20,8 +20,13 @@
       >
       </mat-calendar>
       <div class="period-selection-calender-hint">
-        <p class="point">Point update</p>
-        <p class="ranking">Ranking update</p>
+        <div class="info">
+          <p class="point">{{'all.breakdown.update.point' | translate}}</p>
+          <p class="ranking">{{'all.breakdown.update.ranking' | translate}}</p>
+        </div>
+        <div class="buttons">
+          <button mat-stroked-button (click)="lastUpdate()">{{'all.breakdown.update.last' | translate}}</button>
+        </div>
       </div>
     </div>
   </mat-menu>

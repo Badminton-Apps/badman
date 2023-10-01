@@ -26,7 +26,6 @@ export type I18nTranslations = {
                 "one": string;
                 "other": string;
             };
-            "nextPeriod": string;
             "no-tean": string;
             "noGames": string;
             "notUsed": string;
@@ -36,14 +35,22 @@ export type I18nTranslations = {
                 "one": string;
                 "other": string;
             };
-            "period": string;
+            "period": {
+                "next": string;
+                "previous": string;
+                "title": string;
+            };
             "points": string;
             "pointsPerGame": string;
-            "prevPeriod": string;
             "removed-games": string;
             "team": string;
             "title": string;
             "untill": string;
+            "update": {
+                "last": string;
+                "point": string;
+                "ranking": string;
+            };
             "upgrade": string;
             "usedForDowngrade": string;
             "usedForUpgrade": string;
