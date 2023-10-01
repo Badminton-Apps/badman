@@ -866,6 +866,10 @@ export type I18nTranslations = {
         };
         "tournament": {
             "away": string;
+            "delete": {
+                "description": string;
+                "title": string;
+            };
             "draw": {
                 "games": string;
                 "title": string;

@@ -38,7 +38,7 @@
     },
     "points": "Points",
     "pointsPerGame": "Points par match",
-    "removed-games": "Matchs de la période précédente qui ne comptent plus",
+    "removed-games": "Matchs de la période précédente qui ne comptent plus dans la prochaine mise à jour du classement",
     "team": "Équipe",
     "title": "Répartition des niveaux",
     "untill": "Tot",
@@ -862,6 +862,10 @@
   },
   "tournament": {
     "away": "",
+    "delete": {
+      "description": "Êtes-vous sûr de vouloir supprimer ce tournoi ?",
+      "title": "Supprimer le tournoi"
+    },
     "draw": {
       "games": "Correspondances",
       "title": "Piscine"

@@ -38,7 +38,7 @@
     },
     "points": "Punten",
     "pointsPerGame": "Punten per wedstrijd",
-    "removed-games": "Wedstrijden van vorige periode die niet meer meetellen",
+    "removed-games": "Wedstrijden van vorige periode die niet meer meetellen bij de volgende klassementen update",
     "team": "Team",
     "title": "Level breakdown",
     "untill": "tot",
@@ -862,6 +862,10 @@
   },
   "tournament": {
     "away": "",
+    "delete": {
+      "description": "Weet je zeker dat je dit toernooi wilt verwijderen?",
+      "title": "Verwijder toernooi"
+    },
     "draw": {
       "games": "Wedstrijden",
       "title": "Poule"

@@ -12408,6 +12408,49 @@
 								</translations>
 							</concept_node>
 							<folder_node>
+								<name>delete</name>
+								<children>
+									<concept_node>
+										<name>description</name>
+										<description/>
+										<comment/>
+										<translations>
+											<translation>
+												<language>en-US</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>fr-BE</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>nl-BE</language>
+												<approved>false</approved>
+											</translation>
+										</translations>
+									</concept_node>
+									<concept_node>
+										<name>title</name>
+										<description/>
+										<comment/>
+										<translations>
+											<translation>
+												<language>en-US</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>fr-BE</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>nl-BE</language>
+												<approved>false</approved>
+											</translation>
+										</translations>
+									</concept_node>
+								</children>
+							</folder_node>
+							<folder_node>
 								<name>draw</name>
 								<children>
 									<concept_node>
