@@ -357,11 +357,13 @@ export class ListGamesComponent
 
     // return the highest points
     return {
-      points: rankingPoint?.points ?? 0,
+      points: rankingPoint?.points,
       tooltip,
       upgrade: result === GameBreakdownType.LOST_UPGRADE,
       downgrade: result === GameBreakdownType.LOST_DOWNGRADE,
-      show: result !== GameBreakdownType.LOST_IGNORED,
+      show:
+        result !== GameBreakdownType.LOST_IGNORED &&
+        (rankingPoint?.points ?? -1) >= 0,
     };
   }
 
