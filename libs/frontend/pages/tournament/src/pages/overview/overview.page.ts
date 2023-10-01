@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, TransferState, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -22,6 +30,8 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import {
   AddEventComponent,
+  ConfirmDialogComponent,
+  ConfirmDialogModel,
   HasClaimComponent,
   OpenCloseDateDialogComponent,
 } from '@badman/frontend-components';
@@ -34,6 +44,29 @@ import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { BehaviorSubject, lastValueFrom, merge } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
+
+const FETCH_TOURNAMENTS = gql`
+  query GetEventsTournament(
+    $where: JSONObject
+    $order: [SortOrderType!]
+    $skip: Int
+    $take: Int
+  ) {
+    eventTournaments(where: $where, order: $order, skip: $skip, take: $take) {
+      count
+      rows {
+        id
+        name
+        slug
+        firstDay
+        openDate
+        closeDate
+        visualCode
+        official
+      }
+    }
+  }
+`;
 
 @Component({
   selector: 'badman-tournament-overview',
@@ -165,37 +198,18 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       .query<{
         eventTournaments: { rows: Partial<EventTournament>[]; count: number };
       }>({
-        query: gql`
-          query GetEventsTournament(
-            $where: JSONObject
-            $order: [SortOrderType!]
-            $skip: Int
-            $take: Int
-          ) {
-            eventTournaments(
-              where: $where
-              order: $order
-              skip: $skip
-              take: $take
-            ) {
-              count
-              rows {
-                id
-                name
-                slug
-                firstDay
-                openDate
-                closeDate
-                visualCode
-                official
-              }
-            }
-          }
-        `,
+        query: FETCH_TOURNAMENTS,
         variables: {
           where: {
             official: filter?.official == true ? true : undefined,
-            name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
+            $or: [
+              {
+                name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
+              },
+              {
+                visualCode: filter?.name,
+              },
+            ],
           },
           order: [
             {
@@ -209,7 +223,9 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       })
       .pipe(
         transferState(
-          `tournaments-${aort}-${direction}-${page}-${filter?.name}-${filter?.official}`, this.stateTransfer, this.platformId
+          `tournaments-${aort}-${direction}-${page}-${filter?.name}-${filter?.official}`,
+          this.stateTransfer,
+          this.platformId
         ),
         map((result) => {
           if (!result?.data.eventTournaments) {
@@ -328,6 +344,73 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
             );
           });
       }
+    });
+  }
+
+  removeEvent(tournament: EventTournament) {
+    const dialogData = new ConfirmDialogModel(
+      'all.tournament.delete.title',
+      'all.tournament.delete.description'
+    );
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: dialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((dialogResult) => {
+      if (!dialogResult) {
+        return;
+      }
+
+      this.apollo
+        .mutate({
+          mutation: gql`
+            mutation RemoveTournament($id: ID!) {
+              removeEventTournament(id: $id)
+            }
+          `,
+          variables: {
+            id: tournament.id,
+          },
+          refetchQueries: () => [
+            {
+              query: FETCH_TOURNAMENTS,
+              variables: {
+                where: {
+                  official:
+                    this.filter.value?.official == true ? true : undefined,
+                  $or: [
+                    {
+                      name: this.filter.value?.name
+                        ? { $iLike: `%${this.filter.value.name}%` }
+                        : undefined,
+                    },
+                    {
+                      visualCode: this.filter.value?.name,
+                    },
+                  ],
+                },
+                order: [
+                  {
+                    direction: this.sort.direction || 'desc',
+                    field: this.sort.active || 'firstDay',
+                  },
+                ],
+                take: this.paginator.pageSize,
+                skip: this.paginator.pageIndex * this.paginator.pageSize,
+              },
+            },
+          ],
+        })
+        .subscribe(() => {
+          this.matSnackBar.open('Deleted', undefined, {
+            duration: 1000,
+            panelClass: 'success',
+          });
+
+          // this.update$.next(true);
+        });
     });
   }
 }

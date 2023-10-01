@@ -38,7 +38,7 @@
     },
     "points": "Points",
     "pointsPerGame": "Points per game",
-    "removed-games": "Games of previous period that are removed",
+    "removed-games": "Matches from the previous period that no longer count in the next rankings update",
     "team": "Team",
     "title": "Level breakdown",
     "untill": "Until",
@@ -862,6 +862,10 @@
   },
   "tournament": {
     "away": "Away",
+    "delete": {
+      "description": "Are you sure you want to delete this tournament?",
+      "title": "Delete Tournament"
+    },
     "draw": {
       "games": "Games",
       "title": "Draw"

@@ -58,10 +58,10 @@
         </badman-has-claim>
 
         <badman-has-claim [any]="['delete-any:tournament']">
-          <button mat-menu-item>
+          <button mat-menu-item (click)="this.removeEvent()">
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
-          </button>
+          </button> 
         </badman-has-claim>
       </mat-menu>
     </badman-has-claim>
