@@ -7,14 +7,16 @@ import {
   Player,
   RankingGroup,
   RankingLastPlace,
+  RankingPoint,
   RankingSystem,
   SubEventCompetition,
   SubEventTournament,
 } from '@badman/backend-database';
 import {
   ClubMembershipType,
+  GameBreakdownType,
   GameType,
-  getCurrentSeasonPeriod,
+  getGameResultType,
 } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
@@ -32,13 +34,13 @@ export class ExportBBFPlayers {
     Club?: string;
     'Single Ranking': number;
     'Single Upgrade'?: number;
-    // 'Single Downgrade'?: number;
+    'Single Downgrade'?: number;
     'Double Ranking': number;
     'Double upgrade'?: number;
-    // 'Double downgrade'?: number;
+    'Double downgrade'?: number;
     'Mix ranking': number;
     'Mix upgrade'?: number;
-    // 'Mix downgrade'?: number;
+    'Mix downgrade'?: number;
     'Single # Competition': number;
     'Single # Tournaments': number;
     'Single # Total': number;
@@ -88,23 +90,23 @@ export class ExportBBFPlayers {
 
         const singleComp = compGamesPlayer.filter(
           (g) => g.gameType === GameType.S
-        ).length;
+        );
         const doubleComp = compGamesPlayer.filter(
           (g) => g.gameType === GameType.D
-        ).length;
+        );
         const mixComp = compGamesPlayer.filter(
           (g) => g.gameType === GameType.MX
-        ).length;
+        );
 
         const singleTournament = tournamentGamesPlayer.filter(
           (g) => g.gameType === GameType.S
-        ).length;
+        );
         const doubleTournament = tournamentGamesPlayer.filter(
           (g) => g.gameType === GameType.D
-        ).length;
+        );
         const mixTournament = tournamentGamesPlayer.filter(
           (g) => g.gameType === GameType.MX
-        ).length;
+        );
 
         this.output.push({
           'First Name': player.firstName,
@@ -112,23 +114,32 @@ export class ExportBBFPlayers {
           'Member id': player.memberId,
           Club: player.clubs?.[0]?.name,
           'Single Ranking': lastRanking?.single ?? system.amountOfLevels,
-          // 'Single Downgrade': lastRanking?.singlePointsDowngrade,
+          'Single Downgrade': this.getDowngradeAverage(
+            [...singleComp, ...singleTournament],
+            player
+          ),
           'Single Upgrade': lastRanking?.singlePoints,
           'Double Ranking': lastRanking?.double ?? system.amountOfLevels,
           'Double upgrade': lastRanking?.doublePoints,
-          // 'Double downgrade': lastRanking?.doublePointsDowngrade,
+          'Double downgrade': this.getDowngradeAverage(
+            [...doubleComp, ...doubleTournament],
+            player
+          ),
           'Mix ranking': lastRanking?.mix ?? system.amountOfLevels,
           'Mix upgrade': lastRanking?.mixPoints,
-          // 'Mix downgrade': lastRanking?.mixPointsDowngrade,
-          'Single # Competition': singleComp,
-          'Single # Tournaments': singleTournament,
-          'Single # Total': singleComp + singleTournament,
-          'Double # Competition': doubleComp,
-          'Double # Tournament': doubleTournament,
-          'Double # Total': doubleComp + doubleTournament,
-          'Mix # Competition': mixComp,
-          'Mix # Tournament': mixTournament,
-          'Mix # Total': mixComp + mixTournament,
+          'Mix downgrade': this.getDowngradeAverage(
+            [...mixComp, ...mixTournament],
+            player
+          ),
+          'Single # Competition': singleComp.length,
+          'Single # Tournaments': singleTournament.length,
+          'Single # Total': singleComp.length + singleTournament.length,
+          'Double # Competition': doubleComp.length,
+          'Double # Tournament': doubleTournament.length,
+          'Double # Total': doubleComp.length + doubleTournament.length,
+          'Mix # Competition': mixComp.length,
+          'Mix # Tournament': mixTournament.length,
+          'Mix # Total': mixComp.length + mixTournament.length,
         });
       }
 
@@ -172,17 +183,17 @@ export class ExportBBFPlayers {
         c.memberid != '' &&
         c.memberid != undefined &&
         (onlyComp ? c.TypeName == 'Competitiespeler' : true)
-    );
+    ); // ?.slice(0, 10)
 
     const players = await Player.findAll({
       attributes: ['id', 'firstName', 'lastName', 'memberId'],
       where: {
         [Op.or]: [
           { memberId: playersJson?.map((c) => c.memberid) },
-          {
-            // always include me for debugging
-            slug: 'glenn-latomme',
-          },
+          // {
+          //   // always include me for debugging
+          //   slug: ['glenn-latomme', 'ruben-windey', 'jeroen-casier'],
+          // },
         ],
       },
       include: [
@@ -232,8 +243,20 @@ export class ExportBBFPlayers {
       validSubEventsTournament.push(...(await group.getSubEventTournaments()));
     }
 
+    const sharedInclude = [
+      {
+        model: Player,
+        where: {
+          id: players.map((p) => p.id),
+        },
+      },
+      {
+        model: RankingPoint,
+      },
+    ];
+
     const competitionGames = await Game.findAll({
-      attributes: ['id', 'gameType'],
+      attributes: ['id', 'gameType', 'winner'],
       where: {
         playedAt: {
           [Op.between]: [start, stop],
@@ -241,12 +264,7 @@ export class ExportBBFPlayers {
         linkType: 'competition',
       },
       include: [
-        {
-          model: Player,
-          where: {
-            id: players.map((p) => p.id),
-          },
-        },
+        ...sharedInclude,
         {
           model: EncounterCompetition,
           attributes: ['id'],
@@ -273,7 +291,7 @@ export class ExportBBFPlayers {
     });
 
     const tournamentGames = await Game.findAll({
-      attributes: ['id', 'gameType'],
+      attributes: ['id', 'gameType', 'winner'],
       where: {
         playedAt: {
           [Op.between]: [start, stop],
@@ -281,12 +299,7 @@ export class ExportBBFPlayers {
         linkType: 'tournament',
       },
       include: [
-        {
-          model: Player,
-          where: {
-            id: players.map((p) => p.id),
-          },
-        },
+        ...sharedInclude,
         {
           model: DrawTournament,
           attributes: ['id'],
@@ -306,5 +319,65 @@ export class ExportBBFPlayers {
     });
 
     return [competitionGames, tournamentGames];
+  }
+
+  getDowngradeAverage(games: Game[], player: Player, system?: RankingSystem) {
+    let lostGames = 0;
+    let points: number[] = [];
+    let index = 0;
+
+    for (const game of games) {
+      const playerTeam = game.players?.find(
+        (r) => r.GamePlayerMembership.playerId === player.id
+      )?.GamePlayerMembership.team;
+      const rankingPoint = game.rankingPoints?.find(
+        (x) => x.playerId == player.id
+      );
+      if (!rankingPoint) {
+        continue;
+      }
+
+      rankingPoint.system = system;
+
+      const gameResult = getGameResultType(
+        game.winner == playerTeam,
+        rankingPoint
+      );
+
+      if (gameResult == GameBreakdownType.LOST_DOWNGRADE) {
+        lostGames++;
+      } else if (gameResult == GameBreakdownType.WON) {
+        points.push(rankingPoint?.points ?? 0);
+      }
+    }
+
+    // sort points high to low
+    points = points.sort((a, b) => b - a);
+
+    for (let i = 1; i < points.length; i++) {
+      // start from the highest points amount and add one point at a time
+      const usedPoints = points.slice(0, i);
+
+      // sum points used for this iteration
+      const sum = usedPoints.reduce((a, b) => a + b, 0);
+
+      // Count the games
+      let usedGames = lostGames + usedPoints.length;
+
+      // if usedGames is less then 7 use 7
+      if (usedGames < 7) {
+        usedGames = 7;
+      }
+
+      const newIndex = sum / usedGames;
+
+      if (newIndex < index) {
+        return Math.ceil(index);
+      }
+
+      index = newIndex;
+    }
+
+    return Math.ceil(index);
   }
 }
