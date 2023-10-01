@@ -109,7 +109,6 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         continue;
       }
 
-      
       if (!xmlMatch.Sets) {
         xmlMatch.Sets = { Set: [] };
       }
@@ -220,15 +219,14 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         }
       }
 
-      await game.save({ transaction: this.transaction });
-      await GamePlayerMembership.destroy({
-        where: { gameId: game.id },
-        transaction: this.transaction,
-      });
+      if (game.changed()) {
+        await game.save({ transaction: this.transaction });
+      }
+      
       const memberships = await this._createGamePlayers(xmlMatch, game);
       await GamePlayerMembership.bulkCreate(memberships, {
         transaction: this.transaction,
-        ignoreDuplicates: true,
+        updateOnDuplicate: ['single', 'double', 'mix'],
       });
     }
 
@@ -281,7 +279,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       gamePlayers.push(gp.toJSON());
 
       // Push to list
-      game.players.push({
+      game.players.push({ 
         ...t1p1.toJSON(),
         GamePlayerMembership: gp,
       } as Player & { GamePlayerMembership: GamePlayerMembership });
@@ -328,7 +326,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
-        transaction: this.transaction,
+        transaction: this.transaction, 
       });
 
       const gp = new GamePlayerMembership({
@@ -361,7 +359,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         limit: 1,
         transaction: this.transaction,
       });
-
+ 
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p2.id,
