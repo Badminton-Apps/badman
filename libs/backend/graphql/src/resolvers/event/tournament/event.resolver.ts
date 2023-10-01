@@ -89,7 +89,7 @@ export class EventTournamentResolver {
     @User() user: Player,
     @Args('data') updateEventTournamentData: EventTournamentUpdateInput
   ): Promise<EventTournament> {
-    if (!await user.hasAnyPermission([`edit:tournament`])) {
+    if (!(await user.hasAnyPermission([`edit-any:tournament`]))) {
       throw new UnauthorizedException(
         `You do not have permission to add a tournament`
       );
@@ -186,10 +186,67 @@ export class EventTournamentResolver {
   //   return recipe;
   // }
 
-  // @Mutation(returns => Boolean)
-  // async removeEventTournament(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
+  @Mutation(() => Boolean)
+  async removeEventTournament(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string
+  ) {
+    if (!(await user.hasAnyPermission([`delete-any:tournament`]))) {
+      throw new UnauthorizedException(
+        `You do not have permission to detele a tournament`
+      );
+    }
+
+    const eventTournament = await EventTournament.findByPk(id);
+    if (!eventTournament) {
+      throw new NotFoundException(`${EventTournament.name}: ${id}`);
+    }
+
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      const subEvents = await eventTournament.getSubEventTournaments({
+        transaction,
+      });
+
+      for (const subEvent of subEvents) {
+        const draws = await subEvent.getDrawTournaments({
+          transaction,
+        });
+
+        for (const draw of draws) {
+          const games = await draw.getGames({
+            transaction,
+          });
+
+          for (const game of games) {
+            await game.destroy({
+              transaction,
+            });
+          }
+
+          await draw.destroy({
+            transaction,
+          });
+        }
+
+        await subEvent.destroy({
+          transaction,
+        });
+      }
+
+      await eventTournament.destroy({
+        transaction,
+      });
+
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
+  }
 
   async addGamePointsForSubEvents(
     group: RankingGroup,
