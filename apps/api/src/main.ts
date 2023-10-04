@@ -26,7 +26,7 @@ async function bootstrap() {
       bufferLogs: true,
     }
   );
-
+  app.setGlobalPrefix('api');
   app.register(fmp as any);
 
   const configService = app.get<ConfigService>(ConfigService);
