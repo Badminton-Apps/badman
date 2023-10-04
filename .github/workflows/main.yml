@@ -51,7 +51,7 @@ jobs:
 
   main:
     name: Nx Cloud - Main Job
-    uses: ./.github/workflow-templates/nx-cloud-main.yml
+    uses: ./.github/workflows/templates/nx-cloud-main.yml
     if: ${{ !cancelled() }}
     needs: [merge-dev-into-main]
     secrets:
@@ -73,7 +73,7 @@ jobs:
     name: Nx Cloud - Agents
     if: ${{ !cancelled() }}
     needs: [merge-dev-into-main]
-    uses: ./.github/workflow-templates/nx-cloud-agents.yml
+    uses: ./.github/workflows/templates/nx-cloud-agents.yml
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
@@ -204,6 +204,6 @@ jobs:
     name: E2E Tests
     needs: [release, main]
     if: ${{ inputs.e2e-tests }}
-    uses: ./.github/workflow-templates/playwright.yml
+    uses: ./.github/workflows/templates/playwright.yml
     with:
       node-version: ${{ env.NODE_ENV }}
