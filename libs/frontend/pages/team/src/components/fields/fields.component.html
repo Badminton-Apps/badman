@@ -25,7 +25,9 @@
         </mat-form-field>
 
         <mat-form-field>
-          <mat-label>{{ 'all.club.number' | translate }}</mat-label>
+          <mat-label>{{
+            'all.team.change-number.number' | translate
+          }}</mat-label>
           <mat-select formControlName="teamNumber">
             <mat-option *ngFor="let tn of this.options" [value]="tn">{{
               tn
@@ -86,7 +88,7 @@
   <div class="prefferd">
     <mat-form-field class="day">
       <mat-label>{{ 'all.input.day' | translate }}</mat-label>
-      <mat-select [required]="true" formControlName="preferredDay">
+      <mat-select formControlName="preferredDay">
         <mat-option value="monday">{{
           'all.days.monday' | translate
         }}</mat-option>
@@ -112,12 +114,7 @@
     </mat-form-field>
     <mat-form-field class="time">
       <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
-      <input
-        [required]="true"
-        matInput
-        type="time"
-        formControlName="preferredTime"
-      />
+      <input matInput type="time" formControlName="preferredTime" />
     </mat-form-field>
   </div>
 </form>

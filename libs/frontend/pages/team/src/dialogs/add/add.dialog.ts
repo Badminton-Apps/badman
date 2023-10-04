@@ -1,19 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
+  MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef,
-  MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { TranslateModule } from '@ngx-translate/core';
-import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
-import { Player, Team, TeamPlayer } from '@badman/frontend-models';
-import { SubEventType, TeamMembershipType, getCurrentSeason } from '@badman/utils';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Team, TeamPlayer } from '@badman/frontend-models';
+import { SubEventType, getCurrentSeason } from '@badman/utils';
+import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { switchMap } from 'rxjs';
+import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
 
 @Component({
   templateUrl: './add.dialog.html',
@@ -58,6 +57,9 @@ export class AddDialogComponent {
         clubId: this.fb.control(this.data.team?.clubId),
         season: this.fb.control(this.data.team?.season ?? getCurrentSeason()),
         players: this.fb.array([]),
+
+        preferredDay: this.fb.control(this.data.team?.preferredDay),
+        preferredTime: this.fb.control(this.data.team?.preferredTime),
       });
     }
   }
@@ -65,14 +67,12 @@ export class AddDialogComponent {
   async submit() {
     const data = this.group?.value;
 
-    const players = data.players.map(
-      (player: Partial<TeamPlayer>) => {
-        return {
-          id: player.id,
-          membershipType: player.membershipType,
-        };
-      }
-    );
+    const players = data.players.map((player: Partial<TeamPlayer>) => {
+      return {
+        id: player.id,
+        membershipType: player.membershipType,
+      };
+    });
 
     this.apollo
       .mutate<{ createTeam: Partial<Team> }>({
@@ -93,7 +93,7 @@ export class AddDialogComponent {
             season: data.season,
             phone: data.phone,
             email: data.email,
-            players
+            players,
           },
         },
         refetchQueries: () => ['Team', 'Teams'],
