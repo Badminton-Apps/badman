@@ -10,6 +10,12 @@ on:
         required: true
         default: false
         type: boolean
+      # main branch name
+      e2e-tests:
+        description: 'Do e2e tests'
+        required: true
+        default: true
+        type: boolean
 
 env:
   NODE_ENV: '20.1'
@@ -45,7 +51,7 @@ jobs:
 
   main:
     name: Nx Cloud - Main Job
-    uses: ./.github/workflows/nx-cloud-main.yml
+    uses: ./.github/workflow-templates/nx-cloud-main.yml
     if: ${{ !cancelled() }}
     needs: [merge-dev-into-main]
     secrets:
@@ -67,7 +73,7 @@ jobs:
     name: Nx Cloud - Agents
     if: ${{ !cancelled() }}
     needs: [merge-dev-into-main]
-    uses: ./.github/workflows/nx-cloud-agents.yml
+    uses: ./.github/workflow-templates/nx-cloud-agents.yml
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
@@ -178,7 +184,7 @@ jobs:
           git merge --no-ff origin/main -m "chore(release): v${{ needs.release.outputs.NEW_VERSION }}"
           # git merge --no-ff main -m "Merging main into develop"
           git push
-          
+
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
           # read the affected projects from the main job
@@ -193,3 +199,9 @@ jobs:
           if [[ $affectedProjects == *"worker-sync"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_SYNC_HOOK }}
           fi
+
+  e2e:
+    name: E2E Tests
+    needs: [release, main]
+    if: ${{ inputs.e2e-tests }}
+    uses: ./.github/workflow-templates/playwright.yml
