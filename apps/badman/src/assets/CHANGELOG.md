@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.110.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.8...v6.110.0-beta.9) (2023-10-04)
+
+
+### Features
+
+* using slug in list-games ([3d3d3a7](https://github.com/Badminton-Apps/badman/commit/3d3d3a7009bc9b482389a01dd247554a974a622d))
+
 ## [6.110.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.7...v6.110.0-beta.8) (2023-10-04)
 
 
