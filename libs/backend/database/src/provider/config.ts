@@ -48,7 +48,6 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
         storage: this.configService.get('DB_STORAGE') ?? 'database.sqlite',
       };
     }
-
     // log the options when in development
 
     if (process.env.NODE_ENV === 'development') {

@@ -15,9 +15,22 @@ import { SearchModule } from '@badman/backend-search';
 import { TranslateModule } from '@badman/backend-translate';
 import { TwizzitModule } from '@badman/backend-twizzit';
 import versionPackage from '../version.json';
-import { EventsModule } from './events';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
+const productionModules = process.env.NODE_ENV
+  ? [
+      ServeStaticModule.forRoot({
+        serveRoot: '/client',
+        rootPath: join(__dirname, '..', 'badman'),
+        exclude: ['/api*'],
+      }),
+    ]
+  : [];
+
 @Module({
   imports: [
+    ...productionModules,
     ConfigModule.forRoot(),
     AuthorizationModule,
     GrapqhlModule,
@@ -34,7 +47,6 @@ import { EventsModule } from './events';
     GeneratorModule,
     SearchModule,
     QueueModule,
-    EventsModule,
     HealthModule,
     TranslateModule,
   ],

@@ -39,6 +39,10 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
-    env: {},
+    env: {
+      DB_STORAGE: ':memory:',
+      DB_DIALECT: 'sqlite',
+      NODE_ENV: 'test',
+    },
   },
 });

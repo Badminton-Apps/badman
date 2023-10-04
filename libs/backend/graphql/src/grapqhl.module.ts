@@ -40,7 +40,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
           plugins.push(
             ApolloServerPluginLandingPageLocalDefault({ footer: false })
           );
-        } else {
+        } else if (process.env.NODE_ENV === 'production') {
           plugins.push(
             ApolloServerPluginLandingPageProductionDefault({
               graphRef: config.get<string>('APOLLO_GRAPH_REF'),
