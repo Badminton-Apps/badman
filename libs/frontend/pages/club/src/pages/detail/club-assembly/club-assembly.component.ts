@@ -95,7 +95,7 @@ export class ClubAssemblyComponent implements OnInit {
 
   columns: string[] = [];
   // Inputs
-  @Input({ required: true }) clubId?: string;
+  @Input({ required: true }) club?: Signal<Club>;
   @Input() filter?: FormGroup;
 
   canPlay = CanPlay;
@@ -107,96 +107,104 @@ export class ClubAssemblyComponent implements OnInit {
       });
     }
 
-    this.teams = toSignal(
-      this.filter?.valueChanges?.pipe(
-        tap(() => {
-          this.loading.set(true);
-        }),
-        startWith(this.filter.value ?? {}),
-        switchMap((filter) => {
-          return this.apollo.watchQuery<{ teams: Partial<Team>[] }>({
-            query: gql`
-              query Teams($order: [SortOrderType!], $teamsWhere: JSONObject) {
-                teams(order: $order, where: $teamsWhere) {
-                  id
-                  name
-                  slug
-                  teamNumber
-                  season
-                  captainId
-                  type
-                  clubId
-                  email
-                  phone
-                  preferredDay
-                  preferredTime
-                  type
-                  entry {
-                    id
-                    date
-                    meta {
-                      competition {
-                        players {
+    effect(
+      () => {
+        this.teams = toSignal(
+          this.filter?.valueChanges?.pipe(
+            tap(() => {
+              this.loading.set(true);
+            }),
+            startWith(this.filter.value ?? {}),
+            switchMap((filter) => {
+              return this.apollo.watchQuery<{ teams: Partial<Team>[] }>({
+                query: gql`
+                  query Teams(
+                    $order: [SortOrderType!]
+                    $teamsWhere: JSONObject
+                  ) {
+                    teams(order: $order, where: $teamsWhere) {
+                      id
+                      name
+                      slug
+                      teamNumber
+                      season
+                      captainId
+                      type
+                      clubId
+                      email
+                      phone
+                      preferredDay
+                      preferredTime
+                      type
+                      entry {
+                        id
+                        date
+                        meta {
+                          competition {
+                            players {
+                              id
+                              single
+                              double
+                              mix
+                              gender
+                            }
+                          }
+                        }
+                        subEventCompetition {
                           id
-                          single
-                          double
-                          mix
-                          gender
+                          name
+                          maxLevel
+                          eventCompetition {
+                            id
+                            usedRankingUnit
+                            usedRankingAmount
+                            season
+                          }
                         }
                       }
                     }
-                    subEventCompetition {
-                      id
-                      name
-                      maxLevel
-                      eventCompetition {
-                        id
-                        usedRankingUnit
-                        usedRankingAmount
-                        season
-                      }
-                    }
                   }
-                }
+                `,
+                variables: {
+                  teamsWhere: {
+                    clubId: this.club?.()?.id,
+                    season: filter?.season,
+                    type: filter?.choices,
+                  },
+                  order: [
+                    {
+                      field: 'type',
+                      direction: 'desc',
+                    },
+                    {
+                      field: 'teamNumber',
+                      direction: 'asc',
+                    },
+                  ],
+                },
+              }).valueChanges;
+            }),
+            transferState(
+              `clubTeamsKey-${this.club?.()?.id}`,
+              this.stateTransfer,
+              this.platformId
+            ),
+            map((result) => {
+              if (!result?.data.teams) {
+                throw new Error('No club');
               }
-            `,
-            variables: {
-              teamsWhere: {
-                clubId: this.clubId,
-                season: filter?.season,
-                type: filter?.choices,
-              },
-              order: [
-                {
-                  field: 'type',
-                  direction: 'desc',
-                },
-                {
-                  field: 'teamNumber',
-                  direction: 'asc',
-                },
-              ],
-            },
-          }).valueChanges;
-        }),
-        transferState(
-          `clubTeamsKey-${this.clubId}`,
-          this.stateTransfer,
-          this.platformId
-        ),
-        map((result) => {
-          if (!result?.data.teams) {
-            throw new Error('No club');
-          }
-          return result.data.teams?.map((team) => new Team(team));
-        }),
-        tap((teams) => {
-          this.columns = [
-            'player',
-            ...(teams?.map((team) => team.name ?? 'empty') ?? []),
-          ];
-        })
-      ) ?? of([]),
+              return result.data.teams?.map((team) => new Team(team));
+            }),
+            tap((teams) => {
+              this.columns = [
+                'player',
+                ...(teams?.map((team) => team.name ?? 'empty') ?? []),
+              ];
+            })
+          ) ?? of([]),
+          { injector: this.injector }
+        );
+      },
       { injector: this.injector }
     );
 
@@ -279,7 +287,7 @@ export class ClubAssemblyComponent implements OnInit {
                     }
                   `,
                   variables: {
-                    clubId: this.clubId,
+                    clubId: this.club?.()?.id,
                     playersWhere: {
                       competitionPlayer: true,
                     },
@@ -312,7 +320,7 @@ export class ClubAssemblyComponent implements OnInit {
                 }).valueChanges;
               }),
               transferState(
-                `clubPlayerTeamsKey-${this.clubId}`,
+                `clubPlayerTeamsKey-${this.club?.()?.id}`,
                 this.stateTransfer,
                 this.platformId
               ),

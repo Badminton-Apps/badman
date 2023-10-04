@@ -8,7 +8,6 @@ import {
   PLATFORM_ID,
   Signal,
   computed,
-  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -36,27 +35,20 @@ import {
   SelectSeasonComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
+import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { Club, EventCompetition, Player } from '@badman/frontend-models';
 import { TwizzitService } from '@badman/frontend-twizzit';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Subject, lastValueFrom, of } from 'rxjs';
-import {
-  filter,
-  map,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-} from 'rxjs/operators';
+import { filter, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
 import { ClubCompetitionComponent } from './club-competition/club-competition.component';
+import { ClubEncountersComponent } from './club-encounters/club-encounters.component';
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
-import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
-import { ClubEncountersComponent } from './club-encounters/club-encounters.component';
-import { VERSION_INFO } from '@badman/frontend-html-injects';
 
 @Component({
   selector: 'badman-club-detail',
@@ -121,6 +113,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   routeData = toSignal(this.route.data);
 
   club = computed(() => this.routeData()?.['club'] as Club);
+  clubId = computed(() => this.club()?.id) as Signal<string>;
   currentTab = signal(this.queryParams()?.get('tab') ?? 0);
 
   filter!: FormGroup;
