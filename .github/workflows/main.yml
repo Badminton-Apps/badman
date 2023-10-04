@@ -83,7 +83,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release
-    needs: [main, agents]
+    needs: [e2e, agents]
     if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
 
     # output new version
@@ -202,7 +202,7 @@ jobs:
 
   e2e:
     name: E2E Tests
-    needs: [release, main]
+    needs: [main]
     if: ${{ inputs.e2e-tests }}
     uses: ./.github/workflows/playwright.yml
     
