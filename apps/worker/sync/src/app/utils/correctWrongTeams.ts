@@ -9,6 +9,8 @@ const replacers = [
   ['De Voskes BC', 'BC De Voskes'],
   ['RBC VERVIERS', 'ROYAL BADMINTON CLUB VERVIERS'],
   ['BC GRACE', 'BC Grâce 1'],
+  ['De Koekjes', 'Test 2G'],
+  ['Apparatuur', 'Test 1G']
 ];
 
 export const correctWrongTeams = (team: { 
