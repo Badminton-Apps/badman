@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'production') {
   productionModules.push(
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'badman'),
-      exclude: ['/api*'],
+      exclude: ['api/*', '/graphql'],
     })
   );
 }
