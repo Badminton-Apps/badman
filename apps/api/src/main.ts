@@ -12,7 +12,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 
-import { AppModule, RedisIoAdapter } from './app';
+import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
 
@@ -31,18 +31,6 @@ async function bootstrap() {
 
   const configService = app.get<ConfigService>(ConfigService);
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
-  const redisHost = configService.get('REDIS_HOST');
-  if (redisHost) {
-    const redisPass = configService.get('REDIS_PASSWORD');
-    let redisUrl = redisPass ? `redis://:${redisPass}@` : 'redis://';
-    redisUrl += `${redisHost}:${configService.get('REDIS_PORT')}`;
-
-    const redisIoAdapter = new RedisIoAdapter(app);
-
-    await redisIoAdapter.connectToRedis(redisUrl);
-
-    app.useWebSocketAdapter(redisIoAdapter);
-  }
 
   app.enableCors({
     origin: function (origin, callback) {
