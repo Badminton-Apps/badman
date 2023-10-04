@@ -203,5 +203,5 @@ jobs:
   e2e:
     name: E2E Tests
     needs: [agents, main]
-    if: ${{ inputs.e2e-tests == 'true' }}
+    if: ${{ inputs.e2e-tests }}
     uses: ./.github/workflows/playwright.yml
