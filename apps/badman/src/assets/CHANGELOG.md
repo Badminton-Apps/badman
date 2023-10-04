@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.110.0-beta.10](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.9...v6.110.0-beta.10) (2023-10-04)
+
+
+### Bug Fixes
+
+* loading tab via queryParam signal ([085c68d](https://github.com/Badminton-Apps/badman/commit/085c68db1635c6fe11cdcc2c69d6e404c9cd7f47))
+* pushing changing club to components ([ff6d7bd](https://github.com/Badminton-Apps/badman/commit/ff6d7bd38c6f9808de1d70299edcbb3bac678a2a))
+
 ## [6.110.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.8...v6.110.0-beta.9) (2023-10-04)
 
 
