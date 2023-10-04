@@ -206,4 +206,4 @@ jobs:
     if: ${{ inputs.e2e-tests }}
     uses: ./.github/workflows/playwright.yml
     with:
-      node-version: ${{ env.NODE_ENV }}
+      node-version: ${{env.NODE_ENV}}
