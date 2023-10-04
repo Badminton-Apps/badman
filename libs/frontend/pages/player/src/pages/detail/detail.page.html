@@ -104,7 +104,7 @@
     <ng-container *ngIf="(teams$ | async) ?? [] as teams">
       <badman-upcoming-games
         *ngIf="teams.length>0"
-        [clubid]="club()?.id"
+        [clubId]="club()?.id"
         [teams]="teams"
       ></badman-upcoming-games>
     </ng-container>

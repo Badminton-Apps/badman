@@ -29,7 +29,7 @@ export class UserShortcutsComponent implements OnInit {
   user$?: Observable<LoggedinUser>;
 
   expanded = {
-    club: false,
+    club: true,
   };
 
   constructor(private authenticateService: AuthenticateService) {}
