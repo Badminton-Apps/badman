@@ -18,15 +18,16 @@ import versionPackage from '../version.json';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
-const productionModules = process.env.NODE_ENV
-  ? [
-      ServeStaticModule.forRoot({
-        serveRoot: '/client',
-        rootPath: join(__dirname, '..', 'badman'),
-        exclude: ['/api*'],
-      }),
-    ]
-  : [];
+const productionModules =
+  process.env.NODE_ENV === 'production'
+    ? [
+        ServeStaticModule.forRoot({
+          serveRoot: '/client',
+          rootPath: join(__dirname, '..', 'badman'),
+          exclude: ['/api*'],
+        }),
+      ]
+    : [];
 
 @Module({
   imports: [
