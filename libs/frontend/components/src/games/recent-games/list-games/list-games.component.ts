@@ -203,6 +203,7 @@ export class ListGamesComponent
                 winner
                 players {
                   id
+                  slug
                   fullName
                   team
                   player
