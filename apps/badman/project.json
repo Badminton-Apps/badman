@@ -254,54 +254,6 @@
       "options": {
         "environmentFile": "apps/badman/src/environments/environment.beta.ts"
       }
-    },
-    "storybook": {
-      "executor": "@storybook/angular:start-storybook",
-      "options": {
-        "port": 4400,
-        "configDir": "apps/badman/.storybook",
-        "browserTarget": "badman:build",
-        "compodoc": false,
-        "open": false
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "build-storybook": {
-      "executor": "@storybook/angular:build-storybook",
-      "outputs": ["{options.outputDir}"],
-      "options": {
-        "outputDir": "dist/storybook/badman",
-        "configDir": "apps/badman/.storybook",
-        "browserTarget": "badman:build",
-        "compodoc": false
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "test-storybook": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "test-storybook -c apps/badman/.storybook --url=http://localhost:4400"
-      }
-    },
-    "static-storybook": {
-      "executor": "@nx/web:file-server",
-      "options": {
-        "buildTarget": "badman:build-storybook",
-        "staticFilePath": "dist/storybook/badman"
-      },
-      "configurations": {
-        "ci": {
-          "buildTarget": "badman:build-storybook:ci"
-        }
-      }
     }
   },
   "tags": []
