@@ -140,8 +140,8 @@ jobs:
           # read the affected projects from the main job
           affectedProjects=$(echo ${{ needs.main.outputs.affectedProjects }} | tr -d ' ')
 
-          # check if the affected projects contains api
-          if [[ $affectedProjects == *"api"* ]]; then
+          # check if the affected projects contains api or badman
+          if [[ $affectedProjects == *"api"* || $affectedProjects == *"badman"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
           fi
 
