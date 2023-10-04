@@ -1,6 +1,6 @@
 {
   "name": "badman-mono",
-  "version": "6.110.0-beta.1",
+  "version": "6.110.0-beta.2",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -10,14 +10,11 @@
     "test": "nx test",
     "lint": "nx lint",
     "e2e": "nx e2e app-e2e",
-
     "dev:up": "docker-compose -f docker-compose.dev.yml up",
     "dev:down": "docker-compose -f docker-compose.dev.yml down",
-    
     "start:stackblitz": "nx run-many --target=serve --projects=api,badman --parallel",
     "start:server": "nx run-many --target=serve --projects=api,worker-sync,worker-ranking --parallel",
     "start:client": "nx serve client",
-    
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
     "affected:build": "nx affected:build",
