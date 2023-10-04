@@ -5,7 +5,7 @@
         <mat-icon color="primary">groups</mat-icon>
         {{ 'all.club.titles.teams' | translate }}
       </h3>
-      <badman-has-claim [any]="['edit-any:club', this.clubId + '_edit:club']">
+      <badman-has-claim [any]="['edit-any:club', this.clubId() + '_edit:club']">
         <button mat-icon-button (click)="this.addTeam()">
           <mat-icon>add</mat-icon>
         </button>
@@ -22,7 +22,7 @@
 
         <!-- allow editing if the entry is empty -->
         <badman-has-claim
-          [any]="[this.clubId + '_edit:club', 'edit-any:club']"
+          [any]="[this.clubId() + '_edit:club', 'edit-any:club']"
           *ngIf="this.whenTeamEdit"
         >
           <button
@@ -46,7 +46,7 @@
       </h3>
       <badman-recent-games
         *ngIf="isClient"
-        [clubId]="clubId"
+        [clubId]="this.clubId()"
         [teams]="teams() ?? []"
       ></badman-recent-games>
     </section>
@@ -57,7 +57,7 @@
         {{ 'all.game.upcoming.title' | translate }}
       </h3>
       <badman-upcoming-games
-        [clubid]="clubId"
+        [clubId]="this.clubId()"
         [teams]="teams() ?? []"
       ></badman-upcoming-games>
     </section>

@@ -34,7 +34,7 @@ import { BehaviorSubject, Observable, map, scan, switchMap, tap } from 'rxjs';
 export class UpcomingGamesComponent implements OnInit, OnChanges {
   private apollo = inject(Apollo);
 
-  @Input() clubid?: string;
+  @Input() clubId?: string;
   @Input() teamId?: string;
 
   @Input() teams!: Team | Team[];
@@ -181,14 +181,14 @@ export class UpcomingGamesComponent implements OnInit, OnChanges {
   }
 
   private _setHome(encounters: EncounterCompetition[]) {
-    if (!this.clubid && !this.teamId) {
+    if (!this.clubId && !this.teamId) {
       return encounters;
     }
 
     this.hasHomeTeam = true;
 
     return encounters.map((r) => {
-      if (r.home?.club?.id === this.clubid || r.home?.id === this.teamId) {
+      if (r.home?.club?.id === this.clubId || r.home?.id === this.teamId) {
         r.showingForHomeTeam = true;
       } else {
         r.showingForHomeTeam = false;

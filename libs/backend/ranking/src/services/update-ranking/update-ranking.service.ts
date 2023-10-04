@@ -94,11 +94,13 @@ export class UpdateRankingService {
         for (let i = 0; i < newPlayers.length; i += chunkSize) {
           chunks.push(newPlayers.slice(i, i + chunkSize));
         }
-        
+
         let playersProcessed = 0;
         for (const chunk of chunks) {
           playersProcessed += chunk.length;
-          this._logger.verbose(`Processing ${playersProcessed} of ${newPlayers.length} players`);
+          this._logger.verbose(
+            `Processing ${playersProcessed} of ${newPlayers.length} players`
+          );
 
           await Player.bulkCreate(
             chunk?.map((newp) => {
@@ -107,7 +109,7 @@ export class UpdateRankingService {
                 firstName: newp.firstName,
                 lastName: newp.lastName,
               } as Partial<Player>;
-            }), 
+            }),
             { transaction }
           );
         }
@@ -215,7 +217,7 @@ export class UpdateRankingService {
               this._logger.verbose(
                 `Create new ranking place for player: ${player.id}`
               );
-            }
+            } 
 
             place = new RankingPlace();
             place.playerId = player.id;
@@ -230,7 +232,7 @@ export class UpdateRankingService {
           place.mix = d.mixed || place.mix;
           place.mixPoints = d.mixedPoints || place.mixPoints;
 
-          if (place.changed()) {
+          if (place.changed() != false) {
             this._logger.verbose(
               `Update ranking place for player: ${player.id}`
             );

@@ -6,6 +6,7 @@ import {
   PLATFORM_ID,
   Signal,
   TransferState,
+  effect,
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -39,7 +40,7 @@ export class ClubPlayersComponent implements OnInit {
   players?: Signal<{ player: Player; teams: number }[] | undefined>;
 
   // Inputs
-  @Input({ required: true }) clubId?: string;
+  @Input({ required: true }) clubId!: Signal<string>;
 
   @Input() filter?: FormGroup;
 
@@ -50,55 +51,60 @@ export class ClubPlayersComponent implements OnInit {
       });
     }
 
-    this.players = toSignal(
-      this.filter?.valueChanges?.pipe(
-        startWith(this.filter.value ?? {}),
-        switchMap((filter) => {
-          return this.apollo.watchQuery<{ club: Partial<Club> }>({
-            query: gql`
-              query PlayersForTeams($teamsWhere: JSONObject, $clubId: ID!) {
-                club(id: $clubId) {
-                  id
-                  players {
-                    id
-                    fullName
-                    slug
-                    teams(where: $teamsWhere) {
+    effect(
+      () => {
+        this.players = toSignal(
+          this.filter?.valueChanges?.pipe(
+            startWith(this.filter.value ?? {}),
+            switchMap((filter) => {
+              return this.apollo.watchQuery<{ club: Partial<Club> }>({
+                query: gql`
+                  query PlayersForTeams($teamsWhere: JSONObject, $clubId: ID!) {
+                    club(id: $clubId) {
                       id
+                      players {
+                        id
+                        fullName
+                        slug
+                        teams(where: $teamsWhere) {
+                          id
+                        }
+                      }
                     }
                   }
-                }
+                `,
+                variables: {
+                  clubId: this.clubId(),
+                  teamsWhere: {
+                    season: filter?.season,
+                    type: filter?.choices,
+                  },
+                },
+              }).valueChanges;
+            }),
+            transferState(
+              `clubPlayerTeamsKey-${this.clubId()}`,
+              this.stateTransfer,
+              this.platformId
+            ),
+            map((result) => {
+              if (!result?.data.club) {
+                throw new Error('No club');
               }
-            `,
-            variables: {
-              clubId: this.clubId,
-              teamsWhere: {
-                season: filter?.season,
-                type: filter?.choices,
-              },
-            },
-          }).valueChanges;
-        }),
-        transferState(
-          `clubPlayerTeamsKey-${this.clubId}`,
-          this.stateTransfer,
-          this.platformId
-        ),
-        map((result) => {
-          if (!result?.data.club) {
-            throw new Error('No club');
-          }
-          return new Club(result.data.club);
-        }),
-        map((club) => {
-          return (club.players ?? []).map((player) => {
-            return {
-              player,
-              teams: (player.teams ?? []).length,
-            };
-          });
-        })
-      ) ?? of([]),
+              return new Club(result.data.club);
+            }),
+            map((club) => {
+              return (club.players ?? []).map((player) => {
+                return {
+                  player,
+                  teams: (player.teams ?? []).length,
+                };
+              });
+            })
+          ) ?? of([]),
+          { injector: this.injector }
+        );
+      },
       { injector: this.injector }
     );
   }
