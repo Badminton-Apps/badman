@@ -7,6 +7,7 @@
     "start": "nx serve",
     "start:prod": "node -r dotenv/config dist/apps/api/main.js",
     "build": "nx build",
+    "build:server": "nx run-many --target=build --projects=badman,api --parallel",
     "test": "nx test",
     "lint": "nx lint",
     "e2e": "nx e2e app-e2e",
