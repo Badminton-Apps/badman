@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.110.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.7...v6.110.0-beta.8) (2023-10-04)
+
+
+### Bug Fixes
+
+* creationg of team wasn't working as expected ([fef7985](https://github.com/Badminton-Apps/badman/commit/fef79853c7956ab359ab6703c7f67167d5611b16))
+
 ## [6.110.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.6...v6.110.0-beta.7) (2023-10-04)
 
 ## [6.110.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.5...v6.110.0-beta.6) (2023-10-04)
