@@ -111,7 +111,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
 
   // signals
   seasons?: Signal<number[]>;
-  currentTab = signal(0);
   canViewEnrollmentForClub?: Signal<boolean | undefined>;
   canViewEnrollmentForEvent?: Signal<boolean | undefined>;
   canViewEnrollments?: Signal<boolean | undefined>;
@@ -122,6 +121,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   routeData = toSignal(this.route.data);
 
   club = computed(() => this.routeData()?.['club'] as Club);
+  currentTab = signal(this.queryParams()?.get('tab') ?? 0);
 
   filter!: FormGroup;
 
@@ -216,26 +216,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     this.canViewEnrollments = computed(
       () =>
         this.canViewEnrollmentForClub?.() || this.canViewEnrollmentForEvent?.()
-    );
-
-    effect(
-      () => {
-        // if the canViewEnrollments is loaded
-        if (this.canViewEnrollments?.() !== undefined) {
-          // check if the query params contian tabindex
-          this.route.queryParams
-            .pipe(
-              startWith(this.route.snapshot.queryParams),
-              take(1),
-              filter((params) => params['tab']),
-              map((params) => params['tab'])
-            )
-            .subscribe((tabindex) => {
-              this.currentTab.set(parseInt(tabindex, 10));
-            });
-        }
-      },
-      { injector: this.injector, allowSignalWrites: true }
     );
   }
 
