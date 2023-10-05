@@ -15,6 +15,7 @@ on:
         description: 'Do e2e tests'
         required: true
         default: 'true'
+        type: boolean
 
 env:
   NODE_ENV: '20.1'
