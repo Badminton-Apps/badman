@@ -4,7 +4,7 @@ test.describe('Landing page', () => {
   test.describe('Ranking section', () => {
     let section: Locator;
     test.beforeEach(async ({ page }) => {
-      await page.goto('/', { waitUntil: 'networkidle' });
+      await page.goto('/');
 
       // find section with class ranking
       section = page.locator('section.ranking');
