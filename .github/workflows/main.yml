@@ -195,5 +195,5 @@ jobs:
   e2e:
     name: E2E Tests
     needs: [agents, main]
-    if: ${{ inputs.e2e-tests }}
+    if: always() && inputs.e2e-tests && !cancelled() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
     uses: ./.github/workflows/playwright.yml
