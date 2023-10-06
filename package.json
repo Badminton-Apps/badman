@@ -10,7 +10,7 @@
     "build:server": "nx run-many --target=build --projects=badman,api --parallel",
     "test": "nx test",
     "lint": "nx lint",
-    "e2e": "nx e2e app-e2e",
+    "e2e": "nx e2e badman-e2e",
     "dev:up": "docker-compose -f docker-compose.dev.yml up",
     "dev:down": "docker-compose -f docker-compose.dev.yml down",
     "start:stackblitz": "nx run-many --target=serve --projects=api,badman --parallel",
