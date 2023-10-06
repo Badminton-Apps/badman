@@ -14,7 +14,7 @@ on:
       e2e-tests:
         description: 'Do e2e tests'
         required: true
-        default: 'true'
+        default: true
         type: boolean
 
 env:
@@ -24,7 +24,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-run-name: ${{ inputs.prod-release && 'Prod' || 'Beta' }} release
+run-name: ${{ inputs.prod-release && 'Prod' || 'Beta' }} release ${{ inputs.e2e-tests && 'with E2E tests' || '' }}
 
 jobs:
   merge-dev-into-main:
@@ -205,5 +205,5 @@ jobs:
   e2e:
     name: E2E Tests
     needs: [agents, main]
-    if: ${{ inputs.e2e-tests == 'true' }}
+    if: ${{ inputs.e2e-tests }}
     uses: ./.github/workflows/playwright.yml
