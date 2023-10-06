@@ -36,9 +36,10 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'npx nx run-many --target serve --projects badman,api --parallel',
-    url: 'http://localhost:3000',
+    url: baseURL,
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
+    timeout: 120_000,
     env: {
       DB_STORAGE: ':memory:',
       DB_DIALECT: 'sqlite',
