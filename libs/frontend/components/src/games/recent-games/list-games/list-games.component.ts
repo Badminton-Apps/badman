@@ -346,10 +346,10 @@ export class ListGamesComponent
         tooltip = 'all.breakdown.usedForDowngrade';
         break;
       case GameBreakdownType.LOST_DOWNGRADE:
-        tooltip = 'all.breakdown.usedForUpgrade';
+        tooltip = 'all.breakdown.usedForDowngrade';
         break;
       case GameBreakdownType.LOST_UPGRADE:
-        tooltip = 'all.breakdown.usedForDowngrade';
+        tooltip = 'all.breakdown.usedForUpgrade';
         break;
       case GameBreakdownType.LOST_IGNORED:
         tooltip = 'all.breakdown.notUsed';
