@@ -336,6 +336,11 @@ jobs:
         run: |
           # get affected projects
           affectedProjects=$(npx nx show projects --affected --with-target serve)
+          # convert space separated list to comma separated list
+          affectedProjects=$(echo $affectedProjects | tr ' ' ',')
+          # convert enter separated list to comma separated list
+          affectedProjects=$(echo $affectedProjects | tr '\n' ',')
+
           echo affectedProjects $affectedProjects
           echo "affectedProjects=$affectedProjects" >> $GITHUB_OUTPUT
 
