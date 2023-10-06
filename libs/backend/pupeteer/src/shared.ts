@@ -8,6 +8,7 @@ export async function getBrowser(headless = true) {
       '--disable-setuid-sandbox',
       // '--single-process',
       '--disable-dev-shm-usage',
+      '--js-flags="--max-old-space-size=100"'
     ],
   });
 }

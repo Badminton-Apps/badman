@@ -111,7 +111,7 @@ export class CheckEncounterProcessor {
           );
           // Close browser if any
           if (browser) {
-            browser.close();
+            await browser.close();
           }
 
           // Create browser
@@ -126,9 +126,11 @@ export class CheckEncounterProcessor {
 
           // Processing encounters
           for (const encounter of chunk) {
-            await this.syncEncounter(encounter, page);
+            await this._syncEncounter(encounter, page);
             encountersProcessed++;
           }
+
+          await page.close();
           chunksProcessed++;
         }
       } else {
@@ -139,7 +141,7 @@ export class CheckEncounterProcessor {
     } finally {
       // Close browser
       if (browser) {
-        browser.close();
+        await browser.close();
       }
 
       this.logger.log('Synced encounters');
@@ -147,7 +149,7 @@ export class CheckEncounterProcessor {
   }
 
   @Process(Sync.CheckEncounter)
-  async acceptDate(job: Job<{ encounterId: string }>) {
+  async syncEncounter(job: Job<{ encounterId: string }>) {
     const encounter = await EncounterCompetition.findByPk(
       job.data.encounterId,
       {
@@ -160,7 +162,7 @@ export class CheckEncounterProcessor {
       return;
     }
     // Create browser
-    const browser = await getBrowser(false);
+    const browser = await getBrowser();
     try {
       const page = await browser.newPage();
       page.setDefaultTimeout(10000);
@@ -170,7 +172,9 @@ export class CheckEncounterProcessor {
       await accepCookies({ page });
 
       // Processing encounters
-      await this.syncEncounter(encounter, page);
+      await this._syncEncounter(encounter, page);
+
+      await page.close();
     } catch (error) {
       this.logger.error(error);
     } finally {
@@ -183,7 +187,7 @@ export class CheckEncounterProcessor {
     }
   }
 
-  async syncEncounter(encounter: EncounterCompetition, page: Page) {
+  private async _syncEncounter(encounter: EncounterCompetition, page: Page) {
     this.logger.debug(`Syncing encounter ${encounter.visualCode}`);
     const url = await gotoEncounterPage({ page }, encounter);
 
@@ -245,5 +249,6 @@ export class CheckEncounterProcessor {
       encounter.accepted = true;
       await encounter.save();
     }
+    
   }
 }
