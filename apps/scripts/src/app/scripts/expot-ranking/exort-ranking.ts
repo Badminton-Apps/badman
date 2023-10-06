@@ -160,7 +160,7 @@ export class ExportBBFPlayers {
     }
   }
 
-  async loadPlayers(season: number, system: RankingSystem, onlyComp = true) {
+  async loadPlayers(season: number, system: RankingSystem) {
     this.logger.verbose(`Loading players`);
     const playersxlsx = xlsx.readFile(
       `apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`
@@ -181,8 +181,7 @@ export class ExportBBFPlayers {
       (c) =>
         c.memberid != null &&
         c.memberid != '' &&
-        c.memberid != undefined &&
-        (onlyComp ? c.TypeName == 'Competitiespeler' : true)
+        c.memberid != undefined
     ); // ?.slice(0, 10)
 
     const players = await Player.findAll({
