@@ -83,7 +83,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release
-    needs: [e2e]
+    needs: [e2e, main]
     if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
 
     # output new version
