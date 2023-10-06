@@ -154,16 +154,6 @@ jobs:
 
       ## Vercel deploys automatically on push to branch with Chore: prefix
 
-      # - name: Trigger deploy hook on Vercel.com (if affected)
-      #   run: |
-      #     # read the affected projects from the main job
-      #     affectedProjects=$(echo ${{ needs.main.outputs.affectedProjects }} | tr -d ' ')
-
-      #     # check if the affected projects contains api
-      #     if [[ $affectedProjects == *"badman"* ]]; then
-      #       curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_CLIENT_HOOK  || secrets.BETA_CLIENT_HOOK }}
-      #     fi
-
   merge-main-into-dev:
     name: Merge Main into Dev
     runs-on: ubuntu-latest
