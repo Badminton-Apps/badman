@@ -4,7 +4,7 @@ import { setup } from '../utils/setup';
 test.describe('Assembly page', () => {
   test.beforeEach(async ({ page }) => {
     await setup(page);
-    await page.goto('/competition/assembly', { waitUntil: 'networkidle' });
+    await page.goto('/competition/assembly');
   });
 
   test('if page is visible', async ({ page }) => {
