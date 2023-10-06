@@ -335,7 +335,7 @@ jobs:
         id: outputAffectedProjects
         run: |
           # get affected projects
-          affectedProjects=$(npx nx print-affected --select=projects --type=app)
+          affectedProjects=$(npx nx show projects --affected --with-target serve)
           echo affectedProjects $affectedProjects
           echo "affectedProjects=$affectedProjects" >> $GITHUB_OUTPUT
 
