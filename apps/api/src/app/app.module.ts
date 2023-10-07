@@ -14,26 +14,26 @@ import { QueueModule } from '@badman/backend-queue';
 import { SearchModule } from '@badman/backend-search';
 import { TranslateModule } from '@badman/backend-translate';
 import { TwizzitModule } from '@badman/backend-twizzit';
-import versionPackage from '../version.json';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import versionPackage from '../version.json';
 
 const productionModules = [];
 if (process.env.NODE_ENV === 'production') {
-  console.log('Loaded static module');
-
   productionModules.push(
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'badman'),
       exclude: ['api/*', '/graphql'],
-    })
+    }),
   );
 }
 
 @Module({
   imports: [
     ...productionModules,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      cache: true,
+    }),
     AuthorizationModule,
     GrapqhlModule,
     DatabaseModule,
@@ -59,7 +59,7 @@ export class AppModule {
   private readonly logger = new Logger(AppModule.name);
   constructor(configService: ConfigService) {
     this.logger.log(
-      `${AppModule.name} loaded, env: ${configService.get('NODE_ENV')}`
+      `${AppModule.name} loaded, env: ${configService.get('NODE_ENV')}`,
     );
   }
 }
