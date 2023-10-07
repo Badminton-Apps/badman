@@ -13,12 +13,12 @@ export class EncounterCompetitionBuilder {
   private awayTeam?: TeamBuilder;
   private draw?: DrawCompetitionBuilder;
 
-  constructor() {
-    this.encounter = new EncounterCompetition();
+  constructor(id?: string) {
+    this.encounter = new EncounterCompetition({ id });
   }
 
-  static Create(): EncounterCompetitionBuilder {
-    return new EncounterCompetitionBuilder();
+  static Create(id?: string): EncounterCompetitionBuilder {
+    return new EncounterCompetitionBuilder(id);
   }
 
   WithId(id: string): EncounterCompetitionBuilder {

@@ -16,7 +16,6 @@ import { SystemBuilder } from './systemBuilder';
 import { SystemGroupBuilder } from './systemGroupBuilder';
 import { TeamBuilder } from './teamBuilder';
 import { Logger } from '@nestjs/common';
-import { TeamPlayerMembershipType } from '../_interception';
 
 export async function loadTest() {
   const logger = new Logger(`Testing data`);
@@ -26,14 +25,10 @@ export async function loadTest() {
   logger.debug(`Current season: ${season}`);
 
   const system = addRankingSystem();
-  const { event, draw, subEvent } = addEvent(season);
-  const club1 = addClub('BC Broodrooster', system, season, draw, subEvent);
+  const { event, draw, subEvent, encounter } = addEvent(season);
+  const club1 = addClub('BC Broodrooster', system, season, draw, subEvent, "3757acd9-b42a-4f93-8564-face7557ea07", "cab3a0dd-452b-4b6f-b839-320a89d9c0f2");
   const club2 = addClub('BC Tandpasta', system, season, draw, subEvent);
 
-  // // encounter.WithHomeTeam(club1.team);
-  // // encounter.WithAwayTeam(club2.team);
-
-  // // await encounter.Build();
   try {
     logger.log('Building test data');
     logger.debug('Building ranking system');
@@ -45,6 +40,11 @@ export async function loadTest() {
     await club1.club.Build();
     logger.debug('loading club 2');
     await club2.club.Build();
+
+    // Didn't find any easy way to do this via builder pattern
+    const encounter1 = await encounter.Build();
+    encounter1.setHome(await club1.team.Build());
+    encounter1.setAway(await club2.team.Build());
 
     logger.log('Done building test data');
   } catch (error) {
@@ -63,9 +63,9 @@ function addRankingSystem() {
   return system;
 }
 
-function addEvent(season: number) {
-  const encounter = EncounterCompetitionBuilder.Create().WithDate(
-    new Date(`${season}-05-09`),
+function addEvent(season: number, id?: string) {
+  const encounter = EncounterCompetitionBuilder.Create(id).WithDate(
+    new Date(`${season}-10-15`),
   );
   const draw = DrawCompetitionBuilder.Create().WithName('Test draw');
 
@@ -97,10 +97,13 @@ function addClub(
   season: number,
   draw: DrawCompetitionBuilder,
   subEvent: SubEventCompetitionBuilder,
+  clubId?: string,
+  teamId?: string,
 ) {
-  const player111 = PlayerBuilder.Create()
-    .WithName('player 1 - 1 - 1', 'team 1')
+  const player111F = PlayerBuilder.Create()
+    .WithName('F 1-1-1', name)
     .WithCompetitionStatus(false)
+    .WithGender('F')
     .WithRanking(
       RankingPlaceBuilder.Create()
         .ForSystem(system)
@@ -108,8 +111,8 @@ function addClub(
         .WithDate(new Date('2020-05-09')),
     );
 
-  const player555 = PlayerBuilder.Create()
-    .WithName('player 5 - 5 - 5', 'team 1')
+  const player555F = PlayerBuilder.Create()
+    .WithName('F 5-5-5', name)
     .WithCompetitionStatus(false)
     .WithGender('F')
     .WithRanking(
@@ -119,10 +122,10 @@ function addClub(
         .WithDate(new Date('2020-05-09')),
     );
 
-  const player666 = PlayerBuilder.Create()
-    .WithName('player 6 - 6 - 6', 'team 1')
+  const player666F = PlayerBuilder.Create()
+    .WithName('F 6-6-6', name)
     .WithCompetitionStatus(true)
-    .WithGender('M')
+    .WithGender('F')
     .WithRanking(
       RankingPlaceBuilder.Create()
         .ForSystem(system)
@@ -130,10 +133,10 @@ function addClub(
         .WithDate(new Date('2020-05-09')),
     );
 
-  const player777 = PlayerBuilder.Create()
-    .WithName('player 7 - 7 - 7', 'team 1')
+  const player777F = PlayerBuilder.Create()
+    .WithName('F 7-7-7', name)
     .WithCompetitionStatus(true)
-    .WithGender('M')
+    .WithGender('F')
     .WithRanking(
       RankingPlaceBuilder.Create()
         .ForSystem(system)
@@ -141,8 +144,8 @@ function addClub(
         .WithDate(new Date('2020-05-09')),
     );
 
-  const player888 = PlayerBuilder.Create()
-    .WithName('player 8 - 8 - 8', 'team 1')
+  const player888M = PlayerBuilder.Create()
+    .WithName('M 8-8-8', name)
     .WithCompetitionStatus(true)
     .WithGender('M')
     .WithRanking(
@@ -152,8 +155,8 @@ function addClub(
         .WithDate(new Date('2020-05-09')),
     );
 
-  const player999 = PlayerBuilder.Create()
-    .WithName('player 9 - 9 - 9', 'team 1')
+  const player999M = PlayerBuilder.Create()
+    .WithName('M 9-9-9', name)
     .WithCompetitionStatus(true)
     .WithGender('M')
     .WithRanking(
@@ -163,38 +166,39 @@ function addClub(
         .WithDate(new Date('2020-05-09')),
     );
 
-  const team = TeamBuilder.Create(SubEventTypeEnum.MX)
-    .WithName('team 1H') 
+  const team = TeamBuilder.Create(SubEventTypeEnum.MX, teamId)
+    .WithName('team 1G')
     .WithSeason(season)
     .WithTeamNumber(1);
 
-  const club = ClubBuilder.Create()
+  const club = ClubBuilder.Create(clubId)
     .WithName(name)
     .WithTeam(
       team
-        .WithPlayer(player777, TeamMembershipType.REGULAR)
-        .WithPlayer(player888, TeamMembershipType.REGULAR)
-        .WithPlayer(player999, TeamMembershipType.REGULAR)
-        .WithPlayer(player666, TeamMembershipType.REGULAR)
+        .WithPlayer(player777F, TeamMembershipType.REGULAR)
+        .WithPlayer(player888M, TeamMembershipType.REGULAR)
+        .WithPlayer(player999M, TeamMembershipType.REGULAR)
+        .WithPlayer(player666F, TeamMembershipType.REGULAR)
+        .WithPlayer(player111F, TeamMembershipType.REGULAR)
         .WithEntry(
           EventCompetitionEntryBuilder.Create('competition')
             .ForDraw(draw)
             .ForSubEvent(subEvent)
-            .WithBasePlayer(player666, 6, 6, 6)
-            .WithBasePlayer(player777, 7, 7, 7)
-            .WithBasePlayer(player888, 8, 8, 8)
-            .WithBasePlayer(player999, 9, 9, 9)
+            .WithBasePlayer(player666F, 6, 6, 6)
+            .WithBasePlayer(player777F, 7, 7, 7)
+            .WithBasePlayer(player888M, 8, 8, 8)
+            .WithBasePlayer(player999M, 9, 9, 9)
             .WithBaseIndex(60),
         ),
     );
 
   return {
-    player111,
-    player555,
-    player666,
-    player777,
-    player888,
-    player999,
+    player111: player111F,
+    player555: player555F,
+    player666: player666F,
+    player777: player777F,
+    player888: player888M,
+    player999: player999M,
     team,
     club,
   };
