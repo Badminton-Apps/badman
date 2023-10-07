@@ -33,7 +33,7 @@ export class DatabaseModule implements OnModuleInit {
   // get sequelize instance
   constructor(
     private readonly configService: ConfigService,
-    private readonly sequelize: Sequelize
+    private readonly sequelize: Sequelize,
   ) {}
 
   async onModuleInit() {
