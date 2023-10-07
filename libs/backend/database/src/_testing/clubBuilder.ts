@@ -1,4 +1,4 @@
-import { Club, Team } from '../models';
+import { Club } from '../models';
 import { TeamBuilder } from './teamBuilder';
 
 export class ClubBuilder {
@@ -30,12 +30,6 @@ export class ClubBuilder {
   WithTeam(team: TeamBuilder): ClubBuilder {
     team.ForClub(this.club);
     this.teams.push(team);
-    return this;
-  }
-
-  
-  ForTeam(team: Team): ClubBuilder {
-    this.club.hasTeam(team);
     return this;
   }
 

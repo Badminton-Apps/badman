@@ -1,12 +1,15 @@
-import { DrawCompetition, SubEventCompetition } from '../models';
+import { DrawCompetition } from '../models';
 import { EncounterCompetitionBuilder } from './eventCompetitionEncounterBuilder';
+import { EventCompetitionEntryBuilder } from './eventCompetitionEntryBuilder';
+import { SubEventCompetitionBuilder } from './eventCompetitionSubEventBuilder';
 
 export class DrawCompetitionBuilder {
   private build = false;
-  
+
   private draw: DrawCompetition;
 
   private encounters: EncounterCompetitionBuilder[] = [];
+  private entries: EventCompetitionEntryBuilder[] = [];
 
   constructor() {
     this.draw = new DrawCompetition();
@@ -15,8 +18,6 @@ export class DrawCompetitionBuilder {
   static Create(): DrawCompetitionBuilder {
     return new DrawCompetitionBuilder();
   }
-
-  
 
   WithName(firstName: string): DrawCompetitionBuilder {
     this.draw.name = firstName;
@@ -29,16 +30,20 @@ export class DrawCompetitionBuilder {
     return this;
   }
 
-  ForSubEvent(event: SubEventCompetition): DrawCompetitionBuilder {
-    this.draw.subeventId = event.id;
+  ForSubEvent(subEvent: SubEventCompetitionBuilder): DrawCompetitionBuilder {
+    subEvent.WithDraw(this);
     return this;
   }
 
   WithEnouncter(
-    encounter: EncounterCompetitionBuilder
+    encounter: EncounterCompetitionBuilder,
   ): DrawCompetitionBuilder {
-    encounter.ForDraw(this.draw);
     this.encounters.push(encounter);
+    return this;
+  }
+
+  WithEntry(entry: EventCompetitionEntryBuilder): DrawCompetitionBuilder {
+    this.entries.push(entry);
     return this;
   }
 
@@ -51,8 +56,14 @@ export class DrawCompetitionBuilder {
       await this.draw.save();
 
       for (const encounter of this.encounters) {
-        await encounter.Build();
+        const enc = await encounter.Build();
+        await this.draw.addEncounterCompetition(enc);
       }
+
+      for (const entry of this.entries) {
+        entry.WithDrawId(this.draw.id);
+      }
+
     } catch (error) {
       console.error(error);
       throw error;

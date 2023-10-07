@@ -1,10 +1,11 @@
-import { EventTournament, SubEventTournament } from '../models';
+import { SubEventTournament } from '../models';
+import { EventTournamentBuilder } from './eventTournamentBuilder';
 import { DrawTournamentBuilder } from './eventTournamentDrawBuilder';
 import { SystemGroupBuilder } from './systemGroupBuilder';
 
 export class SubEventTournamentBuilder {
   private build = false;
-  
+
   private subEvent: SubEventTournament;
 
   private draws: DrawTournamentBuilder[] = [];
@@ -28,8 +29,8 @@ export class SubEventTournamentBuilder {
     return this;
   }
 
-  ForEvent(event: EventTournament): SubEventTournamentBuilder {
-    this.subEvent.eventId = event.id;
+  ForEvent(event: EventTournamentBuilder): SubEventTournamentBuilder {
+    event.WithSubEvent(this);
     return this;
   }
 
@@ -39,7 +40,6 @@ export class SubEventTournamentBuilder {
   }
 
   WithDraw(draw: DrawTournamentBuilder): SubEventTournamentBuilder {
-    draw.ForSubEvent(this.subEvent);
     this.draws.push(draw);
     return this;
   }
