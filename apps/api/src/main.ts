@@ -16,7 +16,8 @@ import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
 
-async function bootstrap() {
+async function bootstrap() { 
+  Logger.debug('Starting application');
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({
@@ -24,14 +25,19 @@ async function bootstrap() {
     }),
     {
       bufferLogs: true,
-    }
+    },
   );
+  Logger.debug('Application created');
+
   app.setGlobalPrefix('api');
-  app.register(fmp as any);
+  Logger.debug('Set global prefix');
 
-  const configService = app.get<ConfigService>(ConfigService);
+  app.register(fmp as never);
+  Logger.debug('multipart registered');
+
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
-
+  Logger.debug('Logger registered');
+  
   app.enableCors({
     origin: function (origin, callback) {
       return callback(null, true);
@@ -39,12 +45,17 @@ async function bootstrap() {
     optionsSuccessStatus: 200,
     credentials: true,
   });
+  Logger.debug('Cors enabled');
 
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   });
+  Logger.debug('Versioning enabled');
 
+  Logger.debug('Extensions loaded');
+
+  const configService = app.get<ConfigService>(ConfigService);
   const port = configService.get('PORT') || 5000;
   await app.listen(port, '0.0.0.0', (error) => {
     if (error) {
@@ -54,9 +65,13 @@ async function bootstrap() {
 
   Logger.debug(
     `🚀 Application is running on: http://localhost:${port}. level: ${configService.get(
-      'NODE_ENV'
-    )}`
+      'NODE_ENV',
+    )}`,
   );
 }
 
-bootstrap();
+try {
+  bootstrap();
+} catch (error) {
+  Logger.error(error);
+}
