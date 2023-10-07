@@ -1,5 +1,5 @@
 import { SubEventTypeEnum, TeamMembershipType } from '@badman/utils';
-import { Club, Team, TeamPlayerMembership } from '../models';
+import { Club, Team } from '../models';
 import { ClubBuilder } from './clubBuilder';
 import { EventCompetitionEntryBuilder } from './eventCompetitionEntryBuilder';
 import { PlayerBuilder } from './playerBuilder';
@@ -13,14 +13,15 @@ export class TeamBuilder {
   private entries: EventCompetitionEntryBuilder[] = [];
   private club?: ClubBuilder;
 
-  constructor(type: SubEventTypeEnum) {
+  constructor(type: SubEventTypeEnum, id?: string) {
     this.team = new Team({
+      id,
       type,
     });
   }
 
-  static Create(type: SubEventTypeEnum): TeamBuilder {
-    return new TeamBuilder(type);
+  static Create(type: SubEventTypeEnum, id?: string): TeamBuilder {
+    return new TeamBuilder(type, id);
   }
 
   WithName(name: string): TeamBuilder {
