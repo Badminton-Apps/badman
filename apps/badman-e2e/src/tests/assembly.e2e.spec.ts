@@ -48,12 +48,9 @@ test.describe('Assembly page', () => {
     //   await expect(player888M).toBeVisible();
     //   await expect(malesDoubles).toBeVisible();
 
-    //   await player888M.dragTo(malesDoubles, {
-    //     sourcePosition: { x: 10, y: 20 },
-    //     targetPosition: { x: 10, y: 20 },
-    //   });
+    //   await player888M.dragTo(malesDoubles);
 
-    //   // await expect(malesDoubles).toContainText('M 8-8-8 BC Broodrooster');
+    //   await expect(malesDoubles).toContainText('M 8-8-8 BC Broodrooster');
     // });
   });
 });
