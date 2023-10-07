@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.110.0-beta.15](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.14...v6.110.0-beta.15) (2023-10-07)
+
+
+### Features
+
+* added e2e ui option ([6538f5f](https://github.com/Badminton-Apps/badman/commit/6538f5fda68f0ec6ed50cd0dfa2d0226adef3d28))
+* adding better builder ([edc1fe8](https://github.com/Badminton-Apps/badman/commit/edc1fe871d4895d9f97aea9ca8cfc81df9cb2a42))
+* cache the config for better performance ([8fefa8d](https://github.com/Badminton-Apps/badman/commit/8fefa8d3608f325c44ea7db4d508423279a24b3d))
+* ilike doesn't exist on sqlite ([4fd550c](https://github.com/Badminton-Apps/badman/commit/4fd550c1aa9d3758c5e2c2b7fd5f61ecb960645b))
+* loading config from .env file ([3975cc8](https://github.com/Badminton-Apps/badman/commit/3975cc8e8e35baa91cc65ab05c6b02c76dcf8344))
+
+
+### Bug Fixes
+
+* awaiting closing of browsers and pafges ([a3c2113](https://github.com/Badminton-Apps/badman/commit/a3c2113b77bba3a612e5cd5f3d6fbc5a33c0653b))
+* badman e2e ([86a189c](https://github.com/Badminton-Apps/badman/commit/86a189c0720b0a50c43131faf304ddeef3846fe5))
+* default value for official ([3aee052](https://github.com/Badminton-Apps/badman/commit/3aee0523eb817fece8f64c6361ce2bbb7ae5938e))
+* **deps:** update dependency conventional-changelog to v5 ([7f79a1d](https://github.com/Badminton-Apps/badman/commit/7f79a1d2b24b7223174a79d173eb2e1a633fd170))
+* disable dev shm usage ([16bafb6](https://github.com/Badminton-Apps/badman/commit/16bafb63deb14f82270fc2c89d1767a81388473b))
+* loading env from configservice ([1a0ade8](https://github.com/Badminton-Apps/badman/commit/1a0ade86c904dbefd112ff54b0fba5c8fb82f67d))
+* reinstall because of strange removal ([958a470](https://github.com/Badminton-Apps/badman/commit/958a4701a44bbb7e8344bc03952685e4238dc236))
+* should have been async ([33e61dc](https://github.com/Badminton-Apps/badman/commit/33e61dc68e516721c166ef24ceea0639376b1e1a))
+* update ranking testing with new builder ([5b9da11](https://github.com/Badminton-Apps/badman/commit/5b9da1196c35ee9a9d626a8ac7c2f5d7fd81afb8))
+* wait for loadstate ([1c1e772](https://github.com/Badminton-Apps/badman/commit/1c1e7725447b738a3ae61c42db4a9931ae20b4c2))
+* when user was logged in, but had no link. this wouldn't load the permissions config ([6bb3bdd](https://github.com/Badminton-Apps/badman/commit/6bb3bdd409e8208e0dee3ad89a44d6200afd4530))
+
 ## [6.110.0-beta.14](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.13...v6.110.0-beta.14) (2023-10-06)
 
 
