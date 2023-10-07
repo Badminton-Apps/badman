@@ -38,6 +38,11 @@ export class RankingPlaceBuilder {
     return this;
   }
 
+  WithUpdatePossible(updatePossible: boolean): RankingPlaceBuilder {
+    this.rankingPlace.updatePossible = updatePossible;
+    return this;
+  }
+
   ForSystem(system: SystemBuilder): RankingPlaceBuilder {
     system.WithrankingPlace(this);
     return this;

@@ -13,4 +13,5 @@ export * from './systemBuilder';
 export * from './systemGroupBuilder';
 export * from './teamBuilder';
 export * from './clubBuilder';
+export * from './rankingPlaceBuilder';
 // end:ng42.barrel

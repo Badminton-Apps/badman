@@ -55,7 +55,7 @@ export class AssemblyValidationService {
     double3?: string[],
     double4?: string[],
 
-    subtitudes?: string[]
+    subtitudes?: string[],
   ): Promise<AssemblyValidationData> {
     const idPlayers = [
       single1,
@@ -179,7 +179,7 @@ export class AssemblyValidationService {
 
     meta.competition.players = getBestPlayers(
       team.type,
-      meta.competition.players
+      meta.competition.players,
     ) as EntryCompetitionPlayer[];
 
     // Other teams meta
@@ -291,7 +291,7 @@ export class AssemblyValidationService {
           double: rankingPlace?.double ?? system.amountOfLevels,
           mix: rankingPlace?.mix ?? system.amountOfLevels,
         };
-      })
+      }),
     );
 
     // const titularsTeam = Team.baseTeam(players, type);
@@ -303,7 +303,7 @@ export class AssemblyValidationService {
 
       teamIndex: titularsTeam.index,
       teamPlayers: (titularsTeam.players?.map((p) =>
-        players.find((pl) => pl.id === p.id)
+        players.find((pl) => pl.id === p.id),
       ) ?? []) as Player[],
 
       encounter,
@@ -325,14 +325,14 @@ export class AssemblyValidationService {
         ?.sort(
           (a, b) =>
             (a.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels) -
-            (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels)
+            (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels),
         ) as [Player, Player],
       double2: players
         ?.filter((p) => double2?.flat(1)?.includes(p.id))
         ?.sort(
           (a, b) =>
             (a.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels) -
-            (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels)
+            (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels),
         ) as [Player, Player],
       double3: players
         ?.filter((p) => double3?.flat(1)?.includes(p.id))
@@ -365,11 +365,11 @@ export class AssemblyValidationService {
    */
   async validate(
     assembly: AssemblyValidationData,
-    validators: Rule[]
+    validators: Rule[],
   ): Promise<AssemblyOutput> {
     // get all errors and warnings from the validators in parallel
     const results = await Promise.all(
-      validators.map((v) => v.validate(assembly))
+      validators.map((v) => v.validate(assembly)),
     );
 
     const errors = results
@@ -411,7 +411,7 @@ export class AssemblyValidationService {
 
       subtitudes?: string[];
     },
-    validators: Rule[]
+    validators: Rule[],
   ) {
     const dbData = await this.getValidationData(
       data.systemId,
@@ -425,7 +425,7 @@ export class AssemblyValidationService {
       data.double2,
       data.double3,
       data.double4,
-      data.subtitudes
+      data.subtitudes,
     );
     return this.validate(dbData, validators);
   }
