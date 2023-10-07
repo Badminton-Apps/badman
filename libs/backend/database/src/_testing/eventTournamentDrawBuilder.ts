@@ -1,9 +1,10 @@
-import { DrawTournament, SubEventTournament } from '../models';
+import { DrawTournament } from '../models';
 import { GameBuilder } from './GameBuilder';
+import { SubEventTournamentBuilder } from './eventTournamentSubEventBuilder';
 
 export class DrawTournamentBuilder {
   private build = false;
-  
+
   private draw: DrawTournament;
 
   private games: GameBuilder[] = [];
@@ -27,13 +28,12 @@ export class DrawTournamentBuilder {
     return this;
   }
 
-  ForSubEvent(event: SubEventTournament): DrawTournamentBuilder {
-    this.draw.subeventId = event.id;
+  ForSubEvent(event: SubEventTournamentBuilder): DrawTournamentBuilder {
+    event.WithDraw(this);
     return this;
   }
 
   WithGame(game: GameBuilder): DrawTournamentBuilder {
-    game.ForTournament(this.draw);
     this.games.push(game);
     return this;
   }

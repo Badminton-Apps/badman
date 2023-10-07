@@ -1,15 +1,17 @@
-import { DrawCompetition, EncounterCompetition } from '../models';
-import { TeamBuilder } from './teamBuilder';
+import { EncounterCompetition } from '../models';
 import { GameBuilder } from './GameBuilder';
+import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
+import { TeamBuilder } from './teamBuilder';
 
 export class EncounterCompetitionBuilder {
   private build = false;
-  
+
   private encounter: EncounterCompetition;
 
   private games: GameBuilder[] = [];
   private homeTeam?: TeamBuilder;
   private awayTeam?: TeamBuilder;
+  private draw?: DrawCompetitionBuilder;
 
   constructor() {
     this.encounter = new EncounterCompetition();
@@ -24,8 +26,8 @@ export class EncounterCompetitionBuilder {
     return this;
   }
 
-  ForDraw(draw: DrawCompetition) {
-    this.encounter.drawId = draw.id;
+  ForDraw(draw: DrawCompetitionBuilder) {
+    draw.WithEnouncter(this);
     return this;
   }
 
