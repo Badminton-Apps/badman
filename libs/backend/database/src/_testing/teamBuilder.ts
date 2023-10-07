@@ -1,15 +1,15 @@
-import { EventCompetitionEntryBuilder } from './eventCompetitionEntryBuilder';
-import { SubEventTypeEnum } from '@badman/utils';
-import { Club, Team } from '../models';
-import { PlayerBuilder } from './playerBuilder';
+import { SubEventTypeEnum, TeamMembershipType } from '@badman/utils';
+import { Club, Team, TeamPlayerMembership } from '../models';
 import { ClubBuilder } from './clubBuilder';
+import { EventCompetitionEntryBuilder } from './eventCompetitionEntryBuilder';
+import { PlayerBuilder } from './playerBuilder';
 
 export class TeamBuilder {
   private build = false;
 
   private team: Team;
 
-  private players: PlayerBuilder[] = [];
+  private players: [PlayerBuilder, TeamMembershipType][] = [];
   private entries: EventCompetitionEntryBuilder[] = [];
   private club?: ClubBuilder;
 
@@ -43,20 +43,19 @@ export class TeamBuilder {
     return this;
   }
 
-  WithPlayer(player: PlayerBuilder): TeamBuilder {
-    player.ForTeam(this.team);
-    this.players.push(player);
+  WithPlayer(player: PlayerBuilder, type: TeamMembershipType): TeamBuilder {
+    this.players.push([player, type]);
     return this;
   }
 
   WithEntry(entry: EventCompetitionEntryBuilder): TeamBuilder {
-    entry.ForTeam(this.team);
+    entry.ForTeam(this);
     this.entries.push(entry);
     return this;
   }
 
   WithClub(club: ClubBuilder): TeamBuilder {
-    club.ForTeam(this.team);
+    club.WithTeam(this);
     this.club = club;
     return this;
   }
@@ -72,18 +71,26 @@ export class TeamBuilder {
     }
 
     try {
+      if (this.club) {
+        const c = await this.club.Build();
+        this.team.clubId = c.id;
+      }
+
       await this.team.save();
 
-      for (const player of this.players) {
-        await player.Build();
+      for (const [player, type] of this.players) {
+        const p = await player.Build();
+        await this.team.addPlayer(p, {
+          through: {
+            membershipType: type,
+            start: new Date(),
+          },
+        });
       }
 
       for (const entry of this.entries) {
+        entry.WithTeamId(this.team.id);
         await entry.Build();
-      }
-
-      if (this.club) {
-        await this.club.Build();
       }
     } catch (error) {
       console.error(error);

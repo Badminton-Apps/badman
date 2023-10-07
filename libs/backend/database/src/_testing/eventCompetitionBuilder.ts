@@ -30,7 +30,7 @@ export class EventCompetitionBuilder {
 
     return this;
   }
-  
+
   WithUsedRanking(usedRanking: UsedRankingTiming): EventCompetitionBuilder {
     this.event.usedRankingAmount = usedRanking.amount;
     this.event.usedRankingUnit = usedRanking.unit;
@@ -39,7 +39,6 @@ export class EventCompetitionBuilder {
   }
 
   WithSubEvent(subEvent: SubEventCompetitionBuilder): EventCompetitionBuilder {
-    subEvent.ForEvent(this.event);
     this.subEvents.push(subEvent);
     return this;
   }
@@ -53,6 +52,7 @@ export class EventCompetitionBuilder {
       await this.event.save();
 
       for (const subEvent of this.subEvents) {
+        subEvent.WithEventId(this.event.id);
         await subEvent.Build();
       }
     } catch (error) {
