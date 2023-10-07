@@ -13,20 +13,20 @@ export type TeamSubeventIndexRuleParams = {
 
 export class TeamSubeventIndexRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
-    const { teamIndex: baseTeamIndex, subEvent } = assembly;
+    const { teamIndex, subEvent } = assembly;
 
     if (!subEvent?.minBaseIndex) {
       throw new Error('Subevent is not defined');
     }
 
-    if ((baseTeamIndex ?? 0) < subEvent.minBaseIndex) {
+    if ((teamIndex ?? 0) < subEvent.minBaseIndex) {
       return {
         valid: false,
         errors: [
           {
             message: 'all.competition.team-assembly.errors.team-to-strong',
             params: {
-              teamIndex: baseTeamIndex,
+              teamIndex: teamIndex,
               minIndex: subEvent.minBaseIndex,
               maxIndex: subEvent.maxBaseIndex,
             },
