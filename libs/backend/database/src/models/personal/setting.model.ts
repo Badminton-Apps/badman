@@ -121,6 +121,13 @@ export class Setting extends Model {
     defaultValue: NotificationType.EMAIL,
   })
   clubEnrollmentNotification!: NotificationType;
+
+  @Field(() => Int)
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: NotificationType.EMAIL,
+  })
+  synEncounterFailed!: NotificationType;
 }
 
 @InputType()
