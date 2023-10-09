@@ -1,5 +1,5 @@
 import { User } from '@badman/backend-authorization';
-import { Player } from '@badman/backend-database';
+import { EncounterCompetition, Player } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
 import { MailingService } from '@badman/backend-mailing';
 import { NotificationService } from '@badman/backend-notifications';
@@ -31,7 +31,7 @@ export class AppController {
     private cpGen: CpGeneratorService,
     private notificationService: NotificationService,
     private planner: PlannerService,
-    private mailService: MailingService
+    private mailService: MailingService,
   ) {}
 
   @Post('queue-job')
@@ -44,12 +44,12 @@ export class AppController {
       jobArgs: { [key: string]: unknown };
       removeOnComplete: boolean;
       removeOnFail: boolean;
-    }
+    },
   ) {
     this.logger.debug({
       message: 'Queueing job',
       args: args.job,
-      user: user?.toJSON(), 
+      user: user?.toJSON(),
       hasPerm: await user.hasAnyPermission(['change:job']),
     });
 
@@ -94,7 +94,7 @@ export class AppController {
       const fileName = basename(fileLoc, extension);
       res.header(
         'Content-disposition',
-        'attachment; filename=' + fileName + extension
+        'attachment; filename=' + fileName + extension,
       );
 
       res.type(extension).send(file);
@@ -107,7 +107,7 @@ export class AppController {
   @Get('planner')
   async getPlanner(
     @Res() res: FastifyReply,
-    @Query() query: { season: string }
+    @Query() query: { season: string },
   ) {
     this.logger.debug('Generating planner');
     const result = await this.planner.getPlannerData(query.season);
@@ -116,5 +116,35 @@ export class AppController {
 
     // Respond ok for now
     res.status(200).send(result);
+  }
+
+  @Get('error')
+  async testError() {
+    const url =
+      'https://www.toernooi.nl/sport/teammatch.aspx?id=0131343E-0198-48F4-A75B-4995C6B9095F&match=478';
+    const glenn = await Player.findOne({
+      where: {
+        slug: 'glenn-latomme',
+      },
+    });
+
+    const encounter = await EncounterCompetition.findByPk(
+      '81662379-702b-4a5f-8a28-8ee773a5915d',
+    );
+
+    if (!glenn) {
+      this.logger.error(`Glenn not found`);
+      return;
+    }
+
+    if (!encounter) {
+      this.logger.error(`Encounter not found`);
+      return;
+    }
+
+    await this.notificationService.notifySyncEncounterFailed(glenn.id, {
+      url,
+      encounter,
+    });
   }
 }
