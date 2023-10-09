@@ -2,6 +2,148 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.110.0-beta.16](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.15...v6.110.0-beta.16) (2023-10-09)
+
+
+### Features
+
+* sending mail to glenn when checkEncounters failed ([18eba50](https://github.com/Badminton-Apps/badman/commit/18eba50dc368ad1f5f94d720674f34b22d512686))
+
+## [6.110.0-beta.15](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.14...v6.110.0-beta.15) (2023-10-07)
+
+
+### Features
+
+* added e2e ui option ([6538f5f](https://github.com/Badminton-Apps/badman/commit/6538f5fda68f0ec6ed50cd0dfa2d0226adef3d28))
+* adding better builder ([edc1fe8](https://github.com/Badminton-Apps/badman/commit/edc1fe871d4895d9f97aea9ca8cfc81df9cb2a42))
+* cache the config for better performance ([8fefa8d](https://github.com/Badminton-Apps/badman/commit/8fefa8d3608f325c44ea7db4d508423279a24b3d))
+* ilike doesn't exist on sqlite ([4fd550c](https://github.com/Badminton-Apps/badman/commit/4fd550c1aa9d3758c5e2c2b7fd5f61ecb960645b))
+* loading config from .env file ([3975cc8](https://github.com/Badminton-Apps/badman/commit/3975cc8e8e35baa91cc65ab05c6b02c76dcf8344))
+
+
+### Bug Fixes
+
+* awaiting closing of browsers and pafges ([a3c2113](https://github.com/Badminton-Apps/badman/commit/a3c2113b77bba3a612e5cd5f3d6fbc5a33c0653b))
+* badman e2e ([86a189c](https://github.com/Badminton-Apps/badman/commit/86a189c0720b0a50c43131faf304ddeef3846fe5))
+* default value for official ([3aee052](https://github.com/Badminton-Apps/badman/commit/3aee0523eb817fece8f64c6361ce2bbb7ae5938e))
+* **deps:** update dependency conventional-changelog to v5 ([7f79a1d](https://github.com/Badminton-Apps/badman/commit/7f79a1d2b24b7223174a79d173eb2e1a633fd170))
+* disable dev shm usage ([16bafb6](https://github.com/Badminton-Apps/badman/commit/16bafb63deb14f82270fc2c89d1767a81388473b))
+* loading env from configservice ([1a0ade8](https://github.com/Badminton-Apps/badman/commit/1a0ade86c904dbefd112ff54b0fba5c8fb82f67d))
+* reinstall because of strange removal ([958a470](https://github.com/Badminton-Apps/badman/commit/958a4701a44bbb7e8344bc03952685e4238dc236))
+* should have been async ([33e61dc](https://github.com/Badminton-Apps/badman/commit/33e61dc68e516721c166ef24ceea0639376b1e1a))
+* update ranking testing with new builder ([5b9da11](https://github.com/Badminton-Apps/badman/commit/5b9da1196c35ee9a9d626a8ac7c2f5d7fd81afb8))
+* wait for loadstate ([1c1e772](https://github.com/Badminton-Apps/badman/commit/1c1e7725447b738a3ae61c42db4a9931ae20b4c2))
+* when user was logged in, but had no link. this wouldn't load the permissions config ([6bb3bdd](https://github.com/Badminton-Apps/badman/commit/6bb3bdd409e8208e0dee3ad89a44d6200afd4530))
+
+## [6.110.0-beta.14](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.13...v6.110.0-beta.14) (2023-10-06)
+
+
+### Bug Fixes
+
+* using correct label ([4523a06](https://github.com/Badminton-Apps/badman/commit/4523a06925eb67b170d2940e57bfb3bbeb34fe83))
+
+## [6.110.0-beta.13](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.12...v6.110.0-beta.13) (2023-10-05)
+
+## [6.110.0-beta.12](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.11...v6.110.0-beta.12) (2023-10-05)
+
+## [6.110.0-beta.11](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.10...v6.110.0-beta.11) (2023-10-05)
+
+
+### Bug Fixes
+
+* simple change to trigger client build ([0ba4d42](https://github.com/Badminton-Apps/badman/commit/0ba4d4295639a677f93a6e10ec6ebf60649d4575))
+
+## [6.110.0-beta.10](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.9...v6.110.0-beta.10) (2023-10-04)
+
+
+### Bug Fixes
+
+* loading tab via queryParam signal ([085c68d](https://github.com/Badminton-Apps/badman/commit/085c68db1635c6fe11cdcc2c69d6e404c9cd7f47))
+* pushing changing club to components ([ff6d7bd](https://github.com/Badminton-Apps/badman/commit/ff6d7bd38c6f9808de1d70299edcbb3bac678a2a))
+
+## [6.110.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.8...v6.110.0-beta.9) (2023-10-04)
+
+
+### Features
+
+* using slug in list-games ([3d3d3a7](https://github.com/Badminton-Apps/badman/commit/3d3d3a7009bc9b482389a01dd247554a974a622d))
+
+## [6.110.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.7...v6.110.0-beta.8) (2023-10-04)
+
+
+### Bug Fixes
+
+* creationg of team wasn't working as expected ([fef7985](https://github.com/Badminton-Apps/badman/commit/fef79853c7956ab359ab6703c7f67167d5611b16))
+
+## [6.110.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.6...v6.110.0-beta.7) (2023-10-04)
+
+## [6.110.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.5...v6.110.0-beta.6) (2023-10-04)
+
+## [6.110.0-beta.5](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.4...v6.110.0-beta.5) (2023-10-04)
+
+
+### Features
+
+* got it working ([55cc1e5](https://github.com/Badminton-Apps/badman/commit/55cc1e5616fb45601ac8c1e9aba2e897336c864e))
+
+## [6.110.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.3...v6.110.0-beta.4) (2023-10-04)
+
+
+### Features
+
+* some debugging info ([8323670](https://github.com/Badminton-Apps/badman/commit/83236702f7ba1c01c560e495174d5acb974a30e0))
+
+## [6.110.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.2...v6.110.0-beta.3) (2023-10-04)
+
+## [6.110.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.1...v6.110.0-beta.2) (2023-10-04)
+
+## [6.110.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.0...v6.110.0-beta.1) (2023-10-01)
+
+
+### Features
+
+* always recalculate points (in case of changes) ([73a258e](https://github.com/Badminton-Apps/badman/commit/73a258eb1025812f2c51ebe8c18aae7398e543b7))
+* button to go directly to last update ([1d355d2](https://github.com/Badminton-Apps/badman/commit/1d355d2daf741dd2e999780538c0fca98c230fa5))
+* ceil to top ([fea40f6](https://github.com/Badminton-Apps/badman/commit/fea40f678b7fcdd86ef00b0948caa95b49bab1bc))
+* convert difference to decimal ([6ea069f](https://github.com/Badminton-Apps/badman/commit/6ea069fdeaf51891340e1d36d9226d44bd7aab1f))
+* don't show points if none are known ([d43c147](https://github.com/Badminton-Apps/badman/commit/d43c14796176aa80ea337203e890a88cb254387e))
+* downgrade calculated ([97021c3](https://github.com/Badminton-Apps/badman/commit/97021c38d14976df162d142ecd350d2c59fa5782))
+* export ranking ([529c1aa](https://github.com/Badminton-Apps/badman/commit/529c1aa3e315987a490e423c74b43fbe67995dfc))
+* keep showing the udpates ([bf86cfd](https://github.com/Badminton-Apps/badman/commit/bf86cfd2a669a132fe2a6b971dc735904e9196a9))
+* move the most used actions to the main menu ([9b3c460](https://github.com/Badminton-Apps/badman/commit/9b3c46031eb14dcd801ddddafb9543777d74be89))
+* removing of events ([2d45c4d](https://github.com/Badminton-Apps/badman/commit/2d45c4da76cd987d2d498ed4b0e13c7ced88bdff))
+* save end date in url ([f596833](https://github.com/Badminton-Apps/badman/commit/f596833a81e2c2afbed0d4d2c5c2b4af07c2e7b9))
+* shared excel functions ([e1d244d](https://github.com/Badminton-Apps/badman/commit/e1d244d7bf545570fc121bfe3a6b6f4c8c98801e))
+
+
+### Bug Fixes
+
+* also fetch games that just were dropped ([5589206](https://github.com/Badminton-Apps/badman/commit/55892066fe2b8eaac9c53f8f056b1f1d7013c3db))
+* close menu on selection ([6a4c022](https://github.com/Badminton-Apps/badman/commit/6a4c022b29e63bf532c59b243c781ef7c8f8d93d))
+
+## [6.110.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.109.1...v6.110.0-beta.0) (2023-09-30)
+
+
+### Features
+
+* loading improvements + showing player's club ([80a5005](https://github.com/Badminton-Apps/badman/commit/80a5005b48abe264889e03bf4ee4e3d0d1526837))
+* more improvements on the loading of data ([7de59ad](https://github.com/Badminton-Apps/badman/commit/7de59adca65f275db39a85791e08c07cd7089922))
+* reworked the breakdown to be more reliable performance ([2dcbb8d](https://github.com/Badminton-Apps/badman/commit/2dcbb8d1693ccc483d0a7a9cb70a7aea4e96db9f))
+* some styling for detail-encounter ([5b86539](https://github.com/Badminton-Apps/badman/commit/5b86539dad5fede1a6776ae2bcec29280e58f7c9))
+* syncing now with config, allows LFBB and victor league to be included ([cc87617](https://github.com/Badminton-Apps/badman/commit/cc8761713927d98879c938d5e2e6eb436002c724))
+
+
+### Bug Fixes
+
+* fix for warning caused by angular-material ([3c7f1e1](https://github.com/Badminton-Apps/badman/commit/3c7f1e1ebce141acd48fb94f3e35bcc061b7fba0))
+* link the volumes to local disk ([4e63742](https://github.com/Badminton-Apps/badman/commit/4e63742b65362648d6e0b91da1ff82d849ff36c5))
+* loading observer should be above loading block ([b53f337](https://github.com/Badminton-Apps/badman/commit/b53f337608f0f1b933abb1c66f0d02ebcd08e9cd))
+* navigating would lock some components ([487739f](https://github.com/Badminton-Apps/badman/commit/487739f5a0aaef10151dc8b81f14ce6e491099a2))
+* skipping the game if there was no game ([2cf4a46](https://github.com/Badminton-Apps/badman/commit/2cf4a46f8c7bd2edafecb7cde78f2fdb904e86bb))
+* temp workaround, but still not ideal ([24f4188](https://github.com/Badminton-Apps/badman/commit/24f41885a0d9d937cd3365ed430de5f5c4fccc4c))
+* this way if the team get's created with number 1 ([04ecd21](https://github.com/Badminton-Apps/badman/commit/04ecd21145e9da79859b89183dc2f21081dc8bd0))
+* width should be set higher up ([5325328](https://github.com/Badminton-Apps/badman/commit/5325328fbda65758d5df154b431cafd5621d22bb))
+
 ### [6.109.1](https://github.com/Badminton-Apps/badman/compare/v6.109.0...v6.109.1) (2023-09-28)
 
 

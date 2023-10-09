@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -8,7 +8,7 @@ import {
 } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { RankingSystem } from '@badman/frontend-models';
@@ -40,8 +40,9 @@ import { MomentModule } from 'ngx-moment';
 })
 export class PeriodSelectionComponent {
   @Input() period!: FormGroup;
-
   @Input() system!: RankingSystem;
+
+  @ViewChild(MatMenuTrigger) trigger?: MatMenuTrigger;
 
   updates: Moment[] = [];
   minDateInUpdate?: Moment;
@@ -49,10 +50,6 @@ export class PeriodSelectionComponent {
   dateClass: MatCalendarCellClassFunction<Moment> = (cellDate, view) => {
     // Only highligh dates inside the month view.
     if (view === 'month') {
-      if (cellDate.isAfter(this.system.caluclationIntervalLastUpdate)) {
-        return '';
-      }
-
       // is first monday of the month
       let isFirstMonday = cellDate.clone().set('date', 1).isoWeekday(8);
 
@@ -73,6 +70,10 @@ export class PeriodSelectionComponent {
     return '';
   };
 
+  lastUpdate() {
+    this.customPeriod(moment(this.system.caluclationIntervalLastUpdate));
+  }
+
   customPeriod(targetDate: Moment | null) {
     if (!targetDate) {
       return;
@@ -91,7 +92,10 @@ export class PeriodSelectionComponent {
 
     const nextPeriod = startPeriod
       .clone()
-      .add(this.system.caluclationIntervalAmount, this.system.calculationIntervalUnit);
+      .add(
+        this.system.caluclationIntervalAmount,
+        this.system.calculationIntervalUnit
+      );
 
     this.period?.patchValue({
       start: startPeriod,
@@ -99,5 +103,7 @@ export class PeriodSelectionComponent {
       game: gamePeriod,
       next: nextPeriod,
     });
+
+    this.trigger?.closeMenu();
   }
 }

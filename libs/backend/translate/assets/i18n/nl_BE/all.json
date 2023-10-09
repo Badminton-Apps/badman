@@ -22,7 +22,6 @@
       "one": "1 verloren wedstrijd",
       "other": "{count} verloren wedstrijden"
     },
-    "nextPeriod": "Volgende periode",
     "no-tean": "Geen team",
     "noGames": "Geen wedstrijden",
     "notUsed": "Niet gebruikt",
@@ -32,14 +31,22 @@
       "one": "1 wedstrijd",
       "other": "{count} wedstrijden"
     },
-    "period": "Periode",
+    "period": {
+      "next": "Volgende periode",
+      "previous": "Vorige periode",
+      "title": "Periode"
+    },
     "points": "Punten",
     "pointsPerGame": "Punten per wedstrijd",
-    "prevPeriod": "Vorige periode",
-    "removed-games": "Wedstrijden van vorige periode die niet meer meetellen",
+    "removed-games": "Wedstrijden van vorige periode die niet meer meetellen bij de volgende klassementen update",
     "team": "Team",
     "title": "Level breakdown",
     "untill": "tot",
+    "update": {
+      "last": "Laatste update",
+      "point": "Punten update",
+      "ranking": "Ranking update"
+    },
     "upgrade": "Upgrade",
     "usedForDowngrade": "Gebruikt voor downgrade en upgrade",
     "usedForUpgrade": "Gebruikt enkel voor upgrade"
@@ -855,6 +862,10 @@
   },
   "tournament": {
     "away": "",
+    "delete": {
+      "description": "Weet je zeker dat je dit toernooi wilt verwijderen?",
+      "title": "Verwijder toernooi"
+    },
     "draw": {
       "games": "Wedstrijden",
       "title": "Poule"

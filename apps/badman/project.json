@@ -4,12 +4,13 @@
   "projectType": "application",
   "sourceRoot": "apps/badman/src",
   "prefix": "badman",
+  "tags": ["type:app", "scope:client"],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/badman/browser",
+        "outputPath": "dist/apps/badman",
         "index": "apps/badman/src/index.html",
         "main": "apps/badman/src/main.ts",
         "polyfills": ["zone.js"],
@@ -156,153 +157,6 @@
         "jestConfig": "apps/badman/jest.config.ts",
         "passWithNoTests": true
       }
-    },
-    "server": {
-      "executor": "@angular-devkit/build-angular:server",
-      "options": {
-        "outputPath": "dist/badman/server",
-        "main": "apps/badman/server.ts",
-        "tsConfig": "apps/badman/tsconfig.server.json",
-        "inlineStyleLanguage": "scss"
-      },
-      "configurations": {
-        "production": {
-          "fileReplacements": [
-            {
-              "replace": "apps/badman/src/environments/environment.ts",
-              "with": "apps/badman/src/environments/environment.prod.ts"
-            }
-          ],
-          "outputHashing": "media"
-        },
-        "beta": {
-          "fileReplacements": [
-            {
-              "replace": "apps/badman/src/environments/environment.ts",
-              "with": "apps/badman/src/environments/environment.beta.ts"
-            }
-          ],
-          "outputHashing": "media"
-        },
-        "development": {
-          "optimization": false,
-          "sourceMap": true,
-          "extractLicenses": false,
-          "vendorChunk": true,
-          "buildOptimizer": false
-        },
-        "dev-beta": {
-          "fileReplacements": [
-            {
-              "replace": "apps/badman/src/environments/environment.ts",
-              "with": "apps/badman/src/environments/environment.dev-beta.ts"
-            }
-          ],
-          "optimization": false,
-          "sourceMap": true,
-          "extractLicenses": false,
-          "vendorChunk": true,
-          "buildOptimizer": false
-        }
-      },
-      "defaultConfiguration": "development"
-    },
-    "serve-ssr": {
-      "executor": "@nguniversal/builders:ssr-dev-server",
-      "options": {
-        "port": 3000
-      },
-      "configurations": {
-        "development": {
-          "browserTarget": "badman:build:development",
-          "serverTarget": "badman:server:development"
-        },
-        "production": {
-          "browserTarget": "badman:build:production",
-          "serverTarget": "badman:server:production"
-        }
-      },
-      "defaultConfiguration": "development"
-    },
-    "prerender": {
-      "executor": "@nguniversal/builders:prerender",
-      "options": {
-        "routes": ["/"]
-      },
-      "configurations": {
-        "production": {
-          "browserTarget": "badman:build:production",
-          "serverTarget": "badman:server:production"
-        },
-        "development": {
-          "browserTarget": "badman:build:development",
-          "serverTarget": "badman:server:development"
-        },
-        "beta": {
-          "browserTarget": "badman:build:beta",
-          "serverTarget": "badman:server:beta"
-        },
-        "dev-beta": {
-          "browserTarget": "badman:build:dev-beta",
-          "serverTarget": "badman:server:dev-beta"
-        }
-      },
-      "defaultConfiguration": "development"
-    },
-    "collect-vars": {
-      "executor": "ng-process-env:collectVars",
-      "options": {
-        "environmentFile": "apps/badman/src/environments/environment.beta.ts"
-      }
-    },
-    "storybook": {
-      "executor": "@storybook/angular:start-storybook",
-      "options": {
-        "port": 4400,
-        "configDir": "apps/badman/.storybook",
-        "browserTarget": "badman:build",
-        "compodoc": false,
-        "open": false
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "build-storybook": {
-      "executor": "@storybook/angular:build-storybook",
-      "outputs": ["{options.outputDir}"],
-      "options": {
-        "outputDir": "dist/storybook/badman",
-        "configDir": "apps/badman/.storybook",
-        "browserTarget": "badman:build",
-        "compodoc": false
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "test-storybook": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "test-storybook -c apps/badman/.storybook --url=http://localhost:4400"
-      }
-    },
-    "static-storybook": {
-      "executor": "@nx/web:file-server",
-      "options": {
-        "buildTarget": "badman:build-storybook",
-        "staticFilePath": "dist/storybook/badman"
-      },
-      "configurations": {
-        "ci": {
-          "buildTarget": "badman:build-storybook:ci"
-        }
-      }
     }
-  },
-  "tags": []
+  }
 }

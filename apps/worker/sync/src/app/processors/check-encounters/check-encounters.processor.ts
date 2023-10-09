@@ -2,6 +2,7 @@ import {
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
+  Player,
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
@@ -107,11 +108,11 @@ export class CheckEncounterProcessor {
           this.logger.debug(
             `Processing cthunk of ${chunk.length} encounters, ${
               encounters.count - encountersProcessed
-            } encounter left, ${chunks.length - chunksProcessed} chunks left`
+            } encounter left, ${chunks.length - chunksProcessed} chunks left`,
           );
           // Close browser if any
           if (browser) {
-            browser.close();
+            await browser.close();
           }
 
           // Create browser
@@ -126,9 +127,11 @@ export class CheckEncounterProcessor {
 
           // Processing encounters
           for (const encounter of chunk) {
-            await this.syncEncounter(encounter, page);
+            await this._syncEncounter(encounter, page);
             encountersProcessed++;
           }
+
+          await page.close();
           chunksProcessed++;
         }
       } else {
@@ -139,7 +142,7 @@ export class CheckEncounterProcessor {
     } finally {
       // Close browser
       if (browser) {
-        browser.close();
+        await browser.close();
       }
 
       this.logger.log('Synced encounters');
@@ -147,12 +150,12 @@ export class CheckEncounterProcessor {
   }
 
   @Process(Sync.CheckEncounter)
-  async acceptDate(job: Job<{ encounterId: string }>) {
+  async syncEncounter(job: Job<{ encounterId: string }>) {
     const encounter = await EncounterCompetition.findByPk(
       job.data.encounterId,
       {
         include: includes,
-      }
+      },
     );
 
     if (!encounter) {
@@ -160,7 +163,7 @@ export class CheckEncounterProcessor {
       return;
     }
     // Create browser
-    const browser = await getBrowser(false);
+    const browser = await getBrowser();
     try {
       const page = await browser.newPage();
       page.setDefaultTimeout(10000);
@@ -170,7 +173,9 @@ export class CheckEncounterProcessor {
       await accepCookies({ page });
 
       // Processing encounters
-      await this.syncEncounter(encounter, page);
+      await this._syncEncounter(encounter, page);
+
+      await page.close();
     } catch (error) {
       this.logger.error(error);
     } finally {
@@ -183,67 +188,85 @@ export class CheckEncounterProcessor {
     }
   }
 
-  async syncEncounter(encounter: EncounterCompetition, page: Page) {
-    this.logger.debug(`Syncing encounter ${encounter.visualCode}`);
+  private async _syncEncounter(encounter: EncounterCompetition, page: Page) {
     const url = await gotoEncounterPage({ page }, encounter);
+    this.logger.debug(`Syncing encounter ${url}`);
+    try {
+      const time = await hasTime({ page }, { logger: this.logger });
+      if (!time) {
+        this.logger.verbose(`Encounter ${encounter.visualCode} has no time`);
+        return;
+      }
+      const { entered, enteredOn } = await detailEntered(
+        { page },
+        { logger: this.logger },
+      );
+      const { accepted, acceptedOn } = await detailAccepted(
+        { page },
+        { logger: this.logger },
+      );
+      const { hasComment } = await detailComment(
+        { page },
+        { logger: this.logger },
+      );
 
-    const time = await hasTime({ page }, { logger: this.logger });
-    if (!time) {
-      this.logger.verbose(`Encounter ${encounter.visualCode} has no time`);
-      return;
-    }
-    const { entered, enteredOn } = await detailEntered(
-      { page },
-      { logger: this.logger }
-    );
-    const { accepted, acceptedOn } = await detailAccepted(
-      { page },
-      { logger: this.logger }
-    );
-    const { hasComment } = await detailComment(
-      { page },
-      { logger: this.logger }
-    );
+      const hoursPassed = moment().diff(encounter.date, 'hour');
+      this.logger.debug(
+        `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
+      );
 
-    const hoursPassed = moment().diff(encounter.date, 'hour');
-    this.logger.debug(
-      `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`
-    );
+      if (!entered && hoursPassed > 24 && !hasComment) {
+        this.notificationService.notifyEncounterNotEntered(encounter);
+      } else if (!accepted && hoursPassed > 48 && !hasComment) {
+        this.notificationService.notifyEncounterNotAccepted(encounter);
+      }
 
-    if (!entered && hoursPassed > 24 && !hasComment) {
-      this.notificationService.notifyEncounterNotEntered(encounter);
-    } else if (!accepted && hoursPassed > 48 && !hasComment) {
-      this.notificationService.notifyEncounterNotAccepted(encounter);
-    }
+      // Update our local data
+      if (entered) {
+        const enteredMoment = moment(enteredOn);
 
-    // Update our local data
-    if (entered) {
-      const enteredMoment = moment(enteredOn);
+        if (!enteredMoment.isValid()) {
+          this.logger.error(
+            `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`,
+          );
+          return;
+        }
 
-      if (!enteredMoment.isValid()) {
-        this.logger.error(
-          `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`
-        );
+        encounter.enteredOn = enteredMoment.toDate();
+        await encounter.save();
+      }
+
+      if (accepted) {
+        const acceptedMoment = moment(acceptedOn);
+
+        if (!acceptedMoment.isValid()) {
+          this.logger.error(
+            `Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`,
+          );
+          return;
+        }
+
+        encounter.acceptedOn = acceptedMoment.toDate();
+        encounter.accepted = true;
+        await encounter.save();
+      }
+    } catch (error) {
+      this.logger.error(error);
+      const glenn = await Player.findOne({
+        where: {
+          slug: 'glenn-latomme',
+        },
+      });
+
+      if (!glenn) {
+        this.logger.error(`Glenn not found`);
         return;
       }
 
-      encounter.enteredOn = enteredMoment.toDate();
-      await encounter.save();
-    }
-
-    if (accepted) {
-      const acceptedMoment = moment(acceptedOn);
-
-      if (!acceptedMoment.isValid()) {
-        this.logger.error(
-          `Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`
-        );
-        return;
-      }
-
-      encounter.acceptedOn = acceptedMoment.toDate();
-      encounter.accepted = true;
-      await encounter.save();
+      await this.notificationService.notifySyncEncounterFailed(glenn.id, {
+        url,
+        encounter,
+      });
     }
   }
 }

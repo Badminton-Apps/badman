@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   Injector,
+  OnDestroy,
   OnInit,
   Signal,
   TemplateRef,
@@ -39,8 +40,8 @@ import { sortSubEvents } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { combineLatest, lastValueFrom } from 'rxjs';
-import { filter, map, startWith, take } from 'rxjs/operators';
+import { Subject, combineLatest, lastValueFrom } from 'rxjs';
+import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
@@ -85,7 +86,7 @@ import { ExcelService } from '@badman/frontend-excel';
     CompetitionEncountersComponent,
   ],
 })
-export class DetailPageComponent implements OnInit {
+export class DetailPageComponent implements OnInit, OnDestroy {
   // injectors
   authService = inject(ClaimService);
   injector = inject(Injector);
@@ -105,6 +106,7 @@ export class DetailPageComponent implements OnInit {
     () => this.hasPermission() || this.versionInfo.beta
   );
 
+  destroy$ = new Subject<void>();
   copyYearControl = new FormControl();
 
   eventCompetition!: EventCompetition;
@@ -128,68 +130,70 @@ export class DetailPageComponent implements OnInit {
     combineLatest([
       this.route.data,
       this.translate.get(['all.competition.title']),
-    ]).subscribe(([data, translations]) => {
-      this.eventCompetition = data['eventCompetition'];
-      this.subEvents = this.eventCompetition.subEventCompetitions
-        ?.sort(sortSubEvents)
-        ?.reduce((acc, subEventCompetition) => {
-          const eventType = subEventCompetition.eventType || 'Unknown';
-          const subEvents = acc.find(
-            (x) => x.eventType === eventType
-          )?.subEvents;
-          if (subEvents) {
-            subEvents.push(subEventCompetition);
-          } else {
-            acc.push({ eventType, subEvents: [subEventCompetition] });
-          }
-          return acc;
-        }, [] as { eventType: string; subEvents: SubEventCompetition[] }[]);
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([data, translations]) => {
+        this.eventCompetition = data['eventCompetition'];
+        this.subEvents = this.eventCompetition.subEventCompetitions
+          ?.sort(sortSubEvents)
+          ?.reduce((acc, subEventCompetition) => {
+            const eventType = subEventCompetition.eventType || 'Unknown';
+            const subEvents = acc.find(
+              (x) => x.eventType === eventType
+            )?.subEvents;
+            if (subEvents) {
+              subEvents.push(subEventCompetition);
+            } else {
+              acc.push({ eventType, subEvents: [subEventCompetition] });
+            }
+            return acc;
+          }, [] as { eventType: string; subEvents: SubEventCompetition[] }[]);
 
-      const eventCompetitionName = `${this.eventCompetition.name}`;
-      this.copyYearControl.setValue(
-        (this.eventCompetition.season || new Date().getFullYear()) + 1
-      );
+        const eventCompetitionName = `${this.eventCompetition.name}`;
+        this.copyYearControl.setValue(
+          (this.eventCompetition.season || new Date().getFullYear()) + 1
+        );
 
-      this.seoService.update({
-        title: eventCompetitionName,
-        description: `Club ${eventCompetitionName}`,
-        type: 'website',
-        keywords: ['event', 'competition', 'badminton'],
+        this.seoService.update({
+          title: eventCompetitionName,
+          description: `Club ${eventCompetitionName}`,
+          type: 'website',
+          keywords: ['event', 'competition', 'badminton'],
+        });
+        this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
+        this.breadcrumbsService.set(
+          'competition',
+          translations['all.competition.title']
+        );
+
+        this.canViewEnrollments = toSignal(
+          this.authService.hasAnyClaims$([
+            'view-any:enrollment-competition',
+            `${this.eventCompetition.id}_view:enrollment-competition`,
+          ]),
+          { injector: this.injector }
+        );
+
+        effect(
+          () => {
+            // if the canViewEnrollments is loaded
+            if (this.canViewEnrollments?.() !== undefined) {
+              // check if the query params contian tabindex
+              this.route.queryParams
+                .pipe(
+                  startWith(this.route.snapshot.queryParams),
+                  take(1),
+                  filter((params) => params['tab']),
+                  map((params) => params['tab'])
+                )
+                .subscribe((tabindex) => {
+                  this.currentTab.set(parseInt(tabindex, 10));
+                });
+            }
+          },
+          { injector: this.injector, allowSignalWrites: true }
+        );
       });
-      this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
-      this.breadcrumbsService.set(
-        'competition',
-        translations['all.competition.title']
-      );
-
-      this.canViewEnrollments = toSignal(
-        this.authService.hasAnyClaims$([
-          'view-any:enrollment-competition',
-          `${this.eventCompetition.id}_view:enrollment-competition`,
-        ]),
-        { injector: this.injector }
-      );
-
-      effect(
-        () => {
-          // if the canViewEnrollments is loaded
-          if (this.canViewEnrollments?.() !== undefined) {
-            // check if the query params contian tabindex
-            this.route.queryParams
-              .pipe(
-                startWith(this.route.snapshot.queryParams),
-                take(1),
-                filter((params) => params['tab']),
-                map((params) => params['tab'])
-              )
-              .subscribe((tabindex) => {
-                this.currentTab.set(parseInt(tabindex, 10));
-              });
-          }
-        },
-        { injector: this.injector, allowSignalWrites: true }
-      );
-    });
   }
 
   async copy(templateRef: TemplateRef<object>) {
@@ -386,5 +390,10 @@ export class DetailPageComponent implements OnInit {
       },
       queryParamsHandling: 'merge',
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();``
+    this.destroy$.complete();
   }
 }

@@ -43,7 +43,7 @@
         }"
       >
         <div class="player" *ngIf="this.getPlayer(game, 1, 1) as p1t1">
-          <a [routerLink]="['/player', p1t1?.id]"
+          <a [routerLink]="['/player', p1t1?.slug]"
             >{{ p1t1?.fullName }}
             <ng-container *ngIf="this.getRanking(game, p1t1) as ranking"
               >({{ ranking }})</ng-container
@@ -51,7 +51,7 @@
           >
         </div>
         <div class="player" *ngIf="this.getPlayer(game, 2, 1) as p2t1">
-          <a [routerLink]="['/player', p2t1?.id]">
+          <a [routerLink]="['/player', p2t1?.slug]">
             {{ p2t1?.fullName }}
             <ng-container *ngIf="this.getRanking(game, p2t1) as ranking"
               >({{ ranking }})</ng-container
@@ -94,7 +94,7 @@
         }"
       >
         <div class="player" *ngIf="this.getPlayer(game, 1, 2) as p1t2">
-          <a [routerLink]="['/player', p1t2?.id]">
+          <a [routerLink]="['/player', p1t2?.slug]">
             <ng-container *ngIf="this.getRanking(game, p1t2) as ranking"
               >({{ ranking }})</ng-container
             >
@@ -102,7 +102,7 @@
           </a>
         </div>
         <div class="player" *ngIf="this.getPlayer(game, 2, 2) as p2t2">
-          <a [routerLink]="['/player', p2t2?.id]">
+          <a [routerLink]="['/player', p2t2?.slug]">
             <ng-container *ngIf="this.getRanking(game, p2t2) as ranking"
               >({{ ranking }})</ng-container
             >
@@ -136,7 +136,6 @@
     <div class="no-more-games" translate="all.competition.no-more-games"></div>
   </ng-container>
 
-  <badman-loading-block [items]="5" height="80px" *ngIf="!this.endOfList" />
-
   <div #bottomObserver id="bottomObserver"></div>
+  <badman-loading-block [items]="5" height="80px" *ngIf="!this.endOfList" />
 </ng-container>

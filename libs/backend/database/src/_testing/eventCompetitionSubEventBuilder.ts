@@ -1,6 +1,9 @@
-import { EventCompetition, SubEventCompetition } from '../models';
+import { SubEventTypeEnum } from '@badman/utils';
+import { SubEventCompetition } from '../models';
+import { EventCompetitionBuilder } from './eventCompetitionBuilder';
 import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
 import { SystemGroupBuilder } from './systemGroupBuilder';
+import { EventCompetitionEntryBuilder } from './eventCompetitionEntryBuilder';
 
 export class SubEventCompetitionBuilder {
   private build = false;
@@ -8,13 +11,16 @@ export class SubEventCompetitionBuilder {
   private subEvent: SubEventCompetition;
 
   private draws: DrawCompetitionBuilder[] = [];
+  private entries: EventCompetitionEntryBuilder[] = [];
 
-  constructor() {
-    this.subEvent = new SubEventCompetition();
+  constructor(type: SubEventTypeEnum) {
+    this.subEvent = new SubEventCompetition({
+      eventType: type,
+    });
   }
 
-  static Create(): SubEventCompetitionBuilder {
-    return new SubEventCompetitionBuilder();
+  static Create(type: SubEventTypeEnum): SubEventCompetitionBuilder {
+    return new SubEventCompetitionBuilder(type);
   }
 
   WithName(firstName: string): SubEventCompetitionBuilder {
@@ -30,7 +36,7 @@ export class SubEventCompetitionBuilder {
 
   WithIndex(
     minBaseIndex: number,
-    maxBaseIndex: number
+    maxBaseIndex: number,
   ): SubEventCompetitionBuilder {
     this.subEvent.minBaseIndex = minBaseIndex;
     this.subEvent.maxBaseIndex = maxBaseIndex;
@@ -42,8 +48,13 @@ export class SubEventCompetitionBuilder {
     return this;
   }
 
-  ForEvent(event: EventCompetition): SubEventCompetitionBuilder {
-    this.subEvent.eventId = event.id;
+  WithEventId(eventId: string): SubEventCompetitionBuilder {
+    this.subEvent.eventId = eventId;
+    return this;
+  }
+
+  ForEvent(event: EventCompetitionBuilder): SubEventCompetitionBuilder {
+    event.WithSubEvent(this);
     return this;
   }
 
@@ -53,8 +64,12 @@ export class SubEventCompetitionBuilder {
   }
 
   WithDraw(draw: DrawCompetitionBuilder): SubEventCompetitionBuilder {
-    draw.ForSubEvent(this.subEvent);
     this.draws.push(draw);
+    return this;
+  }
+
+  WithEntry(entry: EventCompetitionEntryBuilder): SubEventCompetitionBuilder {
+    this.entries.push(entry);
     return this;
   }
 
@@ -66,9 +81,16 @@ export class SubEventCompetitionBuilder {
     try {
       await this.subEvent.save();
 
+
       for (const draw of this.draws) {
-        await draw.Build();
+        const d = await draw.Build();
+        await this.subEvent.addDrawCompetition(d);
       }
+
+      for (const entry of this.entries) {
+        entry.WithSubEventId(this.subEvent.id);
+      }
+
     } catch (error) {
       console.error(error);
       throw error;

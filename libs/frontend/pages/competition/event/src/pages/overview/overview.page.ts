@@ -107,7 +107,8 @@ export class OverviewPageComponent implements OnInit {
     });
 
     const result = await lastValueFrom(dialogRef.afterClosed());
-    if (result?.url) {
+
+    if (result?.id) {
       await lastValueFrom(this.jobsService.syncEventById(result));
     }
   }

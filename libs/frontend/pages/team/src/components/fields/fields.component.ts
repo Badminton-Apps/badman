@@ -71,10 +71,17 @@ export class TeamFieldComponent implements OnInit {
         }
 
         if (type) {
+          const numbersForType = this.teamNumbers?.[type as SubEventType] ?? [];
+
+          if (numbersForType.length === 0) {
+            this.group?.get('teamNumber')?.setValue(1);
+            this.group?.get('teamNumber')?.enable();
+            this.options = [1];
+            return;
+          }
+
           // find max number
-          const max = Math.max(
-            ...(this.teamNumbers?.[type as SubEventType] ?? [])
-          );
+          const max = Math.max(...numbersForType);
 
           // if the teamnumber is not set, set it to max + 1
           if (!this.group?.get('teamNumber')?.value) {

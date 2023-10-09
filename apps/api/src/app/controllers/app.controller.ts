@@ -1,5 +1,5 @@
 import { User } from '@badman/backend-authorization';
-import { Player } from '@badman/backend-database';
+import { EncounterCompetition, Player } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
 import { MailingService } from '@badman/backend-mailing';
 import { NotificationService } from '@badman/backend-notifications';
@@ -29,9 +29,7 @@ export class AppController {
     @InjectQueue(SimulationQueue) private rankingSim: Queue,
     @InjectQueue(SyncQueue) private rankingSync: Queue,
     private cpGen: CpGeneratorService,
-    private notificationService: NotificationService,
     private planner: PlannerService,
-    private mailService: MailingService
   ) {}
 
   @Post('queue-job')
@@ -44,13 +42,13 @@ export class AppController {
       jobArgs: { [key: string]: unknown };
       removeOnComplete: boolean;
       removeOnFail: boolean;
-    }
+    },
   ) {
     this.logger.debug({
       message: 'Queueing job',
       args: args.job,
       user: user?.toJSON(),
-      hasPerm: user.hasAnyPermission(['change:job']),
+      hasPerm: await user.hasAnyPermission(['change:job']),
     });
 
     if (!(await user.hasAnyPermission(['change:job']))) {
@@ -94,7 +92,7 @@ export class AppController {
       const fileName = basename(fileLoc, extension);
       res.header(
         'Content-disposition',
-        'attachment; filename=' + fileName + extension
+        'attachment; filename=' + fileName + extension,
       );
 
       res.type(extension).send(file);
@@ -107,7 +105,7 @@ export class AppController {
   @Get('planner')
   async getPlanner(
     @Res() res: FastifyReply,
-    @Query() query: { season: string }
+    @Query() query: { season: string },
   ) {
     this.logger.debug('Generating planner');
     const result = await this.planner.getPlannerData(query.season);

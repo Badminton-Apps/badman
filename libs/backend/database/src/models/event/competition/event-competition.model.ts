@@ -152,6 +152,10 @@ export class EventCompetition extends Model {
   @Column(DataType.STRING)
   slug?: string;
 
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  teamMatcher?: string;
+
   @Field(() => Int)
   @Column(DataType.NUMBER)
   usedRankingAmount!: number;
@@ -167,8 +171,11 @@ export class EventCompetition extends Model {
   }
 
   @Field(() => Boolean)
-  @Column(DataType.BOOLEAN)
-  official?: boolean;
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  official!: boolean;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
@@ -196,7 +203,7 @@ export class EventCompetition extends Model {
 
   regenerateSlug!: Slugify<EventCompetition>;
 
-  // Has many SubEvent
+  // Has many SubEventCompetition
   getSubEventCompetitions!: HasManyGetAssociationsMixin<SubEventCompetition>;
   setSubEventCompetitions!: HasManySetAssociationsMixin<
     SubEventCompetition,
@@ -206,7 +213,7 @@ export class EventCompetition extends Model {
     SubEventCompetition,
     string
   >;
-  addSubEventCompetitiont!: HasManyAddAssociationMixin<
+  addSubEventCompetition!: HasManyAddAssociationMixin<
     SubEventCompetition,
     string
   >;
@@ -262,7 +269,7 @@ export class EventCompetitionUpdateInput extends PartialType(
     'exceptions',
     'infoEvents',
   ] as const),
-  InputType
+  InputType,
 ) {
   @Field(() => [AvailabilityExceptionInputType], { nullable: true })
   exceptions?: AvailabilityException[];
@@ -274,7 +281,7 @@ export class EventCompetitionUpdateInput extends PartialType(
 @InputType()
 export class EventCompetitionNewInput extends PartialType(
   OmitType(EventCompetitionUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}
 
 export interface EventException {

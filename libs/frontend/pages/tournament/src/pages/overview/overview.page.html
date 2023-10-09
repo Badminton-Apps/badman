@@ -86,7 +86,7 @@
               <mat-icon>edit</mat-icon>
               <span>{{'all.tournament.overview.menu.edit' | translate}}</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item (click)="removeEvent(row)">
               <mat-icon>delete</mat-icon>
               <span>{{'all.tournament.overview.menu.delete' | translate}}</span>
             </button>

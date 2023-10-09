@@ -1,11 +1,15 @@
 import { RankingSystems } from '@badman/utils';
 import { RankingSystem } from '../models';
 import { SystemGroupBuilder } from './systemGroupBuilder';
+import { RankingPlaceBuilder } from './rankingPlaceBuilder';
 
 export class SystemBuilder {
   private build = false;
   
   private system: RankingSystem;
+
+  private groups: SystemGroupBuilder[] = [];
+  private rankingPlaces: RankingPlaceBuilder[] = [];
 
   constructor(
     rankingSystem: RankingSystems,
@@ -42,7 +46,7 @@ export class SystemBuilder {
   }
 
   WithGroup(group: SystemGroupBuilder) {
-    group.WithSystem(this.system);
+    this.groups.push(group);
     return this;
   }
 
@@ -115,6 +119,11 @@ export class SystemBuilder {
     return this;
   }
 
+  WithrankingPlace(rankingPlace: RankingPlaceBuilder): SystemBuilder {
+    this.rankingPlaces.push(rankingPlace);
+    return this;
+  }
+
   AsPrimary(): SystemBuilder {
     this.system.primary = true;
     return this;
@@ -132,6 +141,16 @@ export class SystemBuilder {
 
     try {
       await this.system.save();
+
+      for (const group of this.groups) {
+        const g = await group.Build();
+        await this.system.addRankingGroup(g);
+      }
+
+      for (const place of this.rankingPlaces) {
+        place.WithSystemId(this.system.id);
+      }
+
     } catch (error) {
       console.error(error);
       throw error;

@@ -1,17 +1,16 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Inject,
   Input,
+  OnChanges,
   OnInit,
-  PLATFORM_ID,
-  TransferState,
+  SimpleChanges,
+  inject,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { EncounterCompetition, Team } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -32,8 +31,10 @@ import { BehaviorSubject, Observable, map, scan, switchMap, tap } from 'rxjs';
   templateUrl: './upcoming-games.component.html',
   styleUrls: ['./upcoming-games.component.scss'],
 })
-export class UpcomingGamesComponent implements OnInit {
-  @Input() clubid?: string;
+export class UpcomingGamesComponent implements OnInit, OnChanges {
+  private apollo = inject(Apollo);
+
+  @Input() clubId?: string;
   @Input() teamId?: string;
 
   @Input() teams!: Team | Team[];
@@ -43,26 +44,49 @@ export class UpcomingGamesComponent implements OnInit {
 
   hasHomeTeam = false;
   hasMoreToLoad = true;
+  reset = false;
 
   readonly pageSize = 10;
 
-  constructor(
-    private apollo: Apollo,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {}
-
   ngOnInit() {
     this.upcomingEncounters$ = this.currentIndex$.pipe(
-      switchMap((offset) =>
-        this._loadUpcomingEncounters(
+      switchMap((offset) => {
+        return this._loadUpcomingEncounters(
           Array.isArray(this.teams) ? this.teams : [this.teams],
           offset
-        )
-      ),
-      // append the value
-      scan((acc, curr) => acc.concat(curr), [] as EncounterCompetition[])
+        );
+      }),
+      scan((acc, curr) => {
+        // reset the list
+        if (this.reset) {
+          this.reset = false;
+          return acc;
+        }
+        // append the value
+        return acc.concat(curr);
+      }, [] as EncounterCompetition[])
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      !changes['clubid']?.previousValue &&
+      !changes['teamId']?.previousValue &&
+      !changes['teams']?.previousValue
+    ) {
+      return;
+    }
+
+    // Reset the list when the id changes
+    if (
+      changes['clubid']?.currentValue !== changes['clubid']?.previousValue ||
+      changes['teamId']?.currentValue !== changes['teamId']?.previousValue ||
+      JSON.stringify(changes['teams']?.currentValue) !==
+        JSON.stringify(changes['teams']?.previousValue)
+    ) {
+      this.reset = true;
+      this.currentIndex$.next(0);
+    }
   }
 
   private _loadUpcomingEncounters(teams: Team[], offset: number) {
@@ -137,11 +161,11 @@ export class UpcomingGamesComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          'upcommingKey-' + this.teamId ?? this.clubid,
-          this.stateTransfer,
-          this.platformId
-        ),
+        // transferState(
+        //   'upcommingKey-' + this.teamId ?? this.clubid,
+        //   this.stateTransfer,
+        //   this.platformId
+        // ),
         map((result) => {
           return result?.data?.encounterCompetitions?.rows?.map(
             (encounter) => new EncounterCompetition(encounter)
@@ -157,14 +181,14 @@ export class UpcomingGamesComponent implements OnInit {
   }
 
   private _setHome(encounters: EncounterCompetition[]) {
-    if (!this.clubid && !this.teamId) {
+    if (!this.clubId && !this.teamId) {
       return encounters;
     }
 
     this.hasHomeTeam = true;
 
     return encounters.map((r) => {
-      if (r.home?.club?.id === this.clubid || r.home?.id === this.teamId) {
+      if (r.home?.club?.id === this.clubId || r.home?.id === this.teamId) {
         r.showingForHomeTeam = true;
       } else {
         r.showingForHomeTeam = false;

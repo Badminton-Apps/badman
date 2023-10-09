@@ -29,7 +29,7 @@ export class MailingService {
 
   constructor(
     private compileService: CompileService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {
     this.subjectPrefix =
       this.configService.get<string>('MAIL_SUBJECT_PREFIX') || '';
@@ -58,7 +58,7 @@ export class MailingService {
       slug: string;
     },
     encounter: EncounterCompetition,
-    isHome: boolean
+    isHome: boolean,
   ) {
     // fetch event
     const event = await encounter.getDrawCompetition({
@@ -116,7 +116,7 @@ export class MailingService {
       slug: string;
     },
     encounter: EncounterCompetition,
-    isHome: boolean
+    isHome: boolean,
   ) {
     // fetch event
     const event = await encounter.getDrawCompetition({
@@ -174,7 +174,7 @@ export class MailingService {
     },
     encounter: EncounterCompetition,
     isHome: boolean,
-    isChangedLocation: boolean
+    isChangedLocation: boolean,
   ) {
     if (!encounter.home || !encounter.away) {
       throw new Error('Team not found');
@@ -232,9 +232,7 @@ export class MailingService {
     await this._sendMail(options);
   }
 
-  async sendLocationChangedMail(
-    encounter: EncounterCompetition
-  ) {
+  async sendLocationChangedMail(encounter: EncounterCompetition) {
     // fetch event
     const event = await encounter.getDrawCompetition({
       attributes: ['id'],
@@ -253,7 +251,6 @@ export class MailingService {
     });
 
     const location = await encounter.getLocation();
-
 
     const eventCompetition = event?.subEventCompetition
       ?.eventCompetition as EventCompetition;
@@ -289,7 +286,7 @@ export class MailingService {
       slug: string;
     },
     encounter: EncounterCompetition,
-    url: string
+    url: string,
   ) {
     moment.locale('nl-be');
     const options = {
@@ -322,7 +319,7 @@ export class MailingService {
       slug: string;
     },
     encounter: EncounterCompetition,
-    url: string
+    url: string,
   ) {
     moment.locale('nl-be');
     const options = {
@@ -356,7 +353,7 @@ export class MailingService {
     },
     club: Club,
     locations: Location[],
-    comments: Comment[]
+    comments: Comment[],
   ) {
     moment.locale('nl-be');
     const options = {
@@ -389,7 +386,7 @@ export class MailingService {
     },
     event: EventCompetition | EventTournament,
     success: boolean,
-    url?: string
+    url?: string,
   ) {
     moment.locale('nl-be');
     const options = {
@@ -410,6 +407,40 @@ export class MailingService {
       event: EventCompetition;
       url?: string;
       success: boolean;
+      user: string;
+      settingsSlug: string;
+    }>;
+
+    await this._sendMail(options);
+  }
+
+  async sendSyncEncounterFailedMail(
+    to: {
+      fullName: string;
+      email: string;
+      slug: string;
+    },
+    encounter: EncounterCompetition,
+    url?: string,
+    urlBadman?: string,
+  ) {
+    moment.locale('nl-be');
+    const options = {
+      from: 'info@badman.app',
+      to: to.email,
+      subject: `Synchronisatie encounter failed`,
+      template: 'synEncounterFailed',
+      context: {
+        event: encounter.toJSON(),
+        url,
+        urlBadman,
+        user: to.fullName,
+        settingsSlug: to.slug,
+      },
+    } as MailOptions<{
+      event: EncounterCompetition;
+      url?: string;
+      urlBadman?: string;
       user: string;
       settingsSlug: string;
     }>;
@@ -449,7 +480,7 @@ export class MailingService {
         lastValueFrom(
           this.compileService.toHtml(template, {
             locals: context,
-          })
+          }),
         ).then((html) => {
           mail.data.html = html;
           callback();
@@ -484,12 +515,11 @@ export class MailingService {
       // add clientUrl to context
       options.context.clientUrl = this.configService.get('CLIENT_URL') ?? '';
       if (this._mailingEnabled === false) {
-        this.logger.debug('Mailing disabled', { data: options });
+        this.logger.debug('Mailing disabled');
         const compiled = await lastValueFrom(
-          this.compileService.toHtml(
-            options.template,
-            options.context as CompileOptions
-          )
+          this.compileService.toHtml(options.template, {
+            locals: options.context,
+          } as CompileOptions),
         );
 
         if (process.env.NODE_ENV === 'development') {
@@ -514,7 +544,7 @@ export class MailingService {
         options.cc = [];
 
         options.subject += ` overwritten email original(to: ${to?.join(
-          ','
+          ',',
         )}, cc: ${cc.join(',')}) `;
       }
 

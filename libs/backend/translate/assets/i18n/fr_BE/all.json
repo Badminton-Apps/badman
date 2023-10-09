@@ -22,7 +22,6 @@
       "one": "1 match perdu",
       "other": "{count} matchs perdus"
     },
-    "nextPeriod": "Prochaine période",
     "no-tean": "Pas d'équipe",
     "noGames": "Pas de concours",
     "notUsed": "Non utilisé",
@@ -32,14 +31,22 @@
       "one": "1 match",
       "other": "{count}  correspondances"
     },
-    "period": "Période",
+    "period": {
+      "next": "Prochaine période",
+      "previous": "Période précédente",
+      "title": "Période"
+    },
     "points": "Points",
     "pointsPerGame": "Points par match",
-    "prevPeriod": "Période précédente",
-    "removed-games": "Matchs de la période précédente qui ne comptent plus",
+    "removed-games": "Matchs de la période précédente qui ne comptent plus dans la prochaine mise à jour du classement",
     "team": "Équipe",
     "title": "Répartition des niveaux",
     "untill": "Tot",
+    "update": {
+      "last": "Dernière mise à jour",
+      "point": "Mise à jour des points",
+      "ranking": "Mise à jour du classement"
+    },
     "upgrade": "Surclassement",
     "usedForDowngrade": "Utilisé pour la rétrogradation et la mise à niveau",
     "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
@@ -855,6 +862,10 @@
   },
   "tournament": {
     "away": "",
+    "delete": {
+      "description": "Êtes-vous sûr de vouloir supprimer ce tournoi ?",
+      "title": "Supprimer le tournoi"
+    },
     "draw": {
       "games": "Correspondances",
       "title": "Piscine"

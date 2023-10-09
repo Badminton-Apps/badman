@@ -23,6 +23,18 @@
 
       <mat-menu #menu="matMenu">
         <badman-has-claim [any]="['edit:competition']">
+          <button mat-menu-item [routerLink]="'edit'">
+            <mat-icon>edit</mat-icon>
+            <span>{{'all.button.edit' | translate}}</span>
+          </button>
+
+          <badman-has-claim [any]="['change:job']">
+            <button mat-menu-item (click)="syncEvent()">
+              <mat-icon>sync</mat-icon>
+              <span>{{'all.competition.menu.sync' | translate}}</span>
+            </button>
+          </badman-has-claim>
+
           <button mat-menu-item [matMenuTriggerFor]="actions">
             <mat-icon> more_horiz </mat-icon>
             <span>{{'all.competition.menu.actions' | translate}}</span>
@@ -34,11 +46,6 @@
           </button>
 
           <mat-menu #actions="matMenu">
-            <button mat-menu-item [routerLink]="'edit'">
-              <mat-icon>edit</mat-icon>
-              <span>{{'all.button.edit' | translate}}</span>
-            </button>
-
             <button mat-menu-item (click)="this.copy(year)">
               <mat-icon>content_copy</mat-icon>
               <span>{{'all.competition.menu.copy' | translate}}</span>
@@ -72,13 +79,6 @@
                 'all.competition.menu.make-official') | translate}}
               </span>
             </button>
-
-            <badman-has-claim [any]="['change:job']">
-              <button mat-menu-item (click)="syncEvent()">
-                <mat-icon>sync</mat-icon>
-                <span>{{'all.competition.menu.sync' | translate}}</span>
-              </button>
-            </badman-has-claim>
 
             <badman-has-claim [any]="['delete:competition']">
               <button mat-menu-item>

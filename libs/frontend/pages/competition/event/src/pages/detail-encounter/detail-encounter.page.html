@@ -61,7 +61,7 @@
     </ng-container>
   </div>
   <div class="team1" [ngClass]="{ winner: game.winner === 1 }">
-    <div
+    <a
       class="player player1"
       *ngIf="this.getPlayer(game, 1, 1) as playerT1P1"
       [routerLink]="['/player', playerT1P1?.slug]"
@@ -70,19 +70,20 @@
       <span *ngIf="this.getRanking(playerT1P1, game) as ranking"
         >({{ ranking }})</span
       >
-    </div>
-    <div
+    </a>
+    <a
       class="player player2"
       *ngIf="
         this.game.gameType !== 'S' &&
         this.getPlayer(game, 2, 1) as playerT1P2
       "
+      [routerLink]="['/player', playerT1P2?.slug]"
     >
       {{ playerT1P2.fullName }}
       <span *ngIf="this.getRanking(playerT1P2, game) as ranking"
         >({{ ranking }})</span
       >
-    </div>
+    </a>
   </div>
 
   <div class="sets">
@@ -94,7 +95,7 @@
   </div>
 
   <div class="team2" [ngClass]="{ winner: game.winner === 2 }">
-    <div
+    <a
       class="player player1"
       *ngIf="this.getPlayer(game, 1, 2) as playerT2P1"
       [routerLink]="['/player', playerT2P1?.slug]"
@@ -103,18 +104,19 @@
       <span *ngIf="this.getRanking(playerT2P1, game) as ranking"
         >({{ ranking }})</span
       >
-    </div>
-    <div
+    </a>
+    <a
       class="player player2"
       *ngIf="
         this.game.gameType !== 'S' &&
         this.getPlayer(game, 2, 2) as playerT2P2
       "
+      [routerLink]="['/player', playerT2P2?.slug]"
     >
       {{ playerT2P2.fullName }}
       <span *ngIf="this.getRanking(playerT2P2, game) as ranking"
         >({{ ranking }})</span
       >
-    </div>
+    </a>
   </div>
 </div>

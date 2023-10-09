@@ -7,6 +7,7 @@ import {
   PLATFORM_ID,
   Signal,
   TransferState,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -60,111 +61,118 @@ export class ClubEncountersComponent implements OnInit {
   loading = signal(true);
 
   // Inputs
-  @Input({ required: true }) clubId?: string;
+  @Input({ required: true }) clubId!: Signal<string>;
 
   @Input() filter!: FormGroup;
 
   ngOnInit(): void {
     this._setupFilter();
 
-    this.encounters = toSignal(
-      this.filter?.valueChanges?.pipe(
-        tap(() => {
-          this.loading.set(true);
-        }),
-        startWith(this.filter.value ?? {}),
-        switchMap((filter) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const where: Record<string, any> = {
-            $or: [
-              {
-                homeTeamId: {
-                  $in: filter.teams,
-                },
-              },
-            ],
-          };
+    effect(
+      () => {
+        this.encounters = toSignal(
+          this.filter?.valueChanges?.pipe(
+            tap(() => {
+              this.loading.set(true);
+            }),
+            startWith(this.filter.value ?? {}),
+            switchMap((filter) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const where: Record<string, any> = {
+                $or: [
+                  {
+                    homeTeamId: {
+                      $in: filter.teams,
+                    },
+                  },
+                ],
+              };
 
-          if (!filter.onlyHomeGames) {
-            where['$or'].push({
-              awayTeamId: {
-                $in: filter.teams,
-              },
-            });
-          }
+              if (!filter.onlyHomeGames) {
+                where['$or'].push({
+                  awayTeamId: {
+                    $in: filter.teams,
+                  },
+                });
+              }
 
-          if (filter.changedDate) {
-            where['originalDate'] = { $ne: null };
-          }
+              if (filter.changedDate) {
+                where['originalDate'] = { $ne: null };
+              }
 
-          if (filter.changedLocation) {
-            where['originalLocationId'] = { $ne: null };
-          }
+              if (filter.changedLocation) {
+                where['originalLocationId'] = { $ne: null };
+              }
 
-          return this.apollo.watchQuery<{
-            encounterCompetitions: {
-              count: number;
-              rows: Partial<EncounterCompetition>[];
-            };
-          }>({
-            query: gql`
-              query GetTeamEncounters($where: JSONObject) {
-                encounterCompetitions(where: $where) {
-                  count
-                  rows {
-                    id
-                    date
-                    home {
-                      id
-                      name
-                    }
-                    away {
-                      id
-                      name
-                    }
-                    homeScore
-                    awayScore
-                    drawCompetition {
-                      id
-                      subEventCompetition {
+              return this.apollo.watchQuery<{
+                encounterCompetitions: {
+                  count: number;
+                  rows: Partial<EncounterCompetition>[];
+                };
+              }>({
+                query: gql`
+                  query GetTeamEncounters($where: JSONObject) {
+                    encounterCompetitions(where: $where) {
+                      count
+                      rows {
                         id
-                        eventType
-                        eventId
+                        date
+                        home {
+                          id
+                          name
+                        }
+                        away {
+                          id
+                          name
+                        }
+                        homeScore
+                        awayScore
+                        drawCompetition {
+                          id
+                          subEventCompetition {
+                            id
+                            eventType
+                            eventId
+                          }
+                        }
+                        encounterChange {
+                          id
+                          accepted
+                        }
                       }
                     }
-                    encounterChange {
-                      id
-                      accepted
-                    }
                   }
-                }
-              }
-            `,
-            variables: {
-              where,
-            },
-          }).valueChanges;
-        }),
-        map((result) => {
-          return result?.data?.encounterCompetitions.rows;
-        }),
-        map((encounters) =>
-          encounters?.map((encounter) => new EncounterCompetition(encounter))
-        ),
-        map((encounters) => encounters?.sort(sortEncounters)),
-        map((encounters) =>
-          // if the change is not null and not accepted
-          encounters?.filter((encounter) =>
-            this.filter?.value?.openEncounters ?? false
-              ? encounter.encounterChange?.id != null &&
-                !encounter.encounterChange?.accepted
-              : true
-          )
-        ),
-        tap(() => {
-          this.loading.set(false);
-        })
-      ),
+                `,
+                variables: {
+                  where,
+                },
+              }).valueChanges;
+            }),
+            map((result) => {
+              return result?.data?.encounterCompetitions.rows;
+            }),
+            map((encounters) =>
+              encounters?.map(
+                (encounter) => new EncounterCompetition(encounter)
+              )
+            ),
+            map((encounters) => encounters?.sort(sortEncounters)),
+            map((encounters) =>
+              // if the change is not null and not accepted
+              encounters?.filter((encounter) =>
+                this.filter?.value?.openEncounters ?? false
+                  ? encounter.encounterChange?.id != null &&
+                    !encounter.encounterChange?.accepted
+                  : true
+              )
+            ),
+            tap(() => {
+              this.loading.set(false);
+            })
+          ),
+          { injector: this.injector }
+        );
+      },
       { injector: this.injector }
     );
   }

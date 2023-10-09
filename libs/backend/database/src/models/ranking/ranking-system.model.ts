@@ -232,6 +232,17 @@ export class RankingSystem extends Model {
   hasRankingPoints!: HasManyHasAssociationsMixin<RankingPoint, string>;
   countRankingPoints!: HasManyCountAssociationsMixin;
 
+  // Has many RankingPlace
+  getRankingPlaces!: HasManyGetAssociationsMixin<RankingPlace>;
+  setRankingPlaces!: HasManySetAssociationsMixin<RankingPlace, string>;
+  addRankingPlaces!: HasManyAddAssociationsMixin<RankingPlace, string>;
+  addRankingPlace!: HasManyAddAssociationMixin<RankingPlace, string>;
+  removeRankingPlace!: HasManyRemoveAssociationMixin<RankingPlace, string>;
+  removeRankingPlaces!: HasManyRemoveAssociationsMixin<RankingPlace, string>;
+  hasRankingPlace!: HasManyHasAssociationMixin<RankingPlace, string>;
+  hasRankingPlaces!: HasManyHasAssociationsMixin<RankingPlace, string>;
+  countRankingPlaces!: HasManyCountAssociationsMixin;
+
   // Belongs to many Group
   getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;
   setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;

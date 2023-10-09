@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  max-width: 750px;
 
   @media (max-width: 760px) {
     // lower font size for mobile
@@ -18,6 +17,7 @@
   border-style: solid;
   padding: 1rem 1rem 1.25rem 1rem;
   border-radius: 0.25rem;
+  flex: 1;
 
   &.double,
   &.mix {

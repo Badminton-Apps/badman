@@ -8,7 +8,6 @@ import {
   PLATFORM_ID,
   Signal,
   computed,
-  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -36,27 +35,20 @@ import {
   SelectSeasonComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
+import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { Club, EventCompetition, Player } from '@badman/frontend-models';
 import { TwizzitService } from '@badman/frontend-twizzit';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Subject, lastValueFrom, of } from 'rxjs';
-import {
-  filter,
-  map,
-  startWith,
-  switchMap,
-  take,
-  takeUntil,
-} from 'rxjs/operators';
+import { filter, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
 import { ClubCompetitionComponent } from './club-competition/club-competition.component';
+import { ClubEncountersComponent } from './club-encounters/club-encounters.component';
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
-import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
-import { ClubEncountersComponent } from './club-encounters/club-encounters.component';
-import { VERSION_INFO } from '@badman/frontend-html-injects';
 
 @Component({
   selector: 'badman-club-detail',
@@ -111,12 +103,19 @@ export class DetailPageComponent implements OnInit, OnDestroy {
 
   // signals
   seasons?: Signal<number[]>;
-  currentTab = signal(0);
   canViewEnrollmentForClub?: Signal<boolean | undefined>;
   canViewEnrollmentForEvent?: Signal<boolean | undefined>;
   canViewEnrollments?: Signal<boolean | undefined>;
 
-  club!: Club;
+  // route
+  queryParams = toSignal(this.route.queryParamMap);
+  routeParams = toSignal(this.route.paramMap);
+  routeData = toSignal(this.route.data);
+
+  club = computed(() => this.routeData()?.['club'] as Club);
+  clubId = computed(() => this.club()?.id) as Signal<string>;
+  currentTab = signal(this.queryParams()?.get('tab') ?? 0);
+
   filter!: FormGroup;
 
   update$ = new Subject<void>();
@@ -132,114 +131,85 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private twizzitService: TwizzitService,
     @Inject(PLATFORM_ID) private platformId: string
-  ) {}
+  ) {
+    const clubName = `${this.club().name}`;
+    this.seoService.update({
+      title: clubName,
+      description: `Club ${clubName}`,
+      type: 'website',
+      keywords: ['club', 'badminton'],
+    });
+    this.breadcrumbsService.set('@club', clubName);
+  }
 
   get isClient(): boolean {
     return isPlatformBrowser(this.platformId);
   }
 
-  hasPermission = toSignal(
-    this.claimService.hasAnyClaims$(['edit-any:club'])
-  );
-
+  hasPermission = toSignal(this.claimService.hasAnyClaims$(['edit-any:club']));
 
   canViewEncounter = computed(
     () => this.hasPermission() || this.versionInfo.beta
   );
 
   ngOnInit(): void {
-    this.route.data.subscribe((data) => {
-      this.club = data['club'];
+    this.filter = this.formBuilder.group({
+      choices: [['M', 'F', 'MX', 'NATIONAL']],
+      season: getCurrentSeason(),
+      club: this.club(),
+    });
 
-      this.filter = this.formBuilder.group({
-        choices: [['M', 'F', 'MX', 'NATIONAL']],
-        season: getCurrentSeason(),
-        club: this.club,
-      });
+    this.canViewEnrollmentForClub = toSignal(
+      this.authService.hasAnyClaims$([
+        'view-any:enrollment-competition',
+        `${this.club().id}_view:enrollment-competition`,
+      ]),
+      { injector: this.injector }
+    );
 
-      const clubName = `${this.club.name}`;
-
-      this.seoService.update({
-        title: clubName,
-        description: `Club ${clubName}`,
-        type: 'website',
-        keywords: ['club', 'badminton'],
-      });
-      this.breadcrumbsService.set('@club', clubName);
-
-      this.canViewEnrollmentForClub = toSignal(
-        this.authService.hasAnyClaims$([
-          'view-any:enrollment-competition',
-          `${this.club.id}_view:enrollment-competition`,
-        ]),
-        { injector: this.injector }
-      );
-
-      this.canViewEnrollmentForEvent = toSignal(
-        this.filter.get('season')?.valueChanges.pipe(
-          startWith(this.filter.get('season')?.value),
-          switchMap((season) => {
-            return this.apollo.query<{
-              eventCompetitions: {
-                rows: Partial<EventCompetition>[];
-              };
-            }>({
-              query: gql`
-                query CompetitionIdsForSeason($where: JSONObject) {
-                  eventCompetitions(where: $where) {
-                    rows {
-                      id
-                    }
+    this.canViewEnrollmentForEvent = toSignal(
+      this.filter.get('season')?.valueChanges.pipe(
+        startWith(this.filter.get('season')?.value),
+        switchMap((season) => {
+          return this.apollo.query<{
+            eventCompetitions: {
+              rows: Partial<EventCompetition>[];
+            };
+          }>({
+            query: gql`
+              query CompetitionIdsForSeason($where: JSONObject) {
+                eventCompetitions(where: $where) {
+                  rows {
+                    id
                   }
                 }
-              `,
-              variables: {
-                where: {
-                  season: season,
-                },
+              }
+            `,
+            variables: {
+              where: {
+                season: season,
               },
-            });
-          }),
-          switchMap((result) => {
-            if (!result?.data.eventCompetitions) {
-              throw new Error('No eventCompetitions');
-            }
-            return this.authService.hasAnyClaims$(
-              result.data.eventCompetitions.rows.map(
-                (row) => `${row.id}_view:enrollment-competition`
-              )
-            );
-          })
-        ) ?? of(false),
-        { injector: this.injector }
-      );
-
-      this.canViewEnrollments = computed(
-        () =>
-          this.canViewEnrollmentForClub?.() ||
-          this.canViewEnrollmentForEvent?.()
-      );
-
-      effect(
-        () => {
-          // if the canViewEnrollments is loaded
-          if (this.canViewEnrollments?.() !== undefined) {
-            // check if the query params contian tabindex
-            this.route.queryParams
-              .pipe(
-                startWith(this.route.snapshot.queryParams),
-                take(1),
-                filter((params) => params['tab']),
-                map((params) => params['tab'])
-              )
-              .subscribe((tabindex) => {
-                this.currentTab.set(parseInt(tabindex, 10));
-              });
+            },
+          });
+        }),
+        switchMap((result) => {
+          if (!result?.data.eventCompetitions) {
+            throw new Error('No eventCompetitions');
           }
-        },
-        { injector: this.injector, allowSignalWrites: true }
-      );
-    });
+          return this.authService.hasAnyClaims$(
+            result.data.eventCompetitions.rows.map(
+              (row) => `${row.id}_view:enrollment-competition`
+            )
+          );
+        })
+      ) ?? of(false),
+      { injector: this.injector }
+    );
+
+    this.canViewEnrollments = computed(
+      () =>
+        this.canViewEnrollmentForClub?.() || this.canViewEnrollmentForEvent?.()
+    );
   }
 
   setTab(index: number) {
@@ -272,14 +242,16 @@ export class DetailPageComponent implements OnInit, OnDestroy {
 
   async downloadTwizzit() {
     const season = this.filter.get('season')?.value;
-    await lastValueFrom(this.twizzitService.downloadTwizzit(this.club, season));
+    await lastValueFrom(
+      this.twizzitService.downloadTwizzit(this.club(), season)
+    );
   }
 
   addPlayer() {
     this.dialog
       .open(AddPlayerComponent, {
         data: {
-          clubId: this.club.id,
+          clubId: this.club().id,
         },
       })
       .afterClosed()
@@ -295,7 +267,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
             `,
             variables: {
               data: {
-                clubId: this.club.id,
+                clubId: this.club().id,
                 playerId: player.id,
                 start: new Date(),
               },
