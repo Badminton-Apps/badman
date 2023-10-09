@@ -36,27 +36,27 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       useFactory: async (config: ConfigService) => {
         const plugins = [];
 
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV !== 'production') {
           plugins.push(
-            ApolloServerPluginLandingPageLocalDefault({ footer: false })
+            ApolloServerPluginLandingPageLocalDefault({ footer: false }),
           );
-        } else {
+        } else if (process.env.NODE_ENV === 'production') {
           plugins.push(
             ApolloServerPluginLandingPageProductionDefault({
               graphRef: config.get<string>('APOLLO_GRAPH_REF'),
               footer: true,
-            })
+            }),
           );
           plugins.push(ApolloServerPluginSchemaReporting());
           plugins.push(
             OperationRegistry({
               forbidUnregisteredOperations: true,
-            })
+            }),
           );
           plugins.push(
             ApolloServerPluginUsageReporting({
               sendVariableValues: { all: true },
-            })
+            }),
           );
         }
 

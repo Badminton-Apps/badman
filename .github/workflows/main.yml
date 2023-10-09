@@ -10,6 +10,12 @@ on:
         required: true
         default: false
         type: boolean
+      # main branch name
+      e2e-tests:
+        description: 'Do e2e tests'
+        required: true
+        default: true
+        type: boolean
 
 env:
   NODE_ENV: '20.1'
@@ -18,7 +24,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-run-name: ${{ inputs.prod-release && 'Prod' || 'Beta' }} release
+run-name: ${{ inputs.prod-release && 'Prod' || 'Beta' }} release ${{ inputs.e2e-tests && 'with E2E tests' || '' }}
 
 jobs:
   merge-dev-into-main:
@@ -77,7 +83,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release
-    needs: [main, agents]
+    needs: [e2e, main]
     if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
 
     # output new version
@@ -134,8 +140,10 @@ jobs:
           # read the affected projects from the main job
           affectedProjects=$(echo ${{ needs.main.outputs.affectedProjects }} | tr -d ' ')
 
-          # check if the affected projects contains api
-          if [[ $affectedProjects == *"api"* ]]; then
+          echo "Affected Projects: $affectedProjects"
+
+          # check if the affected projects contains api or badman
+          if [[ $affectedProjects == *"api"* || $affectedProjects == *"badman"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
           fi
 
@@ -145,16 +153,6 @@ jobs:
           fi
 
       ## Vercel deploys automatically on push to branch with Chore: prefix
-
-      # - name: Trigger deploy hook on Vercel.com (if affected)
-      #   run: |
-      #     # read the affected projects from the main job
-      #     affectedProjects=$(echo ${{ needs.main.outputs.affectedProjects }} | tr -d ' ')
-
-      #     # check if the affected projects contains api
-      #     if [[ $affectedProjects == *"badman"* ]]; then
-      #       curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_CLIENT_HOOK  || secrets.BETA_CLIENT_HOOK }}
-      #     fi
 
   merge-main-into-dev:
     name: Merge Main into Dev
@@ -178,7 +176,7 @@ jobs:
           git merge --no-ff origin/main -m "chore(release): v${{ needs.release.outputs.NEW_VERSION }}"
           # git merge --no-ff main -m "Merging main into develop"
           git push
-          
+
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
           # read the affected projects from the main job
@@ -193,3 +191,9 @@ jobs:
           if [[ $affectedProjects == *"worker-sync"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_SYNC_HOOK }}
           fi
+
+  e2e:
+    name: E2E Tests
+    needs: [agents, main]
+    if: always() && inputs.e2e-tests && !cancelled() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+    uses: ./.github/workflows/playwright.yml

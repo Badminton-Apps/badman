@@ -5,6 +5,8 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { I18nTranslations } from '@badman/utils';
+import { PathImpl2 } from '@nestjs/config';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -15,7 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDialogModule,
     MatButtonModule,
 
-    TranslateModule
+    TranslateModule,
   ],
   // styleUrls: ['./confirm-dialog.component.css']
 })
@@ -49,5 +51,8 @@ export class ConfirmDialogComponent {
  * It has been kept here to keep it as part of shared component.
  */
 export class ConfirmDialogModel {
-  constructor(public title: string, public message: string) {}
+  constructor(
+    public title: PathImpl2<I18nTranslations>,
+    public message: PathImpl2<I18nTranslations>
+  ) {}
 }

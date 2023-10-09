@@ -25,7 +25,6 @@ export class EventTournamentBuilder {
   }
 
   WithSubEvent(subEvent: SubEventTournamentBuilder): EventTournamentBuilder {
-    subEvent.ForEvent(this.event);
     this.subEvents.push(subEvent);
     return this;
   }

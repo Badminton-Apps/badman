@@ -12,6 +12,9 @@ import {
   Team,
 } from './models';
 import { SequelizeConfigProvider } from './provider';
+import { loadTest } from './_testing/load-test';
+import { Sequelize } from 'sequelize-typescript';
+
 @Module({
   imports: [
     SequelizeModule.forRootAsync({
@@ -27,7 +30,13 @@ import { SequelizeConfigProvider } from './provider';
 export class DatabaseModule implements OnModuleInit {
   private readonly logger = new Logger(DatabaseModule.name);
 
-  onModuleInit() {
+  // get sequelize instance
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly sequelize: Sequelize,
+  ) {}
+
+  async onModuleInit() {
     this.logger.debug('initialize addons');
     slugifyModel(Player as unknown as Model, {
       source: ['firstName', 'lastName', 'memberId'],
@@ -44,5 +53,15 @@ export class DatabaseModule implements OnModuleInit {
     slugifyModel(Team as unknown as Model, {
       source: ['name', 'season'],
     });
+
+    if (this.configService.get('NODE_ENV') === 'test') {
+      // initialize test database
+      this.logger.log('Initializing test database');
+      await this.sequelize.sync({ force: true });
+
+      // load test data
+      this.logger.log('Loading test data');
+      await loadTest();
+    }
   }
 }

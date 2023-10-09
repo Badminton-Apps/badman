@@ -5,12 +5,22 @@ import {
   Player,
 } from '@badman/backend-database';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Op, WhereOptions } from 'sequelize';
 
 @Injectable()
 export class SearchService {
+  private readonly like = Op.iLike;
+
+  constructor(private readonly configService: ConfigService) {
+    if (this.configService.get('DB_DIALECT') === 'sqlite') {
+      this.like = Op.like;
+    }
+    
+  }
+
   async search(
-    query: string
+    query: string,
   ): Promise<(Player | Club | EventCompetition | EventTournament)[]> {
     const parts =
       `${query}`
@@ -48,9 +58,9 @@ export class SearchService {
     for (const part of parts) {
       queries.push({
         [Op.or]: [
-          { firstName: { [Op.iLike]: `%${part}%` } },
-          { lastName: { [Op.iLike]: `%${part}%` } },
-          { memberId: { [Op.iLike]: `%${part}%` } },
+          { firstName: { [this.like]: `%${part}%` } },
+          { lastName: { [this.like]: `%${part}%` } },
+          { memberId: { [this.like]: `%${part}%` } },
         ],
       });
     }
@@ -64,12 +74,12 @@ export class SearchService {
   }
 
   private async _getCompetitionEvents(
-    parts: string[]
+    parts: string[],
   ): Promise<EventCompetition[]> {
     const queries = [];
     for (const part of parts) {
       queries.push({
-        [Op.or]: [{ name: { [Op.iLike]: `%${part}%` } }],
+        [Op.or]: [{ name: { [this.like]: `%${part}%` } }],
       });
     }
 
@@ -83,12 +93,12 @@ export class SearchService {
   }
 
   private async _getTournamnetsEvents(
-    parts: string[]
+    parts: string[],
   ): Promise<EventTournament[]> {
     const queries = [];
     for (const part of parts) {
       queries.push({
-        [Op.or]: [{ name: { [Op.iLike]: `%${part}%` } }],
+        [Op.or]: [{ name: { [this.like]: `%${part}%` } }],
       });
     }
 
@@ -106,8 +116,8 @@ export class SearchService {
     for (const part of parts) {
       queries.push({
         [Op.or]: [
-          { name: { [Op.iLike]: `%${part}%` } },
-          { abbreviation: { [Op.iLike]: `%${part}%` } },
+          { name: { [this.like]: `%${part}%` } },
+          { abbreviation: { [this.like]: `%${part}%` } },
         ],
       });
     }

@@ -12,7 +12,7 @@ RUN apk add --no-cache --virtual .build-deps \
 RUN npm ci
 # Get the configuration from the environment variables
 ARG CONFIGURATION=production
-RUN npm run build api:build -- --configuration=$CONFIGURATION
+RUN npm run build:server -- --configuration=$CONFIGURATION
 
 # Production stage
 FROM node:20-alpine As production

@@ -299,10 +299,77 @@ export class EventCompetitionResolver {
   //   return recipe;
   // }
 
-  // @Mutation(returns => Boolean)
-  // async removeEventCompetition(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
+  @Mutation(() => Boolean)
+  async removeEventCompetition(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string
+  ) {
+    if (!(await user.hasAnyPermission([`delete:competition`]))) {
+      throw new UnauthorizedException(
+        `You do not have permission to add a competition`
+      );
+    }
+
+    const eventTournament = await EventCompetition.findByPk(id);
+    if (!eventTournament) {
+      throw new NotFoundException(`${EventCompetition.name}: ${id}`);
+    }
+
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      const subEvents = await eventTournament.getSubEventCompetitions({
+        transaction,
+      });
+
+      for (const subEvent of subEvents) {
+        const draws = await subEvent.getDrawCompetitions({
+          transaction,
+        });
+
+        for (const draw of draws) {
+          const encounters = await draw.getEncounterCompetitions({
+            transaction,
+          });
+
+          for (const encounter of encounters) {
+            await encounter.destroy({
+              transaction,
+            });
+
+            const games = await encounter.getGames({
+              transaction,
+            });
+
+            for (const game of games) {
+              await game.destroy({
+                transaction,
+              });
+            }
+          }
+
+          await draw.destroy({
+            transaction,
+          });
+        }
+
+        await subEvent.destroy({
+          transaction,
+        });
+      }
+
+      await eventTournament.destroy({
+        transaction,
+      });
+
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
+  }
 
   async addGamePointsForSubEvents(
     group: RankingGroup,

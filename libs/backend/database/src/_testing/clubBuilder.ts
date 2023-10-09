@@ -1,4 +1,4 @@
-import { Club, Team } from '../models';
+import { Club } from '../models';
 import { TeamBuilder } from './teamBuilder';
 
 export class ClubBuilder {
@@ -8,12 +8,12 @@ export class ClubBuilder {
 
   private teams: TeamBuilder[] = [];
 
-  constructor() {
-    this.club = new Club();
+  constructor(id?: string) {
+    this.club = new Club({ id });
   }
 
-  static Create(): ClubBuilder {
-    return new ClubBuilder();
+  static Create(id?: string): ClubBuilder {
+    return new ClubBuilder(id);
   }
 
   WithName(name: string): ClubBuilder {
@@ -30,12 +30,6 @@ export class ClubBuilder {
   WithTeam(team: TeamBuilder): ClubBuilder {
     team.ForClub(this.club);
     this.teams.push(team);
-    return this;
-  }
-
-  
-  ForTeam(team: Team): ClubBuilder {
-    this.club.hasTeam(team);
     return this;
   }
 

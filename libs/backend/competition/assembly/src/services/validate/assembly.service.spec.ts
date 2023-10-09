@@ -10,6 +10,7 @@ import {
   EventCompetitionEntryBuilder,
   Player,
   PlayerBuilder,
+  RankingPlaceBuilder,
   RankingSystem,
   SubEventCompetition,
   SubEventCompetitionBuilder,
@@ -22,7 +23,11 @@ import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Sequelize } from 'sequelize-typescript';
 
-import { RankingSystems, SubEventTypeEnum } from '@badman/utils';
+import {
+  RankingSystems,
+  SubEventTypeEnum,
+  TeamMembershipType,
+} from '@badman/utils';
 import { AssemblyValidationError } from '../../models';
 import { AssemblyValidationService } from './assembly.service';
 import {
@@ -45,7 +50,7 @@ import {
   TeamSubeventIndexRule,
   TeamSubeventIndexRuleParams,
   TeamSubsIndexRule,
-  TeamSubsIndexRuleParams
+  TeamSubsIndexRuleParams,
 } from './rules';
 
 describe('AssemblyValidationService', () => {
@@ -82,7 +87,9 @@ describe('AssemblyValidationService', () => {
 
     const drawBuilder = DrawCompetitionBuilder.Create().WithName('Test draw');
 
-    const subEventBuilder = SubEventCompetitionBuilder.Create()
+    const subEventBuilder = SubEventCompetitionBuilder.Create(
+      SubEventTypeEnum.MX,
+    )
       .WithName('Test SubEvent')
       .WithIndex(53, 70)
       .WitnMaxLevel(6);
@@ -94,7 +101,7 @@ describe('AssemblyValidationService', () => {
       .WithUsedRanking({ amount: 4, unit: 'months' })
       .WithName('Test Event')
       .WithSubEvent(
-        subEventBuilder.WithDraw(drawBuilder.WithEnouncter(encounterBuilder))
+        subEventBuilder.WithDraw(drawBuilder.WithEnouncter(encounterBuilder)),
       )
       .Build();
 
@@ -122,60 +129,99 @@ describe('AssemblyValidationService', () => {
       player111 = await PlayerBuilder.Create()
         .WithName('player 1 - 1 - 1', 'team 1')
         .WithCompetitionStatus(false)
-        .WithRanking(1, 1, 1, new Date('2020-05-09'), system.id)
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(1, 1, 1)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        )
         .Build();
 
       const player555B = PlayerBuilder.Create()
         .WithName('player 5 - 5 - 5', 'team 1')
         .WithCompetitionStatus(false)
         .WithGender('F')
-        .WithRanking(5, 5, 5, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(5, 5, 5)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player666B = PlayerBuilder.Create()
         .WithName('player 6 - 6 - 6', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('M')
-        .WithRanking(6, 6, 6, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(6, 6, 6)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player777B = PlayerBuilder.Create()
         .WithName('player 7 - 7 - 7', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('M')
-        .WithRanking(7, 7, 7, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(7, 7, 7)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player888B = PlayerBuilder.Create()
         .WithName('player 8 - 8 - 8', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('M')
-        .WithRanking(8, 8, 8, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(8, 8, 8)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player999B = PlayerBuilder.Create()
         .WithName('player 9 - 9 - 9', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('M')
-        .WithRanking(9, 9, 9, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(9, 9, 9)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
-      const teamB = TeamBuilder.Create(SubEventTypeEnum.M).WithName('team 1');
+      const teamB = TeamBuilder.Create(SubEventTypeEnum.M)
+        .WithTeamNumber(1)
+        .WithSeason(event.season)
+        .WithName('team 1');
 
       await ClubBuilder.Create()
         .WithName('club 1')
         .WithTeam(
           teamB
             .WithTeamNumber(2)
-            .WithPlayer(player777B)
-            .WithPlayer(player888B)
-            .WithPlayer(player999B)
-            .WithPlayer(player666B)
+            .WithPlayer(player777B, TeamMembershipType.REGULAR)
+            .WithPlayer(player888B, TeamMembershipType.REGULAR)
+            .WithPlayer(player999B, TeamMembershipType.REGULAR)
+            .WithPlayer(player666B, TeamMembershipType.REGULAR)
             .WithEntry(
               EventCompetitionEntryBuilder.Create('competition')
-                .ForDraw(draw)
-                .ForSubEvent(subEvent)
+                .WithDrawId(draw.id)
+                .WithSubEventId(subEvent.id)
                 .WithBasePlayer(player666B, 6, 6, 6)
                 .WithBasePlayer(player777B, 7, 7, 7)
                 .WithBasePlayer(player888B, 8, 8, 8)
                 .WithBasePlayer(player999B, 9, 9, 9)
-                .WithBaseIndex(60)
-            )
+                .WithBaseIndex(60),
+            ),
         )
         .Build();
 
@@ -203,7 +249,7 @@ describe('AssemblyValidationService', () => {
           double3: [player777.id, player999.id],
           double4: [player888.id, player999.id],
         },
-        AssemblyValidationService.defaultValidators()
+        AssemblyValidationService.defaultValidators(),
       );
 
       expect(validation).toBeDefined();
@@ -229,7 +275,7 @@ describe('AssemblyValidationService', () => {
                 [`single${p2}`]: player888.id,
                 [`single${p1}`]: player777.id,
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -237,10 +283,10 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-single'
+                'all.competition.team-assembly.errors.player-order-single',
             );
             expect(error).toBeUndefined();
-          }
+          },
         );
 
         test.each(valid)(
@@ -254,7 +300,7 @@ describe('AssemblyValidationService', () => {
                 [`double${p2}`]: [player777.id, player888.id],
                 [`double${p1}`]: [player666.id, player888.id],
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -262,10 +308,10 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-doubles'
+                'all.competition.team-assembly.errors.player-order-doubles',
             );
             expect(error).toBeUndefined();
-          }
+          },
         );
 
         test.each(valid)(
@@ -279,7 +325,7 @@ describe('AssemblyValidationService', () => {
                 [`double${p2}`]: [player777.id, player888.id],
                 [`double${p1}`]: [player666.id, player999.id],
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -287,10 +333,10 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-highest'
+                'all.competition.team-assembly.errors.player-order-highest',
             );
             expect(error).toBeUndefined();
-          }
+          },
         );
       });
 
@@ -312,7 +358,7 @@ describe('AssemblyValidationService', () => {
                 [`single${p1}`]: player888.id,
                 [`single${p2}`]: player777.id,
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -321,7 +367,7 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-single'
+                'all.competition.team-assembly.errors.player-order-single',
             ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
 
             expect(error).toBeDefined();
@@ -332,7 +378,7 @@ describe('AssemblyValidationService', () => {
 
             expect(error?.params?.['player2']?.['id']).toBe(player777.id);
             expect(error?.params?.['player2']?.['ranking']).toBe(7);
-          }
+          },
         );
 
         test.each(invalid)(
@@ -346,7 +392,7 @@ describe('AssemblyValidationService', () => {
                 [`double${p1}`]: [player777.id, player888.id],
                 [`double${p2}`]: [player666.id, player888.id],
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -355,7 +401,7 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-doubles'
+                'all.competition.team-assembly.errors.player-order-doubles',
             ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
 
             expect(error).toBeDefined();
@@ -372,7 +418,7 @@ describe('AssemblyValidationService', () => {
             expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
             expect(error?.params?.['team2player2']?.['id']).toBe(player888.id);
             expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
-          }
+          },
         );
 
         test.each(invalid)(
@@ -386,7 +432,7 @@ describe('AssemblyValidationService', () => {
                 [`double${p1}`]: [player777.id, player888.id],
                 [`double${p2}`]: [player666.id, player999.id],
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -395,7 +441,7 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-highest'
+                'all.competition.team-assembly.errors.player-order-highest',
             ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
             expect(error).toBeDefined();
             expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -411,7 +457,7 @@ describe('AssemblyValidationService', () => {
             expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
             expect(error?.params?.['team2player2']?.['id']).toBe(player999.id);
             expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
-          }
+          },
         );
       });
     });
@@ -429,7 +475,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new TeamSubeventIndexRule()]
+            [new TeamSubeventIndexRule()],
           );
 
           expect(validation).toBeDefined();
@@ -437,7 +483,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.team-to-strong'
+              'all.competition.team-assembly.errors.team-to-strong',
           );
           expect(error).toBeUndefined();
         });
@@ -455,7 +501,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new TeamSubeventIndexRule()]
+            [new TeamSubeventIndexRule()],
           );
 
           expect(validation).toBeDefined();
@@ -464,7 +510,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.team-to-strong'
+              'all.competition.team-assembly.errors.team-to-strong',
           ) as AssemblyValidationError<TeamSubeventIndexRuleParams>;
 
           expect(error).toBeDefined();
@@ -489,7 +535,7 @@ describe('AssemblyValidationService', () => {
               single4: player999.id,
               subtitudes: [player888.id],
             },
-            [new TeamSubsIndexRule()]
+            [new TeamSubsIndexRule()],
           );
 
           expect(validation).toBeDefined();
@@ -497,7 +543,7 @@ describe('AssemblyValidationService', () => {
           const warning = validation.warnings?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.warnings.subtitute-team-index'
+              'all.competition.team-assembly.warnings.subtitute-team-index',
           ) as AssemblyValidationError<TeamSubsIndexRuleParams>;
 
           expect(warning).toBeDefined();
@@ -519,14 +565,14 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerCompStatusRule()]
+            [new PlayerCompStatusRule()],
           );
 
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status'
+              e.message === 'all.competition.team-assembly.errors.comp-status',
           );
           expect(error).toBeUndefined();
         });
@@ -544,7 +590,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerCompStatusRule()]
+            [new PlayerCompStatusRule()],
           );
 
           expect(validation).toBeDefined();
@@ -552,7 +598,7 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status'
+              e.message === 'all.competition.team-assembly.errors.comp-status',
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
@@ -570,7 +616,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerCompStatusRule()]
+            [new PlayerCompStatusRule()],
           );
 
           expect(validation).toBeDefined();
@@ -578,7 +624,7 @@ describe('AssemblyValidationService', () => {
 
           const errors = validation.errors?.filter(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status'
+              e.message === 'all.competition.team-assembly.errors.comp-status',
           );
 
           expect(errors).toBeDefined();
@@ -600,7 +646,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -609,7 +655,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-single-games'
+              'all.competition.team-assembly.errors.player-max-single-games',
           );
           expect(error).toBeUndefined();
         });
@@ -625,7 +671,7 @@ describe('AssemblyValidationService', () => {
               double3: [player777.id, player999.id],
               double4: [player888.id, player999.id],
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -634,7 +680,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games'
+              'all.competition.team-assembly.errors.player-max-double-games',
           );
           expect(error).toBeUndefined();
         });
@@ -652,7 +698,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -661,7 +707,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-single-games'
+              'all.competition.team-assembly.errors.player-max-single-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -679,7 +725,7 @@ describe('AssemblyValidationService', () => {
               double3: [player666.id, player999.id],
               double4: [player888.id, player999.id],
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -688,7 +734,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games'
+              'all.competition.team-assembly.errors.player-max-double-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -714,7 +760,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerGenderRule()]
+            [new PlayerGenderRule()],
           );
 
           expect(validation).toBeDefined();
@@ -724,7 +770,8 @@ describe('AssemblyValidationService', () => {
             (e) =>
               e.message ===
                 'all.competition.team-assembly.errors.player-genders' ||
-              e.message === 'all.competition.team-assembly.errors.player-gender'
+              e.message ===
+                'all.competition.team-assembly.errors.player-gender',
           );
           expect(error).toBeUndefined();
         });
@@ -744,7 +791,7 @@ describe('AssemblyValidationService', () => {
                 encounterId: encounter.id,
                 [`single${g}`]: player555.id,
               },
-              [new PlayerGenderRule()]
+              [new PlayerGenderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -753,12 +800,12 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-gender'
+                'all.competition.team-assembly.errors.player-gender',
             ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
             expect(error).toBeDefined();
             expect(error?.params?.['player']?.['id']).toBe(player555.id);
-          }
+          },
         );
 
         test.each(games)(
@@ -771,7 +818,7 @@ describe('AssemblyValidationService', () => {
                 encounterId: encounter.id,
                 [`double${g}`]: [player555.id, player666.id],
               },
-              [new PlayerGenderRule()]
+              [new PlayerGenderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -780,12 +827,12 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-gender'
+                'all.competition.team-assembly.errors.player-gender',
             ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
             expect(error).toBeDefined();
             expect(error?.params?.['player']?.['id']).toBe(player555.id);
-          }
+          },
         );
       });
     });
@@ -804,55 +851,88 @@ describe('AssemblyValidationService', () => {
     beforeEach(async () => {
       const player555B = PlayerBuilder.Create()
         .WithName('player 5 - 5 - 5', 'team 1')
-        .WithCompetitionStatus(true)
-        .WithGender('M')
-        .WithRanking(5, 5, 5, new Date('2020-05-09'), system.id);
+        .WithCompetitionStatus(false)
+        .WithGender('F')
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(5, 5, 5)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player666B = PlayerBuilder.Create()
         .WithName('player 6 - 6 - 6', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('M')
-        .WithRanking(6, 6, 6, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(6, 6, 6)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player777B = PlayerBuilder.Create()
         .WithName('player 7 - 7 - 7', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('M')
-        .WithRanking(7, 7, 7, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(7, 7, 7)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player888B = PlayerBuilder.Create()
         .WithName('player 8 - 8 - 8', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('F')
-        .WithRanking(8, 8, 8, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(8, 8, 8)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player999B = PlayerBuilder.Create()
         .WithName('player 9 - 9 - 9', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('F')
-        .WithRanking(9, 9, 9, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(9, 9, 9)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
-      const teamB = TeamBuilder.Create(SubEventTypeEnum.MX).WithName('team 1');
+      const teamB = TeamBuilder.Create(SubEventTypeEnum.MX)
+        .WithTeamNumber(1)
+        .WithSeason(event.season)
+        .WithName('team 1');
 
       await ClubBuilder.Create()
         .WithName('club 1')
         .WithTeam(
           teamB
             .WithTeamNumber(2)
-            .WithPlayer(player777B)
-            .WithPlayer(player888B)
-            .WithPlayer(player999B)
-            .WithPlayer(player666B)
+            .WithPlayer(player777B, TeamMembershipType.REGULAR)
+            .WithPlayer(player888B, TeamMembershipType.REGULAR)
+            .WithPlayer(player999B, TeamMembershipType.REGULAR)
+            .WithPlayer(player666B, TeamMembershipType.REGULAR)
             .WithEntry(
               EventCompetitionEntryBuilder.Create('competition')
-                .ForDraw(draw)
-                .ForSubEvent(subEvent)
+                .WithDrawId(draw.id)
+                .WithSubEventId(subEvent.id)
                 .WithBasePlayer(player666B, 6, 6, 6)
                 .WithBasePlayer(player777B, 7, 7, 7)
                 .WithBasePlayer(player888B, 8, 8, 8)
                 .WithBasePlayer(player999B, 9, 9, 9)
-                .WithBaseIndex(60)
-            )
+                .WithBaseIndex(60),
+            ),
         )
         .Build();
 
@@ -875,7 +955,7 @@ describe('AssemblyValidationService', () => {
               double3: [player666.id, player999.id],
               double4: [player777.id, player888.id],
             },
-            [new PlayerOrderRule()]
+            [new PlayerOrderRule()],
           );
 
           expect(validation).toBeDefined();
@@ -884,7 +964,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-order-highest'
+              'all.competition.team-assembly.errors.player-order-highest',
           );
           expect(error).toBeUndefined();
         });
@@ -907,7 +987,7 @@ describe('AssemblyValidationService', () => {
                 [`single${p1}`]: player888.id,
                 [`single${p2}`]: player777.id,
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -916,7 +996,7 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-single'
+                'all.competition.team-assembly.errors.player-order-single',
             ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
             expect(error).toBeDefined();
             expect(error?.params?.['game1']).toBe(`single${p1}`);
@@ -926,7 +1006,7 @@ describe('AssemblyValidationService', () => {
 
             expect(error?.params?.['player2']?.['id']).toBe(player777.id);
             expect(error?.params?.['player2']?.['ranking']).toBe(7);
-          }
+          },
         );
 
         it('Mixed double is better then other', async () => {
@@ -938,7 +1018,7 @@ describe('AssemblyValidationService', () => {
               double3: [player777.id, player888.id],
               double4: [player666.id, player888.id],
             },
-            [new PlayerOrderRule()]
+            [new PlayerOrderRule()],
           );
 
           expect(validation).toBeDefined();
@@ -947,7 +1027,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-order-doubles'
+              'all.competition.team-assembly.errors.player-order-doubles',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`mix3`);
@@ -974,7 +1054,7 @@ describe('AssemblyValidationService', () => {
               double3: [player777.id, player888.id],
               double4: [player666.id, player999.id],
             },
-            [new PlayerOrderRule()]
+            [new PlayerOrderRule()],
           );
 
           expect(validation).toBeDefined();
@@ -983,7 +1063,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-order-highest'
+              'all.competition.team-assembly.errors.player-order-highest',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`mix3`);
@@ -1016,7 +1096,7 @@ describe('AssemblyValidationService', () => {
               double3: [player666.id, player777.id],
               double4: [player888.id, player999.id],
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1025,7 +1105,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games'
+              'all.competition.team-assembly.errors.player-max-double-games',
           );
           expect(error).toBeUndefined();
         });
@@ -1041,7 +1121,7 @@ describe('AssemblyValidationService', () => {
               double3: [player666.id, player999.id],
               double4: [player888.id, player999.id],
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1050,7 +1130,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-mix-games'
+              'all.competition.team-assembly.errors.player-max-mix-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -1072,7 +1152,7 @@ describe('AssemblyValidationService', () => {
               double3: [player666.id, player888.id],
               double4: [player777.id, player999.id],
             },
-            [new PlayerGenderRule()]
+            [new PlayerGenderRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1082,7 +1162,8 @@ describe('AssemblyValidationService', () => {
             (e) =>
               e.message ===
                 'all.competition.team-assembly.errors.player-genders' ||
-              e.message === 'all.competition.team-assembly.errors.player-gender'
+              e.message ===
+                'all.competition.team-assembly.errors.player-gender',
           );
           expect(error).toBeUndefined();
         });
@@ -1098,7 +1179,7 @@ describe('AssemblyValidationService', () => {
               double3: [player666.id, player777.id],
               double4: [player888.id, player777.id],
             },
-            [new PlayerGenderRule()]
+            [new PlayerGenderRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1107,7 +1188,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-genders'
+              'all.competition.team-assembly.errors.player-genders',
           ) as AssemblyValidationError<PlayerGenderRulePartnerParams>;
 
           expect(error).toBeDefined();
@@ -1124,7 +1205,7 @@ describe('AssemblyValidationService', () => {
               double3: [player666.id, player999.id],
               double4: [player888.id, player999.id],
             },
-            [new PlayerGenderRule()]
+            [new PlayerGenderRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1133,7 +1214,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-genders'
+              'all.competition.team-assembly.errors.player-genders',
           ) as AssemblyValidationError<PlayerGenderRulePartnerParams>;
 
           expect(error).toBeDefined();
@@ -1156,7 +1237,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerMinLevelRule()]
+            [new PlayerMinLevelRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1164,7 +1245,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-min-level'
+              'all.competition.team-assembly.errors.player-min-level',
           );
           expect(error).toBeUndefined();
         });
@@ -1182,7 +1263,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerMinLevelRule()]
+            [new PlayerMinLevelRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1191,7 +1272,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-min-level'
+              'all.competition.team-assembly.errors.player-min-level',
           ) as AssemblyValidationError<PlayerMinLevelRuleParams>;
 
           expect(error).toBeDefined();
@@ -1221,47 +1302,101 @@ describe('AssemblyValidationService', () => {
       const player555B = PlayerBuilder.Create()
         .WithName('player 5 - 5 - 5', 'team 1')
         .WithCompetitionStatus(false)
-        .WithRanking(5, 5, 5, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(5, 5, 5)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const playerT1r666B = PlayerBuilder.Create()
         .WithName('player 6 - 6 - 6', 'team A')
         .WithCompetitionStatus(true)
-        .WithRanking(6, 6, 6, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(6, 6, 6)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const playerT1r777B = PlayerBuilder.Create()
         .WithName('player 7 - 7 - 7', 'team A')
         .WithCompetitionStatus(true)
-        .WithRanking(7, 7, 7, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(7, 7, 7)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const playerT1r888B = PlayerBuilder.Create()
         .WithName('player 8 - 8 - 8', 'team A')
         .WithCompetitionStatus(true)
-        .WithRanking(8, 8, 8, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(8, 8, 8)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const playerT1r999B = PlayerBuilder.Create()
         .WithName('player 9 - 9 - 9', 'team A')
         .WithCompetitionStatus(true)
-        .WithRanking(9, 9, 9, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(9, 9, 9)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const playerT2r666B = PlayerBuilder.Create()
         .WithName('player 6 - 6 - 6', 'team B')
         .WithCompetitionStatus(true)
-        .WithRanking(6, 6, 6, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(6, 6, 6)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const playerT2r777B = PlayerBuilder.Create()
         .WithName('player 7 - 7 - 7', 'team B')
         .WithCompetitionStatus(true)
-        .WithRanking(7, 7, 7, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(7, 7, 7)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const playerT2r888B = PlayerBuilder.Create()
         .WithName('player 8 - 8 - 8', 'team B')
         .WithCompetitionStatus(true)
-        .WithRanking(8, 8, 8, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(8, 8, 8)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const playerT2r999B = PlayerBuilder.Create()
         .WithName('player 9 - 9 - 9', 'team B')
         .WithCompetitionStatus(true)
-        .WithRanking(9, 9, 9, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(9, 9, 9)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const teamAB = TeamBuilder.Create(SubEventTypeEnum.M)
         .WithTeamNumber(1)
@@ -1276,44 +1411,44 @@ describe('AssemblyValidationService', () => {
         .WithName('club 1')
         .WithTeam(
           teamAB
-            .WithPlayer(playerT1r777B)
-            .WithPlayer(playerT1r888B)
-            .WithPlayer(playerT1r999B)
-            .WithPlayer(playerT1r666B)
+            .WithPlayer(playerT1r777B, TeamMembershipType.REGULAR)
+            .WithPlayer(playerT1r888B, TeamMembershipType.REGULAR)
+            .WithPlayer(playerT1r999B, TeamMembershipType.REGULAR)
+            .WithPlayer(playerT1r666B, TeamMembershipType.REGULAR)
             .WithEntry(
               EventCompetitionEntryBuilder.Create(
                 'competition',
-                '287a088e-14b1-47c5-9086-e728c6615664'
+                '287a088e-14b1-47c5-9086-e728c6615664',
               )
-                .ForDraw(draw)
-                .ForSubEvent(subEvent)
+                .WithDrawId(draw.id)
+                .WithSubEventId(subEvent.id)
                 .WithBasePlayer(playerT1r666B, 6, 6, 6)
                 .WithBasePlayer(playerT1r777B, 7, 7, 7)
                 .WithBasePlayer(playerT1r888B, 8, 8, 8)
                 .WithBasePlayer(playerT1r999B, 9, 9, 9)
-                .WithBaseIndex(60)
-            )
+                .WithBaseIndex(60),
+            ),
         )
 
         .WithTeam(
           teamBB
-            .WithPlayer(playerT2r777B)
-            .WithPlayer(playerT2r888B)
-            .WithPlayer(playerT2r999B)
-            .WithPlayer(playerT2r666B)
+            .WithPlayer(playerT2r777B, TeamMembershipType.REGULAR)
+            .WithPlayer(playerT2r888B, TeamMembershipType.REGULAR)
+            .WithPlayer(playerT2r999B, TeamMembershipType.REGULAR)
+            .WithPlayer(playerT2r666B, TeamMembershipType.REGULAR)
             .WithEntry(
               EventCompetitionEntryBuilder.Create(
                 'competition',
-                '246f21b8-8eab-4597-b9c5-4ef712991cc3'
+                '246f21b8-8eab-4597-b9c5-4ef712991cc3',
               )
-                .ForDraw(draw)
-                .ForSubEvent(subEvent)
+                .WithDrawId(draw.id)
+                .WithSubEventId(subEvent.id)
                 .WithBasePlayer(playerT2r666B, 6, 6, 6)
                 .WithBasePlayer(playerT2r777B, 7, 7, 7)
                 .WithBasePlayer(playerT2r888B, 8, 8, 8)
                 .WithBasePlayer(playerT2r999B, 9, 9, 9)
-                .WithBaseIndex(60)
-            )
+                .WithBaseIndex(60),
+            ),
         )
         .Build();
 
@@ -1346,7 +1481,7 @@ describe('AssemblyValidationService', () => {
               single3: playerT1r888.id,
               single4: playerT1r999.id,
             },
-            [new TeamBaseIndexRule()]
+            [new TeamBaseIndexRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1354,7 +1489,7 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.team-index'
+              e.message === 'all.competition.team-assembly.errors.team-index',
           );
           expect(error).toBeUndefined();
         });
@@ -1370,7 +1505,7 @@ describe('AssemblyValidationService', () => {
               single3: playerT1r888.id,
               single4: playerT1r999.id,
             },
-            [new TeamBaseIndexRule()]
+            [new TeamBaseIndexRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1390,7 +1525,7 @@ describe('AssemblyValidationService', () => {
               single3: playerT1r888.id,
               single4: playerT1r999.id,
             },
-            [new TeamBaseIndexRule()]
+            [new TeamBaseIndexRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1398,7 +1533,7 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.team-index'
+              e.message === 'all.competition.team-assembly.errors.team-index',
           ) as AssemblyValidationError<TeamBaseIndexRuleParams>;
 
           expect(error).toBeDefined();
@@ -1421,7 +1556,7 @@ describe('AssemblyValidationService', () => {
               single3: playerT1r888.id,
               single4: playerT1r999.id,
             },
-            [new TeamClubBaseRule()]
+            [new TeamClubBaseRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1430,7 +1565,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.club-base-other-team'
+              'all.competition.team-assembly.errors.club-base-other-team',
           ) as AssemblyValidationError<TeamClubBaseRuleParams>;
 
           expect(error).toBeDefined();
@@ -1452,7 +1587,7 @@ describe('AssemblyValidationService', () => {
               single3: playerT1r888.id,
               single4: playerT1r999.id,
             },
-            [new PlayerMinLevelRule()]
+            [new PlayerMinLevelRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1460,7 +1595,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-min-level'
+              'all.competition.team-assembly.errors.player-min-level',
           );
           expect(error).toBeUndefined();
         });
@@ -1478,7 +1613,7 @@ describe('AssemblyValidationService', () => {
               single3: playerT2r888.id,
               single4: playerT2r999.id,
             },
-            [new PlayerMinLevelRule()]
+            [new PlayerMinLevelRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1487,7 +1622,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-min-level'
+              'all.competition.team-assembly.errors.player-min-level',
           ) as AssemblyValidationError<PlayerMinLevelRuleParams>;
 
           expect(error).toBeDefined();
@@ -1512,60 +1647,99 @@ describe('AssemblyValidationService', () => {
       player111 = await PlayerBuilder.Create()
         .WithName('player 1 - 1 - 1', 'team 1')
         .WithCompetitionStatus(false)
-        .WithRanking(1, 1, 1, new Date('2020-05-09'), system.id)
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(1, 1, 1)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        )
         .Build();
 
       const player555B = PlayerBuilder.Create()
         .WithName('player 5 - 5 - 5', 'team 1')
         .WithCompetitionStatus(false)
         .WithGender('M')
-        .WithRanking(5, 5, 5, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(5, 5, 5)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player666B = PlayerBuilder.Create()
         .WithName('player 6 - 6 - 6', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('F')
-        .WithRanking(6, 6, 6, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(6, 6, 6)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player777B = PlayerBuilder.Create()
         .WithName('player 7 - 7 - 7', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('F')
-        .WithRanking(7, 7, 7, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(7, 7, 7)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player888B = PlayerBuilder.Create()
         .WithName('player 8 - 8 - 8', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('F')
-        .WithRanking(8, 8, 8, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(8, 8, 8)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
       const player999B = PlayerBuilder.Create()
         .WithName('player 9 - 9 - 9', 'team 1')
         .WithCompetitionStatus(true)
         .WithGender('F')
-        .WithRanking(9, 9, 9, new Date('2020-05-09'), system.id);
+        .WithRanking(
+          RankingPlaceBuilder.Create()
+            .WithSystemId(system.id)
+            .WithRanking(9, 9, 9)
+            .WithUpdatePossible(true)
+            .WithDate(new Date('2020-05-09')),
+        );
 
-      const teamB = TeamBuilder.Create(SubEventTypeEnum.F).WithName('team 1');
+      const teamB = TeamBuilder.Create(SubEventTypeEnum.F)
+        .WithName('team 1')
+        .WithSeason(event.season)
+        .WithTeamNumber(1);
 
       await ClubBuilder.Create()
         .WithName('club 1')
         .WithTeam(
           teamB
             .WithTeamNumber(2)
-            .WithPlayer(player777B)
-            .WithPlayer(player888B)
-            .WithPlayer(player999B)
-            .WithPlayer(player666B)
+            .WithPlayer(player777B, TeamMembershipType.REGULAR)
+            .WithPlayer(player888B, TeamMembershipType.REGULAR)
+            .WithPlayer(player999B, TeamMembershipType.REGULAR)
+            .WithPlayer(player666B, TeamMembershipType.REGULAR)
             .WithEntry(
               EventCompetitionEntryBuilder.Create('competition')
-                .ForDraw(draw)
-                .ForSubEvent(subEvent)
+                .WithDrawId(draw.id)
+                .WithSubEventId(subEvent.id)
                 .WithBasePlayer(player666B, 6, 6, 6)
                 .WithBasePlayer(player777B, 7, 7, 7)
                 .WithBasePlayer(player888B, 8, 8, 8)
                 .WithBasePlayer(player999B, 9, 9, 9)
-                .WithBaseIndex(60)
-            )
+                .WithBaseIndex(60),
+            ),
         )
         .Build();
 
@@ -1593,7 +1767,7 @@ describe('AssemblyValidationService', () => {
           double3: [player777.id, player999.id],
           double4: [player888.id, player999.id],
         },
-        AssemblyValidationService.defaultValidators()
+        AssemblyValidationService.defaultValidators(),
       );
 
       expect(validation).toBeDefined();
@@ -1619,7 +1793,7 @@ describe('AssemblyValidationService', () => {
                 [`single${p2}`]: player888.id,
                 [`single${p1}`]: player777.id,
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -1627,10 +1801,10 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-single'
+                'all.competition.team-assembly.errors.player-order-single',
             );
             expect(error).toBeUndefined();
-          }
+          },
         );
 
         test.each(valid)(
@@ -1644,7 +1818,7 @@ describe('AssemblyValidationService', () => {
                 [`double${p2}`]: [player777.id, player888.id],
                 [`double${p1}`]: [player666.id, player888.id],
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -1652,10 +1826,10 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-doubles'
+                'all.competition.team-assembly.errors.player-order-doubles',
             );
             expect(error).toBeUndefined();
-          }
+          },
         );
 
         test.each(valid)(
@@ -1669,7 +1843,7 @@ describe('AssemblyValidationService', () => {
                 [`double${p2}`]: [player777.id, player888.id],
                 [`double${p1}`]: [player666.id, player999.id],
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -1677,10 +1851,10 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-highest'
+                'all.competition.team-assembly.errors.player-order-highest',
             );
             expect(error).toBeUndefined();
-          }
+          },
         );
       });
 
@@ -1702,7 +1876,7 @@ describe('AssemblyValidationService', () => {
                 [`single${p1}`]: player888.id,
                 [`single${p2}`]: player777.id,
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -1711,7 +1885,7 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-single'
+                'all.competition.team-assembly.errors.player-order-single',
             ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
             expect(error).toBeDefined();
             expect(error?.params?.['game1']).toBe(`single${p1}`);
@@ -1721,7 +1895,7 @@ describe('AssemblyValidationService', () => {
 
             expect(error?.params?.['player2']?.['id']).toBe(player777.id);
             expect(error?.params?.['player2']?.['ranking']).toBe(7);
-          }
+          },
         );
 
         test.each(invalid)(
@@ -1735,7 +1909,7 @@ describe('AssemblyValidationService', () => {
                 [`double${p1}`]: [player777.id, player888.id],
                 [`double${p2}`]: [player666.id, player888.id],
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -1744,7 +1918,7 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-doubles'
+                'all.competition.team-assembly.errors.player-order-doubles',
             ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
             expect(error).toBeDefined();
             expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -1760,7 +1934,7 @@ describe('AssemblyValidationService', () => {
             expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
             expect(error?.params?.['team2player2']?.['id']).toBe(player888.id);
             expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
-          }
+          },
         );
 
         test.each(invalid)(
@@ -1774,7 +1948,7 @@ describe('AssemblyValidationService', () => {
                 [`double${p1}`]: [player777.id, player888.id],
                 [`double${p2}`]: [player666.id, player999.id],
               },
-              [new PlayerOrderRule()]
+              [new PlayerOrderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -1783,7 +1957,7 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-order-highest'
+                'all.competition.team-assembly.errors.player-order-highest',
             ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
             expect(error).toBeDefined();
             expect(error?.params?.['game1']).toBe(`double${p1}`);
@@ -1799,7 +1973,7 @@ describe('AssemblyValidationService', () => {
             expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
             expect(error?.params?.['team2player2']?.['id']).toBe(player999.id);
             expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
-          }
+          },
         );
       });
     });
@@ -1817,7 +1991,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new TeamSubeventIndexRule()]
+            [new TeamSubeventIndexRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1825,7 +1999,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.team-to-strong'
+              'all.competition.team-assembly.errors.team-to-strong',
           );
           expect(error).toBeUndefined();
         });
@@ -1843,7 +2017,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new TeamSubeventIndexRule()]
+            [new TeamSubeventIndexRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1852,7 +2026,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.team-to-strong'
+              'all.competition.team-assembly.errors.team-to-strong',
           ) as AssemblyValidationError<TeamSubeventIndexRuleParams>;
 
           expect(error).toBeDefined();
@@ -1876,14 +2050,14 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerCompStatusRule()]
+            [new PlayerCompStatusRule()],
           );
 
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status'
+              e.message === 'all.competition.team-assembly.errors.comp-status',
           );
           expect(error).toBeUndefined();
         });
@@ -1901,7 +2075,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerCompStatusRule()]
+            [new PlayerCompStatusRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1909,7 +2083,7 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status'
+              e.message === 'all.competition.team-assembly.errors.comp-status',
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
@@ -1927,7 +2101,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerCompStatusRule()]
+            [new PlayerCompStatusRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1935,7 +2109,7 @@ describe('AssemblyValidationService', () => {
 
           const errors = validation.errors?.filter(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status'
+              e.message === 'all.competition.team-assembly.errors.comp-status',
           );
 
           expect(errors).toBeDefined();
@@ -1957,7 +2131,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1966,7 +2140,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-single-games'
+              'all.competition.team-assembly.errors.player-max-single-games',
           );
           expect(error).toBeUndefined();
         });
@@ -1982,7 +2156,7 @@ describe('AssemblyValidationService', () => {
               double3: [player777.id, player999.id],
               double4: [player888.id, player999.id],
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -1991,7 +2165,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games'
+              'all.competition.team-assembly.errors.player-max-double-games',
           );
           expect(error).toBeUndefined();
         });
@@ -2009,7 +2183,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -2018,7 +2192,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-single-games'
+              'all.competition.team-assembly.errors.player-max-single-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -2036,7 +2210,7 @@ describe('AssemblyValidationService', () => {
               double3: [player666.id, player999.id],
               double4: [player888.id, player999.id],
             },
-            [new PlayerMaxGamesRule()]
+            [new PlayerMaxGamesRule()],
           );
 
           expect(validation).toBeDefined();
@@ -2045,7 +2219,7 @@ describe('AssemblyValidationService', () => {
           const error = validation.errors?.find(
             (e) =>
               e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games'
+              'all.competition.team-assembly.errors.player-max-double-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -2071,7 +2245,7 @@ describe('AssemblyValidationService', () => {
               single3: player888.id,
               single4: player999.id,
             },
-            [new PlayerGenderRule()]
+            [new PlayerGenderRule()],
           );
 
           expect(validation).toBeDefined();
@@ -2081,7 +2255,8 @@ describe('AssemblyValidationService', () => {
             (e) =>
               e.message ===
                 'all.competition.team-assembly.errors.player-genders' ||
-              e.message === 'all.competition.team-assembly.errors.player-gender'
+              e.message ===
+                'all.competition.team-assembly.errors.player-gender',
           );
           expect(error).toBeUndefined();
         });
@@ -2101,7 +2276,7 @@ describe('AssemblyValidationService', () => {
                 encounterId: encounter.id,
                 [`single${g}`]: player555.id,
               },
-              [new PlayerGenderRule()]
+              [new PlayerGenderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -2110,12 +2285,12 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-gender'
+                'all.competition.team-assembly.errors.player-gender',
             ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
             expect(error).toBeDefined();
             expect(error?.params?.['player']?.['id']).toBe(player555.id);
-          }
+          },
         );
 
         test.each(games)(
@@ -2128,7 +2303,7 @@ describe('AssemblyValidationService', () => {
                 encounterId: encounter.id,
                 [`double${g}`]: [player555.id, player666.id],
               },
-              [new PlayerGenderRule()]
+              [new PlayerGenderRule()],
             );
 
             expect(validation).toBeDefined();
@@ -2137,12 +2312,12 @@ describe('AssemblyValidationService', () => {
             const error = validation.errors?.find(
               (e) =>
                 e.message ===
-                'all.competition.team-assembly.errors.player-gender'
+                'all.competition.team-assembly.errors.player-gender',
             ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
             expect(error).toBeDefined();
             expect(error?.params?.['player']?.['id']).toBe(player555.id);
-          }
+          },
         );
       });
     });

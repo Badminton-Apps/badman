@@ -16,7 +16,6 @@ export class AppComponent {
   loading = false;
 
   constructor(private contexts: ChildrenOutletContexts) {
-    // console.log(this.contexts);
   }
 
   getRouteAnimationData() {
