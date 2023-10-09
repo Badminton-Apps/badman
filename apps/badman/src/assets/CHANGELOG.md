@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.110.0-beta.16](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.15...v6.110.0-beta.16) (2023-10-09)
+
+
+### Features
+
+* sending mail to glenn when checkEncounters failed ([18eba50](https://github.com/Badminton-Apps/badman/commit/18eba50dc368ad1f5f94d720674f34b22d512686))
+
 ## [6.110.0-beta.15](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.14...v6.110.0-beta.15) (2023-10-07)
 
 
