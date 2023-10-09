@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.111.0](https://github.com/Badminton-Apps/badman/compare/v6.110.0...v6.111.0) (2023-10-09)
+
+
+### Features
+
+* injecting google maps via js-api-loader ([60ce3bb](https://github.com/Badminton-Apps/badman/commit/60ce3bb48d5eed8143f12ef1b7c804a1922e2ace))
+
+
+### Bug Fixes
+
+* remove hydration as we don't use that right now ([96ae21c](https://github.com/Badminton-Apps/badman/commit/96ae21cbb0c515fd4dcfa95172f26c261f58bd10))
+* should have been the correct manifest ([aaad7f6](https://github.com/Badminton-Apps/badman/commit/aaad7f628771f22f552e082a5b0ba6bb964fe4db))
+
 ## [6.110.0](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.16...v6.110.0) (2023-10-09)
 
 ## [6.110.0-beta.16](https://github.com/Badminton-Apps/badman/compare/v6.110.0-beta.15...v6.110.0-beta.16) (2023-10-09)
