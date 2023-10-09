@@ -1,8 +1,5 @@
 import { APP_ID, isDevMode, NgModule, SecurityContext } from '@angular/core';
-import {
-  BrowserModule,
-  provideClientHydration,
-} from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import {
@@ -35,9 +32,9 @@ import { AppComponent } from './app.component';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { ShellComponent } from '@badman/frontend-components';
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { RANKING_CONFIG } from '@badman/frontend-ranking';
 import { CpModule } from '@badman/frontend-cp';
 import { ExcelModule } from '@badman/frontend-excel';
+import { RANKING_CONFIG } from '@badman/frontend-ranking';
 
 const APP_ROUTES: Routes = [
   {
@@ -52,7 +49,7 @@ const APP_ROUTES: Routes = [
     path: 'policy',
     loadComponent: () =>
       import('@badman/frontend-components').then(
-        (m) => m.PrivacyPolicyComponent
+        (m) => m.PrivacyPolicyComponent,
       ),
     data: {
       animation: 'landing',
@@ -102,7 +99,7 @@ const APP_ROUTES: Routes = [
     path: 'notifications',
     loadChildren: () =>
       import('@badman/frontend-notifications').then(
-        (m) => m.NotificationsModule
+        (m) => m.NotificationsModule,
       ),
   },
   {
@@ -225,7 +222,7 @@ const APP_ROUTES: Routes = [
       },
     },
 
-    provideClientHydration(),
+    // provideClientHydration(),
   ],
   bootstrap: [AppComponent],
 })

@@ -1,12 +1,11 @@
-import { DOCUMENT, isPlatformBrowser } from "@angular/common";
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   Inject,
   InjectionToken,
   ModuleWithProviders,
   NgModule,
   PLATFORM_ID,
-} from "@angular/core";
-import { inject } from '@vercel/analytics';
+} from '@angular/core';
 
 function scriptconfig(): string {
   return `
@@ -15,7 +14,7 @@ function scriptconfig(): string {
 }
 
 export const GOOGLEADS_CONFIG_TOKEN =
-  new InjectionToken<GoogleAdsConfiguration>("googleads.config");
+  new InjectionToken<GoogleAdsConfiguration>('googleads.config');
 
 export type GoogleAdsConfiguration = Readonly<{
   enabled: boolean;
@@ -23,9 +22,9 @@ export type GoogleAdsConfiguration = Readonly<{
   publisherId: string;
   slots: {
     sidebar: number;
-    beta: number
+    beta: number;
   };
-  scriptType?:  "text/javascript" | string;
+  scriptType?: 'text/javascript' | string;
 }>;
 
 @NgModule({})
@@ -36,24 +35,24 @@ export class GoogleAdsModule {
     @Inject(DOCUMENT)
     d: Document,
     @Inject(GOOGLEADS_CONFIG_TOKEN)
-    { enabled, publisherId, scriptType, debug }: GoogleAdsConfiguration
+    { enabled, publisherId, scriptType }: GoogleAdsConfiguration,
   ) {
     if (isPlatformBrowser(platformId) && enabled) {
-      const type = scriptType ?? "text/javascript";
+      const type = scriptType ?? 'text/javascript';
 
-      const ads = d.createElement("script");
+      const ads = d.createElement('script');
       ads.type = type;
       ads.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${publisherId}`;
       ads.async = true;
-      ads.crossOrigin = "anonymous";
+      ads.crossOrigin = 'anonymous';
       ads.defer = true;
 
       d.body.appendChild(ads);
 
-      const script = d.createElement("script");
+      const script = d.createElement('script');
       script.type = type;
       script.async = true;
-      script.crossOrigin = "anonymous";
+      script.crossOrigin = 'anonymous';
       script.defer = true;
       script.innerHTML = scriptconfig();
       d.body.appendChild(script);
@@ -65,15 +64,11 @@ export class GoogleAdsModule {
       // amp.crossOrigin = "anonymous";
       // amp.setAttribute("custom-element", "amp-ad");
       // d.head.appendChild(amp)
-
-      inject({
-        mode: debug ? "development" : "production",
-      })
     }
   }
 
   static forRoot(
-    config: GoogleAdsConfiguration
+    config: GoogleAdsConfiguration,
   ): ModuleWithProviders<GoogleAdsModule> {
     return {
       ngModule: GoogleAdsModule,
