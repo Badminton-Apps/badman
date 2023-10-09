@@ -22,7 +22,6 @@ export class SyncEncounterFailed extends Notifier<
 > {
   protected linkType = 'encounter';
   protected type: keyof NotificationOptionsTypes = 'synEncounterFailed';
-  protected override allowedInterval = 'second' as unitOfTime.Diff;
 
   private readonly options = (event: SyncEncounterMeta) => {
     const notification = {
