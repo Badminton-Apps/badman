@@ -29,9 +29,7 @@ export class AppController {
     @InjectQueue(SimulationQueue) private rankingSim: Queue,
     @InjectQueue(SyncQueue) private rankingSync: Queue,
     private cpGen: CpGeneratorService,
-    private notificationService: NotificationService,
     private planner: PlannerService,
-    private mailService: MailingService,
   ) {}
 
   @Post('queue-job')
@@ -116,35 +114,5 @@ export class AppController {
 
     // Respond ok for now
     res.status(200).send(result);
-  }
-
-  @Get('error')
-  async testError() {
-    const url =
-      'https://www.toernooi.nl/sport/teammatch.aspx?id=0131343E-0198-48F4-A75B-4995C6B9095F&match=478';
-    const glenn = await Player.findOne({
-      where: {
-        slug: 'glenn-latomme',
-      },
-    });
-
-    const encounter = await EncounterCompetition.findByPk(
-      '81662379-702b-4a5f-8a28-8ee773a5915d',
-    );
-
-    if (!glenn) {
-      this.logger.error(`Glenn not found`);
-      return;
-    }
-
-    if (!encounter) {
-      this.logger.error(`Encounter not found`);
-      return;
-    }
-
-    await this.notificationService.notifySyncEncounterFailed(glenn.id, {
-      url,
-      encounter,
-    });
   }
 }
