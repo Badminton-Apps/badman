@@ -1,14 +1,14 @@
 {
   "name": "badman_scripts",
-  "version": "6.109.1",
+  "version": "6.110.0-beta.16",
   "license": "MIT",
   "scripts": {
     "create-release": "node ./standard-version.js"
   },
   "private": true,
   "dependencies": {
-    "@actions/core": "^1.10.0",
-    "conventional-changelog": "^4.0.0",
+    "@actions/core": "^1.10.1",
+    "conventional-changelog": "^5.0.0",
     "standard-version": "^9.5.0"
   },
   "volta": {

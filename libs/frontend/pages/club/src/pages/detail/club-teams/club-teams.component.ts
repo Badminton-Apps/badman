@@ -9,6 +9,7 @@ import {
   PLATFORM_ID,
   Signal,
   TransferState,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -67,7 +68,7 @@ export class ClubTeamsComponent implements OnInit {
   loading = signal(true);
 
   // Inputs
-  @Input({ required: true }) clubId?: string;
+  @Input({ required: true }) clubId!: Signal<string>;
   @Input() filter?: FormGroup;
 
   // Outputs
@@ -86,66 +87,74 @@ export class ClubTeamsComponent implements OnInit {
       });
     }
 
-    this.teams = toSignal(
-      this.filter?.valueChanges?.pipe(
-        tap(() => {
-          this.loading.set(true);
-        }),
-        startWith(this.filter.value ?? {}),
-        switchMap((filter) => {
-          return this.apollo.watchQuery<{ teams: Partial<Team>[] }>({
-            query: gql`
-              query Teams($teamsWhere: JSONObject) {
-                teams(where: $teamsWhere) {
-                  id
-                  name
-                  slug
-                  teamNumber
-                  season
-                  captainId
-                  type
-                  clubId
-                  email
-                  phone
-                  preferredDay
-                  preferredTime
-                  entry {
-                    id
-                    date
-                    subEventCompetition {
+    effect(
+      () => {
+        this.teams = toSignal(
+          this.filter?.valueChanges?.pipe(
+            tap(() => {
+              this.loading.set(true);
+            }),
+            startWith(this.filter.value ?? {}),
+            switchMap((filter) => {
+              return this.apollo.watchQuery<{ teams: Partial<Team>[] }>({
+                query: gql`
+                  query Teams($teamsWhere: JSONObject) {
+                    teams(where: $teamsWhere) {
                       id
                       name
+                      slug
+                      teamNumber
+                      season
+                      captainId
+                      type
+                      clubId
+                      email
+                      phone
+                      preferredDay
+                      preferredTime
+                      entry {
+                        id
+                        date
+                        subEventCompetition {
+                          id
+                          name
+                        }
+                      }
                     }
                   }
-                }
+                `,
+                variables: {
+                  teamsWhere: {
+                    clubId: this.clubId(),
+                    season: filter?.season,
+                    type: filter?.choices,
+                  },
+                },
+              }).valueChanges;
+            }),
+            transferState(
+              `clubTeamsKey-${this.clubId}`,
+              this.stateTransfer,
+              this.platformId
+            ),
+            map((result) => {
+              if (!result?.data.teams) {
+                throw new Error('No club');
               }
-            `,
-            variables: {
-              teamsWhere: {
-                clubId: this.clubId,
-                season: filter?.season,
-                type: filter?.choices,
-              },
-            },
-          }).valueChanges;
-        }),
-        transferState(
-          `clubTeamsKey-${this.clubId}`,
-          this.stateTransfer,
-          this.platformId
-        ),
-        map((result) => {
-          if (!result?.data.teams) {
-            throw new Error('No club');
-          }
-          return result.data.teams?.map((team) => new Team(team));
-        }),
-        map((teams) => teams.sort(sortTeams)),
-        tap(() => {
-          this.loading.set(false);
-        })
-      ) ?? of([]),
-      { injector: this.injector }
+              return result.data.teams?.map((team) => new Team(team));
+            }),
+            map((teams) => teams.sort(sortTeams)),
+            tap(() => {
+              this.loading.set(false);
+            })
+          ) ?? of([]),
+          { injector: this.injector }
+        );
+      },
+      {
+        injector: this.injector,
+        allowSignalWrites: true,
+      }
     );
   }
   editTeam(team: Team) {

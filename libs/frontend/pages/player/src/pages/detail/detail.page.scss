@@ -19,8 +19,13 @@
   }
 }
 
+.sub-text a {
+  text-decoration: none;
+}
+
 .recent-games {
-  flex: 1 1 auto;
+  width: 100%;
+  max-width: 750px;
 }
 
 .upcoming-games {
@@ -30,7 +35,6 @@
     flex: 1;
   }
 }
-
 
 h3 {
   display: flex;

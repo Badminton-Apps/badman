@@ -11,8 +11,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
+  ConfirmDialogComponent,
+  ConfirmDialogModel,
   HasClaimComponent,
   OpenCloseDateDialogComponent,
   PageHeaderComponent,
@@ -71,7 +73,8 @@ export class DetailPageComponent implements OnInit {
     private dialog: MatDialog,
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
-    private jobsService: JobsService
+    private jobsService: JobsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -210,5 +213,43 @@ export class DetailPageComponent implements OnInit {
       .subscribe(() => {
         //
       });
+  }
+
+  removeEvent() {
+    const dialogData = new ConfirmDialogModel(
+      'all.tournament.delete.title',
+      'all.tournament.delete.description'
+    );
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: dialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((dialogResult) => {
+      if (!dialogResult) {
+        return;
+      }
+
+      this.apollo
+        .mutate({
+          mutation: gql`
+            mutation RemoveTournament($id: ID!) {
+              removeEventTournament(id: $id)
+            }
+          `,
+          variables: {
+            id: this.eventTournament.id,
+          },
+          refetchQueries: ['EventTournament'],
+        })
+        .subscribe(() => {
+          this.matSnackBar.open('Deleted', undefined, {
+            duration: 1000,
+            panelClass: 'success',
+          });
+          this.router.navigate(['/tournament']);
+        });
+    });
   }
 }

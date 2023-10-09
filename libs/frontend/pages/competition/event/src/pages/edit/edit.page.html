@@ -26,6 +26,13 @@
       >
     </div>
 
+    <div class="matcher">
+      <mat-form-field>
+        <mat-label>Team matcher (for linking with visual reality)</mat-label>
+        <input matInput formControlName="teamMatcher" />
+      </mat-form-field>
+    </div>
+
     <div class="actions">
       <button mat-raised-button color="primary" (click)="this.save()">
         {{ 'all.button.save' | translate }}

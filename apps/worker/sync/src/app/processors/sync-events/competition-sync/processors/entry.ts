@@ -1,9 +1,9 @@
 import { Club, EventEntry, Team } from '@badman/backend-database';
 import { VisualService, XmlItem, XmlTournament } from '@badman/backend-visual';
-import { runParallel, teamValues } from '@badman/utils';
+import { LevelType, runParallel, teamValues } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import { isArray } from 'class-validator';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
 import { correctWrongTeams } from '../../../../utils';
 import { DrawStepData } from './draw';
@@ -31,7 +31,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
   }
 
   public async process(): Promise<EntryStepData[]> {
-    await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? []);
+    await runParallel(this.draws?.map((e) => this._processEntries(e)) ?? [], 1);
 
     return this._entries;
   }
@@ -80,6 +80,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         item,
         event.season,
         event.state,
+        event.teamMatcher,
+        event.type,
         drawEntries?.map((r) => r.teamId ?? '') ?? [],
         subEventEntries.map((r) => r.teamId ?? '') ?? []
       );
@@ -186,11 +188,17 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     item: string,
     season: number,
     state?: string,
+    teamMatcher?: string,
+    type?: LevelType,
     drawTeamIds?: string[],
     subEventTeamIds?: string[]
   ) {
     const name = correctWrongTeams({ name: item })?.name;
-    const { clubName, teamNumber, teamType } = teamValues(name);
+    const { clubName, teamNumber, teamType } = teamValues(
+      name,
+      teamMatcher,
+      type
+    );
 
     const clubs = await this._getPossibleClubs(clubName, state);
 
@@ -199,12 +207,20 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       return;
     }
 
-    const teams = await Team.findAll({
-      where: {
-        clubId: clubs.map((r) => r.id),
+    let where: WhereOptions = {
+      clubId: clubs.map((r) => r.id),
+      type: teamType,
+    };
+
+    if (teamNumber) {
+      where = {
+        ...where,
         teamNumber,
-        type: teamType,
-      },
+      };
+    }
+
+    const teams = await Team.findAll({
+      where,
       transaction: this.transaction,
     });
 
@@ -239,10 +255,24 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     if (teamsWithSameName?.length === 1) {
       return new Team({
         type: teamType,
-        teamNumber: +teamNumber,
+        teamNumber: teamNumber,
         season: season,
         clubId: teamsWithSameName[0].clubId,
         link: teamsWithSameName[0].link,
+      }).save({ transaction: this.transaction });
+    }
+
+    if (clubs.length === 1) {
+      this.logger.debug(
+        `Creating new team ${clubName} ${teamNumber} ${teamType}`
+      );
+
+      // create a new team
+      return new Team({
+        type: teamType,
+        teamNumber: teamNumber,
+        season: season,
+        clubId: clubs[0].id,
       }).save({ transaction: this.transaction });
     }
 

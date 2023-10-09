@@ -187,6 +187,7 @@ export class EditPageComponent implements OnInit {
       checkEncounterForFilledIn: new FormControl(
         event.checkEncounterForFilledIn
       ),
+      teamMatcher: new FormControl(event.teamMatcher),
 
       usedRankingUnit: new FormControl(event.usedRankingUnit, [
         Validators.required,
@@ -273,6 +274,7 @@ export class EditPageComponent implements OnInit {
               name: eventCompetition.name,
               season: eventCompetition.season,
               contactEmail: eventCompetition.contactEmail,
+              teamMatcher: eventCompetition.teamMatcher,
               checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
               exceptions:
                 eventCompetition.exceptions?.filter((e) => e.start && e.end) ??

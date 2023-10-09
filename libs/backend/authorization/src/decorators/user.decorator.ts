@@ -9,9 +9,10 @@ export const User = createParamDecorator(
     const user = request['user'];
 
     // If we have a user in the request, return it
-    if (user && user.sub) {
+    if (user && user.sub && user.id) {
       return user;
     }
+    
 
     // If we don't have a user in the request, set the permissions to return false;
     return {

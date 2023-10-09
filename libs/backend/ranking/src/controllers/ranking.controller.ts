@@ -9,7 +9,6 @@ import fs, {
   writeFileSync,
 } from 'fs';
 import moment from 'moment';
-import archiver from 'archiver';
 import { join } from 'path';
 import { Op } from 'sequelize';
 

@@ -151,6 +151,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
           };
         }, distinctUntilChanged())
       )
+      .pipe(takeUntil(this.destroyed))
       .subscribe(() => {
         this.fillGames();
       });
@@ -331,8 +332,8 @@ export class ListGamesComponent implements OnInit, OnDestroy {
           ? this.system.minNumberOfGamesUsedForUpgrade ?? 0
           : devideUpgrade;
 
-      const avgUpgrade = totalPoints / devideUpgradeCorrected;
-      const avgDowngrade = totalPoints / devideDowngrade;
+      const avgUpgrade = Math.ceil(totalPoints / devideUpgradeCorrected);
+      const avgDowngrade = Math.ceil(totalPoints / devideDowngrade);
 
       if (
         avgUpgrade >
@@ -433,6 +434,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
         },
       })
       .afterClosed()
+      .pipe(takeUntil(this.destroyed))
       .subscribe((game: Game) => {
         if (game) {
           this.games.push(game);

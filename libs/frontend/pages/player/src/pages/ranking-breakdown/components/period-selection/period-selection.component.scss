@@ -18,7 +18,7 @@
 }
 
 .period {
-  padding-left: .5rem;
+  padding-left: 0.5rem;
 }
 
 label {
@@ -30,7 +30,15 @@ label {
   padding: 0px 5px;
 }
 
-mat-calendar{
+mat-calendar {
   width: 300px;
 }
 
+.period-selection-calender-hint {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-right: 1rem;
+}

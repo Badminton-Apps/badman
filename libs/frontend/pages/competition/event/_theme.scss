@@ -3,12 +3,15 @@
 @use './src/pages/detail-draw/detail-draw.page.theme.scss' as detail-draw;
 @use './src/pages/edit-encounter/edit-encounter.page.theme.scss' as
   edit-encounter;
+@use './src/pages/detail-encounter/detail-encounter.page.theme.scss' as
+  detail-encounter;
 
 @mixin theme($theme) {
   @include detail.theme($theme);
   @include detail-draw.theme($theme);
   @include overview.theme($theme);
   @include edit-encounter.theme($theme);
+  @include detail-encounter.theme($theme);
 }
 
 @mixin typography($theme) {
@@ -16,6 +19,7 @@
   @include detail-draw.typography($theme);
   @include overview.typography($theme);
   @include edit-encounter.typography($theme);
+  @include detail-encounter.typography($theme);
 }
 
 @mixin colors($theme) {
@@ -23,4 +27,5 @@
   @include detail-draw.color($theme);
   @include overview.color($theme);
   @include edit-encounter.color($theme);
+  @include detail-encounter.color($theme);
 }

@@ -7,7 +7,7 @@ export async function getBrowser(headless = true) {
       '--no-sandbox',
       '--disable-setuid-sandbox',
       // '--single-process',
-      '--disable-dev-shm-usage',
+      // '--disable-dev-shm-usage', (allows for more memory, but doesn't work on the 512 MB instance)
     ],
   });
 }

@@ -62,8 +62,8 @@ export class RankingPoint extends Model {
   @Column(DataType.DATE)
   rankingDate?: Date;
 
-  @Field(() => Int, { nullable: true })
-  @Column(DataType.NUMBER)
+  @Field(() => Number, { nullable: true })
+  @Column(DataType.DECIMAL)
   differenceInLevel?: number;
 
   @ForeignKey(() => RankingSystem)

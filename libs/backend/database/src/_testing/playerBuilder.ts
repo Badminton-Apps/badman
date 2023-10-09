@@ -1,11 +1,14 @@
-import { Player, RankingPlace, Team } from '../models';
+import { TeamMembershipType } from '@badman/utils';
+import { Player } from '../models';
+import { RankingPlaceBuilder } from './rankingPlaceBuilder';
+import { TeamBuilder } from './teamBuilder';
 
 export class PlayerBuilder {
   private build = false;
 
   private player: Player;
 
-  private rankingPlaces: RankingPlace[] = [];
+  private rankingPlaces: RankingPlaceBuilder[] = [];
 
   constructor(id?: string) {
     this.player = new Player({
@@ -17,26 +20,9 @@ export class PlayerBuilder {
     return new PlayerBuilder(id);
   }
 
-  WithRanking(
-    single: number,
-    double: number,
-    mix: number,
-    rankingDate: Date,
-    systemId: string,
-    updatePossible = true
-  ): PlayerBuilder {
-    const rankingPlace = new RankingPlace({
-      single,
-      double,
-      mix,
-      rankingDate,
-      playerId: this.player.id,
-      systemId,
-      updatePossible,
-    });
 
+  WithRanking(rankingPlace: RankingPlaceBuilder): PlayerBuilder {
     this.rankingPlaces.push(rankingPlace);
-
     return this;
   }
 
@@ -57,8 +43,8 @@ export class PlayerBuilder {
     return this;
   }
 
-  ForTeam(team: Team): PlayerBuilder {
-    this.player.hasTeam(team);
+  ForTeam(team: TeamBuilder, type: TeamMembershipType): PlayerBuilder {
+    team.WithPlayer(this, type);
     return this;
   }
 
@@ -71,8 +57,10 @@ export class PlayerBuilder {
       await this.player.save();
 
       for (const rankingPlace of this.rankingPlaces) {
-        await rankingPlace.save();
+        rankingPlace.WithPlayerId(this.player.id);
+        await rankingPlace.Build();
       }
+
     } catch (error) {
       console.error(error);
       throw error;

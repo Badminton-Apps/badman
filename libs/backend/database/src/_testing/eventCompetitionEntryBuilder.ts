@@ -1,15 +1,18 @@
-import {
-  DrawCompetition,
-  EventEntry,
-  SubEventCompetition,
-  Team,
-} from '../models';
+import { EventEntry } from '../models';
+import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
+import { SubEventCompetitionBuilder } from './eventCompetitionSubEventBuilder';
 import { PlayerBuilder } from './playerBuilder';
+import { TeamBuilder } from './teamBuilder';
 
 export class EventCompetitionEntryBuilder {
+
   private build = false;
 
   private entry: EventEntry;
+
+  private draw?: DrawCompetitionBuilder;
+  private subEvent?: SubEventCompetitionBuilder;
+  private team?: TeamBuilder;
 
   private basePlayers: {
     player: PlayerBuilder;
@@ -29,17 +32,16 @@ export class EventCompetitionEntryBuilder {
 
   static Create(
     entryType: 'competition' | 'tournament',
-    id?: string
+    id?: string,
   ): EventCompetitionEntryBuilder {
     return new EventCompetitionEntryBuilder(entryType, id);
   }
 
- 
   WithBasePlayer(
     player: PlayerBuilder,
     single: number,
     double: number,
-    mix: number
+    mix: number,
   ): EventCompetitionEntryBuilder {
     this.basePlayers.push({
       player,
@@ -56,21 +58,36 @@ export class EventCompetitionEntryBuilder {
     return this;
   }
 
-  ForDraw(draw: DrawCompetition): EventCompetitionEntryBuilder {
-    this.entry.drawId = draw.id;
+  WithDrawId(id: string): EventCompetitionEntryBuilder {
+    this.entry.drawId = id;
     return this;
   }
 
-  ForSubEvent(subEvent: SubEventCompetition): EventCompetitionEntryBuilder {
-    this.entry.subEventId = subEvent.id;
+  ForDraw(draw: DrawCompetitionBuilder): EventCompetitionEntryBuilder {
+    draw.WithEntry(this);
     return this;
   }
 
-  ForTeam(team: Team): EventCompetitionEntryBuilder {
-    this.entry.teamId = team.id;
+  WithSubEventId(id: string): EventCompetitionEntryBuilder {
+    this.entry.subEventId = id;
     return this;
   }
 
+  ForSubEvent(subEvent: SubEventCompetitionBuilder): EventCompetitionEntryBuilder {
+    subEvent.WithEntry(this);
+    return this;
+  }
+
+  WithTeamId(id: string) {
+    this.entry.teamId = id;
+    return this;
+  }
+  
+
+  ForTeam(team: TeamBuilder): EventCompetitionEntryBuilder {
+    this.team = team;
+    return this;
+  } 
 
   async Build(rebuild = false): Promise<EventEntry> {
     if (this.build && !rebuild) {
@@ -78,12 +95,13 @@ export class EventCompetitionEntryBuilder {
     }
 
     try {
+
       if (this.basePlayers) {
         this.entry.meta = {
           competition: {
             players: [],
             teamIndex: this.index,
-          },
+          }, 
         };
       }
 
@@ -95,7 +113,7 @@ export class EventCompetitionEntryBuilder {
           single: basePlayer.single,
           double: basePlayer.double,
           mix: basePlayer.mix,
-        });
+        }); 
       }
 
       await this.entry.save();
