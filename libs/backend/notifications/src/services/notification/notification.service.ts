@@ -19,6 +19,7 @@ import {
   EventSyncedSuccessNotifier,
   EventSyncedFailedNotifier,
   CompetitionEncounterChangeFinishRequestNotifier,
+  SyncEncounterFailed,
 } from '../../notifiers';
 import { PushService } from '../push';
 import { ConfigService } from '@nestjs/config';
@@ -32,12 +33,12 @@ export class NotificationService {
   constructor(
     private mailing: MailingService,
     private push: PushService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {}
 
   async notifyEncounterChange(
     encounter: EncounterCompetition,
-    homeTeamRequests: boolean
+    homeTeamRequests: boolean,
   ) {
     const homeTeam = await encounter.getHome({
       include: [
@@ -65,12 +66,12 @@ export class NotificationService {
 
     const notifierNew = new CompetitionEncounterChangeNewRequestNotifier(
       this.mailing,
-      this.push
+      this.push,
     );
     const notifierConform =
       new CompetitionEncounterChangeConformationRequestNotifier(
         this.mailing,
-        this.push
+        this.push,
       );
 
     if (newReqTeam.captain && newReqTeam.email) {
@@ -78,7 +79,7 @@ export class NotificationService {
         newReqTeam.captain,
         encounter.id,
         { encounter, isHome: homeTeamRequests },
-        { email: newReqTeam.email }
+        { email: newReqTeam.email },
       );
     }
 
@@ -87,19 +88,19 @@ export class NotificationService {
         confReqTeam.captain,
         encounter.id,
         { encounter, isHome: !homeTeamRequests },
-        { email: confReqTeam.email }
+        { email: confReqTeam.email },
       );
     }
   }
 
   async notifyEncounterChangeFinished(
     encounter: EncounterCompetition,
-    locationHasChanged: boolean
+    locationHasChanged: boolean,
   ) {
     const notifierFinished =
       new CompetitionEncounterChangeFinishRequestNotifier(
         this.mailing,
-        this.push
+        this.push,
       );
     const homeTeam = await encounter.getHome({
       include: [
@@ -127,7 +128,7 @@ export class NotificationService {
         homeTeam.captain,
         encounter.id,
         { encounter, locationHasChanged, isHome: true },
-        { email: homeTeam.email }
+        { email: homeTeam.email },
       );
     }
 
@@ -136,7 +137,7 @@ export class NotificationService {
         awayTeam.captain,
         encounter.id,
         { encounter, locationHasChanged, isHome: false },
-        { email: awayTeam.email }
+        { email: awayTeam.email },
       );
     }
 
@@ -148,7 +149,7 @@ export class NotificationService {
   async notifyEncounterNotEntered(encounter: EncounterCompetition) {
     const notifierNotEntered = new CompetitionEncounterNotEnteredNotifier(
       this.mailing,
-      this.push
+      this.push,
     );
 
     const homeTeam = await encounter.getHome({
@@ -172,7 +173,7 @@ export class NotificationService {
         homeTeam.captain,
         encounter.id,
         { encounter },
-        { email: homeTeam.email, url }
+        { email: homeTeam.email, url },
       );
     }
   }
@@ -180,7 +181,7 @@ export class NotificationService {
   async notifyEncounterNotAccepted(encounter: EncounterCompetition) {
     const notifierNotAccepted = new CompetitionEncounterNotAcceptedNotifier(
       this.mailing,
-      this.push
+      this.push,
     );
     const awayTeam = await encounter.getAway({
       include: [
@@ -202,7 +203,7 @@ export class NotificationService {
         awayTeam.captain,
         encounter.id,
         { encounter },
-        { email: awayTeam.email, url }
+        { email: awayTeam.email, url },
       );
     }
   }
@@ -212,7 +213,7 @@ export class NotificationService {
     {
       event,
       success,
-    }: { event?: EventCompetition | EventTournament; success: boolean }
+    }: { event?: EventCompetition | EventTournament; success: boolean },
   ) {
     const notifierSyncFinished = success
       ? new EventSyncedSuccessNotifier(this.mailing, this.push)
@@ -226,7 +227,7 @@ export class NotificationService {
         user,
         event?.id,
         { event, success },
-        { email: user?.email, url, slug: user?.slug }
+        { email: user?.email, url, slug: user?.slug },
       );
     }
   }
@@ -235,11 +236,11 @@ export class NotificationService {
     userId: string,
     clubId: string,
     season: number,
-    email: string
+    email: string,
   ) {
     const notifierEnrollment = new ClubEnrollmentNotifier(
       this.mailing,
-      this.push
+      this.push,
     );
 
     const user = await Player.findByPk(userId);
@@ -290,7 +291,7 @@ export class NotificationService {
       club.teams
         ?.map((team) => team?.entry)
         ?.map((eventEntry) => eventEntry?.subEventCompetition)
-        ?.map((subEvent) => subEvent?.eventId)
+        ?.map((subEvent) => subEvent?.eventId),
     );
 
     const comments = await club.getComments({
@@ -309,8 +310,9 @@ export class NotificationService {
     });
 
     const ids = club?.teams
-      ?.map((team) =>
-        team?.entry?.meta?.competition?.players.map((player) => player.id)
+      ?.map(
+        (team) =>
+          team?.entry?.meta?.competition?.players.map((player) => player.id),
       )
       .flat();
 
@@ -347,7 +349,57 @@ export class NotificationService {
       { email: email || user.email || '', url },
       {
         email: true,
-      }
+      },
     );
+  }
+
+  async notifySyncEncounterFailed(
+    userId: string,
+    { encounter, url }: { encounter?: EncounterCompetition; url: string },
+  ) {
+    const notifier = new SyncEncounterFailed(this.mailing, this.push);
+
+    if (!encounter) {
+      throw new Error('Encounter not found');
+    }
+
+    const user = await Player.findByPk(userId);
+
+    if (!encounter?.drawCompetition) {
+      encounter.drawCompetition = await encounter?.getDrawCompetition();
+    }
+
+    if (!encounter?.drawCompetition?.subEventCompetition) {
+      encounter.drawCompetition.subEventCompetition =
+        await encounter?.drawCompetition?.getSubEventCompetition();
+    }
+
+    if (!encounter?.drawCompetition?.subEventCompetition?.eventCompetition) {
+      encounter.drawCompetition.subEventCompetition.eventCompetition =
+        await encounter?.drawCompetition?.subEventCompetition?.getEventCompetition();
+    }
+
+    if (!encounter?.home) {
+      encounter.home = await encounter?.getHome();
+    }
+
+    if (!encounter?.away) {
+      encounter.away = await encounter?.getAway();
+    }
+
+    const urlBadman = `${this.configService.get(
+      'CLIENT_URL',
+    )}/competition/${encounter?.drawCompetition?.subEventCompetition
+      ?.eventCompetition?.id}/draw/${encounter?.drawCompetition
+      ?.id}/encounter/${encounter?.id}`;
+
+    if (user?.email && encounter?.id && url && user?.slug) {
+      notifier.notify(
+        user,
+        encounter.id,
+        { encounter, url, urlBadman },
+        { email: user?.email, slug: user?.slug },
+      );
+    }
   }
 }
