@@ -68,16 +68,18 @@ export class UploadRankingController {
       throw new Error('Invalid ranking date');
     }
 
-    await this._updateRankingService.processFileUpload(mappedData, {
+    this._updateRankingService.processFileUpload(mappedData, {
       updateCompStatus,
       updateRanking,
       rankingDate: rankingDate.toDate(),
       removeAllRanking,
       rankingSystemId,
       createNewPlayers,
+    }).then(() => {
+      this._logger.log('Ranking processed');
     });
 
-    return { message: 'File processed successfully' };
+    return { success: true };
   }
 
   private async _readFile(file: MultipartFile, rows: number | undefined = undefined) {
