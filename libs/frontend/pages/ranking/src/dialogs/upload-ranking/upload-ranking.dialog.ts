@@ -149,7 +149,7 @@ export class UploadRankingDialogComponent {
     formData.append('createNewPlayers', this.createNewPlayers.toString());
     formData.append('rankingDate', this.rankingDate.toISOString());
     formData.append('updateRanking', this.updateRanking.toString());
-
+ 
     try {
       const result = await lastValueFrom(
         this.http.post<{ message: boolean }>(
@@ -163,6 +163,9 @@ export class UploadRankingDialogComponent {
           duration: 5000,
         });
       }
+
+      this.dialogRef.close();
+
     } catch (error) {
       console.error(error);
     } finally {
