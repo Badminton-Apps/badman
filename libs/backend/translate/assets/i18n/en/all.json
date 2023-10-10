@@ -566,7 +566,8 @@
     "year": "Year"
   },
   "landing": {
-    "description": "We are working on making a central place for all your badminton data."
+    "description": "We are working on making a central place for all your badminton data.",
+    "title": "Badman"
   },
   "lists": {
     "name": "Name"
