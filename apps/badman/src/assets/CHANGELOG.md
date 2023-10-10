@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.112.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.112.0-beta.0...v6.112.0-beta.1) (2023-10-10)
+
+
+### Bug Fixes
+
+* now this works with blocking the server less ([d0a79bb](https://github.com/Badminton-Apps/badman/commit/d0a79bba83accac118fdf340348e686ffa63e6d3))
+
 ## [6.112.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.111.0...v6.112.0-beta.0) (2023-10-10)
 
 
