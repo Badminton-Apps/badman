@@ -24,7 +24,7 @@ export class UpdateRankingService {
       removeAllRanking: false,
       updateRanking: false,
       createNewPlayers: false,
-    }
+    },
   ) {
     if (!options.rankingDate) {
       throw new Error('Ranking date is required');
@@ -53,7 +53,7 @@ export class UpdateRankingService {
           Math.min(
             existingMember.single,
             existingMember.doubles,
-            existingMember.mixed
+            existingMember.mixed,
           )
         ) {
           acc[currentIndex] = member;
@@ -65,22 +65,34 @@ export class UpdateRankingService {
     const transaction = await this._sequelize.transaction();
     try {
       this._logger.log('Start processing export members role per group');
-      const dataPlayers = await Player.findAll({
-        attributes: ['id', 'memberId', 'competitionPlayer', 'gender'],
-        where: {
-          memberId: data.map((d) => d.memberId),
-        },
-        transaction,
-      });
+      const distinctPlayers: Player[] = [];
+      const distinctIds: string[] = [];
 
-      // distinct players
-      const distinctPlayers = dataPlayers.filter(
-        (p, i, a) => a.findIndex((t) => t.memberId === p.memberId) === i
-      );
+      // fetch players from database in chunks and add them to the distinct players
+
+      const chunks = this.chunkArray(data);
+
+      for (const chunk of chunks) {
+        // filter out distinct ids from the chunk
+        const distinctChunkIds = chunk
+          .map((d) => d.memberId)
+          .filter((d) => !distinctIds.find((p) => p === d));
+
+        const players = await Player.findAll({
+          attributes: ['id', 'memberId', 'competitionPlayer', 'gender'],
+          where: {
+            memberId: distinctChunkIds,
+          },
+          transaction,
+        });
+
+        distinctPlayers.push(...players);
+        distinctIds.push(...players.map((p) => p.memberId ?? ''));
+      }
 
       // find all players that are not in the database
       const newPlayers = data.filter(
-        (d) => !dataPlayers.find((p) => p.memberId === d.memberId)
+        (d) => !distinctIds.find((p) => p === d.memberId),
       );
 
       // Create new players
@@ -99,7 +111,7 @@ export class UpdateRankingService {
         for (const chunk of chunks) {
           playersProcessed += chunk.length;
           this._logger.verbose(
-            `Processing ${playersProcessed} of ${newPlayers.length} players`
+            `Processing ${playersProcessed} of ${newPlayers.length} players`,
           );
 
           await Player.bulkCreate(
@@ -110,7 +122,7 @@ export class UpdateRankingService {
                 lastName: newp.lastName,
               } as Partial<Player>;
             }),
-            { transaction }
+            { transaction },
           );
         }
 
@@ -128,14 +140,14 @@ export class UpdateRankingService {
 
       // Update comp status
       this._logger.debug(
-        `Update competition status: ${options.updateCompStatus}`
+        `Update competition status: ${options.updateCompStatus}`,
       );
       if (
         options.updateCompStatus == true ||
         options.updateCompStatus == 'true'
       ) {
         const newCompPlayers = distinctPlayers?.filter(
-          (p) => p.competitionPlayer == false
+          (p) => p.competitionPlayer == false,
         );
 
         const removedCompPlayers = await Player.findAll({
@@ -152,12 +164,12 @@ export class UpdateRankingService {
         await this.setCompetitionStatus(
           newCompPlayers.map((p) => p.id),
           true,
-          transaction
+          transaction,
         );
         await this.setCompetitionStatus(
           removedCompPlayers.map((p) => p.id),
           false,
-          transaction
+          transaction,
         );
       }
 
@@ -181,70 +193,71 @@ export class UpdateRankingService {
       this._logger.debug(`Update ranking: ${options.updateRanking}`);
 
       if (options.updateRanking == true || options.updateRanking == 'true') {
-        const places = await RankingPlace.findAll({
-          attributes: [
-            'id',
-            'playerId',
-            'systemId',
-            'rankingDate',
-            'single',
-            'singlePoints',
-            'double',
-            'doublePoints',
-            'mix',
-            'mixPoints',
-          ],
-          where: {
-            playerId: distinctPlayers?.map((p) => p.id) ?? [],
-            rankingDate: options.rankingDate,
-            systemId: options.rankingSystemId,
-          },
-          transaction,
-        });
+        const distinctPlayersChunks = this.chunkArray(distinctPlayers, 100);
 
-        this._logger.debug(`Found ${places.length} places`);
-        const toUpdate: RankingPlace[] = [];
+        for (const chunk of distinctPlayersChunks) {
+          const places = await RankingPlace.findAll({
+            attributes: [
+              'id',
+              'playerId',
+              'systemId',
+              'rankingDate',
+              'single',
+              'singlePoints',
+              'double',
+              'doublePoints',
+              'mix',
+              'mixPoints',
+            ],
+            where: {
+              playerId: chunk?.map((p) => p.id) ?? [],
+              rankingDate: options.rankingDate,
+              systemId: options.rankingSystemId,
+            },
+            transaction,
+          });
 
-        for (const d of data) {
-          const player = distinctPlayers.find((p) => p.memberId === d.memberId);
-          if (!player) {
-            continue;
-          }
-          let place = places.find((p) => p?.playerId === player.id);
+          this._logger.debug(`Found ${places.length} places`);
+          const toUpdate: RankingPlace[] = [];
 
-          if (!place) {
-            if (!options.removeAllRanking) {
+          for (const d of data) {
+            const player = chunk.find((p) => p.memberId === d.memberId);
+            if (!player) {
+              continue;
+            }
+            let place = places.find((p) => p?.playerId === player.id);
+
+            if (!place) {
+              if (!options.removeAllRanking) {
+                this._logger.verbose(
+                  `Create new ranking place for player: ${player.id}`,
+                );
+              }
+
+              place = new RankingPlace();
+              place.playerId = player.id;
+              place.rankingDate = options.rankingDate;
+              place.systemId = options.rankingSystemId;
+            }
+
+            place.single = d.single || place.single;
+            place.singlePoints = d.singlePoints || place.singlePoints;
+            place.double = d.doubles || place.double;
+            place.doublePoints = d.doublesPoints || place.doublePoints;
+            place.mix = d.mixed || place.mix;
+            place.mixPoints = d.mixedPoints || place.mixPoints;
+
+            if (place.changed() != false) {
               this._logger.verbose(
-                `Create new ranking place for player: ${player.id}`
+                `Update ranking place for player: ${player.id}`,
               );
-            } 
-
-            place = new RankingPlace();
-            place.playerId = player.id;
-            place.rankingDate = options.rankingDate;
-            place.systemId = options.rankingSystemId;
+              toUpdate.push(place);
+            }
           }
 
-          place.single = d.single || place.single;
-          place.singlePoints = d.singlePoints || place.singlePoints;
-          place.double = d.doubles || place.double;
-          place.doublePoints = d.doublesPoints || place.doublePoints;
-          place.mix = d.mixed || place.mix;
-          place.mixPoints = d.mixedPoints || place.mixPoints;
+          this._logger.debug(`Update ${toUpdate.length} places`);
 
-          if (place.changed() != false) {
-            this._logger.verbose(
-              `Update ranking place for player: ${player.id}`
-            );
-            toUpdate.push(place);
-          }
-        }
-
-        this._logger.debug(`Update ${toUpdate.length} places`);
-
-        await RankingPlace.bulkCreate(
-          toUpdate?.map((p) => p.toJSON()),
-          {
+          await RankingPlace.bulkCreate(toUpdate?.map((p) => p.toJSON()), {
             updateOnDuplicate: [
               'single',
               'double',
@@ -254,9 +267,11 @@ export class UpdateRankingService {
               'mixPoints',
             ],
             transaction,
-          }
-        );
+          });
+        }
       }
+
+      throw new Error('test');
 
       this._logger.debug('Commit transaction');
       await transaction.commit();
@@ -268,16 +283,24 @@ export class UpdateRankingService {
     }
   }
 
+  private chunkArray<T>(data: T[], chunkSize = 100) {
+    const chunks = [];
+    for (let i = 0; i < data.length; i += chunkSize) {
+      chunks.push(data.slice(i, i + chunkSize));
+    }
+    return chunks;
+  }
+
   // set competition status
   async setCompetitionStatus(
     idd: string[],
     status: boolean,
-    transaction?: Transaction
+    transaction?: Transaction,
   ) {
     transaction = transaction || (await this._sequelize.transaction());
 
     this._logger.verbose(
-      `Set competition status: ${status}, amount: ${idd.length}`
+      `Set competition status: ${status}, amount: ${idd.length}`,
     );
 
     if (idd.length === 0) {
@@ -293,7 +316,7 @@ export class UpdateRankingService {
           id: idd,
         },
         transaction,
-      }
+      },
     );
   }
 }
