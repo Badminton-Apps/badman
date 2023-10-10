@@ -23,7 +23,7 @@ export class FixGendersRunner {
           gender: null,
         },
         transaction,
-      });
+      }); 
 
       // corret gender for incorrect places
       for (const place of lastplaces) {
