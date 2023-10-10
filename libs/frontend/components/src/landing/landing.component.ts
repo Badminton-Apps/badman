@@ -4,18 +4,20 @@ import {
   Component,
   Inject,
   OnInit,
+  inject,
 } from '@angular/core';
 import { AuthenticateService, LoggedinUser } from '@badman/frontend-auth';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { Team } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, switchMap } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { Observable, combineLatest, switchMap } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
 import { RankingTableComponent } from '../ranking-table';
 import { BetaComponent, ProfileOverviewComponent } from './components';
 import { MatIconModule } from '@angular/material/icon';
+import { SeoService } from '@badman/frontend-seo';
 
 @Component({
   selector: 'badman-landing',
@@ -36,6 +38,9 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private translate = inject(TranslateService);
+
   user$?: Observable<LoggedinUser>;
   teams$?: Observable<Team[]>;
 
@@ -46,10 +51,21 @@ export class LandingComponent implements OnInit {
       version: string;
     },
     private authenticateService: AuthenticateService,
-    private apollo: Apollo
+    private apollo: Apollo,
   ) {}
 
   ngOnInit() {
+    combineLatest([this.translate.get('all.landing.title')]).subscribe(
+      ([title]) => {
+        this.seoService.update({
+          title,
+          description: title,
+          type: 'website',
+          keywords: ['badman', 'badminton'],
+        });
+      },
+    );
+
     this.user$ = this.authenticateService.user$;
     this.teams$ = this.user$.pipe(
       filter((user) => user.loggedIn),
@@ -73,9 +89,9 @@ export class LandingComponent implements OnInit {
             },
           })
           .pipe(
-            map((result) => result.data.player.teams?.map((t) => new Team(t)))
-          )
-      )
+            map((result) => result.data.player.teams?.map((t) => new Team(t))),
+          ),
+      ),
     );
   }
 }
