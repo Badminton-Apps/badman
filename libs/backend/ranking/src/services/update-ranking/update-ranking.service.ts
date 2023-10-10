@@ -271,8 +271,6 @@ export class UpdateRankingService {
         }
       }
 
-      throw new Error('test');
-
       this._logger.debug('Commit transaction');
       await transaction.commit();
       this._logger.log('End processing export members role per group');
