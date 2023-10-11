@@ -10,7 +10,7 @@
       *ngFor="let option of filteredClubs$ | async"
       [value]="option.id"
     >
-      {{ option.name }}
+      {{ option.name }} <small class="club-id" *ngIf="option.clubId">({{ option.clubId }}) </small>
     </mat-option>
   </mat-select>
 </mat-form-field>
@@ -27,7 +27,7 @@
       *ngFor="let option of filteredClubs$ | async"
       [value]="option.id"
     >
-      {{ option.name }}
+      {{ option.name }} <small class="club-id" *ngIf="option.clubId">({{ option.clubId }}) </small>
     </mat-option>
   </mat-autocomplete>
   <mat-error *ngIf="this.control?.hasError('required')">
