@@ -6,23 +6,23 @@ import {
   RankingPlace,
   RankingSystem,
 } from '@badman/backend-database';
-import { GameType } from '@badman/utils';
+import { GameType, getRankingWhenNull } from '@badman/utils';
 
 export class RankingProcessor {
   static async checkInactive(instances: RankingPlace[], options: SaveOptions) {
     const singleNullInstances = instances.filter(
-      (instance) => instance.single === null || instance.single === undefined
+      (instance) => instance.single === null || instance.single === undefined,
     );
     const doubleNullInstances = instances.filter(
-      (instance) => instance.double === null || instance.double === undefined
+      (instance) => instance.double === null || instance.double === undefined,
     );
     const mixNullInstances = instances.filter(
-      (instance) => instance.mix === null || instance.mix === undefined
+      (instance) => instance.mix === null || instance.mix === undefined,
     );
 
     const systemDisintct = instances.filter(
       (value, index, self) =>
-        self.findIndex((m) => m.systemId === value.systemId) === index
+        self.findIndex((m) => m.systemId === value.systemId) === index,
     );
 
     const systems = await RankingSystem.findAll({
@@ -196,7 +196,7 @@ export class RankingProcessor {
     rankingSystems?: RankingSystem[],
     args?: {
       transaction?: Transaction;
-    }
+    },
   ): Promise<RankingPlace[]> {
     if (
       (rankingSystems === undefined || rankingSystems === null) &&
@@ -215,64 +215,17 @@ export class RankingProcessor {
     return Promise.all(
       rankingPoints.map((rankingPoint) => {
         const usedSystem = rankingSystems?.find(
-          (r) => r.id === rankingPoint.systemId
+          (r) => r.id === rankingPoint.systemId,
         );
 
         if (!usedSystem) {
           throw new Error(
-            `No system found for rankingPoint ${rankingPoint.id}`
+            `No system found for rankingPoint ${rankingPoint.id}`,
           );
         }
 
-        return this._protect(rankingPoint, usedSystem);
-      })
+        return getRankingWhenNull(rankingPoint, usedSystem);
+      }),
     );
-  }
-
-  private static _protect(
-    rankingPoint: RankingPlace,
-    rankingSystem: RankingSystem
-  ): RankingPlace {
-    rankingPoint.single = rankingPoint.single || 12;
-    rankingPoint.double = rankingPoint.double || 12;
-    rankingPoint.mix = rankingPoint.mix || 12;
-
-    const highest = Math.min(
-      rankingPoint.single,
-      rankingPoint.double,
-      rankingPoint.mix
-    );
-
-    if (rankingPoint.single - highest >= (rankingSystem.maxDiffLevels ?? 0)) {
-      rankingPoint.single = highest + (rankingSystem.maxDiffLevels ?? 0);
-    }
-    if (rankingPoint.double - highest >= (rankingSystem.maxDiffLevels ?? 0)) {
-      rankingPoint.double = highest + (rankingSystem.maxDiffLevels ?? 0);
-    }
-    if (rankingPoint.mix - highest >= (rankingSystem.maxDiffLevels ?? 0)) {
-      rankingPoint.mix = highest + (rankingSystem.maxDiffLevels ?? 0);
-    }
-
-    // if (rankingPoints.single - highestRanking.single > rankingSystem.maxDiffLevelsHighest) {
-    //   rankingPoints.single = highestRanking.single + rankingSystem.maxDiffLevelsHighest;
-    // }
-    // if (rankingPoints.double - highestRanking.double > rankingSystem.maxDiffLevelsHighest) {
-    //   rankingPoints.double = highestRanking.double + rankingSystem.maxDiffLevelsHighest;
-    // }
-    // if (rankingPoints.mix - highestRanking.mix > rankingSystem.maxDiffLevelsHighest) {
-    //   rankingPoints.mix = highestRanking.mix + rankingSystem.maxDiffLevelsHighest;
-    // }
-
-    if (rankingPoint.single > rankingSystem.amountOfLevels) {
-      rankingPoint.single = rankingSystem.amountOfLevels;
-    }
-    if (rankingPoint.double > rankingSystem.amountOfLevels) {
-      rankingPoint.double = rankingSystem.amountOfLevels;
-    }
-    if (rankingPoint.mix > rankingSystem.amountOfLevels) {
-      rankingPoint.mix = rankingSystem.amountOfLevels;
-    }
-
-    return rankingPoint;
   }
 }
