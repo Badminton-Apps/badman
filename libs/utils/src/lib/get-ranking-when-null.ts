@@ -19,9 +19,9 @@ export function getRankingWhenNull<
     throw new Error('No system provided');
   }
 
-  ranking.single = ranking.single || 12;
-  ranking.double = ranking.double || 12;
-  ranking.mix = ranking.mix || 12;
+  ranking.single = ranking.single || system.amountOfLevels;
+  ranking.double = ranking.double || system.amountOfLevels;
+  ranking.mix = ranking.mix || system.amountOfLevels;
 
   const highest = Math.min(ranking.single, ranking.double, ranking.mix);
 

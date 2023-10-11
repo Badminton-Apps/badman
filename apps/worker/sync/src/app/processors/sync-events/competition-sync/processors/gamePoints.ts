@@ -8,9 +8,10 @@ import {
 } from '@badman/backend-database';
 
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
+import { Logger } from '@nestjs/common';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
-import { Logger } from '@nestjs/common';
+import { runParallel } from '@badman/utils';
 
 export class CompetitionSyncPointProcessor extends StepProcessor {
   public event?: EventCompetition;
@@ -95,16 +96,14 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
             transaction: this.transaction,
           });
 
-          for (const game of games) {
-            await this.pointService.createRankingPointforGame(
-              rankingSystem,
-              game,
-              {
+          await runParallel(
+            games?.map((game) =>
+              this.pointService.createRankingPointforGame(rankingSystem, game, {
                 createRankingPoints: true,
                 transaction: this.transaction,
-              },
-            );
-          }
+              }),
+            ) ?? [],
+          );
 
           totalGames += games.length;
         }
