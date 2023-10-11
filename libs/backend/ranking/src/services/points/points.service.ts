@@ -14,6 +14,7 @@ import { GameType } from '@badman/utils';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
+import { getRankingWhenNull } from '@badman/utils';
 
 @Injectable()
 export class PointsService {
@@ -58,7 +59,7 @@ export class PointsService {
       this._logger.verbose(
         `Truncated ${deleted} RankingPoint for system ${
           where.systemId
-        } and between ${start.toISOString()} and ${stop.toISOString()}`
+        } and between ${start.toISOString()} and ${stop.toISOString()}`,
       );
     }
 
@@ -66,11 +67,11 @@ export class PointsService {
 
     const { subEventsC, subEventsT } = await this._getSubEvents(
       groups,
-      options?.transaction
+      options?.transaction,
     );
 
     this._logger.debug(
-      `SubEventsC: ${subEventsC.length}, SubEventsT: ${subEventsT.length}`
+      `SubEventsC: ${subEventsC.length}, SubEventsT: ${subEventsT.length}`,
     );
 
     const games = await this._getGames(
@@ -80,7 +81,7 @@ export class PointsService {
         start,
         stop,
       },
-      options
+      options,
     );
 
     // Calculate ranking points per game
@@ -96,8 +97,8 @@ export class PointsService {
       if (done % 100 === 0) {
         this._logger.debug(
           `Calulating point: ${done}/${total} (${((done / total) * 100).toFixed(
-            2
-          )}%)`
+            2,
+          )}%)`,
         );
       }
     }
@@ -109,7 +110,7 @@ export class PointsService {
     options?: {
       createRankingPoints?: boolean;
       transaction?: Transaction;
-    }
+    },
   ): Promise<RankingPoint[]> {
     const { createRankingPoints = true, transaction } = options ?? {};
 
@@ -150,22 +151,22 @@ export class PointsService {
     const player1Team1 = gamePlayesr.find(
       (player) =>
         player.GamePlayerMembership.team === 1 &&
-        player.GamePlayerMembership.player === 1
+        player.GamePlayerMembership.player === 1,
     );
     const player2Team1 = gamePlayesr.find(
       (player) =>
         player.GamePlayerMembership.team === 1 &&
-        player.GamePlayerMembership.player === 2
+        player.GamePlayerMembership.player === 2,
     );
     const player1Team2 = gamePlayesr.find(
       (player) =>
         player.GamePlayerMembership.team === 2 &&
-        player.GamePlayerMembership.player === 1
+        player.GamePlayerMembership.player === 1,
     );
     const player2Team2 = gamePlayesr.find(
       (player) =>
         player.GamePlayerMembership.team === 2 &&
-        player.GamePlayerMembership.player === 2
+        player.GamePlayerMembership.player === 2,
     );
 
     const {
@@ -180,7 +181,7 @@ export class PointsService {
       player1Team2,
       player2Team1,
       player2Team2,
-      system
+      system,
     );
 
     if (player1Team1 && player1Team1.id && player1Team1Points != null) {
@@ -192,7 +193,7 @@ export class PointsService {
           gameId: game.id,
           rankingDate: game.playedAt,
           differenceInLevel: player1Team1Points === 0 ? differenceInLevel : 0,
-        })
+        }),
       );
     }
     if (player1Team2 && player1Team2.id && player1Team2Points != null) {
@@ -204,7 +205,7 @@ export class PointsService {
           gameId: game.id,
           rankingDate: game.playedAt,
           differenceInLevel: player1Team2Points === 0 ? differenceInLevel : 0,
-        })
+        }),
       );
     }
     if (player2Team1 && player2Team1.id && player2Team1Points != null) {
@@ -216,7 +217,7 @@ export class PointsService {
           gameId: game.id,
           rankingDate: game.playedAt,
           differenceInLevel: player2Team1Points === 0 ? differenceInLevel : 0,
-        })
+        }),
       );
     }
     if (player2Team2 && player2Team2.id && player2Team2Points != null) {
@@ -228,7 +229,7 @@ export class PointsService {
           gameId: game.id,
           rankingDate: game.playedAt,
           differenceInLevel: player2Team2Points === 0 ? differenceInLevel : 0,
-        })
+        }),
       );
     }
 
@@ -245,14 +246,17 @@ export class PointsService {
       for (const ranking of rankings) {
         // find if there is already a ranking point for this player
         const existing = points.find((p) => p.playerId === ranking.playerId);
-        // update points and difference in level
         if (existing) {
-          existing.points = ranking.points;
-          existing.differenceInLevel = ranking.differenceInLevel;
-          //  if any changes, save
-          if (existing.changed()) {
+        // update points and difference in level
+        if (
+            existing.points !== ranking.points ||
+            existing.differenceInLevel !== ranking.differenceInLevel
+          ) {
+            existing.points = ranking.points;
+            existing.differenceInLevel = ranking.differenceInLevel;
             await existing.save({ transaction });
           }
+
         } else {
           await ranking.save({ transaction });
         }
@@ -266,12 +270,12 @@ export class PointsService {
     subEventsC: string[],
     subEventsT: string[],
     { start, stop }: { start: Date; stop: Date },
-    options?: { transaction?: Transaction }
+    options?: { transaction?: Transaction },
   ) {
     const { transaction } = options ?? {};
 
     this._logger.debug(
-      `Getting games between ${start.toISOString()} and ${stop.toISOString()}`
+      `Getting games between ${start.toISOString()} and ${stop.toISOString()}`,
     );
 
     const where = {
@@ -340,7 +344,7 @@ export class PointsService {
 
   private async _getSubEvents(
     groups: RankingGroup[],
-    transaction?: Transaction
+    transaction?: Transaction,
   ) {
     let subEventsC: string[] = [];
     let subEventsT: string[] = [];
@@ -380,7 +384,7 @@ export class PointsService {
     player2Team2:
       | (Player & { GamePlayerMembership: GamePlayerMembership })
       | undefined,
-    system: RankingSystem
+    system: RankingSystem,
   ) {
     const points = {
       player1Team1Points: null,
@@ -408,10 +412,22 @@ export class PointsService {
       double: system.amountOfLevels,
     };
 
-    const rankingPlayer1Team1 = player1Team1?.rankingPlaces?.[0] ?? maxRanking;
-    const rankingPlayer2Team1 = player2Team1?.rankingPlaces?.[0] ?? maxRanking;
-    const rankingPlayer1Team2 = player1Team2?.rankingPlaces?.[0] ?? maxRanking;
-    const rankingPlayer2Team2 = player2Team2?.rankingPlaces?.[0] ?? maxRanking;
+    const rankingPlayer1Team1 = getRankingWhenNull(
+      player1Team1?.rankingPlaces?.[0] ?? maxRanking,
+      system,
+    );
+    const rankingPlayer2Team1 = getRankingWhenNull(
+      player2Team1?.rankingPlaces?.[0] ?? maxRanking,
+      system,
+    );
+    const rankingPlayer1Team2 = getRankingWhenNull(
+      player1Team2?.rankingPlaces?.[0] ?? maxRanking,
+      system,
+    );
+    const rankingPlayer2Team2 = getRankingWhenNull(
+      player2Team2?.rankingPlaces?.[0] ?? maxRanking,
+      system,
+    );
 
     let pointsFrom: 'single' | 'mix' | 'double' | undefined = undefined;
 
@@ -434,25 +450,25 @@ export class PointsService {
     if (rankingPlayer1Team2) {
       levelP1T2 = parseInt(
         `${rankingPlayer1Team2[pointsFrom] ?? system.amountOfLevels}`,
-        10
+        10,
       );
     }
     if (rankingPlayer2Team2) {
       levelP2T2 = parseInt(
         `${rankingPlayer2Team2[pointsFrom] ?? system.amountOfLevels}`,
-        10
+        10,
       );
     }
     if (rankingPlayer1Team1) {
       levelP1T1 = parseInt(
         `${rankingPlayer1Team1[pointsFrom] ?? system.amountOfLevels}`,
-        10
+        10,
       );
     }
     if (rankingPlayer2Team1) {
       levelP2T1 = parseInt(
         `${rankingPlayer2Team1[pointsFrom] ?? system.amountOfLevels}`,
-        10
+        10,
       );
     }
 
@@ -476,7 +492,7 @@ export class PointsService {
         const wonPoints = Math.round(
           (this._getWinningPoints(system, levelP1T2) +
             this._getWinningPoints(system, levelP2T2)) /
-            2
+            2,
         );
         points.player1Team1Points = wonPoints;
         points.player2Team1Points = wonPoints;
@@ -490,7 +506,7 @@ export class PointsService {
         const wonPoints = Math.round(
           (this._getWinningPoints(system, levelP1T1) +
             this._getWinningPoints(system, levelP2T1)) /
-            2
+            2,
         );
         points.player1Team2Points = wonPoints;
         points.player2Team2Points = wonPoints;

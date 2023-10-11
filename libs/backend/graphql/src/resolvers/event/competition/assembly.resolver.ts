@@ -8,9 +8,10 @@ import {
   Assembly,
   Player,
   PlayerRankingType,
+  RankingPlace,
   RankingSystem,
 } from '@badman/backend-database';
-import { sortPlayers } from '@badman/utils';
+import { getRankingWhenNull, sortPlayers } from '@badman/utils';
 import { Logger, NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -30,17 +31,17 @@ export class AssemblyResolver {
     description: `Validate the assembly\n\r**note**: the levels are the ones from may!`,
   })
   async assemblyValidation(
-    @Args('assembly') assembly: AssemblyInput
+    @Args('assembly') assembly: AssemblyInput,
   ): Promise<AssemblyOutput> {
     return this.assemblyService.fetchAndValidate(
       assembly,
-      AssemblyValidationService.defaultValidators()
+      AssemblyValidationService.defaultValidators(),
     );
   }
 
   @ResolveField(() => [PlayerRankingType])
   async titularsPlayers(
-    @Parent() assembly: AssemblyOutput
+    @Parent() assembly: AssemblyOutput,
   ): Promise<PlayerRankingType[]> {
     if (!assembly.titularsPlayerData) return [];
 
@@ -56,29 +57,31 @@ export class AssemblyResolver {
 
     if (!system) {
       throw new NotFoundException(
-        `${RankingSystem.name}: ${assembly.systemId}`
+        `${RankingSystem.name}: ${assembly.systemId}`,
       );
     }
 
     return p
-      .map((player) => ({
-        ...player.toJSON(),
-        single:
+      .map((player) => {
+        const place = getRankingWhenNull(
           assembly.titularsPlayerData?.find((p) => p.id === player.id)
-            ?.rankingPlaces?.[0]?.single ?? system.amountOfLevels,
-        double:
-          assembly.titularsPlayerData?.find((p) => p.id === player.id)
-            ?.rankingPlaces?.[0]?.double ?? system.amountOfLevels,
-        mix:
-          assembly.titularsPlayerData?.find((p) => p.id === player.id)
-            ?.rankingPlaces?.[0]?.mix ?? system.amountOfLevels,
-      }))
+            ?.rankingPlaces?.[0] ?? ({} as RankingPlace),
+          system,
+        );
+
+        return {
+          ...player.toJSON(),
+          single: place?.single,
+          double: place?.double,
+          mix: place?.mix,
+        };
+      })
       ?.sort(sortPlayers);
   }
 
   @ResolveField(() => [PlayerRankingType])
   async baseTeamPlayers(
-    @Parent() assembly: AssemblyOutput
+    @Parent() assembly: AssemblyOutput,
   ): Promise<PlayerRankingType[]> {
     if (!assembly.basePlayersData) return [];
 
@@ -103,14 +106,14 @@ export class AssemblyResolver {
   @Mutation(() => Boolean)
   async createAssembly(
     @User() user: Player,
-    @Args('assembly') assembly: AssemblyInput
+    @Args('assembly') assembly: AssemblyInput,
   ) {
     if (!assembly) throw new Error('Assembly is required');
     if (!assembly.encounterId) throw new Error('Encounter is required');
     if (!assembly.teamId) throw new Error('Team is required');
 
     this.logger.debug(
-      `Saving assembly for encounter ${assembly.encounterId} and team ${assembly.teamId}, by player ${user.fullName}`
+      `Saving assembly for encounter ${assembly.encounterId} and team ${assembly.teamId}, by player ${user.fullName}`,
     );
 
     try {

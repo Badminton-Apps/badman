@@ -13,7 +13,12 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from '@badman/backend-visual';
-import { GameStatus, GameType, runParallel } from '@badman/utils';
+import {
+  GameStatus,
+  GameType,
+  getRankingWhenNull,
+  runParallel,
+} from '@badman/utils';
 import { Logger, NotFoundException } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -31,7 +36,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions,
   ) {
     if (!options) {
       options = {};
@@ -81,7 +86,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   private async _processEncounter(
     encounter: EncounterCompetition,
     internalId: number,
-    games: Game[]
+    games: Game[],
   ) {
     // only get info for games that have been played
     if (moment(encounter.date).isAfter(moment())) {
@@ -92,17 +97,18 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     const result = await this.visualService.getMatch(
       this.visualTournament.Code,
       internalId,
-      !isLastWeek
+      !isLastWeek,
     );
 
     const visualMatch = result.filter(
-      (m) => m != null || m != undefined
+      (m) => m != null || m != undefined,
     ) as XmlMatch[];
 
     for (const xmlMatch of visualMatch) {
       let game = games.find(
         (r) =>
-          r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`
+          r.order === xmlMatch.MatchOrder &&
+          r.visualCode === `${xmlMatch.Code}`,
       );
 
       if (!xmlMatch.Sets) {
@@ -200,7 +206,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       if (game.changed()) {
         await game.save({ transaction: this.transaction });
       }
-      
+
       const memberships = await this._createGamePlayers(xmlMatch, game);
       await GamePlayerMembership.bulkCreate(memberships, {
         transaction: this.transaction,
@@ -243,14 +249,23 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         limit: 1,
       });
 
+      const place = getRankingWhenNull(
+        rankingt1p1?.[0] ?? {
+          single: this._system.amountOfLevels,
+          double: this._system.amountOfLevels,
+          mix: this._system.amountOfLevels,
+        },
+        this._system,
+      );
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: team1player1.id,
         team: 1,
         player: 1,
-        single: rankingt1p1.length > 0 ? rankingt1p1[0].single : undefined,
-        double: rankingt1p1.length > 0 ? rankingt1p1[0].double : undefined,
-        mix: rankingt1p1.length > 0 ? rankingt1p1[0].mix : undefined,
+        single: place.single,
+        double: place.double,
+        mix: place.mix,
         systemId: this._system?.id,
       });
       gamePlayers.push(gp.toJSON());
@@ -274,14 +289,23 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         limit: 1,
       });
 
+      const place = getRankingWhenNull(
+        rankingt1p2?.[0] ?? {
+          single: this._system.amountOfLevels,
+          double: this._system.amountOfLevels,
+          mix: this._system.amountOfLevels,
+        },
+        this._system,
+      );
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: team1player2.id,
         team: 1,
         player: 2,
-        single: rankingt1p2.length > 0 ? rankingt1p2[0].single : undefined,
-        double: rankingt1p2.length > 0 ? rankingt1p2[0].double : undefined,
-        mix: rankingt1p2.length > 0 ? rankingt1p2[0].mix : undefined,
+        single: place.single,
+        double: place.double,
+        mix: place.mix,
         systemId: this._system?.id,
       });
       gamePlayers.push(gp.toJSON());
@@ -304,14 +328,23 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         limit: 1,
       });
 
+      const place = getRankingWhenNull(
+        rankingt2p1?.[0] ?? {
+          single: this._system.amountOfLevels,
+          double: this._system.amountOfLevels,
+          mix: this._system.amountOfLevels,
+        },
+        this._system,
+      );
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: team2player1.id,
         team: 2,
         player: 1,
-        single: rankingt2p1.length > 0 ? rankingt2p1[0].single : undefined,
-        double: rankingt2p1.length > 0 ? rankingt2p1[0].double : undefined,
-        mix: rankingt2p1.length > 0 ? rankingt2p1[0].mix : undefined,
+        single: place.single,
+        double: place.double,
+        mix: place.mix,
         systemId: this._system?.id,
       });
       gamePlayers.push(gp.toJSON());
@@ -334,14 +367,23 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         limit: 1,
       });
 
+      const place = getRankingWhenNull(
+        rankingtt2p2?.[0] ?? {
+          single: this._system.amountOfLevels,
+          double: this._system.amountOfLevels,
+          mix: this._system.amountOfLevels,
+        },
+        this._system,
+      );
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: team2player2.id,
         team: 2,
         player: 2,
-        single: rankingtt2p2.length > 0 ? rankingtt2p2[0].single : undefined,
-        double: rankingtt2p2.length > 0 ? rankingtt2p2[0].double : undefined,
-        mix: rankingtt2p2.length > 0 ? rankingtt2p2[0].mix : undefined,
+        single: place.single,
+        double: place.double,
+        mix: place.mix,
         systemId: this._system?.id,
       });
       gamePlayers.push(gp.toJSON());
@@ -390,7 +432,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
           (p.firstName === corrected.firstName &&
             p.lastName === corrected.lastName) ||
           (p.firstName === corrected.lastName &&
-            p.lastName === corrected.firstName)
+            p.lastName === corrected.firstName),
       );
     }
     return returnPlayer;
