@@ -15,7 +15,10 @@ import { Logger } from '@nestjs/common';
 export class CompetitionSyncPointProcessor extends StepProcessor {
   public event?: EventCompetition;
 
-  constructor(private pointService: PointsService, options?: StepOptions) {
+  constructor(
+    private pointService: PointsService,
+    options?: StepOptions,
+  ) {
     if (!options) {
       options = {};
     }
@@ -35,7 +38,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
       const index = subEvents.indexOf(subEvent);
       const progress = (index / subEvents.length) * 100;
       this.logger.debug(
-        `Syncing points for ${subEvent.name} (${progress.toFixed(2)}%)`
+        `Syncing points for ${subEvent.name} (${progress.toFixed(2)}%)`,
       );
 
       const groups = await subEvent.getRankingGroups({
@@ -52,6 +55,14 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
             })
           ).map((s) => s.encounterCompetitions);
 
+          const encounterIds = encounters
+            .map((encounter) => encounter?.map((e) => e.id))
+            .flat();
+
+          if (!encounterIds || encounterIds.length == 0) {
+            continue;
+          }
+
           const games = await Game.findAll({
             attributes: [
               'id',
@@ -63,9 +74,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
             ],
             where: {
               linkId: {
-                [Op.in]: encounters
-                  .map((encounter) => encounter?.map((e) => e.id))
-                  .flat(),
+                [Op.in]: encounterIds,
               },
               playedAt: {
                 [Op.gte]: StartVisualRankingDate,
@@ -93,7 +102,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
               {
                 createRankingPoints: true,
                 transaction: this.transaction,
-              }
+              },
             );
           }
 
@@ -101,8 +110,6 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
         }
       }
     }
-    this.logger.debug(
-      `${totalGames} games found`
-    );
+    this.logger.debug(`${totalGames} games found`);
   }
 }
