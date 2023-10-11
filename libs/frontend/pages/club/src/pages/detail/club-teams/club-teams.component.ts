@@ -119,6 +119,11 @@ export class ClubTeamsComponent implements OnInit {
                           id
                           name
                         }
+                        standing {
+                          id
+                          position
+                          size
+                        }
                       }
                     }
                   }
