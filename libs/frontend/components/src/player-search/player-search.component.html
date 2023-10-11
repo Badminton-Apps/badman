@@ -15,6 +15,8 @@
       #auto="matAutocomplete"
       [displayWith]="displayFn"
       (optionSelected)="this.selectedPlayer($event)"
+      class="badman-search-player-panel"
+      [classList]="['badman-search-player-panel']"
     >
       <ng-container *ngIf="this.filteredOptions$ | async as options">
         <mat-option
@@ -38,7 +40,9 @@
           [disabled]="this.ignorePlayersIds!.indexOf(option.id!) >= 0"
         >
           {{ option.firstName }} {{ option.lastName }}
-          <small *ngIf="option.memberId">({{ option.memberId }}) </small>
+          <small class="member-id" *ngIf="option.memberId"
+            >({{ option.memberId }})
+          </small>
           <small
             *ngIf="
               option.clubs &&

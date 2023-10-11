@@ -11,11 +11,13 @@
     [displayWith]="displayFn"
     [autoSelectActiveOption]="true"
     [autoActiveFirstOption]="true"
+    class="badman-select-player-panel"
+    [classList]="['badman-select-player-panel']"
   >
     <ng-container *ngIf="this.filteredOptions$ | async as options">
       <mat-option *ngFor="let option of options" [value]="option">
         <span>{{ option.fullName }}</span
-        ><small *ngIf="option.memberId">({{ option.memberId }}) </small>
+        ><small class="member-id" *ngIf="option.memberId">({{ option.memberId }}) </small>
       </mat-option>
     </ng-container>
   </mat-autocomplete>

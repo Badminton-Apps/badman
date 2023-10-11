@@ -7,6 +7,10 @@
 @use './src/loading-block/loading-block.component.theme.scss' as loading-block;
 @use './src/page-header/page-header.component.theme.scss' as page-header;
 @use './src/player-search/player-search.component.theme.scss' as player-search;
+@use './src/selects/select-club/select-club.component.theme.scss' as
+  select-club;
+@use './src/selects/select-player/select-player.component.theme.scss' as
+  select-player;
 @use './src/roles/edit-role/edit-role.component.theme.scss' as edit-role;
 @use './src/shell/theme' as shell;
 @use './src/standing/standing.component.theme.scss' as standing;
@@ -18,6 +22,8 @@
   @include loading-block.theme($theme);
   @include page-header.theme($theme);
   @include player-search.theme($theme);
+  @include select-club.theme($theme);
+  @include select-player.theme($theme);
   @include recent-games.theme($theme);
   @include shell.theme($theme);
   @include standing.theme($theme);
@@ -31,6 +37,8 @@
   @include loading-block.typography($theme);
   @include page-header.typography($theme);
   @include player-search.typography($theme);
+  @include select-club.typography($theme);
+  @include select-player.typography($theme);
   @include recent-games.typography($theme);
   @include shell.typography($theme);
   @include standing.typography($theme);
@@ -44,6 +52,8 @@
   @include loading-block.color($theme);
   @include page-header.color($theme);
   @include player-search.color($theme);
+  @include select-club.color($theme);
+  @include select-player.color($theme);
   @include recent-games.color($theme);
   @include shell.color($theme); 
   @include standing.color($theme);
