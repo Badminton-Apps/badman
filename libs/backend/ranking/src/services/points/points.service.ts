@@ -128,25 +128,11 @@ export class PointsService {
       return [];
     }
 
-    const gamePlayesr = (await game.getPlayers({
-      attributes: ['id', 'gender'],
-      include: [
-        {
-          model: RankingPlace,
-          attributes: ['single', 'double', 'mix', 'rankingDate', 'systemId'],
-          required: false,
-          where: {
-            systemId: system.id,
-            rankingDate: {
-              [Op.lte]: game.playedAt,
-            },
-          },
-          order: [['rankingDate', 'DESC']],
-          limit: 1,
-        },
-      ],
+    const gamePlayesr = await this._getPlayersForGame(
+      game,
+      system,
       transaction,
-    })) as (Player & { GamePlayerMembership: GamePlayerMembership })[];
+    );
 
     const player1Team1 = gamePlayesr.find(
       (player) =>
@@ -247,8 +233,8 @@ export class PointsService {
         // find if there is already a ranking point for this player
         const existing = points.find((p) => p.playerId === ranking.playerId);
         if (existing) {
-        // update points and difference in level
-        if (
+          // update points and difference in level
+          if (
             existing.points !== ranking.points ||
             existing.differenceInLevel !== ranking.differenceInLevel
           ) {
@@ -256,7 +242,6 @@ export class PointsService {
             existing.differenceInLevel = ranking.differenceInLevel;
             await existing.save({ transaction });
           }
-
         } else {
           await ranking.save({ transaction });
         }
@@ -405,27 +390,36 @@ export class PointsService {
     let levelP1T2 = system.amountOfLevels;
     let levelP2T2 = system.amountOfLevels;
 
-    // Get rankings
-    const maxRanking = {
-      single: system.amountOfLevels,
-      mix: system.amountOfLevels,
-      double: system.amountOfLevels,
-    };
-
     const rankingPlayer1Team1 = getRankingWhenNull(
-      player1Team1?.rankingPlaces?.[0] ?? maxRanking,
+      player1Team1?.rankingPlaces?.[0] ?? {
+        single: player1Team1?.GamePlayerMembership.single,
+        mix: player1Team1?.GamePlayerMembership.mix,
+        double: player1Team1?.GamePlayerMembership.double,
+      },
       system,
     );
     const rankingPlayer2Team1 = getRankingWhenNull(
-      player2Team1?.rankingPlaces?.[0] ?? maxRanking,
+      player2Team1?.rankingPlaces?.[0] ?? {
+        single: player2Team1?.GamePlayerMembership.single,
+        mix: player2Team1?.GamePlayerMembership.mix,
+        double: player2Team1?.GamePlayerMembership.double,
+      },
       system,
     );
     const rankingPlayer1Team2 = getRankingWhenNull(
-      player1Team2?.rankingPlaces?.[0] ?? maxRanking,
+      player1Team2?.rankingPlaces?.[0] ?? {
+        single: player1Team2?.GamePlayerMembership.single,
+        mix: player1Team2?.GamePlayerMembership.mix,
+        double: player1Team2?.GamePlayerMembership.double,
+      },
       system,
     );
     const rankingPlayer2Team2 = getRankingWhenNull(
-      player2Team2?.rankingPlaces?.[0] ?? maxRanking,
+      player2Team2?.rankingPlaces?.[0] ?? {
+        single: player2Team2?.GamePlayerMembership.single,
+        mix: player2Team2?.GamePlayerMembership.mix,
+        double: player2Team2?.GamePlayerMembership.double,
+      },
       system,
     );
 
@@ -525,5 +519,45 @@ export class PointsService {
   private _getWinningPoints(system: RankingSystem, level: number): number {
     const index = system.pointsWhenWinningAgainst.length - level;
     return Math.round(system.pointsWhenWinningAgainst[index]);
+  }
+
+  private _getPlayersForGame(
+    game: Game,
+    system: RankingSystem,
+    transaction?: Transaction,
+  ) {
+    const hasAllItems = () => {
+      const playerAmount = game.gameType === GameType.S ? 2 : 4;
+
+      if (game.players?.length !== playerAmount) {
+        return false;
+      }
+    };
+
+    if (hasAllItems()) {
+      return game.players as (Player & {
+        GamePlayerMembership: GamePlayerMembership;
+      })[];
+    }
+
+    return game.getPlayers({
+      attributes: ['id', 'gender'],
+      include: [
+        {
+          model: RankingPlace,
+          attributes: ['single', 'double', 'mix', 'rankingDate', 'systemId'],
+          required: false,
+          where: {
+            systemId: system.id,
+            rankingDate: {
+              [Op.lte]: game.playedAt,
+            },
+          },
+          order: [['rankingDate', 'DESC']],
+          limit: 1,
+        },
+      ],
+      transaction,
+    }) as Promise<(Player & { GamePlayerMembership: GamePlayerMembership })[]>;
   }
 }
