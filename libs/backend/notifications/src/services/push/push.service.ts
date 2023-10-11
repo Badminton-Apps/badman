@@ -12,8 +12,9 @@ export class PushService {
   constructor(configSerice: ConfigService) {
     const publicVapidKey = configSerice.get('VAPID_PUBLIC_KEY');
     const privateVapidKey = configSerice.get('VAPID_PRIVATE_KEY');
+    const pushEnabledKey = configSerice.get<boolean>('PUSH_ENABLED');
 
-    if (publicVapidKey && privateVapidKey) {
+    if (publicVapidKey && privateVapidKey && pushEnabledKey) {
       setVapidDetails(
         'mailto:info@badman.app',
         publicVapidKey,
