@@ -571,6 +571,7 @@ export type I18nTranslations = {
         };
         "landing": {
             "description": string;
+            "title": string;
         };
         "lists": {
             "name": string;
