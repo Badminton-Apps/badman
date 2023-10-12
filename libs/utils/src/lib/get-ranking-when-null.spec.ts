@@ -1,7 +1,10 @@
 import { getRankingWhenNull } from './get-ranking-when-null';
 
 describe('getRanking', () => {
-  const maxLevel = 12;
+  const system = {
+    amountOfLevels: 12,
+    maxDiffLevels: 2,
+  };
 
   it('Should update the single to best ranking + 2', () => {
     const ranking = {
@@ -14,7 +17,7 @@ describe('getRanking', () => {
       double: 2,
       mix: 3,
     };
-    expect(getRankingWhenNull(ranking, maxLevel)).toEqual(expectedRanking);
+    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
   });
 
   it('Should update the double to best ranking + 2', () => {
@@ -28,7 +31,7 @@ describe('getRanking', () => {
       double: 5,
       mix: 3,
     };
-    expect(getRankingWhenNull(ranking, maxLevel)).toEqual(expectedRanking);
+    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
   });
 
   it('Should update the mix to best ranking + 2', () => {
@@ -42,9 +45,8 @@ describe('getRanking', () => {
       double: 7,
       mix: 7,
     };
-    expect(getRankingWhenNull(ranking, maxLevel)).toEqual(expectedRanking);
+    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
   });
-
 
   it('should return the correct ranking when all values are maxlevel', () => {
     const ranking = {
@@ -57,7 +59,7 @@ describe('getRanking', () => {
       double: 12,
       mix: 12,
     };
-    expect(getRankingWhenNull(ranking, maxLevel)).toEqual(expectedRanking);
+    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
   });
 
   it('should return the correct ranking multiple rankings are unkown', () => {
@@ -71,7 +73,7 @@ describe('getRanking', () => {
       double: 11,
       mix: 11,
     };
-    expect(getRankingWhenNull(ranking, maxLevel)).toEqual(expectedRanking);
+    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
   });
 
   it('should return the correct ranking with all rankings combined', () => {
@@ -85,6 +87,6 @@ describe('getRanking', () => {
       double: 10,
       mix: 12,
     };
-    expect(getRankingWhenNull(ranking, maxLevel)).toEqual(expectedRanking);
+    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
   });
 });
