@@ -93,7 +93,7 @@
               "with": "apps/badman/src/environments/environment.beta.ts"
             },
             {
-              "replace": "apps/badman/manifest.json",
+              "replace": "apps/badman/src/manifest.json",
               "with": "apps/badman/src/manifests/manifest.beta.json"
             }
           ],
