@@ -40,7 +40,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions & GameStepOptions
+    options?: StepOptions & GameStepOptions,
   ) {
     if (!options) {
       options = {};
@@ -62,7 +62,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     });
 
     await runParallel(
-      this.draws?.map((e) => this._processSubevent(e.draw, e.internalId)) ?? []
+      this.draws?.map((e) => this._processSubevent(e.draw, e.internalId)) ?? [],
     );
 
     return this._games;
@@ -78,7 +78,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       // include: [Player]
     });
     const subEvent = this.subEvents?.find(
-      (sub) => draw.subeventId === sub.subEvent.id
+      (sub) => draw.subeventId === sub.subEvent.id,
     )?.subEvent;
 
     const isLastWeek = moment()
@@ -88,7 +88,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
     const visualMatch = (await this.visualService.getMatches(
       this.visualTournament.Code,
       internalId,
-      !isLastWeek
+      !isLastWeek,
     )) as XmlMatch[];
 
     for (const xmlMatch of visualMatch) {
@@ -222,7 +222,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       if (game.changed()) {
         await game.save({ transaction: this.transaction });
       }
-      
+
       const memberships = await this._createGamePlayers(xmlMatch, game);
       await GamePlayerMembership.bulkCreate(memberships, {
         transaction: this.transaction,
@@ -266,14 +266,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         transaction: this.transaction,
       });
 
-      const place = getRankingProtected(
-        rankingt1p1?.[0] ?? {
-          single: this._system.amountOfLevels,
-          double: this._system.amountOfLevels,
-          mix: this._system.amountOfLevels,
-        },
-        this._system,
-      );
+      const place = getRankingProtected(rankingt1p1?.[0], this._system);
 
       const gp = new GamePlayerMembership({
         gameId: game.id,
@@ -288,7 +281,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       gamePlayers.push(gp.toJSON());
 
       // Push to list
-      game.players.push({ 
+      game.players.push({
         ...t1p1.toJSON(),
         GamePlayerMembership: gp,
       } as Player & { GamePlayerMembership: GamePlayerMembership });
@@ -307,14 +300,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         transaction: this.transaction,
       });
 
-      const place = getRankingProtected(
-        rankingt1p2?.[0] ?? {
-          single: this._system.amountOfLevels,
-          double: this._system.amountOfLevels,
-          mix: this._system.amountOfLevels,
-        },
-        this._system,
-      );
+      const place = getRankingProtected(rankingt1p2?.[0], this._system);
 
       const gp = new GamePlayerMembership({
         gameId: game.id,
@@ -344,17 +330,10 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
-        transaction: this.transaction, 
+        transaction: this.transaction,
       });
 
-      const place = getRankingProtected(
-        rankingt2p1?.[0] ?? {
-          single: this._system.amountOfLevels,
-          double: this._system.amountOfLevels,
-          mix: this._system.amountOfLevels,
-        },
-        this._system,
-      );
+      const place = getRankingProtected(rankingt2p1?.[0], this._system);
 
       const gp = new GamePlayerMembership({
         gameId: game.id,
@@ -387,15 +366,8 @@ export class TournamentSyncGameProcessor extends StepProcessor {
         transaction: this.transaction,
       });
 
-      const place = getRankingProtected(
-        rankingtt2p2?.[0] ?? {
-          single: this._system.amountOfLevels,
-          double: this._system.amountOfLevels,
-          mix: this._system.amountOfLevels,
-        },
-        this._system,
-      );
- 
+      const place = getRankingProtected(rankingtt2p2?.[0], this._system);
+
       const gp = new GamePlayerMembership({
         gameId: game.id,
         playerId: t2p2.id,
@@ -441,7 +413,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           (p.firstName === corrected.firstName &&
             p.lastName === corrected.lastName) ||
           (p.firstName === corrected.lastName &&
-            p.lastName === corrected.firstName)
+            p.lastName === corrected.firstName),
       );
     }
     return returnPlayer;
