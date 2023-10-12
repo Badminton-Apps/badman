@@ -14,7 +14,35 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
+        );
+
+        // run update query for some clubs
+        await queryInterface.sequelize.query(
+          `
+          UPDATE "Clubs"
+          SET 
+            "name" = 'La Fine Plume asbl',
+            "fullName" = 'AXIS PARC LA FINE PLUME ASBL'
+          WHERE
+            "slug" = 'la-fine-plume-asbl'
+			      AND "clubId" = 145
+
+          `,
+        );
+
+        // run update query for some clubs
+        await queryInterface.sequelize.query(
+          `
+          UPDATE "Clubs"
+          SET 
+            "name" = 'Verviers',
+            "fullName" = 'ROYAL BADMINTON CLUB VERVIERS'
+          WHERE
+            "slug" = 'verviers'
+			      AND "clubId" = 19
+
+          `,
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -30,7 +58,7 @@ module.exports = {
         await queryInterface.removeColumn(
           { tableName: 'EventCompetitions', schema: 'event' },
           'teamMatcher',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

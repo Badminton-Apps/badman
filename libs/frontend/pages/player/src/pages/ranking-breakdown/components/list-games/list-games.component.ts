@@ -101,7 +101,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     breakpointObserver: BreakpointObserver,
     changeDetectorRef: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {
     breakpointObserver
       .observe([
@@ -128,10 +128,10 @@ export class ListGamesComponent implements OnInit, OnDestroy {
 
     // Filter out games that are from previous period
     this.prevGames = this.games.filter((x) =>
-      moment(x.playedAt).isBefore(startPeriod)
+      moment(x.playedAt).isBefore(startPeriod),
     );
     this.games = this.games.filter((x) =>
-      moment(x.playedAt).isSameOrAfter(startPeriod)
+      moment(x.playedAt).isSameOrAfter(startPeriod),
     );
 
     this.type = this.formGroup.get('gameType')?.value;
@@ -149,7 +149,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
             includedDowngrade: value.includedDowngrade,
             includeOutOfScope: value.includeOutOfScope,
           };
-        }, distinctUntilChanged())
+        }, distinctUntilChanged()),
       )
       .pipe(takeUntil(this.destroyed))
       .subscribe(() => {
@@ -178,21 +178,21 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       }
 
       const rankingPoint = game.rankingPoints?.find(
-        (x) => x.playerId == this.playerId
+        (x) => x.playerId == this.playerId,
       );
 
       const teamP1 = game.players?.find(
-        (x) => x.team == me.team && x.player == 1
+        (x) => x.team == me.team && x.player == 1,
       );
       const teamP2 = game.players?.find(
-        (x) => x.team == me.team && x.player == 2
+        (x) => x.team == me.team && x.player == 2,
       );
 
       const opponentP1 = game.players?.find(
-        (x) => x.team !== me.team && x.player == 1
+        (x) => x.team !== me.team && x.player == 1,
       );
       const opponentP2 = game.players?.find(
-        (x) => x.team !== me.team && x.player == 2
+        (x) => x.team !== me.team && x.player == 2,
       );
 
       const type = getGameResultType(game.winner == me.team, {
@@ -259,21 +259,21 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       }
 
       const rankingPoint = game.rankingPoints?.find(
-        (x) => x.playerId == this.playerId
+        (x) => x.playerId == this.playerId,
       );
 
       const teamP1 = game.players?.find(
-        (x) => x.team == me.team && x.player == 1
+        (x) => x.team == me.team && x.player == 1,
       );
       const teamP2 = game.players?.find(
-        (x) => x.team == me.team && x.player == 2
+        (x) => x.team == me.team && x.player == 2,
       );
 
       const opponentP1 = game.players?.find(
-        (x) => x.team !== me.team && x.player == 1
+        (x) => x.team !== me.team && x.player == 1,
       );
       const opponentP2 = game.players?.find(
-        (x) => x.team !== me.team && x.player == 2
+        (x) => x.team !== me.team && x.player == 2,
       );
 
       const type = getGameResultType(game.winner == me.team, {
@@ -332,8 +332,13 @@ export class ListGamesComponent implements OnInit, OnDestroy {
           ? this.system.minNumberOfGamesUsedForUpgrade ?? 0
           : devideUpgrade;
 
+      const devideDowngradeCorrected =
+        devideDowngrade < (this.system.minNumberOfGamesUsedForDowngrade ?? 0)
+          ? this.system.minNumberOfGamesUsedForDowngrade ?? 0
+          : devideDowngrade;
+
       const avgUpgrade = Math.ceil(totalPoints / devideUpgradeCorrected);
-      const avgDowngrade = Math.ceil(totalPoints / devideDowngrade);
+      const avgDowngrade = Math.ceil(totalPoints / devideDowngradeCorrected);
 
       if (
         avgUpgrade >
@@ -404,7 +409,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
           {
             original: game.devideUpgrade,
             corrected: game.devideUpgradeCorrected,
-          }
+          },
         )}`;
       }
     } else {

@@ -308,6 +308,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
                 id
                 name
                 slug
+                clubId
               }
             }
           }

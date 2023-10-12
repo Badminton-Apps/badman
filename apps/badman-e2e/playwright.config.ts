@@ -40,7 +40,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
     timeout: 120_000,
-      env: {
+    env: {
       DB_STORAGE: ':memory:',
       DB_DIALECT: 'sqlite',
       NODE_ENV: 'test',

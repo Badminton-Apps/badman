@@ -15,9 +15,14 @@
       <div class="team" *ngFor="let team of teams()">
         <div [routerLink]="['team', team.slug]">
           <span class="name">{{ team.name }}</span>
-          <span class="event" *ngIf="team.entry?.subEventCompetition?.name">{{
-            team.entry?.subEventCompetition?.name
-          }}</span>
+          <span class="event" *ngIf="team.entry?.subEventCompetition?.name">
+            <ng-container *ngIf="team.entry?.standing">
+              #{{ team.entry?.standing?.position }}/{{
+                team.entry?.standing?.size
+              }}
+              in </ng-container
+            >{{ team.entry?.subEventCompetition?.name }}</span
+          >
         </div>
 
         <!-- allow editing if the entry is empty -->

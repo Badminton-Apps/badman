@@ -135,6 +135,7 @@
             [searchOutsideClub]="false"
             [club]="this.group.get('club')!.value"
             [label]="'Voeg speler toe'"
+            [validationFunction]="this.validatePlayer"
             [where]="this.wherePlayer"
             (whenSelectPlayer)="addPlayer($event)"
             [ignorePlayers]="this.ignorePlayers"

@@ -44,6 +44,7 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 import { PlayerFieldsComponent } from '../fields';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   standalone: true,
@@ -60,6 +61,7 @@ import { PlayerFieldsComponent } from '../fields';
     MatFormFieldModule,
     MatDialogModule,
     MatInputModule,
+    MatProgressBarModule,
 
     // My Modules
     PlayerFieldsComponent,
@@ -86,6 +88,12 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
   where?: { [key: string]: unknown };
 
   @Input()
+  validationFunction: (player: Player) => {
+    valid: boolean;
+    message?: string;
+  } = () => ({ valid: true });
+
+  @Input()
   player?: string | Player;
 
   @Input()
@@ -104,6 +112,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
 
   ignorePlayersIds?: string[] = [];
 
+  loading = false;
+
   formControl!: FormControl;
   activeValue?: Player;
 
@@ -114,7 +124,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
   newPlayerTemplateRef?: TemplateRef<HTMLElement>;
   newPlayerFormGroup?: FormGroup;
 
-  constructor(private apollo: Apollo, private dialog: MatDialog) {}
+  constructor(
+    private apollo: Apollo,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (!(changes['player']?.isFirstChange() ?? true)) {
@@ -137,6 +150,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
       filter((x) => !!x),
       filter((x) => typeof x === 'string'),
       filter((x) => x?.length >= 2),
+      tap(() => (this.loading = true)),
       debounceTime(600),
       switchMap((r) => {
         this.clubId =
@@ -176,7 +190,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
                 },
               })
               .pipe(
-                map((x) => x.data?.club?.players?.map((r) => new Player(r)))
+                map((x) => x.data?.club?.players?.map((r) => new Player(r))),
               )
           : of([]);
 
@@ -186,7 +200,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
               query: r,
               results,
             };
-          })
+          }),
         );
       }),
       switchMap((response) => {
@@ -228,24 +242,18 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
           return of([]);
         }
       }),
-      map((result) =>
-        // Distinct by id
-        result?.filter(
-          (value, index, self) =>
-            self.findIndex((m) => m.id === value.id) === index
-        )
-      )
-    );
-
-    // TODO: Implement in above pipe, once rxjs stops doing weird
-    search$.pipe(
-      tap((result) => {
-        // if only one result, select it
-        if (result?.length === 1) {
-          this._selectPlayer(result[0]);
-        }
-      })
-    );
+      map(
+        (result: Player[]) =>
+          // Distinct by id
+          result?.filter(
+            (value, index, self) =>
+              self.findIndex((m) => m.id === value.id) === index,
+          ),
+      ),
+      tap(() => {
+        this.loading = false;
+      }),
+    ) as Observable<Player[]>;
 
     this.filteredOptions$ = merge(search$, this.clear$);
   }
@@ -279,11 +287,11 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
                     id: p,
                   },
                 })
-                .pipe(map((x) => new Player(x.data?.player)))
+                .pipe(map((x) => new Player(x.data?.player))),
             );
           }
           return of(p);
-        })
+        }),
       )
       .subscribe((player) => {
         if (player) {
@@ -346,7 +354,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
                     },
                   },
                 })
-                .pipe(map((x) => new Player(x.data?.createPlayer)))
+                .pipe(map((x) => new Player(x.data?.createPlayer))),
             );
             if (!this.clearOnSelection) {
               this.formControl.setValue(this.newPlayerFormGroup?.value);

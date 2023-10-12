@@ -5,12 +5,16 @@
     [formControl]="this.control!"
     required
     (selectionChange)="this.selectClub($event)"
+    [panelClass]="'badman-select-club-panel'"
   >
     <mat-option
       *ngFor="let option of filteredClubs$ | async"
       [value]="option.id"
     >
       {{ option.name }}
+      <small class="club-id" *ngIf="option.clubId"
+        >({{ option.clubId }})
+      </small>
     </mat-option>
   </mat-select>
 </mat-form-field>
@@ -19,15 +23,21 @@
   <mat-label>{{ 'all.pickers.select-club' | translate }}</mat-label>
   <input matInput [formControl]="this.control!" [matAutocomplete]="auto" />
   <mat-autocomplete
+
     #auto="matAutocomplete"
     [displayWith]="this.displayFn.bind(this)"
     (optionSelected)="this.selectClub($event)"
+    class="badman-select-club-panel"
+    [classList]="['badman-select-club-panel']"
   >
     <mat-option
       *ngFor="let option of filteredClubs$ | async"
       [value]="option.id"
     >
       {{ option.name }}
+      <small class="club-id" *ngIf="option.clubId"
+        >({{ option.clubId }})
+      </small>
     </mat-option>
   </mat-autocomplete>
   <mat-error *ngIf="this.control?.hasError('required')">
