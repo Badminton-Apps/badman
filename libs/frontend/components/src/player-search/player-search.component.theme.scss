@@ -5,6 +5,7 @@
 
 @mixin color($theme) {
   $color-config: mat.get-color-config($theme);
+  $warn-palette: map.get($theme, 'warn');
   $background: map.get($color-config, 'background');
 
   $foreground: map.get($color-config, 'foreground');
@@ -30,6 +31,10 @@
     small.member-id {
       color: $caption-color;
     }
+
+    .invalid-player {
+      color: mat.get-color-from-palette($warn-palette, 300);
+    }
   }
 }
 
@@ -44,6 +49,9 @@
 
   .badman-search-player-panel {
     small.member-id {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+    .invalid-player {
       @include mat.typography-level($typography-config, 'caption');
     }
   }

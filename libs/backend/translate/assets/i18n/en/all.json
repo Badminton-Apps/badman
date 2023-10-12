@@ -655,7 +655,9 @@
     "no-players": "No Players",
     "regular": "Regular player",
     "search": {
+      "backup-player": "Player is listed with reserve players",
       "create": "Add new player",
+      "in-list": "Player is already listed",
       "label": "Search player",
       "not-found": "Player not found"
     },

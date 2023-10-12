@@ -655,7 +655,9 @@
     "no-players": "Geen spelers",
     "regular": "Vaste speler",
     "search": {
+      "backup-player": "Speler staat bij reservespelers",
       "create": "Voeg een nieuwe speler toe",
+      "in-list": "Speler staat al in de lijst",
       "label": "Zoek speler",
       "not-found": "Speler niet gevonden"
     },

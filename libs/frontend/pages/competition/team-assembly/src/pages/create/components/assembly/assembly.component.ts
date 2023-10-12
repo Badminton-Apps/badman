@@ -9,6 +9,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Inject,
@@ -197,7 +198,9 @@ export class AssemblyComponent implements OnInit, OnDestroy {
     players: [],
   };
 
-  wherePlayer: { [key: string]: unknown } = {};
+  wherePlayer = {
+    gender: this.type === 'MX' ? undefined : this.type,
+  };
 
   captionSingle1Prefix = '';
   captionSingle2Prefix = '';
@@ -242,8 +245,11 @@ export class AssemblyComponent implements OnInit, OnDestroy {
     if (!id) {
       return false;
     }
-    
-    return this.team?.entry?.meta?.competition?.players?.find((p) => p.id === id)?.levelException ?? false;
+
+    return (
+      this.team?.entry?.meta?.competition?.players?.find((p) => p.id === id)
+        ?.levelException ?? false
+    );
   }
 
   constructor(
@@ -253,7 +259,8 @@ export class AssemblyComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    private changeDetectorRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {
@@ -284,7 +291,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
         map(([team, encounter]) => {
           return [team != null && encounter != null, encounter] as const;
         }),
-        distinctUntilChanged(([a], [b]) => a === b)
+        distinctUntilChanged(([a], [b]) => a === b),
       )
       .subscribe(async ([gotRequired, encounter]) => {
         this.gotRequired = gotRequired;
@@ -307,7 +314,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
               }),
               switchMap(() => {
                 return this._checkAssembly();
-              })
+              }),
             )
             .subscribe((validation) => this.updateValidations(validation));
 
@@ -369,7 +376,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
         {
           [TeamMembershipType.REGULAR]: [] as TeamPlayer[],
           [TeamMembershipType.BACKUP]: [] as TeamPlayer[],
-        }
+        },
       );
 
       // Take first of saved if available
@@ -404,10 +411,10 @@ export class AssemblyComponent implements OnInit, OnDestroy {
             (id) =>
               ![this.players?.BACKUP, this.players?.REGULAR]
                 .flat(1)
-                .find((player) => player?.id === id)
+                .find((player) => player?.id === id),
           )
           ?.filter((id) => id != null && id !== '' && id !== undefined)
-          .map((id) => this.addPlayer({ id } as Player))
+          .map((id) => this.addPlayer({ id } as Player)),
       );
 
       if (saved?.assembly?.double1) {
@@ -447,7 +454,6 @@ export class AssemblyComponent implements OnInit, OnDestroy {
       }
 
       this._sortLists();
-      this._updateWherePlayer();
       this._setTranslations();
 
       this.team = team;
@@ -494,15 +500,14 @@ export class AssemblyComponent implements OnInit, OnDestroy {
                   systemId,
                 },
               },
-            })
-          )
+            }),
+          ),
         )
-        .pipe(map((x) => new Player(x.data?.player)))
+        .pipe(map((x) => new Player(x.data?.player))),
     );
 
     this.players?.REGULAR?.push(playerRankings);
     this._sortLists();
-    this._updateWherePlayer();
   }
 
   updateValidations(info: ValidationResult) {
@@ -624,7 +629,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
       moveItemInArray(
         event.container.data,
         event.previousIndex,
-        event.currentIndex
+        event.currentIndex,
       );
     } else {
       if (
@@ -651,10 +656,10 @@ export class AssemblyComponent implements OnInit, OnDestroy {
         ];
 
         const singlesCount = singles.filter(
-          (p) => p.id === event.item.data.id
+          (p) => p.id === event.item.data.id,
         ).length;
         const doublesCount = doubles.filter(
-          (p) => p.id === event.item.data.id
+          (p) => p.id === event.item.data.id,
         ).length;
         if (
           singlesCount > 0 &&
@@ -672,20 +677,20 @@ export class AssemblyComponent implements OnInit, OnDestroy {
           event.previousContainer.data,
           event.container.data,
           event.previousIndex,
-          event.currentIndex
+          event.currentIndex,
         );
       } else {
         transferArrayItem(
           event.previousContainer.data,
           event.container.data,
           event.previousIndex,
-          event.currentIndex
+          event.currentIndex,
         );
       }
 
       if (event.container.id !== 'substitudeList') {
         this.substitutes = this.substitutes.filter(
-          (r) => r.id !== event.item.data.id
+          (r) => r.id !== event.item.data.id,
         );
       }
     }
@@ -759,7 +764,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
             transferState(
               `assemblyTeamKey-${teamId}`,
               this.stateTransfer,
-              this.platformId
+              this.platformId,
             ),
             map((result) => {
               if (!result?.data.team) {
@@ -767,9 +772,9 @@ export class AssemblyComponent implements OnInit, OnDestroy {
               }
 
               return new Team(result.data.team);
-            })
-          )
-      )
+            }),
+          ),
+      ),
     );
   }
 
@@ -808,7 +813,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
           },
         };
       }),
-      shareReplay(1)
+      shareReplay(1),
     );
   }
 
@@ -843,12 +848,12 @@ export class AssemblyComponent implements OnInit, OnDestroy {
         transferState(
           `eventForEncounter-${encounterCompetitionId}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map(
           (result) =>
             result?.data.encounterCompetition?.drawCompetition
-              ?.subEventCompetition
+              ?.subEventCompetition,
         ),
         map((result) => {
           if (!result?.eventCompetition) {
@@ -858,7 +863,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
           this.type = result?.eventType;
 
           return new EventCompetition(result?.eventCompetition);
-        })
+        }),
       );
   }
 
@@ -950,7 +955,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
           }
 
           return result.data.assemblyValidation;
-        })
+        }),
       );
   }
 
@@ -1060,16 +1065,25 @@ export class AssemblyComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _updateWherePlayer() {
-    this.wherePlayer = {
-      gender: this.type === 'MX' ? undefined : this.type,
-      id: {
-        $notIn: this.players?.REGULAR?.map((p) => p.id)
-          .concat(this.substitutes?.map((p) => p.id))
-          .concat(this.players.BACKUP?.map((p) => p.id)),
-      },
+  validatePlayer = (player: Player) => {
+    if (this.players?.REGULAR?.find((p) => p.id === player.id)) {
+      return {
+        valid: false,
+        message: 'all.player.search.in-list',
+      };
+    }
+
+    if (this.players?.BACKUP?.find((p) => p.id === player.id)) {
+      return {
+        valid: false,
+        message: 'all.player.search.backup-player',
+      };
+    }
+
+    return {
+      valid: true,
     };
-  }
+  };
 
   private _loadSaved(encounterId: string, captainId?: string) {
     if (!this.authenticateService.loggedIn) {
@@ -1112,25 +1126,26 @@ export class AssemblyComponent implements OnInit, OnDestroy {
         transferState(
           `savedAssembly-${encounterId}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           if (!result?.data?.encounterCompetition) {
             throw new Error('No encounterCompetition');
           }
           return result.data.encounterCompetition?.assemblies?.map(
-            (assembly) => new Assembly(assembly)
+            (assembly) => new Assembly(assembly),
           );
-        })
+        }),
       );
   }
 
   private _getPlayers(ids: string[]) {
     return ids
-      ?.map((id) =>
-        this.players?.REGULAR.concat(this.players.REGULAR)?.find(
-          (x) => x?.id === id
-        )
+      ?.map(
+        (id) =>
+          this.players?.REGULAR.concat(this.players.REGULAR)?.find(
+            (x) => x?.id === id,
+          ),
       )
       ?.filter((x) => x != null) as Player[];
   }
