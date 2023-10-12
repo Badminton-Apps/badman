@@ -49,14 +49,14 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
 
       for (const group of groups) {
         for (const rankingSystem of group.rankingSystems ?? []) {
-          const encounters = (
+          const encounterIds= (
             await subEvent.getDrawCompetitions({
-              include: [{ model: EncounterCompetition }],
+              attributes: ['id'],
+              include: [{ model: EncounterCompetition, attributes: ['id'] }],
               transaction: this.transaction,
             })
-          ).map((s) => s.encounterCompetitions);
-
-          const encounterIds = encounters
+          )
+            .map((s) => s.encounterCompetitions)
             .map((encounter) => encounter?.map((e) => e.id))
             .flat();
 

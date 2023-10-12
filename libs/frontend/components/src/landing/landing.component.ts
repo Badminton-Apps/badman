@@ -6,18 +6,18 @@ import {
   OnInit,
   inject,
 } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthenticateService, LoggedinUser } from '@badman/frontend-auth';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { Team } from '@badman/frontend-models';
+import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, combineLatest, switchMap } from 'rxjs';
-import { filter, map, tap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
 import { RankingTableComponent } from '../ranking-table';
 import { BetaComponent, ProfileOverviewComponent } from './components';
-import { MatIconModule } from '@angular/material/icon';
-import { SeoService } from '@badman/frontend-seo';
 
 @Component({
   selector: 'badman-landing',
