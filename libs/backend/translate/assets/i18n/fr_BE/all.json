@@ -655,7 +655,9 @@
     "no-players": "Aucun joueur",
     "regular": "Joueur régulier",
     "search": {
+      "backup-player": "Le joueur est répertorié avec les joueurs de réserve",
       "create": "Ajouter un nouveau joueur",
+      "in-list": "Le joueur est déjà répertorié",
       "label": "Lecteur de recherche",
       "not-found": "Joueur introuvable"
     },

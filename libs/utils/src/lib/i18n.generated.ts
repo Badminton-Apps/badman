@@ -659,7 +659,9 @@ export type I18nTranslations = {
             "no-players": string;
             "regular": string;
             "search": {
+                "backup-player": string;
                 "create": string;
+                "in-list": string;
                 "label": string;
                 "not-found": string;
             };
