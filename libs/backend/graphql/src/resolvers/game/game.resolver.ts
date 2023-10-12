@@ -18,7 +18,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
-import { getRankingWhenNull } from '@badman/utils';
+import { getRankingProtected } from '@badman/utils';
 
 @Resolver(() => Game)
 export class GamesResolver {
@@ -99,7 +99,7 @@ export class GamesResolver {
             throw new NotFoundException('No primary ranking system found');
           }
           
-          const place = getRankingWhenNull(
+          const place = getRankingProtected(
             gamePlayer.GamePlayerMembership,
             system,
           );

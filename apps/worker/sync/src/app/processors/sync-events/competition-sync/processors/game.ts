@@ -16,7 +16,7 @@ import {
 import {
   GameStatus,
   GameType,
-  getRankingWhenNull,
+  getRankingProtected,
   runParallel,
 } from '@badman/utils';
 import { Logger, NotFoundException } from '@nestjs/common';
@@ -249,7 +249,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         limit: 1,
       });
 
-      const place = getRankingWhenNull(
+      const place = getRankingProtected(
         rankingt1p1?.[0] ?? {
           single: this._system.amountOfLevels,
           double: this._system.amountOfLevels,
@@ -289,7 +289,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         limit: 1,
       });
 
-      const place = getRankingWhenNull(
+      const place = getRankingProtected(
         rankingt1p2?.[0] ?? {
           single: this._system.amountOfLevels,
           double: this._system.amountOfLevels,
@@ -328,7 +328,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         limit: 1,
       });
 
-      const place = getRankingWhenNull(
+      const place = getRankingProtected(
         rankingt2p1?.[0] ?? {
           single: this._system.amountOfLevels,
           double: this._system.amountOfLevels,
@@ -367,7 +367,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         limit: 1,
       });
 
-      const place = getRankingWhenNull(
+      const place = getRankingProtected(
         rankingtt2p2?.[0] ?? {
           single: this._system.amountOfLevels,
           double: this._system.amountOfLevels,

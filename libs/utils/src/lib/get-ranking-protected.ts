@@ -1,4 +1,4 @@
-export function getRankingWhenNull<
+export function getRankingProtected<
   T extends {
     single?: number | null;
     double?: number | null;
