@@ -39,6 +39,7 @@ describe('PointsService', () => {
 
     const group = SystemGroupBuilder.Create();
     system = await SystemBuilder.Create(RankingSystems.BVL, 12, 75, 50)
+      .WithMaxDiffLevels(2)
       .AsPrimary()
       .WithGroup(group)
       .Build();
