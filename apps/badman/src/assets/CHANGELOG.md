@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.112.0](https://github.com/Badminton-Apps/badman/compare/v6.112.0-beta.3...v6.112.0) (2023-10-12)
+
+
+### Features
+
+* protecting the resolvers ([714b5fd](https://github.com/Badminton-Apps/badman/commit/714b5fd48bbb36de09969f77eaf68f29aa233087))
+* show reasons why player can't be added ([7a0ba90](https://github.com/Badminton-Apps/badman/commit/7a0ba900cd3d975efa84884f87f6076ecf733ff2))
+
+
+### Bug Fixes
+
+* manifest is now of beta ([a3a01e1](https://github.com/Badminton-Apps/badman/commit/a3a01e1f87ed118bd88da28ece538e86f04810ad))
+
 ## [6.112.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.112.0-beta.2...v6.112.0-beta.3) (2023-10-12)
 
 
