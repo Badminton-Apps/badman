@@ -22,7 +22,7 @@ import {
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
-import { getRankingWhenNull } from '@badman/utils';
+import { getRankingProtected } from '@badman/utils';
 
 @Resolver(() => RankingPlace)
 export class RankingPlaceResolver {
@@ -49,7 +49,7 @@ export class RankingPlaceResolver {
         throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
       }
 
-      place = getRankingWhenNull(place, system);
+      place = getRankingProtected(place, system);
     }
 
     return place;
@@ -73,7 +73,7 @@ export class RankingPlaceResolver {
           );
         }
 
-        place = getRankingWhenNull(place, system);
+        place = getRankingProtected(place, system);
       }
     }
 
