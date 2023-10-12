@@ -48,6 +48,20 @@ describe('getRanking', () => {
     expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
   });
 
+  it('Should update the mix to best ranking + 2 with undefined', () => {
+    const ranking = {
+      single: 5,
+      double: 7,
+      mix: undefined,
+    };
+    const expectedRanking = {
+      single: 5,
+      double: 7,
+      mix: 7,
+    };
+    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
+  });
+
   it('should return the correct ranking when all values are maxlevel', () => {
     const ranking = {
       single: 12,

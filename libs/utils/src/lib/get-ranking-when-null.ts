@@ -1,8 +1,8 @@
 export function getRankingWhenNull<
   T extends {
-    single?: number;
-    double?: number;
-    mix?: number;
+    single?: number | null;
+    double?: number | null;
+    mix?: number | null;
   },
   S extends Partial<{
     amountOfLevels?: number;
@@ -15,8 +15,12 @@ export function getRankingWhenNull<
   }
 
   // if no system is provided, throw an error
-  if (!system.amountOfLevels || !system.maxDiffLevels) {
-    throw new Error('No system provided');
+  if (!system.amountOfLevels) {
+    throw new Error('No amount of levels provided');
+  }
+
+  if (!system.maxDiffLevels) {
+    throw new Error('No max diff levels provided');
   }
 
   ranking.single = ranking.single || system.amountOfLevels;
