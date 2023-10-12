@@ -70,10 +70,6 @@
             {
               "replace": "apps/badman/src/environments/environment.ts",
               "with": "apps/badman/src/environments/environment.prod.ts"
-            },
-            {
-              "replace": "dist/apps/badman/manifest.json",
-              "with": "apps/badman/src/manifests/manifest.prod.json"
             }
           ],
           "outputHashing": "all"
@@ -95,6 +91,10 @@
             {
               "replace": "apps/badman/src/environments/environment.ts",
               "with": "apps/badman/src/environments/environment.beta.ts"
+            },
+            {
+              "replace": "dist/apps/badman/manifest.json",
+              "with": "apps/badman/src/manifests/manifest.beta.json"
             }
           ],
           "outputHashing": "all"
