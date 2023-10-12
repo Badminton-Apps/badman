@@ -8,14 +8,18 @@ import {
 } from '@badman/backend-database';
 
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
+import { Logger } from '@nestjs/common';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
-import { Logger } from '@nestjs/common';
+import { runParallel } from '@badman/utils';
 
 export class CompetitionSyncPointProcessor extends StepProcessor {
   public event?: EventCompetition;
 
-  constructor(private pointService: PointsService, options?: StepOptions) {
+  constructor(
+    private pointService: PointsService,
+    options?: StepOptions,
+  ) {
     if (!options) {
       options = {};
     }
@@ -35,7 +39,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
       const index = subEvents.indexOf(subEvent);
       const progress = (index / subEvents.length) * 100;
       this.logger.debug(
-        `Syncing points for ${subEvent.name} (${progress.toFixed(2)}%)`
+        `Syncing points for ${subEvent.name} (${progress.toFixed(2)}%)`,
       );
 
       const groups = await subEvent.getRankingGroups({
@@ -45,12 +49,20 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
 
       for (const group of groups) {
         for (const rankingSystem of group.rankingSystems ?? []) {
-          const encounters = (
+          const encounterIds= (
             await subEvent.getDrawCompetitions({
-              include: [{ model: EncounterCompetition }],
+              attributes: ['id'],
+              include: [{ model: EncounterCompetition, attributes: ['id'] }],
               transaction: this.transaction,
             })
-          ).map((s) => s.encounterCompetitions);
+          )
+            .map((s) => s.encounterCompetitions)
+            .map((encounter) => encounter?.map((e) => e.id))
+            .flat();
+
+          if (!encounterIds || encounterIds.length == 0) {
+            continue;
+          }
 
           const games = await Game.findAll({
             attributes: [
@@ -63,9 +75,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
             ],
             where: {
               linkId: {
-                [Op.in]: encounters
-                  .map((encounter) => encounter?.map((e) => e.id))
-                  .flat(),
+                [Op.in]: encounterIds,
               },
               playedAt: {
                 [Op.gte]: StartVisualRankingDate,
@@ -86,23 +96,19 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
             transaction: this.transaction,
           });
 
-          for (const game of games) {
-            await this.pointService.createRankingPointforGame(
-              rankingSystem,
-              game,
-              {
+          await runParallel(
+            games?.map((game) =>
+              this.pointService.createRankingPointforGame(rankingSystem, game, {
                 createRankingPoints: true,
                 transaction: this.transaction,
-              }
-            );
-          }
+              }),
+            ) ?? [],
+          );
 
           totalGames += games.length;
         }
       }
     }
-    this.logger.debug(
-      `${totalGames} games found`
-    );
+    this.logger.debug(`${totalGames} games found`);
   }
 }

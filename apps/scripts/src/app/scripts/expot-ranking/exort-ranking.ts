@@ -76,71 +76,23 @@ export class ExportBBFPlayers {
       const players = await this.loadPlayers(season, system);
       const [compGames, tournamentGames] = await this.countGames(
         system,
-        players
+        players,
       );
 
-      for (const player of players) {
-        const lastRanking = player.rankingLastPlaces?.[0];
-        const compGamesPlayer = compGames.filter((g) =>
-          g.players?.some((p) => p.id == player.id)
-        );
-        const tournamentGamesPlayer = tournamentGames.filter((g) =>
-          g.players?.some((p) => p.id == player.id)
-        );
+      const totalPlayers = players.length;
+      let processedPlayers = 0;
 
-        const singleComp = compGamesPlayer.filter(
-          (g) => g.gameType === GameType.S
-        );
-        const doubleComp = compGamesPlayer.filter(
-          (g) => g.gameType === GameType.D
-        );
-        const mixComp = compGamesPlayer.filter(
-          (g) => g.gameType === GameType.MX
-        );
+      for (const p of players) {
+        this.processPlayer(p, compGames, tournamentGames, system);
 
-        const singleTournament = tournamentGamesPlayer.filter(
-          (g) => g.gameType === GameType.S
-        );
-        const doubleTournament = tournamentGamesPlayer.filter(
-          (g) => g.gameType === GameType.D
-        );
-        const mixTournament = tournamentGamesPlayer.filter(
-          (g) => g.gameType === GameType.MX
-        );
-
-        this.output.push({
-          'First Name': player.firstName,
-          'Last Name': player.lastName,
-          'Member id': player.memberId,
-          Club: player.clubs?.[0]?.name,
-          'Single Ranking': lastRanking?.single ?? system.amountOfLevels,
-          'Single Downgrade': this.getDowngradeAverage(
-            [...singleComp, ...singleTournament],
-            player
-          ),
-          'Single Upgrade': lastRanking?.singlePoints,
-          'Double Ranking': lastRanking?.double ?? system.amountOfLevels,
-          'Double upgrade': lastRanking?.doublePoints,
-          'Double downgrade': this.getDowngradeAverage(
-            [...doubleComp, ...doubleTournament],
-            player
-          ),
-          'Mix ranking': lastRanking?.mix ?? system.amountOfLevels,
-          'Mix upgrade': lastRanking?.mixPoints,
-          'Mix downgrade': this.getDowngradeAverage(
-            [...mixComp, ...mixTournament],
-            player
-          ),
-          'Single # Competition': singleComp.length,
-          'Single # Tournaments': singleTournament.length,
-          'Single # Total': singleComp.length + singleTournament.length,
-          'Double # Competition': doubleComp.length,
-          'Double # Tournament': doubleTournament.length,
-          'Double # Total': doubleComp.length + doubleTournament.length,
-          'Mix # Competition': mixComp.length,
-          'Mix # Tournament': mixTournament.length,
-          'Mix # Total': mixComp.length + mixTournament.length,
-        });
+        if (processedPlayers % 100 === 0) {
+          this.logger.verbose(
+            `Processed ${processedPlayers} of ${totalPlayers} (${
+              (processedPlayers / totalPlayers) * 100
+            }%)`,
+          );
+        }
+        processedPlayers++;
       }
 
       const wb = xlsx.utils.book_new();
@@ -153,17 +105,80 @@ export class ExportBBFPlayers {
 
       xlsx.writeFile(
         wb,
-        `apps/scripts/src/app/shared-files/BBF Ranking ${season}.xlsx`
+        `apps/scripts/src/app/shared-files/BBF Ranking ${season}.xlsx`,
       );
     } catch (error) {
       this.logger.error(error);
     }
   }
 
+  private processPlayer(
+    player: Player,
+    compGames: Game[],
+    tournamentGames: Game[],
+    system: RankingSystem,
+  ) {
+    const lastRanking = player.rankingLastPlaces?.[0];
+    const compGamesPlayer = compGames.filter(
+      (g) => g.players?.some((p) => p.id == player.id),
+    );
+    const tournamentGamesPlayer = tournamentGames.filter(
+      (g) => g.players?.some((p) => p.id == player.id),
+    );
+
+    const singleComp = compGamesPlayer.filter((g) => g.gameType === GameType.S);
+    const doubleComp = compGamesPlayer.filter((g) => g.gameType === GameType.D);
+    const mixComp = compGamesPlayer.filter((g) => g.gameType === GameType.MX);
+
+    const singleTournament = tournamentGamesPlayer.filter(
+      (g) => g.gameType === GameType.S,
+    );
+    const doubleTournament = tournamentGamesPlayer.filter(
+      (g) => g.gameType === GameType.D,
+    );
+    const mixTournament = tournamentGamesPlayer.filter(
+      (g) => g.gameType === GameType.MX,
+    );
+
+    this.output.push({
+      'First Name': player.firstName,
+      'Last Name': player.lastName,
+      'Member id': player.memberId,
+      Club: player.clubs?.[0]?.name,
+      'Single Ranking': lastRanking?.single ?? system.amountOfLevels,
+      'Single Downgrade': this.getDowngradeAverage(
+        [...singleComp, ...singleTournament],
+        player,
+      ),
+      'Single Upgrade': lastRanking?.singlePoints,
+      'Double Ranking': lastRanking?.double ?? system.amountOfLevels,
+      'Double upgrade': lastRanking?.doublePoints,
+      'Double downgrade': this.getDowngradeAverage(
+        [...doubleComp, ...doubleTournament],
+        player,
+      ),
+      'Mix ranking': lastRanking?.mix ?? system.amountOfLevels,
+      'Mix upgrade': lastRanking?.mixPoints,
+      'Mix downgrade': this.getDowngradeAverage(
+        [...mixComp, ...mixTournament],
+        player,
+      ),
+      'Single # Competition': singleComp.length,
+      'Single # Tournaments': singleTournament.length,
+      'Single # Total': singleComp.length + singleTournament.length,
+      'Double # Competition': doubleComp.length,
+      'Double # Tournament': doubleTournament.length,
+      'Double # Total': doubleComp.length + doubleTournament.length,
+      'Mix # Competition': mixComp.length,
+      'Mix # Tournament': mixTournament.length,
+      'Mix # Total': mixComp.length + mixTournament.length,
+    });
+  }
+
   async loadPlayers(season: number, system: RankingSystem) {
     this.logger.verbose(`Loading players`);
     const playersxlsx = xlsx.readFile(
-      `apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`
+      `apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`,
     );
     const playersSheet = playersxlsx.Sheets[playersxlsx.SheetNames[0]];
     let playersJson = xlsx.utils.sheet_to_json<{
@@ -178,10 +193,7 @@ export class ExportBBFPlayers {
     }>(playersSheet);
 
     playersJson = playersJson?.filter(
-      (c) =>
-        c.memberid != null &&
-        c.memberid != '' &&
-        c.memberid != undefined
+      (c) => c.memberid != null && c.memberid != '' && c.memberid != undefined,
     ); // ?.slice(0, 10)
 
     const players = await Player.findAll({
@@ -230,7 +242,7 @@ export class ExportBBFPlayers {
   }
 
   async countGames(system: RankingSystem, players: Player[]) {
-    const stop = system.updateIntervalAmountLastUpdate;
+    const stop = system.caluclationIntervalLastUpdate;
     const start = moment(stop)
       .subtract(system.periodAmount, system.periodUnit)
       .toDate();
@@ -254,6 +266,9 @@ export class ExportBBFPlayers {
       },
     ];
 
+    this.logger.verbose(`Loading games between ${start} and ${stop}`);
+
+    this.logger.verbose(`Loading competition games`);
     const competitionGames = await Game.findAll({
       attributes: ['id', 'gameType', 'winner'],
       where: {
@@ -289,6 +304,7 @@ export class ExportBBFPlayers {
       ],
     });
 
+    this.logger.verbose(`Loading tournament games`);
     const tournamentGames = await Game.findAll({
       attributes: ['id', 'gameType', 'winner'],
       where: {
@@ -327,10 +343,10 @@ export class ExportBBFPlayers {
 
     for (const game of games) {
       const playerTeam = game.players?.find(
-        (r) => r.GamePlayerMembership.playerId === player.id
+        (r) => r.GamePlayerMembership.playerId === player.id,
       )?.GamePlayerMembership.team;
       const rankingPoint = game.rankingPoints?.find(
-        (x) => x.playerId == player.id
+        (x) => x.playerId == player.id,
       );
       if (!rankingPoint) {
         continue;
@@ -340,7 +356,7 @@ export class ExportBBFPlayers {
 
       const gameResult = getGameResultType(
         game.winner == playerTeam,
-        rankingPoint
+        rankingPoint,
       );
 
       if (gameResult == GameBreakdownType.LOST_DOWNGRADE) {

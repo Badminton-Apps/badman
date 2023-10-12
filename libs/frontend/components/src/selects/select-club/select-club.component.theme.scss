@@ -5,7 +5,6 @@
 
 @mixin color($theme) {
   $color-config: mat.get-color-config($theme);
-  $warn-palette: map.get($theme, 'warn');
   $background: map.get($color-config, 'background');
 
   $foreground: map.get($color-config, 'foreground');
@@ -24,40 +23,30 @@
     );
   }
 
-  // badman-player-search {
+  // badman-select-club {
   // }
 
-  .badman-search-player-panel {
-    small.member-id {
+  .badman-select-club-panel {
+    small.club-id {
       color: $caption-color;
-    }
-
-    .invalid-player {
-      color: mat.get-color-from-palette($warn-palette, 300);
     }
   }
 }
 
 @mixin typography($theme) {
   $typography-config: mat.get-typography-config($theme);
-
-  // badman-player-search {
-  //   .mat-mdc-form-field-bottom-align {
-  //     display: none;
-  //   }
+  // badman-select-club {
   // }
 
-  .badman-search-player-panel {
-    small.member-id {
-      @include mat.typography-level($typography-config, 'caption');
-    }
-    .invalid-player {
+  .badman-select-club-panel {
+    small.club-id {
       @include mat.typography-level($typography-config, 'caption');
     }
   }
 }
 
 @mixin theme($theme) {
+  // Only apply theme on the correct element
   $color-config: mat.get-color-config($theme);
   @if $color-config != null {
     @include color($theme);

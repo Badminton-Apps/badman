@@ -32,7 +32,7 @@ export class RankingPlaceResolver {
 
   @Query(() => RankingPlace)
   async rankingPlace(
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ): Promise<RankingPlace> {
     let place = await RankingPlace.findByPk(id);
 
@@ -49,7 +49,7 @@ export class RankingPlaceResolver {
         throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
       }
 
-      place = getRankingWhenNull(place, system.amountOfLevels) as RankingPlace;
+      place = getRankingWhenNull(place, system);
     }
 
     return place;
@@ -68,10 +68,12 @@ export class RankingPlaceResolver {
         });
 
         if (!system) {
-          throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
+          throw new NotFoundException(
+            `${RankingSystem.name}: ${place.systemId}`,
+          );
         }
 
-        place = getRankingWhenNull(place, system.amountOfLevels) as RankingPlace;
+        place = getRankingWhenNull(place, system);
       }
     }
 
@@ -80,7 +82,7 @@ export class RankingPlaceResolver {
 
   @ResolveField(() => RankingSystem)
   async rankingSystem(
-    @Parent() rankingPlace: RankingPlace
+    @Parent() rankingPlace: RankingPlace,
   ): Promise<RankingSystem> {
     return rankingPlace.getRankingSystem();
   }
@@ -94,16 +96,16 @@ export class RankingPlaceResolver {
   async updateRankingPlace(
     @User() user: Player,
     @Args('data')
-    updateRankingPlaceData: RankingPlaceUpdateInput
+    updateRankingPlaceData: RankingPlaceUpdateInput,
   ) {
     if (
-      !await user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${updateRankingPlaceData.playerId}_edit:player`,
         'edit-any:player',
-      ])
+      ]))
     ) {
       throw new UnauthorizedException(
-        `You do not have permission to edit this club`
+        `You do not have permission to edit this club`,
       );
     }
 
@@ -114,12 +116,12 @@ export class RankingPlaceResolver {
         updateRankingPlaceData.id,
         {
           transaction,
-        }
+        },
       );
 
       if (!rankingPlace) {
         throw new NotFoundException(
-          `${RankingPlace.name}: ${updateRankingPlaceData.id}`
+          `${RankingPlace.name}: ${updateRankingPlaceData.id}`,
         );
       }
 
@@ -142,16 +144,16 @@ export class RankingPlaceResolver {
   @Mutation(() => RankingPlace)
   async newRankingPlace(
     @User() user: Player,
-    @Args('data') newRankingPlaceData: RankingPlaceNewInput
+    @Args('data') newRankingPlaceData: RankingPlaceNewInput,
   ) {
     if (
-      !await user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${newRankingPlaceData.playerId}_edit:player`,
         'edit-any:player',
-      ])
+      ]))
     ) {
       throw new UnauthorizedException(
-        `You do not have permission to edit this club`
+        `You do not have permission to edit this club`,
       );
     }
 
@@ -164,14 +166,14 @@ export class RankingPlaceResolver {
 
       if (!player) {
         throw new NotFoundException(
-          `${Player.name}: ${newRankingPlaceData.playerId}`
+          `${Player.name}: ${newRankingPlaceData.playerId}`,
         );
       }
 
       // Update club
       const place = await RankingPlace.create(
         { ...newRankingPlaceData },
-        { transaction }
+        { transaction },
       );
 
       // Commit transaction
@@ -187,7 +189,7 @@ export class RankingPlaceResolver {
   @Mutation(() => Boolean)
   async removeRankingPlace(
     @User() user: Player,
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ) {
     const rankingPlace = await RankingPlace.findByPk(id);
 
@@ -196,13 +198,13 @@ export class RankingPlaceResolver {
     }
 
     if (
-      !await user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${rankingPlace.playerId}_edit:player`,
         'edit-any:player',
-      ])
+      ]))
     ) {
       throw new UnauthorizedException(
-        `You do not have permission to edit this club`
+        `You do not have permission to edit this club`,
       );
     }
 

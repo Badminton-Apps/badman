@@ -33,7 +33,7 @@
 
             <mat-menu #menu="matMenu">
               <badman-has-claim [any]="['edit:competition']">
-                <button mat-menu-item [routerLink]="['edit', event.id]">
+                <button mat-menu-item [routerLink]="[event.slug, 'edit']">
                   <mat-icon>edit</mat-icon>
                   <span>Edit</span>
                 </button>

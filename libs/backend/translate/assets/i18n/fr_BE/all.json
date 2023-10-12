@@ -566,7 +566,8 @@
     "year": "Année"
   },
   "landing": {
-    "description": "Nous nous efforçons de faire de badman l'endroit central pour toutes les données relatives au badminton."
+    "description": "Nous nous efforçons de faire de badman l'endroit central pour toutes les données relatives au badminton.",
+    "title": "Badman"
   },
   "lists": {
     "name": "Nom"
@@ -654,7 +655,9 @@
     "no-players": "Aucun joueur",
     "regular": "Joueur régulier",
     "search": {
+      "backup-player": "Le joueur est répertorié avec les joueurs de réserve",
       "create": "Ajouter un nouveau joueur",
+      "in-list": "Le joueur est déjà répertorié",
       "label": "Lecteur de recherche",
       "not-found": "Joueur introuvable"
     },

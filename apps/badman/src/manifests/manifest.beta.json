@@ -1,12 +1,12 @@
 {
-  "name": "Badman",
-  "short_name": "Badman",
+  "name": "Badman (BETA)",
+  "short_name": "Badman (beta)",
   "theme_color": "#212121",
   "background_color": "#303030",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
-  "homepage_url": "https://badman.app",
+  "homepage_url": "https://beta.badman.app",
   "icons": [
     {
       "src": "assets/icons/manifest-icon-192.maskable.png",

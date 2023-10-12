@@ -6,6 +6,7 @@ import {
   GamePlayerMembership,
   Player,
   RankingPoint,
+  RankingSystem,
 } from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
 import {
@@ -17,6 +18,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
+import { getRankingWhenNull } from '@badman/utils';
 
 @Resolver(() => Game)
 export class GamesResolver {
@@ -38,14 +40,14 @@ export class GamesResolver {
   @ResolveField(() => [RankingPoint])
   async rankingPoints(
     @Parent() game: Game,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<RankingPoint[]> {
     return game.getRankingPoints(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => EncounterCompetition)
   async competition(
-    @Parent() game: Game
+    @Parent() game: Game,
   ): Promise<EncounterCompetition | null> {
     if (game.linkType == 'competition') {
       return game.getCompetition();
@@ -64,19 +66,58 @@ export class GamesResolver {
 
   @ResolveField(() => [GamePlayerMembershipType])
   async players(
-    @Parent() game: Game
+    @Parent() game: Game,
   ): Promise<(Player & GamePlayerMembership)[][]> {
     const players = (await game.getPlayers()) as (Player & {
       GamePlayerMembership: GamePlayerMembership;
     })[];
 
+    // check if any single, double or mixed is null
+    const hasNull = players?.some(
+      (gamePlayer: Player & { GamePlayerMembership: GamePlayerMembership }) => {
+        return (
+          gamePlayer.GamePlayerMembership.single == null ||
+          gamePlayer.GamePlayerMembership.double == null ||
+          gamePlayer.GamePlayerMembership.mix == null
+        );
+      },
+    );
+
+    let system: RankingSystem | null = null;
+    if (hasNull) {
+      system = await RankingSystem.findOne({
+        where: {
+          primary: true,
+        },
+      });
+    }
+
     return players?.map(
       (gamePlayer: Player & { GamePlayerMembership: GamePlayerMembership }) => {
+        if (hasNull) {
+          if (!system) {
+            throw new NotFoundException('No primary ranking system found');
+          }
+          
+          const place = getRankingWhenNull(
+            gamePlayer.GamePlayerMembership,
+            system,
+          );
+
+          return {
+            ...gamePlayer.GamePlayerMembership.toJSON(),
+            ...gamePlayer.toJSON(),
+            single: place.single,
+            double: place.double,
+            mix: place.mix,
+          };
+        }
+
         return {
           ...gamePlayer.GamePlayerMembership.toJSON(),
           ...gamePlayer.toJSON(),
         };
-      }
+      },
     );
   }
 }

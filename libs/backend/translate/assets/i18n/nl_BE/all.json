@@ -566,7 +566,8 @@
     "year": "Jaar"
   },
   "landing": {
-    "description": "We werken eraan om met badman de centrale plaats te zijn voor al je badminton data."
+    "description": "We werken eraan om met badman de centrale plaats te zijn voor al je badminton data.",
+    "title": "Badman"
   },
   "lists": {
     "name": "Naam"
@@ -654,7 +655,9 @@
     "no-players": "Geen spelers",
     "regular": "Vaste speler",
     "search": {
+      "backup-player": "Speler staat bij reservespelers",
       "create": "Voeg een nieuwe speler toe",
+      "in-list": "Speler staat al in de lijst",
       "label": "Zoek speler",
       "not-found": "Speler niet gevonden"
     },

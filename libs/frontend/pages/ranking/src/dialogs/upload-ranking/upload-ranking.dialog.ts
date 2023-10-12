@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
+  inject,
 } from '@angular/core';
 import {
   MatDialogModule,
@@ -27,6 +28,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'badman-upload-ranking',
@@ -54,6 +56,8 @@ import { MatInputModule } from '@angular/material/input';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadRankingDialogComponent {
+  snackbar = inject(MatSnackBar);
+
   previewData?: MembersRolePerGroupData[];
   headerRow?: string[];
   dragging = false;
@@ -74,7 +78,7 @@ export class UploadRankingDialogComponent {
     public dialogRef: MatDialogRef<UploadRankingDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: { rankingSystem: RankingSystem },
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   onDragOver(event: DragEvent) {
@@ -115,7 +119,7 @@ export class UploadRankingDialogComponent {
         {
           reportProgress: true,
           observe: 'events',
-        }
+        },
       )
       .subscribe((event) => {
         if (event.type === HttpEventType.Response) {
@@ -145,18 +149,23 @@ export class UploadRankingDialogComponent {
     formData.append('createNewPlayers', this.createNewPlayers.toString());
     formData.append('rankingDate', this.rankingDate.toISOString());
     formData.append('updateRanking', this.updateRanking.toString());
-
+ 
     try {
       const result = await lastValueFrom(
-        this.http.post(`${this.config.api}/upload/process`, formData, {
-          reportProgress: true,
-          observe: 'events',
-        })
+        this.http.post<{ message: boolean }>(
+          `${this.config.api}/upload/process`,
+          formData,
+        ),
       );
 
-      if (result.type === HttpEventType.Response) {
-        this.dialogRef.close();
+      if (result?.message) {
+        this.snackbar.open('Processing started', undefined, {
+          duration: 5000,
+        });
       }
+
+      this.dialogRef.close();
+
     } catch (error) {
       console.error(error);
     } finally {

@@ -20,10 +20,14 @@
           "apps/badman/src/favicon.ico",
           "apps/badman/src/assets",
           "apps/badman/src/manifest.json",
-          "apps/badman/src/manifest.prod.json",
           "apps/badman/src/robots.txt",
           "apps/badman/src/sitemap.xml",
-          "apps/badman/src/ads.txt"
+          "apps/badman/src/ads.txt",
+          {
+            "input": "apps/badman/src/manifests",
+            "output": "/",
+            "glob": "*.json"
+          }
         ],
         "allowedCommonJsDependencies": [
           "moment",
@@ -68,8 +72,8 @@
               "with": "apps/badman/src/environments/environment.prod.ts"
             },
             {
-              "replace": "apps/badman/src/manifest.json",
-              "with": "apps/badman/src/manifest.prod.json"
+              "replace": "dist/apps/badman/manifest.json",
+              "with": "apps/badman/src/manifests/manifest.prod.json"
             }
           ],
           "outputHashing": "all"

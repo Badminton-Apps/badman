@@ -28,7 +28,7 @@ export class GoogleMapsModule {
       loader
         .load()
         .then(() => {
-          console.log('injected google maps');
+          // console.log('injected google maps');
         })
         .catch((e) => {
           console.error(e);

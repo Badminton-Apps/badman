@@ -34,8 +34,8 @@ export class CronService {
     // Scheduling job
     this.logger.verbose(`Scheduling ${jobName} in ${readable}`);
     return queue.add(jobName, data, {
+      removeOnFail: 1,
       removeOnComplete: true,
-      removeOnFail: true,
       delay: next,
       repeat: {
         cron: cron,

@@ -21,7 +21,11 @@ import {
   Team,
   TeamPlayerMembershipType,
 } from '@badman/backend-database';
-import { getCurrentSeason, IsUUID } from '@badman/utils';
+import {
+  getCurrentSeason,
+  getRankingWhenNull as getRankingProtected,
+  IsUUID,
+} from '@badman/utils';
 import {
   Logger,
   NotFoundException,
@@ -73,7 +77,7 @@ export class PlayersResolver {
 
   @Query(() => PagedPlayer)
   async players(
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: Player[] }> {
     return Player.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
@@ -109,7 +113,7 @@ export class PlayersResolver {
   @ResolveField(() => [Claim])
   async claims(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<Claim[]> {
     return player.getClaims(ListArgs.toFindOptions(listArgs));
   }
@@ -117,7 +121,7 @@ export class PlayersResolver {
   @ResolveField(() => [Notification])
   async notifications(
     @User() user: Player,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<Notification[]> {
     return user.getNotifications(ListArgs.toFindOptions(listArgs));
   }
@@ -130,41 +134,27 @@ export class PlayersResolver {
   @ResolveField(() => [RankingPlace], { description: 'Default sorting: DESC' })
   async rankingPlaces(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
+    @Args('systemId', { type: () => ID, nullable: true }) systemId?: string,
   ): Promise<RankingPlace[]> {
     const places = await player.getRankingPlaces({
       order: [['rankingDate', 'DESC']],
       ...ListArgs.toFindOptions(listArgs),
     });
 
-    // if one of the levels is not set, get the default from the system
-    for (const place of places) {
-      if (!place.single || !place.double || !place.mix) {
-        const system = await RankingSystem.findByPk(place.systemId, {
-          attributes: ['amountOfLevels'],
+    const system = systemId
+      ? await RankingSystem.findByPk(systemId)
+      : await RankingSystem.findOne({
+          where: {
+            primary: true,
+          },
         });
 
-        if (!system) {
-          throw new NotFoundException(
-            `${RankingSystem.name}: ${place.systemId}`
-          );
-        }
-
-        const bestRankingMin2 =
-          Math.min(
-            place?.single ?? system.amountOfLevels,
-            place?.double ?? system.amountOfLevels,
-            place?.mix ?? system.amountOfLevels
-          ) + 2;
-
-        // if the player has a missing rankingplace, we set the lowest possible ranking
-        place.single = place?.single ?? bestRankingMin2;
-        place.double = place?.double ?? bestRankingMin2;
-        place.mix = place?.mix ?? bestRankingMin2;
-      }
+    if (!system) {
+      throw new NotFoundException(`${RankingSystem.name}: ${systemId}`);
     }
 
-    return places;
+    return places?.map((place) => getRankingProtected(place, system)) ?? [];
   }
 
   @ResolveField(() => [RankingLastPlace], {
@@ -172,47 +162,33 @@ export class PlayersResolver {
   })
   async rankingLastPlaces(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
+    @Args('systemId', { type: () => ID, nullable: true }) systemId?: string,
   ): Promise<RankingLastPlace[]> {
     const places = await player.getRankingLastPlaces({
       order: [['rankingDate', 'DESC']],
       ...ListArgs.toFindOptions(listArgs),
     });
 
-    // if one of the levels is not set, get the default from the system
-    for (const place of places) {
-      if (!place.single || !place.double || !place.mix) {
-        const system = await RankingSystem.findByPk(place.systemId, {
-          attributes: ['amountOfLevels'],
+    const system = systemId
+      ? await RankingSystem.findByPk(systemId)
+      : await RankingSystem.findOne({
+          where: {
+            primary: true,
+          },
         });
 
-        if (!system) {
-          throw new NotFoundException(
-            `${RankingSystem.name}: ${place.systemId}`
-          );
-        }
-
-        const bestRankingMin2 =
-          Math.min(
-            place?.single ?? system.amountOfLevels,
-            place?.double ?? system.amountOfLevels,
-            place?.mix ?? system.amountOfLevels
-          ) + 2;
-
-        // if the player has a missing rankingplace, we set the lowest possible ranking
-        place.single = place?.single ?? bestRankingMin2;
-        place.double = place?.double ?? bestRankingMin2;
-        place.mix = place?.mix ?? bestRankingMin2;
-      }
+    if (!system) {
+      throw new NotFoundException(`${RankingSystem.name}: ${systemId}`);
     }
 
-    return places;
+    return places?.map((place) => getRankingProtected(place, system)) ?? [];
   }
 
   @ResolveField(() => [Game])
   async games(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<Game[]> {
     return player.getGames(ListArgs.toFindOptions(listArgs));
   }
@@ -226,7 +202,7 @@ export class PlayersResolver {
       description:
         'Include the inactive teams (this overwrites the active filter if given)',
     })
-    season?: number
+    season?: number,
   ): Promise<Team[]> {
     const args = ListArgs.toFindOptions(listArgs);
 
@@ -246,7 +222,7 @@ export class PlayersResolver {
       nullable: true,
       description: 'Include the historical clubs',
     })
-    historical?: boolean
+    historical?: boolean,
   ): Promise<
     (Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined
   > {
@@ -272,7 +248,7 @@ export class PlayersResolver {
   async createPlayer(@User() user: Player, @Args('data') data: PlayerNewInput) {
     if (!(await user.hasAnyPermission(['add:player']))) {
       throw new UnauthorizedException(
-        `You do not have permission to create a player`
+        `You do not have permission to create a player`,
       );
     }
 
@@ -284,7 +260,7 @@ export class PlayersResolver {
         {
           ...data,
         },
-        { transaction }
+        { transaction },
       );
 
       await transaction.commit();
@@ -299,7 +275,7 @@ export class PlayersResolver {
   @Mutation(() => Player)
   async updatePlayer(
     @User() user: Player,
-    @Args('data') data: PlayerUpdateInput
+    @Args('data') data: PlayerUpdateInput,
   ) {
     if (
       !(await user.hasAnyPermission([
@@ -308,7 +284,7 @@ export class PlayersResolver {
       ]))
     ) {
       throw new UnauthorizedException(
-        `You do not have permission to edit this player`
+        `You do not have permission to edit this player`,
       );
     }
 
@@ -338,11 +314,11 @@ export class PlayersResolver {
   @Mutation(() => Boolean)
   async removePlayer(
     @User() user: Player,
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ) {
     if (!(await user.hasAnyPermission(['delete:player']))) {
       throw new UnauthorizedException(
-        `You do not have permission to delete this player`
+        `You do not have permission to delete this player`,
       );
     }
 
@@ -372,7 +348,7 @@ export class PlayersResolver {
   @Mutation(() => Player)
   async claimAccount(
     @User() user: LoggedInUser,
-    @Args('playerId') playerId: string
+    @Args('playerId') playerId: string,
   ): Promise<Player> {
     const player = await Player.findByPk(playerId);
     if (!player) {
@@ -396,7 +372,7 @@ export class PlayersResolver {
   @Mutation(() => Boolean)
   async updateSetting(
     @User() user: Player,
-    @Args('settings') settingsInput: SettingUpdateInput
+    @Args('settings') settingsInput: SettingUpdateInput,
   ): Promise<boolean> {
     if (!user) {
       throw new UnauthorizedException();
@@ -430,7 +406,7 @@ export class PlayersResolver {
   @Mutation(() => Boolean)
   async addPushSubScription(
     @User() user: Player,
-    @Args('subscription') subscription: PushSubscriptionInputType
+    @Args('subscription') subscription: PushSubscriptionInputType,
   ): Promise<boolean> {
     if (!user || !user?.id) {
       return false;
@@ -446,12 +422,12 @@ export class PlayersResolver {
 
     // check if the subscription already exists
     const existing = settings?.pushSubscriptions?.find(
-      (sub) => sub.endpoint === subscription.endpoint
+      (sub) => sub.endpoint === subscription.endpoint,
     );
 
     if (!existing) {
       this.logger.debug(
-        `Adding subscription for player ${user.fullName} (${subscription.endpoint})`
+        `Adding subscription for player ${user.fullName} (${subscription.endpoint})`,
       );
       settings.pushSubscriptions.push({
         endpoint: subscription.endpoint,
@@ -474,7 +450,7 @@ export class GamePlayersResolver extends PlayersResolver {
   @ResolveField(() => RankingPlace)
   async rankingPlace(
     @Parent() player: Player & { GamePlayerMembership: GamePlayerMembership },
-    @Args() listArgs: WhereArgs
+    @Args() listArgs: WhereArgs,
   ): Promise<RankingPlace> {
     const game = await Game.findByPk(player.GamePlayerMembership.gameId, {
       attributes: ['playedAt'],
@@ -482,7 +458,7 @@ export class GamePlayersResolver extends PlayersResolver {
 
     if (!game) {
       throw new NotFoundException(
-        `${Game.name}: ${player.GamePlayerMembership.gameId}`
+        `${Game.name}: ${player.GamePlayerMembership.gameId}`,
       );
     }
 
@@ -507,7 +483,7 @@ export class TeamPlayerResolver extends PlayersResolver {
   @ResolveField(() => [RankingLastPlace])
   async rankingLastPlaces(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<RankingLastPlace[]> {
     const args = ListArgs.toFindOptions(listArgs);
 
@@ -527,7 +503,7 @@ export class TeamPlayerResolver extends PlayersResolver {
 
         if (!system) {
           throw new NotFoundException(
-            `${RankingSystem.name}: ${place.systemId}`
+            `${RankingSystem.name}: ${place.systemId}`,
           );
         }
 
@@ -545,7 +521,7 @@ export class TeamPlayerResolver extends PlayersResolver {
   })
   async rankingPlaces(
     @Parent() player: Player,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<RankingPlace[]> {
     const args = ListArgs.toFindOptions({
       order: [{ direction: 'DESC', field: 'rankingDate' }],
@@ -569,7 +545,7 @@ export class TeamPlayerResolver extends PlayersResolver {
 
         if (!system) {
           throw new NotFoundException(
-            `${RankingSystem.name}: ${place.systemId}`
+            `${RankingSystem.name}: ${place.systemId}`,
           );
         }
 
