@@ -11,7 +11,7 @@ import {
   RankingPlace,
   RankingSystem,
 } from '@badman/backend-database';
-import { getRankingWhenNull, sortPlayers } from '@badman/utils';
+import { getRankingProtected, sortPlayers } from '@badman/utils';
 import { Logger, NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -63,7 +63,7 @@ export class AssemblyResolver {
 
     return p
       .map((player) => {
-        const place = getRankingWhenNull(
+        const place = getRankingProtected(
           assembly.titularsPlayerData?.find((p) => p.id === player.id)
             ?.rankingPlaces?.[0] ?? ({} as RankingPlace),
           system,
