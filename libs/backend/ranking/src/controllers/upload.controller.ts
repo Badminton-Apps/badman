@@ -1,18 +1,12 @@
-import {
-  Body,
-  Controller,
-  Logger,
-  Post,
-  UploadedFile,
-  UseGuards,
-} from '@nestjs/common';
+import { MultipartValue } from '@fastify/multipart';
+import { Controller, Logger, Post, Res, UseGuards } from '@nestjs/common';
+import { FastifyReply } from 'fastify';
+import moment from 'moment';
 import 'multer';
 import * as XLSX from 'xlsx';
 import { MembersRolePerGroupData, UpdateRankingService } from '../services';
 import { File, MultipartFile } from '../utils/file.decorator';
 import { UploadGuard } from '../utils/upload.guard';
-import { MultipartValue } from '@fastify/multipart';
-import moment from 'moment';
 
 @Controller('ranking/upload')
 export class UploadRankingController {
@@ -27,7 +21,7 @@ export class UploadRankingController {
 
     // filter out competition members
     const filteredData = mappedData.filter(
-      (row) => row.role === 'Competitiespeler'
+      (row) => row.role === 'Competitiespeler',
     );
 
     // Get headers
@@ -46,7 +40,7 @@ export class UploadRankingController {
 
   @Post('process')
   @UseGuards(UploadGuard)
-  async process(@File() file: MultipartFile) {
+  async process(@File() file: MultipartFile, @Res() res: FastifyReply) {
     const mappedData = await this._readFile(file);
 
     const updateCompStatus =
@@ -54,7 +48,7 @@ export class UploadRankingController {
     const updateRanking =
       (file.fields['updateRanking'] as MultipartValue)?.value === 'true';
     const rankingDate = moment(
-      (file.fields['rankingDate'] as MultipartValue)?.value as string
+      (file.fields['rankingDate'] as MultipartValue)?.value as string,
     );
     const removeAllRanking =
       (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
@@ -68,19 +62,26 @@ export class UploadRankingController {
       throw new Error('Invalid ranking date');
     }
 
-    await this._updateRankingService.processFileUpload(mappedData, {
-      updateCompStatus,
-      updateRanking,
-      rankingDate: rankingDate.toDate(),
-      removeAllRanking,
-      rankingSystemId,
-      createNewPlayers,
-    });
+    res.send({ message: true });
 
-    return { message: 'File processed successfully' };
+    this._updateRankingService
+      .processFileUpload(mappedData, {
+        updateCompStatus,
+        updateRanking,
+        rankingDate: rankingDate.toDate(),
+        removeAllRanking,
+        rankingSystemId,
+        createNewPlayers,
+      })
+      .then(() => {
+        this._logger.log('Ranking processed');
+      });
   }
 
-  private async _readFile(file: MultipartFile, rows: number | undefined = undefined) {
+  private async _readFile(
+    file: MultipartFile,
+    rows: number | undefined = undefined,
+  ) {
     const workbook = XLSX.read(await file.toBuffer(), {
       dense: true,
       sheetRows: rows,
@@ -100,7 +101,7 @@ export class UploadRankingController {
 
     workbook.SheetNames.forEach((sheetName) => {
       const data = XLSX.utils.sheet_to_json<bbfRating>(
-        workbook.Sheets[sheetName]
+        workbook.Sheets[sheetName],
       );
       for (const row of data) {
         let player = players.get(row['P1Memberid']);

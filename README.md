@@ -79,3 +79,9 @@ https://github.com/rakyll/hey
 1. `NX_MIGRATE_USE_LOCAL=true nx migrate latest`
 2. `npm i`
 3. `NX_MIGRATE_USE_LOCAL=true nx migrate --run-migrations`
+
+
+## Restoring Database
+- download `.sql.gz` file
+- go into psql
+- `\i path_to_sql_file`

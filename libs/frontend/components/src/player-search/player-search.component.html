@@ -8,6 +8,10 @@
       [matAutocomplete]="auto"
       (blur)="this.inputBlur()"
     />
+    <ng-container *ngIf="this.loading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar
+    ></ng-container>
+
     <mat-autocomplete
       autoActiveFirstOption
       autoSelectActiveOption
@@ -15,6 +19,8 @@
       #auto="matAutocomplete"
       [displayWith]="displayFn"
       (optionSelected)="this.selectedPlayer($event)"
+      class="badman-search-player-panel"
+      [classList]="['badman-search-player-panel']"
     >
       <ng-container *ngIf="this.filteredOptions$ | async as options">
         <mat-option
@@ -32,22 +38,33 @@
           {{ 'all.player.search.not-found' | translate }}
         </mat-option>
 
-        <mat-option
-          *ngFor="let option of options"
-          [value]="option"
-          [disabled]="this.ignorePlayersIds!.indexOf(option.id!) >= 0"
-        >
-          {{ option.firstName }} {{ option.lastName }}
-          <small *ngIf="option.memberId">({{ option.memberId }}) </small>
-          <small
-            *ngIf="
-              option.clubs &&
-              option.clubs.length > 0 &&
-              option.clubs[0]?.id !== this.clubId
-            "
-            >{{ option.clubs[0].name }}</small
-          >
-        </mat-option>
+        <ng-container *ngFor="let option of options">
+          <ng-container *ngIf="validationFunction(option) as validation">
+            <mat-option
+              [value]="option"
+              [disabled]="
+                this.ignorePlayersIds!.indexOf(option.id!) >= 0 ||
+                !validation.valid
+              "
+            >
+              {{ option.firstName }} {{ option.lastName }}
+              <small class="member-id" *ngIf="option.memberId"
+                >({{ option.memberId }})
+              </small>
+              <small
+                *ngIf="
+                  option.clubs &&
+                  option.clubs.length > 0 &&
+                  option.clubs[0]?.id !== this.clubId
+                "
+                >{{ option.clubs[0].name }}</small
+              >
+              <div class="invalid-player" *ngIf="validation.message">
+                {{ validation.message | translate }}
+              </div>
+            </mat-option>
+          </ng-container>
+        </ng-container>
       </ng-container>
     </mat-autocomplete>
   </mat-form-field>
