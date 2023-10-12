@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.112.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.112.0-beta.2...v6.112.0-beta.3) (2023-10-12)
+
+
+### Features
+
+* adding club number to club select ([fec3205](https://github.com/Badminton-Apps/badman/commit/fec32052e1dc0e4cb8a884c263d3e70cc7a39414))
+* adding some styling to select club, select player, search player ([16812fb](https://github.com/Badminton-Apps/badman/commit/16812fbfc9d11a55c2c3fe7f4bb94ae4b2e23312))
+* changing cron's configuration ([6fd670f](https://github.com/Badminton-Apps/badman/commit/6fd670f24121794de1033960ba03a0b03a35e2b8))
+* disable push via config ([a469bf9](https://github.com/Badminton-Apps/badman/commit/a469bf937840d36dd163241c5bae0be75fb113e4))
+* move protector to unified / shared code ([9daf60e](https://github.com/Badminton-Apps/badman/commit/9daf60ef64d53b0541500d96e5f3d0a831a71134))
+* showing position in draw ([5ca2660](https://github.com/Badminton-Apps/badman/commit/5ca26607b1dd23d82f20b8597d606606a0ceba25))
+
+
+### Bug Fixes
+
+* add extra club for syncing ([b595131](https://github.com/Badminton-Apps/badman/commit/b5951315b4ff5434644f239cc0eee94fea88cd79))
+* adding manual change for clubs into db ([06a2a71](https://github.com/Badminton-Apps/badman/commit/06a2a7165058fb73604a9c58ad84d0a68b4ff0e4))
+* allow null to be used as empty value ([90362c2](https://github.com/Badminton-Apps/badman/commit/90362c2909ed0a64ba77e5d5f3ace94c784271d9))
+* correct downgrade points for < minGames ([ff678f8](https://github.com/Badminton-Apps/badman/commit/ff678f8f57eb084eda7158586b0b39ceeab990c0))
+* default use the production one, untill issue is resolved of not replacing ([32cb786](https://github.com/Badminton-Apps/badman/commit/32cb7864387e1124fe3e68e58b468e784d090212))
+* link to correct url ([f48eb75](https://github.com/Badminton-Apps/badman/commit/f48eb7567d6414f0d1270c29317865604da1a1dc))
+
 ## [6.112.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.112.0-beta.1...v6.112.0-beta.2) (2023-10-10)
 
 
