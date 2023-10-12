@@ -112,7 +112,8 @@ export class PointsService {
       transaction?: Transaction;
     },
   ): Promise<RankingPoint[]> {
-    const { createRankingPoints = true, transaction } = options ?? {};
+    const transaction = options?.transaction;
+    const createRankingPoints = options?.createRankingPoints ?? true;
 
     const rankings: RankingPoint[] = [];
     // ignore these types
