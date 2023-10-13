@@ -4,7 +4,7 @@
   <mat-nav-list role="list">
     <mat-list-item
       role="listitem"
-      *ngFor="let encounter of encounters"
+      *ngFor="let encounter of encounters; trackBy: trackById"
       [routerLink]="[
         '/',
         'competition',

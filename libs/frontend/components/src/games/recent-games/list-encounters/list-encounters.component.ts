@@ -56,12 +56,12 @@ export class ListEncountersComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {
     this.recentEncounters$ = this._loadRecentEncounterForTeams(
-      Array.isArray(this.teams) ? this.teams : [this.teams]
+      Array.isArray(this.teams) ? this.teams : [this.teams],
     );
   }
 
@@ -161,14 +161,22 @@ export class ListEncountersComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(`recentKey-${this.teamId ?? this.clubId}`, this.stateTransfer, this.platformId),
+        transferState(
+          `recentKey-${this.teamId ?? this.clubId}`,
+          this.stateTransfer,
+          this.platformId,
+        ),
         map((result) => {
           return (
             result?.data.encounterCompetitions.rows?.map(
-              (encounter) => new EncounterCompetition(encounter)
+              (encounter) => new EncounterCompetition(encounter),
             ) ?? []
           );
-        })
+        }),
       );
+  }
+
+  trackById(index: number, item: Partial<{ id: string }>) {
+    return item.id;
   }
 }

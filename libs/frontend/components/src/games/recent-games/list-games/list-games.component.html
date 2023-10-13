@@ -20,7 +20,7 @@
 <ng-container *ngIf="recentGames$ | async as games">
   <div
     class="game"
-    *ngFor="let game of games"
+    *ngFor="let game of games; trackBy: trackById"
     [ngClass]="{
       double: game.gameType === 'D',
       mix: game.gameType === 'MX',
