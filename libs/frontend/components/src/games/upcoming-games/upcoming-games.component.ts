@@ -200,4 +200,8 @@ export class UpcomingGamesComponent implements OnInit, OnChanges {
   loadMore() {
     this.currentIndex$.next(this.currentIndex$.value + this.pageSize);
   }
+
+  trackById(index: number, item: Partial<{ id: string }>) {
+    return item.id;
+  }
 }
