@@ -98,9 +98,10 @@ export class ShellComponent {
 
   isHandset = toSignal(
     this.breakpointObserver
-      .observe(Breakpoints.Handset)
-      .pipe(map((result) => result.matches))
+      .observe(['(max-width: 959.98px)'])
+      .pipe(map((result) => result.matches)),
   );
+
 
   canEnroll$!: Observable<boolean>;
   canChange$!: Observable<boolean>;
@@ -118,26 +119,26 @@ export class ShellComponent {
     private router: Router,
     updates: SwUpdate,
     snackBar: MatSnackBar,
-    private auth: ClaimService
+    private auth: ClaimService,
   ) {
     this.banner = new Banner(
       config.publisherId,
       config.slots.sidebar,
       config.enabled,
-      config.debug
+      config.debug,
     );
 
     if (isPlatformBrowser(this.platformId)) {
       updates.versionUpdates
         .pipe(
           filter(
-            (evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'
+            (evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY',
           ),
           map((evt) => ({
             type: 'UPDATE_AVAILABLE',
             current: evt.currentVersion,
             available: evt.latestVersion,
-          }))
+          })),
         )
         .subscribe(() => {
           snackBar
@@ -175,8 +176,8 @@ export class ShellComponent {
           map(
             (events) =>
               (events?.data?.eventTournaments?.count ?? 0) != 0 ||
-              (events?.data?.eventCompetitions?.count ?? 0) != 0
-          )
+              (events?.data?.eventCompetitions?.count ?? 0) != 0,
+          ),
         );
 
       this.canEnroll$ = combineLatest([
@@ -186,7 +187,7 @@ export class ShellComponent {
       ]).pipe(
         map(([canAnyEnroll, canViewEnroll, openEnrollments]) => {
           return canAnyEnroll || (canViewEnroll && openEnrollments);
-        })
+        }),
       );
 
       const openChangeEncounter = this.apollo
@@ -213,8 +214,8 @@ export class ShellComponent {
           map(
             (events) =>
               (events?.data?.eventTournaments?.count ?? 0) != 0 ||
-              (events?.data?.eventCompetitions?.count ?? 0) != 0
-          )
+              (events?.data?.eventCompetitions?.count ?? 0) != 0,
+          ),
         );
 
       const canAnyChange$ = this.auth.hasClaim$('change-any:encounter');
@@ -227,7 +228,7 @@ export class ShellComponent {
       ]).pipe(
         map(([canAnyChange, canViewChange, openChangeEncounter]) => {
           return canAnyChange || (canViewChange && openChangeEncounter);
-        })
+        }),
       );
 
       this.router.events.subscribe((event: Event) => {
