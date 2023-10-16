@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.113.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.112.0...v6.113.0-beta.0) (2023-10-16)
+
+
+### Features
+
+* also protect tournament ([d1d96b0](https://github.com/Badminton-Apps/badman/commit/d1d96b0d8e0059c6313b3561d14ed4900ef6c4c5))
+* change encounter admin mode ([d4ce959](https://github.com/Badminton-Apps/badman/commit/d4ce9590018f19233e13fb9e8447a9753c284a12))
+* improve performance of loading games ([8b996a8](https://github.com/Badminton-Apps/badman/commit/8b996a877a5ac756d74ef6505a679e15b6b89419))
+
+
+### Bug Fixes
+
+* breakpoints for change encounter ([368a934](https://github.com/Badminton-Apps/badman/commit/368a934f4ce3fcf554bd5295a9bb30baa7016283))
+* breakpoints for shell ([72255fa](https://github.com/Badminton-Apps/badman/commit/72255fa6fa232655ba82fdbdcbea4031a032ce0b))
+* create ranking if no ranking is provided ([222371b](https://github.com/Badminton-Apps/badman/commit/222371b5f465f49bbcd71b4ee709e3360180f96d))
+* download button ([c261648](https://github.com/Badminton-Apps/badman/commit/c261648c921892ff4d9711bba3521a5b12fae019))
+* manifest should have been source ([75d9b70](https://github.com/Badminton-Apps/badman/commit/75d9b70c7a00b93c5d48acfda280974229d61d66))
+* typo in `Confirmation` ([021ac9d](https://github.com/Badminton-Apps/badman/commit/021ac9d02457b29a157bd80741c59834286d0336))
+
 ## [6.112.0](https://github.com/Badminton-Apps/badman/compare/v6.112.0-beta.3...v6.112.0) (2023-10-12)
 
 
