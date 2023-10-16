@@ -207,6 +207,7 @@
     },
     "menu": {
       "actions": "Actions",
+      "add-event": "Add event",
       "averages": "Average level",
       "copy": "Copy",
       "dates": "Change dates",
@@ -256,7 +257,8 @@
       "errors": {
         "already": "Player already present as titular.",
         "club-base-other-team": "<strong>{player.fullName}</strong> is baseplayer of other team",
-        "comp-status": "<strong>{player.fullName}</strong> is not marked as a competition player",
+        "comp-status": "{player.fullName} is not marked as a competition player",
+        "comp-status-html": "<strong>{player.fullName}</strong> is not marked as a competition player",
         "none": "No errors found",
         "not-enough-players": "Too few titulars are currently lined up for the meeting.",
         "player-above-lower": "Player with higher formation index is lined up in front of this player",
@@ -883,6 +885,9 @@
     "last-updated": "Changed on",
     "liga": "",
     "load-more": "load more",
+    "menu": {
+      "add-event": "Add event"
+    },
     "note": "note: Changes are saved directly",
     "overview": {
       "date": "Date",
