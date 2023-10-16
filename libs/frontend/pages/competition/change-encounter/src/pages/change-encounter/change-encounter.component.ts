@@ -69,8 +69,8 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
 
   isHandset = toSignal(
     this.breakpointObserver
-      .observe(Breakpoints.Handset)
-      .pipe(map((result) => result.matches))
+      .observe(['(max-width: 959.98px)'])
+      .pipe(map((result) => result.matches)),
   );
 
   hasPermission = toSignal(
