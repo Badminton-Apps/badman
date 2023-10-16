@@ -203,6 +203,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
                   calculationIntervalUnit
                   caluclationIntervalAmount
                   minNumberOfGamesUsedForUpgrade
+                  minNumberOfGamesUsedForDowngrade
                   updateIntervalAmount
                   updateIntervalUnit
                   periodAmount

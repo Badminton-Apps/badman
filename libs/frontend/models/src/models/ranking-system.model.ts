@@ -47,7 +47,7 @@ export class RankingSystem {
     this.procentWinningPlus1 = args?.procentWinningPlus1;
     this.procentLosing = args?.procentLosing;
     this.minNumberOfGamesUsedForUpgrade = args?.minNumberOfGamesUsedForUpgrade;
-    this.minNumberOfGamesUsedForDowngrade = args?.minNumberOfGamesUsedForUpgrade;
+    this.minNumberOfGamesUsedForDowngrade = args?.minNumberOfGamesUsedForDowngrade;
     this.maxDiffLevels = args?.maxDiffLevels;
     this.maxDiffLevelsHighest = args?.maxDiffLevelsHighest;
     this.latestXGamesToUse = args?.latestXGamesToUse;
