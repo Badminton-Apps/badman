@@ -744,7 +744,7 @@
         "title": "Invullen ontmoetingen"
       },
       "encounterChange": {
-        "conformationNotification": "Bevestiging aanvraag",
+        "confirmationNotification": "Bevestiging aanvraag",
         "finishedNotification": "Verplaatsing afgewerkt",
         "newNotification": "Nieuwe aanvraag",
         "title": "Verplaatsingsaanvragen"
@@ -755,7 +755,7 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Club<strong> {club.name}</strong> is succesvol ingeschreven",
-        "encounterChangeConformationNotification": "Nieuwe verplaatsingsaanvraag voor <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong>",
+        "encounterChangeConfirmationNotification": "Nieuwe verplaatsingsaanvraag voor <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong>",
         "encounterChangeFinishedNotification": "Wedstrijd <strong>{encounter.home.name}</strong> tegen<strong>{encounter.away.name}</strong> is verplaats",
         "encounterChangeNewNotification": "Nieuwe verplaatsingsaanvraag voor <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "De wedstrijd <strong>{encounter.home.name}</strong> tegen <strong>{encounter.away.name}</strong> van <strong>{encounter.date}</strong> is nog niet bevestigd.",
