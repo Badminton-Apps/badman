@@ -88,13 +88,14 @@
           </div>
         </div>
 
-        <div class="submit" *ngIf="this.requestClosing">
+        <div class="submit" *ngIf="!this.requestClosed || (admin$ | async)">
           <div>
             <button
               mat-stroked-button
               (click)="this.addDate()"
               type="button"
-              [disabled]="this.requestClosed"
+              
+              [disabled]="this.requestClosed && (admin$ | async) === false"
             >
               {{ 'all.competition.change-encounter.add-date' | translate }}
             </button>
@@ -126,7 +127,7 @@
               </button>
             </badman-has-claim>
           </div>
-          <div *ngIf="!this.requestClosed" class="caption">
+          <div *ngIf="!this.requestClosed && requestClosing" class="caption">
             <p>
               {{
                 'all.competition.change-encounter.warnings.closing' | translate
