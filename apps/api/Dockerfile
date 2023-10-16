@@ -13,7 +13,6 @@ RUN npm ci
 # Get the configuration from the environment variables
 ARG CONFIGURATION=production
 RUN npm run build:server -- --configuration=$CONFIGURATION
-RUN npm run migrate:up
 
 # Production stage
 FROM node:20-alpine As production
