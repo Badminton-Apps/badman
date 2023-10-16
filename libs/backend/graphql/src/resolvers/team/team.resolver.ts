@@ -71,7 +71,7 @@ export class TeamsResolver {
   @ResolveField(() => [TeamPlayerMembershipType])
   async players(@Parent() team: Team, @Args() listArgs: ListArgs) {
     const players = (await team.getPlayers(
-      ListArgs.toFindOptions(listArgs)
+      ListArgs.toFindOptions(listArgs),
     )) as (Player & { TeamPlayerMembership: TeamPlayerMembership })[];
 
     return players?.map(
@@ -80,7 +80,7 @@ export class TeamsResolver {
           ...player.TeamPlayerMembership.toJSON(),
           ...player.toJSON(),
         };
-      }
+      },
     );
   }
 
@@ -125,7 +125,7 @@ export class TeamsResolver {
   @ResolveField(() => [Location])
   async locations(
     @Parent() team: Team,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<Location[]> {
     return team.getLocations(ListArgs.toFindOptions(listArgs));
   }
@@ -145,7 +145,7 @@ export class TeamsResolver {
   @Mutation(() => Team)
   async createTeam(
     @Args('data') newTeamData: TeamNewInput,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<Team> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -164,7 +164,7 @@ export class TeamsResolver {
         ]))
       ) {
         throw new UnauthorizedException(
-          `You do not have permission to add a competition`
+          `You do not have permission to add a competition`,
         );
       }
 
@@ -203,7 +203,7 @@ export class TeamsResolver {
           {
             ...teamData,
           },
-          { transaction }
+          { transaction },
         );
         created = true;
       }
@@ -253,7 +253,7 @@ export class TeamsResolver {
             }
 
             const membership = dbMemberships.find(
-              (m) => m.playerId === dbPlayer.id
+              (m) => m.playerId === dbPlayer.id,
             );
 
             if (membership) {
@@ -274,20 +274,20 @@ export class TeamsResolver {
                 transaction,
               });
             }
-          })
+          }),
         );
 
         // remove players that are not in the new list
         await Promise.all(
           dbMemberships.map(async (membership) => {
             const player = newTeamData.players?.find(
-              (p) => p.id === membership.playerId
+              (p) => p.id === membership.playerId,
             );
 
             if (!player) {
               await membership.destroy({ transaction });
             }
-          })
+          }),
         );
       }
 
@@ -355,7 +355,7 @@ export class TeamsResolver {
 
             if (!ranking) {
               throw new NotFoundException(
-                `Ranking for player ${p.id} not found`
+                `Ranking for player ${p.id} not found`,
               );
             }
 
@@ -394,7 +394,7 @@ export class TeamsResolver {
   @Mutation(() => Team)
   async updateTeam(
     @Args('data') updateTeamData: TeamUpdateInput,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<Team> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -413,7 +413,7 @@ export class TeamsResolver {
         ]))
       ) {
         throw new UnauthorizedException(
-          `You do not have permission to add a competition`
+          `You do not have permission to add a competition`,
         );
       }
 
@@ -487,7 +487,7 @@ export class TeamsResolver {
 
       await dbTeam.update(
         { ...dbTeam.toJSON(), ...updateTeamData },
-        { transaction }
+        { transaction },
       );
 
       // revert to original name
@@ -511,7 +511,7 @@ export class TeamsResolver {
   @Mutation(() => Boolean)
   async deleteTeam(
     @Args('id', { type: () => ID }) id: number,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<boolean> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -528,7 +528,7 @@ export class TeamsResolver {
         ]))
       ) {
         throw new UnauthorizedException(
-          `You do not have permission to add a competition`
+          `You do not have permission to add a competition`,
         );
       }
 
@@ -565,7 +565,7 @@ export class TeamsResolver {
 
     team.name = `${prefix} ${team.teamNumber}${getLetterForRegion(
       team.type,
-      'vl'
+      'vl',
     )}${temp ? '_temp' : ''}`;
 
     team.abbreviation = `${team.club?.abbreviation} ${
@@ -578,7 +578,7 @@ export class TeamsResolver {
   async addPlayerFromTeam(
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
-    @User() user: Player
+    @User() user: Player,
   ) {
     const team = await Team.findByPk(teamId);
 
@@ -609,7 +609,7 @@ export class TeamsResolver {
   async removePlayerFromTeam(
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
-    @User() user: Player
+    @User() user: Player,
   ) {
     const team = await Team.findByPk(teamId);
 
@@ -635,7 +635,7 @@ export class TeamsResolver {
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
     @Args('subEventId', { type: () => ID }) subEventId: string,
-    @User() user: Player
+    @User() user: Player,
   ) {
     const perm = [`change-base:team`, 'edit-any:club'];
     const transaction = await this._sequelize.transaction();
@@ -664,13 +664,13 @@ export class TeamsResolver {
       });
       if (!entry) {
         throw new NotFoundException(
-          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
+          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`,
         );
       }
 
       const meta = entry.meta;
       const removedPlayer = meta?.competition?.players.filter(
-        (p) => p.id === playerId
+        (p) => p.id === playerId,
       )[0];
       if (!removedPlayer) {
         throw new BadRequestException('Player not part of base?');
@@ -681,7 +681,7 @@ export class TeamsResolver {
       }
 
       meta.competition.players = meta?.competition?.players.filter(
-        (p) => p.id !== playerId
+        (p) => p.id !== playerId,
       );
 
       entry.meta = meta;
@@ -703,7 +703,7 @@ export class TeamsResolver {
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
     @Args('subEventId', { type: () => ID }) subEventId: string,
-    @User() user: Player
+    @User() user: Player,
   ) {
     const perm = [`change-base:team`, 'edit-any:club'];
     const transaction = await this._sequelize.transaction();
@@ -732,7 +732,7 @@ export class TeamsResolver {
       });
       if (!entry) {
         throw new NotFoundException(
-          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
+          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`,
         );
       }
 
@@ -773,7 +773,7 @@ export class TeamsResolver {
     @Args('subEventId', { type: () => ID }) subEventId: string,
     @Args('player', { type: () => EntryCompetitionPlayersInputType })
     playerCompetition: EntryCompetitionPlayersInputType,
-    @User() user: Player
+    @User() user: Player,
   ) {
     const perm = [`change-base:team`, 'edit-any:club'];
     const transaction = await this._sequelize.transaction();
@@ -802,12 +802,12 @@ export class TeamsResolver {
       });
       if (!entry) {
         throw new NotFoundException(
-          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`
+          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`,
         );
       }
 
       const currentPlayer = entry.meta?.competition?.players.find(
-        (p) => p.id === playerCompetition.id
+        (p) => p.id === playerCompetition.id,
       );
       if (!currentPlayer) {
         throw new BadRequestException('Player not part of base?');
@@ -824,8 +824,8 @@ export class TeamsResolver {
       }
 
       // update the player in the meta
-      entry.meta.competition.players = entry.meta.competition.players.map((p) =>
-        p.id === playerCompetition.id ? updatedPlayer : p
+      entry.meta.competition.players = entry.meta.competition.players.map(
+        (p) => (p.id === playerCompetition.id ? updatedPlayer : p),
       );
 
       // create a new meta object to trigger the update
@@ -848,7 +848,7 @@ export class TeamsResolver {
   async removeLocationFromTeam(
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('locationId', { type: () => ID }) locationId: string,
-    @User() user: Player
+    @User() user: Player,
   ) {
     const team = await Team.findByPk(teamId);
 
@@ -874,7 +874,7 @@ export class TeamsResolver {
   async addLocationFromTeam(
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('locationId', { type: () => ID }) locationId: string,
-    @User() user: Player
+    @User() user: Player,
   ) {
     const team = await Team.findByPk(teamId);
 
@@ -901,7 +901,7 @@ export class TeamsResolver {
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
     @Args('membershipType', { type: () => String })
-    membershipType: TeamMembershipType
+    membershipType: TeamMembershipType,
   ) {
     const team = await Team.findByPk(teamId);
 
@@ -924,7 +924,7 @@ export class TeamsResolver {
 
     if (!membership) {
       throw new NotFoundException(
-        `${TeamPlayerMembership.name}: Team: ${teamId}, Player: ${playerId}`
+        `${TeamPlayerMembership.name}: Team: ${teamId}, Player: ${playerId}`,
       );
     }
 

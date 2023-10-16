@@ -92,6 +92,9 @@ export class RankingSystem extends Model {
   minNumberOfGamesUsedForUpgrade?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
+  minNumberOfGamesUsedForDowngrade?: number;
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
   maxDiffLevels?: number;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)

@@ -23,8 +23,10 @@
       [updateUrl]="true"
       (encounterSelected)="this.encounterSelected($event)"
     ></badman-select-encounter>
+
     <div class="download">
       <button
+        class="download-assembly"
         mat-button
         (click)="this.download()"
         [class.spinner]="this.pdfLoading"

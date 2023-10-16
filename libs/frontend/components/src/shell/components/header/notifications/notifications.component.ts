@@ -64,7 +64,7 @@ export class NotificationComponent {
     switch (notification.type) {
       case 'encounterNotEnteredNotification':
       case 'encounterNotAccepted':
-      case 'encounterChangeConformationNotification':
+      case 'encounterChangeConfirmationNotification':
       case 'encounterChangeNewNotification':
       case 'encounterChangeFinishedNotification':
         return {

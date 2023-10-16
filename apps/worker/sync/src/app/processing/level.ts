@@ -6,7 +6,7 @@ import {
   RankingPlace,
   RankingSystem,
 } from '@badman/backend-database';
-import { GameType, getRankingWhenNull } from '@badman/utils';
+import { GameType, getRankingProtected } from '@badman/utils';
 
 export class RankingProcessor {
   static async checkInactive(instances: RankingPlace[], options: SaveOptions) {
@@ -224,7 +224,7 @@ export class RankingProcessor {
           );
         }
 
-        return getRankingWhenNull(rankingPoint, usedSystem);
+        return getRankingProtected(rankingPoint, usedSystem);
       }),
     );
   }
