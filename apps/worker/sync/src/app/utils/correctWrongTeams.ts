@@ -1,5 +1,6 @@
 const replacers = [
   ['W&amp;L', 'W&L BV', true],
+  ['W&L BV', 'W&L BV', true], // needed so the the next one doesn't replace it again
   ['W&L', 'W&L BV', true],
   ['Haneveld', 'Haeneveld', true],
   ['Gitse1D', 'Gitse 1D', true],
@@ -11,10 +12,10 @@ const replacers = [
   ['BC GRACE', 'BC Grâce 1', true],
   ['De Koekjes', 'Test 2G', true],
   ['Apparatuur', 'Test 1G', true],
-  ['BCCM ALLEGRO', 'BC Cardinal Mercier', true]
+  ['BCCM ALLEGRO', 'BC Cardinal Mercier', true],
 ] as const;
 
-export const correctWrongTeams = (team: { 
+export const correctWrongTeams = (team: {
   id?: string;
   name: string;
 }): {
@@ -29,11 +30,10 @@ export const correctWrongTeams = (team: {
       team.name = team.name.replace(from, to);
 
       if (finish) {
-        break; 
+        break;
       }
     }
   }
 
   return team;
 };
- 
