@@ -57,7 +57,7 @@ export class EnrollmentValidationService {
       throw new Error('No teams found');
     }
 
-    const teamIdIds = teams.map((t) => t.link);
+    const teamIdIds = teams.map((t) => t.link) as string[];
 
     if (teamIdIds.length > 0) {
       previousSeasonTeams = await Team.findAll({
@@ -196,6 +196,10 @@ export class EnrollmentValidationService {
         const baseIndex = getIndexFromPlayers(t.type, basePlayers);
 
         const preTeam = previousSeasonTeams.find((p) => p.link === t.link);
+
+        if (!t.id){
+          throw new Error('No team id found');
+        }
 
         return {
           team: new Team({

@@ -744,7 +744,7 @@
         "title": "Enter encounter results"
       },
       "encounterChange": {
-        "conformationNotification": "Conformation request",
+        "confirmationNotification": "Confirmation request",
         "finishedNotification": "Encounter changed",
         "newNotification": "New request",
         "title": "Encounter change requests"
@@ -755,7 +755,7 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Club<strong> {club.name}</strong> has been successfully registered",
-        "encounterChangeConformationNotification": "New displacement request for <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong>",
+        "encounterChangeConfirmationNotification": "New displacement request for <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong>",
         "encounterChangeFinishedNotification": "Request {encounter.home.name} against {encounter.away.name} move",
         "encounterChangeNewNotification": "New displacement request for <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "The match <strong>{encounter.home.name}</strong> against <strong>{encounter.away.name}</strong> of <strong>{encounter.date}</strong> has not yet been confirmed.",

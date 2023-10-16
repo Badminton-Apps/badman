@@ -92,7 +92,7 @@ export class Setting extends Model {
     type: DataType.INTEGER,
     defaultValue: NotificationType.NONE,
   })
-  encounterChangeConformationNotification!: NotificationType;
+  encounterChangeConfirmationNotification!: NotificationType;
 
   @Field(() => Int)
   @Column({
