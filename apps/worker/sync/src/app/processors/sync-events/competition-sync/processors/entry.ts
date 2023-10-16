@@ -202,7 +202,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
     const clubs = await this._getPossibleClubs(clubName, state);
 
-    if (!clubs) {
+    if (!clubs || clubs.length === 0) {
       this.logger.warn(`Club not found ${clubName} ${state}`);
       return;
     }
