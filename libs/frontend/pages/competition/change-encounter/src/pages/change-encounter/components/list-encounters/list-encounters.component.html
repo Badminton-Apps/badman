@@ -1,4 +1,4 @@
-<ng-container *ngIf="isHandset()">
+<ng-container *ngIf="showCompact">
   <ng-container *ngIf="this.group" [formGroup]="group">
     <!-- year selection -->
     <mat-form-field>
@@ -48,7 +48,7 @@
   </ng-container>
 </ng-container>
 
-<ng-container *ngIf="!isHandset()">
+<ng-container *ngIf="!showCompact">
   <mat-nav-list
     *ngIf="
       this.encountersSem1 &&
