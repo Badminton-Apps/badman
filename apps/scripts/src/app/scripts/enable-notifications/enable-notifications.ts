@@ -1,10 +1,14 @@
 import { Player, Setting, Team } from '@badman/backend-database';
 import { NotificationType } from '@badman/utils';
 import { Injectable } from '@nestjs/common';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class EnableNotificationsService {
+  constructor(private sequelize: Sequelize) {}
+
   async process(year: number) {
+    const transaction = await this.sequelize.transaction();
     const teams = await Team.findAll({
       where: {
         season: year,
@@ -13,30 +17,50 @@ export class EnableNotificationsService {
         {
           model: Player,
           as: 'captain',
-          include: [{
-            model: Setting
-          }]
+          include: [
+            {
+              model: Setting,
+            },
+          ],
         },
       ],
+      transaction,
     });
 
+    try {
+      for (const team of teams) {
+        if (team.captain) {
+          let setting = team.captain?.setting;
+          if (!setting) {
+            setting = new Setting({
+              playerId: team.captain.id,
+            });
+          }
 
-    for (const team of teams){
-      if (team.captain){
-        if (!team.captain.setting){
-          team.captain.setting = new Setting()
-        }
+          if (
+            setting?.encounterNotAcceptedNotification != NotificationType.NONE
+          ) {
+            setting.encounterNotAcceptedNotification = NotificationType.EMAIL;
+          }
 
-        if (team.captain?.setting?.encounterNotAcceptedNotification != NotificationType.NONE){
-          team.captain.setting.encounterNotAcceptedNotification = NotificationType.EMAIL | NotificationType.PUSH
-        }
+          if (
+            setting?.encounterChangeConfirmationNotification !=
+            NotificationType.NONE
+          ) {
+            setting.encounterChangeConfirmationNotification =
+              NotificationType.EMAIL;
+          }
 
-        if (team.captain?.setting?.encounterChangeConfirmationNotification != NotificationType.NONE){
-          team.captain.setting.encounterChangeConfirmationNotification = NotificationType.EMAIL | NotificationType.PUSH
+          await setting.save({
+            transaction,
+          });
         }
-        
       }
-    }
 
+      await transaction.commit();
+    } catch (e) {
+      console.log(e);
+      await transaction.rollback();
+    }
   }
 }
