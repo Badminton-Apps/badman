@@ -13,6 +13,8 @@ const replacers = [
   ['De Koekjes', 'Test 2G', true],
   ['Apparatuur', 'Test 1G', true],
   ['BCCM ALLEGRO', 'BC Cardinal Mercier', true],
+  ['Olve Badminton Club', 'Olve Badminton Club Vzw', true],
+  ['Mont-sur-Marchienne RBC', 'Mont-sur-Marchienne RBC Asbl', true],
 ] as const;
 
 export const correctWrongTeams = (team: {
