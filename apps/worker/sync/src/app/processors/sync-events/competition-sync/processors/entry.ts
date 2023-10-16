@@ -20,7 +20,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions,
   ) {
     if (!options) {
       options = {};
@@ -41,7 +41,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
     this.logger.log(
-      `Processing entries for draw ${draw.name} - ${subEvent.eventType}, (${internalId})`
+      `Processing entries for draw ${draw.name} - ${subEvent.eventType}, (${internalId})`,
     );
     const event = await subEvent.getEventCompetition({
       transaction: this.transaction,
@@ -57,7 +57,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
     const xmlDraw = await this.visualService.getDraw(
       this.visualTournament.Code,
-      internalId
+      internalId,
     );
 
     if (!xmlDraw) {
@@ -71,8 +71,8 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     // get the teams for the draw
     const teams = new Set(
       xmlDraw.Structure.Item?.map((item) => item.Team?.Name)?.filter(
-        (name) => name?.length > 0
-      ) ?? []
+        (name) => name?.length > 0,
+      ) ?? [],
     );
 
     for (const item of teams) {
@@ -83,7 +83,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
         event.teamMatcher,
         event.type,
         drawEntries?.map((r) => r.teamId ?? '') ?? [],
-        subEventEntries.map((r) => r.teamId ?? '') ?? []
+        subEventEntries.map((r) => r.teamId ?? '') ?? [],
       );
 
       if (!teams) {
@@ -124,7 +124,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     for (const entry of entries) {
       if (entry.team?.season !== event.season) {
         this.logger.log(
-          `Team existed multiple season ${entry.team?.name} (${entry.team?.season})`
+          `Team existed multiple season ${entry.team?.name} (${entry.team?.season})`,
         );
         await entry.destroy({ transaction: this.transaction });
 
@@ -173,7 +173,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       const club = clubs.find((r) => r.state === state);
       if (club) {
         this.logger.debug(
-          `Multiple clubs found ${clubName}, picking the club with state ${state}, club's state ${club?.state}`
+          `Multiple clubs found ${clubName}, picking the club with state ${state}, club's state ${club?.state}`,
         );
         return [club];
       }
@@ -191,13 +191,13 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     teamMatcher?: string,
     type?: LevelType,
     drawTeamIds?: string[],
-    subEventTeamIds?: string[]
+    subEventTeamIds?: string[],
   ) {
     const name = correctWrongTeams({ name: item })?.name;
     const { clubName, teamNumber, teamType } = teamValues(
       name,
       teamMatcher,
-      type
+      type,
     );
 
     const clubs = await this._getPossibleClubs(clubName, state);
@@ -215,7 +215,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     if (teamNumber) {
       where = {
         ...where,
-        teamNumber,
+        teamNumber, 
       };
     }
 
@@ -264,7 +264,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
 
     if (clubs.length === 1) {
       this.logger.debug(
-        `Creating new team ${clubName} ${teamNumber} ${teamType}`
+        `Creating new team ${clubName} ${teamNumber} ${teamType}`,
       );
 
       // create a new team
