@@ -53,7 +53,7 @@ export class PlaceService {
       this._logger.verbose(
         `Truncated ${deleted} RankingPlace for system ${
           where.systemId
-        } and between ${start.toISOString()} and ${stop.toISOString()}`
+        } and between ${start.toISOString()} and ${stop.toISOString()}`,
       );
     }
 
@@ -144,7 +144,7 @@ export class PlaceService {
         this._protectRanking(
           newRanking,
           system.amountOfLevels,
-          system.maxDiffLevels
+          system.maxDiffLevels,
         );
         newRanking.updatePossible = true;
       }
@@ -159,7 +159,7 @@ export class PlaceService {
           `Calulating places: ${done}/${total} (${(
             (done / total) *
             100
-          ).toFixed(2)}%)`
+          ).toFixed(2)}%)`,
         );
       }
     }
@@ -183,7 +183,7 @@ export class PlaceService {
       lastRanking: number;
       lastRankingInactive: boolean;
       transaction?: Transaction;
-    }
+    },
   ) {
     const {
       transaction,
@@ -211,7 +211,7 @@ export class PlaceService {
     const { upgrade, downgrade } = this._calculatePoints(
       system,
       (games?.map((g) => g.rankingPoints?.[0])?.filter((g) => g != undefined) ??
-        []) as RankingPoint[]
+        []) as RankingPoint[],
     );
 
     const result = {
@@ -253,7 +253,7 @@ export class PlaceService {
 
   private async _getPlayers(
     systemId: string,
-    options?: { transaction?: Transaction }
+    options?: { transaction?: Transaction },
   ) {
     const { transaction } = options ?? {};
 
@@ -282,7 +282,7 @@ export class PlaceService {
       start?: Date;
       stop?: Date;
       gameType?: GameType;
-    }
+    },
   ) {
     const { transaction } = options ?? {};
 
@@ -335,7 +335,7 @@ export class PlaceService {
       start?: Date;
       stop?: Date;
       gameType?: GameType;
-    }
+    },
   ) {
     if (
       !system.inactivityAmount ||
@@ -371,7 +371,7 @@ export class PlaceService {
     // difference is a negative number when layers are higher
     let pointsForUpgrade = points.filter(
       (x) =>
-        (x.differenceInLevel ?? 0) >= (system.differenceForUpgrade ?? 0) * -1
+        (x.differenceInLevel ?? 0) >= (system.differenceForUpgrade ?? 0) * -1,
     );
 
     // Filter out when there is a limit to use
@@ -383,13 +383,13 @@ export class PlaceService {
 
     const pointsUpgrade = this._findPointsAverage(
       pointsForUpgrade,
-      system.minNumberOfGamesUsedForUpgrade
+      system.minNumberOfGamesUsedForUpgrade,
     );
 
     // difference is a negative number when layers are higher
     let pointsForDowngrade = points.filter(
       (x) =>
-        (x.differenceInLevel ?? 0) >= (system.differenceForDowngrade ?? 0) * -1
+        (x.differenceInLevel ?? 0) >= (system.differenceForDowngrade ?? 0) * -1,
     );
 
     // Filter out when there is a limit to use
@@ -399,7 +399,10 @@ export class PlaceService {
         .slice(0, system.latestXGamesToUse);
     }
 
-    const pointsDowngrade = this._findPointsAverage(pointsForDowngrade);
+    const pointsDowngrade = this._findPointsAverage(
+      pointsForDowngrade,
+      system.minNumberOfGamesUsedForDowngrade,
+    );
 
     return {
       upgrade: pointsUpgrade,
@@ -409,7 +412,7 @@ export class PlaceService {
 
   private _findPointsAverage(
     rankingPoints: RankingPoint[],
-    limitMinGames?: number
+    limitMinGames?: number,
   ) {
     const avgPoints = rankingPoints.map((x) => x.points).filter((x) => x === 0);
     const wonPoints = rankingPoints
@@ -443,7 +446,7 @@ export class PlaceService {
     system: RankingSystem,
     pointsUpgrade: number,
     pointsDowngrade: number,
-    currentLevel: number
+    currentLevel: number,
   ): number {
     let topLevelByUpgradePoints = 1;
     let bottomLevelByDowngradePoints = system.amountOfLevels;
@@ -503,12 +506,12 @@ export class PlaceService {
   private _protectRanking(
     newRanking: RankingPlace,
     amountOfLevels: number,
-    maxDiffLevels?: number
+    maxDiffLevels?: number,
   ): RankingPlace {
     const highest = Math.min(
       newRanking.single ?? amountOfLevels,
       newRanking.double ?? amountOfLevels,
-      newRanking.mix ?? amountOfLevels
+      newRanking.mix ?? amountOfLevels,
     );
 
     maxDiffLevels = maxDiffLevels ?? 0;

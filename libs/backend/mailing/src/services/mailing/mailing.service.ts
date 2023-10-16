@@ -109,7 +109,7 @@ export class MailingService {
     await this._sendMail(options);
   }
 
-  async sendConformationRequestMail(
+  async sendConfirmationRequestMail(
     to: {
       fullName: string;
       email: string;

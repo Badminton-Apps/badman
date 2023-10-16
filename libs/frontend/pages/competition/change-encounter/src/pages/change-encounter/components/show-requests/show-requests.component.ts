@@ -28,7 +28,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthenticateService } from '@badman/frontend-auth';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ClaimService } from '@badman/frontend-auth';
+import {
+  HasClaimComponent,
+  SetEncounterDateDialogComponent,
+} from '@badman/frontend-components';
 import {
   Comment,
   EncounterChange,
@@ -48,11 +53,6 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
 import { RequestDateComponent } from '../request-date/request-date.component';
-import {
-  HasClaimComponent,
-  SetEncounterDateDialogComponent,
-} from '@badman/frontend-components';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 const CHANGE_QUERY = gql`
   query EncounterChange($id: ID!) {
@@ -123,6 +123,8 @@ export class ShowRequestsComponent implements OnInit {
   requestClosed = false;
   requestClosing!: moment.Moment;
 
+  admin$ = this.claimService.hasAnyClaims$(['change-any:encounter']);
+
   comments = signal<Comment[]>([]);
 
   requests$!: Observable<EncounterChange>;
@@ -134,7 +136,7 @@ export class ShowRequestsComponent implements OnInit {
     private readonly snackBar: MatSnackBar,
     private readonly changeDetector: ChangeDetectorRef,
     private readonly translate: TranslateService,
-    public readonly authenticateService: AuthenticateService
+    private readonly claimService: ClaimService,
   ) {}
 
   async ngOnInit() {
@@ -143,11 +145,18 @@ export class ShowRequestsComponent implements OnInit {
       this.requests$ = this.previous.valueChanges.pipe(
         tap((encounter: EncounterCompetition) => {
           this.encounter = encounter;
-          this.requestClosing = moment(
+          if (
             encounter?.drawCompetition?.subEventCompetition?.eventCompetition
               ?.changeCloseDate
-          );
-          this.requestClosed = moment().isAfter(this.requestClosing);
+          ) {
+            this.requestClosing = moment(
+              encounter?.drawCompetition?.subEventCompetition?.eventCompetition
+                ?.changeCloseDate,
+            );
+            this.requestClosed = moment().isAfter(this.requestClosing);
+          } else {
+            this.requestClosed = false;
+          }
 
           this.running = false;
 
@@ -163,7 +172,7 @@ export class ShowRequestsComponent implements OnInit {
             return of(
               new EncounterChange({
                 encounter: encounter,
-              })
+              }),
             );
           }
 
@@ -182,8 +191,8 @@ export class ShowRequestsComponent implements OnInit {
                   new EncounterChange({
                     ...x.data?.encounterChange,
                     encounter: encounter,
-                  })
-              )
+                  }),
+              ),
             );
         }),
         tap((encounterChange) => {
@@ -198,7 +207,7 @@ export class ShowRequestsComponent implements OnInit {
           });
 
           encounterChange?.dates?.map((r) => this._addDateControl(r));
-        })
+        }),
       );
     } else {
       console.warn(`Dependency ${this.dependsOn} not found`, this.previous);
@@ -252,7 +261,7 @@ export class ShowRequestsComponent implements OnInit {
         'OK',
         {
           duration: 4000,
-        }
+        },
       );
 
       this.formGroupRequest.markAllAsTouched();
@@ -283,11 +292,11 @@ export class ShowRequestsComponent implements OnInit {
           selected: d?.selected,
           date: d?.calendar?.date,
           locationId: d?.calendar?.locationId,
-        })
+        }),
     );
     const ids = dates.map((o) => o.date?.getTime());
     change.dates = dates.filter(
-      ({ date }, index) => !ids.includes(date?.getTime(), index + 1)
+      ({ date }, index) => !ids.includes(date?.getTime(), index + 1),
     );
     change.accepted = change.dates.some((r) => r.selected == true);
 
@@ -296,12 +305,12 @@ export class ShowRequestsComponent implements OnInit {
         // hometeam always needs to add at least one date
         this.snackBar.open(
           this.translate.instant(
-            'competition.change-encounter.errors.select-one-date'
+            'competition.change-encounter.errors.select-one-date',
           ),
           'OK',
           {
             duration: 4000,
-          }
+          },
         );
         this.running = false;
         return;
@@ -337,7 +346,7 @@ export class ShowRequestsComponent implements OnInit {
                 },
               },
             ],
-          })
+          }),
         );
 
         const teamControl = this.group.get('team');
@@ -349,23 +358,23 @@ export class ShowRequestsComponent implements OnInit {
         this.group.get(this.dependsOn)?.setValue(null);
         this.snackBar.open(
           await this.translate.instant(
-            'all.competition.change-encounter.requested'
+            'all.competition.change-encounter.requested',
           ),
           'OK',
           {
             duration: 4000,
-          }
+          },
         );
       } catch (error) {
         console.error(error);
         this.snackBar.open(
           await this.translate.instant(
-            'all.competition.change-encounter.requested-failed'
+            'all.competition.change-encounter.requested-failed',
           ),
           'OK',
           {
             duration: 4000,
-          }
+          },
         );
       } finally {
         this.running = false;
@@ -419,7 +428,7 @@ export class ShowRequestsComponent implements OnInit {
             },
           },
         ],
-      })
+      }),
     );
 
     this.formGroupRequest.get('accepted')?.setValue(true);

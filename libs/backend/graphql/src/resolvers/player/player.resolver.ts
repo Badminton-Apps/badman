@@ -23,7 +23,7 @@ import {
 } from '@badman/backend-database';
 import {
   getCurrentSeason,
-  getRankingWhenNull as getRankingProtected,
+  getRankingProtected,
   IsUUID,
 } from '@badman/utils';
 import {

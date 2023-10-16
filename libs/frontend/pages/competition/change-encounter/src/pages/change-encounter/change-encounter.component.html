@@ -29,6 +29,7 @@
 
     <div class="list-encounters">
       <badman-list-encounters
+        [showCompact]="isHandset()"
         [updateUrl]="true"
         [group]="formGroup"
       ></badman-list-encounters>
