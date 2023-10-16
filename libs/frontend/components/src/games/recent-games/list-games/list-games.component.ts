@@ -418,4 +418,8 @@ export class ListGamesComponent
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  trackById(index: number, item: Partial<{ id: string }>) {
+    return item.id;
+  }
 }

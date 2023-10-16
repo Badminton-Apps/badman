@@ -98,9 +98,9 @@ export class SettingsPageComponent implements OnInit {
           if (setting === null || setting === undefined) {
             return;
           }
-          const encounterChangeConformationNotificationControl =
+          const encounterChangeConfirmationNotificationControl =
             new FormControl(
-              this.getValues(setting.encounterChangeConformationNotification)
+              this.getValues(setting.encounterChangeConfirmationNotification)
             );
 
           const encounterChangeFinishedNotificationControl = new FormControl(
@@ -129,8 +129,8 @@ export class SettingsPageComponent implements OnInit {
             this.getValues(setting.clubEnrollmentNotification)
           );
           this.settingsForm = new FormGroup({
-            encounterChangeConformationNotification:
-              encounterChangeConformationNotificationControl,
+            encounterChangeConfirmationNotification:
+              encounterChangeConfirmationNotificationControl,
             encounterChangeFinishedNotification:
               encounterChangeFinishedNotificationControl,
             encounterChangeNewNotification:
@@ -173,7 +173,7 @@ export class SettingsPageComponent implements OnInit {
       .mutate({
         mutation: gql`
           mutation UpdateSettings(
-            $encounterChangeConformationNotification: Int!
+            $encounterChangeConfirmationNotification: Int!
             $encounterChangeFinishedNotification: Int!
             $encounterChangeNewNotification: Int!
             $encounterNotAcceptedNotification: Int!
@@ -184,7 +184,7 @@ export class SettingsPageComponent implements OnInit {
           ) {
             updateSetting(
               settings: {
-                encounterChangeConformationNotification: $encounterChangeConformationNotification
+                encounterChangeConfirmationNotification: $encounterChangeConfirmationNotification
                 encounterChangeFinishedNotification: $encounterChangeFinishedNotification
                 encounterChangeNewNotification: $encounterChangeNewNotification
                 encounterNotAcceptedNotification: $encounterNotAcceptedNotification
@@ -197,9 +197,9 @@ export class SettingsPageComponent implements OnInit {
           }
         `,
         variables: {
-          encounterChangeConformationNotification:
+          encounterChangeConfirmationNotification:
             this.settingsForm
-              .get('encounterChangeConformationNotification')
+              .get('encounterChangeConfirmationNotification')
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           encounterChangeFinishedNotification:
             this.settingsForm
@@ -247,7 +247,7 @@ export class SettingsPageComponent implements OnInit {
               id
               setting {
                 id
-                encounterChangeConformationNotification
+                encounterChangeConfirmationNotification
                 encounterChangeFinishedNotification
                 encounterChangeNewNotification
                 encounterNotAcceptedNotification

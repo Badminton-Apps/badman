@@ -1,4 +1,4 @@
-export function getRankingWhenNull<
+export function getRankingProtected<
   T extends {
     single?: number | null;
     double?: number | null;
@@ -10,8 +10,13 @@ export function getRankingWhenNull<
   }>,
 >(ranking: T, system: S): T {
   // if no ranking has null values, return the ranking
-  if (ranking.single && ranking.double && ranking.mix) {
+  if (ranking?.single && ranking?.double && ranking?.mix) {
     return ranking;
+  }
+
+  // Create object if no ranking is provided
+  if (!ranking) {
+    ranking = {} as T;
   }
 
   // if no system is provided, throw an error
@@ -22,6 +27,7 @@ export function getRankingWhenNull<
   if (!system.maxDiffLevels) {
     throw new Error('No max diff levels provided');
   }
+  
 
   ranking.single = ranking.single || system.amountOfLevels;
   ranking.double = ranking.double || system.amountOfLevels;

@@ -748,7 +748,7 @@ export type I18nTranslations = {
                     "title": string;
                 };
                 "encounterChange": {
-                    "conformationNotification": string;
+                    "confirmationNotification": string;
                     "finishedNotification": string;
                     "newNotification": string;
                     "title": string;
@@ -759,7 +759,7 @@ export type I18nTranslations = {
                 };
                 "messages": {
                     "clubEnrollmentNotification": string;
-                    "encounterChangeConformationNotification": string;
+                    "encounterChangeConfirmationNotification": string;
                     "encounterChangeFinishedNotification": string;
                     "encounterChangeNewNotification": string;
                     "encounterNotAcceptedNotification": string;

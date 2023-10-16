@@ -1,16 +1,16 @@
 import { DatabaseModule } from '@badman/backend-database';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ExportBBFPlayers } from './scripts/expot-ranking/exort-ranking';
+import { EnableNotificationsService } from './scripts/enable-notifications/enable-notifications';
 
 @Module({
-  providers: [ExportBBFPlayers],
+  providers: [EnableNotificationsService],
   imports: [ConfigModule.forRoot(), DatabaseModule],
 })
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
   
-  constructor(private fixer: ExportBBFPlayers) {}
+  constructor(private fixer: EnableNotificationsService) {}
 
   async onModuleInit() {
     this.logger.log('Running script');

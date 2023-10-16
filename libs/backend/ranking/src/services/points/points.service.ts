@@ -14,7 +14,7 @@ import { GameType } from '@badman/utils';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
-import { getRankingWhenNull } from '@badman/utils';
+import { getRankingProtected } from '@badman/utils';
 
 @Injectable()
 export class PointsService {
@@ -391,7 +391,7 @@ export class PointsService {
     let levelP1T2 = system.amountOfLevels;
     let levelP2T2 = system.amountOfLevels;
 
-    const rankingPlayer1Team1 = getRankingWhenNull(
+    const rankingPlayer1Team1 = getRankingProtected(
       player1Team1?.rankingPlaces?.[0] ?? {
         single: player1Team1?.GamePlayerMembership.single,
         mix: player1Team1?.GamePlayerMembership.mix,
@@ -399,7 +399,7 @@ export class PointsService {
       },
       system,
     );
-    const rankingPlayer2Team1 = getRankingWhenNull(
+    const rankingPlayer2Team1 = getRankingProtected(
       player2Team1?.rankingPlaces?.[0] ?? {
         single: player2Team1?.GamePlayerMembership.single,
         mix: player2Team1?.GamePlayerMembership.mix,
@@ -407,7 +407,7 @@ export class PointsService {
       },
       system,
     );
-    const rankingPlayer1Team2 = getRankingWhenNull(
+    const rankingPlayer1Team2 = getRankingProtected(
       player1Team2?.rankingPlaces?.[0] ?? {
         single: player1Team2?.GamePlayerMembership.single,
         mix: player1Team2?.GamePlayerMembership.mix,
@@ -415,7 +415,7 @@ export class PointsService {
       },
       system,
     );
-    const rankingPlayer2Team2 = getRankingWhenNull(
+    const rankingPlayer2Team2 = getRankingProtected(
       player2Team2?.rankingPlaces?.[0] ?? {
         single: player2Team2?.GamePlayerMembership.single,
         mix: player2Team2?.GamePlayerMembership.mix,

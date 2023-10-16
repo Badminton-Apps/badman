@@ -10959,7 +10959,7 @@
 										<name>encounterChange</name>
 										<children>
 											<concept_node>
-												<name>conformationNotification</name>
+												<name>confirmationNotification</name>
 												<description/>
 												<comment/>
 												<translations>
@@ -11102,7 +11102,7 @@
 												</translations>
 											</concept_node>
 											<concept_node>
-												<name>encounterChangeConformationNotification</name>
+												<name>encounterChangeConfirmationNotification</name>
 												<description/>
 												<comment/>
 												<translations>

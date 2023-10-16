@@ -1,4 +1,4 @@
-import { getRankingWhenNull } from './get-ranking-when-null';
+import { getRankingProtected } from './get-ranking-protected';
 
 describe('getRanking', () => {
   const system = {
@@ -17,7 +17,7 @@ describe('getRanking', () => {
       double: 2,
       mix: 3,
     };
-    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
+    expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
   it('Should update the double to best ranking + 2', () => {
@@ -31,7 +31,7 @@ describe('getRanking', () => {
       double: 5,
       mix: 3,
     };
-    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
+    expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
   it('Should update the mix to best ranking + 2', () => {
@@ -45,7 +45,7 @@ describe('getRanking', () => {
       double: 7,
       mix: 7,
     };
-    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
+    expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
   it('Should update the mix to best ranking + 2 with undefined', () => {
@@ -59,7 +59,7 @@ describe('getRanking', () => {
       double: 7,
       mix: 7,
     };
-    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
+    expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
   it('should return the correct ranking when all values are maxlevel', () => {
@@ -73,7 +73,7 @@ describe('getRanking', () => {
       double: 12,
       mix: 12,
     };
-    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
+    expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
   it('should return the correct ranking multiple rankings are unkown', () => {
@@ -87,7 +87,7 @@ describe('getRanking', () => {
       double: 11,
       mix: 11,
     };
-    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
+    expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 
   it('should return the correct ranking with all rankings combined', () => {
@@ -101,6 +101,6 @@ describe('getRanking', () => {
       double: 10,
       mix: 12,
     };
-    expect(getRankingWhenNull(ranking, system)).toEqual(expectedRanking);
+    expect(getRankingProtected(ranking, system)).toEqual(expectedRanking);
   });
 });

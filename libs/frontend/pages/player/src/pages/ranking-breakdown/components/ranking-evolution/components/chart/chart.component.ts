@@ -99,12 +99,12 @@ export class ChartComponent implements OnInit {
       annotations.push({
         y: this.nextLevel,
         yAxisIndex: 1,
-        borderColor: '#999',
+        borderColor: '#696',
         label: {
-          borderColor: '#999',
+          borderColor: '#696',
           style: {
             color: '#fff',
-            background: '#999',
+            background: '#696',
           },
           position: 'center',
           text: 'Points needed',

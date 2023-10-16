@@ -1,6 +1,6 @@
 import { AvaliableLanguages, NotificationType } from '@badman/utils';
 export class Setting {
-  encounterChangeConformationNotification?: NotificationType;
+  encounterChangeConfirmationNotification?: NotificationType;
   encounterChangeFinishedNotification?: NotificationType;
   encounterChangeNewNotification?: NotificationType;
   encounterNotAcceptedNotification?: NotificationType;
@@ -11,8 +11,8 @@ export class Setting {
   language?: AvaliableLanguages;
 
   constructor({ ...args }: Partial<Setting>) {
-    this.encounterChangeConformationNotification =
-      args?.encounterChangeConformationNotification;
+    this.encounterChangeConfirmationNotification =
+      args?.encounterChangeConfirmationNotification;
     this.encounterChangeFinishedNotification =
       args?.encounterChangeFinishedNotification;
     this.encounterChangeNewNotification = args?.encounterChangeNewNotification;

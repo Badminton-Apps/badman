@@ -16,7 +16,7 @@ import {
 import {
   GameStatus,
   GameType,
-  getRankingWhenNull,
+  getRankingProtected,
   runParallel,
 } from '@badman/utils';
 import { Logger, NotFoundException } from '@nestjs/common';
@@ -247,16 +247,10 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
-      const place = getRankingWhenNull(
-        rankingt1p1?.[0] ?? {
-          single: this._system.amountOfLevels,
-          double: this._system.amountOfLevels,
-          mix: this._system.amountOfLevels,
-        },
-        this._system,
-      );
+      const place = getRankingProtected(rankingt1p1?.[0], this._system);
 
       const gp = new GamePlayerMembership({
         gameId: game.id,
@@ -287,16 +281,10 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
-      const place = getRankingWhenNull(
-        rankingt1p2?.[0] ?? {
-          single: this._system.amountOfLevels,
-          double: this._system.amountOfLevels,
-          mix: this._system.amountOfLevels,
-        },
-        this._system,
-      );
+      const place = getRankingProtected(rankingt1p2?.[0], this._system);
 
       const gp = new GamePlayerMembership({
         gameId: game.id,
@@ -326,16 +314,10 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
-      const place = getRankingWhenNull(
-        rankingt2p1?.[0] ?? {
-          single: this._system.amountOfLevels,
-          double: this._system.amountOfLevels,
-          mix: this._system.amountOfLevels,
-        },
-        this._system,
-      );
+      const place = getRankingProtected(rankingt2p1?.[0], this._system);
 
       const gp = new GamePlayerMembership({
         gameId: game.id,
@@ -365,16 +347,10 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         },
         order: [['rankingDate', 'DESC']],
         limit: 1,
+        transaction: this.transaction,
       });
 
-      const place = getRankingWhenNull(
-        rankingtt2p2?.[0] ?? {
-          single: this._system.amountOfLevels,
-          double: this._system.amountOfLevels,
-          mix: this._system.amountOfLevels,
-        },
-        this._system,
-      );
+      const place = getRankingProtected(rankingtt2p2?.[0], this._system);
 
       const gp = new GamePlayerMembership({
         gameId: game.id,

@@ -24,7 +24,6 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions,
   CreateOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
@@ -58,6 +57,7 @@ import {
 } from 'sequelize-typescript';
 import { TeamPlayerMembershipType } from '../_interception';
 import { Slugify } from '../types';
+import { Relation } from '../wrapper';
 import { Club } from './club.model';
 import {
   EncounterCompetition,
@@ -71,18 +71,19 @@ import { TeamLocationCompetition } from './event/competition/team-location-membe
 import { Player, PlayerTeamInput } from './player.model';
 import { Role } from './security';
 import { TeamPlayerMembership } from './team-player-membership.model';
-import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
   schema: 'public',
 })
 @ObjectType({ description: 'A Team' })
-export class Team extends Model {
-  constructor(values?: Partial<Team>, options?: BuildOptions) {
-    super(values, options);
-  }
 
+// This allows typing on the model, but of course adds some typing overhead
+// <
+//   InferAttributes<Team>,
+//   InferCreationAttributes<Team>
+// >
+export class Team extends Model {
   @Field(() => Date, { nullable: true })
   updatedAt?: Date;
 
@@ -124,8 +125,8 @@ export class Team extends Model {
       'wednesday',
       'thursday',
       'friday',
-      'saturday'
-    )
+      'saturday',
+    ),
   )
   preferredDay?: string;
 
@@ -221,7 +222,7 @@ export class Team extends Model {
   static async generateName(
     instance: Team,
     options?: CreateOptions,
-    club?: Club
+    club?: Club,
   ) {
     club =
       club ?? (await instance.getClub({ transaction: options?.transaction }));
@@ -250,7 +251,7 @@ export class Team extends Model {
   static async generateAbbreviation(
     instance: Team,
     options?: CreateOptions,
-    club?: Club
+    club?: Club,
   ) {
     club =
       club ?? (await instance.getClub({ transaction: options?.transaction }));
@@ -371,7 +372,7 @@ export class TeamUpdateInput extends PartialType(
     'roles',
     'entry',
   ] as const),
-  InputType
+  InputType,
 ) {
   // Include the entry
   @Field(() => EventEntryUpdateInput, { nullable: true })
@@ -384,8 +385,8 @@ export class TeamUpdateInput extends PartialType(
 
 @InputType()
 export class TeamNewInput extends PartialType(
-  OmitType(TeamUpdateInput, ['entry', 'players'] as const),
-  InputType
+  OmitType(TeamUpdateInput, ['id', 'entry', 'players'] as const),
+  InputType,
 ) {
   // Include the entry
   @Field(() => EventEntryNewInput, { nullable: true })

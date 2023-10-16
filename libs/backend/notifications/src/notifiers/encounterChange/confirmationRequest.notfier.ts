@@ -6,13 +6,13 @@ import {
 import { Notifier } from '../notifier.base';
 import { RequestOptions } from 'web-push';
 import { unitOfTime } from 'moment';
-export class CompetitionEncounterChangeConformationRequestNotifier extends Notifier<{
+export class CompetitionEncounterChangeConfirmationRequestNotifier extends Notifier<{
   encounter: EncounterCompetition;
   isHome: boolean;
 }> {
   protected linkType = 'encounterCompetition';
   protected type: keyof NotificationOptionsTypes =
-    'encounterChangeConformationNotification';
+    'encounterChangeConfirmationNotification';
   protected allowedInterval: unitOfTime.Diff = 'minute';
 
   private readonly options = (encounter: EncounterCompetition) => {

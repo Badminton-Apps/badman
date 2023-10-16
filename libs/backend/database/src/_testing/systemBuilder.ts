@@ -90,6 +90,12 @@ export class SystemBuilder {
     this.system.minNumberOfGamesUsedForUpgrade = minNumberOfGamesUsedForUpgrade;
     return this;
   }
+  WithMinNumberOfGamesUsedForDowngrade(
+    minNumberOfGamesUsedForDowngrade: number
+  ): SystemBuilder {
+    this.system.minNumberOfGamesUsedForDowngrade = minNumberOfGamesUsedForDowngrade;
+    return this;
+  }
   WithMaxDiffLevels(maxDiffLevels: number): SystemBuilder {
     this.system.maxDiffLevels = maxDiffLevels;
     return this;
