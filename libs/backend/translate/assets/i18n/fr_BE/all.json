@@ -207,6 +207,7 @@
     },
     "menu": {
       "actions": "Actions",
+      "add-event": "Ajouter un évènement",
       "averages": "Niveau moyen",
       "copy": "Copie",
       "dates": "Modifier les dates",
@@ -256,7 +257,8 @@
       "errors": {
         "already": "Joueur déjà présent en tant que titualris.",
         "club-base-other-team": "<strong>{player.fullName}</strong> est un joueur de base d'une autre équipe",
-        "comp-status": "<strong>{player.fullName}</strong> n'est pas inscrit au concours",
+        "comp-status": "{player.fullName} n'est pas inscrit au concours",
+        "comp-status-html": "<strong>{player.fullName}</strong> n'est pas inscrit au concours",
         "none": "Aucune erreur trouvée",
         "not-enough-players": "Trop peu de détenteurs de titres sont actuellement alignés pour la rencontre.",
         "player-above-lower": "Le joueur avec l'indice de rédaction le plus élevé est aligné avant ce joueur.",
@@ -883,6 +885,9 @@
     "last-updated": "Modifié le",
     "liga": "",
     "load-more": "Charger plus",
+    "menu": {
+      "add-event": "Ajouter un évènement"
+    },
     "note": "note : les modifications sont enregistrées immédiatement",
     "overview": {
       "date": "Date",

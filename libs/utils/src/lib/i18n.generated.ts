@@ -211,6 +211,7 @@ export type I18nTranslations = {
             };
             "menu": {
                 "actions": string;
+                "add-event": string;
                 "averages": string;
                 "copy": string;
                 "dates": string;
@@ -261,6 +262,7 @@ export type I18nTranslations = {
                     "already": string;
                     "club-base-other-team": string;
                     "comp-status": string;
+                    "comp-status-html": string;
                     "none": string;
                     "not-enough-players": string;
                     "player-above-lower": string;
@@ -887,6 +889,9 @@ export type I18nTranslations = {
             "last-updated": string;
             "liga": string;
             "load-more": string;
+            "menu": {
+                "add-event": string;
+            };
             "note": string;
             "overview": {
                 "date": string;
