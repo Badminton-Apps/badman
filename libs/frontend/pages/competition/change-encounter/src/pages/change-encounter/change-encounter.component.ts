@@ -1,9 +1,8 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   OnDestroy,
   OnInit,
   computed,
@@ -74,11 +73,11 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
   );
 
   hasPermission = toSignal(
-    this.claimService.hasAnyClaims$(['change-any:encounter'])
+    this.claimService.hasAnyClaims$(['change-any:encounter']),
   );
 
   canSelectSeason = computed(
-    () => this.hasPermission() || this.versionInfo.beta
+    () => this.hasPermission() || this.versionInfo.beta,
   );
 
   formGroup?: FormGroup;
@@ -109,7 +108,7 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
         });
         this.breadcrumbsService.set(
           'competition/change-encounter',
-          changeEncounterKey
+          changeEncounterKey,
         );
       });
   }
