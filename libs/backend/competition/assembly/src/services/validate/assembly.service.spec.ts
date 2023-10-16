@@ -572,7 +572,7 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status',
+              e.message === 'all.competition.team-assembly.errors.comp-status-html',
           );
           expect(error).toBeUndefined();
         });
@@ -598,7 +598,7 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status',
+              e.message === 'all.competition.team-assembly.errors.comp-status-html',
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
@@ -624,7 +624,7 @@ describe('AssemblyValidationService', () => {
 
           const errors = validation.errors?.filter(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status',
+              e.message === 'all.competition.team-assembly.errors.comp-status-html',
           );
 
           expect(errors).toBeDefined();
@@ -2057,7 +2057,7 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status',
+              e.message === 'all.competition.team-assembly.errors.comp-status-html',
           );
           expect(error).toBeUndefined();
         });
@@ -2083,7 +2083,7 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status',
+              e.message === 'all.competition.team-assembly.errors.comp-status-html',
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
@@ -2109,7 +2109,7 @@ describe('AssemblyValidationService', () => {
 
           const errors = validation.errors?.filter(
             (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status',
+              e.message === 'all.competition.team-assembly.errors.comp-status-html',
           );
 
           expect(errors).toBeDefined();

@@ -514,7 +514,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors?.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status'
+  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -540,7 +540,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status'
+  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
   //         );
 
   //         expect(error).toBeDefined();
@@ -566,7 +566,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const errors = validation.errors.filter(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status'
+  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
   //         );
 
   //         expect(errors).toBeDefined();
@@ -1869,7 +1869,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors?.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status'
+  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
   //         );
   //         expect(error).toBeUndefined();
   //       });
@@ -1895,7 +1895,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const error = validation.errors.find(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status'
+  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
   //         );
 
   //         expect(error).toBeDefined();
@@ -1921,7 +1921,7 @@ describe('EnrollmentValidationService', () => {
 
   //         const errors = validation.errors.filter(
   //           (e) =>
-  //             e.message === 'all.competition.team-assembly.errors.comp-status'
+  //             e.message === 'all.competition.team-assembly.errors.comp-status-html'
   //         );
 
   //         expect(errors).toBeDefined();

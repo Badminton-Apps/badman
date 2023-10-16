@@ -15,9 +15,8 @@ import {
 import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
-import { Sequelize } from 'sequelize-typescript';
 
-async function bootstrap() { 
+async function bootstrap() {
   Logger.debug('Starting application');
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -38,7 +37,7 @@ async function bootstrap() {
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   Logger.debug('Logger registered');
-  
+
   app.enableCors({
     origin: function (origin, callback) {
       return callback(null, true);
@@ -63,7 +62,6 @@ async function bootstrap() {
       process.exit(1);
     }
   });
-
 
   Logger.debug(
     `🚀 Application is running on: http://localhost:${port}. level: ${configService.get(
