@@ -1,4 +1,3 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
@@ -6,9 +5,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  inject,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -58,13 +55,6 @@ import {
   ],
 })
 export class ListEncountersComponent implements OnInit, OnDestroy {
-  breakpointObserver = inject(BreakpointObserver);
-  isHandset = toSignal(
-    this.breakpointObserver
-      .observe(Breakpoints.Handset)
-      .pipe(map((result) => result.matches))
-  );
-
   destroy$ = new Subject<void>();
 
   @Input()
@@ -82,6 +72,9 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
   @Input()
   updateUrl = false;
 
+  @Input()
+  showCompact: boolean | undefined = false;
+
   control!: FormControl<EncounterCompetition | null>;
 
   encountersSem1!: EncounterCompetition[];
@@ -91,13 +84,13 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
     private apollo: Apollo,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
     if (this.group) {
       this.control = this.group?.get(
-        this.controlName
+        this.controlName,
       ) as FormControl<EncounterCompetition>;
     }
 
@@ -120,8 +113,9 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
 
       combineLatest([
         previous.valueChanges.pipe(startWith(null)),
-        ...updateOnControls.map((control) =>
-          control?.valueChanges?.pipe(startWith(() => control?.value))
+        ...updateOnControls.map(
+          (control) =>
+            control?.valueChanges?.pipe(startWith(() => control?.value)),
         ),
       ])
         .pipe(
@@ -141,7 +135,7 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
             } else {
               return of([]);
             }
-          })
+          }),
         )
         .subscribe((encounters) => {
           // the encoutners should be devided in 2 years,
@@ -150,22 +144,22 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
 
           // get the lowest year
           const lowestYear = Math.min(
-            ...encounters.map((r) => r.date?.getFullYear() || 0)
+            ...encounters.map((r) => r.date?.getFullYear() || 0),
           );
 
           this.encountersSem1 = encounters.filter(
-            (r) => r.date?.getFullYear() === lowestYear
+            (r) => r.date?.getFullYear() === lowestYear,
           );
 
           this.encountersSem2 = encounters.filter(
-            (r) => r.date?.getFullYear() !== lowestYear
+            (r) => r.date?.getFullYear() !== lowestYear,
           );
 
           const params = this.activatedRoute.snapshot.queryParams;
 
           if (params && params[this.controlName]) {
             const foundEncounter = encounters.find(
-              (r) => r.id == params[this.controlName]
+              (r) => r.id == params[this.controlName],
             );
 
             if (foundEncounter) {
@@ -290,10 +284,11 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
         },
       })
       .pipe(
-        map((result) =>
-          result.data.encounterCompetitions?.rows.map(
-            (r) => new EncounterCompetition(r)
-          )
+        map(
+          (result) =>
+            result.data.encounterCompetitions?.rows.map(
+              (r) => new EncounterCompetition(r),
+            ),
         ),
         map((e) =>
           e.sort((a, b) => {
@@ -302,14 +297,14 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
             }
 
             return a.date.getTime() - b.date.getTime();
-          })
+          }),
         ),
         map((e) => {
           return e?.map((r) => {
             r.showingForHomeTeam = r.home?.id === teamId;
             return r;
           });
-        })
+        }),
       );
   }
 
