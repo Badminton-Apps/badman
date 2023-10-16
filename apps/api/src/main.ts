@@ -15,6 +15,7 @@ import {
 import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
+import { Sequelize } from 'sequelize-typescript';
 
 async function bootstrap() { 
   Logger.debug('Starting application');
@@ -62,6 +63,7 @@ async function bootstrap() {
       process.exit(1);
     }
   });
+
 
   Logger.debug(
     `🚀 Application is running on: http://localhost:${port}. level: ${configService.get(

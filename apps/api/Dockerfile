@@ -13,6 +13,7 @@ RUN npm ci
 # Get the configuration from the environment variables
 ARG CONFIGURATION=production
 RUN npm run build:server -- --configuration=$CONFIGURATION
+RUN npm run migrate:up
 
 # Production stage
 FROM node:20-alpine As production
@@ -38,8 +39,6 @@ WORKDIR /usr/src/app
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 
-# run migrations
-RUN npx sequelize-cli db:migrate
 
 EXPOSE $PORT
 CMD [ "dumb-init", "node",  "./dist/apps/api/main.js"]
