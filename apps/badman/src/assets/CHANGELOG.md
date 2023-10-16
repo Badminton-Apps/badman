@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.113.0](https://github.com/Badminton-Apps/badman/compare/v6.113.0-beta.0...v6.113.0) (2023-10-16)
+
+
+### Features
+
+* adding dowgnrade in the database ([f702340](https://github.com/Badminton-Apps/badman/commit/f7023402690df96ce7ecefbe0354d16ed122651a))
+* breakdown to a green color for easier seeing the line ([fd437ab](https://github.com/Badminton-Apps/badman/commit/fd437ab4a99f6e0ce901e7826b95557995f5d098))
+* run migrations right before starting the server ([ed0dc07](https://github.com/Badminton-Apps/badman/commit/ed0dc0741b22791cb554b32dea94b65a76dc791d))
+
 ## [6.113.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.112.0...v6.113.0-beta.0) (2023-10-16)
 
 
