@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.113.5](https://github.com/Badminton-Apps/badman/compare/v6.113.4...v6.113.5) (2023-10-16)
+
+
+### Bug Fixes
+
+* more corrections for Victor League ([514b1da](https://github.com/Badminton-Apps/badman/commit/514b1dac80ce07f2e1931ce0d8a49810be557016))
+
 ### [6.113.4](https://github.com/Badminton-Apps/badman/compare/v6.113.3...v6.113.4) (2023-10-16)
 
 
