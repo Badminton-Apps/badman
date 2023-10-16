@@ -215,7 +215,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     if (teamNumber) {
       where = {
         ...where,
-        teamNumber, 
+        teamNumber,
       };
     }
 
