@@ -744,7 +744,7 @@
         "title": "Invullen ontmoetingen"
       },
       "encounterChange": {
-        "conformationNotification": "Bevestiging aanvraag",
+        "confirmationNotification": "Bevestiging aanvraag",
         "finishedNotification": "Verplaatsing afgewerkt",
         "newNotification": "Nieuwe aanvraag",
         "title": "Verplaatsings aanvragen"
@@ -755,7 +755,7 @@
       },
       "messages": {
         "clubEnrollmentNotification": "Le club<strong> {club.name}</strong> a été enregistré avec succès",
-        "encounterChangeConformationNotification": "Nouvelle demande de déplacement pour <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong>",
+        "encounterChangeConfirmationNotification": "Nouvelle demande de déplacement pour <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong>",
         "encounterChangeFinishedNotification": "Application {encounter.home.name} contre {encounter.away.name} mouvement",
         "encounterChangeNewNotification": "Nouvelle demande de déplacement pour <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong>",
         "encounterNotAcceptedNotification": "Le match <strong>{encounter.home.name}</strong> contre <strong>{encounter.away.name}</strong> de <strong>{encounter.date}</strong> n'a pas encore été confirmé.",

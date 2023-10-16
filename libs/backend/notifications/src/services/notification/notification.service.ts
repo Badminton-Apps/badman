@@ -12,7 +12,7 @@ import {
 import { MailingService } from '@badman/backend-mailing';
 import { Injectable, Logger } from '@nestjs/common';
 import {
-  CompetitionEncounterChangeConformationRequestNotifier,
+  CompetitionEncounterChangeConfirmationRequestNotifier,
   CompetitionEncounterChangeNewRequestNotifier,
   CompetitionEncounterNotAcceptedNotifier,
   CompetitionEncounterNotEnteredNotifier,
@@ -69,7 +69,7 @@ export class NotificationService {
       this.push,
     );
     const notifierConform =
-      new CompetitionEncounterChangeConformationRequestNotifier(
+      new CompetitionEncounterChangeConfirmationRequestNotifier(
         this.mailing,
         this.push,
       );
@@ -173,7 +173,7 @@ export class NotificationService {
         homeTeam.captain,
         encounter.id,
         { encounter },
-        { email: homeTeam.email, url },
+        { email: homeTeam.email ?? homeTeam.captain?.email, url },
       );
     }
   }
@@ -203,7 +203,7 @@ export class NotificationService {
         awayTeam.captain,
         encounter.id,
         { encounter },
-        { email: awayTeam.email, url },
+        { email: awayTeam.email ?? awayTeam.captain?.email, url },
       );
     }
   }
