@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.114.0](https://github.com/Badminton-Apps/badman/compare/v6.113.5...v6.114.0) (2023-10-17)
+
+
+### Features
+
+* switching cron to nestjs' cron feature ([313ddf9](https://github.com/Badminton-Apps/badman/commit/313ddf95f8bea2fb3da7b1aff950a60949a740d0))
+
 ### [6.113.5](https://github.com/Badminton-Apps/badman/compare/v6.113.4...v6.113.5) (2023-10-16)
 
 
