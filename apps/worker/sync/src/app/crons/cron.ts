@@ -2,7 +2,7 @@ import { Sync, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Cron, SchedulerRegistry } from '@nestjs/schedule';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { Queue } from 'bull';
 import { CronJob } from 'cron';
 
@@ -16,10 +16,15 @@ export class CronService {
     private readonly schedulerRegistry: SchedulerRegistry,
     readonly configSerive: ConfigService,
   ) {
-    this.logger.log(`Scheduling cron jobs`);
-
     // if not in production, offset the cron jobs by 15 minute
     this.offset = this.configSerive.get('NODE_ENV') === 'production' ? 0 : 15;
+    this.logger.log(`Scheduling cron jobs`);
+
+    this.QueueingSyncEvents();
+    this.QueueingSyncRanking();
+    this.QueueingCheckEncounters();
+
+    this.getCrons();
   }
 
   public QueueingSyncEvents() {
@@ -70,5 +75,18 @@ export class CronService {
     });
 
     this.schedulerRegistry.addCronJob(Sync.CheckEncounters, job);
+  }
+
+  getCrons() {
+    const jobs = this.schedulerRegistry.getCronJobs();
+    jobs.forEach((value, key) => {
+      let next;
+      try {
+        next = value.nextDates();
+      } catch (e) {
+        next = 'error: next fire date is in the past!';
+      }
+      this.logger.debug(`job: ${key} -> next: ${next}`);
+    });
   }
 }
