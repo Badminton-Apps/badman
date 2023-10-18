@@ -32,6 +32,15 @@
         required
       />
     </mat-form-field>
+
+    <mat-form-field class="flex">
+      <mat-label>{{ 'all.gender.title' | translate }}</mat-label>
+      <mat-select formControlName="gender" required>
+        <mat-option>-- {{ 'all.gender.select' | translate }} --</mat-option>
+        <mat-option value="M">{{ 'all.gender.male' | translate }}</mat-option>
+        <mat-option value="F">{{ 'all.gender.female' | translate }}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
   <badman-has-claim [all]="['subscription:player']">
