@@ -64,9 +64,7 @@ const includes = [
 export class CheckEncounterProcessor {
   private readonly logger = new Logger(CheckEncounterProcessor.name);
 
-  constructor(private notificationService: NotificationService) {
-    this.logger.debug('Check encounter processor initialized');
-  }
+  constructor(private notificationService: NotificationService) {}
 
   @Process(Sync.CheckEncounters)
   async syncEncounters(): Promise<void> {

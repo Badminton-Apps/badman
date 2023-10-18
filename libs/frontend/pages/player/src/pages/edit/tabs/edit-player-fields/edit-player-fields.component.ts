@@ -15,6 +15,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClaimService } from '@badman/frontend-auth';
 import { HasClaimComponent } from '@badman/frontend-components';
@@ -35,6 +36,7 @@ import { debounceTime, filter, switchMap } from 'rxjs/operators';
     FormsModule,
     MatInputModule,
     HasClaimComponent,
+    MatSelectModule,
     TranslateModule,
   ],
 })
@@ -66,6 +68,10 @@ export class EditPlayerFieldsComponent implements OnInit {
       this.player.memberId,
       Validators.required
     );
+    const genderControl = new FormControl(
+      this.player.gender,
+      Validators.required
+    );
     const subControl = new FormControl(this.player.sub);
 
     memberIdControl.disable();
@@ -82,6 +88,7 @@ export class EditPlayerFieldsComponent implements OnInit {
       firstName: firstNameControl,
       lastName: lastNameControl,
       memberId: memberIdControl,
+      gender: genderControl,
       sub: subControl,
     });
 
@@ -94,7 +101,8 @@ export class EditPlayerFieldsComponent implements OnInit {
             v.firstName !== this.player.firstName ||
             v.lastName !== this.player.lastName ||
             v.memberId !== this.player.memberId ||
-            v.sub !== this.player.sub
+            v.sub !== this.player.sub ||
+            v.gender !== this.player.gender
         ),
         switchMap(() =>
           this.apollo.mutate<{ updatePlayer: Player }>({
@@ -104,6 +112,8 @@ export class EditPlayerFieldsComponent implements OnInit {
                   id
                   firstName
                   lastName
+                  memberId
+                  gender
                 }
               }
             `,
@@ -113,6 +123,7 @@ export class EditPlayerFieldsComponent implements OnInit {
                 firstName: this.fg.value.firstName,
                 lastName: this.fg.value.lastName,
                 memberId: this.fg.value.memberId,
+                gender: this.fg.value.gender,
                 sub: this.fg.value.sub,
               },
             },

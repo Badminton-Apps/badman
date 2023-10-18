@@ -104,6 +104,29 @@ const TEAM_PLAYER_INFO = gql`
   }   
 `;
 
+export const SAVED_ASSEMBLY = gql`
+  query SavedAssembly($id: ID!, $where: JSONObject) {
+    encounterCompetition(id: $id) {
+      id
+      assemblies(where: $where) {
+        id
+        assembly {
+          single1
+          single2
+          single3
+          single4
+          double1
+          double2
+          double3
+          double4
+          subtitudes
+        }
+        captainId
+      }
+    }
+  }
+`;
+
 @Component({
   selector: 'badman-assembly',
   standalone: true,
@@ -508,6 +531,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
 
     this.players?.REGULAR?.push(playerRankings);
     this._sortLists();
+    this.changeDetectorRef.detectChanges();
   }
 
   updateValidations(info: ValidationResult) {
@@ -1092,28 +1116,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
 
     return this.apollo
       .query<{ encounterCompetition: Partial<EncounterCompetition> }>({
-        query: gql`
-          query SavedAssembly($id: ID!, $where: JSONObject) {
-            encounterCompetition(id: $id) {
-              id
-              assemblies(where: $where) {
-                id
-                assembly {
-                  single1
-                  single2
-                  single3
-                  single4
-                  double1
-                  double2
-                  double3
-                  double4
-                  subtitudes
-                }
-                captainId
-              }
-            }
-          }
-        `,
+        query: SAVED_ASSEMBLY,
         variables: {
           id: encounterId,
           where: {

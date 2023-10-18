@@ -8,8 +8,16 @@
     $color-config: mat.get-color-config($theme);
     // Background color
     $background: map.get($color-config, 'background');
+    $foreground: map.get($color-config, 'foreground');
+    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+
+    .editor {
+      border: 1px solid $border-color;
+      border-radius: 4px;
+    }
   }
 }
+
 
 @mixin typography($theme) {
   badman-faq {
@@ -28,4 +36,9 @@
   @if $typography-config != null {
     @include typography($theme);
   }
+}
+
+
+.ql-tooltip{
+  z-index: 9999;
 }

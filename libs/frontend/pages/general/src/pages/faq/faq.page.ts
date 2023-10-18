@@ -24,6 +24,7 @@ import { QuillModule } from 'ngx-quill';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
+  selector: 'badman-faq',
   templateUrl: './faq.page.html',
   styleUrls: ['./faq.page.scss'],
   standalone: true,
@@ -60,8 +61,8 @@ export class FaqPageComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef
   ) {
     this.editForm = formBuilder.group({
-      question: [''],
-      answer: [''],
+      question: '',
+      answer: '',
     });
   }
 

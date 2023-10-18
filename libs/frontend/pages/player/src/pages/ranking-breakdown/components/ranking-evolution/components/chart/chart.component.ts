@@ -232,7 +232,7 @@ export class ChartComponent implements OnInit {
       });
 
     // get last level of the series
-    const lastLevel = this.levelSeries[this.levelSeries.length - 1].y ?? 12;
+    const lastLevel = this.levelSeries[this.levelSeries.length - 1]?.y ?? 12;
 
     if (lastLevel === 1) {
       return;

@@ -45,7 +45,7 @@ export class LocationResolver {
 
   @Query(() => Location)
   async location(
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ): Promise<Location | null> {
     return Location.findByPk(id);
   }
@@ -66,7 +66,7 @@ export class LocationResolver {
   @ResolveField(() => [Availability])
   async availibilities(
     @Parent() location: Location,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<Availability[]> {
     return location.getAvailabilities(ListArgs.toFindOptions(listArgs));
   }
@@ -79,7 +79,7 @@ export class LocationResolver {
   @Mutation(() => Location)
   async createLocation(
     @Args('data') newLocationData: LocationNewInput,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<Location> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -92,10 +92,13 @@ export class LocationResolver {
       }
 
       if (
-        !await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club'])
+        !(await user.hasAnyPermission([
+          `${dbClub.id}_edit:location`,
+          'edit-any:club',
+        ]))
       ) {
         throw new UnauthorizedException(
-          `You do not have permission to add a competition`
+          `You do not have permission to add a competition`,
         );
       }
 
@@ -112,7 +115,7 @@ export class LocationResolver {
               } as Geometry)
             : undefined,
         },
-        { transaction }
+        { transaction },
       );
 
       await transaction.commit();
@@ -127,7 +130,7 @@ export class LocationResolver {
   @Mutation(() => Location)
   async updateLocation(
     @Args('data') updateLocationData: LocationUpdateInput,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<Location> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -135,18 +138,18 @@ export class LocationResolver {
 
       if (!dbLocation) {
         throw new NotFoundException(
-          `${Location.name}: ${updateLocationData.id}`
+          `${Location.name}: ${updateLocationData.id}`,
         );
       }
 
       if (
-        !await user.hasAnyPermission([
+        !(await user.hasAnyPermission([
           `${dbLocation.clubId}_edit:location`,
           'edit-any:club',
-        ])
+        ]))
       ) {
         throw new UnauthorizedException(
-          `You do not have permission to add a competition`
+          `You do not have permission to add a competition`,
         );
       }
 
@@ -164,12 +167,46 @@ export class LocationResolver {
               } as Geometry)
             : undefined,
         },
-        { transaction }
+        { transaction },
       );
 
       // await dbLocation.update(location, { transaction });
       await transaction.commit();
       return dbLocation;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async removeLocation(
+    @Args('id', { type: () => ID }) id: string,
+    @User() user: Player,
+  ): Promise<boolean> {
+    const transaction = await this._sequelize.transaction();
+    try {
+      const dbLocation = await Location.findByPk(id, { transaction });
+
+      if (!dbLocation) {
+        throw new NotFoundException(`${Location.name}: ${id}`);
+      }
+
+      if (
+        !(await user.hasAnyPermission([
+          `${dbLocation.clubId}_edit:location`,
+          'edit-any:club',
+        ]))
+      ) {
+        throw new UnauthorizedException(
+          `You do not have permission to add a competition`,
+        );
+      }
+
+      await dbLocation.destroy({ transaction });
+      await transaction.commit();
+      return true;
     } catch (e) {
       this.logger.warn('rollback', e);
       await transaction.rollback();

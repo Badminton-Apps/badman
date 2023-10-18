@@ -14,6 +14,15 @@
   right: 20px;
 }
 
+.editor {
+  display: flex;
+  margin-top: 1rem;
+
+  quill-editor {
+    flex: 1;
+  }
+}
+
 mat-card-header {
   display: flex;
   align-items: center;
@@ -27,7 +36,9 @@ mat-card-header {
     margin-left: 0.5rem;
     visibility: hidden;
     opacity: 0;
-    transition: visibility 0s, opacity 0.3s linear;
+    transition:
+      visibility 0s,
+      opacity 0.3s linear;
   }
 
   &:hover {

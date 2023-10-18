@@ -35,11 +35,9 @@
       [any]="['edit:faq', 'add:faq']"
       *ngIf="questionBeingEdited === question.id"
     >
-      <ng-container [formGroup]="editForm">
-        <mat-form-field>
-          <!-- <badman-quill formControlName="answer"></badman-quill> -->
-        </mat-form-field>
-      </ng-container>
+      <div class="editor" [formGroup]="editForm">
+        <quill-editor formControlName="answer" theme="bubble"></quill-editor>
+      </div>
     </badman-has-claim>
   </mat-card-content>
   <badman-has-claim
