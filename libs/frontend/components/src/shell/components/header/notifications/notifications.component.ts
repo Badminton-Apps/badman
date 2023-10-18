@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -60,6 +61,14 @@ export class NotificationComponent {
   notifications = toSignal(this.notificationService.notifications$);
   unread = computed(() => this.notifications()?.filter((notif) => !notif.read));
 
+  constructor() {
+    effect(() => {
+      if (this.isOpen() == true) {
+        this.readAllNotifications();
+      }
+    });
+  }
+
   getParams(notification: Notification) {
     switch (notification.type) {
       case 'encounterNotEnteredNotification':
@@ -92,11 +101,9 @@ export class NotificationComponent {
     }
   }
 
-  readNotification(notification: Notification) {
-    this.notificationService.readNotification(notification, true);
-  }
-
-  unreadNotification(notification: Notification) {
-    this.notificationService.readNotification(notification, false);
+  readAllNotifications() {
+    for (const notification of this.notifications() ?? []) {
+      this.notificationService.readNotification(notification, true);
+    }
   }
 }
