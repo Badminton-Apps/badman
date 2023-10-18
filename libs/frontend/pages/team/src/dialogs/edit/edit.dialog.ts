@@ -26,6 +26,20 @@ import {
   TeamPlayersComponent,
 } from '../../components';
 
+const PLAYERS_QUERY = gql`
+  query TeamPlayers($teamId: ID!) {
+    team(id: $teamId) {
+      id
+      players {
+        id
+        fullName
+        membershipType
+        teamId
+      }
+    }
+  }
+`;
+
 @Component({
   templateUrl: './edit.dialog.html',
   styleUrls: ['./edit.dialog.scss'],
@@ -133,19 +147,7 @@ export class EditDialogComponent {
   private _loadPlayers() {
     return this.apollo
       .watchQuery<{ team: Partial<Team> }>({
-        query: gql`
-          query TeamPlayers($teamId: ID!) {
-            team(id: $teamId) {
-              id
-              players {
-                id
-                fullName
-                membershipType
-                teamId
-              }
-            }
-          }
-        `,
+        query: PLAYERS_QUERY,
         variables: {
           teamId: this.data.team.id,
         },
@@ -193,7 +195,16 @@ export class EditDialogComponent {
             preferredTime: data.preferredTime,
           },
         },
-        refetchQueries: () => ['Team', 'Teams'],
+        refetchQueries: () => [
+          'Team',
+          'Teams',
+          {
+            query: PLAYERS_QUERY,
+            variables: {
+              teamId: this.data.team.id,
+            },
+          },
+        ],
       })
       .subscribe(() => {
         this.snackBar.open('Saved', undefined, {
