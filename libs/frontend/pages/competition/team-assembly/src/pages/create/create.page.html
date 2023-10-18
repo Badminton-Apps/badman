@@ -34,7 +34,7 @@
       >
         {{'all.button.download' | translate}}
       </button>
-      <ng-container *ngIf="this.authenticate.loggedIn">
+      <ng-container *ngIf="this.authenticateService.loggedIn">
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>arrow_drop_down</mat-icon>
         </button>

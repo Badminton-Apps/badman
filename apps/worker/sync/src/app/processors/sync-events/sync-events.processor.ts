@@ -37,8 +37,6 @@ export class SyncEventsProcessor {
     private visualService: VisualService,
     private _sequelize: Sequelize
   ) {
-    this.logger.debug('SyncEvents');
-
     this._competitionSync = new CompetitionSyncer(
       this.visualService,
       pointService

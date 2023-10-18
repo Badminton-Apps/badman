@@ -32,7 +32,7 @@ export class VisualService {
 
   constructor(
     private _configService: ConfigService,
-    @Inject(CACHE_MANAGER) private _cacheManager: Cache
+    @Inject(CACHE_MANAGER) private _cacheManager: Cache,
   ) {
     this._http = axiosRateLimit(axios.create(), { maxRPS: 15 });
     axiosRetry(this._http, { retries: this._retries });
@@ -46,7 +46,7 @@ export class VisualService {
   async getPlayers(tourneyId: string, useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Player`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return this._asArray(parsed.Player);
@@ -55,9 +55,9 @@ export class VisualService {
   async getMatch(tourneyId: string, matchId: string | number, useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get(
-        'VR_API'
+        'VR_API',
       )}/Tournament/${tourneyId}/TeamMatch/${matchId}`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     if (parsed.Match) {
@@ -74,13 +74,13 @@ export class VisualService {
   async getMatches(
     tourneyId: string,
     drawId: string | number,
-    useCache = true
+    useCache = true,
   ): Promise<(XmlTeamMatch | XmlMatch)[]> {
     const result = await this._getFromApi(
       `${this._configService.get(
-        'VR_API'
+        'VR_API',
       )}/Tournament/${tourneyId}/Draw/${drawId}/Match`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
 
@@ -98,13 +98,13 @@ export class VisualService {
   async getDraws(
     tourneyId: string,
     eventId: string | number,
-    useCache = true
+    useCache = true,
   ): Promise<XmlTournamentDraw[]> {
     const result = await this._getFromApi(
       `${this._configService.get(
-        'VR_API'
+        'VR_API',
       )}/Tournament/${tourneyId}/Event/${eventId}/Draw`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return this._asArray(parsed.TournamentDraw);
@@ -113,13 +113,13 @@ export class VisualService {
   async getDraw(
     tourneyId: string,
     drawId: string | number,
-    useCache = true
+    useCache = true,
   ): Promise<XmlTournamentDraw> {
     const result = await this._getFromApi(
       `${this._configService.get(
-        'VR_API'
+        'VR_API',
       )}/Tournament/${tourneyId}/Draw/${drawId}`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.TournamentDraw as XmlTournamentDraw;
@@ -127,11 +127,11 @@ export class VisualService {
 
   async getEvents(
     tourneyId: string | number,
-    useCache = true
+    useCache = true,
   ): Promise<XmlTournamentEvent[]> {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Event`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return this._asArray(parsed.TournamentEvent);
@@ -140,7 +140,7 @@ export class VisualService {
   async getTournament(tourneyId: string, useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Tournament/${tourneyId}`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.Tournament as XmlTournament;
@@ -192,9 +192,9 @@ export class VisualService {
 
   async getChangeEvents(date: Moment, page = 0, pageSize = 100) {
     const url = `${this._configService.get(
-      'VR_API'
+      'VR_API',
     )}/Tournament?list=1&refdate=${date.format(
-      'YYYY-MM-DD'
+      'YYYY-MM-DD',
     )}&pagesize=${pageSize}&pageno=${page}`;
 
     const result = await this._getFromApi(url, false);
@@ -219,9 +219,9 @@ export class VisualService {
   async getDate(tourneyId: string, encounterId: string, useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get(
-        'VR_API'
+        'VR_API',
       )}/Tournament/${tourneyId}/Match/${encounterId}/Date`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.TournamentMatch?.MatchDate;
@@ -229,7 +229,7 @@ export class VisualService {
 
   async changeDate(tourneyId: string, matchId: string, newDate: Date) {
     const url = `${this._configService.get(
-      'VR_API'
+      'VR_API',
     )}/Tournament/${tourneyId}/Match/${matchId}/Date`;
 
     const body = `
@@ -256,13 +256,13 @@ export class VisualService {
 
     if (this._configService.get('NODE_ENV') === 'production') {
       const resultPut = await axios(options);
-      const parser = new XMLParser(); 
+      const parser = new XMLParser();
 
       const bodyPut = parser.parse(resultPut.data).Result as XmlResult;
       if (bodyPut.Error?.Code !== 0 || bodyPut.Error.Message !== 'Success.') {
         this.logger.error(options);
         throw new Error(bodyPut.Error?.Message);
-      } 
+      }
 
       await this._cacheManager.del(`${VisualService.CACHE_KEY}:${url}`);
     } else {
@@ -273,7 +273,7 @@ export class VisualService {
   async getRanking(useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Ranking`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return this._asArray(parsed.Ranking);
@@ -282,7 +282,7 @@ export class VisualService {
   async getCategories(rankingId: string, useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Ranking/${rankingId}/Category`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.RankingCategory;
@@ -291,7 +291,7 @@ export class VisualService {
   async getPublications(rankingId: string, useCache = true) {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Ranking/${rankingId}/Publication`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.RankingPublication;
@@ -301,13 +301,13 @@ export class VisualService {
     rankingId: string,
     publicationId: string,
     categoryId: string,
-    useCache = true
+    useCache = true,
   ) {
     const result = await this._getFromApi(
       `${this._configService.get(
-        'VR_API'
+        'VR_API',
       )}/Ranking/${rankingId}/Publication/${publicationId}/Category/${categoryId}`,
-      useCache
+      useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.RankingPublicationPoints;
@@ -323,12 +323,12 @@ export class VisualService {
 
     if (useCache && this._cacheManager) {
       const cached = await this._cacheManager.get(
-        `${VisualService.CACHE_KEY}:${url}`
+        `${VisualService.CACHE_KEY}:${url}`,
       );
       if (cached) {
         const t1 = performance.now();
         this.logger.verbose(
-          `Getting from (cache) ${url} took ${(t1 - t0).toFixed(2)}ms`
+          `Getting from (cache) ${url} took ${(t1 - t0).toFixed(2)}ms`,
         );
         return cached;
       }
@@ -352,7 +352,7 @@ export class VisualService {
     await this._cacheManager.set(
       `${VisualService.CACHE_KEY}:${url}`,
       result.data,
-      CACHE_TTL
+      CACHE_TTL,
     );
 
     const t1 = performance.now();

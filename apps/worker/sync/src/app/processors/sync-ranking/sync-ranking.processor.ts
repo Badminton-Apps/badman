@@ -19,7 +19,6 @@ export class SyncRankingProcessor {
     visualService: VisualService,
     @InjectQueue(SyncQueue) readonly rankingQ: Queue
   ) {
-    this.logger.debug('SyncRanking');
     this._rankingSync = new RankingSyncer(visualService, rankingQ);
   }
 

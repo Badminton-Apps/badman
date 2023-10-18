@@ -36,8 +36,8 @@ export class SearchService {
     }
 
     const results = await Promise.all([
-      this._getPlayerResult(parts),
       this._getClubs(parts),
+      this._getPlayerResult(parts),
       this._getCompetitionEvents(parts),
       this._getTournamnetsEvents(parts),
     ]);
