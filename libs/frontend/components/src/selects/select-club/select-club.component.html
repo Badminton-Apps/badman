@@ -21,9 +21,13 @@
 
 <mat-form-field *ngIf="this.useAutocomplete">
   <mat-label>{{ 'all.pickers.select-club' | translate }}</mat-label>
-  <input matInput [formControl]="this.control!" [matAutocomplete]="auto" />
+  <input
+    matInput
+    [formControl]="this.control!"
+    [matAutocomplete]="auto"
+    onfocus="this.select()"
+  />
   <mat-autocomplete
-
     #auto="matAutocomplete"
     [displayWith]="this.displayFn.bind(this)"
     (optionSelected)="this.selectClub($event)"
