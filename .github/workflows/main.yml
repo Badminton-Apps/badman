@@ -58,7 +58,7 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
-      node-version: ${{ github.env.NODE_ENV }}
+      node-version: '20.1'
       main-branch-name: ${{ inputs.prod-release && 'main' || 'develop' }}
       output-affected-projects: true
       parallel-commands: |
@@ -78,7 +78,7 @@ jobs:
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
-      node-version: ${{ github.env.NODE_ENV }}
+      node-version: '20.1'
       number-of-agents: 3
       timeout: 15
 
