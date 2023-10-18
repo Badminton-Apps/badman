@@ -25,6 +25,7 @@ export class PlayerResolver {
               firstName
               lastName
               memberId
+              gender
               sub
               competitionPlayer
               clubs {
