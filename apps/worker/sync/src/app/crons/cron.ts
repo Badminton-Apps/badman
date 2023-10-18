@@ -1,51 +1,74 @@
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { ConfigService } from '@nestjs/config';
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { Queue } from 'bull';
+import { CronJob } from 'cron';
 
 @Injectable()
 export class CronService {
   private readonly logger = new Logger(CronService.name);
+  private offset = 0;
 
-  constructor(@InjectQueue(SyncQueue) private readonly syncQ: Queue) {}
+  constructor(
+    @InjectQueue(SyncQueue) private readonly syncQ: Queue,
+    private readonly schedulerRegistry: SchedulerRegistry,
+    readonly configSerive: ConfigService,
+  ) {
+    this.logger.log(`Scheduling cron jobs`);
 
-  @Cron('15 */4 * * *', {
-    name: Sync.SyncEvents,
-    timeZone: 'Europe/Paris',
-  })
+    // if not in production, offset the cron jobs by 15 minute
+    this.offset = this.configSerive.get('NODE_ENV') === 'production' ? 0 : 15;
+  }
+
   public QueueingSyncEvents() {
-    this.logger.verbose('Queueing SyncEvents');
-
-    this.syncQ.add(Sync.SyncEvents, null, {
-      removeOnFail: 1,
-      removeOnComplete: true,
+    const job = new CronJob({
+      cronTime: `${15 + this.offset} */4 * * *`,
+      onTick: () => {
+        this.logger.verbose('Queueing SyncEvents');
+        this.syncQ.add(Sync.SyncEvents, null, {
+          removeOnFail: 1,
+          removeOnComplete: true,
+        });
+      },
+      timeZone: 'Europe/Brussels',
     });
+
+    this.schedulerRegistry.addCronJob(Sync.SyncEvents, job);
   }
 
-  @Cron('0 18 * * *', {
-    name: Sync.SyncRanking,
-    timeZone: 'Europe/Paris',
-  })
   public QueueingSyncRanking() {
-    this.logger.verbose('Queueing SyncRanking');
+    const job = new CronJob({
+      cronTime: `${0 + this.offset} 18 * * *`,
+      onTick: () => {
+        this.logger.verbose('Queueing SyncRanking');
 
-    this.syncQ.add(Sync.SyncRanking, null, {
-      removeOnFail: 1,
-      removeOnComplete: true,
+        this.syncQ.add(Sync.SyncRanking, null, {
+          removeOnFail: 1,
+          removeOnComplete: true,
+        });
+      },
+      timeZone: 'Europe/Brussels',
     });
+
+    this.schedulerRegistry.addCronJob(Sync.SyncRanking, job);
   }
 
-  @Cron('30 */4 * * *', {
-    name: Sync.CheckEncounters,
-    timeZone: 'Europe/Paris',
-  })
   public QueueingCheckEncounters() {
-    this.logger.verbose('Queueing CheckEncounters');
+    const job = new CronJob({
+      cronTime: `${30 + this.offset} */4 * * *`,
+      onTick: () => {
+        this.logger.verbose('Queueing CheckEncounters');
 
-    this.syncQ.add(Sync.CheckEncounters, null, {
-      removeOnFail: 1,
-      removeOnComplete: true,
+        this.syncQ.add(Sync.CheckEncounters, null, {
+          removeOnFail: 1,
+          removeOnComplete: true,
+        });
+      },
+      timeZone: 'Europe/Brussels',
     });
+
+    this.schedulerRegistry.addCronJob(Sync.CheckEncounters, job);
   }
 }
