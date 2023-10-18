@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.115.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.114.1-beta.0...v6.115.0-beta.0) (2023-10-18)
+
+
+### Features
+
+* adding gender selection ([090e1cf](https://github.com/Badminton-Apps/badman/commit/090e1cf9d20dfe980842e329c7f77a6a155491aa))
+* adding info when scheduling the cron ([53edbea](https://github.com/Badminton-Apps/badman/commit/53edbea5e850d5e0f19c2d1c56d0c4726b48ed43))
+* club first ([4ebad30](https://github.com/Badminton-Apps/badman/commit/4ebad3018794151fb5334b57f88ca3f5f6364ef5))
+* offset cron jobs when not in production ([7b9ae82](https://github.com/Badminton-Apps/badman/commit/7b9ae82edf0f2ef52c92467de019f370062db982))
+* when creating new player parse input and if int use as memberId ([e8b44d8](https://github.com/Badminton-Apps/badman/commit/e8b44d806c786a29af421518426a4282c50e9291))
+
+
+### Bug Fixes
+
+* faq edit not possible ([fd89de1](https://github.com/Badminton-Apps/badman/commit/fd89de1e802d3383878d56e58278d2695997b2ad))
+* removing location ([a3a0ae0](https://github.com/Badminton-Apps/badman/commit/a3a0ae04f250f69d1b8ff02a322e08bc1c006228))
+* spacing in create new player ([fcf3135](https://github.com/Badminton-Apps/badman/commit/fcf313538cf35295bb48c0554dbe12a3f4081780))
+
 ### [6.114.1-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.114.0...v6.114.1-beta.0) (2023-10-18)
 
 
