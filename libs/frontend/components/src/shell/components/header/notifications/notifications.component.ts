@@ -102,8 +102,11 @@ export class NotificationComponent {
   }
 
   readAllNotifications() {
-    for (const notification of this.notifications() ?? []) {
+    for (const notification of this.notifications()?.filter(
+      (n) => n.read == false,
+    ) ?? []) {
       this.notificationService.readNotification(notification, true);
+      notification.read = true;
     }
   }
 }
