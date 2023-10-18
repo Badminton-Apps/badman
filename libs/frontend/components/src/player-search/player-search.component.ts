@@ -308,19 +308,27 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
     if (event.option.value?.id == null && this.newPlayerTemplateRef) {
       let firstName: string | undefined;
       let lastName: string | undefined;
+      let memberId: number | undefined;
       if (event.option.value != null) {
         const spaced = event.option.value.indexOf(' ');
-        if (spaced != -1) {
-          firstName = event.option.value.slice(spaced).trim();
-          lastName = event.option.value.substr(0, spaced).trim();
-        } else {
-          firstName = event.option.value.trim();
+
+        // if spaced is a number then use it for the memberId
+        memberId = parseInt(event.option.value.slice(0, spaced).trim());
+
+        if (isNaN(memberId)) {
+          if (spaced != -1) {
+            firstName = event.option.value.slice(spaced).trim();
+            lastName = event.option.value.substr(0, spaced).trim();
+          } else {
+            firstName = event.option.value.trim();
+          }
         }
       }
 
       this.newPlayerFormGroup = PlayerFieldsComponent.newPlayerForm({
         firstName,
         lastName,
+        memberId: memberId?.toString(),
       });
 
       const dialogRef = this.dialog.open(this.newPlayerTemplateRef);
