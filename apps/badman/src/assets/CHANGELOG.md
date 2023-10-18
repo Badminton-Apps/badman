@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.114.1-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.114.0...v6.114.1-beta.0) (2023-10-18)
+
+
+### Bug Fixes
+
+* chart could have error when some info is missing ([256b29a](https://github.com/Badminton-Apps/badman/commit/256b29abd0c09e3b92033bb0575148fcc1a14502))
+* export using the minNumerOfGamesForDowngrade ([2ad101f](https://github.com/Badminton-Apps/badman/commit/2ad101f01e8c8bab57ccc45a4d92a0fa4b65fdf6))
+* this would prevent removing of ranking points when marking unofficial ([99b37ef](https://github.com/Badminton-Apps/badman/commit/99b37efe1e8a6acf0f4774e5780337cb7a939f88))
+
 ## [6.114.0](https://github.com/Badminton-Apps/badman/compare/v6.113.5...v6.114.0) (2023-10-17)
 
 
