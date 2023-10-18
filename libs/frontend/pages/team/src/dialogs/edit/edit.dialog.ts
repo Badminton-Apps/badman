@@ -47,6 +47,7 @@ import {
 })
 export class EditDialogComponent {
   group?: FormGroup;
+  saveing = false;
 
   constructor(
     private snackBar: MatSnackBar,
@@ -62,7 +63,7 @@ export class EditDialogComponent {
       teamNumbers: {
         [key in SubEventType]: number[];
       };
-    }
+    },
   ) {
     const group = this.fb.group({
       id: this.fb.control(this.data.team.id),
@@ -96,7 +97,7 @@ export class EditDialogComponent {
       ?.get(PLAYERS_CONTROL)
       ?.valueChanges.pipe(
         startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []),
-        pairwise()
+        pairwise(),
       )
       .subscribe(([prev, curr]: [TeamPlayer[], TeamPlayer[]]) => {
         if (!prev || !curr) {
@@ -105,12 +106,12 @@ export class EditDialogComponent {
 
         // filter out the new players
         const newPlayers = curr.filter(
-          (c) => !prev.some((p) => p?.id === c?.id)
+          (c) => !prev.some((p) => p?.id === c?.id),
         );
 
         // filter out the removed players
         const removedPlayers = prev.filter(
-          (p) => !curr.some((c) => c?.id === p?.id)
+          (p) => !curr.some((c) => c?.id === p?.id),
         );
 
         // if there are new players
@@ -153,22 +154,23 @@ export class EditDialogComponent {
         transferState(
           `teamPlayers-${this.data.team.id}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
-        map((result) =>
-          result?.data.team.players?.map((t) => new TeamPlayer(t))
+        map(
+          (result) => result?.data.team.players?.map((t) => new TeamPlayer(t)),
         ),
         map(
           (players) =>
             players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ??
-            undefined
+            undefined,
         ),
-        take(1)
+        take(1),
       );
   }
 
   saveTeam() {
     const data = this.group?.value;
+    this.saveing = true;
 
     return this.apollo
       .mutate<{ createTeam: Partial<Team> }>({
@@ -198,6 +200,7 @@ export class EditDialogComponent {
           duration: 1000,
           panelClass: 'success',
         });
+        this.saveing = false;
 
         this.dialogRef.close();
       });
@@ -219,7 +222,7 @@ export class EditDialogComponent {
             teamId: this.data.team.id,
           },
           refetchQueries: ['TeamPlayers'],
-        })
+        }),
       );
     }
   }
@@ -243,7 +246,7 @@ export class EditDialogComponent {
             teamId: this.data.team.id,
           },
           refetchQueries: ['TeamPlayers'],
-        })
+        }),
       );
     }
   }
@@ -289,7 +292,7 @@ export class EditDialogComponent {
   removeTeam() {
     const dialogData = new ConfirmDialogModel(
       'all.club.delete.team.title',
-      'all.club.delete.team.description'
+      'all.club.delete.team.description',
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
