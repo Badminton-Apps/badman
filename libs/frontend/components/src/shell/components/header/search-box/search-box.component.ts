@@ -68,6 +68,7 @@ export class SearchBoxComponent implements OnInit {
         this.apollo.query<{
           search: SearchType[];
         }>({
+          fetchPolicy: 'network-only',
           query: gql`
             query Search($query: String!) {
               search(query: $query) {
