@@ -31,7 +31,7 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
-import { AssemblyComponent } from './components';
+import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
 
 @Component({
   selector: 'badman-assembly-create',
@@ -78,8 +78,8 @@ export class CreatePageComponent implements OnInit {
     private pdfService: PdfService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    public authenticate: AuthenticateService,
-    private changeDetectorRef: ChangeDetectorRef
+    public authenticateService: AuthenticateService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -162,15 +162,15 @@ export class CreatePageComponent implements OnInit {
         variables: {
           id: encounterId,
         },
-      })
+      }),
     );
 
     const encounter = new EncounterCompetition(
-      result.data.encounterCompetition
+      result.data.encounterCompetition,
     );
-    const fileName = `${moment(encounter?.date).format('YYYY-MM-DD HH:mm')} - ${
-      encounter?.home?.name
-    } vs ${encounter?.away?.name}.pdf`;
+    const fileName = `${moment(encounter?.date).format(
+      'YYYY-MM-DD HH:mm',
+    )} - ${encounter?.home?.name} vs ${encounter?.away?.name}.pdf`;
 
     // Generate pdf
     this.systemService
@@ -209,7 +209,7 @@ export class CreatePageComponent implements OnInit {
               ?.get('subtitudes')
               ?.value?.map((r: Player) => r.id),
           });
-        })
+        }),
       )
       .subscribe((pdf) => {
         const url = window.URL.createObjectURL(pdf);
@@ -300,9 +300,21 @@ export class CreatePageComponent implements OnInit {
                 ?.value?.map((r: Player) => r.id),
             },
           },
+          refetchQueries: () => [
+            {
+              query: SAVED_ASSEMBLY,
+              variables: {
+                id: this.formGroup?.get('encounter')?.value,
+                where: {
+                  captainId: this.formGroup?.get('captain')?.value,
+                  playerId: this.authenticateService?.user?.id,
+                },
+              },
+            },
+          ],
         });
       }),
-      take(1)
+      take(1),
     );
   }
 }
