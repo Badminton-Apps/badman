@@ -380,8 +380,8 @@ export class ExportBBFPlayers {
       let usedGames = lostGames + usedPoints.length;
 
       // if usedGames is less then 7 use 7
-      if (usedGames < (system?.minNumberOfGamesUsedForDowngrade ?? 0)) {
-        usedGames = 7;
+      if (usedGames < (system?.minNumberOfGamesUsedForDowngrade ?? 1)) {
+        usedGames = system?.minNumberOfGamesUsedForDowngrade ?? 1;
       }
 
       const newIndex = sum / usedGames;
