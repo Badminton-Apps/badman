@@ -495,8 +495,8 @@ export class EditPageComponent implements OnInit, OnDestroy {
     await lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation DeleteLocation($id: ID!) {
-            deleteLocation(id: $id)
+          mutation RemoveLocation($id: ID!) {
+            removeLocation(id: $id)
           }
         `,
         variables: { id: location.id },
@@ -505,6 +505,8 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
     this.updateLocation$.next(null);
   }
+
+  
 
   async addRole() {
     this.updateRoles$.next(false);

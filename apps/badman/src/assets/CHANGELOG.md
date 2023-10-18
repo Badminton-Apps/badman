@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.115.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.115.0-beta.0...v6.115.0-beta.1) (2023-10-18)
+
+
+### Features
+
+* opening notification tray, mark all as read ([f1aaca2](https://github.com/Badminton-Apps/badman/commit/f1aaca2e490d840fc32c4ddf4ed65b87b3e23e86))
+* select everything input on select ([7f23637](https://github.com/Badminton-Apps/badman/commit/7f23637afd8f521486e199b0c0f351456ebc6b57))
+* spinner when saving team ([0ca9c11](https://github.com/Badminton-Apps/badman/commit/0ca9c112463ffc689b5c426fdcaba6551389d5f0))
+
+
+### Bug Fixes
+
+* always search the api for info ([532079d](https://github.com/Badminton-Apps/badman/commit/532079d0facac691409eb5869c3c8aa8546b04f9))
+* only mark unread notifications ([4cbf9b0](https://github.com/Badminton-Apps/badman/commit/4cbf9b0db0074aa259d127186a378c959036aed8))
+* period of setting end date wasn't working ([84d586e](https://github.com/Badminton-Apps/badman/commit/84d586e79b72b6930d10cd60b33a0572dc8e5644))
+* re-loading cached saved assembly ([177d75a](https://github.com/Badminton-Apps/badman/commit/177d75a9f102c64a465554311bab0d772ccbbb2e))
+* refresh view when adding player ([2241d80](https://github.com/Badminton-Apps/badman/commit/2241d8045c5bd67e79edc2e6ff0458a54998c5af))
+* should have been may ([9cadc87](https://github.com/Badminton-Apps/badman/commit/9cadc87d5ddf5353b53e3f38721980d54c8356c8))
+* update chached data when saving ([0919f81](https://github.com/Badminton-Apps/badman/commit/0919f817ec6d4cd8de4dd299b9979879e10c5af2))
+* update player ranking via save button ([797e841](https://github.com/Badminton-Apps/badman/commit/797e841a3b86cd3154871b7d0506f58b3f55bf47))
+
+## [6.115.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.114.1-beta.0...v6.115.0-beta.0) (2023-10-18)
+
+
+### Features
+
+* adding gender selection ([090e1cf](https://github.com/Badminton-Apps/badman/commit/090e1cf9d20dfe980842e329c7f77a6a155491aa))
+* adding info when scheduling the cron ([53edbea](https://github.com/Badminton-Apps/badman/commit/53edbea5e850d5e0f19c2d1c56d0c4726b48ed43))
+* club first ([4ebad30](https://github.com/Badminton-Apps/badman/commit/4ebad3018794151fb5334b57f88ca3f5f6364ef5))
+* offset cron jobs when not in production ([7b9ae82](https://github.com/Badminton-Apps/badman/commit/7b9ae82edf0f2ef52c92467de019f370062db982))
+* when creating new player parse input and if int use as memberId ([e8b44d8](https://github.com/Badminton-Apps/badman/commit/e8b44d806c786a29af421518426a4282c50e9291))
+
+
+### Bug Fixes
+
+* faq edit not possible ([fd89de1](https://github.com/Badminton-Apps/badman/commit/fd89de1e802d3383878d56e58278d2695997b2ad))
+* removing location ([a3a0ae0](https://github.com/Badminton-Apps/badman/commit/a3a0ae04f250f69d1b8ff02a322e08bc1c006228))
+* spacing in create new player ([fcf3135](https://github.com/Badminton-Apps/badman/commit/fcf313538cf35295bb48c0554dbe12a3f4081780))
+
+### [6.114.1-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.114.0...v6.114.1-beta.0) (2023-10-18)
+
+
+### Bug Fixes
+
+* chart could have error when some info is missing ([256b29a](https://github.com/Badminton-Apps/badman/commit/256b29abd0c09e3b92033bb0575148fcc1a14502))
+* export using the minNumerOfGamesForDowngrade ([2ad101f](https://github.com/Badminton-Apps/badman/commit/2ad101f01e8c8bab57ccc45a4d92a0fa4b65fdf6))
+* this would prevent removing of ranking points when marking unofficial ([99b37ef](https://github.com/Badminton-Apps/badman/commit/99b37efe1e8a6acf0f4774e5780337cb7a939f88))
+
 ## [6.114.0](https://github.com/Badminton-Apps/badman/compare/v6.113.5...v6.114.0) (2023-10-17)
 
 

@@ -31,13 +31,12 @@
           [ngClass]="{
             read: notification.read
           }"
-          (click)="readNotification(notification)"
         >
           <span
             matLine
             [innerHTML]="
               'all.settings.notifications.messages.' + notification.type
-                | translate : getParams(notification)
+                | translate: getParams(notification)
             "
           ></span>
         </div>
