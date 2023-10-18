@@ -178,7 +178,7 @@ export class CalendarComponent implements OnInit {
     ];
 
     this.minDate = moment([this.season, 8, 1]).toDate();
-    this.maxDate = moment([this.season + 1, 5, 1])
+    this.maxDate = moment([this.season + 1, 4, 1])
       .endOf('month')
       .toDate();
 
