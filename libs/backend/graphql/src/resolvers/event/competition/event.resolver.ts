@@ -51,12 +51,12 @@ export class EventCompetitionResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private _pointService: PointsService
+    private _pointService: PointsService,
   ) {}
 
   @Query(() => EventCompetition)
   async eventCompetition(
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ): Promise<EventCompetition> {
     const eventCompetition = IsUUID(id)
       ? await EventCompetition.findByPk(id)
@@ -74,7 +74,7 @@ export class EventCompetitionResolver {
 
   @Query(() => PagedEventCompetition)
   async eventCompetitions(
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EventCompetition[] }> {
     return EventCompetition.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
@@ -93,7 +93,7 @@ export class EventCompetitionResolver {
   @ResolveField(() => [SubEventCompetition])
   async subEventCompetitions(
     @Parent() event: EventCompetition,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<SubEventCompetition[]> {
     return event.getSubEventCompetitions(ListArgs.toFindOptions(listArgs));
   }
@@ -101,7 +101,7 @@ export class EventCompetitionResolver {
   @ResolveField(() => [Comment])
   async comments(
     @Parent() event: EventCompetition,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<Comment[]> {
     return event.getComments(ListArgs.toFindOptions(listArgs));
   }
@@ -133,11 +133,11 @@ export class EventCompetitionResolver {
   @Mutation(() => EventCompetition)
   async updateEventCompetition(
     @User() user: Player,
-    @Args('data') updateEventCompetitionData: EventCompetitionUpdateInput
+    @Args('data') updateEventCompetitionData: EventCompetitionUpdateInput,
   ): Promise<EventCompetition> {
     if (!(await user.hasAnyPermission([`edit:competition`]))) {
       throw new UnauthorizedException(
-        `You do not have permission to add a competition`
+        `You do not have permission to add a competition`,
       );
     }
 
@@ -145,19 +145,16 @@ export class EventCompetitionResolver {
     const transaction = await this._sequelize.transaction();
     try {
       const eventCompetitionDb = await EventCompetition.findByPk(
-        updateEventCompetitionData.id
+        updateEventCompetitionData.id,
       );
 
       if (!eventCompetitionDb) {
         throw new NotFoundException(
-          `${EventCompetition.name}: ${updateEventCompetitionData.id}`
+          `${EventCompetition.name}: ${updateEventCompetitionData.id}`,
         );
       }
 
-      if (
-        updateEventCompetitionData.official &&
-        eventCompetitionDb.official !== updateEventCompetitionData.official
-      ) {
+      if (eventCompetitionDb.official !== updateEventCompetitionData.official) {
         const subEvents = await eventCompetitionDb.getSubEventCompetitions({
           transaction,
         });
@@ -172,7 +169,7 @@ export class EventCompetitionResolver {
 
         if (!ranking) {
           throw new NotFoundException(
-            `${RankingSystem.name}: primary system not found`
+            `${RankingSystem.name}: primary system not found`,
           );
         }
 
@@ -181,6 +178,7 @@ export class EventCompetitionResolver {
         });
 
         if (updateEventCompetitionData.official == true) {
+          this.logger.debug(`Adding ranking groups and points`);
           for (const subEvent of subEvents) {
             await subEvent.setRankingGroups(groups, {
               transaction,
@@ -191,10 +189,11 @@ export class EventCompetitionResolver {
             await this.addGamePointsForSubEvents(
               group,
               subEvents?.map((s) => s.id),
-              transaction
+              transaction,
             );
           }
         } else {
+          this.logger.debug(`Removing ranking groups and points`);
           // we are making it unofficial
           for (const subEvent of subEvents) {
             await subEvent.removeRankingGroups(groups, {
@@ -207,7 +206,7 @@ export class EventCompetitionResolver {
             await this.removeGamePointsForSubEvents(
               group,
               subEvents?.map((s) => s.id),
-              transaction
+              transaction,
             );
           }
         }
@@ -216,11 +215,13 @@ export class EventCompetitionResolver {
       // Update db
       const result = await eventCompetitionDb.update(
         updateEventCompetitionData,
-        { transaction }
+        { transaction },
       );
 
       // Commit transaction
       await transaction.commit();
+
+      this.logger.debug(`Updated ${EventCompetition.name}: ${result.id}`);
 
       return result;
     } catch (error) {
@@ -234,11 +235,11 @@ export class EventCompetitionResolver {
   async copyEventCompetition(
     @User() user: Player,
     @Args('id', { type: () => ID }) id: string,
-    @Args('year', { type: () => Int }) year: number
+    @Args('year', { type: () => Int }) year: number,
   ) {
     if (!(await user.hasAnyPermission([`add:competition`]))) {
       throw new UnauthorizedException(
-        `You do not have permission to add a competition`
+        `You do not have permission to add a competition`,
       );
     }
     const transaction = await this._sequelize.transaction();
@@ -302,11 +303,11 @@ export class EventCompetitionResolver {
   @Mutation(() => Boolean)
   async removeEventCompetition(
     @User() user: Player,
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ) {
     if (!(await user.hasAnyPermission([`delete:competition`]))) {
       throw new UnauthorizedException(
-        `You do not have permission to add a competition`
+        `You do not have permission to add a competition`,
       );
     }
 
@@ -374,7 +375,7 @@ export class EventCompetitionResolver {
   async addGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction
+    transaction: Transaction,
   ) {
     const systems = await group.getRankingSystems({ transaction });
     const games = await Game.findAll({
@@ -418,14 +419,14 @@ export class EventCompetitionResolver {
           this._pointService.createRankingPointforGame(system, game, {
             createRankingPoints: true,
             transaction,
-          })
+          }),
         );
       }
 
       await Promise.all(promisse);
 
       this.logger.debug(
-        `Added points for ${games.length} games in system ${system.name}(${system.id})`
+        `Added points for ${games.length} games in system ${system.name}(${system.id})`,
       );
     }
   }
@@ -433,7 +434,7 @@ export class EventCompetitionResolver {
   async removeGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction
+    transaction: Transaction,
   ) {
     const systems = await group.getRankingSystems({ transaction });
 
@@ -468,7 +469,7 @@ export class EventCompetitionResolver {
       });
 
       this.logger.debug(
-        `Removed points for ${games.length} games in system ${system.name}(${system.id})`
+        `Removed points for ${games.length} games in system ${system.name}(${system.id})`,
       );
     }
   }
