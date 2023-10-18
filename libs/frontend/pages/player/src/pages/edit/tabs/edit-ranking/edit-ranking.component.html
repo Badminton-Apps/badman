@@ -36,4 +36,16 @@
       />
     </mat-form-field>
   </div>
+
+  <div>
+    <button
+      mat-raised-button
+      type="button"
+      [disabled]="!this.rankingForm.valid"
+      [color]="'primary'"
+      (click)="saveRanking()"
+    >
+      {{ 'all.button.save' | translate }}
+    </button>
+  </div>
 </form>
