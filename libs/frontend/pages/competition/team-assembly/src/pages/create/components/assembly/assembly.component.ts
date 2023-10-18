@@ -508,6 +508,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
 
     this.players?.REGULAR?.push(playerRankings);
     this._sortLists();
+    this.changeDetectorRef.detectChanges();
   }
 
   updateValidations(info: ValidationResult) {
