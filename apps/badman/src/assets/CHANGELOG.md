@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.115.0](https://github.com/Badminton-Apps/badman/compare/v6.115.0-beta.1...v6.115.0) (2023-10-18)
+
+
+### Bug Fixes
+
+* rounding instead of ceiling ([e479b56](https://github.com/Badminton-Apps/badman/commit/e479b56e7823579d331f9e1a4ba8b92eb6844a01))
+
 ## [6.115.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.115.0-beta.0...v6.115.0-beta.1) (2023-10-18)
 
 
