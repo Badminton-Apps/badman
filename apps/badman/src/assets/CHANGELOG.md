@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.115.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.115.0-beta.0...v6.115.0-beta.1) (2023-10-18)
+
+
+### Features
+
+* opening notification tray, mark all as read ([f1aaca2](https://github.com/Badminton-Apps/badman/commit/f1aaca2e490d840fc32c4ddf4ed65b87b3e23e86))
+* select everything input on select ([7f23637](https://github.com/Badminton-Apps/badman/commit/7f23637afd8f521486e199b0c0f351456ebc6b57))
+* spinner when saving team ([0ca9c11](https://github.com/Badminton-Apps/badman/commit/0ca9c112463ffc689b5c426fdcaba6551389d5f0))
+
+
+### Bug Fixes
+
+* always search the api for info ([532079d](https://github.com/Badminton-Apps/badman/commit/532079d0facac691409eb5869c3c8aa8546b04f9))
+* only mark unread notifications ([4cbf9b0](https://github.com/Badminton-Apps/badman/commit/4cbf9b0db0074aa259d127186a378c959036aed8))
+* period of setting end date wasn't working ([84d586e](https://github.com/Badminton-Apps/badman/commit/84d586e79b72b6930d10cd60b33a0572dc8e5644))
+* re-loading cached saved assembly ([177d75a](https://github.com/Badminton-Apps/badman/commit/177d75a9f102c64a465554311bab0d772ccbbb2e))
+* refresh view when adding player ([2241d80](https://github.com/Badminton-Apps/badman/commit/2241d8045c5bd67e79edc2e6ff0458a54998c5af))
+* should have been may ([9cadc87](https://github.com/Badminton-Apps/badman/commit/9cadc87d5ddf5353b53e3f38721980d54c8356c8))
+* update chached data when saving ([0919f81](https://github.com/Badminton-Apps/badman/commit/0919f817ec6d4cd8de4dd299b9979879e10c5af2))
+* update player ranking via save button ([797e841](https://github.com/Badminton-Apps/badman/commit/797e841a3b86cd3154871b7d0506f58b3f55bf47))
+
 ## [6.115.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.114.1-beta.0...v6.115.0-beta.0) (2023-10-18)
 
 
