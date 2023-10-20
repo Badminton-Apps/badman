@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.116.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.115.0...v6.116.0-beta.0) (2023-10-20)
+
+
+### Features
+
+* 15 min stepper when using the arrows ([65ad276](https://github.com/Badminton-Apps/badman/commit/65ad2766367be89714b9553b393f61bd4405fe41))
+* testing bun ([1b796bf](https://github.com/Badminton-Apps/badman/commit/1b796bf247775198da8b262a24677039a14898c6))
+
 ## [6.115.0](https://github.com/Badminton-Apps/badman/compare/v6.115.0-beta.1...v6.115.0) (2023-10-18)
 
 
