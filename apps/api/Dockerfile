@@ -15,7 +15,7 @@ ARG CONFIGURATION=production
 RUN npm run build:server -- --configuration=$CONFIGURATION
 
 # Production stage
-FROM oven/bun:alpine As production
+FROM node:20-alpine As production
 ENV NODE_ENV=production \
     TZ="Europe/Brussels" \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
@@ -40,4 +40,4 @@ COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 
 
 EXPOSE $PORT
-CMD [ "dumb-init", "bun",  "./dist/apps/api/main.js"]
+CMD [ "dumb-init", "node",  "./dist/apps/api/main.js"]
