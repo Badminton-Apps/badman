@@ -65,9 +65,7 @@ export class SearchService {
       });
     }
 
-    // Temporary structure to return the results.
     return await Player.findAll({
-      attributes: ['id', 'slug', 'memberId', 'firstName', 'lastName', 'gender'],
       where: { [Op.and]: queries },
       limit: 100,
     });
@@ -83,9 +81,7 @@ export class SearchService {
       });
     }
 
-    // Temporary structure to return the results.
     return await EventCompetition.findAll({
-      attributes: ['id', 'slug', 'name'],
       order: [['season', 'DESC']],
       where: { [Op.and]: queries },
       limit: 100,
@@ -102,9 +98,7 @@ export class SearchService {
       });
     }
 
-    // Temporary structure to return the results.
     return await EventTournament.findAll({
-      attributes: ['id', 'slug', 'name'],
       order: [['firstDay', 'DESC']],
       where: { [Op.and]: queries },
       limit: 100,
@@ -122,9 +116,7 @@ export class SearchService {
       });
     }
 
-    // Temporary structure to return the results.
     return await Club.findAll({
-      attributes: ['id', 'slug', 'name', 'abbreviation'],
       where: { [Op.and]: queries },
       limit: 100,
     });
