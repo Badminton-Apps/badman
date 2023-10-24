@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.116.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.116.0-beta.1...v6.116.0-beta.2) (2023-10-24)
+
+
+### Features
+
+* adding same styling to searchbox then in player / club search ([cf033ab](https://github.com/Badminton-Apps/badman/commit/cf033ab13f59089ae7b69be780b825c81bab03bd))
+
 ## [6.116.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.116.0-beta.0...v6.116.0-beta.1) (2023-10-20)
 
 ## [6.116.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.115.0...v6.116.0-beta.0) (2023-10-20)
