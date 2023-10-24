@@ -38,6 +38,12 @@ WORKDIR /usr/src/app
 COPY --chown=node:node --from=build /usr/src/app/dist ./dist
 COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
 
+# replace the ./dist/apps/badman/manifest.json with manifest.beta.json if the configuration is beta
+ARG CONFIGURATION=production
+RUN if [ "$CONFIGURATION" = "beta" ] ; then \
+    cp ./dist/apps/badman/manifest.beta.json ./dist/apps/badman/manifest.json; \
+    fi
+
 
 EXPOSE $PORT
 CMD [ "dumb-init", "node",  "./dist/apps/api/main.js"]
