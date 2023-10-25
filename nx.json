@@ -1,28 +1,24 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx-cloud",
-      "options": {
-        "cacheDirectory": "/tmp/nx-cache",
-        "cacheableOperations": ["build", "server", "lint", "test"],
-        "accessToken": "NTM2YmYwOTAtM2NlZC00ZDFmLTkwMDAtNzljM2Y4MDFiMTBmfHJlYWQtd3JpdGU="
-      }
-    }
-  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production"],
+      "cache": true
     },
     "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "cache": true
     },
     "lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
+      "cache": true
     },
     "e2e": {
       "inputs": ["default", "^production"]
+    },
+    "server": {
+      "cache": true
     }
   },
   "namedInputs": {
@@ -65,5 +61,7 @@
   "defaultProject": "badman",
   "affected": {
     "defaultBase": "main"
-  }
+  },
+  "nxCloudAccessToken": "NTM2YmYwOTAtM2NlZC00ZDFmLTkwMDAtNzljM2Y4MDFiMTBmfHJlYWQtd3JpdGU=",
+  "cacheDirectory": "/tmp/nx-cache"
 }
