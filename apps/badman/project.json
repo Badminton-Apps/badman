@@ -154,7 +154,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": ["apps/badman/**/*.ts", "apps/badman/**/*.html"]
       }
