@@ -86,7 +86,7 @@ jobs:
         # Specify shell to help normalize across different operating systems
         shell: bash
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Detect package manager
         id: package_manager

@@ -76,7 +76,7 @@ export class SearchBoxComponent implements OnInit {
                   id
                   name
                   slug
-                  abbreviation
+                  clubId
                 }
                 ... on EventTournament {
                   id

@@ -60,7 +60,8 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     const encounters = await draw.getEncounterCompetitions({
       transaction: this.transaction,
     });
-    const canChange = moment().isBefore(`${this.event.season + 1}-01-01`);
+    
+    const canChange = moment().isAfter(`${this.event.season}-08-01`);
 
     const visualMatches = (await this.visualService.getMatches(
       this.visualTournament.Code,
@@ -135,7 +136,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       if (dbEncounter.date !== matchDate) {
         dbEncounter.date = matchDate;
         await dbEncounter.save({ transaction: this.transaction });
-      }
+      } 
 
       if (!Array.isArray(xmlTeamMatch.Sets?.Set)) {
         dbEncounter.homeScore = xmlTeamMatch.Sets?.Set?.Team1;

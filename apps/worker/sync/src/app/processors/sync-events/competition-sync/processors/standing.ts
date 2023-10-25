@@ -67,7 +67,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
 
     for (const encounter of encounters) {
       if (!encounter.homeTeamId || !encounter.awayTeamId) {
-        continue;
+        continue; 
       }
 
       const homeTeam = teams.find((t) => t.id === encounter.homeTeamId);
