@@ -6,6 +6,5 @@
     "@badman/backend-database": "workspace:*",
     "@badman/backend-translate": "workspace:*",
     "@badman/backend-compile": "workspace:*"
-
   }
 }
