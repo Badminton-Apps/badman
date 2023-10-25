@@ -46,15 +46,16 @@
           placeholder="Choose a date"
           [min]="this.minDate"
           [max]="this.maxDate"
+          [step]="900"
           [matDatepickerFilter]="filterDate"
-          
           [formControl]="manualDateControl"
         />
         <mat-datepicker-toggle
           matSuffix
           [for]="$any(openPicker)"
         ></mat-datepicker-toggle>
-        <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
+        <ngx-mat-datetime-picker [stepMinute]="15" #openPicker>
+        </ngx-mat-datetime-picker>
       </mat-form-field>
 
       <button
@@ -136,12 +137,12 @@
           <span class="courts">
             {{
               'all.competition.change-encounter.calendar.remaining'
-                | translate : { amount: loc.space }
+                | translate: { amount: loc.space }
             }}
             <span *ngIf="loc.requested?.length">
               ({{
                 'all.competition.change-encounter.calendar.option'
-                  | translate : { amount: loc.requested.length }
+                  | translate: { amount: loc.requested.length }
               }})
             </span>
           </span>
@@ -217,7 +218,7 @@
             'all.competition.change-encounter.calendar.other-games' | translate
           }}</small>
           <div class="event-name" *ngFor="let enc of dayInfo.other">
-            {{ enc?.date | date : 'HH:mm' }} -
+            {{ enc?.date | date: 'HH:mm' }} -
             {{ enc?.home?.name }}
             {{ 'all.competition.vs-short' | translate }}
             {{ enc?.away?.name }}

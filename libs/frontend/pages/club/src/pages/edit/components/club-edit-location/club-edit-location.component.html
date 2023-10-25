@@ -93,13 +93,13 @@
                   <mat-label>{{
                     'all.input.start-hour' | translate
                   }}</mat-label>
-                  <input matInput type="time" formControlName="startTime" />
+                  <input matInput type="time"step="900" formControlName="startTime" />
                 </mat-form-field>
               </div>
               <div class="endTime">
                 <mat-form-field>
                   <mat-label>{{ 'all.input.end-hour' | translate }}</mat-label>
-                  <input matInput type="time" formControlName="endTime" />
+                  <input matInput type="time" step="900"formControlName="endTime" />
                 </mat-form-field>
               </div>
 

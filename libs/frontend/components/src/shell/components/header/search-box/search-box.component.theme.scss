@@ -4,14 +4,17 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  badman-search-box {
-    // Get the color config from the theme.
-    $color-config: mat.get-color-config($theme);
+  $color-config: mat.get-color-config($theme);
+  $background: map.get($color-config, 'background');
 
+  $foreground: map.get($color-config, 'foreground');
+  $isDark: map.get($color-config, 'is-dark');
+  $caption-color: null;
+
+  badman-search-box {
     // Get the primary color palette from the color-config.
     $primary-palette: map.get($color-config, 'primary');
     $accent-palette: map.get($color-config, 'accent');
-    $background: map.get($color-config, 'background');
 
     $background-color: darken(
       mat.get-color-from-palette($background, 'app-bar'),
@@ -32,11 +35,35 @@
       }
     }
   }
+
+  @if ($isDark) {
+    $caption-color: darken(
+      mat.get-color-from-palette($foreground, 'base'),
+      40%
+    );
+  } @else {
+    $caption-color: lighten(
+      mat.get-color-from-palette($foreground, 'base'),
+      60%
+    );
+  }
+
+  .search-select-panel {
+    small.extra {
+      color: $caption-color;
+    }
+  }
 }
 
 @mixin typography($theme) {
-  badman-search-box {
-    $typography-config: mat.get-typography-config($theme);
+  $typography-config: mat.get-typography-config($theme);
+  // badman-search-box {
+  // }
+
+  .search-select-panel {
+    small.extra {
+      @include mat.typography-level($typography-config, 'caption');
+    }
   }
 }
 

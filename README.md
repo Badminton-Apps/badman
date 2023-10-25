@@ -85,3 +85,7 @@ https://github.com/rakyll/hey
 - download `.sql.gz` file
 - go into psql
 - `\i path_to_sql_file`
+
+## docker build and run
+- `docker build -t badman . -f apps/api/Dockerfile`
+- `docker run badman --env-file .env -p 5001:5001`

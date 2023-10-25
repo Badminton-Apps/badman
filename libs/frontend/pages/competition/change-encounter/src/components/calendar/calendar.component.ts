@@ -156,7 +156,13 @@ export class CalendarComponent implements OnInit {
     },
     private apollo: Apollo,
   ) {
-    this.manualDateControl = new FormControl(data?.date);
+    // set date to closes 15 min
+    const manualDate = moment(data?.date);
+    if (manualDate.isValid()) {
+      manualDate.set('minute', Math.ceil(manualDate.get('minute') / 15) * 15);
+    }
+
+    this.manualDateControl = new FormControl(manualDate.toDate());
     this.manualLocationControl = new FormControl(data?.locationId);
 
     this.firstDayOfMonth = moment(data.date);
