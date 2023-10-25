@@ -36,7 +36,7 @@
         >
         <span
           *ngIf="
-            (encounter.homeScore ?? -1) >= 0 && (encounter.awayScore ?? -1) >= 0
+            (encounter.homeScore ?? -1) > 0 || (encounter.awayScore ?? -1) > 0
           "
           >&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span
         >
