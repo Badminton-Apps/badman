@@ -27,6 +27,9 @@ export class EncounterResolver {
               awayScore
               date
               visualCode
+              shuttle
+              startHour
+              endHour
               drawCompetition {
                 subEventCompetition {
                   eventType

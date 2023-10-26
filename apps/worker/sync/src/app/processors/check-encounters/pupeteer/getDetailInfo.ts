@@ -15,7 +15,7 @@ export async function detailInfo(
   },
 ) {
   const { logger } = args || {};
-  logger?.verbose('getDetailInfo');
+  logger?.verbose('detailInfo');
   const { page, timeout } = pupeteer;
   if (!page) {
     throw new Error('No page provided');

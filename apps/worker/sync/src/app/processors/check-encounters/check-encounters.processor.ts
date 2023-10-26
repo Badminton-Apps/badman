@@ -18,11 +18,11 @@ import {
   detailAccepted,
   detailComment,
   detailEntered,
+  detailInfo,
   gotoEncounterPage,
   hasTime,
 } from './pupeteer';
 import { Job } from 'bull';
-import { detailInfo } from './pupeteer/getDetailInfo';
 
 const includes = [
   {
@@ -215,6 +215,10 @@ export class CheckEncounterProcessor {
           { logger: this.logger },
         );
 
+        this.logger.debug(
+          `Encounter started on ${startedOn} and ended on ${endedOn}, used shuttle ${usedShuttle}`,
+        );
+
         encounter.startHour = startedOn || undefined;
         encounter.endHour = endedOn || undefined;
         encounter.shuttle = usedShuttle || undefined;
@@ -261,7 +265,7 @@ export class CheckEncounterProcessor {
         encounter.acceptedOn = acceptedMoment.toDate();
         encounter.accepted = true;
       }
-      
+
       await encounter.save();
     } catch (error) {
       this.logger.error(error);
