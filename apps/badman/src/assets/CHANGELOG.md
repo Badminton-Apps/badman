@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.118.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.1...v6.118.0-beta.2) (2023-10-26)
+
+
+### Bug Fixes
+
+* export the search module ([e8f3e90](https://github.com/Badminton-Apps/badman/commit/e8f3e9082e507a3cc3f7bc723eb5fd70ec6deadb))
+
 ## [6.118.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.0...v6.118.0-beta.1) (2023-10-26)
 
 
