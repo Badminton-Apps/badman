@@ -77,7 +77,7 @@ export class SelectSeasonComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {
@@ -94,16 +94,16 @@ export class SelectSeasonComponent implements OnInit, OnDestroy {
     }
 
     const previous = this.group?.get(this.dependsOn);
+
     if (previous && this.type === 'club') {
       previous.valueChanges
         .pipe(startWith(previous.value), takeUntil(this.destroy$))
         .subscribe((value) => {
-          const clubId = value?.id ?? value;
-
+          const clubId = `${value?.id ?? value}`;
           // if the clubId is a uuid continue
           if (
             !clubId?.match(
-              /^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/
+              /^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/,
             )
           ) {
             return;
@@ -145,19 +145,19 @@ export class SelectSeasonComponent implements OnInit, OnDestroy {
           transferState(
             `eventCompetitions-seasons`,
             this.stateTransfer,
-            this.platformId
+            this.platformId,
           ),
           map((result) => {
             if (!result?.data.eventCompetitionSeasons) {
               throw new Error('No teams');
             }
             return result.data.eventCompetitionSeasons;
-          })
+          }),
         ),
       {
         initialValue: [getCurrentSeason()],
         injector: this.injector,
-      }
+      },
     );
   }
 
@@ -185,7 +185,7 @@ export class SelectSeasonComponent implements OnInit, OnDestroy {
           transferState(
             `club-${club.id}-seasons`,
             this.stateTransfer,
-            this.platformId
+            this.platformId,
           ),
           map((result) => {
             if (!result?.data.teams) {
@@ -196,12 +196,12 @@ export class SelectSeasonComponent implements OnInit, OnDestroy {
           // map distinct years
           map((years) => [...new Set(years)]),
           // sort years
-          map((years) => years.sort((a, b) => b - a))
+          map((years) => years.sort((a, b) => b - a)),
         ),
       {
         initialValue: [getCurrentSeason()],
         injector: this.injector,
-      }
+      },
     );
   }
 
