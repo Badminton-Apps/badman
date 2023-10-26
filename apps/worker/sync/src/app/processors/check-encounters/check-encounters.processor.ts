@@ -234,13 +234,11 @@ export class CheckEncounterProcessor {
         encounter.enteredOn = enteredMoment.toDate();
 
         try {
-          const { endedOn, startedOn, usedShuttle } = await detailInfo(
-            { page },
-            { logger: this.logger },
-          );
+          const { endedOn, startedOn, usedShuttle, gameLeader } =
+            await detailInfo({ page }, { logger: this.logger });
 
           this.logger.debug(
-            `Encounter started on ${startedOn} and ended on ${endedOn}, used shuttle ${usedShuttle}`,
+            `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`,
           );
 
           encounter.startHour = startedOn || undefined;
