@@ -18,9 +18,9 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -101,7 +101,7 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private authenticateService: AuthenticateService,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {
@@ -130,14 +130,15 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
 
       this.teams$ = combineLatest([
         previous.valueChanges.pipe(startWith(null)),
-        ...updateOnControls.map((control) =>
-          control?.valueChanges?.pipe(startWith(() => control?.value))
+        ...updateOnControls.map(
+          (control) =>
+            control?.valueChanges?.pipe(startWith(() => control?.value)),
         ),
       ]).pipe(
         takeUntil(this.destroy$),
         distinctUntilChanged(),
-        map(() => previous?.value?.id),
-        startWith(previous?.value?.id),
+        map(() => previous?.value?.id ?? previous?.value),
+        startWith(previous?.value?.id ?? previous?.value),
         pairwise(),
         switchMap(([prev, next]) => {
           if (prev != null && prev !== next) {
@@ -153,20 +154,23 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
           }
         }),
         map((teams) => {
-          const grouped = (teams ?? []).reduce((acc, team) => {
-            const group = team.type ?? 'Other';
-            if (!acc[group]) {
-              acc[group] = [];
-            }
-            acc[group].push(team);
-            return acc;
-          }, {} as { [key: string]: Team[] });
+          const grouped = (teams ?? []).reduce(
+            (acc, team) => {
+              const group = team.type ?? 'Other';
+              if (!acc[group]) {
+                acc[group] = [];
+              }
+              acc[group].push(team);
+              return acc;
+            },
+            {} as { [key: string]: Team[] },
+          );
           return Object.keys(grouped).map((key) => ({
             type: key,
             teams: grouped[key],
           }));
         }),
-        shareReplay(1)
+        shareReplay(1),
       );
 
       this.teams$
@@ -185,13 +189,13 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
                     teams,
                     teamsUser: teamsUser?.[0],
                   })),
-                  take(1)
+                  take(1),
                 )
               : of({
                   teams,
                   teamsUser: undefined,
-                })
-          )
+                }),
+          ),
         )
         .subscribe(({ teams, teamsUser }) => {
           let foundTeam: Team[] | undefined = undefined;
@@ -218,11 +222,11 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
             this.control.setValue(
               this.multiple
                 ? foundTeam.map((team) => team.id ?? '')
-                : foundTeam[0].id ?? ''
+                : foundTeam[0].id ?? '',
             );
             this._updateUrl(
               foundTeam.map((team) => team.id ?? ''),
-              teamId == null
+              teamId == null,
             );
           }
         });
@@ -312,14 +316,14 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         transferState(
           `clubTeamsKey-${clubId}}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           if (!result?.data.teams) {
             throw new Error('No club');
           }
           return result.data.teams?.map((team) => new Team(team));
-        })
+        }),
       );
   }
 
@@ -343,20 +347,20 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
         transferState(
           `captainOfTeam-${userId}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           if (!result?.data.teams) {
             throw new Error('No club');
           }
           return result.data.teams?.map((team) => team?.id);
-        })
+        }),
       );
   }
 
   selectAll(options: { type: string; teams: Team[] }[]) {
     this.control.setValue(
-      options.map((option) => option.teams?.map((team) => team.id)).flat()
+      options.map((option) => option.teams?.map((team) => team.id)).flat(),
     );
   }
 

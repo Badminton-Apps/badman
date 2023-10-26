@@ -251,6 +251,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       return;
     }
 
+
     this.control?.setValue(id);
 
     if (this.updateUrl && id) {
