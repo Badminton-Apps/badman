@@ -7,6 +7,6 @@ import { ConfigModule } from '@nestjs/config';
   imports: [ConfigModule],
   controllers: [],
   providers: [SearchService, SearchResolver],
-  exports: [],
+  exports: [SearchService],
 })
 export class SearchModule {}
