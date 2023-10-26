@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.116.0](https://github.com/Badminton-Apps/badman/compare/v6.116.0-beta.3...v6.116.0) (2023-10-26)
+
+
+### Bug Fixes
+
+* 8-0 would not show the score ([4dfdcb8](https://github.com/Badminton-Apps/badman/commit/4dfdcb8ed47cf1c9a6b80f16c1a51a691ed23994))
+* always fetch live data if this season ([826698b](https://github.com/Badminton-Apps/badman/commit/826698b37391d56a9131b2496a600000809583ba))
+* downgrade package because of bug ([4d78fd8](https://github.com/Badminton-Apps/badman/commit/4d78fd8e26f9d3e395ada91ed6c86cd3bde36c68))
+
 ## [6.116.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.116.0-beta.2...v6.116.0-beta.3) (2023-10-24)
 
 ## [6.116.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.116.0-beta.1...v6.116.0-beta.2) (2023-10-24)
