@@ -22,6 +22,7 @@ import {
   hasTime,
 } from './pupeteer';
 import { Job } from 'bull';
+import { detailInfo } from './pupeteer/getDetailInfo';
 
 const includes = [
   {
@@ -208,6 +209,20 @@ export class CheckEncounterProcessor {
         { logger: this.logger },
       );
 
+      try {
+        const { endedOn, startedOn, usedShuttle } = await detailInfo(
+          { page },
+          { logger: this.logger },
+        );
+
+        encounter.startHour = startedOn || undefined;
+        encounter.endHour = endedOn || undefined;
+        encounter.shuttle = usedShuttle || undefined;
+      } catch (error) {
+        this.logger.warn(error);
+        // continue, we don't really care about this
+      }
+
       const hoursPassed = moment().diff(encounter.date, 'hour');
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
@@ -231,7 +246,6 @@ export class CheckEncounterProcessor {
         }
 
         encounter.enteredOn = enteredMoment.toDate();
-        await encounter.save();
       }
 
       if (accepted) {
@@ -246,8 +260,9 @@ export class CheckEncounterProcessor {
 
         encounter.acceptedOn = acceptedMoment.toDate();
         encounter.accepted = true;
-        await encounter.save();
       }
+      
+      await encounter.save();
     } catch (error) {
       this.logger.error(error);
       const glenn = await Player.findOne({
