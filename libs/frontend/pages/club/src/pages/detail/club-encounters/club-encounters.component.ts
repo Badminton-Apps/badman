@@ -77,7 +77,6 @@ export class ClubEncountersComponent implements OnInit {
             }),
             startWith(this.filter.value ?? {}),
             switchMap((filter) => {
-
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const where: Record<string, any> = {
                 $or: [
@@ -192,7 +191,10 @@ export class ClubEncountersComponent implements OnInit {
         openEncounters: new FormControl(false),
       });
     }
-    if (this.filter.get('club')?.value?.id !== this.clubId()) {
+    if (
+      (this.filter.get('club')?.value?.id ?? this.filter.get('club')?.value) !==
+      this.clubId()
+    ) {
       this.filter.get('club')?.setValue({ id: this.clubId() });
     }
 
