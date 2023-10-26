@@ -31,7 +31,6 @@ import {
     EnterScoresProcessor,
     CheckEncounterProcessor,
     CheckRankingProcessor,
-    SearchModule,
 
     CronService,
   ],
@@ -46,6 +45,7 @@ import {
     RankingModule,
     ScheduleModule.forRoot(),
     QueueModule,
+    SearchModule,
     NotificationsModule,
     VisualModule,
     TranslateModule,
