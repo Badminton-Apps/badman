@@ -148,11 +148,17 @@ jobs:
         run: |
           echo "name=$([[ -f ./yarn.lock ]] && echo "yarn" || ([[ -f ./pnpm-lock.yaml ]] && echo "pnpm") || echo "npm")" >> $GITHUB_OUTPUT
 
+      # # Set node/npm/yarn versions using volta, with optional overrides provided by the consumer
+      # - uses: volta-cli/action@v4
+      #   with:
+      #     node-version: '${{ inputs.node-version }}'
+      #     npm-version: '${{ inputs.npm-version }}'
+      #     yarn-version: '${{ inputs.yarn-version }}'
+      #     package-json-path: '${{ inputs.working-directory || github.workspace }}/package.json'
       - uses: actions/setup-node@v3
         with:
           node-version: '${{ inputs.node-version }}'
-          package-json-path: '${{ inputs.working-directory || github.workspace }}/package.json'
-
+          
       # Install pnpm with exact version provided by consumer or fallback to latest
       - name: Install PNPM
         if: steps.package_manager.outputs.name == 'pnpm'
