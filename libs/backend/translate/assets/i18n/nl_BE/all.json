@@ -193,9 +193,11 @@
       "change-date": "Gewijzigde datum",
       "change-location": "Gewijzigde locatie",
       "change-location-note": "De optie tot het filteren van locatie wijzigingen werkt enkel voor wedstrijden verlegd na 30/07",
+      "gameleader": "Wedstrijdleider",
       "home-games": "Alleen thuiswedstrijden",
       "no-more": "Geen ontmoetingen meer",
       "open-requests": "Openstaande verplaatsingsaanvragen",
+      "shuttle": "Gebruikte shuttle",
       "title": "Ontmoetingen"
     },
     "home": "Thuis",

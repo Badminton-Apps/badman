@@ -197,9 +197,11 @@ export type I18nTranslations = {
                 "change-date": string;
                 "change-location": string;
                 "change-location-note": string;
+                "gameleader": string;
                 "home-games": string;
                 "no-more": string;
                 "open-requests": string;
+                "shuttle": string;
                 "title": string;
             };
             "home": string;

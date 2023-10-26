@@ -193,9 +193,11 @@
       "change-date": "Modified date",
       "change-location": "Modified location",
       "change-location-note": "Location change filtering option works only for encounters rescheduled after 30/07",
+      "gameleader": "Game leader",
       "home-games": "Home games only",
       "no-more": "No more encounters",
       "open-requests": "Open transfer requests",
+      "shuttle": "Used shuttle",
       "title": "Encounters"
     },
     "home": "Home",
