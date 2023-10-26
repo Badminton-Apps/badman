@@ -26,14 +26,14 @@ export async function detailInfo(
     const targetPage = page;
     const body = await waitForSelector(selector, targetPage, timeout);
 
-  const rows = await body.$$('tr');
+    const rows = await body.$$('tr');
 
     let gameLeader: string | null = null;
     let usedShuttle: string | null = null;
     let startedOn: string | null = null;
     let endedOn: string | null = null;
 
-    const timeFinder = /(\d{1,2})[:u](\d{1,2})/gim;
+    const timeFinder = /.*(0[0-9]|1[0-9]|2[0-3])[:u]([0-5][0-9]).*/gim;
 
     for (const row of rows) {
       // logger.verbose(`Processing row`);
@@ -54,18 +54,16 @@ export async function detailInfo(
           const td = await row.$('td');
           const tdTxt = (await td?.evaluate((el) => el.textContent)) || '';
 
-          const match = timeFinder.exec(tdTxt);
+          const match = timeFinder.exec(tdTxt.trim());
 
           if (match) {
             startedOn = `${match[1]}:${match[2]}`;
           }
-
-          startedOn = tdTxt;
         } else if (headerTxt.indexOf('Einduur ontmoeting') !== -1) {
           const td = await row.$('td');
           const tdTxt = (await td?.evaluate((el) => el.textContent)) || '';
 
-          const match = timeFinder.exec(tdTxt);
+          const match = timeFinder.exec(tdTxt.trim());
 
           if (match) {
             endedOn = `${match[1]}:${match[2]}`;
