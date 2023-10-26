@@ -23,6 +23,9 @@ export class EncounterCompetition {
   originalLocationId?: Date;
   originalLocation?: Location;
 
+  shuttle?: string;
+  startHour?: string;
+  endHour?: string;
 
   homeTeamId?: string;
   awayTeamId?: string;
@@ -49,6 +52,9 @@ export class EncounterCompetition {
         ? new Location(args?.location)
         : undefined;
 
+    this.shuttle = args?.shuttle;
+    this.startHour = args?.startHour;
+    this.endHour = args?.endHour;
 
     this.games = args?.games
       ?.map((g) => new Game(g))
