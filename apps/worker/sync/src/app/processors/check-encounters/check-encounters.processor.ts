@@ -209,24 +209,6 @@ export class CheckEncounterProcessor {
         { logger: this.logger },
       );
 
-      try {
-        const { endedOn, startedOn, usedShuttle } = await detailInfo(
-          { page },
-          { logger: this.logger },
-        );
-
-        this.logger.debug(
-          `Encounter started on ${startedOn} and ended on ${endedOn}, used shuttle ${usedShuttle}`,
-        );
-
-        encounter.startHour = startedOn || undefined;
-        encounter.endHour = endedOn || undefined;
-        encounter.shuttle = usedShuttle || undefined;
-      } catch (error) {
-        this.logger.warn(error);
-        // continue, we don't really care about this
-      }
-
       const hoursPassed = moment().diff(encounter.date, 'hour');
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
@@ -250,9 +232,27 @@ export class CheckEncounterProcessor {
         }
 
         encounter.enteredOn = enteredMoment.toDate();
+
+        try {
+          const { endedOn, startedOn, usedShuttle } = await detailInfo(
+            { page },
+            { logger: this.logger },
+          );
+
+          this.logger.debug(
+            `Encounter started on ${startedOn} and ended on ${endedOn}, used shuttle ${usedShuttle}`,
+          );
+
+          encounter.startHour = startedOn || undefined;
+          encounter.endHour = endedOn || undefined;
+          encounter.shuttle = usedShuttle || undefined;
+        } catch (error) {
+          this.logger.warn(error);
+          // continue, we don't really care about this
+        }
       }
 
-      if (accepted) {
+      if (entered && accepted) {
         const acceptedMoment = moment(acceptedOn);
 
         if (!acceptedMoment.isValid()) {
