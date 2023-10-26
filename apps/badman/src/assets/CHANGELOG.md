@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.116.1](https://github.com/Badminton-Apps/badman/compare/v6.116.0...v6.116.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* factor in the fact that club might be a object ([f898797](https://github.com/Badminton-Apps/badman/commit/f898797334bdf054716290f18d06cd1ce4b2fe72))
+
 ## [6.116.0](https://github.com/Badminton-Apps/badman/compare/v6.116.0-beta.3...v6.116.0) (2023-10-26)
 
 
