@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.118.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.0...v6.118.0-beta.1) (2023-10-26)
+
+
+### Features
+
+* adding gameleader ([29c2fe6](https://github.com/Badminton-Apps/badman/commit/29c2fe620e1b0fbe76b99283129f8c9101c31a1d))
+* only check if entered ([2423464](https://github.com/Badminton-Apps/badman/commit/2423464c9946bde41bdbe404de267916a3a3f081))
+* search for game leader ([53cc925](https://github.com/Badminton-Apps/badman/commit/53cc9254371e225fa18dad0133c51eb1d0b92ce7))
+
 ## [6.118.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.117.0...v6.118.0-beta.0) (2023-10-26)
 
 
