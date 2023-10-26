@@ -136,8 +136,8 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
       ]).pipe(
         takeUntil(this.destroy$),
         distinctUntilChanged(),
-        map(() => previous?.value),
-        startWith(previous?.value),
+        map(() => previous?.value?.id),
+        startWith(previous?.value?.id),
         pairwise(),
         switchMap(([prev, next]) => {
           if (prev != null && prev !== next) {
