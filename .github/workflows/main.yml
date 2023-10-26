@@ -61,8 +61,6 @@ jobs:
       node-version: '20.1'
       main-branch-name: ${{ inputs.prod-release && 'main' || 'develop' }}
       output-affected-projects: true
-      parallel-commands: |
-        npx nx-cloud record -- npx nx workspace-lint
       parallel-commands-on-agents: |
         npx nx affected --target=build --parallel=3 --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
         npx nx affected --target=lint --parallel=3 --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
