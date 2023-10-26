@@ -244,10 +244,13 @@ export class CheckEncounterProcessor {
           this.logger.debug(
             `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`,
           );
+          
 
           encounter.startHour = startedOn || undefined;
           encounter.endHour = endedOn || undefined;
           encounter.shuttle = usedShuttle || undefined;
+
+
           if (gameLeader && gameLeader.length > 0) {
             const gameLeaderPlayer = await this.searchService.searchPlayers(
               this.searchService.getParts(gameLeader),
