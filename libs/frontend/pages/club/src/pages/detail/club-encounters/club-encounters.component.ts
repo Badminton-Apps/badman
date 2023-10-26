@@ -77,6 +77,7 @@ export class ClubEncountersComponent implements OnInit {
             }),
             startWith(this.filter.value ?? {}),
             switchMap((filter) => {
+
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const where: Record<string, any> = {
                 $or: [
@@ -151,36 +152,38 @@ export class ClubEncountersComponent implements OnInit {
             map((result) => {
               return result?.data?.encounterCompetitions.rows;
             }),
-            map((encounters) =>
-              encounters?.map(
-                (encounter) => new EncounterCompetition(encounter)
-              )
+            map(
+              (encounters) =>
+                encounters?.map(
+                  (encounter) => new EncounterCompetition(encounter),
+                ),
             ),
             map((encounters) => encounters?.sort(sortEncounters)),
-            map((encounters) =>
-              // if the change is not null and not accepted
-              encounters?.filter((encounter) =>
-                this.filter?.value?.openEncounters ?? false
-                  ? encounter.encounterChange?.id != null &&
-                    !encounter.encounterChange?.accepted
-                  : true
-              )
+            map(
+              (encounters) =>
+                // if the change is not null and not accepted
+                encounters?.filter((encounter) =>
+                  this.filter?.value?.openEncounters ?? false
+                    ? encounter.encounterChange?.id != null &&
+                      !encounter.encounterChange?.accepted
+                    : true,
+                ),
             ),
             tap(() => {
               this.loading.set(false);
-            })
+            }),
           ),
-          { injector: this.injector }
+          { injector: this.injector },
         );
       },
-      { injector: this.injector }
+      { injector: this.injector },
     );
   }
 
   private _setupFilter() {
     if (!this.filter) {
       this.filter = new FormGroup({
-        club: new FormControl(this.clubId),
+        club: new FormControl(this.clubId()),
         season: new FormControl(getCurrentSeason()),
         teams: new FormControl(),
         onlyHomeGames: new FormControl(true),
@@ -189,8 +192,8 @@ export class ClubEncountersComponent implements OnInit {
         openEncounters: new FormControl(false),
       });
     }
-    if (this.filter.get('club')?.value !== this.clubId) {
-      this.filter.get('club')?.setValue(this.clubId);
+    if (this.filter.get('club')?.value?.id !== this.clubId()) {
+      this.filter.get('club')?.setValue({ id: this.clubId() });
     }
 
     if (!this.filter.get('teams')?.value) {
