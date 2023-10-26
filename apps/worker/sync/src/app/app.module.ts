@@ -5,6 +5,7 @@ import { NotificationsModule } from '@badman/backend-notifications';
 import { QueueModule } from '@badman/backend-queue';
 import { RankingModule } from '@badman/backend-ranking';
 import { VisualModule } from '@badman/backend-visual';
+import { SearchModule } from '@badman/backend-search';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -30,6 +31,7 @@ import {
     EnterScoresProcessor,
     CheckEncounterProcessor,
     CheckRankingProcessor,
+    SearchModule,
 
     CronService,
   ],
