@@ -33,8 +33,6 @@ export async function detailInfo(
     let startedOn: string | null = null;
     let endedOn: string | null = null;
 
-    const timeFinder = /.*(0[0-9]|1[0-9]|2[0-3])[:u]([0-5][0-9]).*/gim;
-
     for (const row of rows) {
       // logger.verbose(`Processing row`);
       const th = await row.$('th');
@@ -54,19 +52,21 @@ export async function detailInfo(
           const td = await row.$('td');
           const tdTxt = (await td?.evaluate((el) => el.textContent)) || '';
 
-          const match = timeFinder.exec(tdTxt.trim());
-
-          if (match) {
-            startedOn = `${match[1]}:${match[2]}`;
+          // get the first group and second group from the regex, first are the hours and second are the minutes
+          const timeMatch =
+            /.*(0[0-9]|1[0-9]|2[0-3])[:u]([0-5][0-9]).*/gim.exec(tdTxt);
+          if (timeMatch && timeMatch.length > 0) {
+            startedOn = `${timeMatch[1]}:${timeMatch[2]}`;
           }
         } else if (headerTxt.indexOf('Einduur ontmoeting') !== -1) {
           const td = await row.$('td');
           const tdTxt = (await td?.evaluate((el) => el.textContent)) || '';
 
-          const match = timeFinder.exec(tdTxt.trim());
-
-          if (match) {
-            endedOn = `${match[1]}:${match[2]}`;
+          const timeMatch = /.*(0[0-9]|1[0-9]|2[0-3])[:u]([0-5][0-9]).*/gim.exec(
+            tdTxt,
+          );
+          if (timeMatch && timeMatch.length > 0) {
+            endedOn = `${timeMatch[1]}:${timeMatch[2]}`;
           }
         }
       }
