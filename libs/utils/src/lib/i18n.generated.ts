@@ -675,7 +675,6 @@ export type I18nTranslations = {
             "title": string;
         };
         "ranking": {
-            "add-ranking": string;
             "all-ranking": string;
             "double": string;
             "double-points": string;
@@ -689,6 +688,9 @@ export type I18nTranslations = {
             "last-update": string;
             "list": string;
             "may-ranking": string;
+            "menu": {
+                "add-ranking": string;
+            };
             "mix": string;
             "mix-points": string;
             "mix-rank": string;
@@ -699,6 +701,7 @@ export type I18nTranslations = {
             "table": {
                 "title": string;
             };
+            "title": string;
             "trending_down": string;
             "trending_up": string;
             "update-happend": string;

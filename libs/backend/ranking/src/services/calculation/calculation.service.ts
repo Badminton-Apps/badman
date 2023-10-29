@@ -1,8 +1,15 @@
-import { RankingGroup, RankingSystem } from '@badman/backend-database';
+import {
+  RankingGroup,
+  RankingPoint,
+  RankingSystem,
+} from '@badman/backend-database';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { PlaceService } from '../place';
 import { PointsService } from '../points';
+import { Op } from 'sequelize';
+import { Moment } from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class CalculationService {
@@ -11,15 +18,14 @@ export class CalculationService {
   constructor(
     private sequelize: Sequelize,
     private pointsService: PointsService,
-    private placeService: PlaceService
+    private placeService: PlaceService,
   ) {}
 
   public async simulation(
     systemId: string,
     calcDate?: Date | string,
     periods?: number,
-    updateRanking = true,
-    recalculatePoints = false
+    recalculatePoints = false,
   ) {
     const transaction = await this.sequelize.transaction();
     try {
@@ -32,27 +38,55 @@ export class CalculationService {
 
       this.logger.log(`Simulation for ${system.name}`);
 
-      // TODO: if start and stop are filled in do nmultiple updates
+      // first we need to rmeove all points after the calcDate
+      await RankingPoint.destroy({
+        where: {
+          systemId,
+          rankingDate: {
+            [Op.gte]: calcDate,
+          },
+        },
+        transaction,
+      });
 
-      if (recalculatePoints) {
-        this.logger.verbose(`updating points`);
-        await this.pointsService.createRankingPointsForPeriod({
+      // if no periods are defined, calulate up untill last update interval
+      let toDate = moment();
+      if ((periods ?? 0) > 0) {
+        toDate = moment(calcDate);
+        for (let i = 0; i < (periods ?? 0); i++) {
+          toDate.add(
+            system.caluclationIntervalAmount,
+            system.calculationIntervalUnit, 
+          );
+        }
+      }
+
+      const updates = this._getUpdateIntervals(
+        system,
+        moment(calcDate),
+        toDate,
+      );
+
+      for (const [updateDate, isUpdateNeeded] of updates) {
+        if (recalculatePoints) { 
+          await this.pointsService.createRankingPointsForPeriod({
+            system,
+            calcDate: updateDate,
+            options: {
+              transaction,
+            },
+          });
+        }
+
+        await this.placeService.createUpdateRanking({
           system,
-          calcDate,
+          calcDate: updateDate,
           options: {
             transaction,
+            updateRanking: isUpdateNeeded,
           },
         });
       }
-
-      await this.placeService.createUpdateRanking({
-        system,
-        calcDate,
-        options: {
-          transaction,
-          updateRanking,
-        },
-      });
 
       await transaction.commit();
       this.logger.log(`Simulation finished ${system.name}`);
@@ -61,5 +95,46 @@ export class CalculationService {
       this.logger.error(e);
       throw e;
     }
+  }
+
+  private _getUpdateIntervals(system: RankingSystem, from: Moment, to: Moment) {
+    let limit = 100;
+    const lastUpdate = moment(system.updateIntervalAmountLastUpdate);
+    const updates: [Date, boolean][] = [];
+
+    if (!system.updateIntervalAmount || !system.updateIntervalUnit) {
+      throw new Error('No update interval defined');
+    }
+
+    while (lastUpdate.isAfter(from) || limit <= 0) {
+      lastUpdate
+        .subtract(system.updateIntervalAmount, system.updateIntervalUnit)
+        .startOf('month')
+        .add(6, 'day')
+        .startOf('isoWeek');
+      limit--;
+    }
+
+    while (from.isBefore(to)) {
+      const diff = lastUpdate.diff(from, system.updateIntervalUnit) * -1;
+      const isUpdateNeeded = diff >= system.updateIntervalAmount;
+
+      if (isUpdateNeeded) {
+        lastUpdate
+          .add(system.updateIntervalAmount, system.updateIntervalUnit)
+          .startOf('month')
+          .add(6, 'day')
+          .startOf('isoWeek');
+      }
+
+      updates.push([from.toDate(), isUpdateNeeded]);
+
+      from.add(
+        system.caluclationIntervalAmount,
+        system.calculationIntervalUnit,
+      );
+    }
+
+    return updates;
   }
 }

@@ -671,7 +671,6 @@
     "title": "Points tabel"
   },
   "ranking": {
-    "add-ranking": "Add ranking",
     "all-ranking": "All update",
     "double": "Double",
     "double-points": "Ranking points",
@@ -685,6 +684,9 @@
     "last-update": "last update",
     "list": "Ranking players",
     "may-ranking": "May ranking",
+    "menu": {
+      "add-ranking": "Add ranking"
+    },
     "mix": "Mixed",
     "mix-points": "Ranking points",
     "mix-rank": "Ranking place",
@@ -695,6 +697,7 @@
     "table": {
       "title": "Ranking table"
     },
+    "title": "Ranking",
     "trending_down": "Trending down",
     "trending_up": "Trending up",
     "update-happend": "Update happened",
