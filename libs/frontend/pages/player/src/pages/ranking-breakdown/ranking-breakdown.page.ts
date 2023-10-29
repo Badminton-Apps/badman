@@ -193,7 +193,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
         this.apollo
           .query<{ rankingSystems: RankingSystem[] }>({
             query: gql`
-              query getPrimary($where: JSONObject) {
+              query GetSystem($where: JSONObject) {
                 rankingSystems(where: $where) {
                   id
                   differenceForUpgrade
@@ -252,7 +252,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
             query PlayerGames(
               $where: JSONObject
               $playerId: ID!
-              $rankingType: ID!
+              $systemId: ID!
             ) {
               player(id: $playerId) {
                 id
@@ -270,7 +270,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
                     double
                     mix
                   }
-                  rankingPoints(where: { systemId: $rankingType }) {
+                  rankingPoints(where: { systemId: $systemId }) {
                     id
                     differenceInLevel
                     playerId
@@ -289,7 +289,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
               },
             },
             playerId: this.player().id,
-            rankingType: this.system()?.id,
+            systemId: this.system()?.id,
           },
         })
       ),

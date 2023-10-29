@@ -27,8 +27,7 @@ export class SimulationProcessor {
       job.data.systemId,
       job.data.calcDate,
       job.data.periods,
-      true,
-      false
+      job.data.recalculatePoints
     );
   }
 }

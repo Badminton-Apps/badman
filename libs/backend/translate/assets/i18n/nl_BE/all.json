@@ -671,7 +671,6 @@
     "title": "Puntentabel"
   },
   "ranking": {
-    "add-ranking": "Voeg ranking toe",
     "all-ranking": "Alle updates",
     "double": "Dubbel",
     "double-points": "Ranking punten",
@@ -685,6 +684,9 @@
     "last-update": "Laatste update",
     "list": "Ranking spelers",
     "may-ranking": "Mei ranking",
+    "menu": {
+      "add-ranking": "Voeg ranking toe"
+    },
     "mix": "Gemengd",
     "mix-points": "Ranking punten",
     "mix-rank": "Ranking plaats",
@@ -695,6 +697,7 @@
     "table": {
       "title": "Ranking tabel"
     },
+    "title": "Ranking",
     "trending_down": "Neerwaartse trend",
     "trending_up": "Stijgende trend",
     "update-happend": "Update plaatsgevonden",

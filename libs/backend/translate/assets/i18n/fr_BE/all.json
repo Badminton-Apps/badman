@@ -671,7 +671,6 @@
     "title": "Tableau des points"
   },
   "ranking": {
-    "add-ranking": "Voeg ranking toe",
     "all-ranking": "Alle updates",
     "double": "Double",
     "double-points": "Double points",
@@ -685,6 +684,9 @@
     "last-update": "Dernière mise à jour",
     "list": "Ranking joueurs",
     "may-ranking": "Mei ranking",
+    "menu": {
+      "add-ranking": "Voeg ranking toe"
+    },
     "mix": "Mixte",
     "mix-points": "Mixte points",
     "mix-rank": "Ranking classement",
@@ -695,6 +697,7 @@
     "table": {
       "title": "Tableau de classement"
     },
+    "title": "Classement",
     "trending_down": "Tendance à la baisse",
     "trending_up": "La tendance est à la hausse",
     "update-happend": "Update plaatsgevonden",

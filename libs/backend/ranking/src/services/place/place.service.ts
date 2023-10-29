@@ -5,7 +5,7 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/backend-database';
-import { GameType } from '@badman/utils';
+import { GameType, getRankingProtected, runParallel } from '@badman/utils';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
@@ -35,7 +35,7 @@ export class PlaceService {
     if (!system) {
       throw new NotFoundException(`${RankingSystem.name}`);
     }
-    this._logger.log(`Calculatting places for ${system.name}`);
+    this._logger.log(`Calculatting places for ${system.name}, ${calcDate}`);
 
     const start = moment(calcDate)
       .subtract(system.periodAmount, system.periodUnit)
@@ -57,111 +57,28 @@ export class PlaceService {
       );
     }
 
-    const players = await this._getPlayers(system.id, { transaction });
+    const players = await this._getPlayers({ transaction });
+    const batchSize = 50;
+    for (let i = 0; i < players.length; i += batchSize) {
+      const batch = players.slice(i, i + batchSize);
+      const promisses = batch?.map((p) =>
+        this._newPlaceForPlayer(p, system, stop, start, options),
+      );
+      // benchmark start
+      const startPef = Date.now();
+      // Calculate places per player
+      await runParallel(promisses, 50);
+      // benchmark end
+      const stopPef = Date.now();
 
-    // Calculate places per player
-    const total = players.length;
-    let done = 0;
-    for (const player of players) {
-      let lastRankings = await player.getRankingPlaces({
-        where: {
-          systemId: system.id,
-        },
-        transaction,
-        order: [['rankingDate', 'DESC']],
-        limit: 1,
-      });
-
-      if (lastRankings.length === 0) {
-        const newRanking = new RankingPlace({
-          systemId: system.id,
-          playerId: player.id,
-          gender: player.gender,
-          single: system.amountOfLevels,
-          double: system.amountOfLevels,
-          mix: system.amountOfLevels,
-        });
-        lastRankings = [newRanking];
-      }
-
-      // Get last ranking (thecnically should be only one)
-      const lastRanking = lastRankings[0];
-
-      // Start creating the new one
-      const newRanking = new RankingPlace({
-        systemId: system.id,
-        playerId: player.id,
-        rankingDate: stop,
-      });
-
-      // Single
-      const single = await this._getNewPlace(system, player, {
-        ...options,
-        start,
-        stop,
-        lastRanking: lastRanking.single ?? system.amountOfLevels,
-        lastRankingInactive: lastRanking.singleInactive ?? false,
-        gameType: GameType.S,
-      });
-
-      newRanking.single = single.level;
-      newRanking.singleInactive = single.inactive;
-      newRanking.singlePoints = single.upgrade;
-      newRanking.singlePointsDowngrade = single.downgrade;
-
-      // Double
-      const double = await this._getNewPlace(system, player, {
-        ...options,
-        start,
-        stop,
-        lastRanking: lastRanking.double ?? system.amountOfLevels,
-        lastRankingInactive: lastRanking.doubleInactive ?? false,
-        gameType: GameType.D,
-      });
-
-      newRanking.double = double.level;
-      newRanking.doubleInactive = double.inactive;
-      newRanking.doublePoints = double.upgrade;
-      newRanking.doublePointsDowngrade = double.downgrade;
-
-      // Mix
-      const mix = await this._getNewPlace(system, player, {
-        ...options,
-        start,
-        stop,
-        lastRanking: lastRanking.mix ?? system.amountOfLevels,
-        lastRankingInactive: lastRanking.mixInactive ?? false,
-        gameType: GameType.MX,
-      });
-
-      newRanking.mix = mix.level;
-      newRanking.mixInactive = mix.inactive;
-      newRanking.mixPoints = mix.upgrade;
-      newRanking.mixPointsDowngrade = mix.downgrade;
-
-      if (options?.updateRanking) {
-        // Protections
-        this._protectRanking(
-          newRanking,
-          system.amountOfLevels,
-          system.maxDiffLevels,
-        );
-        newRanking.updatePossible = true;
-      }
-
-      // Save the new ranking
-      await newRanking.save({ transaction });
-
-      // Increase
-      done++;
-      if (done % 100 === 0) {
-        this._logger.debug(
-          `Calulating places: ${done}/${total} (${(
-            (done / total) *
-            100
-          ).toFixed(2)}%)`,
-        );
-      }
+      // Log progress and total percentage
+      this._logger.debug(
+        `Calulating places: ${i + batchSize}/${players.length}  (${Math.round(
+          ((i + batchSize) / players.length) * 100,
+        )}%), avg: ${Math.round(
+          (stopPef - startPef) / batchSize,
+          )}ms per player`,
+      ); 
     }
 
     if (options?.updateRanking) {
@@ -170,6 +87,110 @@ export class PlaceService {
 
     system.caluclationIntervalLastUpdate = stop;
     await system.save({ transaction });
+  }
+
+  private async _newPlaceForPlayer(
+    player: Player,
+    system: RankingSystem,
+    stop: Date,
+    start: Date,
+    options:
+      | {
+          updateRanking?: boolean | undefined;
+          transaction?: Transaction | undefined;
+        }
+      | undefined,
+  ) {
+    let lastRankings = await player.getRankingPlaces({
+      where: {
+        systemId: system.id,
+      },
+      transaction: options?.transaction,
+      order: [['rankingDate', 'DESC']],
+      limit: 1,
+    });
+
+    if (lastRankings.length === 0) {
+      const newRanking = new RankingPlace({ 
+        systemId: system.id,
+        playerId: player.id,
+        gender: player.gender,
+        single: system.amountOfLevels,
+        double: system.amountOfLevels,
+        mix: system.amountOfLevels,
+      });
+      lastRankings = [newRanking];
+    }
+
+    // Get last ranking (thecnically should be only one)
+    const lastRanking = lastRankings[0];
+
+    // Start creating the new one
+    let newRanking = new RankingPlace({
+      systemId: system.id,
+      playerId: player.id,
+      rankingDate: stop,
+    });
+
+    // Single
+    const singlePromise = this._getNewPlace(system, player, {
+      ...options,
+      start,
+      stop,
+      lastRanking: lastRanking.single ?? system.amountOfLevels,
+      lastRankingInactive: lastRanking.singleInactive ?? false,
+      gameType: GameType.S,
+    });
+
+    // Mix
+    const mixPromise = this._getNewPlace(system, player, {
+      ...options,
+      start,
+      stop,
+      lastRanking: lastRanking.mix ?? system.amountOfLevels,
+      lastRankingInactive: lastRanking.mixInactive ?? false,
+      gameType: GameType.MX,
+    });
+
+    // Double
+    const doublePromise = this._getNewPlace(system, player, {
+      ...options,
+      start,
+      stop,
+      lastRanking: lastRanking.double ?? system.amountOfLevels,
+      lastRankingInactive: lastRanking.doubleInactive ?? false,
+      gameType: GameType.D,
+    });
+
+    const [single, mix, double] = await Promise.all([
+      singlePromise,
+      mixPromise,
+      doublePromise,
+    ]);
+
+    newRanking.single = single.level;
+    newRanking.singleInactive = single.inactive;
+    newRanking.singlePoints = single.upgrade;
+    newRanking.singlePointsDowngrade = single.downgrade;
+
+    newRanking.double = double.level;
+    newRanking.doubleInactive = double.inactive;
+    newRanking.doublePoints = double.upgrade;
+    newRanking.doublePointsDowngrade = double.downgrade;
+
+    newRanking.mix = mix.level;
+    newRanking.mixInactive = mix.inactive;
+    newRanking.mixPoints = mix.upgrade;
+    newRanking.mixPointsDowngrade = mix.downgrade;
+
+    if (options?.updateRanking) {
+      // Protections
+      newRanking = getRankingProtected(newRanking, system);
+      newRanking.updatePossible = true;
+    }
+
+    // Save the new ranking
+    await newRanking.save({ transaction: options?.transaction });
   }
 
   private async _getNewPlace(
@@ -251,25 +272,15 @@ export class PlaceService {
     return result;
   }
 
-  private async _getPlayers(
-    systemId: string,
-    options?: { transaction?: Transaction },
-  ) {
+  private async _getPlayers(options?: { transaction?: Transaction }) {
     const { transaction } = options ?? {};
 
     // we require lastRankingPlace to skip players who have never played
     return await Player.findAll({
       attributes: ['id', 'gender'],
-      include: [
-        {
-          required: true,
-          model: RankingLastPlace,
-          attributes: ['single', 'double', 'mix', 'rankingDate', 'systemId'],
-          where: {
-            systemId,
-          },
-        },
-      ],
+      where: {
+        competitionPlayer: true,
+      },
       transaction,
     });
   }
@@ -310,9 +321,11 @@ export class PlaceService {
     }
 
     return await player.getGames({
+      attributes: ['id'],
       where,
       include: [
         {
+          attributes: ['id', 'points', 'differenceInLevel'],
           required: true,
           model: RankingPoint,
           where: {
@@ -501,47 +514,5 @@ export class PlaceService {
     } else {
       return bottomLevelByDowngradePoints;
     }
-  }
-
-  private _protectRanking(
-    newRanking: RankingPlace,
-    amountOfLevels: number,
-    maxDiffLevels?: number,
-  ): RankingPlace {
-    const highest = Math.min(
-      newRanking.single ?? amountOfLevels,
-      newRanking.double ?? amountOfLevels,
-      newRanking.mix ?? amountOfLevels,
-    );
-
-    maxDiffLevels = maxDiffLevels ?? 0;
-
-    newRanking.single = newRanking.single ?? amountOfLevels;
-    newRanking.double = newRanking.double ?? amountOfLevels;
-    newRanking.mix = newRanking.mix ?? amountOfLevels;
-
-    if (newRanking.single - highest >= maxDiffLevels) {
-      newRanking.single = highest + maxDiffLevels;
-    }
-    if (newRanking.double - highest >= maxDiffLevels) {
-      newRanking.double = highest + maxDiffLevels;
-    }
-    if (newRanking.mix - highest >= maxDiffLevels) {
-      newRanking.mix = highest + maxDiffLevels;
-    }
-
-    // protect against going to high
-
-    if (newRanking.single > amountOfLevels) {
-      newRanking.single = amountOfLevels;
-    }
-    if (newRanking.double > amountOfLevels) {
-      newRanking.double = amountOfLevels;
-    }
-    if (newRanking.mix > amountOfLevels) {
-      newRanking.mix = amountOfLevels;
-    }
-
-    return newRanking;
   }
 }

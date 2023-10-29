@@ -1,11 +1,11 @@
 <badman-page-header>
-  <div title>{{this.rankingSystem.name}}</div>
+  <div title>{{this.rankingSystem().name}}</div>
   <div subTitle>
     <mat-chip-listbox>
       <mat-chip
-        [matTooltip]="this.rankingSystem.caluclationIntervalLastUpdate?.toLocaleDateString() ?? ''"
+        [matTooltip]="this.rankingSystem().caluclationIntervalLastUpdate?.toLocaleDateString() ?? ''"
         >{{'all.ranking.last-update' | translate}}:
-        {{this.rankingSystem.caluclationIntervalLastUpdate |amTimeAgo
+        {{this.rankingSystem().caluclationIntervalLastUpdate |amTimeAgo
         }}</mat-chip
       >
     </mat-chip-listbox>
@@ -39,4 +39,4 @@
   </div>
 </badman-page-header>
 
-<badman-ranking-table></badman-ranking-table>
+<badman-ranking-table [id]="this.rankingSystem().id!"></badman-ranking-table>

@@ -2,10 +2,6 @@
   <div title>{{'all.competition.title' | translate}}</div>
 
   <div actions>
-    <button mat-icon-button class="favorite" title="favorite">
-      <mat-icon>star_outline</mat-icon>
-    </button>
-
     <badman-has-claim [any]="['change:job']">
       <button
         (click)="$event.stopPropagation()"

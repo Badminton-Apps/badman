@@ -107,6 +107,16 @@
         <badman-search-box></badman-search-box>
       </div>
 
+      <ng-container *ngIf="systemService.watchSysem$ | async as system">
+        <button
+          type="button"
+          mat-icon-button
+          (click)="systemService.clearWatchSystem()"
+          [matTooltip]="'Watching: ' + system.name"
+        >
+          <mat-icon>show_chart</mat-icon>
+        </button>
+      </ng-container>
       <badman-notifications></badman-notifications>
       <badman-header-menu></badman-header-menu>
     </mat-toolbar>
