@@ -6,4 +6,5 @@ export interface SimulationV2Job {
   systemId: string;
   calcDate?: Date | string;
   periods?: number;
+  recalculatePoints?: boolean;
 }

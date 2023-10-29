@@ -13,6 +13,7 @@ import {
   SimpleChanges,
   TransferState,
   ViewChild,
+  inject,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -54,6 +55,7 @@ import {
   tap,
 } from 'rxjs/operators';
 import { LoadingBlockComponent } from '../../../loading-block';
+import { RankingSystemService } from '@badman/frontend-graphql';
 
 @Component({
   standalone: true,
@@ -82,6 +84,8 @@ import { LoadingBlockComponent } from '../../../loading-block';
 export class ListGamesComponent
   implements OnInit, AfterViewInit, OnDestroy, OnChanges
 {
+  private systemService = inject(RankingSystemService);
+
   private destroy$ = new Subject<void>();
   @Input() playerId?: string;
 
@@ -101,7 +105,7 @@ export class ListGamesComponent
     formBuilder: FormBuilder,
     private apollo: Apollo,
     private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {
     this.filter = formBuilder.group({
       choices: [['S', 'D', 'MX']],
@@ -118,17 +122,23 @@ export class ListGamesComponent
           this.currentPage$.next(1);
           this.endOfList = false;
           return this.recentGames$.next([]);
-        })
+        }),
       ),
+      this.systemService.getPrimarySystemId(),
     ])
       .pipe(
         shareReplay(1),
         takeUntil(this.destroy$),
         filter(() => !this.endOfList),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        mergeMap(([page, filter]) =>
-          this._loadRecentGamesForPlayer(this.playerId ?? '', page, filter)
-        )
+        mergeMap(([page, filter, systemId]) =>
+          this._loadRecentGamesForPlayer(
+            this.playerId ?? '',
+            page,
+            filter,
+            systemId,
+          ),
+        ),
         // Increment the page number for the next request
       )
       .subscribe((games) => {
@@ -178,7 +188,8 @@ export class ListGamesComponent
   private _loadRecentGamesForPlayer(
     playerId: string,
     page: number,
-    filter?: Partial<{ choices: string[] | null }>
+    filter?: Partial<{ choices: string[] | null }>,
+    systemId?: string,
   ) {
     return this.apollo
       .query<{
@@ -190,6 +201,7 @@ export class ListGamesComponent
           query Games(
             $id: ID!
             $where: JSONObject
+            $whereRanking: JSONObject
             $take: Int
             $skip: Int
             $order: [SortOrderType!]
@@ -211,7 +223,7 @@ export class ListGamesComponent
                   double
                   mix
                 }
-                rankingPoints {
+                rankingPoints(where: $whereRanking) {
                   id
                   differenceInLevel
                   points
@@ -277,6 +289,9 @@ export class ListGamesComponent
               $in: filter?.choices ?? ['S', 'D', 'MX'],
             },
           },
+          whereRanking: {
+            systemId,
+          },
           order: [
             {
               direction: 'desc',
@@ -291,7 +306,7 @@ export class ListGamesComponent
         transferState(
           `recentGamesKey-${this.playerId}`,
           this.transferState,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           return (
@@ -303,7 +318,7 @@ export class ListGamesComponent
             // If the current page has less items than the page size, we've reached the end of the list
             this.endOfList = true;
           }
-        })
+        }),
       );
   }
 

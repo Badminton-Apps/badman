@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  
+  .row {
+    display: flex;
+    .flex {
+      flex: 1;
+    }
+    mat-form-field:not(:first-child) {
+      padding-left: 25px;
+    }
+    mat-checkbox {
+      padding: 16px 0;
+    }
+  }
+}

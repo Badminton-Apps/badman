@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  Injector,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
+  Signal,
   TransferState,
   computed,
   effect,
@@ -67,6 +69,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   // Dependencies
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private injector = inject(Injector);
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
   private apollo = inject(Apollo);
@@ -90,8 +93,8 @@ export class DetailPageComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<void>();
 
-  teams$?: Observable<Team[] | null>;
-  rankingPlaces$?: Observable<RankingPlace>;
+  teams?: Signal<Team[]>;
+  rankingPlace?: Signal<RankingPlace>;
 
   tooltip = {
     single: '',
@@ -104,8 +107,8 @@ export class DetailPageComponent implements OnInit, OnDestroy {
 
   constructor() {
     effect(() => {
-      this.teams$ = this._loadTeamsForPlayer();
-      this.rankingPlaces$ = this._loadRankingForPlayer();
+      this.teams = this._loadTeamsForPlayer();
+      this.rankingPlace = this._loadRankingForPlayer();
     });
   }
 
@@ -119,9 +122,9 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       .subscribe(([single, double, mix]) => {
         const lastNames = `${this.player().lastName}`.split(' ');
         if ((lastNames ?? []).length > 0) {
-          this.initials = `${this.player().firstName?.[0]}${
-            lastNames?.[lastNames.length - 1][0]
-          }`.toUpperCase();
+          this.initials = `${this.player().firstName?.[0]}${lastNames?.[
+            lastNames.length - 1
+          ][0]}`.toUpperCase();
         }
 
         this.tooltip.single = single;
@@ -148,8 +151,8 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
       map(
         ([loggedIn, hasClaim]) =>
-          loggedIn && (hasClaim || this.player().sub === null)
-      )
+          loggedIn && (hasClaim || this.player().sub === null),
+      ),
     );
 
     this.canClaim$ = combineLatest([
@@ -158,44 +161,47 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     ]).pipe(
       takeUntil(this.destroy$),
 
-      map(([loggedIn, user]) => loggedIn && !user.id)
+      map(([loggedIn, user]) => loggedIn && !user.id),
     );
   }
 
   getPlayer(game: Game, player: number, team: number) {
     const playerInGame = game.players?.find(
-      (p) => p.player === player && p.team === team
+      (p) => p.player === player && p.team === team,
     );
     return playerInGame?.fullName || 'Unknown';
   }
 
   private _loadTeamsForPlayer() {
-    return this.apollo
-      .query<{ player: { teams: Partial<Team>[] } }>({
-        query: gql`
-          query ClubsAndTeams($playerId: ID!) {
-            player(id: $playerId) {
-              id
-              teams {
+    return toSignal(
+      this.apollo
+        .query<{ player: { teams: Partial<Team>[] } }>({
+          query: gql`
+            query ClubsAndTeams($playerId: ID!) {
+              player(id: $playerId) {
                 id
-                clubId
-                slug
+                teams {
+                  id
+                  clubId
+                  slug
+                }
               }
             }
-          }
-        `,
-        variables: {
-          playerId: this.player().id,
-        },
-      })
-      .pipe(
-        map((result) => result.data.player.teams?.map((t) => new Team(t))),
-        transferState(
-          `teamsPlayer-${this.player().id}`,
-          this.stateTransfer,
-          this.platformId
-        )
-      );
+          `,
+          variables: {
+            playerId: this.player().id,
+          },
+        })
+        .pipe(
+          map((result) => result.data.player.teams?.map((t) => new Team(t))),
+          transferState(
+            `teamsPlayer-${this.player().id}`,
+            this.stateTransfer,
+            this.platformId,
+          ),
+        ),
+      { injector: this.injector },
+    ) as Signal<Team[]>;
   }
 
   async claimAccount() {
@@ -211,7 +217,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         variables: {
           playerId: this.player().id,
         },
-      })
+      }),
     );
 
     this.snackBar.open(this.translate.instant('all.player.claimed'), 'OK', {
@@ -221,64 +227,67 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   }
 
   private _loadRankingForPlayer() {
-    return this.apollo
-      .query<{ player: { rankingLastPlaces: Partial<RankingPlace>[] } }>({
-        query: gql`
-          query LastRankingPlace($playerId: ID!) {
-            player(id: $playerId) {
-              id
-              rankingLastPlaces {
+    return toSignal(
+      this.apollo
+        .query<{ player: { rankingLastPlaces: Partial<RankingPlace>[] } }>({
+          query: gql`
+            query LastRankingPlace($playerId: ID!) {
+              player(id: $playerId) {
                 id
-                single
-                singlePoints
-                double
-                doublePoints
-                mix
-                mixPoints
-                rankingSystem {
+                rankingLastPlaces {
                   id
-                  primary
+                  single
+                  singlePoints
+                  double
+                  doublePoints
+                  mix
+                  mixPoints
+                  rankingSystem {
+                    id
+                    primary
+                  }
                 }
               }
             }
-          }
-        `,
-        variables: {
-          playerId: this.player().id,
-        },
-      })
-      .pipe(
-        transferState(
-          `rankingPlayer-${this.player().id}`,
-          this.stateTransfer,
-          this.platformId
-        ),
-        map((result) => {
-          if ((result?.data?.player?.rankingLastPlaces ?? []).length > 0) {
-            const findPrimary = result?.data.player.rankingLastPlaces.find(
-              (r) => r.rankingSystem?.primary
-            );
+          `,
+          variables: {
+            playerId: this.player().id,
+          },
+        })
+        .pipe(
+          transferState(
+            `rankingPlayer-${this.player().id}`,
+            this.stateTransfer,
+            this.platformId,
+          ),
+          map((result) => {
+            if ((result?.data?.player?.rankingLastPlaces ?? []).length > 0) {
+              const findPrimary = result?.data.player.rankingLastPlaces.find(
+                (r) => r.rankingSystem?.primary,
+              );
 
-            if (findPrimary) {
-              return new RankingPlace(findPrimary);
+              if (findPrimary) {
+                return new RankingPlace(findPrimary);
+              }
+
+              return new RankingPlace(result?.data.player.rankingLastPlaces[0]);
             }
 
-            return new RankingPlace(result?.data.player.rankingLastPlaces[0]);
-          }
-
-          return {
-            single: 12,
-            double: 12,
-            mix: 12,
-          } as RankingPlace;
-        })
-      );
+            return {
+              single: 12,
+              double: 12,
+              mix: 12,
+            } as RankingPlace;
+          }),
+        ),
+      { injector: this.injector },
+    ) as Signal<RankingPlace>;
   }
 
   removePlayer() {
     const dialogData = new ConfirmDialogModel(
       'all.club.delete.player.title',
-      'all.club.delete.player.description'
+      'all.club.delete.player.description',
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
