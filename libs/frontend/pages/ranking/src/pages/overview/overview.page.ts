@@ -122,7 +122,6 @@ export class OverviewPageComponent {
       this.systems = this._loadSystems();
     });
   }
-
   _loadSystems() {
     return toSignal(
       this.filter?.valueChanges?.pipe(
@@ -143,9 +142,18 @@ export class OverviewPageComponent {
           if (!result?.data.rankingSystems) {
             throw new Error('No Systems');
           }
-          return result.data.rankingSystems.map(
-            (system) => new RankingSystem(system),
-          );
+          return result.data.rankingSystems
+            .map((system) => new RankingSystem(system))
+            ?.sort((a, b) => {
+              // by name
+              if (`${a.name}` > `${b.name}`) {
+                return 1;
+              } else if (`${a.name}` < `${b.name}`) {
+                return -1;
+              }
+
+              return 0;
+            });
         }),
         tap(() => {
           this.loading.set(false);
