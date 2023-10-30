@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Inject,
-  OnInit,
+  Injector,
   PLATFORM_ID,
+  Signal,
   TransferState,
+  computed,
+  effect,
+  inject,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +26,7 @@ import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, map } from 'rxjs';
+import { map } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -45,89 +49,97 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     PageHeaderComponent,
   ],
 })
-export class DetailPageComponent implements OnInit {
-  team!: Team;
+export class DetailPageComponent {
+  private route = inject(ActivatedRoute);
+  private apollo = inject(Apollo);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject(PLATFORM_ID);
+  private breadcrumbService = inject(BreadcrumbService);
+  private seoService = inject(SeoService);
+  private injector = inject(Injector);
 
-  entries$?: Observable<EventEntry | undefined>;
+  // route
+  queryParams = toSignal(this.route.queryParamMap);
+  routeParams = toSignal(this.route.paramMap);
+  routeData = toSignal(this.route.data);
 
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {}
+  team = computed(() => this.routeData()?.['team'] as Team);
 
-  ngOnInit(): void {
-    this.team = this.route.snapshot.data['team'];
-    const teamName = `${this.team.name}`;
+  entry!: Signal<EventEntry>;
 
-    this.seoService.update({
-      title: teamName,
-      description: `Team ${teamName}`,
-      type: 'website',
-      keywords: ['team', 'badminton'],
+  constructor() {
+    effect(() => {
+      const teamName = `${this.team().name}`;
+
+      this.seoService.update({
+        title: teamName,
+        description: `Team ${teamName}`,
+        type: 'website',
+        keywords: ['team', 'badminton'],
+      });
+      this.breadcrumbService.set(
+        'club/:id',
+        this.route.snapshot.data['club'].name,
+      );
+      this.breadcrumbService.set('club/:id/team/:id', teamName);
+
+      this.entry = this._loadEntry();
     });
-    this.breadcrumbsService.set(
-      'club/:id',
-      this.route.snapshot.data['club'].name
-    );
-    this.breadcrumbsService.set('club/:id/team/:id', teamName);
-
-    this.entries$ = this._latestEntry();
   }
 
-  private _latestEntry() {
+  private _loadEntry() {
     const year = getCurrentSeason();
-    return this.apollo
-      .query<{ team: Partial<Team> }>({
-        query: gql`
-          query Entries($teamId: ID!) {
-            team(id: $teamId) {
-              id
-              entry {
+    return toSignal(
+      this.apollo
+        .query<{ team: Partial<Team> }>({
+          query: gql`
+            query Entries($teamId: ID!) {
+              team(id: $teamId) {
                 id
-                date
-                standing {
+                entry {
                   id
-                  position
-                  size
-                }
-                drawCompetition {
-                  id
-                }
-                subEventCompetition {
-                  id
-                  eventCompetition {
+                  date
+                  standing {
                     id
-                    name
-                    slug
+                    position
+                    size
+                  }
+                  drawCompetition {
+                    id
+                  }
+                  subEventCompetition {
+                    id
+                    eventCompetition {
+                      id
+                      name
+                      slug
+                    }
                   }
                 }
               }
             }
-          }
-        `,
-        variables: {
-          teamId: this.team.id,
-        },
-      })
-      .pipe(
-        transferState(
-          `teamEntries-${this.team.id}-${year}`,
-          this.stateTransfer,
-          this.platformId
-        ),
-        map((result) => {
-          if (!result?.data?.team?.entry) {
-            return undefined;
-          }
-
-          return new EventEntry(
-            result?.data?.team?.entry as Partial<EventEntry>
-          );
+          `,
+          variables: {
+            teamId: this.team().id,
+          },
         })
-      );
+        .pipe(
+          transferState(
+            `teamEntries-${this.team().id}-${year}`,
+            this.stateTransfer,
+            this.platformId,
+          ),
+          map((result) => {
+            if (!result?.data?.team?.entry) {
+              return undefined;
+            }
+
+            return new EventEntry(
+              result?.data?.team?.entry as Partial<EventEntry>,
+            );
+          }),
+        ),
+      { injector: this.injector },
+    ) as Signal<EventEntry>;
   }
 }

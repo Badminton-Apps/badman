@@ -32,7 +32,7 @@ export class RecentGamesComponent implements OnInit {
   @Input() teams!: Team | Team[];
 
   ngOnInit() {
-    if (!this.teamId && !this.clubId && this.teams instanceof Team) {
+    if (!this.teamId && !this.clubId && (this.teams instanceof Team)) {
       this.teamId = this.teams.id;
     }
 
@@ -40,4 +40,6 @@ export class RecentGamesComponent implements OnInit {
       this.type = 'game';
     }
   }
+
+  
 }

@@ -3,7 +3,6 @@ import {
   Component,
   Injector,
   OnDestroy,
-  OnInit,
   PLATFORM_ID,
   Signal,
   TransferState,
@@ -65,7 +64,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     HasClaimComponent,
   ],
 })
-export class DetailPageComponent implements OnInit, OnDestroy {
+export class DetailPageComponent implements OnDestroy {
   // Dependencies
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -109,10 +108,23 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     effect(() => {
       this.teams = this._loadTeamsForPlayer();
       this.rankingPlace = this._loadRankingForPlayer();
-    });
-  }
 
-  ngOnInit(): void {
+      this.seoService.update({
+        title: `${this.player().fullName}`,
+        description: `Player ${this.player().fullName}`,
+        type: 'website',
+        keywords: ['player', 'badminton'],
+      });
+      this.breadcrumbService.set('player/:id', this.player().fullName);
+
+      const lastNames = `${this.player().lastName}`.split(' ');
+      if ((lastNames ?? []).length > 0) {
+        this.initials = `${this.player().firstName?.[0]}${lastNames?.[
+          lastNames.length - 1
+        ][0]}`.toUpperCase();
+      }
+    });
+
     combineLatest([
       this.translate.get('all.ranking.single'),
       this.translate.get('all.ranking.double'),
@@ -120,24 +132,9 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([single, double, mix]) => {
-        const lastNames = `${this.player().lastName}`.split(' ');
-        if ((lastNames ?? []).length > 0) {
-          this.initials = `${this.player().firstName?.[0]}${lastNames?.[
-            lastNames.length - 1
-          ][0]}`.toUpperCase();
-        }
-
         this.tooltip.single = single;
         this.tooltip.double = double;
         this.tooltip.mix = mix;
-
-        this.seoService.update({
-          title: `${this.player().fullName}`,
-          description: `Player ${this.player().fullName}`,
-          type: 'website',
-          keywords: ['player', 'badminton'],
-        });
-        this.breadcrumbService.set('player/:id', this.player().fullName);
       });
 
     this.hasMenu$ = combineLatest([

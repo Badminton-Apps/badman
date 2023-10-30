@@ -1,7 +1,7 @@
 <mat-list role="list">
   <mat-list-item
     role="listitem"
-    *ngFor="let upcoming of this.upcomingEncounters$ | async; trackBy: trackById"
+    *ngFor="let upcoming of this.upcomingEncounters(); trackBy: trackById"
   >
     <span matListItemTitle>{{ upcoming?.date | amDateFormat : 'llll' }}</span>
     <span matListItemLine
