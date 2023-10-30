@@ -29,13 +29,14 @@ import {
   RecentGamesComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
+import { RankingSystemService } from '@badman/frontend-graphql';
 import { Game, Player, RankingPlace, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, Subject, combineLatest, lastValueFrom, of } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -79,6 +80,7 @@ export class DetailPageComponent implements OnDestroy {
   private translate = inject(TranslateService);
   private claim = inject(ClaimService);
   private auth = inject(AuthenticateService);
+  private systemService = inject(RankingSystemService);
 
   // route
   queryParams = toSignal(this.route.queryParamMap);
@@ -225,58 +227,62 @@ export class DetailPageComponent implements OnDestroy {
 
   private _loadRankingForPlayer() {
     return toSignal(
-      this.apollo
-        .query<{ player: { rankingLastPlaces: Partial<RankingPlace>[] } }>({
-          query: gql`
-            query LastRankingPlace($playerId: ID!) {
-              player(id: $playerId) {
-                id
-                rankingLastPlaces {
+      this.systemService.getPrimarySystemId().pipe(
+        switchMap((systemId) =>
+          this.apollo.query<{
+            player: { rankingLastPlaces: Partial<RankingPlace>[] };
+          }>({
+            query: gql`
+              query LastRankingPlace($playerId: ID!, $systemId: ID!) {
+                player(id: $playerId) {
                   id
-                  single
-                  singlePoints
-                  double
-                  doublePoints
-                  mix
-                  mixPoints
-                  rankingSystem {
+                  rankingLastPlaces(where: { systemId: $systemId }) {
                     id
-                    primary
+                    single
+                    singlePoints
+                    double
+                    doublePoints
+                    mix
+                    mixPoints
+                    rankingSystem {
+                      id
+                      primary
+                    }
                   }
                 }
               }
-            }
-          `,
-          variables: {
-            playerId: this.player().id,
-          },
-        })
-        .pipe(
-          transferState(
-            `rankingPlayer-${this.player().id}`,
-            this.stateTransfer,
-            this.platformId,
-          ),
-          map((result) => {
-            if ((result?.data?.player?.rankingLastPlaces ?? []).length > 0) {
-              const findPrimary = result?.data.player.rankingLastPlaces.find(
-                (r) => r.rankingSystem?.primary,
-              );
-
-              if (findPrimary) {
-                return new RankingPlace(findPrimary);
-              }
-
-              return new RankingPlace(result?.data.player.rankingLastPlaces[0]);
-            }
-
-            return {
-              single: 12,
-              double: 12,
-              mix: 12,
-            } as RankingPlace;
+            `,
+            variables: {
+              playerId: this.player().id,
+              systemId,
+            },
           }),
         ),
+        transferState(
+          `rankingPlayer-${this.player().id}`,
+          this.stateTransfer,
+          this.platformId,
+        ),
+        map((result) => {
+          if ((result?.data?.player?.rankingLastPlaces ?? []).length > 0) {
+            const findPrimary = result?.data.player.rankingLastPlaces.find(
+              (r) => r.rankingSystem?.primary,
+            );
+
+            if (findPrimary) {
+              return new RankingPlace(findPrimary);
+            }
+
+            return new RankingPlace(result?.data.player.rankingLastPlaces[0]);
+          }
+
+          return {
+            single: 12,
+            double: 12,
+            mix: 12,
+          } as RankingPlace;
+        }),
+      ),
       { injector: this.injector },
     ) as Signal<RankingPlace>;
   }
