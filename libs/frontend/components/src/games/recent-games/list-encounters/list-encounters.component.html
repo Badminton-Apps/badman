@@ -1,10 +1,8 @@
-<ng-container
-  *ngIf="this.recentEncounters$ | async as encounters; else loading"
->
+<ng-container *ngIf="this.recentEncounters(); else loading">
   <mat-nav-list role="list">
     <mat-list-item
       role="listitem"
-      *ngFor="let encounter of encounters; trackBy: trackById"
+      *ngFor="let encounter of this.recentEncounters(); trackBy: trackById"
       [routerLink]="[
         '/',
         'competition',
