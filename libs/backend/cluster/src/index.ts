@@ -1,1 +1,2 @@
-export * from './lib/cluster.module';
+export * from './cluster.module';
+export * from './cluster.service';

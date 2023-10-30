@@ -7,11 +7,11 @@ const numCPUs = parseInt(process.argv[2] || '1');
 
 @Injectable()
 export class ClusterService {
-  static clusterize(callback: () => void): void {
+  static clusterize(callback: () => void, cpus: number = numCPUs): void {
     if (cluster.isPrimary) {
-      console.log(`MASTER SERVER (${process.pid}) IS RUNNING ${numCPUs} WORKERS}`);
+      console.log(`MASTER SERVER (${process.pid}) IS RUNNING ${cpus} WORKERS`);
 
-      for (let i = 0; i < numCPUs; i++) {
+      for (let i = 0; i < cpus; i++) {
         cluster.fork();
       }
 
