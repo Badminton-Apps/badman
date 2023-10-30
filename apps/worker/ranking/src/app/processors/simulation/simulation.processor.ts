@@ -1,7 +1,7 @@
 import {
   Simulation,
   SimulationQueue,
-  SimulationV2Job
+  SimulationV2Job,
 } from '@badman/backend-queue';
 import { CalculationService } from '@badman/backend-ranking';
 import { Process, Processor } from '@nestjs/bull';
@@ -14,9 +14,7 @@ import { Job } from 'bull';
 export class SimulationProcessor {
   private readonly _logger = new Logger(SimulationProcessor.name);
 
-  constructor(
-    private calculationService: CalculationService,
-  ) {
+  constructor(private calculationService: CalculationService) {
     this._logger.debug('SyncRanking');
   }
 
@@ -31,7 +29,6 @@ export class SimulationProcessor {
       job.data.fromDate,
       job.data.toDate,
       job.data.periods,
-      job.data.recalculatePoints,
     );
   }
 }

@@ -24,7 +24,6 @@ export class CalculationService {
     fromDate?: Date | string,
     toDate?: Date | string,
     periods?: number,
-    recalculatePoints = false,
     transaction?: Transaction,
   ) {
     try {
@@ -44,16 +43,12 @@ export class CalculationService {
         for (let i = 0; i < (periods ?? 0); i++) {
           fromDateM.subtract(
             system.caluclationIntervalAmount,
-            system.calculationIntervalUnit,
+            system.calculationIntervalUnit, 
           );
         }
       }
 
-      const updates = this._getUpdateIntervals(
-        system,
-        fromDateM,
-        toDateM,
-      );
+      const updates = this._getUpdateIntervals(system, fromDateM, toDateM);
 
       // I know t
       const minUpdate = moment(updates[0][0]);
@@ -92,21 +87,17 @@ export class CalculationService {
 
       for (const [updateDate, isUpdateNeeded] of updates) {
         this.logger.debug(
-          `${moment(updateDate).format(
-            'YYYY-MM-DD',
-          )}, ${isUpdateNeeded}, ${recalculatePoints}`,
+          `${moment(updateDate).format('YYYY-MM-DD')}, ${isUpdateNeeded}`,
         );
 
         const startUpdate = moment();
-        if (recalculatePoints) {
-          await this.pointsService.createRankingPointsForPeriod({
-            system,
-            calcDate: updateDate,
-            options: {
-              transaction,
-            },
-          });
-        }
+        await this.pointsService.createRankingPointsForPeriod({
+          system,
+          calcDate: updateDate,
+          options: {
+            transaction,
+          },
+        });
 
         await this.placeService.createUpdateRanking({
           system,
@@ -116,11 +107,6 @@ export class CalculationService {
             updateRanking: isUpdateNeeded,
           },
         });
-
-        if (isUpdateNeeded) {
-          // recalculate points for the next update because the ranking might have changed because of the updaet
-          recalculatePoints = true;
-        }
 
         const stopUpdate = moment();
         const duration = moment.duration(stopUpdate.diff(startUpdate));
