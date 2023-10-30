@@ -230,8 +230,12 @@ export class ListGamesComponent
                   playerId
                   system {
                     id
-                    differenceForDowngrade
-                    differenceForUpgrade
+                    differenceForDowngradeSingle
+                    differenceForDowngradeDouble
+                    differenceForDowngradeMix
+                    differenceForUpgradeSingle
+                    differenceForUpgradeDouble
+                    differenceForUpgradeMix
                   }
                 }
                 set1Team1
@@ -351,10 +355,14 @@ export class ListGamesComponent
     }
     const won = game.winner == team;
 
+    if (!game.gameType) {
+      throw `Game ${game.id} has no gameType`;
+    }
+
     let tooltip = undefined;
 
     const rankingPoint = game.rankingPoints?.find((p) => p.playerId === t1?.id);
-    const result = getGameResultType(won, rankingPoint);
+    const result = getGameResultType(won, game.gameType, rankingPoint);
 
     switch (result) {
       case GameBreakdownType.WON:
