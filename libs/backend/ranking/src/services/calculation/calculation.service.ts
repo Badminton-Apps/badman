@@ -1,22 +1,15 @@
-import {
-  RankingGroup,
-  RankingPoint,
-  RankingSystem,
-} from '@badman/backend-database';
+import { RankingGroup, RankingSystem } from '@badman/backend-database';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Sequelize } from 'sequelize-typescript';
+import moment, { Moment } from 'moment';
+import { Transaction } from 'sequelize';
 import { PlaceService } from '../place';
 import { PointsService } from '../points';
-import { Op } from 'sequelize';
-import { Moment } from 'moment';
-import moment from 'moment';
 
 @Injectable()
 export class CalculationService {
   private readonly logger = new Logger(CalculationService.name);
 
   constructor(
-    private sequelize: Sequelize,
     private pointsService: PointsService,
     private placeService: PlaceService,
   ) {}
@@ -26,8 +19,8 @@ export class CalculationService {
     calcDate?: Date | string,
     periods?: number,
     recalculatePoints = false,
+    transaction?: Transaction,
   ) {
-    const transaction = await this.sequelize.transaction();
     try {
       const system = await RankingSystem.findByPk(systemId, {
         include: [{ model: RankingGroup }],
@@ -38,17 +31,6 @@ export class CalculationService {
 
       this.logger.log(`Simulation for ${system.name}`);
 
-      // first we need to rmeove all points after the calcDate
-      await RankingPoint.destroy({
-        where: {
-          systemId,
-          rankingDate: {
-            [Op.gte]: calcDate,
-          },
-        },
-        transaction,
-      });
-
       // if no periods are defined, calulate up untill last update interval
       let toDate = moment();
       if ((periods ?? 0) > 0) {
@@ -56,7 +38,7 @@ export class CalculationService {
         for (let i = 0; i < (periods ?? 0); i++) {
           toDate.add(
             system.caluclationIntervalAmount,
-            system.calculationIntervalUnit, 
+            system.calculationIntervalUnit,
           );
         }
       }
@@ -67,10 +49,32 @@ export class CalculationService {
         toDate,
       );
 
+      // I know t
+      const minUpdate = moment(updates[0][0]);
+      const maxUpdate = moment(updates[updates.length - 1][0]);
+
+      this.logger.log(
+        `Simulation for ${system.name} has ${
+          updates.length
+        } point updates planned, including ${
+          updates.filter((u) => u[1]).length
+        } ranking updates, between ${minUpdate?.format(
+          'YYYY-MM-DD',
+        )} and ${maxUpdate?.format('YYYY-MM-DD')}
+        `,
+      );
+ 
       for (const [updateDate, isUpdateNeeded] of updates) {
-        if (recalculatePoints) { 
+        this.logger.debug(
+          `${moment(updateDate).format(
+            'YYYY-MM-DD',
+          )}, ${isUpdateNeeded}, ${recalculatePoints}`,
+        );
+
+        const startUpdate = moment();
+        if (recalculatePoints) {
           await this.pointsService.createRankingPointsForPeriod({
-            system,
+            system, 
             calcDate: updateDate,
             options: {
               transaction,
@@ -86,12 +90,30 @@ export class CalculationService {
             updateRanking: isUpdateNeeded,
           },
         });
+
+        if (isUpdateNeeded) {
+          // recalculate points for the next update because the ranking might have changed because of the updaet
+          recalculatePoints = true;
+        }
+
+        const stopUpdate = moment();
+        const duration = moment.duration(stopUpdate.diff(startUpdate));
+
+        this.logger.log(
+          `Simulation for ${
+            system.name
+          } finished in ${duration.asSeconds()} seconds`,
+        );
       }
 
-      await transaction.commit();
+      if (transaction) {
+        await transaction?.commit();
+      }
       this.logger.log(`Simulation finished ${system.name}`);
     } catch (e) {
-      await transaction.rollback();
+      if (transaction) {
+        await transaction.rollback();
+      }
       this.logger.error(e);
       throw e;
     }
@@ -134,6 +156,17 @@ export class CalculationService {
         system.calculationIntervalUnit,
       );
     }
+
+    // sort updates by date
+    updates.sort((a, b) => {
+      if (a[0].getTime() > b[0].getTime()) {
+        return 1;
+      }
+      if (a[0].getTime() < b[0].getTime()) {
+        return -1;
+      }
+      return 0;
+    });
 
     return updates;
   }
