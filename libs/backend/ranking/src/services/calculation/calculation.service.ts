@@ -1,7 +1,12 @@
-import { RankingGroup, RankingSystem } from '@badman/backend-database';
+import {
+  RankingGroup,
+  RankingPlace,
+  RankingPoint,
+  RankingSystem,
+} from '@badman/backend-database';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import moment, { Moment } from 'moment';
-import { Transaction } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { PlaceService } from '../place';
 import { PointsService } from '../points';
 
@@ -16,7 +21,8 @@ export class CalculationService {
 
   public async simulation(
     systemId: string,
-    calcDate?: Date | string,
+    fromDate?: Date | string,
+    toDate?: Date | string,
     periods?: number,
     recalculatePoints = false,
     transaction?: Transaction,
@@ -32,11 +38,11 @@ export class CalculationService {
       this.logger.log(`Simulation for ${system.name}`);
 
       // if no periods are defined, calulate up untill last update interval
-      let toDate = moment();
+      const toDateM = moment(toDate);
+      const fromDateM = moment(fromDate);
       if ((periods ?? 0) > 0) {
-        toDate = moment(calcDate);
         for (let i = 0; i < (periods ?? 0); i++) {
-          toDate.add(
+          fromDateM.subtract(
             system.caluclationIntervalAmount,
             system.calculationIntervalUnit,
           );
@@ -45,8 +51,8 @@ export class CalculationService {
 
       const updates = this._getUpdateIntervals(
         system,
-        moment(calcDate),
-        toDate,
+        fromDateM,
+        toDateM,
       );
 
       // I know t
@@ -63,7 +69,27 @@ export class CalculationService {
         )} and ${maxUpdate?.format('YYYY-MM-DD')}
         `,
       );
- 
+
+      await RankingPlace.destroy({
+        where: {
+          systemId: system.id,
+          rankingDate: {
+            [Op.between]: [minUpdate.toDate(), maxUpdate.toDate()],
+          },
+        },
+        transaction,
+      });
+
+      await RankingPoint.destroy({
+        where: {
+          systemId: system.id,
+          rankingDate: {
+            [Op.between]: [minUpdate.toDate(), maxUpdate.toDate()],
+          },
+        },
+        transaction,
+      });
+
       for (const [updateDate, isUpdateNeeded] of updates) {
         this.logger.debug(
           `${moment(updateDate).format(
@@ -74,7 +100,7 @@ export class CalculationService {
         const startUpdate = moment();
         if (recalculatePoints) {
           await this.pointsService.createRankingPointsForPeriod({
-            system, 
+            system,
             calcDate: updateDate,
             options: {
               transaction,

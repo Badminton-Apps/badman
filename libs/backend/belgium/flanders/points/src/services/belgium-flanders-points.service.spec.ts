@@ -13,16 +13,16 @@ import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Sequelize } from 'sequelize-typescript';
 
-import { PointsService } from './points.service';
+import { BelgiumFlandersPointsService } from './belgium-flanders-points.service';
 
-describe('PointsService', () => {
-  let service: PointsService;
+describe('BelgiumFlandersPointsService', () => {
+  let service: BelgiumFlandersPointsService;
   let system: RankingSystem;
   let module: TestingModule;
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
-      providers: [PointsService],
+      providers: [BelgiumFlandersPointsService],
       imports: [
         DatabaseModule,
         ConfigModule.forRoot({
@@ -31,7 +31,7 @@ describe('PointsService', () => {
       ],
     }).compile();
 
-    service = module.get<PointsService>(PointsService);
+    service = module.get<BelgiumFlandersPointsService>(BelgiumFlandersPointsService);
 
     // Setup db
     const sequelize = module.get<Sequelize>(Sequelize);

@@ -7,7 +7,8 @@ export enum Simulation {
 
 export interface SimulationV2Job {
   systemId: string;
-  calcDate?: Date | string;
+  fromDate?: Date | string;
+  toDate?: Date | string;
   periods?: number;
   recalculatePoints?: boolean;
 }
