@@ -108,12 +108,28 @@ export class SystemBuilder {
     this.system.latestXGamesToUse = latestXGamesToUse;
     return this;
   }
-  WithDifferenceForUpgrade(differenceForUpgrade: number): SystemBuilder {
-    this.system.differenceForUpgrade = differenceForUpgrade;
+  WithDifferenceForUpgradeSingle(differenceForUpgrade: number): SystemBuilder {
+    this.system.differenceForUpgradeSingle = differenceForUpgrade;
     return this;
   }
-  WithDifferenceForDowngrade(differenceForDowngrade: number): SystemBuilder {
-    this.system.differenceForDowngrade = differenceForDowngrade;
+  WithDifferenceForUpgradeDouble(differenceForUpgrade: number): SystemBuilder {
+    this.system.differenceForUpgradeDouble = differenceForUpgrade;
+    return this;
+  }
+  WithDifferenceForUpgradeMix(differenceForUpgrade: number): SystemBuilder {
+    this.system.differenceForUpgradeMix = differenceForUpgrade;
+    return this;
+  }
+  WithDifferenceForDowngradeSingle(differenceForDowngrade: number): SystemBuilder {
+    this.system.differenceForDowngradeSingle = differenceForDowngrade;
+    return this;
+  }
+  WithDifferenceForDowngradeDouble(differenceForDowngrade: number): SystemBuilder {
+    this.system.differenceForDowngradeDouble = differenceForDowngrade;
+    return this;
+  }
+  WithDifferenceForDowngradeMix(differenceForDowngrade: number): SystemBuilder {
+    this.system.differenceForDowngradeMix = differenceForDowngrade;
     return this;
   }
   WithMaxLevelDownPerChange(maxLevelDownPerChange: number): SystemBuilder {

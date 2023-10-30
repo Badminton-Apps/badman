@@ -7,7 +7,12 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormGroup,
+  Validators,
+  FormControl,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -126,12 +131,28 @@ export class RankingSystemFieldsComponent implements OnInit {
         this.system.calculationIntervalUnit,
         Validators.required,
       ),
-      differenceForUpgrade: new FormControl(
-        this.system.differenceForUpgrade,
+      differenceForDowngradeSingle: new FormControl(
+        this.system.differenceForDowngradeSingle,
         Validators.required,
       ),
-      differenceForDowngrade: new FormControl(
-        this.system.differenceForDowngrade,
+      differenceForDowngradeDouble: new FormControl(
+        this.system.differenceForDowngradeDouble,
+        Validators.required,
+      ),
+      differenceForDowngradeMix: new FormControl(
+        this.system.differenceForDowngradeMix,
+        Validators.required,
+      ),
+      differenceForUpgradeSingle: new FormControl(
+        this.system.differenceForUpgradeSingle,
+        Validators.required,
+      ),
+      differenceForUpgradeDouble: new FormControl(
+        this.system.differenceForUpgradeDouble,
+        Validators.required,
+      ),
+      differenceForUpgradeMix: new FormControl(
+        this.system.differenceForUpgradeMix,
         Validators.required,
       ),
       startingType: new FormControl(

@@ -17,7 +17,7 @@
   </div>
 
   <div class="row">
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Type</mat-label>
       <mat-select
         formControlName="rankingSystem"
@@ -32,7 +32,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Amount of levels</mat-label>
       <input
         type="number"
@@ -43,10 +43,24 @@
         required
       />
     </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Starting Type</mat-label>
+      <mat-select
+        formControlName="startingType"
+        alt="startingType"
+        autocomplete="startingType"
+        required
+      >
+        <mat-option value="formula">Formula</mat-option>
+        <mat-option value="tableLFBB">Table LFBB</mat-option>
+        <mat-option value="tableBVL">Table BVL</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
   <div class="row">
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>% Winning</mat-label>
       <input
         type="number"
@@ -57,7 +71,7 @@
         required
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>% Winning + 1</mat-label>
       <input
         type="number"
@@ -70,7 +84,7 @@
         required
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>% Losing</mat-label>
       <input
         type="number"
@@ -84,7 +98,7 @@
   </div>
 
   <div class="row">
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Games to use</mat-label>
       <input
         type="number"
@@ -94,7 +108,7 @@
         autocomplete="latestXGamesToUse"
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Min number of games to use for upgrade</mat-label>
       <input
         type="number"
@@ -105,7 +119,7 @@
       />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Diff levels</mat-label>
       <input
         type="number"
@@ -118,8 +132,10 @@
     </mat-form-field>
   </div>
 
+  <h4>Update interval</h4>
+
   <div class="row">
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Point update</mat-label>
       <input
         type="number"
@@ -130,7 +146,7 @@
         required
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Point update</mat-label>
       <mat-select
         formControlName="calculationIntervalUnit"
@@ -144,7 +160,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Ranking update</mat-label>
       <input
         type="number"
@@ -155,7 +171,7 @@
         required
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Ranking update</mat-label>
       <mat-select
         formControlName="updateIntervalUnit"
@@ -170,7 +186,7 @@
     </mat-form-field>
   </div>
   <div class="row">
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Period games</mat-label>
       <input
         type="number"
@@ -181,7 +197,7 @@
         required
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Period games</mat-label>
       <mat-select
         formControlName="periodUnit"
@@ -195,46 +211,80 @@
       </mat-select>
     </mat-form-field>
   </div>
-
+  <h4>Upgrade / Downgrade</h4>
   <div class="row">
-    <mat-form-field appearance="outline" fxFlex="250px">
-      <mat-label>Level diff used for upgrade</mat-label>
+    <mat-form-field appearance="outline">
+      <mat-label>Level diff used for upgrade Single</mat-label>
       <input
         type="number"
         matInput
-        formControlName="differenceForUpgrade"
-        alt="differenceForUpgrade"
-        autocomplete="differenceForUpgrade"
+        formControlName="differenceForUpgradeSingle"
+        alt="differenceForUpgradeSingle"
+        autocomplete="differenceForUpgradeSingle"
         required
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
-      <mat-label>Level diff used for downgrade</mat-label>
+    <mat-form-field appearance="outline">
+      <mat-label>Level diff used for upgrade Double</mat-label>
       <input
         type="number"
         matInput
-        formControlName="differenceForDowngrade"
-        alt="differenceForDowngrade"
-        autocomplete="differenceForDowngrade"
+        formControlName="differenceForUpgradeDouble"
+        alt="differenceForUpgradeDouble"
+        autocomplete="differenceForUpgradeDouble"
         required
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
-      <mat-label>Starting Type</mat-label>
-      <mat-select
-        formControlName="startingType"
-        alt="startingType"
-        autocomplete="startingType"
+    <mat-form-field appearance="outline">
+      <mat-label>Level diff used for upgrade Mix</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="differenceForUpgradeMix"
+        alt="differenceForUpgradeMix"
+        autocomplete="differenceForUpgradeMix"
         required
-      >
-        <mat-option value="formula">Formula</mat-option>
-        <mat-option value="tableLFBB">Table LFBB</mat-option>
-        <mat-option value="tableBVL">Table BVL</mat-option>
-      </mat-select>
+      />
     </mat-form-field>
   </div>
   <div class="row">
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
+      <mat-label>Level diff used for downgrade Single</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="differenceForDowngradeSingle"
+        alt="differenceForDowngradeSingle"
+        autocomplete="differenceForDowngradeSingle"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Level diff used for downgrade Double</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="differenceForDowngradeDouble"
+        alt="differenceForDowngradeDouble"
+        autocomplete="differenceForDowngradeDouble"
+        required
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Level diff used for downgrade Mix</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="differenceForDowngradeMix"
+        alt="differenceForDowngradeMix"
+        autocomplete="differenceForDowngradeMix"
+        required
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <mat-form-field appearance="outline">
       <mat-label>Max # levels up per change</mat-label>
       <input
         type="number"
@@ -244,7 +294,7 @@
         autocomplete="maxLevelUpPerChange"
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Max # levels down per change</mat-label>
       <input
         type="number"
@@ -255,8 +305,10 @@
       />
     </mat-form-field>
   </div>
+
+  <h4>Inactivity</h4>
   <div class="row">
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Inactivity period</mat-label>
       <input
         type="number"
@@ -267,7 +319,7 @@
         required
       />
     </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Inactivity period</mat-label>
       <mat-select
         formControlName="inactivityUnit"
@@ -281,7 +333,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Games for inactivty</mat-label>
       <input
         type="number"
@@ -293,8 +345,10 @@
       />
     </mat-form-field>
   </div>
+
+  <h4>Link to events</h4>
   <div class="row">
-    <mat-form-field appearance="outline" fxFlex="250px">
+    <mat-form-field appearance="outline">
       <mat-label>Groups</mat-label>
       <mat-select
         [formControl]="this.rakingGroupForm"
