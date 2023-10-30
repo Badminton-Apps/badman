@@ -1,8 +1,13 @@
-import { Player, RankingPlace, RankingPoint, RankingSystem } from '@badman/backend-database';
+import {
+  Player,
+  RankingPlace,
+  RankingPoint,
+  RankingSystem,
+} from '@badman/backend-database';
 import { GameType, getRankingProtected } from '@badman/utils';
 import { Injectable } from '@nestjs/common';
 import moment from 'moment';
-import { Transaction, Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 
 @Injectable()
 export class BelgiumFlandersPlacesService {
@@ -150,6 +155,7 @@ export class BelgiumFlandersPlacesService {
       system,
       (games?.map((g) => g.rankingPoints?.[0])?.filter((g) => g != undefined) ??
         []) as RankingPoint[],
+      gameType,
     );
 
     const result = {
@@ -277,7 +283,11 @@ export class BelgiumFlandersPlacesService {
     return false;
   }
 
-  private _calculatePoints(system: RankingSystem, points: RankingPoint[]) {
+  private _calculatePoints(
+    system: RankingSystem,
+    points: RankingPoint[],
+    gameType: GameType,
+  ) {
     if (!points.length) {
       return {
         upgrade: 0,
@@ -285,10 +295,23 @@ export class BelgiumFlandersPlacesService {
       };
     }
 
+    const propDowngrade =
+      gameType === GameType.S
+        ? 'differenceForDowngradeSingle'
+        : gameType === GameType.D
+        ? 'differenceForDowngradeDouble'
+        : 'differenceForDowngradeMix';
+
+    const propUpgrade =
+      gameType === GameType.S
+        ? 'differenceForUpgradeSingle'
+        : gameType === GameType.D
+        ? 'differenceForUpgradeDouble'
+        : 'differenceForUpgradeMix';
+
     // difference is a negative number when layers are higher
     let pointsForUpgrade = points.filter(
-      (x) =>
-        (x.differenceInLevel ?? 0) >= (system.differenceForUpgrade ?? 0) * -1,
+      (x) => (x.differenceInLevel ?? 0) >= (system[propUpgrade] ?? 0) * -1,
     );
 
     // Filter out when there is a limit to use
@@ -305,8 +328,7 @@ export class BelgiumFlandersPlacesService {
 
     // difference is a negative number when layers are higher
     let pointsForDowngrade = points.filter(
-      (x) =>
-        (x.differenceInLevel ?? 0) >= (system.differenceForDowngrade ?? 0) * -1,
+      (x) => (x.differenceInLevel ?? 0) >= (system[propDowngrade] ?? 0) * -1,
     );
 
     // Filter out when there is a limit to use
@@ -349,9 +371,7 @@ export class BelgiumFlandersPlacesService {
 
       const newAvg = sum / gamesToUse;
       // if the average is lower then previous stop counting
-      if (newAvg < avg) {
-        return avg;
-      } else {
+      if (newAvg > avg) {
         avg = newAvg;
       }
     });

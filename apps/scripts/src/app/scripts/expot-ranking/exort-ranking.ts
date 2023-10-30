@@ -351,10 +351,16 @@ export class ExportBBFPlayers {
         continue;
       }
 
+      if (!game.gameType) {
+        this.logger.warn(`Game ${game.id} has no gameType`);
+        continue;
+      }
+
       rankingPoint.system = system;
 
       const gameResult = getGameResultType(
         game.winner == playerTeam,
+        game.gameType,
         rankingPoint,
       );
 
@@ -411,10 +417,17 @@ export class ExportBBFPlayers {
         continue;
       }
 
+      if (!game.gameType) {
+        this.logger.warn(`Game ${game.id} has no gameType`);
+        continue;
+      }
+
+
       rankingPoint.system = system;
 
       const gameResult = getGameResultType(
         game.winner == playerTeam,
+        game.gameType,
         rankingPoint,
       );
 

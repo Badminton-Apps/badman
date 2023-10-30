@@ -196,8 +196,12 @@ export class RankingBreakdownPageComponent implements OnDestroy {
               query GetSystem($where: JSONObject) {
                 rankingSystems(where: $where) {
                   id
-                  differenceForUpgrade
-                  differenceForDowngrade
+                  differenceForDowngradeSingle
+                  differenceForDowngradeDouble
+                  differenceForDowngradeMix
+                  differenceForUpgradeSingle
+                  differenceForUpgradeDouble
+                  differenceForUpgradeMix
                   updateIntervalAmountLastUpdate
                   caluclationIntervalLastUpdate
                   calculationIntervalUnit
@@ -261,6 +265,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
                   playedAt
                   winner
                   status
+                  gameType  
                   players {
                     id
                     team

@@ -199,11 +199,27 @@ export class RankingSystem extends Model {
 
   @Field(() => Int, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 1 })
-  differenceForUpgrade?: number;
+  differenceForUpgradeSingle?: number;
+
+  @Field(() => Int, { nullable: true })
+  @Column({ type: DataType.NUMBER, defaultValue: 1 })
+  differenceForUpgradeDouble?: number;
+
+  @Field(() => Int, { nullable: true })
+  @Column({ type: DataType.NUMBER, defaultValue: 1 })
+  differenceForUpgradeMix?: number;
 
   @Field(() => Int, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 0 })
-  differenceForDowngrade?: number;
+  differenceForDowngradeSingle?: number;
+
+  @Field(() => Int, { nullable: true })
+  @Column({ type: DataType.NUMBER, defaultValue: 0 })
+  differenceForDowngradeDouble?: number;
+
+  @Field(() => Int, { nullable: true })
+  @Column({ type: DataType.NUMBER, defaultValue: 0 })
+  differenceForDowngradeMix?: number;
 
   @Field(() => String, { nullable: true })
   @Column({

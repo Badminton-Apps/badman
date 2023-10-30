@@ -58,8 +58,12 @@ const FETCH_SYSTEM = gql`
       updateIntervalAmount
       updateIntervalUnit
       rankingSystem
-      differenceForUpgrade
-      differenceForDowngrade
+      differenceForDowngradeSingle
+      differenceForDowngradeDouble
+      differenceForDowngradeMix
+      differenceForUpgradeSingle
+      differenceForUpgradeDouble
+      differenceForUpgradeMix
       startingType
       rankingGroups {
         id

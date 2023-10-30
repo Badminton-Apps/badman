@@ -176,6 +176,10 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       if (!me) {
         throw new Error('Player not found');
       }
+      if (!game.gameType) {
+        console.warn(`Game ${game.id} has no gameType`);
+        continue;
+      }
 
       const rankingPoint = game.rankingPoints?.find(
         (x) => x.playerId == this.playerId,
@@ -195,7 +199,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
         (x) => x.team !== me.team && x.player == 2,
       );
 
-      const type = getGameResultType(game.winner == me.team, {
+      const type = getGameResultType(game.winner == me.team, game.gameType, {
         differenceInLevel: rankingPoint?.differenceInLevel ?? 0,
         system: this.system,
       });
@@ -257,6 +261,10 @@ export class ListGamesComponent implements OnInit, OnDestroy {
       if (!me) {
         throw new Error('Player not found');
       }
+      if (!game.gameType) {
+        console.warn(`Game ${game.id} has no gameType`);
+        continue;
+      }
 
       const rankingPoint = game.rankingPoints?.find(
         (x) => x.playerId == this.playerId,
@@ -276,7 +284,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
         (x) => x.team !== me.team && x.player == 2,
       );
 
-      const type = getGameResultType(game.winner == me.team, {
+      const type = getGameResultType(game.winner == me.team, game.gameType, {
         differenceInLevel: rankingPoint?.differenceInLevel ?? 0,
         system: this.system,
       });
