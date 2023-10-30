@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   Injector,
-  OnInit,
   PLATFORM_ID,
   Signal,
   TemplateRef,
@@ -20,7 +19,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -34,12 +32,12 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { PageHeaderComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
-import { RankingSystem, Team } from '@badman/frontend-models';
+import { RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { tap, startWith, switchMap, map, of } from 'rxjs';
+import { map, of, startWith, switchMap, tap } from 'rxjs';
 
 const FETCH_SYSTEMS = gql`
   query GetSystemsQuery($order: [SortOrderType!], $skip: Int, $take: Int) {
@@ -132,7 +130,7 @@ export class OverviewPageComponent {
           this.loading.set(true);
         }),
         startWith(this.filter.value ?? {}),
-        switchMap((filter) => {
+        switchMap(() => {
           return this.apollo.watchQuery<{
             rankingSystems: Partial<RankingSystem>[];
           }>({
@@ -206,14 +204,10 @@ export class OverviewPageComponent {
         }),
       )
       .subscribe(() => {
-        this.snackBar.open(
-          'Copy has started, give it some time before all places are copied',
-          undefined,
-          {
-            duration: 1000,
-            panelClass: 'success',
-          },
-        );
+        this.snackBar.open('System copied', undefined, {
+          duration: 1000,
+          panelClass: 'success',
+        });
       });
   }
 
