@@ -43,7 +43,7 @@ export class CalculationService {
         for (let i = 0; i < (periods ?? 0); i++) {
           fromDateM.subtract(
             system.caluclationIntervalAmount,
-            system.calculationIntervalUnit, 
+            system.calculationIntervalUnit,
           );
         }
       }
@@ -85,9 +85,11 @@ export class CalculationService {
         transaction,
       });
 
-      for (const [updateDate, isUpdateNeeded] of updates) {
+      for (const [index, [updateDate, isUpdateNeeded]] of updates.entries()) {
         this.logger.debug(
-          `${moment(updateDate).format('YYYY-MM-DD')}, ${isUpdateNeeded}`,
+          `${moment(updateDate).format(
+            'YYYY-MM-DD',
+          )}, ${isUpdateNeeded}, ${index} / ${updates.length}}`,
         );
 
         const startUpdate = moment();
