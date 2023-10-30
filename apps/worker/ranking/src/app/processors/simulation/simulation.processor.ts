@@ -28,7 +28,8 @@ export class SimulationProcessor {
 
     await this.calculationService.simulation(
       job.data.systemId,
-      job.data.calcDate,
+      job.data.fromDate,
+      job.data.toDate,
       job.data.periods,
       job.data.recalculatePoints,
     );
