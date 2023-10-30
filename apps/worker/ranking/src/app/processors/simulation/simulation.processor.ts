@@ -1,7 +1,7 @@
 import {
   Simulation,
   SimulationQueue,
-  SimulationV2Job,
+  SimulationV2Job
 } from '@badman/backend-queue';
 import { CalculationService } from '@badman/backend-ranking';
 import { Process, Processor } from '@nestjs/bull';
@@ -12,22 +12,25 @@ import { Job } from 'bull';
   name: SimulationQueue,
 })
 export class SimulationProcessor {
-  private readonly logger = new Logger(SimulationProcessor.name);
+  private readonly _logger = new Logger(SimulationProcessor.name);
 
-  constructor(private calculationService: CalculationService) {
-    this.logger.debug('SyncRanking');
+  constructor(
+    private calculationService: CalculationService,
+  ) {
+    this._logger.debug('SyncRanking');
   }
 
   @Process(Simulation.Start)
   async startSimulation(job: Job<SimulationV2Job>): Promise<void> {
-    this.logger.log('Start Simulation v2');
-    this.logger.debug(job.data);
+    this._logger.log('Start Simulation v2');
+    this._logger.debug(job.data);
+    // const transaction = await this.sequelize.transaction();
 
     await this.calculationService.simulation(
       job.data.systemId,
       job.data.calcDate,
       job.data.periods,
-      job.data.recalculatePoints
+      job.data.recalculatePoints,
     );
   }
 }

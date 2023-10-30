@@ -1,21 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app/app.module';
-import { EventEmitter } from 'events';
+import { ClusterService } from '@badman/backend-cluster';
 
-async function bootstrap() {
+async function bootstrapPointsService() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
       transport: Transport.TCP,
       options: {
-        port: 4001,
+        port: 4003,
       },
     },
   );
   await app.listen();
-
-  // set max listeners to 1000
-  EventEmitter.defaultMaxListeners = 5000;
 }
-bootstrap();
+// bootstrap();
+ClusterService.clusterize(bootstrapPointsService, 20);
