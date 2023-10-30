@@ -9,11 +9,6 @@ export function getRankingProtected<
     maxDiffLevels?: number;
   }>,
 >(ranking: T, system: S): T {
-  // if no ranking has null values, return the ranking
-  if (ranking?.single && ranking?.double && ranking?.mix) {
-    return ranking;
-  }
-
   // Create object if no ranking is provided
   if (!ranking) {
     ranking = {} as T;

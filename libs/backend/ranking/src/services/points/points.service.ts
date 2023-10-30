@@ -49,7 +49,7 @@ export class PointsService {
     }
 
     const start = moment(calcDate)
-      .subtract(system.periodAmount, system.periodUnit)
+      .subtract(system.caluclationIntervalAmount, system.calculationIntervalUnit)
       .toDate();
     const stop = moment(calcDate).toDate();
 
@@ -92,6 +92,8 @@ export class PointsService {
       },
       options,
     );
+
+    this._logger.debug(`Games: ${games.length}`);
 
     // process the players in chunks of 500
     const chunkSize = 100;

@@ -6,9 +6,9 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/backend-database';
-import { getRankingProtected, GameType } from '@badman/utils';
+import { GameType, getRankingProtected } from '@badman/utils';
 import { Injectable } from '@nestjs/common';
-import { Transaction, Op } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 
 @Injectable()
 export class BelgiumFlandersPointsService {
@@ -201,7 +201,7 @@ export class BelgiumFlandersPointsService {
       },
       system,
     );
-    const rankingPlayer2Team1 = getRankingProtected(
+    const rankingPlayer2Team1 = getRankingProtected( 
       player2Team1?.rankingPlaces?.[0] ?? {
         single: player2Team1?.GamePlayerMembership.single,
         mix: player2Team1?.GamePlayerMembership.mix,
@@ -215,7 +215,7 @@ export class BelgiumFlandersPointsService {
         mix: player1Team2?.GamePlayerMembership.mix,
         double: player1Team2?.GamePlayerMembership.double,
       },
-      system,
+      system,  
     );
     const rankingPlayer2Team2 = getRankingProtected(
       player2Team2?.rankingPlaces?.[0] ?? {
@@ -335,6 +335,8 @@ export class BelgiumFlandersPointsService {
       if (game.players?.length !== playerAmount) {
         return false;
       }
+
+      return true;
     };
 
     if (hasAllItems()) {
