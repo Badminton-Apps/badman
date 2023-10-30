@@ -219,8 +219,11 @@ export class ChartComponent implements OnInit {
         }
 
         if (x.points) {
-          if (x.points > this.maxPoints || x.pointsDowngrade > this.maxPoints) {
+          if (x.points > this.maxPoints) {
             this.maxPoints = x.points;
+          }
+          if (x.pointsDowngrade > this.maxPoints) {
+            this.maxPoints = x.pointsDowngrade;
           }
 
           this.pointsSeries.push({
