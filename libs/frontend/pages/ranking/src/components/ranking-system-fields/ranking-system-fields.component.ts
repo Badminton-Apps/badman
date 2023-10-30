@@ -73,8 +73,6 @@ export class RankingSystemFieldsComponent implements OnInit {
   rakingGroupForm!: FormControl;
 
   ngOnInit() {
-    console.log(this.system);
-
     this.rankingSystemForm = new FormGroup({
       id: new FormControl(this.system.id, Validators.required),
       name: new FormControl(this.system.name, Validators.required),
