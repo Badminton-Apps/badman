@@ -47,6 +47,15 @@
       "@badman/backend-twizzit": ["libs/backend/twizzit/src/index.ts"],
       "@badman/backend-visual": ["libs/backend/visual/src/index.ts"],
       "@badman/backend/comp-tet": ["libs/backend/comp-tet/src/index.ts"],
+      "@badman/belgium-flanders-games": [
+        "libs/backend/belgium/flanders/games/src/index.ts"
+      ],
+      "@badman/belgium-flanders-places": [
+        "libs/backend/belgium/flanders/places/src/index.ts"
+      ],
+      "@badman/belgium-flanders-points": [
+        "libs/backend/belgium/flanders/points/src/index.ts"
+      ],
       "@badman/frontend-auth": ["libs/frontend/modules/auth/src/index.ts"],
       "@badman/frontend-change-encounter": [
         "libs/frontend/pages/competition/change-encounter/src/index.ts"
