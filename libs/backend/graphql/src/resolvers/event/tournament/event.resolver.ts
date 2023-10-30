@@ -48,12 +48,12 @@ export class EventTournamentResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private _pointService: PointsService
+    private _pointService: PointsService,
   ) {}
 
   @Query(() => EventTournament)
   async eventTournament(
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ): Promise<EventTournament> {
     const eventTournament = IsUUID(id)
       ? await EventTournament.findByPk(id)
@@ -71,7 +71,7 @@ export class EventTournamentResolver {
 
   @Query(() => PagedEventTournament)
   async eventTournaments(
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EventTournament[] }> {
     return EventTournament.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
@@ -79,7 +79,7 @@ export class EventTournamentResolver {
   @ResolveField(() => [SubEventTournament])
   async subEventTournaments(
     @Parent() event: EventTournament,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<SubEventTournament[]> {
     return event.getSubEventTournaments(ListArgs.toFindOptions(listArgs));
   }
@@ -87,11 +87,11 @@ export class EventTournamentResolver {
   @Mutation(() => EventTournament)
   async updateEventTournament(
     @User() user: Player,
-    @Args('data') updateEventTournamentData: EventTournamentUpdateInput
+    @Args('data') updateEventTournamentData: EventTournamentUpdateInput,
   ): Promise<EventTournament> {
     if (!(await user.hasAnyPermission([`edit-any:tournament`]))) {
       throw new UnauthorizedException(
-        `You do not have permission to add a tournament`
+        `You do not have permission to add a tournament`,
       );
     }
 
@@ -99,12 +99,12 @@ export class EventTournamentResolver {
     const transaction = await this._sequelize.transaction();
     try {
       const eventTournamentDb = await EventTournament.findByPk(
-        updateEventTournamentData.id
+        updateEventTournamentData.id,
       );
 
       if (!eventTournamentDb) {
         throw new NotFoundException(
-          `${EventTournament.name}: ${updateEventTournamentData.id}`
+          `${EventTournament.name}: ${updateEventTournamentData.id}`,
         );
       }
 
@@ -140,7 +140,7 @@ export class EventTournamentResolver {
             await this.addGamePointsForSubEvents(
               group,
               subEvents?.map((s) => s.id),
-              transaction
+              transaction,
             );
           }
         } else {
@@ -156,7 +156,7 @@ export class EventTournamentResolver {
             await this.removeGamePointsForSubEvents(
               group,
               subEvents?.map((s) => s.id),
-              transaction
+              transaction,
             );
           }
         }
@@ -189,11 +189,11 @@ export class EventTournamentResolver {
   @Mutation(() => Boolean)
   async removeEventTournament(
     @User() user: Player,
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ) {
     if (!(await user.hasAnyPermission([`delete-any:tournament`]))) {
       throw new UnauthorizedException(
-        `You do not have permission to detele a tournament`
+        `You do not have permission to detele a tournament`,
       );
     }
 
@@ -251,7 +251,7 @@ export class EventTournamentResolver {
   async addGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction
+    transaction: Transaction,
   ) {
     const systems = await group.getRankingSystems({ transaction });
     const games = await Game.findAll({
@@ -287,16 +287,15 @@ export class EventTournamentResolver {
       for (const game of games) {
         promisse.push(
           this._pointService.createRankingPointforGame(system, game, {
-            createRankingPoints: true,
             transaction,
-          })
+          }),
         );
       }
 
       await Promise.all(promisse);
 
       this.logger.debug(
-        `Added points for ${games.length} games in system ${system.name}(${system.id})`
+        `Added points for ${games.length} games in system ${system.name}(${system.id})`,
       );
     }
   }
@@ -304,7 +303,7 @@ export class EventTournamentResolver {
   async removeGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction
+    transaction: Transaction,
   ) {
     const systems = await group.getRankingSystems({ transaction });
 
@@ -333,7 +332,7 @@ export class EventTournamentResolver {
       });
 
       this.logger.debug(
-        `Removed points for ${games.length} games in system ${system.name}(${system.id})`
+        `Removed points for ${games.length} games in system ${system.name}(${system.id})`,
       );
     }
   }

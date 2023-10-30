@@ -1,0 +1,71 @@
+{
+  "name": "worker-belgium-flanders-places",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/worker/belgium/flanders/places/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/worker/belgium/flanders/places",
+        "main": "apps/worker/belgium/flanders/places/src/main.ts",
+        "tsConfig": "apps/worker/belgium/flanders/places/tsconfig.app.json",
+        "assets": ["apps/worker/belgium/flanders/places/src/assets"],
+        "webpackConfig": "apps/worker/belgium/flanders/places/webpack.config.js"
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "worker-belgium-flanders-places:build",
+        "port": 9300,
+        "inspect": "inspect",
+        "host": "0.0.0.0"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "worker-belgium-flanders-places:build:development"
+        },
+        "production": {
+          "buildTarget": "worker-belgium-flanders-places:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/worker/belgium/flanders/places/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/worker/belgium/flanders/places"
+      ],
+      "options": {
+        "jestConfig": "apps/worker/belgium/flanders/places/jest.config.js",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

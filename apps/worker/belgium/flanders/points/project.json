@@ -1,0 +1,68 @@
+{
+  "name": "worker-belgium-flanders-points",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/worker/belgium/flanders/points/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "development",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/worker/belgium/flanders/points",
+        "main": "apps/worker/belgium/flanders/points/src/main.ts",
+        "tsConfig": "apps/worker/belgium/flanders/points/tsconfig.app.json",
+        "assets": ["apps/worker/belgium/flanders/points/src/assets"],
+        "webpackConfig": "apps/worker/belgium/flanders/points/webpack.config.js"
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "worker-belgium-flanders-points:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "worker-belgium-flanders-points:build:development"
+        },
+        "production": {
+          "buildTarget": "worker-belgium-flanders-points:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/worker/belgium/flanders/points/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/worker/belgium/flanders/points"
+      ],
+      "options": {
+        "jestConfig": "apps/worker/belgium/flanders/points/jest.config.js",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
