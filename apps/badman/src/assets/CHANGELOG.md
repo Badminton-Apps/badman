@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.118.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.5...v6.118.0-beta.6) (2023-10-31)
+
+
+### Features
+
+* adding option for up and downgrade difference ([6fcf482](https://github.com/Badminton-Apps/badman/commit/6fcf48255252424b0d4e8859c09687859aec1b24))
+* always recalculate points ([f31c71f](https://github.com/Badminton-Apps/badman/commit/f31c71f680e62a722f34d304eb6b58d6cd314704))
+* change to use from and to date ([7000154](https://github.com/Badminton-Apps/badman/commit/70001545abca464e9d201c0e76113a16960e07d5))
+* improved simulation code ([a3b00c5](https://github.com/Badminton-Apps/badman/commit/a3b00c5109ef44cdd4b90ec161a36f3792ce46d1))
+* moving the cluster service to the cluster module ... :P ([b28a169](https://github.com/Badminton-Apps/badman/commit/b28a1690632c0f38355cf9846cbe81c520eb6e52))
+* send calculations to workers ([f911f63](https://github.com/Badminton-Apps/badman/commit/f911f63a0d7b37d2a5f10adf08f024ab5efa04c8))
+* some sorting on ranking overview page ([017a7ac](https://github.com/Badminton-Apps/badman/commit/017a7acf20feea1d7fc7c4931aa23ebb22362c1d))
+* some workers that can run multithread calculations ([8b79c85](https://github.com/Badminton-Apps/badman/commit/8b79c856b8efff328328c80130a7d3f95d813a43))
+
+
+### Bug Fixes
+
+* not all paths retured code ([fd61233](https://github.com/Badminton-Apps/badman/commit/fd61233c17315ae00b3f866faea4c97d77b1d827))
+* only load rankingplace of active system ([66cb79c](https://github.com/Badminton-Apps/badman/commit/66cb79c0781167859be0126fa1eeeccd931d6b9e))
+* switching team to signals ([f240aaa](https://github.com/Badminton-Apps/badman/commit/f240aaa9119bc88d66e7da188371093f0761de8a))
+* testing for services ([74f2e21](https://github.com/Badminton-Apps/badman/commit/74f2e21e274bb316814fe008a217a6996170d95e))
+* when going down in points could result in strange behaviour ([e6ae6ca](https://github.com/Badminton-Apps/badman/commit/e6ae6ca53700e28a0254e77f35c995281521c571))
+
 ## [6.118.0-beta.5](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.4...v6.118.0-beta.5) (2023-10-27)
 
 
