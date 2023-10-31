@@ -14,7 +14,7 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item>
         <mat-icon>add</mat-icon>
-        <span>{{'all.ranking.menu.add-system' | translate}}</span>
+        <span>{{'all.ranking.menu.add-ranking' | translate}}</span>
       </button>
     </mat-menu>
   </div>
@@ -78,16 +78,18 @@
         <button mat-menu-item (click)="watchSystem(element)">
           {{ 'all.button.watch-system' | translate }}
         </button>
-        <button mat-menu-item [routerLink]="[element.id, 'edit']">
-          {{ 'all.button.edit' | translate }}
-        </button>
-        <button mat-menu-item (click)="cloneSystem(element)">
-          {{ 'all.button.clone' | translate }}
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="deleteSystem(element)">
-          {{ 'all.button.delete' | translate }}
-        </button>
+        <badman-has-claim [any]="['edit:ranking']">
+          <button mat-menu-item [routerLink]="[element.id, 'edit']">
+            {{ 'all.button.edit' | translate }}
+          </button>
+          <button mat-menu-item (click)="cloneSystem(element)">
+            {{ 'all.button.clone' | translate }}
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="deleteSystem(element)">
+            {{ 'all.button.delete' | translate }}
+          </button>
+        </badman-has-claim>
       </mat-menu>
     </td>
   </ng-container>
@@ -109,7 +111,11 @@
           [formGroup]="copySystemFormGroup"
           [rangePicker]="picker"
         >
-          <input matStartDate formControlName="start" placeholder="Start date" />
+          <input
+            matStartDate
+            formControlName="start"
+            placeholder="Start date"
+          />
           <input matEndDate formControlName="end" placeholder="End date" />
         </mat-date-range-input>
         <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>

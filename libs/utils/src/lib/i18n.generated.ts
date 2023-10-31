@@ -62,6 +62,7 @@ export type I18nTranslations = {
             "agree": string;
             "all": string;
             "cancel": string;
+            "clone": string;
             "close": string;
             "create": string;
             "delete": string;
@@ -690,6 +691,7 @@ export type I18nTranslations = {
             "may-ranking": string;
             "menu": {
                 "add-ranking": string;
+                "add-system": string;
             };
             "mix": string;
             "mix-points": string;

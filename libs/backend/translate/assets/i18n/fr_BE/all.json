@@ -58,6 +58,7 @@
     "agree": "Ok",
     "all": "Tout",
     "cancel": "Annuler",
+    "clone": "Copie",
     "close": "Fermer",
     "create": "Créer",
     "delete": "Retirer",
@@ -685,7 +686,8 @@
     "list": "Ranking joueurs",
     "may-ranking": "Mei ranking",
     "menu": {
-      "add-ranking": "Voeg ranking toe"
+      "add-ranking": "Voeg ranking toe",
+      "add-system": "Nouveau système"
     },
     "mix": "Mixte",
     "mix-points": "Mixte points",
