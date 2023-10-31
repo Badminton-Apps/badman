@@ -99,7 +99,6 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
           await runParallel(
             games?.map((game) =>
               this.pointService.createRankingPointforGame(rankingSystem, game, {
-                createRankingPoints: true,
                 transaction: this.transaction,
               }),
             ) ?? [],

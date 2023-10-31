@@ -78,7 +78,6 @@ export class TournamentSyncPointProcessor extends StepProcessor {
               rankingSystem,
               game,
               {
-                createRankingPoints: true,
                 transaction: this.transaction,
               }
             );
