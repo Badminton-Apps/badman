@@ -30,14 +30,14 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { PageHeaderComponent } from '@badman/frontend-components';
+import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { map, of, startWith, switchMap, tap } from 'rxjs';
+import { filter, map, of, startWith, switchMap, tap } from 'rxjs';
 
 const FETCH_SYSTEMS = gql`
   query GetSystemsQuery($order: [SortOrderType!], $skip: Int, $take: Int) {
@@ -83,6 +83,7 @@ const FETCH_SYSTEMS = gql`
 
     // Own Module
     PageHeaderComponent,
+    HasClaimComponent,
   ],
 })
 export class OverviewPageComponent {
@@ -176,6 +177,7 @@ export class OverviewPageComponent {
     dialogRef
       .afterClosed()
       .pipe(
+        filter((result) => !!result),
         switchMap(() => {
           return this.apollo.mutate({
             mutation: gql`

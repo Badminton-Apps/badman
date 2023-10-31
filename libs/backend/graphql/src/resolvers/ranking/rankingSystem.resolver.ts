@@ -228,7 +228,7 @@ export class RankingSystemResolver {
   ) {
     if (!(await user.hasAnyPermission(['edit:ranking']))) {
       throw new UnauthorizedException(
-        `You do not have permission to edit this club`,
+        `You do not have permission to copy a system`,
       );
     }
     // Do transaction
