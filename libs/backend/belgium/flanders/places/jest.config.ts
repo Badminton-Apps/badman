@@ -2,11 +2,17 @@
 export default {
   displayName: 'belgium-flanders-places',
   preset: '../../../../../jest.preset.js',
+  globals: {},
   testEnvironment: 'node',
   transform: {
-    '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
+    '^.+\\.[tj]s$': [
+      'ts-jest',
+      {
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+      },
+    ],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory:
-    '../../../../../coverage/libs/backend/belgium/flanders/places',
+    '../../../../../coverage/libs/backend/belgium/flanders/points',
 };
