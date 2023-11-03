@@ -215,6 +215,10 @@ export class RecentGamesService {
                 direction: 'desc',
                 field: 'playedAt',
               },
+              {
+                direction: 'desc',
+                field: 'id',
+              },
             ],
             skip: (page - 1) * this.gamesPerPage, // Skip the previous pages
             take: this.gamesPerPage, // Load only the current page
