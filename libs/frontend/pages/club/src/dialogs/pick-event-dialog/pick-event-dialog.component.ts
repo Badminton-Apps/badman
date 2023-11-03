@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -13,7 +13,8 @@ import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { SubEventType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { BehaviorSubject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 
 export interface PickEventDialogData {
@@ -40,8 +41,8 @@ export interface PickEventDialogData {
   templateUrl: './pick-event-dialog.component.html',
   styleUrls: ['./pick-event-dialog.component.scss'],
 })
-export class PickEventDialogComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class PickEventDialogComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   selectForm = new FormGroup({
     event: new FormControl<string>(''),
@@ -61,7 +62,7 @@ export class PickEventDialogComponent implements OnInit, OnDestroy {
   constructor(
     private readonly appollo: Apollo,
     private readonly _dialogRef: MatDialogRef<PickEventDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public readonly data: PickEventDialogData
+    @Inject(MAT_DIALOG_DATA) public readonly data: PickEventDialogData,
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +74,7 @@ export class PickEventDialogComponent implements OnInit, OnDestroy {
           this.#subEvents.next([]);
           return;
         }
-        
+
         return this.onEventSelected(eventId);
       });
 
@@ -121,10 +122,10 @@ export class PickEventDialogComponent implements OnInit, OnDestroy {
         map(
           (result) =>
             result.data.eventCompetitions.rows?.map(
-              (row) => new EventCompetition(row)
-            ) ?? []
+              (row) => new EventCompetition(row),
+            ) ?? [],
         ),
-        tap((events) => this.#events.next(events))
+        tap((events) => this.#events.next(events)),
       );
   }
 
@@ -153,15 +154,10 @@ export class PickEventDialogComponent implements OnInit, OnDestroy {
         map(
           (result) =>
             result.data.subEventCompetitions?.map(
-              (row) => new SubEventCompetition(row)
-            ) ?? []
+              (row) => new SubEventCompetition(row),
+            ) ?? [],
         ),
-        tap((subEvents) => this.#subEvents.next(subEvents))
+        tap((subEvents) => this.#subEvents.next(subEvents)),
       );
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

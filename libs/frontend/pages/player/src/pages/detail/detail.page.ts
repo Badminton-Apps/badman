@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   Injector,
-  OnDestroy,
   PLATFORM_ID,
   Signal,
   TransferState,
@@ -35,7 +34,8 @@ import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, Subject, combineLatest, lastValueFrom, of } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { Observable, combineLatest, lastValueFrom, of } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
@@ -65,7 +65,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     HasClaimComponent,
   ],
 })
-export class DetailPageComponent implements OnDestroy {
+export class DetailPageComponent {
   // Dependencies
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -81,18 +81,17 @@ export class DetailPageComponent implements OnDestroy {
   private claim = inject(ClaimService);
   private auth = inject(AuthenticateService);
   private systemService = inject(RankingSystemService);
+  private destroy$ = injectDestroy();
 
   // route
-  queryParams = toSignal(this.route.queryParamMap);
-  routeParams = toSignal(this.route.paramMap);
-  routeData = toSignal(this.route.data);
+  private queryParams = toSignal(this.route.queryParamMap);
+  private routeParams = toSignal(this.route.paramMap);
+  private routeData= toSignal(this.route.data);
 
   player = computed(() => this.routeData()?.['player'] as Player);
   club = computed(() => this.player().clubs?.[0]);
 
   initials?: string;
-
-  destroy$ = new Subject<void>();
 
   teams?: Signal<Team[]>;
   rankingPlace?: Signal<RankingPlace>;
@@ -323,10 +322,5 @@ export class DetailPageComponent implements OnDestroy {
           this.router.navigate(['/']);
         });
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

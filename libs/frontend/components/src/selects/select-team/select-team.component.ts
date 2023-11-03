@@ -3,7 +3,6 @@ import {
   Component,
   Inject,
   Input,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
   TransferState,
@@ -29,9 +28,9 @@ import { Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import {
   Observable,
-  Subject,
   combineLatest,
   concatMap,
   distinctUntilChanged,
@@ -66,8 +65,8 @@ import {
   templateUrl: './select-team.component.html',
   styleUrls: ['./select-team.component.scss'],
 })
-export class SelectTeamComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class SelectTeamComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   @Input()
   controlName = 'team';
@@ -366,12 +365,5 @@ export class SelectTeamComponent implements OnInit, OnDestroy {
 
   deselectAll() {
     this.control.setValue([]);
-  }
-
-  ngOnDestroy() {
-    // this.group.removeControl(this.controlName);
-
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -9,7 +9,6 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -28,7 +27,8 @@ import {
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 import { MomentModule } from 'ngx-moment';
-import { distinctUntilChanged, map, Subject, takeUntil } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs';
 import { AddGameComponent } from '../../dialogs/add-game';
 
 @Component({
@@ -52,13 +52,14 @@ import { AddGameComponent } from '../../dialogs/add-game';
     LayoutModule,
   ],
 })
-export class ListGamesComponent implements OnInit, OnDestroy {
+export class ListGamesComponent implements OnInit {
+  private destroy$ = injectDestroy();
+
   @Input() games!: Game[];
   @Input() system!: RankingSystem;
   @Input() playerId!: string;
   @Input() formGroup!: FormGroup;
 
-  destroyed = new Subject<void>();
   dataSource = new MatTableDataSource<GameBreakdown>([]);
   dataSourceRemoved = new MatTableDataSource<Game>([]);
 
@@ -111,7 +112,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
         Breakpoints.Large,
         Breakpoints.XLarge,
       ])
-      .pipe(takeUntil(this.destroyed))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         for (const query of Object.keys(result.breakpoints)) {
           if (result.breakpoints[query]) {
@@ -151,7 +152,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
           };
         }, distinctUntilChanged()),
       )
-      .pipe(takeUntil(this.destroyed))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.fillGames();
       });
@@ -447,7 +448,7 @@ export class ListGamesComponent implements OnInit, OnDestroy {
         },
       })
       .afterClosed()
-      .pipe(takeUntil(this.destroyed))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((game: Game) => {
         if (game) {
           this.games.push(game);
@@ -455,11 +456,6 @@ export class ListGamesComponent implements OnInit, OnDestroy {
           this.fillGames();
         }
       });
-  }
-
-  ngOnDestroy() {
-    this.destroyed.next();
-    this.destroyed.complete();
   }
 }
 

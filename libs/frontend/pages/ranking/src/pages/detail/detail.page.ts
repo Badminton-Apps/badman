@@ -54,9 +54,9 @@ export class DetailPageComponent {
   private jobService = inject(JobsService);
 
   // route
-  queryParams = toSignal(this.route.queryParamMap);
-  routeParams = toSignal(this.route.paramMap);
-  routeData = toSignal(this.route.data);
+  private queryParams = toSignal(this.route.queryParamMap);
+  private routeParams = toSignal(this.route.paramMap);
+  private routeData= toSignal(this.route.data);
 
   rankingSystem = computed(
     () => this.routeData()?.['rankingSystem'] as RankingSystem,

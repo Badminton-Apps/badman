@@ -3,11 +3,8 @@ import {
   Component,
   Injector,
   Input,
-  OnDestroy,
   OnInit,
-  PLATFORM_ID,
   Signal,
-  TransferState,
   ViewChild,
   computed,
   effect,
@@ -23,7 +20,7 @@ import {
   Location,
 } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
-import { Subject, map, switchMap } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 
 import {
   GoogleMapsModule,
@@ -52,14 +49,12 @@ import {
   styleUrls: ['./competition-map.component.scss'],
   providers: [provideAnimations()],
 })
-export class CompetitionMapComponent implements OnInit, OnDestroy {
+export class CompetitionMapComponent implements OnInit {
   @ViewChild(MapInfoWindow) infoWindow?: MapInfoWindow;
 
   // injects
-  apollo = inject(Apollo);
-  injector = inject(Injector);
-  stateTransfer = inject(TransferState);
-  platformId = inject(PLATFORM_ID);
+  private apollo = inject(Apollo);
+  private injector = inject(Injector);
 
   // signals
   locations?: Signal<Location[] | undefined>;
@@ -91,8 +86,6 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
 
   selectedLocation = signal<Location | undefined>(undefined);
 
-  destroy$ = new Subject<void>();
-
   // Inputs
   @Input({ required: true }) eventId?: string;
 
@@ -120,11 +113,11 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
           },
         })
         .valueChanges.pipe(
-          map((res) => new EventCompetition(res.data.eventCompetition))
+          map((res) => new EventCompetition(res.data.eventCompetition)),
         ),
       {
         injector: this.injector,
-      }
+      },
     );
 
     this.locations = toSignal(
@@ -154,12 +147,12 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
                 subEventId: subEvents,
               },
             },
-          })
+          }),
         ),
         map((res) => res.data.eventEntries),
         map((eventEntries) => {
           const clubIds = new Set(
-            eventEntries.map((eventEntry) => eventEntry.team?.club?.id)
+            eventEntries.map((eventEntry) => eventEntry.team?.club?.id),
           );
           return [...clubIds] as string[];
         }),
@@ -201,17 +194,17 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
                 season: 2023,
               },
             },
-          })
+          }),
         ),
         map((res) => res.data.locations),
         map((locations) => locations.map((location) => new Location(location))),
         map((locations) =>
-          locations.filter((location) => location.availibilities?.length > 0)
-        )
+          locations.filter((location) => location.availibilities?.length > 0),
+        ),
       ),
       {
         injector: this.injector,
-      }
+      },
     ) as Signal<Location[]>;
 
     effect(
@@ -222,14 +215,14 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
 
         this.subEvents.set(
           (this.eventCompetition?.()?.subEventCompetitions?.map(
-            (subEvent) => subEvent.id
-          ) ?? []) as string[]
+            (subEvent) => subEvent.id,
+          ) ?? []) as string[],
         );
       },
       {
         injector: this.injector,
         allowSignalWrites: true,
-      }
+      },
     );
   }
 
@@ -243,11 +236,6 @@ export class CompetitionMapComponent implements OnInit, OnDestroy {
   openInfoWindow(marker: MapMarker, location: Location) {
     this.selectedLocation.set(location);
     this.infoWindow?.open(marker);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   selectSubEvent(subEventId: string, event: MatCheckboxChange) {

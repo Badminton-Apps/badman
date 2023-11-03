@@ -4,7 +4,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -23,28 +22,22 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Club, Player } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import {
-  Observable,
-  ReplaySubject,
-  Subject,
-  lastValueFrom,
-  merge,
-  of,
-} from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { Observable, ReplaySubject, lastValueFrom, merge, of } from 'rxjs';
 import {
   debounceTime,
   filter,
-  tap,
   map,
   startWith,
   switchMap,
   takeUntil,
+  tap,
 } from 'rxjs/operators';
 import { PlayerFieldsComponent } from '../fields';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   standalone: true,
@@ -70,8 +63,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   templateUrl: './player-search.component.html',
   styleUrls: ['./player-search.component.scss'],
 })
-export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+export class PlayerSearchComponent implements OnChanges, OnInit {
+  private destroy$ = injectDestroy();
 
   @Output() whenSelectPlayer = new EventEmitter<Player>();
 
@@ -420,10 +413,5 @@ export class PlayerSearchComponent implements OnChanges, OnInit, OnDestroy {
       $and: queries,
       ...args?.where,
     };
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

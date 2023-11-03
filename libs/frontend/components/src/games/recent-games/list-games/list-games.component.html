@@ -20,7 +20,7 @@
 <ng-container *ngIf="recentGames$ | async as games">
   <div
     class="game"
-    *ngFor="let game of games; trackBy: trackById"
+    *ngFor="let game of games; trackByProp: 'id'"
     [ngClass]="{
       double: game.gameType === 'D',
       mix: game.gameType === 'MX',
@@ -32,7 +32,7 @@
       <a [routerLink]="extra.link">{{ extra.title }}</a>
     </div>
     <div class="game__date">
-      <div>{{ game?.playedAt | amDateFormat : 'llll' }}</div>
+      <div>{{ game?.playedAt | amDateFormat: 'llll' }}</div>
     </div>
     <div class="game__play">
       <div
