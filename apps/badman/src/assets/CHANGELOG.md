@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.119.0](https://github.com/Badminton-Apps/badman/compare/v6.118.0...v6.119.0) (2023-11-03)
+
+
+### Features
+
+* loading & end of list ([14833c9](https://github.com/Badminton-Apps/badman/commit/14833c9fc9379607019d3213eb67408977cbb165))
+* moved recent-games data to service ([9cffe02](https://github.com/Badminton-Apps/badman/commit/9cffe0265ebc0159c5ad26e8c160857b67a9334d))
+
 ## [6.118.0](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.8...v6.118.0) (2023-11-03)
 
 ## [6.118.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.7...v6.118.0-beta.8) (2023-11-03)
