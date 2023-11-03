@@ -19,6 +19,7 @@ import {
 interface RecentGamesState {
   games: Game[];
   loading: boolean;
+  endReached?: boolean;
   error: string | null;
 }
 
@@ -47,6 +48,7 @@ export class RecentGamesService {
   games = computed(() => this.state().games);
   error = computed(() => this.state().error);
   loading = computed(() => this.state().loading);
+  endReached = computed(() => this.state().endReached);
 
   //sources
   pagination$ = new BehaviorSubject<number>(1);
@@ -84,6 +86,7 @@ export class RecentGamesService {
         return {
           ...state,
           games: [...state.games, ...response.games],
+          endReached: response.games.length < this.gamesPerPage,
           loading: false,
         };
       });
