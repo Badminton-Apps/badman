@@ -4,54 +4,27 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Inject,
   Input,
   OnChanges,
   OnInit,
-  PLATFORM_ID,
   SimpleChanges,
-  TransferState,
   ViewChild,
   inject,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { RankingSystemService } from '@badman/frontend-graphql';
 import { Game, GamePlayer } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import {
-  GameBreakdownType,
-  GameType,
-  getGameResultType,
-  sortGames,
-} from '@badman/utils';
+import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
-import { injectDestroy } from 'ngxtension/inject-destroy';
 import { TrackByProp } from 'ngxtension/trackby-id-prop';
-import { BehaviorSubject, combineLatest, distinctUntilChanged } from 'rxjs';
-import {
-  filter,
-  map,
-  mergeMap,
-  shareReplay,
-  startWith,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
 import { LoadingBlockComponent } from '../../../loading-block';
+import { RecentGamesService } from './data-access/recent-games.service';
 
 @Component({
   standalone: true,
@@ -79,69 +52,17 @@ import { LoadingBlockComponent } from '../../../loading-block';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
-  private systemService = inject(RankingSystemService);
-
-  private destroy$ = injectDestroy();
+  recentGames = inject(RecentGamesService);
 
   @Input() playerId?: string;
 
-  filter: FormGroup<{
-    choices: FormControl<string[] | null>;
-  }>;
-
-  itemsPerPage = 10;
-  endOfList = false;
-
-  recentGames$ = new BehaviorSubject<Game[]>([]); // start with an empty list
-  currentPage$ = new BehaviorSubject<number>(1);
-
   @ViewChild('bottomObserver', { static: false }) bottomObserver!: ElementRef;
 
-  constructor(
-    formBuilder: FormBuilder,
-    private apollo: Apollo,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {
-    this.filter = formBuilder.group({
-      choices: [['S', 'D', 'MX']],
-    });
-  }
-
   ngOnInit() {
-    combineLatest([
-      this.currentPage$,
-      this.filter.valueChanges.pipe(
-        startWith(this.filter.value),
-        // reset the page when the filter changes
-        tap(() => {
-          this.currentPage$.next(1);
-          this.endOfList = false;
-          return this.recentGames$.next([]);
-        }),
-      ),
-      this.systemService.getPrimarySystemId(),
-    ])
-      .pipe(
-        shareReplay(1),
-        takeUntil(this.destroy$),
-        filter(() => !this.endOfList),
-        distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        mergeMap(([page, filter, systemId]) =>
-          this._loadRecentGamesForPlayer(
-            this.playerId ?? '',
-            page,
-            filter,
-            systemId,
-          ),
-        ),
-        // Increment the page number for the next request
-      )
-      .subscribe((games) => {
-        // Add the new items to the existing list
-        const currentGames = this.recentGames$.getValue();
-        this.recentGames$.next([...currentGames, ...games].sort(sortGames));
-      });
+    this.recentGames.filter.setValue({
+      choices: ['S', 'D', 'MX'],
+      playerId: this.playerId ?? '',
+    });
   }
 
   ngAfterViewInit() {
@@ -153,9 +74,11 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && this.recentGames.games().length > 0) {
           // The bottom of the current list is visible, load more items
-          this.currentPage$.next(this.currentPage$.getValue() + 1);
+          this.recentGames.pagination$.next(
+            this.recentGames.pagination$.getValue() + 1,
+          );
         }
       });
     }, options);
@@ -175,151 +98,13 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
     if (
       changes['playerId'].currentValue !== changes['playerId'].previousValue
     ) {
-      this.endOfList = false;
-      this.recentGames$.next([]);
-      this.currentPage$.next(1);
+      console.log('resetting', changes['playerId'].currentValue);
+
+      this.recentGames.filter.patchValue({
+        choices: ['S', 'D', 'MX'],
+        playerId: changes['playerId'].currentValue,
+      });
     }
-  }
-
-  private _loadRecentGamesForPlayer(
-    playerId: string,
-    page: number,
-    filter?: Partial<{ choices: string[] | null }>,
-    systemId?: string,
-  ) {
-    return this.apollo
-      .query<{
-        player: {
-          games: Partial<Game>[];
-        };
-      }>({
-        query: gql`
-          query Games(
-            $id: ID!
-            $where: JSONObject
-            $whereRanking: JSONObject
-            $take: Int
-            $skip: Int
-            $order: [SortOrderType!]
-          ) {
-            player(id: $id) {
-              id
-              games(where: $where, order: $order, take: $take, skip: $skip) {
-                id
-                playedAt
-                gameType
-                winner
-                players {
-                  id
-                  slug
-                  fullName
-                  team
-                  player
-                  single
-                  double
-                  mix
-                }
-                rankingPoints(where: $whereRanking) {
-                  id
-                  differenceInLevel
-                  points
-                  playerId
-                  system {
-                    id
-                    differenceForDowngradeSingle
-                    differenceForDowngradeDouble
-                    differenceForDowngradeMix
-                    differenceForUpgradeSingle
-                    differenceForUpgradeDouble
-                    differenceForUpgradeMix
-                  }
-                }
-                set1Team1
-                set1Team2
-                set2Team1
-                set2Team2
-                set3Team1
-                set3Team2
-                order
-                competition {
-                  id
-                  drawCompetition {
-                    name
-                    id
-                    subEventCompetition {
-                      id
-                      name
-                      eventId
-                    }
-                  }
-
-                  home {
-                    id
-                    name
-                  }
-
-                  away {
-                    id
-                    name
-                  }
-                }
-                tournament {
-                  name
-                  subEventTournament {
-                    name
-                    id
-                    eventTournament {
-                      id
-                      name
-                    }
-                  }
-                  id
-                }
-              }
-            }
-          }
-        `,
-        variables: {
-          id: playerId,
-          where: {
-            playedAt: {
-              $lte: moment().format('YYYY-MM-DD'),
-            },
-            gameType: {
-              $in: filter?.choices ?? ['S', 'D', 'MX'],
-            },
-          },
-          whereRanking: {
-            systemId,
-          },
-          order: [
-            {
-              direction: 'desc',
-              field: 'playedAt',
-            },
-          ],
-          skip: (page - 1) * this.itemsPerPage, // Skip the previous pages
-          take: this.itemsPerPage, // Load only the current page
-        },
-      })
-      .pipe(
-        transferState(
-          `recentGamesKey-${this.playerId}`,
-          this.transferState,
-          this.platformId,
-        ),
-        map((result) => {
-          return (
-            result?.data.player?.games?.map((game) => new Game(game)) ?? []
-          );
-        }),
-        tap((games) => {
-          if (games.length < this.itemsPerPage) {
-            // If the current page has less items than the page size, we've reached the end of the list
-            this.endOfList = true;
-          }
-        }),
-      );
   }
 
   getPlayer(game: Game, player: number, team: number) {
