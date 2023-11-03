@@ -101,8 +101,6 @@ export class RecentGamesService {
       return [];
     }
 
-    console.log(filter.playerId, page);
-
     return this.systemService.getPrimarySystemId().pipe(
       switchMap((systemId) =>
         this.apollo.query<{
