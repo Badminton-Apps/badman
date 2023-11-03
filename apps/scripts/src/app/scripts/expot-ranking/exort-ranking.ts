@@ -56,7 +56,7 @@ export class ExportBBFPlayers {
     this.logger.log('ExportBBFPlayers');
   }
 
-  async process(season: number) {
+  async process(season: number, systemId: string) {
     // create an excel to track all actions
     const debug = false;
 
@@ -65,7 +65,8 @@ export class ExportBBFPlayers {
 
       const system = await RankingSystem.findOne({
         where: {
-          primary: true,
+          id: systemId,
+          // primary: true,
         },
         include: [{ model: RankingGroup }],
       });
@@ -123,7 +124,7 @@ export class ExportBBFPlayers {
 
       xlsx.writeFile(
         wb,
-        `apps/scripts/src/app/shared-files/BBF Ranking ${season}.xlsx`,
+        `apps/scripts/src/app/shared-files/${system.name} ${season}.xlsx`,
       );
     } catch (error) {
       this.logger.error(error);
@@ -351,10 +352,16 @@ export class ExportBBFPlayers {
         continue;
       }
 
+      if (!game.gameType) {
+        this.logger.warn(`Game ${game.id} has no gameType`);
+        continue;
+      }
+
       rankingPoint.system = system;
 
       const gameResult = getGameResultType(
         game.winner == playerTeam,
+        game.gameType,
         rankingPoint,
       );
 
@@ -411,10 +418,17 @@ export class ExportBBFPlayers {
         continue;
       }
 
+      if (!game.gameType) {
+        this.logger.warn(`Game ${game.id} has no gameType`);
+        continue;
+      }
+
+
       rankingPoint.system = system;
 
       const gameResult = getGameResultType(
         game.winner == playerTeam,
+        game.gameType,
         rankingPoint,
       );
 

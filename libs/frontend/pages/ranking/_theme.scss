@@ -1,20 +1,29 @@
 @use './src/pages/detail/detail.page.theme.scss' as detail;
+@use './src/pages/edit/edit.page.theme.scss' as edit;
+@use './src/pages/overview/overview.page.theme.scss' as overview;
 @use './src/dialogs/dialogs.theme.scss' as dialogs;
 
 @mixin theme($theme) {
   @include detail.theme($theme);
+  @include edit.theme($theme);
+  @include overview.theme($theme);
   @include dialogs.theme($theme);
 }
 
 
 @mixin typography($theme) {
   @include detail.typography($theme);
+  @include edit.typography($theme);
+  @include overview.typography($theme);
+
   @include dialogs.typography($theme);
 }
 
 
 @mixin colors($theme) {
   @include detail.color($theme);
+  @include edit.color($theme);
+  @include overview.color($theme);
   @include dialogs.colors($theme);
 }
 

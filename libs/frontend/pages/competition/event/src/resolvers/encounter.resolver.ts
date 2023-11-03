@@ -11,7 +11,7 @@ export class EncounterResolver {
     private apollo: Apollo,
 
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -27,6 +27,13 @@ export class EncounterResolver {
               awayScore
               date
               visualCode
+              shuttle
+              startHour
+              endHour
+              gameLeader {
+                id
+                fullName
+              }
               drawCompetition {
                 subEventCompetition {
                   eventType
@@ -80,7 +87,7 @@ export class EncounterResolver {
         transferState(
           `encounterKey-${encounterId}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           if (!result?.data.encounterCompetition) {
@@ -89,7 +96,7 @@ export class EncounterResolver {
           return new EncounterCompetition(result.data.encounterCompetition);
         }),
 
-        first()
+        first(),
       );
   }
 }

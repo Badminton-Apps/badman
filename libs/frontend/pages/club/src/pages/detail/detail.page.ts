@@ -3,7 +3,6 @@ import {
   Component,
   Inject,
   Injector,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
   Signal,
@@ -41,6 +40,7 @@ import { TwizzitService } from '@badman/frontend-twizzit';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Subject, lastValueFrom, of } from 'rxjs';
 import { filter, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -91,15 +91,16 @@ import { ClubTeamsComponent } from './club-teams/club-teams.component';
     MatTabsModule,
   ],
 })
-export class DetailPageComponent implements OnInit, OnDestroy {
+export class DetailPageComponent implements OnInit {
   // Injectors
-  authService = inject(ClaimService);
-  injector = inject(Injector);
+  private authService = inject(ClaimService);
+  private injector = inject(Injector);
   private claimService = inject(ClaimService);
   private versionInfo: {
     beta: boolean;
     version: string;
   } = inject(VERSION_INFO);
+  private destroy$ = injectDestroy();
 
   // signals
   seasons?: Signal<number[]>;
@@ -108,9 +109,9 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   canViewEnrollments?: Signal<boolean | undefined>;
 
   // route
-  queryParams = toSignal(this.route.queryParamMap);
-  routeParams = toSignal(this.route.paramMap);
-  routeData = toSignal(this.route.data);
+  private queryParams = toSignal(this.route.queryParamMap);
+  private routeParams = toSignal(this.route.paramMap);
+  private routeData= toSignal(this.route.data);
 
   club = computed(() => this.routeData()?.['club'] as Club);
   clubId = computed(() => this.club()?.id) as Signal<string>;
@@ -119,7 +120,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   filter!: FormGroup;
 
   update$ = new Subject<void>();
-  destroy$ = new Subject<void>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -130,7 +130,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private twizzitService: TwizzitService,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {
     const clubName = `${this.club().name}`;
     this.seoService.update({
@@ -149,7 +149,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   hasPermission = toSignal(this.claimService.hasAnyClaims$(['edit-any:club']));
 
   canViewEncounter = computed(
-    () => this.hasPermission() || this.versionInfo.beta
+    () => this.hasPermission() || this.versionInfo.beta,
   );
 
   ngOnInit(): void {
@@ -164,7 +164,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         'view-any:enrollment-competition',
         `${this.club().id}_view:enrollment-competition`,
       ]),
-      { injector: this.injector }
+      { injector: this.injector },
     );
 
     this.canViewEnrollmentForEvent = toSignal(
@@ -198,17 +198,17 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           }
           return this.authService.hasAnyClaims$(
             result.data.eventCompetitions.rows.map(
-              (row) => `${row.id}_view:enrollment-competition`
-            )
+              (row) => `${row.id}_view:enrollment-competition`,
+            ),
           );
-        })
+        }),
       ) ?? of(false),
-      { injector: this.injector }
+      { injector: this.injector },
     );
 
     this.canViewEnrollments = computed(
       () =>
-        this.canViewEnrollmentForClub?.() || this.canViewEnrollmentForEvent?.()
+        this.canViewEnrollmentForClub?.() || this.canViewEnrollmentForEvent?.(),
     );
   }
 
@@ -220,11 +220,6 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       },
       queryParamsHandling: 'merge',
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   deletePlayer(player: Player) {
@@ -243,7 +238,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   async downloadTwizzit() {
     const season = this.filter.get('season')?.value;
     await lastValueFrom(
-      this.twizzitService.downloadTwizzit(this.club(), season)
+      this.twizzitService.downloadTwizzit(this.club(), season),
     );
   }
 
@@ -273,7 +268,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
               },
             },
           });
-        })
+        }),
       )
       .subscribe(() => {
         this.update$.next();

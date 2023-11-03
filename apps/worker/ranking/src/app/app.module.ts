@@ -20,4 +20,4 @@ import { SimulationProcessor } from './processors';
   ],
   providers: [SimulationProcessor],
 })
-export class WorkerRankingModule {}
+export class AppModule {}

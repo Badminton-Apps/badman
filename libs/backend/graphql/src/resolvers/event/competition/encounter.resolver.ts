@@ -110,6 +110,11 @@ export class EncounterCompetitionResolver {
     return encounter.getGames();
   }
 
+  @ResolveField(() => Player)
+  async gameLeader(@Parent() encounter: EncounterCompetition): Promise<Player> {
+    return encounter.getGameLeader();
+  }
+
   @ResolveField(() => [Comment], { nullable: true })
   async homeComments(
     @Parent() encounter: EncounterCompetition

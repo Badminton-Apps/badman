@@ -62,6 +62,7 @@ export type I18nTranslations = {
             "agree": string;
             "all": string;
             "cancel": string;
+            "clone": string;
             "close": string;
             "create": string;
             "delete": string;
@@ -197,9 +198,11 @@ export type I18nTranslations = {
                 "change-date": string;
                 "change-location": string;
                 "change-location-note": string;
+                "gameleader": string;
                 "home-games": string;
                 "no-more": string;
                 "open-requests": string;
+                "shuttle": string;
                 "title": string;
             };
             "home": string;
@@ -673,7 +676,6 @@ export type I18nTranslations = {
             "title": string;
         };
         "ranking": {
-            "add-ranking": string;
             "all-ranking": string;
             "double": string;
             "double-points": string;
@@ -687,6 +689,10 @@ export type I18nTranslations = {
             "last-update": string;
             "list": string;
             "may-ranking": string;
+            "menu": {
+                "add-ranking": string;
+                "add-system": string;
+            };
             "mix": string;
             "mix-points": string;
             "mix-rank": string;
@@ -697,6 +703,7 @@ export type I18nTranslations = {
             "table": {
                 "title": string;
             };
+            "title": string;
             "trending_down": string;
             "trending_up": string;
             "update-happend": string;

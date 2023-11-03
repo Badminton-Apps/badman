@@ -60,9 +60,6 @@ export class EditRankingComponent implements OnInit {
               id
               primary
               amountOfLevels
-              caluclationIntervalLastUpdate
-              differenceForUpgrade
-              differenceForDowngrade
             }
           }
         `,

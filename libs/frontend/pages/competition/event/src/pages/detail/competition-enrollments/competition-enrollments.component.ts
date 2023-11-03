@@ -12,11 +12,8 @@ import {
   Component,
   Injector,
   Input,
-  OnDestroy,
   OnInit,
-  PLATFORM_ID,
   Signal,
-  TransferState,
   effect,
   inject,
   signal,
@@ -26,7 +23,6 @@ import { FormControl } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -47,7 +43,8 @@ import {
 } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Subject, from } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { from } from 'rxjs';
 import {
   bufferCount,
   concatMap,
@@ -90,23 +87,21 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     trigger('detailExpand', [
       state(
         'collapsed',
-        style({ height: '0px', minHeight: '0', visibility: 'hidden' })
+        style({ height: '0px', minHeight: '0', visibility: 'hidden' }),
       ),
       state('expanded', style({ height: '*', visibility: 'visible' })),
       transition(
         'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
       ),
     ]),
   ],
 })
-export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
+export class CompetitionEnrollmentsComponent implements OnInit {
   // injects
-  apollo = inject(Apollo);
-  injector = inject(Injector);
-  stateTransfer = inject(TransferState);
-  platformId = inject(PLATFORM_ID);
-  dialog = inject(MatDialog);
+  private apollo = inject(Apollo);
+  private injector = inject(Injector);
+  private destroy$ = injectDestroy();
 
   // signals
   eventCompetition?: Signal<EventCompetition | undefined>;
@@ -124,8 +119,6 @@ export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
   loadingValidations = signal(false);
   progress = signal(0);
   total = signal(0);
-
-  destroy$ = new Subject<void>();
 
   // Form Controls
   clubControl = new FormControl();
@@ -223,7 +216,7 @@ export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
                   },
                 ],
               },
-            }).valueChanges
+            }).valueChanges,
         ),
         map((result) => {
           if (!this.clubControl.value) {
@@ -236,8 +229,8 @@ export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
               (subEventCompetition) =>
                 subEventCompetition.eventEntries?.some(
                   (eventEntry) =>
-                    eventEntry.team?.club?.id === this.clubControl.value
-                )
+                    eventEntry.team?.club?.id === this.clubControl.value,
+                ),
             );
 
           // Filter the eventEntries within each filtered subEventCompetition
@@ -248,9 +241,9 @@ export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
                 ...subEventCompetition,
                 eventEntries: subEventCompetition.eventEntries?.filter(
                   (eventEntry) =>
-                    eventEntry.team?.club?.id === this.clubControl.value
+                    eventEntry.team?.club?.id === this.clubControl.value,
                 ),
-              })
+              }),
             ),
           };
 
@@ -259,17 +252,17 @@ export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
         map((result) => new EventCompetition(result)),
         tap(() => {
           this.loading.set(false);
-        })
+        }),
       ),
-      { injector: this.injector }
+      { injector: this.injector },
     );
 
     effect(
       () => {
         this.loadingValidations.set(true);
         const eventIds = (this.eventCompetition?.()
-          ?.subEventCompetitions?.map((subEvent) =>
-            subEvent.eventEntries?.map((entry) => entry.id)
+          ?.subEventCompetitions?.map(
+            (subEvent) => subEvent.eventEntries?.map((entry) => entry.id),
           )
           ?.flat()
           ?.filter((id) => !!id) ?? []) as string[];
@@ -280,7 +273,7 @@ export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
           .pipe(
             bufferCount(10),
             concatMap((txn) => this.getValidationsForEventEntry(txn)),
-            takeUntil(this.destroy$)
+            takeUntil(this.destroy$),
           )
           .subscribe((results) => {
             this.progress.set(this.progress() + results.length);
@@ -296,11 +289,11 @@ export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
               }
               this.validationsForTeam.set(
                 result.teamId,
-                result.enrollmentValidation
+                result.enrollmentValidation,
               );
 
               const subEventValidation = this.validationsForSubevent.get(
-                result.subEventId
+                result.subEventId,
               );
 
               this.validationsForSubevent.set(result.subEventId, {
@@ -321,7 +314,7 @@ export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
       {
         injector: this.injector,
         allowSignalWrites: true,
-      }
+      },
     );
   }
 
@@ -371,23 +364,18 @@ export class CompetitionEnrollmentsComponent implements OnInit, OnDestroy {
     const validations =
       this.eventCompetition?.()
         ?.subEventCompetitions?.find(
-          (subEventCompetition) => subEventCompetition.id === id
+          (subEventCompetition) => subEventCompetition.id === id,
         )
         ?.eventEntries?.map((eventEntry) => eventEntry.enrollmentValidation) ??
       [];
 
     return {
       errors: validations.filter(
-        (validation) => (validation?.errors?.length ?? 0) > 0
+        (validation) => (validation?.errors?.length ?? 0) > 0,
       ).length,
       warnings: validations.filter(
-        (validation) => (validation?.warnings?.length ?? 0) > 0
+        (validation) => (validation?.warnings?.length ?? 0) > 0,
       ).length,
     };
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

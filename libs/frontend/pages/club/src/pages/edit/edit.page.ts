@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   Inject,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
   TemplateRef,
@@ -57,10 +56,10 @@ import {
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import {
   BehaviorSubject,
   Observable,
-  Subject,
   combineLatest,
   lastValueFrom,
 } from 'rxjs';
@@ -118,12 +117,12 @@ import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
     MatDividerModule,
   ],
 })
-export class EditPageComponent implements OnInit, OnDestroy {
+export class EditPageComponent implements OnInit {
   public securityTypes: typeof SecurityType = SecurityType;
 
   club!: Club;
 
-  destroy$ = new Subject<void>();
+  private destroy$ = injectDestroy();
 
   roles$!: Observable<Role[]>;
   locations$!: Observable<Location[]>;
@@ -175,7 +174,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
     @Inject(APOLLO_CACHE) private cache: InMemoryCache,
     private route: ActivatedRoute,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit(): void {
@@ -221,7 +220,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
           debounceTime(500),
           distinctUntilChanged(),
           skip(1),
-          filter(() => this.clubGroup?.valid ?? false)
+          filter(() => this.clubGroup?.valid ?? false),
         )
         .subscribe((value) => {
           this.save(value as Club);
@@ -229,7 +228,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
       this.roles$ = combineLatest([this.updateClub$, this.updateRoles$]).pipe(
         takeUntil(this.destroy$),
-        switchMap(([, useCache]) => this._loadRoles(useCache))
+        switchMap(([, useCache]) => this._loadRoles(useCache)),
       );
 
       this._getYears().then((years) => {
@@ -307,15 +306,15 @@ export class EditPageComponent implements OnInit, OnDestroy {
             const maxLevelM = Math.max(
               ...(teams
                 ?.filter((t) => t.type === type)
-                .map((t) => t.teamNumber ?? 0) ?? [])
+                .map((t) => t.teamNumber ?? 0) ?? []),
             );
             this.teamNumbers[type] = Array.from(
               { length: maxLevelM },
-              (_, i) => i + 1
+              (_, i) => i + 1,
             );
           }
         }),
-        map((teams) => teams.sort(sortTeams))
+        map((teams) => teams.sort(sortTeams)),
       );
 
       this.locationForSeason$ = combineLatest([
@@ -370,14 +369,9 @@ export class EditPageComponent implements OnInit, OnDestroy {
         }),
         map((x) => {
           return (x.data.club.locations ?? []).map((t) => new Location(t));
-        })
+        }),
       );
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private _loadRoles(useCache = true) {
@@ -409,7 +403,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         transferState(
           `clubRolesKey-${this.club.id}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           if (!result?.data.roles) {
@@ -417,7 +411,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
           }
 
           return result.data.roles.map((roles) => new Role(roles));
-        })
+        }),
       );
   }
 
@@ -451,8 +445,8 @@ export class EditPageComponent implements OnInit, OnDestroy {
           // map distinct years
           map((years) => [...new Set(years)]),
           // sort years
-          map((years) => years.sort((a, b) => b - a))
-        )
+          map((years) => years.sort((a, b) => b - a)),
+        ),
     );
   }
 
@@ -469,7 +463,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         variables: {
           data: club,
         },
-      })
+      }),
     );
     this.snackBar.open('Saved', undefined, {
       duration: 1000,
@@ -500,13 +494,11 @@ export class EditPageComponent implements OnInit, OnDestroy {
           }
         `,
         variables: { id: location.id },
-      })
+      }),
     );
 
     this.updateLocation$.next(null);
   }
-
-  
 
   async addRole() {
     this.updateRoles$.next(false);
@@ -546,7 +538,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
           }
         `,
         variables: { id: role.id },
-      })
+      }),
     );
     this._deleteRoleFromCache(role.id);
     this.updateRoles$.next(false);
@@ -586,7 +578,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
           subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
-      })
+      }),
     );
     this._deleteTeamFromCache(team.id);
     this.updateTeams$.next(null);
@@ -594,7 +586,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
   async onDeleteBasePlayer(
     player: Partial<EntryCompetitionPlayer>,
-    team: Team
+    team: Team,
   ) {
     if (!team?.id) {
       throw new Error('No team id');
@@ -629,7 +621,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
           subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
-      })
+      }),
     );
     this._deleteTeamFromCache(team.id);
     this.updateTeams$.next(null);
@@ -637,7 +629,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
   async onPlayerMetaUpdated(
     player: Partial<EntryCompetitionPlayer>,
-    team: Team
+    team: Team,
   ) {
     if (!team?.id) {
       throw new Error('No team id');
@@ -680,7 +672,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
           subEventId: team.entry.subEventCompetition.id,
           teamId: team.id,
         },
-      })
+      }),
     );
     this._deleteTeamFromCache(team.id);
     this.updateTeams$.next(null);
@@ -691,7 +683,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
       event: string;
       subEvent: string;
     },
-    team: Team
+    team: Team,
   ) {
     this.apollo
       .mutate({

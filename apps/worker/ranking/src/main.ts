@@ -1,32 +1,21 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import { NestFactory } from '@nestjs/core';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { WorkerRankingModule } from './app/app.module';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import { ConfigService } from '@nestjs/config';
-async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    WorkerRankingModule,
-    new FastifyAdapter(),
-    {
-      bufferLogs: true,
-    }
-  );
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { AppModule } from './app/app.module';
+import { EventEmitter } from 'events';
 
-  const configService = app.get<ConfigService>(ConfigService);
-  const port = configService.get('PORT') || 5001;
-  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
-  await app.listen(port, '0.0.0.0', (error) => {
-    if (error) {
-      process.exit(1);
-    }
-  });
+async function bootstrap() {
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.TCP,
+      options: {
+        port: 4001,
+      },
+    },
+  );
+  await app.listen();
+
+  // set max listeners to 1000
+  EventEmitter.defaultMaxListeners = 5000;
 }
 bootstrap();

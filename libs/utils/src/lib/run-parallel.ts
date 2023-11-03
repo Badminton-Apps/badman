@@ -1,6 +1,6 @@
 export async function runParallel<T>(
   promises: Promise<T>[],
-  parallelism = 10
+  parallelism = 10,
 ): Promise<T[]> {
   const results: T[] = [];
   let runningPromises = 0;

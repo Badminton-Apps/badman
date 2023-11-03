@@ -4,7 +4,6 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
 import {
@@ -23,12 +22,13 @@ import { EventCompetition } from '@badman/frontend-models';
 import { LevelType, SubEventType, levelTypeSort } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Subject, lastValueFrom } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { lastValueFrom } from 'rxjs';
 import {
   distinctUntilChanged,
   pairwise,
   startWith,
-  takeUntil
+  takeUntil,
 } from 'rxjs/operators';
 import { EVENTS, SEASON, TEAMS } from '../../../../../forms';
 import { TeamForm } from '../teams-transfer';
@@ -49,8 +49,8 @@ import { TeamForm } from '../teams-transfer';
   styleUrls: ['./events.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EventsStepComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class EventsStepComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   provWhere = {
     openDate: { $lte: new Date().toISOString() },
@@ -88,7 +88,10 @@ export class EventsStepComponent implements OnInit, OnDestroy {
     NATIONAL: false,
   };
 
-  constructor(private apollo: Apollo, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private apollo: Apollo,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit() {
     if (this.group) {
@@ -105,8 +108,6 @@ export class EventsStepComponent implements OnInit, OnDestroy {
       this.group.addControl(this.controlName, this.control);
     }
 
-   
-
     this.provFormControl.valueChanges
       .pipe(takeUntil(this.destroy$), startWith(null), pairwise())
       .subscribe(([old, event]) => {
@@ -114,8 +115,8 @@ export class EventsStepComponent implements OnInit, OnDestroy {
         if (old?.id) {
           this.control?.setValue(
             this.control?.value?.filter(
-              (value) => value.name != LevelType.PROV
-            ) ?? []
+              (value) => value.name != LevelType.PROV,
+            ) ?? [],
           );
         }
 
@@ -123,7 +124,7 @@ export class EventsStepComponent implements OnInit, OnDestroy {
         if (event?.id) {
           this.control?.setValue([
             ...(this.control?.value?.filter(
-              (value) => value.name != LevelType.PROV
+              (value) => value.name != LevelType.PROV,
             ) ?? []),
             {
               name: LevelType.PROV,
@@ -134,11 +135,6 @@ export class EventsStepComponent implements OnInit, OnDestroy {
       });
 
     this._loadInitialEvents();
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   async select(event: MatCheckboxChange, name: LevelType) {
@@ -155,7 +151,7 @@ export class EventsStepComponent implements OnInit, OnDestroy {
 
     if (!event.checked) {
       this.control?.setValue(
-        this.control?.value?.filter((value) => value.name != name) ?? []
+        this.control?.value?.filter((value) => value.name != name) ?? [],
       );
       return;
     }
@@ -184,7 +180,7 @@ export class EventsStepComponent implements OnInit, OnDestroy {
             type: name,
           },
         },
-      })
+      }),
     );
 
     const resultEvent = result.data?.eventCompetitions?.rows?.[0]?.id;
@@ -217,8 +213,8 @@ export class EventsStepComponent implements OnInit, OnDestroy {
             a.F?.length == b.F?.length &&
             a.M?.length == b.M?.length &&
             a.MX?.length == b.MX?.length &&
-            a.NATIONAL?.length == b.NATIONAL?.length
-        )
+            a.NATIONAL?.length == b.NATIONAL?.length,
+        ),
       )
       .subscribe((teams) => {
         // reset checkboxes
@@ -244,11 +240,11 @@ export class EventsStepComponent implements OnInit, OnDestroy {
                 (c) =>
                   c.id ==
                   (t.team?.entry?.subEventCompetition?.eventCompetition?.id ??
-                    '')
+                    ''),
               )
             ) {
               competitions.push(
-                t.team?.entry.subEventCompetition.eventCompetition
+                t.team?.entry.subEventCompetition.eventCompetition,
               );
             }
           }
@@ -288,7 +284,7 @@ export class EventsStepComponent implements OnInit, OnDestroy {
                   prov.name?.replace(/\d{4}-\d{4}/, '') ?? '';
 
                 const find = result.data?.eventCompetitions?.rows?.find(
-                  (c) => (c.name?.indexOf(nameWithoutYears) ?? -1) > -1
+                  (c) => (c.name?.indexOf(nameWithoutYears) ?? -1) > -1,
                 );
 
                 if (find) {
@@ -297,7 +293,7 @@ export class EventsStepComponent implements OnInit, OnDestroy {
 
                 this.select(
                   { checked: true } as MatCheckboxChange,
-                  LevelType.PROV
+                  LevelType.PROV,
                 );
                 this.cdr.markForCheck();
               });
@@ -310,7 +306,7 @@ export class EventsStepComponent implements OnInit, OnDestroy {
           if (competitions?.some((c) => c.type == 'NATIONAL')) {
             this.select(
               { checked: true } as MatCheckboxChange,
-              LevelType.NATIONAL
+              LevelType.NATIONAL,
             );
           }
         }

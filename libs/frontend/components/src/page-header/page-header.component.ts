@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterContentInit,
   ChangeDetectionStrategy,
   Component,
   ContentChildren,
-  QueryList,
   ElementRef,
-  AfterContentInit,
-  OnDestroy,
+  QueryList,
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'badman-page-header',
@@ -18,8 +18,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./page-header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PageHeaderComponent implements AfterContentInit, OnDestroy {
-  private _avatarSub?: Subscription;
+export class PageHeaderComponent implements AfterContentInit {
+  private destroy$ = injectDestroy();
   public hasAvatar?: boolean;
 
   @ContentChildren('avatar') content?: QueryList<ElementRef>;
@@ -28,13 +28,9 @@ export class PageHeaderComponent implements AfterContentInit, OnDestroy {
     if (!this.content) return;
 
     this.hasAvatar = this.content.length > 0;
-    this._avatarSub = this.content.changes.subscribe(() => {
+    this.content.changes.pipe(takeUntil(this.destroy$)).subscribe(() => {
       if (!this.content) return;
       this.hasAvatar = this.content.length > 0;
     });
-  }
-
-  ngOnDestroy() {
-    this._avatarSub?.unsubscribe();
   }
 }

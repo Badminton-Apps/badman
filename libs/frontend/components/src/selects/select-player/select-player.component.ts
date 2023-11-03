@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
 import {
@@ -22,9 +21,9 @@ import { Player } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { DocumentNode, FragmentDefinitionNode } from 'graphql';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import {
   Observable,
-  Subject,
   debounceTime,
   filter,
   lastValueFrom,
@@ -54,8 +53,8 @@ import {
     MatSelectModule,
   ],
 })
-export class SelectPlayerComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class SelectPlayerComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   @Input()
   label?: string;
@@ -150,13 +149,14 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
           });
         }),
         // Distinct by id
-        map((result) =>
-          result?.data?.players?.rows?.filter(
-            (value, index, self) =>
-              self.findIndex((m) => m.id === value.id) === index
-          )
+        map(
+          (result) =>
+            result?.data?.players?.rows?.filter(
+              (value, index, self) =>
+                self.findIndex((m) => m.id === value.id) === index,
+            ),
         ),
-        map((players) => players?.map((p) => new Player(p)))
+        map((players) => players?.map((p) => new Player(p))),
       );
     });
   }
@@ -170,20 +170,13 @@ export class SelectPlayerComponent implements OnInit, OnDestroy {
             variables: {
               where: { id: this.formControl.value },
             },
-          })
+          }),
         );
         this.formControl.setValue(new Player(player?.data?.players?.rows[0]));
       } else if (this.formControl.value instanceof Player) {
         this.formControl.setValue(this.formControl.value);
       }
     }
-  }
-
-  ngOnDestroy() {
-    this.formGroup.removeControl(this.controlName);
-
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   @Input()

@@ -1,6 +1,6 @@
 {
   "name": "badman-mono",
-  "version": "6.117.0",
+  "version": "6.118.0-beta.8",
   "license": "MIT",
   "scripts": {
     "ng": "nx",
@@ -15,7 +15,8 @@
     "dev:up": "docker-compose -f docker-compose.dev.yml up",
     "dev:down": "docker-compose -f docker-compose.dev.yml down",
     "start:stackblitz": "nx run-many --target=serve --projects=api,badman --parallel",
-    "start:server": "nx run-many --target=serve --projects=api,worker-sync,worker-ranking --parallel",
+    "start:server": "nx run-many --target=serve --projects=api,worker-sync --parallel",
+    "start:simulation": "nx run-many --target=serve --projects=worker-ranking,worker-belgium-flanders-places,worker-belgium-flanders-points --parallel",
     "start:client": "nx serve client",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
@@ -130,6 +131,7 @@
     "ngx-markdown": "^16.0.0",
     "ngx-moment": "^6.0.2",
     "ngx-quill": "^22.1.0",
+    "ngxtension": "^0.14.1",
     "node-geocoder": "^4.2.0",
     "nodemailer": "^6.9.5",
     "parse5": "^7.1.2",

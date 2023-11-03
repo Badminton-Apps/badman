@@ -1,0 +1,8 @@
+<badman-ranking-system-fields
+  *ngIf="this.system?.()"
+  [system]="this.system()!"
+  [groups]="this.groups()!"
+  (whenUpdated)="this.save($event)"
+  (whenGroupAdded)="this.addGroup($event)"
+  (whenGroupRemoved)="this.removeGroup($event)"
+></badman-ranking-system-fields>

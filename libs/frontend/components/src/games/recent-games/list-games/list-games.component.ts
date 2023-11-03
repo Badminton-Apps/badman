@@ -7,12 +7,12 @@ import {
   Inject,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
   SimpleChanges,
   TransferState,
   ViewChild,
+  inject,
 } from '@angular/core';
 import {
   FormBuilder,
@@ -26,6 +26,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import { RankingSystemService } from '@badman/frontend-graphql';
 import { Game, GamePlayer } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import {
@@ -38,12 +39,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
-import {
-  BehaviorSubject,
-  Subject,
-  combineLatest,
-  distinctUntilChanged,
-} from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { TrackByProp } from 'ngxtension/trackby-id-prop';
+import { BehaviorSubject, combineLatest, distinctUntilChanged } from 'rxjs';
 import {
   filter,
   map,
@@ -63,6 +61,7 @@ import { LoadingBlockComponent } from '../../../loading-block';
     TranslateModule,
     MomentModule,
     ReactiveFormsModule,
+    TrackByProp,
 
     // Material modules
     MatButtonModule,
@@ -79,10 +78,11 @@ import { LoadingBlockComponent } from '../../../loading-block';
   styleUrls: ['./list-games.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListGamesComponent
-  implements OnInit, AfterViewInit, OnDestroy, OnChanges
-{
-  private destroy$ = new Subject<void>();
+export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
+  private systemService = inject(RankingSystemService);
+
+  private destroy$ = injectDestroy();
+
   @Input() playerId?: string;
 
   filter: FormGroup<{
@@ -101,7 +101,7 @@ export class ListGamesComponent
     formBuilder: FormBuilder,
     private apollo: Apollo,
     private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {
     this.filter = formBuilder.group({
       choices: [['S', 'D', 'MX']],
@@ -118,17 +118,23 @@ export class ListGamesComponent
           this.currentPage$.next(1);
           this.endOfList = false;
           return this.recentGames$.next([]);
-        })
+        }),
       ),
+      this.systemService.getPrimarySystemId(),
     ])
       .pipe(
         shareReplay(1),
         takeUntil(this.destroy$),
         filter(() => !this.endOfList),
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-        mergeMap(([page, filter]) =>
-          this._loadRecentGamesForPlayer(this.playerId ?? '', page, filter)
-        )
+        mergeMap(([page, filter, systemId]) =>
+          this._loadRecentGamesForPlayer(
+            this.playerId ?? '',
+            page,
+            filter,
+            systemId,
+          ),
+        ),
         // Increment the page number for the next request
       )
       .subscribe((games) => {
@@ -178,7 +184,8 @@ export class ListGamesComponent
   private _loadRecentGamesForPlayer(
     playerId: string,
     page: number,
-    filter?: Partial<{ choices: string[] | null }>
+    filter?: Partial<{ choices: string[] | null }>,
+    systemId?: string,
   ) {
     return this.apollo
       .query<{
@@ -190,6 +197,7 @@ export class ListGamesComponent
           query Games(
             $id: ID!
             $where: JSONObject
+            $whereRanking: JSONObject
             $take: Int
             $skip: Int
             $order: [SortOrderType!]
@@ -211,15 +219,19 @@ export class ListGamesComponent
                   double
                   mix
                 }
-                rankingPoints {
+                rankingPoints(where: $whereRanking) {
                   id
                   differenceInLevel
                   points
                   playerId
                   system {
                     id
-                    differenceForDowngrade
-                    differenceForUpgrade
+                    differenceForDowngradeSingle
+                    differenceForDowngradeDouble
+                    differenceForDowngradeMix
+                    differenceForUpgradeSingle
+                    differenceForUpgradeDouble
+                    differenceForUpgradeMix
                   }
                 }
                 set1Team1
@@ -277,6 +289,9 @@ export class ListGamesComponent
               $in: filter?.choices ?? ['S', 'D', 'MX'],
             },
           },
+          whereRanking: {
+            systemId,
+          },
           order: [
             {
               direction: 'desc',
@@ -291,7 +306,7 @@ export class ListGamesComponent
         transferState(
           `recentGamesKey-${this.playerId}`,
           this.transferState,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           return (
@@ -303,7 +318,7 @@ export class ListGamesComponent
             // If the current page has less items than the page size, we've reached the end of the list
             this.endOfList = true;
           }
-        })
+        }),
       );
   }
 
@@ -336,10 +351,14 @@ export class ListGamesComponent
     }
     const won = game.winner == team;
 
+    if (!game.gameType) {
+      throw `Game ${game.id} has no gameType`;
+    }
+
     let tooltip = undefined;
 
     const rankingPoint = game.rankingPoints?.find((p) => p.playerId === t1?.id);
-    const result = getGameResultType(won, rankingPoint);
+    const result = getGameResultType(won, game.gameType, rankingPoint);
 
     switch (result) {
       case GameBreakdownType.WON:
@@ -412,14 +431,5 @@ export class ListGamesComponent
       case GameType.MX:
         return 'mix';
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  trackById(index: number, item: Partial<{ id: string }>) {
-    return item.id;
   }
 }

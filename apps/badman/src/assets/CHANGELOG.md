@@ -2,6 +2,79 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.118.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.7...v6.118.0-beta.8) (2023-11-03)
+
+
+### Features
+
+* adding option to specify systemId ([e435327](https://github.com/Badminton-Apps/badman/commit/e4353276580a8bc8a5386f5e79a4d727c3ec51e4))
+* enable tooltip ([7c68bd3](https://github.com/Badminton-Apps/badman/commit/7c68bd3e68e50d9df7e79c2b3e983458bdf2710a))
+* enable tooltip on chart ([a3e2c5a](https://github.com/Badminton-Apps/badman/commit/a3e2c5a74e4e82fbbd3768979b67bcf3427d41a9))
+
+## [6.118.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.6...v6.118.0-beta.7) (2023-10-31)
+
+
+### Bug Fixes
+
+* translations ([41fe84f](https://github.com/Badminton-Apps/badman/commit/41fe84f68e5f10d8f9a270a63ee34d92af1383ae))
+
+## [6.118.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.5...v6.118.0-beta.6) (2023-10-31)
+
+
+### Features
+
+* adding option for up and downgrade difference ([6fcf482](https://github.com/Badminton-Apps/badman/commit/6fcf48255252424b0d4e8859c09687859aec1b24))
+* always recalculate points ([f31c71f](https://github.com/Badminton-Apps/badman/commit/f31c71f680e62a722f34d304eb6b58d6cd314704))
+* change to use from and to date ([7000154](https://github.com/Badminton-Apps/badman/commit/70001545abca464e9d201c0e76113a16960e07d5))
+* improved simulation code ([a3b00c5](https://github.com/Badminton-Apps/badman/commit/a3b00c5109ef44cdd4b90ec161a36f3792ce46d1))
+* moving the cluster service to the cluster module ... :P ([b28a169](https://github.com/Badminton-Apps/badman/commit/b28a1690632c0f38355cf9846cbe81c520eb6e52))
+* send calculations to workers ([f911f63](https://github.com/Badminton-Apps/badman/commit/f911f63a0d7b37d2a5f10adf08f024ab5efa04c8))
+* some sorting on ranking overview page ([017a7ac](https://github.com/Badminton-Apps/badman/commit/017a7acf20feea1d7fc7c4931aa23ebb22362c1d))
+* some workers that can run multithread calculations ([8b79c85](https://github.com/Badminton-Apps/badman/commit/8b79c856b8efff328328c80130a7d3f95d813a43))
+
+
+### Bug Fixes
+
+* not all paths retured code ([fd61233](https://github.com/Badminton-Apps/badman/commit/fd61233c17315ae00b3f866faea4c97d77b1d827))
+* only load rankingplace of active system ([66cb79c](https://github.com/Badminton-Apps/badman/commit/66cb79c0781167859be0126fa1eeeccd931d6b9e))
+* switching team to signals ([f240aaa](https://github.com/Badminton-Apps/badman/commit/f240aaa9119bc88d66e7da188371093f0761de8a))
+* testing for services ([74f2e21](https://github.com/Badminton-Apps/badman/commit/74f2e21e274bb316814fe008a217a6996170d95e))
+* when going down in points could result in strange behaviour ([e6ae6ca](https://github.com/Badminton-Apps/badman/commit/e6ae6ca53700e28a0254e77f35c995281521c571))
+
+## [6.118.0-beta.5](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.4...v6.118.0-beta.5) (2023-10-27)
+
+
+### Bug Fixes
+
+* this somehow works ([f3eea88](https://github.com/Badminton-Apps/badman/commit/f3eea88fed0310d2522597dd96d1c29594ca0672))
+
+## [6.118.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.3...v6.118.0-beta.4) (2023-10-26)
+
+## [6.118.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.2...v6.118.0-beta.3) (2023-10-26)
+
+## [6.118.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.1...v6.118.0-beta.2) (2023-10-26)
+
+
+### Bug Fixes
+
+* export the search module ([e8f3e90](https://github.com/Badminton-Apps/badman/commit/e8f3e9082e507a3cc3f7bc723eb5fd70ec6deadb))
+
+## [6.118.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.0...v6.118.0-beta.1) (2023-10-26)
+
+
+### Features
+
+* adding gameleader ([29c2fe6](https://github.com/Badminton-Apps/badman/commit/29c2fe620e1b0fbe76b99283129f8c9101c31a1d))
+* only check if entered ([2423464](https://github.com/Badminton-Apps/badman/commit/2423464c9946bde41bdbe404de267916a3a3f081))
+* search for game leader ([53cc925](https://github.com/Badminton-Apps/badman/commit/53cc9254371e225fa18dad0133c51eb1d0b92ce7))
+
+## [6.118.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.117.0...v6.118.0-beta.0) (2023-10-26)
+
+
+### Features
+
+* adding detail info to page ([7d014e2](https://github.com/Badminton-Apps/badman/commit/7d014e2f8655ab0e2e87113774488deb32cfa14b))
+
 ## [6.117.0](https://github.com/Badminton-Apps/badman/compare/v6.116.1...v6.117.0) (2023-10-26)
 
 

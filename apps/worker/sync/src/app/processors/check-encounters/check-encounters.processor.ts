@@ -9,6 +9,7 @@ import {
 import { NotificationService } from '@badman/backend-notifications';
 import { accepCookies, getBrowser } from '@badman/backend-pupeteer';
 import { Sync, SyncQueue } from '@badman/backend-queue';
+import { SearchService } from '@badman/backend-search';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import moment from 'moment';
@@ -18,11 +19,11 @@ import {
   detailAccepted,
   detailComment,
   detailEntered,
+  detailInfo,
   gotoEncounterPage,
   hasTime,
 } from './pupeteer';
 import { Job } from 'bull';
-import { detailInfo } from './pupeteer/getDetailInfo';
 
 const includes = [
   {
@@ -65,7 +66,10 @@ const includes = [
 export class CheckEncounterProcessor {
   private readonly logger = new Logger(CheckEncounterProcessor.name);
 
-  constructor(private notificationService: NotificationService) {}
+  constructor(
+    private notificationService: NotificationService,
+    private searchService: SearchService,
+  ) {}
 
   @Process(Sync.CheckEncounters)
   async syncEncounters(): Promise<void> {
@@ -209,20 +213,6 @@ export class CheckEncounterProcessor {
         { logger: this.logger },
       );
 
-      try {
-        const { endedOn, startedOn, usedShuttle } = await detailInfo(
-          { page },
-          { logger: this.logger },
-        );
-
-        encounter.startHour = startedOn || undefined;
-        encounter.endHour = endedOn || undefined;
-        encounter.shuttle = usedShuttle || undefined;
-      } catch (error) {
-        this.logger.warn(error);
-        // continue, we don't really care about this
-      }
-
       const hoursPassed = moment().diff(encounter.date, 'hour');
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
@@ -246,9 +236,50 @@ export class CheckEncounterProcessor {
         }
 
         encounter.enteredOn = enteredMoment.toDate();
+
+        try {
+          const { endedOn, startedOn, usedShuttle, gameLeader } =
+            await detailInfo({ page }, { logger: this.logger });
+
+          this.logger.debug(
+            `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`,
+          );
+          
+
+          encounter.startHour = startedOn || undefined;
+          encounter.endHour = endedOn || undefined;
+          encounter.shuttle = usedShuttle || undefined;
+
+
+          if (gameLeader && gameLeader.length > 0) {
+            const gameLeaderPlayer = await this.searchService.searchPlayers(
+              this.searchService.getParts(gameLeader),
+              [
+                {
+                  memberId: {
+                    [Op.ne]: null,
+                  },
+                },
+              ],
+            );
+
+            if (gameLeaderPlayer && gameLeaderPlayer.length > 0) {
+              if (gameLeaderPlayer.length > 1) {
+                this.logger.warn(
+                  `Found multiple players for game leader ${gameLeader}`,
+                );
+              } else {
+                await encounter.setGameLeader(gameLeaderPlayer[0]);
+              }
+            }
+          }
+        } catch (error) {
+          this.logger.warn(error);
+          // continue, we don't really care about this
+        }
       }
 
-      if (accepted) {
+      if (entered && accepted) {
         const acceptedMoment = moment(acceptedOn);
 
         if (!acceptedMoment.isValid()) {
@@ -261,7 +292,7 @@ export class CheckEncounterProcessor {
         encounter.acceptedOn = acceptedMoment.toDate();
         encounter.accepted = true;
       }
-      
+
       await encounter.save();
     } catch (error) {
       this.logger.error(error);

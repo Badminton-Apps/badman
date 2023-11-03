@@ -1,0 +1,148 @@
+<badman-page-header>
+  <div title>{{'all.ranking.title' | translate}}</div>
+
+  <div actions>
+    <button
+      (click)="$event.stopPropagation()"
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+      title="more options"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>add</mat-icon>
+        <span>{{'all.ranking.menu.add-ranking' | translate}}</span>
+      </button>
+    </mat-menu>
+  </div>
+</badman-page-header>
+
+<table mat-table [dataSource]="this.systems?.() ?? []">
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <!-- primary Column -->
+  <ng-container matColumnDef="primary">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <mat-icon *ngIf="element.primary">star</mat-icon>
+    </td>
+  </ng-container>
+
+  <!-- primary Column -->
+  <ng-container matColumnDef="running">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <mat-icon *ngIf="element.runCurrently">graphic_eq</mat-icon>
+    </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      {{ 'all.input.name' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <a [routerLink]="[element?.id]">{{ element.name }}</a>
+    </td>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="procentWinning">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>% Win</th>
+    <td mat-cell *matCellDef="let element">{{ element.procentWinning }}</td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="procentLosing">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>% Lose</th>
+    <td mat-cell *matCellDef="let element">{{ element.procentLosing }}</td>
+  </ng-container>
+
+  <!-- latestXGamesToUse Column -->
+  <ng-container matColumnDef="latestXGamesToUse">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Games to use</th>
+    <td mat-cell *matCellDef="let element">{{ element.latestXGamesToUse }}</td>
+  </ng-container>
+  <ng-container matColumnDef="options">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button [matMenuTriggerFor]="rankingSystemMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #rankingSystemMenu="matMenu">
+        <button mat-menu-item (click)="watchSystem(element)">
+          {{ 'all.button.watch-system' | translate }}
+        </button>
+        <badman-has-claim [any]="['edit:ranking']">
+          <button mat-menu-item [routerLink]="[element.id, 'edit']">
+            {{ 'all.button.edit' | translate }}
+          </button>
+          <button mat-menu-item (click)="cloneSystem(element)">
+            {{ 'all.button.clone' | translate }}
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="deleteSystem(element)">
+            {{ 'all.button.delete' | translate }}
+          </button>
+        </badman-has-claim>
+      </mat-menu>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
+<ng-template #copySystem>
+  <h2 matDialogTitle>{{ 'all.ranking.title' | translate }}</h2>
+  <mat-dialog-content>
+    <div id="copySystem">
+      <mat-slide-toggle [(ngModel)]="showDatePicker"
+        >Copy ranking places</mat-slide-toggle
+      >
+      <mat-form-field *ngIf="showDatePicker">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input
+          [formGroup]="copySystemFormGroup"
+          [rangePicker]="picker"
+        >
+          <input
+            matStartDate
+            formControlName="start"
+            placeholder="Start date"
+          />
+          <input matEndDate formControlName="end" placeholder="End date" />
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+
+        <mat-error
+          *ngIf="copySystemFormGroup.controls.start.hasError('matStartDateInvalid')"
+          >Invalid start date</mat-error
+        >
+        <mat-error
+          *ngIf="copySystemFormGroup.controls.end.hasError('matEndDateInvalid')"
+          >Invalid end date</mat-error
+        >
+      </mat-form-field>
+      <p>Selected range: {{copySystemFormGroup.value | json}}</p>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button [matDialogClose]="true" color="primary">
+      {{ 'all.button.create' | translate }}
+    </button>
+    <button mat-button matDialogClose>
+      {{ 'all.button.cancel' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

@@ -1,8 +1,6 @@
 import { User } from '@badman/backend-authorization';
-import { EncounterCompetition, Player } from '@badman/backend-database';
+import { Player } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
-import { MailingService } from '@badman/backend-mailing';
-import { NotificationService } from '@badman/backend-notifications';
 import { SimulationQueue, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import {

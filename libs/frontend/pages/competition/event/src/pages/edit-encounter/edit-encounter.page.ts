@@ -19,10 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute } from '@angular/router';
 import { GameScoreComponentComponent } from '@badman/frontend-components';
-import {
-  EncounterCompetition,
-  GamePlayer,
-} from '@badman/frontend-models';
+import { EncounterCompetition, GamePlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { gameLabel } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -69,7 +66,7 @@ export class EditEncounterComponent implements OnInit {
     private apollo: Apollo,
     @Inject(PLATFORM_ID) private platformId: string,
     private formBuilder: FormBuilder,
-    private matdialog: MatDialog
+    private matdialog: MatDialog,
   ) {}
 
   get isClient(): boolean {
@@ -99,7 +96,7 @@ export class EditEncounterComponent implements OnInit {
       this.breadcrumbsService.set('@drawCompetition', drawCompetitionName);
       this.breadcrumbsService.set(
         '@encounterCompetition',
-        encounterCompetitionName
+        encounterCompetitionName,
       );
 
       this.createForm();
@@ -139,34 +136,34 @@ export class EditEncounterComponent implements OnInit {
           }),
           team1: this.formBuilder.group({
             player1: this.formBuilder.control(
-              this.getPlayer(game.players, 1, 1)
+              this.getPlayer(game.players, 1, 1),
             ),
             player2: this.formBuilder.control(
-              this.getPlayer(game.players, 1, 2)
+              this.getPlayer(game.players, 1, 2),
             ),
           }),
           team2: this.formBuilder.group({
             player1: this.formBuilder.control(
-              this.getPlayer(game.players, 2, 1)
+              this.getPlayer(game.players, 2, 1),
             ),
             player2: this.formBuilder.control(
-              this.getPlayer(game.players, 2, 2)
+              this.getPlayer(game.players, 2, 2),
             ),
           }),
-        })
+        }),
       );
     }
     this.formGroup = this.formBuilder.group({
       games: this.formBuilder.array(games),
-      shuttle: this.formBuilder.control(''),
-      startTime: this.formBuilder.control(''),
-      endTime: this.formBuilder.control(''),
+      shuttle: this.formBuilder.control(this.encounterCompetition.shuttle),
+      startHour: this.formBuilder.control(this.encounterCompetition.startHour),
+      endHour: this.formBuilder.control(this.encounterCompetition.endHour),
     });
   }
 
   private getPlayer(players?: GamePlayer[], team?: number, player?: number) {
     return players?.find(
-      (playerGame) => playerGame.team === team && playerGame.player === player
+      (playerGame) => playerGame.team === team && playerGame.player === player,
     );
   }
 
