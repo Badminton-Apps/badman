@@ -123,7 +123,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     private matSnackBar: MatSnackBar,
     formBuilder: FormBuilder,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {
     this.filter = formBuilder.group({
       name: new FormControl(''),
@@ -148,7 +148,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       this.sort.sortChange,
       this.paginator.page,
       this.filter.valueChanges,
-      this.update$
+      this.update$,
     )
       .pipe(
         startWith({}),
@@ -159,7 +159,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
             this.paginator.pageSize,
             this.sort.active,
             this.sort.direction,
-            this.filter.value
+            this.filter.value,
           );
         }),
         map((data) => {
@@ -176,7 +176,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           // would prevent users from re-triggering requests.
           this.paginator.length = data.count;
           return data.items;
-        })
+        }),
       )
       .subscribe((data) => {
         this.data = data;
@@ -192,25 +192,38 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     filter?: {
       name?: string;
       official?: boolean;
-    }
+    },
   ) {
+    const where: {
+      official?: boolean;
+      $or?: {
+        name?: {
+          $iLike?: string;
+        };
+        visualCode?: string;
+      }[];
+    } = {
+      official: filter?.official == true ? true : undefined,
+    };
+
+    if (filter?.name) {
+      where['$or'] = [
+        {
+          name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
+        },
+        {
+          visualCode: filter?.name ? filter.name : undefined,
+        },
+      ];
+    }
+
     return this.apollo
       .query<{
         eventTournaments: { rows: Partial<EventTournament>[]; count: number };
       }>({
         query: FETCH_TOURNAMENTS,
         variables: {
-          where: {
-            official: filter?.official == true ? true : undefined,
-            $or: [
-              {
-                name: filter?.name ? { $iLike: `%${filter.name}%` } : undefined,
-              },
-              {
-                visualCode: filter?.name,
-              },
-            ],
-          },
+          where,
           order: [
             {
               direction: direction || 'desc',
@@ -225,7 +238,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
         transferState(
           `tournaments-${aort}-${direction}-${page}-${filter?.name}-${filter?.official}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           if (!result?.data.eventTournaments) {
@@ -234,10 +247,10 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           return {
             count: result.data.eventTournaments.count,
             items: result.data.eventTournaments.rows.map(
-              (team) => new EventTournament(team)
+              (team) => new EventTournament(team),
             ),
           };
-        })
+        }),
       );
   }
 
@@ -268,7 +281,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           'Close',
           {
             duration: 2000,
-          }
+          },
         );
       });
   }
@@ -280,14 +293,14 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
         'Close',
         {
           duration: 2000,
-        }
+        },
       );
 
       return;
     }
 
     await lastValueFrom(
-      this.jobsService.syncEventById({ id: eventTournament.visualCode })
+      this.jobsService.syncEventById({ id: eventTournament.visualCode }),
     );
   }
 
@@ -340,7 +353,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
               'Close',
               {
                 duration: 2000,
-              }
+              },
             );
           });
       }
@@ -350,7 +363,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
   removeEvent(tournament: EventTournament) {
     const dialogData = new ConfirmDialogModel(
       'all.tournament.delete.title',
-      'all.tournament.delete.description'
+      'all.tournament.delete.description',
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

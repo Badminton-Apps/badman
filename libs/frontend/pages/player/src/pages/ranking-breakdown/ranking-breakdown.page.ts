@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  OnDestroy,
   PLATFORM_ID,
   TransferState,
   computed,
@@ -26,7 +25,8 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
-import { Subject, combineLatest, of } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { combineLatest, of } from 'rxjs';
 import {
   distinctUntilChanged,
   map,
@@ -64,7 +64,7 @@ import { RankingEvolutionComponent } from './components/ranking-evolution';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RankingBreakdownPageComponent implements OnDestroy {
+export class RankingBreakdownPageComponent {
   // Dependencies
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -74,11 +74,12 @@ export class RankingBreakdownPageComponent implements OnDestroy {
   private apollo = inject(Apollo);
   private stateTransfer = inject(TransferState);
   private platformId = inject(PLATFORM_ID);
+  private destroy$ = injectDestroy();
 
   // route
-  queryParams = toSignal(this.route.queryParamMap);
-  routeParams = toSignal(this.route.paramMap);
-  routeData = toSignal(this.route.data);
+  private queryParams = toSignal(this.route.queryParamMap);
+  private routeParams = toSignal(this.route.paramMap);
+  private routeData= toSignal(this.route.data);
 
   // filters
   periodFilter = new FormGroup({
@@ -92,16 +93,16 @@ export class RankingBreakdownPageComponent implements OnDestroy {
     gameType: new FormControl(this.routeParams()?.get('type')),
     period: this.periodFilter,
     includedIgnored: new FormControl(
-      this.routeParams()?.get('includedIgnored') ?? false
+      this.routeParams()?.get('includedIgnored') ?? false,
     ),
     includedUpgrade: new FormControl(
-      this.routeParams()?.get('includedUpgrade') ?? true
+      this.routeParams()?.get('includedUpgrade') ?? true,
     ),
     includedDowngrade: new FormControl(
-      this.routeParams()?.get('includedDowngrade') ?? true
+      this.routeParams()?.get('includedDowngrade') ?? true,
     ),
     includeOutOfScope: new FormControl(
-      this.routeParams()?.get('includeOutOfScope') ?? false
+      this.routeParams()?.get('includeOutOfScope') ?? false,
     ),
   });
 
@@ -116,9 +117,6 @@ export class RankingBreakdownPageComponent implements OnDestroy {
 
   // specific computed value so the effect only triggers when the end date changes
   periodEndRoute = computed(() => this.queryParams()?.get('end'));
-
-  // Destroy
-  destroy$ = new Subject<void>();
 
   // Games
   constructor() {
@@ -144,7 +142,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
       },
       {
         allowSignalWrites: true,
-      }
+      },
     );
 
     this.gameFilter.valueChanges
@@ -169,14 +167,14 @@ export class RankingBreakdownPageComponent implements OnDestroy {
       .clone()
       .subtract(
         this.system()?.updateIntervalAmount,
-        this.system()?.updateIntervalUnit
+        this.system()?.updateIntervalUnit,
       );
 
     const nextPeriod = startPeriod
       .clone()
       .add(
         this.system()?.caluclationIntervalAmount,
-        this.system()?.calculationIntervalUnit
+        this.system()?.calculationIntervalUnit,
       );
 
     this.periodFilter.setValue({
@@ -193,11 +191,15 @@ export class RankingBreakdownPageComponent implements OnDestroy {
         this.apollo
           .query<{ rankingSystems: RankingSystem[] }>({
             query: gql`
-              query getPrimary($where: JSONObject) {
+              query GetSystem($where: JSONObject) {
                 rankingSystems(where: $where) {
                   id
-                  differenceForUpgrade
-                  differenceForDowngrade
+                  differenceForDowngradeSingle
+                  differenceForDowngradeDouble
+                  differenceForDowngradeMix
+                  differenceForUpgradeSingle
+                  differenceForUpgradeDouble
+                  differenceForUpgradeMix
                   updateIntervalAmountLastUpdate
                   caluclationIntervalLastUpdate
                   calculationIntervalUnit
@@ -228,9 +230,9 @@ export class RankingBreakdownPageComponent implements OnDestroy {
               }
 
               return new RankingSystem(x.data.rankingSystems[0]);
-            })
-          )
-      )
+            }),
+          ),
+      ),
     );
   }
 
@@ -252,7 +254,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
             query PlayerGames(
               $where: JSONObject
               $playerId: ID!
-              $rankingType: ID!
+              $systemId: ID!
             ) {
               player(id: $playerId) {
                 id
@@ -261,6 +263,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
                   playedAt
                   winner
                   status
+                  gameType
                   players {
                     id
                     team
@@ -270,7 +273,7 @@ export class RankingBreakdownPageComponent implements OnDestroy {
                     double
                     mix
                   }
-                  rankingPoints(where: { systemId: $rankingType }) {
+                  rankingPoints(where: { systemId: $systemId }) {
                     id
                     differenceInLevel
                     playerId
@@ -289,21 +292,21 @@ export class RankingBreakdownPageComponent implements OnDestroy {
               },
             },
             playerId: this.player().id,
-            rankingType: this.system()?.id,
+            systemId: this.system()?.id,
           },
-        })
+        }),
       ),
       map((x) => x.data.player.games?.map((g) => new Game(g)) ?? []),
       map((games) =>
-        games.filter((game) => (game.rankingPoints?.length ?? 0) > 0)
+        games.filter((game) => (game.rankingPoints?.length ?? 0) > 0),
       ),
-      tap(() => this.loadingGames.set(false))
+      tap(() => this.loadingGames.set(false)),
     );
   }
 
   private _updateUrl() {
     const systemLastUpdate = moment(
-      this.system()?.caluclationIntervalLastUpdate
+      this.system()?.caluclationIntervalLastUpdate,
     );
 
     const queryParams: { [key: string]: string | boolean | null | undefined } =
@@ -350,10 +353,5 @@ export class RankingBreakdownPageComponent implements OnDestroy {
       queryParams,
       queryParamsHandling: 'merge',
     });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

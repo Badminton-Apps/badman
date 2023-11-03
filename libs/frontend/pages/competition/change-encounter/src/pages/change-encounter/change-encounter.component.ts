@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  OnDestroy,
   OnInit,
   computed,
   inject,
@@ -23,7 +22,7 @@ import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { SeoService } from '@badman/frontend-seo';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import { map, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ListEncountersComponent, ShowRequestsComponent } from './components';
@@ -51,8 +50,8 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangeEncounterComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+export class ChangeEncounterComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   breakpointObserver = inject(BreakpointObserver);
   private seoService = inject(SeoService);
@@ -111,10 +110,5 @@ export class ChangeEncounterComponent implements OnInit, OnDestroy {
           changeEncounterKey,
         );
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

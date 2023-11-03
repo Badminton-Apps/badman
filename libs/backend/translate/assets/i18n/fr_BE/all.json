@@ -58,6 +58,7 @@
     "agree": "Ok",
     "all": "Tout",
     "cancel": "Annuler",
+    "clone": "Copie",
     "close": "Fermer",
     "create": "Créer",
     "delete": "Retirer",
@@ -193,9 +194,11 @@
       "change-date": "Date de modification",
       "change-location": "Changement de lieu",
       "change-location-note": "L'option de filtrage des changements de lieu ne fonctionne que pour les matches reprogrammés après le 30/07.",
+      "gameleader": "Directeur de course",
       "home-games": "Matchs à domicile uniquement",
       "no-more": "Plus de rencontres",
       "open-requests": "Ouvrir les demandes de transfert",
+      "shuttle": "Navette d'occasion",
       "title": "Réunions"
     },
     "home": "Accueil",
@@ -669,7 +672,6 @@
     "title": "Tableau des points"
   },
   "ranking": {
-    "add-ranking": "Voeg ranking toe",
     "all-ranking": "Alle updates",
     "double": "Double",
     "double-points": "Double points",
@@ -683,6 +685,10 @@
     "last-update": "Dernière mise à jour",
     "list": "Ranking joueurs",
     "may-ranking": "Mei ranking",
+    "menu": {
+      "add-ranking": "Voeg ranking toe",
+      "add-system": "Nouveau système"
+    },
     "mix": "Mixte",
     "mix-points": "Mixte points",
     "mix-rank": "Ranking classement",
@@ -693,6 +699,7 @@
     "table": {
       "title": "Tableau de classement"
     },
+    "title": "Classement",
     "trending_down": "Tendance à la baisse",
     "trending_up": "La tendance est à la hausse",
     "update-happend": "Update plaatsgevonden",

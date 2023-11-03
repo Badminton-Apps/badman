@@ -1,0 +1,44 @@
+{
+  "name": "belgium-flanders-games",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/belgium/flanders/games/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/belgium/flanders/games",
+        "tsConfig": "libs/backend/belgium/flanders/games/tsconfig.lib.json",
+        "packageJson": "libs/backend/belgium/flanders/games/package.json",
+        "main": "libs/backend/belgium/flanders/games/src/index.ts",
+        "assets": ["libs/backend/belgium/flanders/games/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/backend/belgium/flanders/games/**/*.ts",
+          "libs/backend/belgium/flanders/games/package.json"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/backend/belgium/flanders/games/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

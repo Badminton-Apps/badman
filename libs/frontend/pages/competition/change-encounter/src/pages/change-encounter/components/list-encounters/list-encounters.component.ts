@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -22,7 +16,8 @@ import { EncounterCompetition } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { Subject, combineLatest, of } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { combineLatest, of } from 'rxjs';
 import {
   distinctUntilChanged,
   map,
@@ -54,8 +49,8 @@ import {
     LoadingBlockComponent,
   ],
 })
-export class ListEncountersComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class ListEncountersComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   @Input()
   controlName = 'encounter';
@@ -306,10 +301,5 @@ export class ListEncountersComponent implements OnInit, OnDestroy {
           });
         }),
       );
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

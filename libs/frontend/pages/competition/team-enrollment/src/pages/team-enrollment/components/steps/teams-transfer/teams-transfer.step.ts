@@ -4,7 +4,6 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
 import {
@@ -22,7 +21,8 @@ import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
 import { SubEventType, sortTeams } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { Observable, Subscription, combineLatest, of } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -31,7 +31,7 @@ import {
   startWith,
   switchMap,
   takeUntil,
-  tap
+  tap,
 } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { CLUB, SEASON, TEAMS } from '../../../../../forms';
@@ -71,8 +71,8 @@ export type TeamForm = FormGroup<{
   styleUrls: ['./teams-transfer.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeamsTransferStepComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class TeamsTransferStepComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   @Input()
   group!: FormGroup;
@@ -109,7 +109,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
   constructor(
     private apollo: Apollo,
     private systemService: RankingSystemService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -149,13 +149,13 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     if (this.group) {
       clubid$ = this.group?.valueChanges.pipe(
         map((value) => value?.[this.clubControlName]),
-        startWith(this.group.value?.[this.clubControlName])
+        startWith(this.group.value?.[this.clubControlName]),
       );
 
       season$ = this.group?.valueChanges.pipe(
         map((value) => value?.[this.seasonControlName]),
         startWith(this.group.value?.[this.seasonControlName]),
-        filter((value) => value !== undefined)
+        filter((value) => value !== undefined),
       );
     } else {
       clubid$ = of(this.clubId as string);
@@ -180,7 +180,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
             variables: {
               id: id,
             },
-          })
+          }),
         ),
         map((result) => result.data.rankingSystem),
         tap((id) => {
@@ -194,7 +194,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
             this.group?.get('rankingSystem')?.setValue(id);
           }
         }),
-        distinctUntilChanged()
+        distinctUntilChanged(),
       ),
     ])?.pipe(
       takeUntil(this.destroy$),
@@ -306,10 +306,10 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
             map((teams) => teams?.sort(sortTeams)),
             map((teams) => {
               const teamsLastSeason = teams?.filter(
-                (team) => team.season == season - 1
+                (team) => team.season == season - 1,
               );
               const teamsThisSeason = teams?.filter(
-                (team) => team.season == season
+                (team) => team.season == season,
               );
 
               // we have 2 arrays, teams of last season
@@ -317,14 +317,14 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
 
               const lastSeason = teamsLastSeason?.map((team) => {
                 const teamThisSeason = teamsThisSeason?.find(
-                  (t) => t.link == team.link
+                  (t) => t.link == team.link,
                 );
 
                 if (teamThisSeason != null) {
                   // remove the team from the teamsThisSeason array
                   teamsThisSeason.splice(
                     teamsThisSeason.indexOf(teamThisSeason),
-                    1
+                    1,
                   );
 
                   // select the team
@@ -356,8 +356,8 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
                 lastSeason,
                 newThisSeason,
               };
-            })
-          )
+            }),
+          ),
       ),
       shareReplay(1),
       tap(({ lastSeason, newThisSeason }) => {
@@ -373,13 +373,13 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
           this.teamsForm?.push(control);
           this.teamSubscriptions.push(
             control.valueChanges
-              .pipe(startWith(team.selected))
+              .pipe(startWith(team.selected), takeUntil(this.destroy$))
               .subscribe((value) => {
                 if (value == null) {
                   return;
                 }
                 this.select(value, team);
-              })
+              }),
           );
         }
 
@@ -388,27 +388,27 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
           this.newTeamsForm?.push(control);
           this.teamSubscriptions.push(
             control.valueChanges
-              .pipe(startWith(team.selected))
+              .pipe(startWith(team.selected), takeUntil(this.destroy$))
               .subscribe((value) => {
                 if (value == null) {
                   return;
                 }
                 this.select(value, team);
-              })
+              }),
           );
         }
-      })
+      }),
     );
   }
 
   select(selected: boolean, team: Team & { selected: boolean }) {
     // if the team is already selected, we don't need to do anything
     const typedControl = this.control?.get(
-      team.type ?? ''
+      team.type ?? '',
     ) as FormArray<TeamForm>;
 
     const index = typedControl.value?.findIndex(
-      (t) => t.team?.link == team.link
+      (t) => t.team?.link == team.link,
     );
 
     if (selected) {
@@ -480,7 +480,7 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
 
     // sort the teams
     typedControl?.controls?.sort((a, b) =>
-      sortTeams(a.value.team, b.value.team)
+      sortTeams(a.value.team, b.value.team),
     );
 
     this.changeDetectorRef.markForCheck();
@@ -500,11 +500,5 @@ export class TeamsTransferStepComponent implements OnInit, OnDestroy {
     for (let i = 0; i < (form?.length ?? 0); i++) {
       form?.[i].setValue(false);
     }
-  }
-
-  ngOnDestroy() {
-    this.teamSubscriptions.forEach((sub) => sub.unsubscribe());
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

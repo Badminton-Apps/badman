@@ -47,6 +47,24 @@
       <mat-chip *ngIf="encounterCompetition.location?.name">
         {{encounterCompetition.location?.name}}</mat-chip
       >
+      <mat-chip
+        *ngIf="encounterCompetition.shuttle"
+        [matTooltip]="'all.competition.encounters.shuttle' | translate"
+      >
+        {{encounterCompetition.shuttle}}</mat-chip
+      >
+      <mat-chip
+        *ngIf="encounterCompetition.startHour && encounterCompetition.endHour"
+      >
+        {{encounterCompetition.startHour}} - {{encounterCompetition.endHour}}
+      </mat-chip>
+
+      <mat-chip
+        *ngIf="encounterCompetition.gameLeader?.fullName"
+        [matTooltip]="'all.competition.encounters.gameleader' | translate"
+      >
+        {{encounterCompetition.gameLeader?.fullName}}
+      </mat-chip>
     </mat-chip-listbox>
   </div>
 </badman-page-header>

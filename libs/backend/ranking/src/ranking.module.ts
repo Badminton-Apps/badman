@@ -8,16 +8,23 @@ import {
   PointsService,
   UpdateRankingService,
 } from './services';
+import { BelgiumFlandersPlacesModule } from '@badman/belgium-flanders-places';
+import { BelgiumFlandersPointsModule } from '@badman/belgium-flanders-points';
 
 @Module({
   controllers: [UploadRankingController, RankingController],
-  imports: [DatabaseModule, QueueModule],
+  imports: [
+    DatabaseModule,
+    QueueModule,
+    BelgiumFlandersPlacesModule,
+    BelgiumFlandersPointsModule,
+  ],
   providers: [
     PointsService,
     CalculationService,
     PlaceService,
     UpdateRankingService,
   ],
-  exports: [CalculationService, PointsService],
+  exports: [CalculationService, PointsService, PlaceService],
 })
 export class RankingModule {}

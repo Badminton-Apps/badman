@@ -417,7 +417,6 @@ export class EventCompetitionResolver {
       for (const game of games) {
         promisse.push(
           this._pointService.createRankingPointforGame(system, game, {
-            createRankingPoints: true,
             transaction,
           }),
         );

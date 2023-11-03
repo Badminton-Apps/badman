@@ -58,6 +58,7 @@
     "agree": "Ok",
     "all": "All",
     "cancel": "Cancel",
+    "clone": "Clone",
     "close": "Close",
     "create": "Create",
     "delete": "Delete",
@@ -193,9 +194,11 @@
       "change-date": "Modified date",
       "change-location": "Modified location",
       "change-location-note": "Location change filtering option works only for encounters rescheduled after 30/07",
+      "gameleader": "Game leader",
       "home-games": "Home games only",
       "no-more": "No more encounters",
       "open-requests": "Open transfer requests",
+      "shuttle": "Used shuttle",
       "title": "Encounters"
     },
     "home": "Home",
@@ -669,7 +672,6 @@
     "title": "Points tabel"
   },
   "ranking": {
-    "add-ranking": "Add ranking",
     "all-ranking": "All update",
     "double": "Double",
     "double-points": "Ranking points",
@@ -683,6 +685,10 @@
     "last-update": "last update",
     "list": "Ranking players",
     "may-ranking": "May ranking",
+    "menu": {
+      "add-ranking": "Add ranking",
+      "add-system": "New system"
+    },
     "mix": "Mixed",
     "mix-points": "Ranking points",
     "mix-rank": "Ranking place",
@@ -693,6 +699,7 @@
     "table": {
       "title": "Ranking table"
     },
+    "title": "Ranking",
     "trending_down": "Trending down",
     "trending_up": "Trending up",
     "update-happend": "Update happened",
