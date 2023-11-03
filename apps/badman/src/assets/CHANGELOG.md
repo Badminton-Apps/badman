@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.118.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.7...v6.118.0-beta.8) (2023-11-03)
+
+
+### Features
+
+* adding option to specify systemId ([e435327](https://github.com/Badminton-Apps/badman/commit/e4353276580a8bc8a5386f5e79a4d727c3ec51e4))
+* enable tooltip ([7c68bd3](https://github.com/Badminton-Apps/badman/commit/7c68bd3e68e50d9df7e79c2b3e983458bdf2710a))
+* enable tooltip on chart ([a3e2c5a](https://github.com/Badminton-Apps/badman/commit/a3e2c5a74e4e82fbbd3768979b67bcf3427d41a9))
+
 ## [6.118.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.118.0-beta.6...v6.118.0-beta.7) (2023-10-31)
 
 
