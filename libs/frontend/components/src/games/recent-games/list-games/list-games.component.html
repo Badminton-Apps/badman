@@ -1,4 +1,4 @@
-<form [formGroup]="filter" class="filter">
+<form [formGroup]="recentGames.filter" class="filter">
   <mat-button-toggle-group
     name="team types"
     aria-label="team types"
@@ -17,125 +17,123 @@
   </mat-button-toggle-group>
 </form>
 
-<ng-container *ngIf="recentGames$ | async as games">
-  <div
-    class="game"
-    *ngFor="let game of games; trackByProp: 'id'"
-    [ngClass]="{
-      double: game.gameType === 'D',
-      mix: game.gameType === 'MX',
-      single: game.gameType === 'S',
-      wonByPlayer: getWonStatusForPlayer(game)
-    }"
-  >
-    <div class="game__extra" *ngIf="getExtra(game) as extra">
-      <a [routerLink]="extra.link">{{ extra.title }}</a>
-    </div>
-    <div class="game__date">
-      <div>{{ game?.playedAt | amDateFormat: 'llll' }}</div>
-    </div>
-    <div class="game__play">
-      <div
-        class="team team1"
-        [ngClass]="{
-          won: game.winner === 1,
-          isTeamOfPlayer: this.isTeamOfPlayer(game, 1)
-        }"
-      >
-        <div class="player" *ngIf="this.getPlayer(game, 1, 1) as p1t1">
-          <a [routerLink]="['/player', p1t1?.slug]"
-            >{{ p1t1?.fullName }}
-            <ng-container *ngIf="this.getRanking(game, p1t1) as ranking"
-              >({{ ranking }})</ng-container
-            ></a
-          >
-        </div>
-        <div class="player" *ngIf="this.getPlayer(game, 2, 1) as p2t1">
-          <a [routerLink]="['/player', p2t1?.slug]">
-            {{ p2t1?.fullName }}
-            <ng-container *ngIf="this.getRanking(game, p2t1) as ranking"
-              >({{ ranking }})</ng-container
-            >
-          </a>
-        </div>
-        <div class="game__points" *ngIf="this.getPoints(game, 1) as points">
-          <span
-            [matTooltip]="points.tooltip ?? '' | translate"
-            [matTooltipDisabled]="!points.tooltip"
-            [matTooltipPosition]="'right'"
-          >
-            <ng-container *ngIf="points.show">
-              {{ points.points }} {{ 'all.game.points' | translate }}
-              <ng-container *ngIf="points.upgrade">
-                <mat-icon>arrow_upward</mat-icon>
-              </ng-container>
-              <ng-container *ngIf="points.downgrade">
-                <mat-icon>swap_vert</mat-icon>
-              </ng-container>
-            </ng-container>
-
-            <ng-container *ngIf="!points.show"> - </ng-container>
-          </span>
-        </div>
+<div
+  class="game"
+  *ngFor="let game of recentGames.games(); trackByProp: 'id'"
+  [ngClass]="{
+    double: game.gameType === 'D',
+    mix: game.gameType === 'MX',
+    single: game.gameType === 'S',
+    wonByPlayer: getWonStatusForPlayer(game)
+  }"
+>
+  <div class="game__extra" *ngIf="getExtra(game) as extra">
+    <a [routerLink]="extra.link">{{ extra.title }}</a>
+  </div>
+  <div class="game__date">
+    <div>{{ game?.playedAt | amDateFormat: 'llll' }}</div>
+  </div>
+  <div class="game__play">
+    <div
+      class="team team1"
+      [ngClass]="{
+        won: game.winner === 1,
+        isTeamOfPlayer: this.isTeamOfPlayer(game, 1)
+      }"
+    >
+      <div class="player" *ngIf="this.getPlayer(game, 1, 1) as p1t1">
+        <a [routerLink]="['/player', p1t1?.slug]"
+          >{{ p1t1?.fullName }}
+          <ng-container *ngIf="this.getRanking(game, p1t1) as ranking"
+            >({{ ranking }})</ng-container
+          ></a
+        >
       </div>
-
-      <div class="scores">
-        <div>{{ game.set1Team1 }} - {{ game.set1Team2 }}</div>
-        <div>{{ game.set2Team1 }} - {{ game.set2Team2 }}</div>
-        <div *ngIf="game.set3Team1 && game.set3Team2">
-          {{ game.set3Team1 }} - {{ game.set3Team2 }}
-        </div>
-      </div>
-      <div
-        class="team team2"
-        [ngClass]="{
-          won: game.winner === 2,
-          isTeamOfPlayer: this.isTeamOfPlayer(game, 2)
-        }"
-      >
-        <div class="player" *ngIf="this.getPlayer(game, 1, 2) as p1t2">
-          <a [routerLink]="['/player', p1t2?.slug]">
-            <ng-container *ngIf="this.getRanking(game, p1t2) as ranking"
-              >({{ ranking }})</ng-container
-            >
-            {{ p1t2?.fullName }}
-          </a>
-        </div>
-        <div class="player" *ngIf="this.getPlayer(game, 2, 2) as p2t2">
-          <a [routerLink]="['/player', p2t2?.slug]">
-            <ng-container *ngIf="this.getRanking(game, p2t2) as ranking"
-              >({{ ranking }})</ng-container
-            >
-            {{ p2t2?.fullName }}
-          </a>
-        </div>
-        <div class="game__points" *ngIf="this.getPoints(game, 2) as points">
-          <span
-            [matTooltip]="points.tooltip ?? '' | translate"
-            [matTooltipDisabled]="!points.tooltip"
-            [matTooltipPosition]="'left'"
+      <div class="player" *ngIf="this.getPlayer(game, 2, 1) as p2t1">
+        <a [routerLink]="['/player', p2t1?.slug]">
+          {{ p2t1?.fullName }}
+          <ng-container *ngIf="this.getRanking(game, p2t1) as ranking"
+            >({{ ranking }})</ng-container
           >
-            <ng-container *ngIf="points.show">
-              {{ points.points }} {{ 'all.game.points' | translate }}
-              <ng-container *ngIf="points.upgrade">
-                <mat-icon>arrow_upward</mat-icon>
-              </ng-container>
-              <ng-container *ngIf="points.downgrade">
-                <mat-icon>swap_vert</mat-icon>
-              </ng-container>
+        </a>
+      </div>
+      <div class="game__points" *ngIf="this.getPoints(game, 1) as points">
+        <span
+          [matTooltip]="points.tooltip ?? '' | translate"
+          [matTooltipDisabled]="!points.tooltip"
+          [matTooltipPosition]="'right'"
+        >
+          <ng-container *ngIf="points.show">
+            {{ points.points }} {{ 'all.game.points' | translate }}
+            <ng-container *ngIf="points.upgrade">
+              <mat-icon>arrow_upward</mat-icon>
             </ng-container>
+            <ng-container *ngIf="points.downgrade">
+              <mat-icon>swap_vert</mat-icon>
+            </ng-container>
+          </ng-container>
 
-            <ng-container *ngIf="!points.show"> - </ng-container>
-          </span>
-        </div>
+          <ng-container *ngIf="!points.show"> - </ng-container>
+        </span>
+      </div>
+    </div>
+
+    <div class="scores">
+      <div>{{ game.set1Team1 }} - {{ game.set1Team2 }}</div>
+      <div>{{ game.set2Team1 }} - {{ game.set2Team2 }}</div>
+      <div *ngIf="game.set3Team1 && game.set3Team2">
+        {{ game.set3Team1 }} - {{ game.set3Team2 }}
+      </div>
+    </div>
+    <div
+      class="team team2"
+      [ngClass]="{
+        won: game.winner === 2,
+        isTeamOfPlayer: this.isTeamOfPlayer(game, 2)
+      }"
+    >
+      <div class="player" *ngIf="this.getPlayer(game, 1, 2) as p1t2">
+        <a [routerLink]="['/player', p1t2?.slug]">
+          <ng-container *ngIf="this.getRanking(game, p1t2) as ranking"
+            >({{ ranking }})</ng-container
+          >
+          {{ p1t2?.fullName }}
+        </a>
+      </div>
+      <div class="player" *ngIf="this.getPlayer(game, 2, 2) as p2t2">
+        <a [routerLink]="['/player', p2t2?.slug]">
+          <ng-container *ngIf="this.getRanking(game, p2t2) as ranking"
+            >({{ ranking }})</ng-container
+          >
+          {{ p2t2?.fullName }}
+        </a>
+      </div>
+      <div class="game__points" *ngIf="this.getPoints(game, 2) as points">
+        <span
+          [matTooltip]="points.tooltip ?? '' | translate"
+          [matTooltipDisabled]="!points.tooltip"
+          [matTooltipPosition]="'left'"
+        >
+          <ng-container *ngIf="points.show">
+            {{ points.points }} {{ 'all.game.points' | translate }}
+            <ng-container *ngIf="points.upgrade">
+              <mat-icon>arrow_upward</mat-icon>
+            </ng-container>
+            <ng-container *ngIf="points.downgrade">
+              <mat-icon>swap_vert</mat-icon>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="!points.show"> - </ng-container>
+        </span>
       </div>
     </div>
   </div>
+</div>
 
-  <ng-container *ngIf="this.endOfList">
-    <div class="no-more-games" translate="all.competition.no-more-games"></div>
-  </ng-container>
-
-  <div #bottomObserver id="bottomObserver"></div>
-  <badman-loading-block [items]="5" height="80px" *ngIf="!this.endOfList" />
+<ng-container *ngIf="recentGames.endReached() && !recentGames.loading()">
+  <div class="no-more-games" translate="all.competition.no-more-games"></div>
 </ng-container>
+
+<div #bottomObserver id="bottomObserver"></div>
+<badman-loading-block [items]="5" height="80px" *ngIf="recentGames.loading()" />
