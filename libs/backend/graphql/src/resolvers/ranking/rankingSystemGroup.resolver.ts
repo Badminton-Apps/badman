@@ -317,17 +317,17 @@ export class RankingGroupsResolver {
         },
       });
 
-      const promisse = [];
-      for (const game of games) {
-        promisse.push(
-          this._pointService.createRankingPointforGame(system, game, {
-            createRankingPoints: true,
-            transaction,
-          })
-        );
-      }
+      // const promisse = [];
+      // for (const game of games) {
+      //   promisse.push(
+      //     this._pointService.createRankingPointforGame(system, game, {
+      //       createRankingPoints: true,
+      //       transaction,
+      //     })
+      //   );
+      // }
 
-      await Promise.all(promisse);
+      // await Promise.all(promisse);
     }
   }
 

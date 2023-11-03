@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   Injector,
-  OnDestroy,
   OnInit,
   Signal,
   TemplateRef,
@@ -33,6 +32,8 @@ import {
   PageHeaderComponent,
 } from '@badman/frontend-components';
 import { CpService } from '@badman/frontend-cp';
+import { ExcelService } from '@badman/frontend-excel';
+import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { JobsModule, JobsService } from '@badman/frontend-jobs';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
@@ -40,14 +41,13 @@ import { sortSubEvents } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { Subject, combineLatest, lastValueFrom } from 'rxjs';
+import { combineLatest, lastValueFrom } from 'rxjs';
 import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { CompetitionEncountersComponent } from './competition-encounters/competition-encounters.component';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
-import { CompetitionEncountersComponent } from './competition-encounters/competition-encounters.component';
-import { VERSION_INFO } from '@badman/frontend-html-injects';
-import { ExcelService } from '@badman/frontend-excel';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -86,15 +86,16 @@ import { ExcelService } from '@badman/frontend-excel';
     CompetitionEncountersComponent,
   ],
 })
-export class DetailPageComponent implements OnInit, OnDestroy {
+export class DetailPageComponent implements OnInit {
   // injectors
-  authService = inject(ClaimService);
-  injector = inject(Injector);
+  private authService = inject(ClaimService);
+  private injector = inject(Injector);
   private claimService = inject(ClaimService);
   private versionInfo: {
     beta: boolean;
     version: string;
   } = inject(VERSION_INFO);
+  private destroy$ = injectDestroy();
 
   // signals
   canViewEnrollments?: Signal<boolean | undefined>;
@@ -103,10 +104,8 @@ export class DetailPageComponent implements OnInit, OnDestroy {
   hasPermission = toSignal(this.claimService.hasAnyClaims$(['edit-any:club']));
 
   canViewEncounter = computed(
-    () => this.hasPermission() || this.versionInfo.beta
+    () => this.hasPermission() || this.versionInfo.beta,
   );
-
-  destroy$ = new Subject<void>();
   copyYearControl = new FormControl();
 
   eventCompetition!: EventCompetition;
@@ -123,7 +122,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     private matSnackBar: MatSnackBar,
     private jobsService: JobsService,
     private cpService: CpService,
-    private excelService: ExcelService
+    private excelService: ExcelService,
   ) {}
 
   ngOnInit(): void {
@@ -136,22 +135,24 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         this.eventCompetition = data['eventCompetition'];
         this.subEvents = this.eventCompetition.subEventCompetitions
           ?.sort(sortSubEvents)
-          ?.reduce((acc, subEventCompetition) => {
-            const eventType = subEventCompetition.eventType || 'Unknown';
-            const subEvents = acc.find(
-              (x) => x.eventType === eventType
-            )?.subEvents;
-            if (subEvents) {
-              subEvents.push(subEventCompetition);
-            } else {
-              acc.push({ eventType, subEvents: [subEventCompetition] });
-            }
-            return acc;
-          }, [] as { eventType: string; subEvents: SubEventCompetition[] }[]);
+          ?.reduce(
+            (acc, subEventCompetition) => {
+              const eventType = subEventCompetition.eventType || 'Unknown';
+              const subEvents = acc.find((x) => x.eventType === eventType)
+                ?.subEvents;
+              if (subEvents) {
+                subEvents.push(subEventCompetition);
+              } else {
+                acc.push({ eventType, subEvents: [subEventCompetition] });
+              }
+              return acc;
+            },
+            [] as { eventType: string; subEvents: SubEventCompetition[] }[],
+          );
 
         const eventCompetitionName = `${this.eventCompetition.name}`;
         this.copyYearControl.setValue(
-          (this.eventCompetition.season || new Date().getFullYear()) + 1
+          (this.eventCompetition.season || new Date().getFullYear()) + 1,
         );
 
         this.seoService.update({
@@ -163,7 +164,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
         this.breadcrumbsService.set(
           'competition',
-          translations['all.competition.title']
+          translations['all.competition.title'],
         );
 
         this.canViewEnrollments = toSignal(
@@ -171,7 +172,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
             'view-any:enrollment-competition',
             `${this.eventCompetition.id}_view:enrollment-competition`,
           ]),
-          { injector: this.injector }
+          { injector: this.injector },
         );
 
         effect(
@@ -184,14 +185,14 @@ export class DetailPageComponent implements OnInit, OnDestroy {
                   startWith(this.route.snapshot.queryParams),
                   take(1),
                   filter((params) => params['tab']),
-                  map((params) => params['tab'])
+                  map((params) => params['tab']),
                 )
                 .subscribe((tabindex) => {
                   this.currentTab.set(parseInt(tabindex, 10));
                 });
             }
           },
-          { injector: this.injector, allowSignalWrites: true }
+          { injector: this.injector, allowSignalWrites: true },
         );
       });
   }
@@ -202,7 +203,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
         .open(templateRef, {
           width: '300px',
         })
-        .afterClosed()
+        .afterClosed(),
     );
 
     if (!year) {
@@ -223,7 +224,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           id: this.eventCompetition.id,
           year,
         },
-      })
+      }),
     );
 
     this.router.navigate([
@@ -273,7 +274,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
               'Close',
               {
                 duration: 2000,
-              }
+              },
             );
           });
       }
@@ -324,7 +325,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
               'Close',
               {
                 duration: 2000,
-              }
+              },
             );
           });
       }
@@ -356,7 +357,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
           'Close',
           {
             duration: 2000,
-          }
+          },
         );
         this.eventCompetition.official = offical;
       });
@@ -368,7 +369,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
     }
 
     await lastValueFrom(
-      this.jobsService.syncEventById({ id: this.eventCompetition.visualCode })
+      this.jobsService.syncEventById({ id: this.eventCompetition.visualCode }),
     );
   }
 
@@ -378,7 +379,7 @@ export class DetailPageComponent implements OnInit, OnDestroy {
 
   async downloadBasePlayers() {
     await lastValueFrom(
-      this.excelService.getBaseplayersEnrollment(this.eventCompetition)
+      this.excelService.getBaseplayersEnrollment(this.eventCompetition),
     );
   }
 
@@ -390,10 +391,5 @@ export class DetailPageComponent implements OnInit, OnDestroy {
       },
       queryParamsHandling: 'merge',
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();``
-    this.destroy$.complete();
   }
 }

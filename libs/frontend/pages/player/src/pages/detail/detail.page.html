@@ -11,28 +11,28 @@
         - </ng-container
       >{{this.player().memberId}}
     </div>
-    <ng-container *ngIf="this.rankingPlaces$ | async as ranking">
+    <ng-container *ngIf="this.rankingPlace?.()">
       <mat-chip-listbox>
         <mat-chip
           matTooltipClass="multi-line-tooltip"
           [routerLink]="['ranking', 'single']"
-          [matTooltip]="tooltip.single + (ranking.singlePoints ? '\n\r' + ranking.singlePoints: '')"
+          [matTooltip]="tooltip.single + (this.rankingPlace?.()?.singlePoints ? '\n\r' + this.rankingPlace?.()?.singlePoints: '')"
           class="single"
-          >{{ranking.single}}</mat-chip
+          >{{this.rankingPlace?.()?.single}}</mat-chip
         >
         <mat-chip
           matTooltipClass="multi-line-tooltip"
           [routerLink]="['ranking', 'double']"
-          [matTooltip]="tooltip.double + (ranking.doublePoints ? '\n\r' + ranking.doublePoints: '')"
+          [matTooltip]="tooltip.double + (this.rankingPlace?.()?.doublePoints ? '\n\r' + this.rankingPlace?.()?.doublePoints: '')"
           class="double"
-          >{{ranking.double}}</mat-chip
+          >{{this.rankingPlace?.()?.double}}</mat-chip
         >
         <mat-chip
           matTooltipClass="multi-line-tooltip"
           [routerLink]="['ranking', 'mix']"
-          [matTooltip]="tooltip.mix + (ranking.mixPoints ? '\n\r' + ranking.mixPoints: '')"
+          [matTooltip]="tooltip.mix + (this.rankingPlace?.()?.mixPoints ? '\n\r' + this.rankingPlace?.()?.mixPoints: '')"
           class="mix"
-          >{{ranking.mix}}</mat-chip
+          >{{this.rankingPlace?.()?.mix}}</mat-chip
         >
       </mat-chip-listbox></ng-container
     >
@@ -101,11 +101,11 @@
       {{ 'all.game.upcoming.title' | translate }}
     </h3>
 
-    <ng-container *ngIf="(teams$ | async) ?? [] as teams">
+    <ng-container *ngIf="this.teams?.()">
       <badman-upcoming-games
-        *ngIf="teams.length>0"
+        *ngIf="(this.teams?.()?.length?? 0) >0"
         [clubId]="club()?.id"
-        [teams]="teams"
+        [teams]="this.teams?.() ?? []"
       ></badman-upcoming-games>
     </ng-container>
   </section>

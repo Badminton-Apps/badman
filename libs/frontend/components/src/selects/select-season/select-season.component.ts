@@ -4,7 +4,6 @@ import {
   Inject,
   Injector,
   Input,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
   Signal,
@@ -26,8 +25,9 @@ import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Subject, startWith } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { startWith } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-select-season',
@@ -47,8 +47,8 @@ import { takeUntil, map } from 'rxjs/operators';
   templateUrl: './select-season.component.html',
   styleUrls: ['./select-season.component.scss'],
 })
-export class SelectSeasonComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
+export class SelectSeasonComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   injector = inject(Injector);
 
@@ -236,10 +236,5 @@ export class SelectSeasonComponent implements OnInit, OnDestroy {
         queryParamsHandling: 'merge',
       });
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

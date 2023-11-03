@@ -11,18 +11,13 @@
       <!--  startTime  -->
       <mat-form-field>
         <mat-label>{{ 'all.pickers.select-start-time' | translate }}</mat-label>
-        <input
-          matInput
-          type="time"
-          formControlName="startTime"
-          alt="startTime"
-        />
+        <input matInput type="time" formControlName="startHour" alt="startHour" />
       </mat-form-field>
 
       <!--  endTime  -->
       <mat-form-field>
         <mat-label>{{ 'all.pickers.select-end-time' | translate }}</mat-label>
-        <input matInput type="time" step="900" formControlName="endTime" alt="endTime" />
+        <input matInput type="time" formControlName="endHour" alt="endHour" />
       </mat-form-field>
     </div>
 

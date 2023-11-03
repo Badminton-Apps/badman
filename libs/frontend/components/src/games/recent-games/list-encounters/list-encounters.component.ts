@@ -2,12 +2,18 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
+  Injector,
   Input,
+  OnChanges,
   OnInit,
   PLATFORM_ID,
+  Signal,
   TransferState,
+  effect,
+  inject,
+  signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
@@ -23,8 +29,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
-import { Observable, map } from 'rxjs';
+import { map } from 'rxjs';
 import { LoadingBlockComponent } from '../../../loading-block';
+import { TrackByProp } from 'ngxtension/trackby-id-prop';
 
 @Component({
   standalone: true,
@@ -33,6 +40,7 @@ import { LoadingBlockComponent } from '../../../loading-block';
     RouterModule,
     TranslateModule,
     MomentModule,
+    TrackByProp,
 
     // Material modules
     MatButtonModule,
@@ -46,23 +54,49 @@ import { LoadingBlockComponent } from '../../../loading-block';
   styleUrls: ['./list-encounters.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListEncountersComponent implements OnInit {
+export class ListEncountersComponent implements OnInit, OnChanges {
+  private apollo = inject(Apollo);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject(PLATFORM_ID);
+  private injector = inject(Injector);
+
   @Input() clubId?: string;
   @Input() teamId?: string;
   @Input() teams!: Team | Team[];
 
-  recentEncounters$?: Observable<EncounterCompetition[]>;
+  teamids = signal<string[]>([]);
+  recentEncounters!: Signal<EncounterCompetition[]>;
 
-  constructor(
-    private apollo: Apollo,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
+  constructor() {
+    effect(() => {
+      this.recentEncounters = this._loadRecentEncounterForTeams();
+    });
+  }
 
-  ngOnInit() {
-    this.recentEncounters$ = this._loadRecentEncounterForTeams(
-      Array.isArray(this.teams) ? this.teams : [this.teams],
-    );
+  ngOnInit(): void {
+    this._setIds();
+  }
+
+  ngOnChanges(): void {
+    this._setIds();
+  }
+
+  private _setIds() {
+    const teamids: string[] = [];
+
+    if (this.teamId) {
+      teamids.push(this.teamId);
+    }
+
+    if (this.teams instanceof Team && this.teams.id) {
+      teamids.push(this.teams.id);
+    }
+
+    if (this.teams instanceof Array) {
+      teamids.push(...this.teams.map((t) => t.id ?? ''));
+    }
+
+    this.teamids.set(teamids);
   }
 
   getPlayer(game: Game, player: number, team: number) {
@@ -98,85 +132,84 @@ export class ListEncountersComponent implements OnInit {
     }
   }
 
-  private _loadRecentEncounterForTeams(teams: Team[]) {
-    return this.apollo
-      .query<{
-        encounterCompetitions: {
-          rows: Partial<EncounterCompetition>[];
-        };
-      }>({
-        query: gql`
-          query RecentGames(
-            $where: JSONObject
-            $take: Int
-            $order: [SortOrderType!]
-          ) {
-            encounterCompetitions(where: $where, order: $order, take: $take) {
-              rows {
-                id
-                date
-                home {
+  private _loadRecentEncounterForTeams() {
+    return toSignal(
+      this.apollo
+        .query<{
+          encounterCompetitions: {
+            rows: Partial<EncounterCompetition>[];
+          };
+        }>({
+          query: gql`
+            query RecentGames(
+              $where: JSONObject
+              $take: Int
+              $order: [SortOrderType!]
+            ) {
+              encounterCompetitions(where: $where, order: $order, take: $take) {
+                rows {
                   id
-                  name
-                }
-                away {
-                  id
-                  name
-                }
-                homeScore
-                awayScore
-                drawCompetition {
-                  id
-                  subEventCompetition {
+                  date
+                  home {
                     id
-                    eventType
-                    eventId
+                    name
+                  }
+                  away {
+                    id
+                    name
+                  }
+                  homeScore
+                  awayScore
+                  drawCompetition {
+                    id
+                    subEventCompetition {
+                      id
+                      eventType
+                      eventId
+                    }
                   }
                 }
               }
             }
-          }
-        `,
-        variables: {
-          where: {
-            date: {
-              $lte: moment().format('YYYY-MM-DD'),
-            },
-            $or: [
-              {
-                homeTeamId: teams.map((team) => team.id),
+          `,
+          variables: {
+            where: {
+              date: {
+                $lte: moment().format('YYYY-MM-DD'),
               },
+              $or: [
+                {
+                  homeTeamId: this.teamids(),
+                },
+                {
+                  awayTeamId: this.teamids(),
+                },
+              ],
+            },
+            order: [
               {
-                awayTeamId: teams.map((team) => team.id),
+                direction: 'desc',
+                field: 'date',
               },
             ],
+            take: 10,
           },
-          order: [
-            {
-              direction: 'desc',
-              field: 'date',
-            },
-          ],
-          take: 10,
-        },
-      })
-      .pipe(
-        transferState(
-          `recentKey-${this.teamId ?? this.clubId}`,
-          this.stateTransfer,
-          this.platformId,
+        })
+        .pipe(
+          transferState(
+            `recentKey-${this.teamId ?? this.clubId}`,
+            this.stateTransfer,
+            this.platformId,
+          ),
+          map((result) => {
+            return (
+              result?.data.encounterCompetitions.rows?.map(
+                (encounter) => new EncounterCompetition(encounter),
+              ) ?? []
+            );
+          }),
         ),
-        map((result) => {
-          return (
-            result?.data.encounterCompetitions.rows?.map(
-              (encounter) => new EncounterCompetition(encounter),
-            ) ?? []
-          );
-        }),
-      );
-  }
-
-  trackById(index: number, item: Partial<{ id: string }>) {
-    return item.id;
+      { injector: this.injector },
+    ) as Signal<EncounterCompetition[]>;
   }
 }

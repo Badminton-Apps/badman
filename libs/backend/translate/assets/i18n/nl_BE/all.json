@@ -58,6 +58,7 @@
     "agree": "Ok",
     "all": "Alles",
     "cancel": "Annuleren",
+    "clone": "Dupliceer",
     "close": "Sluiten",
     "create": "Aanmaken",
     "delete": "Verwijderen",
@@ -193,9 +194,11 @@
       "change-date": "Gewijzigde datum",
       "change-location": "Gewijzigde locatie",
       "change-location-note": "De optie tot het filteren van locatie wijzigingen werkt enkel voor wedstrijden verlegd na 30/07",
+      "gameleader": "Wedstrijdleider",
       "home-games": "Alleen thuiswedstrijden",
       "no-more": "Geen ontmoetingen meer",
       "open-requests": "Openstaande verplaatsingsaanvragen",
+      "shuttle": "Gebruikte shuttle",
       "title": "Ontmoetingen"
     },
     "home": "Thuis",
@@ -669,7 +672,6 @@
     "title": "Puntentabel"
   },
   "ranking": {
-    "add-ranking": "Voeg ranking toe",
     "all-ranking": "Alle updates",
     "double": "Dubbel",
     "double-points": "Ranking punten",
@@ -683,6 +685,10 @@
     "last-update": "Laatste update",
     "list": "Ranking spelers",
     "may-ranking": "Mei ranking",
+    "menu": {
+      "add-ranking": "Voeg ranking toe",
+      "add-system": "Nieuw systeem"
+    },
     "mix": "Gemengd",
     "mix-points": "Ranking punten",
     "mix-rank": "Ranking plaats",
@@ -693,6 +699,7 @@
     "table": {
       "title": "Ranking tabel"
     },
+    "title": "Ranking",
     "trending_down": "Neerwaartse trend",
     "trending_up": "Stijgende trend",
     "update-happend": "Update plaatsgevonden",

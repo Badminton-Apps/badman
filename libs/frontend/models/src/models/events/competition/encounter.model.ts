@@ -4,6 +4,7 @@ import { Location } from '../../location.model';
 import { Assembly } from './assembly.model';
 import { DrawCompetition } from './draw.model';
 import { EncounterChange } from './encounter-change.model';
+import { Player } from '../../player.model';
 
 export class EncounterCompetition {
   id?: string;
@@ -23,6 +24,10 @@ export class EncounterCompetition {
   originalLocationId?: Date;
   originalLocation?: Location;
 
+  shuttle?: string;
+  startHour?: string;
+  endHour?: string;
+  gameLeader?: Player;
 
   homeTeamId?: string;
   awayTeamId?: string;
@@ -49,6 +54,13 @@ export class EncounterCompetition {
         ? new Location(args?.location)
         : undefined;
 
+    this.shuttle = args?.shuttle;
+    this.startHour = args?.startHour;
+    this.endHour = args?.endHour;
+    this.gameLeader =
+      (args?.gameLeader ?? null) != null
+        ? new Player(args?.gameLeader)
+        : undefined;
 
     this.games = args?.games
       ?.map((g) => new Game(g))

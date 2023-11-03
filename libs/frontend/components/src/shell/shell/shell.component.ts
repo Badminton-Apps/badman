@@ -52,6 +52,8 @@ import {
   SearchBoxComponent,
   UserShortcutsComponent,
 } from '../components';
+import { RankingSystemService } from '@badman/frontend-graphql';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'badman-shell',
   imports: [
@@ -77,6 +79,7 @@ import {
     MatButtonModule,
     MatSnackBarModule,
     MatProgressBarModule,
+    MatTooltipModule,
 
     HasClaimComponent,
   ],
@@ -86,6 +89,7 @@ import {
 })
 export class ShellComponent {
   breakpointObserver = inject(BreakpointObserver);
+  systemService = inject(RankingSystemService);
 
   loading = false;
   development = isDevMode();

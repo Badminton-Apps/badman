@@ -26,7 +26,7 @@ const conventionalChangelog = require('conventional-changelog');
     const versionExec = await runExec(
       `standard-version ${
         !prod ? '--prerelease beta' : ''
-      } --dry-run | sed -e '1!d' -e 's/.*to //g'`
+      } --dry-run | sed -e '1!d' -e 's/.*to //g'`,
     );
     const newVersion = versionExec.stdout.trim();
     core.info(`newVersion: ${newVersion}`);
@@ -66,6 +66,22 @@ const conventionalChangelog = require('conventional-changelog');
     if (affectedProjects.includes('worker-ranking')) {
       bumpFiles.push({
         filename: '../apps/worker/ranking/src/version.json',
+        type: 'json',
+      });
+    }
+
+    if (affectedProjects.includes('worker-belgium-flanders-points')) {
+      bumpFiles.push({
+        filename:
+          '../apps/worker/badminton/belgium/flanders/points/src/version.json',
+        type: 'json',
+      });
+    }
+
+    if (affectedProjects.includes('worker-belgium-flanders-places')) {
+      bumpFiles.push({
+        filename:
+          '../apps/worker/badminton/belgium/flanders/places/src/version.json',
         type: 'json',
       });
     }
@@ -118,7 +134,7 @@ const conventionalChangelog = require('conventional-changelog');
             ],
           },
         },
-        { version: args.version }
+        { version: args.version },
       );
 
       changelogStream.on('error', function (err) {
