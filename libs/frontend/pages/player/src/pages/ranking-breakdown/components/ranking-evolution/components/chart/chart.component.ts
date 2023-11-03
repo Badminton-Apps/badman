@@ -114,22 +114,6 @@ export class ChartComponent implements OnInit {
 
     const isDark = this.themeSwitcher.currentActive == 'dark';
 
-    // if ((this.prevLevel ?? 0) < upMax) {
-    //   annotations.push({
-    //     y: this.prevLevel,
-    //     yAxisIndex: 1,
-    //     borderColor: '#999',
-    //     label: {
-    //       borderColor: '#999',
-    //       style: {
-    //         color: '#fff',
-    //         background: '#999',
-    //       },
-    //       text: 'prev level',
-    //     },
-    //   });
-    // }
-
     this.chartOptions = {
       series: [
         {
@@ -167,11 +151,6 @@ export class ChartComponent implements OnInit {
         show: false,
         inverseOrder: true,
       },
-      markers: {
-        hover: {
-          sizeOffset: 5,
-        },
-      },
       title: {
         text: this.title,
       },
@@ -195,7 +174,6 @@ export class ChartComponent implements OnInit {
         mode: isDark ? 'dark' : 'light',
       },
       tooltip: {
-        enabledOnSeries: [0, 2],
       },
       annotations: {
         yaxis: annotations,
