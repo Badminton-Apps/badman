@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -10,7 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { EventCompetition } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
-import { Subject, Observable } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { Observable } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
@@ -27,8 +28,8 @@ import { map, takeUntil, tap } from 'rxjs/operators';
     MatSelectModule,
   ],
 })
-export class SelectEventComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class SelectEventComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   @Input()
   controlName = 'event';
@@ -82,8 +83,9 @@ export class SelectEventComponent implements OnInit, OnDestroy {
       })
       .pipe(
         takeUntil(this.destroy$),
-        map(({ data }) =>
-          data.eventCompetitions.rows?.map((e) => new EventCompetition(e))
+        map(
+          ({ data }) =>
+            data.eventCompetitions.rows?.map((e) => new EventCompetition(e)),
         ),
         tap((events) => {
           if (this.initialId) {
@@ -92,16 +94,7 @@ export class SelectEventComponent implements OnInit, OnDestroy {
               this.control.setValue(initialEvent);
             }
           }
-        })
+        }),
       );
-  }
-
-  ngOnDestroy() {
-    this.control.setValue(null);
-    if (this.formGroup) {
-      this.formGroup.removeControl(this.controlName);
-    }
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

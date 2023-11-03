@@ -3,7 +3,6 @@ import {
   Component,
   Inject,
   Input,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
   TransferState,
@@ -64,7 +63,7 @@ import {
   templateUrl: './select-club.component.html',
   styleUrls: ['./select-club.component.scss'],
 })
-export class SelectClubComponent implements OnInit, OnDestroy {
+export class SelectClubComponent implements OnInit {
   destroy$ = new Subject<void>();
 
   @Input()
@@ -113,7 +112,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private authService: AuthenticateService,
     private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {
@@ -141,11 +140,15 @@ export class SelectClubComponent implements OnInit, OnDestroy {
         switchMap(([allClubs, , all, user, params]) => {
           if (this.needsPermission && !all) {
             return this.claimSerice.claims$.pipe(
-              map((r) =>
-                r?.filter((x) => x?.indexOf(this.singleClubPermission) != -1)
+              map(
+                (r) =>
+                  r?.filter((x) => x?.indexOf(this.singleClubPermission) != -1),
               ),
-              map((r) =>
-                r?.map((c) => c?.replace(`_${this.singleClubPermission}`, ''))
+              map(
+                (r) =>
+                  r?.map(
+                    (c) => c?.replace(`_${this.singleClubPermission}`, ''),
+                  ),
               ),
               switchMap((ids) => {
                 const filtered = allClubs.filter((c) => {
@@ -165,12 +168,12 @@ export class SelectClubComponent implements OnInit, OnDestroy {
                   user,
                   params,
                 });
-              })
+              }),
             );
           }
 
           return of({ rows: allClubs, count: allClubs.length, user, params });
-        })
+        }),
       )
       .subscribe(({ rows, user, params }) => {
         this.#clubs.next(rows ?? null);
@@ -193,7 +196,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
                 (c) =>
                   moment(c.clubMembership?.start).isBefore(moment()) &&
                   c.clubMembership?.end == null &&
-                  c.clubMembership?.membershipType == ClubMembershipType.NORMAL
+                  c.clubMembership?.membershipType == ClubMembershipType.NORMAL,
               )
               ?.map((r) => r.id);
 
@@ -217,7 +220,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     this.filteredClubs$ = this.control?.valueChanges.pipe(
       takeUntil(this.destroy$),
       startWith(undefined),
-      map((value) => this._filter(value))
+      map((value) => this._filter(value)),
     );
 
     // on startup and control is filled in, when the clubs are loaded select the club
@@ -226,7 +229,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
         .pipe(
           filter((r) => r != null),
           take(1),
-          takeUntil(this.destroy$)
+          takeUntil(this.destroy$),
         )
         .subscribe(() => {
           this.selectClub(this.control?.value, false);
@@ -236,7 +239,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
 
   selectClub(
     event?: MatAutocompleteSelectedEvent | MatSelectChange | string | null,
-    removeOtherParams = true
+    removeOtherParams = true,
   ) {
     let id: string | undefined;
     if (event instanceof MatAutocompleteSelectedEvent) {
@@ -250,7 +253,6 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     if (!id) {
       return;
     }
-
 
     this.control?.setValue(id);
 
@@ -323,7 +325,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
           }
           return result.data.clubs.rows.map((c) => new Club(c));
         }),
-        first()
+        first(),
       );
   }
 
@@ -343,7 +345,7 @@ export class SelectClubComponent implements OnInit, OnDestroy {
       (option) =>
         option?.name?.toLowerCase().includes(filterValue) ||
         (filterValue.length == 16 &&
-          option.id?.toLowerCase().includes(filterValue))
+          option.id?.toLowerCase().includes(filterValue)),
     );
   }
 
@@ -353,10 +355,5 @@ export class SelectClubComponent implements OnInit, OnDestroy {
     } else {
       return this.clubs?.find((r) => r.id === value)?.name ?? value ?? '';
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

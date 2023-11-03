@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -22,7 +22,8 @@ import {
 } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, Subject, takeUntil, zip } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { BehaviorSubject, takeUntil, zip } from 'rxjs';
 
 @Component({
   imports: [
@@ -48,8 +49,8 @@ import { BehaviorSubject, Subject, takeUntil, zip } from 'rxjs';
   styleUrls: ['./set-risers-fallers.component.scss'],
   standalone: true,
 })
-export class RisersFallersDialogComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class RisersFallersDialogComponent implements OnInit {
+  private destroy$ = injectDestroy();
   dataSource!: MatTableDataSource<DrawCompetition>;
   originalData!: DrawCompetition[];
 
@@ -65,7 +66,7 @@ export class RisersFallersDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<RisersFallersDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
     public data: { event: EventCompetition },
-    private apollo: Apollo
+    private apollo: Apollo,
   ) {}
 
   ngOnInit(): void {
@@ -111,7 +112,7 @@ export class RisersFallersDialogComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         const subEvents = result.data.subEventCompetitions?.map(
-          (subEvent) => new SubEventCompetition(subEvent)
+          (subEvent) => new SubEventCompetition(subEvent),
         );
 
         const drawCompetitions = subEvents
@@ -120,7 +121,7 @@ export class RisersFallersDialogComponent implements OnInit, OnDestroy {
 
         this.dataSource = new MatTableDataSource(drawCompetitions);
         this.originalData = drawCompetitions.map(
-          (drawCompetition) => ({ ...drawCompetition } as DrawCompetition)
+          (drawCompetition) => ({ ...drawCompetition }) as DrawCompetition,
         );
       });
   }
@@ -132,14 +133,14 @@ export class RisersFallersDialogComponent implements OnInit, OnDestroy {
       (drawCompetition) => {
         const originalDrawCompetition = this.originalData.find(
           (originalDrawCompetition) =>
-            originalDrawCompetition.id === drawCompetition.id
+            originalDrawCompetition.id === drawCompetition.id,
         );
 
         return (
           originalDrawCompetition?.risers !== drawCompetition.risers ||
           originalDrawCompetition?.fallers !== drawCompetition.fallers
         );
-      }
+      },
     );
 
     const obs = changedDrawCompetitions.map((drawCompetition) => {
@@ -164,7 +165,6 @@ export class RisersFallersDialogComponent implements OnInit, OnDestroy {
         },
       });
     });
-
 
     if (obs.length === 0) {
       this.loading = false;
@@ -196,10 +196,5 @@ export class RisersFallersDialogComponent implements OnInit, OnDestroy {
         // close dialog
         this.dialogRef.close();
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -59,9 +59,9 @@ export class DetailPageComponent {
   private injector = inject(Injector);
 
   // route
-  queryParams = toSignal(this.route.queryParamMap);
-  routeParams = toSignal(this.route.paramMap);
-  routeData = toSignal(this.route.data);
+  private queryParams = toSignal(this.route.queryParamMap);
+  private routeParams = toSignal(this.route.paramMap);
+  private routeData= toSignal(this.route.data);
 
   team = computed(() => this.routeData()?.['team'] as Team);
 

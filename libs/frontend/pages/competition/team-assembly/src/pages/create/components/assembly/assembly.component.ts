@@ -14,13 +14,12 @@ import {
   EventEmitter,
   Inject,
   Input,
-  OnDestroy,
   OnInit,
   Output,
   PLATFORM_ID,
   TemplateRef,
   TransferState,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -46,15 +45,13 @@ import {
   TeamPlayer,
 } from '@badman/frontend-models';
 import { EditDialogComponent } from '@badman/frontend-team';
-import {
-  ResizedEvent,
-  transferState,
-  UtilsModule,
-} from '@badman/frontend-utils';
+import { transferState } from '@badman/frontend-utils';
 import { TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment, { Moment } from 'moment';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { NgxResize, ResizeResult } from 'ngxtension/resize';
 import { combineLatest, lastValueFrom, of, Subject } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -139,7 +136,7 @@ export const SAVED_ASSEMBLY = gql`
     PlayerSearchComponent,
     AssemblyMessageComponent,
     HasClaimComponent,
-    UtilsModule,
+    NgxResize,
 
     // Material Modules
     MatTooltipModule,
@@ -154,11 +151,11 @@ export const SAVED_ASSEMBLY = gql`
   templateUrl: './assembly.component.html',
   styleUrls: ['./assembly.component.scss'],
 })
-export class AssemblyComponent implements OnInit, OnDestroy {
+export class AssemblyComponent implements OnInit {
+  private destroy$ = injectDestroy();
+ 
   @Input()
   group!: FormGroup;
-
-  destroy$ = new Subject<void>();
 
   @ViewChild('validationOverview')
   validationTemplateRef?: TemplateRef<HTMLElement>;
@@ -346,10 +343,7 @@ export class AssemblyComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+
 
   async loadData(encounterId: string) {
     this.loaded = false;
@@ -732,8 +726,8 @@ export class AssemblyComponent implements OnInit, OnDestroy {
     });
   }
 
-  onResized(event: ResizedEvent) {
-    this.notSmallScreen = event.newRect.width > 200;
+  onResized(event: ResizeResult) {
+    this.notSmallScreen = event.width > 200;
   }
 
   private _getTeam(encounterId: string, teamId: string) {

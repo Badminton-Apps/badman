@@ -6,7 +6,6 @@ import {
   ElementRef,
   Inject,
   Input,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
   QueryList,
@@ -44,10 +43,10 @@ import {
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import {
   BehaviorSubject,
   Observable,
-  Subject,
   combineLatest,
   lastValueFrom,
   of,
@@ -106,13 +105,14 @@ type FormArrayOfTeamsValue = {
   styleUrls: ['./teams.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeamsStepComponent implements OnInit, OnDestroy {
+export class TeamsStepComponent implements OnInit {
+  private destroy$ = injectDestroy();
+
   #validationResult = new BehaviorSubject<ValidationResult | null>(null);
   get validationResult() {
     return this.#validationResult.value;
   }
 
-  destroy$ = new Subject<void>();
   private update$ = new BehaviorSubject(null);
 
   // get striug array  of event types
@@ -168,14 +168,14 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private apollo: Apollo,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {
     let existed = false;
     if (this.group) {
       this.control = this.group?.get(
-        this.controlName
+        this.controlName,
       ) as FormGroup<FormArrayOfTeams>;
 
       existed = true;
@@ -209,21 +209,21 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
             (b.F?.length ?? 0) +
               (b.M?.length ?? 0) +
               (b.MX?.length ?? 0) +
-              (b.NATIONAL?.length ?? 0)
-        )
+              (b.NATIONAL?.length ?? 0),
+        ),
       )
       .subscribe(() => {
         // initial teamnumbers from 1 to maxlevel
         for (const type of this.eventTypes) {
           const maxLevel = Math.max(
             ...(this.control?.value?.[type]?.map(
-              (t) => t.team?.teamNumber ?? 0
-            ) ?? [0])
+              (t) => t.team?.teamNumber ?? 0,
+            ) ?? [0]),
           );
 
           this.teamNumbers[type] = Array.from(
             { length: maxLevel },
-            (_, i) => i + 1
+            (_, i) => i + 1,
           );
         }
       });
@@ -234,7 +234,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         startWith([this.control?.value]),
         debounceTime(200),
-        switchMap(([v]) => this.validateEnrollment(v as FormArrayOfTeamsValue))
+        switchMap(([v]) => this.validateEnrollment(v as FormArrayOfTeamsValue)),
       )
       .subscribe((v) => {
         if (v?.data?.enrollmentValidation) {
@@ -250,11 +250,6 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       this.changedector.markForCheck();
     });
     this.season = this.group?.get(SEASON)?.value as number;
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   async addTeam(type: SubEventType) {
@@ -278,7 +273,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
           players: new FormArray<FormControl<EntryCompetitionPlayer>>([]),
           subEventId: new FormControl(null),
         }),
-      }) as TeamForm
+      }) as TeamForm,
     );
 
     const ref = this.snackBar.open(
@@ -286,7 +281,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       'Scroll naar team',
       {
         duration: 2000,
-      }
+      },
     );
 
     this.changedector.markForCheck();
@@ -354,7 +349,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
 
       const teams = this.control?.get(type) as FormArray<TeamForm>;
       teams.controls.sort((a: TeamForm, b: TeamForm) =>
-        sortTeams(a.value.team as Team, b.value.team as Team)
+        sortTeams(a.value.team as Team, b.value.team as Team),
       );
 
       this.changedector.markForCheck();
@@ -372,7 +367,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
     oldNumber: number,
     newNumber: number,
     club: Club,
-    type: SubEventTypeEnum
+    type: SubEventTypeEnum,
   ) {
     const teams = this.control?.get(type) as FormArray<TeamForm>;
     // iterate over all controls and update the team number / name
@@ -428,13 +423,13 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       case UseForTeamName.FULL_NAME:
         teamName = `${club.fullName} ${team.teamNumber}${getLetterForRegion(
           team.type as SubEventTypeEnum,
-          'vl'
+          'vl',
         )}`;
         break;
       case UseForTeamName.ABBREVIATION:
         teamName = `${club.abbreviation} ${team.teamNumber}${getLetterForRegion(
           team.type as SubEventTypeEnum,
-          'vl'
+          'vl',
         )}`;
         break;
 
@@ -442,7 +437,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       case UseForTeamName.NAME:
         teamName = `${club.name} ${team.teamNumber}${getLetterForRegion(
           team.type as SubEventTypeEnum,
-          'vl'
+          'vl',
         )}`;
         break;
     }
@@ -552,7 +547,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
           }
           return new Club(r.data.club);
         }),
-        shareReplay(1)
+        shareReplay(1),
       );
   }
 
@@ -598,7 +593,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       map((result) => {
         const subEvents =
           result.data.subEventCompetitions?.map(
-            (subEvent) => new SubEventCompetition(subEvent)
+            (subEvent) => new SubEventCompetition(subEvent),
           ) ?? [];
 
         return {
@@ -613,7 +608,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
               (subEvent) =>
                 subEvent?.eventType === 'MX' &&
                 subEvent?.eventCompetition?.type &&
-                subEvent?.eventCompetition?.type != LevelType.NATIONAL
+                subEvent?.eventCompetition?.type != LevelType.NATIONAL,
             )
             .sort(sortSubEventOrder),
           NATIONAL: subEvents
@@ -621,12 +616,12 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
               (subEvent) =>
                 subEvent?.eventType === 'MX' &&
                 subEvent?.eventCompetition?.type &&
-                subEvent?.eventCompetition?.type == LevelType.NATIONAL
+                subEvent?.eventCompetition?.type == LevelType.NATIONAL,
             )
             .sort(sortSubEventOrder),
         };
       }),
-      shareReplay(1)
+      shareReplay(1),
     );
   }
 
@@ -635,17 +630,17 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       PROV: Math.max(
         ...(subs
           ?.filter((s) => s.eventCompetition?.type === LevelType.PROV)
-          .map((s) => s.level ?? 0) ?? [])
+          .map((s) => s.level ?? 0) ?? []),
       ),
       LIGA: Math.max(
         ...(subs
           ?.filter((s) => s.eventCompetition?.type === LevelType.LIGA)
-          .map((s) => s.level ?? 0) ?? [])
+          .map((s) => s.level ?? 0) ?? []),
       ),
       NATIONAL: Math.max(
         ...(subs
           ?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL)
-          .map((s) => s.level ?? 0) ?? [])
+          .map((s) => s.level ?? 0) ?? []),
       ),
     };
   }
@@ -671,7 +666,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
         const initial = this.getInitialSubEvent(
           team as TeamFormValue,
           subs,
-          maxLevels
+          maxLevels,
         );
         if (initial) {
           control
@@ -687,7 +682,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
   private getInitialSubEvent(
     team: TeamFormValue,
     subs: SubEventCompetition[],
-    maxLevels: ReturnType<typeof this._maxLevels>
+    maxLevels: ReturnType<typeof this._maxLevels>,
   ) {
     let subEventId: string | undefined;
     let type = team.team?.entry?.subEventCompetition?.eventCompetition?.type;
@@ -708,7 +703,7 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       }
 
       subEventId = subs?.find(
-        (sub) => sub.level === newLevel && type === sub.eventCompetition?.type
+        (sub) => sub.level === newLevel && type === sub.eventCompetition?.type,
       )?.id;
     } else if (team.team?.entry?.standing?.faller) {
       let newLevel = level + 1;
@@ -725,13 +720,13 @@ export class TeamsStepComponent implements OnInit, OnDestroy {
       }
 
       subEventId = subs?.find(
-        (sub) => sub.level === newLevel && sub.eventCompetition?.type === type
+        (sub) => sub.level === newLevel && sub.eventCompetition?.type === type,
       )?.id;
     } else {
       subEventId = subs?.find(
         (sub) =>
           sub.level === team.team?.entry?.subEventCompetition?.level &&
-          type === sub.eventCompetition?.type
+          type === sub.eventCompetition?.type,
       )?.id;
     }
 

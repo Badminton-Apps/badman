@@ -7,7 +7,6 @@ import {
   Inject,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
   SimpleChanges,
@@ -27,6 +26,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import { RankingSystemService } from '@badman/frontend-graphql';
 import { Game, GamePlayer } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import {
@@ -39,12 +39,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
-import {
-  BehaviorSubject,
-  Subject,
-  combineLatest,
-  distinctUntilChanged,
-} from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { TrackByProp } from 'ngxtension/trackby-id-prop';
+import { BehaviorSubject, combineLatest, distinctUntilChanged } from 'rxjs';
 import {
   filter,
   map,
@@ -55,7 +52,6 @@ import {
   tap,
 } from 'rxjs/operators';
 import { LoadingBlockComponent } from '../../../loading-block';
-import { RankingSystemService } from '@badman/frontend-graphql';
 
 @Component({
   standalone: true,
@@ -65,6 +61,7 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     TranslateModule,
     MomentModule,
     ReactiveFormsModule,
+    TrackByProp,
 
     // Material modules
     MatButtonModule,
@@ -81,12 +78,11 @@ import { RankingSystemService } from '@badman/frontend-graphql';
   styleUrls: ['./list-games.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListGamesComponent
-  implements OnInit, AfterViewInit, OnDestroy, OnChanges
-{
+export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   private systemService = inject(RankingSystemService);
 
-  private destroy$ = new Subject<void>();
+  private destroy$ = injectDestroy();
+
   @Input() playerId?: string;
 
   filter: FormGroup<{
@@ -435,14 +431,5 @@ export class ListGamesComponent
       case GameType.MX:
         return 'mix';
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  trackById(index: number, item: Partial<{ id: string }>) {
-    return item.id;
   }
 }

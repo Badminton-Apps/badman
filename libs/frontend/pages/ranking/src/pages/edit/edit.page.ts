@@ -113,9 +113,9 @@ export class EditPageComponent {
   private breadcrumbsService = inject(BreadcrumbService);
 
   // route
-  queryParams = toSignal(this.route.queryParamMap);
-  routeParams = toSignal(this.route.paramMap);
-  routeData = toSignal(this.route.data);
+  private queryParams = toSignal(this.route.queryParamMap);
+  private routeParams = toSignal(this.route.paramMap);
+  private routeData= toSignal(this.route.data);
 
   systemId = computed(() => this.routeParams()?.get('id') as string);
   systemName = computed(() => this.system()?.name);

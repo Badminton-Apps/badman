@@ -3,8 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  OnDestroy,
-  OnInit,
+  OnInit
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,8 +14,9 @@ import { ClaimService } from '@badman/frontend-auth';
 import { Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
-import { combineLatest, Subscription } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { combineLatest } from 'rxjs';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import {
   EditClubHistoryComponent,
@@ -53,16 +53,15 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditPageComponent implements OnInit, AfterViewInit, OnDestroy {
+export class EditPageComponent implements OnInit, AfterViewInit {
+  private destroy$ = injectDestroy();
+
   player!: Player;
   selectedTabIndex?: number;
 
   hasRankingPermission = false;
   hasClubHistoryPermission = false;
   hasPermissionPermission = false;
-
-  ontabchange$?: Subscription;
-
   constructor(
     private seoService: SeoService,
     private route: ActivatedRoute,
@@ -70,7 +69,7 @@ export class EditPageComponent implements OnInit, AfterViewInit, OnDestroy {
     private claimService: ClaimService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -97,8 +96,8 @@ export class EditPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.ontabchange$ = this.activatedRoute.queryParams
-        .pipe(distinctUntilChanged())
+      this.activatedRoute.queryParams
+        .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
         .subscribe((params) => {
           this.selectedTabIndex = params['tab'];
         });
@@ -119,12 +118,6 @@ export class EditPageComponent implements OnInit, AfterViewInit, OnDestroy {
         .toString();
 
       this.location.go(url);
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.ontabchange$) {
-      this.ontabchange$.unsubscribe();
     }
   }
 }

@@ -31,6 +31,7 @@ import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { map } from 'rxjs';
 import { LoadingBlockComponent } from '../../../loading-block';
+import { TrackByProp } from 'ngxtension/trackby-id-prop';
 
 @Component({
   standalone: true,
@@ -39,6 +40,7 @@ import { LoadingBlockComponent } from '../../../loading-block';
     RouterModule,
     TranslateModule,
     MomentModule,
+    TrackByProp,
 
     // Material modules
     MatButtonModule,
@@ -209,9 +211,5 @@ export class ListEncountersComponent implements OnInit, OnChanges {
         ),
       { injector: this.injector },
     ) as Signal<EncounterCompetition[]>;
-  }
-
-  trackById(index: number, item: Partial<{ id: string }>) {
-    return item.id;
   }
 }

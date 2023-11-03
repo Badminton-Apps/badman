@@ -1,11 +1,11 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import statesList from './states.json';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import statesList from './states.json';
 
 @Component({
   selector: 'badman-select-state',
@@ -19,8 +19,8 @@ import { Subject } from 'rxjs';
   templateUrl: './select-state.component.html',
   styleUrls: ['./select-state.component.scss'],
 })
-export class SelectCountrystateComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class SelectCountrystateComponent implements OnInit {
+  private destroy$ = injectDestroy();
 
   states: {
     code: string;
@@ -60,15 +60,8 @@ export class SelectCountrystateComponent implements OnInit, OnDestroy {
       previous.valueChanges
         .pipe(startWith(previous.value), takeUntil(this.destroy$))
         .subscribe((value) => {
-          this.states = statesList?.filter(
-            (state) => state.country === value
-          );
+          this.states = statesList?.filter((state) => state.country === value);
         });
     }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }
