@@ -131,9 +131,9 @@
   </div>
 </div>
 
-<!-- <ng-container *ngIf="this.endOfList">
+<ng-container *ngIf="recentGames.endReached() && !recentGames.loading()">
   <div class="no-more-games" translate="all.competition.no-more-games"></div>
-</ng-container> -->
+</ng-container>
 
 <div #bottomObserver id="bottomObserver"></div>
-<badman-loading-block [items]="5" height="80px"  />
+<badman-loading-block [items]="5" height="80px" *ngIf="recentGames.loading()" />
