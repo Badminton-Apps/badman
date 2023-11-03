@@ -195,7 +195,6 @@ export class ChartComponent implements OnInit {
         mode: isDark ? 'dark' : 'light',
       },
       tooltip: {
-        enabled: false,
         enabledOnSeries: [0, 2],
       },
       annotations: {
