@@ -21,6 +21,7 @@ import {
   ApexXAxis,
   ApexYAxis,
   NgApexchartsModule,
+  XAxisAnnotations,
   YAxisAnnotations,
 } from 'ng-apexcharts';
 
@@ -59,7 +60,7 @@ export type ChartOptions = {
 export class ChartComponent implements OnInit {
   // options!: EChartsOption;
   @ViewChild('chart') chart?: ApexChartComponent;
-  public chartOptions?: Partial<ChartOptions>;
+  public chartOptions!: Partial<ChartOptions>;
 
   constructor(private themeSwitcher: ThemeSwitcherService) {}
 
@@ -85,6 +86,7 @@ export class ChartComponent implements OnInit {
 
   levelSeries: { x: number; y: number }[] = [];
   pointsSeries: { x: number; y: number | [number, number] }[] = [];
+  lines: XAxisAnnotations[] = [];
 
   nextLevel?: number;
   prevLevel?: number;
@@ -173,10 +175,10 @@ export class ChartComponent implements OnInit {
       theme: {
         mode: isDark ? 'dark' : 'light',
       },
-      tooltip: {
-      },
+      tooltip: {},
       annotations: {
         yaxis: annotations,
+        xaxis: [],
       },
     };
   }
@@ -230,5 +232,36 @@ export class ChartComponent implements OnInit {
       this.system.pointsToGoUp?.[
         (this.system.amountOfLevels ?? 12) - lastLevel + 1
       ];
+  }
+
+  generateUpdateLines() {
+    if (this.lines.length === 0) {
+      // get max date
+      const updateDate = moment(this.system.updateIntervalAmountLastUpdate);
+
+      // get min date
+      const minDate = moment.min(
+        this.rankingPlaces.map((r) => moment(r.rankingDate)),
+      );
+
+      // go back starting from max date untill min date
+      // the interval is the calculation interval
+      while (updateDate.isAfter(minDate)) {
+        this.lines.push({
+          x: updateDate.valueOf(),
+          strokeDashArray: 0,
+          borderColor: '#3d99f566',
+        });
+
+        updateDate.subtract(
+          this.system.updateIntervalAmount,
+          this.system.updateIntervalUnit,
+        );
+      }
+    }
+
+    if (!this.chartOptions.annotations) {
+      this.chartOptions.annotations = {};
+    }
   }
 }
