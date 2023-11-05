@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.121.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.0...v6.121.0-beta.1) (2023-11-05)
+
+
+### Bug Fixes
+
+* auth0 client and secret are not needed ([5086104](https://github.com/Badminton-Apps/badman/commit/5086104b5a341e848fc41b31ba5faa509f249ab3))
+
 ## [6.121.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.120.0...v6.121.0-beta.0) (2023-11-05)
 
 
