@@ -59,8 +59,8 @@ export const configSchema = Joi.object({
 
   AUTH0_ISSUER_URL: Joi.string().uri().required(),
   AUTH0_AUDIENCE: Joi.string().required(),
-  AUTH0_CLIENT_ID: Joi.string().required(),
-  AUTH0_CLIENT_SECRET: Joi.string().required(),
+  // AUTH0_CLIENT_ID: Joi.string().required(),
+  // AUTH0_CLIENT_SECRET: Joi.string().required(),
 
   MAIL_ENABLED: Joi.boolean().required(),
   MAIL_PASS: Joi.when('MAIL_ENABLED', {
