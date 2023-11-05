@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.120.0](https://github.com/Badminton-Apps/badman/compare/v6.119.0...v6.120.0) (2023-11-03)
+
+
+### Features
+
+* adding secundairy sorting on id to prevent duplicate results ([13231fc](https://github.com/Badminton-Apps/badman/commit/13231fc7846afa30d456e7e82328cde06bbc5901))
+
 ## [6.119.0](https://github.com/Badminton-Apps/badman/compare/v6.118.0...v6.119.0) (2023-11-03)
 
 
