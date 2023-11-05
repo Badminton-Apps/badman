@@ -2,15 +2,39 @@ import * as Joi from 'joi';
 
 export const configSchema = Joi.object({
   NODE_ENV: Joi.string()
-    .valid('development', 'production', 'test', 'provision')
+    .valid('development', 'production', 'test', 'beta')
     .default('development'),
 
-  DB_IP: Joi.string().required(),
-  DB_PORT: Joi.number().required(),
-  DB_DATABASE: Joi.string().required(),
-  DB_USER: Joi.string().required(),
-  DB_PASSWORD: Joi.string().required(),
-  DB_DIALECT: Joi.string().required(),
+  DB_IP: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+  DB_PORT: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.number().required(),
+    otherwise: Joi.number().optional(),
+  }),
+  DB_DATABASE: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+  DB_USER: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+  DB_PASSWORD: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+  DB_DIALECT: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
   DB_SSL: Joi.string().optional(),
 
   DB_CACHE: Joi.boolean().optional(),
@@ -46,8 +70,12 @@ export const configSchema = Joi.object({
   }),
   MAIL_USER: Joi.when('MAIL_ENABLED', {
     is: true,
-    then: Joi.string().email({ tlds: { allow: false } }).required(),
-    otherwise: Joi.string().email({ tlds: { allow: false } }).optional(),
+    then: Joi.string()
+      .email({ tlds: { allow: false } })
+      .required(),
+    otherwise: Joi.string()
+      .email({ tlds: { allow: false } })
+      .optional(),
   }),
   MAIL_HOST: Joi.when('MAIL_ENABLED', {
     is: true,
