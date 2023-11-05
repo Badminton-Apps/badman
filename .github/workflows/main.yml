@@ -133,7 +133,7 @@ jobs:
           tag_name: v${{ env.NEW_VERSION }}
           release_name: v${{ env.NEW_VERSION }}
           body: ${{ env.CHANGELOG  }}
-          draft: ${{ !inputs.prod-release }}
+          prerelease: ${{ !inputs.prod-release }}
 
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
