@@ -2,10 +2,18 @@ import { DatabaseModule } from '@badman/backend-database';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ExportBBFPlayers } from './scripts/expot-ranking/exort-ranking';
+import { configSchema, parseconfig } from '@badman/utils';
 
 @Module({
   providers: [ExportBBFPlayers],
-  imports: [ConfigModule.forRoot(), DatabaseModule],
+  imports: [
+    ConfigModule.forRoot({
+      cache: true,
+      validationSchema: configSchema,
+      load: [parseconfig],
+    }),
+    DatabaseModule,
+  ],
 })
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
@@ -20,7 +28,6 @@ export class ScriptModule implements OnModuleInit {
     await this.fixer.process(2023, 'f8e72d15-0524-4e15-929a-80c0ee4b64cb');
     await this.fixer.process(2023, '29496977-62bb-4f19-9e44-7534a9dec3f6');
     await this.fixer.process(2023, '3a82bf35-7cd7-4240-a72f-6301ce6ea578');
-
 
     this.logger.log('Script finished');
   }
