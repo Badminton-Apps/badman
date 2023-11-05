@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.121.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.120.0...v6.121.0-beta.0) (2023-11-05)
+
+
+### Features
+
+* parsing config + validation ([6add494](https://github.com/Badminton-Apps/badman/commit/6add4942f72dc30a7ce46bc81b0b1b0ebdd4cc7d))
+* removing obsolete starting type from ranking system fields ([2fe2bf7](https://github.com/Badminton-Apps/badman/commit/2fe2bf79259777bdb791309b69b78fbb864ceda5))
+* Update RankingSystems table columns to allow ([2c32734](https://github.com/Badminton-Apps/badman/commit/2c32734bc075e80bf2f350b13040ec2c8e841e15))
+
+
+### Bug Fixes
+
+* Add timeout and port configuration to Playwright ([ed9aa22](https://github.com/Badminton-Apps/badman/commit/ed9aa2290c8545bbc2abd8320bf814772f7006cf))
+* validating email apparently broke the client ([4528699](https://github.com/Badminton-Apps/badman/commit/4528699d480d1c575fd6904dd8e636641690bdfb))
+* validations for database should only be on production / beta ([2b41400](https://github.com/Badminton-Apps/badman/commit/2b4140010a4558915f8e340e63169d32fb352938))
+
 ## [6.120.0](https://github.com/Badminton-Apps/badman/compare/v6.119.0...v6.120.0) (2023-11-03)
 
 
