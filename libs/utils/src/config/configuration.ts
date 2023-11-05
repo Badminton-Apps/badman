@@ -46,8 +46,8 @@ export const configSchema = Joi.object({
   }),
   MAIL_USER: Joi.when('MAIL_ENABLED', {
     is: true,
-    then: Joi.string().email().required(),
-    otherwise: Joi.string().email().optional(),
+    then: Joi.string().email({ tlds: { allow: false } }).required(),
+    otherwise: Joi.string().email({ tlds: { allow: false } }).optional(),
   }),
   MAIL_HOST: Joi.when('MAIL_ENABLED', {
     is: true,
