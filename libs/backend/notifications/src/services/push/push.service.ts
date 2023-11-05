@@ -14,13 +14,16 @@ export class PushService {
     const privateVapidKey = configSerice.get('VAPID_PRIVATE_KEY');
     const pushEnabledKey = configSerice.get<boolean>('PUSH_ENABLED');
 
-    if (publicVapidKey && privateVapidKey && pushEnabledKey) {
+
+    if (publicVapidKey && privateVapidKey && pushEnabledKey) { 
       setVapidDetails(
         'mailto:info@badman.app',
         publicVapidKey,
         privateVapidKey
       );
       this.isPushEnabled = true;
+
+      this.logger.debug('Push notifications enabled'); 
     }
   }
 
@@ -31,7 +34,7 @@ export class PushService {
 
     const settings = await player?.getSetting();
 
-    if (!settings) {
+    if (!settings) { 
       this.logger.warn(`Player ${player?.fullName} has no settings`);
       return;
     }
