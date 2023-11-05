@@ -127,13 +127,13 @@ jobs:
 
       - name: Create Github Release
         uses: actions/create-release@v1
-        if: ${{ inputs.prod-release }}
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
           tag_name: v${{ env.NEW_VERSION }}
           release_name: v${{ env.NEW_VERSION }}
           body: ${{ env.CHANGELOG  }}
+          draft: ${{ !inputs.prod-release }}
 
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |
