@@ -34,7 +34,7 @@ import { ShellComponent } from '@badman/frontend-components';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { CpModule } from '@badman/frontend-cp';
 import { ExcelModule } from '@badman/frontend-excel';
-import { RANKING_CONFIG } from '@badman/frontend-ranking';
+import { RANKING_CONFIG, RankingModule } from '@badman/frontend-ranking';
 
 const APP_ROUTES: Routes = [
   {
@@ -73,8 +73,7 @@ const APP_ROUTES: Routes = [
   },
   {
     path: 'ranking',
-    loadChildren: () =>
-      import('@badman/frontend-ranking').then((m) => m.RankingModule),
+    loadChildren: () => RankingModule,
     data: {
       animation: 'ranking',
     },
