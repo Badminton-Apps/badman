@@ -6,7 +6,7 @@
     "tslib": "^2.6.2",
     "@nestjs/common": "^10.2.7",
     "@badman/backend-database": "workspace:*",
-    "@badman/utils": "*",
+    "@badman/utils": "workspace:*",
     "moment": "^2.29.4",
     "sequelize": "^6.33.0"
   }
