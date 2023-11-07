@@ -28,7 +28,7 @@ export class CronService {
   }
 
   public QueueingSyncEvents() {
-    const job = new CronJob({
+    const job = CronJob.from({
       cronTime: `${15 + this.offset} */4 * * *`,
       onTick: () => {
         this.logger.verbose('Queueing SyncEvents');
@@ -44,7 +44,7 @@ export class CronService {
   }
 
   public QueueingSyncRanking() {
-    const job = new CronJob({
+    const job = CronJob.from({
       cronTime: `${0 + this.offset} 18 * * *`,
       onTick: () => {
         this.logger.verbose('Queueing SyncRanking');
@@ -61,7 +61,7 @@ export class CronService {
   }
 
   public QueueingCheckEncounters() {
-    const job = new CronJob({
+    const job = CronJob.from({
       cronTime: `${30 + this.offset} */4 * * *`,
       onTick: () => {
         this.logger.verbose('Queueing CheckEncounters');
