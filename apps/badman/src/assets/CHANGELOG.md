@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.121.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.1...v6.121.0-beta.2) (2023-11-07)
+
+
+### Bug Fixes
+
+* can't mix/match lazyloading and  static imports ([cb1e75b](https://github.com/Badminton-Apps/badman/commit/cb1e75b0dc43a78586e4a5978af836682302cd8b))
+* **deps:** update angular monorepo ([11fa609](https://github.com/Badminton-Apps/badman/commit/11fa60908af9c455579ffbbc48e473ceb667a095))
+* **deps:** update angular monorepo ([579e827](https://github.com/Badminton-Apps/badman/commit/579e82785b9909e9f80c5f7e7cec8681142af4b5))
+* **deps:** update angularmaterial monorepo to v16.2.11 ([421508d](https://github.com/Badminton-Apps/badman/commit/421508d0cd7fd16f8cb3437347e96e54a27163dc))
+* **deps:** update angularmaterial monorepo to v16.2.11 ([513d7a8](https://github.com/Badminton-Apps/badman/commit/513d7a82191d1de12fdc1475487133a571b1ce2d))
+* **deps:** update dependency @angular/google-maps to v16.2.11 ([877df4b](https://github.com/Badminton-Apps/badman/commit/877df4bbc6facc68d6a0048cafd6f4f4fa2963dc))
+* **deps:** update dependency @nestjs/schedule to v4 ([d9cb652](https://github.com/Badminton-Apps/badman/commit/d9cb652e6a6d5043da6e186717efdca18f8c16ba))
+* **deps:** update dependency ngx-quill to v23 ([89c9616](https://github.com/Badminton-Apps/badman/commit/89c9616937411f868e6087f3f12168fa4953fde4))
+* **deps:** update nest monorepo ([7ea7e98](https://github.com/Badminton-Apps/badman/commit/7ea7e98e12b91abf731ba5081ad90e9d2cdd08a8))
+* **deps:** update nx monorepo ([1a822aa](https://github.com/Badminton-Apps/badman/commit/1a822aa85317ec9179cd082b56967b08b412e21c))
+* include correct import ([411c737](https://github.com/Badminton-Apps/badman/commit/411c737f016c0bb854a4ba30115ddaa41afc0121))
+
 ## [6.121.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.0...v6.121.0-beta.1) (2023-11-05)
 
 
