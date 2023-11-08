@@ -34,6 +34,7 @@
           "file-saver",
           "seed-to-color",
           "raf",
+          "joi",
           "rgbcolor",
           "quill",
           "apexcharts",
