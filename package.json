@@ -160,7 +160,7 @@
     "winston": "^3.10.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz",
     "xng-breadcrumb": "^10.0.0",
-    "zone.js": "~0.13.0"
+    "zone.js": "~0.14.0"
   },
   "devDependencies": {
     "@angular-devkit/architect": "0.1602.10",
