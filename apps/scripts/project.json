@@ -61,14 +61,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/scripts"],
       "options": {
-        "jestConfig": "apps/scripts/jest.config.js",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "apps/scripts/jest.config.js"
       }
     }
   },

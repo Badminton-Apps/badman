@@ -11,11 +11,12 @@ import {
   effect,
   inject,
   signal,
+  TransferState,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { TransferState } from '@angular/platform-browser';
+
 import { RouterModule } from '@angular/router';
 import { EncounterCompetition, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';

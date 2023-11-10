@@ -133,17 +133,17 @@
       },
       "configurations": {
         "production": {
-          "browserTarget": "badman:build:production"
+          "buildTarget": "badman:build:production"
         },
         "development": {
-          "browserTarget": "badman:build:development",
-          "proxyConfig": "apps/badman/proxy.conf.json"
+          "proxyConfig": "apps/badman/proxy.conf.json",
+          "buildTarget": "badman:build:development"
         },
         "beta": {
-          "browserTarget": "badman:build:beta"
+          "buildTarget": "badman:build:beta"
         },
         "dev-beta": {
-          "browserTarget": "badman:build:dev-beta"
+          "buildTarget": "badman:build:dev-beta"
         }
       },
       "defaultConfiguration": "development"
@@ -151,7 +151,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "badman:build"
+        "buildTarget": "badman:build"
       }
     },
     "lint": {
@@ -164,8 +164,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/badman/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/badman/jest.config.ts"
       }
     }
   }
