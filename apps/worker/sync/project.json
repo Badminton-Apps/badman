@@ -67,14 +67,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/worker/sync"],
       "options": {
-        "jestConfig": "apps/worker/sync/jest.config.js",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "apps/worker/sync/jest.config.js"
       }
     }
   },

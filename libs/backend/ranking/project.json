@@ -25,14 +25,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/backend/ranking"],
       "options": {
-        "jestConfig": "libs/backend/ranking/jest.config.js",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "libs/backend/ranking/jest.config.js"
       }
     }
   },
