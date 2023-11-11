@@ -1,5 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Injector,
@@ -11,10 +12,8 @@ import {
   TransferState,
   effect,
   inject,
-  signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,12 +25,12 @@ import {
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
 import { Team } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import { SubEventTypeEnum, getCurrentSeason, sortTeams } from '@badman/utils';
+import { SubEventTypeEnum } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { of } from 'rxjs';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
+import { Apollo } from 'apollo-angular';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { startWith, takeUntil } from 'rxjs/operators';
+import { ClubTeamsService } from './data-access/club-teams.service';
 
 @Component({
   selector: 'badman-club-teams',
@@ -54,6 +53,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
   ],
   templateUrl: './club-teams.component.html',
   styleUrls: ['./club-teams.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubTeamsComponent implements OnInit {
   // injects
@@ -62,10 +62,8 @@ export class ClubTeamsComponent implements OnInit {
   stateTransfer = inject(TransferState);
   platformId = inject(PLATFORM_ID);
   dialog = inject(MatDialog);
-
-  // signals
-  teams?: Signal<Team[] | undefined>;
-  loading = signal(true);
+  clubTeamsService = inject(ClubTeamsService);
+  private destroy$ = injectDestroy();
 
   // Inputs
   @Input({ required: true }) clubId!: Signal<string>;
@@ -80,88 +78,26 @@ export class ClubTeamsComponent implements OnInit {
     return isPlatformBrowser(this.platformId);
   }
 
-  ngOnInit(): void {
-    if (!this.filter) {
-      this.filter = new FormGroup({
-        season: new FormControl(getCurrentSeason()),
+  constructor() {
+    effect(() => {
+      this.clubTeamsService.filter.patchValue({
+        clubId: this.clubId(),
       });
-    }
-
-    effect(
-      () => {
-        this.teams = toSignal(
-          this.filter?.valueChanges?.pipe(
-            tap(() => {
-              this.loading.set(true);
-            }),
-            startWith(this.filter.value ?? {}),
-            switchMap((filter) => {
-              return this.apollo.watchQuery<{ teams: Partial<Team>[] }>({
-                query: gql`
-                  query Teams($teamsWhere: JSONObject) {
-                    teams(where: $teamsWhere) {
-                      id
-                      name
-                      slug
-                      teamNumber
-                      season
-                      captainId
-                      type
-                      clubId
-                      email
-                      phone
-                      preferredDay
-                      preferredTime
-                      entry {
-                        id
-                        date
-                        subEventCompetition {
-                          id
-                          name
-                        }
-                        standing {
-                          id
-                          position
-                          size
-                        }
-                      }
-                    }
-                  }
-                `,
-                variables: {
-                  teamsWhere: {
-                    clubId: this.clubId(),
-                    season: filter?.season,
-                    type: filter?.choices,
-                  },
-                },
-              }).valueChanges;
-            }),
-            transferState(
-              `clubTeamsKey-${this.clubId}`,
-              this.stateTransfer,
-              this.platformId
-            ),
-            map((result) => {
-              if (!result?.data.teams) {
-                throw new Error('No club');
-              }
-              return result.data.teams?.map((team) => new Team(team));
-            }),
-            map((teams) => teams.sort(sortTeams)),
-            tap(() => {
-              this.loading.set(false);
-            })
-          ) ?? of([]),
-          { injector: this.injector }
-        );
-      },
-      {
-        injector: this.injector,
-        allowSignalWrites: true,
-      }
-    );
+    });
   }
+
+  ngOnInit(): void {
+    this.filter?.valueChanges
+      .pipe(startWith(this.filter?.value), takeUntil(this.destroy$))
+      .subscribe((newValue) => {
+        console.log(newValue.choices);
+        this.clubTeamsService.filter.patchValue({
+          season: newValue.season,
+          choices: newValue.choices,
+        });
+      });
+  }
+
   editTeam(team: Team) {
     import('@badman/frontend-team').then((m) => {
       this.dialog
@@ -169,7 +105,8 @@ export class ClubTeamsComponent implements OnInit {
           data: {
             team: team,
             teamNumbers: {
-              [team.type ?? 'M']: this.teams?.()
+              [team.type ?? 'M']: this.clubTeamsService
+                .teams?.()
                 ?.filter((t) => t.type == team.type)
                 ?.map((t) => t.teamNumber),
             },
@@ -195,16 +132,20 @@ export class ClubTeamsComponent implements OnInit {
               season: this.filter?.value.season,
             },
             teamNumbers: {
-              [SubEventTypeEnum.M]: this.teams?.()
+              [SubEventTypeEnum.M]: this.clubTeamsService
+                .teams?.()
                 ?.filter((t) => t.type == SubEventTypeEnum.M)
                 ?.map((t) => t.teamNumber),
-              [SubEventTypeEnum.F]: this.teams?.()
+              [SubEventTypeEnum.F]: this.clubTeamsService
+                .teams?.()
                 ?.filter((t) => t.type == SubEventTypeEnum.F)
                 ?.map((t) => t.teamNumber),
-              [SubEventTypeEnum.MX]: this.teams?.()
+              [SubEventTypeEnum.MX]: this.clubTeamsService
+                .teams?.()
                 ?.filter((t) => t.type == SubEventTypeEnum.MX)
                 ?.map((t) => t.teamNumber),
-              [SubEventTypeEnum.NATIONAL]: this.teams?.()
+              [SubEventTypeEnum.NATIONAL]: this.clubTeamsService
+                .teams?.()
                 ?.filter((t) => t.type == SubEventTypeEnum.NATIONAL)
                 ?.map((t) => t.teamNumber),
             },

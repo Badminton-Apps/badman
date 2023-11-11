@@ -16,23 +16,23 @@
         <mat-chip
           matTooltipClass="multi-line-tooltip"
           [routerLink]="['ranking', 'single']"
-          [matTooltip]="tooltip.single + (this.rankingPlace?.()?.singlePoints ? '\n\r' + this.rankingPlace?.()?.singlePoints: '')"
+          [matTooltip]="tooltip.single + (this.rankingPlace().singlePoints ? '\n\r' + this.rankingPlace().singlePoints: '')"
           class="single"
-          >{{this.rankingPlace?.()?.single}}</mat-chip
+          >{{this.rankingPlace().single}}</mat-chip
         >
         <mat-chip
           matTooltipClass="multi-line-tooltip"
           [routerLink]="['ranking', 'double']"
-          [matTooltip]="tooltip.double + (this.rankingPlace?.()?.doublePoints ? '\n\r' + this.rankingPlace?.()?.doublePoints: '')"
+          [matTooltip]="tooltip.double + (this.rankingPlace().doublePoints ? '\n\r' + this.rankingPlace().doublePoints: '')"
           class="double"
-          >{{this.rankingPlace?.()?.double}}</mat-chip
+          >{{this.rankingPlace().double}}</mat-chip
         >
         <mat-chip
           matTooltipClass="multi-line-tooltip"
           [routerLink]="['ranking', 'mix']"
-          [matTooltip]="tooltip.mix + (this.rankingPlace?.()?.mixPoints ? '\n\r' + this.rankingPlace?.()?.mixPoints: '')"
+          [matTooltip]="tooltip.mix + (this.rankingPlace().mixPoints ? '\n\r' + this.rankingPlace().mixPoints: '')"
           class="mix"
-          >{{this.rankingPlace?.()?.mix}}</mat-chip
+          >{{this.rankingPlace().mix}}</mat-chip
         >
       </mat-chip-listbox></ng-container
     >
@@ -101,11 +101,11 @@
       {{ 'all.game.upcoming.title' | translate }}
     </h3>
 
-    <ng-container *ngIf="this.teams?.()">
+    <ng-container *ngIf="this.teams()">
       <badman-upcoming-games
         *ngIf="(this.teams?.()?.length?? 0) >0"
         [clubId]="club()?.id"
-        [teams]="this.teams?.() ?? []"
+        [teams]="this.teams()"
       ></badman-upcoming-games>
     </ng-container>
   </section>
