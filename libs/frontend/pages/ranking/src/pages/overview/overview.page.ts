@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Injector,
   PLATFORM_ID,
-  Signal,
   TemplateRef,
   TransferState,
   ViewChild,
@@ -11,7 +9,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -30,14 +27,18 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
+import {
+  HasClaimComponent,
+  PageHeaderComponent,
+} from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { filter, map, of, startWith, switchMap, tap } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs';
 
 const FETCH_SYSTEMS = gql`
   query GetSystemsQuery($order: [SortOrderType!], $skip: Int, $take: Int) {
@@ -90,14 +91,14 @@ export class OverviewPageComponent {
   // injects
   private apollo = inject(Apollo);
   private systemService = inject(RankingSystemService);
-  private injector = inject(Injector);
   private stateTransfer = inject(TransferState);
   private platformId = inject(PLATFORM_ID);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private destroy$ = injectDestroy();
 
   // signals
-  systems?: Signal<RankingSystem[]>;
+  systems = signal<RankingSystem[]>([]);
   loading = signal(true);
 
   displayedColumns: string[] = [
@@ -120,12 +121,13 @@ export class OverviewPageComponent {
 
   constructor() {
     effect(() => {
-      this.systems = this._loadSystems();
+      this._loadSystems();
     });
   }
   _loadSystems() {
-    return toSignal(
-      this.filter?.valueChanges?.pipe(
+    this.filter?.valueChanges
+      ?.pipe(
+        takeUntil(this.destroy$),
         tap(() => {
           this.loading.set(true);
         }),
@@ -159,9 +161,10 @@ export class OverviewPageComponent {
         tap(() => {
           this.loading.set(false);
         }),
-      ) ?? of([] as RankingSystem[]),
-      { injector: this.injector },
-    ) as Signal<RankingSystem[]>;
+      )
+      .subscribe((systems) => {
+        this.systems.set(systems);
+      });
   }
 
   watchSystem(system: RankingSystem) {

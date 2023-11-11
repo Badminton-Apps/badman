@@ -1,17 +1,17 @@
 <mat-list role="list">
   <mat-list-item
     role="listitem"
-    *ngFor="let upcoming of this.upcomingEncounters(); trackBy: trackById"
+    *ngFor="let upcoming of this.upcommingGames.games(); trackByProp: 'id'"
   >
-    <span matListItemTitle>{{ upcoming?.date | amDateFormat : 'llll' }}</span>
+    <span matListItemTitle>{{ upcoming?.date | amDateFormat: 'llll' }}</span>
     <span matListItemLine
       ><ng-container
-        *ngIf="this.hasHomeTeam"
+        *ngIf="this.upcommingGames.hasHomeTeam()"
         [ngTemplateOutlet]="hasHome"
         [ngTemplateOutletContext]="{ upcoming: upcoming }"
       ></ng-container
       ><ng-container
-        *ngIf="!this.hasHomeTeam"
+        *ngIf="!this.upcommingGames.hasHomeTeam()"
         [ngTemplateOutlet]="noHome"
         [ngTemplateOutletContext]="{ upcoming: upcoming }"
       ></ng-container>
@@ -20,21 +20,26 @@
 
   <mat-list-item role="listitem">
     <!--  a button to load more -->
-    <ng-container *ngIf="this.hasMoreToLoad; else noMoreEncounters">
+    <ng-container
+      *ngIf="
+        !this.upcommingGames.endReached() && !this.upcommingGames.loading()
+      "
+    >
       <button mat-button (click)="loadMore()">
         {{ 'all.competition.load-more' | translate }}
       </button>
     </ng-container>
+    <ng-container
+      *ngIf="this.upcommingGames.endReached() && !this.upcommingGames.loading()"
+    >
+      <span
+        matListItemLine
+        class="no-more-encounters"
+        translate="all.competition.encounters.no-more"
+      ></span>
+    </ng-container>
   </mat-list-item>
 </mat-list>
-
-<ng-template #noMoreEncounters>
-  <span
-    matListItemLine
-    class="no-more-encounters"
-    translate="all.competition.encounters.no-more"
-  ></span>
-</ng-template>
 
 <ng-template #noHome let-upcoming="upcoming">
   <span
