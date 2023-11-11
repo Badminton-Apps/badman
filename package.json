@@ -273,12 +273,6 @@
     "apollo-angular": {
       "@angular/core": "^16.0.0 || ^17.0.0"
     },
-    "ngx-markdown": {
-      "@angular/platform-browser": "^16.0.0 || ^17.0.0",
-      "@angular/core": "^16.0.0 || ^17.0.0",
-      "@angular/common": "^16.0.0 || ^17.0.0",
-      "zone.js": "^0.14.2"
-    },
     "xng-breadcrumb": {
       "@angular/core": "^16.0.0 || ^17.0.0",
       "@angular/router": "^16.0.0 || ^17.0.0",
