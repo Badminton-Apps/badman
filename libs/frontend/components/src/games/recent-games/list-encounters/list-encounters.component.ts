@@ -2,18 +2,15 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Injector,
   Input,
   OnChanges,
   OnInit,
   PLATFORM_ID,
-  Signal,
   TransferState,
   effect,
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
@@ -29,9 +26,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
-import { map } from 'rxjs';
-import { LoadingBlockComponent } from '../../../loading-block';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import { TrackByProp } from 'ngxtension/trackby-id-prop';
+import { map, takeUntil } from 'rxjs';
+import { LoadingBlockComponent } from '../../../loading-block';
 
 @Component({
   standalone: true,
@@ -58,18 +56,18 @@ export class ListEncountersComponent implements OnInit, OnChanges {
   private apollo = inject(Apollo);
   private stateTransfer = inject(TransferState);
   private platformId = inject(PLATFORM_ID);
-  private injector = inject(Injector);
+  private destroy$ = injectDestroy();
 
   @Input() clubId?: string;
   @Input() teamId?: string;
   @Input() teams!: Team | Team[];
 
   teamids = signal<string[]>([]);
-  recentEncounters!: Signal<EncounterCompetition[]>;
+  recentEncounters = signal<EncounterCompetition[]>([]);
 
   constructor() {
     effect(() => {
-      this.recentEncounters = this._loadRecentEncounterForTeams();
+      this._loadRecentEncounterForTeams();
     });
   }
 
@@ -133,83 +131,84 @@ export class ListEncountersComponent implements OnInit, OnChanges {
   }
 
   private _loadRecentEncounterForTeams() {
-    return toSignal(
-      this.apollo
-        .query<{
-          encounterCompetitions: {
-            rows: Partial<EncounterCompetition>[];
-          };
-        }>({
-          query: gql`
-            query RecentGames(
-              $where: JSONObject
-              $take: Int
-              $order: [SortOrderType!]
-            ) {
-              encounterCompetitions(where: $where, order: $order, take: $take) {
-                rows {
+    this.apollo
+      .query<{
+        encounterCompetitions: {
+          rows: Partial<EncounterCompetition>[];
+        };
+      }>({
+        query: gql`
+          query RecentGames(
+            $where: JSONObject
+            $take: Int
+            $order: [SortOrderType!]
+          ) {
+            encounterCompetitions(where: $where, order: $order, take: $take) {
+              rows {
+                id
+                date
+                home {
                   id
-                  date
-                  home {
+                  name
+                }
+                away {
+                  id
+                  name
+                }
+                homeScore
+                awayScore
+                drawCompetition {
+                  id
+                  subEventCompetition {
                     id
-                    name
-                  }
-                  away {
-                    id
-                    name
-                  }
-                  homeScore
-                  awayScore
-                  drawCompetition {
-                    id
-                    subEventCompetition {
-                      id
-                      eventType
-                      eventId
-                    }
+                    eventType
+                    eventId
                   }
                 }
               }
             }
-          `,
-          variables: {
-            where: {
-              date: {
-                $lte: moment().format('YYYY-MM-DD'),
-              },
-              $or: [
-                {
-                  homeTeamId: this.teamids(),
-                },
-                {
-                  awayTeamId: this.teamids(),
-                },
-              ],
+          }
+        `,
+        variables: {
+          where: {
+            date: {
+              $lte: moment().format('YYYY-MM-DD'),
             },
-            order: [
+            $or: [
               {
-                direction: 'desc',
-                field: 'date',
+                homeTeamId: this.teamids(),
+              },
+              {
+                awayTeamId: this.teamids(),
               },
             ],
-            take: 10,
           },
-        })
-        .pipe(
-          transferState(
-            `recentKey-${this.teamId ?? this.clubId}`,
-            this.stateTransfer,
-            this.platformId,
-          ),
-          map((result) => {
-            return (
-              result?.data.encounterCompetitions.rows?.map(
-                (encounter) => new EncounterCompetition(encounter),
-              ) ?? []
-            );
-          }),
+          order: [
+            {
+              direction: 'desc',
+              field: 'date',
+            },
+          ],
+          take: 10,
+        },
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        transferState(
+          `recentKey-${this.teamId ?? this.clubId}`,
+          this.stateTransfer,
+          this.platformId,
         ),
-      { injector: this.injector },
-    ) as Signal<EncounterCompetition[]>;
+        map((result) => {
+          return (
+            result?.data.encounterCompetitions.rows?.map(
+              (encounter) => new EncounterCompetition(encounter),
+            ) ?? []
+          );
+        }),
+      )
+      .subscribe((encounters) => {
+        this.recentEncounters.set(encounters);
+      });
   }
 }
