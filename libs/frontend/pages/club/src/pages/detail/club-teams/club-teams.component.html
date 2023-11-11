@@ -1,4 +1,4 @@
-<ng-container *ngIf="this.teams && !this.loading()">
+<ng-container *ngIf="this.clubTeamsService.loaded()">
   <section class="teams">
     <div class="title">
       <h3>
@@ -12,7 +12,7 @@
       </badman-has-claim>
     </div>
     <div class="teams-container">
-      <div class="team" *ngFor="let team of teams()">
+      <div class="team" *ngFor="let team of this.clubTeamsService.teams()">
         <div [routerLink]="['team', team.slug]">
           <span class="name">{{ team.name }}</span>
           <span class="event" *ngIf="team.entry?.subEventCompetition?.name">
@@ -43,7 +43,7 @@
     </div>
   </section>
 
-  <section class="games" *ngIf="(teams() ?? []).length > 0">
+  <section class="games" *ngIf="this.clubTeamsService.teams().length > 0">
     <section class="recent-games">
       <h3>
         <mat-icon color="primary">history</mat-icon>
@@ -52,7 +52,7 @@
       <badman-recent-games
         *ngIf="isClient"
         [clubId]="this.clubId()"
-        [teams]="teams() ?? []"
+        [teams]="this.clubTeamsService.teams()"
       ></badman-recent-games>
     </section>
 
@@ -63,13 +63,13 @@
       </h3>
       <badman-upcoming-games
         [clubId]="this.clubId()"
-        [teams]="teams() ?? []"
+        [teams]="this.clubTeamsService.teams()"
       ></badman-upcoming-games>
     </section>
   </section>
 </ng-container>
 
-<ng-container *ngIf="this.loading()">
+<ng-container *ngIf="!this.clubTeamsService.loaded()">
   <section class="teams">
     <h3>
       <mat-icon color="primary">groups</mat-icon>
