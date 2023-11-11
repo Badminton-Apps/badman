@@ -77,7 +77,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
         if (entry.isIntersecting && this.recentGames.games().length > 0) {
           // The bottom of the current list is visible, load more items
           this.recentGames.pagination$.next(
-            this.recentGames.pagination$.getValue() + 1,
+            this.recentGames.page() + 1,
           );
         }
       });
