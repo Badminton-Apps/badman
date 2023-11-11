@@ -129,7 +129,7 @@
     "nestjs-i18n": "^10.3.7",
     "ng-apexcharts": "^1.8.0",
     "ng-process-env": "^16.0.6",
-    "ngx-markdown": "^16.0.0",
+    "ngx-markdown": "^17.0.0",
     "ngx-moment": "^6.0.2",
     "ngx-quill": "^24.0.0",
     "ngxtension": "^1.0.0",
