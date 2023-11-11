@@ -8,6 +8,7 @@ import {
   computed,
   effect,
   inject,
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -26,7 +27,8 @@ import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { map, takeUntil } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
@@ -57,15 +59,16 @@ export class DetailPageComponent {
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
   private injector = inject(Injector);
+  private destroy$ = injectDestroy();
 
   // route
   private queryParams = toSignal(this.route.queryParamMap);
   private routeParams = toSignal(this.route.paramMap);
-  private routeData= toSignal(this.route.data);
+  private routeData = toSignal(this.route.data);
 
   team = computed(() => this.routeData()?.['team'] as Team);
 
-  entry!: Signal<EventEntry>;
+  entry = signal<EventEntry | null>(null);
 
   constructor() {
     effect(() => {
@@ -83,63 +86,68 @@ export class DetailPageComponent {
       );
       this.breadcrumbService.set('club/:id/team/:id', teamName);
 
-      this.entry = this._loadEntry();
+      this._loadEntry();
     });
   }
 
   private _loadEntry() {
     const year = getCurrentSeason();
-    return toSignal(
-      this.apollo
-        .query<{ team: Partial<Team> }>({
-          query: gql`
-            query Entries($teamId: ID!) {
-              team(id: $teamId) {
+    this.apollo
+      .query<{ team: Partial<Team> }>({
+        query: gql`
+          query Entries($teamId: ID!) {
+            team(id: $teamId) {
+              id
+              entry {
                 id
-                entry {
+                date
+                standing {
                   id
-                  date
-                  standing {
+                  position
+                  size
+                }
+                drawCompetition {
+                  id
+                }
+                subEventCompetition {
+                  id
+                  eventCompetition {
                     id
-                    position
-                    size
-                  }
-                  drawCompetition {
-                    id
-                  }
-                  subEventCompetition {
-                    id
-                    eventCompetition {
-                      id
-                      name
-                      slug
-                    }
+                    name
+                    slug
                   }
                 }
               }
             }
-          `,
-          variables: {
-            teamId: this.team().id,
-          },
-        })
-        .pipe(
-          transferState(
-            `teamEntries-${this.team().id}-${year}`,
-            this.stateTransfer,
-            this.platformId,
-          ),
-          map((result) => {
-            if (!result?.data?.team?.entry) {
-              return undefined;
-            }
-
-            return new EventEntry(
-              result?.data?.team?.entry as Partial<EventEntry>,
-            );
-          }),
+          }
+        `,
+        variables: {
+          teamId: this.team().id,
+        },
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        transferState(
+          `teamEntries-${this.team().id}-${year}`,
+          this.stateTransfer,
+          this.platformId,
         ),
-      { injector: this.injector },
-    ) as Signal<EventEntry>;
+        map((result) => {
+          if (!result?.data?.team?.entry) {
+            return undefined;
+          }
+
+          return new EventEntry(
+            result?.data?.team?.entry as Partial<EventEntry>,
+          );
+        }),
+      )
+      .subscribe((entry) => {
+        if (!entry) {
+          return;
+        }
+
+        this.entry.set(entry);
+      });
   }
 }
