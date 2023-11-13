@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { Club, Player, Team } from '@badman/frontend-models';
@@ -12,6 +12,7 @@ import {
   Subject,
   catchError,
   debounceTime,
+  delay,
   distinctUntilChanged,
   filter,
   map,
@@ -48,7 +49,14 @@ export class ClubAssemblyService {
     choices: new FormControl<string[]>([]),
   });
 
+  teams = computed(() => this.state().teams);
+  players = computed(() => this.state().players);
+  loaded = computed(() => this.state().loaded);
+  error = computed(() => this.state().error);
+
   private filterChanged$ = this.filter.valueChanges.pipe(
+    startWith(this.filter.value),
+    filter((filter) => !!filter.clubId && filter.clubId.length > 0),
     debounceTime(300),
     distinctUntilChanged(),
   );
@@ -56,8 +64,6 @@ export class ClubAssemblyService {
   // sources
   private error$ = new Subject<string>();
   private teamsLoaded$ = this.filterChanged$.pipe(
-    startWith(this.filter.value),
-    filter((filter) => !!filter.clubId),
     switchMap((filter) =>
       this.getTeams(filter).pipe(
         map((teams) => teams.sort(sortTeams)),
@@ -68,6 +74,7 @@ export class ClubAssemblyService {
         ),
       ),
     ),
+    delay(100), // some delay to show the loading indicator
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
@@ -132,7 +139,7 @@ export class ClubAssemblyService {
                 subEventCompetition {
                   id
                   name
-                  maxLevel                  
+                  maxLevel
                   eventCompetition {
                     id
                     usedRankingUnit

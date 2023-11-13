@@ -1,4 +1,4 @@
-<ng-container *ngIf="!clubAssemblyService.state.loaded()">
+<ng-container *ngIf="!clubAssemblyService.loaded()">
   <section class="teams">
     <h3>
       <mat-icon color="primary">groups</mat-icon>
@@ -8,7 +8,7 @@
   </section>
 </ng-container>
 
-<ng-container *ngIf="clubAssemblyService.state.loaded()">
+<ng-container *ngIf="clubAssemblyService.loaded()">
   <section class="teams">
     <div class="title">
       <h3>
@@ -23,7 +23,7 @@
     </p>
 
     <div class="player-teams-table">
-      <table mat-table [dataSource]="clubAssemblyService.state.players()">
+      <table mat-table [dataSource]="clubAssemblyService.players()">
         <ng-container matColumnDef="player">
           <th mat-header-cell *matHeaderCellDef>Player</th>
           <td mat-cell *matCellDef="let element">
@@ -33,7 +33,7 @@
 
         <ng-container
           [matColumnDef]="team.name ?? ''"
-          *ngFor="let team of clubAssemblyService.state.teams()"
+          *ngFor="let team of clubAssemblyService.teams()"
         >
           <th mat-header-cell *matHeaderCellDef>{{ team.name }}</th>
           <td mat-cell *matCellDef="let element" class="can-play">
