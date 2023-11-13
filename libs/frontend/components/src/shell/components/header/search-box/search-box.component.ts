@@ -8,10 +8,10 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { merge, Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject, merge } from 'rxjs';
 import {
   debounceTime,
   filter,
@@ -54,7 +54,10 @@ export class SearchBoxComponent implements OnInit {
     })[]
   > = new ReplaySubject(0);
 
-  constructor(private apollo: Apollo, private router: Router) {}
+  constructor(
+    private apollo: Apollo,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.formControl = new FormControl();
@@ -98,15 +101,16 @@ export class SearchBoxComponent implements OnInit {
             }
           `,
           variables: { query },
-        })
+        }),
       ),
       // Distinct by id
-      map((result) =>
-        result?.data?.search?.filter(
-          (value, index, self) =>
-            self.findIndex((m) => m?.id === value?.id) === index
-        )
-      )
+      map(
+        (result) =>
+          result?.data?.search?.filter(
+            (value, index, self) =>
+              self.findIndex((m) => m?.id === value?.id) === index,
+          ),
+      ),
     );
 
     this.filteredOptions$ = merge(search$, this.clear$) as Observable<

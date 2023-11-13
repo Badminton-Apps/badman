@@ -3,7 +3,6 @@ import {
   Component,
   Injector,
   PLATFORM_ID,
-  Signal,
   TransferState,
   computed,
   effect,
