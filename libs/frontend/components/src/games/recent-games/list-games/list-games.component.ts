@@ -98,8 +98,6 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
     if (
       changes['playerId'].currentValue !== changes['playerId'].previousValue
     ) {
-      console.log('resetting', changes['playerId'].currentValue);
-
       this.recentGames.filter.patchValue({
         choices: ['S', 'D', 'MX'],
         playerId: changes['playerId'].currentValue,

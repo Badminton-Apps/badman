@@ -1,9 +1,9 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Team } from '@badman/frontend-models';
 import { getCurrentSeason, sortTeams } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
-import { connect } from 'ngxtension/connect';
+import { signalSlice } from 'ngxtension/signal-slice';
 import {
   EMPTY,
   Subject,
@@ -15,14 +15,12 @@ import {
   merge,
   startWith,
   switchMap,
-  tap,
 } from 'rxjs';
 
 export interface ClubTeamsState {
   teams: Team[];
   loaded: boolean;
   error: string | null;
-  page: number;
   endReached: boolean;
 }
 
@@ -31,7 +29,6 @@ export interface ClubTeamsState {
 })
 export class ClubTeamsService {
   private apollo = inject(Apollo);
-  private teamsPerPage = 10;
 
   filter = new FormGroup({
     clubId: new FormControl<string>(''),
@@ -40,19 +37,17 @@ export class ClubTeamsService {
   });
 
   // state
-  private state = signal<ClubTeamsState>({
+  private initialState: ClubTeamsState = {
     teams: [],
     loaded: false,
     error: null,
-    page: 1,
     endReached: false,
-  });
+  };
 
   // selectors
   teams = computed(() => this.state().teams);
   loaded = computed(() => this.state().loaded);
   error = computed(() => this.state().error);
-  page = computed(() => this.state().page);
 
   private filterChanged$ = this.filter.valueChanges.pipe(
     debounceTime(300),
@@ -61,12 +56,11 @@ export class ClubTeamsService {
 
   // sources
   private teamsLoaded$ = this.filterChanged$.pipe(
-    tap(() => this.page$.next(1)),
     startWith(this.filter.value),
     filter((filter) => !!filter.clubId),
     switchMap((filter) => this.getTeams(filter)),
     map((teams) => teams.sort(sortTeams)),
-    map((teams) => ({ teams })),
+    map((teams) => ({ teams, loaded: true })),
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
@@ -74,38 +68,22 @@ export class ClubTeamsService {
   );
 
   private error$ = new Subject<string>();
-  page$ = new Subject<number>();
 
-  constructor() {
-    const nextState$ = merge(
-      this.filterChanged$.pipe(
-        map(() => ({
-          loading: true,
-          teams: [],
-        })),
-      ),
-      this.error$.pipe(map((error) => ({ error }))),
-    );
+  sources$ = merge(
+    this.teamsLoaded$,
+    this.error$.pipe(map((error) => ({ error }))),
+    this.filterChanged$.pipe(map(() => ({ loaded: false }))),
+  );
 
-    connect(this.state)
-      .with(nextState$)
-      .with(this.filterChanged$, (state) => ({
-        ...state,
-        page: 1,
-      }))
-      .with(this.page$, (state, response) => ({
-        ...state,
-        page: response ?? 1,
-      }))
-      .with(this.teamsLoaded$, (state, response) => {
-        return {
-          ...state,
-          teams: [...state.teams, ...response.teams],
-          endReached: response.teams.length < this.teamsPerPage,
-          loaded: true,
-        };
-      });
-  }
+  state = signalSlice({
+    initialState: this.initialState,
+    sources: [this.sources$],
+    selectors: (state) => ({
+      loadedAndError: () => {
+        return state().loaded && state().error;
+      },
+    }),
+  });
 
   private getTeams(
     filter: Partial<{

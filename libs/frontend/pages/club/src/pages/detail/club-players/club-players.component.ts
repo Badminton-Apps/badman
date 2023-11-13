@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   Injector,
@@ -6,21 +7,20 @@ import {
   PLATFORM_ID,
   Signal,
   TransferState,
-  effect,
   inject,
+  signal,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Apollo, gql } from 'apollo-angular';
-import { Club, Player } from '@badman/frontend-models';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup } from '@angular/forms';
-import { transferState } from '@badman/frontend-utils';
-import { switchMap, map, startWith } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { getCurrentSeason } from '@badman/utils';
-import { LoadingBlockComponent } from '@badman/frontend-components';
 import { RouterModule } from '@angular/router';
+import { LoadingBlockComponent } from '@badman/frontend-components';
+import { Club, Player } from '@badman/frontend-models';
+import { transferState } from '@badman/frontend-utils';
+import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
+import { Apollo, gql } from 'apollo-angular';
+import { combineLatest } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-club-players',
@@ -37,11 +37,15 @@ export class ClubPlayersComponent implements OnInit {
   platformId = inject(PLATFORM_ID);
 
   // signals
-  players?: Signal<{ player: Player; teams: number }[] | undefined>;
+  players = signal<
+    {
+      player: Player;
+      teams: number;
+    }[]
+  >([]);
 
   // Inputs
   @Input({ required: true }) clubId!: Signal<string>;
-
   @Input() filter?: FormGroup;
 
   ngOnInit(): void {
@@ -51,61 +55,66 @@ export class ClubPlayersComponent implements OnInit {
       });
     }
 
-    effect(
-      () => {
-        this.players = toSignal(
-          this.filter?.valueChanges?.pipe(
-            startWith(this.filter.value ?? {}),
-            switchMap((filter) => {
-              return this.apollo.watchQuery<{ club: Partial<Club> }>({
-                query: gql`
-                  query PlayersForTeams($teamsWhere: JSONObject, $clubId: ID!) {
-                    club(id: $clubId) {
+    combineLatest([
+      this.filter?.valueChanges.pipe(startWith(this.filter.value ?? {})),
+      toObservable(this.clubId, {
+        injector: this.injector,
+      }),
+    ])
+      .pipe(
+        switchMap(
+          ([filter, clubId]) =>
+            this.apollo.watchQuery<{ club: Partial<Club> }>({
+              query: gql`
+                query PlayersForTeams($teamsWhere: JSONObject, $clubId: ID!) {
+                  club(id: $clubId) {
+                    id
+                    players {
                       id
-                      players {
+                      fullName
+                      slug
+                      teams(where: $teamsWhere) {
                         id
-                        fullName
-                        slug
-                        teams(where: $teamsWhere) {
-                          id
-                        }
                       }
                     }
                   }
-                `,
-                variables: {
-                  clubId: this.clubId(),
-                  teamsWhere: {
-                    season: filter?.season,
-                    type: filter?.choices,
-                  },
+                }
+              `,
+              variables: {
+                clubId,
+                teamsWhere: {
+                  season: filter?.season,
+                  type: filter?.choices,
                 },
-              }).valueChanges;
-            }),
-            transferState(
-              `clubPlayerTeamsKey-${this.clubId()}`,
-              this.stateTransfer,
-              this.platformId
-            ),
-            map((result) => {
-              if (!result?.data.club) {
-                throw new Error('No club');
-              }
-              return new Club(result.data.club);
-            }),
-            map((club) => {
-              return (club.players ?? []).map((player) => {
-                return {
-                  player,
-                  teams: (player.teams ?? []).length,
-                };
-              });
-            })
-          ) ?? of([]),
-          { injector: this.injector }
-        );
-      },
-      { injector: this.injector }
-    );
+              },
+            }).valueChanges,
+        ),
+        transferState(
+          `clubPlayerTeamsKey-${this.clubId()}`,
+          this.stateTransfer,
+          this.platformId,
+        ),
+        map((result) => {
+          if (!result?.data.club) {
+            throw new Error('No club');
+          }
+          return new Club(result.data.club);
+        }),
+        map((club) => {
+          return (club.players ?? []).map((player) => {
+            return {
+              player,
+              teams: (player.teams ?? []).length,
+            };
+          });
+        }),
+      )
+      .subscribe((players) => {
+        if (!players) {
+          return;
+        }
+
+        this.players.set(players);
+      });
   }
 }

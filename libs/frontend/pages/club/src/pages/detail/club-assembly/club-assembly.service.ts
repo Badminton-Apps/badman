@@ -77,6 +77,7 @@ export class ClubAssemblyService {
   sources$ = merge(
     this.teamsLoaded$,
     this.error$.pipe(map((error) => ({ error }))),
+    this.filterChanged$.pipe(map(() => ({ loaded: false }))),
   );
 
   state = signalSlice({
