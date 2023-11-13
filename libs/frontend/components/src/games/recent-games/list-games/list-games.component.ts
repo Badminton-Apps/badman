@@ -22,7 +22,6 @@ import { Game, GamePlayer } from '@badman/frontend-models';
 import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { TrackByProp } from 'ngxtension/trackby-id-prop';
 import { LoadingBlockComponent } from '../../../loading-block';
 import { RecentGamesService } from './data-access/recent-games.service';
 
@@ -34,7 +33,6 @@ import { RecentGamesService } from './data-access/recent-games.service';
     TranslateModule,
     MomentModule,
     ReactiveFormsModule,
-    TrackByProp,
 
     // Material modules
     MatButtonModule,
@@ -76,9 +74,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
       entries.forEach((entry) => {
         if (entry.isIntersecting && this.recentGames.games().length > 0) {
           // The bottom of the current list is visible, load more items
-          this.recentGames.pagination$.next(
-            this.recentGames.page() + 1,
-          );
+          this.recentGames.pagination$.next(this.recentGames.page() + 1);
         }
       });
     }, options);
