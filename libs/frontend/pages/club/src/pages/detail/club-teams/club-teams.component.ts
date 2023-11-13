@@ -90,7 +90,6 @@ export class ClubTeamsComponent implements OnInit {
     this.filter?.valueChanges
       .pipe(startWith(this.filter?.value), takeUntil(this.destroy$))
       .subscribe((newValue) => {
-        console.log(newValue.choices);
         this.clubTeamsService.filter.patchValue({
           season: newValue.season,
           choices: newValue.choices,
