@@ -9,6 +9,7 @@ import {
   Subject,
   catchError,
   debounceTime,
+  delay,
   distinctUntilChanged,
   filter,
   map,
@@ -50,17 +51,18 @@ export class ClubTeamsService {
   error = computed(() => this.state().error);
 
   private filterChanged$ = this.filter.valueChanges.pipe(
+    startWith(this.filter.value),
+    filter((filter) => !!filter.clubId && filter.clubId.length > 0),
     debounceTime(300),
     distinctUntilChanged(),
   );
 
   // sources
   private teamsLoaded$ = this.filterChanged$.pipe(
-    startWith(this.filter.value),
-    filter((filter) => !!filter.clubId),
     switchMap((filter) => this.getTeams(filter)),
     map((teams) => teams.sort(sortTeams)),
     map((teams) => ({ teams, loaded: true })),
+    delay(100), // some delay to show the loading indicator
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
