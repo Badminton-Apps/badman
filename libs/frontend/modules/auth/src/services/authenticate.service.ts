@@ -14,14 +14,12 @@ import {
   of,
 } from 'rxjs';
 import {
+  catchError,
   map,
   shareReplay,
   switchMap,
-  tap,
-  catchError,
-  timeout,
+  tap
 } from 'rxjs/operators';
-
 const PROFILE_QUERY = gql`
   query GetProfile {
     me {
@@ -68,25 +66,25 @@ export class AuthenticateService {
   constructor(
     private apollo: Apollo,
     @Inject(PLATFORM_ID) private _platformId: string,
-    private injector: Injector
+    private injector: Injector,
   ) {
     if (isPlatformBrowser(this._platformId)) {
       this.authService = this.injector.get(AuthService);
       this.loggedIn$ = merge(
         of(null),
         fromEvent(window, 'online'),
-        fromEvent(window, 'offline')
+        fromEvent(window, 'offline'),
       ).pipe(
         map(() => navigator.onLine),
         switchMap((online) =>
           iif(
             () => online,
             this.authService?.isAuthenticated$.pipe(
-              catchError(() => of(false))
+              catchError(() => of(false)),
             ) ?? of(false),
-            of(false)
-          )
-        )
+            of(false),
+          ),
+        ),
       );
     } else {
       this.loggedIn$ = of(false);
@@ -102,7 +100,7 @@ export class AuthenticateService {
           return (
             this.authService?.user$.pipe(
               // return null if there is an error
-              map((user) => ({ ...user, ...result.data.me }))
+              map((user) => ({ ...user, ...result.data.me })),
             ) ?? of({})
           );
         }),
@@ -110,30 +108,31 @@ export class AuthenticateService {
           const user = new LoggedinUser(result);
           user.loggedIn = true;
           return user;
-        })
+        }),
       );
 
     this.user$ = this.loggedIn$.pipe(
       switchMap((loggedIn) =>
-        iif(() => loggedIn, fetchInfo, of({ loggedIn: false } as LoggedinUser))
+        iif(() => loggedIn, fetchInfo, of({ loggedIn: false } as LoggedinUser)),
       ),
       shareReplay(),
       tap((user) => {
         this.#user.next(user);
         this.#loggedIn.next(user.loggedIn);
-      })
+      }),
     );
   }
 
   logout() {
     return from(this.apollo.client.resetStore()).pipe(
-      map(() =>
-        this.authService?.logout({
-          logoutParams: {
-            returnTo: window.location.origin,
-          },
-        })
-      )
+      map(
+        () =>
+          this.authService?.logout({
+            logoutParams: {
+              returnTo: window.location.origin,
+            },
+          }),
+      ),
     );
   }
 

@@ -171,10 +171,12 @@ export class EditEncounterComponent implements OnInit {
     // console.log(this.formGroup?.value); // ['SF', 'NY']
   }
 
-  openDialog(player: GamePlayer, game: number, action: string) {
+  openDialog(player: GamePlayer, game: number, action: 'injured' | 'quit') {
     this.matdialog.open(ReplacePlayerComponent, {
       data: { player, game, encounter: this.encounterCompetition },
     });
+
+    console.log(action);
   }
 
   getGameLabel(game: number) {

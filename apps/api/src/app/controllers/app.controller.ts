@@ -79,25 +79,20 @@ export class AppController {
   @Get('cp')
   async getCp(@Res() res: FastifyReply, @Query() query: { eventId: string }) {
     this.logger.debug('Generating CP');
-    try {
-      const fileLoc = await this.cpGen.generateCpFile(query.eventId);
-      if (!fileLoc) {
-        throw new HttpException('Could not generate CP', 500);
-      }
-
-      const file = createReadStream(fileLoc);
-      const extension = extname(fileLoc);
-      const fileName = basename(fileLoc, extension);
-      res.header(
-        'Content-disposition',
-        'attachment; filename=' + fileName + extension,
-      );
-
-      res.type(extension).send(file);
-    } catch (e: any) {
-      this.logger.error(e?.process?.message ?? e.message);
-      throw e;
+    const fileLoc = await this.cpGen.generateCpFile(query.eventId);
+    if (!fileLoc) {
+      throw new HttpException('Could not generate CP', 500);
     }
+
+    const file = createReadStream(fileLoc);
+    const extension = extname(fileLoc);
+    const fileName = basename(fileLoc, extension);
+    res.header(
+      'Content-disposition',
+      'attachment; filename=' + fileName + extension,
+    );
+
+    res.type(extension).send(file);
   }
 
   @Get('planner')

@@ -146,9 +146,9 @@ export class AssemblyExportService {
     return uniquePlayers;
   }
 
-  private async _getReplacements(team: Team, players: Player[]) {
-    // find the entry -> subevent
-    const entry = await team.getEntry();
-    const subevent = await entry.getSubEventCompetition();
-  }
+  // private async _getReplacements(team: Team, players: Player[]) {
+  //   // find the entry -> subevent
+  //   const entry = await team.getEntry();
+  //   const subevent = await entry.getSubEventCompetition();
+  // }
 }

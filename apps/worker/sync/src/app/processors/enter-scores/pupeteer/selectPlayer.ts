@@ -56,7 +56,7 @@ export async function selectPlayer(
     // await option.type(optionValue);
 
     await option.focus();
-    await option.evaluate((el, value) => {
+    await option.evaluate((el) => {
       // todo check if this is needed
       // el['value'] = value;
 

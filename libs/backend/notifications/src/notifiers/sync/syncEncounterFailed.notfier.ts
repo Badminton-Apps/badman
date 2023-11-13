@@ -5,7 +5,6 @@ import {
 } from '@badman/backend-database';
 import * as webPush from 'web-push';
 import { Notifier } from '../notifier.base';
-import { unitOfTime } from 'moment';
 
 interface SyncEncounterMeta {
   encounter: EncounterCompetition;

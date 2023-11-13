@@ -2,14 +2,12 @@ import { CompileOptions, CompileService } from '@badman/backend-compile';
 import {
   Club,
   Comment,
-  EncounterChange,
   EncounterCompetition,
   EventCompetition,
   EventTournament,
   Location,
   Player,
-  SubEventCompetition,
-  Team,
+  SubEventCompetition
 } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -474,6 +472,7 @@ export class MailingService {
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this._transporter.use('compile', (mail: any, callback) => {
         const template = mail.data.template;
         const context = mail.data.context;

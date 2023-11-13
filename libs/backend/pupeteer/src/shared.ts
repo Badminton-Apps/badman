@@ -98,11 +98,10 @@ export async function waitForSelector(
 
 export async function querySelectorsAll(
   selectors: string[],
-  frame: Page,
-  timeout?: number
+  frame: Page
 ) {
   for (const selector of selectors) {
-    const result = await querySelectorAll(selector, frame, timeout);
+    const result = await querySelectorAll(selector, frame);
     if (result.length) {
       return result;
     }
@@ -112,8 +111,7 @@ export async function querySelectorsAll(
 
 export async function querySelectorAll(
   selector: string | string[],
-  frame: Page,
-  timeout?: number
+  frame: Page
 ) {
   if (selector instanceof Array) {
     let elements: ElementHandle<Element>[] = [];
