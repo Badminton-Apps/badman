@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.121.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.2...v6.121.0-beta.3) (2023-11-13)
+
+
+### Features
+
+* also recalcualte the last period before starting calculation ([f2bab87](https://github.com/Badminton-Apps/badman/commit/f2bab8732569aabfb1f8beb8839ab9f629441314))
+* assembly overview back up and running ([249b5a0](https://github.com/Badminton-Apps/badman/commit/249b5a01b943dc1edd91c7163d4b9faa3bc6c5b9))
+* filterchanged ([d99df96](https://github.com/Badminton-Apps/badman/commit/d99df96926f0cef4d1349ed9a07d7bfab693d280))
+
+
+### Bug Fixes
+
+* adding fictional games ([0a97ae2](https://github.com/Badminton-Apps/badman/commit/0a97ae21fa6d60067d42779ec29f690eb08dea84))
+* correctly pass the system to the dialog ([631f15f](https://github.com/Badminton-Apps/badman/commit/631f15fffb4a78e6ce78faac09008172d7c86402))
+* correctly setting the competition statsu ([ce2917b](https://github.com/Badminton-Apps/badman/commit/ce2917b222199f4c8989353d0167a3c2fca39ef4))
+* **deps:** update angularmaterial monorepo to v16.2.12 ([74d3b2d](https://github.com/Badminton-Apps/badman/commit/74d3b2d0f3787629d4fcbc6727f531727337d793))
+* **deps:** update dependency @nestjs/graphql to v12.0.10 ([a9e7006](https://github.com/Badminton-Apps/badman/commit/a9e700684d850f778924315efb4b2e859cdf5ead))
+* **deps:** update dependency bull to v4.11.5 ([8723686](https://github.com/Badminton-Apps/badman/commit/87236864c60639a908a0b10af7a20577abafc440))
+* **deps:** update dependency crypto-hash to v3 ([626af78](https://github.com/Badminton-Apps/badman/commit/626af780317a0c584874ba42a1f631f2a4e03ca0))
+* **deps:** update dependency ngx-markdown to v17 ([4252370](https://github.com/Badminton-Apps/badman/commit/425237085da763d1520138fcbb49fa332ff4df76))
+* **deps:** update dependency ngx-markdown to v17.1.0 ([9f56473](https://github.com/Badminton-Apps/badman/commit/9f5647371b10a35f52152329c30304ab4a8e6d9c))
+* **deps:** update dependency ngxtension to ^0.15.0 ([f5e220e](https://github.com/Badminton-Apps/badman/commit/f5e220e038e5ef54d528afc2d6d5d4940501159c))
+* **deps:** update dependency ngxtension to v1.0.3 ([d7cefb9](https://github.com/Badminton-Apps/badman/commit/d7cefb903bd4cad86fd8db08934f242e79f50c1f))
+* **deps:** update dependency ngxtension to v1.1.0 ([199bd89](https://github.com/Badminton-Apps/badman/commit/199bd89f181c168f88fca9b1d77eff4b7a9ef822))
+* **deps:** update dependency rollup to v4.4.0 ([a76de92](https://github.com/Badminton-Apps/badman/commit/a76de92291f5de3365fa06212b611b70c06c022f))
+* **deps:** update dependency sequelize to v6.35.0 ([346315a](https://github.com/Badminton-Apps/badman/commit/346315a401bcc9bb48e1371ecfd622a03426ae9b))
+* **deps:** update logtail monorepo to v0.4.15 ([6e7de83](https://github.com/Badminton-Apps/badman/commit/6e7de834e4769898140a364ba32253fb69316031))
+* linting ([cbc4a2e](https://github.com/Badminton-Apps/badman/commit/cbc4a2e65298194f4984028a6412a957454a0e73))
+* race confition on the loaded signal ([114ad79](https://github.com/Badminton-Apps/badman/commit/114ad795405fa7c544a58bb50b3957665ce49a56))
+
 ## [6.121.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.1...v6.121.0-beta.2) (2023-11-07)
 
 
