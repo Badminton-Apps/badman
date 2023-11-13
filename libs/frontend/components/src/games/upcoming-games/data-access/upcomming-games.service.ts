@@ -119,7 +119,7 @@ export class UpcommingGamesService {
         };
       }>({
         query: gql`
-          query UpcomingGames(
+          query UpcomingGames_page${this.page()}(
             $where: JSONObject
             $take: Int
             $skip: Int
