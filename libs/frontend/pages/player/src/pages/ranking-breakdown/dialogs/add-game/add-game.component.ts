@@ -25,6 +25,7 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/frontend-models';
+import { GameType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { gql } from 'apollo-angular';
 import { DocumentNode } from 'graphql';
@@ -78,7 +79,7 @@ export class AddGameComponent implements OnInit {
       playerId: string;
       type: 'single' | 'double' | 'mix';
       system: RankingSystem;
-    }
+    },
   ) {
     this.fragment = gql`
       fragment AddGameInfo on Player {
@@ -176,10 +177,11 @@ export class AddGameComponent implements OnInit {
     } as GamePlayer);
     players.push({
       ...(this.p1t2.value as Partial<Player>),
-      [this.data.type]: this.p1t1Level.value,
+      [this.data.type]: this.p1t2Level.value,
       team: 2,
       player: 1,
     } as GamePlayer);
+
 
     rankingPoints.push({
       playerId: this.p1t1?.value?.id,
@@ -195,7 +197,7 @@ export class AddGameComponent implements OnInit {
     if (this.p2t1.value != null) {
       players.push({
         ...(this.p2t1.value as Partial<Player>),
-        [this.data.type]: this.p1t1Level.value,
+        [this.data.type]: this.p1t2Level.value,
         team: 1,
         player: 2,
       } as GamePlayer);
@@ -209,7 +211,7 @@ export class AddGameComponent implements OnInit {
     if (this.p2t2.value != null) {
       players.push({
         ...(this.p2t2.value as Partial<Player>),
-        [this.data.type]: this.p1t1Level.value,
+        [this.data.type]: this.p1t2Level.value,
         team: 2,
         player: 2,
       } as GamePlayer);
@@ -222,6 +224,12 @@ export class AddGameComponent implements OnInit {
 
     const game = new Game({
       id: uuidv4(),
+      gameType:
+        this.data.type == 'single'
+          ? GameType.S
+          : this.data.type == 'double'
+          ? GameType.D
+          : GameType.MX,
       winner: t1won ? 1 : 0,
       rankingPoints,
       players,
