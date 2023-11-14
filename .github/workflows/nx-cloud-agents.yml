@@ -215,7 +215,7 @@ jobs:
 
       - name: Process environment-variables
         if: ${{ inputs.environment-variables != '' }}
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           ENV_VARS: ${{ inputs.environment-variables }}
         with:
