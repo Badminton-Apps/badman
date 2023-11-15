@@ -41,6 +41,7 @@ export class CronService {
     });
 
     this.schedulerRegistry.addCronJob(Sync.SyncEvents, job);
+    job.start();
   }
 
   public QueueingSyncRanking() {
@@ -58,6 +59,7 @@ export class CronService {
     });
 
     this.schedulerRegistry.addCronJob(Sync.SyncRanking, job);
+    job.start();
   }
 
   public QueueingCheckEncounters() {
@@ -75,6 +77,7 @@ export class CronService {
     });
 
     this.schedulerRegistry.addCronJob(Sync.CheckEncounters, job);
+    job.start();
   }
 
   getCrons() {
