@@ -105,7 +105,7 @@ export const configSchema = Joi.object({
   VR_API_USER: Joi.string().required(),
   VR_API_PASS: Joi.string().required(),
 
-  CP_PASS: Joi.string().required(),
+  CP_PASS: Joi.string().optional(),
 
   APM_SERVER_ACTIVE: Joi.boolean(),
   APM_SERVER_URL: Joi.when('APM_SERVER_ACTIVE', {
