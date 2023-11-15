@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.121.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.6...v6.121.0-beta.7) (2023-11-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/graphql to v12.0.11 ([ea3fbf1](https://github.com/Badminton-Apps/badman/commit/ea3fbf11c91cb727653696bf94f31171cb51b63e))
+
 ## [6.121.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.5...v6.121.0-beta.6) (2023-11-15)
 
 
