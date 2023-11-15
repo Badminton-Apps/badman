@@ -28,8 +28,9 @@ export class CronService {
   }
 
   public QueueingSyncEvents() {
+    const cronTime = `${15 + this.offset} */4 * * *`;
     const job = CronJob.from({
-      cronTime: `${15 + this.offset} */4 * * *`,
+      cronTime,
       onTick: () => {
         this.logger.verbose('Queueing SyncEvents');
         this.syncQ.add(Sync.SyncEvents, null, {
@@ -42,11 +43,14 @@ export class CronService {
 
     this.schedulerRegistry.addCronJob(Sync.SyncEvents, job);
     job.start();
+
+    this.logger.verbose(`Cron SyncEvents scheduled at ${cronTime}`);
   }
 
   public QueueingSyncRanking() {
+    const cronTime = `${0 + this.offset} 18 * * *`;
     const job = CronJob.from({
-      cronTime: `${0 + this.offset} 18 * * *`,
+      cronTime,
       onTick: () => {
         this.logger.verbose('Queueing SyncRanking');
 
@@ -60,11 +64,14 @@ export class CronService {
 
     this.schedulerRegistry.addCronJob(Sync.SyncRanking, job);
     job.start();
+
+    this.logger.verbose(`Cron SyncRanking scheduled at ${cronTime}`);
   }
 
   public QueueingCheckEncounters() {
+    const cronTime = `${30 + this.offset} */4 * * *`;
     const job = CronJob.from({
-      cronTime: `${30 + this.offset} */4 * * *`,
+      cronTime,
       onTick: () => {
         this.logger.verbose('Queueing CheckEncounters');
 
@@ -78,6 +85,8 @@ export class CronService {
 
     this.schedulerRegistry.addCronJob(Sync.CheckEncounters, job);
     job.start();
+
+    this.logger.verbose(`Cron CheckEncounters scheduled at ${cronTime}`);
   }
 
   getCrons() {
@@ -85,7 +94,7 @@ export class CronService {
     jobs.forEach((value, key) => {
       let next;
       try {
-        next = value.nextDates();
+        next = value.nextDates(1);
       } catch (e) {
         next = 'error: next fire date is in the past!';
       }
