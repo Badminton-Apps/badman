@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.121.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.3...v6.121.0-beta.4) (2023-11-15)
+
+
+### Features
+
+* first usage of control flow ([bcdfbfc](https://github.com/Badminton-Apps/badman/commit/bcdfbfcb8cea6575655ef732725ef91a2828eee1))
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v1.6.2 ([71767ea](https://github.com/Badminton-Apps/badman/commit/71767ea05a95641164aa661787af492077f4f2fd))
+* **deps:** update dependency axios-retry to v3.9.0 ([441da84](https://github.com/Badminton-Apps/badman/commit/441da842a28d1ded4426d6bd5624ac8ec762bcfc))
+* **deps:** update dependency ngx-quill to v24.0.2 ([7b9d4d7](https://github.com/Badminton-Apps/badman/commit/7b9d4d7cbabaf258c97ed59b5794a366fd7bc3f0))
+* **deps:** update dependency ngxtension to v1.2.2 ([12a1bab](https://github.com/Badminton-Apps/badman/commit/12a1baba9d46a0b210492e905ad18ee7ba679c4a))
+* **deps:** update dependency rollup to v4.4.1 ([1f3e03b](https://github.com/Badminton-Apps/badman/commit/1f3e03b96523805ab994f048bc4a6819d08bd04e))
+* **deps:** update logtail monorepo to v0.4.16 ([0eb5397](https://github.com/Badminton-Apps/badman/commit/0eb53970807b72a035d036035e0965a14c7bc743))
+
 ## [6.121.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.2...v6.121.0-beta.3) (2023-11-13)
 
 
