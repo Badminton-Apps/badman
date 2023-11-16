@@ -197,27 +197,27 @@ export class RankingSystem extends Model {
   @Column(DataType.DATE)
   runDate?: Date;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 1 })
   differenceForUpgradeSingle?: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 1 })
   differenceForUpgradeDouble?: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 1 })
   differenceForUpgradeMix?: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 0 })
   differenceForDowngradeSingle?: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 0 })
   differenceForDowngradeDouble?: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Number, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 0 })
   differenceForDowngradeMix?: number;
 
@@ -365,17 +365,17 @@ export class RankingSystem extends Model {
 
     this._levelArrayOneMinus.forEach((x) => {
       this._pointsToGoUp[x] = Math.round(
-        (this._pointsWhenWinningAgainst[x] * this.procentWinning) / 100
+        (this._pointsWhenWinningAgainst[x] * this.procentWinning) / 100,
       );
     });
     this._levelArrayOneMinus.forEach((x) => {
       this._pointsToGoDown[x] = Math.round(
-        (this._pointsWhenWinningAgainst[x + 1] * this.procentLosing) / 100
+        (this._pointsWhenWinningAgainst[x + 1] * this.procentLosing) / 100,
       );
     });
 
     this._pointsWhenWinningAgainst = this._pointsWhenWinningAgainst.map((p) =>
-      Math.round(p)
+      Math.round(p),
     );
   }
 
@@ -397,11 +397,11 @@ export class RankingSystem extends Model {
 @InputType()
 export class RankingSystemUpdateInput extends PartialType(
   OmitType(RankingSystem, ['createdAt', 'updatedAt'] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class RankingSystemNewInput extends PartialType(
   OmitType(RankingSystemUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

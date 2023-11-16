@@ -17,6 +17,7 @@ import { TwizzitModule } from '@badman/backend-twizzit';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import versionPackage from '../version.json';
+import { configSchema, parseconfig } from '@badman/utils';
 
 const productionModules = [];
 if (process.env.NODE_ENV === 'production') {
@@ -33,6 +34,8 @@ if (process.env.NODE_ENV === 'production') {
     ...productionModules,
     ConfigModule.forRoot({
       cache: true,
+      validationSchema: configSchema,
+      load: [parseconfig],
     }),
     AuthorizationModule,
     GrapqhlModule,

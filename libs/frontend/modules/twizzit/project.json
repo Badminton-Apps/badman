@@ -1,5 +1,5 @@
 {
-  "name": "frontend--twizzit",
+  "name": "frontend-twizzit",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/modules/twizzit/src",
@@ -26,8 +26,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/frontend/modules/twizzit/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/frontend/modules/twizzit/jest.config.ts"
       }
     },
     "lint": {

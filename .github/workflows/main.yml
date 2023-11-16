@@ -98,7 +98,7 @@ jobs:
           ref: ${{ inputs.prod-release && 'main' || 'develop' }}
           fetch-depth: 0
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_ENV }}
 
@@ -127,13 +127,13 @@ jobs:
 
       - name: Create Github Release
         uses: actions/create-release@v1
-        if: ${{ inputs.prod-release }}
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}
         with:
           tag_name: v${{ env.NEW_VERSION }}
           release_name: v${{ env.NEW_VERSION }}
           body: ${{ env.CHANGELOG  }}
+          prerelease: ${{ !inputs.prod-release }}
 
       - name: Trigger deploy hooks on Render.com (if affected)
         run: |

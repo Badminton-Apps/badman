@@ -20,6 +20,7 @@ import {
   SyncEventsProcessor,
   SyncRankingProcessor,
 } from './processors';
+import { configSchema, parseconfig } from '@badman/utils';
 
 @Module({
   providers: [
@@ -35,7 +36,11 @@ import {
     CronService,
   ],
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      cache: true,
+      validationSchema: configSchema,
+      load: [parseconfig],
+    }),
     // Lib modules
     LoggingModule.forRoot({
       version: versionPackage.version,

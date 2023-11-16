@@ -3,11 +3,11 @@ import {
   Component,
   Injector,
   PLATFORM_ID,
-  Signal,
   TransferState,
   computed,
   effect,
   inject,
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -26,7 +26,8 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { lastValueFrom, map } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { lastValueFrom, map, takeUntil } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { RankingSystemFieldsComponent } from '../../components/ranking-system-fields/ranking-system-fields.component';
 
@@ -111,18 +112,19 @@ export class EditPageComponent {
   private snackBar = inject(MatSnackBar);
   private seoService = inject(SeoService);
   private breadcrumbsService = inject(BreadcrumbService);
+  private destroy$ = injectDestroy();
 
   // route
   private queryParams = toSignal(this.route.queryParamMap);
   private routeParams = toSignal(this.route.paramMap);
-  private routeData= toSignal(this.route.data);
+  private routeData = toSignal(this.route.data);
 
   systemId = computed(() => this.routeParams()?.get('id') as string);
   systemName = computed(() => this.system()?.name);
 
   // signals
-  system!: Signal<RankingSystem>;
-  groups!: Signal<RankingGroup[] | undefined>;
+  system = signal<RankingSystem | null>(null);
+  groups = signal<RankingGroup[]>([]);
 
   constructor() {
     if (!this.systemId()) {
@@ -131,8 +133,8 @@ export class EditPageComponent {
 
     // Effect on the system id
     effect(() => {
-      this.system = this._loadSystem();
-      this.groups = this._loadGroups();
+      this._loadSystem();
+      this._loadGroups();
     });
 
     // Effect on the system name
@@ -238,66 +240,72 @@ export class EditPageComponent {
   }
 
   private _loadSystem() {
-    return toSignal(
-      this.apollo
-        .query<{ rankingSystem: Partial<RankingSystem> }>({
-          query: FETCH_SYSTEM,
-          variables: {
-            id: this.systemId(),
-          },
-        })
-        .pipe(
-          map((result) => {
-            if (!result?.data.rankingSystem) {
-              throw new Error('No player');
-            }
-            return new RankingSystem(result.data.rankingSystem);
-          }),
-          transferState(
-            `teamsPlayer-${this.systemId()}`,
-            this.stateTransfer,
-            this.platformId,
-          ),
+    this.apollo
+      .query<{ rankingSystem: Partial<RankingSystem> }>({
+        query: FETCH_SYSTEM,
+        variables: {
+          id: this.systemId(),
+        },
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        map((result) => {
+          if (!result?.data.rankingSystem) {
+            throw new Error('No player');
+          }
+          return new RankingSystem(result.data.rankingSystem);
+        }),
+        transferState(
+          `teamsPlayer-${this.systemId()}`,
+          this.stateTransfer,
+          this.platformId,
         ),
-      {
-        injector: this.injector,
-      },
-    ) as Signal<RankingSystem>;
+      )
+      .subscribe((system) => {
+        if (!system) {
+          return;
+        }
+
+        this.system.set(system);
+      });
   }
 
   private _loadGroups() {
-    return toSignal(
-      this.apollo
-        .query<{
-          rankingGroups: Partial<RankingGroup>[];
-        }>({
-          query: gql`
-            query RankingGroupsQuery {
-              rankingGroups {
-                id
-                name
-              }
+    this.apollo
+      .query<{
+        rankingGroups: Partial<RankingGroup>[];
+      }>({
+        query: gql`
+          query RankingGroupsQuery {
+            rankingGroups {
+              id
+              name
             }
-          `,
-        })
-        .pipe(
-          map((result) => {
-            if (!result?.data.rankingGroups) {
-              throw new Error('No Systems');
-            }
-            return result.data.rankingGroups.map(
-              (group) => new RankingGroup(group),
-            );
-          }),
-          transferState(
-            `teamsPlayer-${this.systemId()}`,
-            this.stateTransfer,
-            this.platformId,
-          ),
+          }
+        `,
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        map((result) => {
+          if (!result?.data.rankingGroups) {
+            throw new Error('No Systems');
+          }
+          return result.data.rankingGroups.map(
+            (group) => new RankingGroup(group),
+          );
+        }),
+        transferState(
+          `teamsPlayer-${this.systemId()}`,
+          this.stateTransfer,
+          this.platformId,
         ),
-      {
-        injector: this.injector,
-      },
-    ) as Signal<RankingGroup[]>;
+      )
+      .subscribe((groups) => {
+        if (!groups) {
+          return;
+        }
+
+        this.groups.set(groups);
+      });
   }
 }

@@ -56,14 +56,7 @@
         "{workspaceRoot}/coverage/apps/worker/belgium/flanders/places"
       ],
       "options": {
-        "jestConfig": "apps/worker/belgium/flanders/places/jest.config.js",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "apps/worker/belgium/flanders/places/jest.config.js"
       }
     }
   },

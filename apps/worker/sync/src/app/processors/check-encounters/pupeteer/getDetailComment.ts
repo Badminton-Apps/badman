@@ -16,7 +16,7 @@ export async function detailComment(
 ) {
   const { logger } = args || {};
   logger?.verbose('detailComment');
-  const { page, timeout } = pupeteer;
+  const { page } = pupeteer;
   if (!page) {
     throw new Error('No page provided');
   }
@@ -25,7 +25,7 @@ export async function detailComment(
   {
     let hasComment = false;
     const targetPage = page;
-    const tables = await querySelectorAll(selector, targetPage, timeout);
+    const tables = await querySelectorAll(selector, targetPage);
 
     // iterate over tables find where caption contains 'Opmerkingen'
     for (const table of tables) {
