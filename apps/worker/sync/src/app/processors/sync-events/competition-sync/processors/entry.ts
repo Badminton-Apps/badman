@@ -123,7 +123,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     // remove entries where the team is of the wrong season
     for (const entry of entries) {
       if (entry.team?.season !== event.season) {
-        this.logger.log(
+        this.logger.warn(
           `Team existed multiple season ${entry.team?.name} (${entry.team?.season})`,
         );
         await entry.destroy({ transaction: this.transaction });
@@ -134,7 +134,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     // remove all entries that don't exist in _entries
     for (const entry of entries) {
       if (!this._entries.find((e) => e.entry.id === entry.id)) {
-        this.logger.log(`Entry existed but was removed`);
+        this.logger.warn(`Entry existed but was removed`);
         await entry.destroy({ transaction: this.transaction });
 
         this._entries = this._entries.filter((e) => e.entry.id !== entry.id);
