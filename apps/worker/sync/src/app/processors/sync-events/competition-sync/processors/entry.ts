@@ -40,7 +40,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
     const subEvent = await draw.getSubEventCompetition({
       transaction: this.transaction,
     });
-    this.logger.log(
+    this.logger.debug(
       `Processing entries for draw ${draw.name} - ${subEvent.eventType}, (${internalId})`,
     );
     const event = await subEvent.getEventCompetition({
