@@ -31,7 +31,7 @@ export class SyncRankingService {
       },
     });
 
-    this.logger.log(`Found ${rankings.length} players with no ranking`);
+    this.logger.debug(`Found ${rankings.length} players with no ranking`);
 
     // return last 10
     return rankings;
@@ -47,7 +47,7 @@ export class SyncRankingService {
       return;
     }
 
-    this.logger.log(
+    this.logger.debug(
       `Syncing ranking for ${player.fullName} (${player.memberId})`
     );
     const primary = await RankingSystem.findOne({
@@ -61,7 +61,7 @@ export class SyncRankingService {
     }
 
     if (!player.memberId) {
-      this.logger.log(`Player ${player.fullName} has no memberId`);
+      this.logger.warn(`Player ${player.fullName} has no memberId`);
       return;
     }
 
@@ -75,7 +75,7 @@ export class SyncRankingService {
     });
 
     if (rankingPlaces.length === 0) {
-      this.logger.log(`Player ${player.fullName} has no ranking`);
+      this.logger.warn(`Player ${player.fullName} has no ranking`);
       return;
     }
 
@@ -102,7 +102,7 @@ export class SyncRankingService {
         // ranking was not found
         const links = await searchPlayer({ page }, player);
         if (links.length === 0) {
-          this.logger.log(`Player ${player.fullName} not found`);
+          this.logger.warn(`Player ${player.fullName} not found`);
           return;
         }
 
@@ -132,11 +132,11 @@ export class SyncRankingService {
       }
 
       if (!single || !double || !mix) {
-        this.logger.log(`No ranking found for ${player.fullName}`);
+        this.logger.warn(`No ranking found for ${player.fullName}`);
         return;
       }
 
-      this.logger.log(
+      this.logger.debug(
         `Setting ranking for ${player.fullName}: ${single} ${double} ${mix}`
       );
 
@@ -163,7 +163,7 @@ export class SyncRankingService {
       // Close browser
       if (browser) {
         browser.close();
-        this.logger.log(`Syned ${player.fullName}`);
+        this.logger.debug(`Syned ${player.fullName}`);
       }
     }
   }
