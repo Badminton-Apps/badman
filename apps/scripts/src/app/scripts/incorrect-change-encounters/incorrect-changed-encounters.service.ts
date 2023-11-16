@@ -80,7 +80,7 @@ export class IncorrectEncountersService {
     const filtered = encounters.filter((encounter) => {
       const date = moment(encounter.date);
       const dates = encounter.encounterChange?.dates?.map((d) =>
-        moment(d.date)
+        moment(d.date),
       );
 
       if (!dates) {
@@ -91,7 +91,7 @@ export class IncorrectEncountersService {
     });
 
     this.logger.log(`Sending ${filtered.length} changed encounters to visual`);
-    const data: any[][] = [
+    const data: unknown[][] = [
       [
         'Id',
         'Home Team',
@@ -121,11 +121,10 @@ export class IncorrectEncountersService {
       try {
         if ((encounter.encounterChange?.dates?.length ?? 0) > 1) {
           this.logger.log(
-            `encounter ${encounter.home?.name} vs ${
-              encounter.away?.name
-            } on ${moment(encounter.date).format(
-              'DD-MM-YYYY HH:mm'
-            )} has multiple dates`
+            `encounter ${encounter.home?.name} vs ${encounter.away
+              ?.name} on ${moment(encounter.date).format(
+              'DD-MM-YYYY HH:mm',
+            )} has multiple dates`,
           );
 
           data.push(this.addRowWithMultipleDates(encounter));
@@ -137,17 +136,16 @@ export class IncorrectEncountersService {
 
         if (!firstSuggestion) {
           this.logger.error(
-            `No first suggestion found for encounter ${encounter.id}`
+            `No first suggestion found for encounter ${encounter.id}`,
           );
           continue;
         }
 
         this.logger.log(
-          `Sending encounter ${encounter.home?.name} vs ${
-            encounter.away?.name
-          } from ${moment(encounter.date).format(
-            'DD-MM-YYYY HH:mm'
-          )} to date ${moment(firstSuggestion).format('DD-MM-YYYY HH:mm')}`
+          `Sending encounter ${encounter.home?.name} vs ${encounter.away
+            ?.name} from ${moment(encounter.date).format(
+            'DD-MM-YYYY HH:mm',
+          )} to date ${moment(firstSuggestion).format('DD-MM-YYYY HH:mm')}`,
         );
 
         data.push(this.addRowWithOneDate(encounter));
@@ -165,9 +163,9 @@ export class IncorrectEncountersService {
       } catch (e) {
         this.logger.error(`Error sending encounter ${encounter.id} to visual`);
         this.logger.error(e);
-      } 
+      }
     }
- 
+
     await this.generateExcelFile(data, season);
   }
 
@@ -195,7 +193,7 @@ export class IncorrectEncountersService {
       'NO',
       encounter.encounterChange?.dates?.length ?? 0,
       ...(encounter.encounterChange?.dates?.map((d) =>
-        moment(d.date).format('DD-MM-YYYY HH:mm')
+        moment(d.date).format('DD-MM-YYYY HH:mm'),
       ) ?? []),
     ];
   }
@@ -221,12 +219,12 @@ export class IncorrectEncountersService {
       'YES',
       encounter.encounterChange?.dates?.length ?? 0,
       ...(encounter.encounterChange?.dates?.map((d) =>
-        moment(d.date).format('DD-MM-YYYY HH:mm')
+        moment(d.date).format('DD-MM-YYYY HH:mm'),
       ) ?? []),
     ];
   }
 
-  private async generateExcelFile(data: any[][], season: number) {
+  private async generateExcelFile(data: unknown[][], season: number) {
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
 
@@ -244,15 +242,15 @@ export class IncorrectEncountersService {
     const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
       data.reduce(
         (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
-        0
-      )
+        0,
+      ),
     );
     ws['!cols'] = columnSizes.map((width) => ({ width }));
 
     // Enable filtering
     ws['!autofilter'] = {
       ref: XLSX.utils.encode_range(
-        XLSX.utils.decode_range(ws['!ref'] as string)
+        XLSX.utils.decode_range(ws['!ref'] as string),
       ),
     };
 

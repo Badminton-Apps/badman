@@ -111,7 +111,7 @@ export class DetailPageComponent implements OnInit {
   // route
   private queryParams = toSignal(this.route.queryParamMap);
   private routeParams = toSignal(this.route.paramMap);
-  private routeData= toSignal(this.route.data);
+  private routeData = toSignal(this.route.data);
 
   club = computed(() => this.routeData()?.['club'] as Club);
   clubId = computed(() => this.club()?.id) as Signal<string>;

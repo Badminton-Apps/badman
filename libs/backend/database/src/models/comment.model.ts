@@ -18,7 +18,7 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
-import { EncounterChange, EncounterCompetition } from './event';
+import { EncounterCompetition } from './event';
 import { Club } from './club.model';
 import {
   Field,
@@ -114,11 +114,11 @@ export class CommentUpdateInput extends PartialType(
     'competition',
     'encounter',
   ] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class CommentNewInput extends PartialType(
   OmitType(CommentUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

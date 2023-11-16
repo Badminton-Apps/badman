@@ -6,10 +6,15 @@ import { ConfigModule } from '@nestjs/config';
 import versionPackage from '../version.json';
 import { PlacesProcessor } from './places.processor';
 import { BelgiumFlandersPlacesModule } from '@badman/belgium-flanders-places';
+import { configSchema, parseconfig } from '@badman/utils';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      cache: true,
+      validationSchema: configSchema,
+      load: [parseconfig],
+    }),
     LoggingModule.forRoot({
       version: versionPackage.version,
       name: 'worker-belgium-flanders-places',

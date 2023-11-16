@@ -3,11 +3,11 @@ import {
   Component,
   Injector,
   PLATFORM_ID,
-  Signal,
   TransferState,
   computed,
   effect,
   inject,
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -86,15 +86,15 @@ export class DetailPageComponent {
   // route
   private queryParams = toSignal(this.route.queryParamMap);
   private routeParams = toSignal(this.route.paramMap);
-  private routeData= toSignal(this.route.data);
+  private routeData = toSignal(this.route.data);
 
   player = computed(() => this.routeData()?.['player'] as Player);
   club = computed(() => this.player().clubs?.[0]);
 
   initials?: string;
 
-  teams?: Signal<Team[]>;
-  rankingPlace?: Signal<RankingPlace>;
+  teams = signal<Team[]>([]);
+  rankingPlace = signal<RankingPlace>({});
 
   tooltip = {
     single: '',
@@ -107,8 +107,8 @@ export class DetailPageComponent {
 
   constructor() {
     effect(() => {
-      this.teams = this._loadTeamsForPlayer();
-      this.rankingPlace = this._loadRankingForPlayer();
+      this._loadTeamsForPlayer();
+      this._loadRankingForPlayer();
 
       this.seoService.update({
         title: `${this.player().fullName}`,
@@ -171,35 +171,40 @@ export class DetailPageComponent {
   }
 
   private _loadTeamsForPlayer() {
-    return toSignal(
-      this.apollo
-        .query<{ player: { teams: Partial<Team>[] } }>({
-          query: gql`
-            query ClubsAndTeams($playerId: ID!) {
-              player(id: $playerId) {
+    this.apollo
+      .query<{ player: { teams: Partial<Team>[] } }>({
+        query: gql`
+          query ClubsAndTeams($playerId: ID!) {
+            player(id: $playerId) {
+              id
+              teams {
                 id
-                teams {
-                  id
-                  clubId
-                  slug
-                }
+                clubId
+                slug
               }
             }
-          `,
-          variables: {
-            playerId: this.player().id,
-          },
-        })
-        .pipe(
-          map((result) => result.data.player.teams?.map((t) => new Team(t))),
-          transferState(
-            `teamsPlayer-${this.player().id}`,
-            this.stateTransfer,
-            this.platformId,
-          ),
+          }
+        `,
+        variables: {
+          playerId: this.player().id,
+        },
+      })
+      .pipe(
+        takeUntil(this.destroy$),
+        map((result) => result.data.player.teams?.map((t) => new Team(t))),
+        transferState(
+          `teamsPlayer-${this.player().id}`,
+          this.stateTransfer,
+          this.platformId,
         ),
-      { injector: this.injector },
-    ) as Signal<Team[]>;
+      )
+      .subscribe((teams) => {
+        if (!teams) {
+          return;
+        }
+
+        this.teams.set(teams);
+      });
   }
 
   async claimAccount() {
@@ -225,8 +230,9 @@ export class DetailPageComponent {
   }
 
   private _loadRankingForPlayer() {
-    return toSignal(
-      this.systemService.getPrimarySystemId().pipe(
+    this.systemService
+      .getPrimarySystemId()
+      .pipe(
         switchMap((systemId) =>
           this.apollo.query<{
             player: { rankingLastPlaces: Partial<RankingPlace>[] };
@@ -257,6 +263,7 @@ export class DetailPageComponent {
             },
           }),
         ),
+        takeUntil(this.destroy$),
         transferState(
           `rankingPlayer-${this.player().id}`,
           this.stateTransfer,
@@ -281,9 +288,10 @@ export class DetailPageComponent {
             mix: 12,
           } as RankingPlace;
         }),
-      ),
-      { injector: this.injector },
-    ) as Signal<RankingPlace>;
+      )
+      .subscribe((rankingPlace) => {
+        this.rankingPlace.set(rankingPlace);
+      });
   }
 
   removePlayer() {

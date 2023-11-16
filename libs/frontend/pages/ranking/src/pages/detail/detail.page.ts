@@ -54,8 +54,6 @@ export class DetailPageComponent {
   private jobService = inject(JobsService);
 
   // route
-  private queryParams = toSignal(this.route.queryParamMap);
-  private routeParams = toSignal(this.route.paramMap);
   private routeData= toSignal(this.route.data);
 
   rankingSystem = computed(
@@ -78,7 +76,7 @@ export class DetailPageComponent {
   openUploadDialog() {
     this.dialog.open(UploadRankingDialogComponent, {
       data: {
-        rankingSystem: this.rankingSystem,
+        rankingSystem: this.rankingSystem(),
       },
       disableClose: true,
     });

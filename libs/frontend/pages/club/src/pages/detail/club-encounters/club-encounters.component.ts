@@ -7,15 +7,14 @@ import {
   PLATFORM_ID,
   Signal,
   TransferState,
-  effect,
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
 import {
   LoadingBlockComponent,
@@ -25,9 +24,8 @@ import { EncounterCompetition } from '@badman/frontend-models';
 import { getCurrentSeason, sortEncounters } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { MomentModule } from 'ngx-moment';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-club-encounters',
@@ -56,8 +54,7 @@ export class ClubEncountersComponent implements OnInit {
   platformId = inject(PLATFORM_ID);
 
   // signals
-  encounters?: Signal<EncounterCompetition[] | undefined>;
-  awayEncounters?: Signal<EncounterCompetition[] | undefined>;
+  encounters = signal<EncounterCompetition[]>([]);
   loading = signal(true);
 
   // Inputs
@@ -68,115 +65,109 @@ export class ClubEncountersComponent implements OnInit {
   ngOnInit(): void {
     this._setupFilter();
 
-    effect(
-      () => {
-        this.encounters = toSignal(
-          this.filter?.valueChanges?.pipe(
-            tap(() => {
-              this.loading.set(true);
-            }),
-            startWith(this.filter.value ?? {}),
-            switchMap((filter) => {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const where: Record<string, any> = {
-                $or: [
-                  {
-                    homeTeamId: {
-                      $in: filter.teams,
-                    },
-                  },
-                ],
-              };
+    this.filter?.valueChanges
+      .pipe(
+        startWith(this.filter.value ?? {}),
+        tap(() => {
+          this.loading.set(true);
+        }),
+        switchMap((filter) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const where: Record<string, any> = {
+            $or: [
+              {
+                homeTeamId: {
+                  $in: filter.teams,
+                },
+              },
+            ],
+          };
 
-              if (!filter.onlyHomeGames) {
-                where['$or'].push({
-                  awayTeamId: {
-                    $in: filter.teams,
-                  },
-                });
-              }
+          if (!filter.onlyHomeGames) {
+            where['$or'].push({
+              awayTeamId: {
+                $in: filter.teams,
+              },
+            });
+          }
 
-              if (filter.changedDate) {
-                where['originalDate'] = { $ne: null };
-              }
+          if (filter.changedDate) {
+            where['originalDate'] = { $ne: null };
+          }
 
-              if (filter.changedLocation) {
-                where['originalLocationId'] = { $ne: null };
-              }
+          if (filter.changedLocation) {
+            where['originalLocationId'] = { $ne: null };
+          }
 
-              return this.apollo.watchQuery<{
-                encounterCompetitions: {
-                  count: number;
-                  rows: Partial<EncounterCompetition>[];
-                };
-              }>({
-                query: gql`
-                  query GetTeamEncounters($where: JSONObject) {
-                    encounterCompetitions(where: $where) {
-                      count
-                      rows {
+          return this.apollo.watchQuery<{
+            encounterCompetitions: {
+              count: number;
+              rows: Partial<EncounterCompetition>[];
+            };
+          }>({
+            query: gql`
+              query GetTeamEncounters($where: JSONObject) {
+                encounterCompetitions(where: $where) {
+                  count
+                  rows {
+                    id
+                    date
+                    home {
+                      id
+                      name
+                    }
+                    away {
+                      id
+                      name
+                    }
+                    homeScore
+                    awayScore
+                    drawCompetition {
+                      id
+                      subEventCompetition {
                         id
-                        date
-                        home {
-                          id
-                          name
-                        }
-                        away {
-                          id
-                          name
-                        }
-                        homeScore
-                        awayScore
-                        drawCompetition {
-                          id
-                          subEventCompetition {
-                            id
-                            eventType
-                            eventId
-                          }
-                        }
-                        encounterChange {
-                          id
-                          accepted
-                        }
+                        eventType
+                        eventId
                       }
                     }
+                    encounterChange {
+                      id
+                      accepted
+                    }
                   }
-                `,
-                variables: {
-                  where,
-                },
-              }).valueChanges;
-            }),
-            map((result) => {
-              return result?.data?.encounterCompetitions.rows;
-            }),
-            map(
-              (encounters) =>
-                encounters?.map(
-                  (encounter) => new EncounterCompetition(encounter),
-                ),
+                }
+              }
+            `,
+            variables: {
+              where,
+            },
+          }).valueChanges;
+        }),
+        map((result) => {
+          return result?.data?.encounterCompetitions.rows;
+        }),
+        map(
+          (encounters) =>
+            encounters?.map((encounter) => new EncounterCompetition(encounter)),
+        ),
+        map((encounters) => encounters?.sort(sortEncounters)),
+        map(
+          (encounters) =>
+            // if the change is not null and not accepted
+            encounters?.filter((encounter) =>
+              this.filter?.value?.openEncounters ?? false
+                ? encounter.encounterChange?.id != null &&
+                  !encounter.encounterChange?.accepted
+                : true,
             ),
-            map((encounters) => encounters?.sort(sortEncounters)),
-            map(
-              (encounters) =>
-                // if the change is not null and not accepted
-                encounters?.filter((encounter) =>
-                  this.filter?.value?.openEncounters ?? false
-                    ? encounter.encounterChange?.id != null &&
-                      !encounter.encounterChange?.accepted
-                    : true,
-                ),
-            ),
-            tap(() => {
-              this.loading.set(false);
-            }),
-          ),
-          { injector: this.injector },
-        );
-      },
-      { injector: this.injector },
-    );
+        ),
+        tap(() => {
+          this.loading.set(false);
+        }),
+      )
+      .subscribe((encounters) => {
+        this.encounters?.set(encounters);
+      });
   }
 
   private _setupFilter() {

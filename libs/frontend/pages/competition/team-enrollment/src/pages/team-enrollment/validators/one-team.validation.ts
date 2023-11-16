@@ -2,7 +2,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Team } from '@badman/frontend-models';
 import { SubEventType } from '@badman/utils';
 
-export function minAmountOfTeams(teams: number): ValidatorFn {
+export function minAmountOfTeams(minAmount: number): ValidatorFn {
   return (
     control: AbstractControl<{ [key in SubEventType]: Team[] }>
   ): ValidationErrors | null => {
@@ -12,6 +12,6 @@ export function minAmountOfTeams(teams: number): ValidatorFn {
       0
     );
 
-    return teams >= 1 ? null : { minAmountOfTeams: true };
+    return teams >= minAmount ? null : { minAmountOfTeams: true };
   };
 }

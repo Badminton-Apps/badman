@@ -12,10 +12,10 @@ export declare class GameExportService {
         'Tijdstip afspraak': string;
         Thuisteam: string;
         Uitteam: string;
-        Resource: any;
-        'Part (%)': any;
-        Omschrijving: any;
-        Score: any;
-        'Score details': any;
+        Resource: string;
+        'Part (%)': string;
+        Omschrijving: string;
+        Score: string;
+        'Score details': string;
     }[]>;
 }

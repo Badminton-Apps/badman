@@ -27,6 +27,24 @@ type gameType =
   | 'double3'
   | 'double4';
 
+type inputBody = {
+  systemId: string;
+  captainId: string;
+  teamId: string;
+  encounterId: string;
+
+  single1: string;
+  single2: string;
+  single3: string;
+  single4: string;
+  double1: string[];
+  double2: string[];
+  double3: string[];
+  double4: string[];
+
+  subtitudes: string[];
+};
+
 @Controller({
   path: 'pdf/assembly',
 })
@@ -36,16 +54,16 @@ export class AssemblyController {
   constructor(
     private readonly compileService: CompileService,
     private readonly assemblyService: AssemblyValidationService,
-    private readonly i18nService: I18nService<I18nTranslations>
+    private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
   @Post('team')
   async teamAssembly(
     @Req() req: FastifyRequest,
-    @Res({ passthrough: true }) res: FastifyReply
+    @Res({ passthrough: true }) res: FastifyReply,
   ) {
     // compile the template that returns a buffer of the pdf
-    const pdf$ = await this.getTeamAssemblyPdf(req.body as any);
+    const pdf$ = await this.getTeamAssemblyPdf(req.body as inputBody);
 
     if (!pdf$) {
       throw new Error('Pdf could not be generated');
@@ -61,23 +79,7 @@ export class AssemblyController {
     return new StreamableFile(pdf);
   }
 
-  private async getTeamAssemblyPdf(input: {
-    systemId: string;
-    captainId: string;
-    teamId: string;
-    encounterId: string;
-
-    single1: string;
-    single2: string;
-    single3: string;
-    single4: string;
-    double1: string[];
-    double2: string[];
-    double3: string[];
-    double4: string[];
-
-    subtitudes: string[];
-  }) {
+  private async getTeamAssemblyPdf(input: inputBody) {
     const data = await this.assemblyService.getValidationData(
       input.systemId,
       input.teamId,
@@ -90,12 +92,12 @@ export class AssemblyController {
       input.double2,
       input.double3,
       input.double4,
-      input.subtitudes
+      input.subtitudes,
     );
 
     const validation = await this.assemblyService.validate(
       data,
-      AssemblyValidationService.defaultValidators()
+      AssemblyValidationService.defaultValidators(),
     );
 
     let homeTeam: Team;
@@ -129,7 +131,7 @@ export class AssemblyController {
       `${__dirname}/compile/libs/assembly/images/logo.png`,
       {
         encoding: 'base64',
-      }
+      },
     );
 
     const date = moment(data.encounter.date)
@@ -137,7 +139,7 @@ export class AssemblyController {
       .format('DD-MM-YYYY HH:mm');
 
     this.logger.debug(
-      `Generating assembly for ${homeTeam.name} vs ${awayTeam.name} on ${date}`
+      `Generating assembly for ${homeTeam.name} vs ${awayTeam.name} on ${date}`,
     );
 
     const indexed: string[] = [];
@@ -195,7 +197,7 @@ export class AssemblyController {
         this._processPlayer(data, indexed, based, data.single4),
       ],
       subtitudes: data.subtitudes?.map((player) =>
-        this._processPlayer(data, [], [], player)
+        this._processPlayer(data, [], [], player),
       ),
       type: data.type,
       event: `${
@@ -218,7 +220,7 @@ export class AssemblyController {
       context.doubles?.find((p) => p?.player2?.exception)
     ) {
       context.exception = this.i18nService.translate(
-        'all.competition.team-assembly.level-exemption'
+        'all.competition.team-assembly.level-exemption',
       );
     }
 
@@ -267,7 +269,7 @@ export class AssemblyController {
     for (let i = 0; i < 8; i++) {
       const gameLabels = gameLabel(
         data.subEvent?.eventType as 'M' | 'F' | 'MX',
-        i + 1
+        i + 1,
       );
       let labelMessage = '';
 
@@ -292,7 +294,7 @@ export class AssemblyController {
     data: AssemblyValidationData,
     indexed: string[],
     based: string[],
-    player?: Player
+    player?: Player,
   ):
     | undefined
     | (Partial<Player> & {
@@ -346,7 +348,7 @@ export class AssemblyController {
         Math.min(
           player.rankingPlaces?.[0].single ?? 12,
           player.rankingPlaces?.[0].double ?? 12,
-          data.type === 'MX' ? player.rankingPlaces?.[0].mix ?? 12 : 12
+          data.type === 'MX' ? player.rankingPlaces?.[0].mix ?? 12 : 12,
         ) ?? 12;
     } else {
       prepped.sum = data.type === 'MX' ? 36 : 24;
@@ -356,11 +358,11 @@ export class AssemblyController {
     const best = Math.min(
       player.rankingLastPlaces?.[0]?.single ?? 12,
       player.rankingLastPlaces?.[0]?.double ?? 12,
-      data.type === 'MX' ? player.rankingLastPlaces?.[0]?.mix ?? 12 : 12
+      data.type === 'MX' ? player.rankingLastPlaces?.[0]?.mix ?? 12 : 12,
     );
 
     prepped.exception = data.meta?.competition?.players?.find(
-      (p) => p.id === player.id
+      (p) => p.id === player.id,
     )?.levelException;
 
     // if a ranking is not availible use 2 higher then the best ranking but cannot be higher then 12
