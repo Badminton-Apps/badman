@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend--utils',
+  displayName: 'frontend-utils',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../../../coverage/libs/frontend/modules/utils',

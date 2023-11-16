@@ -16,7 +16,6 @@ import {
   PLATFORM_ID,
   Signal,
   TransferState,
-  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -88,12 +87,12 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     trigger('detailExpand', [
       state(
         'collapsed',
-        style({ height: '0px', minHeight: '0', visibility: 'hidden' })
+        style({ height: '0px', minHeight: '0', visibility: 'hidden' }),
       ),
       state('expanded', style({ height: '*', visibility: 'visible' })),
       transition(
         'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
       ),
     ]),
   ],
@@ -129,154 +128,194 @@ export class ClubCompetitionComponent implements OnInit {
   }
 
   private _setTeams(): void {
-    effect(() => {
-      this.teams = toSignal(
-        this.filter?.get('season')?.valueChanges?.pipe(
-          startWith(this.filter.value.season ?? {}),
-          tap(() => {
-            this.loading.set(true);
-          }),
-          switchMap((filter) => {
-            return this.apollo.watchQuery<{
-              teams: Partial<Team>[];
-            }>({
-              query: gql`
-                query EventEntries(
-                  $clubId: ID!
-                  $where: JSONObject
-                  $order: [SortOrderType!]
-                ) {
-                  teams(where: $where, order: $order) {
+    this.teams = toSignal(
+      this.filter?.get('season')?.valueChanges?.pipe(
+        startWith(this.filter.value.season ?? {}),
+        tap(() => {
+          this.loading.set(true);
+        }),
+        switchMap((filter) => {
+          return this.apollo.watchQuery<{
+            teams: Partial<Team>[];
+          }>({
+            query: gql`
+              query EventEntries(
+                $where: JSONObject
+                $order: [SortOrderType!]
+              ) {
+                teams(where: $where, order: $order) {
+                  id
+                  name
+                  preferredDay
+                  preferredTime
+                  captain {
                     id
-                    name
-                    preferredDay
-                    preferredTime
-                    captain {
+                    fullName
+                  }
+                  entry {
+                    id
+                    subEventCompetition {
                       id
-                      fullName
-                    }
-                    entry {
-                      id
-                      subEventCompetition {
+                      name
+                      eventType
+                      eventCompetition {
                         id
                         name
-                        eventType
-                        eventCompetition {
-                          id
-                          name
-                        }
                       }
-                      meta {
-                        competition {
-                          teamIndex
-                          players {
-                            id
-                            player {
-                              id
-                              fullName
-                            }
-                            single
-                            double
-                            mix
-                          }
-                        }
-                      }
-                      enrollmentValidation {
-                        id
-                        linkId
+                    }
+                    meta {
+                      competition {
                         teamIndex
-                        baseIndex
-                        isNewTeam
-                        possibleOldTeam
-                        maxLevel
-                        minBaseIndex
-                        maxBaseIndex
-                        valid
-                        errors {
-                          message
-                          params
+                        players {
+                          id
+                          player {
+                            id
+                            fullName
+                          }
+                          single
+                          double
+                          mix
                         }
-                        warnings {
-                          message
-                          params
-                        }
+                      }
+                    }
+                    enrollmentValidation {
+                      id
+                      linkId
+                      teamIndex
+                      baseIndex
+                      isNewTeam
+                      possibleOldTeam
+                      maxLevel
+                      minBaseIndex
+                      maxBaseIndex
+                      valid
+                      errors {
+                        message
+                        params
+                      }
+                      warnings {
+                        message
+                        params
                       }
                     }
                   }
                 }
-              `,
-              variables: {
-                order: [
-                  {
-                    field: 'type',
-                    direction: 'asc',
-                  },
-                  {
-                    field: 'teamNumber',
-                    direction: 'asc',
-                  },
-                ],
-                where: {
-                  clubId: this.clubId(),
-                  season: filter,
+              }
+            `,
+            variables: {
+              order: [
+                {
+                  field: 'type',
+                  direction: 'asc',
                 },
+                {
+                  field: 'teamNumber',
+                  direction: 'asc',
+                },
+              ],
+              where: {
+                clubId: this.clubId(),
+                season: filter,
               },
-            }).valueChanges;
-          }),
+            },
+          }).valueChanges;
+        }),
 
-          map((result) => result?.data?.teams?.map((t) => new Team(t))),
-          tap((teams) => {
-            // unique set of events
-            const events = teams?.map(
-              (team) => team.entry?.subEventCompetition?.eventCompetition
-            );
-            const uniqueEvents = [...new Set(events)];
+        map((result) => result?.data?.teams?.map((t) => new Team(t))),
+        tap((teams) => {
+          // unique set of events
+          const events = teams?.map(
+            (team) => team.entry?.subEventCompetition?.eventCompetition,
+          );
+          const uniqueEvents = [...new Set(events)];
 
-            if (uniqueEvents?.length) {
-              this.events.set(uniqueEvents as EventCompetition[]);
-            }
+          if (uniqueEvents?.length) {
+            this.events.set(uniqueEvents as EventCompetition[]);
+          }
 
-            this.loading.set(false);
-          })
-        ) ?? of(undefined),
-        { injector: this.injector }
-      );
+          this.loading.set(false);
+        }),
+      ) ?? of(undefined),
+      { injector: this.injector },
+    );
 
-      this.locations = toSignal(
-        this.filter?.get('season')?.valueChanges?.pipe(
-          startWith(this.filter.value.season ?? {}),
-          switchMap((filter) => {
-            return this.apollo.watchQuery<{
+    this.locations = toSignal(
+      this.filter?.get('season')?.valueChanges?.pipe(
+        startWith(this.filter.value.season ?? {}),
+        switchMap((filter) => {
+          return this.apollo.watchQuery<{
+            club: Partial<Club>;
+          }>({
+            query: gql`
+              query Locations($clubId: ID!, $where: JSONObject) {
+                club(id: $clubId) {
+                  id
+                  locations {
+                    id
+                    name
+                    address
+                    postalcode
+                    street
+                    streetNumber
+                    city
+                    state
+                    phone
+                    fax
+                    availibilities(where: $where) {
+                      id
+                      days {
+                        day
+                        startTime
+                        endTime
+                        courts
+                      }
+                      exceptions {
+                        start
+                        end
+                        courts
+                      }
+                    }
+                  }
+                }
+              }
+            `,
+            variables: {
+              clubId: this.clubId(),
+              where: {
+                season: filter,
+              },
+            },
+          }).valueChanges;
+        }),
+
+        map((result) => new Club(result?.data?.club)),
+        map((club) => club?.locations),
+      ) ?? of(undefined),
+      { injector: this.injector },
+    );
+
+    this.comments = toSignal(
+      toObservable(this.events, { injector: this.injector }).pipe(
+        map((events) => events?.map((event) => event?.id)),
+        filter((eventIds) => eventIds !== undefined),
+        filter((eventIds) => (eventIds?.length ?? 0) > 0),
+        switchMap(
+          (eventIds) =>
+            this.apollo.watchQuery<{
               club: Partial<Club>;
             }>({
               query: gql`
-                query Locations($clubId: ID!, $where: JSONObject) {
+                query Comments($clubId: ID!, $where: JSONObject) {
                   club(id: $clubId) {
                     id
-                    locations {
+                    comments(where: $where) {
                       id
-                      name
-                      address
-                      postalcode
-                      street
-                      streetNumber
-                      city
-                      state
-                      phone
-                      fax
-                      availibilities(where: $where) {
+                      message
+                      createdAt
+                      linkId
+                      player {
                         id
-                        days {
-                          day
-                          startTime
-                          endTime
-                          courts
-                        }
-                        exceptions {
-                          start
-                          end
-                          courts
-                        }
+                        fullName
                       }
                     }
                   }
@@ -285,59 +324,16 @@ export class ClubCompetitionComponent implements OnInit {
               variables: {
                 clubId: this.clubId(),
                 where: {
-                  season: filter,
+                  linkId: eventIds,
                 },
               },
-            }).valueChanges;
-          }),
-
-          map((result) => new Club(result?.data?.club)),
-          map((club) => club?.locations)
-        ) ?? of(undefined),
-        { injector: this.injector }
-      );
-
-      this.comments = toSignal(
-        toObservable(this.events, { injector: this.injector }).pipe(
-          map((events) => events?.map((event) => event?.id)),
-          filter((eventIds) => eventIds !== undefined),
-          filter((eventIds) => (eventIds?.length ?? 0) > 0),
-          switchMap(
-            (eventIds) =>
-              this.apollo.watchQuery<{
-                club: Partial<Club>;
-              }>({
-                query: gql`
-                  query Comments($clubId: ID!, $where: JSONObject) {
-                    club(id: $clubId) {
-                      id
-                      comments(where: $where) {
-                        id
-                        message
-                        createdAt
-                        linkId
-                        player {
-                          id
-                          fullName
-                        }
-                      }
-                    }
-                  }
-                `,
-                variables: {
-                  clubId: this.clubId(),
-                  where: {
-                    linkId: eventIds,
-                  },
-                },
-              }).valueChanges
-          ),
-          map((result) => new Club(result?.data?.club)),
-          map((club) => club?.comments)
+            }).valueChanges,
         ),
-        { injector: this.injector }
-      );
-    });
+        map((result) => new Club(result?.data?.club)),
+        map((club) => club?.comments),
+      ),
+      { injector: this.injector },
+    );
   }
 
   getEventName(id: string): string {

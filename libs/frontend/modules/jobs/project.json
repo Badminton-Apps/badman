@@ -1,5 +1,5 @@
 {
-  "name": "frontend--jobs",
+  "name": "frontend-jobs",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/frontend/modules/jobs/src",
@@ -26,14 +26,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/frontend/modules/jobs/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "libs/frontend/modules/jobs/jest.config.ts"
       }
     },
     "lint": {

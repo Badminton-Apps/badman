@@ -1,5 +1,5 @@
 <badman-ranking-system-fields
-  *ngIf="this.system?.()"
+  *ngIf="this.system() !== null"
   [system]="this.system()!"
   [groups]="this.groups()!"
   (whenUpdated)="this.save($event)"

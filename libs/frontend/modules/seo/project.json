@@ -26,8 +26,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/frontend/modules/seo/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/frontend/modules/seo/jest.config.ts"
       }
     },
     "lint": {

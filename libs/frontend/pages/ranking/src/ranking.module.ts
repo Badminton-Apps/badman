@@ -1,17 +1,12 @@
-import { InjectionToken, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RankingSystemResolver } from './resolvers';
 import {
   DetailPageComponent,
-  OverviewPageComponent,
   EditPageComponent,
+  OverviewPageComponent,
 } from './pages';
-import { IRankingConfig } from './interfaces';
-
-export const RANKING_CONFIG = new InjectionToken<IRankingConfig>(
-  'RANKING_CONFIG',
-);
+import { RankingSystemResolver } from './resolvers';
 
 const MODULE_ROUTES: Routes = [
   {
@@ -37,7 +32,10 @@ const MODULE_ROUTES: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild(MODULE_ROUTES)],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(MODULE_ROUTES),
+  ],
   declarations: [],
   providers: [RankingSystemResolver],
 })

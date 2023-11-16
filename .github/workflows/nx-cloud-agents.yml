@@ -100,7 +100,7 @@ jobs:
       #     npm-version: "${{ inputs.npm-version }}"
       #     yarn-version: "${{ inputs.yarn-version }}"
       #     package-json-path: "${{ inputs.working-directory || github.workspace }}/package.json"
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: '${{ inputs.node-version }}'
 
@@ -215,7 +215,7 @@ jobs:
 
       - name: Process environment-variables
         if: ${{ inputs.environment-variables != '' }}
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           ENV_VARS: ${{ inputs.environment-variables }}
         with:

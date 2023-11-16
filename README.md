@@ -80,11 +80,15 @@ https://github.com/rakyll/hey
 2. `npm i`
 3. `NX_MIGRATE_USE_LOCAL=true nx migrate --run-migrations`
 
-
-## Restoring Database
+## Database
+### Restoring Database
 - download `.sql.gz` file
 - go into psql
 - `\i path_to_sql_file`
+
+### Importing / Exporting data from dev to prod
+- `COPY (select * from "ranking"."RankingSystems" where "id" = '7c5cb68a-a0bf-4728-95fe-94191c5ee32a') TO '/home/backup/rankingSystems_v7.csv' DELIMITER ',' CSV;`
+- Import / Export data > select the file
 
 ## docker build and run
 - `docker build -t badman . -f apps/api/Dockerfile`

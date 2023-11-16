@@ -51,7 +51,11 @@ export class CalculationService {
       const updates = this._getUpdateIntervals(system, fromDateM, toDateM);
 
       // I know t
-      const minUpdate = moment(updates[0][0]);
+      const minUpdatePlace = moment(updates[0][0]);
+      const minUpdatePoints = moment(updates[0][0]).subtract(
+        system.periodAmount,
+        system.periodUnit,
+      );
       const maxUpdate = moment(updates[updates.length - 1][0]);
 
       this.logger.log(
@@ -59,7 +63,7 @@ export class CalculationService {
           updates.length
         } point updates planned, including ${
           updates.filter((u) => u[1]).length
-        } ranking updates, between ${minUpdate?.format(
+        } ranking updates, between ${minUpdatePlace?.format(
           'YYYY-MM-DD',
         )} and ${maxUpdate?.format('YYYY-MM-DD')}
         `,
@@ -69,7 +73,7 @@ export class CalculationService {
         where: {
           systemId: system.id,
           rankingDate: {
-            [Op.between]: [minUpdate.toDate(), maxUpdate.toDate()],
+            [Op.between]: [minUpdatePlace.toDate(), maxUpdate.toDate()],
           },
         },
         transaction,
@@ -79,11 +83,30 @@ export class CalculationService {
         where: {
           systemId: system.id,
           rankingDate: {
-            [Op.between]: [minUpdate.toDate(), maxUpdate.toDate()],
+            [Op.between]: [minUpdatePoints.toDate(), maxUpdate.toDate()],
           },
         },
         transaction,
       });
+
+      for (let period = 0; period < (system.periodAmount ?? 0); period++) {
+        this.logger.debug(
+          ` points for date: ${moment(minUpdatePoints).format(
+            'YYYY-MM-DD',
+          )}, ${period} / ${system.periodAmount}}`,
+        );
+
+        await this.pointsService.createRankingPointsForPeriod({
+          system,
+          calcDate: minUpdatePoints.toDate(),
+          options: {
+            transaction,
+          },
+        });
+
+        minUpdatePoints.add(1, system.periodUnit);
+
+      }
 
       for (const [index, [updateDate, isUpdateNeeded]] of updates.entries()) {
         this.logger.debug(

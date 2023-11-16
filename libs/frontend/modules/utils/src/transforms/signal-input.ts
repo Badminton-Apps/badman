@@ -1,4 +1,4 @@
-import { Signal, WritableSignal, signal } from '@angular/core';
+import { WritableSignal, signal } from '@angular/core';
 
 /**
  * This variable is used to store the signal
@@ -21,7 +21,6 @@ let inputSignalStore: WritableSignal<unknown>;
 //     return signalInput;
 //   };
 // }
-
 
 export function signalInputTransform(initialValue: unknown) {
   const signalInput = signal<unknown>(initialValue);

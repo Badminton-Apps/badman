@@ -25,14 +25,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/backend/mailing"],
       "options": {
-        "jestConfig": "libs/backend/mailing/jest.config.js",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "libs/backend/mailing/jest.config.js"
       }
     }
   },

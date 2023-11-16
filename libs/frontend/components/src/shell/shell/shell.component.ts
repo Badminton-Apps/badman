@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +17,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   Event,
   NavigationCancel,
@@ -31,7 +32,8 @@ import {
   SwUpdate,
   VersionReadyEvent,
 } from '@angular/service-worker';
-import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
+import { ClaimService } from '@badman/frontend-auth';
+import { RankingSystemService } from '@badman/frontend-graphql';
 import {
   GOOGLEADS_CONFIG_TOKEN,
   GoogleAdsConfiguration,
@@ -52,8 +54,6 @@ import {
   SearchBoxComponent,
   UserShortcutsComponent,
 } from '../components';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'badman-shell',
   imports: [
@@ -105,7 +105,6 @@ export class ShellComponent {
       .observe(['(max-width: 959.98px)'])
       .pipe(map((result) => result.matches)),
   );
-
 
   canEnroll$!: Observable<boolean>;
   canChange$!: Observable<boolean>;

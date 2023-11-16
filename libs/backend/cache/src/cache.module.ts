@@ -19,7 +19,7 @@ export const CACHE_TTL = 60 * 60 * 24 * 7; // 1 week
             },
             ttl: CACHE_TTL,
             password: configService.get('REDIS_PASSWORD'),
-            database: configService.get<number>('CACHE_DB') ?? 0,
+            database: configService.get<number>('REDIS_DATABASE') ?? 0,
           })) as unknown as CacheStore;
 
           return {

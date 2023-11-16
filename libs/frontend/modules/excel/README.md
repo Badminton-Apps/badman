@@ -1,7 +1,7 @@
-# frontend--excel
+# frontend-excel
 
 This library was generated with [Nx](https://nx.dev).
 
 ## Running unit tests
 
-Run `nx test frontend--excel` to execute the unit tests.
+Run `nx test frontend-excel` to execute the unit tests.

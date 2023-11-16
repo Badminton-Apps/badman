@@ -2,6 +2,114 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.121.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.6...v6.121.0-beta.7) (2023-11-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @nestjs/graphql to v12.0.11 ([ea3fbf1](https://github.com/Badminton-Apps/badman/commit/ea3fbf11c91cb727653696bf94f31171cb51b63e))
+
+## [6.121.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.5...v6.121.0-beta.6) (2023-11-15)
+
+
+### Bug Fixes
+
+* added debug info on scheduling ([6729c42](https://github.com/Badminton-Apps/badman/commit/6729c423bb8db49a4e6d018e8571da1048065518))
+
+## [6.121.0-beta.5](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.4...v6.121.0-beta.5) (2023-11-15)
+
+
+### Bug Fixes
+
+* start cron jobs ([07d3e52](https://github.com/Badminton-Apps/badman/commit/07d3e5212b1edcf2394a55f8508a7007ef04f92d))
+
+## [6.121.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.3...v6.121.0-beta.4) (2023-11-15)
+
+
+### Features
+
+* first usage of control flow ([bcdfbfc](https://github.com/Badminton-Apps/badman/commit/bcdfbfcb8cea6575655ef732725ef91a2828eee1))
+
+
+### Bug Fixes
+
+* **deps:** update dependency axios to v1.6.2 ([71767ea](https://github.com/Badminton-Apps/badman/commit/71767ea05a95641164aa661787af492077f4f2fd))
+* **deps:** update dependency axios-retry to v3.9.0 ([441da84](https://github.com/Badminton-Apps/badman/commit/441da842a28d1ded4426d6bd5624ac8ec762bcfc))
+* **deps:** update dependency ngx-quill to v24.0.2 ([7b9d4d7](https://github.com/Badminton-Apps/badman/commit/7b9d4d7cbabaf258c97ed59b5794a366fd7bc3f0))
+* **deps:** update dependency ngxtension to v1.2.2 ([12a1bab](https://github.com/Badminton-Apps/badman/commit/12a1baba9d46a0b210492e905ad18ee7ba679c4a))
+* **deps:** update dependency rollup to v4.4.1 ([1f3e03b](https://github.com/Badminton-Apps/badman/commit/1f3e03b96523805ab994f048bc4a6819d08bd04e))
+* **deps:** update logtail monorepo to v0.4.16 ([0eb5397](https://github.com/Badminton-Apps/badman/commit/0eb53970807b72a035d036035e0965a14c7bc743))
+
+## [6.121.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.2...v6.121.0-beta.3) (2023-11-13)
+
+
+### Features
+
+* also recalcualte the last period before starting calculation ([f2bab87](https://github.com/Badminton-Apps/badman/commit/f2bab8732569aabfb1f8beb8839ab9f629441314))
+* assembly overview back up and running ([249b5a0](https://github.com/Badminton-Apps/badman/commit/249b5a01b943dc1edd91c7163d4b9faa3bc6c5b9))
+* filterchanged ([d99df96](https://github.com/Badminton-Apps/badman/commit/d99df96926f0cef4d1349ed9a07d7bfab693d280))
+
+
+### Bug Fixes
+
+* adding fictional games ([0a97ae2](https://github.com/Badminton-Apps/badman/commit/0a97ae21fa6d60067d42779ec29f690eb08dea84))
+* correctly pass the system to the dialog ([631f15f](https://github.com/Badminton-Apps/badman/commit/631f15fffb4a78e6ce78faac09008172d7c86402))
+* correctly setting the competition statsu ([ce2917b](https://github.com/Badminton-Apps/badman/commit/ce2917b222199f4c8989353d0167a3c2fca39ef4))
+* **deps:** update angularmaterial monorepo to v16.2.12 ([74d3b2d](https://github.com/Badminton-Apps/badman/commit/74d3b2d0f3787629d4fcbc6727f531727337d793))
+* **deps:** update dependency @nestjs/graphql to v12.0.10 ([a9e7006](https://github.com/Badminton-Apps/badman/commit/a9e700684d850f778924315efb4b2e859cdf5ead))
+* **deps:** update dependency bull to v4.11.5 ([8723686](https://github.com/Badminton-Apps/badman/commit/87236864c60639a908a0b10af7a20577abafc440))
+* **deps:** update dependency crypto-hash to v3 ([626af78](https://github.com/Badminton-Apps/badman/commit/626af780317a0c584874ba42a1f631f2a4e03ca0))
+* **deps:** update dependency ngx-markdown to v17 ([4252370](https://github.com/Badminton-Apps/badman/commit/425237085da763d1520138fcbb49fa332ff4df76))
+* **deps:** update dependency ngx-markdown to v17.1.0 ([9f56473](https://github.com/Badminton-Apps/badman/commit/9f5647371b10a35f52152329c30304ab4a8e6d9c))
+* **deps:** update dependency ngxtension to ^0.15.0 ([f5e220e](https://github.com/Badminton-Apps/badman/commit/f5e220e038e5ef54d528afc2d6d5d4940501159c))
+* **deps:** update dependency ngxtension to v1.0.3 ([d7cefb9](https://github.com/Badminton-Apps/badman/commit/d7cefb903bd4cad86fd8db08934f242e79f50c1f))
+* **deps:** update dependency ngxtension to v1.1.0 ([199bd89](https://github.com/Badminton-Apps/badman/commit/199bd89f181c168f88fca9b1d77eff4b7a9ef822))
+* **deps:** update dependency rollup to v4.4.0 ([a76de92](https://github.com/Badminton-Apps/badman/commit/a76de92291f5de3365fa06212b611b70c06c022f))
+* **deps:** update dependency sequelize to v6.35.0 ([346315a](https://github.com/Badminton-Apps/badman/commit/346315a401bcc9bb48e1371ecfd622a03426ae9b))
+* **deps:** update logtail monorepo to v0.4.15 ([6e7de83](https://github.com/Badminton-Apps/badman/commit/6e7de834e4769898140a364ba32253fb69316031))
+* linting ([cbc4a2e](https://github.com/Badminton-Apps/badman/commit/cbc4a2e65298194f4984028a6412a957454a0e73))
+* race confition on the loaded signal ([114ad79](https://github.com/Badminton-Apps/badman/commit/114ad795405fa7c544a58bb50b3957665ce49a56))
+
+## [6.121.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.1...v6.121.0-beta.2) (2023-11-07)
+
+
+### Bug Fixes
+
+* can't mix/match lazyloading and  static imports ([cb1e75b](https://github.com/Badminton-Apps/badman/commit/cb1e75b0dc43a78586e4a5978af836682302cd8b))
+* **deps:** update angular monorepo ([11fa609](https://github.com/Badminton-Apps/badman/commit/11fa60908af9c455579ffbbc48e473ceb667a095))
+* **deps:** update angular monorepo ([579e827](https://github.com/Badminton-Apps/badman/commit/579e82785b9909e9f80c5f7e7cec8681142af4b5))
+* **deps:** update angularmaterial monorepo to v16.2.11 ([421508d](https://github.com/Badminton-Apps/badman/commit/421508d0cd7fd16f8cb3437347e96e54a27163dc))
+* **deps:** update angularmaterial monorepo to v16.2.11 ([513d7a8](https://github.com/Badminton-Apps/badman/commit/513d7a82191d1de12fdc1475487133a571b1ce2d))
+* **deps:** update dependency @angular/google-maps to v16.2.11 ([877df4b](https://github.com/Badminton-Apps/badman/commit/877df4bbc6facc68d6a0048cafd6f4f4fa2963dc))
+* **deps:** update dependency @nestjs/schedule to v4 ([d9cb652](https://github.com/Badminton-Apps/badman/commit/d9cb652e6a6d5043da6e186717efdca18f8c16ba))
+* **deps:** update dependency ngx-quill to v23 ([89c9616](https://github.com/Badminton-Apps/badman/commit/89c9616937411f868e6087f3f12168fa4953fde4))
+* **deps:** update nest monorepo ([7ea7e98](https://github.com/Badminton-Apps/badman/commit/7ea7e98e12b91abf731ba5081ad90e9d2cdd08a8))
+* **deps:** update nx monorepo ([1a822aa](https://github.com/Badminton-Apps/badman/commit/1a822aa85317ec9179cd082b56967b08b412e21c))
+* include correct import ([411c737](https://github.com/Badminton-Apps/badman/commit/411c737f016c0bb854a4ba30115ddaa41afc0121))
+
+## [6.121.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.0...v6.121.0-beta.1) (2023-11-05)
+
+
+### Bug Fixes
+
+* auth0 client and secret are not needed ([5086104](https://github.com/Badminton-Apps/badman/commit/5086104b5a341e848fc41b31ba5faa509f249ab3))
+
+## [6.121.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.120.0...v6.121.0-beta.0) (2023-11-05)
+
+
+### Features
+
+* parsing config + validation ([6add494](https://github.com/Badminton-Apps/badman/commit/6add4942f72dc30a7ce46bc81b0b1b0ebdd4cc7d))
+* removing obsolete starting type from ranking system fields ([2fe2bf7](https://github.com/Badminton-Apps/badman/commit/2fe2bf79259777bdb791309b69b78fbb864ceda5))
+* Update RankingSystems table columns to allow ([2c32734](https://github.com/Badminton-Apps/badman/commit/2c32734bc075e80bf2f350b13040ec2c8e841e15))
+
+
+### Bug Fixes
+
+* Add timeout and port configuration to Playwright ([ed9aa22](https://github.com/Badminton-Apps/badman/commit/ed9aa2290c8545bbc2abd8320bf814772f7006cf))
+* validating email apparently broke the client ([4528699](https://github.com/Badminton-Apps/badman/commit/4528699d480d1c575fd6904dd8e636641690bdfb))
+* validations for database should only be on production / beta ([2b41400](https://github.com/Badminton-Apps/badman/commit/2b4140010a4558915f8e340e63169d32fb352938))
+
 ## [6.120.0](https://github.com/Badminton-Apps/badman/compare/v6.119.0...v6.120.0) (2023-11-03)
 
 

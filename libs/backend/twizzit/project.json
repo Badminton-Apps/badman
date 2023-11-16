@@ -26,14 +26,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/backend/twizzit"],
       "options": {
-        "jestConfig": "libs/backend/twizzit/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "libs/backend/twizzit/jest.config.ts"
       }
     }
   },

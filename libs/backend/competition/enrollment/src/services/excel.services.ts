@@ -15,7 +15,7 @@ export class ExcelService {
       ],
     });
 
-    const data: any[][] = [
+    const data: (string | number | undefined)[][] = [
       [
         'Naam',
         'Voornaam',
@@ -42,7 +42,7 @@ export class ExcelService {
         });
         for (const entry of entries) {
           for (const meta of entry.meta?.competition?.players?.sort(
-            sortPlayers
+            sortPlayers,
           ) ?? []) {
             const player = await Player.findByPk(meta.id);
 
@@ -64,8 +64,8 @@ export class ExcelService {
                 subEvent.name,
                 draw.name,
                 subEvent.eventType == SubEventTypeEnum.MX,
-                entry.meta?.competition?.teamIndex
-              )
+                entry.meta?.competition?.teamIndex,
+              ),
             );
           }
         }
@@ -89,15 +89,15 @@ export class ExcelService {
     const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
       data.reduce(
         (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
-        0
-      )
+        0,
+      ),
     );
     ws['!cols'] = columnSizes.map((width) => ({ width }));
 
     // Enable filtering
     ws['!autofilter'] = {
       ref: XLSX.utils.encode_range(
-        XLSX.utils.decode_range(ws['!ref'] as string)
+        XLSX.utils.decode_range(ws['!ref'] as string),
       ),
     };
 
@@ -116,7 +116,7 @@ export class ExcelService {
     subEventName: string,
     drawName: string,
     mixed: boolean,
-    teamIndex: number | undefined
+    teamIndex: number | undefined,
   ) {
     return [
       player.lastName,

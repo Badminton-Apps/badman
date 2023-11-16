@@ -9,7 +9,7 @@ import {
 @Injectable()
 export class UploadGuard implements CanActivate {
   public async canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const req = ctx.switchToHttp().getRequest() as any;
+    const req = ctx.switchToHttp().getRequest();
     const isMultipart = req.isMultipart();
     if (!isMultipart)
       throw new BadRequestException('multipart/form-data expected.');

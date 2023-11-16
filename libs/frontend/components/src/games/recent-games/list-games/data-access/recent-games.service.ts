@@ -6,14 +6,14 @@ import { Game } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { connect } from 'ngxtension/connect';
-import { BehaviorSubject, EMPTY, Subject, merge } from 'rxjs';
+import { EMPTY, Subject, merge } from 'rxjs';
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
   map,
   mergeMap,
-  tap,
+  startWith,
   switchMap,
 } from 'rxjs/operators';
 interface RecentGamesState {
@@ -21,6 +21,7 @@ interface RecentGamesState {
   loading: boolean;
   endReached?: boolean;
   error: string | null;
+  page: number;
 }
 
 @Injectable({
@@ -42,6 +43,7 @@ export class RecentGamesService {
     games: [],
     error: null,
     loading: true,
+    page: 1,
   });
 
   // selectors
@@ -49,12 +51,12 @@ export class RecentGamesService {
   error = computed(() => this.state().error);
   loading = computed(() => this.state().loading);
   endReached = computed(() => this.state().endReached);
+  page = computed(() => this.state().page);
 
   //sources
-  pagination$ = new BehaviorSubject<number>(1);
+  pagination$ = new Subject<number | null>();
   private error$ = new Subject<string | null>();
   private filterChanged$ = this.filter.valueChanges.pipe(
-    tap(() => this.pagination$.next(1)),
     debounceTime(300),
     distinctUntilChanged(),
   );
@@ -62,8 +64,9 @@ export class RecentGamesService {
   private gamesLoaded$ = this.filterChanged$.pipe(
     switchMap((filter) =>
       this.pagination$.pipe(
+        startWith(1),
         distinctUntilChanged(),
-        mergeMap((page) => this._loadRecentGamesForPlayer(filter, page)),
+        mergeMap(() => this._loadRecentGamesForPlayer(filter)),
       ),
     ),
   );
@@ -82,6 +85,14 @@ export class RecentGamesService {
 
     connect(this.state)
       .with(nextState$)
+      .with(this.filterChanged$, (state) => ({
+        ...state,
+        page: 1,
+      }))
+      .with(this.pagination$, (state, response) => ({
+        ...state,
+        page: response ?? 1,
+      }))
       .with(this.gamesLoaded$, (state, response) => {
         return {
           ...state,
@@ -98,7 +109,6 @@ export class RecentGamesService {
       systemId: string | null;
       choices: string[] | null;
     }>,
-    page: number,
   ) {
     if (!filter.playerId) {
       return [];
@@ -112,7 +122,7 @@ export class RecentGamesService {
           };
         }>({
           query: gql`
-            query GamesPage_${page}_${(filter.choices ?? [])?.join('_')}(
+            query GamesPage_${this.page()}_${(filter.choices ?? [])?.join('_')}(
               $id: ID!
               $where: JSONObject
               $whereRanking: JSONObject
@@ -220,7 +230,7 @@ export class RecentGamesService {
                 field: 'id',
               },
             ],
-            skip: (page - 1) * this.gamesPerPage, // Skip the previous pages
+            skip: (this.page() - 1) * this.gamesPerPage, // Skip the previous pages
             take: this.gamesPerPage, // Load only the current page
           },
         }),

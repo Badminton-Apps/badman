@@ -26,14 +26,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/backend/visual"],
       "options": {
-        "jestConfig": "libs/backend/visual/jest.config.ts",
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "jestConfig": "libs/backend/visual/jest.config.ts"
       }
     }
   },

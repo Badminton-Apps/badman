@@ -9,7 +9,7 @@ import * as XLSX from 'xlsx';
 import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize';
 import moment from 'moment';
-import { sortComments, sortPlaces } from '@badman/utils';
+import { sortPlaces } from '@badman/utils';
 
 @Injectable()
 export class ResyncBaseTeamsService {

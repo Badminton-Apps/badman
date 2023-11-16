@@ -6,10 +6,15 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import versionPackage from '../version.json';
 import { SimulationProcessor } from './processors';
+import { configSchema, parseconfig } from '@badman/utils';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      cache: true,
+      validationSchema: configSchema,
+      load: [parseconfig],
+    }),
     LoggingModule.forRoot({
       version: versionPackage.version,
       name: 'worker-ranking',

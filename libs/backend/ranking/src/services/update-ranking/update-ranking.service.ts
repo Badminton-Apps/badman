@@ -19,7 +19,7 @@ export class UpdateRankingService {
       createNewPlayers?: boolean | string;
       rankingDate?: Date;
       rankingSystemId?: string;
-    } = {
+    } = { 
       updateCompStatus: false,
       removeAllRanking: false,
       updateRanking: false,
@@ -146,15 +146,26 @@ export class UpdateRankingService {
         options.updateCompStatus == true ||
         options.updateCompStatus == 'true'
       ) {
-        const newCompPlayers = distinctPlayers?.filter(
-          (p) => p.competitionPlayer == false,
-        );
+        const memberIdsComp = data
+          ?.filter((p) => p.role === 'Competitiespeler')
+          ?.map((d) => d.memberId);
+
+        const newCompPlayers = await Player.findAll({
+          attributes: ['id', 'memberId', 'competitionPlayer'],
+          where: {
+            memberId: {
+              [Op.in]: memberIdsComp,
+            },
+            competitionPlayer: false,
+          },
+          transaction,
+        });
 
         const removedCompPlayers = await Player.findAll({
           attributes: ['id', 'memberId', 'competitionPlayer'],
           where: {
             memberId: {
-              [Op.notIn]: data.map((d) => d.memberId),
+              [Op.notIn]: memberIdsComp,
             },
             competitionPlayer: true,
           },
