@@ -37,7 +37,7 @@ export class CheckRankingProcessor {
       throw new NotFoundException(`${Player.name}: ${playerId} not found`);
     }
 
-    this.logger.log(
+    this.logger.debug(
       `Syncing ranking for ${player.fullName} (${player.memberId})`
     );
     const primary = await RankingSystem.findOne({
@@ -52,7 +52,7 @@ export class CheckRankingProcessor {
       
 
     if (!player.memberId) {
-      this.logger.log(`Player ${player.fullName} has no memberId`);
+      this.logger.warn(`Player ${player.fullName} has no memberId`);
       return;
     }
 
@@ -66,7 +66,7 @@ export class CheckRankingProcessor {
     });
 
     if (rankingPlaces.length === 0) {
-      this.logger.log(`Player ${player.fullName} has no ranking`);
+      this.logger.warn(`Player ${player.fullName} has no ranking`);
       return;
     }
 
@@ -93,7 +93,7 @@ export class CheckRankingProcessor {
         // ranking was not found
         const links = await searchPlayer({ page }, player);
         if (links.length === 0) {
-          this.logger.log(`Player ${player.fullName} not found`);
+          this.logger.warn(`Player ${player.fullName} not found`);
           return;
         }
 
@@ -123,11 +123,11 @@ export class CheckRankingProcessor {
       }
 
       if (!single || !double || !mix) {
-        this.logger.log(`No ranking found for ${player.fullName}`);
+        this.logger.warn(`No ranking found for ${player.fullName}`);
         return;
       }
 
-      this.logger.log(
+      this.logger.debug(
         `Setting ranking for ${player.fullName}: ${single} ${double} ${mix}`
       );
 
@@ -154,7 +154,7 @@ export class CheckRankingProcessor {
       // Close browser
       if (browser) {
         browser.close();
-        this.logger.log(`Syned ${player.fullName}`);
+        this.logger.debug(`Syned ${player.fullName}`);
       }
     }
   }

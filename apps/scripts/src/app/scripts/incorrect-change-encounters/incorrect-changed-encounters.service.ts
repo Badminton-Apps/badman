@@ -75,7 +75,7 @@ export class IncorrectEncountersService {
     const encounters = await this.getChangeEncounters(startDate, endDate);
 
     // send to visual
-    this.logger.log(`Loaded ${encounters.length} changed encounters`);
+    this.logger.debug(`Loaded ${encounters.length} changed encounters`);
 
     const filtered = encounters.filter((encounter) => {
       const date = moment(encounter.date);
@@ -90,7 +90,7 @@ export class IncorrectEncountersService {
       return !dates.some((d) => d.isSame(date, 'minute'));
     });
 
-    this.logger.log(`Sending ${filtered.length} changed encounters to visual`);
+    this.logger.debug(`Sending ${filtered.length} changed encounters to visual`);
     const data: unknown[][] = [
       [
         'Id',
