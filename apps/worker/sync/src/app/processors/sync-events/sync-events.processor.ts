@@ -126,7 +126,7 @@ export class SyncEventsProcessor {
         const total = toProcess;
         const percent = Math.round((current / total) * 10000) / 100;
         job.progress(percent);
-        this.logger.log(
+        this.logger.debug(
           `Processing ${xmlTournament?.Name}, ${percent}% (${i}/${total})`
         );
 
