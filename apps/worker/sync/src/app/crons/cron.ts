@@ -18,15 +18,14 @@ export class CronService {
     private readonly schedulerRegistry: SchedulerRegistry,
     readonly configSerive: ConfigService,
   ) {
-    // if not in production, offset the cron jobs by 15 minute
     this.cronSyncEvents =
-      this.configSerive.get<string>('CRON_SYNC_EVENTS') ?? '0 */4 * * *';
+      this.configSerive.get<string>('CRON_SYNC_EVENTS') ?? '0 0/4 * * *';
 
     this.cronSyncRanking =
       this.configSerive.get<string>('CRON_SYNC_RANKING') ?? '0 18 * * *';
 
     this.cronCheckEncounters =
-      this.configSerive.get<string>('CRON_CHECK_ENCOUNTERS') ?? '30 */4 * * *';
+      this.configSerive.get<string>('CRON_CHECK_ENCOUNTERS') ?? '30 0/4 * * *';
 
     this.logger.log(`Scheduling cron jobs`);
 
