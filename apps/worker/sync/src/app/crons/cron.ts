@@ -9,15 +9,24 @@ import { CronJob } from 'cron';
 @Injectable()
 export class CronService {
   private readonly logger = new Logger(CronService.name);
-  private offset = 0;
+  private cronSyncEvents: string;
+  private cronSyncRanking: string;
+  private cronCheckEncounters: string;
 
   constructor(
     @InjectQueue(SyncQueue) private readonly syncQ: Queue,
     private readonly schedulerRegistry: SchedulerRegistry,
     readonly configSerive: ConfigService,
   ) {
-    // if not in production, offset the cron jobs by 15 minute
-    this.offset = this.configSerive.get('NODE_ENV') === 'production' ? 0 : 15;
+    this.cronSyncEvents =
+      this.configSerive.get<string>('CRON_SYNC_EVENTS') ?? '0 0/4 * * *';
+
+    this.cronSyncRanking =
+      this.configSerive.get<string>('CRON_SYNC_RANKING') ?? '0 18 * * *';
+
+    this.cronCheckEncounters =
+      this.configSerive.get<string>('CRON_CHECK_ENCOUNTERS') ?? '30 0/4 * * *';
+
     this.logger.log(`Scheduling cron jobs`);
 
     this.QueueingSyncEvents();
@@ -28,9 +37,8 @@ export class CronService {
   }
 
   public QueueingSyncEvents() {
-    const cronTime = `${15 + this.offset} */4 * * *`;
     const job = CronJob.from({
-      cronTime,
+      cronTime: this.cronSyncEvents,
       onTick: () => {
         this.logger.verbose('Queueing SyncEvents');
         this.syncQ.add(Sync.SyncEvents, null, {
@@ -44,13 +52,12 @@ export class CronService {
     this.schedulerRegistry.addCronJob(Sync.SyncEvents, job);
     job.start();
 
-    this.logger.verbose(`Cron SyncEvents scheduled at ${cronTime}`);
+    this.logger.verbose(`Cron SyncEvents scheduled at ${this.cronSyncEvents}`);
   }
 
   public QueueingSyncRanking() {
-    const cronTime = `${0 + this.offset} 18 * * *`;
     const job = CronJob.from({
-      cronTime,
+      cronTime: this.cronSyncRanking,
       onTick: () => {
         this.logger.verbose('Queueing SyncRanking');
 
@@ -65,13 +72,12 @@ export class CronService {
     this.schedulerRegistry.addCronJob(Sync.SyncRanking, job);
     job.start();
 
-    this.logger.verbose(`Cron SyncRanking scheduled at ${cronTime}`);
+    this.logger.verbose(`Cron SyncRanking scheduled at ${this.cronSyncRanking}`);
   }
 
   public QueueingCheckEncounters() {
-    const cronTime = `${30 + this.offset} */4 * * *`;
     const job = CronJob.from({
-      cronTime,
+      cronTime: this.cronCheckEncounters,
       onTick: () => {
         this.logger.verbose('Queueing CheckEncounters');
 
@@ -86,7 +92,7 @@ export class CronService {
     this.schedulerRegistry.addCronJob(Sync.CheckEncounters, job);
     job.start();
 
-    this.logger.verbose(`Cron CheckEncounters scheduled at ${cronTime}`);
+    this.logger.verbose(`Cron CheckEncounters scheduled at ${this.cronCheckEncounters}`);
   }
 
   getCrons() {
