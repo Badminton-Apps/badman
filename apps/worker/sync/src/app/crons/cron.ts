@@ -17,7 +17,7 @@ export class CronService {
     readonly configSerive: ConfigService,
   ) {
     // if not in production, offset the cron jobs by 15 minute
-    this.offset = this.configSerive.get('NODE_ENV') === 'production' ? 0 : 15;
+    this.offset = this.configSerive.get('NODE_ENV') === 'production' ? 0 : 45;
     this.logger.log(`Scheduling cron jobs`);
 
     this.QueueingSyncEvents();
