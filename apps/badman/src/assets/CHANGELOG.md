@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.122.0](https://github.com/Badminton-Apps/badman/compare/v6.121.1-beta.0...v6.122.0) (2023-11-17)
+
+
+### Features
+
+* offset by 45min ([af39697](https://github.com/Badminton-Apps/badman/commit/af39697fe4811ae87d18e7279a6ba0ef132b015a))
+
+
+### Bug Fixes
+
+* adding new cron ([391b599](https://github.com/Badminton-Apps/badman/commit/391b5998a4b69325a1218135d0151fda80735949))
+* using config values for this ([3be1670](https://github.com/Badminton-Apps/badman/commit/3be16700ed4141403a6f433564c41959c4e8f190))
+
 ### [6.121.1-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.121.0...v6.121.1-beta.0) (2023-11-17)
 
 
