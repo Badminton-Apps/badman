@@ -1,6 +1,6 @@
 {
   "name": "badman_scripts",
-  "version": "6.121.0",
+  "version": "6.121.1-beta.0",
   "license": "MIT",
   "scripts": {
     "create-release": "node ./standard-version.js"
@@ -13,7 +13,7 @@
   },
   "volta": {
     "node": "20.9.0",
-    "npm": "10.2.3"
+    "npm": "10.2.4"
   },
   "engines": {
     "npm": ">=8.0.0"
