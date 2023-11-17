@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.121.1-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.121.0...v6.121.1-beta.0) (2023-11-17)
+
+
+### Bug Fixes
+
+* cache manager ([8992274](https://github.com/Badminton-Apps/badman/commit/8992274cfc0ab28fba7485e5e0a862a532fef8c4))
+* **deps:** update angular monorepo to v17.0.3 ([001fc0f](https://github.com/Badminton-Apps/badman/commit/001fc0fea3e1a480ee4687cba596389e34928429))
+* **deps:** update angularmaterial monorepo to v17.0.1 ([d7d01d1](https://github.com/Badminton-Apps/badman/commit/d7d01d177a6b49ed239b8889e7677ccaa5825f26))
+* loglevel should be lower for this ([79e3c48](https://github.com/Badminton-Apps/badman/commit/79e3c48c9cc271a72df4bd501bd68f866a258fef))
+
 ## [6.121.0](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.7...v6.121.0) (2023-11-16)
 
 ## [6.121.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.121.0-beta.6...v6.121.0-beta.7) (2023-11-15)
