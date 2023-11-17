@@ -62,6 +62,10 @@ export const configSchema = Joi.object({
   // AUTH0_CLIENT_ID: Joi.string().required(),
   // AUTH0_CLIENT_SECRET: Joi.string().required(),
 
+  CRON_SYNC_EVENTS: Joi.string().optional(),
+  CRON_SYNC_RANKING: Joi.string().optional(),
+  CRON_CHECK_ENCOUNTERS: Joi.string().optional(),
+
   MAIL_ENABLED: Joi.boolean().required(),
   MAIL_PASS: Joi.when('MAIL_ENABLED', {
     is: true,
