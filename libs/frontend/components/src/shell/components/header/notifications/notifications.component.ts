@@ -25,7 +25,7 @@ import { Notification } from '@badman/frontend-models';
 import { LanguageComponent } from '@badman/frontend-translation';
 import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
-import { bufferCount, concat, concatMap, delay, forkJoin, from, mergeMap } from 'rxjs';
+import { bufferCount, concatMap, delay, forkJoin, from } from 'rxjs';
 import { ThemeSwitcherComponent } from '../theme-switcher';
 
 @Component({
