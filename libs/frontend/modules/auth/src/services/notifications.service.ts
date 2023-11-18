@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 
-import { map, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap, take, tap } from 'rxjs/operators';
 
 import { SwPush } from '@angular/service-worker';
 import { Claim, Notification } from '@badman/frontend-models';
@@ -17,6 +17,7 @@ import { AuthenticateService } from './authenticate.service';
 const QUERY = gql`
   query GetNotifications($order: [SortOrderType!]) {
     me {
+      id
       notifications(order: $order) {
         id
         read
@@ -30,7 +31,6 @@ const QUERY = gql`
         competition {
           id
           name
-          
         }
         tournament {
           id
@@ -66,10 +66,11 @@ export class NotificationService {
   constructor(
     private apollo: Apollo,
     private authService: AuthenticateService,
-    private swPush: SwPush
+    private swPush: SwPush,
   ) {
     combineLatest([this.authService.user$, this.update$])
       .pipe(
+        debounceTime(1000),
         switchMap(([player]) => {
           if (!player?.loggedIn) {
             return of(undefined);
@@ -93,7 +94,7 @@ export class NotificationService {
               },
             })
             .pipe(map((result) => result.data.me?.notifications));
-        })
+        }),
       )
       .subscribe((notifications) => {
         this.notifications$.next(notifications);
@@ -101,7 +102,7 @@ export class NotificationService {
   }
 
   readNotification(notification: Notification, read: boolean) {
-    this.apollo
+    return this.apollo
       .mutate<{ claims: Claim[] }>({
         mutation: gql`
           mutation UpdateNotification($data: NotificationUpdateInput!) {
@@ -117,10 +118,15 @@ export class NotificationService {
           },
         },
       })
-      .subscribe(() => {
-        this.update$.next(null);
-      });
+      .pipe(
+        take(1),
+        tap(() => {
+          this.update$.next(null);
+        }),
+      );
   }
+
+  
 
   async subscribeToNotifications() {
     if (this.swPush.isEnabled) {
@@ -141,7 +147,7 @@ export class NotificationService {
             variables: {
               subscription: sub,
             },
-          })
+          }),
         );
       } catch (e) {
         console.error(e);

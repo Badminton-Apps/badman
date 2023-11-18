@@ -21,11 +21,12 @@ import {
   NotificationService,
 } from '@badman/frontend-auth';
 import { GraphQLModule } from '@badman/frontend-graphql';
-import { LanguageComponent } from '@badman/frontend-translation';
-import { ThemeSwitcherComponent } from '../theme-switcher';
-import { TranslateModule } from '@ngx-translate/core';
 import { Notification } from '@badman/frontend-models';
+import { LanguageComponent } from '@badman/frontend-translation';
+import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
+import { bufferCount, concat, concatMap, delay, forkJoin, from, mergeMap } from 'rxjs';
+import { ThemeSwitcherComponent } from '../theme-switcher';
 
 @Component({
   selector: 'badman-notifications',
@@ -102,11 +103,21 @@ export class NotificationComponent {
   }
 
   readAllNotifications() {
-    for (const notification of this.notifications()?.filter(
-      (n) => n.read == false,
-    ) ?? []) {
-      this.notificationService.readNotification(notification, true);
-      notification.read = true;
-    }
+    const notificationsToProcess =
+      this.notifications()
+        ?.filter((n) => n.read == false)
+        ?.map((notification) =>
+          this.notificationService.readNotification(notification, true).pipe(
+            delay(50)
+          ),
+        ) ?? [];
+
+    // process notifications one by one
+    from(notificationsToProcess)
+      .pipe(
+        bufferCount(1),
+        concatMap((buffer) => forkJoin(buffer)),
+      )
+      .subscribe(() => {});
   }
 }
