@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.122.1](https://github.com/Badminton-Apps/badman/compare/v6.122.0...v6.122.1) (2023-11-18)
+
+
+### Bug Fixes
+
+* better handling when lots of notifications ([de8aeac](https://github.com/Badminton-Apps/badman/commit/de8aeac87313361f7e04cc64eb8a704372d20bdf))
+* **deps:** update dependency cache-manager to v5.3.1 ([1783307](https://github.com/Badminton-Apps/badman/commit/178330783332a362a5f7e71833b4a29622180a3b))
+* **deps:** update dependency rollup to v4.5.0 ([82b945b](https://github.com/Badminton-Apps/badman/commit/82b945bb8bffa209abb2bca69506aebedaaf1566))
+
 ## [6.122.0](https://github.com/Badminton-Apps/badman/compare/v6.121.1-beta.0...v6.122.0) (2023-11-17)
 
 
