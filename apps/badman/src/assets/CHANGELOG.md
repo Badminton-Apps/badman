@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.122.2-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.122.1...v6.122.2-beta.0) (2023-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ngx-markdown to v17.1.1 ([fb4d811](https://github.com/Badminton-Apps/badman/commit/fb4d811dfb3feb2d85d94f1760649f1f21040586))
+* **deps:** update dependency sequelize to v6.35.1 ([b261990](https://github.com/Badminton-Apps/badman/commit/b2619909ccbe77c8e4f63581015148337c8a500b))
+* **deps:** update nest monorepo to v10.2.10 ([8690ffa](https://github.com/Badminton-Apps/badman/commit/8690ffaa8d66ab6a28e99c323936c7356175c989))
+
 ### [6.122.1](https://github.com/Badminton-Apps/badman/compare/v6.122.0...v6.122.1) (2023-11-18)
 
 
