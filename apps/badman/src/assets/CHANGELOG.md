@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.123.0](https://github.com/Badminton-Apps/badman/compare/v6.122.2-beta.0...v6.123.0) (2023-11-21)
+
+
+### Features
+
+* let's run the sync ranking more frequenly ([1b96c45](https://github.com/Badminton-Apps/badman/commit/1b96c454ff0c7e54939896ef565ba439a9152506))
+
+
+### Bug Fixes
+
+* each competition has its own notation ([d037715](https://github.com/Badminton-Apps/badman/commit/d0377154dcd61b6a046388d382ee7ee2bcd5e2ce))
+
 ### [6.122.2-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.122.1...v6.122.2-beta.0) (2023-11-20)
 
 
