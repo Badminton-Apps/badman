@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.127.0](https://github.com/Badminton-Apps/badman/compare/v6.126.0...v6.127.0) (2023-11-22)
+
+
+### Features
+
+* only show upgrade/downgrade tooltip on usedPoints ([d6d02eb](https://github.com/Badminton-Apps/badman/commit/d6d02ebb42ac1eb96204600c31675d89c6133ff4))
+
 ## [6.126.0](https://github.com/Badminton-Apps/badman/compare/v6.125.0...v6.126.0) (2023-11-22)
 
 
