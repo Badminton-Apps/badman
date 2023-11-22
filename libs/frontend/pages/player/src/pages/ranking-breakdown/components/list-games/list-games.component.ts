@@ -471,10 +471,10 @@ export class ListGamesComponent implements OnInit {
     if (isForUpgrade) {
       devider = `${game.devideUpgradeCorrected}`;
       if ((game.devideUpgrade ?? 0) < (game.devideUpgradeCorrected ?? 0)) {
-        devider += `\n${this.translateService.instant(
+        devider += `\n\r\n\r${this.translateService.instant(
           'all.breakdown.corrected',
-          { 
-            original: game.devideUpgrade, 
+          {
+            original: game.devideUpgrade,
             corrected: game.devideUpgradeCorrected,
           },
         )}`;
@@ -485,28 +485,38 @@ export class ListGamesComponent implements OnInit {
 
     let tooltip = `${game.totalPoints?.toLocaleString()} / ${devider}`;
 
-    if (canChange) {
-      if (isForUpgrade) {
-        const level = this.rankingPlace()?.[this.type] ?? 12;
+    if (isForUpgrade) {
+      const level = this.rankingPlace()?.[this.type] ?? 12;
 
-        tooltip += `\n\r${this.translateService.instant('all.breakdown.can-upgrade', {
+      tooltip += `\n\r\n\r${this.translateService.instant(
+        canChange
+          ? 'all.breakdown.can-upgrade'
+          : 'all.breakdown.can-not-upgrade',
+        {
           level,
           newLevel: level - 1,
-          points: this.system.pointsToGoUp?.[
-            (this.system.amountOfLevels ?? 12) - level
-          ],
-        })}`;
-      } else {
-        const level = this.rankingPlace()?.[this.type] ?? 12;
+          points:
+            this.system.pointsToGoUp?.[
+              (this.system.amountOfLevels ?? 12) - level
+            ],
+        },
+      )}`;
+    } else {
+      const level = this.rankingPlace()?.[this.type] ?? 12;
 
-        tooltip += `\n\r${this.translateService.instant('all.breakdown.can-downgrade', {
+      tooltip += `\n\r\n\r${this.translateService.instant(
+        canChange
+          ? 'all.breakdown.can-downgrade'
+          : 'all.breakdown.can-not-downgrade',
+        {
           level,
           newLevel: level + 1,
-          points: this.system.pointsToGoDown?.[
-            (this.system.amountOfLevels ?? 12) - (level + 1)
-          ],
-        })}`;
-      }
+          points:
+            this.system.pointsToGoDown?.[
+              (this.system.amountOfLevels ?? 12) - (level + 1)
+            ],
+        },
+      )}`;
     }
 
     return tooltip;
