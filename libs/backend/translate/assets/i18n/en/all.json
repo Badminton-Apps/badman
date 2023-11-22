@@ -8,8 +8,8 @@
       "title": "Add (fictive) game",
       "won": "Team 1 won?"
     },
-    "can-downgrade": "These are enough points to drop from {level} to {newLevel}",
-    "can-upgrade": "These are enough points to increase from {level} to {newLevel}",
+    "can-downgrade": "These are enough points (<{points}) to drop from {level} to {newLevel}",
+    "can-upgrade": "These are enough points (>{points}) to increase from {level} to {newLevel}",
     "corrected": "Originally {original} games, average is being calculated with minimum {corrected} games.",
     "date": "Date",
     "disclaimer": "Currently, this is a proof of concept. This is because we don't have the full data set from an external system to show the following correctly. We are working on this.",

@@ -492,6 +492,9 @@ export class ListGamesComponent implements OnInit {
         tooltip += `\n\r${this.translateService.instant('all.breakdown.can-upgrade', {
           level,
           newLevel: level - 1,
+          points: this.system.pointsToGoUp?.[
+            (this.system.amountOfLevels ?? 12) - level
+          ],
         })}`;
       } else {
         const level = this.rankingPlace()?.[this.type] ?? 12;
@@ -499,6 +502,9 @@ export class ListGamesComponent implements OnInit {
         tooltip += `\n\r${this.translateService.instant('all.breakdown.can-downgrade', {
           level,
           newLevel: level + 1,
+          points: this.system.pointsToGoDown?.[
+            (this.system.amountOfLevels ?? 12) - (level + 1)
+          ],
         })}`;
       }
     }
