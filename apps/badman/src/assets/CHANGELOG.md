@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.125.0](https://github.com/Badminton-Apps/badman/compare/v6.124.0...v6.125.0) (2023-11-22)
+
+
+### Features
+
+* also show required points for upgrade/downgrade ([fd8b065](https://github.com/Badminton-Apps/badman/commit/fd8b065af19ca54e511e0c5be01283bc5810189d))
+* show numbers in local string ([fcb0522](https://github.com/Badminton-Apps/badman/commit/fcb0522f73a99f94546188e3387d1f582248512b))
+* showing if player has enough to go up ([7801511](https://github.com/Badminton-Apps/badman/commit/7801511958b9f5f06a40aba9c83b2de7383535dc))
+
+
+### Bug Fixes
+
+* **deps:** update angular monorepo to v17.0.4 ([5e91a77](https://github.com/Badminton-Apps/badman/commit/5e91a77f0ae89a8018573fa825e784a10d060ca9))
+
 ## [6.124.0](https://github.com/Badminton-Apps/badman/compare/v6.123.0...v6.124.0) (2023-11-22)
 
 
