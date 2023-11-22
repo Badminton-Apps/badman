@@ -37,17 +37,15 @@
       ></badman-period-selection>
     </form>
 
-    <ng-container *ngIf="!this.loadingGames(); else loading">
+    @if(!this.loadingGames()){
       <badman-list-games
         [system]="system"
         [games]="games() ?? []"
-        [playerId]="player().id!"
+        [player]="player"
         [formGroup]="this.gameFilter"
       ></badman-list-games>
-    </ng-container>
+    } @else {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
   </ng-container>
-
-  <ng-template #loading>
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </ng-template>
 </ng-container>
