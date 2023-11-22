@@ -5,43 +5,12 @@ import { RankingSystem } from '@badman/frontend-models';
 import moment from 'moment';
 // import { EChartsOption } from 'echarts';
 import {
-  ApexAnnotations,
-  ApexAxisChartSeries,
-  ApexChart,
   ChartComponent as ApexChartComponent,
-  ApexDataLabels,
-  ApexFill,
-  ApexForecastDataPoints,
-  ApexLegend,
-  ApexMarkers,
-  ApexStroke,
-  ApexTheme,
-  ApexTitleSubtitle,
-  ApexTooltip,
-  ApexXAxis,
-  ApexYAxis,
+  ApexOptions,
   NgApexchartsModule,
   XAxisAnnotations,
   YAxisAnnotations,
 } from 'ng-apexcharts';
-
-export type ChartOptions = {
-  series?: ApexAxisChartSeries;
-  annotations?: ApexAnnotations;
-  chart?: ApexChart;
-  dataLabels?: ApexDataLabels;
-  stroke?: ApexStroke;
-  xaxis?: ApexXAxis;
-  yaxis?: ApexYAxis[];
-  title?: ApexTitleSubtitle;
-  markers?: ApexMarkers;
-  colors?: string[];
-  fill?: ApexFill;
-  forecastDataPoints?: ApexForecastDataPoints;
-  legend?: ApexLegend;
-  tooltip?: ApexTooltip;
-  theme?: ApexTheme;
-};
 
 @Component({
   selector: 'badman-chart',
@@ -60,7 +29,7 @@ export type ChartOptions = {
 export class ChartComponent implements OnInit {
   // options!: EChartsOption;
   @ViewChild('chart') chart?: ApexChartComponent;
-  public chartOptions!: Partial<ChartOptions>;
+  public chartOptions!: Partial<ApexOptions>;
 
   constructor(private themeSwitcher: ThemeSwitcherService) {}
 
@@ -147,7 +116,7 @@ export class ChartComponent implements OnInit {
       },
       stroke: {
         curve: ['straight', 'smooth'],
-        width: [2, 0.2],
+        width: [3, 0.2],
       },
       legend: {
         show: false,
@@ -156,7 +125,6 @@ export class ChartComponent implements OnInit {
       title: {
         text: this.title,
       },
-
       xaxis: {
         type: 'datetime',
       },
@@ -165,11 +133,14 @@ export class ChartComponent implements OnInit {
           min: 0,
           max: this.system.amountOfLevels,
           reversed: true,
+          seriesName: 'ranking',
+          tickAmount: this.system.amountOfLevels,
         },
         {
           min: 0,
           max: upMax,
           opposite: true,
+          seriesName: 'points',
         },
       ],
       theme: {
