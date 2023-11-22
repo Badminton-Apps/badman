@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.124.0](https://github.com/Badminton-Apps/badman/compare/v6.123.0...v6.124.0) (2023-11-22)
+
+
+### Features
+
+* defer upcomming games ([9def688](https://github.com/Badminton-Apps/badman/commit/9def68837534835d9bffd1f6f02f4edf833e6dec))
+
+
+### Bug Fixes
+
+* **deps:** update dependency apollo-angular to v6 ([7c097bc](https://github.com/Badminton-Apps/badman/commit/7c097bc942f82f59d0fd3b563175d54f85921ee5))
+* **deps:** update dependency updates ([cdddee9](https://github.com/Badminton-Apps/badman/commit/cdddee94a7e93ba89e1586d9a1695b1ac3b9856d))
+* finally the chart is showing correctly ([897bda7](https://github.com/Badminton-Apps/badman/commit/897bda7cd6009d23798be67d57a15bb4595ea6b7))
+* removed unused fix ([bb8f834](https://github.com/Badminton-Apps/badman/commit/bb8f8345f2973a19036ec43bb132ef5724e69ea8))
+* updated packa-lock file ([b8883d2](https://github.com/Badminton-Apps/badman/commit/b8883d23385a3d8598166155c7e8e85f23539595))
+
 ## [6.123.0](https://github.com/Badminton-Apps/badman/compare/v6.122.2-beta.0...v6.123.0) (2023-11-21)
 
 
