@@ -18,6 +18,7 @@ import { filter, map } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
 import { RankingTableComponent } from '../ranking-table';
 import { BetaComponent, ProfileOverviewComponent } from './components';
+import { LoadingBlockComponent } from '../loading-block';
 
 @Component({
   selector: 'badman-landing',
@@ -32,6 +33,7 @@ import { BetaComponent, ProfileOverviewComponent } from './components';
     ProfileOverviewComponent,
     UpcomingGamesComponent,
     RankingTableComponent,
+    LoadingBlockComponent,
   ],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
