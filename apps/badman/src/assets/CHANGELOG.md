@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.123.0](https://github.com/Badminton-Apps/badman/compare/v6.122.2-beta.0...v6.123.0) (2023-11-21)
+
+
+### Features
+
+* let's run the sync ranking more frequenly ([1b96c45](https://github.com/Badminton-Apps/badman/commit/1b96c454ff0c7e54939896ef565ba439a9152506))
+
+
+### Bug Fixes
+
+* each competition has its own notation ([d037715](https://github.com/Badminton-Apps/badman/commit/d0377154dcd61b6a046388d382ee7ee2bcd5e2ce))
+
+### [6.122.2-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.122.1...v6.122.2-beta.0) (2023-11-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ngx-markdown to v17.1.1 ([fb4d811](https://github.com/Badminton-Apps/badman/commit/fb4d811dfb3feb2d85d94f1760649f1f21040586))
+* **deps:** update dependency sequelize to v6.35.1 ([b261990](https://github.com/Badminton-Apps/badman/commit/b2619909ccbe77c8e4f63581015148337c8a500b))
+* **deps:** update nest monorepo to v10.2.10 ([8690ffa](https://github.com/Badminton-Apps/badman/commit/8690ffaa8d66ab6a28e99c323936c7356175c989))
+
+### [6.122.1](https://github.com/Badminton-Apps/badman/compare/v6.122.0...v6.122.1) (2023-11-18)
+
+
+### Bug Fixes
+
+* better handling when lots of notifications ([de8aeac](https://github.com/Badminton-Apps/badman/commit/de8aeac87313361f7e04cc64eb8a704372d20bdf))
+* **deps:** update dependency cache-manager to v5.3.1 ([1783307](https://github.com/Badminton-Apps/badman/commit/178330783332a362a5f7e71833b4a29622180a3b))
+* **deps:** update dependency rollup to v4.5.0 ([82b945b](https://github.com/Badminton-Apps/badman/commit/82b945bb8bffa209abb2bca69506aebedaaf1566))
+
 ## [6.122.0](https://github.com/Badminton-Apps/badman/compare/v6.121.1-beta.0...v6.122.0) (2023-11-17)
 
 
