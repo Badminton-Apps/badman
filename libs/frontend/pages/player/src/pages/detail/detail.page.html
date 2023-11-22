@@ -14,21 +14,21 @@
     <ng-container *ngIf="this.rankingPlace?.()">
       <mat-chip-listbox>
         <mat-chip
-          matTooltipClass="multi-line-tooltip"
+          matTooltipClass="tooltip-multi-line"
           [routerLink]="['ranking', 'single']"
           [matTooltip]="tooltip.single + (this.rankingPlace().singlePoints ? '\n\r' + this.rankingPlace().singlePoints?.toLocaleString(): '')"
           class="single"
           >{{this.rankingPlace().single}}</mat-chip
         >
         <mat-chip
-          matTooltipClass="multi-line-tooltip"
+          matTooltipClass="tooltip-multi-line"
           [routerLink]="['ranking', 'double']"
           [matTooltip]="tooltip.double + (this.rankingPlace().doublePoints ? '\n\r' + this.rankingPlace().doublePoints?.toLocaleString(): '')"
           class="double"
           >{{this.rankingPlace().double}}</mat-chip
         >
         <mat-chip
-          matTooltipClass="multi-line-tooltip"
+          matTooltipClass="tooltip-multi-line"
           [routerLink]="['ranking', 'mix']"
           [matTooltip]="tooltip.mix + (this.rankingPlace().mixPoints ? '\n\r' + this.rankingPlace().mixPoints?.toLocaleString(): '')"
           class="mix"

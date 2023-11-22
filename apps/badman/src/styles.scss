@@ -126,8 +126,11 @@ mat-sidenav-container {
   }
 }
 
-.multi-line-tooltip {
+.tooltip-multi-line {
   white-space: pre-line;
+}
+.tooltip-center-text.mdc-tooltip--multiline div {
+  text-align: center;
 }
 
 ::-webkit-scrollbar {
