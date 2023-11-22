@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.128.1](https://github.com/Badminton-Apps/badman/compare/v6.128.0...v6.128.1) (2023-11-22)
+
+
+### Bug Fixes
+
+* add game dialog with only ranking ([5cef505](https://github.com/Badminton-Apps/badman/commit/5cef5050e3c242a1e7e2a45fe3ef28dfbf3d44ad))
+
 ## [6.128.0](https://github.com/Badminton-Apps/badman/compare/v6.127.0...v6.128.0) (2023-11-22)
 
 
