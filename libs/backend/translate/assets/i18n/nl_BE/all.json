@@ -8,8 +8,10 @@
       "title": "Voeg (fictieve) wedstrijd toe",
       "won": "Team 1 Gewonnen?"
     },
-    "can-downgrade": "Dit zijn genoeg punten (<{points}) om te dalen van {level} naar {newLevel}",
-    "can-upgrade": "Dit zijn genoeg punten (>{points}) om te stijgen van {level} naar {newLevel}",
+    "can-downgrade": "Met dit aantal punten (<{points}) zal de speler dalen van {level} naar {newLevel}",
+    "can-not-downgrade": "Minder dan {points} = dalen van {level} naar {newLevel}",
+    "can-not-upgrade": "Meer dan {points} = stijgen van {level} naar {newLevel}",
+    "can-upgrade": "Met dit aantal punten (>{points}) zal de speler stijgen van {level} naar {newLevel}",
     "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met minimum {corrected} wedstrijden.",
     "date": "Datum",
     "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
