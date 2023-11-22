@@ -13,6 +13,8 @@ export type I18nTranslations = {
                 "won": string;
             };
             "can-downgrade": string;
+            "can-not-downgrade": string;
+            "can-not-upgrade": string;
             "can-upgrade": string;
             "corrected": string;
             "date": string;

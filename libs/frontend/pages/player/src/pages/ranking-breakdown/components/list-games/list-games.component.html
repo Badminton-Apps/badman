@@ -185,19 +185,15 @@
         upgrade: i === indexUsedForUpgrade && this.canUpgrade
       }"
     >
-      <ng-container [ngSwitch]="game.type"> 
-        <span *ngSwitchCase="'WON'"
-          ><span
-            matTooltipClass="multi-line-tooltip"
-            [matTooltip]="
-              getTooltip(
-                game,
-                true,
-                i === indexUsedForUpgrade && this.canUpgrade
-              )
-            "
-            >{{ game.avgUpgrade | number: '.0-0' }}</span
-          ></span
+      <ng-container [ngSwitch]="game.type">
+        <span
+          class="has-tooltip"
+          *ngSwitchCase="'WON'"
+          matTooltipClass="multi-line-tooltip"
+          [matTooltip]="
+            getTooltip(game, true, i === indexUsedForUpgrade && this.canUpgrade)
+          "
+          >{{ game.avgUpgrade | number: '.0-0' }}</span
         >
         <span *ngSwitchCase="'LOST_UPGRADE'">0</span>
         <span *ngSwitchCase="'LOST_DOWNGRADE'">0</span>
@@ -223,18 +219,18 @@
       }"
     >
       <ng-container [ngSwitch]="game.type">
-        <span *ngSwitchCase="'WON'">
-          <span
-            matTooltipClass="multi-line-tooltip"
-            [matTooltip]="
-              getTooltip(
-                game,
-                false,
-                i === indexUsedForDowngrade && this.canDowngrade
-              )
-            "
-            >{{ game.avgDowngrade | number: '.0-0' }}</span
-          ></span
+        <span
+          class="has-tooltip"
+          *ngSwitchCase="'WON'"
+          matTooltipClass="multi-line-tooltip"
+          [matTooltip]="
+            getTooltip(
+              game,
+              false,
+              i === indexUsedForDowngrade && this.canDowngrade
+            )
+          "
+          >{{ game.avgDowngrade | number: '.0-0' }}</span
         >
         <span *ngSwitchCase="'LOST_UPGRADE'">-</span>
         <span *ngSwitchCase="'LOST_DOWNGRADE'">0</span>
