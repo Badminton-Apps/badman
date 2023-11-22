@@ -66,8 +66,6 @@
   </div>
 </form>
 
-{{ this.canUpgrade }} - {{ this.canDowngrade }}
-
 <mat-table #breakdownTable [dataSource]="dataSource">
   <!-- Game count -->
   <ng-container matColumnDef="count">
@@ -190,9 +188,7 @@
           class="has-tooltip"
           *ngSwitchCase="'WON'"
           matTooltipClass="multi-line-tooltip"
-          [matTooltip]="
-            getTooltip(game, true, i === indexUsedForUpgrade && this.canUpgrade)
-          "
+          [matTooltip]="getTooltip(game, true, i === indexUsedForUpgrade)"
           >{{ game.avgUpgrade | number: '.0-0' }}</span
         >
         <span *ngSwitchCase="'LOST_UPGRADE'">0</span>
@@ -223,13 +219,7 @@
           class="has-tooltip"
           *ngSwitchCase="'WON'"
           matTooltipClass="multi-line-tooltip"
-          [matTooltip]="
-            getTooltip(
-              game,
-              false,
-              i === indexUsedForDowngrade && this.canDowngrade
-            )
-          "
+          [matTooltip]="getTooltip(game, false, i === indexUsedForDowngrade)"
           >{{ game.avgDowngrade | number: '.0-0' }}</span
         >
         <span *ngSwitchCase="'LOST_UPGRADE'">-</span>
