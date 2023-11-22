@@ -12,6 +12,8 @@ export type I18nTranslations = {
                 "title": string;
                 "won": string;
             };
+            "can-downgrade": string;
+            "can-upgrade": string;
             "corrected": string;
             "date": string;
             "disclaimer": string;

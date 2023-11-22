@@ -10,6 +10,8 @@ import {
   Component,
   Input,
   OnInit,
+  Signal,
+  computed,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +20,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Game, GamePlayer, RankingSystem } from '@badman/frontend-models';
+import {
+  Game,
+  GamePlayer,
+  Player,
+  RankingSystem,
+} from '@badman/frontend-models';
 import {
   GameBreakdownType,
   GameStatus,
@@ -57,13 +64,21 @@ export class ListGamesComponent implements OnInit {
 
   @Input() games!: Game[];
   @Input() system!: RankingSystem;
-  @Input() playerId!: string;
+  @Input() player!: Signal<Player>;
   @Input() formGroup!: FormGroup;
 
   dataSource = new MatTableDataSource<GameBreakdown>([]);
   dataSourceRemoved = new MatTableDataSource<Game>([]);
 
-  type!: string;
+  playerId = computed(() => this.player()?.id);
+  rankingPlace = computed(
+    () =>
+      this.player()?.rankingLastPlaces?.find(
+        (x) => x.systemId == this.system.id,
+      ),
+  );
+
+  type!: 'single' | 'double' | 'mix';
   prevGames?: Game[];
   wonGames: ListGame[] = [];
 
@@ -74,6 +89,8 @@ export class ListGamesComponent implements OnInit {
 
   indexUsedForUpgrade = 0;
   indexUsedForDowngrade = 0;
+  canUpgrade = false;
+  canDowngrade = false;
 
   gameBreakdown: GameBreakdown[] = [];
 
@@ -173,7 +190,7 @@ export class ListGamesComponent implements OnInit {
         continue;
       }
 
-      const me = game.players?.find((x) => x.id == this.playerId);
+      const me = game.players?.find((x) => x.id == this.playerId());
       if (!me) {
         throw new Error('Player not found');
       }
@@ -183,7 +200,7 @@ export class ListGamesComponent implements OnInit {
       }
 
       const rankingPoint = game.rankingPoints?.find(
-        (x) => x.playerId == this.playerId,
+        (x) => x.playerId == this.playerId(),
       );
 
       const teamP1 = game.players?.find(
@@ -258,7 +275,7 @@ export class ListGamesComponent implements OnInit {
       if (!game?.id) {
         throw new Error('Game not found');
       }
-      const me = game.players?.find((x) => x.id == this.playerId);
+      const me = game.players?.find((x) => x.id == this.playerId());
       if (!me) {
         throw new Error('Player not found');
       }
@@ -268,7 +285,7 @@ export class ListGamesComponent implements OnInit {
       }
 
       const rankingPoint = game.rankingPoints?.find(
-        (x) => x.playerId == this.playerId,
+        (x) => x.playerId == this.playerId(),
       );
 
       const teamP1 = game.players?.find(
@@ -363,6 +380,8 @@ export class ListGamesComponent implements OnInit {
         this.indexUsedForDowngrade = startingIndex + i;
       }
 
+      // decide if the player is going to upgrade
+
       this.gameBreakdown.push({
         id: game.id,
         playedAt: game.playedAt,
@@ -392,6 +411,41 @@ export class ListGamesComponent implements OnInit {
     }));
 
     this.dataSource.data = this.gameBreakdown;
+    this.canUpgradeOrDowngrade();
+  }
+
+  canUpgradeOrDowngrade() {
+    if (this.rankingPlace()) {
+      const level = this.rankingPlace()?.[this.type] ?? 12;
+
+      const nextLevel =
+        this.system.pointsToGoUp?.[(this.system.amountOfLevels ?? 12) - level];
+
+      const prevLevel =
+        this.system.pointsToGoDown?.[
+          (this.system.amountOfLevels ?? 12) - (level + 1)
+        ];
+
+      const upgradePoints =
+        this.gameBreakdown[this.indexUsedForUpgrade]?.avgUpgrade ?? 0;
+
+      const downgradePoints =
+        this.gameBreakdown[this.indexUsedForDowngrade]?.avgDowngrade ?? 0;
+
+      this.canUpgrade = upgradePoints >= (nextLevel ?? 0);
+      this.canDowngrade = downgradePoints <= (prevLevel ?? 0);
+
+      // console.log(
+      //   `Upgrade ${level} -> ${level - 1}: ${upgradePoints} >= ${nextLevel} = ${
+      //     this.canUpgrade
+      //   }`,
+      // );
+      // console.log(
+      //   `Downgrade ${level} -> ${
+      //     level + 1
+      //   }: ${downgradePoints} <= ${prevLevel} = ${this.canDowngrade}`,
+      // );
+    }
   }
 
   private addLostGames(processGames: ListGame[]) {
@@ -407,7 +461,11 @@ export class ListGamesComponent implements OnInit {
     }
   }
 
-  getTooltip(game: GameBreakdown, isForUpgrade: boolean): string {
+  getTooltip(
+    game: GameBreakdown,
+    isForUpgrade: boolean,
+    canChange: boolean,
+  ): string {
     let devider = '';
 
     if (isForUpgrade) {
@@ -415,8 +473,8 @@ export class ListGamesComponent implements OnInit {
       if ((game.devideUpgrade ?? 0) < (game.devideUpgradeCorrected ?? 0)) {
         devider += `\n${this.translateService.instant(
           'all.breakdown.corrected',
-          {
-            original: game.devideUpgrade,
+          { 
+            original: game.devideUpgrade, 
             corrected: game.devideUpgradeCorrected,
           },
         )}`;
@@ -425,7 +483,27 @@ export class ListGamesComponent implements OnInit {
       devider = `${game.devideDowngrade}`;
     }
 
-    return `${game.totalPoints} / ${devider}`;
+    let tooltip = `${game.totalPoints?.toLocaleString()} / ${devider}`;
+
+    if (canChange) {
+      if (isForUpgrade) {
+        const level = this.rankingPlace()?.[this.type] ?? 12;
+
+        tooltip += `\n\r${this.translateService.instant('all.breakdown.can-upgrade', {
+          level,
+          newLevel: level - 1,
+        })}`;
+      } else {
+        const level = this.rankingPlace()?.[this.type] ?? 12;
+
+        tooltip += `\n\r${this.translateService.instant('all.breakdown.can-downgrade', {
+          level,
+          newLevel: level + 1,
+        })}`;
+      }
+    }
+
+    return tooltip;
   }
 
   deleteGame(game: GameBreakdown) {
@@ -442,7 +520,7 @@ export class ListGamesComponent implements OnInit {
       .open(AddGameComponent, {
         minWidth: '450px',
         data: {
-          playerId: this.playerId,
+          playerId: this.playerId(),
           type: this.type,
           system: this.system,
         },

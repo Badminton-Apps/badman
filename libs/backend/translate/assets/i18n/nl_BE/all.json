@@ -8,6 +8,8 @@
       "title": "Voeg (fictieve) wedstrijd toe",
       "won": "Team 1 Gewonnen?"
     },
+    "can-downgrade": "Dit zijn genoeg punten om te dalen van {level} naar {newLevel}",
+    "can-upgrade": "Dit zijn genoeg punten om te stijgen van {level} naar {newLevel}",
     "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met minimum {corrected} wedstrijden.",
     "date": "Datum",
     "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",

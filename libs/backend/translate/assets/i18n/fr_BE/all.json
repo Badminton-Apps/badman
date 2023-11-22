@@ -8,6 +8,8 @@
       "title": "Ajouter une correspondance (fictive)",
       "won": "L'équipe 1 a gagné ?"
     },
+    "can-downgrade": "Ce sont suffisamment de points pour passer de {level} à {newLevel}",
+    "can-upgrade": "Ce sont suffisamment de points pour passer de {level} à {newLevel}",
     "corrected": " {original} correspondances d'origine, la moyenne est calculée avec un minimum de {corrected} correspondances.",
     "date": "Date",
     "disclaimer": "Il s'agit actuellement d'une preuve de concept. En effet, nous ne pouvons pas demander toutes les données d'un système externe pour afficher correctement ce qui suit. Nous y travaillons.",
