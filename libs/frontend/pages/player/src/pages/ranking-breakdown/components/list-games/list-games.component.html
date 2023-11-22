@@ -10,7 +10,7 @@
                 '=1': 'all.breakdown.lostGames.one',
                 other: 'all.breakdown.lostGames.other'
               }
-          | translate : { count: lostGamesIgnored.length }
+          | translate: { count: lostGamesIgnored.length }
       }}</mat-slide-toggle
     >
   </div>
@@ -25,7 +25,7 @@
                 '=1': 'all.breakdown.lostGames.one',
                 other: 'all.breakdown.lostGames.other'
               }
-          | translate : { count: lostGamesUpgrade.length }
+          | translate: { count: lostGamesUpgrade.length }
       }}
     </mat-slide-toggle>
   </div>
@@ -40,7 +40,7 @@
                 '=1': 'all.breakdown.lostGames.one',
                 other: 'all.breakdown.lostGames.other'
               }
-          | translate : { count: lostGamesDowngrade.length }
+          | translate: { count: lostGamesDowngrade.length }
       }}
     </mat-slide-toggle>
   </div>
@@ -55,7 +55,7 @@
                 '=1': 'all.breakdown.outOfScope.one',
                 other: 'all.breakdown.outOfScope.other'
               }
-          | translate : { count: outOfScopeGames.length }
+          | translate: { count: outOfScopeGames.length }
       }}
     </mat-slide-toggle>
   </div>
@@ -65,6 +65,8 @@
     </button>
   </div>
 </form>
+
+{{ this.canUpgrade }} - {{ this.canDowngrade }}
 
 <mat-table #breakdownTable [dataSource]="dataSource">
   <!-- Game count -->
@@ -98,7 +100,7 @@
       attr.data-label="{{ 'all.breakdown.date' | translate }}"
     >
       <span>{{
-        !!game.playedAt ? (game.playedAt | amDateFormat : this.dateFormat) : ''
+        !!game.playedAt ? (game.playedAt | amDateFormat: this.dateFormat) : ''
       }}</span>
     </mat-cell>
     <mat-footer-cell *matFooterCellDef></mat-footer-cell>
@@ -115,11 +117,11 @@
     >
       <div *ngIf="game.team?.[0]">
         {{ game.team?.[0].fullName }}
-        ({{game.team?.[0]?.[type] || 'N/A'}})
+        ({{ game.team?.[0]?.[type] || 'N/A' }})
       </div>
       <div *ngIf="game.team?.[1]">
         {{ game.team?.[1].fullName }}
-        ({{game.team?.[1]?.[type] || 'N/A'}})
+        ({{ game.team?.[1]?.[type] || 'N/A' }})
       </div>
 
       <div *ngIf="!game.team?.[0] && !game.team?.[1]">
@@ -140,11 +142,11 @@
     >
       <div *ngIf="game.opponent?.[0]">
         {{ game.opponent?.[0].fullName }}
-        ({{game.opponent?.[0]?.[type] || 'N/A'}})
+        ({{ game.opponent?.[0]?.[type] || 'N/A' }})
       </div>
       <div *ngIf="game.opponent?.[1]">
         {{ game.opponent?.[1].fullName }}
-        ({{game.opponent?.[1]?.[type] || 'N/A'}})
+        ({{ game.opponent?.[1]?.[type] || 'N/A' }})
       </div>
 
       <div *ngIf="!game.team?.[0] && !game.team?.[1]">
@@ -179,14 +181,23 @@
       [ngClass]="{
         used: i === indexUsedForUpgrade,
         unused: i < indexUsedForUpgrade,
-        ignore: i > indexUsedForUpgrade
+        ignore: i > indexUsedForUpgrade,
+        upgrade: i === indexUsedForUpgrade && this.canUpgrade
       }"
     >
-      <ng-container [ngSwitch]="game.type">
+      <ng-container [ngSwitch]="game.type"> 
         <span *ngSwitchCase="'WON'"
-          ><span [matTooltip]="getTooltip(game, true)">{{
-            game.avgUpgrade | number : '.0-0'
-          }}</span></span
+          ><span
+            matTooltipClass="multi-line-tooltip"
+            [matTooltip]="
+              getTooltip(
+                game,
+                true,
+                i === indexUsedForUpgrade && this.canUpgrade
+              )
+            "
+            >{{ game.avgUpgrade | number: '.0-0' }}</span
+          ></span
         >
         <span *ngSwitchCase="'LOST_UPGRADE'">0</span>
         <span *ngSwitchCase="'LOST_DOWNGRADE'">0</span>
@@ -207,14 +218,23 @@
       [ngClass]="{
         used: i === indexUsedForDowngrade,
         unused: i < indexUsedForDowngrade,
-        ignore: i > indexUsedForDowngrade
+        ignore: i > indexUsedForDowngrade,
+        downgrade: i === indexUsedForDowngrade && this.canDowngrade
       }"
     >
       <ng-container [ngSwitch]="game.type">
         <span *ngSwitchCase="'WON'">
-          <span [matTooltip]="getTooltip(game, false)">{{
-            game.avgDowngrade | number : '.0-0'
-          }}</span></span
+          <span
+            matTooltipClass="multi-line-tooltip"
+            [matTooltip]="
+              getTooltip(
+                game,
+                false,
+                i === indexUsedForDowngrade && this.canDowngrade
+              )
+            "
+            >{{ game.avgDowngrade | number: '.0-0' }}</span
+          ></span
         >
         <span *ngSwitchCase="'LOST_UPGRADE'">-</span>
         <span *ngSwitchCase="'LOST_DOWNGRADE'">0</span>
@@ -287,7 +307,7 @@
       attr.data-label="{{ 'all.breakdown.date' | translate }}"
     >
       <span>{{
-        !!game.playedAt ? (game.playedAt | amDateFormat : this.dateFormat) : ''
+        !!game.playedAt ? (game.playedAt | amDateFormat: this.dateFormat) : ''
       }}</span>
     </mat-cell>
     <mat-footer-cell *matFooterCellDef></mat-footer-cell>
@@ -304,11 +324,11 @@
     >
       <div *ngIf="game.team?.[0]">
         {{ game.team?.[0].fullName }}
-        ({{game.team?.[0]?.[type] || 'N/A'}})
+        ({{ game.team?.[0]?.[type] || 'N/A' }})
       </div>
       <div *ngIf="game.team?.[1]">
         {{ game.team?.[1].fullName }}
-        ({{game.team?.[1]?.[type] || 'N/A'}})
+        ({{ game.team?.[1]?.[type] || 'N/A' }})
       </div>
 
       <div *ngIf="!game.team?.[0] && !game.team?.[1]">
@@ -329,11 +349,11 @@
     >
       <div *ngIf="game.opponent?.[0]">
         {{ game.opponent?.[0].fullName }}
-        ({{game.opponent?.[0]?.[type] || 'N/A'}})
+        ({{ game.opponent?.[0]?.[type] || 'N/A' }})
       </div>
       <div *ngIf="game.opponent?.[1]">
         {{ game.opponent?.[1].fullName }}
-        ({{game.opponent?.[1]?.[type] || 'N/A'}})
+        ({{ game.opponent?.[1]?.[type] || 'N/A' }})
       </div>
 
       <div *ngIf="!game.team?.[0] && !game.team?.[1]">
