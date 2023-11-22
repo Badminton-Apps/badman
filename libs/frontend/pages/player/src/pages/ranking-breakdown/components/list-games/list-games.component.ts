@@ -425,7 +425,7 @@ export class ListGamesComponent implements OnInit {
       devider = `${game.devideDowngrade}`;
     }
 
-    return `${game.totalPoints} / ${devider}`;
+    return `${game.totalPoints?.toLocaleString()} / ${devider}`;
   }
 
   deleteGame(game: GameBreakdown) {
