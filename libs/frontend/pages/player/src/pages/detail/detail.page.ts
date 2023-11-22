@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Injector,
   PLATFORM_ID,
   TransferState,
   computed,
   effect,
   inject,
-  signal,
+  signal
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -35,10 +34,9 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable, combineLatest, lastValueFrom, of } from 'rxjs';
+import { Observable, combineLatest, iif, lastValueFrom, of } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
-
 @Component({
   selector: 'badman-player-detail',
   templateUrl: './detail.page.html',
@@ -69,7 +67,6 @@ export class DetailPageComponent {
   // Dependencies
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private injector = inject(Injector);
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
   private apollo = inject(Apollo);
@@ -233,64 +230,79 @@ export class DetailPageComponent {
     this.systemService
       .getPrimarySystemId()
       .pipe(
-        switchMap((systemId) =>
-          this.apollo.query<{
-            player: { rankingLastPlaces: Partial<RankingPlace>[] };
-          }>({
-            query: gql`
-              query LastRankingPlace($playerId: ID!, $systemId: ID!) {
-                player(id: $playerId) {
-                  id
-                  rankingLastPlaces(where: { systemId: $systemId }) {
-                    id
-                    single
-                    singlePoints
-                    double
-                    doublePoints
-                    mix
-                    mixPoints
-                    rankingSystem {
+        switchMap((systemId) => {
+          const rankingPlace = this.player()?.rankingLastPlaces?.find(
+            (r) => r.systemId === systemId,
+          );
+
+          return iif(
+            () => rankingPlace !== undefined,
+            this.apollo
+              .query<{
+                player: { rankingLastPlaces: Partial<RankingPlace>[] };
+              }>({
+                query: gql`
+                  query LastRankingPlace($playerId: ID!, $systemId: ID!) {
+                    player(id: $playerId) {
                       id
-                      primary
+                      rankingLastPlaces(where: { systemId: $systemId }) {
+                        id
+                        single
+                        singlePoints
+                        double
+                        doublePoints
+                        mix
+                        mixPoints
+                        systemId
+                      }
                     }
                   }
-                }
-              }
-            `,
-            variables: {
-              playerId: this.player().id,
-              systemId,
-            },
-          }),
-        ),
+                `,
+                variables: {
+                  playerId: this.player().id,
+                  systemId,
+                },
+              })
+              .pipe(
+                map((result) => {
+                  if (
+                    (result?.data?.player?.rankingLastPlaces ?? []).length > 0
+                  ) {
+                    const findPrimary =
+                      result?.data.player.rankingLastPlaces.find(
+                        (r) => r.systemId === systemId,
+                      );
+
+                    if (findPrimary) {
+                      return new RankingPlace(findPrimary);
+                    }
+
+                    return new RankingPlace(
+                      result?.data.player.rankingLastPlaces[0],
+                    );
+                  }
+                  return undefined;
+                }),
+              ),
+            of(rankingPlace),
+          );
+        }),
         takeUntil(this.destroy$),
         transferState(
           `rankingPlayer-${this.player().id}`,
           this.stateTransfer,
           this.platformId,
         ),
-        map((result) => {
-          if ((result?.data?.player?.rankingLastPlaces ?? []).length > 0) {
-            const findPrimary = result?.data.player.rankingLastPlaces.find(
-              (r) => r.rankingSystem?.primary,
-            );
-
-            if (findPrimary) {
-              return new RankingPlace(findPrimary);
-            }
-
-            return new RankingPlace(result?.data.player.rankingLastPlaces[0]);
-          }
-
-          return {
-            single: 12,
-            double: 12,
-            mix: 12,
-          } as RankingPlace;
-        }),
       )
       .subscribe((rankingPlace) => {
-        this.rankingPlace.set(rankingPlace);
+        this.rankingPlace.set(
+          rankingPlace ??
+            ({
+              single: 12,
+              double: 12,
+              mix: 12,
+            } as RankingPlace),
+        );
       });
   }
 
