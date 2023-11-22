@@ -164,10 +164,10 @@ export class AddGameComponent implements OnInit {
       : this._getWinningPoints(this.p1t1Level.value);
 
     const team2Points = this.p2t2Level.value
-      ? (this._getWinningPoints(this.p1t2Level.value) +
+      ? (this._getWinningPoints(this.p2t2Level.value) +
           this._getWinningPoints(this.p2t2Level.value)) /
         2
-      : this._getWinningPoints(this.p1t2Level.value);
+      : this._getWinningPoints(this.p2t2Level.value);
 
     players.push({
       ...(this.p1t1.value as Partial<Player>),
@@ -194,29 +194,29 @@ export class AddGameComponent implements OnInit {
       differenceInLevel: t1won ? differenceInLevel : -differenceInLevel,
     });
 
-    if (this.p2t1.value != null) {
+    if (this.p2t1Level.value != null) {
       players.push({
         ...(this.p2t1.value as Partial<Player>),
-        [this.data.type]: this.p1t2Level.value,
+        [this.data.type]: this.p2t1Level.value,
         team: 1,
         player: 2,
       } as GamePlayer);
       rankingPoints.push({
-        playerId: this.p2t1.value.id,
+        playerId: this.p2t1?.value?.id,
         points: t1won ? team2Points : 0,
         differenceInLevel: t1won ? -differenceInLevel : differenceInLevel,
       });
     }
 
-    if (this.p2t2.value != null) {
+    if (this.p2t2Level.value != null) {
       players.push({
         ...(this.p2t2.value as Partial<Player>),
-        [this.data.type]: this.p1t2Level.value,
+        [this.data.type]: this.p2t2Level.value,
         team: 2,
         player: 2,
       } as GamePlayer);
       rankingPoints.push({
-        playerId: this.p2t2.value.id,
+        playerId: this.p2t2?.value?.id,
         points: t1won ? 0 : team1Points,
         differenceInLevel: t1won ? differenceInLevel : -differenceInLevel,
       });
