@@ -464,7 +464,7 @@ export class ListGamesComponent implements OnInit {
   getTooltip(
     game: GameBreakdown,
     isForUpgrade: boolean,
-    canChange: boolean,
+    usedPoints: boolean,
   ): string {
     let devider = '';
 
@@ -485,38 +485,40 @@ export class ListGamesComponent implements OnInit {
 
     let tooltip = `${game.totalPoints?.toLocaleString()} / ${devider}`;
 
-    if (isForUpgrade) {
-      const level = this.rankingPlace()?.[this.type] ?? 12;
+    if (usedPoints) {
+      if (isForUpgrade) {
+        const level = this.rankingPlace()?.[this.type] ?? 12;
 
-      tooltip += `\n\r\n\r${this.translateService.instant(
-        canChange
-          ? 'all.breakdown.can-upgrade'
-          : 'all.breakdown.can-not-upgrade',
-        {
-          level,
-          newLevel: level - 1,
-          points:
-            this.system.pointsToGoUp?.[
-              (this.system.amountOfLevels ?? 12) - level
-            ],
-        },
-      )}`;
-    } else {
-      const level = this.rankingPlace()?.[this.type] ?? 12;
+        tooltip += `\n\r\n\r${this.translateService.instant(
+          this.canUpgrade
+            ? 'all.breakdown.can-upgrade'
+            : 'all.breakdown.can-not-upgrade',
+          {
+            level,
+            newLevel: level - 1,
+            points:
+              this.system.pointsToGoUp?.[
+                (this.system.amountOfLevels ?? 12) - level
+              ],
+          },
+        )}`;
+      } else {
+        const level = this.rankingPlace()?.[this.type] ?? 12;
 
-      tooltip += `\n\r\n\r${this.translateService.instant(
-        canChange
-          ? 'all.breakdown.can-downgrade'
-          : 'all.breakdown.can-not-downgrade',
-        {
-          level,
-          newLevel: level + 1,
-          points:
-            this.system.pointsToGoDown?.[
-              (this.system.amountOfLevels ?? 12) - (level + 1)
-            ],
-        },
-      )}`;
+        tooltip += `\n\r\n\r${this.translateService.instant(
+          this.canDowngrade
+            ? 'all.breakdown.can-downgrade'
+            : 'all.breakdown.can-not-downgrade',
+          {
+            level,
+            newLevel: level + 1,
+            points:
+              this.system.pointsToGoDown?.[
+                (this.system.amountOfLevels ?? 12) - (level + 1)
+              ],
+          },
+        )}`;
+      }
     }
 
     return tooltip;
