@@ -123,10 +123,6 @@ export class RankingEvolutionComponent implements OnInit {
                 doublePointsDowngrade
                 double
                 updatePossible
-                rankingSystem {
-                  id
-                  name
-                }
               }
             }
           }
