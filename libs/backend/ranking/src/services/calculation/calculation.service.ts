@@ -26,13 +26,18 @@ export class CalculationService {
     periods?: number,
     transaction?: Transaction,
   ) {
+    const system = await RankingSystem.findByPk(systemId, {
+      include: [{ model: RankingGroup }],
+    });
+
+    if (!system) {
+      throw new NotFoundException(`${RankingSystem.name}: ${systemId}`);
+    }
+    system.runCurrently = true;
+    await system.save();
+
+
     try {
-      const system = await RankingSystem.findByPk(systemId, {
-        include: [{ model: RankingGroup }],
-      });
-      if (!system) {
-        throw new NotFoundException(`${RankingSystem.name}: ${systemId}`);
-      }
 
       this.logger.log(`Simulation for ${system.name}`);
 
@@ -153,6 +158,9 @@ export class CalculationService {
       }
       this.logger.error(e);
       throw e;
+    } finally {
+      system.runCurrently = false;
+      await system.save();
     }
   }
 
