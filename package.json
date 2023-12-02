@@ -274,11 +274,11 @@
     }
   },
   "volta": {
-    "node": "20.9.0",
+    "node": "20.10.0",
     "npm": "10.2.4"
   },
   "engines": {
-    "node": "20.10.0"
+    "node": "21.3.0"
   },
   "browserslist": [
     "defaults"
