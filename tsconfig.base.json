@@ -103,7 +103,7 @@
       "@badman/frontend-utils": ["libs/frontend/modules/utils/src/index.ts"],
       "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],
       "@badman/utils": ["libs/utils/src/index.ts"],
-      "backend-orchestrator": ["libs/backend/orchestrator /src/index.ts"]
+      "@badman/backend-orchestrator": ["libs/backend/orchestrator/src/index.ts"]
     },
     "strictNullChecks": true,
     "strict": true

@@ -16,7 +16,7 @@ import { TranslateModule } from '@badman/backend-translate';
 import { TwizzitModule } from '@badman/backend-twizzit';
 import { configSchema, parseconfig } from '@badman/utils';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { OrchestratorModule } from 'backend-orchestrator';
+import { OrchestratorModule } from '@badman/backend-orchestrator';
 import { join } from 'path';
 import versionPackage from '../version.json';
 
