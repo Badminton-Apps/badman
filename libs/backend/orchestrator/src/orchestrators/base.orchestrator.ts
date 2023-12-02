@@ -12,6 +12,8 @@ export class OrchestratorBase {
 
   @OnGlobalQueueWaiting()
   queueWaiting() {
+    this.logger.log(`[${this.constructor.name}] Queue waiting`);
+
     if (!this.hasStarted) {
       this.startServer();
       this.hasStarted = true;
@@ -21,6 +23,8 @@ export class OrchestratorBase {
 
   @OnGlobalQueueDrained()
   finished() {
+    this.logger.log(`[${this.constructor.name}] Queue drained`);
+    
     clearTimeout(this.timeout);
 
     this.timeout = setTimeout(() => {
