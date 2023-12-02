@@ -20,21 +20,24 @@ export class OrchestratorSimulation extends OrchestratorBase {
 
     // if any jobs are left in the queue, start the server
     this._simulationQueue.getJobCounts().then((counts) => {
+      this.logger.log(
+        `[SIM] Found ${counts.waiting} jobs in queue, starting worker`,
+      );
       if (counts.waiting > 0) {
         super.queueWaiting();
       } else {
-        super.finished();
+        this.stopServer();
       }
     });
   }
 
   override startServer(): void {
-    this.logger.log(`[SYNC] Starting worker for queue ${SimulationQueue}`);
+    this.logger.log(`[SIM] Starting worker for queue ${SimulationQueue}`);
     this.renderService.startService('simulation');
   }
 
   override stopServer(): void {
-    this.logger.log(`[SYNC] Stopping worker for queue ${SimulationQueue}`);
+    this.logger.log(`[SIM] Stopping worker for queue ${SimulationQueue}`);
     this.renderService.suspendService('simulation');
   }
 }

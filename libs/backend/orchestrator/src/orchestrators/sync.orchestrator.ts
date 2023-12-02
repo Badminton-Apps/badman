@@ -21,11 +21,13 @@ export class OrchestratorSync extends OrchestratorBase {
     // if any jobs are left in the queue, start the server
     this._syncQueue.getJobCounts().then((counts) => {
       if (counts.waiting > 0) {
-        this.logger.log(`[SYNC] Found ${counts.waiting} jobs in queue, starting worker`);
+        this.logger.log(
+          `[SYNC] Found ${counts.waiting} jobs in queue, starting worker`,
+        );
         super.queueWaiting();
-      } else{
+      } else {
         this.logger.log(`[SYNC] No jobs in queue, stopping worker`);
-        super.finished();
+        this.stopServer();
       }
     });
   }
@@ -38,5 +40,5 @@ export class OrchestratorSync extends OrchestratorBase {
   override stopServer(): void {
     this.logger.log(`[SYNC] Stopping worker for queue ${SyncQueue}`);
     this.renderService.suspendService('sync');
-  }
+  } 
 }
