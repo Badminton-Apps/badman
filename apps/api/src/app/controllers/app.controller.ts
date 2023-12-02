@@ -24,8 +24,8 @@ export class AppController {
   private readonly logger = new Logger(AppController.name);
 
   constructor(
-    @InjectQueue(SimulationQueue) private rankingSim: Queue,
-    @InjectQueue(SyncQueue) private rankingSync: Queue,
+    @InjectQueue(SimulationQueue) private _simulationQueue: Queue,
+    @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private cpGen: CpGeneratorService,
     private planner: PlannerService,
   ) {}
@@ -42,12 +42,12 @@ export class AppController {
       removeOnFail: boolean;
     },
   ) {
-    this.logger.debug({
-      message: 'Queueing job',
-      args: args.job,
-      user: user?.toJSON(),
-      hasPerm: await user.hasAnyPermission(['change:job']),
-    });
+    // this.logger.debug({
+    //   message: 'Queueing job',
+    //   args: args.job,
+    //   user: user?.toJSON(),
+    //   hasPerm: await user.hasAnyPermission(['change:job']),
+    // });
 
     if (!(await user.hasAnyPermission(['change:job']))) {
       throw new UnauthorizedException('You do not have permission to do this');
@@ -62,12 +62,12 @@ export class AppController {
 
     switch (args.queue) {
       case SimulationQueue:
-        return this.rankingSim.add(args.job, args.jobArgs, {
+        return this._simulationQueue.add(args.job, args.jobArgs, {
           removeOnComplete: args.removeOnComplete,
           removeOnFail: args.removeOnFail,
         });
       case SyncQueue:
-        return this.rankingSync.add(args.job, args.jobArgs, {
+        return this._syncQueue.add(args.job, args.jobArgs, {
           removeOnComplete: args.removeOnComplete,
           removeOnFail: args.removeOnFail,
         });
@@ -108,4 +108,6 @@ export class AppController {
     // Respond ok for now
     res.status(200).send(result);
   }
+
+ 
 }

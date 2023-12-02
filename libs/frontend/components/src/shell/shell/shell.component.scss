@@ -61,6 +61,14 @@
     }
   }
 
+  mat-sidenav-content {
+    margin-left: 200px;
+
+    &.mobile {
+      margin-left: 0;
+    }
+  }
+
   .content {
     height: calc(100% - 37px);
     overflow: scroll;

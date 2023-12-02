@@ -241,6 +241,7 @@ export class ExportBBFPlayers {
       attributes: ['id', 'firstName', 'lastName', 'memberId'],
       where: {
         [Op.or]: orClause,
+        competitionPlayer: true,
       },
       include: [
         {
