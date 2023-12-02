@@ -1,31 +1,29 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import api from 'api';
 
 @Injectable()
 export class RenderService {
-  private renderApi: {
-    auth: (apiKey: string) => void;
-    getService: (serviceId: { serviceId: string }) => Promise<{
-      data: {
-        id: string;
-        suspended: 'suspended' | 'not_suspended';
-      };
-    }>;
-    resumeService: (serviceId: { serviceId: string }) => Promise<void>;
-    suspendService: (serviceId: { serviceId: string }) => Promise<void>;
-  };
   private _logger = new Logger(RenderService.name);
+  private options!: {
+    method: string;
+    headers: {
+      accept: string;
+      authorization: string;
+    };
+  };
+  private renderApi!: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.renderApi = api(
-      this.configService.get<string>('RENDER_API') as string,
-    );
-    if (!this.renderApi) {
-      throw new Error('Render API not found');
-    }
-
-    this.renderApi.auth(this.configService.get<string>('RENDER_API_KEY')!);
+    this.options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        authorization: `Bearer ${this.configService.get<string>(
+          'RENDER_API_KEY',
+        )}`,
+      },
+    };
+    this.renderApi = this.configService.get<string>('RENDER_API_URL')!;
   }
 
   async startService(serviceName: 'simulation' | 'sync') {
@@ -53,16 +51,17 @@ export class RenderService {
       throw new Error(`Service ${serviceName} not found`);
     }
 
-    const service = await this.renderApi.getService({ serviceId });
-    this._logger.debug(
-      `Service ${serviceName} status: ${service.data.suspended}`,
-    );
-    if (service.data.suspended == 'suspended') {
+    const serviceData = await this._getSerivce(serviceId, serviceName);
+
+    if (serviceData.suspended == 'suspended') {
       try {
         this._logger.debug(
           `Starting service ${serviceName} with id ${serviceId}`,
         );
-        await this.renderApi.resumeService({ serviceId });
+        await fetch(
+          `${this.renderApi}/services/${serviceId}/resume`,
+          this.options,
+        );
         this._logger.log(`Service ${serviceName} started`);
       } catch (err: unknown) {
         this._logger.error(`Service ${serviceName} failed to start`, err);
@@ -89,7 +88,8 @@ export class RenderService {
       throw new Error(`Service ${serviceName} not found`);
     }
 
-    const service = await this.renderApi.getService({ serviceId });
+    const service = await this._getSerivce(serviceId, serviceName);
+
     this._logger.debug(
       `Service ${serviceName} status: ${service.data.suspended}`,
     );
@@ -98,7 +98,10 @@ export class RenderService {
         this._logger.debug(
           `Suspending service ${serviceName} with id ${serviceId}`,
         );
-        await this.renderApi.suspendService({ serviceId });
+        await fetch(
+          `${this.renderApi}/services/${serviceId}/suspend`,
+          this.options,
+        );
         this._logger.log(`Service ${serviceName} suspended`);
       } catch (err: unknown) {
         this._logger.error(`Service ${serviceName} failed to suspend`, err);
@@ -106,5 +109,19 @@ export class RenderService {
     } else {
       this._logger.debug(`Service ${serviceName} already suspended`);
     }
+  }
+
+  private async _getSerivce(serviceId: string, serviceName: string) {
+    const service = await fetch(
+      `${this.renderApi}/services/${serviceId}`,
+      this.options,
+    );
+
+    if (!service.ok) {
+      throw new Error(`Service ${serviceName} not found`);
+    }
+
+    const serviceData = await service.json();
+    return serviceData;
   }
 }
