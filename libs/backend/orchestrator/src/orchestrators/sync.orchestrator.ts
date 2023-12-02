@@ -13,32 +13,32 @@ export class OrchestratorSync extends OrchestratorBase {
 
   constructor(
     private readonly renderService: RenderService,
-    @InjectQueue(SyncQueue) private _syncQueue: Queue,
+    @InjectQueue(SyncQueue) private _queue: Queue,
   ) {
     super();
     this.logger.log(`${SyncQueue} Orchestrator created`);
 
     // if any jobs are left in the queue, start the server
-    this._syncQueue.getJobCounts().then((counts) => {
+    this._queue.getJobCounts().then((counts) => {
       if (counts.waiting > 0) {
         this.logger.log(
-          `[SYNC] Found ${counts.waiting} jobs in queue, starting worker`,
+          `[${SyncQueue}] Found ${counts.waiting} jobs in queue, starting worker`,
         );
         super.queueWaiting();
       } else {
-        this.logger.log(`[SYNC] No jobs in queue, stopping worker`);
+        this.logger.log(`[${SyncQueue}] No jobs in queue, stopping worker`);
         this.stopServer();
       }
     });
   }
 
   override startServer(): void {
-    this.logger.log(`[SYNC] Starting worker for queue ${SyncQueue}`);
+    this.logger.log(`[${SyncQueue}] Starting worker for queue ${SyncQueue}`);
     this.renderService.startService('sync');
   }
 
   override stopServer(): void {
-    this.logger.log(`[SYNC] Stopping worker for queue ${SyncQueue}`);
+    this.logger.log(`[${SyncQueue}] Stopping worker for queue ${SyncQueue}`);
     this.renderService.suspendService('sync');
   } 
 }

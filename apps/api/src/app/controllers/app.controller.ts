@@ -42,12 +42,12 @@ export class AppController {
       removeOnFail: boolean;
     },
   ) {
-    // this.logger.debug({
-    //   message: 'Queueing job',
-    //   args: args.job,
-    //   user: user?.toJSON(),
-    //   hasPerm: await user.hasAnyPermission(['change:job']),
-    // });
+    this.logger.debug({
+      message: 'Queueing job',
+      args: args.job,
+      user: user?.fullName,
+      hasPerm: await user.hasAnyPermission(['change:job']),
+    });
 
     if (!(await user.hasAnyPermission(['change:job']))) {
       throw new UnauthorizedException('You do not have permission to do this');
