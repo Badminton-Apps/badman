@@ -4,18 +4,37 @@ import api from 'api';
 
 @Injectable()
 export class RenderService {
-  private renderApi = api('@render-api/v1.0');
+  private renderApi: {
+    auth: (apiKey: string) => void;
+    getService: (serviceId: { serviceId: string }) => Promise<{
+      data: {
+        id: string;
+        suspended: 'suspended' | 'not_suspended';
+      };
+    }>;
+    resumeService: (serviceId: { serviceId: string }) => Promise<void>;
+    suspendService: (serviceId: { serviceId: string }) => Promise<void>;
+  };
   private _logger = new Logger(RenderService.name);
 
   constructor(private readonly configService: ConfigService) {
-    this.renderApi.auth(this.configService.get<string>('RENDER_API_KEY'));
+    this.renderApi = api(
+      this.configService.get<string>('RENDER_API') as string,
+    );
+    if (!this.renderApi) {
+      throw new Error('Render API not found');
+    }
+
+    this.renderApi.auth(this.configService.get<string>('RENDER_API_KEY')!);
   }
 
   async startService(serviceName: 'simulation' | 'sync') {
     let serviceId: string | undefined;
 
     if (this.configService.get<string>('NODE_ENV') === 'development') {
-      this._logger.debug(`Skipping startService for ${serviceName} in development`);
+      this._logger.debug(
+        `Skipping startService for ${serviceName} in development`,
+      );
       return;
     }
 
@@ -35,8 +54,10 @@ export class RenderService {
     }
 
     const service = await this.renderApi.getService({ serviceId });
-    this._logger.debug(`Service ${serviceName} status: ${service.data.suspended}`);
-    if (service.data.suspended == 'suspened') {
+    this._logger.debug(
+      `Service ${serviceName} status: ${service.data.suspended}`,
+    );
+    if (service.data.suspended == 'suspended') {
       try {
         this._logger.debug(
           `Starting service ${serviceName} with id ${serviceId}`,
@@ -69,7 +90,9 @@ export class RenderService {
     }
 
     const service = await this.renderApi.getService({ serviceId });
-    this._logger.debug(`Service ${serviceName} status: ${service.data.suspended}`);
+    this._logger.debug(
+      `Service ${serviceName} status: ${service.data.suspended}`,
+    );
     if (service.data.suspended == 'not_suspended') {
       try {
         this._logger.debug(
