@@ -152,6 +152,11 @@ jobs:
             curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
           fi
 
+          # check if the affected projects contains worker-sync
+          if [[ $affectedProjects == *"worker-ranking"* ]]; then
+            curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_WORKER_RANKING_HOOK  || secrets.BETA_WORKER_RANKING_HOOK }}
+          fi
+
       ## Vercel deploys automatically on push to branch with Chore: prefix
 
   merge-main-into-dev:
@@ -192,6 +197,11 @@ jobs:
           # check if the affected projects contains worker-sync
           if [[ $affectedProjects == *"worker-sync"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_SYNC_HOOK }}
+          fi
+
+          # check if the affected projects contains worker-sync
+          if [[ $affectedProjects == *"worker-ranking"* ]]; then
+            curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_RANKING_HOOK }}
           fi
 
   e2e:
