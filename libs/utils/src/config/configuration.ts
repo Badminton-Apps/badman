@@ -130,7 +130,7 @@ export const configSchema = Joi.object({
   RENDER_API_KEY: Joi.string().required(),
   RENDER_API: Joi.string().required(),
   RENDER_WAIT_TIME: Joi.number().integer().optional().default(2_100_000),
-  SERVICE_SIMULATION: Joi.string().required(),
+  SERVICE_RANKING: Joi.string().required(),
   SERVICE_SYNC: Joi.string().required(),
 });
 
