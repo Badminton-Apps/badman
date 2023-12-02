@@ -12,7 +12,6 @@ RUN apk add --no-cache --virtual .build-deps \
 RUN npm ci
 # Get the configuration from the environment variables
 ARG CONFIGURATION=production
-RUN npx nx reset
 RUN npm run build:server -- --configuration=$CONFIGURATION
 
 # Production stage
