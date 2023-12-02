@@ -1,6 +1,6 @@
 /* eslint-disable */
-module.exports = {
-  displayName: 'notifications',
+export default {
+  displayName: 'health',
   preset: '../../../jest.preset.js',
   globals: {},
   testEnvironment: 'node',
@@ -13,5 +13,5 @@ module.exports = {
     ],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../../coverage/libs/backend/notifications',
+  coverageDirectory: '../../../coverage/libs/backend/health',
 };
