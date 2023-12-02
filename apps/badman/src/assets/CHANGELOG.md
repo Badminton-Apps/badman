@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.3...v6.129.0-beta.4) (2023-12-02)
+
+
+### Bug Fixes
+
+* removing the nx reset again. ([81d1204](https://github.com/Badminton-Apps/badman/commit/81d120457dca7eea8e3d503faf194fab24f70ede))
+
 ## [6.129.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.2...v6.129.0-beta.3) (2023-12-02)
 
 
