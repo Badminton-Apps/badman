@@ -8,7 +8,6 @@ import { VisualModule } from '@badman/backend-visual';
 import { SearchModule } from '@badman/backend-search';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ScheduleModule } from '@nestjs/schedule';
 import versionPackage from '../version.json';
 import {
   CheckEncounterProcessor,
@@ -45,7 +44,6 @@ import { configSchema, parseconfig } from '@badman/utils';
     }),
     DatabaseModule,
     RankingModule,
-    ScheduleModule.forRoot(),
     QueueModule,
     SearchModule,
     NotificationsModule,
