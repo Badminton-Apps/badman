@@ -21,8 +21,10 @@ export class OrchestratorSync extends OrchestratorBase {
     // if any jobs are left in the queue, start the server
     this._syncQueue.getJobCounts().then((counts) => {
       if (counts.waiting > 0) {
+        this.logger.log(`[SYNC] Found ${counts.waiting} jobs in queue, starting worker`);
         super.queueWaiting();
       } else{
+        this.logger.log(`[SYNC] No jobs in queue, stopping worker`);
         super.finished();
       }
     });
