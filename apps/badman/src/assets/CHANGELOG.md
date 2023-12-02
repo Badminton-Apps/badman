@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.2...v6.129.0-beta.3) (2023-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency sequelize-typescript to v2.1.6 [security] ([2d9ff58](https://github.com/Badminton-Apps/badman/commit/2d9ff58cf42d090618490b05bbef61b6fa84f4b9))
+
 ## [6.129.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.1...v6.129.0-beta.2) (2023-12-02)
 
 
