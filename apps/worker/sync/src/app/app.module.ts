@@ -10,7 +10,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import versionPackage from '../version.json';
-import { CronService } from './crons';
 import {
   CheckEncounterProcessor,
   CheckRankingProcessor,
@@ -32,8 +31,6 @@ import { configSchema, parseconfig } from '@badman/utils';
     EnterScoresProcessor,
     CheckEncounterProcessor,
     CheckRankingProcessor,
-
-    CronService,
   ],
   imports: [
     ConfigModule.forRoot({
