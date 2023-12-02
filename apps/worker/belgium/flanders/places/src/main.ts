@@ -1,19 +1,13 @@
-import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { AppModule } from './app/app.module';
 import { ClusterService } from '@badman/backend-cluster';
+import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { cpus } from 'os';
+import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.TCP,
-      options: {
-        port: 4002,
-      },
-    },
-  );
+  const app =
+    await NestFactory.createMicroservice<MicroserviceOptions>(AppModule);
   await app.listen();
 }
 // bootstrap();
-ClusterService.clusterize(bootstrap, 20);
+ClusterService.clusterize(bootstrap, cpus().length);
