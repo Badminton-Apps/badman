@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.128.1...v6.129.0-beta.0) (2023-12-02)
+
+
+### Features
+
+* deploying ranking if needed ([2bde781](https://github.com/Badminton-Apps/badman/commit/2bde781d0f66e5d6ff8098a1348ce489a9797dc2))
+* set running to true when running ([ec1e186](https://github.com/Badminton-Apps/badman/commit/ec1e1866c7a32ba28e8367cf693eabafdb57a019))
+* setting cpu's based on cpu's ([1d27f45](https://github.com/Badminton-Apps/badman/commit/1d27f45b0a1bb5c5f900d1dced03d02e2ae97650))
+* start and suspend services when needed ([085d743](https://github.com/Badminton-Apps/badman/commit/085d74365cf827d1ec51b2eee9ee8b4af1a0d07a))
+
+
+### Bug Fixes
+
+* no need for system ([7372d1d](https://github.com/Badminton-Apps/badman/commit/7372d1d4f648e8380083f5cdd05163e6877c103e))
+
 ### [6.128.1](https://github.com/Badminton-Apps/badman/compare/v6.128.0...v6.128.1) (2023-11-22)
 
 
