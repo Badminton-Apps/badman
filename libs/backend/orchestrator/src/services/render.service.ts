@@ -72,6 +72,13 @@ export class RenderService {
   }
 
   async suspendService(serviceName: 'simulation' | 'sync') {
+    if (this.configService.get<string>('NODE_ENV') === 'development') {
+      this._logger.debug(
+        `Skipping suspendService for ${serviceName} in development`,
+      );
+      return;
+    }
+
     let serviceId: string | undefined;
     switch (serviceName) {
       case 'simulation':
@@ -88,12 +95,12 @@ export class RenderService {
       throw new Error(`Service ${serviceName} not found`);
     }
 
-    const service = await this._getSerivce(serviceId, serviceName);
+    const serviceData = await this._getSerivce(serviceId, serviceName);
 
     this._logger.debug(
-      `Service ${serviceName} status: ${service.data.suspended}`,
+      `Service ${serviceName} status: ${serviceData.suspended}`,
     );
-    if (service.data.suspended == 'not_suspended') {
+    if (serviceData.suspended == 'not_suspended') {
       try {
         this._logger.debug(
           `Suspending service ${serviceName} with id ${serviceId}`,
