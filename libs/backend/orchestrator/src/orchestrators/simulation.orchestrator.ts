@@ -13,19 +13,20 @@ export class OrchestratorSimulation extends OrchestratorBase {
 
   constructor(
     private readonly renderService: RenderService,
-    @InjectQueue(SimulationQueue) private _simulationQueue: Queue,
+    @InjectQueue(SimulationQueue) private _queue: Queue,
   ) {
     super();
     this.logger.log(`${SimulationQueue} Orchestrator created`);
 
     // if any jobs are left in the queue, start the server
-    this._simulationQueue.getJobCounts().then((counts) => {
-      this.logger.log(
-        `[SIM] Found ${counts.waiting} jobs in queue, starting worker`,
-      );
+    this._queue.getJobCounts().then((counts) => {
       if (counts.waiting > 0) {
+        this.logger.log(
+          `[${SimulationQueue}] Found ${counts.waiting} jobs in queue, starting worker`,
+        );
         super.queueWaiting();
       } else {
+        this.logger.log(`[${SimulationQueue}] No jobs in queue, stopping worker`);
         this.stopServer();
       }
     });
