@@ -1,10 +1,10 @@
+import { SyncQueue } from '@badman/backend-queue';
 import {
   OnGlobalQueueError,
   OnGlobalQueueFailed,
   Processor,
 } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import { SyncQueue } from '@badman/backend-queue';
 
 @Processor({
   name: SyncQueue,
@@ -21,4 +21,11 @@ export class GlobalConsumer {
   onError(job: string, err: Error) {
     this.logger.error(`Job ${job} failed`, err);
   }
+
+  // @OnQueueActive()
+  // handleQueueActive(job: Job) {
+  //   this.logger.log(`[SYNC] Queue ${job.name} is active`);
+
+  //   // super.handleQueueActive(job);
+  // }
 }

@@ -12,6 +12,7 @@ import { Sync, SyncQueue } from '@badman/backend-queue';
 import { SearchService } from '@badman/backend-search';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
+import { Job } from 'bull';
 import moment from 'moment';
 import { Browser, Page } from 'puppeteer';
 import { Op } from 'sequelize';
@@ -23,7 +24,6 @@ import {
   gotoEncounterPage,
   hasTime,
 } from './pupeteer';
-import { Job } from 'bull';
 
 const includes = [
   {
@@ -72,7 +72,7 @@ export class CheckEncounterProcessor {
   ) {}
 
   @Process(Sync.CheckEncounters)
-  async syncEncounters(): Promise<void> {
+  async syncEncounters() {
     this.logger.log('Syncing encounters');
     let browser: Browser | undefined;
     try {
@@ -150,6 +150,8 @@ export class CheckEncounterProcessor {
 
       this.logger.log('Synced encounters');
     }
+
+    return true;
   }
 
   @Process(Sync.CheckEncounter)
@@ -244,12 +246,10 @@ export class CheckEncounterProcessor {
           this.logger.debug(
             `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`,
           );
-          
 
           encounter.startHour = startedOn || undefined;
           encounter.endHour = endedOn || undefined;
           encounter.shuttle = usedShuttle || undefined;
-
 
           if (gameLeader && gameLeader.length > 0) {
             const gameLeaderPlayer = await this.searchService.searchPlayers(
