@@ -278,7 +278,7 @@
     "npm": "10.2.4"
   },
   "engines": {
-    "npm": ">=8.0.0"
+    "node": "20.10.0"
   },
   "browserslist": [
     "defaults"
