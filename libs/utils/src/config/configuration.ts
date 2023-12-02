@@ -126,6 +126,12 @@ export const configSchema = Joi.object({
   VERCEL_ANALYTICS_ID: Joi.string(),
 
   GRAPH_ID: Joi.string().required(),
+
+  RENDER_API_KEY: Joi.string().required(),
+  RENDER_API: Joi.string().required(),
+  RENDER_WAIT_TIME: Joi.number().integer().optional().default(2_100_000),
+  SERVICE_SIMULATION: Joi.string().required(),
+  SERVICE_SYNC: Joi.string().required(),
 });
 
 export const parseconfig = () => ({
