@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.5...v6.129.0-beta.6) (2023-12-02)
+
+
+### Features
+
+* using a normal API for the render ([b401c5e](https://github.com/Badminton-Apps/badman/commit/b401c5e1640e295a9dfd4146e6f4632957a4e8ca))
+
+
+### Bug Fixes
+
+* get the right config helps ([baddefe](https://github.com/Badminton-Apps/badman/commit/baddefe8cf2d1400de286e51c16a1ea544991ee8))
+
 ## [6.129.0-beta.5](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.4...v6.129.0-beta.5) (2023-12-02)
 
 
