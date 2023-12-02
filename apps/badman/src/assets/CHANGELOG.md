@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.1...v6.129.0-beta.2) (2023-12-02)
+
+
+### Bug Fixes
+
+* adding some debug logs on launch ([4286374](https://github.com/Badminton-Apps/badman/commit/4286374f49fbcb67f6be242f30b0ea2f12322f9f))
+* nx is doing weird stuff ([512cb02](https://github.com/Badminton-Apps/badman/commit/512cb02e53773fadfa53d3a344114d34035b285e))
+
 ## [6.129.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.0...v6.129.0-beta.1) (2023-12-02)
 
 
