@@ -1,6 +1,7 @@
+import { ClusterService } from '@badman/backend-cluster';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions } from '@nestjs/microservices';
-import { ClusterService } from '@badman/backend-cluster';
+import { cpus } from 'os';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
@@ -9,4 +10,4 @@ async function bootstrap() {
   await app.listen();
 }
 // bootstrap();
-ClusterService.clusterize(bootstrap, 20);
+ClusterService.clusterize(bootstrap, cpus().length);
