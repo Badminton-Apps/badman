@@ -55,7 +55,7 @@ export class RenderService {
     let serviceId: string | undefined;
     switch (serviceName) {
       case 'simulation':
-        serviceId = this.configService.get('SERVICE_SIMULATION');
+        serviceId = this.configService.get('SERVICE_RANKING');
         break;
       case 'sync':
         serviceId = this.configService.get('SERVICE_SYNC');
