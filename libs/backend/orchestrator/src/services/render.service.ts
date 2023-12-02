@@ -4,24 +4,18 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class RenderService {
   private _logger = new Logger(RenderService.name);
-  private options!: {
-    method: string;
-    headers: {
-      accept: string;
-      authorization: string;
-    };
+  private headers!: {
+    accept: string;
+    authorization: string;
   };
   private renderApi!: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        authorization: `Bearer ${this.configService.get<string>(
-          'RENDER_API_KEY',
-        )}`,
-      },
+    this.headers = {
+      accept: 'application/json',
+      authorization: `Bearer ${this.configService.get<string>(
+        'RENDER_API_KEY',
+      )}`,
     };
     this.renderApi = this.configService.get<string>('RENDER_API_URL')!;
   }
@@ -58,10 +52,10 @@ export class RenderService {
         this._logger.debug(
           `Starting service ${serviceName} with id ${serviceId}`,
         );
-        await fetch(
-          `${this.renderApi}/services/${serviceId}/resume`,
-          this.options,
-        );
+        await fetch(`${this.renderApi}/services/${serviceId}/resume`, {
+          method: 'POST',
+          headers: this.headers,
+        });
         this._logger.log(`Service ${serviceName} started`);
       } catch (err: unknown) {
         this._logger.error(`Service ${serviceName} failed to start`, err);
@@ -105,10 +99,10 @@ export class RenderService {
         this._logger.debug(
           `Suspending service ${serviceName} with id ${serviceId}`,
         );
-        await fetch(
-          `${this.renderApi}/services/${serviceId}/suspend`,
-          this.options,
-        );
+        await fetch(`${this.renderApi}/services/${serviceId}/suspend`, {
+          method: 'POST',
+          headers: this.headers,
+        });
         this._logger.log(`Service ${serviceName} suspended`);
       } catch (err: unknown) {
         this._logger.error(`Service ${serviceName} failed to suspend`, err);
@@ -119,10 +113,10 @@ export class RenderService {
   }
 
   private async _getSerivce(serviceId: string, serviceName: string) {
-    const service = await fetch(
-      `${this.renderApi}/services/${serviceId}`,
-      this.options,
-    );
+    const service = await fetch(`${this.renderApi}/services/${serviceId}`, {
+      method: 'GET',
+      headers: this.headers,
+    });
 
     if (!service.ok) {
       throw new Error(`Service ${serviceName} not found`);
