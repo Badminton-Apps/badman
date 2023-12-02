@@ -1,35 +1,32 @@
 {
   "name": "backend-orchestrator",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/backend/orchestrator /src",
+  "sourceRoot": "libs/backend/orchestrator/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/js:swc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/backend/orchestrator ",
-        "tsConfig": "libs/backend/orchestrator /tsconfig.lib.json",
-        "packageJson": "libs/backend/orchestrator /package.json",
-        "main": "libs/backend/orchestrator /src/index.ts",
-        "assets": ["libs/backend/orchestrator /*.md"]
+        "outputPath": "dist/libs/backend/orchestrator",
+        "tsConfig": "libs/backend/orchestrator/tsconfig.lib.json",
+        "packageJson": "libs/backend/orchestrator/package.json",
+        "main": "libs/backend/orchestrator/src/index.ts",
+        "assets": ["libs/backend-orchestrator/*.md"]
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "libs/backend/orchestrator /**/*.ts",
-          "libs/backend/orchestrator /package.json"
-        ]
+        "lintFilePatterns": ["libs/backend/orchestrator/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/orchestrator"],
       "options": {
-        "jestConfig": "libs/backend/orchestrator /jest.config.ts"
+        "jestConfig": "libs/backend/orchestrator/jest.config.ts"
       }
     }
   },
