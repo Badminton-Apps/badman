@@ -22,7 +22,7 @@ export class CronService {
       this.configSerive.get<string>('CRON_SYNC_EVENTS') ?? '5 0/4 * * *';
 
     this.cronSyncRanking =
-      this.configSerive.get<string>('CRON_SYNC_RANKING') ?? '0 */4 * * MON-TUE';
+      this.configSerive.get<string>('CRON_SYNC_RANKING') ?? '0 0/4 * * MON-TUE';
 
     this.cronCheckEncounters =
       this.configSerive.get<string>('CRON_CHECK_ENCOUNTERS') ?? '15 0/4 * * *';
