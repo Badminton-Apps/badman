@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.8...v6.129.0-beta.9) (2023-12-03)
+
+
+### Features
+
+* some more testing ([9d11471](https://github.com/Badminton-Apps/badman/commit/9d114713ccd2fadf116dc2523fccbfe86d3f0dd1))
+
+
+### Bug Fixes
+
+* puppeteer in different location ([d42f0fa](https://github.com/Badminton-Apps/badman/commit/d42f0fa7bd88696d9bacb47b21ae11a597586840))
+
 ## [6.129.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.7...v6.129.0-beta.8) (2023-12-02)
 
 
