@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.10](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.9...v6.129.0-beta.10) (2023-12-03)
+
+
+### Bug Fixes
+
+* should be 0/4 ([cd5ae80](https://github.com/Badminton-Apps/badman/commit/cd5ae80a65acdf211314370b1b70610e16e88ac7))
+* should pass the config along ([d066d1e](https://github.com/Badminton-Apps/badman/commit/d066d1e2f1f06a9a3d067b6e6d0498bc4b85798d))
+* should use the variable if I want to ([0afc7a8](https://github.com/Badminton-Apps/badman/commit/0afc7a8850062f0395d7c0c97df45b04a6c18665))
+
 ## [6.129.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.8...v6.129.0-beta.9) (2023-12-03)
 
 
