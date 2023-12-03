@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { Queue } from 'bull';
 import { OrchestratorBase } from './base.orchestrator';
 import { RenderService } from '../services/render.service';
+import { ConfigService } from '@nestjs/config';
 
 @Processor({
   name: SimulationQueue,
@@ -14,8 +15,9 @@ export class OrchestratorSimulation extends OrchestratorBase {
   constructor(
     private readonly renderService: RenderService,
     @InjectQueue(SimulationQueue) private _queue: Queue,
+    configSerivce: ConfigService,
   ) {
-    super();
+    super(configSerivce);
     this.logger.log(`${SimulationQueue} Orchestrator created`);
 
     // if any jobs are left in the queue, start the server
@@ -26,7 +28,9 @@ export class OrchestratorSimulation extends OrchestratorBase {
         );
         super.queueWaiting();
       } else {
-        this.logger.log(`[${SimulationQueue}] No jobs in queue, stopping worker`);
+        this.logger.log(
+          `[${SimulationQueue}] No jobs in queue, stopping worker`,
+        );
         this.stopServer();
       }
     });
