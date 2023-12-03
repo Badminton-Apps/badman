@@ -19,13 +19,13 @@ export class CronService {
     readonly configSerive: ConfigService,
   ) {
     this.cronSyncEvents =
-      this.configSerive.get<string>('CRON_SYNC_EVENTS') ?? '0 0/4 * * *';
+      this.configSerive.get<string>('CRON_SYNC_EVENTS') ?? '5 0/4 * * *';
 
     this.cronSyncRanking =
-      this.configSerive.get<string>('CRON_SYNC_RANKING') ?? '30 */4 * * MON-TUE';
+      this.configSerive.get<string>('CRON_SYNC_RANKING') ?? '0 */4 * * MON-TUE';
 
     this.cronCheckEncounters =
-      this.configSerive.get<string>('CRON_CHECK_ENCOUNTERS') ?? '30 0/4 * * *';
+      this.configSerive.get<string>('CRON_CHECK_ENCOUNTERS') ?? '15 0/4 * * *';
 
     this.logger.log(`Scheduling cron jobs`);
 
