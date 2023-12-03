@@ -1,10 +1,20 @@
 import { OnGlobalQueueDrained, OnGlobalQueueWaiting } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 export class OrchestratorBase {
   protected logger = new Logger(OrchestratorBase.name);
   private timeout?: NodeJS.Timeout;
+  private timeoutTime = 1000 * 60 * 5; // 5 minutes
   private hasStarted = false;
+
+  constructor(private readonly configSerivce: ConfigService) {
+    const configuredTimeout = this.configSerivce.get<string>('RENDER_WAIT_TIME');
+
+    if (configuredTimeout) {
+      this.timeoutTime = parseInt(configuredTimeout);
+    }
+  }
 
   // abstract classes for complete and active
   startServer() {}
@@ -24,12 +34,12 @@ export class OrchestratorBase {
   @OnGlobalQueueDrained()
   finished() {
     this.logger.log(`[${this.constructor.name}] Queue drained`);
-    
+
     clearTimeout(this.timeout);
 
     this.timeout = setTimeout(() => {
       this.stopServer();
       this.hasStarted = false;
-    }, 2_100_000); // 35 minutes
+    }, ); 
   }
 }
