@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 type ServiceStatus = 'suspended' | 'not_suspended';
 type Services = 'ranking' | 'sync';
 
-
 @Injectable()
 export class RenderService {
   private _logger = new Logger(RenderService.name);
@@ -25,14 +24,16 @@ export class RenderService {
   }
 
   async startService(serviceName: Services) {
-    // if (this.configService.get<string>('NODE_ENV') === 'development') {
-    //   this._logger.debug(
-    //     `Skipping startService for ${serviceName} in development`,
-    //   );
-    //   return;
-    // }
+    if (this.configService.get<string>('NODE_ENV') === 'development') {
+      this._logger.debug(
+        `Skipping startService for ${serviceName} in development`,
+      );
+      return;
+    }
 
-    const serviceId = this.configService.get<string>(`SERVICE_${serviceName.toUpperCase()}`);
+    const serviceId = this.configService.get<string>(
+      `SERVICE_${serviceName.toUpperCase()}`,
+    );
 
     if (!serviceId) {
       throw new Error(`Service ${serviceName} not found`);
@@ -59,14 +60,16 @@ export class RenderService {
   }
 
   async suspendService(serviceName: Services) {
-    // if (this.configService.get<string>('NODE_ENV') === 'development') {
-    //   this._logger.debug(
-    //     `Skipping suspendService for ${serviceName} in development`,
-    //   );
-    //   return;
-    // }
+    if (this.configService.get<string>('NODE_ENV') === 'development') {
+      this._logger.debug(
+        `Skipping suspendService for ${serviceName} in development`,
+      );
+      return;
+    }
 
-    const serviceId = this.configService.get<string>(`SERVICE_${serviceName.toUpperCase()}`);
+    const serviceId = this.configService.get<string>(
+      `SERVICE_${serviceName.toUpperCase()}`,
+    );
 
     if (!serviceId) {
       throw new Error(`Service ${serviceName} not found`);
