@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { OrchestratorBase } from './base.orchestrator';
 import { RenderService } from '../services/render.service';
 import { Queue } from 'bull';
+import { ConfigService } from '@nestjs/config';
 
 @Processor({
   name: SyncQueue,
@@ -14,8 +15,9 @@ export class OrchestratorSync extends OrchestratorBase {
   constructor(
     private readonly renderService: RenderService,
     @InjectQueue(SyncQueue) private _queue: Queue,
+    configSerivce: ConfigService,
   ) {
-    super();
+    super(configSerivce);
     this.logger.log(`${SyncQueue} Orchestrator created`);
 
     // if any jobs are left in the queue, start the server
@@ -40,5 +42,5 @@ export class OrchestratorSync extends OrchestratorBase {
   override stopServer(): void {
     this.logger.log(`[${SyncQueue}] Stopping worker for queue ${SyncQueue}`);
     this.renderService.suspendService('sync');
-  } 
+  }
 }
