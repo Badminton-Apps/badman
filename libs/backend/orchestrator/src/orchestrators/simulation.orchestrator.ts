@@ -34,11 +34,11 @@ export class OrchestratorSimulation extends OrchestratorBase {
 
   override startServer(): void {
     this.logger.log(`[SIM] Starting worker for queue ${SimulationQueue}`);
-    this.renderService.startService('simulation');
+    this.renderService.startService('ranking');
   }
 
   override stopServer(): void {
     this.logger.log(`[SIM] Stopping worker for queue ${SimulationQueue}`);
-    this.renderService.suspendService('simulation');
+    this.renderService.suspendService('ranking');
   }
 }
