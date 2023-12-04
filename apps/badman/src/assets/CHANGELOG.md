@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.11](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.10...v6.129.0-beta.11) (2023-12-04)
+
+
+### Features
+
+* build prod on production ([a644d42](https://github.com/Badminton-Apps/badman/commit/a644d42ea042a270517586c12ca16b2295e7cc7f))
+* first draft of mobile version of assembly tool ([60a3c26](https://github.com/Badminton-Apps/badman/commit/60a3c26af7fab673491f08011dba2b9cafdd276e))
+
+
+### Bug Fixes
+
+* can be auto ([908980a](https://github.com/Badminton-Apps/badman/commit/908980a3704d6090a607f66e5e86dcdce494c7b5))
+* mobile should render correct ([38a8429](https://github.com/Badminton-Apps/badman/commit/38a84298a885fb9456ddb7f9fc2bb2ebb8aed294))
+* this fixes the file replacements needed for beta ([4055fa6](https://github.com/Badminton-Apps/badman/commit/4055fa6cbcd611d5b4f600adaf4b43429ae91911))
+
 ## [6.129.0-beta.10](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.9...v6.129.0-beta.10) (2023-12-03)
 
 
