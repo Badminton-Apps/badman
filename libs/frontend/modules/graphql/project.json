@@ -20,7 +20,7 @@
           "tsConfig": "libs/frontend/modules/graphql/tsconfig.lib.json"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nx/jest:jest",

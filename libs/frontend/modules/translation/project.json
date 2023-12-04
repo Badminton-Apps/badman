@@ -20,7 +20,7 @@
           "tsConfig": "libs/frontend/modules/translation/tsconfig.lib.json"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nx/jest:jest",
