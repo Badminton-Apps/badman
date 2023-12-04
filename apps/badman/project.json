@@ -22,12 +22,7 @@
           "apps/badman/src/manifest.json",
           "apps/badman/src/robots.txt",
           "apps/badman/src/sitemap.xml",
-          "apps/badman/src/ads.txt",
-          {
-            "input": "apps/badman/src/manifests",
-            "output": "/",
-            "glob": "*.json"
-          }
+          "apps/badman/src/ads.txt"
         ],
         "allowedCommonJsDependencies": [
           "moment",
@@ -89,14 +84,17 @@
               "maximumError": "4kb"
             }
           ],
+          "assets": [
+            {
+              "input": "apps/badman/src/deployment/beta",
+              "output": "/",
+              "glob": "*"
+            }
+          ],
           "fileReplacements": [
             {
               "replace": "apps/badman/src/environments/environment.ts",
               "with": "apps/badman/src/environments/environment.beta.ts"
-            },
-            {
-              "replace": "apps/badman/src/manifest.json",
-              "with": "apps/badman/src/manifests/manifest.beta.json"
             }
           ],
           "outputHashing": "all"
