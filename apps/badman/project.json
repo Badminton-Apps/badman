@@ -63,6 +63,14 @@
               "maximumError": "4kb"
             }
           ],
+          "assets": [
+            "apps/badman/src/favicon.ico",
+            "apps/badman/src/assets",
+            "apps/badman/src/manifest.json",
+            "apps/badman/src/robots.txt",
+            "apps/badman/src/sitemap.xml",
+            "apps/badman/src/ads.txt"
+          ],
           "fileReplacements": [
             {
               "replace": "apps/badman/src/environments/environment.ts",
@@ -85,6 +93,12 @@
             }
           ],
           "assets": [
+            "apps/badman/src/favicon.ico",
+            "apps/badman/src/assets",
+            "apps/badman/src/manifest.json",
+            "apps/badman/src/robots.txt",
+            "apps/badman/src/sitemap.xml",
+            "apps/badman/src/ads.txt",
             {
               "input": "apps/badman/src/deployment/beta",
               "output": "/",
