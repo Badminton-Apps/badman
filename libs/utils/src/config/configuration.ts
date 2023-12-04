@@ -128,7 +128,6 @@ export const configSchema = Joi.object({
   GRAPH_ID: Joi.string().required(),
 
   RENDER_API_KEY: Joi.string().required(),
-  RENDER_API: Joi.string().required(),
   RENDER_API_URL: Joi.string().uri().required(),
   RENDER_WAIT_TIME: Joi.number().integer().optional().default(2_100_000),
   SERVICE_RANKING: Joi.string().required(),
