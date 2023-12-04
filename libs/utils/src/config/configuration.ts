@@ -42,8 +42,8 @@ export const configSchema = Joi.object({
   REDIS_DATABASE: Joi.number().integer().optional(),
   REDIS_HOST: Joi.when('DB_CACHE', {
     is: true,
-    then: Joi.string().hostname().required(),
-    otherwise: Joi.string().hostname().optional(),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
   }),
   REDIS_PORT: Joi.when('DB_CACHE', {
     is: true,
