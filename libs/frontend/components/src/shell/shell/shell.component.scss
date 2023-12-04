@@ -71,7 +71,7 @@
 
   .content {
     height: calc(100% - 37px);
-    overflow: scroll;
+    overflow: auto;
     .loading {
       height: 3px;
     }
