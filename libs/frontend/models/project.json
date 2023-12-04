@@ -20,7 +20,7 @@
           "tsConfig": "libs/frontend/models/tsconfig.lib.json"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "production"
     },
     "lint": {
       "executor": "@nx/eslint:lint",
