@@ -12,6 +12,7 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  inject,
   Inject,
   Input,
   OnInit,
@@ -19,7 +20,7 @@ import {
   PLATFORM_ID,
   TemplateRef,
   TransferState,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -65,6 +66,8 @@ import {
 import { ValidationMessage, ValidationResult } from '../../models/validation';
 import { AssemblyMessageComponent } from '../assembly-message/assembly-message.component';
 import { TeamAssemblyPlayerComponent } from '../team-assembly-player';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const info = `
   id
@@ -153,7 +156,14 @@ export const SAVED_ASSEMBLY = gql`
 })
 export class AssemblyComponent implements OnInit {
   private destroy$ = injectDestroy();
- 
+  breakpointObserver = inject(BreakpointObserver);
+
+  isHandset = toSignal(
+    this.breakpointObserver
+      .observe(['(max-width: 959.98px)'])
+      .pipe(map((result) => result.matches)),
+  );
+
   @Input()
   group!: FormGroup;
 
@@ -342,8 +352,6 @@ export class AssemblyComponent implements OnInit {
         }
       });
   }
-
-
 
   async loadData(encounterId: string) {
     this.loaded = false;
