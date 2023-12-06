@@ -91,7 +91,7 @@
       <badman-banner [banner]="this.banner" *ngIf="this.banner"></badman-banner>
     </div>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content  [ngClass]="{ mobile: isHandset() }">
     <mat-toolbar class="app-toolbar">
       <button
         type="button"
