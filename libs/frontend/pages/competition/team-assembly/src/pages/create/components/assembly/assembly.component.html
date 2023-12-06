@@ -15,7 +15,7 @@
                 [matTooltip]="
                   'all.competition.team-assembly.level-exemption' | translate
                 "
-                ><mat-icon inline=true>lock</mat-icon></span
+                ><mat-icon inline="true">lock</mat-icon></span
               >
             </ng-container>
             <span *ngIf="notSmallScreen" class="ranking">
@@ -42,7 +42,7 @@
                 [matTooltip]="
                   'all.competition.team-assembly.level-exemption' | translate
                 "
-                ><mat-icon inline=true>lock</mat-icon></span
+                ><mat-icon inline="true">lock</mat-icon></span
               >
             </ng-container>
             <span *ngIf="notSmallScreen" class="ranking">
@@ -65,334 +65,546 @@
       </div>
     </div>
 
-    <div class="assembly">
-      <div class="team-info">
-        <div class="captain">
-          <badman-player-search
-            [player]="this.group.get('captain')!.value"
-            [allowCreation]="false"
-            [club]="this.club"
-            label="all.competition.team-assembly.captain"
-            (whenSelectPlayer)="this.selectedCaptain($event)"
-            [clearOnSelection]="false"
-          ></badman-player-search>
+    @if (this.isHandset()) {
+      <div class="assembly mobile">
+        <div class="current-assembly">
+          <div>
+            <label
+              >{{ this.captionDouble1Prefix | translate }}
+              {{ this.captionDouble1 | translate }}</label
+            >
+
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+          </div>
+          <div>
+            <label
+              >{{ this.captionDouble2Prefix | translate }}
+              {{ this.captionDouble2 | translate }}</label
+            >
+
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+          </div>
+          <div>
+            <label
+              >{{ this.captionDouble3Prefix | translate }}
+              {{ this.captionDouble3 | translate }}</label
+            >
+
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+          </div>
+          <div>
+            <label
+              >{{ this.captionDouble4Prefix | translate }}
+              {{ this.captionDouble4 | translate }}</label
+            >
+
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+          </div>
+
+          <div>
+            <label
+              >{{ this.captionSingle1Prefix | translate }}
+              {{ this.captionSingle1 | translate }}</label
+            >
+
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+          </div>
+          <div>
+            <label
+              >{{ this.captionSingle2Prefix | translate }}
+              {{ this.captionSingle1 | translate }}</label
+            >
+
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+          </div>
+          <div>
+            <label
+              >{{ this.captionSingle3Prefix | translate }}
+              {{ this.captionSingle3 | translate }}</label
+            >
+
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+          </div>
+          <div>
+            <label
+              >{{ this.captionSingle4Prefix | translate }}
+              {{ this.captionSingle4 | translate }}</label
+            >
+
+            <badman-player-search
+              [options]="
+                (this.players?.REGULAR ?? []).concat(this.players?.BACKUP ?? [])
+              "
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [clearOnSelection]="false"
+              [where]="this.wherePlayer"
+            ></badman-player-search>
+          </div>
         </div>
+      </div>
+    } @else {
+      <div class="assembly">
+        <div class="team-info">
+          <div class="captain">
+            <badman-player-search
+              [player]="this.group.get('captain')!.value"
+              [allowCreation]="false"
+              [club]="this.club"
+              label="all.competition.team-assembly.captain"
+              (whenSelectPlayer)="this.selectedCaptain($event)"
+              [clearOnSelection]="false"
+            ></badman-player-search>
+          </div>
 
-        <div
-          class="drag"
-          cdkDropList
-          id="playerList"
-          [cdkDropListData]="this.players.REGULAR.concat(this.players.BACKUP)"
-          [cdkDropListConnectedTo]="this.lists"
-          (cdkDropListDropped)="drop($event)"
-          [cdkDropListSortingDisabled]="true"
-          *ngIf="this.players"
-        >
-          <label>{{
-            'all.competition.team-assembly.players.title' | translate
-          }}</label>
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of this.players.REGULAR ?? []"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            [cdkDragData]="item"
-            [cdkDragPreviewClass]="'player-drag'"
-            cdkDrag
-          ></badman-assembly-player>
-
-          <ng-container
-            *ngIf="this.players.BACKUP && this.players.BACKUP.length > 0"
+          <div
+            class="drag"
+            cdkDropList
+            id="playerList"
+            [cdkDropListData]="this.players.REGULAR.concat(this.players.BACKUP)"
+            [cdkDropListConnectedTo]="this.lists"
+            (cdkDropListDropped)="drop($event)"
+            [cdkDropListSortingDisabled]="true"
+            *ngIf="this.players"
           >
-            <mat-divider></mat-divider>
-            <div class="expandable-item" (click)="showBackup = !showBackup">
-              <div>
-                {{ 'all.competition.team-assembly.players.backup' | translate }}
+            <label>{{
+              'all.competition.team-assembly.players.title' | translate
+            }}</label>
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of this.players.REGULAR ?? []"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              [cdkDragData]="item"
+              [cdkDragPreviewClass]="'player-drag'"
+              cdkDrag
+            ></badman-assembly-player>
+
+            <ng-container
+              *ngIf="this.players.BACKUP && this.players.BACKUP.length > 0"
+            >
+              <mat-divider></mat-divider>
+              <div class="expandable-item" (click)="showBackup = !showBackup">
+                <div>
+                  {{
+                    'all.competition.team-assembly.players.backup' | translate
+                  }}
+                </div>
+                <mat-icon *ngIf="!showBackup">expand_more</mat-icon>
+                <mat-icon *ngIf="showBackup">expand_less</mat-icon>
               </div>
-              <mat-icon *ngIf="!showBackup">expand_more</mat-icon>
-              <mat-icon *ngIf="showBackup">expand_less</mat-icon>
-            </div>
 
-            <div [ngClass]="{ hidden: !showBackup }" class="backup">
-              <badman-assembly-player
-                class="drag-item"
-                *ngFor="let item of this.players.BACKUP ?? []"
-                [player]="item"
-                [levelException]="isException(item?.id)"
-                [eventType]="this.type"
-                [cdkDragData]="item"
-                [cdkDragPreviewClass]="'player-drag'"
-                cdkDrag
-              ></badman-assembly-player>
-            </div>
-          </ng-container>
+              <div [ngClass]="{ hidden: !showBackup }" class="backup">
+                <badman-assembly-player
+                  class="drag-item"
+                  *ngFor="let item of this.players.BACKUP ?? []"
+                  [player]="item"
+                  [levelException]="isException(item?.id)"
+                  [eventType]="this.type"
+                  [cdkDragData]="item"
+                  [cdkDragPreviewClass]="'player-drag'"
+                  cdkDrag
+                ></badman-assembly-player>
+              </div>
+            </ng-container>
+          </div>
+          <div class="add-player">
+            <badman-player-search
+              [allowCreation]="false"
+              [searchOutsideClub]="false"
+              [club]="this.group.get('club')!.value"
+              [label]="'Voeg speler toe'"
+              [validationFunction]="this.validatePlayer"
+              [where]="this.wherePlayer"
+              (whenSelectPlayer)="addPlayer($event)"
+              [ignorePlayers]="this.ignorePlayers"
+            ></badman-player-search>
+          </div>
+
+          <div class="change-team">
+            <badman-has-claim
+              [any]="[
+                this.group.get('club')?.value + '_edit:team',
+                'edit-any:club'
+              ]"
+            >
+              <p>
+                {{ 'all.competition.team-assembly.change-team' | translate }}
+              </p>
+              <button mat-stroked-button (click)="this.changeTeam()">
+                {{ 'all.button.edit' | translate }}
+              </button>
+            </badman-has-claim>
+          </div>
         </div>
 
-        <div class="add-player">
-          <badman-player-search
-            [allowCreation]="false"
-            [searchOutsideClub]="false"
-            [club]="this.group.get('club')!.value"
-            [label]="'Voeg speler toe'"
-            [validationFunction]="this.validatePlayer"
-            [where]="this.wherePlayer"
-            (whenSelectPlayer)="addPlayer($event)"
-            [ignorePlayers]="this.ignorePlayers"
-          ></badman-player-search>
-        </div>
-
-        <div class="change-team">
-          <badman-has-claim
-            [any]="[
-              this.group.get('club')?.value + '_edit:team',
-              'edit-any:club'
-            ]"
+        <div class="current-assembly">
+          <div
+            class="drag double"
+            cdkDropList
+            id="double1List"
+            [cdkDropListData]="double1"
+            [cdkDropListConnectedTo]="this.lists"
+            [cdkDropListEnterPredicate]="this.canDropPredicate"
+            [cdkDropListSortingDisabled]="true"
+            (cdkDropListDropped)="drop($event)"
           >
-            <p>{{ 'all.competition.team-assembly.change-team' | translate }}</p>
-            <button mat-stroked-button (click)="this.changeTeam()">
-              {{ 'all.button.edit' | translate }}
-            </button>
-          </badman-has-claim>
+            <label
+              >{{ this.captionDouble1Prefix | translate }}
+              {{ this.captionDouble1 | translate }}</label
+            >
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of double1"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              showType="double1"
+              [cdkDragData]="item"
+              [cdkDragPreviewClass]="'player-drag'"
+              cdkDrag
+            ></badman-assembly-player>
+          </div>
+          <div
+            class="drag double"
+            cdkDropList
+            id="double2List"
+            [cdkDropListData]="double2"
+            [cdkDropListConnectedTo]="this.lists"
+            [cdkDropListEnterPredicate]="this.canDropPredicate"
+            [cdkDropListSortingDisabled]="true"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <label
+              >{{ this.captionDouble2Prefix | translate }}
+              {{ this.captionDouble2 | translate }}</label
+            >
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of double2"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              [cdkDragData]="item"
+              [cdkDragPreviewClass]="'player-drag'"
+              showType="double2"
+              cdkDrag
+            ></badman-assembly-player>
+          </div>
+          <div
+            class="drag double"
+            cdkDropList
+            id="double3List"
+            [cdkDropListData]="double3"
+            [cdkDropListConnectedTo]="this.lists"
+            [cdkDropListEnterPredicate]="this.canDropPredicate"
+            [cdkDropListSortingDisabled]="true"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <label
+              >{{ this.captionDouble3Prefix | translate }}
+              {{ this.captionDouble3 | translate }}</label
+            >
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of double3"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              showType="double3"
+              [cdkDragPreviewClass]="'player-drag'"
+              [cdkDragData]="item"
+              cdkDrag
+            ></badman-assembly-player>
+          </div>
+          <div
+            class="drag double"
+            cdkDropList
+            id="double4List"
+            [cdkDropListData]="double4"
+            [cdkDropListConnectedTo]="this.lists"
+            [cdkDropListEnterPredicate]="this.canDropPredicate"
+            [cdkDropListSortingDisabled]="true"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <label
+              >{{ this.captionDouble4Prefix | translate }}
+              {{ this.captionDouble4 | translate }}</label
+            >
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of double4"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              showType="double4"
+              [cdkDragPreviewClass]="'player-drag'"
+              [cdkDragData]="item"
+              cdkDrag
+            ></badman-assembly-player>
+          </div>
+          <div
+            class="drag single"
+            cdkDropList
+            id="single1List"
+            [cdkDropListData]="single1"
+            [cdkDropListConnectedTo]="this.lists"
+            [cdkDropListEnterPredicate]="this.canDropPredicate"
+            [cdkDropListSortingDisabled]="true"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <label
+              >{{ this.captionSingle1Prefix | translate }}
+              {{ this.captionSingle1 | translate }}</label
+            >
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of single1"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              showType="single1"
+              [cdkDragPreviewClass]="'player-drag'"
+              [cdkDragData]="item"
+              cdkDrag
+            ></badman-assembly-player>
+          </div>
+          <div
+            class="drag single"
+            cdkDropList
+            id="single2List"
+            [cdkDropListData]="single2"
+            [cdkDropListConnectedTo]="this.lists"
+            [cdkDropListSortingDisabled]="true"
+            [cdkDropListEnterPredicate]="this.canDropPredicate"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <label
+              >{{ this.captionSingle2Prefix | translate }}
+              {{ this.captionSingle2 | translate }}</label
+            >
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of single2"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              showType="single2"
+              [cdkDragPreviewClass]="'player-drag'"
+              [cdkDragData]="item"
+              cdkDrag
+            ></badman-assembly-player>
+          </div>
+          <div
+            class="drag single"
+            cdkDropList
+            id="single3List"
+            [cdkDropListData]="single3"
+            [cdkDropListConnectedTo]="this.lists"
+            [cdkDropListEnterPredicate]="this.canDropPredicate"
+            [cdkDropListSortingDisabled]="true"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <label
+              >{{ this.captionSingle3Prefix | translate }}
+              {{ this.captionSingle3 | translate }}</label
+            >
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of single3"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              showType="single3"
+              [cdkDragPreviewClass]="'player-drag'"
+              [cdkDragData]="item"
+              cdkDrag
+            ></badman-assembly-player>
+          </div>
+          <div
+            class="drag single"
+            cdkDropList
+            id="single4List"
+            [cdkDropListData]="single4"
+            [cdkDropListConnectedTo]="this.lists"
+            [cdkDropListEnterPredicate]="this.canDropPredicate"
+            [cdkDropListSortingDisabled]="true"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <label
+              >{{ this.captionSingle4Prefix | translate }}
+              {{ this.captionSingle4 | translate }}</label
+            >
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of single4"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              showType="single4"
+              [cdkDragPreviewClass]="'player-drag'"
+              [cdkDragData]="item"
+              cdkDrag
+            ></badman-assembly-player>
+          </div>
+
+          <div><mat-divider></mat-divider></div>
+
+          <div
+            class="drag single"
+            cdkDropList
+            id="substitudeList"
+            [cdkDropListData]="substitutes"
+            [cdkDropListConnectedTo]="this.lists"
+            [cdkDropListEnterPredicate]="this.canDropPredicate"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <label>{{
+              'all.competition.team-assembly.substitude' | translate
+            }}</label>
+            <badman-assembly-player
+              class="drag-item"
+              *ngFor="let item of substitutes"
+              [player]="item"
+              [levelException]="isException(item?.id)"
+              [eventType]="this.type"
+              [cdkDragPreviewClass]="'player-drag'"
+              [cdkDragData]="item"
+              cdkDrag
+            ></badman-assembly-player>
+          </div>
         </div>
       </div>
-      <div class="current-assembly">
-        <div
-          class="drag double"
-          cdkDropList
-          id="double1List"
-          [cdkDropListData]="double1"
-          [cdkDropListConnectedTo]="this.lists"
-          [cdkDropListEnterPredicate]="this.canDropPredicate"
-          [cdkDropListSortingDisabled]="true"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <label
-            >{{ this.captionDouble1Prefix | translate }}
-            {{ this.captionDouble1 | translate }}</label
-          >
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of double1"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            showType="double1"
-            [cdkDragData]="item"
-            [cdkDragPreviewClass]="'player-drag'"
-            cdkDrag
-          ></badman-assembly-player>
-        </div>
-        <div
-          class="drag double"
-          cdkDropList
-          id="double2List"
-          [cdkDropListData]="double2"
-          [cdkDropListConnectedTo]="this.lists"
-          [cdkDropListEnterPredicate]="this.canDropPredicate"
-          [cdkDropListSortingDisabled]="true"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <label
-            >{{ this.captionDouble2Prefix | translate }}
-            {{ this.captionDouble2 | translate }}</label
-          >
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of double2"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            [cdkDragData]="item"
-            [cdkDragPreviewClass]="'player-drag'"
-            showType="double2"
-            cdkDrag
-          ></badman-assembly-player>
-        </div>
-        <div
-          class="drag double"
-          cdkDropList
-          id="double3List"
-          [cdkDropListData]="double3"
-          [cdkDropListConnectedTo]="this.lists"
-          [cdkDropListEnterPredicate]="this.canDropPredicate"
-          [cdkDropListSortingDisabled]="true"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <label
-            >{{ this.captionDouble3Prefix | translate }}
-            {{ this.captionDouble3 | translate }}</label
-          >
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of double3"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            showType="double3"
-            [cdkDragPreviewClass]="'player-drag'"
-            [cdkDragData]="item"
-            cdkDrag
-          ></badman-assembly-player>
-        </div>
-        <div
-          class="drag double"
-          cdkDropList
-          id="double4List"
-          [cdkDropListData]="double4"
-          [cdkDropListConnectedTo]="this.lists"
-          [cdkDropListEnterPredicate]="this.canDropPredicate"
-          [cdkDropListSortingDisabled]="true"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <label
-            >{{ this.captionDouble4Prefix | translate }}
-            {{ this.captionDouble4 | translate }}</label
-          >
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of double4"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            showType="double4"
-            [cdkDragPreviewClass]="'player-drag'"
-            [cdkDragData]="item"
-            cdkDrag
-          ></badman-assembly-player>
-        </div>
-        <div
-          class="drag single"
-          cdkDropList
-          id="single1List"
-          [cdkDropListData]="single1"
-          [cdkDropListConnectedTo]="this.lists"
-          [cdkDropListEnterPredicate]="this.canDropPredicate"
-          [cdkDropListSortingDisabled]="true"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <label
-            >{{ this.captionSingle1Prefix | translate }}
-            {{ this.captionSingle1 | translate }}</label
-          >
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of single1"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            showType="single1"
-            [cdkDragPreviewClass]="'player-drag'"
-            [cdkDragData]="item"
-            cdkDrag
-          ></badman-assembly-player>
-        </div>
-        <div
-          class="drag single"
-          cdkDropList
-          id="single2List"
-          [cdkDropListData]="single2"
-          [cdkDropListConnectedTo]="this.lists"
-          [cdkDropListSortingDisabled]="true"
-          [cdkDropListEnterPredicate]="this.canDropPredicate"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <label
-            >{{ this.captionSingle2Prefix | translate }}
-            {{ this.captionSingle2 | translate }}</label
-          >
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of single2"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            showType="single2"
-            [cdkDragPreviewClass]="'player-drag'"
-            [cdkDragData]="item"
-            cdkDrag
-          ></badman-assembly-player>
-        </div>
-        <div
-          class="drag single"
-          cdkDropList
-          id="single3List"
-          [cdkDropListData]="single3"
-          [cdkDropListConnectedTo]="this.lists"
-          [cdkDropListEnterPredicate]="this.canDropPredicate"
-          [cdkDropListSortingDisabled]="true"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <label
-            >{{ this.captionSingle3Prefix | translate }}
-            {{ this.captionSingle3 | translate }}</label
-          >
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of single3"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            showType="single3"
-            [cdkDragPreviewClass]="'player-drag'"
-            [cdkDragData]="item"
-            cdkDrag
-          ></badman-assembly-player>
-        </div>
-        <div
-          class="drag single"
-          cdkDropList
-          id="single4List"
-          [cdkDropListData]="single4"
-          [cdkDropListConnectedTo]="this.lists"
-          [cdkDropListEnterPredicate]="this.canDropPredicate"
-          [cdkDropListSortingDisabled]="true"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <label
-            >{{ this.captionSingle4Prefix | translate }}
-            {{ this.captionSingle4 | translate }}</label
-          >
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of single4"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            showType="single4"
-            [cdkDragPreviewClass]="'player-drag'"
-            [cdkDragData]="item"
-            cdkDrag
-          ></badman-assembly-player>
-        </div>
-
-        <div><mat-divider></mat-divider></div>
-
-        <div
-          class="drag single"
-          cdkDropList
-          id="substitudeList"
-          [cdkDropListData]="substitutes"
-          [cdkDropListConnectedTo]="this.lists"
-          [cdkDropListEnterPredicate]="this.canDropPredicate"
-          (cdkDropListDropped)="drop($event)"
-        >
-          <label>{{
-            'all.competition.team-assembly.substitude' | translate
-          }}</label>
-          <badman-assembly-player
-            class="drag-item"
-            *ngFor="let item of substitutes"
-            [player]="item"
-            [levelException]="isException(item?.id)"
-            [eventType]="this.type"
-            [cdkDragPreviewClass]="'player-drag'"
-            [cdkDragData]="item"
-            cdkDrag
-          ></badman-assembly-player>
-        </div>
-      </div>
-    </div>
+    }
   </section>
 
   <ng-template #loading>

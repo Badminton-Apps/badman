@@ -17,7 +17,7 @@ import { AppModule } from './app';
 import fmp from '@fastify/multipart';
 
 async function bootstrap() {
-  Logger.debug('Starting application');
+  Logger.debug('Starting application'); 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({

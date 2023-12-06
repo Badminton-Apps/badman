@@ -9,10 +9,11 @@ export class OrchestratorBase {
   private hasStarted = false;
 
   constructor(private readonly configSerivce: ConfigService) {
-    const configuredTimeout = this.configSerivce.get<string>('RENDER_WAIT_TIME');
+    const configuredTimeout =
+      this.configSerivce.get<string>('RENDER_WAIT_TIME');
 
     if (configuredTimeout) {
-      this.timeoutTime = parseInt(configuredTimeout);
+      this.timeoutTime = parseInt(configuredTimeout) 
     }
   }
 
@@ -40,6 +41,6 @@ export class OrchestratorBase {
     this.timeout = setTimeout(() => {
       this.stopServer();
       this.hasStarted = false;
-    }, ); 
+    }, this.timeoutTime);
   }
 }
