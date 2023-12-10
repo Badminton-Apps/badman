@@ -1,11 +1,7 @@
-# backend-orchestrator
+# orchestrator
 
 This library was generated with [Nx](https://nx.dev).
 
-## Building
-
-Run `nx build backend-orchestrator` to build the library.
-
 ## Running unit tests
 
-Run `nx test backend-orchestrator` to execute the unit tests via [Jest](https://jestjs.io).
+Run `nx test orchestrator` to execute the unit tests via [Jest](https://jestjs.io).
