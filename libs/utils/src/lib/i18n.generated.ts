@@ -578,6 +578,9 @@ export type I18nTranslations = {
             "type": string;
             "year": string;
         };
+        "jobs": {
+            "title": string;
+        };
         "landing": {
             "description": string;
             "title": string;
@@ -807,6 +810,9 @@ export type I18nTranslations = {
                 "general": {
                     "changelog": string;
                     "faq": string;
+                    "title": string;
+                };
+                "jobs": {
                     "title": string;
                 };
                 "persnal": {

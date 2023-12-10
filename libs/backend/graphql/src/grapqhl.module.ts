@@ -26,6 +26,8 @@ import {
   TeamResolverModule,
 } from './resolvers';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServiceResolverModule } from './resolvers/services/serice.module';
+import { CronJobResolverModule } from './resolvers/cronJobs/cronJob.module';
 
 @Module({
   imports: [
@@ -82,6 +84,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     GameResolverModule,
     PlayerResolverModule,
     NotificationResolverModule,
+    ServiceResolverModule,
+    CronJobResolverModule
   ],
 })
 export class GrapqhlModule {}

@@ -10,3 +10,5 @@ export const Badminton = {
     },
   },
 };
+
+export type QueueName = typeof RankingQueue | typeof SyncQueue | typeof SimulationQueue;

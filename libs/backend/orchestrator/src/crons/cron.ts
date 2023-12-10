@@ -1,67 +1,69 @@
-import { Sync, SyncQueue } from '@badman/backend-queue';
+import { CronJob } from '@badman/backend-database';
+import { SimulationQueue, Sync, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { Queue } from 'bull';
-import { CronJob } from 'cron';
+import { CronJob as Job } from 'cron';
 
 @Injectable()
-export class CronService {
+export class CronService implements OnModuleInit {
   private readonly logger = new Logger(CronService.name);
-  private cronSyncEvents: string;
-  private cronSyncRanking: string;
-  private cronCheckEncounters: string;
 
   constructor(
     @InjectQueue(SyncQueue) private readonly syncQ: Queue,
+    @InjectQueue(SimulationQueue) private readonly simQ: Queue,
     private readonly schedulerRegistry: SchedulerRegistry,
     readonly configSerive: ConfigService,
   ) {
-    this.cronSyncEvents =
-      this.configSerive.get<string>('CRON_SYNC_EVENTS') ?? '5 0/4 * * *';
+    // const cronSyncEvents =
+    //   this.configSerive.get<string>('CRON_SYNC_EVENTS') ?? '5 0/4 * * *';
+    // const cronSyncRanking =
+    //   this.configSerive.get<string>('CRON_SYNC_RANKING') ?? '0 0/4 * * MON-TUE';
+    // const cronCheckEncounters =
+    //   this.configSerive.get<string>('CRON_CHECK_ENCOUNTERS') ?? '15 0/4 * * *';
+    // this.logger.log(`Scheduling cron jobs`);
+    // this.QueueingSyncEvents(cronSyncEvents); 
+    // this.QueueingSyncRanking(cronSyncRanking);
+    // this.QueueingCheckEncounters(cronCheckEncounters);
+    // this.getCrons();
+  }
 
-    this.cronSyncRanking =
-      this.configSerive.get<string>('CRON_SYNC_RANKING') ?? '0 0/4 * * MON-TUE';
+  async onModuleInit() {
+    const jobs = await CronJob.findAll();
 
-    this.cronCheckEncounters =
-      this.configSerive.get<string>('CRON_CHECK_ENCOUNTERS') ?? '15 0/4 * * *';
-
-    this.logger.log(`Scheduling cron jobs`);
-
-    this.QueueingSyncEvents();
-    this.QueueingSyncRanking();
-    this.QueueingCheckEncounters();
+    for (const job of jobs) {
+      this.QueueJob(job);
+    }
 
     this.getCrons();
   }
 
-  public QueueingSyncEvents() {
-    const job = CronJob.from({
-      cronTime: this.cronSyncEvents,
-      onTick: () => {
-        this.logger.verbose('Queueing SyncEvents');
-        this.syncQ.add(Sync.SyncEvents, null, {
-          removeOnFail: 1,
-          removeOnComplete: true,
-        });
-      },
-      timeZone: 'Europe/Brussels',
-    });
-
-    this.schedulerRegistry.addCronJob(Sync.SyncEvents, job);
-    job.start();
-
-    this.logger.verbose(`Cron SyncEvents scheduled at ${this.cronSyncEvents}`);
+  private _getQueue(queueName: string) {
+    switch (queueName) {
+      case SyncQueue:
+        return this.syncQ;
+      case SimulationQueue:
+        return this.simQ;
+      default:
+        throw new Error(`Queue ${queueName} not found`);
+    }
   }
 
-  public QueueingSyncRanking() {
-    const job = CronJob.from({
-      cronTime: this.cronSyncRanking,
-      onTick: () => {
-        this.logger.verbose('Queueing SyncRanking');
+  private QueueJob(job: CronJob) {
+    if (!job.meta?.queueName) {
+      throw new Error(`Queue name not found for job ${job.name}`);
+    }
 
-        this.syncQ.add(Sync.SyncRanking, null, {
+    const j = Job.from({
+      cronTime: job.cronTime,
+      onTick: async () => {
+        job.lastRun = new Date();
+        await job.save();
+        this.logger.verbose(`Queueing ${job.name}`);
+        const queue = this._getQueue(job.meta!.queueName);
+        queue.add(job.meta!.jobName, job.meta?.arguments, {
           removeOnFail: 1,
           removeOnComplete: true,
         });
@@ -69,30 +71,10 @@ export class CronService {
       timeZone: 'Europe/Brussels',
     });
 
-    this.schedulerRegistry.addCronJob(Sync.SyncRanking, job);
-    job.start();
+    this.schedulerRegistry.addCronJob(job.name, j);
+    j.start();
 
-    this.logger.verbose(`Cron SyncRanking scheduled at ${this.cronSyncRanking}`);
-  }
-
-  public QueueingCheckEncounters() {
-    const job = CronJob.from({
-      cronTime: this.cronCheckEncounters,
-      onTick: () => {
-        this.logger.verbose('Queueing CheckEncounters');
-
-        this.syncQ.add(Sync.CheckEncounters, null, {
-          removeOnFail: 1,
-          removeOnComplete: true,
-        });
-      },
-      timeZone: 'Europe/Brussels',
-    });
-
-    this.schedulerRegistry.addCronJob(Sync.CheckEncounters, job);
-    job.start();
-
-    this.logger.verbose(`Cron CheckEncounters scheduled at ${this.cronCheckEncounters}`);
+    this.logger.verbose(`Cron ${job.name} scheduled at ${job.cronTime}`);
   }
 
   getCrons() {

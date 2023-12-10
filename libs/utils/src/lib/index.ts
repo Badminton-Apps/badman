@@ -1,5 +1,6 @@
 export * from './sorts'
 export * from './enums'
+export * from './events'
 
 export * from './comp'
 export * from './game-label'

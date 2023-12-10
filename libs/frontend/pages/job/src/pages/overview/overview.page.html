@@ -1,0 +1,69 @@
+<badman-page-header>
+  <div title>{{'all.jobs.title' | translate}}</div>
+
+  <div actions>
+    <button
+      (click)="$event.stopPropagation()"
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+      title="more options"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>add</mat-icon>
+        <span>{{'all.ranking.menu.add-ranking' | translate}}</span>
+      </button>
+    </mat-menu>
+  </div>
+</badman-page-header>
+
+<table mat-table [dataSource]="this.service.state().cronJobs">
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      {{ 'all.input.name' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <a [routerLink]="[element?.id]">{{ element.name }}</a>
+    </td>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="cronTime">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Interval</th>
+    <td mat-cell *matCellDef="let element">{{ element.cronTime }}</td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="lastRun">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Last run</th>
+    <td mat-cell *matCellDef="let element">{{ element.lastRun }}</td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="options">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button [matMenuTriggerFor]="rankingSystemMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #rankingSystemMenu="matMenu">
+        <badman-has-claim [any]="['edit:ranking']">
+          <button mat-menu-item [routerLink]="[element.id, 'edit']">
+            {{ 'all.button.edit' | translate }}
+          </button>
+        </badman-has-claim>
+      </mat-menu>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

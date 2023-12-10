@@ -35,7 +35,7 @@ import {
   HasClaimComponent,
   OpenCloseDateDialogComponent,
 } from '@badman/frontend-components';
-import { JobsModule, JobsService } from '@badman/frontend-jobs';
+import { JobsService } from '@badman/frontend-jobs';
 import { EventTournament } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
@@ -84,7 +84,6 @@ const FETCH_TOURNAMENTS = gql`
 
     // Own Components
     HasClaimComponent,
-    JobsModule,
 
     // Material Modules
     MatCardModule,
