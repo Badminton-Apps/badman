@@ -3,9 +3,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronService } from './crons';
-import { OrchestratorSimulation } from './orchestrators/simulation.orchestrator';
+import { OrchestratorRanking } from './orchestrators/ranking.orchestrator';
 import { OrchestratorSync } from './orchestrators/sync.orchestrator';
 import { RenderService } from './services/render.service';
+import { SocketModule } from '@badman/backend-socket';
 
 @Module({
   providers: [
@@ -15,8 +16,8 @@ import { RenderService } from './services/render.service';
 
     // Orchestrators
     OrchestratorSync,
-    OrchestratorSimulation,
+    OrchestratorRanking,
   ],
-  imports: [QueueModule, ScheduleModule.forRoot(), ConfigModule],
+  imports: [QueueModule, SocketModule, ScheduleModule.forRoot(), ConfigModule],
 })
 export class OrchestratorModule {}

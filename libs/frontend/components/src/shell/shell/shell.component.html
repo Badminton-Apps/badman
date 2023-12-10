@@ -84,14 +84,26 @@
           <a mat-list-item [routerLink]="['/ranking']">{{
             'all.shell.sidebar.ranking.title' | translate
           }}</a>
+
+          <badman-has-claim [any]="['change:job']">
+            <a
+              mat-list-item
+              [routerLink]="['/jobs']"
+              >{{ 'all.shell.sidebar.jobs.title' | translate }}</a
+            >
+          </badman-has-claim>
         </mat-nav-list>
       </div>
       <div class="spacer"></div>
-
-      <badman-banner [banner]="this.banner" *ngIf="this.banner"></badman-banner>
+      <div>
+        <badman-has-claim [any]="['change:job']">
+          <badman-service-status />
+        </badman-has-claim>
+        <badman-banner [banner]="this.banner" *ngIf="this.banner" />
+      </div>
     </div>
   </mat-sidenav>
-  <mat-sidenav-content  [ngClass]="{ mobile: isHandset() }">
+  <mat-sidenav-content [ngClass]="{ mobile: isHandset() }">
     <mat-toolbar class="app-toolbar">
       <button
         type="button"

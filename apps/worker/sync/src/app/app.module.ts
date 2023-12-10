@@ -1,12 +1,12 @@
 import { TranslateModule } from '@badman/backend-translate';
-import { DatabaseModule } from '@badman/backend-database';
+import { DatabaseModule, Service } from '@badman/backend-database';
 import { LoggingModule } from '@badman/backend-logging';
 import { NotificationsModule } from '@badman/backend-notifications';
 import { QueueModule } from '@badman/backend-queue';
 import { RankingModule } from '@badman/backend-ranking';
 import { VisualModule } from '@badman/backend-visual';
 import { SearchModule } from '@badman/backend-search';
-import { Module } from '@nestjs/common';
+import { Logger, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import versionPackage from '../version.json';
 import {
@@ -18,7 +18,8 @@ import {
   SyncEventsProcessor,
   SyncRankingProcessor,
 } from './processors';
-import { configSchema, parseconfig } from '@badman/utils';
+import { EVENTS, configSchema, parseconfig } from '@badman/utils';
+import { EventsGateway, SocketModule } from '@badman/backend-socket';
 
 @Module({
   providers: [
@@ -49,6 +50,27 @@ import { configSchema, parseconfig } from '@badman/utils';
     NotificationsModule,
     VisualModule,
     TranslateModule,
+    SocketModule,
   ],
 })
-export class WorkerSyncModule {}
+export class WorkerSyncModule implements OnApplicationBootstrap {
+  protected logger = new Logger(WorkerSyncModule.name);
+  
+  constructor(private readonly gateway: EventsGateway) {}
+  async onApplicationBootstrap() {
+    
+    this.logger.log('Starting sync service');
+
+    const service = await Service.findOne({ where: { name: 'sync' } });
+    if (!service) {
+      this.logger.error('Could not find sync service');
+      return;
+    }
+
+    service.status = 'started';
+    await service?.save();
+    this.gateway.server.emit(EVENTS.SERVICE.SERVICE_STARTED, {
+      id: service?.id,
+    });
+  }
+}

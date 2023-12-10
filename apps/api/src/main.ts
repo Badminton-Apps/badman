@@ -11,13 +11,15 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+// import { IoAdapter } from '@nestjs/platform-socket.io';
 
 import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
+import { RedisIoAdapter } from '@badman/backend-socket';
 
 async function bootstrap() {
-  Logger.debug('Starting application'); 
+  Logger.debug('Starting application');
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({
@@ -27,6 +29,7 @@ async function bootstrap() {
       bufferLogs: true,
     },
   );
+  const configService = app.get<ConfigService>(ConfigService);
   Logger.debug('Application created');
 
   app.setGlobalPrefix('api');
@@ -53,9 +56,21 @@ async function bootstrap() {
   });
   Logger.debug('Versioning enabled');
 
+  const redisHost = configService.get('REDIS_HOST');
+  if (redisHost) {
+    const redisPass = configService.get('REDIS_PASSWORD');
+    const redisIoAdapter = new RedisIoAdapter(app);
+
+    let redisUrl = redisPass ? `redis://:${redisPass}@` : 'redis://';
+    redisUrl += `${redisHost}:${configService.get('REDIS_PORT')}`;
+
+    await redisIoAdapter.connectToRedis(redisUrl);
+
+    app.useWebSocketAdapter(redisIoAdapter);
+  }
+
   Logger.debug('Extensions loaded');
 
-  const configService = app.get<ConfigService>(ConfigService);
   const port = configService.get('PORT') || 5000;
   await app.listen(port, '0.0.0.0', (error) => {
     if (error) {
@@ -64,7 +79,7 @@ async function bootstrap() {
   });
 
   Logger.debug(
-    `🚀 Application is running on: http://localhost:${port}. level: ${configService.get(
+    `🚀 Application is running on: ${await app.getUrl()}. level: ${configService.get(
       'NODE_ENV',
     )}`,
   );

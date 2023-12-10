@@ -18,5 +18,6 @@ export * from './roles';
 export * from './selects';
 export * from './shell';
 export * from './standing';
+export * from './shell/components/sidebar/service-status';
 
 // end:ng42.barrel
