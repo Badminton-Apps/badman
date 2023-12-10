@@ -574,6 +574,9 @@
     "type": "Type",
     "year": "Jaar"
   },
+  "jobs": {
+    "title": "Jobs"
+  },
   "landing": {
     "description": "We werken eraan om met badman de centrale plaats te zijn voor al je badminton data.",
     "title": "Badman"
@@ -804,6 +807,9 @@
         "changelog": "Changelog",
         "faq": "FAQ",
         "title": "Algemeen"
+      },
+      "jobs": {
+        "title": "Jobs"
       },
       "persnal": {
         "club": "Mijn Club",

@@ -2,6 +2,7 @@
 export * from './security';
 export * from './events';
 export * from './personal';
+export * from './system';
 
 export * from './availibilty.model';
 export * from './banner.model';

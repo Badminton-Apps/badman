@@ -1,0 +1,33 @@
+{
+  "name": "backend-socket",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/socket/src",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:swc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/socket",
+        "tsConfig": "libs/backend/socket/tsconfig.lib.json",
+        "packageJson": "libs/backend/socket/package.json",
+        "main": "libs/backend/socket/src/index.ts",
+        "assets": ["libs/backend-socket/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/backend/socket/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/backend/socket"],
+      "options": {
+        "jestConfig": "libs/backend/socket/jest.config.js"
+      }
+    }
+  },
+  "tags": []
+}

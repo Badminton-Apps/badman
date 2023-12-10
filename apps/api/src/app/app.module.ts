@@ -10,13 +10,14 @@ import { HealthModule } from '@badman/backend-health';
 import { LoggingModule } from '@badman/backend-logging';
 import { MailingModule } from '@badman/backend-mailing';
 import { NotificationsModule } from '@badman/backend-notifications';
+import { OrchestratorModule } from '@badman/backend-orchestrator';
 import { QueueModule } from '@badman/backend-queue';
 import { SearchModule } from '@badman/backend-search';
+import { SocketModule } from '@badman/backend-socket';
 import { TranslateModule } from '@badman/backend-translate';
 import { TwizzitModule } from '@badman/backend-twizzit';
 import { configSchema, parseconfig } from '@badman/utils';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { OrchestratorModule } from '@badman/backend-orchestrator';
 import { join } from 'path';
 import versionPackage from '../version.json';
 
@@ -56,12 +57,14 @@ if (process.env.NODE_ENV === 'production') {
     HealthModule,
     TranslateModule,
     OrchestratorModule,
+    SocketModule,
   ],
   controllers: [AppController, ImageController],
   providers: [Logger],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);
+
   constructor(configService: ConfigService) {
     this.logger.log(
       `${AppModule.name} loaded, env: ${configService.get('NODE_ENV')}`,

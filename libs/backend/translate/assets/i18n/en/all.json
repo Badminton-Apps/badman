@@ -574,6 +574,9 @@
     "type": "Type",
     "year": "Year"
   },
+  "jobs": {
+    "title": "Jobs"
+  },
   "landing": {
     "description": "We are working on making a central place for all your badminton data.",
     "title": "Badman"
@@ -804,6 +807,9 @@
         "changelog": "Changelog",
         "faq": "FAQ",
         "title": "General"
+      },
+      "jobs": {
+        "title": "Jobs"
       },
       "persnal": {
         "club": "My Club",
