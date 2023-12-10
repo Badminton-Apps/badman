@@ -16,7 +16,6 @@ import {
   GoogleMapsModule,
   VERSION_INFO,
 } from '@badman/frontend-html-injects';
-import { JOBS_CONFIG_TOKEN } from '@badman/frontend-jobs';
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
@@ -35,14 +34,16 @@ import { MarkdownModule } from 'ngx-markdown';
 import { QuillModule } from 'ngx-quill';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
-
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { ShellComponent } from '@badman/frontend-components';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { CpModule } from '@badman/frontend-cp';
+
 import { ExcelModule } from '@badman/frontend-excel';
-import { RANKING_CONFIG } from '@badman/frontend-ranking';
 import { Socket, SocketIoModule } from 'ngx-socket-io';
+
+/*  eslint-disable @nx/enforce-module-boundaries*/
+import { ShellComponent } from '@badman/frontend-components';
+import { RANKING_CONFIG } from '@badman/frontend-ranking';
+import { JOBS_CONFIG_TOKEN } from '@badman/frontend-jobs';
+/*  eslint-enable @nx/enforce-module-boundaries */
 
 const APP_ROUTES: Routes = [
   {

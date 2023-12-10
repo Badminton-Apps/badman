@@ -1,5 +1,5 @@
 import { CronJob } from '@badman/backend-database';
-import { SimulationQueue, Sync, SyncQueue } from '@badman/backend-queue';
+import { SimulationQueue, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -16,19 +16,7 @@ export class CronService implements OnModuleInit {
     @InjectQueue(SimulationQueue) private readonly simQ: Queue,
     private readonly schedulerRegistry: SchedulerRegistry,
     readonly configSerive: ConfigService,
-  ) {
-    // const cronSyncEvents =
-    //   this.configSerive.get<string>('CRON_SYNC_EVENTS') ?? '5 0/4 * * *';
-    // const cronSyncRanking =
-    //   this.configSerive.get<string>('CRON_SYNC_RANKING') ?? '0 0/4 * * MON-TUE';
-    // const cronCheckEncounters =
-    //   this.configSerive.get<string>('CRON_CHECK_ENCOUNTERS') ?? '15 0/4 * * *';
-    // this.logger.log(`Scheduling cron jobs`);
-    // this.QueueingSyncEvents(cronSyncEvents); 
-    // this.QueueingSyncRanking(cronSyncRanking);
-    // this.QueueingCheckEncounters(cronCheckEncounters);
-    // this.getCrons();
-  }
+  ) {}
 
   async onModuleInit() {
     const jobs = await CronJob.findAll();

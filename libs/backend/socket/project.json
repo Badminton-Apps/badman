@@ -2,6 +2,7 @@
   "name": "backend-socket",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/socket/src",
+  "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
@@ -25,7 +26,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/backend/socket"],
       "options": {
-        "jestConfig": "libs/backend/socket/jest.config.js"
+        "jestConfig": "libs/backend/socket/jest.config.ts"
       }
     }
   },
