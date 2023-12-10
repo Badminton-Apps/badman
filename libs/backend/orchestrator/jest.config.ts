@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'health',
+  displayName: 'orchestrator',
   preset: '../../../jest.preset.js',
   globals: {},
   testEnvironment: 'node',
@@ -13,5 +13,5 @@ export default {
     ],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../../coverage/libs/backend/health',
+  coverageDirectory: '../../../coverage/libs/backend/orchestrator',
 };
