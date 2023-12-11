@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.12](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.11...v6.129.0-beta.12) (2023-12-11)
+
+
+### Features
+
+* adding jobs via DB, websockets for info regarding servies, ... ([0d983fa](https://github.com/Badminton-Apps/badman/commit/0d983faee063def834f13b63bf47d609df1de0bd))
+
+
+### Bug Fixes
+
+* back to a working build ([261cfe0](https://github.com/Badminton-Apps/badman/commit/261cfe0f0f2c5bc91e719ae51ec8c5899384840a))
+* **deps:** update angular monorepo to v17.0.6 ([1bf8a89](https://github.com/Badminton-Apps/badman/commit/1bf8a891d75a88ad46b1d45eb44b54e9f4d6045a))
+* **deps:** update angularmaterial monorepo to v17.0.3 ([7b20035](https://github.com/Badminton-Apps/badman/commit/7b2003554edb6522f4fa0e8091e906d3221ca8e3))
+* **deps:** update dependency ngx-quill to v24.0.4 ([0d793a0](https://github.com/Badminton-Apps/badman/commit/0d793a088ba7c7af3d4c5b9e365928010a9d659e))
+* **deps:** update dependency ngxtension to v1.6.0 ([aa6c6e8](https://github.com/Badminton-Apps/badman/commit/aa6c6e800a05960df58a6d22531ad88184ba95e1))
+* is this the reason? ([3f74e6e](https://github.com/Badminton-Apps/badman/commit/3f74e6ee3b00bd3007465cf9e4d5ac43d501d9bc))
+* publishable packages can't reference eachother ([21b29bd](https://github.com/Badminton-Apps/badman/commit/21b29bd67a5c86c40fdb6f92ba1cd70d81d95f3c))
+* should use the timeout time if configured ([e2e5a3a](https://github.com/Badminton-Apps/badman/commit/e2e5a3a2b17fd8f2bc1429634db17ab4831d0a56))
+
 ## [6.129.0-beta.11](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.10...v6.129.0-beta.11) (2023-12-04)
 
 
