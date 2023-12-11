@@ -22,6 +22,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthModule } from '@badman/frontend-auth';
+import { CpModule } from '@badman/frontend-cp';
 import { PdfModule } from '@badman/frontend-pdf';
 import { SeoModule } from '@badman/frontend-seo';
 import { TranslationModule } from '@badman/frontend-translation';
@@ -34,15 +35,14 @@ import { MarkdownModule } from 'ngx-markdown';
 import { QuillModule } from 'ngx-quill';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
-import { CpModule } from '@badman/frontend-cp';
 
 import { ExcelModule } from '@badman/frontend-excel';
 import { Socket, SocketIoModule } from 'ngx-socket-io';
 
 /*  eslint-disable @nx/enforce-module-boundaries*/
 import { ShellComponent } from '@badman/frontend-components';
+import { JOBS_CONFIG_TOKEN } from '@badman/frontend-queue';
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
-import { JOBS_CONFIG_TOKEN } from '@badman/frontend-jobs';
 /*  eslint-enable @nx/enforce-module-boundaries */
 
 const APP_ROUTES: Routes = [

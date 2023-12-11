@@ -14,36 +14,36 @@
 //   ) {}
 
 //   resolve(route: ActivatedRouteSnapshot) {
-//     const clubId = route.params['id'];
+//     const jobId = route.params['id'];
 
 //     return this.apollo
-//       .query<{ club: Partial<Club> }>({
+//       .query<{ job: Partial<Club> }>({
 //         query: gql`
 //           query Club($id: ID!) {
-//             club(id: $id) {
+//             job(id: $id) {
 //               id
 //               name
 //               slug
 //               fullName
 //               abbreviation
 //               useForTeamName
-//               clubId
+//               jobId
 //               country
 //               state
 //             }
 //           }
 //         `,
 //         variables: {
-//           id: clubId,
+//           id: jobId,
 //         },
 //       })
 //       .pipe(
-//         transferState(`clubKey-${clubId}`, this.stateTransfer, this.platformId),
+//         transferState(`jobKey-${jobId}`, this.stateTransfer, this.platformId),
 //         map((result) => {
-//           if (!result?.data.club) {
-//             throw new Error('No club');
+//           if (!result?.data.job) {
+//             throw new Error('No job');
 //           }
-//           return new Club(result.data.club);
+//           return new Club(result.data.job);
 //         }),
 //         first()
 //       );

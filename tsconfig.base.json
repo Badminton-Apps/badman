@@ -79,6 +79,7 @@
         "libs/frontend/modules/html-injects/src/index.ts"
       ],
       "@badman/frontend-jobs": ["libs/frontend/pages/job/src/index.ts"],
+      "@badman/frontend-queue": ["libs/frontend/modules/queue/src/index.ts"],
       "@badman/frontend-models": ["libs/frontend/models/src/index.ts"],
       "@badman/frontend-notifications": [
         "libs/frontend/pages/notifications/src/index.ts"

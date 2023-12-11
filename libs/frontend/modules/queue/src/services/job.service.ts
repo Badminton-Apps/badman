@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { JobsConfiguration } from '../interfaces/job-config.interface';
 import { JOBS_CONFIG_TOKEN } from '../injection';
+import { JobsConfiguration } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',

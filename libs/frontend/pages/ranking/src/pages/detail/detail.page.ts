@@ -13,7 +13,7 @@ import {
   PageHeaderComponent,
   RankingTableComponent,
 } from '@badman/frontend-components';
-import { JobsService } from '@badman/frontend-jobs';
+import { JobsService } from '@badman/frontend-queue';
 import { RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
