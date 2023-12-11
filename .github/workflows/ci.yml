@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_ENV: '20.1'
+  NODE_ENV: '20.10.0'
   NX_NON_NATIVE_HASHER: 'true'
 
 jobs:
