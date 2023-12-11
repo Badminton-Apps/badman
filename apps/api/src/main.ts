@@ -16,7 +16,7 @@ import {
 import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
-import { RedisIoAdapter } from '@badman/backend-websocket';
+import { RedisIoAdapter } from '@badman/backend-websockets';
 
 async function bootstrap() {
   Logger.debug('Starting application');

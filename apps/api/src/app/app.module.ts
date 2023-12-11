@@ -13,7 +13,7 @@ import { NotificationsModule } from '@badman/backend-notifications';
 import { OrchestratorModule } from '@badman/backend-orchestrator';
 import { QueueModule } from '@badman/backend-queue';
 import { SearchModule } from '@badman/backend-search';
-import { SocketModule } from '@badman/backend-websocket';
+import { SocketModule } from '@badman/backend-websockets';
 import { TranslateModule } from '@badman/backend-translate';
 import { TwizzitModule } from '@badman/backend-twizzit';
 import { configSchema, parseconfig } from '@badman/utils';

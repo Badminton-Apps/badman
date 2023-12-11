@@ -1,4 +1,4 @@
-import { EventsGateway } from '@badman/backend-websocket';
+import { EventsGateway } from '@badman/backend-websockets';
 import { Service } from '@badman/backend-database';
 import { EVENTS } from '@badman/utils';
 import { OnGlobalQueueDrained, OnGlobalQueueWaiting } from '@nestjs/bull';

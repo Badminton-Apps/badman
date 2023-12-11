@@ -1,4 +1,4 @@
-import { RedisIoAdapter } from '@badman/backend-websocket';
+import { RedisIoAdapter } from '@badman/backend-websockets';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import {

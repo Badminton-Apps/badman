@@ -2,7 +2,7 @@ import { User } from '@badman/backend-authorization';
 import { Player, Service } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
 import { SimulationQueue, SyncQueue } from '@badman/backend-queue';
-import { EventsGateway } from '@badman/backend-websocket';
+import { EventsGateway } from '@badman/backend-websockets';
 import { EVENTS } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import {
