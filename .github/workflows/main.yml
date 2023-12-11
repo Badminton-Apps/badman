@@ -97,7 +97,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_ENV }}
+          node-version: ${{ vars.NODE_ENV }}
 
       - name: install dependencies for release
         run: npm --prefix \scripts install
