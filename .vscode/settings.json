@@ -1,5 +1,8 @@
 {
   "githubPullRequests.ignoredPullRequestBranches": [
     "develop"
+  ],
+  "github-actions.workflows.pinned.workflows": [
+    ".github/workflows/main.yml"
   ]
 }
