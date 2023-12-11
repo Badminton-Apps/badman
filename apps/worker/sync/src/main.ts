@@ -7,7 +7,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
-import { RedisIoAdapter } from '@badman/backend-socket';
+import { RedisIoAdapter } from '@badman/backend-websocket';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     WorkerSyncModule,

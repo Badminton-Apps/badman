@@ -46,10 +46,10 @@
       "@badman/backend-queue": ["libs/backend/queue/src/index.ts"],
       "@badman/backend-ranking": ["libs/backend/ranking/src/index.ts"],
       "@badman/backend-search": ["libs/backend/search/src/index.ts"],
-      "@badman/backend-socket": ["libs/backend/socket/src/index.ts"],
       "@badman/backend-translate": ["libs/backend/translate/src/index.ts"],
       "@badman/backend-twizzit": ["libs/backend/twizzit/src/index.ts"],
       "@badman/backend-visual": ["libs/backend/visual/src/index.ts"],
+      "@badman/backend-websockets": ["libs/backend/websockets/src/index.ts"],
       "@badman/backend/comp-tet": ["libs/backend/comp-tet/src/index.ts"],
       "@badman/belgium-flanders-games": [
         "libs/backend/belgium/flanders/games/src/index.ts"

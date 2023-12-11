@@ -19,7 +19,7 @@ import {
   SyncRankingProcessor,
 } from './processors';
 import { EVENTS, configSchema, parseconfig } from '@badman/utils';
-import { EventsGateway, SocketModule } from '@badman/backend-socket';
+import { EventsGateway, SocketModule } from '@badman/backend-websocket';
 
 @Module({
   providers: [

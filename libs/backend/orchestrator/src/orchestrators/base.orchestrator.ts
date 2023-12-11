@@ -1,4 +1,4 @@
-import { EventsGateway } from '@badman/backend-socket';
+import { EventsGateway } from '@badman/backend-websocket';
 import { Service } from '@badman/backend-database';
 import { EVENTS } from '@badman/utils';
 import { OnGlobalQueueDrained, OnGlobalQueueWaiting } from '@nestjs/bull';
@@ -90,9 +90,6 @@ export class OrchestratorBase {
       this.hasStarted = false;
     }, this.timeoutTime);
   }
-
-  
-
 
   private async _getService() {
     let service = await Service.findOne({ where: { name: this.serviceName } });
