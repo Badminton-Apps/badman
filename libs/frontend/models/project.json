@@ -24,13 +24,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "libs/frontend/models/**/*.ts",
-          "libs/frontend/models/**/*.html"
-        ]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

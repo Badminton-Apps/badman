@@ -79,13 +79,13 @@
         "libs/frontend/modules/html-injects/src/index.ts"
       ],
       "@badman/frontend-jobs": ["libs/frontend/pages/job/src/index.ts"],
-      "@badman/frontend-queue": ["libs/frontend/modules/queue/src/index.ts"],
       "@badman/frontend-models": ["libs/frontend/models/src/index.ts"],
       "@badman/frontend-notifications": [
         "libs/frontend/pages/notifications/src/index.ts"
       ],
       "@badman/frontend-pdf": ["libs/frontend/modules/pdf/src/index.ts"],
       "@badman/frontend-player": ["libs/frontend/pages/player/src/index.ts"],
+      "@badman/frontend-queue": ["libs/frontend/modules/queue/src/index.ts"],
       "@badman/frontend-ranking": ["libs/frontend/pages/ranking/src/index.ts"],
       "@badman/frontend-role": ["libs/frontend/pages/role/src/index.ts"],
       "@badman/frontend-seo": ["libs/frontend/modules/seo/src/index.ts"],

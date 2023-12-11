@@ -31,13 +31,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "libs/frontend/pages/competition/team-enrollment/**/*.ts",
-          "libs/frontend/pages/competition/team-enrollment/**/*.html"
-        ]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

@@ -31,13 +31,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "libs/frontend/pages/player/**/*.ts",
-          "libs/frontend/pages/player/**/*.html"
-        ]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

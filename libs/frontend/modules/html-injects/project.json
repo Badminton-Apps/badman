@@ -31,13 +31,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "libs/frontend/modules/html-injects/**/*.ts",
-          "libs/frontend/modules/html-injects/**/*.html"
-        ]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []
