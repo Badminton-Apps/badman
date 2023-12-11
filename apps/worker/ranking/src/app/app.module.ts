@@ -7,7 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import versionPackage from '../version.json';
 import { SimulationProcessor } from './processors';
 import { EVENTS, configSchema, parseconfig } from '@badman/utils';
-import { EventsGateway, SocketModule } from '@badman/backend-websocket';
+import { EventsGateway, SocketModule } from '@badman/backend-websockets';
 
 @Module({
   imports: [
