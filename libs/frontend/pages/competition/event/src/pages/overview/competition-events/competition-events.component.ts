@@ -25,7 +25,7 @@ import {
   LoadingBlockComponent,
   OpenCloseDateDialogComponent,
 } from '@badman/frontend-components';
-import { JobsService } from '@badman/frontend-jobs';
+import { JobsService } from '@badman/frontend-queue';
 import { EventCompetition } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
