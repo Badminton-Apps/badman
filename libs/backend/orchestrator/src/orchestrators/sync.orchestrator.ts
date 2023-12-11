@@ -5,7 +5,7 @@ import { OrchestratorBase } from './base.orchestrator';
 import { RenderService } from '../services/render.service';
 import { Queue } from 'bull';
 import { ConfigService } from '@nestjs/config';
-import { EventsGateway } from '@badman/backend-socket';
+import { EventsGateway } from '@badman/backend-websocket';
 
 @Processor({
   name: SyncQueue,

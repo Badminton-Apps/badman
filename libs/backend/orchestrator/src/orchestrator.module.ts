@@ -6,7 +6,7 @@ import { CronService } from './crons';
 import { OrchestratorRanking } from './orchestrators/ranking.orchestrator';
 import { OrchestratorSync } from './orchestrators/sync.orchestrator';
 import { RenderService } from './services/render.service';
-import { SocketModule } from '@badman/backend-socket';
+import { SocketModule } from '@badman/backend-websocket';
 
 @Module({
   providers: [
