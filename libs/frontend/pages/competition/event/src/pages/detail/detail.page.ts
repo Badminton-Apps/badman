@@ -34,7 +34,7 @@ import {
 import { CpService } from '@badman/frontend-cp';
 import { ExcelService } from '@badman/frontend-excel';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
-import {  JobsService } from '@badman/frontend-jobs';
+import { JobsService } from '@badman/frontend-queue';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { sortSubEvents } from '@badman/utils';

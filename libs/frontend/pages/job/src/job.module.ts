@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { OverviewPageComponent } from './pages/overview';
-import { JobsService } from './services';
 
 const MODULE_ROUTES: Routes = [
   {
@@ -14,7 +13,7 @@ const MODULE_ROUTES: Routes = [
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(MODULE_ROUTES)],
   declarations: [],
-  providers: [JobsService],
+  providers: [],
 })
 export class JobModule {}
 

@@ -21,7 +21,7 @@ import {
   HasClaimComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
-import { JobsService } from '@badman/frontend-jobs';
+import { JobsService } from '@badman/frontend-queue';
 import {
   DrawCompetition,
   EncounterCompetition,

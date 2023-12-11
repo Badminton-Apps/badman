@@ -35,7 +35,7 @@ import {
   HasClaimComponent,
   OpenCloseDateDialogComponent,
 } from '@badman/frontend-components';
-import { JobsService } from '@badman/frontend-jobs';
+import { JobsService } from '@badman/frontend-queue';
 import { EventTournament } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
