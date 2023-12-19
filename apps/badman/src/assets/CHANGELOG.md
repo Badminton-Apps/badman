@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.16](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.15...v6.129.0-beta.16) (2023-12-19)
+
+
+### Features
+
+* adding nextRun ([3d76d98](https://github.com/Badminton-Apps/badman/commit/3d76d982d550ad8e07e0f1a4625cc8eab943af6a))
+
 ## [6.129.0-beta.15](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.14...v6.129.0-beta.15) (2023-12-19)
 
 
