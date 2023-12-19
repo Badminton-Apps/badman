@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.13](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.12...v6.129.0-beta.13) (2023-12-19)
+
+
+### Features
+
+* queing job ([8190817](https://github.com/Badminton-Apps/badman/commit/819081757b338965aaf5aae687ede54e55e65d75))
+
+
+### Bug Fixes
+
+* remove items that now come from DB ([06e54e5](https://github.com/Badminton-Apps/badman/commit/06e54e5c12795d9db9f94d9a09f1967061f69334))
+* remove own packages from auto update ([26f7f11](https://github.com/Badminton-Apps/badman/commit/26f7f114efdae85dab5021da185557306ff98cbc))
+
 ## [6.129.0-beta.12](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.11...v6.129.0-beta.12) (2023-12-11)
 
 
