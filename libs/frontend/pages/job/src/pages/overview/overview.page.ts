@@ -1,15 +1,9 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  inject
-} from '@angular/core';
-import {
-  FormsModule,
-  ReactiveFormsModule
-} from '@angular/forms';
+import { Component, TemplateRef, ViewChild, inject } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,10 +16,10 @@ import {
   HasClaimComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
+import { CronJob } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { CronJobService } from '../../services/cronjob.service';
-
 
 @Component({
   selector: 'badman-ranking-overview',
@@ -62,13 +56,29 @@ import { CronJobService } from '../../services/cronjob.service';
 export class OverviewPageComponent {
   // injects
   service = inject(CronJobService);
+  dialog = inject(MatDialog);
+
+  @ViewChild('dialogTemplate', { static: true })
+  dialogTemplate!: TemplateRef<HTMLElement>;
 
   displayedColumns: string[] = [
     'name',
     'cronTime',
     'lastRun',
+    'running',
     'options',
   ];
 
+  openDialog(cron: CronJob) {
+    const dialogRef = this.dialog.open(this.dialogTemplate, {
+      data: cron,
+    });
 
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Queue the job here
+        this.service.state.load(cron);
+      }
+    });
+  }
 }

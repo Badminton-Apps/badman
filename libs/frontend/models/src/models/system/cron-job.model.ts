@@ -4,6 +4,7 @@ export class CronJob {
   cronTime?: string;
   meta?: QueueCronJob;
   lastRun?: Date;
+  running?: boolean;
 
   constructor(args: Partial<CronJob>) {
     this.id = args?.id;
@@ -11,6 +12,7 @@ export class CronJob {
     this.cronTime = args?.cronTime;
     this.meta = args?.meta;
     this.lastRun = args?.lastRun;
+    this.running = args?.running;
   }
 }
 
