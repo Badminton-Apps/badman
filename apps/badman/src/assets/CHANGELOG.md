@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.15](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.14...v6.129.0-beta.15) (2023-12-19)
+
+
+### Features
+
+* readable format ([ed22a37](https://github.com/Badminton-Apps/badman/commit/ed22a375972b198ee6f3e172f7917a95fbf3199c))
+
+
+### Bug Fixes
+
+* should also emit the id ([4ec4662](https://github.com/Badminton-Apps/badman/commit/4ec46627df9a0ef76d75eecae6d96c58fa438862))
+* should parse the date ([8e77459](https://github.com/Badminton-Apps/badman/commit/8e77459d9e2b7f328c1b39d833f982edde35dce9))
+
 ## [6.129.0-beta.14](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.13...v6.129.0-beta.14) (2023-12-19)
 
 
