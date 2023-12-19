@@ -53,7 +53,6 @@ export class CronService implements OnModuleInit {
         queue.add(job.meta!.jobName, job.meta?.arguments, {
           removeOnFail: 1,
           removeOnComplete: true,
-          delay: 5 * 60 * 1000,
         });
       },
       timeZone: 'Europe/Brussels',
