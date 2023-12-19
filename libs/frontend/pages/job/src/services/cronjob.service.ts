@@ -39,6 +39,7 @@ export class CronJobService {
             name
             cronTime
             lastRun
+            nextRun
             running
             meta {
               jobName
