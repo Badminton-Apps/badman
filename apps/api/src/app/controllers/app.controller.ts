@@ -78,13 +78,13 @@ export class AppController {
     switch (args.queue) {
       case SimulationQueue:
         return this._simulationQueue.add(args.job, args.jobArgs, {
-          removeOnComplete: args.removeOnComplete,
-          removeOnFail: args.removeOnFail,
+          removeOnComplete: args.removeOnComplete || true,
+          removeOnFail: args.removeOnFail || 1,
         });
       case SyncQueue:
         return this._syncQueue.add(args.job, args.jobArgs, {
-          removeOnComplete: args.removeOnComplete,
-          removeOnFail: args.removeOnFail,
+          removeOnComplete: args.removeOnComplete || true,
+          removeOnFail: args.removeOnFail || 1,
         });
       default:
         throw new HttpException('Unknown queue', 500);
