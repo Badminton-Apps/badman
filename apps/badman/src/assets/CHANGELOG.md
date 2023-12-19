@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.14](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.13...v6.129.0-beta.14) (2023-12-19)
+
+
+### Features
+
+* adding default values on remove/failed complete ([4998735](https://github.com/Badminton-Apps/badman/commit/499873535ebbc2ba4825013767259969af542d6e))
+
+
+### Bug Fixes
+
+* using correct names ([6c8dee8](https://github.com/Badminton-Apps/badman/commit/6c8dee8d0051d4dd5b87d6d207abe09e92c53c82))
+
 ## [6.129.0-beta.13](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.12...v6.129.0-beta.13) (2023-12-19)
 
 
