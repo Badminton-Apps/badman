@@ -1,9 +1,12 @@
+import moment from 'moment';
+import { Moment } from 'moment';
+
 export class CronJob {
   id?: string;
   name?: string;
   cronTime?: string;
   meta?: QueueCronJob;
-  lastRun?: Date;
+  lastRun?: Moment;
   running?: boolean;
 
   constructor(args: Partial<CronJob>) {
@@ -11,7 +14,8 @@ export class CronJob {
     this.name = args?.name;
     this.cronTime = args?.cronTime;
     this.meta = args?.meta;
-    this.lastRun = args?.lastRun;
+    const parsed = moment(args?.lastRun);
+    this.lastRun = parsed.isValid() ? parsed : undefined;
     this.running = args?.running;
   }
 }
