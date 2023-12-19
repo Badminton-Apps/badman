@@ -77,7 +77,7 @@ export class SyncEventsProcessor {
   ) {
     const cronJob = await CronJob.findOne({
       where: {
-        name: 'sync',
+        name: 'Sync Events',
       },
     });
 
