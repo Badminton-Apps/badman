@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === 'production') {
       exclude: ['api/*', '/graphql'],
     }),
   );
-}
+} 
 
 @Module({
   imports: [

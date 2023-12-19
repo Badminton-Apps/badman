@@ -85,7 +85,12 @@ export class OrchestratorBase {
 
     clearTimeout(this.timeout);
 
-    this.timeout = setTimeout(() => {
+    this.timeout = setTimeout(async () => {
+      // chekc if there are still jobs in the queue
+      const jobs = await this.queue.getJobCounts();
+
+      this.logger.debug(`[${this.serviceName}] Jobs in queue: ${jobs.waiting}, ${jobs.active}, ${jobs.completed}, ${jobs.failed}`);
+
       this.stopServer();
       this.hasStarted = false;
     }, this.timeoutTime);
