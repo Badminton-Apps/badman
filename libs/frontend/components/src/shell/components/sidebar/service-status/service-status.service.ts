@@ -45,35 +45,57 @@ export class ServiceService {
 
   starting$ = (state: Signal<ServicesState>) =>
     this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STARTING).pipe(
-      map((service) => ({
-        services: state().services.map((item) =>
-          item.id === service.id
+      map((service) => {
+        if (!service.id) {
+          console.warn(
+            `No service id found in ${EVENTS.SERVICE.SERVICE_STARTING} event`,
+          );
+        }
+
+        return ({
+          services: state().services.map((item) => item.id === service.id
             ? { ...item, status: 'starting' as const }
-            : item,
-        ),
-      })),
+            : item
+          ),
+        });
+      }),
     );
 
   started$ = (state: Signal<ServicesState>) =>
     this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STARTED).pipe(
-      map((service) => ({
-        services: state().services.map((item) =>
-          item.id === service.id
-            ? { ...item, status: 'started' as const }
-            : item,
-        ),
-      })),
+      map((service) => {
+        if (!service.id) {
+          console.warn(
+            `No service id found in ${EVENTS.SERVICE.SERVICE_STARTED} event`,
+          );
+        }
+
+        return {
+          services: state().services.map((item) =>
+            item.id === service.id
+              ? { ...item, status: 'started' as const }
+              : item,
+          ),
+        };
+      }),
     );
 
   stopped$ = (state: Signal<ServicesState>) =>
     this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STOPPED).pipe(
-      map((service) => ({
-        services: state().services.map((item) =>
-          item.id === service.id
-            ? { ...item, status: 'stopped' as const }
-            : item,
-        ),
-      })),
+      map((service) => {
+        if (!service.id) {
+          console.warn(
+            `No service id found in ${EVENTS.SERVICE.SERVICE_STOPPED} event`,
+          );
+        }
+        return {
+          services: state().services.map((item) =>
+            item.id === service.id
+              ? { ...item, status: 'stopped' as const }
+              : item,
+          ),
+        };
+      }),
     );
   sources$ = merge(
     this.servicesLoaded$.pipe(
