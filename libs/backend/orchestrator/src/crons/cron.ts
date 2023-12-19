@@ -47,7 +47,6 @@ export class CronService implements OnModuleInit {
     const j = Job.from({
       cronTime: job.cronTime,
       onTick: async () => {
-        job.lastRun = new Date();
         await job.save();
         this.logger.verbose(`Queueing ${job.name}`);
         const queue = this._getQueue(job.meta!.queueName);

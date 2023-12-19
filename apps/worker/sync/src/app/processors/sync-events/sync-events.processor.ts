@@ -13,7 +13,11 @@ import { CompetitionSyncer } from './competition-sync';
 import { TournamentSyncer } from './tournament-sync';
 import moment from 'moment';
 import { NotificationService } from '@badman/backend-notifications';
-import { EventCompetition, EventTournament } from '@badman/backend-database';
+import {
+  CronJob,
+  EventCompetition,
+  EventTournament,
+} from '@badman/backend-database';
 
 @Processor({
   name: SyncQueue,
@@ -21,7 +25,6 @@ import { EventCompetition, EventTournament } from '@badman/backend-database';
 export class SyncEventsProcessor {
   private _competitionSync: CompetitionSyncer;
   private _tournamentSync: TournamentSyncer;
-  private lastRun?: Date;
 
   private readonly logger = new Logger(SyncEventsProcessor.name);
   private formats = [
@@ -35,15 +38,15 @@ export class SyncEventsProcessor {
     pointService: PointsService,
     private notificationService: NotificationService,
     private visualService: VisualService,
-    private _sequelize: Sequelize
+    private _sequelize: Sequelize,
   ) {
     this._competitionSync = new CompetitionSyncer(
       this.visualService,
-      pointService
+      pointService,
     );
     this._tournamentSync = new TournamentSyncer(
       this.visualService,
-      pointService
+      pointService,
     );
   }
 
@@ -70,14 +73,32 @@ export class SyncEventsProcessor {
       limit: number;
       // the to notifiy user
       userId?: string | string[];
-    }>
+    }>,
   ) {
+    const cronJob = await CronJob.findOne({
+      where: {
+        name: 'sync',
+      },
+    });
+
+    if (!cronJob) {
+      throw new Error('Job not found');
+    }
+
+    if (cronJob.running) {
+      this.logger.log('Job already running');
+      return;
+    }
+
+    cronJob.running = true;
+    await cronJob.save();
+
     try {
-      const newDate = moment(job.data?.date ?? this.lastRun);
+      const newDate = moment(job.data?.date ?? cronJob.lastRun);
       let newEvents: XmlTournament[] = [];
       if (job.data?.search?.length > 0) {
         newEvents = newEvents.concat(
-          await this.visualService.searchEvents(job.data?.search)
+          await this.visualService.searchEvents(job.data?.search),
         );
       } else if (job.data?.id?.length > 0) {
         if (!Array.isArray(job.data?.id)) {
@@ -94,7 +115,7 @@ export class SyncEventsProcessor {
         }
       } else {
         newEvents = newEvents.concat(
-          await this.visualService.getChangeEvents(newDate)
+          await this.visualService.getChangeEvents(newDate),
         );
       }
       newEvents = newEvents.sort((a, b) => {
@@ -110,7 +131,7 @@ export class SyncEventsProcessor {
       }
 
       this.logger.verbose(
-        `Found ${newEvents.length} new events after ${job.data?.startDate}`
+        `Found ${newEvents.length} new events after ${job.data?.startDate}`,
       );
 
       let toProcess = newEvents.length;
@@ -127,7 +148,7 @@ export class SyncEventsProcessor {
         const percent = Math.round((current / total) * 10000) / 100;
         job.progress(percent);
         this.logger.debug(
-          `Processing ${xmlTournament?.Name}, ${percent}% (${i}/${total})`
+          `Processing ${xmlTournament?.Name}, ${percent}% (${i}/${total})`,
         );
 
         // Skip certain events
@@ -217,9 +238,12 @@ export class SyncEventsProcessor {
       this.logger.error('Error', e);
 
       throw e;
+    } finally {
+      cronJob.running = false;
+      cronJob.lastRun = new Date();
+      await cronJob.save();
     }
 
-    this.lastRun = new Date();
     this.logger.log('Finished sync of Visual scores');
   }
 }
