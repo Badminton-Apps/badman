@@ -7,6 +7,7 @@ export class CronJob {
   cronTime?: string;
   meta?: QueueCronJob;
   lastRun?: Moment;
+  nextRun?: Moment;
   running?: boolean;
 
   constructor(args: Partial<CronJob>) {
@@ -14,9 +15,14 @@ export class CronJob {
     this.name = args?.name;
     this.cronTime = args?.cronTime;
     this.meta = args?.meta;
+
+    this.running = args?.running;
+
     const parsed = moment(args?.lastRun);
     this.lastRun = parsed.isValid() ? parsed : undefined;
-    this.running = args?.running;
+
+    const next = moment(args?.nextRun);
+    this.nextRun = next.isValid() ? next : undefined;
   }
 }
 

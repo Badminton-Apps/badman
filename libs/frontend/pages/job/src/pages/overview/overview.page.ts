@@ -65,6 +65,7 @@ export class OverviewPageComponent {
     'name',
     'cronTime',
     'lastRun',
+    'nextRun',
     'running',
     'options',
   ];
