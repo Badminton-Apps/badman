@@ -57,6 +57,11 @@ export class CronJob extends Model {
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   lastRun?: Date;
+
+  @Field(() => Boolean, { nullable: false })
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  running?: boolean;
 }
 
 @InputType()

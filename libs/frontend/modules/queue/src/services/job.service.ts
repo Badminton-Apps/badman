@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { JOBS_CONFIG_TOKEN } from '../injection';
 import { JobsConfiguration } from '../interfaces';
+import { CronJob } from '@badman/frontend-models';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ import { JobsConfiguration } from '../interfaces';
 export class JobsService {
   constructor(
     @Inject(JOBS_CONFIG_TOKEN) private config: JobsConfiguration,
-    private http: HttpClient
+    private http: HttpClient,
   ) {}
 
   syncEventById(args: { id: string | string[]; official?: boolean }) {
@@ -44,6 +45,22 @@ export class JobsService {
       },
       removeOnComplete: true,
       removeOnFail: true,
+    });
+  }
+
+  queueJob(
+    job: CronJob,
+    args: {
+      removeOnComplete?: boolean;
+      removeOnFail?: boolean;
+    },
+  ) {
+    return this.http.post(`${this.config.api}/queue-job`, {
+      queue: job.meta?.queueName,
+      job: job.meta?.jobName,
+      jobArgs: job.meta?.arguments,
+      removeOnComplete: args.removeOnComplete,
+      removeOnFail: args.removeOnFail,
     });
   }
 }
