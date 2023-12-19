@@ -64,6 +64,7 @@ export class OrchestratorBase {
     const service = await this._getService();
     await this.renderService.suspendService(service);
     this.gateway.server?.emit(EVENTS.SERVICE.SERVICE_STOPPED, {
+      id: service.id,
       service: this.serviceName,
     });
   }
