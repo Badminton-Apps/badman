@@ -35,7 +35,7 @@ export class SyncRankingProcessor {
 
     const cronJob = await CronJob.findOne({
       where: {
-        name: 'ranking',
+        name: 'Sync Ranking',
       },
     });
 
