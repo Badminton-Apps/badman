@@ -19,7 +19,7 @@ export class UpdateRankingService {
       createNewPlayers?: boolean | string;
       rankingDate?: Date;
       rankingSystemId?: string;
-    } = { 
+    } = {
       updateCompStatus: false,
       removeAllRanking: false,
       updateRanking: false,
@@ -120,6 +120,7 @@ export class UpdateRankingService {
                 memberId: newp.memberId,
                 firstName: newp.firstName,
                 lastName: newp.lastName,
+                gender: newp.gender == 'M' ? 'M' : 'F',
               } as Partial<Player>;
             }),
             { transaction },
@@ -282,6 +283,18 @@ export class UpdateRankingService {
         }
       }
 
+      // update player gender
+      for (const d of data) {
+        const player = distinctPlayers.find((p) => p.memberId === d.memberId);
+        if (!player) {
+          continue;
+        }
+
+        player.gender = d.gender == 'M' ? 'M' : 'F';
+
+        await player.save({ transaction });
+      }
+
       this._logger.debug('Commit transaction');
       await transaction.commit();
       this._logger.log('End processing export members role per group');
@@ -336,6 +349,7 @@ export interface MembersRolePerGroupData {
   firstName: string;
   lastName: string;
   role: string;
+  gender: 'M' | 'V';
   single: number;
   singlePoints: number;
   doubles: number;
