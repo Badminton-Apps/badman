@@ -7,6 +7,7 @@ import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 import moment from 'moment-timezone';
 import { Job } from 'bull';
+import { ConfigType } from '@badman/utils';
 
 @Processor({
   name: SyncQueue,
