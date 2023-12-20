@@ -8,6 +8,7 @@ import {
 } from 'nest-winston';
 import { format, transports } from 'winston';
 import { ILoggingConfig } from './interfaces/logging.config';
+import { ConfigType } from '@badman/utils';
 
 const { combine, timestamp, errors, ms, json } = format;
 
@@ -44,7 +45,7 @@ export class LoggingModule {
       imports: [
         WinstonModule.forRootAsync({
           imports: [ConfigModule],
-          useFactory: (configService: ConfigService) => {
+          useFactory: (configService: ConfigService<ConfigType>) => {
             if (configService.get('NODE_ENV') === 'production') {
               const token = configService.get('LOGTAIL_TOKEN');
               if (!token) {

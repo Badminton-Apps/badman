@@ -18,7 +18,7 @@ import {
   SyncEventsProcessor,
   SyncRankingProcessor,
 } from './processors';
-import { EVENTS, configSchema, parseconfig } from '@badman/utils';
+import { EVENTS, configSchema, load } from '@badman/utils';
 import { EventsGateway, SocketModule } from '@badman/backend-websockets';
 
 @Module({
@@ -36,7 +36,7 @@ import { EventsGateway, SocketModule } from '@badman/backend-websockets';
     ConfigModule.forRoot({
       cache: true,
       validationSchema: configSchema,
-      load: [parseconfig],
+      load: [load],
     }),
     // Lib modules
     LoggingModule.forRoot({

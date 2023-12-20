@@ -2,6 +2,7 @@ import { Service } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 type ServiceStatus = 'suspended' | 'not_suspended';
+import { ConfigType } from '@badman/utils';
 
 @Injectable()
 export class RenderService {
@@ -12,7 +13,7 @@ export class RenderService {
   };
   private renderApi!: string;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService<ConfigType>) {
     this.headers = {
       accept: 'application/json',
       authorization: `Bearer ${this.configService.get<string>(

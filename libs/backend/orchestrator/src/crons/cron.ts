@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { Queue } from 'bull';
 import { CronJob as Job } from 'cron';
+import { ConfigType } from '@badman/utils';
 
 @Injectable()
 export class CronService implements OnModuleInit {
@@ -15,7 +16,7 @@ export class CronService implements OnModuleInit {
     @InjectQueue(SyncQueue) private readonly syncQ: Queue,
     @InjectQueue(SimulationQueue) private readonly simQ: Queue,
     private readonly schedulerRegistry: SchedulerRegistry,
-    readonly configSerive: ConfigService,
+    readonly configSerive: ConfigService<ConfigType>,
   ) {}
 
   async onModuleInit() {

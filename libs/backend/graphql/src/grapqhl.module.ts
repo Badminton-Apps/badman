@@ -28,6 +28,7 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServiceResolverModule } from './resolvers/services/serice.module';
 import { CronJobResolverModule } from './resolvers/cronJobs/cronJob.module';
+import { ConfigType } from '@badman/utils';
 
 @Module({
   imports: [
@@ -35,7 +36,7 @@ import { CronJobResolverModule } from './resolvers/cronJobs/cronJob.module';
       driver: ApolloDriver,
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
+      useFactory: async (config: ConfigService<ConfigType>) => {
         const plugins = [];
 
         if (process.env.NODE_ENV !== 'production') {

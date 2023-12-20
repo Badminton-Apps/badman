@@ -8,6 +8,7 @@ import { Services } from '../services';
 import { Queue } from 'bull';
 import { RenderService } from '../services/render.service';
 import { Cron } from '@nestjs/schedule';
+import { ConfigType } from '@badman/utils';
 
 export class OrchestratorBase {
   protected logger = new Logger(OrchestratorBase.name);
@@ -17,7 +18,7 @@ export class OrchestratorBase {
 
   constructor(
     protected readonly serviceName: Services,
-    private readonly configSerivce: ConfigService,
+    private readonly configSerivce: ConfigService<ConfigType>,
     private readonly gateway: EventsGateway,
     private queue: Queue,
     private readonly renderService: RenderService,

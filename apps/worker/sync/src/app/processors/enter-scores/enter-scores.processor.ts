@@ -31,7 +31,7 @@ export class EnterScoresProcessor {
   private readonly _username?: string;
   private readonly _password?: string;
 
-  constructor(configService: ConfigService) {
+  constructor(configService: ConfigService<ConfigType>) {
     this._username = configService.get('VR_API_SCORE_USER');
     this._password = configService.get('VR_API_SCORE_PASS');
 

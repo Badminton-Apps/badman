@@ -15,7 +15,7 @@ export class SyncDateProcessor {
   private readonly logger = new Logger(SyncDateProcessor.name);
   private visualFormat = 'YYYY-MM-DDTHH:mm:ss';
 
-  constructor(private configService: ConfigService) {
+  constructor(private configService: ConfigService<ConfigType>) {
     this.logger.debug('SyncDateConsumer');
   }
 

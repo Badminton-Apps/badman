@@ -1,10 +1,11 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 export const configSchema = Joi.object({
   NODE_ENV: Joi.string()
     .valid('development', 'production', 'test', 'beta')
     .default('development'),
 
+  DB_STORAGE: Joi.string().optional(),
   DB_IP: Joi.when('NODE_ENV', {
     is: Joi.valid('production', 'beta'),
     then: Joi.string().required(),
@@ -39,6 +40,7 @@ export const configSchema = Joi.object({
 
   DB_CACHE: Joi.boolean().optional(),
   DB_CACHE_PREFIX: Joi.string().optional(),
+  DB_LOGGING: Joi.boolean().optional(),
   REDIS_DATABASE: Joi.number().integer().optional(),
   REDIS_HOST: Joi.when('DB_CACHE', {
     is: true,
@@ -98,7 +100,10 @@ export const configSchema = Joi.object({
     otherwise: Joi.string().optional(),
   }),
 
+  // Visual
   VR_CHANGE_DATES: Joi.boolean().required(),
+  VR_ACCEPT_ENCOUNTERS: Joi.boolean().required(),
+
   VR_API: Joi.string().uri().required(),
   VR_API_USER: Joi.string().required(),
   VR_API_PASS: Joi.string().required(),
@@ -117,6 +122,12 @@ export const configSchema = Joi.object({
     otherwise: Joi.string().optional(),
   }),
 
+  APOLLO_GRAPH_REF: Joi.when('NODE_ENV', {
+    is: Joi.valid('production', 'beta'),
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional(),
+  }),
+
   VERCEL_ANALYTICS_ID: Joi.string(),
 
   GRAPH_ID: Joi.string().required(),
@@ -126,10 +137,58 @@ export const configSchema = Joi.object({
   RENDER_WAIT_TIME: Joi.number().integer().optional().default(2_100_000),
 });
 
-export const parseconfig = () => ({
+export const load = () => ({
   DB_CACHE: process.env?.['DB_CACHE'] === 'true',
+  DB_LOGGING: process.env?.['DB_LOGGING'] === 'true',
   MAIL_ENABLED: process.env?.['MAIL_ENABLED'] === 'true',
   PUSH_ENABLED: process.env?.['PUSH_ENABLED'] === 'true',
   VR_CHANGE_DATES: process.env?.['VR_CHANGE_DATES'] === 'true',
   APM_SERVER_ACTIVE: process.env?.['APM_SERVER_ACTIVE'] === 'true',
 });
+
+export type ConfigType = {
+  NODE_ENV: 'development' | 'production' | 'test' | 'beta';
+  DB_STORAGE?: string;
+  DB_IP?: string;
+  DB_PORT?: number;
+  DB_DATABASE?: string;
+  DB_USER?: string;
+  DB_PASSWORD?: string;
+  DB_DIALECT?: string;
+  DB_SSL?: string;
+  DB_CACHE: boolean;
+  DB_CACHE_PREFIX?: string;
+  DB_LOGGING?: boolean;
+  REDIS_DATABASE?: number;
+  REDIS_HOST?: string;
+  REDIS_PORT?: number;
+  REDIS_PASSWORD?: string;
+  QUEUE_DB: number;
+  CLIENT_URL: string;
+  LOGTAIL_TOKEN?: string;
+  AUTH0_ISSUER_URL: string;
+  AUTH0_AUDIENCE: string;
+  MAIL_ENABLED: boolean;
+  MAIL_PASS?: string;
+  MAIL_USER?: string;
+  MAIL_HOST?: string;
+  MAIL_SUBJECT_PREFIX?: string;
+  PUSH_ENABLED: boolean;
+  VAPID_PRIVATE_KEY?: string;
+  VAPID_PUBLIC_KEY?: string;
+  VR_CHANGE_DATES: boolean;
+  VR_ACCEPT_ENCOUNTERS: boolean;
+  VR_API: string;
+  VR_API_USER: string;
+  VR_API_PASS: string;
+  CP_PASS?: string;
+  APM_SERVER_ACTIVE?: boolean;
+  APM_SERVER_URL?: string;
+  APM_SERVER_TOKEN?: string;
+  APOLLO_GRAPH_REF?: string;
+  VERCEL_ANALYTICS_ID?: string;
+  GRAPH_ID: string;
+  RENDER_API_KEY: string;
+  RENDER_API_URL: string;
+  RENDER_WAIT_TIME?: number;
+};

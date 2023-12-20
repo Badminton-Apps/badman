@@ -4,7 +4,7 @@ import { RmqContext, RmqOptions, Transport } from '@nestjs/microservices';
 
 @Injectable()
 export class MicroService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService<ConfigType>) {}
 
   getOptions(queue: string, noAck = false): RmqOptions {
     return {
