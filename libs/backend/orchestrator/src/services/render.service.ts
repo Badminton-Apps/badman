@@ -23,14 +23,15 @@ export class RenderService {
   }
 
   async startService(service: Service) {
+    // Update service status
     service.status = 'starting';
     await service.save();
 
+    // Don't start services in development
     if (this.configService.get<string>('NODE_ENV') === 'development') {
-      this._logger.debug(
+      this._logger.verbose(
         `Skipping startService for ${service.name} in development`,
       );
-
       return;
     }
 
@@ -38,18 +39,17 @@ export class RenderService {
       throw new Error(`No render id found for service ${service.name}`);
     }
 
+    // Get the service
     const serviceData = await this._getSerivce(service);
 
+    // Start the service if it's suspended
     if (serviceData.suspended == 'suspended') {
       try {
-        this._logger.debug(
-          `Starting service ${service.name} with id ${service.renderId}`,
-        );
         await fetch(`${this.renderApi}/services/${service.renderId}/resume`, {
           method: 'POST',
           headers: this.headers,
         });
-        this._logger.log(`Service ${service.name} started`);
+        this._logger.log(`Service ${service.name} (${service.renderId}) resumed`);
       } catch (err: unknown) {
         this._logger.error(`Service ${service.name} failed to start`, err);
       }
@@ -59,11 +59,13 @@ export class RenderService {
   }
 
   async suspendService(service: Service) {
+    // Update service status
     service.status = 'stopped';
     await service.save();
 
+    // Don't suspend services in development
     if (this.configService.get<string>('NODE_ENV') === 'development') {
-      this._logger.debug(
+      this._logger.verbose(
         `Skipping suspendService for ${service.name} in development`,
       );
       return;
@@ -72,21 +74,17 @@ export class RenderService {
       throw new Error(`No render id found for service ${service.name}`);
     }
 
+    // Get the service
     const serviceData = await this._getSerivce(service);
 
-    this._logger.debug(
-      `Service ${service.name} status: ${serviceData.suspended}`,
-    );
+    // Suspend the service if it's not suspended
     if (serviceData.suspended == 'not_suspended') {
       try {
-        this._logger.debug(
-          `Suspending service ${service.name} with id ${service.renderId}`,
-        );
         await fetch(`${this.renderApi}/services/${service.renderId}/suspend`, {
           method: 'POST',
           headers: this.headers,
         });
-        this._logger.log(`Service ${service.name} suspended`);
+        this._logger.log(`Service ${service.name} (${service.renderId}) suspended`);
       } catch (err: unknown) {
         this._logger.error(`Service ${service.name} failed to suspend`, err);
       }
