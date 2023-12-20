@@ -9,7 +9,9 @@ import { Rule } from './_rule.base';
 export type TeamClubBaseRuleParams = {
   player: Partial<Player>;
 };
-
+/**
+ * Checks if the player is not in another base team that is higher than the current team or part of the same subevent
+ */
 export class TeamClubBaseRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {

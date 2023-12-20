@@ -10,6 +10,9 @@ export type TeamBaseIndexRuleParams = {
   baseIndex: number;
 };
 
+/**
+ * Checks if the teamIndex is beter than the baseIndex
+ */
 export class TeamBaseIndexRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { team, teamIndex, meta } = assembly;
