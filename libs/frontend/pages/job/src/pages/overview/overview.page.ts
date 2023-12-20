@@ -78,7 +78,7 @@ export class OverviewPageComponent {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Queue the job here
-        this.service.state.load(cron);
+        this.service.state.queue(cron);
       }
     });
   }
