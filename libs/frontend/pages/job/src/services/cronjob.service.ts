@@ -52,6 +52,9 @@ export class CronJobService {
     })
     .pipe(
       map((res) => res.data?.cronJobs?.map((item) => new CronJob(item)) ?? []),
+      map((cronJobs) =>
+        cronJobs.sort((a, b) => `${a.name}`.localeCompare(`${b.name}`)),
+      ),
     );
 
   sources$ = merge(
@@ -67,7 +70,7 @@ export class CronJobService {
     initialState: this.initialState,
     sources: [this.sources$],
     actionSources: {
-      load: (_state, action$: Observable<CronJob>) =>
+      queue: (_state, action$: Observable<CronJob>) =>
         action$.pipe(switchMap((job) => this.jobService.queueJob(job, {}))),
     },
   });
