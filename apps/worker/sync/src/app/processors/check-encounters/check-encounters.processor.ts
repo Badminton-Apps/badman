@@ -1,4 +1,5 @@
 import {
+  Club,
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
@@ -10,6 +11,7 @@ import { NotificationService } from '@badman/backend-notifications';
 import { accepCookies, getBrowser } from '@badman/backend-pupeteer';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { SearchService } from '@badman/backend-search';
+import { ConfigType } from '@badman/utils';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
@@ -17,6 +19,7 @@ import moment from 'moment';
 import { Browser, Page } from 'puppeteer';
 import { Op } from 'sequelize';
 import {
+  acceptEncounter,
   detailAccepted,
   detailComment,
   detailEntered,
@@ -24,17 +27,30 @@ import {
   gotoEncounterPage,
   hasTime,
 } from './pupeteer';
+import { ConfigService } from '@nestjs/config';
 
 const includes = [
   {
     model: Team,
     as: 'home',
     attributes: ['id', 'name'],
+    include: [
+      {
+        model: Club,
+        attributes: ['id', 'name', 'slug'],
+      },
+    ],
   },
   {
     model: Team,
     as: 'away',
     attributes: ['id', 'name'],
+    include: [
+      {
+        model: Club,
+        attributes: ['id', 'name', 'slug'],
+      },
+    ],
   },
   {
     required: true,
@@ -66,9 +82,12 @@ const includes = [
 export class CheckEncounterProcessor {
   private readonly logger = new Logger(CheckEncounterProcessor.name);
 
+  private readonly autoAcceptClubs = ['smash-for-fun', 'herne', 'opslag'];
+
   constructor(
     private notificationService: NotificationService,
     private searchService: SearchService,
+    private configService: ConfigService<ConfigType>,
   ) {}
 
   @Process(Sync.CheckEncounters)
@@ -223,11 +242,30 @@ export class CheckEncounterProcessor {
       if (!entered && hoursPassed > 24 && !hasComment) {
         this.notificationService.notifyEncounterNotEntered(encounter);
       } else if (!accepted && hoursPassed > 48 && !hasComment) {
-        // auto accept for clubs
+        // Check if we can auto accept
+        if (
+          encounter.away?.club?.slug &&
+          this.autoAcceptClubs.includes(encounter.away.club.slug) &&
+          this.configService.get<boolean>('VR_ACCEPT_ENCOUNTERS')
+        ) {
+          this.logger.debug(
+            `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
+          );
 
-        // 
-        this.notificationService.notifyEncounterNotAccepted(encounter);
-
+          const succesfull = await acceptEncounter(
+            { page },
+            { logger: this.logger },
+          );
+          if (!succesfull) {
+            // we failed to accept the encounter for some reason, notify the user
+            this.logger.warn(
+              `Could not auto accept encounter ${encounter.visualCode}`,
+            );
+            this.notificationService.notifyEncounterNotAccepted(encounter);
+          }
+        } else {
+          this.notificationService.notifyEncounterNotAccepted(encounter);
+        }
       }
 
       // Update our local data
