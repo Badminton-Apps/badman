@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Services } from '../services';
 import { Queue } from 'bull';
 import { RenderService } from '../services/render.service';
+import { Cron } from '@nestjs/schedule';
 
 export class OrchestratorBase {
   protected logger = new Logger(OrchestratorBase.name);
@@ -29,19 +30,13 @@ export class OrchestratorBase {
     }
 
     // if any jobs are left in the queue, start the server
-    this.queue.getJobCounts().then((counts) => {
-      if (counts.waiting > 0) {
-        this.logger.log(
-          `[${this.serviceName}] Found ${counts.waiting} jobs in queue, starting worker`,
-        );
-        this.queueWaiting();
-      } else {
-        this.logger.log(
-          `[${this.serviceName}] No jobs in queue, stopping worker`,
-        );
-        this.stopServer();
-      }
-    });
+    this._checkAndStartStopIfNeeded();
+  }
+
+  // check each hour if the queue is empty
+  @Cron('0 * * * *')
+  async checkQueue() {
+    this._checkAndStartStopIfNeeded();
   }
 
   async startServer(): Promise<void> {
@@ -90,7 +85,9 @@ export class OrchestratorBase {
       // chekc if there are still jobs in the queue
       const jobs = await this.queue.getJobCounts();
 
-      this.logger.debug(`[${this.serviceName}] Jobs in queue: ${jobs.waiting}, ${jobs.active}, ${jobs.completed}, ${jobs.failed}`);
+      this.logger.debug(
+        `[${this.serviceName}] Jobs in queue: ${jobs.waiting}, ${jobs.active}, ${jobs.completed}, ${jobs.failed}`,
+      );
 
       this.stopServer();
       this.hasStarted = false;
@@ -108,5 +105,21 @@ export class OrchestratorBase {
     }
 
     return service;
+  }
+
+  private _checkAndStartStopIfNeeded() {
+    this.queue.getJobCounts().then((counts) => {
+      if (counts.waiting > 0) {
+        this.logger.debug(
+          `[${this.serviceName}] Found ${counts.waiting} jobs in queue, starting worker`,
+        );
+        this.queueWaiting();
+      } else {
+        this.logger.debug(
+          `[${this.serviceName}] No jobs in queue, stopping worker`,
+        );
+        this.stopServer();
+      }
+    });
   }
 }
