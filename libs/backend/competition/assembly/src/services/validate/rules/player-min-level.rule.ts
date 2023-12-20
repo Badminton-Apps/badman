@@ -13,6 +13,11 @@ export type PlayerMinLevelRuleParams = {
   rankingType: 'single' | 'double' | 'mix';
 };
 
+/**
+ * Checks if the player isn't better than the max allowed level of the subevent
+ * 
+ * If the player has a level exception, the player is allowed to be better than the max level
+ */
 export class PlayerMinLevelRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
