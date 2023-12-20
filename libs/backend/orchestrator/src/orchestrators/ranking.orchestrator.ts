@@ -6,6 +6,7 @@ import { OrchestratorBase } from './base.orchestrator';
 import { RenderService } from '../services/render.service';
 import { ConfigService } from '@nestjs/config';
 import { EventsGateway } from '@badman/backend-websockets';
+import { ConfigType } from '@badman/utils';
 
 @Processor({
   name: SimulationQueue,
@@ -17,7 +18,7 @@ export class OrchestratorRanking extends OrchestratorBase {
     renderService: RenderService,
     @InjectQueue(SimulationQueue) queue: Queue,
     gateway: EventsGateway,
-    configSerivce: ConfigService,
+    configSerivce: ConfigService<ConfigType>,
   ) {
     super('ranking', configSerivce, gateway, queue, renderService);
     this.logger.log(`${SimulationQueue} Orchestrator created`);

@@ -5,13 +5,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { AssemblyController } from './controllers';
 import { AssemblyExportService, AssemblyValidationService } from './services';
+import { ConfigType } from '@badman/utils';
 
 @Module({
   imports: [
     DatabaseModule,
     CompileModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => {
+      useFactory: (configService: ConfigService<ConfigType>) => {
         return {
           view: {
             root: join(__dirname, 'compile', 'libs', 'assembly'),

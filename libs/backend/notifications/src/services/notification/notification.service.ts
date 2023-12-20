@@ -11,6 +11,7 @@ import {
 } from '@badman/backend-database';
 import { MailingService } from '@badman/backend-mailing';
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigType } from '@badman/utils';
 import {
   CompetitionEncounterChangeConfirmationRequestNotifier,
   CompetitionEncounterChangeNewRequestNotifier,
@@ -33,7 +34,7 @@ export class NotificationService {
   constructor(
     private mailing: MailingService,
     private push: PushService,
-    private configService: ConfigService,
+    private configService: ConfigService<ConfigType>,
   ) {}
 
   async notifyEncounterChange(

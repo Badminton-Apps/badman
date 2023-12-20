@@ -1,4 +1,5 @@
 import { CacheModule } from '@badman/backend-cache';
+import { ConfigType } from '@badman/utils';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -32,7 +33,7 @@ export class DatabaseModule implements OnModuleInit {
 
   // get sequelize instance
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<ConfigType>,
     private readonly sequelize: Sequelize,
   ) {}
 
