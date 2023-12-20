@@ -2,7 +2,7 @@ import { DatabaseModule } from '@badman/backend-database';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ExportBBFPlayers } from './scripts/expot-ranking/exort-ranking';
-import { configSchema, parseconfig } from '@badman/utils';
+import { configSchema, load } from '@badman/utils';
 
 @Module({
   providers: [ExportBBFPlayers],
@@ -10,7 +10,7 @@ import { configSchema, parseconfig } from '@badman/utils';
     ConfigModule.forRoot({
       cache: true,
       validationSchema: configSchema,
-      load: [parseconfig],
+      load: [load],
     }),
     DatabaseModule,
   ],
