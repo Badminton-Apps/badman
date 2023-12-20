@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.17](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.16...v6.129.0-beta.17) (2023-12-20)
+
+
+### Features
+
+* adding typing to config ([847aa62](https://github.com/Badminton-Apps/badman/commit/847aa629a298c37b26a8b1b838b8708bba80ed0a))
+* auto accepting encounters ([317094e](https://github.com/Badminton-Apps/badman/commit/317094ec481eced4685b3bfb49579f2b6c8cf038))
+* check each hour just in case the queue got confused ([221eae8](https://github.com/Badminton-Apps/badman/commit/221eae8d12aa17563946712eb19fe73363df48de))
+* sorting + renaming to logical name ([66a7096](https://github.com/Badminton-Apps/badman/commit/66a7096e60a6600c8f62198364733bdefb8bccd0))
+
+
+### Bug Fixes
+
+* correct gender when updating ranking ([79d70d5](https://github.com/Badminton-Apps/badman/commit/79d70d58c89d3715d479bac200053672894dd94c))
+* removing testing code ([3cac249](https://github.com/Badminton-Apps/badman/commit/3cac24979ae7171b4b4a91a0e726c2da14327ac8))
+* some debug logging for future me ([6f9c5bc](https://github.com/Badminton-Apps/badman/commit/6f9c5bca7141efd8ba68eb9a9133494bc25a7905))
+* this isn't used right now ([045596e](https://github.com/Badminton-Apps/badman/commit/045596e0cb038c0fb57cd847ee03ca6ab3c623cf))
+
 ## [6.129.0-beta.16](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.15...v6.129.0-beta.16) (2023-12-19)
 
 
