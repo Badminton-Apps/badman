@@ -101,8 +101,8 @@ export const configSchema = Joi.object({
   }),
 
   // Visual
-  VR_CHANGE_DATES: Joi.boolean().required(),
-  VR_ACCEPT_ENCOUNTERS: Joi.boolean().required(),
+  VR_CHANGE_DATES: Joi.boolean().optional(),
+  VR_ACCEPT_ENCOUNTERS: Joi.boolean().optional(),
 
   VR_API: Joi.string().uri().required(),
   VR_API_USER: Joi.string().required(),
@@ -143,6 +143,7 @@ export const load = () => ({
   MAIL_ENABLED: process.env?.['MAIL_ENABLED'] === 'true',
   PUSH_ENABLED: process.env?.['PUSH_ENABLED'] === 'true',
   VR_CHANGE_DATES: process.env?.['VR_CHANGE_DATES'] === 'true',
+  VR_ACCEPT_ENCOUNTERS: process.env?.['VR_ACCEPT_ENCOUNTERS'] === 'true',
   APM_SERVER_ACTIVE: process.env?.['APM_SERVER_ACTIVE'] === 'true',
 });
 
