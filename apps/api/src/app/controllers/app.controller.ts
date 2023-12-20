@@ -1,9 +1,7 @@
 import { User } from '@badman/backend-authorization';
-import { Player, Service } from '@badman/backend-database';
+import { Player } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
 import { SimulationQueue, SyncQueue } from '@badman/backend-queue';
-import { EventsGateway } from '@badman/backend-websockets';
-import { EVENTS } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import {
   Body,
@@ -30,20 +28,7 @@ export class AppController {
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private cpGen: CpGeneratorService,
     private planner: PlannerService,
-    private gateway: EventsGateway,
   ) {}
-
-  @Get('test')
-  async test() {
-    const service = await Service.findOne({ where: { name: 'sync' } });
-    this.gateway.server.emit(EVENTS.SERVICE.SERVICE_STOPPED, {
-      id: service?.id,
-    });
-    // this.gateway.emit(EVENTS.SERVICE.SERVICE_STARTED, 'test');
-
-    // this.logger.debug('Test');
-    return 'Test';
-  }
 
   @Post('queue-job')
   async getQueueJob(
