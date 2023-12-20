@@ -223,7 +223,11 @@ export class CheckEncounterProcessor {
       if (!entered && hoursPassed > 24 && !hasComment) {
         this.notificationService.notifyEncounterNotEntered(encounter);
       } else if (!accepted && hoursPassed > 48 && !hasComment) {
+        // auto accept for clubs
+
+        // 
         this.notificationService.notifyEncounterNotAccepted(encounter);
+
       }
 
       // Update our local data

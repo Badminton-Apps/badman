@@ -10,7 +10,9 @@ export type TeamSubeventIndexRuleParams = {
   minIndex: number;
   maxIndex: number;
 };
-
+/**
+ * Checks if the teamIndex is not lower then the allowed minIndex of the subevent
+ */
 export class TeamSubeventIndexRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { teamIndex, subEvent } = assembly;
