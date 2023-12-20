@@ -22,6 +22,7 @@ import {
   enterShuttle,
   enterStartHour,
 } from './pupeteer';
+import { ConfigType } from '@badman/utils';
 
 @Processor({
   name: SyncQueue,
@@ -32,8 +33,8 @@ export class EnterScoresProcessor {
   private readonly _password?: string;
 
   constructor(configService: ConfigService<ConfigType>) {
-    this._username = configService.get('VR_API_SCORE_USER');
-    this._password = configService.get('VR_API_SCORE_PASS');
+    this._username = configService.get('VR_API_USER');
+    this._password = configService.get('VR_API_PASS');
 
     this.logger.debug('Enter scores processor initialized');
   }
