@@ -24,6 +24,13 @@ export class ServiceService {
     loaded: false,
   };
 
+  // constructor() {
+  //   // debugging purposes listen to all events
+  //   this.socket.onAny((event, ...args) => {
+  //     console.log(event, args);
+  //   });
+  // }
+
   // sources
   private servicesLoaded$ = this.apollo
     .query<{
@@ -52,12 +59,13 @@ export class ServiceService {
           );
         }
 
-        return ({
-          services: state().services.map((item) => item.id === service.id
-            ? { ...item, status: 'starting' as const }
-            : item
+        return {
+          services: state().services.map((item) =>
+            item.id === service.id
+              ? { ...item, status: 'starting' as const }
+              : item,
           ),
-        });
+        };
       }),
     );
 
@@ -110,6 +118,4 @@ export class ServiceService {
     initialState: this.initialState,
     sources: [this.sources$, this.starting$, this.started$, this.stopped$],
   });
-
-  constructor() {}
 }
