@@ -16,7 +16,7 @@ import { SearchModule } from '@badman/backend-search';
 import { SocketModule } from '@badman/backend-websockets';
 import { TranslateModule } from '@badman/backend-translate';
 import { TwizzitModule } from '@badman/backend-twizzit';
-import { configSchema, parseconfig } from '@badman/utils';
+import { ConfigType, configSchema, load } from '@badman/utils';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import versionPackage from '../version.json';
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
     ConfigModule.forRoot({
       cache: true,
       validationSchema: configSchema,
-      load: [parseconfig],
+      load: [load],
     }),
     AuthorizationModule,
     GrapqhlModule,
@@ -65,7 +65,7 @@ if (process.env.NODE_ENV === 'production') {
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);
 
-  constructor(configService: ConfigService) {
+  constructor(configService: ConfigService<ConfigType>) {
     this.logger.log(
       `${AppModule.name} loaded, env: ${configService.get('NODE_ENV')}`,
     );

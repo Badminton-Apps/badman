@@ -10,6 +10,7 @@ import {
 } from '@badman/backend-database';
 import { EnrollmentValidationService } from '@badman/backend-enrollment';
 import {
+  ConfigType,
   I18nTranslations,
   SubEventTypeEnum,
   TeamMembershipType,
@@ -51,7 +52,7 @@ export class CpGeneratorService {
   ];
 
   constructor(
-    private _configService: ConfigService,
+    private _configService: ConfigService<ConfigType>,
     private _validation: EnrollmentValidationService,
     private readonly i18nService: I18nService<I18nTranslations>,
   ) {}

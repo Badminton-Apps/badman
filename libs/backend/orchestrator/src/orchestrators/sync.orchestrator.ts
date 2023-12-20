@@ -6,6 +6,7 @@ import { RenderService } from '../services/render.service';
 import { Queue } from 'bull';
 import { ConfigService } from '@nestjs/config';
 import { EventsGateway } from '@badman/backend-websockets';
+import { ConfigType } from '@badman/utils';
 
 @Processor({
   name: SyncQueue,
@@ -17,7 +18,7 @@ export class OrchestratorSync extends OrchestratorBase {
     renderService: RenderService,
     @InjectQueue(SyncQueue) queue: Queue,
     gateway: EventsGateway,
-    configSerivce: ConfigService,
+    configSerivce: ConfigService<ConfigType>,
   ) {
     super('sync', configSerivce, gateway, queue, renderService);
     this.logger.log(`${SyncQueue} Orchestrator created`);

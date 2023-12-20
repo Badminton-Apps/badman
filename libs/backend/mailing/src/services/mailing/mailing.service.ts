@@ -1,4 +1,5 @@
 import { CompileOptions, CompileService } from '@badman/backend-compile';
+import { ConfigType } from '@badman/utils';
 import {
   Club,
   Comment,
@@ -27,7 +28,7 @@ export class MailingService {
 
   constructor(
     private compileService: CompileService,
-    private configService: ConfigService,
+    private configService: ConfigService<ConfigType>,
   ) {
     this.subjectPrefix =
       this.configService.get<string>('MAIL_SUBJECT_PREFIX') || '';

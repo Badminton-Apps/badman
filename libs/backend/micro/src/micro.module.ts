@@ -23,7 +23,7 @@ export class MicroModule {
         ClientsModule.registerAsync([
           {
             name,
-            useFactory: (configService: ConfigService) =>
+            useFactory: (configService: ConfigService<ConfigType>) =>
               ({
                 transport: Transport.RMQ,
                 options: {

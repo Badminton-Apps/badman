@@ -3,13 +3,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as webPush from 'web-push';
 import { RequestOptions, WebPushError, setVapidDetails } from 'web-push';
+import { ConfigType } from '@badman/utils';
 
 @Injectable()
 export class PushService {
   private readonly logger = new Logger(PushService.name);
   private isPushEnabled = false;
 
-  constructor(configSerice: ConfigService) {
+  constructor(configSerice: ConfigService<ConfigType>) {
     const publicVapidKey = configSerice.get('VAPID_PUBLIC_KEY');
     const privateVapidKey = configSerice.get('VAPID_PRIVATE_KEY');
     const pushEnabledKey = configSerice.get<boolean>('PUSH_ENABLED');
