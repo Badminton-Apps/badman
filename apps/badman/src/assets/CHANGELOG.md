@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.19](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.18...v6.129.0-beta.19) (2023-12-22)
+
+
+### Bug Fixes
+
+* should also update the Sync Encounters cronjob ([e8689a1](https://github.com/Badminton-Apps/badman/commit/e8689a1755d8e771954048bb01ca2682f4254163))
+* should wait for timer otherwise would result in shutting down while active ([d994bbf](https://github.com/Badminton-Apps/badman/commit/d994bbf865fa6ce9539adf982f82632c6b89b469))
+
 ## [6.129.0-beta.18](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.17...v6.129.0-beta.18) (2023-12-22)
 
 
