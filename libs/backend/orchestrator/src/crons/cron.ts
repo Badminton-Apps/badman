@@ -52,8 +52,8 @@ export class CronService implements OnModuleInit {
         this.logger.verbose(`Queueing ${job.name}`);
         const queue = this._getQueue(job.meta!.queueName);
         queue.add(job.meta!.jobName, job.meta?.arguments, {
-          removeOnFail: 1,
-          removeOnComplete: true,
+          removeOnFail: 5,
+          removeOnComplete: 5,
         });
       },
       timeZone: 'Europe/Brussels',
