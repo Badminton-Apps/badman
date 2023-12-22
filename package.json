@@ -202,7 +202,7 @@
     "@types/geojson": "^7946.0.13",
     "@types/jest": "29.5.10",
     "@types/multer": "^1.4.11",
-    "@types/node": "18.16.9",
+    "@types/node": "20.10.5",
     "@types/node-geocoder": "^4.2.6",
     "@types/nodemailer": "^6.4.14",
     "@types/quill": "^2.0.14",
