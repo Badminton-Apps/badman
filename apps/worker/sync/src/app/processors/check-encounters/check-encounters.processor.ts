@@ -1,5 +1,6 @@
 import {
   Club,
+  CronJob,
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
@@ -94,6 +95,24 @@ export class CheckEncounterProcessor {
   async syncEncounters() {
     this.logger.log('Syncing encounters');
     let browser: Browser | undefined;
+    const cronJob = await CronJob.findOne({
+      where: {
+        name: 'Sync Events',
+      },
+    });
+
+    if (!cronJob) {
+      throw new Error('Job not found');
+    }
+
+    if (cronJob.running) {
+      this.logger.log('Job already running');
+      return;
+    }
+
+    cronJob.running = true;
+    await cronJob.save();
+
     try {
       // get all encounters that are not accepted yet within the last 14 days
 
@@ -167,7 +186,12 @@ export class CheckEncounterProcessor {
         await browser.close();
       }
 
+      cronJob.running = false;
+      cronJob.lastRun = new Date();
+      await cronJob.save();
+
       this.logger.log('Synced encounters');
+      
     }
 
     return true;
