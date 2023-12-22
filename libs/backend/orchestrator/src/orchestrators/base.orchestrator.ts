@@ -77,7 +77,7 @@ export class OrchestratorBase {
   }
 
   @OnGlobalQueueDrained()
-  finished() {
+  queueDrained() {
     this.logger.log(`[${this.serviceName}] Queue drained`);
 
     clearTimeout(this.timeout);
@@ -119,7 +119,7 @@ export class OrchestratorBase {
         this.logger.debug(
           `[${this.serviceName}] No jobs in queue, stopping worker`,
         );
-        this.stopServer();
+        this.queueDrained();
       }
     });
   }
