@@ -32,7 +32,6 @@
             "output": "compile/libs/mailing"
           }
         ],
-        "isolatedConfig": true,
         "webpackConfig": "apps/api/webpack.config.js"
       },
       "configurations": {

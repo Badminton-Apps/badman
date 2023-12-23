@@ -193,7 +193,7 @@ export class RankingSyncer {
         const last = pubs?.slice(-1)?.[0];
         if (last) {
           // store the latest publication in the calculationIntervalLastUpdate
-          ranking.system.caluclationIntervalLastUpdate = last.date.toDate();
+          ranking.system.calculationIntervalLastUpdate = last.date.toDate();
         }
 
         const lastUpdate = pubs?.filter((r) => r.usedForUpdate)?.slice(-1)?.[0];

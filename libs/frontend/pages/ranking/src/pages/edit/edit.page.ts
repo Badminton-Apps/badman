@@ -36,6 +36,8 @@ const FETCH_SYSTEM = gql`
     rankingSystem(id: $id) {
       id
       name
+      primary
+      calculateUpdates
       amountOfLevels
       procentWinning
       procentWinningPlus1
@@ -50,14 +52,16 @@ const FETCH_SYSTEM = gql`
       inactivityAmount
       inactivityUnit
       inactiveBehavior
-      caluclationIntervalLastUpdate
-      caluclationIntervalAmount
+      calculationIntervalLastUpdate
+      calculationIntervalAmount
       calculationIntervalUnit
+      calculationDayOfWeek
       periodAmount
       periodUnit
       updateIntervalAmountLastUpdate
       updateIntervalAmount
       updateIntervalUnit
+      updateDayOfWeek
       rankingSystem
       differenceForDowngradeSingle
       differenceForDowngradeDouble

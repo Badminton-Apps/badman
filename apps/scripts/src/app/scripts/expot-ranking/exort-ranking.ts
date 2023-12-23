@@ -278,8 +278,8 @@ export class ExportBBFPlayers {
   }
 
   async countGames(system: RankingSystem, players: Player[]) {
-    const stop = moment(); // system.caluclationIntervalLastUpdate;
-    const start = moment(system.caluclationIntervalLastUpdate).subtract(
+    const stop = moment(); // system.calculationIntervalLastUpdate;
+    const start = moment(system.calculationIntervalLastUpdate).subtract(
       system.periodAmount,
       system.periodUnit,
     );

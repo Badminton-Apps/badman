@@ -158,7 +158,7 @@ export class RankingBreakdownPageComponent {
     // Default we take next update interval, if no end is given
     const endPeriod =
       (end ?? null) == null
-        ? moment(this.system()?.caluclationIntervalLastUpdate)
+        ? moment(this.system()?.calculationIntervalLastUpdate)
         : moment(end);
     const startPeriod = endPeriod
       .clone()
@@ -173,7 +173,7 @@ export class RankingBreakdownPageComponent {
     const nextPeriod = startPeriod
       .clone()
       .add(
-        this.system()?.caluclationIntervalAmount,
+        this.system()?.calculationIntervalAmount,
         this.system()?.calculationIntervalUnit,
       );
 
@@ -194,6 +194,7 @@ export class RankingBreakdownPageComponent {
               query GetSystem($where: JSONObject) {
                 rankingSystems(where: $where) {
                   id
+                  name
                   differenceForDowngradeSingle
                   differenceForDowngradeDouble
                   differenceForDowngradeMix
@@ -201,13 +202,15 @@ export class RankingBreakdownPageComponent {
                   differenceForUpgradeDouble
                   differenceForUpgradeMix
                   updateIntervalAmountLastUpdate
-                  caluclationIntervalLastUpdate
+                  calculationIntervalLastUpdate
                   calculationIntervalUnit
-                  caluclationIntervalAmount
+                  calculationIntervalAmount
+                  calculationDayOfWeek
                   minNumberOfGamesUsedForUpgrade
                   minNumberOfGamesUsedForDowngrade
                   updateIntervalAmount
                   updateIntervalUnit
+                  updateDayOfWeek
                   periodAmount
                   periodUnit
                   pointsToGoUp
@@ -306,7 +309,7 @@ export class RankingBreakdownPageComponent {
 
   private _updateUrl() {
     const systemLastUpdate = moment(
-      this.system()?.caluclationIntervalLastUpdate,
+      this.system()?.calculationIntervalLastUpdate,
     );
 
     const queryParams: { [key: string]: string | boolean | null | undefined } =

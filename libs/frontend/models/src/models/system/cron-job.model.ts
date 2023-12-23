@@ -14,7 +14,10 @@ export class CronJob {
     this.id = args?.id;
     this.name = args?.name;
     this.cronTime = args?.cronTime;
-    this.meta = args?.meta;
+    this.meta = {
+      ...(args?.meta ?? {}),
+      arguments: JSON.parse((args.meta?.arguments as string) ?? '{}'),
+    } as QueueCronJob;
 
     this.running = args?.running;
 
@@ -29,5 +32,5 @@ export class CronJob {
 export interface QueueCronJob {
   jobName: string;
   queueName: string;
-  arguments: string;
+  arguments: unknown;
 }
