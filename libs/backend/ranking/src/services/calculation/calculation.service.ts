@@ -121,9 +121,9 @@ export class CalculationService {
 
         for (let period = 0; period < (system.periodAmount ?? 0); period++) {
           this.logger.debug(
-            ` points for date: ${moment(minUpdatePoints).format(
+            `points for date: ${moment(minUpdatePoints).format(
               'YYYY-MM-DD',
-            )}, ${period} / ${system.periodAmount}}`,
+            )}, ${period} / ${system.periodAmount}`,
           );
 
           await this.pointsService.createRankingPointsForPeriod({
@@ -140,9 +140,9 @@ export class CalculationService {
 
       for (const [index, { date, updatePossible }] of updates.entries()) {
         this.logger.debug(
-          `${moment(date).format(
+          `points and ranking for date: ${moment(date).format(
             'YYYY-MM-DD',
-          )}, ${updatePossible}, ${index} / ${updates.length}}`,
+          )}, ${updatePossible}, ${index} / ${updates.length}`,
         );
 
         const startUpdate = moment();
