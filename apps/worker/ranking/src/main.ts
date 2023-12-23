@@ -7,6 +7,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { WorkerRankingModule } from './app/app.module';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -40,5 +41,9 @@ async function bootstrap() {
       process.exit(1);
     }
   });
+
+  setTimeout(() => {
+    Logger.debug('worker-ranking is ready');
+  }, 200);
 }
 bootstrap();
