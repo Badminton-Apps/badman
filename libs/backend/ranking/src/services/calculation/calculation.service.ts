@@ -148,7 +148,7 @@ export class CalculationService {
         const startUpdate = moment();
         await this.pointsService.createRankingPointsForPeriod({
           system,
-          calcDate: date,
+          calcDate: date.toDate(),
           options: {
             transaction,
           },
@@ -156,7 +156,7 @@ export class CalculationService {
 
         await this.placeService.createUpdateRanking({
           system,
-          calcDate: date,
+          calcDate: date.toDate(),
           options: {
             transaction,
             updateRanking: updatePossible,
