@@ -106,7 +106,7 @@ export class CronService implements OnModuleInit {
     for (const system of systems) {
       const jobName = `Update Ranking ${system.name}`;
       const job = jobs.find((j) => j.name === jobName);
-      const cronTime = '5 12 * * *';
+      const cronTime = '0 0 * * *';
 
       if (job) {
         job.cronTime = cronTime;
