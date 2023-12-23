@@ -46,6 +46,7 @@ const FETCH_SYSTEMS = gql`
       id
       primary
       runCurrently
+      calculateUpdates
       name
       procentWinning
       procentLosing
@@ -108,6 +109,7 @@ export class OverviewPageComponent {
     'procentWinning',
     'procentLosing',
     'latestXGamesToUse',
+    'calculateUpdates',
     'options',
   ];
   filter = new FormGroup({});

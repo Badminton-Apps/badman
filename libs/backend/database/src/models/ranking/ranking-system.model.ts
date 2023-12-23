@@ -134,18 +134,21 @@ export class RankingSystem extends Model {
   @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  caluclationIntervalLastUpdate?: Date;
-
+  calculationIntervalLastUpdate?: Date;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  caluclationIntervalAmount?: number;
+  calculationDayOfWeek?: number; // SUN = 0, MON = 1, TUE = 2, WED = 3, THU = 4, FRI = 5, SAT = 6
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  calculationIntervalAmount?: number;
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   calculationIntervalUnit?: 'months' | 'weeks' | 'days';
 
+ 
   get calculationInterval(): RankingTiming {
     return {
-      amount: this.caluclationIntervalAmount,
+      amount: this.calculationIntervalAmount,
       unit: this.calculationIntervalUnit,
     };
   }
@@ -167,6 +170,11 @@ export class RankingSystem extends Model {
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   updateIntervalAmountLastUpdate?: Date;
+
+  @Field(() => Int, { nullable: true })
+  @Column(DataType.NUMBER)
+  updateDayOfWeek?: number; // SUN = 0, MON = 1, TUE = 2, WED = 3, THU = 4, FRI = 5, SAT = 6
+
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
   updateIntervalAmount?: number;
@@ -180,16 +188,21 @@ export class RankingSystem extends Model {
       unit: this.updateIntervalUnit,
     };
   }
+  
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB', 'VISUAL'))
   rankingSystem?: RankingSystems;
 
-  @Field(() => Boolean, { nullable: true })
-  @Column(DataType.BOOLEAN)
-  primary?: boolean;
+  @Field(() => Boolean, { nullable: false })
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  primary!: boolean;
 
-  @Field(() => Boolean, { nullable: true })
+  @Field(() => Boolean, { nullable: false })
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  calculateUpdates!: boolean;
+
+  @Field(() => Boolean, { nullable: false })
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   runCurrently?: boolean;
 

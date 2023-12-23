@@ -1,5 +1,9 @@
-export const Ranking = {
-  steps: {
-    step1: 'step1',
-  },
-};
+export enum Ranking {
+  UpdateRanking = 'UpdateRanking',
+}
+
+
+export interface UpdateRankingJob {
+  systemId: string;
+  recalculatePoints: boolean;
+}

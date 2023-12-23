@@ -13,6 +13,7 @@ import {
   FormControl,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -48,6 +49,7 @@ import { debounceTime } from 'rxjs';
     MatMenuModule,
     MatOptionModule,
     MatSelectModule,
+    MatSlideToggleModule,
 
     // Own Module
     PageHeaderComponent,
@@ -118,17 +120,26 @@ export class RankingSystemFieldsComponent implements OnInit {
         this.system.updateIntervalUnit,
         Validators.required,
       ),
+      updateDayOfWeek: new FormControl(
+        this.system.updateDayOfWeek,
+        Validators.required,
+      ),
+
       periodAmount: new FormControl(
         this.system.periodAmount,
         Validators.required,
       ),
       periodUnit: new FormControl(this.system.periodUnit, Validators.required),
-      caluclationIntervalAmount: new FormControl(
-        this.system.caluclationIntervalAmount,
+      calculationIntervalAmount: new FormControl(
+        this.system.calculationIntervalAmount,
         Validators.required,
       ),
       calculationIntervalUnit: new FormControl(
         this.system.calculationIntervalUnit,
+        Validators.required,
+      ),
+      calculationDayOfWeek: new FormControl(
+        this.system.calculationDayOfWeek,
         Validators.required,
       ),
       differenceForDowngradeSingle: new FormControl(
@@ -159,12 +170,16 @@ export class RankingSystemFieldsComponent implements OnInit {
         this.system.startingType,
         Validators.required,
       ),
+      primary: new FormControl(this.system.primary),
+      calculateUpdates: new FormControl(this.system.calculateUpdates),
       maxLevelUpPerChange: new FormControl(this.system.maxLevelUpPerChange),
       maxLevelDownPerChange: new FormControl(this.system.maxLevelDownPerChange),
       gamesForInactivty: new FormControl(this.system.gamesForInactivty),
       inactivityAmount: new FormControl(this.system.inactivityAmount),
       inactivityUnit: new FormControl(this.system.inactivityUnit),
     });
+
+    console.log(this.system)
 
     this.rakingGroupForm = new FormControl(this.system.rankingGroups);
 

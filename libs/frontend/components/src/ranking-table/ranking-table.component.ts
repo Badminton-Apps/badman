@@ -97,7 +97,7 @@ export class RankingTableComponent implements OnInit {
                 pointsToGoUp
                 pointsToGoDown
                 pointsWhenWinningAgainst
-                caluclationIntervalLastUpdate
+                calculationIntervalLastUpdate
                 primary
               }
             }

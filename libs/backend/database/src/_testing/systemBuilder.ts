@@ -50,10 +50,10 @@ export class SystemBuilder {
     return this;
   }
 
-  WithCaluclationIntervalAmount(
-    caluclationIntervalAmount: number
+  WithcalculationIntervalAmount(
+    calculationIntervalAmount: number
   ): SystemBuilder {
-    this.system.caluclationIntervalAmount = caluclationIntervalAmount;
+    this.system.calculationIntervalAmount = calculationIntervalAmount;
     return this;
   }
   WithCalculationIntervalUnit(

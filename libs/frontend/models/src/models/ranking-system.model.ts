@@ -19,16 +19,19 @@ export class RankingSystem {
   gamesForInactivty?: number;
   inactivityAmount?: number;
   inactivityUnit?: 'months' | 'weeks' | 'days';
-  caluclationIntervalLastUpdate?: Date;
-  caluclationIntervalAmount?: number;
+  calculationIntervalLastUpdate?: Date;
+  calculationIntervalAmount?: number;
   calculationIntervalUnit?: 'months' | 'weeks' | 'days';
+  updateDayOfWeek?: number;
   periodAmount?: number;
   periodUnit?: 'months' | 'weeks' | 'days';
   updateIntervalAmountLastUpdate?: Date;
   updateIntervalAmount?: number;
   updateIntervalUnit?: 'months' | 'weeks' | 'days';
+  calculationDayOfWeek?: number;
   rankingSystem?: RankingSystems;
   primary?: boolean;
+  calculateUpdates?: boolean;
   runCurrently?: boolean;
   differenceForUpgradeSingle?: number;
   differenceForUpgradeDouble?: number;
@@ -60,11 +63,12 @@ export class RankingSystem {
     this.gamesForInactivty = args?.gamesForInactivty;
     this.inactivityAmount = args?.inactivityAmount;
     this.inactivityUnit = args?.inactivityUnit;
-    this.caluclationIntervalLastUpdate = moment(
-      args?.caluclationIntervalLastUpdate
+    this.calculationIntervalLastUpdate = moment(
+      args?.calculationIntervalLastUpdate
     ).toDate();
-    this.caluclationIntervalAmount = args?.caluclationIntervalAmount;
+    this.calculationIntervalAmount = args?.calculationIntervalAmount;
     this.calculationIntervalUnit = args?.calculationIntervalUnit;
+    this.calculationDayOfWeek = args?.calculationDayOfWeek;
     this.periodAmount = args?.periodAmount;
     this.periodUnit = args?.periodUnit;
     this.updateIntervalAmountLastUpdate = moment(
@@ -72,8 +76,10 @@ export class RankingSystem {
     ).toDate();
     this.updateIntervalAmount = args?.updateIntervalAmount;
     this.updateIntervalUnit = args?.updateIntervalUnit;
+    this.updateDayOfWeek = args?.updateDayOfWeek;
     this.rankingSystem = args?.rankingSystem;
     this.primary = args?.primary;
+    this.calculateUpdates = args?.calculateUpdates;
     this.runCurrently = args?.runCurrently;
     this.differenceForUpgradeSingle = args?.differenceForUpgradeSingle;
     this.differenceForUpgradeDouble = args?.differenceForUpgradeDouble;

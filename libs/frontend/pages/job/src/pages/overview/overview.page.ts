@@ -78,7 +78,10 @@ export class OverviewPageComponent {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Queue the job here
-        this.service.state.queue(cron);
+        this.service.state.queue({
+          ...cron,
+          meta: JSON.parse(result),
+        });
       }
     });
   }

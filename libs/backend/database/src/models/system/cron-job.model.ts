@@ -44,6 +44,10 @@ export class CronJob extends Model {
   name!: string;
 
   @Field(() => String, { nullable: false })
+  @Column(DataType.STRING)
+  type!: 'ranking' | 'sync';
+
+  @Field(() => String, { nullable: false })
   @Unique('unique_constraint')
   @Column(DataType.STRING)
   cronTime!: string;
