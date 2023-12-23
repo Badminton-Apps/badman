@@ -1,6 +1,6 @@
 import {
+  RankingQueue,
   Simulation,
-  SimulationQueue,
   SimulationV2Job,
 } from '@badman/backend-queue';
 import { CalculationService } from '@badman/backend-ranking';
@@ -9,7 +9,7 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 
 @Processor({
-  name: SimulationQueue,
+  name: RankingQueue,
 })
 export class SimulationProcessor {
   private readonly _logger = new Logger(SimulationProcessor.name);

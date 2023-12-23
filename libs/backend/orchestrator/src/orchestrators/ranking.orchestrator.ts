@@ -1,4 +1,4 @@
-import { SimulationQueue } from '@badman/backend-queue';
+import { RankingQueue } from '@badman/backend-queue';
 import { InjectQueue, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Queue } from 'bull';
@@ -9,18 +9,18 @@ import { EventsGateway } from '@badman/backend-websockets';
 import { ConfigType } from '@badman/utils';
 
 @Processor({
-  name: SimulationQueue,
+  name: RankingQueue,
 })
 export class OrchestratorRanking extends OrchestratorBase {
   override logger = new Logger(OrchestratorRanking.name);
 
   constructor(
     renderService: RenderService,
-    @InjectQueue(SimulationQueue) queue: Queue,
+    @InjectQueue(RankingQueue) queue: Queue,
     gateway: EventsGateway,
     configSerivce: ConfigService<ConfigType>,
   ) {
     super('ranking', configSerivce, gateway, queue, renderService);
-    this.logger.log(`${SimulationQueue} Orchestrator created`);
+    this.logger.log(`${RankingQueue} Orchestrator created`);
   }
 }

@@ -1,9 +1,5 @@
 import { CronJob, RankingSystem } from '@badman/backend-database';
-import {
-  RankingQueue,
-  SimulationQueue,
-  SyncQueue,
-} from '@badman/backend-queue';
+import { RankingQueue, SyncQueue } from '@badman/backend-queue';
 import { ConfigType, getRankingPeriods } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -19,7 +15,6 @@ export class CronService implements OnModuleInit {
 
   constructor(
     @InjectQueue(SyncQueue) private readonly syncQ: Queue,
-    @InjectQueue(SimulationQueue) private readonly simQ: Queue,
     @InjectQueue(RankingQueue) private readonly rankQ: Queue,
     private readonly schedulerRegistry: SchedulerRegistry,
     readonly configSerive: ConfigService<ConfigType>,
@@ -52,8 +47,8 @@ export class CronService implements OnModuleInit {
     switch (queueName) {
       case SyncQueue:
         return this.syncQ;
-      case SimulationQueue:
-        return this.simQ;
+      case RankingQueue:
+        return this.rankQ;
       default:
         throw new Error(`Queue ${queueName} not found`);
     }

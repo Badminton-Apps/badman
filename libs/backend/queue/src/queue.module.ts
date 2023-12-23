@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
-import { Badminton, RankingQueue, SimulationQueue, SyncQueue } from './queues';
+import { Badminton, RankingQueue, SyncQueue } from './queues';
 import { ConfigType } from '@badman/utils';
 
 const BullQueueModules = [
   BullModule.registerQueue({ name: RankingQueue }),
   BullModule.registerQueue({ name: SyncQueue }),
-  BullModule.registerQueue({ name: SimulationQueue }),
 
   // Belgium
   BullModule.registerQueue({ name: Badminton.Belgium.Flanders.Points }),
