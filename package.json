@@ -17,6 +17,7 @@
     "start:stackblitz": "nx run-many --target=serve --projects=api,badman --parallel",
     "start:server": "nx run-many --target=serve --projects=api,worker-sync --parallel",
     "start:simulation": "nx run-many --target=serve --projects=worker-ranking,worker-belgium-flanders-places,worker-belgium-flanders-points --parallel",
+    "run:simulation": "npx --yes concurrently \"./dist/apps/worker/ranking/main.js\" \"./dist/apps/worker/belgium-flanders-places/main.js\" \"./dist/apps/worker/belgium-flanders-points/main.js\"",
     "start:client": "nx serve client",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
@@ -31,7 +32,11 @@
     "update": "nx migrate latest",
     "migrate:up": "npx sequelize-cli db:migrate",
     "migrate:undo": "npx sequelize-cli db:migrate:undo",
-    "generate-barrels": "barrelsby --config=barrelsby.config.json"
+    "generate-barrels": "barrelsby --config=barrelsby.config.json",
+    "run:worker": "node ./dist/apps/worker/ranking/main.js",
+    "run:belgium-flanders-places": "node ./dist/apps/worker/belgium/flanders/places/main.js",
+    "run:belgium-flanders-points": "node ./dist/apps/worker/belgium/flanders/points/main.js",
+    "run:ranking": "concurrently \"npm run run:worker\" \"npm run run:belgium-flanders-places\" \"npm run run:belgium-flanders-points\""
   },
   "private": true,
   "dependencies": {
@@ -213,6 +218,7 @@
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "barrelsby": "^2.8.1",
+    "concurrently": "^8.2.2",
     "cypress": "^13.6.0",
     "eslint": "8.48.0",
     "eslint-config-prettier": "9.0.0",
