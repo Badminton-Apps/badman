@@ -1,8 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app/app.module';
-import { ClusterService } from '@badman/backend-cluster';
-import { cpus } from 'os';
+import { Logger } from '@nestjs/common';
 
 async function bootstrapPointsService() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -15,6 +14,10 @@ async function bootstrapPointsService() {
     },
   );
   await app.listen();
+
+  setTimeout(() => {
+    Logger.debug('worker-belgium-flanders-games is ready');
+  }, 200);
 }
-// bootstrap();
-ClusterService.clusterize(bootstrapPointsService, cpus().length);
+bootstrapPointsService();
+// ClusterService.clusterize(bootstrapPointsService, cpus().length);
