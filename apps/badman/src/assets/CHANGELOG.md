@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.22](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.21...v6.129.0-beta.22) (2023-12-23)
+
+
+### Bug Fixes
+
+* removing simulation queue, this is now ranking queue ([b62d511](https://github.com/Badminton-Apps/badman/commit/b62d5112814d444dc31e0416e375aabd785bfc85))
+* should have been midnight ([54badd6](https://github.com/Badminton-Apps/badman/commit/54badd6ca6e3336f6530d967a8cfe70ac56be861))
+
 ## [6.129.0-beta.21](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.20...v6.129.0-beta.21) (2023-12-23)
 
 
