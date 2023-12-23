@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -16,7 +16,6 @@ import { getRankingPeriods } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 import { MomentModule } from 'ngx-moment';
-import { startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-period-selection',
@@ -40,7 +39,7 @@ import { startWith } from 'rxjs/operators';
     MatMenuModule,
   ],
 })
-export class PeriodSelectionComponent  {
+export class PeriodSelectionComponent {
   @Input() period!: FormGroup;
   @Input() system!: RankingSystem;
 
@@ -48,13 +47,11 @@ export class PeriodSelectionComponent  {
 
   minDateInUpdate?: Moment;
 
- 
-
   dateClass: MatCalendarCellClassFunction<Moment> = (cellDate, view) => {
     // Only highligh dates inside the month view.
     if (view === 'month') {
       const updates = getRankingPeriods(this.system, cellDate, cellDate);
-      
+
       // find the date in the update list
       const update = updates.find((u) => {
         return moment(u.date).isSame(cellDate, 'day');

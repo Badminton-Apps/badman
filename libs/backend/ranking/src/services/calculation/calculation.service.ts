@@ -4,12 +4,13 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/backend-database';
+import { getRankingPeriods } from '@badman/utils';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
 import { PlaceService } from '../place';
 import { PointsService } from '../points';
-import { getRankingPeriods } from '@badman/utils';
+import { EventEmitter } from 'events';
 
 @Injectable()
 export class CalculationService {
@@ -19,7 +20,7 @@ export class CalculationService {
     private pointsService: PointsService,
     private placeService: PlaceService,
   ) {
-    require('events').EventEmitter.defaultMaxListeners = Infinity;
+    EventEmitter.defaultMaxListeners = Infinity;
   }
 
   public async updateRanking(
