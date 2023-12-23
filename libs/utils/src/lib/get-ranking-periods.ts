@@ -20,7 +20,7 @@ export function getRankingPeriods<
     includeUpdate?: boolean;
     includeCalculation?: boolean;
   },
-): { date: Date; updatePossible: boolean }[] {
+): { date: Moment; updatePossible: boolean }[] {
   if (
     ((args?.includeUpdate ?? true) && !system.updateIntervalAmount) ||
     !system.updateIntervalUnit ||
@@ -44,7 +44,7 @@ export function getRankingPeriods<
   const lastUpdate = moment(system.updateIntervalAmountLastUpdate);
   const lastCalculation = moment(system.calculationIntervalLastUpdate);
   const updates: {
-    date: Date;
+    date: Moment;
     updatePossible: boolean;
   }[] = [];
 
@@ -82,7 +82,7 @@ export function getRankingPeriods<
 
       if (lastUpdate.isSameOrBefore(to) && lastUpdate.isSameOrAfter(from)) {
         updates.push({
-          date: lastUpdate.toDate(),
+          date: lastUpdate.clone(),
           updatePossible: true,
         });
       }
@@ -129,8 +129,8 @@ export function getRankingPeriods<
 
       // if update already exists, don't add it again
       if (
-        updates.find(
-          (u) => u.date.getTime() === lastCalculation.toDate().getTime(),
+        updates.find((u) =>
+          u.date.isSame(lastCalculation, system.calculationIntervalUnit),
         )
       ) {
         continue;
@@ -141,7 +141,7 @@ export function getRankingPeriods<
         lastCalculation.isSameOrAfter(from)
       ) {
         updates.push({
-          date: lastCalculation.toDate(),
+          date: lastCalculation.clone(),
           updatePossible: false,
         });
       }
@@ -150,12 +150,14 @@ export function getRankingPeriods<
 
   // sort updates by date
   updates.sort((a, b) => {
-    if (a.date.getTime() > b.date.getTime()) {
-      return 1;
-    }
-    if (a.date.getTime() < b.date.getTime()) {
+    if (a.date.isBefore(b.date)) {
       return -1;
     }
+
+    if (a.date.isAfter(b.date)) {
+      return 1;
+    }
+
     return 0;
   });
 
