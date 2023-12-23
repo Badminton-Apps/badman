@@ -9,6 +9,7 @@ import { Queue } from 'bull';
 import { RenderService } from '../services/render.service';
 import { Cron } from '@nestjs/schedule';
 import { ConfigType } from '@badman/utils';
+import { clear } from 'console';
 
 export class OrchestratorBase {
   protected logger = new Logger(OrchestratorBase.name);
@@ -89,6 +90,17 @@ export class OrchestratorBase {
       this.logger.debug(
         `[${this.serviceName}] Jobs in queue: ${jobs.waiting}, ${jobs.active}, ${jobs.completed}, ${jobs.failed}`,
       );
+
+      if (jobs.waiting > 0 || jobs.active > 0) {
+        this.logger.debug(
+          `[${this.serviceName}] Jobs in queue, not stopping worker`,
+        );
+
+        // reset timeout
+        this.queueDrained();
+
+        return;
+      }
 
       this.stopServer();
       this.hasStarted = false;
