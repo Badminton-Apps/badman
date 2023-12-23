@@ -1,6 +1,5 @@
 export const RankingQueue = 'ranking';
 export const SyncQueue = 'sync';
-export const SimulationQueue = 'simulation';
 
 export const Badminton = {
   Belgium: {
@@ -11,4 +10,4 @@ export const Badminton = {
   },
 };
 
-export type QueueName = typeof RankingQueue | typeof SyncQueue | typeof SimulationQueue;
+export type QueueName = typeof RankingQueue | typeof SyncQueue;
