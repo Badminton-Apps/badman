@@ -24,11 +24,10 @@ export class SimulationProcessor {
     this._logger.debug(job.data);
     // const transaction = await this.sequelize.transaction();
 
-    await this.calculationService.simulation(
-      job.data.systemId,
-      job.data.fromDate,
-      job.data.toDate,
-      job.data.periods,
-    );
+    await this.calculationService.updateRanking(job.data.systemId, {
+      fromDate: job.data.fromDate,
+      toDate: job.data.toDate,
+      periods: job.data.periods,
+    });
   }
 }

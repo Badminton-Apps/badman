@@ -2,12 +2,12 @@ import { DatabaseModule, Service } from '@badman/backend-database';
 import { LoggingModule } from '@badman/backend-logging';
 import { QueueModule } from '@badman/backend-queue';
 import { RankingModule } from '@badman/backend-ranking';
+import { EventsGateway, SocketModule } from '@badman/backend-websockets';
+import { EVENTS, configSchema, load } from '@badman/utils';
 import { Logger, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import versionPackage from '../version.json';
-import { SimulationProcessor } from './processors';
-import { EVENTS, configSchema, load } from '@badman/utils';
-import { EventsGateway, SocketModule } from '@badman/backend-websockets';
+import { RankingProcessor, SimulationProcessor } from './processors';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { EventsGateway, SocketModule } from '@badman/backend-websockets';
     RankingModule,
     SocketModule,
   ],
-  providers: [SimulationProcessor],
+  providers: [SimulationProcessor, RankingProcessor],
 })
 export class WorkerRankingModule implements OnApplicationBootstrap {
   protected logger = new Logger(WorkerRankingModule.name);
@@ -46,4 +46,3 @@ export class WorkerRankingModule implements OnApplicationBootstrap {
     });
   }
 }
-

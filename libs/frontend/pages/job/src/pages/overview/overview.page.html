@@ -85,10 +85,21 @@
   <mat-dialog-content>
     <!-- have a json editor for the data.meta field -->
 
-    <pre>{{data.meta | json}}</pre>
+    <mat-form-field style="width: 100%">
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="3"
+        #meta
+        placeholder="Edit meta data"
+      >
+{{data.meta | json}}</textarea
+      >
+    </mat-form-field>
   </mat-dialog-content>
+
   <mat-dialog-actions>
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="true">Confirm</button>
+    <button mat-button [mat-dialog-close]="meta.value">Confirm</button>
   </mat-dialog-actions>
 </ng-template>

@@ -1,7 +1,7 @@
 import { User } from '@badman/backend-authorization';
 import { Player } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
-import { SimulationQueue, SyncQueue } from '@badman/backend-queue';
+import { RankingQueue, SimulationQueue, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import {
   Body,
@@ -24,6 +24,7 @@ export class AppController {
   private readonly logger = new Logger(AppController.name);
 
   constructor(
+    @InjectQueue(RankingQueue) private _rankingQueue: Queue,
     @InjectQueue(SimulationQueue) private _simulationQueue: Queue,
     @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private cpGen: CpGeneratorService,
@@ -36,7 +37,7 @@ export class AppController {
     @Body()
     args: {
       job: string;
-      queue: typeof SimulationQueue | typeof SyncQueue;
+      queue: typeof SimulationQueue | typeof SyncQueue | typeof RankingQueue;
       jobArgs: { [key: string]: unknown };
       removeOnComplete: boolean;
       removeOnFail: boolean;
@@ -68,6 +69,11 @@ export class AppController {
         });
       case SyncQueue:
         return this._syncQueue.add(args.job, args.jobArgs, {
+          removeOnComplete: args.removeOnComplete || true,
+          removeOnFail: args.removeOnFail || 1,
+        });
+      case RankingQueue:
+        return this._rankingQueue.add(args.job, args.jobArgs, {
           removeOnComplete: args.removeOnComplete || true,
           removeOnFail: args.removeOnFail || 1,
         });

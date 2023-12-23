@@ -103,7 +103,7 @@ export class PlaceService {
       system.updateIntervalAmountLastUpdate = stop;
     }
 
-    system.caluclationIntervalLastUpdate = stop;
+    system.calculationIntervalLastUpdate = stop;
     await system.save({ transaction });
   }
 
