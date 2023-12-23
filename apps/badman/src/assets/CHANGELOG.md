@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.20](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.19...v6.129.0-beta.20) (2023-12-23)
+
+
+### Features
+
+* moving the period calculation to a helper function with tests ([25b6b8c](https://github.com/Badminton-Apps/badman/commit/25b6b8c0d1af66fa0880e2a36011d15d1bd2f5d9))
+
 ## [6.129.0-beta.19](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.18...v6.129.0-beta.19) (2023-12-22)
 
 
