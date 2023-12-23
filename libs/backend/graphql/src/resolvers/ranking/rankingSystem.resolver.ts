@@ -326,49 +326,77 @@ export class RankingSystemResolver {
     copyToEndDate: Date | undefined,
     transaction: Transaction,
   ) {
-    const chunkSize = 100000;
-    const toCopyPlaces = await RankingPlace.count({
-      where: {
-        systemId: currenSystemId,
-        rankingDate: {
-          [Op.between]: [copyFromStartDate, copyToEndDate],
-        },
-      },
-      transaction,
-    });
+    this.logger.debug(
+      `Copy places from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
+    );
 
-    let offset = 0;
-    while (offset < toCopyPlaces) {
-      this.logger.debug(`Copy places ${offset}/${toCopyPlaces}`);
-      const places = await RankingPlace.findAll({
-        where: {
-          systemId: currenSystemId,
-          rankingDate: {
-            [Op.between]: [copyFromStartDate, copyToEndDate],
-          },
-        },
-        order: [['id', 'ASC']],
-        limit: chunkSize,
-        offset,
+    // get all column names
+    const columns = (await this._sequelize.query(
+      `
+      SELECT column_name
+      FROM information_schema.columns
+      WHERE table_schema = 'ranking'
+      AND table_name   = 'RankingPlaces'
+    `,
+      {
+        type: 'SELECT',
         transaction,
-      });
+      },
+    )) as { column_name: string }[];
 
-      if (places?.length > 0) {
-        await RankingPlace.bulkCreate(
-          places.map((place) => ({
-            ...place.toJSON(),
-            id: undefined,
-            systemId: newSystemId,
-          })),
-          {
-            transaction,
-            hooks: false,
-          },
-        );
-      }
+    await this._sequelize.query(
+      `
+      CREATE TEMPORARY TABLE temp_places AS
+      SELECT  uuid_generate_v4() as "id", ${columns
+        .filter((c) => c.column_name !== 'id')
+        .map((c) => `"${c.column_name}"`)
+        .join(', ')}
+      FROM "ranking"."RankingPlaces"
+      WHERE "systemId" = '${currenSystemId}'
+      AND "rankingDate" BETWEEN '${copyFromStartDate?.toISOString()}' AND '${copyToEndDate?.toISOString()}'
+    `,
+      {
+        transaction,
+      },
+    );
 
-      offset += chunkSize;
-    }
+    this.logger.verbose(`Created temp table`);
+
+    await this._sequelize.query(
+      `
+      UPDATE temp_places
+      SET "systemId" = '${newSystemId}' 
+    `,
+      {
+        transaction,
+      },
+    );
+
+    // generate new ids
+
+    this.logger.verbose(`Updated temp table`);
+
+    await this._sequelize.query(
+      `
+      INSERT INTO "ranking"."RankingPlaces"
+      SELECT * FROM temp_places 
+    `,
+      {
+        transaction,
+      },
+    );
+
+    this.logger.verbose(`Inserted temp table`);
+
+    // drop temp table
+    await this._sequelize.query(
+      `
+      DROP TABLE temp_places
+    `,
+      {
+        transaction,
+      },
+    );
   }
 
   private async copyRankingLastPlaces(
@@ -378,49 +406,75 @@ export class RankingSystemResolver {
     copyToEndDate: Date | undefined,
     transaction: Transaction,
   ) {
-    const chunkSize = 100000;
-    const toCopyPlaces = await RankingLastPlace.count({
-      where: {
-        systemId: currenSystemId,
-        rankingDate: {
-          [Op.between]: [copyFromStartDate, copyToEndDate],
-        },
-      },
-      transaction,
-    });
+    this.logger.debug(
+      `Copy last places from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
+    );
 
-    let offset = 0;
-    while (offset < toCopyPlaces) {
-      this.logger.debug(`Copy last places ${offset}/${toCopyPlaces}`);
-      const places = await RankingLastPlace.findAll({
-        where: {
-          systemId: currenSystemId,
-          rankingDate: {
-            [Op.between]: [copyFromStartDate, copyToEndDate],
-          },
-        },
-        order: [['id', 'ASC']],
-        limit: chunkSize,
-        offset,
+    // get all column names
+    const columns = (await this._sequelize.query(
+      `
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_schema = 'ranking'
+        AND table_name   = 'RankingLastPlaces'
+      `,
+      {
+        type: 'SELECT',
         transaction,
-      });
+      },
+    )) as { column_name: string }[];
 
-      if (places?.length > 0) {
-        await RankingLastPlace.bulkCreate(
-          places.map((place) => ({
-            ...place.toJSON(),
-            id: undefined,
-            systemId: newSystemId,
-          })),
-          {
-            hooks: false,
-            transaction,
-          },
-        );
-      }
+    await this._sequelize.query(
+      `
+      CREATE TEMPORARY TABLE temp_last_places AS
+      SELECT  uuid_generate_v4() as "id", ${columns
+        .filter((c) => c.column_name !== 'id')
+        .map((c) => `"${c.column_name}"`)
+        .join(', ')}
+      FROM "ranking"."RankingLastPlaces"
+      WHERE "systemId" = '${currenSystemId}'
+      AND "rankingDate" BETWEEN '${copyFromStartDate?.toISOString()}' AND '${copyToEndDate?.toISOString()}'
+    `,
+      {
+        transaction,
+      },
+    );
 
-      offset += chunkSize;
-    }
+    this.logger.verbose(`Created temp table`);
+
+    await this._sequelize.query(
+      `
+      UPDATE temp_last_places
+      SET "systemId" = '${newSystemId}'
+    `,
+      {
+        transaction,
+      },
+    );
+
+    this.logger.verbose(`Updated temp table`);
+
+    await this._sequelize.query(
+      `
+      INSERT INTO "ranking"."RankingLastPlaces"
+      SELECT * FROM temp_last_places
+    `,
+      {
+        transaction,
+      },
+    );
+
+    this.logger.verbose(`Inserted temp table`);
+
+    // drop temp table
+    await this._sequelize.query(
+      `
+      DROP TABLE temp_last_places
+    `,
+      {
+        transaction,
+      },
+    );
   }
 
   private async copyRankingPoints(
@@ -430,49 +484,75 @@ export class RankingSystemResolver {
     copyToEndDate: Date | undefined,
     transaction: Transaction,
   ) {
-    const chunkSize = 100000;
-    const toCopyPoints = await RankingPoint.count({
-      where: {
-        systemId: currenSystemId,
-        rankingDate: {
-          [Op.between]: [copyFromStartDate, copyToEndDate],
-        },
-      },
-      transaction,
-    });
+    this.logger.debug(
+      `Copy Points from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
+    );
 
-    let offset = 0;
-    while (offset < toCopyPoints) {
-      this.logger.debug(`Copy points ${offset}/${toCopyPoints}`);
-      const points = await RankingPoint.findAll({
-        where: {
-          systemId: currenSystemId,
-          rankingDate: {
-            [Op.between]: [copyFromStartDate, copyToEndDate],
-          },
-        },
-        limit: chunkSize,
-        order: [['id', 'ASC']],
-        offset,
+    // get all column names
+    const columns = (await this._sequelize.query(
+      `
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_schema = 'ranking'
+        AND table_name   = 'RankingPoints'
+      `,
+      {
+        type: 'SELECT',
         transaction,
-      });
+      },
+    )) as { column_name: string }[];
 
-      if (points?.length > 0) {
-        await RankingPoint.bulkCreate(
-          points.map((place) => ({
-            ...place.toJSON(),
-            id: undefined,
-            systemId: newSystemId,
-          })),
-          {
-            transaction,
-            hooks: false,
-          },
-        );
-      }
+    await this._sequelize.query(
+      `
+      CREATE TEMPORARY TABLE temp_points AS
+      SELECT  uuid_generate_v4() as "id", ${columns
+        .filter((c) => c.column_name !== 'id')
+        .map((c) => `"${c.column_name}"`)
+        .join(', ')}
+      FROM "ranking"."RankingPoints"
+      WHERE "systemId" = '${currenSystemId}'
+      AND "rankingDate" BETWEEN '${copyFromStartDate?.toISOString()}' AND '${copyToEndDate?.toISOString()}'
+    `,
+      {
+        transaction,
+      },
+    );
 
-      offset += chunkSize;
-    }
+    this.logger.verbose(`Created temp table`);
+
+    await this._sequelize.query(
+      `
+      UPDATE temp_points
+      SET "systemId" = '${newSystemId}'
+    `,
+      {
+        transaction,
+      },
+    );
+
+    this.logger.verbose(`Updated temp table`);
+
+    await this._sequelize.query(
+      `
+      INSERT INTO "ranking"."RankingPoints"
+      SELECT * FROM temp_points
+    `,
+      {
+        transaction,
+      },
+    );
+
+    this.logger.verbose(`Inserted temp table`);
+
+    // drop temp table
+    await this._sequelize.query(
+      `
+      DROP TABLE temp_points
+    `,
+      {
+        transaction,
+      },
+    );
   }
 
   @Mutation(() => Boolean)
