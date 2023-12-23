@@ -4,13 +4,13 @@ import {
   SimulationQueue,
   SyncQueue,
 } from '@badman/backend-queue';
+import { ConfigType, getRankingPeriods } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Cron, SchedulerRegistry } from '@nestjs/schedule';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { Queue } from 'bull';
 import { CronJob as Job } from 'cron';
-import { ConfigType, getRankingPeriods } from '@badman/utils';
 import moment from 'moment';
 
 @Injectable()
@@ -87,7 +87,7 @@ export class CronService implements OnModuleInit {
         });
       },
       timeZone: 'Europe/Brussels',
-    }); 
+    });
 
     this.schedulerRegistry.addCronJob(job.name, j);
     j.start();
@@ -106,7 +106,7 @@ export class CronService implements OnModuleInit {
     for (const system of systems) {
       const jobName = `Update Ranking ${system.name}`;
       const job = jobs.find((j) => j.name === jobName);
-      let cronTime = '5 12 * * *';
+      const cronTime = '5 12 * * *';
 
       if (job) {
         job.cronTime = cronTime;
@@ -169,7 +169,8 @@ export class CronService implements OnModuleInit {
           throw new Error(`System not found`);
         }
 
-        let hasUpdates = getRankingPeriods(system, moment(), moment()).length > 0;
+        const hasUpdates =
+          getRankingPeriods(system, moment(), moment()).length > 0;
 
         if (!hasUpdates) {
           this.logger.verbose(`No updates for ${job.name}`);
