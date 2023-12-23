@@ -6,4 +6,6 @@ export enum Ranking {
 export interface UpdateRankingJob {
   systemId: string;
   recalculatePoints: boolean;
+  fromDate: string;
+  toDate: string;
 }
