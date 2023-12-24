@@ -64,6 +64,7 @@
     "cancel": "Cancel",
     "clone": "Clone",
     "close": "Close",
+    "copy": "Copy",
     "create": "Create",
     "delete": "Delete",
     "detail": "Details",
@@ -680,6 +681,7 @@
   },
   "ranking": {
     "all-ranking": "All update",
+    "clone-points": "Copy points to this system",
     "double": "Double",
     "double-points": "Ranking points",
     "double-rank": "Ranking place",
