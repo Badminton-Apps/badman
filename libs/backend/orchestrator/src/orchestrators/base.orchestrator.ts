@@ -7,17 +7,29 @@ import { Cron } from '@nestjs/schedule';
 import { Queue } from 'bull';
 import { Services } from '../services';
 import { RenderService } from '../services/render.service';
+import { ConfigService } from '@nestjs/config';
+import { ConfigType } from '@badman/utils';
 
 export class OrchestratorBase {
   protected logger = new Logger(OrchestratorBase.name);
   private hasStarted = false;
+  private timeout?: NodeJS.Timeout;
+  private timeoutTime = 1000 * 60 * 5; // 5 minutes
 
   constructor(
     protected readonly serviceName: Services,
+    protected readonly configSerivce: ConfigService<ConfigType>,
     private readonly gateway: EventsGateway,
     private readonly queue: Queue,
     private readonly renderService: RenderService,
-  ) {}
+  ) {
+    const configuredTimeout =
+      this.configSerivce.get<string>('RENDER_WAIT_TIME');
+
+    if (configuredTimeout) {
+      this.timeoutTime = parseInt(configuredTimeout);
+    }
+  }
 
   @Cron('*/1 * * * *')
   async checkQueue() {
@@ -73,6 +85,8 @@ export class OrchestratorBase {
     const counts = await this.queue.getJobCounts();
 
     if (counts.waiting > 0 || counts.active > 0) {
+      // clear timeout if it exists because we have jobs in queue
+      clearTimeout(this.timeout);
       if (!this.hasStarted) {
         this.logger.debug(
           `[${this.serviceName}] Found ${counts.waiting} jobs in queue, starting worker`,
@@ -82,11 +96,13 @@ export class OrchestratorBase {
       }
     } else {
       if (this.hasStarted) {
-        this.logger.debug(
-          `[${this.serviceName}] No more jobs in queue, stopping worker`,
-        );
-        this.stopServer();
-        this.hasStarted = false;
+        this.timeout = setTimeout(() => {
+          this.logger.debug(
+            `[${this.serviceName}] No more jobs in queue, stopping worker`,
+          );
+          this.stopServer();
+          this.hasStarted = false;
+        }, this.timeoutTime);
       }
     }
   }
