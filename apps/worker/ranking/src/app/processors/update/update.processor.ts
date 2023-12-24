@@ -27,6 +27,5 @@ export class RankingProcessor {
 
     await this.calculationService.updateRanking(system.id, { ...job.data });
 
-    // ,"recalculatePoints": true
   }
 }
