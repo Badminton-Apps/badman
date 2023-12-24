@@ -1,44 +1,30 @@
-import { EventsGateway } from '@badman/backend-websockets';
 import { Service } from '@badman/backend-database';
+import { EventsGateway } from '@badman/backend-websockets';
 import { EVENTS } from '@badman/utils';
-import { OnGlobalQueueDrained, OnGlobalQueueWaiting } from '@nestjs/bull';
+import { OnGlobalQueueWaiting } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Services } from '../services';
-import { Queue } from 'bull';
-import { RenderService } from '../services/render.service';
 import { Cron } from '@nestjs/schedule';
-import { ConfigType } from '@badman/utils';
-import { clear } from 'console';
+import { Queue } from 'bull';
+import { Services } from '../services';
+import { RenderService } from '../services/render.service';
 
 export class OrchestratorBase {
   protected logger = new Logger(OrchestratorBase.name);
-  private timeout?: NodeJS.Timeout;
-  private timeoutTime = 1000 * 60 * 5; // 5 minutes
   private hasStarted = false;
 
   constructor(
     protected readonly serviceName: Services,
-    private readonly configSerivce: ConfigService<ConfigType>,
     private readonly gateway: EventsGateway,
-    private queue: Queue,
+    private readonly queue: Queue,
     private readonly renderService: RenderService,
   ) {
-    const configuredTimeout =
-      this.configSerivce.get<string>('RENDER_WAIT_TIME');
-
-    if (configuredTimeout) {
-      this.timeoutTime = parseInt(configuredTimeout);
-    }
-
     // if any jobs are left in the queue, start the server
     this._checkAndStartStopIfNeeded();
   }
 
-  // check each hour if the queue is empty
-  @Cron('0 * * * *')
+  @Cron('*/1 * * * *')
   async checkQueue() {
-    this._checkAndStartStopIfNeeded();
+    await this._checkAndStartStopIfNeeded();
   }
 
   async startServer(): Promise<void> {
@@ -67,44 +53,10 @@ export class OrchestratorBase {
   }
 
   @OnGlobalQueueWaiting()
-  queueWaiting() {
-    this.logger.log(`[${this.serviceName}] Queue waiting`);
-
+  async queueWaiting() {
     if (!this.hasStarted) {
-      this.startServer();
-      this.hasStarted = true;
+      await this._checkAndStartStopIfNeeded();
     }
-    clearTimeout(this.timeout);
-  }
-
-  @OnGlobalQueueDrained()
-  queueDrained() {
-    this.logger.log(`[${this.serviceName}] Queue drained`);
-
-    clearTimeout(this.timeout);
-
-    this.timeout = setTimeout(async () => {
-      // chekc if there are still jobs in the queue
-      const jobs = await this.queue.getJobCounts();
-
-      this.logger.debug(
-        `[${this.serviceName}] Jobs in queue: ${jobs.waiting}, ${jobs.active}, ${jobs.completed}, ${jobs.failed}`,
-      );
-
-      if (jobs.waiting > 0 || jobs.active > 0) {
-        this.logger.debug(
-          `[${this.serviceName}] Jobs in queue, not stopping worker`,
-        );
-
-        // reset timeout
-        this.queueWaiting();
-
-        return;
-      }
-
-      this.stopServer();
-      this.hasStarted = false;
-    }, this.timeoutTime);
   }
 
   private async _getService() {
@@ -120,19 +72,25 @@ export class OrchestratorBase {
     return service;
   }
 
-  private _checkAndStartStopIfNeeded() {
-    this.queue.getJobCounts().then((counts) => {
-      if (counts.waiting > 0) {
+  private async _checkAndStartStopIfNeeded() {
+    const counts = await this.queue.getJobCounts();
+
+    if (counts.waiting > 0 || counts.active > 0) {
+      if (!this.hasStarted) {
         this.logger.debug(
           `[${this.serviceName}] Found ${counts.waiting} jobs in queue, starting worker`,
         );
-        this.queueWaiting();
-      } else {
-        this.logger.debug(
-          `[${this.serviceName}] No jobs in queue, stopping worker`,
-        );
-        this.queueDrained();
+        this.startServer();
+        this.hasStarted = true;
       }
-    });
+    } else {
+      if (this.hasStarted) {
+        this.logger.debug(
+          `[${this.serviceName}] No more jobs in queue, stopping worker`,
+        );
+        this.stopServer();
+        this.hasStarted = false;
+      }
+    }
   }
 }
