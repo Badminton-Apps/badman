@@ -81,7 +81,7 @@ export class OrchestratorBase {
 
       if (!this.hasStarted) {
         this.logger.debug(
-          `[${this.serviceName}] Found ${counts.waiting} waiting and ${counts.active} jobs in queue, starting worker`,
+          `[${this.serviceName}] Found ${counts.waiting} waiting and ${counts.active} active jobs in queue, starting worker`,
         );
         this.startServer();
         this.hasStarted = true;
