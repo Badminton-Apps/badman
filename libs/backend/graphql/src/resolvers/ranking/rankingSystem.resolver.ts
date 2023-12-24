@@ -5,8 +5,6 @@ import {
   PagedRankingLastPlaces,
   Player,
   RankingSystemUpdateInput,
-  RankingPlace,
-  RankingPoint,
 } from '@badman/backend-database';
 import {
   Logger,
@@ -232,7 +230,7 @@ export class RankingSystemResolver {
       );
     }
     // Do transaction
-    const transaction = await this._sequelize.transaction();
+    const transaction: Transaction | undefined = undefined; //await this._sequelize.transaction();
 
     try {
       const dbSystem = await RankingSystem.findByPk(id);
@@ -281,6 +279,9 @@ export class RankingSystemResolver {
           transaction,
         );
 
+        // wait 2 seconds
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
         await this.copyRankingPoints(
           dbSystem.id,
           newSystem.id,
@@ -288,6 +289,9 @@ export class RankingSystemResolver {
           copyToEndDate,
           transaction,
         );
+
+        // wait 2 seconds
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         await this.copyRankingPlaces(
           dbSystem.id,
@@ -309,12 +313,12 @@ export class RankingSystemResolver {
         });
       }
 
-      await transaction.commit();
+      // await transaction?.commit();
       this.logger.log(`Copied system ${dbSystem.name} to ${newSystem.name}`);
       return dbSystem;
     } catch (e) {
       this.logger.error('rollback', e);
-      await transaction.rollback();
+      // await transaction?.rollback();
       throw e;
     }
   }
@@ -324,7 +328,7 @@ export class RankingSystemResolver {
     newSystemId: string,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
-    transaction: Transaction,
+    transaction: Transaction | undefined,
   ) {
     this.logger.debug(
       `Copy places from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
@@ -404,7 +408,7 @@ export class RankingSystemResolver {
     newSystemId: string,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
-    transaction: Transaction,
+    transaction: Transaction | undefined,
   ) {
     this.logger.debug(
       `Copy last places from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
@@ -482,7 +486,7 @@ export class RankingSystemResolver {
     newSystemId: string,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
-    transaction: Transaction,
+    transaction: Transaction | undefined,
   ) {
     this.logger.debug(
       `Copy Points from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
