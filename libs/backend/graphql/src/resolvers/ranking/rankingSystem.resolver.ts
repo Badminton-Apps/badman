@@ -5,6 +5,8 @@ import {
   PagedRankingLastPlaces,
   Player,
   RankingSystemUpdateInput,
+  RankingPoint,
+  RankingPlace,
 } from '@badman/backend-database';
 import {
   Logger,
@@ -25,6 +27,7 @@ import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
 import { CacheControl } from '../../decorators';
 import { Op, Transaction } from 'sequelize';
+import moment from 'moment';
 
 @CacheControl({ maxAge: 31536000 })
 @Resolver(() => RankingSystem)
@@ -229,8 +232,9 @@ export class RankingSystemResolver {
         `You do not have permission to copy a system`,
       );
     }
+
     // Do transaction
-    const transaction: Transaction | undefined = undefined; //await this._sequelize.transaction();
+    const transaction = await this._sequelize.transaction();
 
     try {
       const dbSystem = await RankingSystem.findByPk(id);
@@ -271,31 +275,9 @@ export class RankingSystemResolver {
       this.logger.debug(`New System ${newSystem.name} (${newSystem.id})`);
 
       if (copyFromStartDate || copyToEndDate) {
-        await this.copyRankingLastPlaces(
-          dbSystem.id,
-          newSystem.id,
-          copyFromStartDate,
-          copyToEndDate,
-          transaction,
-        );
-
-        // wait 2 seconds
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        await this.copyRankingPoints(
-          dbSystem.id,
-          newSystem.id,
-          copyFromStartDate,
-          copyToEndDate,
-          transaction,
-        );
-
-        // wait 2 seconds
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        await this.copyRankingPlaces(
-          dbSystem.id,
-          newSystem.id,
+        await this._copyPlaces(
+          dbSystem,
+          newSystem,
           copyFromStartDate,
           copyToEndDate,
           transaction,
@@ -313,24 +295,203 @@ export class RankingSystemResolver {
         });
       }
 
-      // await transaction?.commit();
+      await transaction?.commit();
       this.logger.log(`Copied system ${dbSystem.name} to ${newSystem.name}`);
       return dbSystem;
     } catch (e) {
       this.logger.error('rollback', e);
-      // await transaction?.rollback();
+      await transaction?.rollback();
       throw e;
     }
   }
 
-  private async copyRankingPlaces(
+  @Mutation(() => RankingSystem)
+  async copyPlacesPoints(
+    @User() user: Player,
+    @Args('source', { type: () => ID }) source: string,
+    @Args('destination', { type: () => ID }) destination: string,
+    @Args('copyFromStartDate', { type: () => Date, nullable: true })
+    copyFromStartDate?: Date,
+    @Args('copyToEndDate', { type: () => Date, nullable: true })
+    copyToEndDate?: Date,
+  ) {
+    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+      throw new UnauthorizedException(
+        `You do not have permission to copy a system`,
+      );
+    } 
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      const sourceSystem = await RankingSystem.findByPk(source);
+      if (!sourceSystem) {
+        throw new NotFoundException(`${RankingSystem.name}: ${source}`);
+      }
+
+      const destinationSystem = await RankingSystem.findByPk(destination);
+      if (!destinationSystem) {
+        throw new NotFoundException(`${RankingSystem.name}: ${destination}`);
+      }
+
+      if (copyFromStartDate || copyToEndDate) {
+        // remove all places and points
+        await this._copyPlaces(
+          sourceSystem,
+          destinationSystem,
+          copyFromStartDate,
+          copyToEndDate,
+          transaction,
+        );
+      }
+
+      await transaction?.commit();
+      this.logger.log(
+        `Copied places ${sourceSystem.name} to ${destinationSystem.name}`,
+      );
+      return sourceSystem;
+    } catch (e) {
+      this.logger.error('rollback', e);
+      await transaction?.rollback();
+      throw e;
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async removeRankingSystem(
+    @User() user: Player,
+    @Args('id', { type: () => ID }) id: string,
+  ) {
+    if (!(await user.hasAnyPermission(['edit:ranking']))) {
+      throw new UnauthorizedException(
+        `You do not have permission to edit this club`,
+      );
+    }
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+
+    try {
+      const dbSystem = await RankingSystem.findByPk(id);
+      if (!dbSystem) {
+        throw new NotFoundException(`${RankingSystem.name}: ${id}`);
+      }
+
+      await dbSystem.destroy({
+        transaction,
+      });
+
+      await transaction.commit();
+      return true;
+    } catch (e) {
+      this.logger.error('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
+
+  private async _copyPlaces(
+    sourceSystem: RankingSystem,
+    destinationSystem: RankingSystem,
+    copyFromStartDate: Date | undefined,
+    copyToEndDate: Date | undefined,
+    transaction: Transaction,
+  ) {
+    await RankingLastPlace.destroy({
+      where: {
+        systemId: destinationSystem.id,
+        rankingDate: {
+          [Op.and]: [
+            {
+              [Op.gte]: copyFromStartDate,
+            },
+            {
+              [Op.lt]: copyToEndDate,
+            },
+          ],
+        },
+      },
+      transaction,
+    });
+
+    await RankingPoint.destroy({
+      where: {
+        systemId: destinationSystem.id,
+        rankingDate: {
+          [Op.and]: [
+            {
+              [Op.gte]: copyFromStartDate,
+            },
+            {
+              [Op.lt]: copyToEndDate,
+            },
+          ],
+        },
+      },
+      transaction,
+    });
+
+    await RankingPlace.destroy({
+      where: {
+        systemId: destinationSystem.id,
+        rankingDate: {
+          [Op.and]: [
+            {
+              [Op.gte]: copyFromStartDate,
+            },
+            {
+              [Op.lt]: copyToEndDate,
+            },
+          ],
+        },
+      },
+      transaction,
+    });
+
+    const dates = this._chunkedDates(copyFromStartDate, copyToEndDate);
+
+    for (const { from, to } of dates) {
+      this.logger.debug(
+        `Copy places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`,
+      );
+      await this._copyRankingLastPlaces(
+        sourceSystem.id,
+        destinationSystem.id,
+        from,
+        to,
+        transaction,
+      );
+
+      await this._copyRankingPoints(
+        sourceSystem.id,
+        destinationSystem.id,
+        from,
+        to,
+        transaction,
+      );
+
+      await this._copyRankingPlaces(
+        sourceSystem.id,
+        destinationSystem.id,
+        from,
+        to,
+        transaction,
+      );
+
+      this.logger.debug(
+        `Copied places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`,
+      );
+    }
+  }
+
+  private async _copyRankingPlaces(
     currenSystemId: string,
     newSystemId: string,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
     transaction: Transaction | undefined,
   ) {
-    this.logger.debug(
+    this.logger.verbose(
       `Copy places from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
     );
 
@@ -357,7 +518,8 @@ export class RankingSystemResolver {
         .join(', ')}
       FROM "ranking"."RankingPlaces"
       WHERE "systemId" = '${currenSystemId}'
-      AND "rankingDate" BETWEEN '${copyFromStartDate?.toISOString()}' AND '${copyToEndDate?.toISOString()}'
+      AND "rankingDate" > '${copyFromStartDate?.toISOString()}' AND  "rankingDate" <= '${copyToEndDate?.toISOString()}'
+
     `,
       {
         transaction,
@@ -403,15 +565,15 @@ export class RankingSystemResolver {
     );
   }
 
-  private async copyRankingLastPlaces(
-    currenSystemId: string,
-    newSystemId: string,
+  private async _copyRankingLastPlaces(
+    sourceSystemId: string,
+    destinationSystemId: string,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
     transaction: Transaction | undefined,
   ) {
-    this.logger.debug(
-      `Copy last places from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
+    this.logger.verbose(
+      `Copy last places from ${sourceSystemId} to ${destinationSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
     );
 
     // get all column names
@@ -436,8 +598,8 @@ export class RankingSystemResolver {
         .map((c) => `"${c.column_name}"`)
         .join(', ')}
       FROM "ranking"."RankingLastPlaces"
-      WHERE "systemId" = '${currenSystemId}'
-      AND "rankingDate" BETWEEN '${copyFromStartDate?.toISOString()}' AND '${copyToEndDate?.toISOString()}'
+      WHERE "systemId" = '${sourceSystemId}'
+      AND "rankingDate" > '${copyFromStartDate?.toISOString()}' AND  "rankingDate" <= '${copyToEndDate?.toISOString()}'
     `,
       {
         transaction,
@@ -449,7 +611,7 @@ export class RankingSystemResolver {
     await this._sequelize.query(
       `
       UPDATE temp_last_places
-      SET "systemId" = '${newSystemId}'
+      SET "systemId" = '${destinationSystemId}'
     `,
       {
         transaction,
@@ -481,14 +643,14 @@ export class RankingSystemResolver {
     );
   }
 
-  private async copyRankingPoints(
+  private async _copyRankingPoints(
     currenSystemId: string,
     newSystemId: string,
     copyFromStartDate: Date | undefined,
     copyToEndDate: Date | undefined,
     transaction: Transaction | undefined,
   ) {
-    this.logger.debug(
+    this.logger.verbose(
       `Copy Points from ${currenSystemId} to ${newSystemId} between ${copyFromStartDate} and ${copyToEndDate}`,
     );
 
@@ -515,7 +677,8 @@ export class RankingSystemResolver {
         .join(', ')}
       FROM "ranking"."RankingPoints"
       WHERE "systemId" = '${currenSystemId}'
-      AND "rankingDate" BETWEEN '${copyFromStartDate?.toISOString()}' AND '${copyToEndDate?.toISOString()}'
+      AND "rankingDate" > '${copyFromStartDate?.toISOString()}' AND  "rankingDate" <= '${copyToEndDate?.toISOString()}'
+
     `,
       {
         transaction,
@@ -559,35 +722,31 @@ export class RankingSystemResolver {
     );
   }
 
-  @Mutation(() => Boolean)
-  async removeRankingSystem(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-  ) {
-    if (!(await user.hasAnyPermission(['edit:ranking']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`,
-      );
-    }
-    // Do transaction
-    const transaction = await this._sequelize.transaction();
+  /**
+   * Splits up the dates into chunks of max 1 month
+   *
+   * @param from Start date
+   * @param to End date
+   */
+  private _chunkedDates(from: Date | undefined, to: Date | undefined) {
+    const dates: { from: Date; to: Date }[] = [];
+    let current = moment(from);
+    const end = moment(to);
 
-    try {
-      const dbSystem = await RankingSystem.findByPk(id);
-      if (!dbSystem) {
-        throw new NotFoundException(`${RankingSystem.name}: ${id}`);
-      }
-
-      await dbSystem.destroy({
-        transaction,
+    while (current < end) {
+      const from = moment(current);
+      const to = moment(current).add(1, 'month');
+      dates.push({
+        from: from.toDate(),
+        to: to.toDate(),
       });
-
-      await transaction.commit();
-      return true;
-    } catch (e) {
-      this.logger.error('rollback', e);
-      await transaction.rollback();
-      throw e;
+      current = to;
     }
+
+    if (dates.length >= 1) {
+      // the last chunk should end at the to date
+      dates[dates.length - 1].to = end.toDate();
+    }
+    return dates;
   }
 }

@@ -64,6 +64,7 @@
     "cancel": "Annuleren",
     "clone": "Dupliceer",
     "close": "Sluiten",
+    "copy": "Kopiëren",
     "create": "Aanmaken",
     "delete": "Verwijderen",
     "detail": "Details",
@@ -680,6 +681,7 @@
   },
   "ranking": {
     "all-ranking": "Alle updates",
+    "clone-points": "Kopieer punten naar dit systeem",
     "double": "Dubbel",
     "double-points": "Ranking punten",
     "double-rank": "Ranking plaats",
