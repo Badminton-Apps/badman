@@ -319,7 +319,7 @@ export class RankingSystemResolver {
       throw new UnauthorizedException(
         `You do not have permission to copy a system`,
       );
-    } 
+    }
 
     // Do transaction
     const transaction = await this._sequelize.transaction();
