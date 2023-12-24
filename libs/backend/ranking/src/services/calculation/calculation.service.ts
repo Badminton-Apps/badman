@@ -47,7 +47,16 @@ export class CalculationService {
       })) as RankingSystem;
     }
 
-    const { fromDate, toDate, periods, recalculatePoints, transaction } = args;
+    const {
+      fromDate,
+      toDate,
+      periods,
+      recalculatePoints,
+      calculatePlaces,
+      calculatePoints,
+      calculateRanking,
+      transaction,
+    } = args;
 
     if (!system) {
       throw new NotFoundException(`${RankingSystem.name} not found`);
@@ -97,15 +106,17 @@ export class CalculationService {
         `,
       );
 
-      await RankingPlace.destroy({
-        where: {
-          systemId: system.id,
-          rankingDate: {
-            [Op.between]: [minUpdatePlace.toDate(), maxUpdate.toDate()],
+      if (calculatePlaces) {
+        await RankingPlace.destroy({
+          where: {
+            systemId: system.id,
+            rankingDate: {
+              [Op.between]: [minUpdatePlace.toDate(), maxUpdate.toDate()],
+            },
           },
-        },
-        transaction,
-      });
+          transaction,
+        });
+      }
 
       if (recalculatePoints) {
         this.logger.verbose(
@@ -152,7 +163,7 @@ export class CalculationService {
         );
 
         const startUpdate = moment();
-        if (args.calculatePoints) {
+        if (calculatePoints) {
           await this.pointsService.createRankingPointsForPeriod({
             system,
             calcDate: date.toDate(),
@@ -162,13 +173,13 @@ export class CalculationService {
           });
         }
 
-        if (args.calculatePlaces) {
+        if (calculatePlaces) {
           await this.placeService.createUpdateRanking({
             system,
             calcDate: date.toDate(),
             options: {
               transaction,
-              updateRanking: args.calculateRanking ? updatePossible : false,
+              updateRanking: calculateRanking ? updatePossible : false,
             },
           });
         }
