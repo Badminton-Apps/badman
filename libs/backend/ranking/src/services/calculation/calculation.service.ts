@@ -30,9 +30,15 @@ export class CalculationService {
       toDate?: Date | string;
       periods?: number;
       recalculatePoints?: boolean;
+      calculatePoints?: boolean;
+      calculatePlaces?: boolean;
+      calculateRanking?: boolean;
       transaction?: Transaction;
     } = {
       recalculatePoints: false,
+      calculatePoints: true,
+      calculatePlaces: true,
+      calculateRanking: true,
     },
   ) {
     if (typeof system === 'string') {
@@ -146,22 +152,26 @@ export class CalculationService {
         );
 
         const startUpdate = moment();
-        await this.pointsService.createRankingPointsForPeriod({
-          system,
-          calcDate: date.toDate(),
-          options: {
-            transaction,
-          },
-        });
+        if (args.calculatePoints) {
+          await this.pointsService.createRankingPointsForPeriod({
+            system,
+            calcDate: date.toDate(),
+            options: {
+              transaction,
+            },
+          });
+        }
 
-        await this.placeService.createUpdateRanking({
-          system,
-          calcDate: date.toDate(),
-          options: {
-            transaction,
-            updateRanking: updatePossible,
-          },
-        });
+        if (args.calculatePlaces) {
+          await this.placeService.createUpdateRanking({
+            system,
+            calcDate: date.toDate(),
+            options: {
+              transaction,
+              updateRanking: args.calculateRanking ? updatePossible : false,
+            },
+          });
+        }
 
         const stopUpdate = moment();
         const duration = moment.duration(stopUpdate.diff(startUpdate));
