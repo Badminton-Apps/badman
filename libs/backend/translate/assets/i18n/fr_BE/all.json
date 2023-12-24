@@ -64,6 +64,7 @@
     "cancel": "Annuler",
     "clone": "Copie",
     "close": "Fermer",
+    "copy": "Copier",
     "create": "Créer",
     "delete": "Retirer",
     "detail": "Détails",
@@ -680,6 +681,7 @@
   },
   "ranking": {
     "all-ranking": "Alle updates",
+    "clone-points": "Copier les points vers ce système",
     "double": "Double",
     "double-points": "Double points",
     "double-rank": "Ranking classement",

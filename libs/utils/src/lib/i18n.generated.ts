@@ -68,6 +68,7 @@ export type I18nTranslations = {
             "cancel": string;
             "clone": string;
             "close": string;
+            "copy": string;
             "create": string;
             "delete": string;
             "detail": string;
@@ -684,6 +685,7 @@ export type I18nTranslations = {
         };
         "ranking": {
             "all-ranking": string;
+            "clone-points": string;
             "double": string;
             "double-points": string;
             "double-rank": string;
