@@ -34,11 +34,6 @@ export class CalculationService {
       calculatePlaces?: boolean;
       calculateRanking?: boolean;
       transaction?: Transaction;
-    } = {
-      recalculatePoints: false,
-      calculatePoints: true,
-      calculatePlaces: true,
-      calculateRanking: true,
     },
   ) {
     if (typeof system === 'string') {
@@ -56,7 +51,15 @@ export class CalculationService {
       calculatePoints,
       calculateRanking,
       transaction,
-    } = args;
+    } = {
+      // Default values
+      recalculatePoints: false,
+      calculatePoints: true,
+      calculatePlaces: true,
+      calculateRanking: true,
+      // Args
+      ...args,
+    };
 
     if (!system) {
       throw new NotFoundException(`${RankingSystem.name} not found`);
@@ -144,7 +147,6 @@ export class CalculationService {
           minUpdatePoints.add(1, system.periodUnit);
         }
       }
-    
 
       if (calculatePlaces) {
         await RankingPlace.destroy({
