@@ -106,18 +106,8 @@ export class CalculationService {
         `,
       );
 
-      if (calculatePlaces) {
-        await RankingPlace.destroy({
-          where: {
-            systemId: system.id,
-            rankingDate: {
-              [Op.between]: [minUpdatePlace.toDate(), maxUpdate.toDate()],
-            },
-          },
-          transaction,
-        });
-      }
-
+      // If we changed the system, we might have to recalculate the points,
+      // Setting recalculatePoints to true will delete all points and recalculate them
       if (recalculatePoints) {
         this.logger.verbose(
           `Recalculate points for ${
@@ -154,12 +144,27 @@ export class CalculationService {
           minUpdatePoints.add(1, system.periodUnit);
         }
       }
+    
+
+      if (calculatePlaces) {
+        await RankingPlace.destroy({
+          where: {
+            systemId: system.id,
+            rankingDate: {
+              [Op.between]: [minUpdatePlace.toDate(), maxUpdate.toDate()],
+            },
+          },
+          transaction,
+        });
+      }
 
       for (const [index, { date, updatePossible }] of updates.entries()) {
         this.logger.debug(
           `points and ranking for date: ${moment(date).format(
             'YYYY-MM-DD',
-          )}, ${updatePossible}, ${index} / ${updates.length}`,
+          )}, ${updatePossible}, ${index} / ${
+            updates.length
+          }, calculateRanking: ${calculateRanking}, calculatePlaces: ${calculatePlaces}, calculatePoints: ${calculatePoints}`,
         );
 
         const startUpdate = moment();
