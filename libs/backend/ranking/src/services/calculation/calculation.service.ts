@@ -1,16 +1,15 @@
 import {
   RankingGroup,
-  RankingPlace,
   RankingPoint,
-  RankingSystem,
+  RankingSystem
 } from '@badman/backend-database';
 import { getRankingPeriods } from '@badman/utils';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { EventEmitter } from 'events';
 import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
 import { PlaceService } from '../place';
 import { PointsService } from '../points';
-import { EventEmitter } from 'events';
 
 @Injectable()
 export class CalculationService {
@@ -146,18 +145,6 @@ export class CalculationService {
 
           minUpdatePoints.add(1, system.periodUnit);
         }
-      }
-
-      if (calculatePlaces) {
-        await RankingPlace.destroy({
-          where: {
-            systemId: system.id,
-            rankingDate: {
-              [Op.between]: [minUpdatePlace.toDate(), maxUpdate.toDate()],
-            },
-          },
-          transaction,
-        });
       }
 
       for (const [index, { date, updatePossible }] of updates.entries()) {
