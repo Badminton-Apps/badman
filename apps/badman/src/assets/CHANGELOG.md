@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.25](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.24...v6.129.0-beta.25) (2023-12-24)
+
+
+### Features
+
+* copy places only ([081763e](https://github.com/Badminton-Apps/badman/commit/081763eec88f2a89afad4f415e061f1e35afdcd1))
+* optional arguments for enabling/disabling calculations ([f1c9fa5](https://github.com/Badminton-Apps/badman/commit/f1c9fa56fffc6eeea5e81fbdb340c066554d1df6))
+* restart quueue if there are still jobs remaining. ([73faeb3](https://github.com/Badminton-Apps/badman/commit/73faeb33d8b6b3f45cb76d30cf9665641317821c))
+* switch to cron interval check ([e58993a](https://github.com/Badminton-Apps/badman/commit/e58993a7d8193eeffb63f189926057102623ea60))
+
+
+### Bug Fixes
+
+* add job queue check before stopping worker ([c97c6b0](https://github.com/Badminton-Apps/badman/commit/c97c6b02aea5c63648466cf71ed2145835f583e4))
+* sometimes is a query just faster ([7169cbb](https://github.com/Badminton-Apps/badman/commit/7169cbbbdf7042a1b48a95d5c0d956fe56d154ab))
+* we don't really need to check on startup, will be triggered within the minute ([4218a8e](https://github.com/Badminton-Apps/badman/commit/4218a8e686eb6c396f4f0799cc74810f7cd54e26))
+
 ## [6.129.0-beta.24](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.23...v6.129.0-beta.24) (2023-12-23)
 
 ## [6.129.0-beta.23](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.22...v6.129.0-beta.23) (2023-12-23)
