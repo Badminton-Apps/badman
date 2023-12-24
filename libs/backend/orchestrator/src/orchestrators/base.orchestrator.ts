@@ -17,10 +17,7 @@ export class OrchestratorBase {
     private readonly gateway: EventsGateway,
     private readonly queue: Queue,
     private readonly renderService: RenderService,
-  ) {
-    // if any jobs are left in the queue, start the server
-    this._checkAndStartStopIfNeeded();
-  }
+  ) {}
 
   @Cron('*/1 * * * *')
   async checkQueue() {
