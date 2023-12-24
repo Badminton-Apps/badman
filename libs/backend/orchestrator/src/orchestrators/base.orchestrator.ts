@@ -97,7 +97,7 @@ export class OrchestratorBase {
         );
 
         // reset timeout
-        this.queueDrained();
+        this.queueWaiting();
 
         return;
       }
