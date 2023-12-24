@@ -25,11 +25,7 @@ export class RankingProcessor {
       throw new Error('System not found');
     }
 
-    await this.calculationService.updateRanking(system.id, {
-      recalculatePoints: job.data.recalculatePoints,
-      fromDate: job.data.fromDate,
-      toDate: job.data.toDate,
-    });
+    await this.calculationService.updateRanking(system.id, { ...job.data });
 
     // ,"recalculatePoints": true
   }
