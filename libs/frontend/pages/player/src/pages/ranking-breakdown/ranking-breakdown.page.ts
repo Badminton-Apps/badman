@@ -19,9 +19,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
-import { Game, Player, RankingSystem } from '@badman/frontend-models';
+import { Game, Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -70,16 +69,16 @@ export class RankingBreakdownPageComponent {
   private router = inject(Router);
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
-  private systemService = inject(RankingSystemService);
   private apollo = inject(Apollo);
   private stateTransfer = inject(TransferState);
   private platformId = inject(PLATFORM_ID);
   private destroy$ = injectDestroy();
+  systemService = inject(RankingSystemService);
 
   // route
   private queryParams = toSignal(this.route.queryParamMap);
   private routeParams = toSignal(this.route.paramMap);
-  private routeData= toSignal(this.route.data);
+  private routeData = toSignal(this.route.data);
 
   // filters
   periodFilter = new FormGroup({
@@ -107,7 +106,6 @@ export class RankingBreakdownPageComponent {
   });
 
   // Signals
-  system = toSignal(this._getSystem());
   games = toSignal(this._loadGames());
   loadingGames = signal(true);
 
@@ -134,7 +132,7 @@ export class RankingBreakdownPageComponent {
           return;
         }
 
-        if (!this.system()) {
+        if (this.systemService.system()) {
           return;
         }
 
@@ -158,23 +156,26 @@ export class RankingBreakdownPageComponent {
     // Default we take next update interval, if no end is given
     const endPeriod =
       (end ?? null) == null
-        ? moment(this.system()?.calculationIntervalLastUpdate)
+        ? moment(this.systemService.system()?.calculationIntervalLastUpdate)
         : moment(end);
     const startPeriod = endPeriod
       .clone()
-      .subtract(this.system()?.periodAmount, this.system()?.periodUnit);
+      .subtract(
+        this.systemService.system()?.periodAmount,
+        this.systemService.system()?.periodUnit,
+      );
     const gamePeriod = startPeriod
       .clone()
       .subtract(
-        this.system()?.updateIntervalAmount,
-        this.system()?.updateIntervalUnit,
+        this.systemService.system()?.updateIntervalAmount,
+        this.systemService.system()?.updateIntervalUnit,
       );
 
     const nextPeriod = startPeriod
       .clone()
       .add(
-        this.system()?.calculationIntervalAmount,
-        this.system()?.calculationIntervalUnit,
+        this.systemService.system()?.calculationIntervalAmount,
+        this.systemService.system()?.calculationIntervalUnit,
       );
 
     this.periodFilter.setValue({
@@ -183,60 +184,6 @@ export class RankingBreakdownPageComponent {
       game: gamePeriod,
       next: nextPeriod,
     });
-  }
-
-  private _getSystem() {
-    return this.systemService.getPrimarySystemsWhere().pipe(
-      switchMap((query) =>
-        this.apollo
-          .query<{ rankingSystems: RankingSystem[] }>({
-            query: gql`
-              query GetSystem($where: JSONObject) {
-                rankingSystems(where: $where) {
-                  id
-                  name
-                  differenceForDowngradeSingle
-                  differenceForDowngradeDouble
-                  differenceForDowngradeMix
-                  differenceForUpgradeSingle
-                  differenceForUpgradeDouble
-                  differenceForUpgradeMix
-                  updateIntervalAmountLastUpdate
-                  calculationIntervalLastUpdate
-                  calculationIntervalUnit
-                  calculationIntervalAmount
-                  calculationDayOfWeek
-                  minNumberOfGamesUsedForUpgrade
-                  minNumberOfGamesUsedForDowngrade
-                  updateIntervalAmount
-                  updateIntervalUnit
-                  updateDayOfWeek
-                  periodAmount
-                  periodUnit
-                  pointsToGoUp
-                  pointsWhenWinningAgainst
-                  pointsToGoDown
-                  amountOfLevels
-                  latestXGamesToUse
-                }
-              }
-            `,
-            variables: {
-              where: query,
-            },
-          })
-          .pipe(
-            transferState('primarySystem', this.stateTransfer, this.platformId),
-            map((x) => {
-              if (!x?.data?.rankingSystems?.length) {
-                throw new Error('No ranking system found');
-              }
-
-              return new RankingSystem(x.data.rankingSystems[0]);
-            }),
-          ),
-      ),
-    );
   }
 
   private _loadGames() {
@@ -295,7 +242,7 @@ export class RankingBreakdownPageComponent {
               },
             },
             playerId: this.player().id,
-            systemId: this.system()?.id,
+            systemId: this.systemService.system()?.id,
           },
         }),
       ),
@@ -309,7 +256,7 @@ export class RankingBreakdownPageComponent {
 
   private _updateUrl() {
     const systemLastUpdate = moment(
-      this.system()?.calculationIntervalLastUpdate,
+      this.systemService.system()?.calculationIntervalLastUpdate,
     );
 
     const queryParams: { [key: string]: string | boolean | null | undefined } =

@@ -10,6 +10,7 @@ import moment from 'moment';
 import { Op, Transaction } from 'sequelize';
 import { PlaceService } from '../place';
 import { PointsService } from '../points';
+import { UpdateRankingJob } from '@badman/backend-queue';
 
 @Injectable()
 export class CalculationService {
@@ -24,16 +25,8 @@ export class CalculationService {
 
   public async updateRanking(
     system: string | RankingSystem,
-    args: {
-      fromDate?: Date | string;
-      toDate?: Date | string;
-      periods?: number;
-      recalculatePoints?: boolean;
-      calculatePoints?: boolean;
-      calculatePlaces?: boolean;
-      calculateRanking?: boolean;
-      transaction?: Transaction;
-    },
+    args?: UpdateRankingJob,
+    transaction?: Transaction,
   ) {
     if (typeof system === 'string') {
       system = (await RankingSystem.findByPk(system, {
@@ -49,7 +42,6 @@ export class CalculationService {
       calculatePlaces,
       calculatePoints,
       calculateRanking,
-      transaction,
     } = {
       // Default values
       recalculatePoints: false,

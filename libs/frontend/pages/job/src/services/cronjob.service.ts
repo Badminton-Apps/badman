@@ -74,6 +74,4 @@ export class CronJobService {
         action$.pipe(switchMap((job) => this.jobService.queueJob(job, {}))),
     },
   });
-
-  constructor() {}
 }
