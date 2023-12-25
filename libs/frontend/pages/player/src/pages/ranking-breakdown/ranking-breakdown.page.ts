@@ -132,9 +132,10 @@ export class RankingBreakdownPageComponent {
           return;
         }
 
-        if (this.systemService.system()) {
+        if (!this.systemService.system()) {
           return;
         }
+
 
         this._loadPeriodFilter();
       },
