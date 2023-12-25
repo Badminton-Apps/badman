@@ -7,7 +7,7 @@ import { EVENTS, configSchema, load } from '@badman/utils';
 import { Logger, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import versionPackage from '../version.json';
-import { RankingProcessor, SimulationProcessor } from './processors';
+import { RankingProcessor } from './processors';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { RankingProcessor, SimulationProcessor } from './processors';
     RankingModule,
     SocketModule,
   ],
-  providers: [SimulationProcessor, RankingProcessor],
+  providers: [RankingProcessor],
 })
 export class WorkerRankingModule implements OnApplicationBootstrap {
   protected logger = new Logger(WorkerRankingModule.name);

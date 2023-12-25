@@ -17,6 +17,7 @@ import {
   filter,
   map,
   merge,
+  of,
   startWith,
   switchMap,
 } from 'rxjs';
@@ -177,127 +178,126 @@ export class ClubAssemblyService {
       choices: string[] | null;
     }>,
   ) {
-    return this.systemService.getPrimarySystemId().pipe(
-      switchMap((systemId) => {
-        const events = teams
-          ?.map((e) => e?.entry?.subEventCompetition?.eventCompetition)
-          ?.filter((e) => e?.usedRankingUnit && e?.usedRankingAmount);
-        const event = events?.[0];
+    const events = teams
+      ?.map((e) => e?.entry?.subEventCompetition?.eventCompetition)
+      ?.filter((e) => e?.usedRankingUnit && e?.usedRankingAmount);
+    const event = events?.[0];
 
-        if (!event || !event?.usedRankingUnit || !event?.usedRankingAmount) {
-          return [];
-        }
+    if (!event || !event?.usedRankingUnit || !event?.usedRankingAmount) {
+      return of([]);
+    }
 
-        const usedRankingDate = moment();
-        usedRankingDate.set(
-          'year',
-          filter.season ?? event?.season ?? getCurrentSeason(),
-        );
-        usedRankingDate.set(event?.usedRankingUnit, event?.usedRankingAmount);
+    const usedRankingDate = moment();
+    usedRankingDate.set(
+      'year',
+      filter.season ?? event?.season ?? getCurrentSeason(),
+    );
+    usedRankingDate.set(event?.usedRankingUnit, event?.usedRankingAmount);
 
-        // get first and last of the month
-        const startRanking = moment(usedRankingDate).startOf('month');
-        const endRanking = moment(usedRankingDate).endOf('month');
+    // get first and last of the month
+    const startRanking = moment(usedRankingDate).startOf('month');
+    const endRanking = moment(usedRankingDate).endOf('month');
 
-        return this.apollo.watchQuery<{ club: Partial<Club> }>({
-          query: gql`
-            query ClubPlayers(
-              $playersWhere: JSONObject
-              $clubId: ID!
-              $order: [SortOrderType!]
-              $orderPlaces: [SortOrderType!]
-              $rankingWhere: JSONObject
-              $lastRankginWhere: JSONObject
-            ) {
-              club(id: $clubId) {
+    return this.apollo
+      .watchQuery<{ club: Partial<Club> }>({
+        query: gql`
+          query ClubPlayers(
+            $playersWhere: JSONObject
+            $clubId: ID!
+            $order: [SortOrderType!]
+            $orderPlaces: [SortOrderType!]
+            $rankingWhere: JSONObject
+            $lastRankginWhere: JSONObject
+          ) {
+            club(id: $clubId) {
+              id
+              players(where: $playersWhere, order: $order) {
                 id
-                players(where: $playersWhere, order: $order) {
+                lastName
+                firstName
+                gender
+                slug
+                rankingLastPlaces(where: $lastRankginWhere) {
                   id
-                  lastName
-                  firstName
-                  gender
-                  slug
-                  rankingLastPlaces(where: $lastRankginWhere) {
-                    id
-                    single
-                    double
-                    mix
-                  }
-                  rankingPlaces(
-                    where: $rankingWhere
-                    order: $orderPlaces
-                    take: 1
-                  ) {
-                    id
-                    rankingDate
-                    single
-                    double
-                    mix
-                  }
+                  single
+                  double
+                  mix
+                }
+                rankingPlaces(
+                  where: $rankingWhere
+                  order: $orderPlaces
+                  take: 1
+                ) {
+                  id
+                  rankingDate
+                  single
+                  double
+                  mix
                 }
               }
             }
-          `,
-          variables: {
-            clubId: filter.clubId,
-            playersWhere: {
-              competitionPlayer: true,
-            },
-            order: [
-              {
-                field: 'lastName',
-                direction: 'asc',
-              },
-              {
-                field: 'firstName',
-                direction: 'asc',
-              },
-            ],
-            orderPlaces: [
-              {
-                field: 'rankingDate',
-                direction: 'desc',
-              },
-            ],
-            rankingWhere: {
-              rankingDate: {
-                $between: [startRanking, endRanking],
-              },
-              systemId,
-            },
-            lastRankginWhere: {
-              systemId,
-            },
+          }
+        `,
+        variables: {
+          clubId: filter.clubId,
+          playersWhere: {
+            competitionPlayer: true,
           },
-        }).valueChanges;
-      }),
-      map((result) => {
-        if (!result?.data.club) {
-          throw new Error('No club');
-        }
-        return new Club(result.data.club);
-      }),
-      map(
-        (club) =>
-          club.players?.map((player) => {
-            const row = {
-              player: player,
-            } as PlayerRow;
+          order: [
+            {
+              field: 'lastName',
+              direction: 'asc',
+            },
+            {
+              field: 'firstName',
+              direction: 'asc',
+            },
+          ],
+          orderPlaces: [
+            {
+              field: 'rankingDate',
+              direction: 'desc',
+            },
+          ],
+          rankingWhere: {
+            rankingDate: {
+              $between: [startRanking, endRanking],
+            },
+            systemId: this.systemService.systemId(),
+          },
+          lastRankginWhere: {
+            systemId: this.systemService.systemId(),
+          },
+        },
+      })
+      .valueChanges.pipe(
+        map((result) => {
+          if (!result?.data.club) {
+            throw new Error('No club');
+          }
+          return new Club(result.data.club);
+        }),
+        map(
+          (club) =>
+            club.players?.map((player) => {
+              const row = {
+                player: player,
+              } as PlayerRow;
 
-            for (const team of teams ?? []) {
-              const sameTypeTeams =
-                teams?.filter((t) => t.type == team.type) ?? [];
-              row[team.name ?? ''] = this.getCanPlay(
-                player,
-                team,
-                sameTypeTeams,
-              );
-            }
+              for (const team of teams ?? []) {
+                const sameTypeTeams =
+                  teams?.filter((t) => t.type == team.type) ?? [];
+                row[team.name ?? ''] = this.getCanPlay(
+                  player,
+                  team,
+                  sameTypeTeams,
+                );
+              }
 
-            return row;
-          }) ?? [],
-      ),
-    );
+              return row;
+            }) ?? [],
+        ),
+      );
   }
 
   getCanPlay(

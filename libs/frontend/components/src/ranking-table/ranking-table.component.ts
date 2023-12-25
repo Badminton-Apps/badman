@@ -14,7 +14,7 @@ import { RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, first, map, of, switchMap, take } from 'rxjs';
+import { first, map } from 'rxjs';
 
 @Component({
   selector: 'badman-ranking-table',
@@ -26,7 +26,7 @@ import { Observable, first, map, of, switchMap, take } from 'rxjs';
 })
 export class RankingTableComponent implements OnInit {
   @Input()
-  id = 'primary';
+  id: string | null = null;
 
   dataSource = new MatTableDataSource<RankingScoreTable>();
 
@@ -41,55 +41,43 @@ export class RankingTableComponent implements OnInit {
     private apollo: Apollo,
     private raningSystemService: RankingSystemService,
     private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {
-    let input: Observable<string>;
-    if (this.id == 'primary') {
-      input = this.raningSystemService.getPrimarySystemId();
-    } else {
-      input = of(this.id);
-    }
+    this._loadRanking(this.id).subscribe((system) => {
+      let level = system.amountOfLevels ?? 0;
+      const data = system.pointsWhenWinningAgainst?.map(
+        (winning: number, index: number) => {
+          return {
+            level: level--,
+            pointsToGoUp:
+              level !== 0
+                ? Math.round(system.pointsToGoUp?.[index] ?? 0)
+                : null,
+            pointsToGoDown:
+              index === 0
+                ? null
+                : Math.round(system.pointsToGoDown?.[index - 1] ?? 0),
+            pointsWhenWinningAgainst: Math.round(winning),
+          } as RankingScoreTable;
+        },
+      );
 
-    input
-      .pipe(
-        switchMap((systemId) => this._loadRanking(systemId)),
-        take(1)
-      )
-      .subscribe((system) => {
-        let level = system.amountOfLevels ?? 0;
-        const data = system.pointsWhenWinningAgainst?.map(
-          (winning: number, index: number) => {
-            return {
-              level: level--,
-              pointsToGoUp:
-                level !== 0
-                  ? Math.round(system.pointsToGoUp?.[index] ?? 0)
-                  : null,
-              pointsToGoDown:
-                index === 0
-                  ? null
-                  : Math.round(system.pointsToGoDown?.[index - 1] ?? 0),
-              pointsWhenWinningAgainst: Math.round(winning),
-            } as RankingScoreTable;
-          }
-        );
-
-        if (data) {
-          this.dataSource.data = data;
-        }
-      });
+      if (data) {
+        this.dataSource.data = data;
+      }
+    });
   }
 
-  _loadRanking(systemId: string) {
+  _loadRanking(systemId: string | null) {
     {
       return this.apollo
         .query<{
           rankingSystem: Partial<RankingSystem>;
         }>({
           query: gql`
-            query GetSystemForTable($id: ID!) {
+            query GetSystemForTable($id: ID) {
               rankingSystem(id: $id) {
                 id
                 name
@@ -110,7 +98,7 @@ export class RankingTableComponent implements OnInit {
           transferState(
             'rankingKey-' + systemId,
             this.transferState,
-            this.platformId
+            this.platformId,
           ),
           map((result) => {
             if (!result?.data.rankingSystem) {
@@ -118,7 +106,7 @@ export class RankingTableComponent implements OnInit {
             }
             return new RankingSystem(result.data.rankingSystem);
           }),
-          first()
+          first(),
         );
     }
   }

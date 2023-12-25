@@ -192,7 +192,13 @@ export class OverviewPageComponent {
   }
 
   watchSystem(system: RankingSystem) {
-    this.systemService.watchSystem(system);
+    if (!system.id) {
+      console.warn('No system id');
+      return;
+    }
+
+
+    this.systemService.state.watchSystem(system.id);
   }
 
   cloneSystem(system: RankingSystem) {

@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  Injector,
   PLATFORM_ID,
   TransferState,
   computed,
   effect,
   inject,
-  signal
+  signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -79,6 +80,7 @@ export class DetailPageComponent {
   private auth = inject(AuthenticateService);
   private systemService = inject(RankingSystemService);
   private destroy$ = injectDestroy();
+  private injector = inject(Injector);
 
   // route
   private queryParams = toSignal(this.route.queryParamMap);
@@ -103,25 +105,32 @@ export class DetailPageComponent {
   canClaim$?: Observable<boolean>;
 
   constructor() {
-    effect(() => {
-      this._loadTeamsForPlayer();
-      this._loadRankingForPlayer();
+    this._loadRankingForPlayer();
 
-      this.seoService.update({
-        title: `${this.player().fullName}`,
-        description: `Player ${this.player().fullName}`,
-        type: 'website',
-        keywords: ['player', 'badminton'],
-      });
-      this.breadcrumbService.set('player/:id', this.player().fullName);
+    effect(
+      () => {
+        this._loadTeamsForPlayer();
 
-      const lastNames = `${this.player().lastName}`.split(' ');
-      if ((lastNames ?? []).length > 0) {
-        this.initials = `${this.player().firstName?.[0]}${lastNames?.[
-          lastNames.length - 1
-        ][0]}`.toUpperCase();
-      }
-    });
+        this.seoService.update({
+          title: `${this.player().fullName}`,
+          description: `Player ${this.player().fullName}`,
+          type: 'website',
+          keywords: ['player', 'badminton'],
+        });
+        this.breadcrumbService.set('player/:id', this.player().fullName);
+
+        const lastNames = `${this.player().lastName}`.split(' ');
+        if ((lastNames ?? []).length > 0) {
+          this.initials = `${this.player().firstName?.[0]}${lastNames?.[
+            lastNames.length - 1
+          ][0]}`.toUpperCase();
+        }
+      },
+      {
+        allowSignalWrites: true,
+        injector: this.injector,
+      },
+    );
 
     combineLatest([
       this.translate.get('all.ranking.single'),
@@ -227,8 +236,7 @@ export class DetailPageComponent {
   }
 
   private _loadRankingForPlayer() {
-    this.systemService
-      .getPrimarySystemId()
+    toObservable(this.systemService.systemId)
       .pipe(
         switchMap((systemId) => {
           const rankingPlace = this.player()?.rankingLastPlaces?.find(
@@ -236,7 +244,7 @@ export class DetailPageComponent {
           );
 
           return iif(
-            () => rankingPlace !== undefined,
+            () => rankingPlace === undefined,
             this.apollo
               .query<{
                 player: { rankingLastPlaces: Partial<RankingPlace>[] };
