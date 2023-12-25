@@ -165,40 +165,9 @@ export class TeamsTransferStepComponent implements OnInit {
     this.teams$ = combineLatest([
       clubid$.pipe(distinctUntilChanged()),
       season$.pipe(distinctUntilChanged()),
-      this.systemService.getPrimarySystemId().pipe(
-        switchMap((id) =>
-          this.apollo.query<{
-            rankingSystem: { id: string };
-          }>({
-            query: gql`
-              query RankingSystem($id: ID!) {
-                rankingSystem(id: $id) {
-                  id
-                }
-              }
-            `,
-            variables: {
-              id: id,
-            },
-          }),
-        ),
-        map((result) => result.data.rankingSystem),
-        tap((id) => {
-          if (id == undefined) {
-            throw new Error('No ranking system found');
-          }
-
-          if (!this.group?.get('rankingSystem')) {
-            this.group?.addControl('rankingSystem', new FormControl(id));
-          } else {
-            this.group?.get('rankingSystem')?.setValue(id);
-          }
-        }),
-        distinctUntilChanged(),
-      ),
     ])?.pipe(
       takeUntil(this.destroy$),
-      switchMap(([clubId, season, system]) =>
+      switchMap(([clubId, season]) =>
         this.apollo
           .query<{ teams: Team[] }>({
             fetchPolicy: 'no-cache',
@@ -288,7 +257,7 @@ export class TeamsTransferStepComponent implements OnInit {
                 },
               },
               rankingWhere: {
-                systemId: system.id,
+                systemId: this.systemService.systemId(),
                 rankingDate: {
                   $lte: new Date(season, 5, 10),
                 },

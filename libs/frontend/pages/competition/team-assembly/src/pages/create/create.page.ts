@@ -30,7 +30,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
 import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
 
 @Component({
@@ -173,44 +172,35 @@ export class CreatePageComponent implements OnInit {
     )} - ${encounter?.home?.name} vs ${encounter?.away?.name}.pdf`;
 
     // Generate pdf
-    this.systemService
-      .getPrimarySystemId()
-      .pipe(
-        switchMap((systemId) => {
-          if (!systemId) {
-            throw new Error('No system found');
-          }
+    this.pdfService
+      .getTeamAssembly({
+        systemId: this.systemService.systemId()!,
+        captainId: this.formGroup?.get('captain')?.value,
+        teamId: this.formGroup?.get('team')?.value,
+        encounterId: encounterId,
 
-          return this.pdfService.getTeamAssembly({
-            systemId,
-            captainId: this.formGroup?.get('captain')?.value,
-            teamId: this.formGroup?.get('team')?.value,
-            encounterId: encounterId,
+        single1: this.formGroup?.get('single1')?.value?.id,
+        single2: this.formGroup?.get('single2')?.value?.id,
+        single3: this.formGroup?.get('single3')?.value?.id,
+        single4: this.formGroup?.get('single4')?.value?.id,
 
-            single1: this.formGroup?.get('single1')?.value?.id,
-            single2: this.formGroup?.get('single2')?.value?.id,
-            single3: this.formGroup?.get('single3')?.value?.id,
-            single4: this.formGroup?.get('single4')?.value?.id,
+        double1: this.formGroup
+          ?.get('double1')
+          ?.value?.map((r: Player) => r.id),
+        double2: this.formGroup
+          ?.get('double2')
+          ?.value?.map((r: Player) => r.id),
+        double3: this.formGroup
+          ?.get('double3')
+          ?.value?.map((r: Player) => r.id),
+        double4: this.formGroup
+          ?.get('double4')
+          ?.value?.map((r: Player) => r.id),
 
-            double1: this.formGroup
-              ?.get('double1')
-              ?.value?.map((r: Player) => r.id),
-            double2: this.formGroup
-              ?.get('double2')
-              ?.value?.map((r: Player) => r.id),
-            double3: this.formGroup
-              ?.get('double3')
-              ?.value?.map((r: Player) => r.id),
-            double4: this.formGroup
-              ?.get('double4')
-              ?.value?.map((r: Player) => r.id),
-
-            subtitudes: this.formGroup
-              ?.get('subtitudes')
-              ?.value?.map((r: Player) => r.id),
-          });
-        }),
-      )
+        subtitudes: this.formGroup
+          ?.get('subtitudes')
+          ?.value?.map((r: Player) => r.id),
+      })
       .subscribe((pdf) => {
         const url = window.URL.createObjectURL(pdf);
         const downloadLink = document.createElement('a');
@@ -258,63 +248,54 @@ export class CreatePageComponent implements OnInit {
   }
 
   private saveAssembly() {
-    return this.systemService.getPrimarySystemId().pipe(
-      switchMap((systemId) => {
-        if (!systemId) {
-          throw new Error('No system found');
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation CreateAssemblyMutation($assembly: AssemblyInput!) {
+          createAssembly(assembly: $assembly)
         }
+      `,
+      variables: {
+        assembly: {
+          systemId: this.systemService.systemId(),
+          captainId: this.formGroup?.get('captain')?.value,
+          teamId: this.formGroup?.get('team')?.value,
+          encounterId: this.formGroup?.get('encounter')?.value,
 
-        return this.apollo.mutate({
-          mutation: gql`
-            mutation CreateAssemblyMutation($assembly: AssemblyInput!) {
-              createAssembly(assembly: $assembly)
-            }
-          `,
+          single1: this.formGroup?.get('single1')?.value?.id,
+          single2: this.formGroup?.get('single2')?.value?.id,
+          single3: this.formGroup?.get('single3')?.value?.id,
+          single4: this.formGroup?.get('single4')?.value?.id,
+
+          double1: this.formGroup
+            ?.get('double1')
+            ?.value?.map((r: Player) => r.id),
+          double2: this.formGroup
+            ?.get('double2')
+            ?.value?.map((r: Player) => r.id),
+          double3: this.formGroup
+            ?.get('double3')
+            ?.value?.map((r: Player) => r.id),
+          double4: this.formGroup
+            ?.get('double4')
+            ?.value?.map((r: Player) => r.id),
+
+          subtitudes: this.formGroup
+            ?.get('subtitudes')
+            ?.value?.map((r: Player) => r.id),
+        },
+      },
+      refetchQueries: () => [
+        {
+          query: SAVED_ASSEMBLY,
           variables: {
-            assembly: {
-              systemId,
+            id: this.formGroup?.get('encounter')?.value,
+            where: {
               captainId: this.formGroup?.get('captain')?.value,
-              teamId: this.formGroup?.get('team')?.value,
-              encounterId: this.formGroup?.get('encounter')?.value,
-
-              single1: this.formGroup?.get('single1')?.value?.id,
-              single2: this.formGroup?.get('single2')?.value?.id,
-              single3: this.formGroup?.get('single3')?.value?.id,
-              single4: this.formGroup?.get('single4')?.value?.id,
-
-              double1: this.formGroup
-                ?.get('double1')
-                ?.value?.map((r: Player) => r.id),
-              double2: this.formGroup
-                ?.get('double2')
-                ?.value?.map((r: Player) => r.id),
-              double3: this.formGroup
-                ?.get('double3')
-                ?.value?.map((r: Player) => r.id),
-              double4: this.formGroup
-                ?.get('double4')
-                ?.value?.map((r: Player) => r.id),
-
-              subtitudes: this.formGroup
-                ?.get('subtitudes')
-                ?.value?.map((r: Player) => r.id),
+              playerId: this.authenticateService?.user?.id,
             },
           },
-          refetchQueries: () => [
-            {
-              query: SAVED_ASSEMBLY,
-              variables: {
-                id: this.formGroup?.get('encounter')?.value,
-                where: {
-                  captainId: this.formGroup?.get('captain')?.value,
-                  playerId: this.authenticateService?.user?.id,
-                },
-              },
-            },
-          ],
-        });
-      }),
-      take(1),
-    );
+        },
+      ],
+    });
   }
 }

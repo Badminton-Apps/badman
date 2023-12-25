@@ -1,5 +1,5 @@
 import { CronJob, RankingSystem } from '@badman/backend-database';
-import { RankingQueue, SyncQueue } from '@badman/backend-queue';
+import { RankingQueue, SyncQueue, UpdateRankingJob } from '@badman/backend-queue';
 import { ConfigType, getRankingPeriods } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -30,7 +30,7 @@ export class CronService implements OnModuleInit {
     for (const job of rankingJobs) {
       this._queueRankingJob(job);
     }
-
+ 
     const syncJobs = await CronJob.findAll({
       where: {
         type: 'sync',
@@ -119,7 +119,10 @@ export class CronService implements OnModuleInit {
           jobName: 'UpdateRanking',
           arguments: {
             systemId: system.id,
-          },
+            // the points are calculated when running sync
+            calculatePoints: false,
+            recalculatePoints: false,
+          } as UpdateRankingJob 
         },
       });
 

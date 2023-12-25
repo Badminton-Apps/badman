@@ -20,6 +20,8 @@
           class="single"
           >{{this.rankingPlace().single}}</mat-chip
         >
+        {{ this.rankingPlace().singlePoints }} - {{
+        this.rankingPlace().singlePointsDowngrade }}
         <mat-chip
           matTooltipClass="tooltip-multi-line"
           [routerLink]="['ranking', 'double']"
