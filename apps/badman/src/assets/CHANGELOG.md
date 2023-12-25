@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.26](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.25...v6.129.0-beta.26) (2023-12-24)
+
+
+### Bug Fixes
+
+* adding some debugging info to check what is going on ([a8d842b](https://github.com/Badminton-Apps/badman/commit/a8d842bc82933d5f7b3838fe576f73e05a8da69a))
+* correct default params ([df949ff](https://github.com/Badminton-Apps/badman/commit/df949ff297be9f6c58e1534f9dacfd9302a9199a))
+* re-introducing the timer ([0d90a83](https://github.com/Badminton-Apps/badman/commit/0d90a8394704e5a27551e1bae1291772c28ca933))
+* remove timeout ([5fb0eb3](https://github.com/Badminton-Apps/badman/commit/5fb0eb3fc597805bc1fb97479a58cfb7a520e992))
+
 ## [6.129.0-beta.25](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.24...v6.129.0-beta.25) (2023-12-24)
 
 
