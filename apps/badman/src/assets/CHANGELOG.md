@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.30](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.29...v6.129.0-beta.30) (2023-12-26)
+
+
+### Features
+
+* first draft of showing points ([4f0dd11](https://github.com/Badminton-Apps/badman/commit/4f0dd117030062d83a6018cb34688e144d97bd92))
+* first draft of showing points ([41109f9](https://github.com/Badminton-Apps/badman/commit/41109f936885ca2feb76d5cdf604b069858135c1))
+
 ## [6.129.0-beta.29](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.28...v6.129.0-beta.29) (2023-12-26)
 
 
