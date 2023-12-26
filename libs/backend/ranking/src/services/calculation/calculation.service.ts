@@ -64,7 +64,7 @@ export class CalculationService {
       // if no periods are defined, calulate up untill last update interval
       const toDateM = moment(toDate);
       const fromDateM = moment(
-        fromDate || system.calculationIntervalLastUpdate,
+        fromDate || system.calculationLastUpdate,
       );
       if ((periods ?? 0) > 0) {
         for (let i = 0; i < (periods ?? 0); i++) {

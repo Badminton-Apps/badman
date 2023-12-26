@@ -34,7 +34,7 @@ export class RankingSystemResolver {
             rankingSystem(id: $id) {
               id
               name
-              calculationIntervalLastUpdate
+              calculationLastUpdate
               primary
             }
           }

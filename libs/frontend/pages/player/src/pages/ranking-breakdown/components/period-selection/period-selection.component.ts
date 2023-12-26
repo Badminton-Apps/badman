@@ -70,7 +70,7 @@ export class PeriodSelectionComponent {
   };
 
   lastUpdate() {
-    this.customPeriod(moment(this.system.calculationIntervalLastUpdate));
+    this.customPeriod(moment(this.system.calculationLastUpdate));
   }
 
   customPeriod(targetDate: Moment | null) {

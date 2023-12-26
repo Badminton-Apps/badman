@@ -12,7 +12,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'weeks',
-      updateIntervalAmountLastUpdate: moment(
+      updateLastUpdate: moment(
         '2023-12-03T00:00:00.000Z',
       ).toDate(),
       calculationDayOfWeek: 1,
@@ -652,7 +652,7 @@ describe('getRankingPeriods', () => {
 
         const s = {
           ...system,
-          updateIntervalAmountLastUpdate: moment('2023-02-01').toDate(),
+          updateLastUpdate: moment('2023-02-01').toDate(),
         } as const;
 
         // Act
@@ -677,7 +677,7 @@ describe('getRankingPeriods', () => {
         // Assert
         const s = {
           ...system,
-          updateIntervalAmountLastUpdate: moment('2023-06-01').toDate(),
+          updateLastUpdate: moment('2023-06-01').toDate(),
         } as const;
 
         // Act
@@ -703,7 +703,7 @@ describe('getRankingPeriods', () => {
         // Assert
         const s = {
           ...system,
-          updateIntervalAmountLastUpdate: moment('2023-02-01').toDate(),
+          updateLastUpdate: moment('2023-02-01').toDate(),
         } as const;
 
         // Act
@@ -734,7 +734,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'months',
-      updateIntervalAmountLastUpdate: moment(
+      updateLastUpdate: moment(
         '2023-12-03T00:00:00.000Z',
       ).toDate(),
       calculationDayOfWeek: 1,
@@ -824,7 +824,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'weeks',
-      updateIntervalAmountLastUpdate: moment(
+      updateLastUpdate: moment(
         '2023-12-03T00:00:00.000Z',
       ).toDate(),
       calculationDayOfWeek: 1,
@@ -888,7 +888,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'weeks',
-      updateIntervalAmountLastUpdate: moment(
+      updateLastUpdate: moment(
         '2023-12-03T00:00:00.000Z',
       ).toDate(),
       calculationDayOfWeek: 1,
@@ -1138,7 +1138,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'weeks',
-      updateIntervalAmountLastUpdate: moment(
+      updateLastUpdate: moment(
         '2023-12-03T00:00:00.000Z',
       ).toDate(),
       calculationDayOfWeek: 1,

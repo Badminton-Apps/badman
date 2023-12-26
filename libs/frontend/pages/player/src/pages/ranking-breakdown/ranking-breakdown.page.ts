@@ -157,7 +157,7 @@ export class RankingBreakdownPageComponent {
     // Default we take next update interval, if no end is given
     const endPeriod =
       (end ?? null) == null
-        ? moment(this.systemService.system()?.calculationIntervalLastUpdate)
+        ? moment(this.systemService.system()?.calculationLastUpdate)
         : moment(end);
     const startPeriod = endPeriod
       .clone()
@@ -257,7 +257,7 @@ export class RankingBreakdownPageComponent {
 
   private _updateUrl() {
     const systemLastUpdate = moment(
-      this.systemService.system()?.calculationIntervalLastUpdate,
+      this.systemService.system()?.calculationLastUpdate,
     );
 
     const queryParams: { [key: string]: string | boolean | null | undefined } =

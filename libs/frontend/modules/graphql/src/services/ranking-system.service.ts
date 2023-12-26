@@ -22,8 +22,8 @@ const SYSTEM_QUERY = gql`
       differenceForUpgradeSingle
       differenceForUpgradeDouble
       differenceForUpgradeMix
-      updateIntervalAmountLastUpdate
-      calculationIntervalLastUpdate
+      updateLastUpdate
+      calculationLastUpdate
       calculationIntervalUnit
       calculationIntervalAmount
       calculationDayOfWeek

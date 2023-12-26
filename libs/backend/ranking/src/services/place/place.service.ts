@@ -100,10 +100,10 @@ export class PlaceService {
     );
 
     if (options?.updateRanking) {
-      system.updateIntervalAmountLastUpdate = stop;
+      system.updateLastUpdate = stop;
     }
 
-    system.calculationIntervalLastUpdate = stop;
+    system.calculationLastUpdate = stop;
     await system.save({ transaction });
   }
 
