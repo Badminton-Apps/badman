@@ -19,13 +19,13 @@ export class RankingSystem {
   gamesForInactivty?: number;
   inactivityAmount?: number;
   inactivityUnit?: 'months' | 'weeks' | 'days';
-  calculationIntervalLastUpdate?: Date;
+  calculationLastUpdate?: Date;
   calculationIntervalAmount?: number;
   calculationIntervalUnit?: 'months' | 'weeks' | 'days';
   updateDayOfWeek?: number;
   periodAmount?: number;
   periodUnit?: 'months' | 'weeks' | 'days';
-  updateIntervalAmountLastUpdate?: Date;
+  updateLastUpdate?: Date;
   updateIntervalAmount?: number;
   updateIntervalUnit?: 'months' | 'weeks' | 'days';
   calculationDayOfWeek?: number;
@@ -63,16 +63,16 @@ export class RankingSystem {
     this.gamesForInactivty = args?.gamesForInactivty;
     this.inactivityAmount = args?.inactivityAmount;
     this.inactivityUnit = args?.inactivityUnit;
-    this.calculationIntervalLastUpdate = moment(
-      args?.calculationIntervalLastUpdate
+    this.calculationLastUpdate = moment(
+      args?.calculationLastUpdate
     ).toDate();
     this.calculationIntervalAmount = args?.calculationIntervalAmount;
     this.calculationIntervalUnit = args?.calculationIntervalUnit;
     this.calculationDayOfWeek = args?.calculationDayOfWeek;
     this.periodAmount = args?.periodAmount;
     this.periodUnit = args?.periodUnit;
-    this.updateIntervalAmountLastUpdate = moment(
-      args?.updateIntervalAmountLastUpdate
+    this.updateLastUpdate = moment(
+      args?.updateLastUpdate
     ).toDate();
     this.updateIntervalAmount = args?.updateIntervalAmount;
     this.updateIntervalUnit = args?.updateIntervalUnit;

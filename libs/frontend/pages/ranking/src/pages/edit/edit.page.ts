@@ -52,13 +52,13 @@ const FETCH_SYSTEM = gql`
       inactivityAmount
       inactivityUnit
       inactiveBehavior
-      calculationIntervalLastUpdate
+      calculationLastUpdate
       calculationIntervalAmount
       calculationIntervalUnit
       calculationDayOfWeek
       periodAmount
       periodUnit
-      updateIntervalAmountLastUpdate
+      updateLastUpdate
       updateIntervalAmount
       updateIntervalUnit
       updateDayOfWeek

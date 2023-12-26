@@ -4,13 +4,13 @@ export function getRankingPeriods<
   T extends Partial<{
     updateIntervalAmount: number;
     updateIntervalUnit: moment.unitOfTime.Base;
-    updateIntervalAmountLastUpdate: Date;
+    updateLastUpdate: Date;
     updateDayOfWeek: number;
 
     calculationIntervalAmount: number;
     calculationIntervalUnit: moment.unitOfTime.Base;
     calculationDayOfWeek: number;
-    calculationIntervalLastUpdate: Date;
+    calculationLastUpdate: Date;
   }>,
 >(
   system: T,
@@ -41,8 +41,8 @@ export function getRankingPeriods<
     throw new Error('Invalid date');
   }
 
-  const lastUpdate = moment(system.updateIntervalAmountLastUpdate);
-  const lastCalculation = moment(system.calculationIntervalLastUpdate);
+  const lastUpdate = moment(system.updateLastUpdate);
+  const lastCalculation = moment(system.calculationLastUpdate);
   const updates: {
     date: Moment;
     updatePossible: boolean;

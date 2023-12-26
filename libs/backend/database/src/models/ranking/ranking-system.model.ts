@@ -134,7 +134,7 @@ export class RankingSystem extends Model {
   @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  calculationIntervalLastUpdate?: Date;
+  calculationLastUpdate?: Date;
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
   calculationDayOfWeek?: number; // SUN = 0, MON = 1, TUE = 2, WED = 3, THU = 4, FRI = 5, SAT = 6
@@ -145,7 +145,6 @@ export class RankingSystem extends Model {
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   calculationIntervalUnit?: 'months' | 'weeks' | 'days';
 
- 
   get calculationInterval(): RankingTiming {
     return {
       amount: this.calculationIntervalAmount,
@@ -169,7 +168,7 @@ export class RankingSystem extends Model {
   @Default(new Date('2016-08-31T22:00:00.000Z'))
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  updateIntervalAmountLastUpdate?: Date;
+  updateLastUpdate?: Date;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
@@ -188,7 +187,6 @@ export class RankingSystem extends Model {
       unit: this.updateIntervalUnit,
     };
   }
-  
 
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('BVL', 'ORIGINAL', 'LFBB', 'VISUAL'))
@@ -205,10 +203,6 @@ export class RankingSystem extends Model {
   @Field(() => Boolean, { nullable: false })
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   runCurrently?: boolean;
-
-  @Field(() => Date, { nullable: true })
-  @Column(DataType.DATE)
-  runDate?: Date;
 
   @Field(() => Number, { nullable: true })
   @Column({ type: DataType.NUMBER, defaultValue: 1 })
