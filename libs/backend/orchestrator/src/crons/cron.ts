@@ -182,7 +182,7 @@ export class CronService implements OnModuleInit {
           getRankingPeriods(
             system,
             // calculation is always updated when the update is run, so we can check since the last update
-            moment(system.calculationIntervalLastUpdate),
+            moment(system.calculationLastUpdate),
             moment(),
           ).length > 0;
 
