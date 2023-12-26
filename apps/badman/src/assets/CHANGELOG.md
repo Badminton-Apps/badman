@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.27](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.26...v6.129.0-beta.27) (2023-12-26)
+
+
+### Features
+
+* moving ranking to signal (more to be done) ([359350e](https://github.com/Badminton-Apps/badman/commit/359350e7ebdd85c23ad0e92ed4b889b1ec7b7a85))
+
+
+### Bug Fixes
+
+* allow clustering on development ([3238713](https://github.com/Badminton-Apps/badman/commit/3238713ead81a8a6cac8674a63ae3a999b7d9e0b))
+* period wouln't return if date wasn't checked on day level ([61bfeab](https://github.com/Badminton-Apps/badman/commit/61bfeab66ce2420bb51c324e4f046e5b0e1d85b1))
+* this gets calcaulated at calculation ([99e3d0c](https://github.com/Badminton-Apps/badman/commit/99e3d0ce80b718445a2b0312308ade09007e3448))
+
 ## [6.129.0-beta.26](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.25...v6.129.0-beta.26) (2023-12-24)
 
 
