@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.28](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.27...v6.129.0-beta.28) (2023-12-26)
+
+
+### Bug Fixes
+
+* find cronjob via jobName & queueName ([ffa0621](https://github.com/Badminton-Apps/badman/commit/ffa0621bca16eb367d205eafab96e6b17303f2d0))
+
 ## [6.129.0-beta.27](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.26...v6.129.0-beta.27) (2023-12-26)
 
 
