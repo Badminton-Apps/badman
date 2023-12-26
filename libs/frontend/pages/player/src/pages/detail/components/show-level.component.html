@@ -1,5 +1,6 @@
 @if (this.showLevelService.rankingPlace()) {
   <div class="level">{{ this.showLevelService.rankingPlace()?.[type] }}</div>
+  
   @if (this.showLevelService.rankingPlace()?.[upgrade] !== null) {
     <span class="points" [ngClass]="{ upgrade: this.canUpgrade }">
       {{ this.showLevelService.rankingPlace()?.[upgrade] }}
