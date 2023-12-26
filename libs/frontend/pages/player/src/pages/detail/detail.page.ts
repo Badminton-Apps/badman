@@ -9,7 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -29,15 +29,16 @@ import {
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
-import { Game, Player, RankingPlace, Team } from '@badman/frontend-models';
+import { Game, Player, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable, combineLatest, iif, lastValueFrom, of } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { Observable, combineLatest, lastValueFrom, of } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { ShowLevelComponent } from './components/show-level.component';
 @Component({
   selector: 'badman-player-detail',
   templateUrl: './detail.page.html',
@@ -62,6 +63,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
+    ShowLevelComponent,
   ],
 })
 export class DetailPageComponent {
@@ -93,7 +95,6 @@ export class DetailPageComponent {
   initials?: string;
 
   teams = signal<Team[]>([]);
-  rankingPlace = signal<RankingPlace>({});
 
   tooltip = {
     single: '',
@@ -105,8 +106,6 @@ export class DetailPageComponent {
   canClaim$?: Observable<boolean>;
 
   constructor() {
-    this._loadRankingForPlayer();
-
     effect(
       () => {
         this._loadTeamsForPlayer();
@@ -235,85 +234,7 @@ export class DetailPageComponent {
     window.location.reload();
   }
 
-  private _loadRankingForPlayer() {
-    toObservable(this.systemService.systemId)
-      .pipe(
-        switchMap((systemId) => {
-          const rankingPlace = this.player()?.rankingLastPlaces?.find(
-            (r) => r.systemId === systemId,
-          );
-
-          return iif(
-            () => rankingPlace === undefined,
-            this.apollo
-              .query<{
-                player: { rankingLastPlaces: Partial<RankingPlace>[] };
-              }>({
-                query: gql`
-                  query LastRankingPlace($playerId: ID!, $systemId: ID!) {
-                    player(id: $playerId) {
-                      id
-                      rankingLastPlaces(where: { systemId: $systemId }) {
-                        id
-                        single
-                        singlePoints
-                        double
-                        doublePoints
-                        mix
-                        mixPoints
-                        systemId
-                      }
-                    }
-                  }
-                `,
-                variables: {
-                  playerId: this.player().id,
-                  systemId,
-                },
-              })
-              .pipe(
-                map((result) => {
-                  if (
-                    (result?.data?.player?.rankingLastPlaces ?? []).length > 0
-                  ) {
-                    const findPrimary =
-                      result?.data.player.rankingLastPlaces.find(
-                        (r) => r.systemId === systemId,
-                      );
-
-                    if (findPrimary) {
-                      return new RankingPlace(findPrimary);
-                    }
-
-                    return new RankingPlace(
-                      result?.data.player.rankingLastPlaces[0],
-                    );
-                  }
-                  return undefined;
-                }),
-              ),
-            of(rankingPlace),
-          );
-        }),
-        takeUntil(this.destroy$),
-        transferState(
-          `rankingPlayer-${this.player().id}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
-      )
-      .subscribe((rankingPlace) => {
-        this.rankingPlace.set(
-          rankingPlace ??
-            ({
-              single: 12,
-              double: 12,
-              mix: 12,
-            } as RankingPlace),
-        );
-      });
-  }
-
+  
   removePlayer() {
     const dialogData = new ConfirmDialogModel(
       'all.club.delete.player.title',

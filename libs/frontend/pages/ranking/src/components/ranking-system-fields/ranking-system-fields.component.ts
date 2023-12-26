@@ -179,8 +179,6 @@ export class RankingSystemFieldsComponent implements OnInit {
       inactivityUnit: new FormControl(this.system.inactivityUnit),
     });
 
-    console.log(this.system)
-
     this.rakingGroupForm = new FormControl(this.system.rankingGroups);
 
     this.rankingSystemForm.valueChanges

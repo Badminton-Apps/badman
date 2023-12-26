@@ -1,1 +1,21 @@
-<p>show-level works!</p>
+@if (this.showLevelService.rankingPlace()) {
+  <div class="level">{{ this.showLevelService.rankingPlace()?.[type] }}</div>
+  @if (this.showLevelService.rankingPlace()?.[upgrade] !== null) {
+    <span class="points" [ngClass]="{ upgrade: this.canUpgrade }">
+      {{ this.showLevelService.rankingPlace()?.[upgrade] }}
+    </span>
+  }
+
+  @if (
+    this.showLevelService.rankingPlace()?.[upgrade] !== null &&
+    this.showLevelService.rankingPlace()?.[downgrade] !== null
+  ) {
+    <span class="separator">-</span>
+  }
+
+  @if (this.showLevelService.rankingPlace()?.[downgrade] !== null) {
+    <span class="points" [ngClass]="{ downgrade: this.canDowngrade }">
+      {{ this.showLevelService.rankingPlace()?.[downgrade] }}
+    </span>
+  }
+}
