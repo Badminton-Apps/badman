@@ -3,44 +3,64 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use './components/show-level.component.theme.scss' as show-level;
-
 @mixin color($theme) {
-  badman-player-detail {
+  badman-show-level {
     $color-config: mat.get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
+    $background: map.get($color-config, 'background');
     $isDark: map.get($color-config, 'is-dark');
+    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
 
-    .click-for-breakdown {
+    $success: map.get($theme, success);
+    $danger: map.get($theme, danger);
+
+    border-color: $border-color;
+
+    .level {
+      border-right: 1px solid $border-color;
+    }
+
+    .points,
+    .separator {
       @if ($isDark) {
         color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
       } @else {
         color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
       }
     }
+
+    .points {
+      &.upgrade {
+        @if ($isDark) {
+          color: mat.get-color-from-palette($success, 200);
+        } @else {
+          color: mat.get-color-from-palette($success, 500);
+        }
+      }
+
+      &.downgrade {
+        @if ($isDark) {
+          color: mat.get-color-from-palette($danger, 200);
+        } @else {
+          color: mat.get-color-from-palette($danger, 500);
+        }
+      }
+    }
   }
 }
 
 @mixin typography($theme) {
-  badman-player-detail {
+  badman-show-level {
     $typography-config: mat.get-typography-config($theme);
-    .sub-text {
-      @include mat.typography-level($typography-config, 'caption');
-    }
 
-    .click-for-breakdown {
+    .points,
+    .separator {
       @include mat.typography-level($typography-config, 'caption');
-    }
-
-    .mdc-evolution-chip__action--presentational {
-      cursor: pointer;
     }
   }
 }
 
 @mixin theme($theme) {
-  @include show-level.theme($theme);
-
   // Only apply theme on the correct element
   $color-config: mat.get-color-config($theme);
   @if $color-config != null {
