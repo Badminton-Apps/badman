@@ -6,11 +6,22 @@
   flex-direction: row;
   align-items: center;
   gap: 5px;
-  padding-right: 5px;
+
+  // if a points exists, then we have a padding
+  
 }
 
 .level {
   padding: 1px 5px;
+}
+
+
+.points:first-child {
+  margin-left: 5px;
+}
+
+.points:last-child {
+  margin-right: 5px;
 }
 
 .level,
