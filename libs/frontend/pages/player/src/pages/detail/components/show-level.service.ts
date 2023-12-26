@@ -21,7 +21,7 @@ export class ShowLevelService {
     loaded: false,
   };
 
-  rankingSystem = computed(() => this.state().rankingPlace?.rankingSystem);
+  rankingPlace = computed(() => this.state().rankingPlace);
 
   // sources
   state = signalSlice({
@@ -47,14 +47,15 @@ export class ShowLevelService {
                       id
                       single
                       singlePoints
+                      singlePointsDowngrade
                       double
                       doublePoints
+                      doublePointsDowngrade
                       mix
                       mixPoints
+                      mixPointsDowngrade
                       systemId
-                      __typename
                     }
-                    __typename
                   }
                 }
               `,
