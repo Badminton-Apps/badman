@@ -35,10 +35,11 @@ export class SyncRankingProcessor {
 
     const cronJob = await CronJob.findOne({
       where: {
-        name: 'Sync Ranking',
+        'meta.jobName': Sync.SyncRanking,
+        'meta.queueName': SyncQueue,
       },
     });
-
+    
     if (!cronJob) {
       throw new Error('Job not found');
     }

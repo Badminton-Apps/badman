@@ -97,7 +97,8 @@ export class CheckEncounterProcessor {
     let browser: Browser | undefined;
     const cronJob = await CronJob.findOne({
       where: {
-        name: 'Sync Events',
+        'meta.jobName': Sync.CheckEncounters,
+        'meta.queueName': SyncQueue,
       },
     });
 
