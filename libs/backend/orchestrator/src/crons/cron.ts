@@ -1,5 +1,9 @@
 import { CronJob, RankingSystem } from '@badman/backend-database';
-import { RankingQueue, SyncQueue, UpdateRankingJob } from '@badman/backend-queue';
+import {
+  RankingQueue,
+  SyncQueue,
+  UpdateRankingJob,
+} from '@badman/backend-queue';
 import { ConfigType, getRankingPeriods } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -21,6 +25,24 @@ export class CronService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    await this.queueSystems();
+    await this.queueCrons();
+
+    this._getCrons();
+  }
+
+  async queueCrons() {
+    const syncJobs = await CronJob.findAll({
+      where: {
+        type: 'sync',
+      },
+    });
+    for (const job of syncJobs) {
+      this._queueSyncJob(job);
+    }
+  }
+
+  async queueSystems() {
     const rankingJobs = await CronJob.findAll({
       where: {
         type: 'ranking',
@@ -30,17 +52,6 @@ export class CronService implements OnModuleInit {
     for (const job of rankingJobs) {
       this._queueRankingJob(job);
     }
- 
-    const syncJobs = await CronJob.findAll({
-      where: {
-        type: 'sync',
-      },
-    });
-    for (const job of syncJobs) {
-      this._queueSyncJob(job);
-    }
-
-    this._getCrons();
   }
 
   private _getQueue(queueName: string) {
@@ -122,7 +133,7 @@ export class CronService implements OnModuleInit {
             // the points are calculated when running sync
             calculatePoints: false,
             recalculatePoints: false,
-          } as UpdateRankingJob 
+          } as UpdateRankingJob,
         },
       });
 
@@ -168,10 +179,15 @@ export class CronService implements OnModuleInit {
         }
 
         const hasUpdates =
-          getRankingPeriods(system, moment(), moment()).length > 0;
+          getRankingPeriods(
+            system,
+            // calculation is always updated when the update is run, so we can check since the last update
+            moment(system.calculationIntervalLastUpdate),
+            moment(),
+          ).length > 0;
 
         if (!hasUpdates) {
-          this.logger.verbose(`No updates for ${job.name}`);
+          this.logger.verbose(`No updates for ${job.name} on ${moment()}`);
           return;
         }
 

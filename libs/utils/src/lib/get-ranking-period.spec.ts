@@ -18,7 +18,7 @@ describe('getRankingPeriods', () => {
       calculationDayOfWeek: 1,
     } as const;
 
-    it('Get for full year only update', () => {
+    test('Get for full year only update', () => {
       // Assert
       const from = moment('2023-01-01');
       const to = moment('2024-01-01');
@@ -96,7 +96,7 @@ describe('getRankingPeriods', () => {
       );
     });
 
-    it('Get for full year only calculation', () => {
+    test('Get for full year only calculation', () => {
       // Assert
       const from = moment('2023-01-01');
       const to = moment('2024-01-01');
@@ -334,7 +334,7 @@ describe('getRankingPeriods', () => {
       );
     });
 
-    it('Get for full', () => {
+    test('Get for full', () => {
       // Assert
       const from = moment('2023-01-01');
       const to = moment('2024-01-01');
@@ -570,6 +570,73 @@ describe('getRankingPeriods', () => {
       );
     });
 
+    const cases = [
+      ['2023-12-20', 0, undefined],
+      ['2023-12-21', 0, undefined],
+      ['2023-12-22', 0, undefined],
+      ['2023-12-23', 0, undefined],
+      ['2023-12-24', 0, undefined],
+      ['2023-12-25', 1, false],
+      ['2023-12-26', 0, undefined],
+      ['2023-12-27', 0, undefined],
+      ['2023-12-28', 0, undefined],
+      ['2023-12-29', 0, undefined],
+      ['2023-12-30', 0, undefined],
+      ['2023-12-31', 0, undefined],
+      ['2024-01-01', 1, true],
+      ['2024-01-02', 0, undefined],
+      ['2024-01-03', 0, undefined],
+      ['2024-01-04', 0, undefined],
+      ['2024-01-05', 0, undefined],
+      ['2024-01-06', 0, undefined],
+      ['2024-01-07', 0, undefined],
+      ['2024-01-08', 1, false],
+      ['2024-01-09', 0, undefined],
+      ['2024-01-10', 0, undefined],
+      ['2024-01-11', 0, undefined],
+      ['2024-01-12', 0, undefined],
+      ['2024-01-13', 0, undefined],
+      ['2024-01-14', 0, undefined],
+      ['2024-01-15', 1, false],
+      ['2024-01-16', 0, undefined],
+      ['2024-01-17', 0, undefined],
+      ['2024-01-18', 0, undefined],
+      ['2024-01-19', 0, undefined],
+      ['2024-01-20', 0, undefined],
+    ] as const;
+
+    // Validate some manual updates, so we know the daily also works
+    test.each(cases)(
+      'For date %s should be %i updates and updatePossible %s',
+      (date: string, length: number, updatePossible?: boolean) => {
+        // Assert
+        const from = moment(date, 'YYYY-MM-DD');
+        const to = moment(date, 'YYYY-MM-DD');
+
+        // Act
+        const result = getRankingPeriods(system, from, to);
+
+        // Assert
+        expect(result.length).toEqual(length);
+
+        if (updatePossible !== undefined) {
+          expect(result[0].updatePossible).toEqual(updatePossible);
+        }
+      },
+    );
+
+    test('Testing something', () => {
+      // Assert
+      const from = moment().subtract(1, 'day');
+      const to = from.clone();
+
+      // Act
+      const result = getRankingPeriods(system, from, to);
+
+      // Assert
+      expect(result.length).toEqual(1);
+    });
+
     describe('last update based on dates', () => {
       const expected = [
         {
@@ -580,7 +647,7 @@ describe('getRankingPeriods', () => {
       const from = moment('2023-03-01');
       const to = moment('2023-04-30');
 
-      it('last update before from', () => {
+      test('last update before from', () => {
         // Assert
 
         const s = {
@@ -606,7 +673,7 @@ describe('getRankingPeriods', () => {
         );
       });
 
-      it('last update after from', () => {
+      test('last update after from', () => {
         // Assert
         const s = {
           ...system,
@@ -632,7 +699,7 @@ describe('getRankingPeriods', () => {
         );
       });
 
-      it('last update betweeen', () => {
+      test('last update betweeen', () => {
         // Assert
         const s = {
           ...system,
@@ -661,7 +728,7 @@ describe('getRankingPeriods', () => {
   });
 
   describe('Ranking: 2 month, Points: 1 month', () => {
-    const system1Month = {
+    const system = {
       updateIntervalAmount: 2,
       updateIntervalUnit: 'months',
       updateDayOfWeek: 1,
@@ -673,13 +740,13 @@ describe('getRankingPeriods', () => {
       calculationDayOfWeek: 1,
     } as const;
 
-    it('Get for full year', () => {
+    test('Get for full year', () => {
       // Assert
       const from = moment('2023-01-01');
       const to = moment('2024-01-01');
 
       // Act
-      const result = getRankingPeriods(system1Month, from, to);
+      const result = getRankingPeriods(system, from, to);
 
       // Assert
       const expected = [
@@ -751,7 +818,7 @@ describe('getRankingPeriods', () => {
   });
 
   describe('Ranking: 2 month, Points: 1 week', () => {
-    const system1Month = {
+    const system = {
       updateIntervalAmount: 2,
       updateIntervalUnit: 'months',
       updateDayOfWeek: 1,
@@ -763,13 +830,13 @@ describe('getRankingPeriods', () => {
       calculationDayOfWeek: 1,
     } as const;
 
-    it('Get for full year', () => {
+    test('Get for full year', () => {
       // Assert
       const from = moment('2023-01-01');
       const to = moment('2024-01-01');
 
       // Act
-      const result = getRankingPeriods(system1Month, from, to, {
+      const result = getRankingPeriods(system, from, to, {
         includeCalculation: false,
       });
 
@@ -827,7 +894,7 @@ describe('getRankingPeriods', () => {
       calculationDayOfWeek: 1,
     } as const;
 
-    it('Get for full', () => {
+    test('Get for full', () => {
       // Assert
       const from = moment('2023-01-01');
       const to = moment('2024-01-01');
@@ -1077,7 +1144,7 @@ describe('getRankingPeriods', () => {
       calculationDayOfWeek: 1,
     } as const;
 
-    it('Get for full', () => {
+    test('Get for full', () => {
       // Assert
       const from = moment('2023-01-01');
       const to = moment('2024-01-01');
