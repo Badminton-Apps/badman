@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.32](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.31...v6.129.0-beta.32) (2023-12-27)
+
+
+### Bug Fixes
+
+* height wasn't correctly set ([4789f4a](https://github.com/Badminton-Apps/badman/commit/4789f4a5a731138175f2d46afbe99ec376ae7b02))
+* more finetuning on system loading ([f8ca376](https://github.com/Badminton-Apps/badman/commit/f8ca376f0e33e784c4b1ca2b77a192f834644024))
+* viewing ranking system wouln't always load correctly ([5b03dd5](https://github.com/Badminton-Apps/badman/commit/5b03dd5b6ad0ee3d42f2a19e79d28b921d251328))
+
 ## [6.129.0-beta.31](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.30...v6.129.0-beta.31) (2023-12-27)
 
 
