@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.33](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.32...v6.129.0-beta.33) (2023-12-27)
+
+
+### Features
+
+* adding interface for running ranking job ([6f62262](https://github.com/Badminton-Apps/badman/commit/6f622625a91cde1d8b829fe94d0dfbb013aba458))
+
 ## [6.129.0-beta.32](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.31...v6.129.0-beta.32) (2023-12-27)
 
 
