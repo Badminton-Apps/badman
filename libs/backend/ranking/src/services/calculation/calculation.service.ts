@@ -1,7 +1,7 @@
 import {
   RankingGroup,
   RankingPoint,
-  RankingSystem
+  RankingSystem,
 } from '@badman/backend-database';
 import { getRankingPeriods } from '@badman/utils';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
@@ -61,10 +61,10 @@ export class CalculationService {
     try {
       this.logger.log(`Simulation for ${system.name}`);
 
-      // if no periods are defined, calulate up untill last update interval
+      // if no periods are defined, calulate from last update interval
       const toDateM = moment(toDate);
       const fromDateM = moment(
-        fromDate || system.calculationLastUpdate,
+        fromDate || moment(system.calculationLastUpdate).add(1, 'day'),
       );
       if ((periods ?? 0) > 0) {
         for (let i = 0; i < (periods ?? 0); i++) {
