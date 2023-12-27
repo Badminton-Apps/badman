@@ -5,7 +5,7 @@ import {
   computed,
   effect,
   inject,
-  signal
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -74,7 +74,7 @@ export class RankingBreakdownPageComponent {
   // route
   private queryParams = toSignal(this.route.queryParamMap);
   private routeParams = toSignal(this.route.paramMap);
-  private routeData = toSignal(this.route.data );
+  private routeData = toSignal(this.route.data);
 
   // filters
   periodFilter = new FormGroup({
