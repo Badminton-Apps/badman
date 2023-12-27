@@ -6,6 +6,7 @@ export class CronJob {
   name?: string;
   cronTime?: string;
   meta?: QueueCronJob;
+  type?: 'sync' | 'ranking' ;
   lastRun?: Moment;
   nextRun?: Moment;
   running?: boolean;
@@ -20,6 +21,7 @@ export class CronJob {
     } as QueueCronJob;
 
     this.running = args?.running;
+    this.type = args?.type;
 
     const parsed = moment(args?.lastRun);
     this.lastRun = parsed.isValid() ? parsed : undefined;
