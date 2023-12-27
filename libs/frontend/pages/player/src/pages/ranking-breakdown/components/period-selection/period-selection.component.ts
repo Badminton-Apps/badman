@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, ViewChild } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  Input,
+  Signal,
+  ViewChild,
+  computed,
+  signal,
+} from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MatCalendarCellClassFunction,
@@ -40,20 +47,41 @@ import { MomentModule } from 'ngx-moment';
   ],
 })
 export class PeriodSelectionComponent {
-  @Input() period!: FormGroup;
-  @Input() system!: RankingSystem;
+  @Input() period!: FormGroup<{
+    start: FormControl<Moment>;
+    end: FormControl<Moment>;
+    game: FormControl<Moment>;
+    next: FormControl<Moment>;
+  }>;
+  @Input() system!: Signal<RankingSystem>;
 
   @ViewChild(MatMenuTrigger) trigger?: MatMenuTrigger;
-
   minDateInUpdate?: Moment;
+
+  viewingDate = signal(moment());
+
+  updates = computed(() => {
+    if (!this.system() || !this.viewingDate()) {
+      return [];
+    }
+
+    return getRankingPeriods(
+      this.system(),
+      this.viewingDate().startOf('month').clone(),
+      this.viewingDate().endOf('month').clone(),
+    );
+  });
 
   dateClass: MatCalendarCellClassFunction<Moment> = (cellDate, view) => {
     // Only highligh dates inside the month view.
     if (view === 'month') {
-      const updates = getRankingPeriods(this.system, cellDate, cellDate);
+      // check if the current month is the same as the viewing date, if not, update the viewing date
+      if (!this.viewingDate().isSame(cellDate, 'month')) {
+        this.viewingDate.set(cellDate.clone());
+      }
 
       // find the date in the update list
-      const update = updates.find((u) => {
+      const update = this.updates().find((u) => {
         return moment(u.date).isSame(cellDate, 'day');
       });
 
@@ -69,8 +97,13 @@ export class PeriodSelectionComponent {
     return '';
   };
 
+  monthSelected(date: Moment) {
+    console.log(date);
+    this.viewingDate.set(date);
+  }
+
   lastUpdate() {
-    this.customPeriod(moment(this.system.calculationLastUpdate));
+    this.customPeriod(moment(this.system().calculationLastUpdate));
   }
 
   customPeriod(targetDate: Moment | null) {
@@ -81,19 +114,19 @@ export class PeriodSelectionComponent {
     const endPeriod = moment(targetDate);
     const startPeriod = endPeriod
       .clone()
-      .subtract(this.system.periodAmount, this.system.periodUnit);
+      .subtract(this.system().periodAmount, this.system().periodUnit);
     const gamePeriod = startPeriod
       .clone()
       .subtract(
-        this.system.updateIntervalAmount,
-        this.system.updateIntervalUnit,
+        this.system().updateIntervalAmount,
+        this.system().updateIntervalUnit,
       );
 
     const nextPeriod = startPeriod
       .clone()
       .add(
-        this.system.calculationIntervalAmount,
-        this.system.calculationIntervalUnit,
+        this.system().calculationIntervalAmount,
+        this.system().calculationIntervalUnit,
       );
 
     this.period?.patchValue({

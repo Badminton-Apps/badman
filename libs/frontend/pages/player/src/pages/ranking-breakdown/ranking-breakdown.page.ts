@@ -2,12 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  PLATFORM_ID,
-  TransferState,
   computed,
   effect,
   inject,
-  signal,
+  signal
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -19,7 +17,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
-import { Game, Player } from '@badman/frontend-models';
+import { Game, Player, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -70,15 +68,13 @@ export class RankingBreakdownPageComponent {
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
   private apollo = inject(Apollo);
-  private stateTransfer = inject(TransferState);
-  private platformId = inject(PLATFORM_ID);
   private destroy$ = injectDestroy();
   systemService = inject(RankingSystemService);
 
   // route
   private queryParams = toSignal(this.route.queryParamMap);
   private routeParams = toSignal(this.route.paramMap);
-  private routeData = toSignal(this.route.data);
+  private routeData = toSignal(this.route.data );
 
   // filters
   periodFilter = new FormGroup({
@@ -112,6 +108,7 @@ export class RankingBreakdownPageComponent {
   // Computed
   player = computed(() => this.routeData()?.['player'] as Player);
   id = computed(() => this.routeParams()?.get('id'));
+  system = computed(() => this.systemService.system() as RankingSystem);
 
   // specific computed value so the effect only triggers when the end date changes
   periodEndRoute = computed(() => this.queryParams()?.get('end'));
@@ -135,7 +132,6 @@ export class RankingBreakdownPageComponent {
         if (!this.systemService.system()) {
           return;
         }
-
 
         this._loadPeriodFilter();
       },
