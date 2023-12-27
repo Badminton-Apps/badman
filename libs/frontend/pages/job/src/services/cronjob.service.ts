@@ -41,6 +41,7 @@ export class CronJobService {
             lastRun
             nextRun
             running
+            type
             meta {
               jobName
               queueName
