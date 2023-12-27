@@ -1,3 +1,6 @@
+// height
+$height: calc(100% - 64px);
+
 .sidenav-container {
   height: 100%;
 
@@ -15,7 +18,7 @@
   .sidebar-items {
     display: flex;
     flex-flow: column;
-    height: calc(100% - 64px);
+    height: $height;
     justify-content: space-between;
 
     .expandable-item {
@@ -70,7 +73,7 @@
   }
 
   .content {
-    height: calc(100% - 37px);
+    height: $height;
     overflow: auto;
     .loading {
       height: 3px;
