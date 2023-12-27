@@ -80,7 +80,7 @@
 
 <!-- Dialog for  -->
 
-<ng-template #dialogTemplate let-data>
+<ng-template #syncTemplate let-data>
   <h2 mat-dialog-title>Queue Job "{{data.name}}"?</h2>
   <mat-dialog-content>
     <!-- have a json editor for the data.meta field -->
@@ -101,5 +101,61 @@
   <mat-dialog-actions>
     <button mat-button mat-dialog-close>Cancel</button>
     <button mat-button [mat-dialog-close]="meta.value">Confirm</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #rankingTemplate let-data>
+  <h2 mat-dialog-title>Queue Job "{{data.name}}"?</h2>
+  <mat-dialog-content>
+    <div class="job-arguments">
+      <div class="date">
+        <mat-form-field>
+          <mat-label>Start date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="pickerFrom"
+            [(ngModel)]="data.meta.arguments.fromDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="pickerFrom"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>End date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="pickerTo"
+            [(ngModel)]="data.meta.arguments.toDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="pickerTo"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="calculate">
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePoints"
+          >Calculate points</mat-slide-toggle
+        >
+        <!-- caption -->
+        
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePlaces"
+          >Calculate places</mat-slide-toggle
+        >
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.recalculatePoints"
+          >Re-Calculate points</mat-slide-toggle
+        >
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="data.meta">Confirm</button>
   </mat-dialog-actions>
 </ng-template>

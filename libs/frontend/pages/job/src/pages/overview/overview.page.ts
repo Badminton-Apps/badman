@@ -58,8 +58,11 @@ export class OverviewPageComponent {
   service = inject(CronJobService);
   dialog = inject(MatDialog);
 
-  @ViewChild('dialogTemplate', { static: true })
-  dialogTemplate!: TemplateRef<HTMLElement>;
+  @ViewChild('syncTemplate', { static: true })
+  syncTemplate!: TemplateRef<HTMLElement>;
+
+  @ViewChild('rankingTemplate', { static: true })
+  rankingTemplate!: TemplateRef<HTMLElement>;
 
   displayedColumns: string[] = [
     'name',
@@ -71,7 +74,22 @@ export class OverviewPageComponent {
   ];
 
   openDialog(cron: CronJob) {
-    const dialogRef = this.dialog.open(this.dialogTemplate, {
+    let template: TemplateRef<HTMLElement>;
+
+    switch (cron.type) {
+      case 'sync':
+        template = this.syncTemplate;
+        break;
+      case 'ranking':
+        template = this.rankingTemplate;
+        break;
+
+      default:
+        console.warn('No template found for cronjob type', cron.type);
+        return;
+    }
+
+    const dialogRef = this.dialog.open(template, {
       data: cron,
     });
 
@@ -80,7 +98,7 @@ export class OverviewPageComponent {
         // Queue the job here
         this.service.state.queue({
           ...cron,
-          meta: JSON.parse(result),
+          meta: result,
         });
       }
     });
