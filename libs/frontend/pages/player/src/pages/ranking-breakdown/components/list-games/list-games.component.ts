@@ -63,7 +63,7 @@ export class ListGamesComponent implements OnInit {
   private destroy$ = injectDestroy();
 
   @Input() games!: Game[];
-  @Input() system!: RankingSystem;
+  @Input() system!: Signal<RankingSystem>;
   @Input() player!: Signal<Player>;
   @Input() formGroup!: FormGroup;
 
@@ -74,7 +74,7 @@ export class ListGamesComponent implements OnInit {
   rankingPlace = computed(
     () =>
       this.player()?.rankingLastPlaces?.find(
-        (x) => x.systemId == this.system.id,
+        (x) => x.systemId == this.system().id,
       ),
   );
 
@@ -219,7 +219,7 @@ export class ListGamesComponent implements OnInit {
 
       const type = getGameResultType(game.winner == me.team, game.gameType, {
         differenceInLevel: rankingPoint?.differenceInLevel ?? 0,
-        system: this.system,
+        system: this.system(),
       });
       const newGameBreakdown = {
         game,
@@ -231,8 +231,8 @@ export class ListGamesComponent implements OnInit {
 
       // Latest x Games to use
       if (
-        this.system.latestXGamesToUse &&
-        validGames >= this.system.latestXGamesToUse
+        this.system().latestXGamesToUse &&
+        validGames >= this.system().latestXGamesToUse!
       ) {
         newGameBreakdown.type = GameBreakdownType.OUT_SCOPE;
       }
@@ -304,7 +304,7 @@ export class ListGamesComponent implements OnInit {
 
       const type = getGameResultType(game.winner == me.team, game.gameType, {
         differenceInLevel: rankingPoint?.differenceInLevel ?? 0,
-        system: this.system,
+        system: this.system(),
       });
 
       gameBreakdownPrev.push({
@@ -325,6 +325,7 @@ export class ListGamesComponent implements OnInit {
   }
 
   fillGames() {
+    
     this.gameBreakdown = [];
 
     if (this.formGroup?.get('includeOutOfScope')?.value) {
@@ -354,13 +355,13 @@ export class ListGamesComponent implements OnInit {
       const devideDowngrade = this.lostGamesDowngrade.length + i + 1; // 0 based;
 
       const devideUpgradeCorrected =
-        devideUpgrade < (this.system.minNumberOfGamesUsedForUpgrade ?? 0)
-          ? this.system.minNumberOfGamesUsedForUpgrade ?? 0
+        devideUpgrade < (this.system().minNumberOfGamesUsedForUpgrade ?? 0)
+          ? this.system().minNumberOfGamesUsedForUpgrade ?? 0
           : devideUpgrade;
 
       const devideDowngradeCorrected =
-        devideDowngrade < (this.system.minNumberOfGamesUsedForDowngrade ?? 0)
-          ? this.system.minNumberOfGamesUsedForDowngrade ?? 0
+        devideDowngrade < (this.system().minNumberOfGamesUsedForDowngrade ?? 0)
+          ? this.system().minNumberOfGamesUsedForDowngrade ?? 0
           : devideDowngrade;
 
       const avgUpgrade = Math.round(totalPoints / devideUpgradeCorrected);
@@ -419,11 +420,11 @@ export class ListGamesComponent implements OnInit {
       const level = this.rankingPlace()?.[this.type] ?? 12;
 
       const nextLevel =
-        this.system.pointsToGoUp?.[(this.system.amountOfLevels ?? 12) - level];
+        this.system().pointsToGoUp?.[(this.system().amountOfLevels ?? 12) - level];
 
       const prevLevel =
-        this.system.pointsToGoDown?.[
-          (this.system.amountOfLevels ?? 12) - (level + 1)
+        this.system().pointsToGoDown?.[
+          (this.system().amountOfLevels ?? 12) - (level + 1)
         ];
 
       const upgradePoints =
@@ -497,8 +498,8 @@ export class ListGamesComponent implements OnInit {
             level,
             newLevel: level - 1,
             points:
-              this.system.pointsToGoUp?.[
-                (this.system.amountOfLevels ?? 12) - level
+              this.system().pointsToGoUp?.[
+                (this.system().amountOfLevels ?? 12) - level
               ],
           },
         )}`;
@@ -513,8 +514,8 @@ export class ListGamesComponent implements OnInit {
             level,
             newLevel: level + 1,
             points:
-              this.system.pointsToGoDown?.[
-                (this.system.amountOfLevels ?? 12) - (level + 1)
+              this.system().pointsToGoDown?.[
+                (this.system().amountOfLevels ?? 12) - (level + 1)
               ],
           },
         )}`;
@@ -540,7 +541,7 @@ export class ListGamesComponent implements OnInit {
         data: {
           playerId: this.playerId(),
           type: this.type,
-          system: this.system,
+          system: this.system(),
         },
       })
       .afterClosed()

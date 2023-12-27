@@ -44,7 +44,7 @@
       }}
     </mat-slide-toggle>
   </div>
-  <div *ngIf="(this.system.latestXGamesToUse ?? 0) > 0">
+  <div *ngIf="(this.system().latestXGamesToUse ?? 0) > 0">
     <mat-slide-toggle formControlName="includeOutOfScope">
       {{ 'all.breakdown.includeOutOfScope' | translate }}:
       {{
