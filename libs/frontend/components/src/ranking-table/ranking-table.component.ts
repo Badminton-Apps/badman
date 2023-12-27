@@ -2,13 +2,17 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
+  Injector,
   Input,
   OnInit,
   PLATFORM_ID,
+  Signal,
   TransferState,
+  computed,
+  inject,
 } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatTableModule } from '@angular/material/table';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -25,10 +29,14 @@ import { first, map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RankingTableComponent implements OnInit {
+  private readonly rankingSystemService = inject(RankingSystemService);
+  private readonly apollo = inject(Apollo);
+  private readonly transferState = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly injector = inject(Injector);
+
   @Input()
   id: string | null = null;
-
-  dataSource = new MatTableDataSource<RankingScoreTable>();
 
   displayedColumns = [
     'level',
@@ -37,38 +45,39 @@ export class RankingTableComponent implements OnInit {
     'pointsWhenWinningAgainst',
   ];
 
-  constructor(
-    private apollo: Apollo,
-    private raningSystemService: RankingSystemService,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
+  system = this.rankingSystemService.system as Signal<RankingSystem>;
 
   ngOnInit() {
-    this._loadRanking(this.id).subscribe((system) => {
-      let level = system.amountOfLevels ?? 0;
-      const data = system.pointsWhenWinningAgainst?.map(
-        (winning: number, index: number) => {
-          return {
-            level: level--,
-            pointsToGoUp:
-              level !== 0
-                ? Math.round(system.pointsToGoUp?.[index] ?? 0)
-                : null,
-            pointsToGoDown:
-              index === 0
-                ? null
-                : Math.round(system.pointsToGoDown?.[index - 1] ?? 0),
-            pointsWhenWinningAgainst: Math.round(winning),
-          } as RankingScoreTable;
-        },
-      );
-
-      if (data) {
-        this.dataSource.data = data;
-      }
-    });
+    if (this.id !== null) {
+      this.system = toSignal(this._loadRanking(this.id), {
+        injector: this.injector,
+      }) as Signal<RankingSystem>;
+    }
   }
+
+  dataSource = computed(() => {
+    if (!this.system()) {
+      return [];
+    }
+
+    let level = this.system().amountOfLevels ?? 0;
+    return this.system().pointsWhenWinningAgainst?.map(
+      (winning: number, index: number) => {
+        return {
+          level: level--,
+          pointsToGoUp:
+            level !== 0
+              ? Math.round(this.system().pointsToGoUp?.[index] ?? 0)
+              : null,
+          pointsToGoDown:
+            index === 0
+              ? null
+              : Math.round(this.system().pointsToGoDown?.[index - 1] ?? 0),
+          pointsWhenWinningAgainst: Math.round(winning),
+        } as RankingScoreTable;
+      },
+    );
+  }) as () => RankingScoreTable[];
 
   _loadRanking(systemId: string | null) {
     {

@@ -1,8 +1,8 @@
 <label>{{ 'all.breakdown.period.title' | translate }}</label>
 <div class="items">
   <div class="period">
-    {{ period.value.start | amDateFormat : 'DD MMM YYYY' }} -
-    {{ period.value.end | amDateFormat : 'DD MMM YYYY' }}
+    {{ period.value.start | amDateFormat: 'DD MMM YYYY' }} -
+    {{ period.value.end | amDateFormat: 'DD MMM YYYY' }}
   </div>
 
   <button mat-icon-button [matMenuTriggerFor]="appMenu">
@@ -21,15 +21,18 @@
       </mat-calendar>
       <div class="period-selection-calender-hint">
         <div class="info">
-          <p class="point">{{'all.breakdown.update.point' | translate}}</p>
-          <p class="ranking">{{'all.breakdown.update.ranking' | translate}}</p>
+          <p class="point">{{ 'all.breakdown.update.point' | translate }}</p>
+          <p class="ranking">
+            {{ 'all.breakdown.update.ranking' | translate }}
+          </p>
         </div>
         <div class="buttons">
-          <button mat-stroked-button (click)="lastUpdate()">{{'all.breakdown.update.last' | translate}}</button>
+          <button mat-stroked-button (click)="lastUpdate()">
+            {{ 'all.breakdown.update.last' | translate }}
+          </button>
         </div>
       </div>
     </div>
   </mat-menu>
 </div>
-
 <!--  (selectedChange)="select($event, calendar)" -->
