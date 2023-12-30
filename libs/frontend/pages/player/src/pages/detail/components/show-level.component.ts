@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,12 +8,10 @@ import {
   effect,
   inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ShowLevelService } from './show-level.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { TranslateService } from '@ngx-translate/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ShowLevelService } from './show-level.service';
 
 @Component({
   selector: 'badman-show-level',
@@ -82,6 +81,10 @@ export class ShowLevelComponent implements OnInit {
       (this.showLevelService.rankingPlace()?.[this.downgrade] ?? 0) <=
       (prevLevel ?? 0);
 
-    this.tooltip = `${this.translate.instant('all.breakdown.upgrade')}: > ${nextLevel} \n${this.translate.instant('all.breakdown.downgrade')}: < ${prevLevel}`;
+    this.tooltip = `${this.translate.instant(
+      'all.breakdown.upgrade',
+    )}: > ${nextLevel} \n${this.translate.instant(
+      'all.breakdown.downgrade',
+    )}: < ${prevLevel}`;
   }
 }
