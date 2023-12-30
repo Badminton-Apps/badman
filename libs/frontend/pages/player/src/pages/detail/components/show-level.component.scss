@@ -1,20 +1,20 @@
 :host {
-  display: flex;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 4px;
-  flex-direction: row;
-  align-items: center;
-  gap: 5px;
-
-  // if a points exists, then we have a padding
+  display: block;
   
+  & > div {
+    display: flex;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 4px;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  }
 }
 
 .level {
   padding: 1px 5px;
 }
-
 
 .points:first-child {
   margin-left: 5px;

@@ -17,7 +17,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import {
@@ -28,7 +27,6 @@ import {
   RecentGamesComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { RankingSystemService } from '@badman/frontend-graphql';
 import { Game, Player, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
@@ -55,7 +53,6 @@ import { ShowLevelComponent } from './components/show-level.component';
     MatButtonModule,
     MatMenuModule,
     MatChipsModule,
-    MatTooltipModule,
     MatDialogModule,
 
     // My Componments
@@ -80,7 +77,6 @@ export class DetailPageComponent {
   private translate = inject(TranslateService);
   private claim = inject(ClaimService);
   private auth = inject(AuthenticateService);
-  private systemService = inject(RankingSystemService);
   private destroy$ = injectDestroy();
   private injector = inject(Injector);
 
@@ -95,12 +91,6 @@ export class DetailPageComponent {
   initials?: string;
 
   teams = signal<Team[]>([]);
-
-  tooltip = {
-    single: '',
-    double: '',
-    mix: '',
-  };
 
   hasMenu$?: Observable<boolean>;
   canClaim$?: Observable<boolean>;
@@ -130,18 +120,6 @@ export class DetailPageComponent {
         injector: this.injector,
       },
     );
-
-    combineLatest([
-      this.translate.get('all.ranking.single'),
-      this.translate.get('all.ranking.double'),
-      this.translate.get('all.ranking.mix'),
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([single, double, mix]) => {
-        this.tooltip.single = single;
-        this.tooltip.double = double;
-        this.tooltip.mix = mix;
-      });
 
     this.hasMenu$ = combineLatest([
       this.auth.loggedIn$ ?? of(false),
@@ -234,7 +212,6 @@ export class DetailPageComponent {
     window.location.reload();
   }
 
-  
   removePlayer() {
     const dialogData = new ConfirmDialogModel(
       'all.club.delete.player.title',
