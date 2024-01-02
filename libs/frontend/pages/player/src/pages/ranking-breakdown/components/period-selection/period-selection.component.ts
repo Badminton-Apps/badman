@@ -65,11 +65,14 @@ export class PeriodSelectionComponent {
       return [];
     }
 
-    return getRankingPeriods(
+    const result = getRankingPeriods(
       this.system(),
-      this.viewingDate().startOf('month').clone(),
-      this.viewingDate().endOf('month').clone(),
+      this.viewingDate().clone().startOf('month').subtract(1, 'day'),
+      this.viewingDate().clone().endOf('month').add(1, 'day')
     );
+
+    console.log('updates', result);
+    return result;
   });
 
   dateClass: MatCalendarCellClassFunction<Moment> = (cellDate, view) => {
@@ -98,7 +101,6 @@ export class PeriodSelectionComponent {
   };
 
   monthSelected(date: Moment) {
-    console.log(date);
     this.viewingDate.set(date);
   }
 
