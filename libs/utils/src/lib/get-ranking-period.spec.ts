@@ -12,9 +12,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'weeks',
-      updateLastUpdate: moment(
-        '2023-12-03T00:00:00.000Z',
-      ).toDate(),
+      updateLastUpdate: moment('2023-12-03T00:00:00.000Z').toDate(),
       calculationDayOfWeek: 1,
     } as const;
 
@@ -81,6 +79,50 @@ describe('getRankingPeriods', () => {
         {
           date: moment('2024-01-01T00:00:00.000Z'),
           updatePossible: true,
+        },
+      ];
+      expect(
+        result.map((r) => ({
+          date: r.date.toISOString(),
+          updatePossible: r.updatePossible,
+        })),
+      ).toEqual(
+        expected.map((r) => ({
+          date: r.date.toISOString(),
+          updatePossible: r.updatePossible,
+        })),
+      );
+    });
+
+    test('Get for full year only update', () => {
+      // Assert
+      const from = moment('2024-01-01');
+      const to = moment('2024-01-31');
+
+      // Act
+      const result = getRankingPeriods(system, from, to, {});
+
+      // Assert
+      const expected = [
+        {
+          date: moment('2024-01-01'),
+          updatePossible: true,
+        },
+        {
+          date: moment('2024-01-08'),
+          updatePossible: false,
+        },
+        {
+          date: moment('2024-01-15'),
+          updatePossible: false,
+        },
+        {
+          date: moment('2024-01-22'),
+          updatePossible: false,
+        },
+        {
+          date: moment('2024-01-29'),
+          updatePossible: false,
         },
       ];
       expect(
@@ -734,9 +776,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'months',
-      updateLastUpdate: moment(
-        '2023-12-03T00:00:00.000Z',
-      ).toDate(),
+      updateLastUpdate: moment('2023-12-03T00:00:00.000Z').toDate(),
       calculationDayOfWeek: 1,
     } as const;
 
@@ -824,9 +864,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'weeks',
-      updateLastUpdate: moment(
-        '2023-12-03T00:00:00.000Z',
-      ).toDate(),
+      updateLastUpdate: moment('2023-12-03T00:00:00.000Z').toDate(),
       calculationDayOfWeek: 1,
     } as const;
 
@@ -888,9 +926,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'weeks',
-      updateLastUpdate: moment(
-        '2023-12-03T00:00:00.000Z',
-      ).toDate(),
+      updateLastUpdate: moment('2023-12-03T00:00:00.000Z').toDate(),
       calculationDayOfWeek: 1,
     } as const;
 
@@ -1138,9 +1174,7 @@ describe('getRankingPeriods', () => {
       updateDayOfWeek: 1,
       calculationIntervalAmount: 1,
       calculationIntervalUnit: 'weeks',
-      updateLastUpdate: moment(
-        '2023-12-03T00:00:00.000Z',
-      ).toDate(),
+      updateLastUpdate: moment('2023-12-03T00:00:00.000Z').toDate(),
       calculationDayOfWeek: 1,
     } as const;
 
