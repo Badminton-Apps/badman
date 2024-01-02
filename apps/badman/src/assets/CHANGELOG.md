@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.35](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.34...v6.129.0-beta.35) (2024-01-02)
+
+
+### Features
+
+* don't re-quue if already running ([7642dc8](https://github.com/Badminton-Apps/badman/commit/7642dc8df163a171b42dd9ad608751d32273573b))
+* scheduling rankingupdate to 2pm so all events are scheduled, and can be checked ([b3b6502](https://github.com/Badminton-Apps/badman/commit/b3b6502c65d19e42089dd5aabb6468a840a72442))
+
+
+### Bug Fixes
+
+* shownig next/prev level only when upgrade/downgrade is possible ([fe52eed](https://github.com/Badminton-Apps/badman/commit/fe52eed93a5d61e1f2beabbd4183c56361709c73))
+
 ## [6.129.0-beta.34](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.33...v6.129.0-beta.34) (2024-01-02)
 
 
