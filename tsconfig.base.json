@@ -7,16 +7,18 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "esModuleInterop": true,
     "importHelpers": true,
+    "esModuleInterop": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "*": ["./types/*"],
       "@badman/backend-assembly": [
         "libs/backend/competition/assembly/src/index.ts"
       ],
@@ -109,8 +111,6 @@
       "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],
       "@badman/utils": ["libs/utils/src/index.ts"]
     },
-    "strictNullChecks": true,
-    "strict": true
   },
   "exclude": ["node_modules", "tmp"]
 }
