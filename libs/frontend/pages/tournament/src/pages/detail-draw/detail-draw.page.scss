@@ -8,25 +8,3 @@
   gap: 1rem;
 }
 
-.games {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-
-  // switch to row for mobile
-  @media (max-width: 959.98px) {
-    flex-direction: column;
-  }
-}
-
-.recent-games {
-  flex: 1 1 auto;
-}
-
-.upcoming-games {
-  flex: 1 1 250px;
-
-  @media (max-width: 959.98px) {
-    flex: 1;
-  }
-}
