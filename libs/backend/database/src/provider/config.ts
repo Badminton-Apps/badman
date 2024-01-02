@@ -33,8 +33,8 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
     };
 
     if (dialect === 'postgres') {
-      // require('pg');
-      await import('pg');
+      require('pg');
+      // await import('pg');
 
       options = {
         ...options,
