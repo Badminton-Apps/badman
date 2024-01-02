@@ -87,6 +87,15 @@ export class CronService implements OnModuleInit {
       onTick: async () => {
         this.logger.verbose(`Queueing ${job.name}`);
         const queue = this._getQueue(job.meta!.queueName);
+
+        // if the job is already running, don't queue it again
+        const runningJobs = await queue.getJobs(['active', 'waiting']);
+        const running = runningJobs.find((j) => j.name === job.meta!.jobName);
+        if (running) {
+          this.logger.verbose(`Job ${job.name} already running`);
+          return;
+        }
+
         queue.add(job.meta!.jobName, job.meta?.arguments, {
           removeOnFail: 5,
           removeOnComplete: 5,
@@ -192,6 +201,15 @@ export class CronService implements OnModuleInit {
         }
 
         const queue = this._getQueue(job.meta!.queueName);
+
+        // if the job is already running, don't queue it again
+        const runningJobs = await queue.getJobs(['active', 'waiting']);
+        const running = runningJobs.find((j) => j.name === job.meta!.jobName);
+        if (running) {
+          this.logger.verbose(`Job ${job.name} already running`);
+          return;
+        }
+
         queue.add(job.meta!.jobName, job.meta?.arguments, {
           removeOnFail: 5,
           removeOnComplete: 5,
