@@ -272,8 +272,8 @@ jobs:
             echo "Running pnpm install --frozen-lockfile"
             pnpm install --frozen-lockfile
           else
-            echo "Running npm i"
-            npm i
+            echo "Running npm ci"
+            npm ci
           fi
 
       - name: Start Nx Agent ${{ matrix.agent }}
