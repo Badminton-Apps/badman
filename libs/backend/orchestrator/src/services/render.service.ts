@@ -41,7 +41,7 @@ export class RenderService {
     }
 
     // Get the service
-    const serviceData = await this._getSerivce(service);
+    const serviceData = await this.getService(service);
 
     // Start the service if it's suspended
     if (serviceData.suspended == 'suspended') {
@@ -76,7 +76,7 @@ export class RenderService {
     }
 
     // Get the service
-    const serviceData = await this._getSerivce(service);
+    const serviceData = await this.getService(service);
 
     // Suspend the service if it's not suspended
     if (serviceData.suspended == 'not_suspended') {
@@ -94,7 +94,7 @@ export class RenderService {
     }
   }
 
-  private async _getSerivce(service: Service) {
+  public async getService(service: Service) {
     const renderService = await fetch(
       `${this.renderApi}/services/${service.renderId}`,
       {

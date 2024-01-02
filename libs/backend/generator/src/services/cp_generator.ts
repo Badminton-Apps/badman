@@ -21,8 +21,7 @@ import { existsSync } from 'fs';
 import { copyFile } from 'fs/promises';
 import moment from 'moment';
 import { I18nService } from 'nestjs-i18n';
-import { resolve } from 'path';
-import path = require('path');
+import { join, resolve } from 'path';
 
 export interface open {
   query<T>(sql: string): Promise<T>;
@@ -215,7 +214,7 @@ export class CpGeneratorService {
   private async _getAdob() {
     let ADODB = null;
     try {
-      ADODB = require('node-adodb');
+      ADODB = await import('node-adodb');
     } catch (er) {
       this.logger.warn(`ADODB not found`);
       return null;
@@ -225,11 +224,11 @@ export class CpGeneratorService {
   }
 
   private async _getConnection(adodb: AdodbType, event: EventCompetition) {
-    const original = path.join(
+    const original = join(
       process.cwd(),
       `libs/backend/generator/assets/empty.cp`,
     );
-    const destination = path.join(
+    const destination = join(
       process.cwd(),
       `libs/backend/generator/assets/${event.name}.cp`,
     );
