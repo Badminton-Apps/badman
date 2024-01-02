@@ -214,7 +214,7 @@ export class CpGeneratorService {
   private async _getAdob() {
     let ADODB = null;
     try {
-      ADODB = await import('node-adodb');
+      ADODB = require('node-adodb');
     } catch (er) {
       this.logger.warn(`ADODB not found`);
       return null;
