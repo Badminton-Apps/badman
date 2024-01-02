@@ -16,17 +16,17 @@
     <div class="levels">
       <badman-show-level
         [routerLink]="['ranking', 'single']"
-        [playerId]="this.player().id!"
+        [playerId]="this.playerId"
         type="single"
       />
       <badman-show-level
         [routerLink]="['ranking', 'double']"
-        [playerId]="this.player().id!"
+        [playerId]="this.playerId"
         type="double"
       />
       <badman-show-level
         [routerLink]="['ranking', 'mix']"
-        [playerId]="this.player().id!"
+        [playerId]="this.playerId"
         type="mix"
       />
     </div>
