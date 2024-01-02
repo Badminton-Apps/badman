@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.34](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.33...v6.129.0-beta.34) (2024-01-02)
+
+
+### Features
+
+* adding upgrade/downgrade tooltip ([81c8bf2](https://github.com/Badminton-Apps/badman/commit/81c8bf272f995febfedd02a9166650a46812b186))
+* checking service statusses on startup ([97a8fe6](https://github.com/Badminton-Apps/badman/commit/97a8fe6247adeeb03b5550a6a8eb81693f728f8c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency xng-breadcrumb to v10.0.2 ([261f131](https://github.com/Badminton-Apps/badman/commit/261f1316de47b0e178053fe01bc1aa09b100456b))
+* doing require works ([5e32108](https://github.com/Badminton-Apps/badman/commit/5e321083b3d9caff7d93632caf4cdd81610babd0))
+* extra null check ([5ece366](https://github.com/Badminton-Apps/badman/commit/5ece366180ae462780c295282f82a2b2d08ba29f))
+* typo in beta message ([44595ed](https://github.com/Badminton-Apps/badman/commit/44595edce5afbd1f4d927ea912ddef2a39c3d1b2))
+
 ## [6.129.0-beta.33](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.32...v6.129.0-beta.33) (2023-12-27)
 
 
