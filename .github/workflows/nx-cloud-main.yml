@@ -291,8 +291,8 @@ jobs:
             echo "Running pnpm install --frozen-lockfile"
             pnpm install --frozen-lockfile
           else
-            echo "Running npm ci"
-            npm ci
+            echo "Running npm i"
+            npm i
           fi
 
       # An unfortunate side-effect of the way reusable workflows work is that by the time they are pulled into the "caller"
