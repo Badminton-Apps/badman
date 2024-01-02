@@ -86,6 +86,7 @@ export class DetailPageComponent {
   private routeData = toSignal(this.route.data);
 
   player = computed(() => this.routeData()?.['player'] as Player);
+  playerId = computed(() => this.player()?.id as string);
   club = computed(() => this.player().clubs?.[0]);
 
   initials?: string;
