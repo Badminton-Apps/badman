@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.36](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.35...v6.129.0-beta.36) (2024-01-02)
+
+
+### Features
+
+* adding link to encounter ([98a277a](https://github.com/Badminton-Apps/badman/commit/98a277a3421ec1f563c546c7330abf5ceb523d7a))
+* adding some standing styling ([552e230](https://github.com/Badminton-Apps/badman/commit/552e230801e6821e67a5864815f4923981d09654))
+
+
+### Bug Fixes
+
+* update dates weren't being added, this fixes it ([04ad5a8](https://github.com/Badminton-Apps/badman/commit/04ad5a8709d75d39755e03d2acff86f22b276adb))
+
 ## [6.129.0-beta.35](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.34...v6.129.0-beta.35) (2024-01-02)
 
 
