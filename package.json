@@ -164,7 +164,7 @@
     "web-vitals": "^3.5.0",
     "winston": "^3.11.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz",
-    "xng-breadcrumb": "10.0.0",
+    "xng-breadcrumb": "10.0.2",
     "zone.js": "0.14.2"
   },
   "devDependencies": {
