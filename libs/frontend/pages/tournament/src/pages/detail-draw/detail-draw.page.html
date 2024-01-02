@@ -1,8 +1,23 @@
-<section class="standing" *ngIf="this.drawTournament">
-  <h3>{{'all.event.standing.title' | translate}}</h3>
-  <badman-standing
-    [type]="'players'"
-    [entries]="drawTournament.eventEntries!"
-  ></badman-standing>
-</section>
+<badman-page-header>
+  <div actions>
+    @if(this.eventTournament.visualCode && this.drawTournament.visualCode){
+    <a
+      mat-icon-button
+      target="_blank"
+      [href]="'https://www.toernooi.nl/sport/tournament/draw?id='+this.eventTournament.visualCode + '&draw=' + this.drawTournament.visualCode"
+      [matTooltip]="'all.button.open-in-new-tab' | translate"
+    >
+      <mat-icon>open_in_new</mat-icon> </a
+    >}
+  </div>
 
+  <div title>{{drawTournament.name}}</div>
+  <div subTitle></div>
+</badman-page-header>
+
+@if(this.drawTournament) {
+<badman-standing
+  [type]="'players'"
+  [entries]="drawTournament.eventEntries!"
+></badman-standing>
+}
