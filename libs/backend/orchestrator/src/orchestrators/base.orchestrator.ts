@@ -11,7 +11,7 @@ import { RenderService } from '../services/render.service';
 export class OrchestratorBase {
   protected logger = new Logger(OrchestratorBase.name);
   private hasStarted = false;
-  private timeoutTime = 1000 * 60 * 5 ; // 5 minutes
+  private timeoutTime = 1000 * 60 * 5; // 5 minutes
   private startTime = new Date();
 
   constructor(
@@ -27,6 +27,12 @@ export class OrchestratorBase {
     if (configuredTimeout) {
       this.timeoutTime = parseInt(configuredTimeout);
     }
+
+    this._updateStatuses().then(() => {
+      this.logger.debug(
+        `[${this.serviceName}] Updated status to ${this.hasStarted ? 'started' : 'stopped'}`,
+      );
+    });
   }
 
   @Cron('*/1 * * * *')
@@ -70,6 +76,34 @@ export class OrchestratorBase {
     }
 
     return service;
+  }
+
+  private async _updateStatuses() {
+    const service = await this._getService();
+    if (!service.renderId){
+      this.logger.log(`[${this.serviceName}] No render id found, skipping status update`);
+      return; 
+    } 
+    const render = await this.renderService.getService(service);
+
+    if (render.suspended === 'suspended') {
+      service.status = 'stopped';
+      this.gateway.server?.emit(EVENTS.SERVICE.SERVICE_STOPPED, {
+        id: service.id, 
+        service: this.serviceName,
+      });
+    } else {
+      service.status = 'started';
+      this.hasStarted = true;
+      this.startTime = new Date();
+
+      this.gateway.server?.emit(EVENTS.SERVICE.SERVICE_STARTED, {
+        id: service.id,
+        service: this.serviceName,
+      });
+    }
+
+    await service.save();
   }
 
   private async _checkAndStartStopIfNeeded() {

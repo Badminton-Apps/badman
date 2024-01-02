@@ -1,3 +1,3 @@
-export * from './adapters'
-export * from './events'
-export * from './socket.module'
+export * from './adapters/redis-io.adapter';
+export * from './events/events.gateway';
+export * from './socket.module';
