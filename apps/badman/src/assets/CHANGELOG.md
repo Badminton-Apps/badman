@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.37](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.36...v6.129.0-beta.37) (2024-01-03)
+
+
+### Features
+
+* some more watching code/details ([cfe26b7](https://github.com/Badminton-Apps/badman/commit/cfe26b7313a28e6d3ecd7c51f443c5c75e892e9e))
+
+
+### Bug Fixes
+
+* adding breakdown games ([239bbe7](https://github.com/Badminton-Apps/badman/commit/239bbe7bb6401b47249b1a1ad60e390e85562904))
+* use start of day ([f24804e](https://github.com/Badminton-Apps/badman/commit/f24804e875ba875294b95a65829fd9870608a2f5))
+
 ## [6.129.0-beta.36](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.35...v6.129.0-beta.36) (2024-01-02)
 
 
