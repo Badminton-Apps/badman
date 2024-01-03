@@ -34,6 +34,9 @@ export class UpdateRankingService {
       throw new Error('No data to process');
     }
 
+    // ranking date should be the start of the day
+    options.rankingDate = moment(options.rankingDate).startOf('day').toDate();
+
     // Filter out douplicates and keep the lowest value (best)
     data = data.reduce((acc, member) => {
       const existingMember = acc.find((m) => m.memberId === member.memberId);
