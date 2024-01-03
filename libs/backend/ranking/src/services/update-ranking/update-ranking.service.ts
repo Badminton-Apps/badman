@@ -309,7 +309,7 @@ export class UpdateRankingService {
   }
 
   private chunkArray<T>(data: T[], chunkSize = 100) {
-    const chunks = [];
+    const chunks = [] as T[][];
     for (let i = 0; i < data.length; i += chunkSize) {
       chunks.push(data.slice(i, i + chunkSize));
     }
