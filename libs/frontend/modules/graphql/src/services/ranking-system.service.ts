@@ -99,6 +99,17 @@ export class RankingSystemService {
             ),
           ),
         ),
+      deleteSystem: (_state, action$: Observable<string>) =>
+        action$.pipe(
+          // delete system
+          switchMap((id) => this._deleteSystem(id)),
+          // load the default system
+          switchMap(() =>
+            this._loadSystem().pipe(
+              map((system) => ({ rankingSystem: system, loaded: true })),
+            ),
+          ),
+        ),
     },
   });
 
@@ -113,5 +124,18 @@ export class RankingSystemService {
         },
       })
       .pipe(map((res) => new RankingSystem(res.data?.rankingSystem)));
+  }
+
+  private _deleteSystem(id?: string | null) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation RemoveRankingSystem($id: ID!) {
+          removeRankingSystem(id: $id)
+        }
+      `,
+      variables: {
+        id: id,
+      },
+    });
   }
 }

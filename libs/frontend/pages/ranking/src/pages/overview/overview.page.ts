@@ -197,10 +197,20 @@ export class OverviewPageComponent {
       return;
     }
 
-
     this.systemService.state.watchSystem(system.id);
   }
 
+
+  deleteSystem(system: RankingSystem) {
+    if (!system.id) {
+      console.warn('No system id');
+      return;
+    }
+
+    this.systemService.state.deleteSystem(system.id);
+  }
+
+  
   cloneSystem(system: RankingSystem) {
     if (!this.copySystemTemplateRef) {
       return;
@@ -330,26 +340,5 @@ export class OverviewPageComponent {
           panelClass: 'success',
         });
       });
-  }
-
-  deleteSystem(system: RankingSystem) {
-    this.apollo
-      .mutate({
-        mutation: gql`
-          mutation RemoveRankingSystem($id: ID!) {
-            removeRankingSystem(id: $id)
-          }
-        `,
-        variables: {
-          id: system.id,
-        },
-        refetchQueries: [
-          {
-            query: FETCH_SYSTEMS,
-            variables: {},
-          },
-        ],
-      })
-      .subscribe();
   }
 }

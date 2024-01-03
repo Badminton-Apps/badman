@@ -5,27 +5,27 @@
       <mat-chip
         [matTooltip]="this.rankingSystem().calculationLastUpdate?.toLocaleDateString() ?? ''"
         >{{'all.ranking.last-update' | translate}}:
-        {{this.rankingSystem().calculationLastUpdate |amTimeAgo
-        }}</mat-chip
+        {{this.rankingSystem().calculationLastUpdate |amTimeAgo }}</mat-chip
       >
     </mat-chip-listbox>
   </div>
 
   <div actions>
-    <badman-has-claim [any]="['edit:ranking']">
-      <button mat-icon-button class="favorite" title="favorite">
-        <mat-icon>star_outline</mat-icon>
+    <button mat-icon-button class="favorite" title="favorite">
+      <mat-icon>star_outline</mat-icon>
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="watchSystem()">
+        <mat-icon>visibility</mat-icon>
+        {{ 'all.button.watch-system' | translate }}
       </button>
 
-      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item [routerLink]="'edit'">
-          <mat-icon>edit</mat-icon>
-          <span>Edit</span>
-        </button>
+      <badman-has-claim [any]="['change:job']">
         <button mat-menu-item (click)="this.openUploadDialog()">
           <mat-icon>upload</mat-icon>
           <span>upload</span>
@@ -34,8 +34,20 @@
           <mat-icon>sync</mat-icon>
           <span>Sync</span>
         </button>
-      </mat-menu>
-    </badman-has-claim>
+      </badman-has-claim>
+
+      <badman-has-claim [any]="['edit:ranking']">
+        <button mat-menu-item [routerLink]="[ 'edit']">
+          <mat-icon>edit</mat-icon>
+          {{ 'all.button.edit' | translate }}
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="deleteSystem()">
+          <mat-icon>delete</mat-icon>
+          {{ 'all.button.delete' | translate }}
+        </button>
+      </badman-has-claim>
+    </mat-menu>
   </div>
 </badman-page-header>
 

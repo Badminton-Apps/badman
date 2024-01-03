@@ -6,6 +6,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
@@ -21,6 +22,7 @@ import { MomentModule } from 'ngx-moment';
 import { take } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { UploadRankingDialogComponent } from '../../dialogs';
+import { RankingSystemService } from '@badman/frontend-graphql';
 
 @Component({
   templateUrl: './detail.page.html',
@@ -39,6 +41,7 @@ import { UploadRankingDialogComponent } from '../../dialogs';
     MatChipsModule,
     MatTooltipModule,
     MatDialogModule,
+    MatDividerModule,
 
     // My Componments
     PageHeaderComponent,
@@ -52,6 +55,7 @@ export class DetailPageComponent {
   private breadcrumbsService = inject(BreadcrumbService);
   private dialog = inject(MatDialog);
   private jobService = inject(JobsService);
+  systemService = inject(RankingSystemService);
 
   // route
   private routeData= toSignal(this.route.data);
@@ -84,5 +88,21 @@ export class DetailPageComponent {
 
   sync() {
     this.jobService.syncRanking().pipe(take(1)).subscribe();
+  }
+
+  watchSystem() {
+    if (!this.rankingSystem().id) {
+      console.warn('No system id');
+      return;
+    }
+    this.systemService.state.watchSystem(this.rankingSystem().id!);
+  }
+
+  deleteSystem() {
+    if (!this.rankingSystem().id) {
+      console.warn('No system id');
+      return;
+    }
+    this.systemService.state.deleteSystem(this.rankingSystem().id!);
   }
 }
