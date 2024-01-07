@@ -49,7 +49,7 @@ export class SyncRankingProcessor {
       return;
     }
 
-    cronJob.running = true;
+    cronJob.amount++;
     await cronJob.save();
 
     try {
@@ -67,7 +67,7 @@ export class SyncRankingProcessor {
       await transaction.rollback();
       throw error;
     } finally{
-      cronJob.running = false;
+      cronJob.amount--;
       cronJob.lastRun = new Date();
       await cronJob.save();
     }

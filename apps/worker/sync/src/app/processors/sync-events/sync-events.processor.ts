@@ -86,12 +86,7 @@ export class SyncEventsProcessor {
       throw new Error('Job not found');
     }
 
-    if (cronJob.running) {
-      this.logger.log('Job already running');
-      return;
-    }
-
-    cronJob.running = true;
+    cronJob.amount++;
     await cronJob.save();
 
     try {
@@ -240,7 +235,7 @@ export class SyncEventsProcessor {
 
       throw e;
     } finally {
-      cronJob.running = false;
+      cronJob.amount--;
       cronJob.lastRun = new Date();
       await cronJob.save();
     }
