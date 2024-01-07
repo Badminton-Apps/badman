@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.38](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.37...v6.129.0-beta.38) (2024-01-07)
+
+
+### Features
+
+* keeping track of running jobs / amount ([0231e45](https://github.com/Badminton-Apps/badman/commit/0231e4544cb87e448d937536a34212009d2f60df))
+
+
+### Bug Fixes
+
+* reset the jobs ([7bab6ab](https://github.com/Badminton-Apps/badman/commit/7bab6aba92415d4d3be19785941c994deea4d10d))
+* should fix status updates ([f4cafdd](https://github.com/Badminton-Apps/badman/commit/f4cafdd57b9d85824ff52931e64644b4bde5b862))
+
 ## [6.129.0-beta.37](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.36...v6.129.0-beta.37) (2024-01-03)
 
 
