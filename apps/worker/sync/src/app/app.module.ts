@@ -1,8 +1,8 @@
 import { TranslateModule } from '@badman/backend-translate';
-import { DatabaseModule, Service } from '@badman/backend-database';
+import { CronJob, DatabaseModule, Service } from '@badman/backend-database';
 import { LoggingModule } from '@badman/backend-logging';
 import { NotificationsModule } from '@badman/backend-notifications';
-import { QueueModule } from '@badman/backend-queue';
+import { QueueModule, SyncQueue } from '@badman/backend-queue';
 import { RankingModule } from '@badman/backend-ranking';
 import { VisualModule } from '@badman/backend-visual';
 import { SearchModule } from '@badman/backend-search';
@@ -72,5 +72,18 @@ export class WorkerSyncModule implements OnApplicationBootstrap {
     this.gateway.server.emit(EVENTS.SERVICE.SERVICE_STARTED, {
       id: service?.id,
     });
+
+    // Reset all jobs
+    const cronJob = await CronJob.findAll({
+      where: {
+        'meta.queueName': SyncQueue,
+      },
+    });
+
+    for (const job of cronJob) {
+      this.logger.log(`Starting cron job ${job.meta.jobName}`);
+      job.running = false;
+      job.save();
+    }
   }
 }

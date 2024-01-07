@@ -1,6 +1,6 @@
-import { DatabaseModule, Service } from '@badman/backend-database';
+import { CronJob, DatabaseModule, Service } from '@badman/backend-database';
 import { LoggingModule } from '@badman/backend-logging';
-import { QueueModule } from '@badman/backend-queue';
+import { QueueModule, RankingQueue } from '@badman/backend-queue';
 import { RankingModule } from '@badman/backend-ranking';
 import { EventsGateway, SocketModule } from '@badman/backend-websockets';
 import { EVENTS, configSchema, load } from '@badman/utils';
@@ -44,5 +44,18 @@ export class WorkerRankingModule implements OnApplicationBootstrap {
     this.gateway.server.emit(EVENTS.SERVICE.SERVICE_STARTED, {
       id: service?.id,
     });
+
+     // Reset all jobs
+     const cronJob = await CronJob.findAll({
+      where: {
+        'meta.queueName': RankingQueue,
+      },
+    });
+
+     for (const job of cronJob) {
+      this.logger.log(`Starting cron job ${job.meta.jobName}`);
+      job.running = false;
+      job.save();
+    }
   }
 }
