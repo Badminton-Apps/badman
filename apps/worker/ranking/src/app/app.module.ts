@@ -54,7 +54,7 @@ export class WorkerRankingModule implements OnApplicationBootstrap {
 
      for (const job of cronJob) {
       this.logger.log(`Starting cron job ${job.meta.jobName}`);
-      job.running = false;
+      job.amount = 0;
       job.save();
     }
   }

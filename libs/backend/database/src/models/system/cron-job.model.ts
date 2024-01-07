@@ -3,6 +3,7 @@ import {
   Field,
   ID,
   InputType,
+  Int,
   ObjectType,
   OmitType,
   PartialType,
@@ -64,8 +65,19 @@ export class CronJob extends Model {
 
   @Field(() => Boolean, { nullable: false })
   @Default(false)
-  @Column(DataType.BOOLEAN)
+  @Column({
+    type: DataType.VIRTUAL,
+    get(this: CronJob) {
+      const amount = this.getDataValue('amount');
+      return amount > 0;
+    }
+  })
   running?: boolean;
+
+  @Field(() => Int, { nullable: false })
+  @Default(0)
+  @Column(DataType.INTEGER)
+  amount?: number;
 }
 
 @InputType()

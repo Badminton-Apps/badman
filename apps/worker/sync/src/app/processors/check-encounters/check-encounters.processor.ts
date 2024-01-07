@@ -111,7 +111,7 @@ export class CheckEncounterProcessor {
       return;
     }
 
-    cronJob.running = true;
+    cronJob.amount++;
     await cronJob.save();
 
     try {
@@ -187,7 +187,7 @@ export class CheckEncounterProcessor {
         await browser.close();
       }
 
-      cronJob.running = false;
+      cronJob.amount++;
       cronJob.lastRun = new Date();
       await cronJob.save();
 
