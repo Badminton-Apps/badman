@@ -192,7 +192,6 @@ export class CheckEncounterProcessor {
       await cronJob.save();
 
       this.logger.log('Synced encounters');
-      
     }
 
     return true;
@@ -258,35 +257,61 @@ export class CheckEncounterProcessor {
         { page },
         { logger: this.logger },
       );
-
+      const enteredMoment = moment(enteredOn);
       const hoursPassed = moment().diff(encounter.date, 'hour');
+
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
       );
 
+      // not entered and passed 24 hours and no comment
       if (!entered && hoursPassed > 24 && !hasComment) {
         this.notificationService.notifyEncounterNotEntered(encounter);
-      } else if (!accepted && hoursPassed > 48 && !hasComment) {
-        // Check if we can auto accept
+      }
+      //
+      else if (!accepted && hoursPassed > 48 && !hasComment) {
+        // Check if it falls under the auto accept clubs
         if (
           encounter.away?.club?.slug &&
           this.autoAcceptClubs.includes(encounter.away.club.slug) &&
-          this.configService.get<boolean>('VR_ACCEPT_ENCOUNTERS')
+          this.configService.get<boolean>('VR_ACCEPT_ENCOUNTERS') &&
+          enteredMoment.isValid()
         ) {
-          this.logger.debug(
-            `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
-          );
+          let hoursPassedEntered = moment().diff(enteredMoment, 'hour');
 
-          const succesfull = await acceptEncounter(
-            { page },
-            { logger: this.logger },
+          // was entered on time
+          const enteredOnTime = enteredMoment.isSameOrBefore(
+            moment(encounter.date).add(36, 'hour'),
           );
-          if (!succesfull) {
-            // we failed to accept the encounter for some reason, notify the user
-            this.logger.warn(
-              `Could not auto accept encounter ${encounter.visualCode}`,
+          if (!enteredOnTime) {
+            // if entered late we give it 36 hours to comment after the encounter was filled in
+            hoursPassedEntered = moment().diff(
+              enteredMoment.clone().add(36, 'hour'),
+              'hour',
             );
-            this.notificationService.notifyEncounterNotAccepted(encounter);
+          }
+
+          // Check if anough time has passed for auto accepting
+          if (hoursPassedEntered > 36) {
+            this.logger.debug(
+              `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
+            );
+
+            const succesfull = await acceptEncounter(
+              { page },
+              { logger: this.logger },
+            );
+            if (!succesfull) {
+              // we failed to accept the encounter for some reason, notify the user
+              this.logger.warn(
+                `Could not auto accept encounter ${encounter.visualCode}`,
+              );
+              this.notificationService.notifyEncounterNotAccepted(encounter);
+            }
+          } else {
+            this.logger.debug(
+              `Not (yet) auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}, entered on ${enteredOn} (${hoursPassedEntered} hours ago))`,
+            );
           }
         } else {
           this.notificationService.notifyEncounterNotAccepted(encounter);
@@ -295,8 +320,6 @@ export class CheckEncounterProcessor {
 
       // Update our local data
       if (entered) {
-        const enteredMoment = moment(enteredOn);
-
         if (!enteredMoment.isValid()) {
           this.logger.error(
             `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`,
