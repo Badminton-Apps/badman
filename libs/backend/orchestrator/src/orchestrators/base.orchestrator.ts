@@ -1,14 +1,14 @@
 import { Service } from '@badman/backend-database';
 import { EventsGateway } from '@badman/backend-websockets';
 import { ConfigType, EVENTS } from '@badman/utils';
-import { Logger } from '@nestjs/common';
+import { Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron } from '@nestjs/schedule';
 import { Queue } from 'bull';
 import { Services } from '../services';
 import { RenderService } from '../services/render.service';
 
-export class OrchestratorBase {
+export class OrchestratorBase implements OnModuleInit {
   protected logger = new Logger(OrchestratorBase.name);
   private hasStarted = false;
   private timeoutTime = 1000 * 60 * 5; // 5 minutes
@@ -27,12 +27,16 @@ export class OrchestratorBase {
     if (configuredTimeout) {
       this.timeoutTime = parseInt(configuredTimeout);
     }
+  }
 
-    this._updateStatuses().then(() => {
-      this.logger.debug(
-        `[${this.serviceName}] Updated status to ${this.hasStarted ? 'started' : 'stopped'}`,
-      );
-    });
+  async onModuleInit() {
+    await this._updateStatuses();
+    
+    this.logger.debug(
+      `[${this.serviceName}] Updated status to ${
+        this.hasStarted ? 'started' : 'stopped'
+      }`,
+    );
   }
 
   @Cron('*/1 * * * *')
@@ -80,16 +84,18 @@ export class OrchestratorBase {
 
   private async _updateStatuses() {
     const service = await this._getService();
-    if (!service.renderId){
-      this.logger.log(`[${this.serviceName}] No render id found, skipping status update`);
-      return; 
-    } 
+    if (!service.renderId) {
+      this.logger.log(
+        `[${this.serviceName}] No render id found, skipping status update`,
+      );
+      return;
+    }
     const render = await this.renderService.getService(service);
 
     if (render.suspended === 'suspended') {
       service.status = 'stopped';
       this.gateway.server?.emit(EVENTS.SERVICE.SERVICE_STOPPED, {
-        id: service.id, 
+        id: service.id,
         service: this.serviceName,
       });
     } else {

@@ -2,6 +2,12 @@ import { defineConfig } from '@playwright/test';
 import { nxE2EPreset } from '@nx/playwright/preset';
 
 import { workspaceRoot } from '@nx/devkit';
+import dotenv from 'dotenv';
+
+dotenv.config({
+  path: `.env.playwright`,
+  override: true,
+});
 
 // For CI, you may want to set BASE_URL to the deployed application.
 const baseURL = process.env['BASE_URL'] || 'http://localhost:3000';
@@ -41,11 +47,5 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
     timeout: 120_000,
-    env: {
-      DB_STORAGE: ':memory:',
-      DB_DIALECT: 'sqlite',
-      NODE_ENV: 'test',
-      PORT: '5000',
-    },
   },
 });

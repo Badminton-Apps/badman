@@ -726,6 +726,7 @@ export type I18nTranslations = {
                 "ranking-date": string;
                 "remove-current-ranking": string;
                 "title": string;
+                "update-possible": string;
                 "update-ranking": string;
             };
         };
