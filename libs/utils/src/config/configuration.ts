@@ -38,7 +38,7 @@ export const configSchema = Joi.object({
   }),
   DB_SSL: Joi.string().optional(),
 
-  DB_CACHE: Joi.boolean().optional(),
+  DB_CACHE: Joi.boolean().default(false),
   DB_CACHE_PREFIX: Joi.string().optional(),
   DB_LOGGING: Joi.boolean().optional(),
   REDIS_DATABASE: Joi.number().integer().optional(),
@@ -53,7 +53,11 @@ export const configSchema = Joi.object({
     otherwise: Joi.number().integer().min(1).max(65535).optional(),
   }),
 
-  QUEUE_DB: Joi.number().integer().required(),
+  QUEUE_DB: Joi.when('DB_CACHE', {
+    is: true,
+    then: Joi.number().integer().required(),
+    otherwise: Joi.number().integer().optional(),
+  }),
 
   CLIENT_URL: Joi.string().uri().required(),
 
@@ -62,7 +66,7 @@ export const configSchema = Joi.object({
   AUTH0_ISSUER_URL: Joi.string().uri().required(),
   AUTH0_AUDIENCE: Joi.string().required(),
 
-  MAIL_ENABLED: Joi.boolean().required(),
+  MAIL_ENABLED: Joi.boolean().default(false),
   MAIL_PASS: Joi.when('MAIL_ENABLED', {
     is: true,
     then: Joi.string().required(),
@@ -88,7 +92,7 @@ export const configSchema = Joi.object({
     otherwise: Joi.string().optional(),
   }),
 
-  PUSH_ENABLED: Joi.boolean().required(),
+  PUSH_ENABLED: Joi.boolean().default(false),
   VAPID_PRIVATE_KEY: Joi.when('PUSH_ENABLED', {
     is: true,
     then: Joi.string().required(),
@@ -105,8 +109,8 @@ export const configSchema = Joi.object({
   VR_ACCEPT_ENCOUNTERS: Joi.boolean().optional(),
 
   VR_API: Joi.string().uri().required(),
-  VR_API_USER: Joi.string().required(),
-  VR_API_PASS: Joi.string().required(),
+  VR_API_USER: Joi.string().optional(),
+  VR_API_PASS: Joi.string().optional(),
 
   CP_PASS: Joi.string().optional(),
 
@@ -130,7 +134,7 @@ export const configSchema = Joi.object({
 
   VERCEL_ANALYTICS_ID: Joi.string(),
 
-  GRAPH_ID: Joi.string().required(),
+  GRAPH_ID: Joi.string().optional(),
 
   RENDER_API_KEY: Joi.string().required(),
   RENDER_API_URL: Joi.string().uri().required(),

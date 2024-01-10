@@ -16,6 +16,7 @@ export class UpdateRankingService {
       updateCompStatus?: boolean | string;
       removeAllRanking?: boolean | string;
       updateRanking?: boolean | string;
+      updatePossible?: boolean | string;
       createNewPlayers?: boolean | string;
       rankingDate?: Date;
       rankingSystemId?: string;
@@ -23,6 +24,7 @@ export class UpdateRankingService {
       updateCompStatus: false,
       removeAllRanking: false,
       updateRanking: false,
+      updatePossible: false,
       createNewPlayers: false,
     },
   ) {
@@ -261,6 +263,7 @@ export class UpdateRankingService {
             place.doublePoints = d.doublesPoints || place.doublePoints;
             place.mix = d.mixed || place.mix;
             place.mixPoints = d.mixedPoints || place.mixPoints;
+            place.updatePossible = `${options.updatePossible}` == 'true'; 
 
             if (place.changed() != false) {
               this._logger.verbose(
