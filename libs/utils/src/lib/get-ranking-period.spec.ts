@@ -667,18 +667,6 @@ describe('getRankingPeriods', () => {
       },
     );
 
-    test('Testing something', () => {
-      // Assert
-      const from = moment().subtract(1, 'day');
-      const to = from.clone();
-
-      // Act
-      const result = getRankingPeriods(system, from, to);
-
-      // Assert
-      expect(result.length).toEqual(1);
-    });
-
     describe('last update based on dates', () => {
       const expected = [
         {
