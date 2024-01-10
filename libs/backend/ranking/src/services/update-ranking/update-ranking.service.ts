@@ -13,11 +13,11 @@ export class UpdateRankingService {
   async processFileUpload(
     data: MembersRolePerGroupData[],
     options: {
-      updateCompStatus?: boolean | string;
-      removeAllRanking?: boolean | string;
-      updateRanking?: boolean | string;
-      updatePossible?: boolean | string;
-      createNewPlayers?: boolean | string;
+      updateCompStatus?: boolean;
+      removeAllRanking?: boolean;
+      updateRanking?: boolean;
+      updatePossible?: boolean;
+      createNewPlayers?: boolean;
       rankingDate?: Date;
       rankingSystemId?: string;
     } = {
@@ -148,10 +148,7 @@ export class UpdateRankingService {
       this._logger.debug(
         `Update competition status: ${options.updateCompStatus}`,
       );
-      if (
-        options.updateCompStatus == true ||
-        options.updateCompStatus == 'true'
-      ) {
+      if (options.updateCompStatus) {
         const memberIdsComp = data
           ?.filter((p) => p.role === 'Competitiespeler')
           ?.map((d) => d.memberId);
@@ -192,10 +189,7 @@ export class UpdateRankingService {
 
       // Remove all ranking
       this._logger.debug(`Remove all ranking: ${options.removeAllRanking}`);
-      if (
-        options.removeAllRanking == true ||
-        options.removeAllRanking == 'true'
-      ) {
+      if (options.removeAllRanking) {
         await RankingPlace.destroy({
           where: {
             playerId: distinctPlayers.map((p) => p.id) ?? [],
@@ -209,7 +203,7 @@ export class UpdateRankingService {
       // Update ranking
       this._logger.debug(`Update ranking: ${options.updateRanking}`);
 
-      if (options.updateRanking == true || options.updateRanking == 'true') {
+      if (options.updateRanking) {
         const distinctPlayersChunks = this.chunkArray(distinctPlayers, 100);
 
         for (const chunk of distinctPlayersChunks) {
@@ -263,7 +257,7 @@ export class UpdateRankingService {
             place.doublePoints = d.doublesPoints || place.doublePoints;
             place.mix = d.mixed || place.mix;
             place.mixPoints = d.mixedPoints || place.mixPoints;
-            place.updatePossible = `${options.updatePossible}` == 'true';
+            place.updatePossible = options.updatePossible;
 
             if (place.changed() != false) {
               this._logger.verbose(
@@ -283,6 +277,7 @@ export class UpdateRankingService {
               'singlePoints',
               'doublePoints',
               'mixPoints',
+              'updatePossible',
             ],
             transaction,
           });
