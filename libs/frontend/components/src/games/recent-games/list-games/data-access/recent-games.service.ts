@@ -114,138 +114,139 @@ export class RecentGamesService {
       return [];
     }
 
-    return this.systemService.getPrimarySystemId().pipe(
-      switchMap((systemId) =>
-        this.apollo.query<{
-          player: {
-            games: Partial<Game>[];
-          };
-        }>({
-          query: gql`
-            query GamesPage_${this.page()}_${(filter.choices ?? [])?.join('_')}(
-              $id: ID!
-              $where: JSONObject
-              $whereRanking: JSONObject
-              $take: Int
-              $skip: Int
-              $order: [SortOrderType!]
-            ) {
-              player(id: $id) {
+    return this.apollo
+      .query<{
+        player: {
+          games: Partial<Game>[];
+        };
+      }>({
+        query: gql`
+        query GamesPage_${this.page()}_${(filter.choices ?? [])?.join('_')}(
+          $id: ID!
+          $where: JSONObject
+          $whereRanking: JSONObject
+          $take: Int
+          $skip: Int
+          $order: [SortOrderType!]
+        ) {
+          player(id: $id) {
+            id
+            games(where: $where, order: $order, take: $take, skip: $skip) {
+              id
+              playedAt
+              gameType
+              winner
+              players {
                 id
-                games(where: $where, order: $order, take: $take, skip: $skip) {
+                slug
+                fullName
+                team
+                player
+                single
+                double
+                mix
+              }
+              rankingPoints(where: $whereRanking) {
+                id
+                differenceInLevel
+                points
+                playerId
+                system {
                   id
-                  playedAt
-                  gameType
-                  winner
-                  players {
-                    id
-                    slug
-                    fullName
-                    team
-                    player
-                    single
-                    double
-                    mix
-                  }
-                  rankingPoints(where: $whereRanking) {
-                    id
-                    differenceInLevel
-                    points
-                    playerId
-                    system {
-                      id
-                      differenceForDowngradeSingle
-                      differenceForDowngradeDouble
-                      differenceForDowngradeMix
-                      differenceForUpgradeSingle
-                      differenceForUpgradeDouble
-                      differenceForUpgradeMix
-                    }
-                  }
-                  set1Team1
-                  set1Team2
-                  set2Team1
-                  set2Team2
-                  set3Team1
-                  set3Team2
-                  order
-                  competition {
-                    id
-                    drawCompetition {
-                      name
-                      id
-                      subEventCompetition {
-                        id
-                        name
-                        eventId
-                      }
-                    }
-
-                    home {
-                      id
-                      name
-                    }
-
-                    away {
-                      id
-                      name
-                    }
-                  }
-                  tournament {
-                    name
-                    subEventTournament {
-                      name
-                      id
-                      eventTournament {
-                        id
-                        name
-                      }
-                    }
-                    id
-                  }
+                  differenceForDowngradeSingle
+                  differenceForDowngradeDouble
+                  differenceForDowngradeMix
+                  differenceForUpgradeSingle
+                  differenceForUpgradeDouble
+                  differenceForUpgradeMix
                 }
               }
+              set1Team1
+              set1Team2
+              set2Team1
+              set2Team2
+              set3Team1
+              set3Team2
+              order
+              competition {
+                id
+                drawCompetition {
+                  name
+                  id
+                  subEventCompetition {
+                    id
+                    name
+                    eventId
+                  }
+                }
+
+                home {
+                  id
+                  name
+                }
+
+                away {
+                  id
+                  name
+                }
+              }
+              tournament {
+                name
+                subEventTournament {
+                  name
+                  id
+                  eventTournament {
+                    id
+                    name
+                  }
+                }
+                id
+              }
             }
-          `,
-          variables: {
-            id: filter.playerId,
-            where: {
-              playedAt: {
-                $lte: moment().format('YYYY-MM-DD'),
-              },
-              gameType: {
-                $in: filter?.choices ?? ['S', 'D', 'MX'],
-              },
+          }
+        }
+      `,
+        variables: {
+          id: filter.playerId,
+          where: {
+            playedAt: {
+              $lte: moment().format('YYYY-MM-DD'),
             },
-            whereRanking: {
-              systemId: systemId,
+            gameType: {
+              $in: filter?.choices ?? ['S', 'D', 'MX'],
             },
-            order: [
-              {
-                direction: 'desc',
-                field: 'playedAt',
-              },
-              {
-                direction: 'desc',
-                field: 'id',
-              },
-            ],
-            skip: (this.page() - 1) * this.gamesPerPage, // Skip the previous pages
-            take: this.gamesPerPage, // Load only the current page
           },
+          whereRanking: {
+            systemId: this.systemService.systemId(),
+          },
+          order: [
+            {
+              direction: 'desc',
+              field: 'playedAt',
+            },
+            {
+              direction: 'desc',
+              field: 'id',
+            },
+          ],
+          skip: (this.page() - 1) * this.gamesPerPage, // Skip the previous pages
+          take: this.gamesPerPage, // Load only the current page
+        },
+      })
+      .pipe(
+        catchError((err) => {
+          this.handleError(err);
+          return EMPTY;
         }),
-      ),
-      catchError((err) => {
-        this.handleError(err);
-        return EMPTY;
-      }),
-      map((result) => {
-        return result?.data.player?.games?.map((game) => new Game(game)) ?? [];
-      }),
-      map((games) => ({
-        games,
-      })),
-    );
+        map((result) => {
+          return (
+            result?.data.player?.games?.map((game) => new Game(game)) ?? []
+          );
+        }),
+        map((games) => ({
+          games,
+        })),
+      );
   }
 
   private handleError(err: HttpErrorResponse) {

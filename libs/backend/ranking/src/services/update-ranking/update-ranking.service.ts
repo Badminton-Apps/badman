@@ -13,16 +13,18 @@ export class UpdateRankingService {
   async processFileUpload(
     data: MembersRolePerGroupData[],
     options: {
-      updateCompStatus?: boolean | string;
-      removeAllRanking?: boolean | string;
-      updateRanking?: boolean | string;
-      createNewPlayers?: boolean | string;
+      updateCompStatus?: boolean;
+      removeAllRanking?: boolean;
+      updateRanking?: boolean;
+      updatePossible?: boolean;
+      createNewPlayers?: boolean;
       rankingDate?: Date;
       rankingSystemId?: string;
-    } = { 
+    } = {
       updateCompStatus: false,
       removeAllRanking: false,
       updateRanking: false,
+      updatePossible: false,
       createNewPlayers: false,
     },
   ) {
@@ -33,6 +35,9 @@ export class UpdateRankingService {
     } else if (!data || data.length == 0) {
       throw new Error('No data to process');
     }
+
+    // ranking date should be the start of the day
+    options.rankingDate = moment(options.rankingDate).startOf('day').toDate();
 
     // Filter out douplicates and keep the lowest value (best)
     data = data.reduce((acc, member) => {
@@ -120,6 +125,7 @@ export class UpdateRankingService {
                 memberId: newp.memberId,
                 firstName: newp.firstName,
                 lastName: newp.lastName,
+                gender: newp.gender == 'M' ? 'M' : 'F',
               } as Partial<Player>;
             }),
             { transaction },
@@ -142,10 +148,7 @@ export class UpdateRankingService {
       this._logger.debug(
         `Update competition status: ${options.updateCompStatus}`,
       );
-      if (
-        options.updateCompStatus == true ||
-        options.updateCompStatus == 'true'
-      ) {
+      if (options.updateCompStatus) {
         const memberIdsComp = data
           ?.filter((p) => p.role === 'Competitiespeler')
           ?.map((d) => d.memberId);
@@ -186,10 +189,7 @@ export class UpdateRankingService {
 
       // Remove all ranking
       this._logger.debug(`Remove all ranking: ${options.removeAllRanking}`);
-      if (
-        options.removeAllRanking == true ||
-        options.removeAllRanking == 'true'
-      ) {
+      if (options.removeAllRanking) {
         await RankingPlace.destroy({
           where: {
             playerId: distinctPlayers.map((p) => p.id) ?? [],
@@ -203,7 +203,7 @@ export class UpdateRankingService {
       // Update ranking
       this._logger.debug(`Update ranking: ${options.updateRanking}`);
 
-      if (options.updateRanking == true || options.updateRanking == 'true') {
+      if (options.updateRanking) {
         const distinctPlayersChunks = this.chunkArray(distinctPlayers, 100);
 
         for (const chunk of distinctPlayersChunks) {
@@ -257,6 +257,7 @@ export class UpdateRankingService {
             place.doublePoints = d.doublesPoints || place.doublePoints;
             place.mix = d.mixed || place.mix;
             place.mixPoints = d.mixedPoints || place.mixPoints;
+            place.updatePossible = options.updatePossible;
 
             if (place.changed() != false) {
               this._logger.verbose(
@@ -276,10 +277,23 @@ export class UpdateRankingService {
               'singlePoints',
               'doublePoints',
               'mixPoints',
+              'updatePossible',
             ],
             transaction,
           });
         }
+      }
+
+      // update player gender
+      for (const d of data) {
+        const player = distinctPlayers.find((p) => p.memberId === d.memberId);
+        if (!player) {
+          continue;
+        }
+
+        player.gender = d.gender == 'M' ? 'M' : 'F';
+
+        await player.save({ transaction });
       }
 
       this._logger.debug('Commit transaction');
@@ -293,7 +307,7 @@ export class UpdateRankingService {
   }
 
   private chunkArray<T>(data: T[], chunkSize = 100) {
-    const chunks = [];
+    const chunks = [] as T[][];
     for (let i = 0; i < data.length; i += chunkSize) {
       chunks.push(data.slice(i, i + chunkSize));
     }
@@ -336,6 +350,7 @@ export interface MembersRolePerGroupData {
   firstName: string;
   lastName: string;
   role: string;
+  gender: 'M' | 'V';
   single: number;
   singlePoints: number;
   doubles: number;

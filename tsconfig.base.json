@@ -7,16 +7,18 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "esModuleInterop": true,
     "importHelpers": true,
+    "esModuleInterop": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "*": ["./types/*"],
       "@badman/backend-assembly": [
         "libs/backend/competition/assembly/src/index.ts"
       ],
@@ -39,6 +41,9 @@
       "@badman/backend-notifications": [
         "libs/backend/notifications/src/index.ts"
       ],
+      "@badman/backend-orchestrator": [
+        "libs/backend/orchestrator/src/index.ts"
+      ],
       "@badman/backend-pupeteer": ["libs/backend/pupeteer/src/index.ts"],
       "@badman/backend-queue": ["libs/backend/queue/src/index.ts"],
       "@badman/backend-ranking": ["libs/backend/ranking/src/index.ts"],
@@ -46,6 +51,7 @@
       "@badman/backend-translate": ["libs/backend/translate/src/index.ts"],
       "@badman/backend-twizzit": ["libs/backend/twizzit/src/index.ts"],
       "@badman/backend-visual": ["libs/backend/visual/src/index.ts"],
+      "@badman/backend-websockets": ["libs/backend/websockets/src/index.ts"],
       "@badman/backend/comp-tet": ["libs/backend/comp-tet/src/index.ts"],
       "@badman/belgium-flanders-games": [
         "libs/backend/belgium/flanders/games/src/index.ts"
@@ -74,13 +80,14 @@
       "@badman/frontend-html-injects": [
         "libs/frontend/modules/html-injects/src/index.ts"
       ],
-      "@badman/frontend-jobs": ["libs/frontend/modules/jobs/src/index.ts"],
+      "@badman/frontend-jobs": ["libs/frontend/pages/job/src/index.ts"],
       "@badman/frontend-models": ["libs/frontend/models/src/index.ts"],
       "@badman/frontend-notifications": [
         "libs/frontend/pages/notifications/src/index.ts"
       ],
       "@badman/frontend-pdf": ["libs/frontend/modules/pdf/src/index.ts"],
       "@badman/frontend-player": ["libs/frontend/pages/player/src/index.ts"],
+      "@badman/frontend-queue": ["libs/frontend/modules/queue/src/index.ts"],
       "@badman/frontend-ranking": ["libs/frontend/pages/ranking/src/index.ts"],
       "@badman/frontend-role": ["libs/frontend/pages/role/src/index.ts"],
       "@badman/frontend-seo": ["libs/frontend/modules/seo/src/index.ts"],
@@ -104,8 +111,6 @@
       "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],
       "@badman/utils": ["libs/utils/src/index.ts"]
     },
-    "strictNullChecks": true,
-    "strict": true
   },
   "exclude": ["node_modules", "tmp"]
 }

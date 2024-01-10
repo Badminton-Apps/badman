@@ -20,7 +20,7 @@
           "tsConfig": "libs/frontend/modules/twizzit/tsconfig.lib.json"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -31,13 +31,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "libs/frontend/modules/twizzit/**/*.ts",
-          "libs/frontend/modules/twizzit/**/*.html"
-        ]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

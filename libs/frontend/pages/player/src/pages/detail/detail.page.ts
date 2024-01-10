@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  Injector,
   PLATFORM_ID,
   TransferState,
   computed,
   effect,
   inject,
-  signal
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -16,7 +17,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import {
@@ -27,16 +27,16 @@ import {
   RecentGamesComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { RankingSystemService } from '@badman/frontend-graphql';
-import { Game, Player, RankingPlace, Team } from '@badman/frontend-models';
+import { Game, Player, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable, combineLatest, iif, lastValueFrom, of } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { Observable, combineLatest, lastValueFrom, of } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { ShowLevelComponent } from './components/show-level.component';
 @Component({
   selector: 'badman-player-detail',
   templateUrl: './detail.page.html',
@@ -53,7 +53,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatButtonModule,
     MatMenuModule,
     MatChipsModule,
-    MatTooltipModule,
     MatDialogModule,
 
     // My Componments
@@ -61,6 +60,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
+    ShowLevelComponent,
   ],
 })
 export class DetailPageComponent {
@@ -77,8 +77,8 @@ export class DetailPageComponent {
   private translate = inject(TranslateService);
   private claim = inject(ClaimService);
   private auth = inject(AuthenticateService);
-  private systemService = inject(RankingSystemService);
   private destroy$ = injectDestroy();
+  private injector = inject(Injector);
 
   // route
   private queryParams = toSignal(this.route.queryParamMap);
@@ -86,54 +86,41 @@ export class DetailPageComponent {
   private routeData = toSignal(this.route.data);
 
   player = computed(() => this.routeData()?.['player'] as Player);
+  playerId = computed(() => this.player()?.id as string);
   club = computed(() => this.player().clubs?.[0]);
 
   initials?: string;
 
   teams = signal<Team[]>([]);
-  rankingPlace = signal<RankingPlace>({});
-
-  tooltip = {
-    single: '',
-    double: '',
-    mix: '',
-  };
 
   hasMenu$?: Observable<boolean>;
   canClaim$?: Observable<boolean>;
 
   constructor() {
-    effect(() => {
-      this._loadTeamsForPlayer();
-      this._loadRankingForPlayer();
+    effect(
+      () => {
+        this._loadTeamsForPlayer();
 
-      this.seoService.update({
-        title: `${this.player().fullName}`,
-        description: `Player ${this.player().fullName}`,
-        type: 'website',
-        keywords: ['player', 'badminton'],
-      });
-      this.breadcrumbService.set('player/:id', this.player().fullName);
+        this.seoService.update({
+          title: `${this.player().fullName}`,
+          description: `Player ${this.player().fullName}`,
+          type: 'website',
+          keywords: ['player', 'badminton'],
+        });
+        this.breadcrumbService.set('player/:id', this.player().fullName);
 
-      const lastNames = `${this.player().lastName}`.split(' ');
-      if ((lastNames ?? []).length > 0) {
-        this.initials = `${this.player().firstName?.[0]}${lastNames?.[
-          lastNames.length - 1
-        ][0]}`.toUpperCase();
-      }
-    });
-
-    combineLatest([
-      this.translate.get('all.ranking.single'),
-      this.translate.get('all.ranking.double'),
-      this.translate.get('all.ranking.mix'),
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([single, double, mix]) => {
-        this.tooltip.single = single;
-        this.tooltip.double = double;
-        this.tooltip.mix = mix;
-      });
+        const lastNames = `${this.player().lastName}`.split(' ');
+        if ((lastNames ?? []).length > 0) {
+          this.initials = `${this.player().firstName?.[0]}${lastNames?.[
+            lastNames.length - 1
+          ][0]}`.toUpperCase();
+        }
+      },
+      {
+        allowSignalWrites: true,
+        injector: this.injector,
+      },
+    );
 
     this.hasMenu$ = combineLatest([
       this.auth.loggedIn$ ?? of(false),
@@ -224,86 +211,6 @@ export class DetailPageComponent {
       duration: 5000,
     });
     window.location.reload();
-  }
-
-  private _loadRankingForPlayer() {
-    this.systemService
-      .getPrimarySystemId()
-      .pipe(
-        switchMap((systemId) => {
-          const rankingPlace = this.player()?.rankingLastPlaces?.find(
-            (r) => r.systemId === systemId,
-          );
-
-          return iif(
-            () => rankingPlace !== undefined,
-            this.apollo
-              .query<{
-                player: { rankingLastPlaces: Partial<RankingPlace>[] };
-              }>({
-                query: gql`
-                  query LastRankingPlace($playerId: ID!, $systemId: ID!) {
-                    player(id: $playerId) {
-                      id
-                      rankingLastPlaces(where: { systemId: $systemId }) {
-                        id
-                        single
-                        singlePoints
-                        double
-                        doublePoints
-                        mix
-                        mixPoints
-                        systemId
-                      }
-                    }
-                  }
-                `,
-                variables: {
-                  playerId: this.player().id,
-                  systemId,
-                },
-              })
-              .pipe(
-                map((result) => {
-                  if (
-                    (result?.data?.player?.rankingLastPlaces ?? []).length > 0
-                  ) {
-                    const findPrimary =
-                      result?.data.player.rankingLastPlaces.find(
-                        (r) => r.systemId === systemId,
-                      );
-
-                    if (findPrimary) {
-                      return new RankingPlace(findPrimary);
-                    }
-
-                    return new RankingPlace(
-                      result?.data.player.rankingLastPlaces[0],
-                    );
-                  }
-                  return undefined;
-                }),
-              ),
-            of(rankingPlace),
-          );
-        }),
-        takeUntil(this.destroy$),
-        transferState(
-          `rankingPlayer-${this.player().id}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
-      )
-      .subscribe((rankingPlace) => {
-        this.rankingPlace.set(
-          rankingPlace ??
-            ({
-              single: 12,
-              double: 12,
-              mix: 12,
-            } as RankingPlace),
-        );
-      });
   }
 
   removePlayer() {

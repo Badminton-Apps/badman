@@ -23,6 +23,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
@@ -38,7 +39,16 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs';
+import {
+  catchError,
+  filter,
+  map,
+  of,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 const FETCH_SYSTEMS = gql`
   query GetSystemsQuery($order: [SortOrderType!], $skip: Int, $take: Int) {
@@ -46,6 +56,7 @@ const FETCH_SYSTEMS = gql`
       id
       primary
       runCurrently
+      calculateUpdates
       name
       procentWinning
       procentLosing
@@ -81,6 +92,7 @@ const FETCH_SYSTEMS = gql`
     MatDividerModule,
     MatSlideToggleModule,
     MatDatepickerModule,
+    MatSelectModule,
 
     // Own Module
     PageHeaderComponent,
@@ -101,6 +113,9 @@ export class OverviewPageComponent {
   systems = signal<RankingSystem[]>([]);
   loading = signal(true);
 
+  copyingSystem = signal(false);
+  copyingPoints = signal(false);
+
   displayedColumns: string[] = [
     'running',
     'primary',
@@ -108,6 +123,7 @@ export class OverviewPageComponent {
     'procentWinning',
     'procentLosing',
     'latestXGamesToUse',
+    'calculateUpdates',
     'options',
   ];
   filter = new FormGroup({});
@@ -118,6 +134,14 @@ export class OverviewPageComponent {
     end: new FormControl<Date | null>(new Date()),
   });
   showDatePicker = true;
+
+  @ViewChild('copyPoints')
+  copyPointsTemplateRef?: TemplateRef<HTMLElement>;
+  copyPointsFormGroup = new FormGroup({
+    source: new FormControl<string | null>(null),
+    start: new FormControl<Date | null>(new Date('2020-09-01')),
+    end: new FormControl<Date | null>(new Date()),
+  });
 
   constructor() {
     effect(() => {
@@ -168,9 +192,25 @@ export class OverviewPageComponent {
   }
 
   watchSystem(system: RankingSystem) {
-    this.systemService.watchSystem(system);
+    if (!system.id) {
+      console.warn('No system id');
+      return;
+    }
+
+    this.systemService.state.watchSystem(system.id);
   }
 
+
+  deleteSystem(system: RankingSystem) {
+    if (!system.id) {
+      console.warn('No system id');
+      return;
+    }
+
+    this.systemService.state.deleteSystem(system.id);
+  }
+
+  
   cloneSystem(system: RankingSystem) {
     if (!this.copySystemTemplateRef) {
       return;
@@ -182,6 +222,7 @@ export class OverviewPageComponent {
       .pipe(
         filter((result) => !!result),
         switchMap(() => {
+          this.copyingSystem.set(true);
           return this.apollo.mutate({
             mutation: gql`
               mutation CopyRankingSystem(
@@ -215,8 +256,20 @@ export class OverviewPageComponent {
             ],
           });
         }),
+
+        catchError((err) => {
+          this.snackBar.open(err.message, undefined, {
+            duration: 1000,
+            panelClass: 'error',
+          });
+          return of(null);
+        }),
       )
-      .subscribe(() => {
+      .subscribe((result) => {
+        this.copyingSystem.set(false);
+        if (!result) {
+          return;
+        }
         this.snackBar.open('System copied', undefined, {
           duration: 1000,
           panelClass: 'success',
@@ -224,24 +277,68 @@ export class OverviewPageComponent {
       });
   }
 
-  deleteSystem(system: RankingSystem) {
-    this.apollo
-      .mutate({
-        mutation: gql`
-          mutation RemoveRankingSystem($id: ID!) {
-            removeRankingSystem(id: $id)
-          }
-        `,
-        variables: {
-          id: system.id,
-        },
-        refetchQueries: [
-          {
-            query: FETCH_SYSTEMS,
-            variables: {},
-          },
-        ],
-      })
-      .subscribe();
+  clonePoints(system: RankingSystem) {
+    if (!this.copyPointsTemplateRef) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(this.copyPointsTemplateRef);
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((result) => !!result),
+        switchMap(() => {
+          this.copyingPoints.set(true);
+          return this.apollo.mutate({
+            mutation: gql`
+              mutation CopyPlacesPoints(
+                $source: ID!
+                $destination: ID!
+                $copyFromStartDate: DateTime
+                $copyToEndDate: DateTime
+              ) {
+                copyPlacesPoints(
+                  source: $source
+                  destination: $destination
+                  copyFromStartDate: $copyFromStartDate
+                  copyToEndDate: $copyToEndDate
+                ) {
+                  id
+                }
+              }
+            `,
+            variables: {
+              source: this.copyPointsFormGroup.value.source,
+              destination: system.id,
+              copyFromStartDate: this.copyPointsFormGroup.value.start,
+              copyToEndDate: this.copyPointsFormGroup.value.end,
+            },
+
+            refetchQueries: [
+              {
+                query: FETCH_SYSTEMS,
+                variables: {},
+              },
+            ],
+          });
+        }),
+        catchError((err) => {
+          this.snackBar.open(err.message, undefined, {
+            duration: 1000,
+            panelClass: 'error',
+          });
+          return of(null);
+        }),
+      )
+      .subscribe((result) => {
+        this.copyingPoints.set(false);
+        if (!result) {
+          return;
+        }
+        this.snackBar.open('System copied', undefined, {
+          duration: 1000,
+          panelClass: 'success',
+        });
+      });
   }
 }

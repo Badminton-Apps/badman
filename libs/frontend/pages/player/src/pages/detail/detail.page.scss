@@ -19,6 +19,17 @@
   }
 }
 
+.levels{
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  badman-show-level{
+    cursor: pointer;
+  }
+}
+
 .sub-text a {
   text-decoration: none;
 }

@@ -7,7 +7,7 @@
     "build": {
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "development",
+      "defaultConfiguration": "production",
       "options": {
         "target": "node",
         "compiler": "tsc",
@@ -58,10 +58,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/worker/sync/**/*.ts"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",

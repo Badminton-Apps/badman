@@ -7,6 +7,7 @@ import axios from 'axios';
 import { XMLParser } from 'fast-xml-parser';
 import moment from 'moment-timezone';
 import { Job } from 'bull';
+import { ConfigType } from '@badman/utils';
 
 @Processor({
   name: SyncQueue,
@@ -15,7 +16,7 @@ export class SyncDateProcessor {
   private readonly logger = new Logger(SyncDateProcessor.name);
   private visualFormat = 'YYYY-MM-DDTHH:mm:ss';
 
-  constructor(private configService: ConfigService) {
+  constructor(private configService: ConfigService<ConfigType>) {
     this.logger.debug('SyncDateConsumer');
   }
 

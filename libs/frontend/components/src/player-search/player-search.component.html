@@ -22,23 +22,45 @@
       class="badman-search-player-panel"
       [classList]="['badman-search-player-panel']"
     >
-      <ng-container *ngIf="this.filteredOptions$ | async as options">
+      @for (option of options; track option.id) {
+        <mat-option [value]="option">
+          @if (option.fullName) {
+            {{ option.fullName }}
+          } @else {
+            {{ option.firstName }} {{ option.lastName }}
+          }
+
+          @if (option.memberId) {
+            <small class="member-id">({{ option.memberId }}) </small>
+          }
+
+          @if (
+            option.clubs &&
+            option.clubs.length > 0 &&
+            option.clubs[0].id !== this.clubId
+          ) {
+            <small>{{ option.clubs[0].name }}</small>
+          }
+        </mat-option>
+      }
+
+      <ng-container *ngIf="this.filteredOptions$ | async as filterdOptions">
         <mat-option
           [value]="this.formControl.value"
-          *ngIf="options.length === 0 && this.allowCreation"
+          *ngIf="filterdOptions.length === 0 && this.allowCreation"
         >
           {{ 'all.player.search.create' | translate }}
         </mat-option>
 
         <mat-option
           [value]="this.formControl.value"
-          *ngIf="options.length === 0 && !this.allowCreation"
+          *ngIf="filterdOptions.length === 0 && !this.allowCreation"
           [disabled]="true"
         >
           {{ 'all.player.search.not-found' | translate }}
         </mat-option>
 
-        <ng-container *ngFor="let option of options">
+        @for (option of filterdOptions; track option.id) {
           <ng-container *ngIf="validationFunction(option) as validation">
             <mat-option
               [value]="option"
@@ -47,24 +69,30 @@
                 !validation.valid
               "
             >
-              {{ option.firstName }} {{ option.lastName }}
-              <small class="member-id" *ngIf="option.memberId"
-                >({{ option.memberId }})
-              </small>
-              <small
-                *ngIf="
-                  option.clubs &&
-                  option.clubs.length > 0 &&
-                  option.clubs[0]?.id !== this.clubId
-                "
-                >{{ option.clubs[0].name }}</small
-              >
+              @if (option.fullName) {
+                {{ option.fullName }}
+              } @else {
+                {{ option.firstName }} {{ option.lastName }}
+              }
+
+              @if (option.memberId) {
+                <small class="member-id">({{ option.memberId }}) </small>
+              }
+
+              @if (
+                option.clubs &&
+                option.clubs.length > 0 &&
+                option.clubs[0].id !== this.clubId
+              ) {
+                <small>{{ option.clubs[0].name }}</small>
+              }
+
               <div class="invalid-player" *ngIf="validation.message">
                 {{ validation.message | translate }}
               </div>
             </mat-option>
           </ng-container>
-        </ng-container>
+        }
       </ng-container>
     </mat-autocomplete>
   </mat-form-field>

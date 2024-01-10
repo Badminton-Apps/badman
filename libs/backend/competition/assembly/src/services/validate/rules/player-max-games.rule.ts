@@ -12,6 +12,9 @@ export type PlayerMaxGamesRuleParams = {
   max: number;
 }
 
+/**
+ * Checks if a player has max 1 single game and 2 double game
+ */
 export class PlayerMaxGamesRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {

@@ -20,7 +20,7 @@
           "tsConfig": "libs/frontend/modules/seo/tsconfig.lib.json"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -30,13 +30,7 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "lintFilePatterns": [
-          "libs/frontend/modules/seo/**/*.ts",
-          "libs/frontend/modules/seo/**/*.html"
-        ]
-      }
+      "executor": "@nx/eslint:lint"
     }
   },
   "tags": []

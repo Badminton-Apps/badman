@@ -20,7 +20,7 @@
           "tsConfig": "libs/frontend/modules/auth/tsconfig.lib.json"
         }
       },
-      "defaultConfiguration": "development"
+      "defaultConfiguration": "production"
     },
     "test": {
       "executor": "@nx/jest:jest",
@@ -31,13 +31,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "libs/frontend/modules/auth/**/*.ts",
-          "libs/frontend/modules/auth/**/*.html"
-        ]
-      }
+      "outputs": ["{options.outputFile}"]
     }
   },
   "tags": []

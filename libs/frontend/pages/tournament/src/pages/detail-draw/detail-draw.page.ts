@@ -6,18 +6,22 @@ import {
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
+  PageHeaderComponent,
   RecentGamesComponent,
   StandingComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { DrawTournament, Player } from '@badman/frontend-models';
+import { DrawTournament, EventTournament, Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
+  selector: 'badman-detail-draw-tournament', 
   templateUrl: './detail-draw.page.html',
   styleUrls: ['./detail-draw.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,14 +32,21 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     RouterModule,
     TranslateModule,
 
+    // Material Modules
+    MatIconModule,
+    MatTooltipModule,
+
     // Own Modules
     StandingComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
+
+    PageHeaderComponent
   ],
 })
 export class DetailDrawComponent implements OnInit {
   drawTournament!: DrawTournament;
+  eventTournament!: EventTournament;
   players?: Player[];
   constructor(
     private seoService: SeoService,
@@ -51,9 +62,10 @@ export class DetailDrawComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       this.drawTournament = data['drawTournament'];
-      const drawTournamentName = `${this.drawTournament.name}`;
+      this.eventTournament = data['eventTournament'];
 
-      const eventTournamentName = data['eventTournament']?.name;
+      const drawTournamentName = `${this.drawTournament.name}`;
+      const eventTournamentName = `${this.eventTournament.name}`;
 
       this.seoService.update({
         title: drawTournamentName,

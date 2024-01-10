@@ -17,9 +17,6 @@ on:
         default: true
         type: boolean
 
-env:
-  NODE_ENV: '20.1'
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -58,7 +55,7 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
-      node-version: '20.1'
+      node-version: ${{ vars.NODE_ENV }}
       main-branch-name: ${{ inputs.prod-release && 'main' || 'develop' }}
       output-affected-projects: true
       parallel-commands-on-agents: |
@@ -76,7 +73,7 @@ jobs:
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
-      node-version: '20.1'
+      node-version: ${{ vars.NODE_ENV }}
       number-of-agents: 3
       timeout: 15
 
@@ -100,7 +97,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_ENV }}
+          node-version: ${{ vars.NODE_ENV }}
 
       - name: install dependencies for release
         run: npm --prefix \scripts install
@@ -152,6 +149,11 @@ jobs:
             curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
           fi
 
+          # check if the affected projects contains worker-sync
+          if [[ $affectedProjects == *"worker-ranking"* ]]; then
+            curl -X POST -H "Content-Type: application/json" ${{ inputs.prod-release && secrets.PROD_WORKER_RANKING_HOOK  || secrets.BETA_WORKER_RANKING_HOOK }}
+          fi
+
       ## Vercel deploys automatically on push to branch with Chore: prefix
 
   merge-main-into-dev:
@@ -192,6 +194,11 @@ jobs:
           # check if the affected projects contains worker-sync
           if [[ $affectedProjects == *"worker-sync"* ]]; then
             curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_SYNC_HOOK }}
+          fi
+
+          # check if the affected projects contains worker-sync
+          if [[ $affectedProjects == *"worker-ranking"* ]]; then
+            curl -X POST -H "Content-Type: application/json" ${{ secrets.BETA_WORKER_RANKING_HOOK }}
           fi
 
   e2e:

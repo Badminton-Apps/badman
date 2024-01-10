@@ -84,14 +84,24 @@
           <a mat-list-item [routerLink]="['/ranking']">{{
             'all.shell.sidebar.ranking.title' | translate
           }}</a>
+
+          <badman-has-claim [any]="['change:job']">
+            <a mat-list-item [routerLink]="['/jobs']">{{
+              'all.shell.sidebar.jobs.title' | translate
+            }}</a>
+          </badman-has-claim>
         </mat-nav-list>
       </div>
       <div class="spacer"></div>
-
-      <badman-banner [banner]="this.banner" *ngIf="this.banner"></badman-banner>
+      <div>
+        <badman-has-claim [any]="['change:job']">
+          <badman-service-status />
+        </badman-has-claim>
+        <badman-banner [banner]="this.banner" *ngIf="this.banner" />
+      </div>
     </div>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content [ngClass]="{ mobile: isHandset() }">
     <mat-toolbar class="app-toolbar">
       <button
         type="button"
@@ -107,12 +117,12 @@
         <badman-search-box></badman-search-box>
       </div>
 
-      <ng-container *ngIf="systemService.watchSysem$ | async as system">
+      <ng-container *ngIf="!systemService.primary()">
         <button
           type="button"
           mat-icon-button
-          (click)="systemService.clearWatchSystem()"
-          [matTooltip]="'Watching: ' + system.name"
+          (click)="systemService.state.clearWatchSystem()"
+          [matTooltip]="'Watching: ' + systemService.system()?.name"
         >
           <mat-icon>show_chart</mat-icon>
         </button>

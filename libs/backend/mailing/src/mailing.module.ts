@@ -4,12 +4,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CompileModule } from '@badman/backend-compile';
 import { MailingService } from './services';
 import { join } from 'path';
+import { ConfigType } from '@badman/utils';
 
 @Module({
   imports: [
     CompileModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService<ConfigType>) => ({
         view: {
           root: join(__dirname, 'compile', 'libs', 'mailing'),
           engine: 'pug',
@@ -25,3 +26,4 @@ import { join } from 'path';
   exports: [MailingService],
 })
 export class MailingModule {}
+ 

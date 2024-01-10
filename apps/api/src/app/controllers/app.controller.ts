@@ -1,7 +1,7 @@
 import { User } from '@badman/backend-authorization';
 import { Player } from '@badman/backend-database';
 import { CpGeneratorService, PlannerService } from '@badman/backend-generator';
-import { SimulationQueue, SyncQueue } from '@badman/backend-queue';
+import { RankingQueue, SyncQueue } from '@badman/backend-queue';
 import { InjectQueue } from '@nestjs/bull';
 import {
   Body,
@@ -24,8 +24,8 @@ export class AppController {
   private readonly logger = new Logger(AppController.name);
 
   constructor(
-    @InjectQueue(SimulationQueue) private rankingSim: Queue,
-    @InjectQueue(SyncQueue) private rankingSync: Queue,
+    @InjectQueue(RankingQueue) private _rankingQueue: Queue,
+    @InjectQueue(SyncQueue) private _syncQueue: Queue,
     private cpGen: CpGeneratorService,
     private planner: PlannerService,
   ) {}
@@ -36,7 +36,7 @@ export class AppController {
     @Body()
     args: {
       job: string;
-      queue: typeof SimulationQueue | typeof SyncQueue;
+      queue: typeof SyncQueue | typeof RankingQueue;
       jobArgs: { [key: string]: unknown };
       removeOnComplete: boolean;
       removeOnFail: boolean;
@@ -45,7 +45,7 @@ export class AppController {
     this.logger.debug({
       message: 'Queueing job',
       args: args.job,
-      user: user?.toJSON(),
+      user: user?.fullName,
       hasPerm: await user.hasAnyPermission(['change:job']),
     });
 
@@ -61,15 +61,15 @@ export class AppController {
     args.jobArgs['userId'] = user.id;
 
     switch (args.queue) {
-      case SimulationQueue:
-        return this.rankingSim.add(args.job, args.jobArgs, {
-          removeOnComplete: args.removeOnComplete,
-          removeOnFail: args.removeOnFail,
-        });
       case SyncQueue:
-        return this.rankingSync.add(args.job, args.jobArgs, {
-          removeOnComplete: args.removeOnComplete,
-          removeOnFail: args.removeOnFail,
+        return this._syncQueue.add(args.job, args.jobArgs, {
+          removeOnComplete: args.removeOnComplete || true,
+          removeOnFail: args.removeOnFail || 1,
+        });
+      case RankingQueue:
+        return this._rankingQueue.add(args.job, args.jobArgs, {
+          removeOnComplete: args.removeOnComplete || true,
+          removeOnFail: args.removeOnFail || 1,
         });
       default:
         throw new HttpException('Unknown queue', 500);

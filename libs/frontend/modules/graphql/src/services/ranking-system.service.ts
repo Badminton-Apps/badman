@@ -1,85 +1,141 @@
-import { Inject, Injectable, PLATFORM_ID, TransferState } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, merge, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 
-import { isPlatformBrowser } from '@angular/common';
 import { RankingSystem } from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
+import { signalSlice } from 'ngxtension/signal-slice';
 
-const WATCH_SYSTEM_KEY = 'system.id';
+export interface RankingState {
+  rankingSystem: RankingSystem | null;
+  loaded: boolean;
+}
+
+const SYSTEM_QUERY = gql`
+  query GetRankingSystem($id: ID) {
+    rankingSystem(id: $id) {
+      id
+      name
+      differenceForDowngradeSingle
+      differenceForDowngradeDouble
+      differenceForDowngradeMix
+      differenceForUpgradeSingle
+      differenceForUpgradeDouble
+      differenceForUpgradeMix
+      updateLastUpdate
+      calculationLastUpdate
+      calculationIntervalUnit
+      calculationIntervalAmount
+      calculationDayOfWeek
+      minNumberOfGamesUsedForUpgrade
+      minNumberOfGamesUsedForDowngrade
+      updateIntervalAmount
+      updateIntervalUnit
+      updateDayOfWeek
+      periodAmount
+      periodUnit
+      pointsToGoUp
+      pointsWhenWinningAgainst
+      pointsToGoDown
+      amountOfLevels
+      latestXGamesToUse
+      primary
+    }
+  }
+`;
+
+const WATCH_SYSTEM_ID_KEY = 'watch.system.id';
 @Injectable({
   providedIn: 'root',
 })
 export class RankingSystemService {
-  public watchSysem$ = new BehaviorSubject<RankingSystem | null>(null);
+  private apollo = inject(Apollo);
 
+  // state
+  initialState: RankingState = {
+    rankingSystem: null,
+    loaded: false,
+  };
 
-  constructor(
-    private apollo: Apollo,
-    @Inject(PLATFORM_ID) private platformId: string,
-    private stateTransfer: TransferState
-  ) {
-    if (isPlatformBrowser(this.platformId)) {
-      const savedSystem = sessionStorage.getItem(WATCH_SYSTEM_KEY);
-      if (savedSystem != null) {
-        this.watchSysem$.next(JSON.parse(savedSystem));
-      }
-    }
-  }
+  // selectors
+  system = computed(() => this.state().rankingSystem);
+  systemId = computed(() => this.state().rankingSystem?.id);
+  primary = computed(() => this.state().rankingSystem?.primary);
 
-  watchSystem(system: RankingSystem) {
-    sessionStorage.setItem(WATCH_SYSTEM_KEY, JSON.stringify(system));
-    this.watchSysem$.next(system);
-  }
+  // sources
+  private servicesLoaded$ = of(
+    sessionStorage.getItem(WATCH_SYSTEM_ID_KEY),
+  ).pipe(switchMap((saved) => this._loadSystem(saved)));
 
-  clearWatchSystem() {
-    sessionStorage.removeItem(WATCH_SYSTEM_KEY);
-    this.watchSysem$.next(null);
-  }
+  //sources
+  sources$ = merge(
+    this.servicesLoaded$.pipe(
+      map((rankingSystem) => ({
+        rankingSystem,
+        loaded: true,
+      })),
+    ),
+  );
 
-  getPrimarySystemId() {
-    return this.getPrimarySystemsWhere().pipe(
-      transferState(`primarySystemId`, this.stateTransfer, this.platformId),
-      switchMap((query) =>
-        this.apollo
-          .query<{ rankingSystems: { id: string }[] }>({
-            query: gql`
-              query GetPrimarySystemsQuery($where: JSONObject) {
-                rankingSystems(where: $where) {
-                  id
-                }
-              }
-            `,
-            variables: {
-              where: query,
-            },
-          })
-          .pipe(map((x) => x.data?.rankingSystems?.[0]?.id))
-      ),
-      map((result) => result)
-    );
-  }
+  state = signalSlice({
+    initialState: this.initialState,
+    sources: [this.sources$],
+    actionSources: {
+      watchSystem: (_state, action$: Observable<string>) =>
+        action$.pipe(
+          tap((id) => sessionStorage.setItem(WATCH_SYSTEM_ID_KEY, id)),
+          switchMap((id) =>
+            this._loadSystem(id).pipe(
+              map((system) => ({ rankingSystem: system, loaded: true })),
+            ),
+          ),
+        ),
+      clearWatchSystem: (_state, action$: Observable<void>) =>
+        action$.pipe(
+          tap(() => sessionStorage.removeItem(WATCH_SYSTEM_ID_KEY)),
+          switchMap(() =>
+            this._loadSystem().pipe(
+              map((system) => ({ rankingSystem: system, loaded: true })),
+            ),
+          ),
+        ),
+      deleteSystem: (_state, action$: Observable<string>) =>
+        action$.pipe(
+          // delete system
+          switchMap((id) => this._deleteSystem(id)),
+          // load the default system
+          switchMap(() =>
+            this._loadSystem().pipe(
+              map((system) => ({ rankingSystem: system, loaded: true })),
+            ),
+          ),
+        ),
+    },
+  });
 
-  getPrimarySystemsWhere() {
-    return this.watchSysem$.pipe(
-      map((system) => {
-        return system != null
-          ? {
-              id: system.id,
-            }
-          : {
-              primary: true,
-            };
+  private _loadSystem(id?: string | null) {
+    return this.apollo
+      .query<{
+        rankingSystem: RankingSystem;
+      }>({
+        query: SYSTEM_QUERY,
+        variables: {
+          id,
+        },
       })
-    );
+      .pipe(map((res) => new RankingSystem(res.data?.rankingSystem)));
   }
-}
 
-export interface SystemCounts {
-  points: {
-    level: number;
-    amount: number;
-  }[];
-  date: string;
+  private _deleteSystem(id?: string | null) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation RemoveRankingSystem($id: ID!) {
+          removeRankingSystem(id: $id)
+        }
+      `,
+      variables: {
+        id: id,
+      },
+    });
+  }
 }

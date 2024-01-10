@@ -1,17 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Apollo, gql, QueryRef } from 'apollo-angular';
-import { lastValueFrom, Observable } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
-import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
-import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
-import { RankingSystemService } from '@badman/frontend-graphql';
 import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { TranslateModule } from '@ngx-translate/core';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
+import { RankingSystemService } from '@badman/frontend-graphql';
+import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
+import { TranslateModule } from '@ngx-translate/core';
+import { Apollo, QueryRef, gql } from 'apollo-angular';
+import { Observable, lastValueFrom } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-place-dialog/edit-ranking-place-dialog.component';
 
 @Component({
   selector: 'badman-edit-ranking-all',
@@ -44,49 +44,41 @@ export class EditRankingAllComponent implements OnInit {
   constructor(
     private systemService: RankingSystemService,
     private appollo: Apollo,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit() {
-    this.systemService
-      .getPrimarySystemsWhere()
-      .pipe(
-        switchMap((where) =>
-          this.appollo
-            .query<{ rankingSystems: RankingSystem[] }>({
-              query: gql`
-                query GetPrimarySystemsInfoForRanking($where: JSONObject) {
-                  rankingSystems(where: $where) {
+    this.appollo
+      .query<{ rankingSystems: RankingSystem[] }>({
+        query: gql`
+          query GetPrimarySystemsInfoForRanking($where: JSONObject) {
+            rankingSystems(where: $where) {
+              id
+              rankingSystem
+              updateIntervalAmount
+              rankingGroups {
+                id
+                name
+                subEventCompetitions {
+                  id
+                  eventCompetition {
                     id
-                    rankingSystem
-                    updateIntervalAmount
-                    rankingGroups {
-                      id
-                      name
-                      subEventCompetitions {
-                        id
-                        eventCompetition {
-                          id
-                          season
-                          usedRankingAmount
-                          usedRankingUnit
-                        }
-                      }
-                    }
+                    season
+                    usedRankingAmount
+                    usedRankingUnit
                   }
                 }
-              `,
-              variables: {
-                where,
-              },
-            })
-            .pipe(
-              map(
-                (result) => new RankingSystem(result.data.rankingSystems?.[0])
-              )
-            )
-        )
-      )
+              }
+            }
+          }
+        `,
+        variables: {
+          where: {
+            id: this.systemService.systemId(),
+          }
+        },
+      })
+      .pipe(map((result) => new RankingSystem(result.data.rankingSystems?.[0])))
       .subscribe((system) => {
         this.system = system;
 
@@ -141,7 +133,7 @@ export class EditRankingAllComponent implements OnInit {
             const allPlaces: Map<Date, RankingPlace[]> = new Map();
             allPlaces[Symbol.iterator] = function* () {
               yield* [...allPlaces.entries()].sort(
-                (a, b) => b[0]?.getTime() - a[0]?.getTime()
+                (a, b) => b[0]?.getTime() - a[0]?.getTime(),
               );
             };
 
@@ -185,7 +177,7 @@ export class EditRankingAllComponent implements OnInit {
             }
 
             return returnBlock;
-          })
+          }),
         );
       });
   }
@@ -261,7 +253,7 @@ export class EditRankingAllComponent implements OnInit {
 
             lastValueFrom(mutation).then(() => this.query$?.refetch());
           }
-        }
+        },
       );
   }
 }

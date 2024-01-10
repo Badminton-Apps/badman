@@ -187,7 +187,7 @@ export class EditRankingComponent implements OnInit {
               single: +value.single,
               double: +value.double,
               mix: +value.mix,
-              rankingDate: this.system?.caluclationIntervalLastUpdate,
+              rankingDate: this.system?.calculationLastUpdate,
               updatePossible: true,
             },
           },

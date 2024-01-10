@@ -26,6 +26,9 @@ export class BelgiumFlandersPlacesService {
     let lastRankings = await player.getRankingPlaces({
       where: {
         systemId: system.id,
+        rankingDate: {
+          [Op.lte]: stop,
+        },
       },
       transaction: options?.transaction,
       order: [['rankingDate', 'DESC']],
@@ -109,6 +112,8 @@ export class BelgiumFlandersPlacesService {
       // Protections
       newRanking = getRankingProtected(newRanking, system);
       newRanking.updatePossible = true;
+    } else{
+      newRanking.updatePossible = false;
     }
 
     // Save the new ranking

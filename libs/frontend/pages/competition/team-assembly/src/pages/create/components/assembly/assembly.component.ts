@@ -7,11 +7,13 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  inject,
   Inject,
   Input,
   OnInit,
@@ -19,8 +21,9 @@ import {
   PLATFORM_ID,
   TemplateRef,
   TransferState,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -58,7 +61,6 @@ import {
   map,
   shareReplay,
   switchMap,
-  take,
   takeUntil,
   tap,
 } from 'rxjs/operators';
@@ -153,7 +155,14 @@ export const SAVED_ASSEMBLY = gql`
 })
 export class AssemblyComponent implements OnInit {
   private destroy$ = injectDestroy();
- 
+  breakpointObserver = inject(BreakpointObserver);
+
+  isHandset = toSignal(
+    this.breakpointObserver
+      .observe(['(max-width: 959.98px)'])
+      .pipe(map((result) => result.matches)),
+  );
+
   @Input()
   group!: FormGroup;
 
@@ -343,8 +352,6 @@ export class AssemblyComponent implements OnInit {
       });
   }
 
-
-
   async loadData(encounterId: string) {
     this.loaded = false;
 
@@ -486,40 +493,34 @@ export class AssemblyComponent implements OnInit {
       return;
     }
     const playerRankings = await lastValueFrom(
-      this.systemService
-        .getPrimarySystemId()
-        .pipe(
-          take(1),
-          switchMap((systemId) =>
-            this.apollo.query<{ player: Player }>({
-              query: gql`
-                ${PLAYER_INFO}
+      this.apollo
+        .query<{ player: Player }>({
+          query: gql`
+            ${PLAYER_INFO}
 
-                query getPlayerInfo(
-                  $playerId: ID!
-                  $rankingWhere: JSONObject
-                  $lastRankginWhere: JSONObject
-                ) {
-                  player(id: $playerId) {
-                    ...PlayerInfo
-                  }
-                }
-              `,
-              variables: {
-                playerId: player.id,
-                rankingWhere: {
-                  rankingDate: {
-                    $between: [this.startRanking, this.endRanking],
-                  },
-                  systemId,
-                },
-                lastRankginWhere: {
-                  systemId,
-                },
+            query getPlayerInfo(
+              $playerId: ID!
+              $rankingWhere: JSONObject
+              $lastRankginWhere: JSONObject
+            ) {
+              player(id: $playerId) {
+                ...PlayerInfo
+              }
+            }
+          `,
+          variables: {
+            playerId: player.id,
+            rankingWhere: {
+              rankingDate: {
+                $between: [this.startRanking, this.endRanking],
               },
-            }),
-          ),
-        )
+              systemId: this.systemService.systemId(),
+            },
+            lastRankginWhere: {
+              systemId: this.systemService.systemId(),
+            },
+          },
+        })
         .pipe(map((x) => new Player(x.data?.player))),
     );
 
@@ -798,11 +799,8 @@ export class AssemblyComponent implements OnInit {
 
   private _getRankingWhere(encounterId: string) {
     // Combine _getEvent and _getEncounter
-    return combineLatest([
-      this._getEvent(encounterId),
-      this.systemService.getPrimarySystemId(),
-    ]).pipe(
-      map(([event, systemId]) => {
+    return this._getEvent(encounterId).pipe(
+      map((event) => {
         if (
           !event ||
           !event.season ||
@@ -824,10 +822,10 @@ export class AssemblyComponent implements OnInit {
             rankingDate: {
               $between: [startRanking, endRanking],
             },
-            systemId,
+            systemId: this.systemService.systemId(),
           },
           lastRankginWhere: {
-            systemId,
+            systemId: this.systemService.systemId(),
           },
         };
       }),
