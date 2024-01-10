@@ -49,7 +49,10 @@ export class PointsService {
     }
 
     const start = moment(calcDate)
-      .subtract(system.caluclationIntervalAmount, system.calculationIntervalUnit)
+      .subtract(
+        system.calculationIntervalAmount,
+        system.calculationIntervalUnit,
+      )
       .toDate();
     const stop = moment(calcDate).toDate();
 
@@ -123,7 +126,7 @@ export class PointsService {
     this._logger.log(
       `Calculated ${
         games.length
-      } places in ${duration.asSeconds()} seconds, average ${average} ms per game`,
+      } points in ${duration.asSeconds()} seconds, average ${average} ms per game`,
     );
   }
 
@@ -228,7 +231,6 @@ export class PointsService {
 
     return { subEventsC, subEventsT };
   }
-
 
   // using without queue
   public async createRankingPointforGame(

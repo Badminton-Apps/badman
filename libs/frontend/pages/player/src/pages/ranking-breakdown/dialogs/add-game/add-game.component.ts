@@ -157,17 +157,16 @@ export class AddGameComponent implements OnInit {
       ? (team1 - team2) / (this.data.type == 'single' ? 1 : 2)
       : (team2 - team1) / (this.data.type == 'single' ? 1 : 2);
 
-    const team1Points = this.p2t1Level.value
-      ? (this._getWinningPoints(this.p1t1Level.value) +
-          this._getWinningPoints(this.p2t1Level.value)) /
-        2
-      : this._getWinningPoints(this.p1t1Level.value);
+    const p1t1Points = this._getWinningPoints(this.p1t1Level.value);
+    const p2t1Points = this._getWinningPoints(this.p2t1Level.value);
 
-    const team2Points = this.p2t2Level.value
-      ? (this._getWinningPoints(this.p2t2Level.value) +
-          this._getWinningPoints(this.p2t2Level.value)) /
-        2
-      : this._getWinningPoints(this.p2t2Level.value);
+    const p1t2Points = this._getWinningPoints(this.p1t2Level.value);
+    const p2t2Points = this._getWinningPoints(this.p2t2Level.value);
+
+    const team1Points =
+      this.data.type == 'single' ? p1t1Points : (p1t1Points + p2t1Points) / 2;
+    const team2Points =
+      this.data.type == 'single' ? p1t2Points : (p1t2Points + p2t2Points) / 2;
 
     players.push({
       ...(this.p1t1.value as Partial<Player>),
@@ -182,7 +181,6 @@ export class AddGameComponent implements OnInit {
       player: 1,
     } as GamePlayer);
 
-
     rankingPoints.push({
       playerId: this.p1t1?.value?.id,
       points: t1won ? team2Points : 0,
@@ -194,7 +192,7 @@ export class AddGameComponent implements OnInit {
       differenceInLevel: t1won ? differenceInLevel : -differenceInLevel,
     });
 
-    if (this.p2t1Level.value != null) {
+    if (this.data.type !== 'single') {
       players.push({
         ...(this.p2t1.value as Partial<Player>),
         [this.data.type]: this.p2t1Level.value,
@@ -206,9 +204,7 @@ export class AddGameComponent implements OnInit {
         points: t1won ? team2Points : 0,
         differenceInLevel: t1won ? -differenceInLevel : differenceInLevel,
       });
-    }
 
-    if (this.p2t2Level.value != null) {
       players.push({
         ...(this.p2t2.value as Partial<Player>),
         [this.data.type]: this.p2t2Level.value,
@@ -228,8 +224,8 @@ export class AddGameComponent implements OnInit {
         this.data.type == 'single'
           ? GameType.S
           : this.data.type == 'double'
-          ? GameType.D
-          : GameType.MX,
+            ? GameType.D
+            : GameType.MX,
       winner: t1won ? 1 : 0,
       rankingPoints,
       players,

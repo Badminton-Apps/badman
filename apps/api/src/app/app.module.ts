@@ -10,14 +10,16 @@ import { HealthModule } from '@badman/backend-health';
 import { LoggingModule } from '@badman/backend-logging';
 import { MailingModule } from '@badman/backend-mailing';
 import { NotificationsModule } from '@badman/backend-notifications';
+import { OrchestratorModule } from '@badman/backend-orchestrator';
 import { QueueModule } from '@badman/backend-queue';
 import { SearchModule } from '@badman/backend-search';
+import { SocketModule } from '@badman/backend-websockets';
 import { TranslateModule } from '@badman/backend-translate';
 import { TwizzitModule } from '@badman/backend-twizzit';
+import { ConfigType, configSchema, load } from '@badman/utils';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import versionPackage from '../version.json';
-import { configSchema, parseconfig } from '@badman/utils';
 
 const productionModules = [];
 if (process.env.NODE_ENV === 'production') {
@@ -27,7 +29,7 @@ if (process.env.NODE_ENV === 'production') {
       exclude: ['api/*', '/graphql'],
     }),
   );
-}
+} 
 
 @Module({
   imports: [
@@ -35,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
     ConfigModule.forRoot({
       cache: true,
       validationSchema: configSchema,
-      load: [parseconfig],
+      load: [load],
     }),
     AuthorizationModule,
     GrapqhlModule,
@@ -54,13 +56,16 @@ if (process.env.NODE_ENV === 'production') {
     QueueModule,
     HealthModule,
     TranslateModule,
+    OrchestratorModule,
+    SocketModule,
   ],
   controllers: [AppController, ImageController],
   providers: [Logger],
 })
 export class AppModule {
   private readonly logger = new Logger(AppModule.name);
-  constructor(configService: ConfigService) {
+
+  constructor(configService: ConfigService<ConfigType>) {
     this.logger.log(
       `${AppModule.name} loaded, env: ${configService.get('NODE_ENV')}`,
     );

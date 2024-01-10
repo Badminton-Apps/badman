@@ -16,16 +16,13 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/backend/notifications/**/*.ts"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/backend/notifications"],
       "options": {
-        "jestConfig": "libs/backend/notifications/jest.config.js"
+        "jestConfig": "libs/backend/notifications/jest.config.ts"
       }
     }
   },

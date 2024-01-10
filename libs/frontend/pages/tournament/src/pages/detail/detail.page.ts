@@ -19,7 +19,7 @@ import {
   OpenCloseDateDialogComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
-import { JobsModule, JobsService } from '@badman/frontend-jobs';
+import { JobsService } from '@badman/frontend-queue';
 import { EventTournament, SubEventTournament } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { sortSubEvents } from '@badman/utils';
@@ -58,7 +58,6 @@ import { AssignRankingGroupsComponent } from '../../components';
 
     // Own modules
     PageHeaderComponent,
-    JobsModule,
     HasClaimComponent,
   ],
 })

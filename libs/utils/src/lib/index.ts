@@ -1,5 +1,6 @@
 export * from './sorts'
 export * from './enums'
+export * from './events'
 
 export * from './comp'
 export * from './game-label'
@@ -11,4 +12,5 @@ export * from './get-index'
 export * from './get-letter-for-team' 
 export * from './get-rankingpoint-result'
 export * from './get-ranking-protected'
-export * from './run-parallel'
+export * from './get-ranking-periods'
+export * from './run-parallel' 

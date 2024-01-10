@@ -27,6 +27,12 @@ export type PlayerOrderRuleParams =
   | PlayerOrderRuleSingleParams
   | PlayerOrderRuleDoubleParams;
 
+/**
+ * Checks the order of the players
+ * 
+ * Singles: players should be in order of ranking
+ * Doubles: the team with the lowest ranking should be first, if the ranking is the same, the best player should be first
+ */
 export class PlayerOrderRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
@@ -53,7 +59,7 @@ export class PlayerOrderRule extends Rule {
       'single2',
       system.amountOfLevels,
       single1,
-      single2
+      single2,
     );
     if (s1) errors.push(s1);
 
@@ -62,7 +68,7 @@ export class PlayerOrderRule extends Rule {
       'single4',
       system.amountOfLevels,
       single3,
-      single4
+      single4,
     );
     if (s3) errors.push(s3);
 
@@ -72,7 +78,7 @@ export class PlayerOrderRule extends Rule {
       system?.amountOfLevels,
       type == SubEventTypeEnum.MX ? 'mix' : 'double',
       double3,
-      double4
+      double4,
     );
 
     if (d3) errors.push(d3);
@@ -84,7 +90,7 @@ export class PlayerOrderRule extends Rule {
         system?.amountOfLevels,
         'double',
         double1,
-        double2
+        double2,
       );
       if (d1) errors.push(d1);
 
@@ -94,7 +100,7 @@ export class PlayerOrderRule extends Rule {
 
         system.amountOfLevels,
         single2,
-        single3
+        single3,
       );
 
       if (s2) errors.push(s2);
@@ -105,7 +111,7 @@ export class PlayerOrderRule extends Rule {
         system.amountOfLevels,
         'double',
         double2,
-        double3
+        double3,
       );
 
       if (d2) errors.push(d2);
@@ -124,7 +130,7 @@ export class PlayerOrderRule extends Rule {
     game2: string,
     defaultRanking = 12,
     player1?: Player,
-    player2?: Player
+    player2?: Player,
   ): AssemblyValidationError<PlayerOrderRuleSingleParams> | undefined {
     if (!player1 || !player2) return;
 
@@ -159,7 +165,7 @@ export class PlayerOrderRule extends Rule {
     defaultRanking = 12,
     type: 'double' | 'mix' = 'double',
     double1?: [Player | undefined, Player | undefined] | undefined,
-    double2?: [Player | undefined, Player | undefined] | undefined
+    double2?: [Player | undefined, Player | undefined] | undefined,
   ): AssemblyValidationError<PlayerOrderRuleDoubleParams> | undefined {
     if (!double1 || !double2) return;
     if (

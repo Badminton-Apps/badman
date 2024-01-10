@@ -68,6 +68,7 @@ export type I18nTranslations = {
             "cancel": string;
             "clone": string;
             "close": string;
+            "copy": string;
             "create": string;
             "delete": string;
             "detail": string;
@@ -578,6 +579,9 @@ export type I18nTranslations = {
             "type": string;
             "year": string;
         };
+        "jobs": {
+            "title": string;
+        };
         "landing": {
             "description": string;
             "title": string;
@@ -681,6 +685,7 @@ export type I18nTranslations = {
         };
         "ranking": {
             "all-ranking": string;
+            "clone-points": string;
             "double": string;
             "double-points": string;
             "double-rank": string;
@@ -721,6 +726,7 @@ export type I18nTranslations = {
                 "ranking-date": string;
                 "remove-current-ranking": string;
                 "title": string;
+                "update-possible": string;
                 "update-ranking": string;
             };
         };
@@ -807,6 +813,9 @@ export type I18nTranslations = {
                 "general": {
                     "changelog": string;
                     "faq": string;
+                    "title": string;
+                };
+                "jobs": {
                     "title": string;
                 };
                 "persnal": {

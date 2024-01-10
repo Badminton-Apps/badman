@@ -23,6 +23,7 @@ export class DrawResolver {
             drawTournament(id: $id) {
               id # needed for caching
               name
+              visualCode
               eventEntries {
                 id
                 players {

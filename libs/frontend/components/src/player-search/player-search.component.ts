@@ -69,7 +69,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   @Output() whenSelectPlayer = new EventEmitter<Player>();
 
   @Input()
-  label = 'all.player.search.label';
+  label = 'all.player.search.label'; 
 
   @Input()
   allowCreation = false;
@@ -102,6 +102,9 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
   @Input()
   ignorePlayers?: Partial<Player>[];
+
+  @Input()
+  options: Player[] = [];
 
   ignorePlayersIds?: string[] = [];
 
@@ -250,6 +253,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
     this.filteredOptions$ = merge(search$, this.clear$);
   }
+
 
   private setPlayer() {
     of(this.player)

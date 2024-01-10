@@ -1,4 +1,5 @@
 // start:ng42.barrel
+export * from './acceptEncounter';
 export * from './gotoEncounterPage';
 export * from './getDetailAccepted';
 export * from './getDetailComment';

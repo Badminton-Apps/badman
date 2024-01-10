@@ -64,6 +64,7 @@
     "cancel": "Annuler",
     "clone": "Copie",
     "close": "Fermer",
+    "copy": "Copier",
     "create": "Créer",
     "delete": "Retirer",
     "detail": "Détails",
@@ -574,6 +575,9 @@
     "type": "Type",
     "year": "Année"
   },
+  "jobs": {
+    "title": "Jobs"
+  },
   "landing": {
     "description": "Nous nous efforçons de faire de badman l'endroit central pour toutes les données relatives au badminton.",
     "title": "Badman"
@@ -677,6 +681,7 @@
   },
   "ranking": {
     "all-ranking": "Alle updates",
+    "clone-points": "Copier les points vers ce système",
     "double": "Double",
     "double-points": "Double points",
     "double-rank": "Ranking classement",
@@ -717,6 +722,7 @@
       "ranking-date": "Mise à jour du classement",
       "remove-current-ranking": "Supprimer tous les classements actuels à partir de la date de classement",
       "title": "Téléchargement de fichiers",
+      "update-possible": "Ranking update",
       "update-ranking": "Mettre à jour les classements"
     }
   },
@@ -804,6 +810,9 @@
         "changelog": "Journal des modifications",
         "faq": "FAQ",
         "title": "Général"
+      },
+      "jobs": {
+        "title": "Jobs"
       },
       "persnal": {
         "club": "Mon club",

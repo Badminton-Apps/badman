@@ -52,6 +52,8 @@ export class UploadRankingController {
     );
     const removeAllRanking =
       (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
+    const updatePossible =
+      (file.fields['updatePossible'] as MultipartValue)?.value === 'true';
     const rankingSystemId = (file.fields['rankingSystemId'] as MultipartValue)
       ?.value as string;
 
@@ -70,6 +72,7 @@ export class UploadRankingController {
         updateRanking,
         rankingDate: rankingDate.toDate(),
         removeAllRanking,
+        updatePossible,
         rankingSystemId,
         createNewPlayers,
       })

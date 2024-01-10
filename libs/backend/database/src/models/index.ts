@@ -14,4 +14,6 @@ export * from './request-link.model';
 export * from './team-player-membership.model';
 export * from './team.model';
 export * from './faq.model';
+export * from './system';
 // end:ng42.barrel
+ 

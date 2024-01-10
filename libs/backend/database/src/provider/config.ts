@@ -6,11 +6,12 @@ import {
 } from '@nestjs/sequelize';
 import { Model, ModelCtor } from 'sequelize-typescript';
 import * as sequelizeModels from '../models';
+import { ConfigType } from '@badman/utils';
 
 @Injectable()
 export class SequelizeConfigProvider implements SequelizeOptionsFactory {
   private readonly logger = new Logger(SequelizeConfigProvider.name);
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService<ConfigType>) {}
 
   async createSequelizeOptions(): Promise<SequelizeModuleOptions> {
     const env = this.configService.get<'production' | 'development' | 'test'>(
@@ -33,6 +34,7 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
 
     if (dialect === 'postgres') {
       require('pg');
+      // await import('pg');
 
       options = {
         ...options,

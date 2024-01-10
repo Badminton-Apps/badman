@@ -208,7 +208,7 @@ export class ChartComponent implements OnInit {
   generateUpdateLines() {
     if (this.lines.length === 0) {
       // get max date
-      const updateDate = moment(this.system.updateIntervalAmountLastUpdate);
+      const updateDate = moment(this.system.updateLastUpdate);
 
       // get min date
       const minDate = moment.min(

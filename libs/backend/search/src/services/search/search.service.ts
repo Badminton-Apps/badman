@@ -7,12 +7,13 @@ import {
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Op, WhereOptions } from 'sequelize';
+import { ConfigType } from '@badman/utils';
 
 @Injectable()
 export class SearchService {
   private readonly like = Op.iLike;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService<ConfigType>) {
     if (this.configService.get('DB_DIALECT') === 'sqlite') {
       this.like = Op.like;
     }

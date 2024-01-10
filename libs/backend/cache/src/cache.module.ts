@@ -3,6 +3,7 @@ import { CacheStore, CacheModule as nestCache } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { redisStore } from 'cache-manager-redis-store';
+import { ConfigType } from '@badman/utils';
 
 export const CACHE_TTL = 60 * 60 * 24 * 7; // 1 week
 
@@ -10,7 +11,7 @@ export const CACHE_TTL = 60 * 60 * 24 * 7; // 1 week
   imports: [
     nestCache.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: async (configService: ConfigService<ConfigType>) => {
         if (configService.get('DB_CACHE') === 'true') {
           const redis = (await redisStore({
             socket: {

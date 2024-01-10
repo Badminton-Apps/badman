@@ -433,8 +433,8 @@ export class AssemblyValidationService {
   static defaultValidators(): Rule[] {
     return [
       new TeamBaseIndexRule(),
-      new TeamClubBaseRule(),
       new TeamSubeventIndexRule(),
+      new TeamClubBaseRule(),
       new PlayerOrderRule(),
       new PlayerCompStatusRule(),
       new PlayerMinLevelRule(),

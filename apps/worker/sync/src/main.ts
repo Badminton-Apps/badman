@@ -7,16 +7,32 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
+import { RedisIoAdapter } from '@badman/backend-websockets';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     WorkerSyncModule,
     new FastifyAdapter(),
     {
       bufferLogs: true,
-    }
+    },
   );
 
   const configService = app.get<ConfigService>(ConfigService);
+
+  const redisHost = configService.get('REDIS_HOST');
+  if (redisHost) {
+    const redisPass = configService.get('REDIS_PASSWORD');
+    const redisIoAdapter = new RedisIoAdapter(app);
+
+    let redisUrl = redisPass ? `redis://:${redisPass}@` : 'redis://';
+
+    redisUrl += `${redisHost}:${configService.get('REDIS_PORT')}`;
+
+    await redisIoAdapter.connectToRedis(redisUrl);
+
+    app.useWebSocketAdapter(redisIoAdapter);
+  }
+
   const port = configService.get('PORT') || 5001;
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   await app.listen(port, '0.0.0.0', (error) => {
@@ -25,4 +41,4 @@ async function bootstrap() {
     }
   });
 }
-bootstrap(); 
+bootstrap();
