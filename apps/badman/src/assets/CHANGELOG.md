@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.39](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.38...v6.129.0-beta.39) (2024-01-10)
+
+
+### Features
+
+* auto accept after 36 hours after entered ([f7fa04f](https://github.com/Badminton-Apps/badman/commit/f7fa04f0575f8cb91040304d42d8c6569cf9831a))
+
+
+### Bug Fixes
+
+* link didn't got the visual Code ([73373b2](https://github.com/Badminton-Apps/badman/commit/73373b29cbe4e330a41ff29301a80a7db3fa8d88))
+* playwright should work now ([2b7f7bf](https://github.com/Badminton-Apps/badman/commit/2b7f7bf6adde4049430ea905ba32820a8b4c99da))
+* testing should work now ([b63ee08](https://github.com/Badminton-Apps/badman/commit/b63ee0865800e30899469730745c8eae5e8b9c77))
+
 ## [6.129.0-beta.38](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.37...v6.129.0-beta.38) (2024-01-07)
 
 
