@@ -64,6 +64,7 @@
     "cancel": "Annuleren",
     "clone": "Dupliceer",
     "close": "Sluiten",
+    "copy": "Kopiëren",
     "create": "Aanmaken",
     "delete": "Verwijderen",
     "detail": "Details",
@@ -574,6 +575,9 @@
     "type": "Type",
     "year": "Jaar"
   },
+  "jobs": {
+    "title": "Jobs"
+  },
   "landing": {
     "description": "We werken eraan om met badman de centrale plaats te zijn voor al je badminton data.",
     "title": "Badman"
@@ -677,6 +681,7 @@
   },
   "ranking": {
     "all-ranking": "Alle updates",
+    "clone-points": "Kopieer punten naar dit systeem",
     "double": "Dubbel",
     "double-points": "Ranking punten",
     "double-rank": "Ranking plaats",
@@ -717,6 +722,7 @@
       "ranking-date": "Klassement update",
       "remove-current-ranking": "Verwijder alle huidige klassementen van ranking datum",
       "title": "File upload",
+      "update-possible": "Klassementen update",
       "update-ranking": "Update klassementen"
     }
   },
@@ -804,6 +810,9 @@
         "changelog": "Changelog",
         "faq": "FAQ",
         "title": "Algemeen"
+      },
+      "jobs": {
+        "title": "Jobs"
       },
       "persnal": {
         "club": "Mijn Club",

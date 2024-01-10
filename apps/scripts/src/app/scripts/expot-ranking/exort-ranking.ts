@@ -241,6 +241,7 @@ export class ExportBBFPlayers {
       attributes: ['id', 'firstName', 'lastName', 'memberId'],
       where: {
         [Op.or]: orClause,
+        competitionPlayer: true,
       },
       include: [
         {
@@ -277,8 +278,8 @@ export class ExportBBFPlayers {
   }
 
   async countGames(system: RankingSystem, players: Player[]) {
-    const stop = moment(); // system.caluclationIntervalLastUpdate;
-    const start = moment(system.caluclationIntervalLastUpdate).subtract(
+    const stop = moment(); // system.calculationLastUpdate;
+    const start = moment(system.calculationLastUpdate).subtract(
       system.periodAmount,
       system.periodUnit,
     );

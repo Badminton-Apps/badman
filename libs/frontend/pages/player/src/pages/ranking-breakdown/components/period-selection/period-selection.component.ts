@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, ViewChild } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  Input,
+  Signal,
+  ViewChild,
+  computed,
+  signal,
+} from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MatCalendarCellClassFunction,
@@ -12,6 +19,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { RankingSystem } from '@badman/frontend-models';
+import { getRankingPeriods } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 import { MomentModule } from 'ngx-moment';
@@ -39,39 +47,65 @@ import { MomentModule } from 'ngx-moment';
   ],
 })
 export class PeriodSelectionComponent {
-  @Input() period!: FormGroup;
-  @Input() system!: RankingSystem;
+  @Input() period!: FormGroup<{
+    start: FormControl<Moment>;
+    end: FormControl<Moment>;
+    game: FormControl<Moment>;
+    next: FormControl<Moment>;
+  }>;
+  @Input() system!: Signal<RankingSystem>;
 
   @ViewChild(MatMenuTrigger) trigger?: MatMenuTrigger;
-
-  updates: Moment[] = [];
   minDateInUpdate?: Moment;
+
+  viewingDate = signal(moment());
+
+  updates = computed(() => {
+    if (!this.system() || !this.viewingDate()) {
+      return [];
+    }
+
+    const result = getRankingPeriods(
+      this.system(),
+      this.viewingDate().clone().startOf('month').subtract(1, 'day'),
+      this.viewingDate().clone().endOf('month').add(1, 'day')
+    );
+
+    console.log('updates', result);
+    return result;
+  });
 
   dateClass: MatCalendarCellClassFunction<Moment> = (cellDate, view) => {
     // Only highligh dates inside the month view.
     if (view === 'month') {
-      // is first monday of the month
-      let isFirstMonday = cellDate.clone().set('date', 1).isoWeekday(8);
-
-      if (isFirstMonday.date() > 7) {
-        isFirstMonday = isFirstMonday.isoWeekday(-6);
+      // check if the current month is the same as the viewing date, if not, update the viewing date
+      if (!this.viewingDate().isSame(cellDate, 'month')) {
+        this.viewingDate.set(cellDate.clone());
       }
 
-      if (cellDate.isSame(isFirstMonday) && cellDate.month() % 2 === 0) {
-        // every first monday of a uneven month
-        return 'ranking-update-date';
-      }
+      // find the date in the update list
+      const update = this.updates().find((u) => {
+        return moment(u.date).isSame(cellDate, 'day');
+      });
 
-      if (cellDate.day() == 1) {
-        return 'point-update-date';
+      if (update) {
+        if (update.updatePossible) {
+          return 'ranking-update-date';
+        } else {
+          return 'point-update-date';
+        }
       }
     }
 
     return '';
   };
 
+  monthSelected(date: Moment) {
+    this.viewingDate.set(date);
+  }
+
   lastUpdate() {
-    this.customPeriod(moment(this.system.caluclationIntervalLastUpdate));
+    this.customPeriod(moment(this.system().calculationLastUpdate));
   }
 
   customPeriod(targetDate: Moment | null) {
@@ -82,19 +116,19 @@ export class PeriodSelectionComponent {
     const endPeriod = moment(targetDate);
     const startPeriod = endPeriod
       .clone()
-      .subtract(this.system.periodAmount, this.system.periodUnit);
+      .subtract(this.system().periodAmount, this.system().periodUnit);
     const gamePeriod = startPeriod
       .clone()
       .subtract(
-        this.system.updateIntervalAmount,
-        this.system.updateIntervalUnit
+        this.system().updateIntervalAmount,
+        this.system().updateIntervalUnit,
       );
 
     const nextPeriod = startPeriod
       .clone()
       .add(
-        this.system.caluclationIntervalAmount,
-        this.system.calculationIntervalUnit
+        this.system().calculationIntervalAmount,
+        this.system().calculationIntervalUnit,
       );
 
     this.period?.patchValue({

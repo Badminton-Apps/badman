@@ -1,4 +1,5 @@
 import { CacheModule } from '@badman/backend-cache';
+import { ConfigType } from '@badman/utils';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -32,11 +33,22 @@ export class DatabaseModule implements OnModuleInit {
 
   // get sequelize instance
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<ConfigType>,
     private readonly sequelize: Sequelize,
   ) {}
 
   async onModuleInit() {
+    if (this.configService.get('NODE_ENV') === 'test') {
+      // initialize test database
+      this.logger.log('Initializing test database');
+      await this.sequelize.sync({ force: true });
+
+      // load test data
+      this.logger.log('Loading test data');
+      await loadTest();
+    }
+
+
     this.logger.debug('initialize addons');
     slugifyModel(Player as unknown as Model, {
       source: ['firstName', 'lastName', 'memberId'],
@@ -53,15 +65,5 @@ export class DatabaseModule implements OnModuleInit {
     slugifyModel(Team as unknown as Model, {
       source: ['name', 'season'],
     });
-
-    if (this.configService.get('NODE_ENV') === 'test') {
-      // initialize test database
-      this.logger.log('Initializing test database');
-      await this.sequelize.sync({ force: true });
-
-      // load test data
-      this.logger.log('Loading test data');
-      await loadTest();
-    }
   }
 }

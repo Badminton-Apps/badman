@@ -134,6 +134,13 @@ export class UpcommingGamesService {
               rows {
                 id
                 date
+                drawCompetition{
+                  id,
+                  subEventCompetition{
+                    id
+                    eventId
+                  }
+                }
                 home {
                   id
                   name

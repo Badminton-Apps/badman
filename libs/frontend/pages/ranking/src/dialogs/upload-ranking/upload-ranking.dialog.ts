@@ -67,6 +67,7 @@ export class UploadRankingDialogComponent {
   uploadProgress$?: Subscription;
 
   competitionStatus = false;
+  updatePossible = false;
   removeAllRanking = false;
   updateRanking = false;
   createNewPlayers = true;
@@ -145,6 +146,7 @@ export class UploadRankingDialogComponent {
     formData.append('file', this.uploadedFile, this.uploadedFile.name);
     formData.append('rankingSystemId', this.data.rankingSystem.id);
     formData.append('updateCompStatus', this.competitionStatus.toString());
+    formData.append('updatePossible', this.updatePossible.toString());
     formData.append('removeAllRanking', this.removeAllRanking.toString());
     formData.append('createNewPlayers', this.createNewPlayers.toString());
     formData.append('rankingDate', this.rankingDate.toISOString());

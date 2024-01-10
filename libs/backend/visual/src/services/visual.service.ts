@@ -19,6 +19,7 @@ import {
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CACHE_TTL } from '@badman/backend-cache';
+import { ConfigType } from '@badman/utils';
 
 @Injectable()
 export class VisualService {
@@ -31,7 +32,7 @@ export class VisualService {
   private _parser: XMLParser;
 
   constructor(
-    private _configService: ConfigService,
+    private _configService: ConfigService<ConfigType>,
     @Inject(CACHE_MANAGER) private _cacheManager: Cache,
   ) {
     this._http = axiosRateLimit(axios.create(), { maxRPS: 15 });

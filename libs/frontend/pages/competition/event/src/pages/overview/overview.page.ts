@@ -14,7 +14,7 @@ import {
   PageHeaderComponent,
   SelectSeasonComponent,
 } from '@badman/frontend-components';
-import { JobsService } from '@badman/frontend-jobs';
+import { JobsService } from '@badman/frontend-queue';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
@@ -81,7 +81,7 @@ export class OverviewPageComponent implements OnInit {
       .pipe(
         take(1),
         filter((params) => params['tab']),
-        map((params) => params['tab'])
+        map((params) => params['tab']),
       )
       .subscribe((tabindex) => {
         this.currentTab.set(parseInt(tabindex, 10));
@@ -96,7 +96,7 @@ export class OverviewPageComponent implements OnInit {
       });
       this.breadcrumbsService.set(
         'competition',
-        translations['all.competition.title']
+        translations['all.competition.title'],
       );
     });
   }

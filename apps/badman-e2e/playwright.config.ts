@@ -2,6 +2,12 @@ import { defineConfig } from '@playwright/test';
 import { nxE2EPreset } from '@nx/playwright/preset';
 
 import { workspaceRoot } from '@nx/devkit';
+import dotenv from 'dotenv';
+
+dotenv.config({
+  path: `.env.test`,
+  override: true,
+});
 
 // For CI, you may want to set BASE_URL to the deployed application.
 const baseURL = process.env['BASE_URL'] || 'http://localhost:3000';
@@ -26,6 +32,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
+  /* Timeout for each test */
   timeout: 120_000,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -41,11 +48,5 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
     timeout: 120_000,
-    env: {
-      DB_STORAGE: ':memory:',
-      DB_DIALECT: 'sqlite',
-      NODE_ENV: 'test',
-      PORT: '5000',
-    },
   },
 });

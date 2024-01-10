@@ -52,6 +52,7 @@ import {
   LogoComponent,
   NotificationComponent,
   SearchBoxComponent,
+  ServiceStatusComponent,
   UserShortcutsComponent,
 } from '../components';
 @Component({
@@ -66,6 +67,7 @@ import {
     BannerComponent,
     NotificationComponent,
     LogoComponent,
+    ServiceStatusComponent,
 
     ServiceWorkerModule,
     BreadcrumbModule,

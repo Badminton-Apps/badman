@@ -21,7 +21,7 @@ export type PlayerGenderRuleParams =
   | PlayerGenderRulePartnerParams;
 
 /**
- * Checks
+ * Checks if the player is the correct gender
  */
 export class PlayerGenderRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {

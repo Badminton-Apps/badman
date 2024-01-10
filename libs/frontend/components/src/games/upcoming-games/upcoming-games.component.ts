@@ -16,6 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { UpcommingGamesService } from './data-access/upcomming-games.service';
 import { TrackByProp } from 'ngxtension/trackby-id-prop';
+import { LoadingBlockComponent } from '../../loading-block';
 
 @Component({
   selector: 'badman-upcoming-games',
@@ -28,6 +29,8 @@ import { TrackByProp } from 'ngxtension/trackby-id-prop';
     TranslateModule,
     MatButtonModule,
     RouterModule,
+
+    LoadingBlockComponent,
   ],
   templateUrl: './upcoming-games.component.html',
   styleUrls: ['./upcoming-games.component.scss'],

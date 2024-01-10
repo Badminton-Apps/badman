@@ -3,6 +3,8 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
+@use './components/show-level.component.theme.scss' as show-level;
+
 @mixin color($theme) {
   badman-player-detail {
     $color-config: mat.get-color-config($theme);
@@ -37,6 +39,8 @@
 }
 
 @mixin theme($theme) {
+  @include show-level.theme($theme);
+
   // Only apply theme on the correct element
   $color-config: mat.get-color-config($theme);
   @if $color-config != null {

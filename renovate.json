@@ -51,5 +51,8 @@
         "@logtail"
       ]
     }
+  ],
+  "ignoreDeps": [
+    "@badman/*"
   ]
 }

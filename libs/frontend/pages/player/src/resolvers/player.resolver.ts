@@ -1,20 +1,23 @@
 import {
   Inject,
   Injectable,
+  Injector,
   PLATFORM_ID,
   TransferState,
   inject,
 } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { Player } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { Apollo, gql } from 'apollo-angular';
-import { first, map, switchMap } from 'rxjs/operators';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class PlayerResolver {
   private systemService = inject(RankingSystemService);
+  private injector = inject(Injector);
 
   constructor(
     private apollo: Apollo,
@@ -25,7 +28,10 @@ export class PlayerResolver {
   resolve(route: ActivatedRouteSnapshot) {
     const playerId = route.params['id'];
 
-    return this.systemService.getPrimarySystemId().pipe(
+    return toObservable(this.systemService.systemId, {
+      injector: this.injector,
+    }).pipe(
+      filter((systemId) => !!systemId),
       switchMap((systemId) =>
         this.apollo.query<{ player: Partial<Player> }>({
           query: gql`

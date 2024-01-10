@@ -7,7 +7,7 @@
     "build": {
       "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "development",
+      "defaultConfiguration": "production",
       "options": {
         "target": "node",
         "compiler": "tsc",
@@ -18,6 +18,9 @@
         "webpackConfig": "apps/worker/ranking/webpack.config.js"
       },
       "configurations": {
+        "development": {
+          "optimization": false
+        },
         "production": {
           "optimization": true,
           "extractLicenses": true,
@@ -30,9 +33,7 @@
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "worker-ranking:build",
-        "port": 9231,
-        "inspect": "inspect",
-        "host": "0.0.0.0"
+        "port": 9231
       },
       "configurations": {
         "development": {
@@ -45,10 +46,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/worker/ranking/**/*.ts"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",

@@ -5,6 +5,7 @@ import { Logger } from '@nestjs/common';
 import { Job, Queue } from 'bull';
 import { Sequelize } from 'sequelize-typescript';
 import { RankingSyncer } from './ranking-sync';
+import { CronJob } from '@badman/backend-database';
 
 @Processor({
   name: SyncQueue,
@@ -32,6 +33,25 @@ export class SyncRankingProcessor {
 
     const transaction = await this._sequelize.transaction();
 
+    const cronJob = await CronJob.findOne({
+      where: {
+        'meta.jobName': Sync.SyncRanking,
+        'meta.queueName': SyncQueue,
+      },
+    });
+    
+    if (!cronJob) {
+      throw new Error('Job not found');
+    }
+
+    if (cronJob.running) {
+      this.logger.log('Job already running');
+      return;
+    }
+
+    cronJob.amount++;
+    await cronJob.save();
+
     try {
       await this._rankingSync.process({
         transaction,
@@ -46,6 +66,10 @@ export class SyncRankingProcessor {
       this.logger.error('Rolling back');
       await transaction.rollback();
       throw error;
+    } finally{
+      cronJob.amount--;
+      cronJob.lastRun = new Date();
+      await cronJob.save();
     }
   }
 }

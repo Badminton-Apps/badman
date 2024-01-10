@@ -2,19 +2,23 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
+  Injector,
   Input,
   OnInit,
   PLATFORM_ID,
+  Signal,
   TransferState,
+  computed,
+  inject,
 } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatTableModule } from '@angular/material/table';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, first, map, of, switchMap, take } from 'rxjs';
+import { first, map } from 'rxjs';
 
 @Component({
   selector: 'badman-ranking-table',
@@ -25,10 +29,14 @@ import { Observable, first, map, of, switchMap, take } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RankingTableComponent implements OnInit {
-  @Input()
-  id = 'primary';
+  private readonly rankingSystemService = inject(RankingSystemService);
+  private readonly apollo = inject(Apollo);
+  private readonly transferState = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly injector = inject(Injector);
 
-  dataSource = new MatTableDataSource<RankingScoreTable>();
+  @Input()
+  id: string | null = null;
 
   displayedColumns = [
     'level',
@@ -37,59 +45,48 @@ export class RankingTableComponent implements OnInit {
     'pointsWhenWinningAgainst',
   ];
 
-  constructor(
-    private apollo: Apollo,
-    private raningSystemService: RankingSystemService,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {}
+  system = this.rankingSystemService.system as Signal<RankingSystem>;
 
   ngOnInit() {
-    let input: Observable<string>;
-    if (this.id == 'primary') {
-      input = this.raningSystemService.getPrimarySystemId();
-    } else {
-      input = of(this.id);
+    if (this.id !== null) {
+      this.system = toSignal(this._loadRanking(this.id), {
+        injector: this.injector,
+      }) as Signal<RankingSystem>;
     }
-
-    input
-      .pipe(
-        switchMap((systemId) => this._loadRanking(systemId)),
-        take(1)
-      )
-      .subscribe((system) => {
-        let level = system.amountOfLevels ?? 0;
-        const data = system.pointsWhenWinningAgainst?.map(
-          (winning: number, index: number) => {
-            return {
-              level: level--,
-              pointsToGoUp:
-                level !== 0
-                  ? Math.round(system.pointsToGoUp?.[index] ?? 0)
-                  : null,
-              pointsToGoDown:
-                index === 0
-                  ? null
-                  : Math.round(system.pointsToGoDown?.[index - 1] ?? 0),
-              pointsWhenWinningAgainst: Math.round(winning),
-            } as RankingScoreTable;
-          }
-        );
-
-        if (data) {
-          this.dataSource.data = data;
-        }
-      });
   }
 
-  _loadRanking(systemId: string) {
+  dataSource = computed(() => {
+    if (!this.system()) {
+      return [];
+    }
+
+    let level = this.system().amountOfLevels ?? 0;
+    return this.system().pointsWhenWinningAgainst?.map(
+      (winning: number, index: number) => {
+        return {
+          level: level--,
+          pointsToGoUp:
+            level !== 0
+              ? Math.round(this.system().pointsToGoUp?.[index] ?? 0)
+              : null,
+          pointsToGoDown:
+            index === 0
+              ? null
+              : Math.round(this.system().pointsToGoDown?.[index - 1] ?? 0),
+          pointsWhenWinningAgainst: Math.round(winning),
+        } as RankingScoreTable;
+      },
+    );
+  }) as () => RankingScoreTable[];
+
+  _loadRanking(systemId: string | null) {
     {
       return this.apollo
         .query<{
           rankingSystem: Partial<RankingSystem>;
         }>({
           query: gql`
-            query GetSystemForTable($id: ID!) {
+            query GetSystemForTable($id: ID) {
               rankingSystem(id: $id) {
                 id
                 name
@@ -97,7 +94,7 @@ export class RankingTableComponent implements OnInit {
                 pointsToGoUp
                 pointsToGoDown
                 pointsWhenWinningAgainst
-                caluclationIntervalLastUpdate
+                calculationLastUpdate
                 primary
               }
             }
@@ -110,7 +107,7 @@ export class RankingTableComponent implements OnInit {
           transferState(
             'rankingKey-' + systemId,
             this.transferState,
-            this.platformId
+            this.platformId,
           ),
           map((result) => {
             if (!result?.data.rankingSystem) {
@@ -118,7 +115,7 @@ export class RankingTableComponent implements OnInit {
             }
             return new RankingSystem(result.data.rankingSystem);
           }),
-          first()
+          first(),
         );
     }
   }

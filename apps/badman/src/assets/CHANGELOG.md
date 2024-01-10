@@ -2,6 +2,441 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.129.0-beta.41](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.40...v6.129.0-beta.41) (2024-01-10)
+
+
+### Bug Fixes
+
+* should update on duplicate ([a84bcf8](https://github.com/Badminton-Apps/badman/commit/a84bcf88bc10a66c2e46a269bc219e5f1d408972))
+* translation key was wrong ([d559c41](https://github.com/Badminton-Apps/badman/commit/d559c41650c0788cfaad809cfe20b02a3f44bee7))
+
+## [6.129.0-beta.40](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.39...v6.129.0-beta.40) (2024-01-10)
+
+
+### Bug Fixes
+
+* arguments for sync jobs ([cac8931](https://github.com/Badminton-Apps/badman/commit/cac8931a5e753ca9c21a934af9a16b1c573e725c))
+
+## [6.129.0-beta.39](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.38...v6.129.0-beta.39) (2024-01-10)
+
+
+### Features
+
+* auto accept after 36 hours after entered ([f7fa04f](https://github.com/Badminton-Apps/badman/commit/f7fa04f0575f8cb91040304d42d8c6569cf9831a))
+
+
+### Bug Fixes
+
+* link didn't got the visual Code ([73373b2](https://github.com/Badminton-Apps/badman/commit/73373b29cbe4e330a41ff29301a80a7db3fa8d88))
+* playwright should work now ([2b7f7bf](https://github.com/Badminton-Apps/badman/commit/2b7f7bf6adde4049430ea905ba32820a8b4c99da))
+* testing should work now ([b63ee08](https://github.com/Badminton-Apps/badman/commit/b63ee0865800e30899469730745c8eae5e8b9c77))
+
+## [6.129.0-beta.38](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.37...v6.129.0-beta.38) (2024-01-07)
+
+
+### Features
+
+* keeping track of running jobs / amount ([0231e45](https://github.com/Badminton-Apps/badman/commit/0231e4544cb87e448d937536a34212009d2f60df))
+
+
+### Bug Fixes
+
+* reset the jobs ([7bab6ab](https://github.com/Badminton-Apps/badman/commit/7bab6aba92415d4d3be19785941c994deea4d10d))
+* should fix status updates ([f4cafdd](https://github.com/Badminton-Apps/badman/commit/f4cafdd57b9d85824ff52931e64644b4bde5b862))
+
+## [6.129.0-beta.37](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.36...v6.129.0-beta.37) (2024-01-03)
+
+
+### Features
+
+* some more watching code/details ([cfe26b7](https://github.com/Badminton-Apps/badman/commit/cfe26b7313a28e6d3ecd7c51f443c5c75e892e9e))
+
+
+### Bug Fixes
+
+* adding breakdown games ([239bbe7](https://github.com/Badminton-Apps/badman/commit/239bbe7bb6401b47249b1a1ad60e390e85562904))
+* use start of day ([f24804e](https://github.com/Badminton-Apps/badman/commit/f24804e875ba875294b95a65829fd9870608a2f5))
+
+## [6.129.0-beta.36](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.35...v6.129.0-beta.36) (2024-01-02)
+
+
+### Features
+
+* adding link to encounter ([98a277a](https://github.com/Badminton-Apps/badman/commit/98a277a3421ec1f563c546c7330abf5ceb523d7a))
+* adding some standing styling ([552e230](https://github.com/Badminton-Apps/badman/commit/552e230801e6821e67a5864815f4923981d09654))
+
+
+### Bug Fixes
+
+* update dates weren't being added, this fixes it ([04ad5a8](https://github.com/Badminton-Apps/badman/commit/04ad5a8709d75d39755e03d2acff86f22b276adb))
+
+## [6.129.0-beta.35](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.34...v6.129.0-beta.35) (2024-01-02)
+
+
+### Features
+
+* don't re-quue if already running ([7642dc8](https://github.com/Badminton-Apps/badman/commit/7642dc8df163a171b42dd9ad608751d32273573b))
+* scheduling rankingupdate to 2pm so all events are scheduled, and can be checked ([b3b6502](https://github.com/Badminton-Apps/badman/commit/b3b6502c65d19e42089dd5aabb6468a840a72442))
+
+
+### Bug Fixes
+
+* shownig next/prev level only when upgrade/downgrade is possible ([fe52eed](https://github.com/Badminton-Apps/badman/commit/fe52eed93a5d61e1f2beabbd4183c56361709c73))
+
+## [6.129.0-beta.34](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.33...v6.129.0-beta.34) (2024-01-02)
+
+
+### Features
+
+* adding upgrade/downgrade tooltip ([81c8bf2](https://github.com/Badminton-Apps/badman/commit/81c8bf272f995febfedd02a9166650a46812b186))
+* checking service statusses on startup ([97a8fe6](https://github.com/Badminton-Apps/badman/commit/97a8fe6247adeeb03b5550a6a8eb81693f728f8c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency xng-breadcrumb to v10.0.2 ([261f131](https://github.com/Badminton-Apps/badman/commit/261f1316de47b0e178053fe01bc1aa09b100456b))
+* doing require works ([5e32108](https://github.com/Badminton-Apps/badman/commit/5e321083b3d9caff7d93632caf4cdd81610babd0))
+* extra null check ([5ece366](https://github.com/Badminton-Apps/badman/commit/5ece366180ae462780c295282f82a2b2d08ba29f))
+* typo in beta message ([44595ed](https://github.com/Badminton-Apps/badman/commit/44595edce5afbd1f4d927ea912ddef2a39c3d1b2))
+
+## [6.129.0-beta.33](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.32...v6.129.0-beta.33) (2023-12-27)
+
+
+### Features
+
+* adding interface for running ranking job ([6f62262](https://github.com/Badminton-Apps/badman/commit/6f622625a91cde1d8b829fe94d0dfbb013aba458))
+
+## [6.129.0-beta.32](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.31...v6.129.0-beta.32) (2023-12-27)
+
+
+### Bug Fixes
+
+* height wasn't correctly set ([4789f4a](https://github.com/Badminton-Apps/badman/commit/4789f4a5a731138175f2d46afbe99ec376ae7b02))
+* more finetuning on system loading ([f8ca376](https://github.com/Badminton-Apps/badman/commit/f8ca376f0e33e784c4b1ca2b77a192f834644024))
+* viewing ranking system wouln't always load correctly ([5b03dd5](https://github.com/Badminton-Apps/badman/commit/5b03dd5b6ad0ee3d42f2a19e79d28b921d251328))
+
+## [6.129.0-beta.31](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.30...v6.129.0-beta.31) (2023-12-27)
+
+
+### Bug Fixes
+
+* if no date is provided, use last calculation update + 1 day ([2b5ddc8](https://github.com/Badminton-Apps/badman/commit/2b5ddc8c47f86faca5c7b7f751bf439b42a8dc0d))
+
+## [6.129.0-beta.30](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.29...v6.129.0-beta.30) (2023-12-26)
+
+
+### Features
+
+* first draft of showing points ([4f0dd11](https://github.com/Badminton-Apps/badman/commit/4f0dd117030062d83a6018cb34688e144d97bd92))
+* first draft of showing points ([41109f9](https://github.com/Badminton-Apps/badman/commit/41109f936885ca2feb76d5cdf604b069858135c1))
+
+## [6.129.0-beta.29](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.28...v6.129.0-beta.29) (2023-12-26)
+
+
+### Bug Fixes
+
+* should be from last calculatino ([b862aaf](https://github.com/Badminton-Apps/badman/commit/b862aafa3e1a73f898828004180ce7d3e1d84c1c))
+
+## [6.129.0-beta.28](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.27...v6.129.0-beta.28) (2023-12-26)
+
+
+### Bug Fixes
+
+* find cronjob via jobName & queueName ([ffa0621](https://github.com/Badminton-Apps/badman/commit/ffa0621bca16eb367d205eafab96e6b17303f2d0))
+
+## [6.129.0-beta.27](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.26...v6.129.0-beta.27) (2023-12-26)
+
+
+### Features
+
+* moving ranking to signal (more to be done) ([359350e](https://github.com/Badminton-Apps/badman/commit/359350e7ebdd85c23ad0e92ed4b889b1ec7b7a85))
+
+
+### Bug Fixes
+
+* allow clustering on development ([3238713](https://github.com/Badminton-Apps/badman/commit/3238713ead81a8a6cac8674a63ae3a999b7d9e0b))
+* period wouln't return if date wasn't checked on day level ([61bfeab](https://github.com/Badminton-Apps/badman/commit/61bfeab66ce2420bb51c324e4f046e5b0e1d85b1))
+* this gets calcaulated at calculation ([99e3d0c](https://github.com/Badminton-Apps/badman/commit/99e3d0ce80b718445a2b0312308ade09007e3448))
+
+## [6.129.0-beta.26](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.25...v6.129.0-beta.26) (2023-12-24)
+
+
+### Bug Fixes
+
+* adding some debugging info to check what is going on ([a8d842b](https://github.com/Badminton-Apps/badman/commit/a8d842bc82933d5f7b3838fe576f73e05a8da69a))
+* correct default params ([df949ff](https://github.com/Badminton-Apps/badman/commit/df949ff297be9f6c58e1534f9dacfd9302a9199a))
+* re-introducing the timer ([0d90a83](https://github.com/Badminton-Apps/badman/commit/0d90a8394704e5a27551e1bae1291772c28ca933))
+* remove timeout ([5fb0eb3](https://github.com/Badminton-Apps/badman/commit/5fb0eb3fc597805bc1fb97479a58cfb7a520e992))
+
+## [6.129.0-beta.25](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.24...v6.129.0-beta.25) (2023-12-24)
+
+
+### Features
+
+* copy places only ([081763e](https://github.com/Badminton-Apps/badman/commit/081763eec88f2a89afad4f415e061f1e35afdcd1))
+* optional arguments for enabling/disabling calculations ([f1c9fa5](https://github.com/Badminton-Apps/badman/commit/f1c9fa56fffc6eeea5e81fbdb340c066554d1df6))
+* restart quueue if there are still jobs remaining. ([73faeb3](https://github.com/Badminton-Apps/badman/commit/73faeb33d8b6b3f45cb76d30cf9665641317821c))
+* switch to cron interval check ([e58993a](https://github.com/Badminton-Apps/badman/commit/e58993a7d8193eeffb63f189926057102623ea60))
+
+
+### Bug Fixes
+
+* add job queue check before stopping worker ([c97c6b0](https://github.com/Badminton-Apps/badman/commit/c97c6b02aea5c63648466cf71ed2145835f583e4))
+* sometimes is a query just faster ([7169cbb](https://github.com/Badminton-Apps/badman/commit/7169cbbbdf7042a1b48a95d5c0d956fe56d154ab))
+* we don't really need to check on startup, will be triggered within the minute ([4218a8e](https://github.com/Badminton-Apps/badman/commit/4218a8e686eb6c396f4f0799cc74810f7cd54e26))
+
+## [6.129.0-beta.24](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.23...v6.129.0-beta.24) (2023-12-23)
+
+## [6.129.0-beta.23](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.22...v6.129.0-beta.23) (2023-12-23)
+
+
+### Bug Fixes
+
+* should also run the workers if I want to use them :) ([4d9d915](https://github.com/Badminton-Apps/badman/commit/4d9d915e88b1b3a5fc2161a33ddb7f4211e81a5c))
+
+## [6.129.0-beta.22](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.21...v6.129.0-beta.22) (2023-12-23)
+
+
+### Bug Fixes
+
+* removing simulation queue, this is now ranking queue ([b62d511](https://github.com/Badminton-Apps/badman/commit/b62d5112814d444dc31e0416e375aabd785bfc85))
+* should have been midnight ([54badd6](https://github.com/Badminton-Apps/badman/commit/54badd6ca6e3336f6530d967a8cfe70ac56be861))
+
+## [6.129.0-beta.21](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.20...v6.129.0-beta.21) (2023-12-23)
+
+
+### Features
+
+* allowing from and to dates ([06cd4eb](https://github.com/Badminton-Apps/badman/commit/06cd4ebcbe25ed4172573b74c12e755e49754cbb))
+
+## [6.129.0-beta.20](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.19...v6.129.0-beta.20) (2023-12-23)
+
+
+### Features
+
+* moving the period calculation to a helper function with tests ([25b6b8c](https://github.com/Badminton-Apps/badman/commit/25b6b8c0d1af66fa0880e2a36011d15d1bd2f5d9))
+
+## [6.129.0-beta.19](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.18...v6.129.0-beta.19) (2023-12-22)
+
+
+### Bug Fixes
+
+* should also update the Sync Encounters cronjob ([e8689a1](https://github.com/Badminton-Apps/badman/commit/e8689a1755d8e771954048bb01ca2682f4254163))
+* should wait for timer otherwise would result in shutting down while active ([d994bbf](https://github.com/Badminton-Apps/badman/commit/d994bbf865fa6ce9539adf982f82632c6b89b469))
+
+## [6.129.0-beta.18](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.17...v6.129.0-beta.18) (2023-12-22)
+
+
+### Features
+
+* store the last 5 jobs ([8cd77c5](https://github.com/Badminton-Apps/badman/commit/8cd77c521f131cee7a0a55ef7513cea66a2f057a))
+
+## [6.129.0-beta.17](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.16...v6.129.0-beta.17) (2023-12-20)
+
+
+### Features
+
+* adding typing to config ([847aa62](https://github.com/Badminton-Apps/badman/commit/847aa629a298c37b26a8b1b838b8708bba80ed0a))
+* auto accepting encounters ([317094e](https://github.com/Badminton-Apps/badman/commit/317094ec481eced4685b3bfb49579f2b6c8cf038))
+* check each hour just in case the queue got confused ([221eae8](https://github.com/Badminton-Apps/badman/commit/221eae8d12aa17563946712eb19fe73363df48de))
+* sorting + renaming to logical name ([66a7096](https://github.com/Badminton-Apps/badman/commit/66a7096e60a6600c8f62198364733bdefb8bccd0))
+
+
+### Bug Fixes
+
+* correct gender when updating ranking ([79d70d5](https://github.com/Badminton-Apps/badman/commit/79d70d58c89d3715d479bac200053672894dd94c))
+* removing testing code ([3cac249](https://github.com/Badminton-Apps/badman/commit/3cac24979ae7171b4b4a91a0e726c2da14327ac8))
+* some debug logging for future me ([6f9c5bc](https://github.com/Badminton-Apps/badman/commit/6f9c5bca7141efd8ba68eb9a9133494bc25a7905))
+* this isn't used right now ([045596e](https://github.com/Badminton-Apps/badman/commit/045596e0cb038c0fb57cd847ee03ca6ab3c623cf))
+
+## [6.129.0-beta.16](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.15...v6.129.0-beta.16) (2023-12-19)
+
+
+### Features
+
+* adding nextRun ([3d76d98](https://github.com/Badminton-Apps/badman/commit/3d76d982d550ad8e07e0f1a4625cc8eab943af6a))
+
+## [6.129.0-beta.15](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.14...v6.129.0-beta.15) (2023-12-19)
+
+
+### Features
+
+* readable format ([ed22a37](https://github.com/Badminton-Apps/badman/commit/ed22a375972b198ee6f3e172f7917a95fbf3199c))
+
+
+### Bug Fixes
+
+* should also emit the id ([4ec4662](https://github.com/Badminton-Apps/badman/commit/4ec46627df9a0ef76d75eecae6d96c58fa438862))
+* should parse the date ([8e77459](https://github.com/Badminton-Apps/badman/commit/8e77459d9e2b7f328c1b39d833f982edde35dce9))
+
+## [6.129.0-beta.14](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.13...v6.129.0-beta.14) (2023-12-19)
+
+
+### Features
+
+* adding default values on remove/failed complete ([4998735](https://github.com/Badminton-Apps/badman/commit/499873535ebbc2ba4825013767259969af542d6e))
+
+
+### Bug Fixes
+
+* using correct names ([6c8dee8](https://github.com/Badminton-Apps/badman/commit/6c8dee8d0051d4dd5b87d6d207abe09e92c53c82))
+
+## [6.129.0-beta.13](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.12...v6.129.0-beta.13) (2023-12-19)
+
+
+### Features
+
+* queing job ([8190817](https://github.com/Badminton-Apps/badman/commit/819081757b338965aaf5aae687ede54e55e65d75))
+
+
+### Bug Fixes
+
+* remove items that now come from DB ([06e54e5](https://github.com/Badminton-Apps/badman/commit/06e54e5c12795d9db9f94d9a09f1967061f69334))
+* remove own packages from auto update ([26f7f11](https://github.com/Badminton-Apps/badman/commit/26f7f114efdae85dab5021da185557306ff98cbc))
+
+## [6.129.0-beta.12](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.11...v6.129.0-beta.12) (2023-12-11)
+
+
+### Features
+
+* adding jobs via DB, websockets for info regarding servies, ... ([0d983fa](https://github.com/Badminton-Apps/badman/commit/0d983faee063def834f13b63bf47d609df1de0bd))
+
+
+### Bug Fixes
+
+* back to a working build ([261cfe0](https://github.com/Badminton-Apps/badman/commit/261cfe0f0f2c5bc91e719ae51ec8c5899384840a))
+* **deps:** update angular monorepo to v17.0.6 ([1bf8a89](https://github.com/Badminton-Apps/badman/commit/1bf8a891d75a88ad46b1d45eb44b54e9f4d6045a))
+* **deps:** update angularmaterial monorepo to v17.0.3 ([7b20035](https://github.com/Badminton-Apps/badman/commit/7b2003554edb6522f4fa0e8091e906d3221ca8e3))
+* **deps:** update dependency ngx-quill to v24.0.4 ([0d793a0](https://github.com/Badminton-Apps/badman/commit/0d793a088ba7c7af3d4c5b9e365928010a9d659e))
+* **deps:** update dependency ngxtension to v1.6.0 ([aa6c6e8](https://github.com/Badminton-Apps/badman/commit/aa6c6e800a05960df58a6d22531ad88184ba95e1))
+* is this the reason? ([3f74e6e](https://github.com/Badminton-Apps/badman/commit/3f74e6ee3b00bd3007465cf9e4d5ac43d501d9bc))
+* publishable packages can't reference eachother ([21b29bd](https://github.com/Badminton-Apps/badman/commit/21b29bd67a5c86c40fdb6f92ba1cd70d81d95f3c))
+* should use the timeout time if configured ([e2e5a3a](https://github.com/Badminton-Apps/badman/commit/e2e5a3a2b17fd8f2bc1429634db17ab4831d0a56))
+
+## [6.129.0-beta.11](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.10...v6.129.0-beta.11) (2023-12-04)
+
+
+### Features
+
+* build prod on production ([a644d42](https://github.com/Badminton-Apps/badman/commit/a644d42ea042a270517586c12ca16b2295e7cc7f))
+* first draft of mobile version of assembly tool ([60a3c26](https://github.com/Badminton-Apps/badman/commit/60a3c26af7fab673491f08011dba2b9cafdd276e))
+
+
+### Bug Fixes
+
+* can be auto ([908980a](https://github.com/Badminton-Apps/badman/commit/908980a3704d6090a607f66e5e86dcdce494c7b5))
+* mobile should render correct ([38a8429](https://github.com/Badminton-Apps/badman/commit/38a84298a885fb9456ddb7f9fc2bb2ebb8aed294))
+* this fixes the file replacements needed for beta ([4055fa6](https://github.com/Badminton-Apps/badman/commit/4055fa6cbcd611d5b4f600adaf4b43429ae91911))
+
+## [6.129.0-beta.10](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.9...v6.129.0-beta.10) (2023-12-03)
+
+
+### Bug Fixes
+
+* should be 0/4 ([cd5ae80](https://github.com/Badminton-Apps/badman/commit/cd5ae80a65acdf211314370b1b70610e16e88ac7))
+* should pass the config along ([d066d1e](https://github.com/Badminton-Apps/badman/commit/d066d1e2f1f06a9a3d067b6e6d0498bc4b85798d))
+* should use the variable if I want to ([0afc7a8](https://github.com/Badminton-Apps/badman/commit/0afc7a8850062f0395d7c0c97df45b04a6c18665))
+
+## [6.129.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.8...v6.129.0-beta.9) (2023-12-03)
+
+
+### Features
+
+* some more testing ([9d11471](https://github.com/Badminton-Apps/badman/commit/9d114713ccd2fadf116dc2523fccbfe86d3f0dd1))
+
+
+### Bug Fixes
+
+* puppeteer in different location ([d42f0fa](https://github.com/Badminton-Apps/badman/commit/d42f0fa7bd88696d9bacb47b21ae11a597586840))
+
+## [6.129.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.7...v6.129.0-beta.8) (2023-12-02)
+
+
+### Features
+
+* some debugging info ([9efb5cf](https://github.com/Badminton-Apps/badman/commit/9efb5cfc55b11b21a6ed5ed925fe5da26d3aa6a3))
+
+
+### Bug Fixes
+
+* schedules is needed for cron (of course) ([59bd9e1](https://github.com/Badminton-Apps/badman/commit/59bd9e1a21ae05a9f3bf4502f7689125c9b77bee))
+
+## [6.129.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.6...v6.129.0-beta.7) (2023-12-02)
+
+
+### Features
+
+* using correct method + putting cron in main API ([5389bdd](https://github.com/Badminton-Apps/badman/commit/5389bdd2a002ab82502ff3b7fe8afae4222cd021))
+
+
+### Bug Fixes
+
+* should have been data ([e4b3105](https://github.com/Badminton-Apps/badman/commit/e4b310518ec1fecafca936886ec21d3ef57d1f94))
+
+## [6.129.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.5...v6.129.0-beta.6) (2023-12-02)
+
+
+### Features
+
+* using a normal API for the render ([b401c5e](https://github.com/Badminton-Apps/badman/commit/b401c5e1640e295a9dfd4146e6f4632957a4e8ca))
+
+
+### Bug Fixes
+
+* get the right config helps ([baddefe](https://github.com/Badminton-Apps/badman/commit/baddefe8cf2d1400de286e51c16a1ea544991ee8))
+
+## [6.129.0-beta.5](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.4...v6.129.0-beta.5) (2023-12-02)
+
+
+### Bug Fixes
+
+* node 20 all the way ([2cf2916](https://github.com/Badminton-Apps/badman/commit/2cf2916d6b561ee4dc96e19d1a622fd43073f4c4))
+* stop the workers directly ([f1a075c](https://github.com/Badminton-Apps/badman/commit/f1a075c7f691e00b8b56a2a9306fab3f61c6cfcb))
+
+## [6.129.0-beta.4](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.3...v6.129.0-beta.4) (2023-12-02)
+
+
+### Bug Fixes
+
+* removing the nx reset again. ([81d1204](https://github.com/Badminton-Apps/badman/commit/81d120457dca7eea8e3d503faf194fab24f70ede))
+
+## [6.129.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.2...v6.129.0-beta.3) (2023-12-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency sequelize-typescript to v2.1.6 [security] ([2d9ff58](https://github.com/Badminton-Apps/badman/commit/2d9ff58cf42d090618490b05bbef61b6fa84f4b9))
+
+## [6.129.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.1...v6.129.0-beta.2) (2023-12-02)
+
+
+### Bug Fixes
+
+* adding some debug logs on launch ([4286374](https://github.com/Badminton-Apps/badman/commit/4286374f49fbcb67f6be242f30b0ea2f12322f9f))
+* nx is doing weird stuff ([512cb02](https://github.com/Badminton-Apps/badman/commit/512cb02e53773fadfa53d3a344114d34035b285e))
+
+## [6.129.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.129.0-beta.0...v6.129.0-beta.1) (2023-12-02)
+
+
+### Bug Fixes
+
+* some references were wrong ([8a5d536](https://github.com/Badminton-Apps/badman/commit/8a5d5363551ac0c77f08ac74a14a10346d4b9f9a))
+
+## [6.129.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.128.1...v6.129.0-beta.0) (2023-12-02)
+
+
+### Features
+
+* deploying ranking if needed ([2bde781](https://github.com/Badminton-Apps/badman/commit/2bde781d0f66e5d6ff8098a1348ce489a9797dc2))
+* set running to true when running ([ec1e186](https://github.com/Badminton-Apps/badman/commit/ec1e1866c7a32ba28e8367cf693eabafdb57a019))
+* setting cpu's based on cpu's ([1d27f45](https://github.com/Badminton-Apps/badman/commit/1d27f45b0a1bb5c5f900d1dced03d02e2ae97650))
+* start and suspend services when needed ([085d743](https://github.com/Badminton-Apps/badman/commit/085d74365cf827d1ec51b2eee9ee8b4af1a0d07a))
+
+
+### Bug Fixes
+
+* no need for system ([7372d1d](https://github.com/Badminton-Apps/badman/commit/7372d1d4f648e8380083f5cdd05163e6877c103e))
+
 ### [6.128.1](https://github.com/Badminton-Apps/badman/compare/v6.128.0...v6.128.1) (2023-11-22)
 
 

@@ -64,6 +64,7 @@
     "cancel": "Cancel",
     "clone": "Clone",
     "close": "Close",
+    "copy": "Copy",
     "create": "Create",
     "delete": "Delete",
     "detail": "Details",
@@ -574,6 +575,9 @@
     "type": "Type",
     "year": "Year"
   },
+  "jobs": {
+    "title": "Jobs"
+  },
   "landing": {
     "description": "We are working on making a central place for all your badminton data.",
     "title": "Badman"
@@ -677,6 +681,7 @@
   },
   "ranking": {
     "all-ranking": "All update",
+    "clone-points": "Copy points to this system",
     "double": "Double",
     "double-points": "Ranking points",
     "double-rank": "Ranking place",
@@ -717,6 +722,7 @@
       "ranking-date": "Ranking update",
       "remove-current-ranking": "Remove all current rankings from ranking date",
       "title": "File upload",
+      "update-possible": "Ranking update",
       "update-ranking": "Update Ranking"
     }
   },
@@ -804,6 +810,9 @@
         "changelog": "Changelog",
         "faq": "FAQ",
         "title": "General"
+      },
+      "jobs": {
+        "title": "Jobs"
       },
       "persnal": {
         "club": "My Club",

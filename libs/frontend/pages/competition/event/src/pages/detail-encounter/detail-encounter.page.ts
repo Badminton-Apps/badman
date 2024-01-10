@@ -21,7 +21,7 @@ import {
   HasClaimComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
-import { JobsModule, JobsService } from '@badman/frontend-jobs';
+import { JobsService } from '@badman/frontend-queue';
 import {
   DrawCompetition,
   EncounterCompetition,
@@ -64,7 +64,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     GameScoreComponentComponent,
     PageHeaderComponent,
     HasClaimComponent,
-    JobsModule,
   ],
 })
 export class DetailEncounterComponent implements OnInit {
@@ -78,7 +77,7 @@ export class DetailEncounterComponent implements OnInit {
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
     private jobService: JobsService,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   get isClient(): boolean {
@@ -104,11 +103,17 @@ export class DetailEncounterComponent implements OnInit {
           this.encounterCompetition.away?.name ?? '',
         ],
       });
-      this.breadcrumbsService.set('@eventCompetition', this.eventCompetition.name ?? '');
-      this.breadcrumbsService.set('@drawCompetition', this.drawCompetition.name ?? '');
+      this.breadcrumbsService.set(
+        '@eventCompetition',
+        this.eventCompetition.name ?? '',
+      );
+      this.breadcrumbsService.set(
+        '@drawCompetition',
+        this.drawCompetition.name ?? '',
+      );
       this.breadcrumbsService.set(
         '@encounterCompetition',
-        this.encounterCompetitionName
+        this.encounterCompetitionName,
       );
     });
   }
@@ -148,7 +153,7 @@ export class DetailEncounterComponent implements OnInit {
     await lastValueFrom(
       this.jobService.checkNotifications({
         id: this.encounterCompetition.id,
-      })
+      }),
     );
   }
 }

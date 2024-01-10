@@ -11,31 +11,27 @@
         - </ng-container
       >{{this.player().memberId}}
     </div>
-    <ng-container *ngIf="this.rankingPlace?.()">
-      <mat-chip-listbox>
-        <mat-chip
-          matTooltipClass="tooltip-multi-line"
-          [routerLink]="['ranking', 'single']"
-          [matTooltip]="tooltip.single + (this.rankingPlace().singlePoints ? '\n\r' + this.rankingPlace().singlePoints?.toLocaleString(): '')"
-          class="single"
-          >{{this.rankingPlace().single}}</mat-chip
-        >
-        <mat-chip
-          matTooltipClass="tooltip-multi-line"
-          [routerLink]="['ranking', 'double']"
-          [matTooltip]="tooltip.double + (this.rankingPlace().doublePoints ? '\n\r' + this.rankingPlace().doublePoints?.toLocaleString(): '')"
-          class="double"
-          >{{this.rankingPlace().double}}</mat-chip
-        >
-        <mat-chip
-          matTooltipClass="tooltip-multi-line"
-          [routerLink]="['ranking', 'mix']"
-          [matTooltip]="tooltip.mix + (this.rankingPlace().mixPoints ? '\n\r' + this.rankingPlace().mixPoints?.toLocaleString(): '')"
-          class="mix"
-          >{{this.rankingPlace().mix}}</mat-chip
-        >
-      </mat-chip-listbox></ng-container
-    >
+
+    @if (this.player().id) {
+    <div class="levels">
+      <badman-show-level
+        [routerLink]="['ranking', 'single']"
+        [playerId]="this.playerId"
+        type="single"
+      />
+      <badman-show-level
+        [routerLink]="['ranking', 'double']"
+        [playerId]="this.playerId"
+        type="double"
+      />
+      <badman-show-level
+        [routerLink]="['ranking', 'mix']"
+        [playerId]="this.playerId"
+        type="mix"
+      />
+    </div>
+    }
+
     <div class="click-for-breakdown">
       {{ 'all.breakdown.hint' | translate }}
     </div>
@@ -68,11 +64,6 @@
             <span>{{'all.player.menu.edit' | translate}}</span>
           </button>
         </badman-has-claim>
-        <!-- <badman-has-claim [any]="['change:job']">
-          <button mat-menu-item (click)="this.syncRanking()">
-            {{ 'all.button.sync-ranking' | translate }}
-          </button>
-        </badman-has-claim> -->
 
         <badman-has-claim [any]="['delete:player']">
           <button mat-menu-item (click)="this.removePlayer()">

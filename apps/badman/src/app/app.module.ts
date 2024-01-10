@@ -1,7 +1,14 @@
-import { APP_ID, isDevMode, NgModule, SecurityContext } from '@angular/core';
+import {
+  APP_ID,
+  inject,
+  isDevMode,
+  NgModule,
+  SecurityContext,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { GraphQLModule } from '@badman/frontend-graphql';
+
 import {
   ClarityModule,
   GoogleAdsModule,
@@ -9,13 +16,13 @@ import {
   GoogleMapsModule,
   VERSION_INFO,
 } from '@badman/frontend-html-injects';
-import { JobsModule } from '@badman/frontend-jobs';
 
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AuthModule } from '@badman/frontend-auth';
+import { CpModule } from '@badman/frontend-cp';
 import { PdfModule } from '@badman/frontend-pdf';
 import { SeoModule } from '@badman/frontend-seo';
 import { TranslationModule } from '@badman/frontend-translation';
@@ -29,12 +36,14 @@ import { QuillModule } from 'ngx-quill';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { ShellComponent } from '@badman/frontend-components';
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import { CpModule } from '@badman/frontend-cp';
 import { ExcelModule } from '@badman/frontend-excel';
-import { RANKING_CONFIG, RankingModule } from '@badman/frontend-ranking';
+import { Socket, SocketIoModule } from 'ngx-socket-io';
+
+/*  eslint-disable @nx/enforce-module-boundaries*/
+import { ShellComponent } from '@badman/frontend-components';
+import { JOBS_CONFIG_TOKEN } from '@badman/frontend-queue';
+import { RANKING_CONFIG } from '@badman/frontend-ranking';
+/*  eslint-enable @nx/enforce-module-boundaries */
 
 const APP_ROUTES: Routes = [
   {
@@ -73,7 +82,8 @@ const APP_ROUTES: Routes = [
   },
   {
     path: 'ranking',
-    loadChildren: () => RankingModule,
+    loadChildren: () =>
+      import('@badman/frontend-ranking').then((m) => m.RankingModule),
     data: {
       animation: 'ranking',
     },
@@ -105,6 +115,11 @@ const APP_ROUTES: Routes = [
     path: 'general',
     loadChildren: () =>
       import('@badman/frontend-general').then((m) => m.GeneralModule),
+  },
+  {
+    path: 'jobs',
+    loadChildren: () =>
+      import('@badman/frontend-jobs').then((m) => m.JobModule),
   },
 ];
 @NgModule({
@@ -172,6 +187,9 @@ const APP_ROUTES: Routes = [
     CpModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/cp`,
     }),
+    SocketIoModule.forRoot({
+      url: `${environment.api}`,
+    }),
     TranslationModule.forRoot({
       api: `${environment.api}/${environment.apiVersion}/translate/i18n/`,
     }),
@@ -181,9 +199,6 @@ const APP_ROUTES: Routes = [
     }),
     AnalyticsModule.forRoot({
       ...environment.vitals,
-    }),
-    JobsModule.forRoot({
-      api: `${environment.api}/${environment.apiVersion}`,
     }),
     QuillModule.forRoot(),
     NgMapsCoreModule,
@@ -214,6 +229,12 @@ const APP_ROUTES: Routes = [
       },
     },
     {
+      provide: JOBS_CONFIG_TOKEN,
+      useValue: {
+        api: `${environment.api}/${environment.apiVersion}`,
+      },
+    },
+    {
       provide: GOOGLE_MAPS_API_CONFIG,
       useValue: {
         apiKey: 'AIzaSyBTWVDWCw6c3rnZGG4GQcvoOoLuonsLuLc',
@@ -225,4 +246,11 @@ const APP_ROUTES: Routes = [
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  socket = inject(Socket);
+
+  constructor() {
+    // Something is wrong with the socket.io configuration, so we need to fix it here
+    this.socket.ioSocket.nsp = '/';
+  }
+}

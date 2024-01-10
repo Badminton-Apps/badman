@@ -192,14 +192,14 @@ export class RankingSyncer {
         // get latest publication
         const last = pubs?.slice(-1)?.[0];
         if (last) {
-          // store the latest publication in the calculationIntervalLastUpdate
-          ranking.system.caluclationIntervalLastUpdate = last.date.toDate();
+          // store the latest publication in the calculationLastUpdate
+          ranking.system.calculationLastUpdate = last.date.toDate();
         }
 
         const lastUpdate = pubs?.filter((r) => r.usedForUpdate)?.slice(-1)?.[0];
         if (lastUpdate) {
-          // store the latest publication in the calculationIntervalLastUpdate
-          ranking.system.updateIntervalAmountLastUpdate =
+          // store the latest publication in the calculationLastUpdate
+          ranking.system.updateLastUpdate =
             lastUpdate.date.toDate();
         }
 

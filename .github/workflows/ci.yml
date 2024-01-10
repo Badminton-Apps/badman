@@ -9,7 +9,6 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_ENV: '20.1'
   NX_NON_NATIVE_HASHER: 'true'
 
 jobs:
@@ -27,6 +26,7 @@ jobs:
         npx nx affected --target=test --parallel=3 --ci --code-coverage
         npx nx affected --target=build --parallel=3
         npx nx affected --target=server
+      node-version: ${{ vars.NODE_ENV }}
 
   agents:
     name: Nx Cloud - Agents
@@ -35,3 +35,4 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
+      node-version: ${{ vars.NODE_ENV }}
