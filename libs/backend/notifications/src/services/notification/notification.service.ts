@@ -195,7 +195,8 @@ export class NotificationService {
 
     // Property was loaded when sending notification
     const eventId =
-      encounter.drawCompetition?.subEventCompetition?.eventCompetition;
+      encounter.drawCompetition?.subEventCompetition?.eventCompetition
+        ?.visualCode;
     const matchId = encounter.visualCode;
     const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
