@@ -722,6 +722,7 @@
       "ranking-date": "Mise à jour du classement",
       "remove-current-ranking": "Supprimer tous les classements actuels à partir de la date de classement",
       "title": "Téléchargement de fichiers",
+      "update-possible": "Ranking update",
       "update-ranking": "Mettre à jour les classements"
     }
   },
