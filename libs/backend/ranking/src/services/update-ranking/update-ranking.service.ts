@@ -263,7 +263,7 @@ export class UpdateRankingService {
             place.doublePoints = d.doublesPoints || place.doublePoints;
             place.mix = d.mixed || place.mix;
             place.mixPoints = d.mixedPoints || place.mixPoints;
-            place.updatePossible = `${options.updatePossible}` == 'true'; 
+            place.updatePossible = `${options.updatePossible}` == 'true';
 
             if (place.changed() != false) {
               this._logger.verbose(
