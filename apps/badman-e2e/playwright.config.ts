@@ -5,7 +5,7 @@ import { workspaceRoot } from '@nx/devkit';
 import dotenv from 'dotenv';
 
 dotenv.config({
-  path: `.env.playwright`,
+  path: `.env.test`,
   override: true,
 });
 
@@ -32,6 +32,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
+  /* Timeout for each test */
   timeout: 120_000,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
