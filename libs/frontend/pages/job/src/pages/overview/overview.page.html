@@ -90,17 +90,15 @@
         matInput
         cdkTextareaAutosize
         cdkAutosizeMinRows="3"
-        #meta
         placeholder="Edit meta data"
-      >
-{{data.meta | json}}</textarea
-      >
+        [(ngModel)]="data.meta.arguments"
+      ></textarea>
     </mat-form-field>
   </mat-dialog-content>
 
   <mat-dialog-actions>
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="meta.value">Confirm</button>
+    <button mat-button [mat-dialog-close]="data.meta">Confirm</button>
   </mat-dialog-actions>
 </ng-template>
 

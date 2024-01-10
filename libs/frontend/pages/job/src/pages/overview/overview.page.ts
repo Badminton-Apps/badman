@@ -79,6 +79,14 @@ export class OverviewPageComponent {
     switch (cron.type) {
       case 'sync':
         template = this.syncTemplate;
+        // we don't have anything configured for sync jobs
+        cron = {
+          ...cron,
+          meta: {
+            ...cron.meta,
+            arguments: JSON.stringify(cron.meta?.arguments, null, 2),
+          },
+        } as CronJob;
         break;
       case 'ranking':
         template = this.rankingTemplate;
@@ -94,7 +102,14 @@ export class OverviewPageComponent {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed', result);
+
       if (result) {
+        if (cron.type === 'sync') {
+          // convert back
+          result.arguments = JSON.parse(result.arguments);
+        }
+        
         // Queue the job here
         this.service.state.queue({
           ...cron,
