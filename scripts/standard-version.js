@@ -48,13 +48,10 @@ const conventionalChangelog = require('conventional-changelog');
       filename: '../apps/badman/src/assets/config.json',
       type: 'json',
     });
-
-    if (affectedProjects.includes('api')) {
-      bumpFiles.push({
-        filename: '../apps/api/src/version.json',
-        type: 'json',
-      });
-    }
+    bumpFiles.push({
+      filename: '../apps/api/src/version.json',
+      type: 'json',
+    });
 
     if (affectedProjects.includes('worker-sync')) {
       bumpFiles.push({
