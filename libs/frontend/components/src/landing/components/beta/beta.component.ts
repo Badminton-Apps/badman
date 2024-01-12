@@ -22,8 +22,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatCardModule,
     RouterModule,
     MatButtonModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
   templateUrl: './beta.component.html',
   styleUrls: ['./beta.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

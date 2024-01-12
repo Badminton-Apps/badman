@@ -38,8 +38,6 @@ import { RANKING_CONFIG } from '../../injection';
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
-
-    // Material modules
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
@@ -49,8 +47,8 @@ import { RANKING_CONFIG } from '../../injection';
     MatCheckboxModule,
     MatInputModule,
     MatFormFieldModule,
-    MatDatepickerModule,
-  ],
+    MatDatepickerModule
+],
   templateUrl: './upload-ranking.dialog.html',
   styleUrls: ['./upload-ranking.dialog.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

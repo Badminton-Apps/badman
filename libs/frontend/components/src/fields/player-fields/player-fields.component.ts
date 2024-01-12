@@ -18,19 +18,14 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./player-fields.component.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
-
-    // Other modules
     TranslateModule,
-
-    // Material Modules
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
-  ],
+    MatSelectModule
+],
 })
 export class PlayerFieldsComponent implements OnInit {
   @Input()

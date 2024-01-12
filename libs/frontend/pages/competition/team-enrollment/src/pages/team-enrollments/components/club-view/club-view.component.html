@@ -3,131 +3,161 @@
     <mat-form-field>
       <mat-label>Year</mat-label>
       <mat-select [formControl]="this.yearControl">
-        <mat-option *ngFor="let year of [2022]" [value]="year">
-          {{ year }}
-        </mat-option>
+        @for (year of [2022]; track year) {
+          <mat-option [value]="year">
+            {{ year }}
+          </mat-option>
+        }
       </mat-select>
     </mat-form-field>
-
     <mat-form-field>
       <mat-label>Event</mat-label>
       <mat-select [formControl]="this.eventControl">
         <mat-option [value]="'all'"> All (warning: slow) </mat-option>
-        <mat-option
-          *ngFor="let event of this.events$ | async"
-          [value]="event.id"
-        >
-          {{ event.name }}
-        </mat-option>
+        @for (event of this.events$ | async; track event) {
+          <mat-option [value]="event.id">
+            {{ event.name }}
+          </mat-option>
+        }
       </mat-select>
     </mat-form-field>
   </div>
-
-  <ng-container *ngIf="loading">
+  @if (loading) {
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </ng-container>
-
-  <mat-card *ngIf="this.clubs$ | async as clubs">
-    <mat-accordion>
-      <mat-expansion-panel *ngFor="let club of clubs">
-        <mat-expansion-panel-header>
-          <mat-panel-title fxFlex="200px">
-            {{ club.name }}
-            <mat-icon
-              *ngIf="!club.hasLocation"
-              matTooltip="Geen beschikbaarheden ingevuld, gelieve de club te contacteren"
-              >warning</mat-icon
-            >
-          </mat-panel-title>
-          <mat-panel-description
-            >{{ club.teams?.length }} Teams</mat-panel-description
-          >
-        </mat-expansion-panel-header>
-        <div class="mat-subheading-2">Locations</div>
-        <div *ngFor="let location of club.locations">
-          <div class="location-title">{{ location.name }}</div>
-          <div class="location-item">
-            <div *ngIf="(location.availibilities?.[0]?.days?.length ?? 0) <= 0">
-              Geen beschikbaarheden ingevuld, gelieve de club te contacteren
-            </div>
-            <div *ngIf="(location.availibilities?.[0]?.days?.length ?? 0) > 0">
-              <div *ngFor="let availibilty of location.availibilities">
-                <span class="location-sub-title">{{
-                  'competition.enrollment.play-day' | translate
-                }}</span>
-                <ul>
-                  <li *ngFor="let day of availibilty.days">
-                    {{ 'all.days.' + day.day | translate }}, {{ day.startTime }}
-                    {{ 'all.breakdown.untill' | translate }} {{ day.endTime }}:
-                    {{ day.courts }}
-                    {{ 'all.input.courts' | translate }}
-                  </li>
-                </ul>
-
-                <span class="location-sub-title">{{
-                  'all.competition.team-enrollment.exceptions' | translate
-                }}</span>
-                <small
-                  *ngIf="
-                    !availibilty.exceptions ||
-                    availibilty.exceptions.length === 0
-                  "
-                >
-                  <br />Geen uitzonderingen
-                </small>
-                <ul>
-                  <li *ngFor="let exception of availibilty.exceptions">
-                    {{ exception.start | amDateFormat : 'LL' }}
-                    {{ 'all.breakdown.untill' | translate }}
-                    {{ exception.end | amDateFormat : 'LL' }}:
-                    {{ exception.courts }} {{ 'all.input.courts' | translate }}
-                  </li>
-                </ul>
+  }
+  @if (this.clubs$ | async; as clubs) {
+    <mat-card>
+      <mat-accordion>
+        @for (club of clubs; track club) {
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title fxFlex="200px">
+                {{ club.name }}
+                @if (!club.hasLocation) {
+                  <mat-icon
+                    matTooltip="Geen beschikbaarheden ingevuld, gelieve de club te contacteren"
+                    >warning</mat-icon
+                  >
+                }
+              </mat-panel-title>
+              <mat-panel-description
+                >{{ club.teams?.length }} Teams</mat-panel-description
+              >
+            </mat-expansion-panel-header>
+            <div class="mat-subheading-2">Locations</div>
+            @for (location of club.locations; track location) {
+              <div>
+                <div class="location-title">{{ location.name }}</div>
+                <div class="location-item">
+                  @if ((location.availibilities?.[0]?.days?.length ?? 0) <= 0) {
+                    <div>
+                      Geen beschikbaarheden ingevuld, gelieve de club te
+                      contacteren
+                    </div>
+                  }
+                  @if ((location.availibilities?.[0]?.days?.length ?? 0) > 0) {
+                    <div>
+                      @for (
+                        availibilty of location.availibilities;
+                        track availibilty
+                      ) {
+                        <div>
+                          <span class="location-sub-title">{{
+                            'competition.enrollment.play-day' | translate
+                          }}</span>
+                          <ul>
+                            @for (day of availibilty.days; track day) {
+                              <li>
+                                {{ 'all.days.' + day.day | translate }},
+                                {{ day.startTime }}
+                                {{ 'all.breakdown.untill' | translate }}
+                                {{ day.endTime }}:
+                                {{ day.courts }}
+                                {{ 'all.input.courts' | translate }}
+                              </li>
+                            }
+                          </ul>
+                          <span class="location-sub-title">{{
+                            'all.competition.team-enrollment.exceptions'
+                              | translate
+                          }}</span>
+                          @if (
+                            !availibilty.exceptions ||
+                            availibilty.exceptions.length === 0
+                          ) {
+                            <small> <br />Geen uitzonderingen </small>
+                          }
+                          <ul>
+                            @for (
+                              exception of availibilty.exceptions;
+                              track exception
+                            ) {
+                              <li>
+                                {{ exception.start | amDateFormat: 'LL' }}
+                                {{ 'all.breakdown.untill' | translate }}
+                                {{ exception.end | amDateFormat: 'LL' }}:
+                                {{ exception.courts }}
+                                {{ 'all.input.courts' | translate }}
+                              </li>
+                            }
+                          </ul>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="mat-subheading-2">Teams</div>
-        <div *ngFor="let team of club.teams">
-          <div
-            class="team-description"
-            cdkOverlayOrigin
-            #trigger="cdkOverlayOrigin"
-            (click)="overlayOpen = team.id ?? ''"
-          >
-            <span
-              >{{
-                team.name
-              }}
-              ({{team.entry?.meta?.competition?.teamIndex}}) -
-              {{ team.entry?.subEventCompetition?.name }}
-              {{ team.entry?.subEventCompetition?.eventType }}</span
-            >
-          </div>
-
-          <ng-template
-            cdkConnectedOverlay
-            cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-            [cdkConnectedOverlayHasBackdrop]="true"
-            [cdkConnectedOverlayOrigin]="trigger"
-            [cdkConnectedOverlayOpen]="overlayOpen === team.id"
-            (detach)="overlayOpen = ''"
-            (backdropClick)="overlayOpen = ''"
-          >
-            <div class="team-detail">
-              <ng-container *ngIf="team.entry as entry">
-                index: {{ entry.meta?.competition?.teamIndex }}
-                <ul>
-                  <li *ngFor="let player of entry.meta?.competition?.players">
-                    {{ player?.player?.fullName }} ({{ player?.single }} -
-                    {{ player?.double }} - {{ player?.mix }})
-                  </li>
-                </ul>
-              </ng-container>
-            </div>
-          </ng-template>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </mat-card>
+            }
+            <div class="mat-subheading-2">Teams</div>
+            @for (team of club.teams; track team) {
+              <div>
+                <div
+                  class="team-description"
+                  cdkOverlayOrigin
+                  #trigger="cdkOverlayOrigin"
+                  (click)="overlayOpen = team.id ?? ''"
+                >
+                  <span
+                    >{{ team.name }} ({{
+                      team.entry?.meta?.competition?.teamIndex
+                    }}) -
+                    {{ team.entry?.subEventCompetition?.name }}
+                    {{ team.entry?.subEventCompetition?.eventType }}</span
+                  >
+                </div>
+                <ng-template
+                  cdkConnectedOverlay
+                  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+                  [cdkConnectedOverlayHasBackdrop]="true"
+                  [cdkConnectedOverlayOrigin]="trigger"
+                  [cdkConnectedOverlayOpen]="overlayOpen === team.id"
+                  (detach)="overlayOpen = ''"
+                  (backdropClick)="overlayOpen = ''"
+                >
+                  <div class="team-detail">
+                    @if (team.entry; as entry) {
+                      index: {{ entry.meta?.competition?.teamIndex }}
+                      <ul>
+                        @for (
+                          player of entry.meta?.competition?.players;
+                          track player
+                        ) {
+                          <li>
+                            {{ player?.player?.fullName }} ({{
+                              player?.single
+                            }}
+                            - {{ player?.double }} - {{ player?.mix }})
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                </ng-template>
+              </div>
+            }
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    </mat-card>
+  }
 </div>

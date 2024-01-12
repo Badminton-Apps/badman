@@ -27,22 +27,16 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Commmon module
     CommonModule,
     RouterModule,
     TranslateModule,
-
-    // Material Modules
     MatIconModule,
     MatTooltipModule,
-
-    // Own Modules
     StandingComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
-
     PageHeaderComponent
-  ],
+],
 })
 export class DetailDrawComponent implements OnInit {
   drawTournament!: DrawTournament;

@@ -32,22 +32,17 @@ import { DrawLocationMapComponent } from './components';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Commmon module
     CommonModule,
     RouterModule,
     TranslateModule,
-
-    // Material
     MatTooltipModule,
     MatIconModule,
-
-    // Own Modules
     StandingComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
     PageHeaderComponent,
     DrawLocationMapComponent
-  ],
+],
 })
 export class DetailDrawCompetitionComponent implements OnInit {
   drawCompetition!: DrawCompetition;

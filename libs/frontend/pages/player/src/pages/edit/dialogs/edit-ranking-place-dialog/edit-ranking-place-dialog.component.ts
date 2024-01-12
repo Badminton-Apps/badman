@@ -43,8 +43,8 @@ import moment, { Moment } from 'moment';
     MatButtonModule,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    FormsModule,
-  ],
+    FormsModule
+],
 })
 export class EditRankingPlaceDialogComponent implements OnInit {
   rankingPlaceForm: FormGroup = new FormGroup({});

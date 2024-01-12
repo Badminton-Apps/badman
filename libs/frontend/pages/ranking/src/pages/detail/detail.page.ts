@@ -33,8 +33,6 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     TranslateModule,
     RouterModule,
     MomentModule,
-
-    // Material
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
@@ -42,12 +40,10 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     MatTooltipModule,
     MatDialogModule,
     MatDividerModule,
-
-    // My Componments
     PageHeaderComponent,
     RankingTableComponent,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
 })
 export class DetailPageComponent {
   private route = inject(ActivatedRoute);

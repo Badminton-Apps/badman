@@ -22,21 +22,16 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./location-dialog.component.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-
-    // Other modules
     MatSelectModule,
     MatDialogModule,
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-
-    // My Modules
-    LocationDialogFieldsComponent,
-  ],
+    LocationDialogFieldsComponent
+],
 })
 export class LocationDialogComponent implements OnInit {
   selectedYear?: number;

@@ -1,5 +1,5 @@
 <!-- Iterate over the games -->
-<ng-container *ngIf="this.formGroup">
+@if (this.formGroup) {
   <form [formGroup]="this.formGroup" (ngSubmit)="onSubmit()">
     <div class="general">
       <!-- free text input -->
@@ -7,85 +7,80 @@
         <mat-label>{{ 'all.input.shuttle' | translate }}</mat-label>
         <input matInput formControlName="shuttle" alt="shuttle" />
       </mat-form-field>
-
       <!--  startTime  -->
       <mat-form-field>
         <mat-label>{{ 'all.pickers.select-start-time' | translate }}</mat-label>
         <input matInput type="time" formControlName="startHour" alt="startHour" />
       </mat-form-field>
-
       <!--  endTime  -->
       <mat-form-field>
         <mat-label>{{ 'all.pickers.select-end-time' | translate }}</mat-label>
         <input matInput type="time" formControlName="endHour" alt="endHour" />
       </mat-form-field>
     </div>
-
     <ng-container formArrayName="games">
-      <div class="game" *ngFor="let cont of games.controls; let i = index">
-        <div class="label">
-          <ng-container *ngFor="let label of getGameLabel(i)">
-            <span>{{ label | translate }}</span>
-          </ng-container>
+      @for (cont of games.controls; track cont; let i = $index) {
+        <div class="game">
+          <div class="label">
+            @for (label of getGameLabel(i); track label) {
+              <span>{{ label | translate }}</span>
+            }
+          </div>
+          <div class="team1">
+            <button
+              class="player"
+              mat-stroked-button
+              [matMenuTriggerFor]="appMenu"
+              [matMenuTriggerData]="{player: cont?.get('team1')?.get('player1')?.value, game: i}"
+              >
+              {{ cont?.get('team1')?.get('player1')?.value?.fullName }}
+            </button>
+            @if (cont?.get('team1')?.get('player2')?.value) {
+              <button
+                class="player"
+                mat-stroked-button
+                [matMenuTriggerFor]="appMenu"
+                [matMenuTriggerData]="{player: cont?.get('team1')?.get('player1')?.value, game: i}"
+                >
+                {{ cont?.get('team1')?.get('player2')?.value?.fullName }}
+              </button>
+            }
+          </div>
+          <div class="team2">
+            <button
+              class="player"
+              mat-stroked-button
+              [matMenuTriggerFor]="appMenu"
+              [matMenuTriggerData]="{player: cont?.get('team1')?.get('player1')?.value, game: i}"
+              >
+              {{ cont?.get('team2')?.get('player1')?.value?.fullName }}
+            </button>
+            @if (cont?.get('team2')?.get('player2')?.value) {
+              <button
+                class="player"
+                mat-stroked-button
+                [matMenuTriggerFor]="appMenu"
+                [matMenuTriggerData]="{player: cont?.get('team1')?.get('player1')?.value, game: i}"
+                >
+                {{ cont?.get('team2')?.get('player2')?.value?.fullName }}
+              </button>
+            }
+          </div>
+          <badman-game-score
+            [gameScoreForm]="$any(cont?.get('set1')?.get('score'))"
+          ></badman-game-score>
+          <badman-game-score
+            [gameScoreForm]="$any(cont?.get('set2')?.get('score'))"
+          ></badman-game-score>
+          <badman-game-score
+            [gameScoreForm]="$any(cont?.get('set3')?.get('score'))"
+          ></badman-game-score>
         </div>
-        <div class="team1">
-          <button
-            class="player"
-            mat-stroked-button
-            [matMenuTriggerFor]="appMenu"
-            [matMenuTriggerData]="{player: cont?.get('team1')?.get('player1')?.value, game: i}"
-          >
-            {{ cont?.get('team1')?.get('player1')?.value?.fullName }}
-          </button>
-          <button
-            class="player"
-            mat-stroked-button
-            *ngIf="cont?.get('team1')?.get('player2')?.value"
-            [matMenuTriggerFor]="appMenu"
-            [matMenuTriggerData]="{player: cont?.get('team1')?.get('player1')?.value, game: i}"
-          >
-            {{ cont?.get('team1')?.get('player2')?.value?.fullName }}
-          </button>
-        </div>
-
-        <div class="team2">
-          <button
-            class="player"
-            mat-stroked-button
-            [matMenuTriggerFor]="appMenu"
-            [matMenuTriggerData]="{player: cont?.get('team1')?.get('player1')?.value, game: i}"
-          >
-            {{ cont?.get('team2')?.get('player1')?.value?.fullName }}
-          </button>
-          <button
-            class="player"
-            mat-stroked-button
-            *ngIf="cont?.get('team2')?.get('player2')?.value"
-            [matMenuTriggerFor]="appMenu"
-            [matMenuTriggerData]="{player: cont?.get('team1')?.get('player1')?.value, game: i}"
-          >
-            {{ cont?.get('team2')?.get('player2')?.value?.fullName }}
-          </button>
-        </div>
-
-        <badman-game-score
-          [gameScoreForm]="$any(cont?.get('set1')?.get('score'))"
-        ></badman-game-score>
-
-        <badman-game-score
-          [gameScoreForm]="$any(cont?.get('set2')?.get('score'))"
-        ></badman-game-score>
-
-        <badman-game-score
-          [gameScoreForm]="$any(cont?.get('set3')?.get('score'))"
-        ></badman-game-score>
-      </div>
+      }
     </ng-container>
   </form>
-</ng-container>
-
+}
 <!-- menu template for changing the player -->
-
 <mat-menu #appMenu="matMenu">
   <ng-template matMenuContent let-player="player" let-game="game">
     <button mat-menu-item (click)="this.openDialog(player, game, 'injured')">

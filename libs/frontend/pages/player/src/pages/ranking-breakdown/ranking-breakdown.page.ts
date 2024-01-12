@@ -45,20 +45,16 @@ import { RankingEvolutionComponent } from './components/ranking-evolution';
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-
-    // Material
     MatIconModule,
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
     MatDialogModule,
     MatProgressBarModule,
-
-    // Own Components
     ListGamesComponent,
     PeriodSelectionComponent,
-    RankingEvolutionComponent,
-  ],
+    RankingEvolutionComponent
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RankingBreakdownPageComponent {

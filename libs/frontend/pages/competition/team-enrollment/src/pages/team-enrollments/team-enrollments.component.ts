@@ -12,10 +12,8 @@ import { ClubViewComponent } from './components';
   imports: [
     CommonModule,
     TranslateModule,
-
-    // Own components
-    ClubViewComponent,
-  ],
+    ClubViewComponent
+],
 })
 export class TeamEnrollmentsComponent {
   eventControl: FormControl = new FormControl();

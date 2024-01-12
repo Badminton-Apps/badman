@@ -1,18 +1,18 @@
 <badman-page-header>
   <div title>{{drawCompetition.name}}</div>
   <div actions>
-    <a
-      mat-icon-button
-      target="_blank"
-      *ngIf="drawCompetition.visualCode && eventCompetition.visualCode"
-      [href]="'https://www.toernooi.nl/sport/league/draw?id='+this.eventCompetition.visualCode + '&draw=' + this.drawCompetition.visualCode"
-      [matTooltip]="'all.button.open-in-new-tab' | translate"
-    >
-      <mat-icon>open_in_new</mat-icon>
-    </a>
+    @if (drawCompetition.visualCode && eventCompetition.visualCode) {
+      <a
+        mat-icon-button
+        target="_blank"
+        [href]="'https://www.toernooi.nl/sport/league/draw?id='+this.eventCompetition.visualCode + '&draw=' + this.drawCompetition.visualCode"
+        [matTooltip]="'all.button.open-in-new-tab' | translate"
+        >
+        <mat-icon>open_in_new</mat-icon>
+      </a>
+    }
   </div>
 </badman-page-header>
-
 <section class="standing">
   <h3>{{'all.event.standing.title' | translate}}</h3>
   <badman-standing
@@ -20,21 +20,19 @@
     [entries]="drawCompetition.eventEntries!"
   ></badman-standing>
 </section>
-
-<section class="games" *ngIf="teams">
-  <section class="recent-games">
-    <h3>{{"all.game.recent.title" | translate}}</h3>
-
-    <badman-recent-games [teams]="teams"></badman-recent-games>
+@if (teams) {
+  <section class="games">
+    <section class="recent-games">
+      <h3>{{"all.game.recent.title" | translate}}</h3>
+      <badman-recent-games [teams]="teams"></badman-recent-games>
+    </section>
+    <section class="upcoming-games">
+      <h3>{{"all.game.upcoming.title" | translate}}</h3>
+      <badman-upcoming-games [teams]="teams"></badman-upcoming-games>
+    </section>
   </section>
-
-  <section class="upcoming-games">
-    <h3>{{"all.game.upcoming.title" | translate}}</h3>
-
-    <badman-upcoming-games [teams]="teams"></badman-upcoming-games>
-  </section>
-</section>
-<!-- 
+}
+<!--
 <section class="location-map">
   <badman-draw-locations-map
     [drawTournament]="this.drawCompetition"

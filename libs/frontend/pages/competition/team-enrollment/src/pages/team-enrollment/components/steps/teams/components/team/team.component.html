@@ -2,7 +2,6 @@
   <div>
     <span class="name">{{ team.value.name }}</span>
   </div>
-
   <div class="change">
     <!-- change number -->
     <button
@@ -11,17 +10,16 @@
       aria-label="Change team number"
       (click)="this.changeTeamNumber.next(team.value)"
       [matTooltip]="'all.team.change-number.tooltip' | translate"
-    >
+      >
       <mat-icon>swap_horiz</mat-icon>
     </button>
-
     <!-- remove team -->
     <button
       mat-icon-button
       class="remove-button"
       aria-label="Remove team"
       (click)="this.removeTeam.next(team.value)"
-    >
+      >
       <mat-icon>delete</mat-icon>
     </button>
   </div>
@@ -33,187 +31,202 @@
       [matTooltip]="this.warningMessage"
       [matTooltipDisabled]="!hasWarning"
       matTooltipClass="tooltip-multi-line"
-    >
-      {{ 'all.team.title.base-fields' | translate }}
-
-      <mat-icon *ngIf="hasWarning">warning</mat-icon>
-    </div>
-    <mat-icon *ngIf="!expanded.team">expand_more</mat-icon>
-    <mat-icon *ngIf="expanded.team">expand_less</mat-icon>
-  </div>
-
-  <mat-divider></mat-divider>
-
-  <div *ngIf="expanded.team">
-    <div class="team-info">
-      <div class="prefferd">
-        <mat-form-field class="day">
-          <mat-label>{{ 'all.input.day' | translate }}</mat-label>
-          <mat-select [required]="true" [(value)]="team.value.preferredDay">
-            <mat-option value="monday">{{
-              'all.days.monday' | translate
-            }}</mat-option>
-            <mat-option value="tuesday">{{
-              'all.days.tuesday' | translate
-            }}</mat-option>
-            <mat-option value="wednesday">{{
-              'all.days.wednesday' | translate
-            }}</mat-option>
-            <mat-option value="thursday">{{
-              'all.days.thursday' | translate
-            }}</mat-option>
-            <mat-option value="friday">{{
-              'all.days.friday' | translate
-            }}</mat-option>
-            <mat-option value="saturday">{{
-              'all.days.saturday' | translate
-            }}</mat-option>
-            <mat-option value="sunday">{{
-              'all.days.sunday' | translate
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="time">
-          <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
-          <input
-            [required]="true"
-            matInput
-            type="time"
-            step="900"
-            [(ngModel)]="team.value.preferredTime"
-          />
-        </mat-form-field>
-      </div>
-      <div class="captain">
-        <p>{{ 'all.team.title.captain' | translate }}</p>
-        <badman-player-search
-          [player]="team.value.captainId"
-          [includePersonal]="true"
-          [allowCreation]="true"
-          [club]="team.value.clubId"
-          [clearOnSelection]="false"
-          (whenSelectPlayer)="team.value.captainId = $event.id"
-        ></badman-player-search>
-      </div>
-      <div class="contact">
-        <mat-form-field class="email">
-          <mat-label>{{ 'all.input.email' | translate }}</mat-label>
-          <input matInput type="email" [required]="true" [(ngModel)]="team.value.email" />
-        </mat-form-field>
-        <mat-form-field class="phone">
-          <mat-label>{{ 'all.input.phone' | translate }}</mat-label>
-          <input matInput [required]="true" [(ngModel)]="team.value.phone" />
-        </mat-form-field>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="normal-players">
-  <div class="expandable-item" (click)="expanded.regular = !expanded.regular">
-    <div>
-      {{ 'all.player.title' | translate }}
-      <span class="count">
-        - {{ baseCount }}
-        {{ 'all.competition.team-enrollment.players.regular' | translate }}
-        <ng-container *ngIf="backupCount > 0"
-          >, {{ backupCount }}
-          {{
-            'all.competition.team-enrollment.players.backup' | translate
-          }}</ng-container
-        ></span
       >
+      {{ 'all.team.title.base-fields' | translate }}
+      @if (hasWarning) {
+        <mat-icon>warning</mat-icon>
+      }
     </div>
-    <mat-icon *ngIf="!expanded.regular">expand_more</mat-icon>
-    <mat-icon *ngIf="expanded.regular">expand_less</mat-icon>
+    @if (!expanded.team) {
+      <mat-icon>expand_more</mat-icon>
+    }
+    @if (expanded.team) {
+      <mat-icon>expand_less</mat-icon>
+    }
   </div>
-
   <mat-divider></mat-divider>
-
-  <div *ngIf="expanded.regular">
-    <div *ngFor="let player of this.team.value.players" class="player">
-      <div class="name">
-        {{ player.fullName }}
-        <span class="ranking">
-          {{ player.lastRanking?.single }} -
-          {{ player.lastRanking?.double }}
-          <ng-container *ngIf="team.value.type === 'MX'">
-            - {{ player.lastRanking?.mix }}</ng-container
-          >
-          ({{
-            (player.lastRanking?.single ?? 12) +
-              (player.lastRanking?.double ?? 12) +
-              (team.value.type === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
-          }})</span
-        >
-      </div>
-      <div class="type">
-        <mat-form-field>
-          <mat-label>Type</mat-label>
-          <mat-select
-            [(value)]="player.membershipType"
-            (selectionChange)="changePlayerType(player, $event.value)"
-          >
-            <mat-option *ngFor="let type of types" [value]="type">
-              {{ 'all.player.' + type | lowercase | translate }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="delete">
-        <button mat-icon-button (click)="removePlayerFromTeam(player)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
-    </div>
-
-    <badman-player-search
-      [allowCreation]="false"
-      [searchOutsideClub]="true"
-      [club]="this.team.value.clubId"
-      [label]="'Voeg speler toe'"
-      (whenSelectPlayer)="addPlayerToTeam($event)"
-    ></badman-player-search>
-  </div>
-</div>
-
-<div class="base-players">
-  <div class="expandable-item" (click)="expanded.base = !expanded.base">
+  @if (expanded.team) {
     <div>
-      {{ 'all.competition.team-enrollment.players.base' | translate }}
-    </div>
-    <mat-icon *ngIf="!expanded.base">expand_more</mat-icon>
-    <mat-icon *ngIf="expanded.base">expand_less</mat-icon>
-  </div>
-
-  <mat-divider></mat-divider>
-
-  <div [hidden]="!expanded.base">
-    <div class="player" *ngFor="let b of basePlayers.value">
-      <div class="name">
-        {{ b.player.fullName }}
-        <span class="ranking">
-          {{ b.single }} - {{ b.double }}
-          <ng-container *ngIf="team.value.type === 'MX'">
-            - {{ b.mix }}</ng-container
-          >
-          ({{
-            b.single + b.double + (team.value.type === 'MX' ? b.mix : 0)
-          }})</span
-        >
+      <div class="team-info">
+        <div class="prefferd">
+          <mat-form-field class="day">
+            <mat-label>{{ 'all.input.day' | translate }}</mat-label>
+            <mat-select [required]="true" [(value)]="team.value.preferredDay">
+              <mat-option value="monday">{{
+                'all.days.monday' | translate
+              }}</mat-option>
+              <mat-option value="tuesday">{{
+                'all.days.tuesday' | translate
+              }}</mat-option>
+              <mat-option value="wednesday">{{
+                'all.days.wednesday' | translate
+              }}</mat-option>
+              <mat-option value="thursday">{{
+                'all.days.thursday' | translate
+              }}</mat-option>
+              <mat-option value="friday">{{
+                'all.days.friday' | translate
+              }}</mat-option>
+              <mat-option value="saturday">{{
+                'all.days.saturday' | translate
+              }}</mat-option>
+              <mat-option value="sunday">{{
+                'all.days.sunday' | translate
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="time">
+            <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
+            <input
+              [required]="true"
+              matInput
+              type="time"
+              step="900"
+              [(ngModel)]="team.value.preferredTime"
+              />
+            </mat-form-field>
+          </div>
+          <div class="captain">
+            <p>{{ 'all.team.title.captain' | translate }}</p>
+            <badman-player-search
+              [player]="team.value.captainId"
+              [includePersonal]="true"
+              [allowCreation]="true"
+              [club]="team.value.clubId"
+              [clearOnSelection]="false"
+              (whenSelectPlayer)="team.value.captainId = $event.id"
+            ></badman-player-search>
+          </div>
+          <div class="contact">
+            <mat-form-field class="email">
+              <mat-label>{{ 'all.input.email' | translate }}</mat-label>
+              <input matInput type="email" [required]="true" [(ngModel)]="team.value.email" />
+            </mat-form-field>
+            <mat-form-field class="phone">
+              <mat-label>{{ 'all.input.phone' | translate }}</mat-label>
+              <input matInput [required]="true" [(ngModel)]="team.value.phone" />
+            </mat-form-field>
+          </div>
+        </div>
       </div>
-      <div class="delete">
-        <button mat-icon-button (click)="removeBasePlayerFromTeam(b.id)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
-    </div>
-    <badman-player-search
-      [allowCreation]="false"
-      [searchOutsideClub]="true"
-      [club]="this.team.value.clubId"
-      [label]="'Voeg speler toe'"
-      (whenSelectPlayer)="addBasePlayerToTeam($event)"
-    ></badman-player-search>
+    }
   </div>
-</div>
+  <div class="normal-players">
+    <div class="expandable-item" (click)="expanded.regular = !expanded.regular">
+      <div>
+        {{ 'all.player.title' | translate }}
+        <span class="count">
+          - {{ baseCount }}
+          {{ 'all.competition.team-enrollment.players.regular' | translate }}
+          @if (backupCount > 0) {
+            , {{ backupCount }}
+            {{
+            'all.competition.team-enrollment.players.backup' | translate
+            }}
+            }</span
+            >
+          </div>
+          @if (!expanded.regular) {
+            <mat-icon>expand_more</mat-icon>
+          }
+          @if (expanded.regular) {
+            <mat-icon>expand_less</mat-icon>
+          }
+        </div>
+        <mat-divider></mat-divider>
+        @if (expanded.regular) {
+          <div>
+            @for (player of this.team.value.players; track player) {
+              <div class="player">
+                <div class="name">
+                  {{ player.fullName }}
+                  <span class="ranking">
+                    {{ player.lastRanking?.single }} -
+                    {{ player.lastRanking?.double }}
+                    @if (team.value.type === 'MX') {
+                      - {{ player.lastRanking?.mix }}
+                    }
+                    ({{
+                    (player.lastRanking?.single ?? 12) +
+                    (player.lastRanking?.double ?? 12) +
+                    (team.value.type === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
+                    }})</span
+                    >
+                  </div>
+                  <div class="type">
+                    <mat-form-field>
+                      <mat-label>Type</mat-label>
+                      <mat-select
+                        [(value)]="player.membershipType"
+                        (selectionChange)="changePlayerType(player, $event.value)"
+                        >
+                        @for (type of types; track type) {
+                          <mat-option [value]="type">
+                            {{ 'all.player.' + type | lowercase | translate }}
+                          </mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="delete">
+                    <button mat-icon-button (click)="removePlayerFromTeam(player)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
+              <badman-player-search
+                [allowCreation]="false"
+                [searchOutsideClub]="true"
+                [club]="this.team.value.clubId"
+                [label]="'Voeg speler toe'"
+                (whenSelectPlayer)="addPlayerToTeam($event)"
+              ></badman-player-search>
+            </div>
+          }
+        </div>
+        <div class="base-players">
+          <div class="expandable-item" (click)="expanded.base = !expanded.base">
+            <div>
+              {{ 'all.competition.team-enrollment.players.base' | translate }}
+            </div>
+            @if (!expanded.base) {
+              <mat-icon>expand_more</mat-icon>
+            }
+            @if (expanded.base) {
+              <mat-icon>expand_less</mat-icon>
+            }
+          </div>
+          <mat-divider></mat-divider>
+          <div [hidden]="!expanded.base">
+            @for (b of basePlayers.value; track b) {
+              <div class="player">
+                <div class="name">
+                  {{ b.player.fullName }}
+                  <span class="ranking">
+                    {{ b.single }} - {{ b.double }}
+                    @if (team.value.type === 'MX') {
+                      - {{ b.mix }}
+                    }
+                    ({{
+                    b.single + b.double + (team.value.type === 'MX' ? b.mix : 0)
+                    }})</span
+                    >
+                  </div>
+                  <div class="delete">
+                    <button mat-icon-button (click)="removeBasePlayerFromTeam(b.id)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
+              <badman-player-search
+                [allowCreation]="false"
+                [searchOutsideClub]="true"
+                [club]="this.team.value.clubId"
+                [label]="'Voeg speler toe'"
+                (whenSelectPlayer)="addBasePlayerToTeam($event)"
+              ></badman-player-search>
+            </div>
+          </div>
+          

@@ -33,17 +33,13 @@ import { RecentGamesService } from './data-access/recent-games.service';
     TranslateModule,
     MomentModule,
     ReactiveFormsModule,
-
-    // Material modules
     MatButtonModule,
     MatChipsModule,
     MatTooltipModule,
     MatButtonToggleModule,
     MatIconModule,
-
-    // own modules
-    LoadingBlockComponent,
-  ],
+    LoadingBlockComponent
+],
   selector: 'badman-list-games',
   templateUrl: './list-games.component.html',
   styleUrls: ['./list-games.component.scss'],

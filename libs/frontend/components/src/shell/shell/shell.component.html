@@ -20,11 +20,14 @@
           <mat-list-item (click)="expanded.general = !expanded.general">
             <div class="expandable-item">
               <div>{{ 'all.shell.sidebar.general.title' | translate }}</div>
-              <mat-icon *ngIf="!expanded.general">expand_more</mat-icon>
-              <mat-icon *ngIf="expanded.general">expand_less</mat-icon>
+              @if (!expanded.general) {
+                <mat-icon>expand_more</mat-icon>
+              }
+              @if (expanded.general) {
+                <mat-icon>expand_less</mat-icon>
+              }
             </div>
           </mat-list-item>
-
           <div [hidden]="!expanded.general">
             <mat-nav-list>
               <a mat-list-item [routerLink]="['/general', 'faq']">{{
@@ -38,53 +41,54 @@
           <mat-list-item (click)="expanded.competition = !expanded.competition">
             <div class="expandable-item">
               <div>{{ 'all.shell.sidebar.competition.title' | translate }}</div>
-              <mat-icon *ngIf="!expanded.competition">expand_more</mat-icon>
-              <mat-icon *ngIf="expanded.competition">expand_less</mat-icon>
+              @if (!expanded.competition) {
+                <mat-icon>expand_more</mat-icon>
+              } @else {
+                <mat-icon>expand_less</mat-icon>
+              }
             </div>
           </mat-list-item>
-
           <div [hidden]="!expanded.competition">
             <mat-nav-list>
               <a mat-list-item [routerLink]="['/competition']">{{
                 'all.shell.sidebar.competition.overview' | translate
               }}</a>
-
               <a mat-list-item [routerLink]="['/competition', 'assembly']">{{
                 'all.shell.sidebar.competition.assembly' | translate
               }}</a>
-
               <badman-has-claim [any]="['*_enlist:team', 'enlist-any:team']">
-                <a
-                  mat-list-item
-                  [routerLink]="['/competition', 'enrollment']"
-                  *ngIf="this.canEnroll$ | async"
-                  >{{
-                    'all.shell.sidebar.competition.enrollment' | translate
-                  }}</a
-                >
+                @if (this.canEnroll$ | async) {
+                  <a
+                    mat-list-item
+                    [routerLink]="['/competition', 'enrollment']"
+                    >{{
+                      'all.shell.sidebar.competition.enrollment' | translate
+                    }}</a
+                  >
+                }
               </badman-has-claim>
               <badman-has-claim
                 [any]="['*_change:encounter', 'change-any:encounter']"
               >
-                <a
-                  mat-list-item
-                  *ngIf="this.canChange$ | async"
-                  [routerLink]="['/competition', 'change-encounter']"
-                  >{{
-                    'all.shell.sidebar.competition.change-encounter' | translate
-                  }}</a
-                >
+                @if (this.canChange$ | async) {
+                  <a
+                    mat-list-item
+                    [routerLink]="['/competition', 'change-encounter']"
+                    >{{
+                      'all.shell.sidebar.competition.change-encounter'
+                        | translate
+                    }}</a
+                  >
+                }
               </badman-has-claim>
             </mat-nav-list>
           </div>
-
           <a mat-list-item [routerLink]="['/tournament']">{{
             'all.shell.sidebar.tournament.title' | translate
           }}</a>
           <a mat-list-item [routerLink]="['/ranking']">{{
             'all.shell.sidebar.ranking.title' | translate
           }}</a>
-
           <badman-has-claim [any]="['change:job']">
             <a mat-list-item [routerLink]="['/jobs']">{{
               'all.shell.sidebar.jobs.title' | translate
@@ -97,27 +101,28 @@
         <badman-has-claim [any]="['change:job']">
           <badman-service-status />
         </badman-has-claim>
-        <badman-banner [banner]="this.banner" *ngIf="this.banner" />
+        @if (this.banner) {
+          <badman-banner [banner]="this.banner" />
+        }
       </div>
     </div>
   </mat-sidenav>
   <mat-sidenav-content [ngClass]="{ mobile: isHandset() }">
     <mat-toolbar class="app-toolbar">
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
-        *ngIf="isHandset()"
-      >
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-      </button>
-
+      @if (isHandset()) {
+        <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="drawer.toggle()"
+        >
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+      }
       <div class="center">
         <badman-search-box></badman-search-box>
       </div>
-
-      <ng-container *ngIf="!systemService.primary()">
+      @if (!systemService.primary()) {
         <button
           type="button"
           mat-icon-button
@@ -126,20 +131,19 @@
         >
           <mat-icon>show_chart</mat-icon>
         </button>
-      </ng-container>
+      }
       <badman-notifications></badman-notifications>
       <badman-header-menu></badman-header-menu>
     </mat-toolbar>
-
     <div class="content">
       <div class="loading">
-        <mat-progress-bar
-          *ngIf="loading"
-          color="accent"
-          mode="indeterminate"
-        ></mat-progress-bar>
+        @if (loading) {
+          <mat-progress-bar
+            color="accent"
+            mode="indeterminate"
+          ></mat-progress-bar>
+        }
       </div>
-
       <xng-breadcrumb>
         <ng-container *xngBreadcrumbItem="let breadcrumb">
           <span class="breadcrumb">{{ breadcrumb | translate }}</span>

@@ -20,8 +20,8 @@ import { map, Observable } from 'rxjs';
     MatDividerModule,
     RouterModule,
     MatExpansionModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
   templateUrl: './user-shortcuts.component.html',
   styleUrls: ['./user-shortcuts.component.scss'],
 })

@@ -37,8 +37,8 @@ import { debounceTime, filter, switchMap } from 'rxjs/operators';
     MatInputModule,
     HasClaimComponent,
     MatSelectModule,
-    TranslateModule,
-  ],
+    TranslateModule
+],
 })
 export class EditPlayerFieldsComponent implements OnInit {
   @Input()

@@ -21,11 +21,9 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     TranslateModule,
     RouterModule,
-
-    // Material
     MatTableModule,
     MatIconModule
-  ]
+]
 })
 export class StandingComponent implements OnInit {
   @Input()

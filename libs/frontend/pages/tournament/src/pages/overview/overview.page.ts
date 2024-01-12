@@ -74,18 +74,12 @@ const FETCH_TOURNAMENTS = gql`
   styleUrls: ['./overview.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-
     TranslateModule,
     ReactiveFormsModule,
     MomentModule,
-
-    // Own Components
     HasClaimComponent,
-
-    // Material Modules
     MatCardModule,
     MatButtonModule,
     MatTableModule,
@@ -99,8 +93,8 @@ const FETCH_TOURNAMENTS = gql`
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatDialogModule,
-  ],
+    MatDialogModule
+],
 })
 export class OverviewPageComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['name', 'firstDay', 'official', 'menu'];

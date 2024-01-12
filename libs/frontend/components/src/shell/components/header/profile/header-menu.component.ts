@@ -22,8 +22,8 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
     MatIconModule,
     MatDividerModule,
     LanguageComponent,
-    ThemeSwitcherComponent,
-  ],
+    ThemeSwitcherComponent
+],
   templateUrl: './header-menu.component.html',
   styleUrls: ['./header-menu.component.scss'],
 })

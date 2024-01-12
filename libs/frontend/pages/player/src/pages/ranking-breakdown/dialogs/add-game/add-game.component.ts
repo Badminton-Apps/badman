@@ -41,8 +41,6 @@ import { v4 as uuidv4 } from 'uuid';
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
-
-    // Material
     MatDialogModule,
     MatSlideToggleModule,
     MatFormFieldModule,
@@ -50,10 +48,8 @@ import { v4 as uuidv4 } from 'uuid';
     MatOptionModule,
     MatInputModule,
     MatButtonModule,
-
-    // Own Modules
-    SelectPlayerComponent,
-  ],
+    SelectPlayerComponent
+],
 })
 export class AddGameComponent implements OnInit {
   formGroup!: FormGroup;

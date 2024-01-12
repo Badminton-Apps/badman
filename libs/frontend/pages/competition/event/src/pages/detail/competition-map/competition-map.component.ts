@@ -37,14 +37,10 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-
-    //  google maps
     GoogleMapsModule,
-
-    // Material Modules
     MatProgressBarModule,
-    MatCheckboxModule,
-  ],
+    MatCheckboxModule
+],
   templateUrl: './competition-map.component.html',
   styleUrls: ['./competition-map.component.scss'],
   providers: [provideAnimations()],

@@ -52,7 +52,6 @@ const roleQuery = gql`
   imports: [
     CommonModule,
     TranslateModule,
-
     MatButtonModule,
     MatIconModule,
     MatDividerModule,
@@ -60,11 +59,10 @@ const roleQuery = gql`
     MatMenuModule,
     MatDialogModule,
     MatListModule,
-
     PlayerSearchComponent,
     ClaimComponent,
-    BadmanBlockModule,
-  ],
+    BadmanBlockModule
+],
   templateUrl: './edit-role.component.html',
   styleUrls: ['./edit-role.component.scss'],
 })

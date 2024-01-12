@@ -2,12 +2,13 @@
   {{ 'all.settings.languages.' + this.current | translate }}
 </button>
 <mat-menu #Lang="matMenu">
-  <button
-    mat-menu-item
-    *ngFor="let lang of langs"
-    [value]="lang"
-    (click)="setLang(lang)"
-  >
-    {{ 'all.settings.languages.' + lang | translate }}
-  </button>
+  @for (lang of langs; track lang) {
+    <button
+      mat-menu-item
+      [value]="lang"
+      (click)="setLang(lang)"
+      >
+      {{ 'all.settings.languages.' + lang | translate }}
+    </button>
+  }
 </mat-menu>

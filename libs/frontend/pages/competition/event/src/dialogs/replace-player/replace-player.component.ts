@@ -16,18 +16,13 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'badman-replace-player',
   standalone: true,
   imports: [
-    // common modules
     CommonModule,
-
-    // Material modules
     MatFormFieldModule,
     MatSelectModule,
     MatDialogModule,
     MatButtonModule,
-
-    // other modules
-    TranslateModule,
-  ],
+    TranslateModule
+],
   templateUrl: './replace-player.component.html',
   styleUrls: ['./replace-player.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

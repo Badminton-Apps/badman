@@ -5,55 +5,53 @@
   </ng-container>
   <ng-container matColumnDef="promotion">
     <td mat-cell *matCellDef="let element">
-      <ng-container *ngIf="element.standing?.riser">
+      @if (element.standing?.riser) {
         <mat-icon class="riser">arrow_upward</mat-icon>
-      </ng-container>
-
-      <ng-container *ngIf="element.standing?.faller">
+      }
+      @if (element.standing?.faller) {
         <mat-icon class="faller">arrow_downward</mat-icon>
-      </ng-container>
-    </td> 
+      }
+    </td>
   </ng-container>
-
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>
       {{ 'all.event.standing.name' | translate }}
     </th>
     <td mat-cell *matCellDef="let element">
-      <ng-container *ngIf="type === 'team'">
+      @if (type === 'team') {
         <a
           class="has-team"
           [routerLink]="[
-            '/club',
-            element.team?.club?.slug,
-            'team',
-            element.team?.slug
+          '/club',
+          element.team?.club?.slug,
+          'team',
+          element.team?.slug
           ]"
-        >
+          >
           {{ element.team?.name }}
         </a>
-      </ng-container>
-      <ng-container *ngIf="type === 'players'">
+      }
+      @if (type === 'players') {
         <div>
           <a
             class="has-user"
             [routerLink]="['/player', element.players[0]?.slug]"
-          >
+            >
             <!-- Name -->
             <span>{{ element.players[0]?.fullName }}</span>
           </a>
-          <ng-container *ngIf="element.players[1]">
+          @if (element.players[1]) {
             <br />
             <a
               class="has-user"
               [routerLink]="['/player', element.players[1]?.slug]"
-            >
+              >
               <!-- Name -->
               <span>{{ element.players[1]?.fullName }}</span>
             </a>
-          </ng-container>
+          }
         </div>
-      </ng-container>
+      }
     </td>
   </ng-container>
   <ng-container matColumnDef="points">
@@ -124,7 +122,6 @@
       {{ element.standing?.totalPointsLost || 0 }}
     </td>
   </ng-container>
-
   <ng-container matColumnDef="games">
     <th mat-header-cell colspan="2" *matHeaderCellDef>
       {{ 'all.event.standing.games' | translate }}
@@ -140,7 +137,6 @@
       {{ 'all.event.standing.totalPoints' | translate }}
     </th>
   </ng-container>
-
   <tr mat-header-row *matHeaderRowDef="displayedColumnsHeaders"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>

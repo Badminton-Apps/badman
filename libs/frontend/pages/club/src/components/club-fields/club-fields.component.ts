@@ -27,22 +27,17 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
     FormsModule,
-
-    // Other modules
     MatInputModule,
     MatOptionModule,
     MatSelectModule,
-
-    // My Modules
     HasClaimComponent,
     SelectCountryComponent,
-    SelectCountrystateComponent,
-  ],
+    SelectCountrystateComponent
+],
 })
 export class ClubFieldsComponent implements OnInit {
   @Input({ required: true })

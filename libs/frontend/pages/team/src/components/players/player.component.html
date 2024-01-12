@@ -1,25 +1,28 @@
-<div *ngFor="let player of this.control?.value" class="player">
-  <div class="name">{{ player.fullName }}</div>
-  <div class="type">
-    <mat-form-field>
-      <mat-label>Type</mat-label>
-      <mat-select
-        [(value)]="player.membershipType"
-        (selectionChange)="playerMembershipTypeChanged(player, $event)"
-      >
-        <mat-option *ngFor="let type of types" [value]="type">
-          {{ 'all.player.' + type | lowercase | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+@for (player of this.control?.value; track player) {
+  <div class="player">
+    <div class="name">{{ player.fullName }}</div>
+    <div class="type">
+      <mat-form-field>
+        <mat-label>Type</mat-label>
+        <mat-select
+          [(value)]="player.membershipType"
+          (selectionChange)="playerMembershipTypeChanged(player, $event)"
+          >
+          @for (type of types; track type) {
+            <mat-option [value]="type">
+              {{ 'all.player.' + type | lowercase | translate }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="delete">
+      <button mat-icon-button (click)="playerRemoved(player)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
   </div>
-  <div class="delete">
-    <button mat-icon-button (click)="playerRemoved(player)">
-      <mat-icon>delete</mat-icon>
-    </button>
-  </div>
-</div>
-
+}
 <badman-player-search
   [allowCreation]="false"
   [searchOutsideClub]="false"

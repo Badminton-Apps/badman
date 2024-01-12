@@ -33,8 +33,8 @@ import { RoleFieldsComponent } from '../../components';
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-    RoleFieldsComponent,
-  ],
+    RoleFieldsComponent
+],
 })
 export class AddPageComponent implements OnInit {
   role!: Role;

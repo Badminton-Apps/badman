@@ -14,19 +14,12 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'badman-game-score',
   standalone: true,
   imports: [
-    // common modules
     CommonModule,
-
-    // Material Modules
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-
-    // Other modules
-    TranslateModule,
-
-    // Own Components
-  ],
+    TranslateModule
+],
   templateUrl: './game-score.component.html',
   styleUrls: ['./game-score.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -12,11 +12,10 @@ import { ThemeSwitcherService } from './theme-switcher.service';
   imports: [
     CommonModule,
     TranslateModule,
-
     MatMenuModule,
     MatButtonModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
   templateUrl: './theme-switcher.component.html',
   styleUrls: ['./theme-switcher.component.scss'],
 })

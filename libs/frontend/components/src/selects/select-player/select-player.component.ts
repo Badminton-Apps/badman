@@ -40,18 +40,14 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-
-    // Core modules
     TranslateModule,
-
-    // Material Modules
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSelectModule,
-  ],
+    MatSelectModule
+],
 })
 export class SelectPlayerComponent implements OnInit {
   private destroy$ = injectDestroy();

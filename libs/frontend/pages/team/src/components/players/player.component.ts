@@ -29,16 +29,12 @@ export const PLAYERS_CONTROL = 'players';
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-
-    // Material
     MatIconModule,
     MatButtonModule,
     MatSelectModule,
     MatSnackBarModule,
-
-    // Own modules
-    PlayerSearchComponent,
-  ],
+    PlayerSearchComponent
+],
 })
 export class TeamPlayersComponent implements OnInit {
   @Input()

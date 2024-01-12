@@ -21,15 +21,11 @@ import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
   imports: [
     CommonModule,
     TranslateModule,
-
-    // My Modules
     TeamFieldComponent,
     TeamPlayersComponent,
-
-    // Material
     MatDialogModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
 })
 export class AddDialogComponent {
   group?: FormGroup;

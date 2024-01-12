@@ -21,15 +21,13 @@ import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
     DateSelectorComponent,
     ReactiveFormsModule,
     FormsModule,
-
     TranslateModule,
-
     MatSelectModule,
     MatIconModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatTooltipModule,
-  ],
+    MatTooltipModule
+],
   templateUrl: './request-date.component.html',
   styleUrls: ['./request-date.component.scss'],
 })

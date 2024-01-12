@@ -56,17 +56,13 @@ export type TeamForm = FormGroup<{
   standalone: true,
   imports: [
     CommonModule,
-
-    // Material
     MatCheckboxModule,
     MatButtonModule,
     MatProgressBarModule,
-
-    // Other
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule,
-  ],
+    TranslateModule
+],
   templateUrl: './teams-transfer.step.html',
   styleUrls: ['./teams-transfer.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -44,16 +44,14 @@ import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
     SelectTeamComponent,
     SelectEncounterComponent,
     SelectSeasonComponent,
-
     TranslateModule,
-
     MatIconModule,
     MatButtonModule,
     AssemblyComponent,
     MatDialogModule,
     MatMenuModule,
-    MatRippleModule,
-  ],
+    MatRippleModule
+],
 })
 export class CreatePageComponent implements OnInit {
   formGroup?: FormGroup;

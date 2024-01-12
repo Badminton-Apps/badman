@@ -1,11 +1,11 @@
-<ng-container *ngIf="authService.loggedIn$ | async">
+@if (authService.loggedIn$ | async) {
   <button
     mat-icon-button
     aria-label="notifications"
     (click)="isOpen.set(!isOpen())"
     cdkOverlayOrigin
     #trigger="cdkOverlayOrigin"
-  >
+    >
     <mat-icon
       matBadgeSize="small"
       [matBadge]="unread()?.length"
@@ -14,34 +14,34 @@
       aria-hidden="false"
       matBadgeColor="warn"
       >notifications</mat-icon
-    >
-  </button>
-
-  <ng-template
-    cdkConnectedOverlay
-    [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isOpen()"
-  >
-    <div class="notification-overlay">
-      <ng-container
-        *ngFor="let notification of notifications(); let last = last"
       >
-        <div
-          class="list-item"
-          [ngClass]="{
+    </button>
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="trigger"
+      [cdkConnectedOverlayOpen]="isOpen()"
+      >
+      <div class="notification-overlay">
+        @for (notification of notifications(); track notification; let last = $last) {
+          <div
+            class="list-item"
+            [ngClass]="{
             read: notification.read
-          }"
-        >
-          <span
-            matLine
-            [innerHTML]="
+            }"
+            >
+            <span
+              matLine
+              [innerHTML]="
               'all.settings.notifications.messages.' + notification.type
-                | translate: getParams(notification)
-            "
-          ></span>
-        </div>
-        <mat-divider *ngIf="!last"></mat-divider>
-      </ng-container>
-    </div>
-  </ng-template>
-</ng-container>
+              | translate: getParams(notification)
+              "
+            ></span>
+          </div>
+          @if (!last) {
+            <mat-divider></mat-divider>
+          }
+        }
+      </div>
+    </ng-template>
+  }
+  

@@ -34,20 +34,16 @@ import { CanPlay, ClubAssemblyService } from './club-assembly.service';
     CommonModule,
     RouterModule,
     TranslateModule,
-
-    // Maeterial Modules
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
     MatTableModule,
     MatTooltipModule,
     MatProgressBarModule,
-
-    // Components
     HasClaimComponent,
     RecentGamesComponent,
-    UpcomingGamesComponent,
-  ],
+    UpcomingGamesComponent
+],
   templateUrl: './club-assembly.component.html',
   styleUrls: ['./club-assembly.component.scss'],
 })

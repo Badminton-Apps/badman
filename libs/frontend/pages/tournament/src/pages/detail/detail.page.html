@@ -1,49 +1,44 @@
 <badman-page-header>
   <div actions>
     <!-- <button mat-icon-button class="favorite" title="favorite">
-      <mat-icon>star_outline</mat-icon>
-    </button> -->
-
+    <mat-icon>star_outline</mat-icon>
+  </button> -->
+  @if (this.eventTournament.visualCode) {
     <a
       mat-icon-button
-      *ngIf="this.eventTournament.visualCode"
       target="_blank"
       [href]="'https://www.toernooi.nl/tournament/'+this.eventTournament.visualCode"
       [matTooltip]="'all.button.open-in-new-tab' | translate"
-    >
+      >
       <mat-icon>open_in_new</mat-icon>
     </a>
-
-    <badman-has-claim
-      [any]="['edit-any:tournament', 'delete-any:tournament','change:job']"
+  }
+  <badman-has-claim
+    [any]="['edit-any:tournament', 'delete-any:tournament','change:job']"
     >
-      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-
-      <mat-menu #menu="matMenu">
-        <badman-has-claim [any]="['edit-any:tournament']">
-          <button mat-menu-item [routerLink]="'edit'">
-            <mat-icon>edit</mat-icon>
-            <span>Edit</span>
-          </button>
-
-          <button mat-menu-item (click)="this.makeOfficial()">
-            <mat-icon>verified_user</mat-icon>
-            <span
-              >{{this.eventTournament.official ? 'Unmake' : 'Make'}}
-              official</span
+    <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <badman-has-claim [any]="['edit-any:tournament']">
+        <button mat-menu-item [routerLink]="'edit'">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="this.makeOfficial()">
+          <mat-icon>verified_user</mat-icon>
+          <span
+            >{{this.eventTournament.official ? 'Unmake' : 'Make'}}
+            official</span
             >
           </button>
         </badman-has-claim>
-
         <badman-has-claim [any]="['change:job']">
           <button mat-menu-item (click)="syncEvent()">
             <mat-icon>sync</mat-icon>
             <span>Sync</span>
           </button>
         </badman-has-claim>
-
         <badman-has-claim [any]="['edit-any:tournament']">
           <button mat-menu-item (click)="this.setOpenClose()">
             <mat-icon>lock</mat-icon>
@@ -56,19 +51,16 @@
             <span>{{ 'all.button.set-ranking-groups' | translate }}</span>
           </button>
         </badman-has-claim>
-
         <badman-has-claim [any]="['delete-any:tournament']">
           <button mat-menu-item (click)="this.removeEvent()">
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
-          </button> 
+          </button>
         </badman-has-claim>
       </mat-menu>
     </badman-has-claim>
   </div>
-
   <div title>{{eventTournament.name}}</div>
-
   <div subTitle>
     <mat-chip-listbox>
       <mat-chip
@@ -76,35 +68,46 @@
         {{((this.eventTournament.allowEnlisting ?? false) ?
         'all.tournament.enrollment.open': 'all.tournament.enrollment.closed') |
         translate}}</mat-chip
-      >
-      <mat-chip *ngIf="eventTournament.lastSync">
-        {{'all.event.last-sync' | translate}}: {{eventTournament.lastSync |
-        amCalendar}}
-      </mat-chip>
-    </mat-chip-listbox>
-  </div>
-</badman-page-header>
-
-<div *ngIf="subEvents" class="subEvents">
-  <div *ngFor="let type of subEvents" class="type">
-    <h3>{{ ('all.game.types.long.' + type.eventType) | translate}}</h3>
-    <mat-card *ngFor="let sub of type.subEvents" class="subEvent">
-      <mat-card-header>
-        <mat-card-title
-          >{{sub.name}} {{sub.eventType}}<span
-            *ngIf="(sub?.rankingGroups?.length ?? 0) > 0"
-            >*</span
-          ></mat-card-title
         >
-        <mat-card-subtitle></mat-card-subtitle>
-      </mat-card-header>
-      <div class="draw">
-        <div *ngFor="let draw of sub.drawTournaments">
-          <button mat-button [routerLink]="['draw', draw.id]">
-            {{draw.name}} ({{draw.size}} entries)
-          </button>
+        @if (eventTournament.lastSync) {
+          <mat-chip>
+            {{'all.event.last-sync' | translate}}: {{eventTournament.lastSync |
+            amCalendar}}
+          </mat-chip>
+        }
+      </mat-chip-listbox>
+    </div>
+  </badman-page-header>
+  @if (subEvents) {
+    <div class="subEvents">
+      @for (type of subEvents; track type) {
+        <div class="type">
+          <h3>{{ ('all.game.types.long.' + type.eventType) | translate}}</h3>
+          @for (sub of type.subEvents; track sub) {
+            <mat-card class="subEvent">
+              <mat-card-header>
+                <mat-card-title
+                  >{{sub.name}} {{sub.eventType}}@if ((sub?.rankingGroups?.length ?? 0) > 0) {
+                  <span
+                    >*</span
+                    >
+                    }</mat-card-title
+                    >
+                    <mat-card-subtitle></mat-card-subtitle>
+                  </mat-card-header>
+                  <div class="draw">
+                    @for (draw of sub.drawTournaments; track draw) {
+                      <div>
+                        <button mat-button [routerLink]="['draw', draw.id]">
+                          {{draw.name}} ({{draw.size}} entries)
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </mat-card>
+              }
+            </div>
+          }
         </div>
-      </div>
-    </mat-card>
-  </div>
-</div>
+      }
+      

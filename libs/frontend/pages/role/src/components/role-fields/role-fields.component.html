@@ -10,21 +10,20 @@
       alt="name"
       autocomplete="name"
       required
-    />
-  </mat-form-field>
-
-  <ng-container *ngFor="let group of this.claims">
-    <h2>{{ group.category }}</h2>
-    <ng-container *ngFor="let claim of group.claims">
-      <badman-claim
-        [claim]="claim"
-        [value]="this.selectedClaims.includes(claim)"
-        (whenChange)="claimChanged(claim, $event)"
-      ></badman-claim>
-    </ng-container>
-  </ng-container>
-
-  <button mat-raised-button color="primary" type="submit">
-    {{ 'all.button.save' | translate }}
-  </button>
-</form>
+      />
+    </mat-form-field>
+    @for (group of this.claims; track group) {
+      <h2>{{ group.category }}</h2>
+      @for (claim of group.claims; track claim) {
+        <badman-claim
+          [claim]="claim"
+          [value]="this.selectedClaims.includes(claim)"
+          (whenChange)="claimChanged(claim, $event)"
+        ></badman-claim>
+      }
+    }
+    <button mat-raised-button color="primary" type="submit">
+      {{ 'all.button.save' | translate }}
+    </button>
+  </form>
+  

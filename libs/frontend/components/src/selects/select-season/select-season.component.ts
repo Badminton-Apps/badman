@@ -34,16 +34,12 @@ import { map, takeUntil } from 'rxjs/operators';
   standalone: true,
   imports: [
     CommonModule,
-
-    // Core modules
     TranslateModule,
-
-    // Material Modules
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
-    MatSelectModule,
-  ],
+    MatSelectModule
+],
   templateUrl: './select-season.component.html',
   styleUrls: ['./select-season.component.scss'],
 })

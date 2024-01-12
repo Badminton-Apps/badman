@@ -50,12 +50,10 @@ const COMMENTS_QUERY = gql`
     MomentModule,
     FormsModule,
     TranslateModule,
-
-    // Material
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule,
-  ],
+    MatInputModule
+],
 })
 export class CommentsComponent implements OnInit, OnChanges {
   // injects

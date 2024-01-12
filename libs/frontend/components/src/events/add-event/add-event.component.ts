@@ -17,20 +17,15 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'badman-add-event',
   standalone: true,
   imports: [
-    // common modules
     CommonModule,
-
-    // Material modules
     MatFormFieldModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
     MatSlideToggleModule,
-
-    // other modules
-    TranslateModule,
-  ], 
+    TranslateModule
+], 
   templateUrl: './add-event.component.html',
   styleUrls: ['./add-event.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

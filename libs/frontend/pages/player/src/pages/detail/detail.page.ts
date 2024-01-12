@@ -47,21 +47,17 @@ import { ShowLevelComponent } from './components/show-level.component';
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-
-    // Material
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
     MatChipsModule,
     MatDialogModule,
-
-    // My Componments
     RecentGamesComponent,
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
-    ShowLevelComponent,
-  ],
+    ShowLevelComponent
+],
 })
 export class DetailPageComponent {
   // Dependencies
@@ -92,6 +88,7 @@ export class DetailPageComponent {
   initials?: string;
 
   teams = signal<Team[]>([]);
+  hasTeams = computed(() => this.teams()?.length > 0);
 
   hasMenu$?: Observable<boolean>;
   canClaim$?: Observable<boolean>;

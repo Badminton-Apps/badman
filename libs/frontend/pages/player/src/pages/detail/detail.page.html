@@ -7,11 +7,9 @@
         ><a [routerLink]="['/', 'club', this.club()?.slug]"
           >{{this.club()?.name}}</a
         ></ng-container
-      ><ng-container *ngIf="this.club()?.name && this.player()?.memberId">
-        - </ng-container
-      >{{this.player().memberId}}
+      >@if (this.club()?.name && this.player().memberId) { -
+      }{{this.player().memberId}}
     </div>
-
     @if (this.player().id) {
     <div class="levels">
       <badman-show-level
@@ -31,73 +29,60 @@
       />
     </div>
     }
-
     <div class="click-for-breakdown">
       {{ 'all.breakdown.hint' | translate }}
     </div>
   </div>
-
   <div actions>
     <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
     </button>
-
-    <ng-container *ngIf="this.hasMenu$ | async">
-      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
-        <mat-icon>more_vert</mat-icon>
+    @if (this.hasMenu$ | async) {
+    <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      @if (this.canClaim$ | async) {
+      <button mat-menu-item (click)="this.claimAccount()">
+        {{ 'all.player.menu.claim' | translate }}
       </button>
-
-      <mat-menu #menu="matMenu">
-        <button
-          mat-menu-item
-          *ngIf="this.canClaim$ | async"
-          (click)="this.claimAccount()"
-        >
-          {{ 'all.player.menu.claim' | translate }}
+      }
+      <badman-has-claim
+        [any]="['edit-any:player', this.player().id + '_edit:player']"
+      >
+        <button mat-menu-item [routerLink]="'edit'">
+          <mat-icon>edit</mat-icon>
+          <span>{{'all.player.menu.edit' | translate}}</span>
         </button>
-
-        <badman-has-claim
-          [any]="['edit-any:player', this.player().id + '_edit:player']"
-        >
-          <button mat-menu-item [routerLink]="'edit'">
-            <mat-icon>edit</mat-icon>
-            <span>{{'all.player.menu.edit' | translate}}</span>
-          </button>
-        </badman-has-claim>
-
-        <badman-has-claim [any]="['delete:player']">
-          <button mat-menu-item (click)="this.removePlayer()">
-            <mat-icon>delete</mat-icon>
-            <span>{{'all.player.menu.delete' | translate}}</span>
-          </button>
-        </badman-has-claim>
-      </mat-menu>
-    </ng-container>
+      </badman-has-claim>
+      <badman-has-claim [any]="['delete:player']">
+        <button mat-menu-item (click)="this.removePlayer()">
+          <mat-icon>delete</mat-icon>
+          <span>{{'all.player.menu.delete' | translate}}</span>
+        </button>
+      </badman-has-claim>
+    </mat-menu>
+    }
   </div>
 </badman-page-header>
-
 <section class="games">
   <section class="recent-games">
     <h3>
       <mat-icon color="primary">history</mat-icon>
       {{"all.game.recent.title" | translate}}
     </h3>
-
     <badman-recent-games [playerId]="this.player().id"></badman-recent-games>
   </section>
-
   <section class="upcoming-games">
     <h3>
       <mat-icon color="primary">calendar_month</mat-icon>
       {{ 'all.game.upcoming.title' | translate }}
     </h3>
-
-    <ng-container *ngIf="this.teams()">
-      <badman-upcoming-games
-        *ngIf="(this.teams?.()?.length?? 0) >0"
-        [clubId]="club()?.id"
-        [teams]="this.teams()"
-      ></badman-upcoming-games>
-    </ng-container>
+    @if (this.hasTeams()) {
+    <badman-upcoming-games
+      [clubId]="club()?.id"
+      [teams]="this.teams()"
+    ></badman-upcoming-games>
+    }
   </section>
 </section>

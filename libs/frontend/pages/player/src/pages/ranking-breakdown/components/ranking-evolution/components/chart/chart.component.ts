@@ -19,12 +19,8 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-
-    // Material
-
-    // Other
-    NgApexchartsModule,
-  ],
+    NgApexchartsModule
+],
 })
 export class ChartComponent implements OnInit {
   // options!: EChartsOption;

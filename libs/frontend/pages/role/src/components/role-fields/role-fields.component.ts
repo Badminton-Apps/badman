@@ -27,19 +27,14 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-
-    // Other modules
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-
-    // My Modules
-    ClaimComponent,
-  ],
+    ClaimComponent
+],
 })
 export class RoleFieldsComponent implements OnInit {
   @Input()

@@ -37,17 +37,13 @@ import {
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-
-    // Material
     MatIconModule,
     MatListModule,
     MatDividerModule,
     MatSelectModule,
-
     MomentModule,
-
-    LoadingBlockComponent,
-  ],
+    LoadingBlockComponent
+],
 })
 export class ListEncountersComponent implements OnInit {
   private destroy$ = injectDestroy();

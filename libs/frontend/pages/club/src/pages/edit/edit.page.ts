@@ -84,17 +84,12 @@ import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
   styleUrls: ['./edit.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
     RouterModule,
-
-    // Other modules
     MomentModule,
     TranslateModule,
-
-    // My Modules
     ClubEditLocationComponent,
     ClubEditTeamComponent,
     ClubFieldsComponent,
@@ -103,8 +98,6 @@ import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
     SelectCountrystateComponent,
     EditRoleComponent,
     AddRoleComponent,
-
-    // Material Modules
     MatButtonToggleModule,
     MatIconModule,
     MatInputModule,
@@ -114,8 +107,8 @@ import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
     MatOptionModule,
     MatSelectModule,
     MatProgressBarModule,
-    MatDividerModule,
-  ],
+    MatDividerModule
+],
 })
 export class EditPageComponent implements OnInit {
   public securityTypes: typeof SecurityType = SecurityType;

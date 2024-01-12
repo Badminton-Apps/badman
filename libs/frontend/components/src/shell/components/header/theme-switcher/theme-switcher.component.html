@@ -2,12 +2,13 @@
   {{ 'all.themes.' + this.current | translate }}
 </button>
 <mat-menu #Lang="matMenu">
-  <button
-    mat-menu-item
-    *ngFor="let theme of this.colorSchemaService.schemes"
-    [value]="theme"
-    (click)="setTheme(theme)"
-  >
-    {{ 'all.themes.' + theme | translate }}
-  </button>
+  @for (theme of this.colorSchemaService.schemes; track theme) {
+    <button
+      mat-menu-item
+      [value]="theme"
+      (click)="setTheme(theme)"
+      >
+      {{ 'all.themes.' + theme | translate }}
+    </button>
+  }
 </mat-menu>

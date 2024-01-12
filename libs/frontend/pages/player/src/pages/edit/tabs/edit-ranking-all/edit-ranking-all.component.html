@@ -1,68 +1,85 @@
 <div class="all-ranking">
-  <ng-container *ngIf="this.allPlaces$">
+  @if (this.allPlaces$) {
     <mat-accordion multi>
-      <mat-expansion-panel *ngFor="let group of this.allPlaces$ | async">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            <ng-container *ngIf="group[0]">{{ group[0].rankingDate | date }} - {{ group[0].single }} -
-              {{ group[0].double }} - {{ group[0].mix }}
-            </ng-container>
-            <ng-container *ngIf="!group[0]">{{
-              'all.ranking.next-ranking' | translate
-            }}</ng-container>
-          </mat-panel-title>
-          <mat-panel-description>
-            {{ group[1].length }} {{ 'all.ranking.updates' | translate }}
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-
-        <mat-action-list *ngFor="let place of group[1]">
-          <button mat-list-item (click)="this.editRanking(place)">
-            <span
-              matListItemTitle
-              [matTooltip]="'all.ranking.update-happend' | translate"
-              matTooltipPosition="left"
-              [matTooltipDisabled]="!place.updatePossible"
-            >{{ place.rankingDate | date }}
-              <ng-container *ngIf="place.updatePossible">*</ng-container>
-            </span>
-            <span
-              matListItemLine
-              *ngIf="
-                place.rankingDate?.getDate() === 15 &&
-                place.rankingDate?.getMonth() === 4
-              "
-            >
-              {{ 'all.ranking.may-ranking' | translate }}
-            </span>
-            <span
-              matListItemLine
-              *ngIf="
-                place.singlePoints || place.doublePoints || place.mixPoints
-              "
-            >
-              <span *ngIf="place.singlePoints"
-                >{{ 'all.ranking.single' | translate }}:
-                {{ place.singlePoints }}</span
-              >
-              -
-              <span *ngIf="place.doublePoints"
-                >{{ 'all.ranking.double' | translate }}:
-                {{ place.doublePoints }}</span
-              >
-              -
-              <span *ngIf="place.mixPoints"
-                >{{ 'all.ranking.mix' | translate }}: {{ place.mixPoints }}</span
-              >
-            </span>
-          </button>
-        </mat-action-list>
-      </mat-expansion-panel>
-    </mat-accordion>
-    <div>
-      <button mat-stroked-button color="primary" (click)="this.editRanking()">
-        {{ 'all.ranking.add-ranking' | translate }}
-      </button>
-    </div>
-  </ng-container>
-</div>
+      @for (group of this.allPlaces$ | async; track group) {
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              @if (group[0]) {
+                {{ group[0].rankingDate | date }} - {{ group[0].single }} -
+                {{ group[0].double }} - {{ group[0].mix }}
+              }
+              @if (!group[0]) {
+                {{
+                'all.ranking.next-ranking' | translate
+                }}
+              }
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ group[1].length }} {{ 'all.ranking.updates' | translate }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          @for (place of group[1]; track place) {
+            <mat-action-list>
+              <button mat-list-item (click)="this.editRanking(place)">
+                <span
+                  matListItemTitle
+                  [matTooltip]="'all.ranking.update-happend' | translate"
+                  matTooltipPosition="left"
+                  [matTooltipDisabled]="!place.updatePossible"
+                  >{{ place.rankingDate | date }}
+                  @if (place.updatePossible) {
+                    *
+                  }
+                </span>
+                @if (
+                  place.rankingDate?.getDate() === 15 &&
+                  place.rankingDate?.getMonth() === 4
+                  ) {
+                  <span
+                    matListItemLine
+                    >
+                    {{ 'all.ranking.may-ranking' | translate }}
+                  </span>
+                }
+                @if (
+                  place.singlePoints || place.doublePoints || place.mixPoints
+                  ) {
+                  <span
+                    matListItemLine
+                    >
+                    @if (place.singlePoints) {
+                      <span
+                        >{{ 'all.ranking.single' | translate }}:
+                        {{ place.singlePoints }}</span
+                        >
+                      }
+                      -
+                      @if (place.doublePoints) {
+                        <span
+                          >{{ 'all.ranking.double' | translate }}:
+                          {{ place.doublePoints }}</span
+                          >
+                        }
+                        -
+                        @if (place.mixPoints) {
+                          <span
+                            >{{ 'all.ranking.mix' | translate }}: {{ place.mixPoints }}</span
+                            >
+                          }
+                        </span>
+                      }
+                    </button>
+                  </mat-action-list>
+                }
+              </mat-expansion-panel>
+            }
+          </mat-accordion>
+          <div>
+            <button mat-stroked-button color="primary" (click)="this.editRanking()">
+              {{ 'all.ranking.add-ranking' | translate }}
+            </button>
+          </div>
+        }
+      </div>
+      

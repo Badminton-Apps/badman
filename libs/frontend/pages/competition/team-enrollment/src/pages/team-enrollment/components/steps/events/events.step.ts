@@ -41,10 +41,8 @@ import { TeamForm } from '../teams-transfer';
     TranslateModule,
     SelectEventComponent,
     ReactiveFormsModule,
-
-    // Material
-    MatCheckboxModule,
-  ],
+    MatCheckboxModule
+],
   templateUrl: './events.step.html',
   styleUrls: ['./events.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

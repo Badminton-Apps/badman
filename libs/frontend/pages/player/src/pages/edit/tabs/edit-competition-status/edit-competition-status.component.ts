@@ -24,8 +24,8 @@ import { debounceTime, map } from 'rxjs';
     HasClaimComponent,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    TranslateModule,
-  ],
+    TranslateModule
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCompetitionStatusComponent implements OnInit {

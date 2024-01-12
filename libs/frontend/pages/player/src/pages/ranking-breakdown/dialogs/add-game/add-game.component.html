@@ -1,13 +1,11 @@
 <h2 mat-dialog-title>
   {{ 'all.breakdown.add-game.title' | translate }}
 </h2>
-
 <mat-dialog-content>
   <form [formGroup]="this.formGroup">
     <mat-slide-toggle formControlName="won">{{
       'all.breakdown.add-game.won' | translate
     }}</mat-slide-toggle>
-
     <div class="game">
       <div class="team1">
         <div class="player1">
@@ -26,84 +24,86 @@
               type="number"
               min="0"
               [max]="this.data.system.amountOfLevels ?? 12"
-            />
-          </mat-form-field>
-        </div>
-        <div class="player2" *ngIf="this.data.type !== 'single'">
-          <badman-select-player
-            controlName="p2t1"
-            [label]="'all.breakdown.add-game.p2t1' | translate"
-            [formGroup]="this.formGroup"
-            [fragment]="fragment"
-          ></badman-select-player>
-          <mat-form-field class="level">
-            <mat-label>Level</mat-label>
-            <input
-              matInput
-              formControlName="p2t1Level"
-              type="number"
-              min="0"
-              [max]="this.data.system.amountOfLevels ?? 12"
-            />
-          </mat-form-field>
-        </div>
-      </div>
-
-      <div class="vs"></div>
-
-      <div class="player1 team2">
-        <div class="player1">
-          <badman-select-player
-            controlName="p1t2"
-            [label]="'all.breakdown.add-game.p1t2' | translate"
-            [formGroup]="this.formGroup"
-            [fragment]="fragment"
-          ></badman-select-player>
-          <mat-form-field class="level">
-            <mat-label>Level</mat-label>
-            <input
-              matInput
-              required
-              formControlName="p1t2Level"
-              type="number"
-              min="0"
-              [max]="this.data.system.amountOfLevels ?? 12"
-            />
-          </mat-form-field>
-        </div>
-        <div class="player2" *ngIf="this.data.type !== 'single'">
-          <badman-select-player
-            controlName="p2t2"
-            [label]="'all.breakdown.add-game.p2t2' | translate"
-            [formGroup]="this.formGroup"
-            [fragment]="fragment"
-          ></badman-select-player>
-          <mat-form-field class="level">
-            <mat-label>Level</mat-label>
-            <input
-              matInput
-              formControlName="p2t2Level"
-              type="number"
-              min="0"
-              [max]="this.data.system.amountOfLevels ?? 12"
-            />
-          </mat-form-field>
-        </div>
-      </div>
-    </div>
-  </form>
-</mat-dialog-content>
-
-<mat-dialog-actions>
-  <button mat-button (click)="onDismiss()">
-    {{ 'all.button.no' | translate }}
-  </button>
-  <button
-    mat-raised-button
-    cdkFocusInitial
-    color="primary"
-    (click)="onConfirm()"
-  >
-    {{ 'all.button.yes' | translate }}
-  </button>
-</mat-dialog-actions>
+              />
+            </mat-form-field>
+          </div>
+          @if (this.data.type !== 'single') {
+            <div class="player2">
+              <badman-select-player
+                controlName="p2t1"
+                [label]="'all.breakdown.add-game.p2t1' | translate"
+                [formGroup]="this.formGroup"
+                [fragment]="fragment"
+              ></badman-select-player>
+              <mat-form-field class="level">
+                <mat-label>Level</mat-label>
+                <input
+                  matInput
+                  formControlName="p2t1Level"
+                  type="number"
+                  min="0"
+                  [max]="this.data.system.amountOfLevels ?? 12"
+                  />
+                </mat-form-field>
+              </div>
+            }
+          </div>
+          <div class="vs"></div>
+          <div class="player1 team2">
+            <div class="player1">
+              <badman-select-player
+                controlName="p1t2"
+                [label]="'all.breakdown.add-game.p1t2' | translate"
+                [formGroup]="this.formGroup"
+                [fragment]="fragment"
+              ></badman-select-player>
+              <mat-form-field class="level">
+                <mat-label>Level</mat-label>
+                <input
+                  matInput
+                  required
+                  formControlName="p1t2Level"
+                  type="number"
+                  min="0"
+                  [max]="this.data.system.amountOfLevels ?? 12"
+                  />
+                </mat-form-field>
+              </div>
+              @if (this.data.type !== 'single') {
+                <div class="player2">
+                  <badman-select-player
+                    controlName="p2t2"
+                    [label]="'all.breakdown.add-game.p2t2' | translate"
+                    [formGroup]="this.formGroup"
+                    [fragment]="fragment"
+                  ></badman-select-player>
+                  <mat-form-field class="level">
+                    <mat-label>Level</mat-label>
+                    <input
+                      matInput
+                      formControlName="p2t2Level"
+                      type="number"
+                      min="0"
+                      [max]="this.data.system.amountOfLevels ?? 12"
+                      />
+                    </mat-form-field>
+                  </div>
+                }
+              </div>
+            </div>
+          </form>
+        </mat-dialog-content>
+        <mat-dialog-actions>
+          <button mat-button (click)="onDismiss()">
+            {{ 'all.button.no' | translate }}
+          </button>
+          <button
+            mat-raised-button
+            cdkFocusInitial
+            color="primary"
+            (click)="onConfirm()"
+            >
+            {{ 'all.button.yes' | translate }}
+          </button>
+        </mat-dialog-actions>
+        

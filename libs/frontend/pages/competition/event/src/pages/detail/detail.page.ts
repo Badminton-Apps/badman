@@ -55,14 +55,10 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
   styleUrls: ['./detail.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
     TranslateModule,
-
     MomentModule,
-
-    // Material Modules
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
@@ -76,14 +72,12 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
     MatTooltipModule,
     MatSnackBarModule,
     MatTabsModule,
-
-    // Own modules
     PageHeaderComponent,
     HasClaimComponent,
     CompetitionEnrollmentsComponent,
     CompetitionMapComponent,
-    CompetitionEncountersComponent,
-  ],
+    CompetitionEncountersComponent
+],
 })
 export class DetailPageComponent implements OnInit {
   // injectors

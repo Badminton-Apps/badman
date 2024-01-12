@@ -3,48 +3,51 @@
 </h2>
 <mat-dialog-content>
   <!-- date time picker -->
-  <div *ngIf="openControl">
-    <mat-form-field>
-      <mat-label>{{ 'all.competition.open-close.open-enrollment' | translate }}</mat-label>
-      <input
-        matInput
-        [ngxMatDatetimePicker]="openPicker"
-        placeholder="Choose a date"
-        [formControl]="openControl"
-      />
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="$any(openPicker)"
-      ></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
-    </mat-form-field>
-  </div>
-
-  <div *ngIf="closeControl">
-    <mat-form-field>
-      <mat-label>{{
-        'all.competition.open-close.close-enrollment' | translate
-      }}</mat-label>
-      <input
-        matInput
-        [ngxMatDatetimePicker]="closePicker"
-        placeholder="Choose a date"
-        [formControl]="closeControl"
-      />
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="$any(closePicker)"
-      ></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker #closePicker> </ngx-mat-datetime-picker>
-    </mat-form-field>
-  </div>
-</mat-dialog-content>
-
-<mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="">
-    {{ 'all.button.close' | translate }}
-  </button>
-  <button mat-raised-button color="primary" (click)="this.save()">
-    {{ 'all.button.save' | translate }}
-  </button>
-</mat-dialog-actions>
+  @if (openControl) {
+    <div>
+      <mat-form-field>
+        <mat-label>{{ 'all.competition.open-close.open-enrollment' | translate }}</mat-label>
+        <input
+          matInput
+          [ngxMatDatetimePicker]="openPicker"
+          placeholder="Choose a date"
+          [formControl]="openControl"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="$any(openPicker)"
+          ></mat-datepicker-toggle>
+          <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
+        </mat-form-field>
+      </div>
+    }
+    @if (closeControl) {
+      <div>
+        <mat-form-field>
+          <mat-label>{{
+            'all.competition.open-close.close-enrollment' | translate
+          }}</mat-label>
+          <input
+            matInput
+            [ngxMatDatetimePicker]="closePicker"
+            placeholder="Choose a date"
+            [formControl]="closeControl"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="$any(closePicker)"
+            ></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #closePicker> </ngx-mat-datetime-picker>
+          </mat-form-field>
+        </div>
+      }
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button [mat-dialog-close]="">
+        {{ 'all.button.close' | translate }}
+      </button>
+      <button mat-raised-button color="primary" (click)="this.save()">
+        {{ 'all.button.save' | translate }}
+      </button>
+    </mat-dialog-actions>
+    

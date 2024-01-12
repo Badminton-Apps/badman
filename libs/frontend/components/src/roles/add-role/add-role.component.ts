@@ -20,13 +20,11 @@ import { iif, of, switchMap } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-
-    // Material
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatInputModule,
-  ],
+    MatInputModule
+],
   templateUrl: './add-role.component.html',
   styleUrls: ['./add-role.component.scss'],
 })

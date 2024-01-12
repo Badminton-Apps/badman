@@ -48,11 +48,8 @@ import { randomLightColor } from 'seed-to-color';
     RouterModule,
     ReactiveFormsModule,
     FormsModule,
-
     TranslateModule,
     NgxMatDatetimePickerModule,
-
-    // Material
     MatIconModule,
     MatInputModule,
     MatButtonModule,
@@ -64,10 +61,8 @@ import { randomLightColor } from 'seed-to-color';
     MatDatepickerModule,
     MatSelectModule,
     MatSnackBarModule,
-
-    // own
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -40,17 +40,13 @@ import { ClubTeamsService } from './data-access/club-teams.service';
     LoadingBlockComponent,
     RouterModule,
     TranslateModule,
-
-    // Maeterial Modules
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
-
-    // Components
     HasClaimComponent,
     RecentGamesComponent,
-    UpcomingGamesComponent,
-  ],
+    UpcomingGamesComponent
+],
   templateUrl: './club-teams.component.html',
   styleUrls: ['./club-teams.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

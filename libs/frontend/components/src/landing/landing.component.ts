@@ -26,15 +26,13 @@ import { LoadingBlockComponent } from '../loading-block';
   imports: [
     CommonModule,
     BetaComponent,
-
     TranslateModule,
     MatIconModule,
-
     ProfileOverviewComponent,
     UpcomingGamesComponent,
     RankingTableComponent,
-    LoadingBlockComponent,
-  ],
+    LoadingBlockComponent
+],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -27,16 +27,12 @@ import { CronJobService } from '../../services/cronjob.service';
   styleUrls: ['./overview.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
     MomentModule,
-
-    // Material Modules
     MatButtonModule,
     MatTableModule,
     MatFormFieldModule,
@@ -47,11 +43,9 @@ import { CronJobService } from '../../services/cronjob.service';
     MatDividerModule,
     MatSlideToggleModule,
     MatDatepickerModule,
-
-    // Own Module
     PageHeaderComponent,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
 })
 export class OverviewPageComponent {
   // injects

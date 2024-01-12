@@ -20,16 +20,14 @@ import { OverlayModule } from '@angular/cdk/overlay';
   standalone: true,
   imports: [
     CommonModule,
-
-    // Material
     ReactiveFormsModule,
     MatFormFieldModule,
     MatOptionModule,
     MatSelectModule,
     MatExpansionModule,
     MatCardModule,
-    OverlayModule,
-  ],
+    OverlayModule
+],
 })
 export class SubEventViewComponent implements OnInit {
   overlayOpen = '';

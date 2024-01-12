@@ -39,16 +39,13 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-
-    // Material
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-
     RecentGamesComponent,
     UpcomingGamesComponent,
-    PageHeaderComponent,
-  ],
+    PageHeaderComponent
+],
 })
 export class DetailPageComponent {
   private route = inject(ActivatedRoute);

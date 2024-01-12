@@ -60,7 +60,6 @@ import {
   imports: [
     CommonModule,
     RouterModule,
-
     UserShortcutsComponent,
     HeaderMenuComponent,
     SearchBoxComponent,
@@ -68,11 +67,9 @@ import {
     NotificationComponent,
     LogoComponent,
     ServiceStatusComponent,
-
     ServiceWorkerModule,
     BreadcrumbModule,
     TranslateModule,
-
     MatSidenavModule,
     MatSlideToggleModule,
     MatToolbarModule,
@@ -82,9 +79,8 @@ import {
     MatSnackBarModule,
     MatProgressBarModule,
     MatTooltipModule,
-
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
   standalone: true,
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss'],

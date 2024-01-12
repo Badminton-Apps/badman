@@ -24,18 +24,15 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     TranslateModule,
-
-    // Material Modules
     MatIconModule,
     ReactiveFormsModule,
     MatSelectModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatInputModule,
-  ],
+    MatInputModule
+],
 })
 export class EventCompetitionLevelFieldsComponent implements OnInit {
   @Input()

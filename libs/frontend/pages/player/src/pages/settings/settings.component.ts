@@ -36,9 +36,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatButtonModule,
     TranslateModule,
     MatSnackBarModule,
-
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
 })
 export class SettingsPageComponent implements OnInit {
   settingsForm!: FormGroup;

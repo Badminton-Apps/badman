@@ -68,12 +68,9 @@ const roleQuery = gql`
   styleUrls: ['./edit.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
     TranslateModule,
-
-    // Material Modules
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
@@ -85,14 +82,12 @@ const roleQuery = gql`
     MatDatepickerModule,
     MatSnackBarModule,
     MatSlideToggleModule,
-
-    // Own modules
     PageHeaderComponent,
     EventCompetitionLevelFieldsComponent,
     HasClaimComponent,
     AddRoleComponent,
-    EditRoleComponent,
-  ],
+    EditRoleComponent
+],
 })
 export class EditPageComponent implements OnInit {
   private injector = inject(Injector);

@@ -1,39 +1,41 @@
-<div *ngIf="this.formGroup">
-  <div class="select-encounter">
-    <badman-select-club
-      singleClubPermission="change:encounter"
-      allClubPermission="change-any:encounter"
-      [needsPermission]="true"
-      [updateUrl]="true"
-      [group]="this.formGroup"
-    ></badman-select-club>
-    <badman-select-season
-      [updateUrl]="true"
-      [group]="this.formGroup"
-      *ngIf="this.canSelectSeason()"
-    >
-    </badman-select-season>
-
-    <badman-select-team
-      [group]="this.formGroup"
-      [updateOn]="['club', 'season']"
-      [updateUrl]="true"
-    ></badman-select-team>
-  </div>
-
-  <div [hidden]="!formGroup.get('team')!.value">
-    <h3 *ngIf="!isHandset()">
-      <mat-icon color="primary">event</mat-icon>
-      {{ 'all.competition.change-encounter.choose-encounter' | translate }}
-    </h3>
-
-    <div class="list-encounters">
-      <badman-list-encounters
-        [showCompact]="isHandset()"
+@if (this.formGroup) {
+  <div>
+    <div class="select-encounter">
+      <badman-select-club
+        singleClubPermission="change:encounter"
+        allClubPermission="change-any:encounter"
+        [needsPermission]="true"
         [updateUrl]="true"
-        [group]="formGroup"
-      ></badman-list-encounters>
-      <badman-show-requests [group]="formGroup"></badman-show-requests>
+        [group]="this.formGroup"
+      ></badman-select-club>
+      @if (this.canSelectSeason()) {
+        <badman-select-season
+          [updateUrl]="true"
+          [group]="this.formGroup"
+          >
+        </badman-select-season>
+      }
+      <badman-select-team
+        [group]="this.formGroup"
+        [updateOn]="['club', 'season']"
+        [updateUrl]="true"
+      ></badman-select-team>
+    </div>
+    <div [hidden]="!formGroup.get('team')!.value">
+      @if (!isHandset()) {
+        <h3>
+          <mat-icon color="primary">event</mat-icon>
+          {{ 'all.competition.change-encounter.choose-encounter' | translate }}
+        </h3>
+      }
+      <div class="list-encounters">
+        <badman-list-encounters
+          [showCompact]="isHandset()"
+          [updateUrl]="true"
+          [group]="formGroup"
+        ></badman-list-encounters>
+        <badman-show-requests [group]="formGroup"></badman-show-requests>
+      </div>
     </div>
   </div>
-</div>
+}

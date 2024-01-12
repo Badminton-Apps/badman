@@ -17,23 +17,19 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
   imports: [
-    // Core modules
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
-
     TranslateModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
-
-    // Material Modules
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    MatDatepickerModule,
-  ],
+    MatDatepickerModule
+],
   templateUrl: './set-open-close-enrollments.component.html',
   styleUrls: ['./set-open-close-enrollments.component.scss'],
   standalone: true,

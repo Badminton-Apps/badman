@@ -3,17 +3,17 @@
   <mat-form-field>
     <mat-label>Replacement</mat-label>
     <mat-select>
-      <mat-option *ngFor="let player of players" [value]="player">
-        {{ player.fullName }}
-      </mat-option>
+      @for (player of players; track player) {
+        <mat-option [value]="player">
+          {{ player.fullName }}
+        </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 </div>
-
 <div mat-dialog-actions>
   <button mat-raised-button color="primary" [mat-dialog-close]="null">
     {{ 'all.button.create' | translate }}
   </button>
-
   <button mat-button [mat-dialog-close]="null">Close</button>
 </div>
