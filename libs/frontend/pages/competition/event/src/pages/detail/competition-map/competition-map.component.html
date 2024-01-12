@@ -1,7 +1,6 @@
 @if (this.loading()) {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-}
-@if (!this.loading()) {
+} @else {
   <div class="map">
     <google-map [center]="this.center()" [zoom]="9" width="100%" height="800px">
       @for (location of locations?.(); track location) {
@@ -9,7 +8,7 @@
           #marker="mapMarker"
           [position]="getLatLng(location)"
           (mapClick)="openInfoWindow(marker, location)"
-          >
+        >
         </map-marker>
       }
       <map-info-window>
@@ -29,13 +28,16 @@
       </map-info-window>
     </google-map>
     <div>
-      @if (subEvents?.()) {
+      @if (subEvents()) {
         <div>
-          @for (subEvent of eventCompetition?.()?.subEventCompetitions; track subEvent) {
+          @for (
+            subEvent of eventCompetition?.()?.subEventCompetitions;
+            track subEvent
+          ) {
             <mat-checkbox
               (change)="selectSubEvent(subEvent.id!, $event)"
               [checked]="this.subEvents().includes(subEvent.id!)"
-              >
+            >
               {{ subEvent.name }} {{ subEvent.eventType }}
             </mat-checkbox>
           }
