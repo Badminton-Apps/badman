@@ -12,8 +12,7 @@
           <span translate="all.competition.vs"></span>
           @if (encounter.showingForHomeTeam) {
             <span> {{ encounter.away?.name }}</span>
-          }
-          @if (!encounter.showingForHomeTeam) {
+          } @else {
             <span> {{ encounter.home?.name }}</span>
           }
         </mat-option>
@@ -26,4 +25,3 @@
     }
   </mat-form-field>
 </ng-container>
-F
