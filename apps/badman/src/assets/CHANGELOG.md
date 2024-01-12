@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.1](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.0...v6.130.0-beta.1) (2024-01-12)
+
+
+### Features
+
+* enable compression ([3c5b4f8](https://github.com/Badminton-Apps/badman/commit/3c5b4f80c7502990e588e71a4f1e61910584162c))
+* load the base players on startup ([6e4f788](https://github.com/Badminton-Apps/badman/commit/6e4f788e7c8c3cbd7f348107833cd5d43f67691c))
+
+
+### Bug Fixes
+
+* compression ([4561539](https://github.com/Badminton-Apps/badman/commit/4561539f039cbab2b8d7c8fe5141382229fb9ee6))
+
 ## [6.130.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.129.3...v6.130.0-beta.0) (2024-01-12)
 
 
