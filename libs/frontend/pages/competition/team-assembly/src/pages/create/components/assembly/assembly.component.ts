@@ -144,8 +144,8 @@ export const SAVED_ASSEMBLY = gql`
     MatSnackBarModule,
     MatIconModule,
     MatDialogModule,
-    MatButtonModule
-],
+    MatButtonModule,
+  ],
   templateUrl: './assembly.component.html',
   styleUrls: ['./assembly.component.scss'],
 })
@@ -1041,6 +1041,11 @@ export class AssemblyComponent implements OnInit {
       this.captionDouble2 = `all.competition.team-assembly.double2`;
       this.captionDouble3 = `all.competition.team-assembly.double3`;
       this.captionDouble4 = `all.competition.team-assembly.double4`;
+
+      this.captionSingle1 = 'all.competition.team-assembly.single1';
+      this.captionSingle2 = 'all.competition.team-assembly.single2';
+      this.captionSingle3 = 'all.competition.team-assembly.single3';
+      this.captionSingle4 = 'all.competition.team-assembly.single4';
     } else if (this.type == 'F') {
       this.captionSingle1Prefix = 'all.gender.females';
       this.captionSingle2Prefix = 'all.gender.females';
@@ -1055,6 +1060,11 @@ export class AssemblyComponent implements OnInit {
       this.captionDouble2 = `all.competition.team-assembly.double2`;
       this.captionDouble3 = `all.competition.team-assembly.double3`;
       this.captionDouble4 = `all.competition.team-assembly.double4`;
+
+      this.captionSingle1 = 'all.competition.team-assembly.single1';
+      this.captionSingle2 = 'all.competition.team-assembly.single2';
+      this.captionSingle3 = 'all.competition.team-assembly.single3';
+      this.captionSingle4 = 'all.competition.team-assembly.single4';
     } else {
       this.captionDouble1Prefix = '';
       this.captionDouble2Prefix = '';
@@ -1067,6 +1077,8 @@ export class AssemblyComponent implements OnInit {
       this.captionSingle3Prefix = 'all.gender.females';
       this.captionSingle4Prefix = 'all.gender.females';
 
+      this.captionSingle1 = 'all.competition.team-assembly.single1';
+      this.captionSingle2 = 'all.competition.team-assembly.single2';
       this.captionSingle3 = 'all.competition.team-assembly.single1';
       this.captionSingle4 = 'all.competition.team-assembly.single2';
 
