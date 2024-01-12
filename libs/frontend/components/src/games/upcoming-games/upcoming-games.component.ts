@@ -14,7 +14,7 @@ import { RouterModule } from '@angular/router';
 import { Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { UpcommingGamesService } from './data-access/upcomming-games.service';
+import { UpcommingGamesService } from './upcomming-games.service';
 import { TrackByProp } from 'ngxtension/trackby-id-prop';
 import { LoadingBlockComponent } from '../../loading-block';
 

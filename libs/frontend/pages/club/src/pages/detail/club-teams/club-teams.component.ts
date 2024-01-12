@@ -30,7 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
-import { ClubTeamsService } from './data-access/club-teams.service';
+import { ClubTeamsService } from './club-teams.service';
 
 @Component({
   selector: 'badman-club-teams',
