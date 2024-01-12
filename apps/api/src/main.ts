@@ -17,6 +17,7 @@ import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
 import { RedisIoAdapter } from '@badman/backend-websockets';
+import compression from 'compression';
 
 async function bootstrap() {
   Logger.debug('Starting application');
@@ -40,6 +41,9 @@ async function bootstrap() {
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   Logger.debug('Logger registered');
+
+  app.use(compression());
+  Logger.debug('Compression enabled');
 
   app.enableCors({
     origin: function (origin, callback) {
