@@ -64,6 +64,7 @@
     "@as-integrations/fastify": "^2.1.1",
     "@auth0/auth0-angular": "~2.2.1",
     "@fast-csv/parse": "^4.3.6",
+    "@fastify/compress": "^6.5.0",
     "@fastify/multipart": "^8.0.0",
     "@fontsource/roboto": "^5.0.8",
     "@googlemaps/js-api-loader": "^1.16.2",

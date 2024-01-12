@@ -2,9 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  Injector,
   OnInit,
   TemplateRef,
   ViewChild,
+  inject,
+  signal,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,8 +32,10 @@ import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
+import { connect } from 'ngxtension/connect';
 import { lastValueFrom } from 'rxjs';
 import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
+import { AssemblyV2Component } from './components/assembly-v2/assembly-v2.component';
 
 @Component({
   selector: 'badman-assembly-create',
@@ -48,12 +53,15 @@ import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
     MatIconModule,
     MatButtonModule,
     AssemblyComponent,
+    AssemblyV2Component,
     MatDialogModule,
     MatMenuModule,
-    MatRippleModule
-],
+    MatRippleModule,
+  ],
 })
 export class CreatePageComponent implements OnInit {
+  private injector = inject(Injector);
+
   formGroup?: FormGroup;
   selectedEventControl: FormControl = new FormControl();
   pdfLoading = false;
@@ -66,6 +74,9 @@ export class CreatePageComponent implements OnInit {
     valid: boolean;
     template: TemplateRef<HTMLElement>;
   };
+
+  teamId = signal<string | undefined>(undefined);
+  encounterId = signal<string | undefined>(undefined);
 
   constructor(
     private seoService: SeoService,
@@ -89,12 +100,20 @@ export class CreatePageComponent implements OnInit {
     // Set for today
     const queryYear = parseInt(this.route.snapshot.queryParams['season'], 10);
     const year = isNaN(queryYear) ? getCurrentSeason() : queryYear;
+    const teamControl = new FormControl();
+    const encounterControl = new FormControl();
 
     this.formGroup = new FormGroup({
       season: new FormControl(year),
       event: this.selectedEventControl,
       club: new FormControl(),
+      team: teamControl,
+      encounter: encounterControl,
     });
+    
+
+    connect(this.teamId, teamControl.valueChanges, this.injector);
+    connect(this.encounterId, encounterControl.valueChanges, this.injector);
   }
 
   encounterSelected(encounter: EncounterCompetition) {

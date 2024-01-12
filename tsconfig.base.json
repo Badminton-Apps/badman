@@ -11,10 +11,7 @@
     "esModuleInterop": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -110,7 +107,7 @@
       "@badman/frontend-utils": ["libs/frontend/modules/utils/src/index.ts"],
       "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],
       "@badman/utils": ["libs/utils/src/index.ts"]
-    },
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

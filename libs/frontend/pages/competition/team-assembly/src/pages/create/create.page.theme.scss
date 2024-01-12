@@ -3,11 +3,13 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 @use './components/assembly/assembly.component.theme' as assembly;
+@use './components/assembly-v2/assembly-v2.component.theme' as assembly-v2;
 @use './components/team-assembly-player/team-assembly-player.component.theme' as
   team-assembly-player;
 
 @mixin color($theme) {
   @include assembly.color($theme);
+  @include assembly-v2.color($theme);
   @include team-assembly-player.color($theme);
 
   badman-assembly-create {
@@ -30,6 +32,7 @@
 
 @mixin typography($theme) {
   @include assembly.typography($theme);
+  @include assembly-v2.typography($theme);
   @include team-assembly-player.typography($theme);
 
   badman-assembly-create {
@@ -49,6 +52,7 @@
 
 @mixin theme($theme) {
   @include assembly.theme($theme);
+  @include assembly-v2.theme($theme);
   @include team-assembly-player.theme($theme);
 
   // Only apply theme on the correct element

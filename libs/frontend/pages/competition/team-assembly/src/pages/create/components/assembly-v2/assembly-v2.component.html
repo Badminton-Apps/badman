@@ -1,0 +1,124 @@
+@if (this.data.state.loaded()) {
+  <section>
+    <div class="information">
+      <div class="team">
+        <div class="container" (ngxResize)="onResized($event)">
+          <label>{{
+            'all.competition.team-assembly.players.base' | translate
+          }}</label>
+          <div class="index">Index: {{ this.data.state().titulars.index }}</div>
+          @for (player of this.data.state().titulars.players; track player) {
+            <div>
+              {{ player.fullName }}
+              @if (isException(player?.id)) {
+                <span
+                  class="level-exception"
+                  [matTooltip]="
+                    'all.competition.team-assembly.level-exemption' | translate
+                  "
+                  ><mat-icon inline="true">lock</mat-icon></span
+                >
+              }
+              @if (notSmallScreen) {
+                <span class="ranking">
+                  {{ player?.single ?? 12 }} - {{ player?.double ?? 12 }}
+                  @if (this.data.state['type']() === 'MX') {
+                    - {{ player?.mix ?? 12 }}
+                  }
+                  ({{ player?.sum }})
+                </span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      <div class="base">
+        <div class="container">
+          <label>{{
+            'all.competition.team-assembly.players.team' | translate
+          }}</label>
+          <div class="index">Index: {{ this.data.state().base.index }}</div>
+          @for (player of this.data.state().base.players; track player) {
+            <div>
+              {{ player.fullName }}
+              @if (isException(player?.id)) {
+                <span
+                  class="level-exception"
+                  [matTooltip]="
+                    'all.competition.team-assembly.level-exemption' | translate
+                  "
+                  ><mat-icon inline="true">lock</mat-icon></span
+                >
+              }
+
+              @if (notSmallScreen) {
+                <span class="ranking">
+                  {{ player?.single ?? 12 }} - {{ player?.double ?? 12 }}
+                  @if (this.data.state['type']() === 'MX') {
+                    - {{ player?.mix ?? 12 }}
+                  }
+                  ({{ player?.sum }})
+                </span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      <div class="errors">
+        <div class="container">
+          <label>{{
+            'all.competition.team-assembly.errors.title' | translate
+          }}</label>
+          <ng-container *ngTemplateOutlet="validationOverview"></ng-container>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  @for (player of this.data.state['regularPlayers'](); track player.id) {
+    <p>{{ player.fullName }}</p>
+  }
+
+  <button mat-button (click)="testGlenn()">Glenn</button>
+  <button mat-button (click)="testShane()">Shane</button>
+  <button mat-button (click)="clearDouble(1, 0)">0</button>
+  <button mat-button (click)="clearDouble(1, 1)">1</button>
+
+  <ng-template #validationOverview>
+    <div class="validation-overview">
+      @if (this.data.state().errors.length > 0) {
+        <ul class="error-list">
+          @for (error of this.data.state().errors; track error) {
+            <li>
+              <badman-assembly-message
+                [validation]="error"
+              ></badman-assembly-message>
+            </li>
+          }
+        </ul>
+      }
+      @if (this.data.state().errors.length > 0) {
+        <ul class="warning-list">
+          @for (warnings of this.data.state().warnings; track warnings) {
+            <li>
+              <badman-assembly-message
+                [validation]="warnings"
+              ></badman-assembly-message>
+            </li>
+          }
+        </ul>
+      }
+      @if (
+        this.data.state().errors.length === 0 &&
+        this.data.state().warnings.length === 0
+      ) {
+        <div class="no-errors">
+          {{ 'all.competition.team-assembly.errors.none' | translate }}
+        </div>
+      }
+    </div>
+  </ng-template>
+} @else {
+  <p>loading...</p>
+}
