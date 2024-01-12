@@ -15,7 +15,7 @@
     </mat-toolbar>
     <div class="sidebar-items">
       <div>
-        <badman-user-shortcuts></badman-user-shortcuts>
+        <badman-user-shortcuts (whenNavigate)="drawer.close()"></badman-user-shortcuts>
         <mat-nav-list>
           <mat-list-item (click)="expanded.general = !expanded.general">
             <div class="expandable-item">
@@ -30,12 +30,18 @@
           </mat-list-item>
           <div [hidden]="!expanded.general">
             <mat-nav-list>
-              <a mat-list-item [routerLink]="['/general', 'faq']">{{
-                'all.shell.sidebar.general.faq' | translate
-              }}</a>
-              <a mat-list-item [routerLink]="['/general', 'changelog']">{{
-                'all.shell.sidebar.general.changelog' | translate
-              }}</a>
+              <a
+                mat-list-item
+                (click)="drawer.close()"
+                [routerLink]="['/general', 'faq']"
+                >{{ 'all.shell.sidebar.general.faq' | translate }}</a
+              >
+              <a
+                mat-list-item
+                (click)="drawer.close()"
+                [routerLink]="['/general', 'changelog']"
+                >{{ 'all.shell.sidebar.general.changelog' | translate }}</a
+              >
             </mat-nav-list>
           </div>
           <mat-list-item (click)="expanded.competition = !expanded.competition">
@@ -50,16 +56,23 @@
           </mat-list-item>
           <div [hidden]="!expanded.competition">
             <mat-nav-list>
-              <a mat-list-item [routerLink]="['/competition']">{{
-                'all.shell.sidebar.competition.overview' | translate
-              }}</a>
-              <a mat-list-item [routerLink]="['/competition', 'assembly']">{{
-                'all.shell.sidebar.competition.assembly' | translate
-              }}</a>
+              <a
+                mat-list-item
+                (click)="drawer.close()"
+                [routerLink]="['/competition']"
+                >{{ 'all.shell.sidebar.competition.overview' | translate }}</a
+              >
+              <a
+                mat-list-item
+                (click)="drawer.close()"
+                [routerLink]="['/competition', 'assembly']"
+                >{{ 'all.shell.sidebar.competition.assembly' | translate }}</a
+              >
               <badman-has-claim [any]="['*_enlist:team', 'enlist-any:team']">
                 @if (this.canEnroll$ | async) {
                   <a
                     mat-list-item
+                    (click)="drawer.close()"
                     [routerLink]="['/competition', 'enrollment']"
                     >{{
                       'all.shell.sidebar.competition.enrollment' | translate
@@ -73,6 +86,7 @@
                 @if (this.canChange$ | async) {
                   <a
                     mat-list-item
+                    (click)="drawer.close()"
                     [routerLink]="['/competition', 'change-encounter']"
                     >{{
                       'all.shell.sidebar.competition.change-encounter'
@@ -83,16 +97,25 @@
               </badman-has-claim>
             </mat-nav-list>
           </div>
-          <a mat-list-item [routerLink]="['/tournament']">{{
-            'all.shell.sidebar.tournament.title' | translate
-          }}</a>
-          <a mat-list-item [routerLink]="['/ranking']">{{
-            'all.shell.sidebar.ranking.title' | translate
-          }}</a>
+          <a
+            mat-list-item
+            (click)="drawer.close()"
+            [routerLink]="['/tournament']"
+            >{{ 'all.shell.sidebar.tournament.title' | translate }}</a
+          >
+          <a
+            mat-list-item
+            (click)="drawer.close()"
+            [routerLink]="['/ranking']"
+            >{{ 'all.shell.sidebar.ranking.title' | translate }}</a
+          >
           <badman-has-claim [any]="['change:job']">
-            <a mat-list-item [routerLink]="['/jobs']">{{
-              'all.shell.sidebar.jobs.title' | translate
-            }}</a>
+            <a
+              mat-list-item
+              (click)="drawer.close()"
+              [routerLink]="['/jobs']"
+              >{{ 'all.shell.sidebar.jobs.title' | translate }}</a
+            >
           </badman-has-claim>
         </mat-nav-list>
       </div>

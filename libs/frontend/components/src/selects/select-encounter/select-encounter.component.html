@@ -5,31 +5,25 @@
       [formControl]="control"
       required
       (selectionChange)="this.selectEncounter($event)"
-      >
-      @if (this.encounters$ | async; as encounters) {
-        @for (encounter of encounters; track encounter) {
-          <mat-option [value]="encounter.id">
-            <span>{{ encounter.date | amDateFormat : 'llll' }} </span>
-            <span translate="all.competition.vs"></span>
-            @if (encounter.showingForHomeTeam) {
-              <span>
-                {{ encounter.away?.name }}</span
-                >
-              }
-              @if (!encounter.showingForHomeTeam) {
-                <span>
-                  {{ encounter.home?.name }}</span
-                  >
-                }
-              </mat-option>
-            }
+    >
+      @for (encounter of this.encounters$ | async; track encounter) {
+        <mat-option [value]="encounter.id">
+          <span>{{ encounter.date | amDateFormat: 'llll' }} </span>
+          <span translate="all.competition.vs"></span>
+          @if (encounter.showingForHomeTeam) {
+            <span> {{ encounter.away?.name }}</span>
           }
-        </mat-select>
-        @if (control.hasError('required')) {
-          <mat-error>
-            {{ 'all.input.this-required' | translate }}
-          </mat-error>
-        }
-      </mat-form-field>
-    </ng-container>
-    
+          @if (!encounter.showingForHomeTeam) {
+            <span> {{ encounter.home?.name }}</span>
+          }
+        </mat-option>
+      }
+    </mat-select>
+    @if (control.hasError('required')) {
+      <mat-error>
+        {{ 'all.input.this-required' | translate }}
+      </mat-error>
+    }
+  </mat-form-field>
+</ng-container>
+F

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,6 +31,8 @@ export class UserShortcutsComponent implements OnInit {
   expanded = {
     club: true,
   };
+
+  @Output() whenNavigate = new EventEmitter<void>();
 
   constructor(private authenticateService: AuthenticateService) {}
 

@@ -20,6 +20,10 @@
       display: flex;
       flex-direction: row;
 
+      @media (max-width: 959.98px) {
+        width: 100%;
+      }
+
       & > div {
         cursor: pointer;
         flex: 1 1 auto;

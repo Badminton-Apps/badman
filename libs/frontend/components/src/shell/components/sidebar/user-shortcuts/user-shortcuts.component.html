@@ -3,16 +3,18 @@
     <mat-nav-list>
       <a
         mat-list-item
+        (click)="whenNavigate.next()"
         [routerLink]="['/player', user.slug]"
         routerLinkActive="active"
-        >
+      >
         {{ 'all.shell.sidebar.persnal.games' | translate }}
       </a>
       @if (user?.clubs && (user.clubs?.length ?? 0) === 1) {
         <a
           mat-list-item
+          (click)="whenNavigate.next()"
           [routerLink]="['/club', user.clubs![0].slug]"
-          >
+        >
           {{ 'all.shell.sidebar.persnal.club' | translate }}
         </a>
       }
@@ -34,9 +36,10 @@
               <mat-nav-list>
                 <a
                   mat-list-item
+                  (click)="whenNavigate.next()"
                   [routerLink]="['/club', club.slug]"
                   routerLinkActive="active"
-                  >
+                >
                   {{ club.name }}
                   @if (club.clubMembership?.membershipType === 'LOAN') {
                     <small class="loan">{{
