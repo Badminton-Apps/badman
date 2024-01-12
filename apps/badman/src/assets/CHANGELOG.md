@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.0](https://github.com/Badminton-Apps/badman/compare/v6.129.3...v6.130.0-beta.0) (2024-01-12)
+
+
+### Features
+
+* close sidebar when navigating ([1cd68ba](https://github.com/Badminton-Apps/badman/commit/1cd68ba00766a0baec3b274f6636aff3decd5781))
+* move to control flow ([34a5ff1](https://github.com/Badminton-Apps/badman/commit/34a5ff1f5b0a43bf7e51b59550156f3d1d28bf89))
+
+
+### Bug Fixes
+
+* removing some warnings ([ef90a18](https://github.com/Badminton-Apps/badman/commit/ef90a1832776ca2e682fcc4350b5d1cba7f30ec7))
+* showing wrong translations when switching between types ([fa6ee13](https://github.com/Badminton-Apps/badman/commit/fa6ee133b0d40803a9df2056ea8fceb540ec9b9a))
+
 ### [6.129.3](https://github.com/Badminton-Apps/badman/compare/v6.129.2...v6.129.3) (2024-01-11)
 
 ### [6.129.2](https://github.com/Badminton-Apps/badman/compare/v6.129.1...v6.129.2) (2024-01-11)
