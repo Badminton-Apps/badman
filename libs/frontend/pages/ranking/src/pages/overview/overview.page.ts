@@ -72,16 +72,12 @@ const FETCH_SYSTEMS = gql`
   styleUrls: ['./overview.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
     MomentModule,
-
-    // Material Modules
     MatButtonModule,
     MatTableModule,
     MatFormFieldModule,
@@ -93,11 +89,9 @@ const FETCH_SYSTEMS = gql`
     MatSlideToggleModule,
     MatDatepickerModule,
     MatSelectModule,
-
-    // Own Module
     PageHeaderComponent,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
 })
 export class OverviewPageComponent {
   // injects

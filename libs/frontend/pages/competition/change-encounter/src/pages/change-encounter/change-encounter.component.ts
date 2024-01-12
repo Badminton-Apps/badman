@@ -34,19 +34,15 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-
     TranslateModule,
-
     MatIconModule,
-
-    // Own
     SelectClubComponent,
     SelectTeamComponent,
     SelectSeasonComponent,
     ListEncountersComponent,
     ShowRequestsComponent,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

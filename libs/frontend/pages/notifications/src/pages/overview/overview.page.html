@@ -1,10 +1,7 @@
 <!-- notification list -->
-
 <mat-list>
-  <ng-container
-    *ngIf="notifications$ | async as notifications; else noNotifications"
-  >
-    <ng-container *ngFor="let notification of notifications; let last = last">
+  @if (notifications$ | async; as notifications) {
+    @for (notification of notifications; track notification; let last = $last) {
       <div mat-list-item>
         <span
           matLine
@@ -14,11 +11,17 @@
           <mat-icon>archive</mat-icon>
         </button>
       </div>
-      <mat-divider *ngIf="!last"></mat-divider>
-    </ng-container>
-  </ng-container>
+      @if (!last) {
+        <mat-divider></mat-divider>
+      }
+    }
+  } @else {
+    <div mat-list-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span matLine>{{ 'all.notifications.noNotifications' | translate }}</span>
+    </div>
+  }
 </mat-list>
-
 <ng-template #noNotifications>
   <div mat-list-item>
     <mat-icon>notifications_off</mat-icon>

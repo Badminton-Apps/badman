@@ -60,11 +60,10 @@ const NOTIFICAION_QUERY = gql`
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-
     MatListModule,
     MatButtonModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewPageComponent implements OnInit {

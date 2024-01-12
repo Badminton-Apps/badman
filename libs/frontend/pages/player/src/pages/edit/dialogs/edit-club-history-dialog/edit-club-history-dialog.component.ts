@@ -32,7 +32,6 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     FormsModule,
     TranslateModule,
-
     MatDialogModule,
     MatSlideToggleModule,
     MatTooltipModule,
@@ -42,9 +41,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule,
     MatDatepickerModule,
     MatSelectModule,
-
-    SelectClubComponent,
-  ],
+    SelectClubComponent
+],
 })
 export class EditClubHistoryDialogComponent implements OnInit {
   clubFormGroup: FormGroup = new FormGroup({});

@@ -25,8 +25,8 @@ import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-plac
     MatListModule,
     MatTooltipModule,
     MatDialogModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
 })
 export class EditRankingAllComponent implements OnInit {
   allPlaces$?: Observable<[RankingPlace | undefined, RankingPlace[]][]>;

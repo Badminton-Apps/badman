@@ -36,8 +36,6 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
     GraphQLModule,
     RouterModule,
     TranslateModule,
-
-    // Material components
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
@@ -45,11 +43,9 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
     MatBadgeModule,
     OverlayModule,
     MatListModule,
-
-    // Own components
     LanguageComponent,
-    ThemeSwitcherComponent,
-  ],
+    ThemeSwitcherComponent
+],
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

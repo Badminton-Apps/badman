@@ -82,8 +82,6 @@ const CHANGE_QUERY = gql`
     FormsModule,
     TranslateModule,
     MomentModule,
-
-    // Material
     MatFormFieldModule,
     MatOptionModule,
     MatIconModule,
@@ -95,13 +93,11 @@ const CHANGE_QUERY = gql`
     MatProgressBarModule,
     MatExpansionModule,
     MatTooltipModule,
-
-    // Own
     DateSelectorComponent,
     CommentsComponent,
     RequestDateComponent,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
 })
 export class ShowRequestsComponent implements OnInit {
   @Input()

@@ -1,23 +1,23 @@
-<ng-container *ngFor="let i of [].constructor(this.items); let last = last">
+@for (i of [].constructor(this.items); track i; let last = $last) {
   <div>
     <div
       class="animation-block"
       [ngStyle]="{
-        'border-radius': borderRadius,
-        height: height,
-        width: width
+      'border-radius': borderRadius,
+      height: height,
+      width: width
       }"
     ></div>
-
-    <div
-      class="animation-block sub-item"
-      *ngIf="subHeight"
-      [ngStyle]="{
+    @if (subHeight) {
+      <div
+        class="animation-block sub-item"
+        [ngStyle]="{
         'border-radius': borderRadius,
         height: subHeight,
         width: width,
         'margin-top': subGap
-      }"
-    ></div>
+        }"
+      ></div>
+    }
   </div>
-</ng-container>
+}

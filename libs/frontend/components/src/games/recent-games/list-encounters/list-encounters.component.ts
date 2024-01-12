@@ -39,14 +39,10 @@ import { LoadingBlockComponent } from '../../../loading-block';
     TranslateModule,
     MomentModule,
     TrackByProp,
-
-    // Material modules
     MatButtonModule,
     MatListModule,
-
-    // own modules
-    LoadingBlockComponent,
-  ],
+    LoadingBlockComponent
+],
   selector: 'badman-list-encounters',
   templateUrl: './list-encounters.component.html',
   styleUrls: ['./list-encounters.component.scss'],

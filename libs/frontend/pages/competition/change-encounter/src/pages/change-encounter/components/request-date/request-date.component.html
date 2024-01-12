@@ -7,7 +7,6 @@
     [home]="this.home"
     formControlName="calendar"
   ></badman-date-selector>
-
   <mat-form-field class="availability">
     <mat-label>{{ 'all.competition.home' | translate }}</mat-label>
     <mat-select formControlName="availabilityHome" required>
@@ -30,30 +29,30 @@
       }}</mat-option>
     </mat-select>
   </mat-form-field>
-
   <div class="actions">
     <div [matTooltip]="tootltipSelected ?? '' | translate">
       <mat-checkbox class="selected" formControlName="selected"> </mat-checkbox>
     </div>
-
-    <div class="delete" *ngIf="!group.get('id')!.value">
-      <button mat-icon-button (click)="removeDate.next()" type="button">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </div>
-
-    <div
-      class="changed-location"
-      [matTooltip]="
+    @if (!group.get('id')!.value) {
+      <div class="delete">
+        <button mat-icon-button (click)="removeDate.next()" type="button">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    }
+    @if (
+      encounter.locationId &&
+      this.group.get('calendar')?.value?.locationId &&
+      encounter.locationId !== this.group.get('calendar')?.value?.locationId
+      ) {
+      <div
+        class="changed-location"
+        [matTooltip]="
         'all.competition.change-encounter.warnings.location-change' | translate
-      "
-      *ngIf="
-        encounter.locationId &&
-        this.group.get('calendar')?.value?.locationId &&
-        encounter.locationId !== this.group.get('calendar')?.value?.locationId
-      "
-    >
-      <mat-icon color="warn">warning</mat-icon>
-    </div>
+        "
+        >
+        <mat-icon color="warn">warning</mat-icon>
+      </div>
+    }
   </div>
 </ng-container>

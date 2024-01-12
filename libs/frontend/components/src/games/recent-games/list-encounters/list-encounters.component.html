@@ -1,9 +1,9 @@
-<ng-container *ngIf="this.recentEncounters(); else loading">
+@if (this.recentEncounters()) {
   <mat-nav-list role="list">
-    <mat-list-item
-      role="listitem"
-      *ngFor="let encounter of this.recentEncounters(); trackByProp: 'id'"
-      [routerLink]="[
+    @for (encounter of this.recentEncounters(); track encounter) {
+      <mat-list-item
+        role="listitem"
+        [routerLink]="[
         '/',
         'competition',
         encounter.drawCompetition?.subEventCompetition?.eventId,
@@ -11,56 +11,54 @@
         encounter.drawCompetition?.id,
         'encounter',
         encounter.id
-      ]"
-    >
-      <span matListItemTitle>
-        <span
-          class="home"
-          [ngClass]="{
+        ]"
+        >
+        <span matListItemTitle>
+          <span
+            class="home"
+            [ngClass]="{
             won: (encounter.homeScore ?? 0) > (encounter.awayScore ?? 0),
             draw: (encounter.homeScore ?? 0) === (encounter.awayScore ?? 0),
             lost: (encounter.homeScore ?? 0) < (encounter.awayScore ?? 0)
-          }"
-          >{{ encounter.home?.name }}</span
-        >&nbsp;<span>{{ 'all.competition.vs-short' | translate }}</span
-        >&nbsp;<span
-          class="away"
-          [ngClass]="{
+            }"
+            >{{ encounter.home?.name }}</span
+            >&nbsp;<span>{{ 'all.competition.vs-short' | translate }}</span
+            >&nbsp;<span
+            class="away"
+            [ngClass]="{
             won: (encounter.awayScore ?? 0) > (encounter.homeScore ?? 0),
             draw: (encounter.awayScore ?? 0) === (encounter.homeScore ?? 0),
             lost: (encounter.awayScore ?? 0) < (encounter.homeScore ?? 0)
-          }"
-          >{{ encounter.away?.name }}</span
-        >
+            }"
+            >{{ encounter.away?.name }}</span
+            >
+            @if (
+              (encounter.homeScore ?? -1) > 0 || (encounter.awayScore ?? -1) > 0
+              ) {
+              <span
+                >&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span
+                >
+              }
+            </span>
+            <span matListItemLine>{{ encounter?.date | amDateFormat: 'llll' }}</span>
+          </mat-list-item>
+        }
+      </mat-nav-list>
+      <ng-template #noMoreEncounters>
         <span
-          *ngIf="
-            (encounter.homeScore ?? -1) > 0 || (encounter.awayScore ?? -1) > 0
-          "
-          >&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span
-        >
-      </span>
-
-      <span matListItemLine>{{ encounter?.date | amDateFormat: 'llll' }}</span>
-    </mat-list-item>
-  </mat-nav-list>
-
-  <ng-template #noMoreEncounters>
-    <span
-      matListItemLine
-      class="no-more-encounters"
-      translate="all.competition.encounters.no-more"
-    ></span>
-  </ng-template>
-
-  <ng-template #noHome let-upcoming="upcoming">
-    <span>
-      {{ upcoming.home?.name }}
-      <span translate="all.competition.vs"></span>
-      {{ upcoming.away?.name }}
-    </span>
-  </ng-template>
-</ng-container>
-
-<ng-template #loading>
-  <badman-loading-block></badman-loading-block>
-</ng-template>
+          matListItemLine
+          class="no-more-encounters"
+          translate="all.competition.encounters.no-more"
+        ></span>
+      </ng-template>
+      <ng-template #noHome let-upcoming="upcoming">
+        <span>
+          {{ upcoming.home?.name }}
+          <span translate="all.competition.vs"></span>
+          {{ upcoming.away?.name }}
+        </span>
+      </ng-template>
+    } @else {
+      <badman-loading-block></badman-loading-block>
+    }
+    

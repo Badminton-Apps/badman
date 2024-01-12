@@ -19,14 +19,12 @@ import { setLanguage } from '../../factory';
   standalone: true,
   imports: [
     CommonModule,
-
     NgxMatMomentModule,
     TranslateModule,
-
     MatMenuModule,
     MatButtonModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
 })
 export class LanguageComponent implements OnInit {
   current!: string;

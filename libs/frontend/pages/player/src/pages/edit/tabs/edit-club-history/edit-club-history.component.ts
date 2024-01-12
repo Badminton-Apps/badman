@@ -27,8 +27,8 @@ import { MatButtonModule } from '@angular/material/button';
     TranslateModule,
     MomentModule,
     MatDialogModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditClubHistoryComponent implements OnInit {

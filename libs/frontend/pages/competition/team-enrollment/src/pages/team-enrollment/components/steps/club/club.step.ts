@@ -52,8 +52,8 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
     FormsModule,
     TranslateModule,
     MatInputModule,
-    SelectClubComponent,
-  ],
+    SelectClubComponent
+],
   templateUrl: './club.step.html',
   styleUrls: ['./club.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

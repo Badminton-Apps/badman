@@ -1,13 +1,15 @@
 <mat-form-field [formGroup]="group">
   <mat-label>Select country</mat-label>
   <mat-select [formControlName]="controlName">
-    <mat-option
-      *ngFor="let state of states"
-      [value]="state.code"
-      >{{
+    @for (state of states; track state) {
+      <mat-option
+        [value]="state.code"
+        >{{
         'all.countries.' + state.country + '.' + state.name
-          | translate
-      }}</mat-option
-    >
-  </mat-select>
-</mat-form-field>
+        | translate
+        }}</mat-option
+        >
+      }
+    </mat-select>
+  </mat-form-field>
+  

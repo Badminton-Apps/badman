@@ -75,11 +75,8 @@ export type LocationForm = FormGroup<{
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
-
-    // Other modules
     MatDividerModule,
     MatMenuModule,
     MatIconModule,
@@ -93,11 +90,9 @@ export type LocationForm = FormGroup<{
     MatSelectModule,
     MatInputModule,
     MatSnackBarModule,
-
-    // My Modules
     HasClaimComponent,
-    BadmanBlockModule,
-  ],
+    BadmanBlockModule
+],
 })
 export class ClubEditLocationComponent implements OnInit {
   @Output() whenEdit = new EventEmitter<Location>();

@@ -1,4 +1,4 @@
-<ng-container *ngIf="this.events; else loading">
+@if (this.events) {
   <h2 mat-dialog-title>Edit event</h2>
   <mat-dialog-content [formGroup]="selectForm">
     <!-- select dropdown events -->
@@ -7,41 +7,42 @@
         'all.pickers.select-event-competition' | translate
       }}</mat-label>
       <mat-select formControlName="event">
-        <mat-option *ngFor="let event of this.events" [value]="event.id">
-          {{ event?.name }}
-        </mat-option>
+        @for (event of this.events; track event) {
+          <mat-option [value]="event.id">
+            {{ event?.name }}
+          </mat-option>
+        }
       </mat-select>
     </mat-form-field>
-
     <mat-form-field>
       <mat-label>{{
         'all.pickers.select-subevent-competition' | translate
       }}</mat-label>
       <mat-select formControlName="subEvent">
-        <mat-option
-          *ngFor="let subEvent of this.subEvents"
-          [value]="subEvent.id"
-        >
-          {{ subEvent?.name }} {{ subEvent?.eventType }}
-        </mat-option>
+        @for (subEvent of this.subEvents; track subEvent) {
+          <mat-option
+            [value]="subEvent.id"
+            >
+            {{ subEvent?.name }} {{ subEvent?.eventType }}
+          </mat-option>
+        }
       </mat-select>
     </mat-form-field>
   </mat-dialog-content>
-
   <mat-dialog-actions>
     <button
       mat-raised-button
       color="primary"
       [mat-dialog-close]="this.selectForm.value"
-    >
+      >
       {{ 'all.button.create' | translate }}
     </button>
-
     <button mat-button>
       {{ 'all.button.cancel' | translate }}
     </button>
   </mat-dialog-actions>
-</ng-container>
-<ng-template #loading>
+} @else {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar
-></ng-template>
+    >
+  }
+  

@@ -25,18 +25,14 @@ import { EnrollmentMessageComponent } from '@badman/frontend-components';
   standalone: true,
   imports: [
     CommonModule,
-
-    // Material
     MatFormFieldModule,
     MatSelectModule,
     ReactiveFormsModule,
     FormsModule,
-
-    // Own
     TeamComponent,
     EnrollmentMessageComponent,
-    TranslateModule,
-  ],
+    TranslateModule
+],
   templateUrl: './team-enrollment.component.html',
   styleUrls: ['./team-enrollment.component.scss'],
 })

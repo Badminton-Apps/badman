@@ -16,8 +16,8 @@ import { ListGamesComponent } from './list-games/list-games.component';
     TranslateModule,
     RouterModule,
     ListEncountersComponent,
-    ListGamesComponent,
-  ],
+    ListGamesComponent
+],
 
   templateUrl: './recent-games.component.html',
   styleUrls: ['./recent-games.component.scss'],

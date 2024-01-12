@@ -48,19 +48,15 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-
-    // Core modules
     MomentModule,
     TranslateModule,
-
-    // Material Modules
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSelectModule,
-  ],
+    MatSelectModule
+],
   templateUrl: './select-encounter.component.html',
   styleUrls: ['./select-encounter.component.scss'],
 })

@@ -4,7 +4,6 @@
   [needsPermission]="true"
   [control]="this.value!"
 ></badman-select-club>
-
 <!-- the input for the verification mail -->
 <mat-form-field>
   <mat-label>{{ 'all.input.email' | translate }}</mat-label>
@@ -14,13 +13,17 @@
     matInput
     [formControl]="email"
     [errorStateMatcher]="matcher"
-  />
-
-  <!-- errors for email -->
-  <mat-error *ngIf="email.hasError('email')&& !email.hasError('required')">
-    {{ 'all.input.error.email' | translate }}
-  </mat-error>
-  <mat-error *ngIf="email.hasError('required')">
-    {{ 'all.input.error.required' | translate }}
-  </mat-error>
-</mat-form-field>
+    />
+    <!-- errors for email -->
+    @if (email.hasError('email')&& !email.hasError('required')) {
+      <mat-error>
+        {{ 'all.input.error.email' | translate }}
+      </mat-error>
+    }
+    @if (email.hasError('required')) {
+      <mat-error>
+        {{ 'all.input.error.required' | translate }}
+      </mat-error>
+    }
+  </mat-form-field>
+  

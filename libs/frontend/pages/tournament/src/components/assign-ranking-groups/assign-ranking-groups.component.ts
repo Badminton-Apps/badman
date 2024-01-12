@@ -33,21 +33,17 @@ import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   imports: [
-    // Core modules
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
-
-    // Material Modules
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
     MatCheckboxModule,
     MatSelectModule,
-    MatTableModule,
-
-  ],
+    MatTableModule
+],
   templateUrl: './assign-ranking-groups.component.html',
   styleUrls: ['./assign-ranking-groups.component.scss'],
   standalone: true,

@@ -41,18 +41,14 @@ import {
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-
-    // Material
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
     MatSnackBarModule,
     MatProgressBarModule,
-
-    // My Modules
     TeamFieldComponent,
-    TeamPlayersComponent,
-  ],
+    TeamPlayersComponent
+],
 })
 export class EditPageComponent implements OnInit {
   team!: Team;

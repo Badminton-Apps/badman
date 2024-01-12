@@ -3,46 +3,50 @@
 </h2>
 <mat-dialog-content class="change-date">
   <!-- date time picker -->
-  <div *ngIf="dateControl">
-    <mat-form-field>
-      <mat-label>{{
-        'all.competition.change-encounter.choose-date' | translate
-      }}</mat-label>
-      <input
-        matInput
-        [ngxMatDatetimePicker]="openPicker"
-        [placeholder]="
+  @if (dateControl) {
+    <div>
+      <mat-form-field>
+        <mat-label>{{
           'all.competition.change-encounter.choose-date' | translate
-        "
-        [formControl]="dateControl"
-      />
-      <ngx-mat-datepicker-toggle
-        matSuffix
-        [for]="$any(openPicker)"
-      ></ngx-mat-datepicker-toggle>
-      <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
-    </mat-form-field>
-  </div>
-
+        }}</mat-label>
+        <input
+          matInput
+          [ngxMatDatetimePicker]="openPicker"
+          [placeholder]="
+            'all.competition.change-encounter.choose-date' | translate
+          "
+          [formControl]="dateControl"
+        />
+        <ngx-mat-datepicker-toggle
+          matSuffix
+          [for]="$any(openPicker)"
+        ></ngx-mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
+      </mat-form-field>
+    </div>
+  }
   <!-- slide toggles for Update Visual, Update badman, Close change request -->
-  <div *ngIf="updateBadman">
-    <mat-slide-toggle [formControl]="updateBadman">{{
-      'all.competition.change-encounter.update-badman' | translate
-    }}</mat-slide-toggle>
-  </div>
-
-  <div *ngIf="updateVisual">
-    <mat-slide-toggle [formControl]="updateVisual">{{
-      'all.competition.change-encounter.update-visual' | translate
-    }}</mat-slide-toggle>
-  </div>
-
-  <div *ngIf="closeChangeRequest">
-    <mat-slide-toggle [formControl]="closeChangeRequest">{{
-      'all.competition.change-encounter.close-change-request' | translate
-    }}</mat-slide-toggle>
-  </div>
-
+  @if (updateBadman) {
+    <div>
+      <mat-slide-toggle [formControl]="updateBadman">{{
+        'all.competition.change-encounter.update-badman' | translate
+      }}</mat-slide-toggle>
+    </div>
+  }
+  @if (updateVisual) {
+    <div>
+      <mat-slide-toggle [formControl]="updateVisual">{{
+        'all.competition.change-encounter.update-visual' | translate
+      }}</mat-slide-toggle>
+    </div>
+  }
+  @if (closeChangeRequest) {
+    <div>
+      <mat-slide-toggle [formControl]="closeChangeRequest">{{
+        'all.competition.change-encounter.close-change-request' | translate
+      }}</mat-slide-toggle>
+    </div>
+  }
   <mat-dialog-actions align="end">
     <button mat-button [mat-dialog-close]="">
       {{ 'all.button.close' | translate }}

@@ -47,17 +47,13 @@ const PLAYERS_QUERY = gql`
   imports: [
     CommonModule,
     TranslateModule,
-
-    // My Modules
     TeamFieldComponent,
     TeamPlayersComponent,
-
-    // Material
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule
+],
 })
 export class EditDialogComponent {
   group?: FormGroup;

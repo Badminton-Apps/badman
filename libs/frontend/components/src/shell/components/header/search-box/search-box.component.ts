@@ -28,13 +28,12 @@ type SearchType = { id: string; name: string; slug: string };
   imports: [
     CommonModule,
     TranslateModule,
-
     MatInputModule,
     MatButtonModule,
     MatIconModule,
     MatAutocompleteModule,
-    ReactiveFormsModule,
-  ],
+    ReactiveFormsModule
+],
   templateUrl: './search-box.component.html',
   styleUrls: ['./search-box.component.scss'],
 })

@@ -47,12 +47,9 @@ import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
-
-    // Material
     MatButtonModule,
     MatInputModule,
     MatIconModule,
@@ -62,10 +59,8 @@ import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
     MatSnackBarModule,
     MatDividerModule,
     MatTooltipModule,
-
-    // Own
-    PlayerSearchComponent,
-  ],
+    PlayerSearchComponent
+],
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.scss'],
 })

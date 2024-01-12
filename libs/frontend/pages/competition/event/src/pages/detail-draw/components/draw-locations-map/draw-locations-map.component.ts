@@ -22,14 +22,11 @@ import { NgMapsGoogleModule } from '@ng-maps/google';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Commmon module
     CommonModule,
     RouterModule,
     TranslateModule,
-
-    NgMapsGoogleModule,
-    // Own Modules
-  ],
+    NgMapsGoogleModule
+],
 })
 export class DrawLocationMapComponent implements OnInit {
   locations: Location[] = [];

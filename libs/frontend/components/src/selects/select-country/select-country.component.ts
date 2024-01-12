@@ -12,8 +12,8 @@ import countriesList from './countries.json';
     CommonModule,
     MatSelectModule,
     TranslateModule,
-    ReactiveFormsModule,
-  ],
+    ReactiveFormsModule
+],
   templateUrl: './select-country.component.html',
   styleUrls: ['./select-country.component.scss'],
 })

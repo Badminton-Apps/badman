@@ -36,13 +36,10 @@ import { AssignRankingGroupsComponent } from '../../components';
   styleUrls: ['./detail.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
     TranslateModule,
     MomentModule,
-
-    // Material Modules
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
@@ -55,11 +52,9 @@ import { AssignRankingGroupsComponent } from '../../components';
     MatCardModule,
     MatTooltipModule,
     MatSnackBarModule,
-
-    // Own modules
     PageHeaderComponent,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
 })
 export class DetailPageComponent implements OnInit {
   eventTournament!: EventTournament;

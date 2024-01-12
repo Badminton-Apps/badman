@@ -1,20 +1,20 @@
-<ng-container *ngIf="this.players; else loadingPlayers">
+@if (this.players()) {
   <section class="players">
     <h3>{{ 'all.club.titles.players' | translate }}</h3>
     <div class="players-container">
-      <div class="player" *ngFor="let player of this.players()">
-        <div [routerLink]="['/player', player.player.slug]">
-          <span class="name">{{ player.player.fullName }}</span>
-          <span class="playerteams"
-            >{{ player.teams }} {{ 'all.team.teams' | translate }}</span
-          >
+      @for (player of this.players(); track player) {
+        <div class="player">
+          <div [routerLink]="['/player', player.player.slug]">
+            <span class="name">{{ player.player.fullName }}</span>
+            <span class="playerteams"
+              >{{ player.teams }} {{ 'all.team.teams' | translate }}</span
+            >
+          </div>
         </div>
-      </div>
+      }
     </div>
   </section>
-</ng-container>
-
-<ng-template #loadingPlayers>
+} @else {
   <section class="players">
     <h3>{{ 'all.club.titles.players' | translate }}</h3>
     <badman-loading-block
@@ -24,4 +24,4 @@
       direction="row"
     />
   </section>
-</ng-template>
+}

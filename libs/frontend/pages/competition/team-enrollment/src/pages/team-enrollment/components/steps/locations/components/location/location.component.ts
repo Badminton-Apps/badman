@@ -63,13 +63,10 @@ export type LocationForm = FormGroup<{
   standalone: true,
   imports: [
     CommonModule,
-
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
     MomentModule,
-
-    // Material
     MatButtonModule,
     MatIconModule,
     MatListModule,
@@ -79,8 +76,8 @@ export type LocationForm = FormGroup<{
     MatSnackBarModule,
     MatDividerModule,
     MatTooltipModule,
-    MatDatepickerModule,
-  ],
+    MatDatepickerModule
+],
   templateUrl: './location.component.html',
   styleUrls: ['./location.component.scss'],
 })

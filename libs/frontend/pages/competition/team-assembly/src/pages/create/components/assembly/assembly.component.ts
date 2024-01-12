@@ -132,15 +132,11 @@ export const SAVED_ASSEMBLY = gql`
   imports: [
     CommonModule,
     TranslateModule,
-
-    // Own modules
     TeamAssemblyPlayerComponent,
     PlayerSearchComponent,
     AssemblyMessageComponent,
     HasClaimComponent,
     NgxResize,
-
-    // Material Modules
     MatTooltipModule,
     DragDropModule,
     MatDividerModule,
@@ -148,8 +144,8 @@ export const SAVED_ASSEMBLY = gql`
     MatSnackBarModule,
     MatIconModule,
     MatDialogModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
   templateUrl: './assembly.component.html',
   styleUrls: ['./assembly.component.scss'],
 })

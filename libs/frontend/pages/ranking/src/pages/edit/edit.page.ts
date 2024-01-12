@@ -84,15 +84,11 @@ const FETCH_SYSTEM = gql`
   styleUrls: ['./edit.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-
     TranslateModule,
     ReactiveFormsModule,
     MomentModule,
-
-    // Material Modules
     MatButtonModule,
     MatTableModule,
     MatFormFieldModule,
@@ -100,11 +96,9 @@ const FETCH_SYSTEM = gql`
     MatIconModule,
     MatMenuModule,
     MatSnackBarModule,
-
-    // Own Module
     PageHeaderComponent,
-    RankingSystemFieldsComponent,
-  ],
+    RankingSystemFieldsComponent
+],
 })
 export class EditPageComponent {
   // injects

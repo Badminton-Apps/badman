@@ -23,22 +23,15 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   styleUrls: ['./detail-avg.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
     TranslateModule,
-
-    // Other
     NgApexchartsModule,
-
-    // Material modules
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-
-    // My modules
-    LoadingBlockComponent,
-  ],
+    LoadingBlockComponent
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailAvgPageComponent implements OnInit {

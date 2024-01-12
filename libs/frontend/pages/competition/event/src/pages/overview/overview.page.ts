@@ -30,27 +30,21 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   styleUrls: ['./overview.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-
     TranslateModule,
     ReactiveFormsModule,
     MomentModule,
-
-    // Material Modules
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
     MatSelectModule,
     MatDialogModule,
-
-    // Own components
     PageHeaderComponent,
     HasClaimComponent,
     CompetitionEventsComponent,
-    SelectSeasonComponent,
-  ],
+    SelectSeasonComponent
+],
 })
 export class OverviewPageComponent implements OnInit {
   route = inject(ActivatedRoute);
