@@ -145,6 +145,7 @@
       "choose-team": "Pick a team",
       "close-change-request": "Close open request",
       "comment": "Comment",
+      "comment-added": "Comment sent",
       "comments": "Comments",
       "dates": "Dates",
       "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied.",

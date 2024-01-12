@@ -115,7 +115,7 @@
                       <div fxFlex>
                         <div class="selection">
                           <span class="day">{{ row.date.getDate() }}</span>
-                          @if (row.date?.getDate() === 1) {
+                          @if (row.date.getDate() === 1) {
                             <span class="momth">
                               {{ monthNames[row.date.getMonth()] | titlecase }}</span
                               >
@@ -147,7 +147,7 @@
                                 'all.competition.change-encounter.calendar.remaining'
                                 | translate: { amount: loc.space }
                                 }}
-                                @if (loc.requested?.length) {
+                                @if (loc.requested.length) {
                                   <span>
                                     ({{
                                     'all.competition.change-encounter.calendar.option'

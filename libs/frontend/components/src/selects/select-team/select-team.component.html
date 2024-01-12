@@ -30,7 +30,7 @@
           }
         }
       </mat-select>
-      @if (control?.hasError('required')) {
+      @if (control.hasError('required')) {
         <mat-error>
           {{ 'all.input.this-required' | translate }}
         </mat-error>
