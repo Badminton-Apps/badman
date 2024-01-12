@@ -16,14 +16,14 @@ import { AssemblyValidationError } from './error.model';
 
 @InputType()
 export class AssemblyInput {
-  @Field(() => ID)
-  encounterId!: string;
+  @Field(() => ID, { nullable: true })
+  encounterId?: string;
 
   @Field(() => ID)
   teamId!: string;
 
   @Field(() => ID, { nullable: true })
-  systemId!: string;
+  systemId?: string;
 
   @Field(() => ID, { nullable: true })
   captainId?: string;
