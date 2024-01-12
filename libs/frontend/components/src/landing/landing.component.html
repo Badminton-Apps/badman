@@ -1,6 +1,5 @@
 @if (this.versionInfo.beta) {
-  <badman-beta [version]="this.versionInfo.version">
-  </badman-beta>
+  <badman-beta [version]="this.versionInfo.version" />
 }
 <div class="content">
   @if (this.user$ | async; as user) {
@@ -11,23 +10,23 @@
           {{ 'all.game.upcoming.title' | translate }}
         </h3>
         @defer {
-        @if (teams.length > 0) {
-          <badman-upcoming-games
-            [clubId]="user.clubs?.[0]?.id"
-            [teams]="teams"
-          ></badman-upcoming-games>
-        }
+          @if (teams.length > 0) {
+            <badman-upcoming-games
+              [clubId]="user.clubs?.[0]?.id"
+              [teams]="teams"
+            ></badman-upcoming-games>
+          }
         } @placeholder (minimum 200ms) {
-        <badman-loading-block [items]="10" height="50px" />
-      }
-    </section>
+          <badman-loading-block [items]="10" height="50px" />
+        }
+      </section>
+    }
   }
-}
-<section class="ranking">
-  <h3>
-    <mat-icon color="primary">show_chart</mat-icon>
-    {{ 'all.ranking.table.title' | translate }}
-  </h3>
-  <badman-ranking-table></badman-ranking-table>
-</section>
+  <section class="ranking">
+    <h3>
+      <mat-icon color="primary">show_chart</mat-icon>
+      {{ 'all.ranking.table.title' | translate }}
+    </h3>
+    <badman-ranking-table></badman-ranking-table>
+  </section>
 </div>
