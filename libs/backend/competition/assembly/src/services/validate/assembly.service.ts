@@ -41,9 +41,10 @@ export class AssemblyValidationService {
   private readonly _logger = new Logger(AssemblyValidationService.name);
 
   async getValidationData(
-    systemId: string,
     teamId: string,
     encounterId: string,
+
+    systemId?: string,
 
     single1?: string,
     single2?: string,
@@ -395,9 +396,10 @@ export class AssemblyValidationService {
 
   async fetchAndValidate(
     data: {
-      systemId: string;
+      systemId?: string;
       teamId: string;
-      encounterId: string;
+
+      encounterId?: string;
 
       single1?: string;
       single2?: string;
@@ -414,9 +416,9 @@ export class AssemblyValidationService {
     validators: Rule[],
   ) {
     const dbData = await this.getValidationData(
-      data.systemId,
       data.teamId,
       data.encounterId,
+      data.systemId,
       data.single1,
       data.single2,
       data.single3,
