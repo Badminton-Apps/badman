@@ -23,7 +23,7 @@ import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { LoadingBlockComponent } from '../../../loading-block';
-import { RecentGamesService } from './data-access/recent-games.service';
+import { RecentGamesService } from '../recent-games.service';
 
 @Component({
   standalone: true,
