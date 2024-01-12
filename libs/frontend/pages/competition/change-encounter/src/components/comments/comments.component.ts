@@ -165,7 +165,7 @@ export class CommentsComponent implements OnInit, OnChanges {
         if (result && result.data && result.data.addComment) {
           this.snackBar.open(
             this.translate.instant(
-              'competition.change-encounter.comment-added'
+              'all.competition.change-encounter.comment-added'
             ),
             'OK',
             {

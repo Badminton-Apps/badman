@@ -3,7 +3,7 @@
     {{ 'all.competition.change-encounter.comments' | translate }}
   </h3>
   <div id="body">
-    @for (comment of comments?.(); track comment) {
+    @for (comment of comments(); track comment) {
       <div
         class="message"
         [ngClass]="{
