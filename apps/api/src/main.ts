@@ -17,7 +17,8 @@ import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
 import { RedisIoAdapter } from '@badman/backend-websockets';
-import compression from 'compression';
+import compression from '@fastify/compress';
+import { FastifyPluginCallback } from 'fastify';
 
 async function bootstrap() {
   Logger.debug('Starting application');
@@ -36,13 +37,14 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   Logger.debug('Set global prefix');
 
-  app.register(fmp as never);
+  await app.register(fmp as never);
   Logger.debug('multipart registered');
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   Logger.debug('Logger registered');
 
-  app.use(compression());
+  await app.register(compression as never);
+
   Logger.debug('Compression enabled');
 
   app.enableCors({
