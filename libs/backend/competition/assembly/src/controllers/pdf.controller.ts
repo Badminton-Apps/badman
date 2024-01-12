@@ -81,9 +81,10 @@ export class AssemblyController {
 
   private async getTeamAssemblyPdf(input: inputBody) {
     const data = await this.assemblyService.getValidationData(
-      input.systemId,
       input.teamId,
       input.encounterId,
+
+      input.systemId,
       input.single1,
       input.single2,
       input.single3,
