@@ -40,22 +40,18 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     CommonModule,
     TranslateModule,
-
-    // Material
     ReactiveFormsModule,
     MatStepperModule,
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-
-    // Own Modules
     ClubStepComponent,
     EventsStepComponent,
     TeamsTransferStepComponent,
     TeamsStepComponent,
     LocationsStepComponent,
-    CommentsStepComponent,
-  ],
+    CommentsStepComponent
+],
 })
 export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;

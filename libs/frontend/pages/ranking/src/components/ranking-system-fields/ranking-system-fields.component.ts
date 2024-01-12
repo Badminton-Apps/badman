@@ -32,15 +32,11 @@ import { debounceTime } from 'rxjs';
 @Component({
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-
     TranslateModule,
     ReactiveFormsModule,
     MomentModule,
-
-    // Material Modules
     MatButtonModule,
     MatTableModule,
     MatFormFieldModule,
@@ -50,10 +46,8 @@ import { debounceTime } from 'rxjs';
     MatOptionModule,
     MatSelectModule,
     MatSlideToggleModule,
-
-    // Own Module
-    PageHeaderComponent,
-  ],
+    PageHeaderComponent
+],
   selector: 'badman-ranking-system-fields',
   templateUrl: './ranking-system-fields.component.html',
   styleUrls: ['./ranking-system-fields.component.scss'],

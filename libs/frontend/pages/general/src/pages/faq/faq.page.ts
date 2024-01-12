@@ -29,23 +29,17 @@ import { lastValueFrom } from 'rxjs';
   styleUrls: ['./faq.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     MatFormFieldModule,
-
-    // Own modules
     HasClaimComponent,
-
-    // Material
     MatCardModule,
     MatIconModule,
     MatButtonModule,
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,
-
-    QuillModule,
-  ],
+    QuillModule
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FaqPageComponent implements OnInit {

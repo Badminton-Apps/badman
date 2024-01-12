@@ -26,8 +26,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
     CommonModule,
     TranslateModule,
     MomentModule,
-
-    // Material
     ReactiveFormsModule,
     MatFormFieldModule,
     MatOptionModule,
@@ -37,8 +35,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatIconModule,
     MatButtonModule,
     MatProgressBarModule,
-    OverlayModule,
-  ],
+    OverlayModule
+],
 })
 export class ClubViewComponent implements OnInit {
   overlayOpen = '';

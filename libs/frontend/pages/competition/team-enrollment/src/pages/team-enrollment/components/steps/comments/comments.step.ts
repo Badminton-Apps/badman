@@ -33,11 +33,9 @@ type CommentForm = {
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
-
-    // Material
     MatFormFieldModule,
-    MatInputModule,
-  ],
+    MatInputModule
+],
   templateUrl: './comments.step.html',
   styleUrls: ['./comments.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

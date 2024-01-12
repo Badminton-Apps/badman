@@ -1,266 +1,260 @@
-<ng-container *ngIf="eventCompetition">
+@if (eventCompetition) {
   <div class="filter">
     <badman-select-club
       [control]="this.clubControl"
       [allowDeselect]="true"
       [autoSelect]="false"
-    />
-  </div>
-
-  <mat-table
-    #table
-    [dataSource]="eventCompetition()?.subEventCompetitions ?? []"
-  >
-    <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-
-    <!-- Position Column -->
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef>
-        {{ 'all.competition.subevent.title' | translate }}
-      </mat-header-cell>
-      <mat-cell *matCellDef="let subevent">
-        {{ subevent.name }} {{ subevent.eventType }}
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="entries">
-      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-      <mat-cell *matCellDef="let subevent">
-        {{ (subevent.eventEntries ?? []).length }}
-        {{ 'all.competition.team-enrollment.enrollments' | translate }}
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="validations">
-      <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-      <mat-cell *matCellDef="let subevent">
-        <ng-container *ngIf="loadingValidations()">
-          loading... ({{ progress() }} / {{ total() }})</ng-container
-        >
-
-        <ng-container
-          *ngIf="
+      />
+    </div>
+    <mat-table
+      #table
+      [dataSource]="eventCompetition()?.subEventCompetitions ?? []"
+      >
+      <!--- Note that these columns can be defined in any order.
+      The actual rendered columns are set as a property on the row definition" -->
+      <!-- Position Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>
+          {{ 'all.competition.subevent.title' | translate }}
+        </mat-header-cell>
+        <mat-cell *matCellDef="let subevent">
+          {{ subevent.name }} {{ subevent.eventType }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="entries">
+        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+        <mat-cell *matCellDef="let subevent">
+          {{ (subevent.eventEntries ?? []).length }}
+          {{ 'all.competition.team-enrollment.enrollments' | translate }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="validations">
+        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+        <mat-cell *matCellDef="let subevent">
+          @if (loadingValidations()) {
+            loading... ({{ progress() }} / {{ total() }})
+          }
+          @if (
             !loadingValidations() &&
-            validationsForSubevent.get(subevent.id) as validation
-          "
-        >
-          <mat-icon
-            *ngIf="validation.errors"
-            [matBadge]="validation.errors"
-            class="invalid"
-            [matTooltip]="
-              'all.competition.team-enrollment.errors.title' | translate
-            "
-            >error</mat-icon
-          >
-
-          <mat-icon
-            *ngIf="validation.warnings"
-            [matBadge]="validation.warnings"
-            class="warning"
-            [matTooltip]="
-              'all.competition.team-enrollment.warnings.title' | translate
-            "
-            >warning</mat-icon
-          >
-        </ng-container>
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      matRipple
-      class="subevent-row"
-      [badmanEnrollmentDetailRow]="row"
-      [badmanEnrollmentDetailRowTpl]="tpl"
-    >
-    </mat-row>
-  </mat-table>
-
-  <ng-container *ngIf="loading()">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </ng-container>
-
-  <ng-template #tpl let-subevent>
-    <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
-      <div *ngFor="let entry of subevent.eventEntries">
-        <mat-expansion-panel>
-          <mat-expansion-panel-header
-            [collapsedHeight]="'auto'"
-            [expandedHeight]="'auto'"
-          >
-            <div class="panel-header">
-              {{ entry.team.name }}
-
-              <span
-                class="team-index"
-                *ngIf="entry?.meta?.competition?.teamIndex"
-              >
-                ({{ 'all.team.team-index' | translate }}:{{
-                  entry?.meta?.competition?.teamIndex
-                }})
-              </span>
-
-              <!-- show errors with label -->
-              <ng-container
-                *ngIf="
-                  !loadingValidations() &&
-                  validationsForTeam.get(entry.team.id) as validation
+            validationsForSubevent.get(subevent.id); as validation
+            ) {
+            @if (validation.errors) {
+              <mat-icon
+                [matBadge]="validation.errors"
+                class="invalid"
+                [matTooltip]="
+                'all.competition.team-enrollment.errors.title' | translate
                 "
-              >
-                <mat-icon
-                  *ngIf="(validation.errors?.length ?? 0) > 0"
-                  [matBadge]="validation.errors.length"
-                  class="invalid"
-                  [matTooltip]="
-                    'all.competition.team-enrollment.errors.title' | translate
-                  "
-                  >error</mat-icon
+                >error</mat-icon
                 >
-
-                <!-- show warnings with label -->
+              }
+              @if (validation.warnings) {
                 <mat-icon
-                  *ngIf="(validation.warnings?.length ?? 0) > 0"
-                  [matBadge]="validation.warnings.length"
+                  [matBadge]="validation.warnings"
                   class="warning"
                   [matTooltip]="
-                    'all.competition.team-enrollment.warnings.title' | translate
+                  'all.competition.team-enrollment.warnings.title' | translate
                   "
                   >warning</mat-icon
-                >
-              </ng-container>
-            </div>
-          </mat-expansion-panel-header>
-
-          <div class="base-players">
-            <badman-block class="base">
-              <badman-block-header>
-                <badman-block-title>{{
-                  'all.competition.team-enrollment.players.base' | translate
-                }}</badman-block-title>
-              </badman-block-header>
-              <mat-divider />
-              <badman-block-content>
-                <mat-list role="list">
-                  <mat-list-item
-                    role="listitem"
-                    *ngFor="
-                      let player of entry?.meta?.competition?.players ?? []
-                    "
                   >
-                    <span matListItemTitle>{{ player.player.fullName }}</span>
-                    <span matListItemLine
-                      >{{ player.single }}- {{ player.double }} -
-                      {{ player.mix }}
-                    </span>
-                  </mat-list-item>
-                </mat-list>
-              </badman-block-content>
-            </badman-block>
-
-            <badman-block class="captain">
-              <badman-block-header>
-                <badman-block-title>{{
-                  'all.team.title.base-fields' | translate
-                }}</badman-block-title>
-              </badman-block-header>
-              <mat-divider />
-
-              <badman-block-content>
-                <mat-list role="list">
-                  <mat-list-item
-                    role="listitem"
-                    *ngIf="entry?.meta?.competition?.teamIndex"
-                  >
-                    <span matListItemTitle>{{
-                      entry?.meta?.competition?.teamIndex
-                    }}</span>
-                    <span matListItemLine>{{
-                      'all.team.team-index' | translate
-                    }}</span>
-                  </mat-list-item>
-                  <mat-list-item role="listitem">
-                    <span matListItemTitle>{{
-                      entry?.team?.captain?.fullName
-                    }}</span>
-                    <span matListItemLine>{{
-                      'all.team.title.captain' | translate
-                    }}</span>
-                  </mat-list-item>
-                  <mat-list-item role="listitem">
-                    <span matListItemTitle
-                      >{{
-                        'all.days.' + entry?.team?.preferredDay | translate
-                      }}
-                      - {{ entry?.team?.preferredTime }}</span
+                }
+              }
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row
+            *matRowDef="let row; columns: displayedColumns"
+            matRipple
+            class="subevent-row"
+            [badmanEnrollmentDetailRow]="row"
+            [badmanEnrollmentDetailRowTpl]="tpl"
+            >
+          </mat-row>
+        </mat-table>
+        @if (loading()) {
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        }
+        <ng-template #tpl let-subevent>
+          <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
+            @for (entry of subevent.eventEntries; track entry) {
+              <div>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header
+                    [collapsedHeight]="'auto'"
+                    [expandedHeight]="'auto'"
                     >
-                    <span matListItemLine>{{
-                      'all.team.prefferd.title' | translate
-                    }}</span>
-                  </mat-list-item>
-                </mat-list>
-              </badman-block-content>
-            </badman-block>
-
-            <badman-block class="validations">
-              <badman-block-header>
-                <badman-block-title>{{
-                  'all.competition.team-enrollment.validations' | translate
-                }}</badman-block-title>
-              </badman-block-header>
-              <mat-divider />
-              <badman-block-content>
-                <ng-container
-                  *ngIf="
-                    !loadingValidations() &&
-                    validationsForTeam.get(entry.team.id) as validation
-                  "
-                >
-                  <ul
-                    class="error-list"
-                    *ngIf="(validation.errors?.length ?? 0) > 0"
-                  >
-                    <li *ngFor="let error of validation.errors">
-                      <badman-enrollment-message
-                        [validation]="error"
-                      ></badman-enrollment-message>
-                    </li>
-                  </ul>
-
-                  <ul
-                    class="warning-list"
-                    *ngIf="(validation.warnings?.length ?? 0) > 0"
-                  >
-                    <li *ngFor="let warnings of validation.warnings">
-                      <badman-enrollment-message
-                        [validation]="warnings"
-                      ></badman-enrollment-message>
-                    </li>
-                  </ul>
-
-                  <div
-                    class="no-errors"
-                    *ngIf="
-                      (validation.errors?.length ?? 0) === 0 &&
-                      (validation.warnings?.length ?? 0) === 0
-                    "
-                  >
-                    {{
-                      'all.competition.team-assembly.errors.none' | translate
-                    }}
-                  </div>
-                </ng-container>
-
-                <badman-loading-block
-                  *ngIf="loadingValidations()"
-                ></badman-loading-block>
-              </badman-block-content>
-            </badman-block>
-          </div>
-        </mat-expansion-panel>
-      </div>
-    </div>
-  </ng-template>
-</ng-container>
+                    <div class="panel-header">
+                      {{ entry.team.name }}
+                      @if (entry?.meta?.competition?.teamIndex) {
+                        <span
+                          class="team-index"
+                          >
+                          ({{ 'all.team.team-index' | translate }}:{{
+                          entry?.meta?.competition?.teamIndex
+                          }})
+                        </span>
+                      }
+                      <!-- show errors with label -->
+                      @if (
+                        !loadingValidations() &&
+                        validationsForTeam.get(entry.team.id); as validation
+                        ) {
+                        @if ((validation.errors?.length ?? 0) > 0) {
+                          <mat-icon
+                            [matBadge]="validation.errors.length"
+                            class="invalid"
+                            [matTooltip]="
+                            'all.competition.team-enrollment.errors.title' | translate
+                            "
+                            >error</mat-icon
+                            >
+                          }
+                          <!-- show warnings with label -->
+                          @if ((validation.warnings?.length ?? 0) > 0) {
+                            <mat-icon
+                              [matBadge]="validation.warnings.length"
+                              class="warning"
+                              [matTooltip]="
+                              'all.competition.team-enrollment.warnings.title' | translate
+                              "
+                              >warning</mat-icon
+                              >
+                            }
+                          }
+                        </div>
+                      </mat-expansion-panel-header>
+                      <div class="base-players">
+                        <badman-block class="base">
+                          <badman-block-header>
+                            <badman-block-title>{{
+                              'all.competition.team-enrollment.players.base' | translate
+                            }}</badman-block-title>
+                          </badman-block-header>
+                          <mat-divider />
+                          <badman-block-content>
+                            <mat-list role="list">
+                              @for (
+                                player of entry?.meta?.competition?.players ?? []
+                                ; track
+                                player) {
+                                <mat-list-item
+                                  role="listitem"
+                                  >
+                                  <span matListItemTitle>{{ player.player.fullName }}</span>
+                                  <span matListItemLine
+                                    >{{ player.single }}- {{ player.double }} -
+                                    {{ player.mix }}
+                                  </span>
+                                </mat-list-item>
+                              }
+                            </mat-list>
+                          </badman-block-content>
+                        </badman-block>
+                        <badman-block class="captain">
+                          <badman-block-header>
+                            <badman-block-title>{{
+                              'all.team.title.base-fields' | translate
+                            }}</badman-block-title>
+                          </badman-block-header>
+                          <mat-divider />
+                          <badman-block-content>
+                            <mat-list role="list">
+                              @if (entry?.meta?.competition?.teamIndex) {
+                                <mat-list-item
+                                  role="listitem"
+                                  >
+                                  <span matListItemTitle>{{
+                                    entry?.meta?.competition?.teamIndex
+                                  }}</span>
+                                  <span matListItemLine>{{
+                                    'all.team.team-index' | translate
+                                  }}</span>
+                                </mat-list-item>
+                              }
+                              <mat-list-item role="listitem">
+                                <span matListItemTitle>{{
+                                  entry?.team?.captain?.fullName
+                                }}</span>
+                                <span matListItemLine>{{
+                                  'all.team.title.captain' | translate
+                                }}</span>
+                              </mat-list-item>
+                              <mat-list-item role="listitem">
+                                <span matListItemTitle
+                                  >{{
+                                  'all.days.' + entry?.team?.preferredDay | translate
+                                  }}
+                                  - {{ entry?.team?.preferredTime }}</span
+                                  >
+                                  <span matListItemLine>{{
+                                    'all.team.prefferd.title' | translate
+                                  }}</span>
+                                </mat-list-item>
+                              </mat-list>
+                            </badman-block-content>
+                          </badman-block>
+                          <badman-block class="validations">
+                            <badman-block-header>
+                              <badman-block-title>{{
+                                'all.competition.team-enrollment.validations' | translate
+                              }}</badman-block-title>
+                            </badman-block-header>
+                            <mat-divider />
+                            <badman-block-content>
+                              @if (
+                                !loadingValidations() &&
+                                validationsForTeam.get(entry.team.id); as validation
+                                ) {
+                                @if ((validation.errors?.length ?? 0) > 0) {
+                                  <ul
+                                    class="error-list"
+                                    >
+                                    @for (error of validation.errors; track error) {
+                                      <li>
+                                        <badman-enrollment-message
+                                          [validation]="error"
+                                        ></badman-enrollment-message>
+                                      </li>
+                                    }
+                                  </ul>
+                                }
+                                @if ((validation.warnings?.length ?? 0) > 0) {
+                                  <ul
+                                    class="warning-list"
+                                    >
+                                    @for (warnings of validation.warnings; track warnings) {
+                                      <li>
+                                        <badman-enrollment-message
+                                          [validation]="warnings"
+                                        ></badman-enrollment-message>
+                                      </li>
+                                    }
+                                  </ul>
+                                }
+                                @if (
+                                  (validation.errors?.length ?? 0) === 0 &&
+                                  (validation.warnings?.length ?? 0) === 0
+                                  ) {
+                                  <div
+                                    class="no-errors"
+                                    >
+                                    {{
+                                    'all.competition.team-assembly.errors.none' | translate
+                                    }}
+                                  </div>
+                                }
+                              }
+                              @if (loadingValidations()) {
+                                <badman-loading-block
+                                ></badman-loading-block>
+                              }
+                            </badman-block-content>
+                          </badman-block>
+                        </div>
+                      </mat-expansion-panel>
+                    </div>
+                  }
+                </div>
+              </ng-template>
+            }
+            

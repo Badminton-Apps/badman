@@ -14,8 +14,8 @@ import statesList from './states.json';
     CommonModule,
     MatSelectModule,
     TranslateModule,
-    ReactiveFormsModule,
-  ],
+    ReactiveFormsModule
+],
   templateUrl: './select-state.component.html',
   styleUrls: ['./select-state.component.scss'],
 })

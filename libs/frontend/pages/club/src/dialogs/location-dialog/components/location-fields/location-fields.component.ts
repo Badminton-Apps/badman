@@ -30,21 +30,16 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-
-    // Other modules
     MatInputModule,
     MatDividerModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatIconModule,
-
-    // My Modules
-    NgMapsPlacesModule,
-  ],
+    NgMapsPlacesModule
+],
 })
 export class LocationDialogFieldsComponent implements OnInit {
   @Input()

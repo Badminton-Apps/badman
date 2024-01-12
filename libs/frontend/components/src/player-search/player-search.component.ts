@@ -43,9 +43,7 @@ import { PlayerFieldsComponent } from '../fields';
   standalone: true,
   imports: [
     CommonModule,
-
     TranslateModule,
-
     MatIconModule,
     MatButtonModule,
     MatOptionModule,
@@ -55,10 +53,8 @@ import { PlayerFieldsComponent } from '../fields';
     MatDialogModule,
     MatInputModule,
     MatProgressBarModule,
-
-    // My Modules
-    PlayerFieldsComponent,
-  ],
+    PlayerFieldsComponent
+],
   selector: 'badman-player-search',
   templateUrl: './player-search.component.html',
   styleUrls: ['./player-search.component.scss'],

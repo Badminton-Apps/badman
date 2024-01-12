@@ -8,11 +8,10 @@ import { MarkdownModule } from 'ngx-markdown';
   styleUrls: ['./changelog.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-    MarkdownModule,
-  ],
+    MarkdownModule
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangelogPageComponent {}

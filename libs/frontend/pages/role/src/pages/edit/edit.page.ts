@@ -21,9 +21,8 @@ import { RoleFieldsComponent } from '../../components';
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-
-    RoleFieldsComponent,
-  ],
+    RoleFieldsComponent
+],
 })
 export class EditPageComponent implements OnInit {
   role!: Role;

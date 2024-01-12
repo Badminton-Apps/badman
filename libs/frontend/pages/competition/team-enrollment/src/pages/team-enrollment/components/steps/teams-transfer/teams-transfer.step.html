@@ -2,23 +2,23 @@
   {{'all.competition.team-enrollment.teams.transfer-teams-description' |
   translate}}
 </div>
-
-<ng-container *ngIf="teams$ | async as teams; else loading">
-    <div class="all">
-      <button mat-button (click)="selectAll('lastSeason')">
-        {{ 'all.button.all' | translate }}
-      </button>
-      <button mat-button (click)="deselectAll('lastSeason')">
-        {{ 'all.button.none' | translate }}
-      </button>
-    </div>
-    <div class="teams" *ngFor="let team of teams.lastSeason; let i = index ">
+@if (teams$ | async; as teams) {
+  <div class="all">
+    <button mat-button (click)="selectAll('lastSeason')">
+      {{ 'all.button.all' | translate }}
+    </button>
+    <button mat-button (click)="deselectAll('lastSeason')">
+      {{ 'all.button.none' | translate }}
+    </button>
+  </div>
+  @for (team of teams.lastSeason; track team; let i = $index) {
+    <div class="teams">
       <mat-checkbox [formControl]="this.teamsForm![i]"
         >{{ team.name }}</mat-checkbox
-      >
-    </div>
-
-    <ng-container *ngIf="teams.newThisSeason.length > 0">
+        >
+      </div>
+    }
+    @if (teams.newThisSeason.length > 0) {
       <h3>
         {{ 'all.competition.team-enrollment.teams.new-teams' | translate }}
       </h3>
@@ -30,17 +30,18 @@
           {{ 'all.button.none' | translate }}
         </button>
       </div>
-      <div
-        class="teams"
-        *ngFor="let team of teams.newThisSeason; let i = index "
-      >
-        <mat-checkbox [formControl]="this.newTeamsForm![i]"
-          >{{ team.name }}</mat-checkbox
+      @for (team of teams.newThisSeason; track team; let i = $index) {
+        <div
+          class="teams"
+          >
+          <mat-checkbox [formControl]="this.newTeamsForm![i]"
+            >{{ team.name }}</mat-checkbox
+            >
+          </div>
+        }
+      }
+    } @else {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar
         >
-      </div>
-    </ng-container>
-  </ng-container>
-
-<ng-template #loading>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar
-></ng-template>
+      }
+      

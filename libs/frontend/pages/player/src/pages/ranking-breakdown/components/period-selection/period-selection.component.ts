@@ -36,15 +36,13 @@ import { MomentModule } from 'ngx-moment';
     RouterModule,
     TranslateModule,
     MomentModule,
-
-    // Material
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
     MatFormFieldModule,
     MatDatepickerModule,
-    MatMenuModule,
-  ],
+    MatMenuModule
+],
 })
 export class PeriodSelectionComponent {
   @Input() period!: FormGroup<{

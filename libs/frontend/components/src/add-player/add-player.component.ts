@@ -15,19 +15,12 @@ import { PlayerSearchComponent } from '../player-search';
   styleUrls: ['./add-player.component.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
-
-    // Other modules
     TranslateModule,
-
-    // Material Modules
     MatDialogModule,
     MatButtonModule,
-
-    // My Modules
-    PlayerSearchComponent,
-  ],
+    PlayerSearchComponent
+],
 })
 export class AddPlayerComponent {
   constructor(

@@ -35,12 +35,9 @@ import { PickEventDialogComponent } from '../../../../dialogs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-
-    // Other modules
     MatListModule,
     MatIconModule,
     MatButtonModule,
@@ -48,11 +45,9 @@ import { PickEventDialogComponent } from '../../../../dialogs';
     MatDialogModule,
     MatMenuModule,
     MatInputModule,
-
-    // My Modules
     PlayerSearchComponent,
-    BadmanBlockModule,
-  ],
+    BadmanBlockModule
+],
 })
 export class ClubEditTeamComponent implements OnInit {
   @Output() whenPlayerAdded = new EventEmitter<Partial<Player>>();

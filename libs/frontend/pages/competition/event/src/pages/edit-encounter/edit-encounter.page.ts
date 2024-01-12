@@ -33,23 +33,16 @@ import { ReplacePlayerComponent } from '../../dialogs';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    // common modules
     CommonModule,
-
-    // other modules
     TranslateModule,
-
-    // Material Modules
     MatFormFieldModule,
     MatInputModule,
     MatMenuModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
-
-    // Own components
-    GameScoreComponentComponent,
-  ],
+    GameScoreComponentComponent
+],
 })
 export class EditEncounterComponent implements OnInit {
   encounterCompetition!: EncounterCompetition;

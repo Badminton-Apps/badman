@@ -27,19 +27,15 @@ import { startWith } from 'rxjs/operators';
     RouterModule,
     TranslateModule,
     FormsModule,
-
-    // Material
     MatIconModule,
     MatButtonModule,
     MatInputModule,
     MatOptionModule,
     HasClaimComponent,
     MatSelectModule,
-
-    // Own modules
     HasClaimComponent,
-    PlayerSearchComponent,
-  ],
+    PlayerSearchComponent
+],
 })
 export class TeamFieldComponent implements OnInit {
   @Input()

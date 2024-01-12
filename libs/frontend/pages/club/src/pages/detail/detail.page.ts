@@ -56,40 +56,31 @@ import { ClubTeamsComponent } from './club-teams/club-teams.component';
   styleUrls: ['./detail.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-
-    // Other modules
     MomentModule,
     TranslateModule,
-
-    // My Modules
     UpcomingGamesComponent,
     RecentGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
     LoadingBlockComponent,
     SelectSeasonComponent,
-
     ClubPlayersComponent,
     ClubTeamsComponent,
     ClubCompetitionComponent,
     ClubAssemblyComponent,
     ClubEncountersComponent,
-
-    // Material Modules
     MatButtonToggleModule,
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-
     MatDialogModule,
     MatSelectModule,
     MatProgressBarModule,
-    MatTabsModule,
-  ],
+    MatTabsModule
+],
 })
 export class DetailPageComponent implements OnInit {
   // Injectors

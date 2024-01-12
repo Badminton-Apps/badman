@@ -7,108 +7,104 @@
       [formControl]="formControl"
       [matAutocomplete]="auto"
       (blur)="this.inputBlur()"
-    />
-    <ng-container *ngIf="this.loading">
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar
-    ></ng-container>
-
-    <mat-autocomplete
-      autoActiveFirstOption
-      autoSelectActiveOption
-      (optionActivated)="this.optionActivated($event)"
-      #auto="matAutocomplete"
-      [displayWith]="displayFn"
-      (optionSelected)="this.selectedPlayer($event)"
-      class="badman-search-player-panel"
-      [classList]="['badman-search-player-panel']"
-    >
-      @for (option of options; track option.id) {
-        <mat-option [value]="option">
-          @if (option.fullName) {
-            {{ option.fullName }}
-          } @else {
-            {{ option.firstName }} {{ option.lastName }}
-          }
-
-          @if (option.memberId) {
-            <small class="member-id">({{ option.memberId }}) </small>
-          }
-
-          @if (
-            option.clubs &&
-            option.clubs.length > 0 &&
-            option.clubs[0].id !== this.clubId
-          ) {
-            <small>{{ option.clubs[0].name }}</small>
-          }
-        </mat-option>
-      }
-
-      <ng-container *ngIf="this.filteredOptions$ | async as filterdOptions">
-        <mat-option
-          [value]="this.formControl.value"
-          *ngIf="filterdOptions.length === 0 && this.allowCreation"
-        >
-          {{ 'all.player.search.create' | translate }}
-        </mat-option>
-
-        <mat-option
-          [value]="this.formControl.value"
-          *ngIf="filterdOptions.length === 0 && !this.allowCreation"
-          [disabled]="true"
-        >
-          {{ 'all.player.search.not-found' | translate }}
-        </mat-option>
-
-        @for (option of filterdOptions; track option.id) {
-          <ng-container *ngIf="validationFunction(option) as validation">
-            <mat-option
-              [value]="option"
-              [disabled]="
-                this.ignorePlayersIds!.indexOf(option.id!) >= 0 ||
-                !validation.valid
-              "
-            >
+      />
+      @if (this.loading) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar
+          >
+        }
+        <mat-autocomplete
+          autoActiveFirstOption
+          autoSelectActiveOption
+          (optionActivated)="this.optionActivated($event)"
+          #auto="matAutocomplete"
+          [displayWith]="displayFn"
+          (optionSelected)="this.selectedPlayer($event)"
+          class="badman-search-player-panel"
+          [classList]="['badman-search-player-panel']"
+          >
+          @for (option of options; track option.id) {
+            <mat-option [value]="option">
               @if (option.fullName) {
                 {{ option.fullName }}
               } @else {
                 {{ option.firstName }} {{ option.lastName }}
               }
-
               @if (option.memberId) {
                 <small class="member-id">({{ option.memberId }}) </small>
               }
-
               @if (
                 option.clubs &&
                 option.clubs.length > 0 &&
                 option.clubs[0].id !== this.clubId
-              ) {
+                ) {
                 <small>{{ option.clubs[0].name }}</small>
               }
-
-              <div class="invalid-player" *ngIf="validation.message">
-                {{ validation.message | translate }}
-              </div>
             </mat-option>
-          </ng-container>
-        }
-      </ng-container>
-    </mat-autocomplete>
-  </mat-form-field>
-</form>
-
-<ng-template #newPlayer>
-  <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
-  <mat-dialog-content>
-    <badman-player-fields [group]="newPlayerFormGroup"></badman-player-fields>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-raised-button [matDialogClose]="true" color="primary">
-      {{ 'all.button.create' | translate }}
-    </button>
-    <button mat-button matDialogClose>
-      {{ 'all.button.cancel' | translate }}
-    </button>
-  </mat-dialog-actions>
-</ng-template>
+          }
+          @if (this.filteredOptions$ | async; as filterdOptions) {
+            @if (filterdOptions.length === 0 && this.allowCreation) {
+              <mat-option
+                [value]="this.formControl.value"
+                >
+                {{ 'all.player.search.create' | translate }}
+              </mat-option>
+            }
+            @if (filterdOptions.length === 0 && !this.allowCreation) {
+              <mat-option
+                [value]="this.formControl.value"
+                [disabled]="true"
+                >
+                {{ 'all.player.search.not-found' | translate }}
+              </mat-option>
+            }
+            @for (option of filterdOptions; track option.id) {
+              @if (validationFunction(option); as validation) {
+                <mat-option
+                  [value]="option"
+                  [disabled]="
+                  this.ignorePlayersIds!.indexOf(option.id!) >= 0 ||
+                  !validation.valid
+                  "
+                  >
+                  @if (option.fullName) {
+                    {{ option.fullName }}
+                  } @else {
+                    {{ option.firstName }} {{ option.lastName }}
+                  }
+                  @if (option.memberId) {
+                    <small class="member-id">({{ option.memberId }}) </small>
+                  }
+                  @if (
+                    option.clubs &&
+                    option.clubs.length > 0 &&
+                    option.clubs[0].id !== this.clubId
+                    ) {
+                    <small>{{ option.clubs[0].name }}</small>
+                  }
+                  @if (validation.message) {
+                    <div class="invalid-player">
+                      {{ validation.message | translate }}
+                    </div>
+                  }
+                </mat-option>
+              }
+            }
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    </form>
+    <ng-template #newPlayer>
+      <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
+      <mat-dialog-content>
+        <badman-player-fields [group]="newPlayerFormGroup"></badman-player-fields>
+      </mat-dialog-content>
+      <mat-dialog-actions align="end">
+        <button mat-raised-button [matDialogClose]="true" color="primary">
+          {{ 'all.button.create' | translate }}
+        </button>
+        <button mat-button matDialogClose>
+          {{ 'all.button.cancel' | translate }}
+        </button>
+      </mat-dialog-actions>
+    </ng-template>
+    

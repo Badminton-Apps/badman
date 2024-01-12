@@ -1,21 +1,20 @@
-<ng-container *ngIf="this.role">
+@if (this.role) {
   <badman-block>
     <badman-block-header>
       <badman-block-title>
         {{ this.role()?.name }}
-        <span
-          *ngIf="this.role()?.locked"
-          class="locked"
-          [matTooltip]="'all.security.roles.locked' | translate"
+        @if (this.role()?.locked) {
+          <span
+            class="locked"
+            [matTooltip]="'all.security.roles.locked' | translate"
           ><mat-icon>lock</mat-icon></span
-        >
+          >
+        }
       </badman-block-title>
-
       <badman-block-actions align="end">
         <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
           <mat-icon>more_vert</mat-icon>
         </button>
-
         <mat-menu #menu="matMenu">
           <button
             mat-menu-item
@@ -23,7 +22,7 @@
             [disabled]="this.role()?.locked"
             [matTooltip]="'all.security.roles.locked' | translate"
             [matTooltipDisabled]="!this.role()?.locked"
-          >
+            >
             <mat-icon>edit</mat-icon>
             <span>{{ 'all.button.edit' | translate }}</span>
           </button>
@@ -32,7 +31,7 @@
             [disabled]="this.role()?.locked"
             [matTooltip]="'all.security.roles.locked' | translate"
             [matTooltipDisabled]="!this.role()?.locked"
-          >
+            >
             <mat-icon>delete</mat-icon>
             <span>{{ 'all.button.delete' | translate }}</span>
           </button>
@@ -42,38 +41,37 @@
     <mat-divider></mat-divider>
     <badman-block-content>
       <mat-list>
-        <ng-container *ngIf="!((this.role()?.players?.length ?? 0) > 0)">
+        @if (!((this.role()?.players?.length ?? 0) > 0)) {
           <mat-list-item>
             <div class="no-players">{{'all.player.no-players' | translate}}</div>
           </mat-list-item>
-        </ng-container>
-
-        <ng-container *ngIf="(this.role()?.players?.length ?? 0) > 0">
-          <div
-            mat-list-item
-            *ngFor="let player of this.role()?.players"
-            class="player"
-          >
-            <span mat-line>
-              {{ player.fullName }}
-            </span>
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button
-                mat-menu-item
-                (click)="onPlayerRemovedFromRole(player)"
-                [disabled]="removeDisabled()"
+        }
+        @if ((this.role()?.players?.length ?? 0) > 0) {
+          @for (player of this.role()?.players; track player) {
+            <div
+              mat-list-item
+              class="player"
               >
-                <mat-icon>delete</mat-icon>
-                <span>{{ 'all.button.delete' | translate }}</span>
+              <span mat-line>
+                {{ player.fullName }}
+              </span>
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
               </button>
-            </mat-menu>
-          </div>
-        </ng-container>
+              <mat-menu #menu="matMenu">
+                <button
+                  mat-menu-item
+                  (click)="onPlayerRemovedFromRole(player)"
+                  [disabled]="removeDisabled()"
+                  >
+                  <mat-icon>delete</mat-icon>
+                  <span>{{ 'all.button.delete' | translate }}</span>
+                </button>
+              </mat-menu>
+            </div>
+          }
+        }
       </mat-list>
-
       <badman-player-search
         [allowCreation]="false"
         [searchOutsideClub]="true"
@@ -82,28 +80,28 @@
       ></badman-player-search>
     </badman-block-content>
   </badman-block>
-</ng-container>
-
+}
 <ng-template #editClaimsTemplate>
   <h2 mat-dialog-title>{{ 'all.security.claims.edit.title' | translate }}</h2>
   <mat-dialog-content>
-    <ng-container *ngFor="let group of this.claims?.()">
+    @for (group of this.claims?.(); track group) {
       <h2>{{ group.category }}</h2>
-      <ng-container *ngFor="let claim of group.claims">
+      @for (claim of group.claims; track claim) {
         <badman-claim
           [claim]="claim"
           [value]="roleClaimsIds().includes(claim.id) || false"
           (whenChange)="onClaimChange($event, claim)"
         ></badman-claim>
-      </ng-container> </ng-container
-  ></mat-dialog-content>
-  <mat-dialog-actions>
-    <button mat-button mat-dialog-close>
-      {{ 'all.button.cancel' | translate }}
-    </button>
-    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-    <button mat-raised-button color="primary" [mat-dialog-close]="true">
-      {{ 'all.button.save' | translate }}
-    </button>
-  </mat-dialog-actions>
-</ng-template>
+      }
+    }</mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button mat-dialog-close>
+        {{ 'all.button.cancel' | translate }}
+      </button>
+      <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+      <button mat-raised-button color="primary" [mat-dialog-close]="true">
+        {{ 'all.button.save' | translate }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
+  

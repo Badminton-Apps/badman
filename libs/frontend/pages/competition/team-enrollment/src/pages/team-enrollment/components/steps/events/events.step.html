@@ -1,16 +1,17 @@
-<ng-container *ngFor="let type of levelTypes">
+@for (type of levelTypes; track type) {
   <div class="row">
     <mat-checkbox [checked]="checkboxes[type]" (change)="select($event,type)"
       >{{ 'all.competition.'+type | lowercase | translate }}</mat-checkbox
-    >
+      >
+    </div>
+  }
+  <div class="row">
+    @if (checkboxes.PROV) {
+      <badman-select-event
+        [control]="this.provFormControl"
+        [where]="this.provWhere"
+        [initialId]="this.provInitialId"
+      ></badman-select-event>
+    }
   </div>
-</ng-container>
-
-<div class="row">
-  <badman-select-event
-    *ngIf="checkboxes.PROV"
-    [control]="this.provFormControl"
-    [where]="this.provWhere"
-    [initialId]="this.provInitialId"
-  ></badman-select-event>
-</div>
+  

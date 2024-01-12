@@ -18,24 +18,20 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
   imports: [
-    // Core modules
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
-
     TranslateModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
-
-    // Material Modules
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
     MatDatepickerModule,
-    MatSlideToggleModule,
-  ],
+    MatSlideToggleModule
+],
   templateUrl: './set-encounter-date.component.html',
   styleUrls: ['./set-encounter-date.component.scss'],
   standalone: true,

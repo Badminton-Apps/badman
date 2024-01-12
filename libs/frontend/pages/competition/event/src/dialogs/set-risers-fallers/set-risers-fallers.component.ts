@@ -27,15 +27,11 @@ import { BehaviorSubject, takeUntil, zip } from 'rxjs';
 
 @Component({
   imports: [
-    // Core modules
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
-
     TranslateModule,
-
-    // Material Modules
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
@@ -43,8 +39,8 @@ import { BehaviorSubject, takeUntil, zip } from 'rxjs';
     MatSelectModule,
     MatTableModule,
     MatInputModule,
-    MatProgressSpinnerModule,
-  ],
+    MatProgressSpinnerModule
+],
   templateUrl: './set-risers-fallers.component.html',
   styleUrls: ['./set-risers-fallers.component.scss'],
   standalone: true,

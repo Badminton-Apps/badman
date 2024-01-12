@@ -1,5 +1,8 @@
-<ng-content *ngIf="this.show$ | async"></ng-content>
-<ng-content
-  *ngIf="(this.show$ | async) === false"
-  select="[noPerm]"
-></ng-content>
+@if (this.show$ | async) {
+  <ng-content></ng-content>
+}
+@if ((this.show$ | async) === false) {
+  <ng-content
+    select="[noPerm]"
+  ></ng-content>
+}

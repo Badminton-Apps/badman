@@ -49,15 +49,13 @@ import { AddGameComponent } from '../../dialogs/add-game';
     TranslateModule,
     ReactiveFormsModule,
     MomentModule,
-
-    // Material
     MatIconModule,
     MatSlideToggleModule,
     MatTableModule,
     MatTooltipModule,
     MatButtonModule,
-    LayoutModule,
-  ],
+    LayoutModule
+],
 })
 export class ListGamesComponent implements OnInit {
   private destroy$ = injectDestroy();

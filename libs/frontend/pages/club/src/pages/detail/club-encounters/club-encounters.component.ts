@@ -38,11 +38,10 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
     RouterModule,
     TranslateModule,
     MomentModule,
-
     MatSlideToggleModule,
     MatListModule,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule
+],
   templateUrl: './club-encounters.component.html',
   styleUrls: ['./club-encounters.component.scss'],
 })

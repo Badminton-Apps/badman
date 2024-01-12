@@ -41,11 +41,10 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
     RouterModule,
     TranslateModule,
     MomentModule,
-
     MatSlideToggleModule,
     MatListModule,
-    MatProgressBarModule,
-  ],
+    MatProgressBarModule
+],
   templateUrl: './competition-encounters.component.html',
   styleUrls: ['./competition-encounters.component.scss'],
 })

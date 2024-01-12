@@ -71,15 +71,14 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     MatButtonModule,
     MomentModule,
     TranslateModule,
-
     CdkTableModule,
     CdkTreeModule,
     EnrollmentDetailRowDirective,
     SelectClubComponent,
     EnrollmentMessageComponent,
     BadmanBlockModule,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
   templateUrl: './club-competition.component.html',
   styleUrls: ['./club-competition.component.scss'],
   providers: [provideAnimations()],

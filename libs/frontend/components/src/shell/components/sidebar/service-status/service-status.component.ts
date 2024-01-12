@@ -8,9 +8,8 @@ import { ServiceService } from './service-status.service';
   styleUrls: ['./service-status.component.scss'],
   standalone: true,
   imports: [
-    // Core modules
-    CommonModule,
-  ],
+    CommonModule
+],
 })
 export class ServiceStatusComponent  {
   state = inject(ServiceService);

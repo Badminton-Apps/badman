@@ -42,14 +42,9 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // common modules
     CommonModule,
     RouterModule,
-
-    // Other modules
     TranslateModule,
-
-    // Material Modules
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
@@ -59,12 +54,10 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatMenuModule,
     MatDividerModule,
     MatTooltipModule,
-
-    // Own components
     GameScoreComponentComponent,
     PageHeaderComponent,
-    HasClaimComponent,
-  ],
+    HasClaimComponent
+],
 })
 export class DetailEncounterComponent implements OnInit {
   encounterCompetition!: EncounterCompetition;

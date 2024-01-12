@@ -48,18 +48,14 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-
-    // Core modules
     TranslateModule,
-
-    // Material Modules
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSelectModule,
-  ],
+    MatSelectModule
+],
   templateUrl: './select-club.component.html',
   styleUrls: ['./select-club.component.scss'],
 })

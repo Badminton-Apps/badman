@@ -31,13 +31,11 @@ export interface PickEventDialogData {
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
-
-    // Material
     MatDialogModule,
     MatProgressBarModule,
     MatSelectModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
   templateUrl: './pick-event-dialog.component.html',
   styleUrls: ['./pick-event-dialog.component.scss'],
 })

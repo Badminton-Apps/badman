@@ -13,12 +13,10 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './confirm.dialog.html',
   standalone: true,
   imports: [
-    // Material
     MatDialogModule,
     MatButtonModule,
-
-    TranslateModule,
-  ],
+    TranslateModule
+],
   // styleUrls: ['./confirm-dialog.component.css']
 })
 export class ConfirmDialogComponent {

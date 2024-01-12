@@ -30,8 +30,8 @@ import { map, mergeMap } from 'rxjs/operators';
     TranslateModule,
     FormsModule,
     MatInputModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
 })
 export class EditRankingComponent implements OnInit {
   update$ = new BehaviorSubject(null);

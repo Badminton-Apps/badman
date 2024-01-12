@@ -42,17 +42,14 @@ import { RisersFallersDialogComponent } from '../../../dialogs';
     CommonModule,
     RouterModule,
     TranslateModule,
-
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
-
-    // own components
     HasClaimComponent,
     LoadingBlockComponent,
-    BadmanBlockModule,
-  ],
+    BadmanBlockModule
+],
   templateUrl: './competition-events.component.html',
   styleUrls: ['./competition-events.component.scss'],
 })

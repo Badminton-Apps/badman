@@ -35,15 +35,11 @@ import {
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
-
-    // Material
     MatDialogModule,
     MatButtonModule,
     MatProgressBarModule,
-
-    // Components
-    LocationComponent,
-  ],
+    LocationComponent
+],
   templateUrl: './locations.step.html',
   styleUrls: ['./locations.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

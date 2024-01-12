@@ -37,20 +37,16 @@ import {
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-
-    // Own Components
     EditRankingComponent,
     EditCompetitionStatusComponent,
     EditRankingAllComponent,
     EditClubHistoryComponent,
     EditPermissionsComponent,
     EditPlayerFieldsComponent,
-
-    // Material
     MatIconModule,
     MatTabsModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditPageComponent implements OnInit, AfterViewInit {
