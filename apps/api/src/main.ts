@@ -18,7 +18,6 @@ import { AppModule } from './app';
 import fmp from '@fastify/multipart';
 import { RedisIoAdapter } from '@badman/backend-websockets';
 import compression from '@fastify/compress';
-import { FastifyPluginCallback } from 'fastify';
 
 async function bootstrap() {
   Logger.debug('Starting application');
