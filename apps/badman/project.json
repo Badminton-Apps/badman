@@ -28,16 +28,11 @@
           "moment",
           "file-saver",
           "seed-to-color",
-          "raf",
           "joi",
-          "rgbcolor",
-          "quill",
-          "apexcharts",
-          "core-js"
+          "quill"
         ],
         "styles": [
           "apps/badman/src/styles.scss",
-          "node_modules/quill/dist/quill.snow.css",
           "node_modules/quill/dist/quill.bubble.css",
           "node_modules/@fontsource/roboto/100.css",
           "node_modules/@fontsource/roboto/300.css",
@@ -77,7 +72,7 @@
               "with": "apps/badman/src/environments/environment.prod.ts"
             }
           ],
-          "outputHashing": "all"
+          "optimization": true
         },
         "beta": {
           "budgets": [

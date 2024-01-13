@@ -1,13 +1,24 @@
+@use '@angular/material' as mat;
 @use './src/pages/create/create.page.theme.scss' as create;
 
-@mixin theme($theme) {
-  @include create.theme($theme);
-}
 
 @mixin typography($theme) {
   @include create.typography($theme);
 }
 
-@mixin colors($theme) {
+@mixin color($theme) {
   @include create.color($theme);
+}
+
+
+@mixin theme($theme) {
+  $color-config: mat.get-color-config($theme);
+  @if $color-config != null {
+    @include color($theme);
+  }
+
+  $typography-config: mat.get-typography-config($theme);
+  @if $typography-config != null {
+    @include typography($theme);
+  }
 }
