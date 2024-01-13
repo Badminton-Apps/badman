@@ -10,7 +10,7 @@
 }
 
 
-@mixin colors($theme) {
+@mixin color($theme) {
   @include upload-ranking.color($theme);
 }
 

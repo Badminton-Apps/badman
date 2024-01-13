@@ -75,18 +75,18 @@ $light-theme: theme.badman-light-theme(
   @include mat.all-component-colors($light-theme);
   @include root-theme.color($light-theme);
   // Own components
-  @include frontend-assembly.colors($light-theme);
-  @include frontend-club.colors($light-theme);
-  @include frontend-competition.colors($light-theme);
-  @include frontend-change-encounter.colors($light-theme);
-  @include frontend-tournament.colors($light-theme);
-  @include frontend-team-enrollement.colors($light-theme);
-  @include frontend-player.colors($light-theme);
-  @include frontend-ranking.colors($light-theme);
-  @include frontend-role.colors($light-theme);
-  @include frontend-team.colors($light-theme);
-  @include frontend-components.colors($light-theme);
-  @include frontend-general.colors($light-theme);
+  @include frontend-assembly.color($light-theme);
+  @include frontend-club.color($light-theme);
+  @include frontend-competition.color($light-theme);
+  @include frontend-change-encounter.color($light-theme);
+  @include frontend-tournament.color($light-theme);
+  @include frontend-team-enrollement.color($light-theme);
+  @include frontend-player.color($light-theme);
+  @include frontend-ranking.color($light-theme);
+  @include frontend-role.color($light-theme);
+  @include frontend-team.color($light-theme);
+  @include frontend-components.color($light-theme);
+  @include frontend-general.color($light-theme);
 
   // Temp fix
   @include datepicker.fix-datepicker($light-theme);

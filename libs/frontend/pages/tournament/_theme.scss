@@ -1,13 +1,9 @@
+@use '@angular/material' as mat;
+
 @use './src/pages/overview/overview.page.theme.scss' as overview;
 @use './src/pages/detail/detail.page.theme.scss' as detail;
 @use './src/pages/detail-draw/detail-draw.page.theme.scss' as detail-draw;
 
-
-@mixin theme($theme) {
-  @include detail.theme($theme);
-  @include detail-draw.theme($theme);
-  @include overview.theme($theme);
-}
 
 @mixin typography($theme) {
   @include detail.typography($theme);
@@ -15,8 +11,20 @@
   @include overview.typography($theme);
 }
 
-@mixin colors($theme) {
+@mixin color($theme) {
   @include detail.color($theme);
   @include detail-draw.color($theme);
   @include overview.color($theme);
+}
+
+@mixin theme($theme) {
+  $color-config: mat.get-color-config($theme);
+  @if $color-config != null {
+    @include color($theme);
+  }
+
+  $typography-config: mat.get-typography-config($theme);
+  @if $typography-config != null {
+    @include typography($theme);
+  }
 }

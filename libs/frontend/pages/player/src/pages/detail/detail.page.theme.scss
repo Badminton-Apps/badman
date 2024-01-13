@@ -6,6 +6,8 @@
 @use './components/show-level.component.theme.scss' as show-level;
 
 @mixin color($theme) {
+  @include show-level.color($theme);
+  
   badman-player-detail {
     $color-config: mat.get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
@@ -22,6 +24,8 @@
 }
 
 @mixin typography($theme) {
+  @include show-level.typography($theme);
+  
   badman-player-detail {
     $typography-config: mat.get-typography-config($theme);
     .sub-text {
@@ -39,7 +43,6 @@
 }
 
 @mixin theme($theme) {
-  @include show-level.theme($theme);
 
   // Only apply theme on the correct element
   $color-config: mat.get-color-config($theme);
