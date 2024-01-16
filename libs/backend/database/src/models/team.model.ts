@@ -183,7 +183,7 @@ export class Team extends Model {
 
   @Field(() => Int)
   @Unique('unique_constraint')
-  @Column(DataType.NUMBER)
+  @Column({ type: DataType.NUMBER, defaultValue: 1 })
   teamNumber!: number;
 
   @HasMany(() => EncounterCompetition, 'homeTeamId')
