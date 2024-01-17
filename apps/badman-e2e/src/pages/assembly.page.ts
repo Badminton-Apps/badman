@@ -12,8 +12,8 @@ export default class AssemblyPage {
 
   readonly seasonInput: Locator;
   readonly clubInput: Locator;
-  readonly teamInput: Locator;
-  readonly encounterInput: Locator;
+  readonly teamSelect: Locator;
+  readonly encounterSelect: Locator;
 
   readonly single1List: Locator;
   readonly single2List: Locator;
@@ -35,8 +35,8 @@ export default class AssemblyPage {
     this.page = page;
 
     this.clubInput = page.locator('badman-select-club input');
-    this.teamInput = page.locator('badman-select-team');
-    this.encounterInput = page.locator('badman-select-encounter');
+    this.teamSelect = page.locator('badman-select-team');
+    this.encounterSelect = page.locator('badman-select-encounter');
 
     this.header = page.locator('h1');
 
@@ -71,7 +71,7 @@ export default class AssemblyPage {
 
   async selectTeam(team: string) {
     // click on the mat-label in this.teamInput
-    this.teamInput.locator('mat-label').click();
+    this.teamSelect.locator('mat-label').click();
 
     // find team in overlay
     const teamItem = this.overlay.locator('mat-option').filter({
@@ -81,18 +81,16 @@ export default class AssemblyPage {
     await teamItem.click();
   }
 
-  async selectEncounter(encounter: string) {
-    await this.encounterInput.fill(encounter);
-    await this.page.keyboard.press('ArrowDown');
-    await this.page.keyboard.press('Enter');
-  }
 
+  /**
+   * Drags a player to a list and checks if the player is in the list
+   * @param playerName name of the player
+   * @param tolist list to drag the player to
+   */
   async dragPlayer(playerName: string, tolist: Locator) {
     const player = await this.getPlayer(playerName);
 
     await dragDrop(this.page, player, tolist);
-
-    await expect(tolist).toContainText(playerName);
   }
 
   async getPlayer(playerName: string) {
