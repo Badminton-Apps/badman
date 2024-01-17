@@ -1,58 +1,45 @@
-import { expect, test } from '@playwright/test';
-import { setup } from '../utils/setup';
+import { expect } from '@playwright/test';
+import { badmanTest } from '../fixture';
 
-test.describe('Assembly page', () => {
-  test.beforeEach(async ({ page }) => {
-    await setup(page);
-    await page.goto('/competition/assembly');
+badmanTest.describe('Landing page', () => {
+  badmanTest('if page is visible', async ({ assemblyPage }) => {
+    await expect(assemblyPage.header).toContainText('Team assembly');
   });
 
-  test('if page is visible', async ({ page }) => {
-    await expect(page.locator('h1')).toContainText('Team assembly');
-  });
-
-  test.describe('assembly', () => {
-    test.beforeEach(async ({ page }) => {
-      const selectClub = page.locator('badman-select-club input');
-
-      await selectClub.fill('BC Broodrooster');
-      await page.keyboard.press('ArrowDown');
-      await page.keyboard.press('Enter');
-
-      const selectTeam = page.locator('badman-select-team');
-      await selectTeam.click();
-      await page.keyboard.press('ArrowDown');
-      await page.keyboard.press('Enter');
+  badmanTest.describe('Assembly', () => {
+    badmanTest.beforeEach(async ({ assemblyPage }) => {
+      await assemblyPage.selectClub('BC Broodrooster');
+      await assemblyPage.selectTeam('BC Broodrooster 1G');
     });
 
-    test('We can select encounter', async ({ page }) => {
-      await expect(page.locator('badman-assembly')).toBeVisible({
-        timeout: 60_000,
+    badmanTest('Select encounter', async ({ assemblyPage }) => {
+      await expect(assemblyPage.playerList).toBeVisible({ timeout: 60_000 });
+    });
+
+    badmanTest('Player 8888 should be visible', async ({ assemblyPage }) => {
+      const player = await assemblyPage.getPlayer('M 8-8-8 BC Broodrooster');
+
+      await expect(player).toBeVisible();
+    });
+
+    badmanTest.describe('Drag and drop', () => {
+      badmanTest('Drag player 8888 to single', async ({ assemblyPage }) => {
+        await assemblyPage.dragPlayer('M 8-8-8 BC Broodrooster', assemblyPage.single1List);
+      });
+
+      badmanTest('Drag player 8888 and 999 to doubles', async ({ assemblyPage }) => {
+        await assemblyPage.dragPlayer('M 8-8-8 BC Broodrooster', assemblyPage.double1List);
+        await assemblyPage.dragPlayer('M 9-9-9 BC Broodrooster', assemblyPage.double1List);
+      });
+
+      badmanTest('Drag player 8888 and 999 to singles reversed and check validation', async ({ assemblyPage }) => {
+        await assemblyPage.dragPlayer('M 8-8-8 BC Broodrooster', assemblyPage.single2List);
+        await assemblyPage.dragPlayer('M 9-9-9 BC Broodrooster', assemblyPage.single1List);
+
+        await expect(assemblyPage.validationOverview).toContainText(
+          'M 8-8-8 BC Broodrooster in single 2 has a higher index than M 9-9-9 BC Broodrooster in single 1.',
+        );
       });
     });
-
-    test('Players of team have been loaded', async ({ page }) => {
-      const player888M = page
-        .locator('badman-assembly-player')
-        .filter({ hasText: 'M 8-8-8' });
-
-      await expect(player888M).toBeVisible({ timeout: 60_000 });
-    });
-
-    // test('We can drage a male to the males dubbles', async ({ page }) => {
-    //   const malesDoubles = page.locator('#double1List');
-    //   const player888M = page
-    //     .locator('badman-assembly-player')
-    //     .filter({ hasText: 'M 8-8-8' })
-    //     .locator('div')
-    //     .first();
-
-    //   await expect(player888M).toBeVisible();
-    //   await expect(malesDoubles).toBeVisible();
-
-    //   await player888M.dragTo(malesDoubles);
-
-    //   await expect(malesDoubles).toContainText('M 8-8-8 BC Broodrooster');
-    // });
   });
 });
