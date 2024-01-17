@@ -13,12 +13,6 @@ dotenv.config({
 const baseURL = process.env['BASE_URL'] || 'http://localhost:3000';
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
-
-/**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
@@ -48,5 +42,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
     timeout: 120_000,
+    // stdout: 'pipe',
+    // stderr: 'pipe',
   },
 });

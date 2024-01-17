@@ -11,15 +11,24 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-// import { IoAdapter } from '@nestjs/platform-socket.io';
-
 import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
 import { RedisIoAdapter } from '@badman/backend-websockets';
 import compression from '@fastify/compress';
+import RedisMemoryServer from 'redis-memory-server';
 
 async function bootstrap() {
+  if (process.env.NODE_ENV === 'test') {
+    const redisMemoryServer = new RedisMemoryServer({
+      instance: {
+        port: 6379,
+      },
+    });
+
+    await redisMemoryServer.start();
+  }
+
   Logger.debug('Starting application');
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -62,6 +71,7 @@ async function bootstrap() {
   Logger.debug('Versioning enabled');
 
   const redisHost = configService.get('REDIS_HOST');
+
   if (redisHost) {
     const redisPass = configService.get('REDIS_PASSWORD');
     const redisIoAdapter = new RedisIoAdapter(app);

@@ -23,9 +23,11 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
     const models = Object.values(sequelizeModels).filter(
       (m) => m.prototype instanceof Model,
     ) as ModelCtor[];
+
     const logging = this.configService.get<boolean>('DB_LOGGING')
       ? console.log
       : false;
+
     const dialect = this.configService.get('DB_DIALECT');
 
     let options: SequelizeModuleOptions = {
