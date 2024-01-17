@@ -11,19 +11,11 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
-import {
-  getBestPlayers,
-  getBestPlayersFromTeam,
-  SubEventTypeEnum,
-} from '@badman/utils';
+import { getBestPlayers, getBestPlayersFromTeam, SubEventTypeEnum } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';
-import {
-  AssemblyValidationData,
-  AssemblyOutput,
-  AssemblyValidationError,
-} from '../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../models';
 import {
   PlayerCompStatusRule,
   PlayerGenderRule,
@@ -91,14 +83,7 @@ export class AssemblyValidationService {
     });
 
     const subEvent = await draw?.getSubEventCompetition({
-      attributes: [
-        'id',
-        'eventId',
-        'eventType',
-        'minBaseIndex',
-        'maxBaseIndex',
-        'maxLevel',
-      ],
+      attributes: ['id', 'eventId', 'eventType', 'minBaseIndex', 'maxBaseIndex', 'maxLevel'],
     });
     const event = await subEvent?.getEventCompetition({
       attributes: ['id', 'usedRankingUnit', 'usedRankingAmount', 'season'],
@@ -139,9 +124,7 @@ export class AssemblyValidationService {
       attributes: ['id', 'teamId', 'subEventId', 'meta'],
       where: {
         teamId: clubTeams?.map((t) => t.id),
-        subEventId: sameYearSubEvents
-          ?.map((e) => e.subEventCompetitions?.map((s) => s.id))
-          .flat(1),
+        subEventId: sameYearSubEvents?.map((e) => e.subEventCompetitions?.map((s) => s.id)).flat(1),
       },
     });
 
@@ -149,10 +132,7 @@ export class AssemblyValidationService {
     // or where the subevent is the same as the entry where the team is playing
     const filteredMemberships = memberships?.filter((m) => {
       const t = clubTeams.find((t) => t.id === m.teamId);
-      return (
-        (t?.teamNumber ?? 0) <= (team.teamNumber ?? 0) ||
-        m.subEventId == subEvent?.id
-      );
+      return (t?.teamNumber ?? 0) <= (team.teamNumber ?? 0) || m.subEventId == subEvent?.id;
     });
 
     const system =
@@ -178,15 +158,10 @@ export class AssemblyValidationService {
       };
     }
 
-    meta.competition.players = getBestPlayers(
-      team.type,
-      meta.competition.players,
-    ) as EntryCompetitionPlayer[];
+    meta.competition.players = getBestPlayers(team.type, meta.competition.players) as EntryCompetitionPlayer[];
 
     // Other teams meta
-    const otherMeta = (filteredMemberships
-      ?.filter((m) => m.teamId !== teamId)
-      ?.map((m) => m.meta) ?? []) as Meta[];
+    const otherMeta = (filteredMemberships?.filter((m) => m.teamId !== teamId)?.map((m) => m.meta) ?? []) as Meta[];
 
     const year = event?.season;
     const usedRankingDate = moment();
@@ -196,18 +171,9 @@ export class AssemblyValidationService {
     // get first and last of the month
     const startRanking = moment(usedRankingDate).startOf('month');
     const endRanking = moment(usedRankingDate).endOf('month');
-
     const players = idPlayers
       ? await Player.findAll({
-          attributes: [
-            'id',
-            'gender',
-            'competitionPlayer',
-            'memberId',
-            'fullName',
-            'firstName',
-            'lastName',
-          ],
+          attributes: ['id', 'gender', 'competitionPlayer', 'memberId', 'fullName', 'firstName', 'lastName'],
           where: {
             id: {
               [Op.in]: idPlayers,
@@ -242,15 +208,7 @@ export class AssemblyValidationService {
 
     const subs = idSubs
       ? await Player.findAll({
-          attributes: [
-            'id',
-            'gender',
-            'memberId',
-            'competitionPlayer',
-            'fullName',
-            'firstName',
-            'lastName',
-          ],
+          attributes: ['id', 'gender', 'memberId', 'competitionPlayer', 'fullName', 'firstName', 'lastName'],
           where: {
             id: {
               [Op.in]: idSubs,
@@ -303,9 +261,7 @@ export class AssemblyValidationService {
       otherMeta,
 
       teamIndex: titularsTeam.index,
-      teamPlayers: (titularsTeam.players?.map((p) =>
-        players.find((pl) => pl.id === p.id),
-      ) ?? []) as Player[],
+      teamPlayers: (titularsTeam.players?.map((p) => players.find((pl) => pl.id === p.id)) ?? []) as Player[],
 
       encounter,
       draw,
@@ -364,14 +320,9 @@ export class AssemblyValidationService {
    * @param assembly Assembly configuaration
    * @returns Whether the assembly is valid or not
    */
-  async validate(
-    assembly: AssemblyValidationData,
-    validators: Rule[],
-  ): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData, validators: Rule[]): Promise<AssemblyOutput> {
     // get all errors and warnings from the validators in parallel
-    const results = await Promise.all(
-      validators.map((v) => v.validate(assembly)),
-    );
+    const results = await Promise.all(validators.map((v) => v.validate(assembly)));
 
     const errors = results
       ?.map((r) => r.errors)

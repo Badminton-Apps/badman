@@ -125,16 +125,28 @@ export class SearchBoxComponent implements OnInit {
 
     switch (event.option.value.__typename) {
       case 'Player':
-        this._navigate(['/player', event.option.value.slug]);
+        this._navigate([
+          '/player',
+          event.option.value.slug ?? event.option.value.id,
+        ]);
         break;
       case 'EventCompetition':
-        this._navigate(['/competition', event.option.value.slug]);
+        this._navigate([
+          '/competition',
+          event.option.value.slug ?? event.option.value.id,
+        ]);
         break;
       case 'EventTournament':
-        this._navigate(['/tournament', event.option.value.slug]);
+        this._navigate([
+          '/tournament',
+          event.option.value.slug ?? event.option.value.id,
+        ]);
         break;
       case 'Club':
-        this._navigate(['/club', event.option.value.slug]);
+        this._navigate([
+          '/club',
+          event.option.value.slug ?? event.option.value.id,
+        ]);
         break;
     }
   }

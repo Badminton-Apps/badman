@@ -2,6 +2,7 @@ import { TeamMembershipType } from '@badman/utils';
 import { Player } from '../models';
 import { RankingPlaceBuilder } from './rankingPlaceBuilder';
 import { TeamBuilder } from './teamBuilder';
+import { RankingLastPlaceBuilder } from './rankingLastPlaceBuilder';
 
 export class PlayerBuilder {
   private build = false;
@@ -9,6 +10,7 @@ export class PlayerBuilder {
   private player: Player;
 
   private rankingPlaces: RankingPlaceBuilder[] = [];
+  private lastRankingPlaces: RankingLastPlaceBuilder[] = [];
 
   constructor(id?: string) {
     this.player = new Player({
@@ -20,16 +22,22 @@ export class PlayerBuilder {
     return new PlayerBuilder(id);
   }
 
-
   WithRanking(rankingPlace: RankingPlaceBuilder): PlayerBuilder {
     this.rankingPlaces.push(rankingPlace);
+
+    return this;
+  }
+
+  WithLastRanking(rankingPlace: RankingLastPlaceBuilder): PlayerBuilder {
+    this.lastRankingPlaces.push(rankingPlace);
     return this;
   }
 
   WithName(firstName: string, lastName: string): PlayerBuilder {
     this.player.firstName = firstName;
     this.player.lastName = lastName;
-
+    this.player.slug = `${firstName}-${lastName}`;
+    
     return this;
   }
 
@@ -61,6 +69,10 @@ export class PlayerBuilder {
         await rankingPlace.Build();
       }
 
+      for (const rankingLastPlace of this.lastRankingPlaces) {
+        rankingLastPlace.WithPlayerId(this.player.id);
+        await rankingLastPlace.Build();
+      }
     } catch (error) {
       console.error(error);
       throw error;
