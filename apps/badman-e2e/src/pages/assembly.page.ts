@@ -1,7 +1,6 @@
 //The homepage file contains the locators and goto method call for our test page. Its basically our page object model class
 
 import type { Locator, Page } from '@playwright/test';
-import { expect } from '@playwright/test';
 import { dragDrop } from '../utils/dragDrop';
 import { setup } from '../utils/setup';
 
@@ -27,6 +26,10 @@ export default class AssemblyPage {
 
   readonly validationOverview: Locator;
   readonly playerList: Locator;
+  readonly titulars: {
+    index: Locator;
+    players: Locator;
+  };
 
   readonly overlay: Locator;
 
@@ -53,6 +56,11 @@ export default class AssemblyPage {
     this.validationOverview = page.locator('.validation-overview');
     this.playerList = page.locator('#playerList');
 
+    this.titulars = {
+      index: page.locator('.information').locator('.team').locator('.index'),
+      players: page.locator('.information').locator('.team'),
+    };
+
     this.overlay = page.locator('.cdk-overlay-container');
   }
 
@@ -60,6 +68,10 @@ export default class AssemblyPage {
     await this.page.goto('/competition/assembly');
   }
 
+  /**
+   * Selects a club from the club select
+   * @param club name of the club
+   */
   async selectClub(club: string) {
     await this.clubInput.fill(club);
     await this.page.keyboard.press('ArrowDown');
@@ -69,6 +81,10 @@ export default class AssemblyPage {
     await this.page.waitForSelector('badman-select-season');
   }
 
+  /**
+   * Selects a team from the team select
+   * @param team name of the team
+   */
   async selectTeam(team: string) {
     // click on the mat-label in this.teamInput
     this.teamSelect.locator('mat-label').click();
@@ -81,7 +97,6 @@ export default class AssemblyPage {
     await teamItem.click();
   }
 
-
   /**
    * Drags a player to a list and checks if the player is in the list
    * @param playerName name of the player
@@ -93,6 +108,10 @@ export default class AssemblyPage {
     await dragDrop(this.page, player, tolist);
   }
 
+  /**
+   * Gets a player from the player list
+   * @param playerName name of the player
+   */
   async getPlayer(playerName: string) {
     return this.playerList.locator('badman-assembly-player').filter({
       hasText: playerName,
