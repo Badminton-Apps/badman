@@ -24,10 +24,18 @@ badmanTest.describe('Landing page', () => {
     });
 
     badmanTest.describe('Drag and drop', () => {
-      badmanTest('Drag player 8888 to single', async ({ assemblyPage }) => {
+      badmanTest('Drag player 8888 to single men', async ({ assemblyPage }) => {
         await assemblyPage.dragPlayer('M 8-8-8 BC Broodrooster', assemblyPage.single1List);
 
         await expect(assemblyPage.single1List).toContainText('M 8-8-8 BC Broodrooster');
+
+        await expect(assemblyPage.titulars.index).toContainText('Index: 132');
+      });
+
+      badmanTest('Drag player 8888 to single women', async ({ assemblyPage }) => {
+        await assemblyPage.dragPlayer('M 8-8-8 BC Broodrooster', assemblyPage.single1List);
+
+        await expect(assemblyPage.single3List).not.toContainText('M 8-8-8 BC Broodrooster');
       });
 
       badmanTest('Drag player 8888 and 999 to doubles', async ({ assemblyPage }) => {
@@ -36,6 +44,8 @@ badmanTest.describe('Landing page', () => {
 
         await expect(assemblyPage.double1List).toContainText('M 8-8-8 BC Broodrooster');
         await expect(assemblyPage.double1List).toContainText('M 9-9-9 BC Broodrooster');
+
+        await expect(assemblyPage.titulars.index).toContainText('Index: 123');
       });
 
       badmanTest('Drag player 8888 and 999 to singles reversed and check validation', async ({ assemblyPage }) => {
