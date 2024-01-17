@@ -10,9 +10,7 @@
                 {{ group[0].double }} - {{ group[0].mix }}
               }
               @if (!group[0]) {
-                {{
-                'all.ranking.next-ranking' | translate
-                }}
+                {{ 'all.ranking.next-ranking' | translate }}
               }
             </mat-panel-title>
             <mat-panel-description>
@@ -35,51 +33,47 @@
                 @if (
                   place.rankingDate?.getDate() === 15 &&
                   place.rankingDate?.getMonth() === 4
-                  ) {
-                  <span
-                    matListItemLine
-                    >
+                ) {
+                  <span matListItemLine>
                     {{ 'all.ranking.may-ranking' | translate }}
                   </span>
                 }
                 @if (
                   place.singlePoints || place.doublePoints || place.mixPoints
-                  ) {
-                  <span
-                    matListItemLine
-                    >
+                ) {
+                  <span matListItemLine>
                     @if (place.singlePoints) {
                       <span
                         >{{ 'all.ranking.single' | translate }}:
                         {{ place.singlePoints }}</span
-                        >
-                      }
-                      -
-                      @if (place.doublePoints) {
-                        <span
-                          >{{ 'all.ranking.double' | translate }}:
-                          {{ place.doublePoints }}</span
-                          >
-                        }
-                        -
-                        @if (place.mixPoints) {
-                          <span
-                            >{{ 'all.ranking.mix' | translate }}: {{ place.mixPoints }}</span
-                            >
-                          }
-                        </span>
-                      }
-                    </button>
-                  </mat-action-list>
+                      >
+                    }
+                    -
+                    @if (place.doublePoints) {
+                      <span
+                        >{{ 'all.ranking.double' | translate }}:
+                        {{ place.doublePoints }}</span
+                      >
+                    }
+                    -
+                    @if (place.mixPoints) {
+                      <span
+                        >{{ 'all.ranking.mix' | translate }}:
+                        {{ place.mixPoints }}</span
+                      >
+                    }
+                  </span>
                 }
-              </mat-expansion-panel>
-            }
-          </mat-accordion>
-          <div>
-            <button mat-stroked-button color="primary" (click)="this.editRanking()">
-              {{ 'all.ranking.add-ranking' | translate }}
-            </button>
-          </div>
-        }
-      </div>
-      
+              </button>
+            </mat-action-list>
+          }
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+    <div>
+      <button mat-stroked-button color="primary" (click)="this.editRanking()">
+        {{ 'all.ranking.add-ranking' | translate }}
+      </button>
+    </div>
+  }
+</div>

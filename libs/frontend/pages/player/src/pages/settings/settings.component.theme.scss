@@ -14,10 +14,8 @@
   badman-settings {
     $typography-config: mat.get-typography-config($theme);
 
-    .settings-title{
+    .settings-title {
       @include mat.typography-level($typography-config, 'headline-6');
     }
   }
 }
-
-

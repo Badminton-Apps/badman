@@ -56,8 +56,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatTooltipModule,
     GameScoreComponentComponent,
     PageHeaderComponent,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
 })
 export class DetailEncounterComponent implements OnInit {
   encounterCompetition!: EncounterCompetition;

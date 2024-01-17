@@ -7,10 +7,8 @@ import { ServiceService } from './service-status.service';
   templateUrl: './service-status.component.html',
   styleUrls: ['./service-status.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule
-],
+  imports: [CommonModule],
 })
-export class ServiceStatusComponent  {
+export class ServiceStatusComponent {
   state = inject(ServiceService);
 }

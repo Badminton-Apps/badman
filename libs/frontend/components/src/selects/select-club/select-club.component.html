@@ -6,16 +6,12 @@
       required
       (selectionChange)="this.selectClub($event)"
       [panelClass]="'badman-select-club-panel'"
-      >
+    >
       @for (option of filteredClubs$ | async; track option) {
-        <mat-option
-          [value]="option.id"
-          >
+        <mat-option [value]="option.id">
           {{ option.name }}
           @if (option.clubId) {
-            <small class="club-id"
-              >({{ option.clubId }})
-            </small>
+            <small class="club-id">({{ option.clubId }}) </small>
           }
         </mat-option>
       }
@@ -30,32 +26,27 @@
       [formControl]="this.control!"
       [matAutocomplete]="auto"
       onfocus="this.select()"
-      />
-      <mat-autocomplete
-        #auto="matAutocomplete"
-        [displayWith]="this.displayFn.bind(this)"
-        (optionSelected)="this.selectClub($event)"
-        class="badman-select-club-panel"
-        [classList]="['badman-select-club-panel']"
-        >
-        @for (option of filteredClubs$ | async; track option) {
-          <mat-option
-            [value]="option.id"
-            >
-            {{ option.name }}
-            @if (option.clubId) {
-              <small class="club-id"
-                >({{ option.clubId }})
-              </small>
-            }
-          </mat-option>
-        }
-      </mat-autocomplete>
-      @if (this.control?.hasError('required')) {
-        <mat-error>
-          {{ 'all.input.this-required' | translate }}
-        </mat-error>
+    />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="this.displayFn.bind(this)"
+      (optionSelected)="this.selectClub($event)"
+      class="badman-select-club-panel"
+      [classList]="['badman-select-club-panel']"
+    >
+      @for (option of filteredClubs$ | async; track option) {
+        <mat-option [value]="option.id">
+          {{ option.name }}
+          @if (option.clubId) {
+            <small class="club-id">({{ option.clubId }}) </small>
+          }
+        </mat-option>
       }
-    </mat-form-field>
-  }
-  
+    </mat-autocomplete>
+    @if (this.control?.hasError('required')) {
+      <mat-error>
+        {{ 'all.input.this-required' | translate }}
+      </mat-error>
+    }
+  </mat-form-field>
+}

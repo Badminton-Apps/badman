@@ -68,7 +68,7 @@ export function getRankingPeriods<
     lastUpdate.startOf(system.updateIntervalUnit);
     while (lastUpdate.isSameOrBefore(to, 'day')) {
       lastUpdate.add(system.updateIntervalAmount, system.updateIntervalUnit);
-    
+
       if (system.updateIntervalUnit === 'months') {
         lastUpdate.isoWeekday(system.updateDayOfWeek + 7);
         if (lastUpdate.date() > 7) {
@@ -89,7 +89,6 @@ export function getRankingPeriods<
           updatePossible: true,
         });
       }
-
     }
   }
 

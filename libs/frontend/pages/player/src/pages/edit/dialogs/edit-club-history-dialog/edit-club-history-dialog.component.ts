@@ -41,8 +41,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule,
     MatDatepickerModule,
     MatSelectModule,
-    SelectClubComponent
-],
+    SelectClubComponent,
+  ],
 })
 export class EditClubHistoryDialogComponent implements OnInit {
   clubFormGroup: FormGroup = new FormGroup({});
@@ -53,7 +53,7 @@ export class EditClubHistoryDialogComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<EditClubHistoryDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { club: Club }
+    @Inject(MAT_DIALOG_DATA) public data: { club: Club },
   ) {}
 
   ngOnInit(): void {
@@ -62,12 +62,12 @@ export class EditClubHistoryDialogComponent implements OnInit {
     ]);
     const startControl = new FormControl(
       this.data.club?.clubMembership?.start,
-      [Validators.required]
+      [Validators.required],
     );
     const endControl = new FormControl(this.data.club?.clubMembership?.end);
     const membershipTypeControl = new FormControl(
       this.data.club?.clubMembership?.membershipType,
-      [Validators.required]
+      [Validators.required],
     );
 
     this.currentClub = this.data.club?.clubMembership?.end === undefined;
@@ -77,7 +77,7 @@ export class EditClubHistoryDialogComponent implements OnInit {
     this.membershipFormGroup.addControl('end', endControl);
     this.membershipFormGroup.addControl(
       'membershipType',
-      membershipTypeControl
+      membershipTypeControl,
     );
   }
 

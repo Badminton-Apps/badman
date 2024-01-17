@@ -50,8 +50,8 @@ import { MatIconModule } from '@angular/material/icon';
     TeamsTransferStepComponent,
     TeamsStepComponent,
     LocationsStepComponent,
-    CommentsStepComponent
-],
+    CommentsStepComponent,
+  ],
 })
 export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
@@ -67,7 +67,7 @@ export class TeamEnrollmentComponent implements OnInit {
         MX: new FormArray<TeamForm>([]),
         NATIONAL: new FormArray<TeamForm>([]),
       },
-      [Validators.required, minAmountOfTeams(1)]
+      [Validators.required, minAmountOfTeams(1)],
     ),
     [LOCATIONS]: new FormArray<LocationForm>([], [Validators.required]),
   });
@@ -77,7 +77,7 @@ export class TeamEnrollmentComponent implements OnInit {
     private readonly breadcrumbService: BreadcrumbService,
     private readonly translate: TranslateService,
     private readonly snackBar: MatSnackBar,
-    private readonly apollo: Apollo
+    private readonly apollo: Apollo,
   ) {}
 
   ngOnInit(): void {
@@ -93,11 +93,11 @@ export class TeamEnrollmentComponent implements OnInit {
 
         this.breadcrumbService.set(
           'competition',
-          enrollemnt['all.competition.title']
+          enrollemnt['all.competition.title'],
         );
         this.breadcrumbService.set(
           'competition/enrollment',
-          enrollemnt['all.competition.team-enrollment.title']
+          enrollemnt['all.competition.team-enrollment.title'],
         );
       });
   }
@@ -131,14 +131,14 @@ export class TeamEnrollmentComponent implements OnInit {
               single: number;
               double: number;
               mix: number;
-            }
+            },
           ) => ({
             id: player?.id,
             gender: player?.gender,
             single: player?.single,
             double: player?.double,
             mix: player?.mix,
-          })
+          }),
         ),
       };
 
@@ -178,7 +178,7 @@ export class TeamEnrollmentComponent implements OnInit {
           variables: {
             team: data,
           },
-        })
+        }),
       );
     }
 
@@ -215,7 +215,7 @@ export class TeamEnrollmentComponent implements OnInit {
               message: comments[type].comment,
             },
           },
-        })
+        }),
       );
     }
 
@@ -245,7 +245,7 @@ export class TeamEnrollmentComponent implements OnInit {
                 exceptions: availibility.exceptions,
               },
             },
-          })
+          }),
         );
       } else {
         observables.push(
@@ -266,7 +266,7 @@ export class TeamEnrollmentComponent implements OnInit {
                 exceptions: availibility.exceptions,
               },
             },
-          })
+          }),
         );
       }
     }
@@ -300,7 +300,7 @@ export class TeamEnrollmentComponent implements OnInit {
           season: this.formGroup.value.season,
           email: this.formGroup.value.email,
         },
-      })
+      }),
     );
 
     this.snackBar.open('Ingeschreven', 'Close', {

@@ -62,8 +62,8 @@ const NOTIFICAION_QUERY = gql`
     TranslateModule,
     MatListModule,
     MatButtonModule,
-    MatIconModule
-],
+    MatIconModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewPageComponent implements OnInit {
@@ -74,7 +74,7 @@ export class OverviewPageComponent implements OnInit {
     private seoService: SeoService,
     private notifService: NotificationService,
     private apollo: Apollo,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit(): void {
@@ -110,11 +110,11 @@ export class OverviewPageComponent implements OnInit {
                   return undefined;
                 }
                 return result.data.notifications?.map(
-                  (n) => new Notification(n)
+                  (n) => new Notification(n),
                 );
-              })
+              }),
             );
-        })
+        }),
       );
     }
   }

@@ -5,7 +5,6 @@
   @include detail.typography($theme);
 }
 
-
 @mixin color($theme) {
   @include detail.color($theme);
 }

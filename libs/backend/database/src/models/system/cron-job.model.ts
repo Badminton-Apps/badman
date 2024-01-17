@@ -70,7 +70,7 @@ export class CronJob extends Model {
     get(this: CronJob) {
       const amount = this.getDataValue('amount');
       return amount > 0;
-    }
+    },
   })
   running?: boolean;
 

@@ -37,7 +37,7 @@ export class LoggingModule {
         }
 
         return resultMessage;
-      }
+      },
     );
 
     return {
@@ -63,7 +63,7 @@ export class LoggingModule {
                   errors({ stack: true }),
                   timestamp(),
                   ms(),
-                  json()
+                  json(),
                 ),
                 transports: [
                   new LogtailTransport(logtail),
@@ -73,7 +73,7 @@ export class LoggingModule {
                       {
                         colors: true,
                         prettyPrint: true,
-                      }
+                      },
                     ),
                   }),
                 ],
@@ -86,7 +86,7 @@ export class LoggingModule {
                   nestWinstonModuleUtilities.format.nestLike('Badman', {
                     colors: true,
                     prettyPrint: true,
-                  })
+                  }),
                 ),
                 transports: [
                   new transports.Console(),

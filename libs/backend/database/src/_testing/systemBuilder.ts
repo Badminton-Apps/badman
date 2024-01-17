@@ -5,7 +5,7 @@ import { RankingPlaceBuilder } from './rankingPlaceBuilder';
 
 export class SystemBuilder {
   private build = false;
-  
+
   private system: RankingSystem;
 
   private groups: SystemGroupBuilder[] = [];
@@ -15,7 +15,7 @@ export class SystemBuilder {
     rankingSystem: RankingSystems,
     amountOfLevels: number,
     procentWinning: number,
-    procentWinningPlus1: number
+    procentWinningPlus1: number,
   ) {
     this.system = new RankingSystem({
       rankingSystem,
@@ -29,13 +29,13 @@ export class SystemBuilder {
     rankingSystem: RankingSystems,
     amountOfLevels: number,
     procentWinning: number,
-    procentWinningPlus1: number
+    procentWinningPlus1: number,
   ): SystemBuilder {
     return new SystemBuilder(
       rankingSystem,
       amountOfLevels,
       procentWinning,
-      procentWinningPlus1
+      procentWinningPlus1,
     );
   }
 
@@ -51,13 +51,13 @@ export class SystemBuilder {
   }
 
   WithcalculationIntervalAmount(
-    calculationIntervalAmount: number
+    calculationIntervalAmount: number,
   ): SystemBuilder {
     this.system.calculationIntervalAmount = calculationIntervalAmount;
     return this;
   }
   WithCalculationIntervalUnit(
-    calculationIntervalUnit: 'months' | 'weeks' | 'days'
+    calculationIntervalUnit: 'months' | 'weeks' | 'days',
   ): SystemBuilder {
     this.system.calculationIntervalUnit = calculationIntervalUnit;
     return this;
@@ -67,7 +67,7 @@ export class SystemBuilder {
     return this;
   }
   WithUpdateIntervalUnit(
-    updateIntervalUnit: 'months' | 'weeks' | 'days'
+    updateIntervalUnit: 'months' | 'weeks' | 'days',
   ): SystemBuilder {
     this.system.updateIntervalUnit = updateIntervalUnit;
     return this;
@@ -85,15 +85,16 @@ export class SystemBuilder {
     return this;
   }
   WithMinNumberOfGamesUsedForUpgrade(
-    minNumberOfGamesUsedForUpgrade: number
+    minNumberOfGamesUsedForUpgrade: number,
   ): SystemBuilder {
     this.system.minNumberOfGamesUsedForUpgrade = minNumberOfGamesUsedForUpgrade;
     return this;
   }
   WithMinNumberOfGamesUsedForDowngrade(
-    minNumberOfGamesUsedForDowngrade: number
+    minNumberOfGamesUsedForDowngrade: number,
   ): SystemBuilder {
-    this.system.minNumberOfGamesUsedForDowngrade = minNumberOfGamesUsedForDowngrade;
+    this.system.minNumberOfGamesUsedForDowngrade =
+      minNumberOfGamesUsedForDowngrade;
     return this;
   }
   WithMaxDiffLevels(maxDiffLevels: number): SystemBuilder {
@@ -120,11 +121,15 @@ export class SystemBuilder {
     this.system.differenceForUpgradeMix = differenceForUpgrade;
     return this;
   }
-  WithDifferenceForDowngradeSingle(differenceForDowngrade: number): SystemBuilder {
+  WithDifferenceForDowngradeSingle(
+    differenceForDowngrade: number,
+  ): SystemBuilder {
     this.system.differenceForDowngradeSingle = differenceForDowngrade;
     return this;
   }
-  WithDifferenceForDowngradeDouble(differenceForDowngrade: number): SystemBuilder {
+  WithDifferenceForDowngradeDouble(
+    differenceForDowngrade: number,
+  ): SystemBuilder {
     this.system.differenceForDowngradeDouble = differenceForDowngrade;
     return this;
   }
@@ -172,7 +177,6 @@ export class SystemBuilder {
       for (const place of this.rankingPlaces) {
         place.WithSystemId(this.system.id);
       }
-
     } catch (error) {
       console.error(error);
       throw error;

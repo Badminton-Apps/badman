@@ -53,8 +53,8 @@ import { AssignRankingGroupsComponent } from '../../components';
     MatTooltipModule,
     MatSnackBarModule,
     PageHeaderComponent,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
 })
 export class DetailPageComponent implements OnInit {
   eventTournament!: EventTournament;
@@ -68,7 +68,7 @@ export class DetailPageComponent implements OnInit {
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
     private jobsService: JobsService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -76,18 +76,20 @@ export class DetailPageComponent implements OnInit {
       this.eventTournament = data['eventTournament'];
       this.subEvents = this.eventTournament.subEventTournaments
         ?.sort(sortSubEvents)
-        ?.reduce((acc, subEventTournament) => {
-          const eventType = subEventTournament.eventType || 'Unknown';
-          const subEvents = acc.find(
-            (x) => x.eventType === eventType
-          )?.subEvents;
-          if (subEvents) {
-            subEvents.push(subEventTournament);
-          } else {
-            acc.push({ eventType, subEvents: [subEventTournament] });
-          }
-          return acc;
-        }, [] as { eventType: string; subEvents: SubEventTournament[] }[]);
+        ?.reduce(
+          (acc, subEventTournament) => {
+            const eventType = subEventTournament.eventType || 'Unknown';
+            const subEvents = acc.find((x) => x.eventType === eventType)
+              ?.subEvents;
+            if (subEvents) {
+              subEvents.push(subEventTournament);
+            } else {
+              acc.push({ eventType, subEvents: [subEventTournament] });
+            }
+            return acc;
+          },
+          [] as { eventType: string; subEvents: SubEventTournament[] }[],
+        );
 
       const eventTournamentName = `${this.eventTournament.name}`;
 
@@ -138,7 +140,7 @@ export class DetailPageComponent implements OnInit {
               'Close',
               {
                 duration: 2000,
-              }
+              },
             );
           });
       }
@@ -171,7 +173,7 @@ export class DetailPageComponent implements OnInit {
           'Close',
           {
             duration: 2000,
-          }
+          },
         );
       });
   }
@@ -183,14 +185,14 @@ export class DetailPageComponent implements OnInit {
         'Close',
         {
           duration: 2000,
-        }
+        },
       );
 
       return;
     }
 
     await lastValueFrom(
-      this.jobsService.syncEventById({ id: this.eventTournament.visualCode })
+      this.jobsService.syncEventById({ id: this.eventTournament.visualCode }),
     );
   }
 
@@ -212,7 +214,7 @@ export class DetailPageComponent implements OnInit {
   removeEvent() {
     const dialogData = new ConfirmDialogModel(
       'all.tournament.delete.title',
-      'all.tournament.delete.description'
+      'all.tournament.delete.description',
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

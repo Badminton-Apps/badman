@@ -1,7 +1,11 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Apollo, gql, MutationResult } from 'apollo-angular';
@@ -42,8 +46,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatDialogModule,
     MatCheckboxModule,
     MatSelectModule,
-    MatTableModule
-],
+    MatTableModule,
+  ],
   templateUrl: './assign-ranking-groups.component.html',
   styleUrls: ['./assign-ranking-groups.component.scss'],
   standalone: true,
@@ -68,7 +72,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
     private dialogRef: MatDialogRef<AssignRankingGroupsComponent>,
     private snackbar: MatSnackBar,
     @Inject(APOLLO_CACHE) private cache: InMemoryCache,
-    private apollo: Apollo
+    private apollo: Apollo,
   ) {}
 
   ngOnInit(): void {
@@ -83,7 +87,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
       // Delete removed
       const removed = Object.keys(this.selection).filter((s) =>
-        groupNames.includes(s)
+        groupNames.includes(s),
       );
       removed.forEach((element) => this.selection.delete(element));
 
@@ -116,7 +120,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
             ...new Set(
               subEvents
                 ?.map((s) => s.rankingGroups?.map((r: RankingGroup) => r.id))
-                .flat()
+                .flat(),
             ),
           ];
 
@@ -144,7 +148,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
                   if (!this.selection.has(key)) {
                     this.selection.set(
                       key,
-                      new SelectionModel<SubEvent>(true, [])
+                      new SelectionModel<SubEvent>(true, []),
                     );
                   }
                   this.selection.get(key)?.select(subEvent);
@@ -156,7 +160,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
             this.selectedGroups.setValue(initialGroups);
           }
-        })
+        }),
       );
   }
 
@@ -175,8 +179,8 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   masterToggle(group: string) {
     this.isAllSelected(group)
       ? this.selection.get(group)?.clear()
-      : this.dataSource?.data.forEach((row) =>
-          this.selection.get(group)?.select(row)
+      : this.dataSource?.data.forEach(
+          (row) => this.selection.get(group)?.select(row),
         );
   }
 
@@ -195,7 +199,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
     const mutations: Observable<MutationResult>[] = [];
 
     const selectedGroups: string[] = this.selectedGroups.value?.map(
-      (r: RankingGroup) => r.id
+      (r: RankingGroup) => r.id,
     );
 
     for (const group of this.groups) {
@@ -270,7 +274,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
               }
             `,
             variables,
-          })
+          }),
         );
       }
 
@@ -301,7 +305,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
               }
             `,
             variables,
-          })
+          }),
         );
       }
     }
@@ -315,7 +319,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         }),
         finalize(() => {
           this.loading = false;
-        })
+        }),
       )
       .subscribe(() => {
         // Evict cache

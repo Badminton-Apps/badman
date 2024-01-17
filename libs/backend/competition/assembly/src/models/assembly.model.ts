@@ -87,7 +87,6 @@ export class AssemblyOutput {
   basePlayersData?: EntryCompetitionPlayer[];
 }
 
-
 export class AssemblyValidationData {
   type?: SubEventTypeEnum;
   meta?: Meta;

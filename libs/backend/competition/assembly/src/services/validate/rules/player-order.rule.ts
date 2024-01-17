@@ -29,7 +29,7 @@ export type PlayerOrderRuleParams =
 
 /**
  * Checks the order of the players
- * 
+ *
  * Singles: players should be in order of ranking
  * Doubles: the team with the lowest ranking should be first, if the ranking is the same, the best player should be first
  */

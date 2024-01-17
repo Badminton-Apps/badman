@@ -54,8 +54,8 @@ import {
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSelectModule
-],
+    MatSelectModule,
+  ],
   templateUrl: './select-club.component.html',
   styleUrls: ['./select-club.component.scss'],
 })

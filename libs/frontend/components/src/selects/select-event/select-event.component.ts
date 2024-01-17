@@ -23,8 +23,8 @@ import { map, takeUntil, tap } from 'rxjs/operators';
     CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule
-],
+    MatSelectModule,
+  ],
 })
 export class SelectEventComponent implements OnInit {
   private destroy$ = injectDestroy();

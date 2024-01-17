@@ -9,7 +9,7 @@
       class="edit-button"
       aria-label="edit location"
       (click)="this.whenLocationUpdate.next()"
-      >
+    >
       <mat-icon>edit</mat-icon>
     </button>
   </div>
@@ -32,10 +32,7 @@
       <div [hidden]="!expanded.days">
         <ng-container formArrayName="days">
           @for (day of this.days.controls; track day; let i = $index) {
-            <div
-              [formGroupName]="i"
-              class="availibility"
-              >
+            <div [formGroupName]="i" class="availibility">
               <div class="day">
                 <mat-form-field>
                   <mat-label>{{ 'all.input.day' | translate }}</mat-label>
@@ -66,14 +63,26 @@
               </div>
               <div class="startTime">
                 <mat-form-field>
-                  <mat-label>{{ 'all.input.start-hour' | translate }}</mat-label>
-                  <input matInput type="time" step="900"  formControlName="startTime" />
+                  <mat-label>{{
+                    'all.input.start-hour' | translate
+                  }}</mat-label>
+                  <input
+                    matInput
+                    type="time"
+                    step="900"
+                    formControlName="startTime"
+                  />
                 </mat-form-field>
               </div>
               <div class="endTime">
                 <mat-form-field>
                   <mat-label>{{ 'all.input.end-hour' | translate }}</mat-label>
-                  <input matInput type="time" step="900" formControlName="endTime" />
+                  <input
+                    matInput
+                    type="time"
+                    step="900"
+                    formControlName="endTime"
+                  />
                 </mat-form-field>
               </div>
               <div class="courts">
@@ -86,134 +95,129 @@
                     type="number"
                     formControlName="courts"
                     alt="courts"
+                  />
+                </mat-form-field>
+              </div>
+              <div class="delete">
+                @if (!isSmallScreen) {
+                  <button mat-icon-button (click)="removeAvailibility(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                }
+                @if (isSmallScreen) {
+                  <button
+                    class="delete-button"
+                    mat-stroked-button
+                    (click)="removeAvailibility(i)"
+                  >
+                    {{ 'all.button.delete' | translate }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </ng-container>
+      </div>
+      <button mat-stroked-button (click)="addAvailibility()">
+        {{ 'all.locations.add-day' | translate }}
+      </button>
+    </div>
+    <div class="exceptions">
+      <div
+        class="expandable-item"
+        (click)="expanded.exceptions = !expanded.exceptions"
+      >
+        <div>
+          {{ 'all.locations.exceptions' | translate }}
+        </div>
+        @if (!expanded.exceptions) {
+          <mat-icon>expand_more</mat-icon>
+        }
+        @if (expanded.exceptions) {
+          <mat-icon>expand_less</mat-icon>
+        }
+      </div>
+      <mat-divider></mat-divider>
+      <p class="hint">{{ 'all.locations.hint' | translate }}</p>
+      <div [hidden]="!expanded.exceptions">
+        <ng-container formArrayName="exceptions">
+          @for (day of this.exceptions.controls; track day; let i = $index) {
+            <div [formGroupName]="i" class="exception">
+              <div class="day">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{
+                    'all.input.date-range' | translate
+                  }}</mat-label>
+                  <mat-date-range-input [rangePicker]="picker">
+                    <input
+                      matStartDate
+                      formControlName="start"
+                      placeholder="Start date"
+                    />
+                    <input
+                      matEndDate
+                      formControlName="end"
+                      placeholder="End date"
+                    />
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle
+                    matSuffix
+                    [for]="picker"
+                  ></mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+              </div>
+              <div class="courts">
+                <button
+                  mat-icon-button
+                  [matTooltip]="
+                    'all.competition.team-enrollment.locations.courts-hint'
+                      | translate
+                  "
+                  (click)="
+                    this.showCourts[i].manualOpen =
+                      !this.showCourts[i].manualOpen
+                  "
+                >
+                  @if (this.showCourts[i].manualOpen) {
+                    <mat-icon>close</mat-icon>
+                  }
+                  @if (!this.showCourts[i].manualOpen) {
+                    <mat-icon>menu_open</mat-icon>
+                  }
+                </button>
+                <div
+                  [hidden]="
+                    !this.showCourts[i].manualOpen &&
+                    !this.showCourts[i].autoOpen
+                  "
+                >
+                  <mat-form-field>
+                    <mat-label>{{
+                      'all.competition.team-enrollment.locations.availible-courts'
+                        | translate
+                    }}</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      formControlName="courts"
+                      alt="courts"
                     />
                   </mat-form-field>
                 </div>
-                <div class="delete">
-                  @if (!isSmallScreen) {
-                    <button
-                      mat-icon-button
-                      (click)="removeAvailibility(i)"
-                      >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  }
-                  @if (isSmallScreen) {
-                    <button
-                      class="delete-button"
-                      mat-stroked-button
-                      (click)="removeAvailibility(i)"
-                      >
-                      {{ 'all.button.delete' | translate }}
-                    </button>
-                  }
-                </div>
               </div>
-            }
-          </ng-container>
-        </div>
-        <button mat-stroked-button (click)="addAvailibility()">
-          {{ 'all.locations.add-day' | translate }}
-        </button>
-      </div>
-      <div class="exceptions">
-        <div
-          class="expandable-item"
-          (click)="expanded.exceptions = !expanded.exceptions"
-          >
-          <div>
-            {{ 'all.locations.exceptions' | translate }}
-          </div>
-          @if (!expanded.exceptions) {
-            <mat-icon>expand_more</mat-icon>
-          }
-          @if (expanded.exceptions) {
-            <mat-icon>expand_less</mat-icon>
-          }
-        </div>
-        <mat-divider></mat-divider>
-        <p class="hint">{{ 'all.locations.hint' | translate }}</p>
-        <div [hidden]="!expanded.exceptions">
-          <ng-container formArrayName="exceptions">
-            @for (day of this.exceptions.controls; track day; let i = $index) {
-              <div
-                [formGroupName]="i"
-                class="exception"
-                >
-                <div class="day">
-                  <mat-form-field appearance="outline">
-                    <mat-label>{{ 'all.input.date-range' | translate }}</mat-label>
-                    <mat-date-range-input [rangePicker]="picker">
-                      <input
-                        matStartDate
-                        formControlName="start"
-                        placeholder="Start date"
-                        />
-                        <input
-                          matEndDate
-                          formControlName="end"
-                          placeholder="End date"
-                          />
-                        </mat-date-range-input>
-                        <mat-datepicker-toggle
-                          matSuffix
-                          [for]="picker"
-                        ></mat-datepicker-toggle>
-                        <mat-date-range-picker #picker></mat-date-range-picker>
-                      </mat-form-field>
-                    </div>
-                    <div class="courts">
-                      <button
-                        mat-icon-button
-                        [matTooltip]="
-                        'all.competition.team-enrollment.locations.courts-hint'
-                        | translate
-                        "
-                        (click)="
-                        this.showCourts[i].manualOpen = !this.showCourts[i].manualOpen
-                        "
-                        >
-                        @if (this.showCourts[i].manualOpen) {
-                          <mat-icon>close</mat-icon>
-                        }
-                        @if (!this.showCourts[i].manualOpen) {
-                          <mat-icon
-                            >menu_open</mat-icon
-                            >
-                          }
-                        </button>
-                        <div
-                          [hidden]="
-                          !this.showCourts[i].manualOpen && !this.showCourts[i].autoOpen
-                          "
-                          >
-                          <mat-form-field>
-                            <mat-label>{{
-                              'all.competition.team-enrollment.locations.availible-courts'
-                              | translate
-                            }}</mat-label>
-                            <input
-                              matInput
-                              type="number"
-                              formControlName="courts"
-                              alt="courts"
-                              />
-                            </mat-form-field>
-                          </div>
-                        </div>
-                        <div class="delete">
-                          <button mat-icon-button (click)="removeException(i)">
-                            <mat-icon>delete</mat-icon>
-                          </button>
-                        </div>
-                      </div>
-                    }
-                  </ng-container>
-                </div>
-                <button mat-stroked-button (click)="addException()">
-                  {{ 'all.locations.add-exception' | translate }}
+              <div class="delete">
+                <button mat-icon-button (click)="removeException(i)">
+                  <mat-icon>delete</mat-icon>
                 </button>
               </div>
-            </ng-container>
+            </div>
           }
-          
+        </ng-container>
+      </div>
+      <button mat-stroked-button (click)="addException()">
+        {{ 'all.locations.add-exception' | translate }}
+      </button>
+    </div>
+  </ng-container>
+}

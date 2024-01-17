@@ -17,7 +17,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { BadmanBlockModule, PlayerSearchComponent } from '@badman/frontend-components';
+import {
+  BadmanBlockModule,
+  PlayerSearchComponent,
+} from '@badman/frontend-components';
 import {
   Club,
   EntryCompetitionPlayer,
@@ -46,8 +49,8 @@ import { PickEventDialogComponent } from '../../../../dialogs';
     MatMenuModule,
     MatInputModule,
     PlayerSearchComponent,
-    BadmanBlockModule
-],
+    BadmanBlockModule,
+  ],
 })
 export class ClubEditTeamComponent implements OnInit {
   @Output() whenPlayerAdded = new EventEmitter<Partial<Player>>();

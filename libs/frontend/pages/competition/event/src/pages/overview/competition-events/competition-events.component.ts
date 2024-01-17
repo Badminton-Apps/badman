@@ -48,8 +48,8 @@ import { RisersFallersDialogComponent } from '../../../dialogs';
     MatDialogModule,
     HasClaimComponent,
     LoadingBlockComponent,
-    BadmanBlockModule
-],
+    BadmanBlockModule,
+  ],
   templateUrl: './competition-events.component.html',
   styleUrls: ['./competition-events.component.scss'],
 })
@@ -148,21 +148,21 @@ export class CompetitionEventsComponent implements OnInit {
         transferState(
           `competitions-${this.filter?.value.official ?? true}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           if (!result?.data.eventCompetitions) {
             throw new Error('No competitions found');
           }
           return result.data.eventCompetitions.rows.map(
-            (team) => new EventCompetition(team)
+            (team) => new EventCompetition(team),
           );
         }),
         tap(() => {
           this.loading.set(false);
-        })
+        }),
       ) ?? of([]),
-      { injector: this.injector }
+      { injector: this.injector },
     );
   }
 
@@ -210,7 +210,7 @@ export class CompetitionEventsComponent implements OnInit {
               'Close',
               {
                 duration: 2000,
-              }
+              },
             );
             this.changeDetectorRef.detectChanges();
           });
@@ -243,7 +243,7 @@ export class CompetitionEventsComponent implements OnInit {
           'Close',
           {
             duration: 2000,
-          }
+          },
         );
 
         this.changeDetectorRef.detectChanges();
@@ -257,7 +257,7 @@ export class CompetitionEventsComponent implements OnInit {
     }
 
     await lastValueFrom(
-      this.jobsService.syncEventById({ id: competition.visualCode })
+      this.jobsService.syncEventById({ id: competition.visualCode }),
     );
   }
 }

@@ -27,34 +27,32 @@
         [year]="selectedYear!"
         [club]="this.data.club"
       ></badman-location-availability> -->
-    </div>
-  }
-</mat-dialog-content>
-<mat-dialog-actions>
-  @if (!location.id) {
-    <button
-      mat-raised-button
-      color="primary"
-      [disabled]="!this.location.name"
-      (click)="this.create(location)"
+      </div>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    @if (!location.id) {
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!this.location.name"
+        (click)="this.create(location)"
       >
-      {{ 'all.button.create' | translate }}
-    </button>
-  }
-  @if (location.id) {
-    <button
-      mat-raised-button
-      color="primary"
-      [disabled]="!this.location.name"
-      (click)="this.update(location)"
+        {{ 'all.button.create' | translate }}
+      </button>
+    }
+    @if (location.id) {
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!this.location.name"
+        (click)="this.update(location)"
       >
-      {{ 'all.button.save' | translate }}
-    </button>
-  }
-  <button mat-button [mat-dialog-close]="location">Close</button>
-</mat-dialog-actions>
+        {{ 'all.button.save' | translate }}
+      </button>
+    }
+    <button mat-button [mat-dialog-close]="location">Close</button>
+  </mat-dialog-actions>
 } @else {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar
-    >
-  }
-  
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}

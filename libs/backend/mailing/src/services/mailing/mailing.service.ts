@@ -8,7 +8,7 @@ import {
   EventTournament,
   Location,
   Player,
-  SubEventCompetition
+  SubEventCompetition,
 } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

@@ -31,8 +31,8 @@ import { LoadingBlockComponent } from '../loading-block';
     ProfileOverviewComponent,
     UpcomingGamesComponent,
     RankingTableComponent,
-    LoadingBlockComponent
-],
+    LoadingBlockComponent,
+  ],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

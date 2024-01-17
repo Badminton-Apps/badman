@@ -45,8 +45,8 @@ import { ClubTeamsService } from './club-teams.service';
     MatDialogModule,
     HasClaimComponent,
     RecentGamesComponent,
-    UpcomingGamesComponent
-],
+    UpcomingGamesComponent,
+  ],
   templateUrl: './club-teams.component.html',
   styleUrls: ['./club-teams.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

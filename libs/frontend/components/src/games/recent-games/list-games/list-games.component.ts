@@ -38,8 +38,8 @@ import { RecentGamesService } from '../recent-games.service';
     MatTooltipModule,
     MatButtonToggleModule,
     MatIconModule,
-    LoadingBlockComponent
-],
+    LoadingBlockComponent,
+  ],
   selector: 'badman-list-games',
   templateUrl: './list-games.component.html',
   styleUrls: ['./list-games.component.scss'],

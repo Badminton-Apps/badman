@@ -44,13 +44,14 @@
       encounter.locationId &&
       this.group.get('calendar')?.value?.locationId &&
       encounter.locationId !== this.group.get('calendar')?.value?.locationId
-      ) {
+    ) {
       <div
         class="changed-location"
         [matTooltip]="
-        'all.competition.change-encounter.warnings.location-change' | translate
+          'all.competition.change-encounter.warnings.location-change'
+            | translate
         "
-        >
+      >
         <mat-icon color="warn">warning</mat-icon>
       </div>
     }

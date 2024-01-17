@@ -107,8 +107,8 @@ import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
     MatOptionModule,
     MatSelectModule,
     MatProgressBarModule,
-    MatDividerModule
-],
+    MatDividerModule,
+  ],
 })
 export class EditPageComponent implements OnInit {
   public securityTypes: typeof SecurityType = SecurityType;

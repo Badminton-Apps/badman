@@ -33,8 +33,8 @@ import { RoleFieldsComponent } from '../../components';
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-    RoleFieldsComponent
-],
+    RoleFieldsComponent,
+  ],
 })
 export class AddPageComponent implements OnInit {
   role!: Role;
@@ -48,7 +48,7 @@ export class AddPageComponent implements OnInit {
     private router: Router,
     private breadcrumbsService: BreadcrumbService,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit(): void {
@@ -95,7 +95,7 @@ export class AddPageComponent implements OnInit {
         transferState(
           'clubTeamsKey-' + this.club.id,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((x) => x?.data.claims?.map((c) => new Claim(c))),
         mergeMap((claims) => claims ?? []),
@@ -105,10 +105,10 @@ export class AddPageComponent implements OnInit {
             toArray(),
             map((items) => {
               return { category: obs.key, claims: items };
-            })
+            }),
           );
         }),
-        toArray()
+        toArray(),
       );
   }
 
@@ -128,7 +128,7 @@ export class AddPageComponent implements OnInit {
         variables: {
           data: { ...role, clubId: club.id },
         },
-      })
+      }),
     );
     await this.router.navigate(['/', 'club', club.id, 'edit']);
   }

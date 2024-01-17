@@ -4,9 +4,6 @@
 @use './src/pages/overview/overview.page.theme.scss' as overview;
 @use './src/dialogs/dialogs.theme.scss' as dialogs;
 
-
-
-
 @mixin typography($theme) {
   @include detail.typography($theme);
   @include edit.typography($theme);
@@ -15,14 +12,12 @@
   @include dialogs.typography($theme);
 }
 
-
 @mixin color($theme) {
   @include detail.color($theme);
   @include edit.color($theme);
   @include overview.color($theme);
   @include dialogs.color($theme);
 }
-
 
 @mixin theme($theme) {
   $color-config: mat.get-color-config($theme);

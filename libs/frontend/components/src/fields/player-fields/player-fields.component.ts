@@ -24,8 +24,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
-],
+    MatSelectModule,
+  ],
 })
 export class PlayerFieldsComponent implements OnInit {
   @Input()
@@ -38,7 +38,7 @@ export class PlayerFieldsComponent implements OnInit {
       gender?: string;
       memberId?: string;
     },
-    group?: FormGroup
+    group?: FormGroup,
   ): FormGroup {
     if (!group) {
       group = new FormGroup({});
@@ -47,7 +47,7 @@ export class PlayerFieldsComponent implements OnInit {
     if (group.get('firstName') == null) {
       const firstNameControl = new FormControl(
         inputData?.firstName,
-        Validators.required
+        Validators.required,
       );
       group.addControl('firstName', firstNameControl);
     }
@@ -55,7 +55,7 @@ export class PlayerFieldsComponent implements OnInit {
     if (group.get('lastName') == null) {
       const lastNameControl = new FormControl(
         inputData?.lastName,
-        Validators.required
+        Validators.required,
       );
       group.addControl('lastName', lastNameControl);
     }
@@ -63,7 +63,7 @@ export class PlayerFieldsComponent implements OnInit {
     if (group.get('gender') == null) {
       const genderControl = new FormControl(
         inputData?.gender,
-        Validators.required
+        Validators.required,
       );
       group.addControl('gender', genderControl);
     }
@@ -71,7 +71,7 @@ export class PlayerFieldsComponent implements OnInit {
     if (group.get('memberId') == null) {
       const memberIdControl = new FormControl(
         inputData?.memberId,
-        Validators.required
+        Validators.required,
       );
       group.addControl('memberId', memberIdControl);
     }

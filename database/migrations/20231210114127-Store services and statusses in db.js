@@ -6,16 +6,16 @@ module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        console.log('Creating EXTENSION')
+        console.log('Creating EXTENSION');
         // create system schema
         await queryInterface.sequelize.query(
           'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";',
         );
 
-        console.log('Creating SCHEMA')
+        console.log('Creating SCHEMA');
         await queryInterface.createSchema('system', { transaction: t });
 
-        console.log('Creating TABLE')
+        console.log('Creating TABLE');
         await queryInterface.createTable(
           {
             tableName: 'Services',

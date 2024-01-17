@@ -44,7 +44,7 @@ export class RankingEvolutionComponent implements OnInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: string,
     private stateTransfer: TransferState,
-    private apollo: Apollo
+    private apollo: Apollo,
   ) {}
 
   ngOnInit(): void {
@@ -61,7 +61,7 @@ export class RankingEvolutionComponent implements OnInit {
               mix: rankingPlace[];
               double: rankingPlace[];
             },
-            value
+            value,
           ) => {
             return {
               single: [
@@ -96,9 +96,9 @@ export class RankingEvolutionComponent implements OnInit {
               ],
             };
           },
-          { single: [], double: [], mix: [] }
+          { single: [], double: [], mix: [] },
         );
-      })
+      }),
     );
   }
 
@@ -136,10 +136,10 @@ export class RankingEvolutionComponent implements OnInit {
         transferState(
           'player-ranking-places' + this.player.id + this.system.id + '-state',
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((x) => x?.data?.player),
-        map((x) => x?.rankingPlaces?.map((x) => new RankingPlace(x)))
+        map((x) => x?.rankingPlaces?.map((x) => new RankingPlace(x))),
       );
   }
 }

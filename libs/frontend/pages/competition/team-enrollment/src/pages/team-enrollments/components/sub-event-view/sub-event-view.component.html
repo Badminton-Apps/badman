@@ -14,9 +14,7 @@
       <mat-label>Event</mat-label>
       <mat-select [formControl]="this.eventControl">
         @for (event of this.events$ | async; track event) {
-          <mat-option
-            [value]="event.id"
-            >
+          <mat-option [value]="event.id">
             {{ event.name }}
           </mat-option>
         }
@@ -31,47 +29,54 @@
             <mat-expansion-panel-header>
               <mat-panel-title fxFlex="200px"
                 >{{ subEvent.name }} {{ subEvent.eventType }}</mat-panel-title
+              >
+              <mat-panel-description
+                >{{
+                  subEvent.eventEntries?.length
+                }}
+                Teams</mat-panel-description
+              >
+            </mat-expansion-panel-header>
+            <ul>
+              @for (entry of subEvent.eventEntries; track entry) {
+                <li
+                  cdkOverlayOrigin
+                  #trigger="cdkOverlayOrigin"
+                  (click)="overlayOpen = entry.team?.id ?? ''"
                 >
-                <mat-panel-description
-                  >{{ subEvent.eventEntries?.length }} Teams</mat-panel-description
+                  {{ entry.team?.name }}
+                  <ng-template
+                    cdkConnectedOverlay
+                    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+                    [cdkConnectedOverlayHasBackdrop]="true"
+                    [cdkConnectedOverlayOrigin]="trigger"
+                    [cdkConnectedOverlayOpen]="overlayOpen === entry?.team?.id"
+                    (detach)="overlayOpen = ''"
+                    (backdropClick)="overlayOpen = ''"
                   >
-                </mat-expansion-panel-header>
-                <ul>
-                  @for (entry of subEvent.eventEntries; track entry) {
-                    <li
-                      cdkOverlayOrigin
-                      #trigger="cdkOverlayOrigin"
-                      (click)="overlayOpen = entry.team?.id ?? ''"
-                      >
-                      {{ entry.team?.name }}
-                      <ng-template
-                        cdkConnectedOverlay
-                        cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-                        [cdkConnectedOverlayHasBackdrop]="true"
-                        [cdkConnectedOverlayOrigin]="trigger"
-                        [cdkConnectedOverlayOpen]="overlayOpen === entry?.team?.id"
-                        (detach)="overlayOpen = ''"
-                        (backdropClick)="overlayOpen = ''"
-                        >
-                        <div class="team-deatil">
-                          index: {{ entry.meta?.competition?.teamIndex }}
-                          <ul>
-                            @for (player of entry.meta?.competition?.players; track player) {
-                              <li>
-                                {{ player?.player?.fullName }} ({{ player?.single }} -
-                                {{ player?.double }} - {{ player?.mix }})
-                              </li>
-                            }
-                          </ul>
-                        </div>
-                      </ng-template>
-                    </li>
-                  }
-                </ul>
-              </mat-expansion-panel>
-            }
-          </mat-accordion>
-        </mat-card>
-      }
-    </div>
-    
+                    <div class="team-deatil">
+                      index: {{ entry.meta?.competition?.teamIndex }}
+                      <ul>
+                        @for (
+                          player of entry.meta?.competition?.players;
+                          track player
+                        ) {
+                          <li>
+                            {{ player?.player?.fullName }} ({{
+                              player?.single
+                            }}
+                            - {{ player?.double }} - {{ player?.mix }})
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  </ng-template>
+                </li>
+              }
+            </ul>
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    </mat-card>
+  }
+</div>

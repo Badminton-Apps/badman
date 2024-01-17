@@ -137,12 +137,12 @@ export class EnterScoresProcessor {
         const t1p1 = game.players?.find(
           (p) =>
             p.GamePlayerMembership.team === 1 &&
-            p.GamePlayerMembership.player === 1
+            p.GamePlayerMembership.player === 1,
         );
         if (t1p1) {
           if (!t1p1.memberId) {
             this.logger.error(
-              `Player ${t1p1.fullName} has no memberId, skipping`
+              `Player ${t1p1.fullName} has no memberId, skipping`,
             );
             continue;
           }
@@ -152,12 +152,12 @@ export class EnterScoresProcessor {
         const t1p2 = game.players?.find(
           (p) =>
             p.GamePlayerMembership.team === 1 &&
-            p.GamePlayerMembership.player === 2
+            p.GamePlayerMembership.player === 2,
         );
         if (t1p2) {
           if (!t1p2.memberId) {
             this.logger.error(
-              `Player ${t1p2.fullName} has no memberId, skipping`
+              `Player ${t1p2.fullName} has no memberId, skipping`,
             );
             continue;
           }
@@ -167,12 +167,12 @@ export class EnterScoresProcessor {
         const t2p1 = game.players?.find(
           (p) =>
             p.GamePlayerMembership.team === 2 &&
-            p.GamePlayerMembership.player === 1
+            p.GamePlayerMembership.player === 1,
         );
         if (t2p1) {
           if (!t2p1.memberId) {
             this.logger.error(
-              `Player ${t2p1.fullName} has no memberId, skipping`
+              `Player ${t2p1.fullName} has no memberId, skipping`,
             );
             continue;
           }
@@ -182,12 +182,12 @@ export class EnterScoresProcessor {
         const t2p2 = game.players?.find(
           (p) =>
             p.GamePlayerMembership.team === 2 &&
-            p.GamePlayerMembership.player === 2
+            p.GamePlayerMembership.player === 2,
         );
         if (t2p2) {
           if (!t2p2.memberId) {
             this.logger.error(
-              `Player ${t2p2.fullName} has no memberId, skipping`
+              `Player ${t2p2.fullName} has no memberId, skipping`,
             );
             continue;
           }
@@ -199,7 +199,7 @@ export class EnterScoresProcessor {
             { page },
             1,
             `${game.set1Team1}-${game.set1Team2}`,
-            game.visualCode
+            game.visualCode,
           );
         }
 
@@ -208,7 +208,7 @@ export class EnterScoresProcessor {
             { page },
             2,
             `${game.set2Team1}-${game.set2Team2}`,
-            game.visualCode
+            game.visualCode,
           );
         }
 
@@ -217,14 +217,14 @@ export class EnterScoresProcessor {
             { page },
             3,
             `${game.set3Team1}-${game.set3Team2}`,
-            game.visualCode
+            game.visualCode,
           );
         }
       }
 
       if (encounter.gameLeader?.fullName) {
         this.logger.debug(
-          `Entering game leader ${encounter.gameLeader?.fullName}`
+          `Entering game leader ${encounter.gameLeader?.fullName}`,
         );
         await enterGameLeader({ page }, encounter.gameLeader?.fullName);
       }

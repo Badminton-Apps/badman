@@ -3,7 +3,8 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use './competition-events/competition-events.component.theme.scss' as competition-events;
+@use './competition-events/competition-events.component.theme.scss' as
+  competition-events;
 
 @mixin color($theme) {
   badman-competition-overview {
@@ -12,7 +13,6 @@
     $color-config: mat.get-color-config($theme);
     // Background color
     $background: map.get($color-config, 'background');
-
   }
 }
 
@@ -21,7 +21,5 @@
     @include competition-events.typography($theme);
 
     $typography-config: mat.get-typography-config($theme);
-
   }
 }
-

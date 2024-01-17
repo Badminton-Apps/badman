@@ -17,7 +17,6 @@
     } @else {
       $color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
     }
-    
 
     .player .sub-text {
       color: $color;
@@ -34,5 +33,3 @@
     }
   }
 }
-
-

@@ -48,8 +48,8 @@ import { v4 as uuidv4 } from 'uuid';
     MatOptionModule,
     MatInputModule,
     MatButtonModule,
-    SelectPlayerComponent
-],
+    SelectPlayerComponent,
+  ],
 })
 export class AddGameComponent implements OnInit {
   formGroup!: FormGroup;

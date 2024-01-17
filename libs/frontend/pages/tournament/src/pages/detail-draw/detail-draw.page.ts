@@ -15,13 +15,17 @@ import {
   StandingComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { DrawTournament, EventTournament, Player } from '@badman/frontend-models';
+import {
+  DrawTournament,
+  EventTournament,
+  Player,
+} from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
-  selector: 'badman-detail-draw-tournament', 
+  selector: 'badman-detail-draw-tournament',
   templateUrl: './detail-draw.page.html',
   styleUrls: ['./detail-draw.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,8 +39,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     StandingComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
-    PageHeaderComponent
-],
+    PageHeaderComponent,
+  ],
 })
 export class DetailDrawComponent implements OnInit {
   drawTournament!: DrawTournament;
@@ -46,7 +50,7 @@ export class DetailDrawComponent implements OnInit {
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   get isClient(): boolean {

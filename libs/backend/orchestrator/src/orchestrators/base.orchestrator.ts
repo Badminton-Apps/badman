@@ -31,7 +31,7 @@ export class OrchestratorBase implements OnModuleInit {
 
   async onModuleInit() {
     await this._updateStatuses();
-    
+
     this.logger.debug(
       `[${this.serviceName}] Updated status to ${
         this.hasStarted ? 'started' : 'stopped'

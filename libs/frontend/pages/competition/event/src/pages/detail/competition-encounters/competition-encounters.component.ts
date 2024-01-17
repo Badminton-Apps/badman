@@ -43,8 +43,8 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators';
     MomentModule,
     MatSlideToggleModule,
     MatListModule,
-    MatProgressBarModule
-],
+    MatProgressBarModule,
+  ],
   templateUrl: './competition-encounters.component.html',
   styleUrls: ['./competition-encounters.component.scss'],
 })
@@ -133,22 +133,23 @@ export class CompetitionEncountersComponent implements OnInit {
               ?.map((s) => s.drawCompetitions ?? [])
               ?.map((d) => d?.map((d) => d.encounterCompetitions ?? []))
               ?.flat(2)
-              ?.filter((e) => !!e) ?? []
+              ?.filter((e) => !!e) ?? [],
         ),
-        map((encounters) =>
-          // if the change is not null and not accepted
-          encounters?.filter((encounter) =>
-            this.filter?.value?.openEncounters ?? false
-              ? encounter.encounterChange?.id != null &&
-                !encounter.encounterChange?.accepted
-              : true
-          )
+        map(
+          (encounters) =>
+            // if the change is not null and not accepted
+            encounters?.filter((encounter) =>
+              this.filter?.value?.openEncounters ?? false
+                ? encounter.encounterChange?.id != null &&
+                  !encounter.encounterChange?.accepted
+                : true,
+            ),
         ),
         tap(() => {
           this.loading.set(false);
-        })
+        }),
       ),
-      { injector: this.injector }
+      { injector: this.injector },
     );
   }
 

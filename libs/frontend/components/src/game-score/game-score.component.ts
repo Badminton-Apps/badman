@@ -18,8 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    TranslateModule
-],
+    TranslateModule,
+  ],
   templateUrl: './game-score.component.html',
   styleUrls: ['./game-score.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,16 +61,15 @@ export class GameScoreComponentComponent implements OnInit {
       });
     }
 
-
     // set the value of the input field
     if (
       this.gameScoreForm?.get('team1')?.value &&
       this.gameScoreForm?.get('team2')?.value
     ) {
       this.inputValue?.setValue(
-        `${this.gameScoreForm?.get('team1')?.value} - ${
-          this.gameScoreForm?.get('team2')?.value
-        }`
+        `${this.gameScoreForm?.get('team1')?.value} - ${this.gameScoreForm?.get(
+          'team2',
+        )?.value}`,
       );
     }
   }
@@ -110,9 +109,9 @@ export class GameScoreComponentComponent implements OnInit {
     }
 
     this.inputValue?.setValue(
-      `${this.gameScoreForm?.get('team1')?.value} - ${
-        this.gameScoreForm?.get('team2')?.value
-      }`
+      `${this.gameScoreForm?.get('team1')?.value} - ${this.gameScoreForm?.get(
+        'team2',
+      )?.value}`,
     );
 
     if (team1 > team2) {

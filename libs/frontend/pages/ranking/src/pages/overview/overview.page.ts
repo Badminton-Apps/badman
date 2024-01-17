@@ -90,8 +90,8 @@ const FETCH_SYSTEMS = gql`
     MatDatepickerModule,
     MatSelectModule,
     PageHeaderComponent,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
 })
 export class OverviewPageComponent {
   // injects
@@ -194,7 +194,6 @@ export class OverviewPageComponent {
     this.systemService.state.watchSystem(system.id);
   }
 
-
   deleteSystem(system: RankingSystem) {
     if (!system.id) {
       console.warn('No system id');
@@ -204,7 +203,6 @@ export class OverviewPageComponent {
     this.systemService.state.deleteSystem(system.id);
   }
 
-  
   cloneSystem(system: RankingSystem) {
     if (!this.copySystemTemplateRef) {
       return;

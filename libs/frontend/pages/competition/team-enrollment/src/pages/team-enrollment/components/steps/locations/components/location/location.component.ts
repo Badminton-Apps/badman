@@ -40,7 +40,7 @@ export type LocationAvailibilityForm = FormGroup<{
   id: FormControl<string | undefined>;
   season: FormControl<number>;
   days: FormArray<LocationavDayType>;
-exceptions: FormArray<LocationExceptionType>;
+  exceptions: FormArray<LocationExceptionType>;
 }>;
 
 export type LocationForm = FormGroup<{
@@ -55,7 +55,6 @@ export type LocationForm = FormGroup<{
   phone: FormControl<string | undefined>;
   fax: FormControl<string | undefined>;
   availibilities: FormArray<LocationAvailibilityForm>;
-  
 }>;
 
 @Component({
@@ -76,8 +75,8 @@ export type LocationForm = FormGroup<{
     MatSnackBarModule,
     MatDividerModule,
     MatTooltipModule,
-    MatDatepickerModule
-],
+    MatDatepickerModule,
+  ],
   templateUrl: './location.component.html',
   styleUrls: ['./location.component.scss'],
 })
@@ -138,7 +137,7 @@ export class LocationComponent implements OnInit {
     let created = false;
     if (this.group) {
       const localControl = this.group.get(
-        this.controlName
+        this.controlName,
       ) as FormArray<LocationAvailibilityForm>;
       // there should be one created by default
       this.control = localControl.controls.at(0) as LocationAvailibilityForm;
@@ -161,7 +160,7 @@ export class LocationComponent implements OnInit {
     }
 
     this.exceptions = this.control.get(
-      'exceptions'
+      'exceptions',
     ) as FormArray<LocationExceptionType>;
 
     if (this.exceptions.length !== 0) {
@@ -185,7 +184,7 @@ export class LocationComponent implements OnInit {
         startTime: new FormControl(),
         endTime: new FormControl(),
         courts: new FormControl(),
-      }) as LocationavDayType
+      }) as LocationavDayType,
     );
     this.expanded.days = true;
   }
@@ -200,7 +199,7 @@ export class LocationComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         courts: new FormControl(0),
-      }) as LocationExceptionType
+      }) as LocationExceptionType,
     );
     this.showCourts.push({
       manualOpen: false,

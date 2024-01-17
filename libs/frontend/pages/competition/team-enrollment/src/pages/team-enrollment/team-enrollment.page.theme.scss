@@ -3,10 +3,10 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use './components/steps/teams-transfer/teams-transfer.step.theme.scss' as teams-transfer;
+@use './components/steps/teams-transfer/teams-transfer.step.theme.scss' as
+  teams-transfer;
 @use './components/steps/teams/teams.step.theme.scss' as teams;
 @use './components/steps/locations/locations.step.theme.scss' as locations;
-
 
 @mixin color($theme) {
   badman-team-enrollment {
@@ -33,5 +33,3 @@
     }
   }
 }
-
-

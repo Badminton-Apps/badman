@@ -41,8 +41,8 @@ import { MomentModule } from 'ngx-moment';
     MatTooltipModule,
     MatFormFieldModule,
     MatDatepickerModule,
-    MatMenuModule
-],
+    MatMenuModule,
+  ],
 })
 export class PeriodSelectionComponent {
   @Input() period!: FormGroup<{
@@ -66,7 +66,7 @@ export class PeriodSelectionComponent {
     const result = getRankingPeriods(
       this.system(),
       this.viewingDate().clone().startOf('month').subtract(1, 'day'),
-      this.viewingDate().clone().endOf('month').add(1, 'day')
+      this.viewingDate().clone().endOf('month').add(1, 'day'),
     );
 
     console.log('updates', result);

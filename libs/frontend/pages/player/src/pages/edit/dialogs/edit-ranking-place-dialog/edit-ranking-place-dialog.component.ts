@@ -20,10 +20,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {
-  RankingPlace,
-  RankingSystem,
-} from '@badman/frontend-models';
+import { RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { RankingSystems } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
@@ -43,8 +40,8 @@ import moment, { Moment } from 'moment';
     MatButtonModule,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    FormsModule
-],
+    FormsModule,
+  ],
 })
 export class EditRankingPlaceDialogComponent implements OnInit {
   rankingPlaceForm: FormGroup = new FormGroup({});
@@ -53,21 +50,21 @@ export class EditRankingPlaceDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<EditRankingPlaceDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { place: RankingPlace; system: RankingSystem }
+    public data: { place: RankingPlace; system: RankingSystem },
   ) {}
 
   ngOnInit(): void {
     const singleControl = new FormControl(
       this.data.place?.single,
-      Validators.required
+      Validators.required,
     );
     const doubleControl = new FormControl(
       this.data.place?.double,
-      Validators.required
+      Validators.required,
     );
     const mixControl = new FormControl(
       this.data.place?.mix,
-      Validators.required
+      Validators.required,
     );
 
     const singlePointsControl = new FormControl(this.data.place?.singlePoints);
@@ -76,11 +73,11 @@ export class EditRankingPlaceDialogComponent implements OnInit {
 
     const rankingDateControl = new FormControl(
       this.data.place?.rankingDate,
-      Validators.required
+      Validators.required,
     );
 
     const updatePossibleControl = new FormControl(
-      this.data.place?.updatePossible
+      this.data.place?.updatePossible,
     );
 
     this.rankingPlaceForm.addControl('single', singleControl);

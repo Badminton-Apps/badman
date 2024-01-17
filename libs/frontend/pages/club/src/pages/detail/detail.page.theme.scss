@@ -5,10 +5,10 @@
 
 @use './club-players/club-players.component.theme.scss' as club-players;
 @use './club-teams/club-teams.component.theme.scss' as club-teams;
-@use './club-competition/club-competition.component.theme.scss' as club-competition;
+@use './club-competition/club-competition.component.theme.scss' as
+  club-competition;
 @use './club-assembly/club-assembly.component.theme.scss' as club-assembly;
 @use './club-encounters/club-encounters.component.theme.scss' as club-encounters;
-
 
 @mixin color($theme) {
   badman-club-detail {
@@ -41,4 +41,3 @@
     }
   }
 }
-

@@ -13,9 +13,7 @@
       <mat-label>Select</mat-label>
       <mat-select [formControl]="subEvent">
         @for (subEvent of subEvents[type]; track subEvent) {
-          <mat-option
-            [value]="subEvent.id"
-            >
+          <mat-option [value]="subEvent.id">
             {{ subEvent.name }}
           </mat-option>
         }
@@ -56,10 +54,8 @@
       @if (
         (validation?.errors?.length ?? 0) === 0 &&
         (validation?.warnings?.length ?? 0) === 0
-        ) {
-        <div
-          class="no-errors"
-          >
+      ) {
+        <div class="no-errors">
           {{ 'all.competition.team-assembly.errors.none' | translate }}
         </div>
       }

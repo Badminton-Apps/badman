@@ -38,8 +38,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatAutocompleteModule,
     MatButtonModule,
     MatIconModule,
-    NgMapsPlacesModule
-],
+    NgMapsPlacesModule,
+  ],
 })
 export class LocationDialogFieldsComponent implements OnInit {
   @Input()
@@ -63,7 +63,7 @@ export class LocationDialogFieldsComponent implements OnInit {
   ngOnInit() {
     const nameControl = new FormControl(
       this.location.name,
-      Validators.required
+      Validators.required,
     );
 
     const addressControl = new FormControl(this.location.address);
@@ -112,16 +112,16 @@ export class LocationDialogFieldsComponent implements OnInit {
         ?.long_name;
 
     const postalcode = $event.address_components?.find((r) =>
-      r.types.includes('postal_code')
+      r.types.includes('postal_code'),
     )?.long_name;
     const state = $event.address_components?.find((r) =>
-      r.types.includes('administrative_area_level_2')
+      r.types.includes('administrative_area_level_2'),
     )?.long_name;
     const street = $event.address_components?.find((r) =>
-      r.types.includes('route')
+      r.types.includes('route'),
     )?.long_name;
     const streetNumber = $event.address_components?.find((r) =>
-      r.types.includes('street_number')
+      r.types.includes('street_number'),
     )?.long_name;
 
     const coordinates = $event.geometry?.location;

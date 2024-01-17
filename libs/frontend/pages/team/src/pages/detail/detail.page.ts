@@ -44,8 +44,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatMenuModule,
     RecentGamesComponent,
     UpcomingGamesComponent,
-    PageHeaderComponent
-],
+    PageHeaderComponent,
+  ],
 })
 export class DetailPageComponent {
   private route = inject(ActivatedRoute);
