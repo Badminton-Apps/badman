@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.3](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.2...v6.130.0-beta.3) (2024-01-17)
+
+
+### Bug Fixes
+
+* ran format on full project ([01389ed](https://github.com/Badminton-Apps/badman/commit/01389ed18865678a3a0505a29a6ed92005a3a4d2))
+* swithcing host to 127.0.0.1 ([80b13d7](https://github.com/Badminton-Apps/badman/commit/80b13d7f5bf81b9906d0f5c29ea384bddbeb3554))
+* this should get e2e working ([4231666](https://github.com/Badminton-Apps/badman/commit/42316660913c69fe1d236e4babb7588c51f83719))
+
 ## [6.130.0-beta.2](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.1...v6.130.0-beta.2) (2024-01-13)
 
 ### Bug Fixes
