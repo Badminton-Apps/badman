@@ -163,6 +163,8 @@ export class EventCompetition extends Model {
   @Field(() => String)
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   usedRankingUnit!: 'months' | 'weeks' | 'days';
+
+  
   get usedRanking(): UsedRankingTiming {
     return {
       amount: this.usedRankingAmount,
