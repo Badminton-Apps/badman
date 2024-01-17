@@ -25,8 +25,8 @@ import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-plac
     MatListModule,
     MatTooltipModule,
     MatDialogModule,
-    MatButtonModule
-],
+    MatButtonModule,
+  ],
 })
 export class EditRankingAllComponent implements OnInit {
   allPlaces$?: Observable<[RankingPlace | undefined, RankingPlace[]][]>;
@@ -75,7 +75,7 @@ export class EditRankingAllComponent implements OnInit {
         variables: {
           where: {
             id: this.systemService.systemId(),
-          }
+          },
         },
       })
       .pipe(map((result) => new RankingSystem(result.data.rankingSystems?.[0])))

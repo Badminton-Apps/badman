@@ -424,7 +424,6 @@ export class ExportBBFPlayers {
         continue;
       }
 
-
       rankingPoint.system = system;
 
       const gameResult = getGameResultType(

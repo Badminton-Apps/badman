@@ -9,11 +9,7 @@ import { ClubViewComponent } from './components';
   templateUrl: './team-enrollments.component.html',
   styleUrls: ['./team-enrollments.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ClubViewComponent
-],
+  imports: [CommonModule, TranslateModule, ClubViewComponent],
 })
 export class TeamEnrollmentsComponent {
   eventControl: FormControl = new FormControl();

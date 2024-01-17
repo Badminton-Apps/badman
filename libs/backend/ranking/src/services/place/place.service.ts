@@ -119,7 +119,7 @@ export class PlaceService {
       transaction,
     });
   }
-  
+
   // using without queue
   public async newPlaceForPlayer(
     player: Player,

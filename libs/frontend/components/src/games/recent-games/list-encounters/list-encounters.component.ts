@@ -41,8 +41,8 @@ import { LoadingBlockComponent } from '../../../loading-block';
     TrackByProp,
     MatButtonModule,
     MatListModule,
-    LoadingBlockComponent
-],
+    LoadingBlockComponent,
+  ],
   selector: 'badman-list-encounters',
   templateUrl: './list-encounters.component.html',
   styleUrls: ['./list-encounters.component.scss'],

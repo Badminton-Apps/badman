@@ -10,12 +10,11 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let team">
         <div class="team">
-          <span class="team-name">{{ team.name }}</span
-            >@if (team?.entry?.meta?.competition?.teamIndex) {
-            <span
-              class="team-index"
+          <span class="team-name">{{ team.name }}</span>
+          @if (team?.entry?.meta?.competition?.teamIndex) {
+            <span class="team-index"
               >({{ 'all.team.team-index' | translate }}:{{
-              team?.entry?.meta?.competition?.teamIndex
+                team?.entry?.meta?.competition?.teamIndex
               }})
             </span>
           }
@@ -34,176 +33,166 @@
       <mat-cell *matCellDef="let team">
         @if ((team?.entry?.enrollmentValidation?.errors ?? []).length > 0) {
           <mat-icon
-            [matBadge]="(team?.entry?.enrollmentValidation?.errors ?? []).length"
+            [matBadge]="
+              (team?.entry?.enrollmentValidation?.errors ?? []).length
+            "
             class="invalid"
             [matTooltip]="
-            'all.competition.team-enrollment.errors.title' | translate
+              'all.competition.team-enrollment.errors.title' | translate
             "
             >error</mat-icon
-            >
-          }
-          @if ((team?.entry?.enrollmentValidation?.warnings ?? []).length > 0) {
-            <mat-icon
-              [matBadge]="
-              (team?.entry?.enrollmentValidation?.warnings ?? []).length
-              "
-              class="warning"
-              [matTooltip]="
-              'all.competition.team-enrollment.warnings.title' | translate
-              "
-              >warning</mat-icon
-              >
-            }
-          </mat-cell>
-        </ng-container>
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row
-          *matRowDef="let row; columns: displayedColumns"
-          matRipple
-          class="subevent-row"
-          [badmanEnrollmentDetailRow]="row"
-          [badmanEnrollmentDetailRowTpl]="tpl"
           >
-        </mat-row>
-      </mat-table>
-      @if (loading()) {
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      }
-      <ng-template #tpl let-team>
-        <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
-          <div class="base-players">
-            <badman-block class="base">
-              <badman-block-header>
-                <badman-block-title>{{
-                  'all.competition.team-enrollment.players.base' | translate
-                }}</badman-block-title>
-              </badman-block-header>
-              <mat-divider />
-              <badman-block-content>
-                <mat-list role="list">
-                  @for (
-                    player of team?.entry?.meta?.competition?.players ?? []
-                    ; track
-                    player) {
-                    <mat-list-item
-                      role="listitem"
-                      >
-                      <span matListItemTitle>{{ player.player.fullName }}</span>
-                      <span matListItemLine
-                        >{{ player.single }}- {{ player.double }} - {{ player.mix }}
-                      </span>
-                    </mat-list-item>
-                  }
-                </mat-list>
-              </badman-block-content>
-            </badman-block>
-            <badman-block class="captain">
-              <badman-block-header>
-                <badman-block-title>{{
-                  'all.team.title.base-fields' | translate
-                }}</badman-block-title>
-              </badman-block-header>
-              <mat-divider />
-              <badman-block-content>
-                <mat-list role="list">
-                  @if (team?.entry?.meta?.competition?.teamIndex) {
-                    <mat-list-item
-                      role="listitem"
-                      >
-                      <span matListItemTitle>{{
-                        team?.entry?.meta?.competition?.teamIndex
-                      }}</span>
-                      <span matListItemLine>{{
-                        'all.team.team-index' | translate
-                      }}</span>
-                    </mat-list-item>
-                  }
-                  <mat-list-item role="listitem">
-                    <span matListItemTitle>{{ team?.captain?.fullName }}</span>
-                    <span matListItemLine>{{
-                      'all.team.title.captain' | translate
-                    }}</span>
-                  </mat-list-item>
-                  <mat-list-item role="listitem">
-                    <span matListItemTitle
-                      >{{ 'all.days.' + team?.preferredDay | translate }} -
-                      {{ team?.preferredTime }}</span
-                      >
-                      <span matListItemLine>{{
-                        'all.team.prefferd.title' | translate
-                      }}</span>
-                    </mat-list-item>
-                  </mat-list>
-                </badman-block-content>
-              </badman-block>
-              <badman-block class="validations">
-                <badman-block-header>
-                  <badman-block-title>{{
-                    'all.competition.team-enrollment.validations' | translate
-                  }}</badman-block-title>
-                </badman-block-header>
-                <mat-divider />
-                <badman-block-content>
-                  @if (
-                    (team?.entry?.enrollmentValidation?.errors?.length ?? 0) > 0
-                    ) {
-                    <ul
-                      class="error-list"
-                      >
-                      @for (error of team?.entry?.enrollmentValidation?.errors; track error) {
-                        <li
-                          >
-                          <badman-enrollment-message
-                            [validation]="error"
-                          ></badman-enrollment-message>
-                        </li>
-                      }
-                    </ul>
-                  }
-                  @if (
-                    (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) > 0
-                    ) {
-                    <ul
-                      class="warning-list"
-                      >
-                      @for (
-                        warnings of team?.entry?.enrollmentValidation?.warnings
-                        ; track
-                        warnings) {
-                        <li
-                          >
-                          <badman-enrollment-message
-                            [validation]="warnings"
-                          ></badman-enrollment-message>
-                        </li>
-                      }
-                    </ul>
-                  }
-                  @if (
-                    (team?.entry?.enrollmentValidation?.errors?.length ?? 0) ===
-                    0 &&
-                    (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) === 0
-                    ) {
-                    <div
-                      class="no-errors"
-                      >
-                      {{ 'all.competition.team-assembly.errors.none' | translate }}
-                    </div>
-                  }
-                </badman-block-content>
-              </badman-block>
-            </div>
-          </div>
-        </ng-template>
-      </section>
-      <section>
-        <h2>Locations</h2>
-        <div class="locations">
-          @for (location of this.locations?.(); track location) {
-            <badman-block>
-              <badman-block-header>
-                <badman-block-title>{{ location.name }}</badman-block-title>
-                <!-- <badman-block-actions align="end">
+        }
+        @if ((team?.entry?.enrollmentValidation?.warnings ?? []).length > 0) {
+          <mat-icon
+            [matBadge]="
+              (team?.entry?.enrollmentValidation?.warnings ?? []).length
+            "
+            class="warning"
+            [matTooltip]="
+              'all.competition.team-enrollment.warnings.title' | translate
+            "
+            >warning</mat-icon
+          >
+        }
+      </mat-cell>
+    </ng-container>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      matRipple
+      class="subevent-row"
+      [badmanEnrollmentDetailRow]="row"
+      [badmanEnrollmentDetailRowTpl]="tpl"
+    >
+    </mat-row>
+  </mat-table>
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+  <ng-template #tpl let-team>
+    <div class="mat-row detail-row" [@detailExpand] style="overflow: hidden">
+      <div class="base-players">
+        <badman-block class="base">
+          <badman-block-header>
+            <badman-block-title>{{
+              'all.competition.team-enrollment.players.base' | translate
+            }}</badman-block-title>
+          </badman-block-header>
+          <mat-divider />
+          <badman-block-content>
+            <mat-list role="list">
+              @for (
+                player of team?.entry?.meta?.competition?.players ?? [];
+                track player
+              ) {
+                <mat-list-item role="listitem">
+                  <span matListItemTitle>{{ player.player.fullName }}</span>
+                  <span matListItemLine
+                    >{{ player.single }}- {{ player.double }} - {{ player.mix }}
+                  </span>
+                </mat-list-item>
+              }
+            </mat-list>
+          </badman-block-content>
+        </badman-block>
+        <badman-block class="captain">
+          <badman-block-header>
+            <badman-block-title>{{
+              'all.team.title.base-fields' | translate
+            }}</badman-block-title>
+          </badman-block-header>
+          <mat-divider />
+          <badman-block-content>
+            <mat-list role="list">
+              @if (team?.entry?.meta?.competition?.teamIndex) {
+                <mat-list-item role="listitem">
+                  <span matListItemTitle>{{
+                    team?.entry?.meta?.competition?.teamIndex
+                  }}</span>
+                  <span matListItemLine>{{
+                    'all.team.team-index' | translate
+                  }}</span>
+                </mat-list-item>
+              }
+              <mat-list-item role="listitem">
+                <span matListItemTitle>{{ team?.captain?.fullName }}</span>
+                <span matListItemLine>{{
+                  'all.team.title.captain' | translate
+                }}</span>
+              </mat-list-item>
+              <mat-list-item role="listitem">
+                <span matListItemTitle
+                  >{{ 'all.days.' + team?.preferredDay | translate }} -
+                  {{ team?.preferredTime }}</span
+                >
+                <span matListItemLine>{{
+                  'all.team.prefferd.title' | translate
+                }}</span>
+              </mat-list-item>
+            </mat-list>
+          </badman-block-content>
+        </badman-block>
+        <badman-block class="validations">
+          <badman-block-header>
+            <badman-block-title>{{
+              'all.competition.team-enrollment.validations' | translate
+            }}</badman-block-title>
+          </badman-block-header>
+          <mat-divider />
+          <badman-block-content>
+            @if ((team?.entry?.enrollmentValidation?.errors?.length ?? 0) > 0) {
+              <ul class="error-list">
+                @for (
+                  error of team?.entry?.enrollmentValidation?.errors;
+                  track error
+                ) {
+                  <li>
+                    <badman-enrollment-message
+                      [validation]="error"
+                    ></badman-enrollment-message>
+                  </li>
+                }
+              </ul>
+            }
+            @if (
+              (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) > 0
+            ) {
+              <ul class="warning-list">
+                @for (
+                  warnings of team?.entry?.enrollmentValidation?.warnings;
+                  track warnings
+                ) {
+                  <li>
+                    <badman-enrollment-message
+                      [validation]="warnings"
+                    ></badman-enrollment-message>
+                  </li>
+                }
+              </ul>
+            }
+            @if (
+              (team?.entry?.enrollmentValidation?.errors?.length ?? 0) === 0 &&
+              (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) === 0
+            ) {
+              <div class="no-errors">
+                {{ 'all.competition.team-assembly.errors.none' | translate }}
+              </div>
+            }
+          </badman-block-content>
+        </badman-block>
+      </div>
+    </div>
+  </ng-template>
+</section>
+<section>
+  <h2>Locations</h2>
+  <div class="locations">
+    @for (location of this.locations?.(); track location) {
+      <badman-block>
+        <badman-block-header>
+          <badman-block-title>{{ location.name }}</badman-block-title>
+          <!-- <badman-block-actions align="end">
                 <button mat-icon-button [matMenuTriggerFor]="options">
                   <mat-icon>more_vert</mat-icon>
                 </button>
@@ -221,105 +210,103 @@
                   </badman-has-claim>
                 </mat-menu>
               </badman-block-actions> -->
-            </badman-block-header>
-            <mat-divider></mat-divider>
-            <badman-block-content>
-              @if (this.location.street) {
-                <span>{{ this.location.street }} </span>
-              }
-              @if (this.location.streetNumber) {
-                <span>{{
-                  this.location.streetNumber
-                }}</span>
-              }
-              <br />
-              @if (this.location.postalcode) {
-                <span
-                  >{{ this.location.postalcode }}
-                </span>
-              }
-              @if (this.location.city) {
-                <span>{{ this.location.city }}</span
-                  >
-                  }<br />
-                  @if (this.location.state) {
-                    <span>{{ this.location.state }}</span
+        </badman-block-header>
+        <mat-divider></mat-divider>
+        <badman-block-content>
+          @if (this.location.street) {
+            <span>{{ this.location.street }} </span>
+          }
+          @if (this.location.streetNumber) {
+            <span>{{ this.location.streetNumber }}</span>
+          }
+          <br />
+          @if (this.location.postalcode) {
+            <span>{{ this.location.postalcode }} </span>
+          }
+          @if (this.location.city) {
+            <span>{{ this.location.city }}</span>
+          }
+          <br />
+          @if (this.location.state) {
+            <span>{{ this.location.state }}</span>
+          }
+          <br />
+          @if (this.location.phone) {
+            <span>{{ this.location.phone }}</span>
+          }
+          @if (this.location.fax) {
+            <span>{{ this.location.fax }}</span>
+          }
+          <div class="days">
+            @for (
+              availibility of this.location?.availibilities ?? [];
+              track availibility
+            ) {
+              <div>
+                <h4>
+                  {{ 'all.competition.team-enrollment.play-days' | translate }}
+                </h4>
+                <mat-list role="list">
+                  @for (day of availibility?.days ?? []; track day) {
+                    <mat-list-item role="listitem">
+                      <span matListItemTitle>
+                        {{ 'all.days.' + day.day | translate }},
+                        {{ day.startTime }}
+                        {{ 'all.breakdown.untill' | translate }}
+                        {{ day.endTime }}</span
                       >
-                      }<br />
-                      @if (this.location.phone) {
-                        <span>{{ this.location.phone }}</span>
-                      }
-                      @if (this.location.fax) {
-                        <span>{{ this.location.fax }}</span>
-                      }
-                      <div class="days">
-                        @for (availibility of this.location?.availibilities ?? []; track availibility) {
-                          <div>
-                            <h4>
-                              {{ 'all.competition.team-enrollment.play-days' | translate }}
-                            </h4>
-                            <mat-list role="list">
-                              @for (day of availibility?.days ?? []; track day) {
-                                <mat-list-item
-                                  role="listitem"
-                                  >
-                                  <span matListItemTitle>
-                                    {{ 'all.days.' + day.day | translate }}, {{ day.startTime }}
-                                    {{ 'all.breakdown.untill' | translate }}
-                                    {{ day.endTime }}</span
-                                    >
-                                    <span matListItemLine>
-                                      {{ day.courts }} {{ 'all.input.courts' | translate }}
-                                    </span>
-                                  </mat-list-item>
-                                }
-                              </mat-list>
-                              <h4>
-                                {{ 'all.competition.team-enrollment.exceptions' | translate }}
-                              </h4>
-                              <mat-list role="list">
-                                @for (exception of availibility?.exceptions ?? []; track exception) {
-                                  <mat-list-item
-                                    role="listitem"
-                                    >
-                                    <span matListItemTitle>
-                                      {{ exception.start | amDateFormat : 'L' }}
-                                      {{ 'all.breakdown.untill' | translate }}
-                                      {{ exception.end | amDateFormat : 'L' }}
-                                    </span>
-                                    <span matListItemLine>
-                                      {{ exception.courts }}
-                                      {{ 'all.input.courts' | translate }}
-                                    </span>
-                                  </mat-list-item>
-                                }
-                              </mat-list>
-                            </div>
-                          }
-                        </div>
-                      </badman-block-content>
-                    </badman-block>
+                      <span matListItemLine>
+                        {{ day.courts }} {{ 'all.input.courts' | translate }}
+                      </span>
+                    </mat-list-item>
                   }
-                </div>
-              </section>
-              <section>
-                <h2>Comments</h2>
-                <div class="comments">
-                  @for (comment of this.comments?.(); track comment) {
-                    <badman-block>
-                      <badman-block-header>
-                        <badman-block-title>
-                          {{ getEventName(comment.linkId!) }}
-                        </badman-block-title>
-                        <badman-block-subtitle>
-                          {{ comment.player?.fullName }} -
-                          {{ comment.createdAt | amDateFormat : 'LLLL' }}
-                        </badman-block-subtitle>
-                      </badman-block-header>
-                      <mat-divider></mat-divider>
-                      <badman-block-content>{{ comment.message }}</badman-block-content>
-                    </badman-block>
+                </mat-list>
+                <h4>
+                  {{ 'all.competition.team-enrollment.exceptions' | translate }}
+                </h4>
+                <mat-list role="list">
+                  @for (
+                    exception of availibility?.exceptions ?? [];
+                    track exception
+                  ) {
+                    <mat-list-item role="listitem">
+                      <span matListItemTitle>
+                        {{ exception.start | amDateFormat: 'L' }}
+                        {{ 'all.breakdown.untill' | translate }}
+                        {{ exception.end | amDateFormat: 'L' }}
+                      </span>
+                      <span matListItemLine>
+                        {{ exception.courts }}
+                        {{ 'all.input.courts' | translate }}
+                      </span>
+                    </mat-list-item>
                   }
-                </div>
-              </section>
-              
+                </mat-list>
+              </div>
+            }
+          </div>
+        </badman-block-content>
+      </badman-block>
+    }
+  </div>
+</section>
+<section>
+  <h2>Comments</h2>
+  <div class="comments">
+    @for (comment of this.comments?.(); track comment) {
+      <badman-block>
+        <badman-block-header>
+          <badman-block-title>
+            {{ getEventName(comment.linkId!) }}
+          </badman-block-title>
+          <badman-block-subtitle>
+            {{ comment.player?.fullName }} -
+            {{ comment.createdAt | amDateFormat: 'LLLL' }}
+          </badman-block-subtitle>
+        </badman-block-header>
+        <mat-divider></mat-divider>
+        <badman-block-content>{{ comment.message }}</badman-block-content>
+      </badman-block>
+    }
+  </div>
+</section>

@@ -7,11 +7,8 @@
     [formControl]="this.inputValue!"
     (blur)="onBlur()"
     [pattern]="this.pattern"
-    />
-    @if (this.inputValue?.valid === false) {
-      <mat-error
-        >Invalid input value</mat-error
-        >
-      }
-    </mat-form-field>
-    
+  />
+  @if (this.inputValue?.valid === false) {
+    <mat-error>Invalid input value</mat-error>
+  }
+</mat-form-field>

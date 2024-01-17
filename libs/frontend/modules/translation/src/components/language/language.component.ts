@@ -1,6 +1,6 @@
 import {
   NgxMatMomentAdapter,
-  NgxMatMomentModule
+  NgxMatMomentModule,
 } from '@angular-material-components/moment-adapter';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -23,8 +23,8 @@ import { setLanguage } from '../../factory';
     TranslateModule,
     MatMenuModule,
     MatButtonModule,
-    MatIconModule
-],
+    MatIconModule,
+  ],
 })
 export class LanguageComponent implements OnInit {
   current!: string;
@@ -32,7 +32,7 @@ export class LanguageComponent implements OnInit {
 
   constructor(
     public translate: TranslateService,
-    private _adapter: DateAdapter<NgxMatMomentAdapter>
+    private _adapter: DateAdapter<NgxMatMomentAdapter>,
   ) {}
 
   ngOnInit(): void {

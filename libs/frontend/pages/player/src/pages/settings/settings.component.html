@@ -8,9 +8,7 @@
         <mat-label>{{ 'all.settings.languages.title' | translate }}</mat-label>
         <mat-select formControlName="language" alt="language">
           @for (type of this.languageTypes; track type) {
-            <mat-option
-              [value]="type.value"
-              >
+            <mat-option [value]="type.value">
               {{ type.viewValue | translate }}
             </mat-option>
           }
@@ -25,17 +23,15 @@
         <mat-form-field>
           <mat-label>{{
             'all.settings.notifications.encounterChange.confirmationNotification'
-            | translate
+              | translate
           }}</mat-label>
           <mat-select
             formControlName="encounterChangeConfirmationNotification"
             alt="encounterChangeConfirmationNotification"
             multiple
-            >
+          >
             @for (type of this.notificationType; track type) {
-              <mat-option
-                [value]="type.value"
-                >
+              <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
               </mat-option>
             }
@@ -44,17 +40,15 @@
         <mat-form-field>
           <mat-label>{{
             'all.settings.notifications.encounterChange.finishedNotification'
-            | translate
+              | translate
           }}</mat-label>
           <mat-select
             formControlName="encounterChangeFinishedNotification"
             alt="encounterChangeFinishedNotification"
             multiple
-            >
+          >
             @for (type of this.notificationType; track type) {
-              <mat-option
-                [value]="type.value"
-                >
+              <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
               </mat-option>
             }
@@ -63,17 +57,15 @@
         <mat-form-field>
           <mat-label>{{
             'all.settings.notifications.encounterChange.newNotification'
-            | translate
+              | translate
           }}</mat-label>
           <mat-select
             formControlName="encounterChangeNewNotification"
             alt="encounterChangeNewNotification"
             multiple
-            >
+          >
             @for (type of this.notificationType; track type) {
-              <mat-option
-                [value]="type.value"
-                >
+              <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
               </mat-option>
             }
@@ -88,17 +80,15 @@
       <mat-form-field>
         <mat-label>{{
           'all.settings.notifications.encounter.notAcceptedNotification'
-          | translate
+            | translate
         }}</mat-label>
         <mat-select
           formControlName="encounterNotAcceptedNotification"
           alt="encounterNotAcceptedNotification"
           multiple
-          >
+        >
           @for (type of this.notificationType; track type) {
-            <mat-option
-              [value]="type.value"
-              >
+            <mat-option [value]="type.value">
               {{ type.viewValue | translate }}
             </mat-option>
           }
@@ -107,17 +97,15 @@
       <mat-form-field>
         <mat-label>{{
           'all.settings.notifications.encounter.notEnteredNotification'
-          | translate
+            | translate
         }}</mat-label>
         <mat-select
           formControlName="encounterNotEnteredNotification"
           alt="encounterNotEnteredNotification"
           multiple
-          >
+        >
           @for (type of this.notificationType; track type) {
-            <mat-option
-              [value]="type.value"
-              >
+            <mat-option [value]="type.value">
               {{ type.viewValue | translate }}
             </mat-option>
           }
@@ -137,11 +125,9 @@
             formControlName="syncSuccessNotification"
             alt="syncSuccessNotification"
             multiple
-            >
+          >
             @for (type of this.notificationType; track type) {
-              <mat-option
-                [value]="type.value"
-                >
+              <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
               </mat-option>
             }
@@ -155,11 +141,9 @@
             formControlName="syncFailedNotification"
             alt="syncFailedNotification"
             multiple
-            >
+          >
             @for (type of this.notificationType; track type) {
-              <mat-option
-                [value]="type.value"
-                >
+              <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
               </mat-option>
             }
@@ -180,11 +164,9 @@
             formControlName="clubEnrollmentNotification"
             alt="clubEnrollmentNotification"
             multiple
-            >
+          >
             @for (type of this.notificationType; track type) {
-              <mat-option
-                [value]="type.value"
-                >
+              <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
               </mat-option>
             }
@@ -200,6 +182,6 @@
   (click)="save()"
   [class.spinner]="this.saving"
   [disabled]="this.saving"
-  >
+>
   save
 </button>

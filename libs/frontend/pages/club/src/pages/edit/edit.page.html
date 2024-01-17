@@ -1,127 +1,119 @@
 <badman-has-claim [any]="[club.id + '_edit:club', 'edit-any:club']">
   @if (clubGroup) {
-    <badman-club-fields
-      [group]="clubGroup"
-    ></badman-club-fields>
+  <badman-club-fields [group]="clubGroup"></badman-club-fields>
   }
   <div noPerm>{{ club.name }}</div>
 </badman-has-claim>
 <badman-has-claim
   [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']"
-  >
+>
   <h2>
     Roles
     <badman-has-claim
       [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']"
-      >
+    >
       <badman-add-role
         (whenRoleAdded)="addRole()"
         linkType="club"
         [linkId]="this.club.id!"
-        />
-      </badman-has-claim>
-    </h2>
-    <div class="roles">
-      @for ( role of this.roles$ | async; track  role) {
-        @if (role.id) {
-          <badman-edit-role
-            [roleId]="role.id"
-            [type]="[securityTypes.CLUB, securityTypes.TEAM]"
-            />
-        }
+      />
+    </badman-has-claim>
+  </h2>
+  <div class="roles">
+    @for ( role of this.roles$ | async; track role) { @if (role.id) {
+    <badman-edit-role
+      [roleId]="role.id"
+      [type]="[securityTypes.CLUB, securityTypes.TEAM]"
+    />
+    } }
+  </div>
+</badman-has-claim>
+<badman-has-claim
+  [any]="['change-base:team', club.id + '_edit:club', 'edit-any:club']"
+>
+  <mat-divider />
+  <mat-form-field>
+    <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
+    <mat-select [formControl]="this.season">
+      @for (option of this.seasons; track option) {
+      <mat-option [value]="option"> {{ option }} </mat-option>
       }
-    </div>
-  </badman-has-claim>
-  <badman-has-claim
-    [any]="['change-base:team', club.id + '_edit:club', 'edit-any:club']"
-    >
-    <mat-divider />
-    <mat-form-field>
-      <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
-      <mat-select [formControl]="this.season">
-        @for (option of this.seasons; track option) {
-          <mat-option [value]="option">
-            {{ option }}
-          </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </badman-has-claim>
-  <badman-has-claim
-    [any]="[
+    </mat-select>
+  </mat-form-field>
+</badman-has-claim>
+<badman-has-claim
+  [any]="[
     club.id + '_add:locations',
     club.id + '_edit:club',
     'edit-any:club'
     ]"
-    >
-    <div class="options">
-      <h2>
-        Locations
-        <button mat-icon-button (click)="this.onEditLocation(undefined, club)">
-          <mat-icon>add</mat-icon>
-        </button>
-      </h2>
-    </div>
-    <div class="locations">
-      @for (location of this.locationForSeason$ | async; track location) {
-        <badman-club-edit-location
-          [location]="location"
-          [season]="this.season.value"
-          [club]="club"
-          (whenEdit)="this.onEditLocation($event, club)"
-          (whenDelete)="this.onDeleteLocation($event)"
-          >
-        </badman-club-edit-location>
-      }
-    </div>
-  </badman-has-claim>
-  <badman-has-claim [any]="['change-base:team']">
-    <div class="options">
-      <h2>
-        Base players
-        @if (this.season.value) {
-          <button mat-icon-button (click)="addTeam()">
-            <mat-icon>add</mat-icon>
-          </button>
-        }
-      </h2>
-    </div>
-    <div class="teams">
-      @for (team of this.teamsForSeason$ | async; track team) {
-        <badman-club-edit-team
-          [team]="team"
-          [club]="club"
-          (whenPlayerAdded)="this.onAddBasePlayer($event, team)"
-          (whenPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
-          (whenPlayerMetaUpdated)="this.onPlayerMetaUpdated($event, team)"
-          (whenSubEventChanged)="this.onSubEventAssignedToTeam($event, team)"
-          >
-        </badman-club-edit-team>
-      }
-    </div>
-  </badman-has-claim>
-  <ng-template #loading>
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </ng-template>
-  <ng-template newRoleTemplate>
-    <h1 mat-dialog-title>Create role</h1>
-    <div mat-dialog-content>
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input matInput #name />
-      </mat-form-field>
-    </div>
-    <div mat-dialog-actions>
-      <button mat-button mat-dialog-close>No Thanks</button>
-      <button
-        mat-raised-button
-        color="primary"
-        [mat-dialog-close]="name.value"
-        cdkFocusInitial
-        [disabled]="!name.value || (name?.value?.length ?? 0) <=3"
-        >
-        Ok
+>
+  <div class="options">
+    <h2>
+      Locations
+      <button mat-icon-button (click)="this.onEditLocation(undefined, club)">
+        <mat-icon>add</mat-icon>
       </button>
-    </div>
-  </ng-template>
-  
+    </h2>
+  </div>
+  <div class="locations">
+    @for (location of this.locationForSeason$ | async; track location) {
+    <badman-club-edit-location
+      [location]="location"
+      [season]="this.season.value"
+      [club]="club"
+      (whenEdit)="this.onEditLocation($event, club)"
+      (whenDelete)="this.onDeleteLocation($event)"
+    >
+    </badman-club-edit-location>
+    }
+  </div>
+</badman-has-claim>
+<badman-has-claim [any]="['change-base:team']">
+  <div class="options">
+    <h2>
+      Base players @if (this.season.value) {
+      <button mat-icon-button (click)="addTeam()">
+        <mat-icon>add</mat-icon>
+      </button>
+      }
+    </h2>
+  </div>
+  <div class="teams">
+    @for (team of this.teamsForSeason$ | async; track team) {
+    <badman-club-edit-team
+      [team]="team"
+      [club]="club"
+      (whenPlayerAdded)="this.onAddBasePlayer($event, team)"
+      (whenPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
+      (whenPlayerMetaUpdated)="this.onPlayerMetaUpdated($event, team)"
+      (whenSubEventChanged)="this.onSubEventAssignedToTeam($event, team)"
+    >
+    </badman-club-edit-team>
+    }
+  </div>
+</badman-has-claim>
+<ng-template #loading>
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-template>
+<ng-template newRoleTemplate>
+  <h1 mat-dialog-title>Create role</h1>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput #name />
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button mat-dialog-close>No Thanks</button>
+    <button
+      mat-raised-button
+      color="primary"
+      [mat-dialog-close]="name.value"
+      cdkFocusInitial
+      [disabled]="!name.value || (name?.value?.length ?? 0) <=3"
+    >
+      Ok
+    </button>
+  </div>
+</ng-template>

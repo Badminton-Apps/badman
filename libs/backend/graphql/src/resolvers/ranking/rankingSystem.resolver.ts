@@ -40,9 +40,10 @@ export class RankingSystemResolver {
   async rankingSystem(
     @Args('id', { type: () => ID, nullable: true }) id?: string,
   ): Promise<RankingSystem> {
-    const rankingSystem = (id ?? null) != null
-      ? await RankingSystem.findByPk(id)
-      : await RankingSystem.findOne({ where: { primary: true } });
+    const rankingSystem =
+      (id ?? null) != null
+        ? await RankingSystem.findByPk(id)
+        : await RankingSystem.findOne({ where: { primary: true } });
 
     if (!rankingSystem) {
       throw new NotFoundException(id);

@@ -55,10 +55,9 @@ import { EventsGateway, SocketModule } from '@badman/backend-websockets';
 })
 export class WorkerSyncModule implements OnApplicationBootstrap {
   protected logger = new Logger(WorkerSyncModule.name);
-  
+
   constructor(private readonly gateway: EventsGateway) {}
   async onApplicationBootstrap() {
-    
     this.logger.log('Starting sync service');
 
     const service = await Service.findOne({ where: { name: 'sync' } });

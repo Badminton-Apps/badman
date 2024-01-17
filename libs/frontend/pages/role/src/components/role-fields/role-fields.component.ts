@@ -33,8 +33,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    ClaimComponent
-],
+    ClaimComponent,
+  ],
 })
 export class RoleFieldsComponent implements OnInit {
   @Input()
@@ -58,9 +58,9 @@ export class RoleFieldsComponent implements OnInit {
 
     for (const claim of this.claims) {
       this.selectedClaims.push(
-        ...claim.claims.filter((c) =>
-          this.role.claims?.some((rc) => rc.name === c.name)
-        )
+        ...claim.claims.filter(
+          (c) => this.role.claims?.some((rc) => rc.name === c.name),
+        ),
       );
     }
   }

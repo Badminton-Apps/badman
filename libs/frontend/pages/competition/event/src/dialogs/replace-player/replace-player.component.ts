@@ -21,8 +21,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatSelectModule,
     MatDialogModule,
     MatButtonModule,
-    TranslateModule
-],
+    TranslateModule,
+  ],
   templateUrl: './replace-player.component.html',
   styleUrls: ['./replace-player.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,7 +36,7 @@ export class ReplacePlayerComponent implements OnInit {
       player: GamePlayer;
       game: number;
       encounter: EncounterCompetition;
-    }
+    },
   ) {}
 
   ngOnInit(): void {

@@ -34,8 +34,8 @@ import { startWith } from 'rxjs/operators';
     HasClaimComponent,
     MatSelectModule,
     HasClaimComponent,
-    PlayerSearchComponent
-],
+    PlayerSearchComponent,
+  ],
 })
 export class TeamFieldComponent implements OnInit {
   @Input()

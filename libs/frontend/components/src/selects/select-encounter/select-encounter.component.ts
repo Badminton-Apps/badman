@@ -55,8 +55,8 @@ import {
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSelectModule
-],
+    MatSelectModule,
+  ],
   templateUrl: './select-encounter.component.html',
   styleUrls: ['./select-encounter.component.scss'],
 })

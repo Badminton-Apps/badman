@@ -9,15 +9,12 @@
 @use './src/loading-block/loading-block.component.theme.scss' as loading-block;
 @use './src/page-header/page-header.component.theme.scss' as page-header;
 @use './src/player-search/player-search.component.theme.scss' as player-search;
-@use './src/selects/select-club/select-club.component.theme.scss' as
-  select-club;
+@use './src/selects/select-club/select-club.component.theme.scss' as select-club;
 @use './src/selects/select-player/select-player.component.theme.scss' as
   select-player;
 @use './src/roles/edit-role/edit-role.component.theme.scss' as edit-role;
 @use './src/shell/theme' as shell;
 @use './src/standing/standing.component.theme.scss' as standing;
-
-
 
 @mixin typography($theme) {
   @include beta.typography($theme);
@@ -44,11 +41,10 @@
   @include select-club.color($theme);
   @include select-player.color($theme);
   @include recent-games.color($theme);
-  @include shell.color($theme); 
+  @include shell.color($theme);
   @include standing.color($theme);
   @include upcoming-games.color($theme);
 }
-
 
 @mixin theme($theme) {
   $color-config: mat.get-color-config($theme);

@@ -24,8 +24,8 @@ import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
     TeamFieldComponent,
     TeamPlayersComponent,
     MatDialogModule,
-    MatButtonModule
-],
+    MatButtonModule,
+  ],
 })
 export class AddDialogComponent {
   group?: FormGroup;
@@ -41,7 +41,7 @@ export class AddDialogComponent {
       teamNumbers: {
         [key in SubEventType]: number[];
       };
-    }
+    },
   ) {
     if (!this.group) {
       this.group = this.fb.group({

@@ -76,8 +76,8 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
     HasClaimComponent,
     CompetitionEnrollmentsComponent,
     CompetitionMapComponent,
-    CompetitionEncountersComponent
-],
+    CompetitionEncountersComponent,
+  ],
 })
 export class DetailPageComponent implements OnInit {
   // injectors

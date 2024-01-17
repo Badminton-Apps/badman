@@ -3,14 +3,11 @@
 @use './src/pages/edit/edit.page.theme.scss' as edit;
 @use './src/components/components.theme.scss' as components;
 
-
-
 @mixin typography($theme) {
   @include add.typography($theme);
   @include edit.typography($theme);
   @include components.typography($theme);
 }
-
 
 @mixin color($theme) {
   @include add.color($theme);

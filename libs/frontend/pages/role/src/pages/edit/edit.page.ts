@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Claim, Club, Role } from '@badman/frontend-models';
@@ -21,8 +27,8 @@ import { RoleFieldsComponent } from '../../components';
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-    RoleFieldsComponent
-],
+    RoleFieldsComponent,
+  ],
 })
 export class EditPageComponent implements OnInit {
   role!: Role;
@@ -36,7 +42,7 @@ export class EditPageComponent implements OnInit {
     private breadcrumbsService: BreadcrumbService,
     private router: Router,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit(): void {
@@ -77,7 +83,7 @@ export class EditPageComponent implements OnInit {
         variables: {
           data: role,
         },
-      })
+      }),
     );
 
     await this.router.navigate(['/', 'club', club.id, 'edit']);
@@ -104,7 +110,11 @@ export class EditPageComponent implements OnInit {
         },
       })
       .pipe(
-        transferState('clubTeamsKey-' + this.club.id, this.stateTransfer, this.platformId),
+        transferState(
+          'clubTeamsKey-' + this.club.id,
+          this.stateTransfer,
+          this.platformId,
+        ),
         map((x) => x?.data.claims?.map((c) => new Claim(c))),
         mergeMap((claims) => claims ?? []),
         groupBy((category) => category.category ?? 'Other'),
@@ -113,10 +123,10 @@ export class EditPageComponent implements OnInit {
             toArray(),
             map((items) => {
               return { category: obs.key, claims: items };
-            })
+            }),
           );
         }),
-        toArray()
+        toArray(),
       );
   }
 }

@@ -44,8 +44,8 @@ import { CronJobService } from '../../services/cronjob.service';
     MatSlideToggleModule,
     MatDatepickerModule,
     PageHeaderComponent,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
 })
 export class OverviewPageComponent {
   // injects
@@ -103,7 +103,7 @@ export class OverviewPageComponent {
           // convert back
           result.arguments = JSON.parse(result.arguments);
         }
-        
+
         // Queue the job here
         this.service.state.queue({
           ...cron,

@@ -77,8 +77,8 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     SelectClubComponent,
     EnrollmentMessageComponent,
     BadmanBlockModule,
-    LoadingBlockComponent
-],
+    LoadingBlockComponent,
+  ],
   templateUrl: './competition-enrollments.component.html',
   styleUrls: ['./competition-enrollments.component.scss'],
   providers: [provideAnimations()],

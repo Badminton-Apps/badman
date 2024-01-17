@@ -56,8 +56,8 @@ import { ShowLevelComponent } from './components/show-level.component';
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
-    ShowLevelComponent
-],
+    ShowLevelComponent,
+  ],
 })
 export class DetailPageComponent {
   // Dependencies

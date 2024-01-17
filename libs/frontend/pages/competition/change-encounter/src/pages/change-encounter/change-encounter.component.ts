@@ -41,8 +41,8 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
     SelectSeasonComponent,
     ListEncountersComponent,
     ShowRequestsComponent,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,95 +1,98 @@
 <badman-block>
   <badman-block-header>
     <badman-block-title>
-      {{ team.name }} @if (teamIndex) {
-      <small>({{ teamIndex }})</small>
-    }
-  </badman-block-title>
-  <badman-block-subtitle>
-    <a
-      (click)="changeSubEvent()"
-      [matTooltipDisabled]="!subEvent"
-      [matTooltip]="'all.team.change-event.change' | translate"
-      >
-      {{
-      subEvent ? subEvent.name : ('all.team.change-event.pick' | translate)
-      }}
-    </a>
-  </badman-block-subtitle>
-</badman-block-header>
-<mat-divider></mat-divider>
-<badman-block-content>
-  <mat-list>
-    @if (!(this.players && this.players.length > 0) && this.subEvent) {
-      <mat-list-item>
-        <div class="no-players">{{'all.player.no-players' | translate}}</div>
-      </mat-list-item>
-    }
-    @if (this.players && this.players.length > 0) {
-      @for (player of this.players; track player) {
-        <div mat-list-item class="player">
-          <span mat-line>
-            {{ player?.player?.fullName }}
-            @if (player.levelException) {
-              <mat-icon class="locked">lock</mat-icon>
-            }
-            <span class="sub-text">
-              {{ player.single }} - {{ player.double }}
-              @if (team.type === 'MX') {
-                - {{ player.mix }}
-              }
-            </span>
-          </span>
-          <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="this.whenPlayerRemoved.next(player)">
-              <mat-icon>delete</mat-icon>
-              <span>{{ 'all.button.delete' | translate }}</span>
-            </button>
-            <button mat-menu-item (click)="onLevelException(player)">
-              @if (!player.levelException) {
-                <mat-icon>lock</mat-icon>
-              }
-              @if (player.levelException) {
-                <mat-icon>lock_open</mat-icon>
-              }
-              <span>Toggle level Exemption</span>
-            </button>
-            <button mat-menu-item (click)="onEditRanking(player)">
-              <mat-icon>edit</mat-icon>
-              <span>Edit Ranking</span>
-            </button>
-          </mat-menu>
-        </div>
+      {{ team.name }}
+      @if (teamIndex) {
+        <small>({{ teamIndex }})</small>
       }
+    </badman-block-title>
+    <badman-block-subtitle>
+      <a
+        (click)="changeSubEvent()"
+        [matTooltipDisabled]="!subEvent"
+        [matTooltip]="'all.team.change-event.change' | translate"
+      >
+        {{
+          subEvent ? subEvent.name : ('all.team.change-event.pick' | translate)
+        }}
+      </a>
+    </badman-block-subtitle>
+  </badman-block-header>
+  <mat-divider></mat-divider>
+  <badman-block-content>
+    <mat-list>
+      @if (!(this.players && this.players.length > 0) && this.subEvent) {
+        <mat-list-item>
+          <div class="no-players">
+            {{ 'all.player.no-players' | translate }}
+          </div>
+        </mat-list-item>
+      }
+      @if (this.players && this.players.length > 0) {
+        @for (player of this.players; track player) {
+          <div mat-list-item class="player">
+            <span mat-line>
+              {{ player?.player?.fullName }}
+              @if (player.levelException) {
+                <mat-icon class="locked">lock</mat-icon>
+              }
+              <span class="sub-text">
+                {{ player.single }} - {{ player.double }}
+                @if (team.type === 'MX') {
+                  - {{ player.mix }}
+                }
+              </span>
+            </span>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button
+                mat-menu-item
+                (click)="this.whenPlayerRemoved.next(player)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>{{ 'all.button.delete' | translate }}</span>
+              </button>
+              <button mat-menu-item (click)="onLevelException(player)">
+                @if (!player.levelException) {
+                  <mat-icon>lock</mat-icon>
+                }
+                @if (player.levelException) {
+                  <mat-icon>lock_open</mat-icon>
+                }
+                <span>Toggle level Exemption</span>
+              </button>
+              <button mat-menu-item (click)="onEditRanking(player)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit Ranking</span>
+              </button>
+            </mat-menu>
+          </div>
+        }
+      }
+    </mat-list>
+    @if (this.subEvent) {
+      <badman-player-search
+        (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
+        [ignorePlayers]="this.players"
+        [allowCreation]="true"
+        [where]="this.where"
+        [club]="this.club"
+      ></badman-player-search>
     }
-  </mat-list>
-  @if (this.subEvent) {
-    <badman-player-search
-      (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
-      [ignorePlayers]="this.players"
-      [allowCreation]="true"
-      [where]="this.where"
-      [club]="this.club"
-    ></badman-player-search>
-  }
-  @if (!this.subEvent) {
-    <p class="no-event">
-      {{ 'all.team.change-event.select-event-hint' | translate }}
-    </p>
-  }
-</badman-block-content>
+    @if (!this.subEvent) {
+      <p class="no-event">
+        {{ 'all.team.change-event.select-event-hint' | translate }}
+      </p>
+    }
+  </badman-block-content>
 </badman-block>
 <ng-template #changeRanking>
   <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
   <mat-dialog-content>
     @if (this.changeRankingFormGroup) {
-      <form
-        class="edit-ranking"
-        [formGroup]="this.changeRankingFormGroup"
-        >
+      <form class="edit-ranking" [formGroup]="this.changeRankingFormGroup">
         <mat-form-field>
           <mat-label>{{ 'all.ranking.single' | translate }}</mat-label>
           <input
@@ -99,40 +102,39 @@
             alt="single"
             autocomplete="single"
             required
-            />
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>{{ 'all.ranking.double' | translate }}</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="double"
-              alt="double"
-              autocomplete="double"
-              required
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>{{ 'all.ranking.mix' | translate }}</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="mix"
-                alt="mix"
-                autocomplete="mix"
-                required
-                />
-              </mat-form-field>
-            </form>
-          }
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-          <button mat-raised-button [matDialogClose]="true" color="primary">
-            {{ 'all.button.save' | translate }}
-          </button>
-          <button mat-button matDialogClose>
-            {{ 'all.button.cancel' | translate }}
-          </button>
-        </mat-dialog-actions>
-      </ng-template>
-      
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ 'all.ranking.double' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="double"
+            alt="double"
+            autocomplete="double"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ 'all.ranking.mix' | translate }}</mat-label>
+          <input
+            matInput
+            type="number"
+            formControlName="mix"
+            alt="mix"
+            autocomplete="mix"
+            required
+          />
+        </mat-form-field>
+      </form>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button [matDialogClose]="true" color="primary">
+      {{ 'all.button.save' | translate }}
+    </button>
+    <button mat-button matDialogClose>
+      {{ 'all.button.cancel' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

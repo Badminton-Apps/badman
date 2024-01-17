@@ -27,8 +27,8 @@ import { MatButtonModule } from '@angular/material/button';
     TranslateModule,
     MomentModule,
     MatDialogModule,
-    MatButtonModule
-],
+    MatButtonModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditClubHistoryComponent implements OnInit {
@@ -68,7 +68,7 @@ export class EditClubHistoryComponent implements OnInit {
   constructor(
     private appollo: Apollo,
     private dialog: MatDialog,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -79,18 +79,18 @@ export class EditClubHistoryComponent implements OnInit {
           query: this.fetchPlayer,
           variables: {
             playerId: this.player.id,
-            includeHistorical: true
+            includeHistorical: true,
           },
-        })
+        }),
       ),
       map((r) => r?.data?.player?.clubs.map((c) => new Club(c))),
       map((r) =>
         r.sort(
           (a, b) =>
             (b?.clubMembership?.start?.getTime() ?? 0) -
-            (a?.clubMembership?.start?.getTime() ?? 0)
-        )
-      )
+            (a?.clubMembership?.start?.getTime() ?? 0),
+        ),
+      ),
     );
   }
 

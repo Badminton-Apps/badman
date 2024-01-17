@@ -41,48 +41,48 @@
         <mat-list-item
           role="listitem"
           [routerLink]="[
-          '/',
-          'competition',
-          encounter.drawCompetition?.subEventCompetition?.eventId,
-          'draw',
-          encounter.drawCompetition?.id,
-          'encounter',
-          encounter.id
+            '/',
+            'competition',
+            encounter.drawCompetition?.subEventCompetition?.eventId,
+            'draw',
+            encounter.drawCompetition?.id,
+            'encounter',
+            encounter.id
           ]"
-          >
+        >
           <span matListItemTitle>
             <span
               class="home"
               [ngClass]="{
-              won: (encounter.homeScore ?? 0) > (encounter.awayScore ?? 0),
-              draw: (encounter.homeScore ?? 0) === (encounter.awayScore ?? 0),
-              lost: (encounter.homeScore ?? 0) < (encounter.awayScore ?? 0)
+                won: (encounter.homeScore ?? 0) > (encounter.awayScore ?? 0),
+                draw: (encounter.homeScore ?? 0) === (encounter.awayScore ?? 0),
+                lost: (encounter.homeScore ?? 0) < (encounter.awayScore ?? 0)
               }"
               >{{ encounter.home?.name }}</span
-              >&nbsp;<span>{{ 'all.competition.vs-short' | translate }}</span
-              >&nbsp;<span
+            >&nbsp;<span>{{ 'all.competition.vs-short' | translate }}</span
+            >&nbsp;<span
               class="away"
               [ngClass]="{
-              won: (encounter.awayScore ?? 0) > (encounter.homeScore ?? 0),
-              draw: (encounter.awayScore ?? 0) === (encounter.homeScore ?? 0),
-              lost: (encounter.awayScore ?? 0) < (encounter.homeScore ?? 0)
+                won: (encounter.awayScore ?? 0) > (encounter.homeScore ?? 0),
+                draw: (encounter.awayScore ?? 0) === (encounter.homeScore ?? 0),
+                lost: (encounter.awayScore ?? 0) < (encounter.homeScore ?? 0)
               }"
               >{{ encounter.away?.name }}</span
+            >
+            @if (
+              (encounter.homeScore ?? -1) > 0 && (encounter.awayScore ?? -1) > 0
+            ) {
+              <span
+                >&nbsp;({{ encounter.homeScore }} -
+                {{ encounter.awayScore }})</span
               >
-              @if (
-                (encounter.homeScore ?? -1) > 0 && (encounter.awayScore ?? -1) > 0
-                ) {
-                <span
-                  >&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span
-                  >
-                }
-              </span>
-              <span matListItemLine>{{
-                encounter?.date | amDateFormat : 'llll'
-              }}</span>
-            </mat-list-item>
-          }
-        </mat-nav-list>
-      </section>
-    }
-    
+            }
+          </span>
+          <span matListItemLine>{{
+            encounter?.date | amDateFormat: 'llll'
+          }}</span>
+        </mat-list-item>
+      }
+    </mat-nav-list>
+  </section>
+}

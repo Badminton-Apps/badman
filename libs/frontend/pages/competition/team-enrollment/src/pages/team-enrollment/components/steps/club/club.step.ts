@@ -32,7 +32,7 @@ import {
 export class DirectErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(
     control: FormControl | null,
-    form: FormGroupDirective | NgForm | null
+    form: FormGroupDirective | NgForm | null,
   ): boolean {
     const isSubmitted = form && form.submitted;
     return !!(
@@ -52,8 +52,8 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
     FormsModule,
     TranslateModule,
     MatInputModule,
-    SelectClubComponent
-],
+    SelectClubComponent,
+  ],
   templateUrl: './club.step.html',
   styleUrls: ['./club.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,7 +88,7 @@ export class ClubStepComponent implements OnInit {
     if (this.group) {
       this.valueId = this.group?.get(this.controlName) as FormControl<string>;
       this.email = this.group?.get(
-        this.controlEmailName
+        this.controlEmailName,
       ) as FormControl<string>;
     }
 
@@ -103,7 +103,7 @@ export class ClubStepComponent implements OnInit {
       this.email?.valueChanges
         .pipe(
           takeUntil(this.destroy$),
-          filter((value) => value != null && this.email?.valid)
+          filter((value) => value != null && this.email?.valid),
         )
         .subscribe((value) => {
           if (value != null) {
@@ -136,10 +136,10 @@ export class ClubStepComponent implements OnInit {
             value[8] === '-' &&
             value[13] === '-' &&
             value[18] === '-' &&
-            value[23] === '-'
+            value[23] === '-',
         ),
         startWith(this.group.value?.[this.controlName]),
-        pairwise()
+        pairwise(),
       )
       .subscribe(([prev, next]) => {
         // clear all other values of groupw

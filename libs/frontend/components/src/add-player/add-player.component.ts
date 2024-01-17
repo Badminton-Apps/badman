@@ -19,13 +19,13 @@ import { PlayerSearchComponent } from '../player-search';
     TranslateModule,
     MatDialogModule,
     MatButtonModule,
-    PlayerSearchComponent
-],
+    PlayerSearchComponent,
+  ],
 })
 export class AddPlayerComponent {
   constructor(
     public dialogRef: MatDialogRef<AddPlayerComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Partial<Player>
+    @Inject(MAT_DIALOG_DATA) public data: Partial<Player>,
   ) {}
 
   selectPlayer(player: Player) {

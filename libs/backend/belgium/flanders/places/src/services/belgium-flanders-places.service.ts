@@ -112,7 +112,7 @@ export class BelgiumFlandersPlacesService {
       // Protections
       newRanking = getRankingProtected(newRanking, system);
       newRanking.updatePossible = true;
-    } else{
+    } else {
       newRanking.updatePossible = false;
     }
 
@@ -304,15 +304,15 @@ export class BelgiumFlandersPlacesService {
       gameType === GameType.S
         ? 'differenceForDowngradeSingle'
         : gameType === GameType.D
-        ? 'differenceForDowngradeDouble'
-        : 'differenceForDowngradeMix';
+          ? 'differenceForDowngradeDouble'
+          : 'differenceForDowngradeMix';
 
     const propUpgrade =
       gameType === GameType.S
         ? 'differenceForUpgradeSingle'
         : gameType === GameType.D
-        ? 'differenceForUpgradeDouble'
-        : 'differenceForUpgradeMix';
+          ? 'differenceForUpgradeDouble'
+          : 'differenceForUpgradeMix';
 
     // difference is a negative number when layers are higher
     let pointsForUpgrade = points.filter(

@@ -21,19 +21,15 @@ import { NgMapsGoogleModule } from '@ng-maps/google';
   styleUrls: ['./draw-locations-map.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    NgMapsGoogleModule
-],
+  imports: [CommonModule, RouterModule, TranslateModule, NgMapsGoogleModule],
 })
 export class DrawLocationMapComponent implements OnInit {
   locations: Location[] = [];
 
   @Input({
     required: true,
-  }) drawTournament!: DrawTournament;
+  })
+  drawTournament!: DrawTournament;
 
   constructor(private apollo: Apollo) {}
 

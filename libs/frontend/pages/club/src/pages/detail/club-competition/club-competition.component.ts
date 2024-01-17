@@ -77,8 +77,8 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     SelectClubComponent,
     EnrollmentMessageComponent,
     BadmanBlockModule,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
   templateUrl: './club-competition.component.html',
   styleUrls: ['./club-competition.component.scss'],
   providers: [provideAnimations()],
@@ -138,10 +138,7 @@ export class ClubCompetitionComponent implements OnInit {
             teams: Partial<Team>[];
           }>({
             query: gql`
-              query EventEntries(
-                $where: JSONObject
-                $order: [SortOrderType!]
-              ) {
+              query EventEntries($where: JSONObject, $order: [SortOrderType!]) {
                 teams(where: $where, order: $order) {
                   id
                   name

@@ -44,8 +44,8 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
     OverlayModule,
     MatListModule,
     LanguageComponent,
-    ThemeSwitcherComponent
-],
+    ThemeSwitcherComponent,
+  ],
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -103,9 +103,9 @@ export class NotificationComponent {
       this.notifications()
         ?.filter((n) => n.read == false)
         ?.map((notification) =>
-          this.notificationService.readNotification(notification, true).pipe(
-            delay(50)
-          ),
+          this.notificationService
+            .readNotification(notification, true)
+            .pipe(delay(50)),
         ) ?? [];
 
     // process notifications one by one

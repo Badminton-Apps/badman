@@ -66,5 +66,5 @@ export class EntryCompetitionPlayersType {
 @InputType()
 export class EntryCompetitionPlayersInputType extends PartialType(
   OmitType(EntryCompetitionPlayersType, ['player'] as const),
-  InputType
+  InputType,
 ) {}

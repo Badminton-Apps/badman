@@ -3,45 +3,36 @@
   translate}}
 </div>
 @if (teams$ | async; as teams) {
-  <div class="all">
-    <button mat-button (click)="selectAll('lastSeason')">
-      {{ 'all.button.all' | translate }}
-    </button>
-    <button mat-button (click)="deselectAll('lastSeason')">
-      {{ 'all.button.none' | translate }}
-    </button>
-  </div>
-  @for (team of teams.lastSeason; track team; let i = $index) {
-    <div class="teams">
-      <mat-checkbox [formControl]="this.teamsForm![i]"
-        >{{ team.name }}</mat-checkbox
-        >
-      </div>
-    }
-    @if (teams.newThisSeason.length > 0) {
-      <h3>
-        {{ 'all.competition.team-enrollment.teams.new-teams' | translate }}
-      </h3>
-      <div class="all">
-        <button mat-button (click)="selectAll('newThisSeason')">
-          {{ 'all.button.all' | translate }}
-        </button>
-        <button mat-button (click)="deselectAll('newThisSeason')">
-          {{ 'all.button.none' | translate }}
-        </button>
-      </div>
-      @for (team of teams.newThisSeason; track team; let i = $index) {
-        <div
-          class="teams"
-          >
-          <mat-checkbox [formControl]="this.newTeamsForm![i]"
-            >{{ team.name }}</mat-checkbox
-            >
-          </div>
-        }
-      }
-    } @else {
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar
-        >
-      }
-      
+<div class="all">
+  <button mat-button (click)="selectAll('lastSeason')">
+    {{ 'all.button.all' | translate }}
+  </button>
+  <button mat-button (click)="deselectAll('lastSeason')">
+    {{ 'all.button.none' | translate }}
+  </button>
+</div>
+@for (team of teams.lastSeason; track team; let i = $index) {
+<div class="teams">
+  <mat-checkbox [formControl]="this.teamsForm![i]"
+    >{{ team.name }}</mat-checkbox
+  >
+</div>
+} @if (teams.newThisSeason.length > 0) {
+<h3>{{ 'all.competition.team-enrollment.teams.new-teams' | translate }}</h3>
+<div class="all">
+  <button mat-button (click)="selectAll('newThisSeason')">
+    {{ 'all.button.all' | translate }}
+  </button>
+  <button mat-button (click)="deselectAll('newThisSeason')">
+    {{ 'all.button.none' | translate }}
+  </button>
+</div>
+@for (team of teams.newThisSeason; track team; let i = $index) {
+<div class="teams">
+  <mat-checkbox [formControl]="this.newTeamsForm![i]"
+    >{{ team.name }}</mat-checkbox
+  >
+</div>
+} } } @else {
+<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}

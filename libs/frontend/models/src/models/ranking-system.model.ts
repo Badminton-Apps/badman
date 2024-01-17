@@ -54,7 +54,8 @@ export class RankingSystem {
     this.procentWinningPlus1 = args?.procentWinningPlus1;
     this.procentLosing = args?.procentLosing;
     this.minNumberOfGamesUsedForUpgrade = args?.minNumberOfGamesUsedForUpgrade;
-    this.minNumberOfGamesUsedForDowngrade = args?.minNumberOfGamesUsedForDowngrade;
+    this.minNumberOfGamesUsedForDowngrade =
+      args?.minNumberOfGamesUsedForDowngrade;
     this.maxDiffLevels = args?.maxDiffLevels;
     this.maxDiffLevelsHighest = args?.maxDiffLevelsHighest;
     this.latestXGamesToUse = args?.latestXGamesToUse;
@@ -63,17 +64,13 @@ export class RankingSystem {
     this.gamesForInactivty = args?.gamesForInactivty;
     this.inactivityAmount = args?.inactivityAmount;
     this.inactivityUnit = args?.inactivityUnit;
-    this.calculationLastUpdate = moment(
-      args?.calculationLastUpdate
-    ).toDate();
+    this.calculationLastUpdate = moment(args?.calculationLastUpdate).toDate();
     this.calculationIntervalAmount = args?.calculationIntervalAmount;
     this.calculationIntervalUnit = args?.calculationIntervalUnit;
     this.calculationDayOfWeek = args?.calculationDayOfWeek;
     this.periodAmount = args?.periodAmount;
     this.periodUnit = args?.periodUnit;
-    this.updateLastUpdate = moment(
-      args?.updateLastUpdate
-    ).toDate();
+    this.updateLastUpdate = moment(args?.updateLastUpdate).toDate();
     this.updateIntervalAmount = args?.updateIntervalAmount;
     this.updateIntervalUnit = args?.updateIntervalUnit;
     this.updateDayOfWeek = args?.updateDayOfWeek;
@@ -110,4 +107,3 @@ export interface RankingPlacesResult {
   date: Date;
   points: RankingPlaceResult[];
 }
-

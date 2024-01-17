@@ -9,10 +9,7 @@
         [group]="this.formGroup"
       ></badman-select-club>
       @if (this.canSelectSeason()) {
-        <badman-select-season
-          [updateUrl]="true"
-          [group]="this.formGroup"
-          >
+        <badman-select-season [updateUrl]="true" [group]="this.formGroup">
         </badman-select-season>
       }
       <badman-select-team

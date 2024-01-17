@@ -6,98 +6,95 @@
       [checked]="this.useSame"
       (change)="this.useSame = !this.useSame"
       >Use same group for all sub events</mat-checkbox
+    >
+    <mat-form-field>
+      <mat-label>Ranking system group</mat-label>
+      <mat-select
+        multiple
+        [formControl]="selectedGroups"
+        [compareWith]="this.compareGroups"
       >
-      <mat-form-field>
-        <mat-label>Ranking system group</mat-label>
-        <mat-select
-          multiple
-          [formControl]="selectedGroups"
-          [compareWith]="this.compareGroups"
-          >
-          @for (group of this.groups$ | async; track group) {
-            <mat-option [value]="group">
-              {{ group.name }}
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      @if (this.dataSource && !this.useSame) {
-        <div class="table-container">
-          <table mat-table [dataSource]="this.dataSource" fxFill>
-            <!-- Name Column -->
-            <ng-container matColumnDef="name">
+        @for (group of this.groups$ | async; track group) {
+          <mat-option [value]="group">
+            {{ group.name }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    @if (this.dataSource && !this.useSame) {
+      <div class="table-container">
+        <table mat-table [dataSource]="this.dataSource" fxFill>
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'input.name' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+          <!-- Weight Column -->
+          <ng-container matColumnDef="eventType">
+            <th mat-header-cell *matHeaderCellDef>Type</th>
+            <td mat-cell *matCellDef="let element">{{ element.eventType }}</td>
+          </ng-container>
+          <!-- SubEventGroups Column -->
+          @for (subEventGroup of selectedGroups.value; track subEventGroup) {
+            <ng-container [matColumnDef]="'group-' + subEventGroup.id">
               <th mat-header-cell *matHeaderCellDef>
-                {{ 'input.name' | translate }}
-              </th>
-              <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-            </ng-container>
-            <!-- Weight Column -->
-            <ng-container matColumnDef="eventType">
-              <th mat-header-cell *matHeaderCellDef>Type</th>
-              <td mat-cell *matCellDef="let element">{{ element.eventType }}</td>
-            </ng-container>
-            <!-- SubEventGroups Column -->
-            @for (subEventGroup of selectedGroups.value; track subEventGroup) {
-              <ng-container
-                [matColumnDef]="'group-' + subEventGroup.id"
-                >
-                <th mat-header-cell *matHeaderCellDef>
-                  <mat-checkbox
-                    (change)="
+                <mat-checkbox
+                  (change)="
                     $event ? masterToggle('group-' + subEventGroup.id) : null
-                    "
-                    [checked]="
+                  "
+                  [checked]="
                     selection.get('group-' + subEventGroup.id)?.hasValue() &&
                     isAllSelected('group-' + subEventGroup.id)
-                    "
-                    [indeterminate]="
+                  "
+                  [indeterminate]="
                     selection.get('group-' + subEventGroup.id)?.hasValue() &&
                     !isAllSelected('group-' + subEventGroup.id)
-                    "
-                    [aria-label]="checkboxLabel('group-' + subEventGroup.id)"
-                    >
-                    {{ subEventGroup.name }}
-                  </mat-checkbox>
-                </th>
-                <td mat-cell *matCellDef="let row">
-                  <mat-checkbox
-                    (click)="$event.stopPropagation()"
-                    (change)="
+                  "
+                  [aria-label]="checkboxLabel('group-' + subEventGroup.id)"
+                >
+                  {{ subEventGroup.name }}
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox
+                  (click)="$event.stopPropagation()"
+                  (change)="
                     $event
-                    ? selection.get('group-' + subEventGroup.id)!.toggle(row)
-                    : null
-                    "
-                    [checked]="
+                      ? selection.get('group-' + subEventGroup.id)!.toggle(row)
+                      : null
+                  "
+                  [checked]="
                     selection.get('group-' + subEventGroup.id)!.isSelected(row)
-                    "
-                    [aria-label]="checkboxLabel('group-' + subEventGroup.id, row)"
-                    >
-                  </mat-checkbox>
-                </td>
-              </ng-container>
-            }
-            <tr
-              mat-header-row
-              *matHeaderRowDef="displayedColumns; sticky: true"
-            ></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-          </table>
-        </div>
-      }
-    </div>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button [disabled]="this.loading" [mat-dialog-close]="">
-      {{ 'all.button.close' | translate }}
-    </button>
-    <button
-      mat-raised-button
-      color="primary"
-      [class.spinner]="this.loading"
-      [disabled]="this.loading"
-      (click)="this.assignRankingGroups()"
-      >
-      {{ 'all.button.save' | translate }}
-    </button>
-  </mat-dialog-actions>
-  
+                  "
+                  [aria-label]="checkboxLabel('group-' + subEventGroup.id, row)"
+                >
+                </mat-checkbox>
+              </td>
+            </ng-container>
+          }
+          <tr
+            mat-header-row
+            *matHeaderRowDef="displayedColumns; sticky: true"
+          ></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+    }
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [disabled]="this.loading" [mat-dialog-close]="">
+    {{ 'all.button.close' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    [class.spinner]="this.loading"
+    [disabled]="this.loading"
+    (click)="this.assignRankingGroups()"
+  >
+    {{ 'all.button.save' | translate }}
+  </button>
+</mat-dialog-actions>

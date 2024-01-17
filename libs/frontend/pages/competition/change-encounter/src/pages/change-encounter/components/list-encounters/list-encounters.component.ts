@@ -42,8 +42,8 @@ import {
     MatDividerModule,
     MatSelectModule,
     MomentModule,
-    LoadingBlockComponent
-],
+    LoadingBlockComponent,
+  ],
 })
 export class ListEncountersComponent implements OnInit {
   private destroy$ = injectDestroy();

@@ -7,7 +7,7 @@
           <span
             class="locked"
             [matTooltip]="'all.security.roles.locked' | translate"
-          ><mat-icon>lock</mat-icon></span
+            ><mat-icon>lock</mat-icon></span
           >
         }
       </badman-block-title>
@@ -22,7 +22,7 @@
             [disabled]="this.role()?.locked"
             [matTooltip]="'all.security.roles.locked' | translate"
             [matTooltipDisabled]="!this.role()?.locked"
-            >
+          >
             <mat-icon>edit</mat-icon>
             <span>{{ 'all.button.edit' | translate }}</span>
           </button>
@@ -31,7 +31,7 @@
             [disabled]="this.role()?.locked"
             [matTooltip]="'all.security.roles.locked' | translate"
             [matTooltipDisabled]="!this.role()?.locked"
-            >
+          >
             <mat-icon>delete</mat-icon>
             <span>{{ 'all.button.delete' | translate }}</span>
           </button>
@@ -43,15 +43,14 @@
       <mat-list>
         @if (!((this.role()?.players?.length ?? 0) > 0)) {
           <mat-list-item>
-            <div class="no-players">{{'all.player.no-players' | translate}}</div>
+            <div class="no-players">
+              {{ 'all.player.no-players' | translate }}
+            </div>
           </mat-list-item>
         }
         @if ((this.role()?.players?.length ?? 0) > 0) {
           @for (player of this.role()?.players; track player) {
-            <div
-              mat-list-item
-              class="player"
-              >
+            <div mat-list-item class="player">
               <span mat-line>
                 {{ player.fullName }}
               </span>
@@ -63,7 +62,7 @@
                   mat-menu-item
                   (click)="onPlayerRemovedFromRole(player)"
                   [disabled]="removeDisabled()"
-                  >
+                >
                   <mat-icon>delete</mat-icon>
                   <span>{{ 'all.button.delete' | translate }}</span>
                 </button>
@@ -93,15 +92,15 @@
           (whenChange)="onClaimChange($event, claim)"
         ></badman-claim>
       }
-    }</mat-dialog-content>
-    <mat-dialog-actions>
-      <button mat-button mat-dialog-close>
-        {{ 'all.button.cancel' | translate }}
-      </button>
-      <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-      <button mat-raised-button color="primary" [mat-dialog-close]="true">
-        {{ 'all.button.save' | translate }}
-      </button>
-    </mat-dialog-actions>
-  </ng-template>
-  
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>
+      {{ 'all.button.cancel' | translate }}
+    </button>
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">
+      {{ 'all.button.save' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

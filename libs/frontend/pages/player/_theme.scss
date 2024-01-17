@@ -2,8 +2,8 @@
 @use './src/pages/detail/detail.page.theme.scss' as detail;
 @use './src/pages/edit/edit.page.theme.scss' as edit;
 @use './src/pages/settings/settings.component.theme' as settings;
-@use './src/pages/ranking-breakdown/ranking-breakdown.page.theme.scss' as ranking-breakdown;
-
+@use './src/pages/ranking-breakdown/ranking-breakdown.page.theme.scss' as
+  ranking-breakdown;
 
 @mixin typography($theme) {
   @include detail.typography($theme);

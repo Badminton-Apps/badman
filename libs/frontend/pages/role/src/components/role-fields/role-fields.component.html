@@ -10,20 +10,19 @@
       alt="name"
       autocomplete="name"
       required
-      />
-    </mat-form-field>
-    @for (group of this.claims; track group) {
-      <h2>{{ group.category }}</h2>
-      @for (claim of group.claims; track claim) {
-        <badman-claim
-          [claim]="claim"
-          [value]="this.selectedClaims.includes(claim)"
-          (whenChange)="claimChanged(claim, $event)"
-        ></badman-claim>
-      }
+    />
+  </mat-form-field>
+  @for (group of this.claims; track group) {
+    <h2>{{ group.category }}</h2>
+    @for (claim of group.claims; track claim) {
+      <badman-claim
+        [claim]="claim"
+        [value]="this.selectedClaims.includes(claim)"
+        (whenChange)="claimChanged(claim, $event)"
+      ></badman-claim>
     }
-    <button mat-raised-button color="primary" type="submit">
-      {{ 'all.button.save' | translate }}
-    </button>
-  </form>
-  
+  }
+  <button mat-raised-button color="primary" type="submit">
+    {{ 'all.button.save' | translate }}
+  </button>
+</form>

@@ -33,8 +33,8 @@ export const PLAYERS_CONTROL = 'players';
     MatButtonModule,
     MatSelectModule,
     MatSnackBarModule,
-    PlayerSearchComponent
-],
+    PlayerSearchComponent,
+  ],
 })
 export class TeamPlayersComponent implements OnInit {
   @Input()
@@ -95,14 +95,14 @@ export class TeamPlayersComponent implements OnInit {
 
     if (this.control && newPlayer != null) {
       this.control.push(
-        new FormControl<TeamPlayer>(newPlayer) as FormControl<TeamPlayer>
+        new FormControl<TeamPlayer>(newPlayer) as FormControl<TeamPlayer>,
       );
     }
   }
 
   async playerRemoved(player: TeamPlayer) {
     const index = this.control?.value.findIndex(
-      (p: TeamPlayer) => p.id === player.id
+      (p: TeamPlayer) => p.id === player.id,
     );
 
     if (index !== undefined && index !== null && index >= 0) {

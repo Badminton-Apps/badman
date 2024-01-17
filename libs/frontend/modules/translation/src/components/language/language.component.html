@@ -3,11 +3,7 @@
 </button>
 <mat-menu #Lang="matMenu">
   @for (lang of langs; track lang) {
-    <button
-      mat-menu-item
-      [value]="lang"
-      (click)="setLang(lang)"
-      >
+    <button mat-menu-item [value]="lang" (click)="setLang(lang)">
       {{ 'all.settings.languages.' + lang | translate }}
     </button>
   }

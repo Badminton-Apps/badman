@@ -41,8 +41,8 @@ import { DrawLocationMapComponent } from './components';
     RecentGamesComponent,
     UpcomingGamesComponent,
     PageHeaderComponent,
-    DrawLocationMapComponent
-],
+    DrawLocationMapComponent,
+  ],
 })
 export class DetailDrawCompetitionComponent implements OnInit {
   drawCompetition!: DrawCompetition;
@@ -52,7 +52,7 @@ export class DetailDrawCompetitionComponent implements OnInit {
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   get isClient(): boolean {
@@ -74,7 +74,7 @@ export class DetailDrawCompetitionComponent implements OnInit {
       });
       this.breadcrumbsService.set(
         '@eventCompetition',
-        this.eventCompetition.name || ''
+        this.eventCompetition.name || '',
       );
       this.breadcrumbsService.set('@drawCompetition', drawCompetitionName);
 

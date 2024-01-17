@@ -15,8 +15,8 @@
           </th>
           <td mat-cell *matCellDef="let element">
             {{
-            'all.game.types.long.' + element.subEventCompetition.eventType
-            | translate
+              'all.game.types.long.' + element.subEventCompetition.eventType
+                | translate
             }}
             - {{ element.name }}
           </td>
@@ -41,7 +41,10 @@
             </mat-form-field>
           </td>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
@@ -57,7 +60,7 @@
     [class.spinner]="this.loading"
     [disabled]="this.loading"
     (click)="this.save()"
-    >
+  >
     {{ 'all.button.save' | translate }}
   </button>
 </mat-dialog-actions>

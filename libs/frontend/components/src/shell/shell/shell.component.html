@@ -15,7 +15,9 @@
     </mat-toolbar>
     <div class="sidebar-items">
       <div>
-        <badman-user-shortcuts (whenNavigate)="isHandset() && drawer.close()"></badman-user-shortcuts>
+        <badman-user-shortcuts
+          (whenNavigate)="isHandset() && drawer.close()"
+        ></badman-user-shortcuts>
         <mat-nav-list>
           <mat-list-item (click)="expanded.general = !expanded.general">
             <div class="expandable-item">

@@ -59,8 +59,8 @@ import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
     MatSnackBarModule,
     MatDividerModule,
     MatTooltipModule,
-    PlayerSearchComponent
-],
+    PlayerSearchComponent,
+  ],
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.scss'],
 })
@@ -108,7 +108,7 @@ export class TeamComponent implements OnInit {
     private apollo: Apollo,
     private snackbar: MatSnackBar,
     private changeDetector: ChangeDetectorRef,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
   ) {}
 
   ngOnInit(): void {
@@ -127,7 +127,7 @@ export class TeamComponent implements OnInit {
               single: p.rankingPlaces?.[0]?.single ?? 12,
               double: p.rankingPlaces?.[0]?.double ?? 12,
               mix: p.rankingPlaces?.[0]?.mix ?? 12,
-            }))
+            })),
           );
         }
       });
@@ -138,7 +138,7 @@ export class TeamComponent implements OnInit {
         if (this.basePlayers.value && this.team?.value?.type) {
           this.baseIndex = getIndexFromPlayers(
             this.team.value.type,
-            this.basePlayers.value
+            this.basePlayers.value,
           );
         }
       });
@@ -146,7 +146,7 @@ export class TeamComponent implements OnInit {
 
   removePlayerFromTeam(player: Player) {
     const newPlayers = this.team.value.players?.filter(
-      (p) => p.id !== player.id
+      (p) => p.id !== player.id,
     );
 
     this.team.value.players = newPlayers;
@@ -171,7 +171,7 @@ export class TeamComponent implements OnInit {
         ...player,
         rankingPlaces: ranking.data?.rankingPlaces ?? [],
         membershipType: TeamMembershipType.REGULAR,
-      })
+      }),
     );
 
     this.team.value.players = newPlayers;
@@ -198,7 +198,9 @@ export class TeamComponent implements OnInit {
     } as EntryCompetitionPlayer;
 
     this.basePlayers.push(
-      this.formBuilder.control(newPlayer) as FormControl<EntryCompetitionPlayer>
+      this.formBuilder.control(
+        newPlayer,
+      ) as FormControl<EntryCompetitionPlayer>,
     );
 
     this.checkTeam();
@@ -220,11 +222,11 @@ export class TeamComponent implements OnInit {
     this.warningMessage = '';
 
     this.baseCount = this.team.value.players?.filter(
-      (p) => p.membershipType === TeamMembershipType.REGULAR
+      (p) => p.membershipType === TeamMembershipType.REGULAR,
     ).length;
 
     this.backupCount = this.team.value.players?.filter(
-      (p) => p.membershipType === TeamMembershipType.BACKUP
+      (p) => p.membershipType === TeamMembershipType.BACKUP,
     ).length;
 
     // check if all required fields are set (captainId, preferredDay, prefferdTime, email, phone)
@@ -284,7 +286,7 @@ export class TeamComponent implements OnInit {
             },
           ],
         },
-      })
+      }),
     );
   }
 }

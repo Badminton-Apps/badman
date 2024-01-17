@@ -4,7 +4,6 @@
 @use './src/pages/detail/detail.page.theme.scss' as detail;
 @use './src/pages/detail-draw/detail-draw.page.theme.scss' as detail-draw;
 
-
 @mixin typography($theme) {
   @include detail.typography($theme);
   @include detail-draw.typography($theme);

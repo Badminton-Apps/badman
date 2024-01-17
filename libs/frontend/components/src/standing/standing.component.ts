@@ -22,8 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     RouterModule,
     MatTableModule,
-    MatIconModule
-]
+    MatIconModule,
+  ],
 })
 export class StandingComponent implements OnInit {
   @Input()
@@ -38,10 +38,10 @@ export class StandingComponent implements OnInit {
   ngOnInit(): void {
     // Filter out those without standing
     this.entries = this.entries.filter((e) => e.standing);
-    
+
     // Sort by postion
     this.entries?.sort(
-      (a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0)
+      (a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0),
     );
 
     if (this.type == 'players') {

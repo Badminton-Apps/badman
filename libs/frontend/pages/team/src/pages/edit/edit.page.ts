@@ -47,8 +47,8 @@ import {
     MatSnackBarModule,
     MatProgressBarModule,
     TeamFieldComponent,
-    TeamPlayersComponent
-],
+    TeamPlayersComponent,
+  ],
 })
 export class EditPageComponent implements OnInit {
   team!: Team;
@@ -67,7 +67,7 @@ export class EditPageComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit(): void {
@@ -82,7 +82,7 @@ export class EditPageComponent implements OnInit {
     });
     this.breadcrumbsService.set(
       'club/:id',
-      this.route.snapshot.data['club'].name
+      this.route.snapshot.data['club'].name,
     );
     this.breadcrumbsService.set('club/:id/team/:id', teamName);
 
@@ -110,7 +110,7 @@ export class EditPageComponent implements OnInit {
       ?.get(PLAYERS_CONTROL)
       ?.valueChanges.pipe(
         startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []),
-        pairwise()
+        pairwise(),
       )
       .subscribe(([prev, curr]: [TeamPlayer[], TeamPlayer[]]) => {
         if (!prev || !curr) {
@@ -119,12 +119,12 @@ export class EditPageComponent implements OnInit {
 
         // filter out the new players
         const newPlayers = curr.filter(
-          (c) => !prev.some((p) => p?.id === c?.id)
+          (c) => !prev.some((p) => p?.id === c?.id),
         );
 
         // filter out the removed players
         const removedPlayers = prev.filter(
-          (p) => !curr.some((c) => c?.id === p?.id)
+          (p) => !curr.some((c) => c?.id === p?.id),
         );
 
         // if there are new players
@@ -193,7 +193,7 @@ export class EditPageComponent implements OnInit {
             teamId: this.team.id,
           },
           refetchQueries: ['TeamPlayers'],
-        })
+        }),
       );
     }
   }
@@ -217,7 +217,7 @@ export class EditPageComponent implements OnInit {
             teamId: this.team.id,
           },
           refetchQueries: ['TeamPlayers'],
-        })
+        }),
       );
     }
   }
@@ -263,7 +263,7 @@ export class EditPageComponent implements OnInit {
   removeTeam() {
     const dialogData = new ConfirmDialogModel(
       'all.club.delete.team.title',
-      'all.club.delete.team.description'
+      'all.club.delete.team.description',
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

@@ -26,8 +26,8 @@ import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
     MatIconModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatTooltipModule
-],
+    MatTooltipModule,
+  ],
   templateUrl: './request-date.component.html',
   styleUrls: ['./request-date.component.scss'],
 })
@@ -51,12 +51,12 @@ export class RequestDateComponent implements OnInit {
       this.group.get('availabilityAway')?.valueChanges.pipe(
         startWith(this.group.get('availabilityAway')?.value),
         distinctUntilChanged(),
-        map((value) => value == 'POSSIBLE')
+        map((value) => value == 'POSSIBLE'),
       ) ?? of(false),
       this.group.get('availabilityHome')?.valueChanges.pipe(
         startWith(this.group.get('availabilityHome')?.value),
         distinctUntilChanged(),
-        map((value) => value == 'POSSIBLE')
+        map((value) => value == 'POSSIBLE'),
       ) ?? of(false),
     ]).subscribe(([availabilityAway, availabilityHome]) => {
       if (availabilityAway && availabilityHome) {
