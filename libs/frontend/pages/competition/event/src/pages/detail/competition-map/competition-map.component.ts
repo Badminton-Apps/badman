@@ -39,8 +39,8 @@ import {
     CommonModule,
     GoogleMapsModule,
     MatProgressBarModule,
-    MatCheckboxModule
-],
+    MatCheckboxModule,
+  ],
   templateUrl: './competition-map.component.html',
   styleUrls: ['./competition-map.component.scss'],
   providers: [provideAnimations()],

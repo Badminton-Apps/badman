@@ -30,8 +30,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-    LoadingBlockComponent
-],
+    LoadingBlockComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailAvgPageComponent implements OnInit {
@@ -122,7 +122,7 @@ export class DetailAvgPageComponent implements OnInit {
     private readonly translate: TranslateService,
     private readonly breadcrumbsService: BreadcrumbService,
     private readonly route: ActivatedRoute,
-    private readonly apollo: Apollo
+    private readonly apollo: Apollo,
   ) {}
 
   ngOnInit(): void {
@@ -136,15 +136,15 @@ export class DetailAvgPageComponent implements OnInit {
       this.eventCompetition = data['eventCompetition'];
       this.breadcrumbsService.set(
         '@eventCompetition',
-        this.eventCompetition.name || ''
+        this.eventCompetition.name || '',
       );
       this.breadcrumbsService.set(
         'competition',
-        translations['all.competition.title']
+        translations['all.competition.title'],
       );
       this.breadcrumbsService.set(
         'competition/:id/avg-level',
-        translations['all.competition.avg-level']
+        translations['all.competition.avg-level'],
       );
     });
 
@@ -163,7 +163,7 @@ export class DetailAvgPageComponent implements OnInit {
     subEvents: SubEventCompetition[],
     gender: 'M' | 'F',
     chartType: 'single' | 'double' | 'mix',
-    eventType: 'M' | 'F' | 'MX'
+    eventType: 'M' | 'F' | 'MX',
   ) {
     const filteredSubEvents = subEvents.filter((s) => s.eventType == eventType);
 
@@ -172,7 +172,7 @@ export class DetailAvgPageComponent implements OnInit {
     const genderData = filteredSubEvents
       .map((subEvent) => {
         const genderData = subEvent.averageLevel?.find(
-          (a) => a.gender == gender
+          (a) => a.gender == gender,
         );
         return {
           avgerage: genderData?.[chartType] as number,
@@ -199,7 +199,7 @@ export class DetailAvgPageComponent implements OnInit {
   chartTitle(
     gender: 'M' | 'F',
     chartType: 'single' | 'double' | 'mix',
-    eventType: 'M' | 'F' | 'MX'
+    eventType: 'M' | 'F' | 'MX',
   ) {
     return {
       text: `Reeks: ${eventType}, Geslacht: ${gender}, Dicipline: ${chartType}`,
@@ -294,9 +294,9 @@ export class DetailAvgPageComponent implements OnInit {
         take(1),
         map((result) => {
           return result.data.eventCompetition.subEventCompetitions?.map(
-            (s) => new SubEventCompetition(s)
+            (s) => new SubEventCompetition(s),
           );
-        })
+        }),
       );
   }
 }

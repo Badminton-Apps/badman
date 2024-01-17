@@ -7,7 +7,6 @@
 @use './src/pages/detail-encounter/detail-encounter.page.theme.scss' as
   detail-encounter;
 
-
 @mixin typography($theme) {
   @include detail.typography($theme);
   @include detail-draw.typography($theme);

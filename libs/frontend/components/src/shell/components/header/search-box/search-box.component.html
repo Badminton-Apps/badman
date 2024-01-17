@@ -4,52 +4,44 @@
     [placeholder]="this.label | translate"
     [formControl]="formControl"
     [matAutocomplete]="auto"
-    />
-    <mat-autocomplete
-      #auto="matAutocomplete"
-      (optionSelected)="selectedPlayer($event)"
-      [classList]="'search-select-panel'"
-      class="search-select-panel"
-      >
-      @if (this.filteredOptions$ | async; as options) {
-        @if (options.length === 0) {
-          <mat-option
-            [value]="this.formControl.value"
-            [disabled]="true"
-            >
-            {{ 'all.player.no-players' | translate }} found
-          </mat-option>
-        }
-        @for (option of options; track option) {
-          <mat-option [value]="option">
-            {{ 'all.search.type.' + option.__typename | lowercase | translate }} -
-            @switch (option.__typename) {
-              @case ('Player') {
-                {{ $any(option).fullName }}
-                @if ($any(option).memberId) {
-                  <small class="extra"
-                    >({{ $any(option).memberId }})
-                  </small>
-                }
-              }
-              @case ('EventCompetition') {
-                {{ $any(option).name }}
-              }
-              @case ('EventTournament') {
-                {{ $any(option).name }}
-              }
-              @case ('Club') {
-                {{ $any(option).name }}
-                @if ($any(option).clubId) {
-                  <small class="extra"
-                    >({{ $any(option).clubId }})
-                  </small>
-                }
+  />
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    (optionSelected)="selectedPlayer($event)"
+    [classList]="'search-select-panel'"
+    class="search-select-panel"
+  >
+    @if (this.filteredOptions$ | async; as options) {
+      @if (options.length === 0) {
+        <mat-option [value]="this.formControl.value" [disabled]="true">
+          {{ 'all.player.no-players' | translate }} found
+        </mat-option>
+      }
+      @for (option of options; track option) {
+        <mat-option [value]="option">
+          {{ 'all.search.type.' + option.__typename | lowercase | translate }} -
+          @switch (option.__typename) {
+            @case ('Player') {
+              {{ $any(option).fullName }}
+              @if ($any(option).memberId) {
+                <small class="extra">({{ $any(option).memberId }}) </small>
               }
             }
-          </mat-option>
-        }
+            @case ('EventCompetition') {
+              {{ $any(option).name }}
+            }
+            @case ('EventTournament') {
+              {{ $any(option).name }}
+            }
+            @case ('Club') {
+              {{ $any(option).name }}
+              @if ($any(option).clubId) {
+                <small class="extra">({{ $any(option).clubId }}) </small>
+              }
+            }
+          }
+        </mat-option>
       }
-    </mat-autocomplete>
-  </form>
-  
+    }
+  </mat-autocomplete>
+</form>

@@ -4,57 +4,55 @@
       <span
         matListItemTitle
         [routerLink]="[
-        '/',
-        'competition',
-        upcoming.drawCompetition?.subEventCompetition?.eventId,
-        'draw',
-        upcoming.drawCompetition?.id,
-        'encounter',
-        upcoming.id
+          '/',
+          'competition',
+          upcoming.drawCompetition?.subEventCompetition?.eventId,
+          'draw',
+          upcoming.drawCompetition?.id,
+          'encounter',
+          upcoming.id
         ]"
         >{{ upcoming?.date | amDateFormat: 'llll' }}</span
-        >
-        <span matListItemLine
-          >@if (this.upcommingGames.hasHomeTeam()) {
+      >
+      <span matListItemLine>
+        @if (this.upcommingGames.hasHomeTeam()) {
           <ng-container
             [ngTemplateOutlet]="hasHome"
             [ngTemplateOutletContext]="{ upcoming: upcoming }"
-            ></ng-container
-            >
-            }@if (!this.upcommingGames.hasHomeTeam()) {
-            <ng-container
-              [ngTemplateOutlet]="noHome"
-              [ngTemplateOutletContext]="{ upcoming: upcoming }"
-            ></ng-container>
-          }
-        </span>
-      </mat-list-item>
-    }
-    @if (this.upcommingGames.loading()) {
-      <badman-loading-block [items]="5" height="56px" />
-    } @else if (this.upcommingGames.endReached()) {
-      <div class="no-more-games" translate="all.competition.no-more-games"></div>
-    }
-    <mat-list-item role="listitem">
-      <!--  a button to load more -->
-      @if (
-        !this.upcommingGames.endReached() && !this.upcommingGames.loading()
-        ) {
-        <button mat-button (click)="loadMore()">
-          {{ 'all.competition.load-more' | translate }}
-        </button>
-      }
-      @if (this.upcommingGames.endReached() && !this.upcommingGames.loading()) {
-        <span
-          matListItemLine
-          class="no-more-encounters"
-          translate="all.competition.encounters.no-more"
-        ></span>
-      }
+          ></ng-container>
+        }
+        @if (!this.upcommingGames.hasHomeTeam()) {
+          <ng-container
+            [ngTemplateOutlet]="noHome"
+            [ngTemplateOutletContext]="{ upcoming: upcoming }"
+          ></ng-container>
+        }
+      </span>
     </mat-list-item>
-  </mat-list>
-  <ng-template #noHome let-upcoming="upcoming">
-    <span
+  }
+  @if (this.upcommingGames.loading()) {
+    <badman-loading-block [items]="5" height="56px" />
+  } @else if (this.upcommingGames.endReached()) {
+    <div class="no-more-games" translate="all.competition.no-more-games"></div>
+  }
+  <mat-list-item role="listitem">
+    <!--  a button to load more -->
+    @if (!this.upcommingGames.endReached() && !this.upcommingGames.loading()) {
+      <button mat-button (click)="loadMore()">
+        {{ 'all.competition.load-more' | translate }}
+      </button>
+    }
+    @if (this.upcommingGames.endReached() && !this.upcommingGames.loading()) {
+      <span
+        matListItemLine
+        class="no-more-encounters"
+        translate="all.competition.encounters.no-more"
+      ></span>
+    }
+  </mat-list-item>
+</mat-list>
+<ng-template #noHome let-upcoming="upcoming">
+  <span
     >{{ upcoming.home?.name }} <span translate="all.competition.vs"></span>
     {{ upcoming.away?.name }}
   </span>
@@ -62,55 +60,54 @@
 <ng-template #hasHome let-upcoming="upcoming">
   <span class="location"
     >{{
-    'all.competition.' + (upcoming.showingForHomeTeam ? 'home' : 'away')
-    | translate
+      'all.competition.' + (upcoming.showingForHomeTeam ? 'home' : 'away')
+        | translate
     }}
     -
   </span>
   @if (upcoming.showingForHomeTeam && upcoming?.home?.club?.slug) {
     <a
       [routerLink]="[
-      '/club',
-      upcoming.home.club.slug,
-      'team',
-      upcoming.home?.slug
+        '/club',
+        upcoming.home.club.slug,
+        'team',
+        upcoming.home?.slug
       ]"
       >{{ upcoming.home?.name }}</a
-      >
-    }
-    @if (!upcoming.showingForHomeTeam && upcoming?.away?.club?.slug) {
-      <a
-        [routerLink]="[
+    >
+  }
+  @if (!upcoming.showingForHomeTeam && upcoming?.away?.club?.slug) {
+    <a
+      [routerLink]="[
         '/club',
         upcoming.away.club.slug,
         'team',
         upcoming.away?.slug
-        ]"
-        >{{ upcoming.away?.name }}</a
-        >
-      }
-      <span>&nbsp;{{ 'all.competition.vs' | translate }}&nbsp;</span>
-      @if (upcoming.showingForHomeTeam && upcoming?.away?.club?.slug) {
-        <a
-          [routerLink]="[
-          '/club',
-          upcoming.away.club.slug,
-          'team',
-          upcoming.away?.slug
-          ]"
-          >{{ upcoming.away?.name }}</a
-          >
-        }
-        @if (!upcoming.showingForHomeTeam && upcoming?.home?.club?.slug) {
-          <a
-            [routerLink]="[
-            '/club',
-            upcoming.home.club.slug,
-            'team',
-            upcoming.home?.slug
-            ]"
-            >{{ upcoming.home?.name }}</a
-            >
-          }
-        </ng-template>
-        
+      ]"
+      >{{ upcoming.away?.name }}</a
+    >
+  }
+  <span>&nbsp;{{ 'all.competition.vs' | translate }}&nbsp;</span>
+  @if (upcoming.showingForHomeTeam && upcoming?.away?.club?.slug) {
+    <a
+      [routerLink]="[
+        '/club',
+        upcoming.away.club.slug,
+        'team',
+        upcoming.away?.slug
+      ]"
+      >{{ upcoming.away?.name }}</a
+    >
+  }
+  @if (!upcoming.showingForHomeTeam && upcoming?.home?.club?.slug) {
+    <a
+      [routerLink]="[
+        '/club',
+        upcoming.home.club.slug,
+        'team',
+        upcoming.home?.slug
+      ]"
+      >{{ upcoming.home?.name }}</a
+    >
+  }
+</ng-template>

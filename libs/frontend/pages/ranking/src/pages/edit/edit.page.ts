@@ -97,8 +97,8 @@ const FETCH_SYSTEM = gql`
     MatMenuModule,
     MatSnackBarModule,
     PageHeaderComponent,
-    RankingSystemFieldsComponent
-],
+    RankingSystemFieldsComponent,
+  ],
 })
 export class EditPageComponent {
   // injects

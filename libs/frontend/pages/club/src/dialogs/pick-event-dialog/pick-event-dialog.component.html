@@ -20,9 +20,7 @@
       }}</mat-label>
       <mat-select formControlName="subEvent">
         @for (subEvent of this.subEvents; track subEvent) {
-          <mat-option
-            [value]="subEvent.id"
-            >
+          <mat-option [value]="subEvent.id">
             {{ subEvent?.name }} {{ subEvent?.eventType }}
           </mat-option>
         }
@@ -34,7 +32,7 @@
       mat-raised-button
       color="primary"
       [mat-dialog-close]="this.selectForm.value"
-      >
+    >
       {{ 'all.button.create' | translate }}
     </button>
     <button mat-button>
@@ -42,7 +40,5 @@
     </button>
   </mat-dialog-actions>
 } @else {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar
-    >
-  }
-  
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}

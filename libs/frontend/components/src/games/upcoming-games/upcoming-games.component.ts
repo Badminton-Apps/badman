@@ -29,8 +29,8 @@ import { LoadingBlockComponent } from '../../loading-block';
     TranslateModule,
     MatButtonModule,
     RouterModule,
-    LoadingBlockComponent
-],
+    LoadingBlockComponent,
+  ],
   templateUrl: './upcoming-games.component.html',
   styleUrls: ['./upcoming-games.component.scss'],
 })

@@ -39,8 +39,8 @@ import { BehaviorSubject, takeUntil, zip } from 'rxjs';
     MatSelectModule,
     MatTableModule,
     MatInputModule,
-    MatProgressSpinnerModule
-],
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './set-risers-fallers.component.html',
   styleUrls: ['./set-risers-fallers.component.scss'],
   standalone: true,

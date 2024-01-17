@@ -61,8 +61,8 @@ import { randomLightColor } from 'seed-to-color';
     MatDatepickerModule,
     MatSelectModule,
     MatSnackBarModule,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

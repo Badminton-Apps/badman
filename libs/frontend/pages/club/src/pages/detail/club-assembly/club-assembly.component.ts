@@ -42,8 +42,8 @@ import { CanPlay, ClubAssemblyService } from './club-assembly.service';
     MatProgressBarModule,
     HasClaimComponent,
     RecentGamesComponent,
-    UpcomingGamesComponent
-],
+    UpcomingGamesComponent,
+  ],
   templateUrl: './club-assembly.component.html',
   styleUrls: ['./club-assembly.component.scss'],
 })

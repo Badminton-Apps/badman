@@ -46,8 +46,8 @@ import {
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSelectModule
-],
+    MatSelectModule,
+  ],
 })
 export class SelectPlayerComponent implements OnInit {
   private destroy$ = injectDestroy();

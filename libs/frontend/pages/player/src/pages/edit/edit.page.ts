@@ -3,7 +3,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  OnInit
+  OnInit,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -45,8 +45,8 @@ import {
     EditPlayerFieldsComponent,
     MatIconModule,
     MatTabsModule,
-    MatButtonModule
-],
+    MatButtonModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditPageComponent implements OnInit, AfterViewInit {

@@ -22,8 +22,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatCardModule,
     RouterModule,
     MatButtonModule,
-    MatIconModule
-],
+    MatIconModule,
+  ],
   templateUrl: './beta.component.html',
   styleUrls: ['./beta.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,7 +39,7 @@ export class BetaComponent implements OnInit {
 
   constructor(
     private authenticateService: AuthenticateService,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {

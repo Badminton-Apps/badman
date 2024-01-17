@@ -52,8 +52,8 @@ const PLAYERS_QUERY = gql`
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatProgressBarModule
-],
+    MatProgressBarModule,
+  ],
 })
 export class EditDialogComponent {
   group?: FormGroup;

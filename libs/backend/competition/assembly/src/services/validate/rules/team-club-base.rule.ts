@@ -39,7 +39,7 @@ export class TeamClubBaseRule extends Rule {
           ...(double2 ?? []),
           ...(double3 ?? []),
           ...(double4 ?? []),
-        ].filter((p) => p != undefined)
+        ].filter((p) => p != undefined),
       ),
     ] as Player[];
 

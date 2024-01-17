@@ -2,85 +2,79 @@
 <div mat-dialog-content>
   <p [innerHTML]="'all.ranking.upload.description' | translate"></p>
   @if (!this.uploadedFile) {
-    <div
-      class="drop-area"
-      [ngClass]="{'dragging': dragging}"
-      (dragover)="onDragOver($event)"
-      (dragleave)="onDragLeave($event)"
-      (drop)="onFileDrop($event)"
-      >
-      <p>{{'all.ranking.upload.hint' | translate}}</p>
-    </div>
+  <div
+    class="drop-area"
+    [ngClass]="{'dragging': dragging}"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onFileDrop($event)"
+  >
+    <p>{{'all.ranking.upload.hint' | translate}}</p>
+  </div>
+  } @if (this.uploadedFile) {
+  <div class="file">
+    <mat-chip [removable]="true" (removed)="this.onFileRemove()"
+      >{{this.uploadedFile.name}}
+      <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+  </div>
+  } @if (previewData) {
+  <h3>Options</h3>
+  <div class="options">
+    <mat-form-field>
+      <mat-label>{{'all.ranking.upload.ranking-date' | translate}}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [placeholder]="'all.ranking.upload.ranking-date' | translate"
+        [(ngModel)]="rankingDate"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-checkbox [(ngModel)]="removeAllRanking"
+      >{{'all.ranking.upload.remove-current-ranking' | translate}}</mat-checkbox
+    >
+    <mat-checkbox [(ngModel)]="competitionStatus"
+      >{{'all.ranking.upload.comp-status' | translate}}</mat-checkbox
+    >
+    <mat-checkbox [(ngModel)]="updateRanking"
+      >{{'all.ranking.upload.update-ranking' | translate}}</mat-checkbox
+    >
+    <mat-checkbox [(ngModel)]="createNewPlayers"
+      >{{'all.ranking.upload.create-new-players' | translate}}</mat-checkbox
+    >
+    <mat-checkbox [(ngModel)]="updatePossible"
+      >{{'all.ranking.upload.update-possible' | translate}}</mat-checkbox
+    >
+  </div>
+  <h3>{{'all.ranking.upload.preview' | translate}}</h3>
+  <table mat-table [dataSource]="previewData">
+    <!-- Position Column -->
+    @for (header of headerRow; track header) {
+    <ng-container [matColumnDef]="header">
+      <th mat-header-cell *matHeaderCellDef>{{header}}</th>
+      <td mat-cell *matCellDef="let element">{{element[header] }}</td>
+    </ng-container>
+    }
+    <tr mat-header-row *matHeaderRowDef="headerRow"></tr>
+    <tr mat-row *matRowDef="let row; columns: headerRow;"></tr>
+  </table>
   }
-  @if (this.uploadedFile) {
-    <div class="file">
-      <mat-chip [removable]="true" (removed)="this.onFileRemove()"
-        >{{this.uploadedFile.name}}
-        <mat-icon matChipRemove>cancel</mat-icon>
-      </mat-chip>
-    </div>
+  <!-- show loading bar if load -->
+  @if (this.uploading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   }
-  @if (previewData) {
-    <h3>Options</h3>
-    <div class="options">
-      <mat-form-field>
-        <mat-label>{{'all.ranking.upload.ranking-date' | translate}}</mat-label>
-        <input
-          matInput
-          [matDatepicker]="picker"
-          [placeholder]="'all.ranking.upload.ranking-date' | translate"
-          [(ngModel)]="rankingDate"
-          />
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        <mat-checkbox [(ngModel)]="removeAllRanking"
-          >{{'all.ranking.upload.remove-current-ranking' |
-          translate}}</mat-checkbox
-          >
-          <mat-checkbox [(ngModel)]="competitionStatus"
-            >{{'all.ranking.upload.comp-status' | translate}}</mat-checkbox
-            >
-            <mat-checkbox [(ngModel)]="updateRanking"
-              >{{'all.ranking.upload.update-ranking' | translate}}</mat-checkbox
-              >
-              <mat-checkbox [(ngModel)]="createNewPlayers"
-                >{{'all.ranking.upload.create-new-players' | translate}}</mat-checkbox
-                >
-                <mat-checkbox [(ngModel)]="updatePossible"
-                  >{{'all.ranking.upload.update-possible' | translate}}</mat-checkbox
-                  >
-                </div>
-                <h3>{{'all.ranking.upload.preview' | translate}}</h3>
-                <table mat-table [dataSource]="previewData">
-                  <!-- Position Column -->
-                  @for (header of headerRow; track header) {
-                    <ng-container [matColumnDef]="header">
-                      <th mat-header-cell *matHeaderCellDef>{{header}}</th>
-                      <td mat-cell *matCellDef="let element">{{element[header] }}</td>
-                    </ng-container>
-                  }
-                  <tr mat-header-row *matHeaderRowDef="headerRow"></tr>
-                  <tr mat-row *matRowDef="let row; columns: headerRow;"></tr>
-                </table>
-              }
-              <!-- show loading bar if load -->
-              @if (this.uploading) {
-                <mat-progress-bar
-                  mode="indeterminate"
-                ></mat-progress-bar>
-              }
-            </div>
-            <div mat-dialog-actions>
-              <button mat-button (click)="onNoClick()">Cancel</button>
-              <button
-                mat-raised-button
-                [class.spinner]="this.processing"
-                [disabled]="!this.uploadedFile || this.uploading || this.processing"
-                color="primary"
-                (click)="processData()"
-                >
-                Process
-              </button>
-            </div>
-            
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button
+    mat-raised-button
+    [class.spinner]="this.processing"
+    [disabled]="!this.uploadedFile || this.uploading || this.processing"
+    color="primary"
+    (click)="processData()"
+  >
+    Process
+  </button>
+</div>

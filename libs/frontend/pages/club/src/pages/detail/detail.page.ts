@@ -79,8 +79,8 @@ import { ClubTeamsComponent } from './club-teams/club-teams.component';
     MatDialogModule,
     MatSelectModule,
     MatProgressBarModule,
-    MatTabsModule
-],
+    MatTabsModule,
+  ],
 })
 export class DetailPageComponent implements OnInit {
   // Injectors

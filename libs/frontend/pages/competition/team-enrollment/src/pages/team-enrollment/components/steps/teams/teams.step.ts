@@ -96,8 +96,8 @@ type FormArrayOfTeamsValue = {
     MatSelectModule,
     MatDividerModule,
     MatProgressBarModule,
-    TeamEnrollmentComponent
-],
+    TeamEnrollmentComponent,
+  ],
   templateUrl: './teams.step.html',
   styleUrls: ['./teams.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -7,7 +7,7 @@ import {
   OnInit,
   effect,
   inject,
-  Signal
+  Signal,
 } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RankingSystemService } from '@badman/frontend-graphql';

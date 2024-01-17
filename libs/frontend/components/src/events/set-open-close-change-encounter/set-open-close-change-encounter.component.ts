@@ -28,14 +28,13 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    MatDatepickerModule
-],
+    MatDatepickerModule,
+  ],
   templateUrl: './set-open-close-change-encounter.component.html',
   styleUrls: ['./set-open-close-change-encounter.component.scss'],
   standalone: true,
 })
 export class OpenCloseChangeEncounterDateDialogComponent implements OnInit {
-  
   openControl?: FormControl;
   closeControl?: FormControl;
   requestDateControl?: FormControl;
@@ -43,7 +42,7 @@ export class OpenCloseChangeEncounterDateDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<OpenCloseChangeEncounterDateDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { openDate: Date; closeDate: Date; requestDate: Date }
+    public data: { openDate: Date; closeDate: Date; requestDate: Date },
   ) {}
 
   ngOnInit(): void {

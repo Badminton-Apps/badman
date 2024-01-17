@@ -5,7 +5,6 @@
   date-selector;
 @use './src/components/calendar/calendar.component.theme.scss' as calendar;
 
-
 @mixin typography($theme) {
   @include change-encounter.typography($theme);
   @include date-selector.typography($theme);

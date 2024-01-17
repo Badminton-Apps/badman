@@ -7,7 +7,7 @@
         required
         [multiple]="this.multiple"
         (selectionChange)="this.selectTeam($event)"
-        >
+      >
         @if (this.teams$ | async; as teams) {
           @if (this.multiple) {
             <button mat-button (click)="selectAll(teams)">
@@ -19,8 +19,10 @@
           }
           @for (group of teams; track group) {
             <mat-optgroup
-              [label]="'all.pickers.select-team-groups.' + group.type | translate"
-              >
+              [label]="
+                'all.pickers.select-team-groups.' + group.type | translate
+              "
+            >
               @for (option of group.teams; track option) {
                 <mat-option [value]="option.id">
                   {{ option.name }}

@@ -53,8 +53,8 @@ import { RankingEvolutionComponent } from './components/ranking-evolution';
     MatProgressBarModule,
     ListGamesComponent,
     PeriodSelectionComponent,
-    RankingEvolutionComponent
-],
+    RankingEvolutionComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RankingBreakdownPageComponent {

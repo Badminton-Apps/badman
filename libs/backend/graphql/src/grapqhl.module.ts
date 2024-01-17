@@ -86,7 +86,7 @@ import { ConfigType } from '@badman/utils';
     PlayerResolverModule,
     NotificationResolverModule,
     ServiceResolverModule,
-    CronJobResolverModule
+    CronJobResolverModule,
   ],
 })
 export class GrapqhlModule {}

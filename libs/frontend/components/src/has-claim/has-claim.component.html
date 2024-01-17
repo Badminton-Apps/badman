@@ -2,7 +2,5 @@
   <ng-content></ng-content>
 }
 @if ((this.show$ | async) === false) {
-  <ng-content
-    select="[noPerm]"
-  ></ng-content>
+  <ng-content select="[noPerm]"></ng-content>
 }

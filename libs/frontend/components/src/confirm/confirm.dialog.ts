@@ -12,11 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   templateUrl: './confirm.dialog.html',
   standalone: true,
-  imports: [
-    MatDialogModule,
-    MatButtonModule,
-    TranslateModule
-],
+  imports: [MatDialogModule, MatButtonModule, TranslateModule],
   // styleUrls: ['./confirm-dialog.component.css']
 })
 export class ConfirmDialogComponent {
@@ -25,7 +21,7 @@ export class ConfirmDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel,
   ) {
     // Update view with given values
     this.title = data.title;
@@ -51,6 +47,6 @@ export class ConfirmDialogComponent {
 export class ConfirmDialogModel {
   constructor(
     public title: PathImpl2<I18nTranslations>,
-    public message: PathImpl2<I18nTranslations>
+    public message: PathImpl2<I18nTranslations>,
   ) {}
 }

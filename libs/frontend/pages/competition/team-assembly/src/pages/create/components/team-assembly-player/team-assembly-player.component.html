@@ -2,10 +2,10 @@
   @if ((player.competitionPlayer ?? false) === false) {
     <mat-icon
       [matTooltip]="
-      'all.competition.team-assembly.errors.comp-status'
-      | translate: { player: player }
+        'all.competition.team-assembly.errors.comp-status'
+          | translate: { player: player }
       "
-      >
+    >
       warning
     </mat-icon>
   }
@@ -15,9 +15,9 @@
       <span
         class="level-exception"
         [matTooltip]="
-        'all.competition.team-assembly.level-exemption' | translate
+          'all.competition.team-assembly.level-exemption' | translate
         "
-      ><mat-icon>lock</mat-icon></span
+        ><mat-icon>lock</mat-icon></span
       >
     }
     <span class="ranking">

@@ -31,8 +31,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatInputModule
-],
+    MatInputModule,
+  ],
 })
 export class EventCompetitionLevelFieldsComponent implements OnInit {
   @Input()
@@ -53,8 +53,8 @@ export class EventCompetitionLevelFieldsComponent implements OnInit {
         this.type === LevelType.PROV
           ? 'Provinciale'
           : this.type === LevelType.LIGA
-          ? 'Liga'
-          : 'Nationale';
+            ? 'Liga'
+            : 'Nationale';
       this.formGroup
         .get('name')
         ?.setValue(`${r}e ${type}`, { emitEvent: false });

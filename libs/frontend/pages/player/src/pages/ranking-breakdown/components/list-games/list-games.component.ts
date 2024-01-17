@@ -54,8 +54,8 @@ import { AddGameComponent } from '../../dialogs/add-game';
     MatTableModule,
     MatTooltipModule,
     MatButtonModule,
-    LayoutModule
-],
+    LayoutModule,
+  ],
 })
 export class ListGamesComponent implements OnInit {
   private destroy$ = injectDestroy();
@@ -323,7 +323,6 @@ export class ListGamesComponent implements OnInit {
   }
 
   fillGames() {
-    
     this.gameBreakdown = [];
 
     if (this.formGroup?.get('includeOutOfScope')?.value) {
@@ -418,7 +417,9 @@ export class ListGamesComponent implements OnInit {
       const level = this.rankingPlace()?.[this.type] ?? 12;
 
       const nextLevel =
-        this.system().pointsToGoUp?.[(this.system().amountOfLevels ?? 12) - level];
+        this.system().pointsToGoUp?.[
+          (this.system().amountOfLevels ?? 12) - level
+        ];
 
       const prevLevel =
         this.system().pointsToGoDown?.[

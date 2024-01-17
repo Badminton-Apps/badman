@@ -79,8 +79,8 @@ import {
     MatSnackBarModule,
     MatProgressBarModule,
     MatTooltipModule,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
   standalone: true,
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss'],
@@ -252,7 +252,4 @@ export class ShellComponent {
       });
     }
   }
-
-
-  
 }

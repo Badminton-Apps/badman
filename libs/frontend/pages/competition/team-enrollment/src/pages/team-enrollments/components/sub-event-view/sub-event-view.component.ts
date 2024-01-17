@@ -26,8 +26,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatSelectModule,
     MatExpansionModule,
     MatCardModule,
-    OverlayModule
-],
+    OverlayModule,
+  ],
 })
 export class SubEventViewComponent implements OnInit {
   overlayOpen = '';
@@ -81,7 +81,7 @@ export class SubEventViewComponent implements OnInit {
           variables: {
             competitionEventId: eventId,
           },
-        })
+        }),
       ),
       map((result) => new EventCompetition(result.data.eventCompetition)),
       map((event) => {
@@ -95,14 +95,14 @@ export class SubEventViewComponent implements OnInit {
         event.subEventCompetitions = event.subEventCompetitions.map(
           (subEvent) => {
             subEvent.eventEntries = subEvent.eventEntries?.filter(
-              (entry) => entry.meta !== null
+              (entry) => entry.meta !== null,
             );
             return subEvent;
-          }
+          },
         );
 
         return event.subEventCompetitions;
-      })
+      }),
     );
 
     this.events$ = this.yearControl.valueChanges.pipe(
@@ -130,13 +130,13 @@ export class SubEventViewComponent implements OnInit {
               closeDate: { $gte: new Date().toISOString() },
             },
           },
-        })
+        }),
       ),
       map((result) =>
         result.data.eventCompetitions.rows.map(
-          (node) => new EventCompetition(node)
-        )
-      )
+          (node) => new EventCompetition(node),
+        ),
+      ),
     );
   }
 }

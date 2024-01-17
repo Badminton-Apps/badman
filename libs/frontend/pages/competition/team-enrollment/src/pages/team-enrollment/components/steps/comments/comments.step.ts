@@ -34,8 +34,8 @@ type CommentForm = {
     TranslateModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
-],
+    MatInputModule,
+  ],
   templateUrl: './comments.step.html',
   styleUrls: ['./comments.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,13 +67,13 @@ export class CommentsStepComponent implements OnInit {
 
   constructor(
     @Inject(Apollo) private apollo: Apollo,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
     if (this.group) {
       this.control = this.group?.get(
-        this.controlName
+        this.controlName,
       ) as FormGroup<CommentForm>;
     }
 
@@ -107,15 +107,17 @@ export class CommentsStepComponent implements OnInit {
           const eventIds = events.map((event) => event.id);
 
           return this._loadComments(eventIds).pipe(
-            map((result) =>
-              events?.map((event) => ({
-                ...event,
-                comment: result?.find((comment) => comment.linkId === event.id)
-                  ?.message,
-              }))
-            )
+            map(
+              (result) =>
+                events?.map((event) => ({
+                  ...event,
+                  comment: result?.find(
+                    (comment) => comment.linkId === event.id,
+                  )?.message,
+                })),
+            ),
           );
-        })
+        }),
       )
       .subscribe((events) => {
         for (const levelType of this.levelTypes) {
@@ -159,7 +161,7 @@ export class CommentsStepComponent implements OnInit {
         },
       })
       .pipe(
-        map((result) => (result?.data?.comments ?? []) as Partial<Comment>[])
+        map((result) => (result?.data?.comments ?? []) as Partial<Comment>[]),
       );
   }
 }

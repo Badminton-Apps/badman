@@ -23,8 +23,8 @@ import { iif, of, switchMap } from 'rxjs';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatInputModule
-],
+    MatInputModule,
+  ],
   templateUrl: './add-role.component.html',
   styleUrls: ['./add-role.component.scss'],
 })
@@ -69,13 +69,13 @@ export class AddRoleComponent {
                   name: result,
                   linkType: this.linkType,
                   linkId: this.linkId,
-                  claims: []
+                  claims: [],
                 },
               },
             }),
-            of(null)
-          )
-        )
+            of(null),
+          ),
+        ),
       )
       .subscribe(() => {
         this.whenRoleAdded.emit();

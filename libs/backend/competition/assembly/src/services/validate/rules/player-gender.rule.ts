@@ -53,8 +53,8 @@ export class PlayerGenderRule extends Rule {
             ...(double3 ?? []),
             ...(double4 ?? []),
           ],
-          'M'
-        )
+          'M',
+        ),
       );
     } else if (type == SubEventTypeEnum.F) {
       errors.push(
@@ -70,17 +70,16 @@ export class PlayerGenderRule extends Rule {
             ...(double3 ?? []),
             ...(double4 ?? []),
           ],
-          'F'
-        )
+          'F',
+        ),
       );
     } else {
       errors.push(
-        ...this._checkGender([single1, single2, ...(double1 ?? [])], 'M')
+        ...this._checkGender([single1, single2, ...(double1 ?? [])], 'M'),
       );
       errors.push(
-        ...this._checkGender([single3, single4, ...(double2 ?? [])], 'F')
+        ...this._checkGender([single3, single4, ...(double2 ?? [])], 'F'),
       );
-
 
       if (
         double4?.[0] &&
@@ -161,7 +160,7 @@ export class PlayerGenderRule extends Rule {
 
   private _checkGender(
     players: (Player | undefined)[],
-    gender: string
+    gender: string,
   ): AssemblyValidationError<PlayerGenderRuleIndividualParams>[] {
     const uniquePlayers = [
       ...new Set(players?.filter((p) => p != undefined && p != null)),

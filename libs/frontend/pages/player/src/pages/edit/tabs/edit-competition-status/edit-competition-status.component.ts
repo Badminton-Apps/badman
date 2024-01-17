@@ -24,8 +24,8 @@ import { debounceTime, map } from 'rxjs';
     HasClaimComponent,
     MatSlideToggleModule,
     ReactiveFormsModule,
-    TranslateModule
-],
+    TranslateModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCompetitionStatusComponent implements OnInit {
@@ -34,7 +34,10 @@ export class EditCompetitionStatusComponent implements OnInit {
   @Input()
   player!: Player;
 
-  constructor(private apollo: Apollo, private _snackBar: MatSnackBar) {}
+  constructor(
+    private apollo: Apollo,
+    private _snackBar: MatSnackBar,
+  ) {}
 
   ngOnInit(): void {
     const compPlayer = new FormControl(this.player.competitionPlayer);
@@ -66,7 +69,7 @@ export class EditCompetitionStatusComponent implements OnInit {
           })
           .pipe(
             map((r) => new Player(r.data?.updatePlayer)),
-            debounceTime(600)
+            debounceTime(600),
           )
           .subscribe(() => {
             this._snackBar.open('Saved', undefined, {

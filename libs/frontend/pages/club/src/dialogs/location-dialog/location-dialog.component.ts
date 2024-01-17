@@ -30,8 +30,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-    LocationDialogFieldsComponent
-],
+    LocationDialogFieldsComponent,
+  ],
 })
 export class LocationDialogComponent implements OnInit {
   selectedYear?: number;
@@ -51,7 +51,7 @@ export class LocationDialogComponent implements OnInit {
       onUpdate: 'close' | 'stay';
       showAvailibilities: boolean;
     },
-    private appollo: Apollo
+    private appollo: Apollo,
   ) {}
 
   ngOnInit(): void {
@@ -95,7 +95,7 @@ export class LocationDialogComponent implements OnInit {
             return of(null);
           }
         }),
-        map((t) => t ?? new Location())
+        map((t) => t ?? new Location()),
       )
       .subscribe((x) => {
         this.location = x;
@@ -149,7 +149,7 @@ export class LocationDialogComponent implements OnInit {
             },
           },
         })
-        .pipe(map((x) => new Location(x.data?.createLocation)))
+        .pipe(map((x) => new Location(x.data?.createLocation))),
     );
 
     if (this.data.onCreate === 'close') {
@@ -204,7 +204,7 @@ export class LocationDialogComponent implements OnInit {
               },
             },
           })
-          .pipe(map((x) => new Location(x.data?.updateLocation)))
+          .pipe(map((x) => new Location(x.data?.updateLocation))),
       );
 
       if (this.data.onUpdate === 'close') {

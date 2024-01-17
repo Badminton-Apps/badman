@@ -15,7 +15,7 @@ export type PlayerMinLevelRuleParams = {
 
 /**
  * Checks if the player isn't better than the max allowed level of the subevent
- * 
+ *
  * If the player has a level exception, the player is allowed to be better than the max level
  */
 export class PlayerMinLevelRule extends Rule {
@@ -69,8 +69,9 @@ export class PlayerMinLevelRule extends Rule {
           continue;
         }
 
-        const metaPlayer = meta?.competition?.players.find((p) => p.id === player.id);
-
+        const metaPlayer = meta?.competition?.players.find(
+          (p) => p.id === player.id,
+        );
 
         ranking.single = ranking.single ?? system.amountOfLevels;
         ranking.double = ranking.double ?? system.amountOfLevels;
@@ -108,7 +109,11 @@ export class PlayerMinLevelRule extends Rule {
           });
         }
 
-        if (type === SubEventTypeEnum.MX && ranking.mix < subEvent.maxLevel && !metaPlayer?.levelException) {
+        if (
+          type === SubEventTypeEnum.MX &&
+          ranking.mix < subEvent.maxLevel &&
+          !metaPlayer?.levelException
+        ) {
           valid = false;
           errors.push({
             message: 'all.competition.team-assembly.errors.player-min-level',

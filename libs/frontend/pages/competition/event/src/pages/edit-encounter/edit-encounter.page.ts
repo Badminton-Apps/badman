@@ -41,8 +41,8 @@ import { ReplacePlayerComponent } from '../../dialogs';
     ReactiveFormsModule,
     MatButtonModule,
     MatDialogModule,
-    GameScoreComponentComponent
-],
+    GameScoreComponentComponent,
+  ],
 })
 export class EditEncounterComponent implements OnInit {
   encounterCompetition!: EncounterCompetition;

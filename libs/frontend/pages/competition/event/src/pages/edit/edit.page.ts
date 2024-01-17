@@ -86,8 +86,8 @@ const roleQuery = gql`
     EventCompetitionLevelFieldsComponent,
     HasClaimComponent,
     AddRoleComponent,
-    EditRoleComponent
-],
+    EditRoleComponent,
+  ],
 })
 export class EditPageComponent implements OnInit {
   private injector = inject(Injector);
@@ -111,7 +111,7 @@ export class EditPageComponent implements OnInit {
     private router: Router,
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -143,9 +143,9 @@ export class EditPageComponent implements OnInit {
           })
           .valueChanges.pipe(
             shareReplay(1),
-            map((result) => result.data?.roles?.map((r) => new Role(r)))
+            map((result) => result.data?.roles?.map((r) => new Role(r))),
           ),
-        { injector: this.injector }
+        { injector: this.injector },
       );
     });
   }
@@ -158,7 +158,7 @@ export class EditPageComponent implements OnInit {
           end: new FormControl(exception.end, Validators.required),
           courts: new FormControl(exception.courts),
         });
-      }) ?? []
+      }) ?? [],
     ) as FormArray<ExceptionType>;
     this.infoEvents = new FormArray(
       event.infoEvents?.map((infoEvent) => {
@@ -167,7 +167,7 @@ export class EditPageComponent implements OnInit {
           end: new FormControl(infoEvent.end, Validators.required),
           name: new FormControl(infoEvent.name),
         });
-      }) ?? []
+      }) ?? [],
     ) as FormArray<InfoEventType>;
 
     this.formGroup = new FormGroup({
@@ -180,7 +180,7 @@ export class EditPageComponent implements OnInit {
       ]),
       contactEmail: new FormControl(event.contactEmail, Validators.required),
       checkEncounterForFilledIn: new FormControl(
-        event.checkEncounterForFilledIn
+        event.checkEncounterForFilledIn,
       ),
       teamMatcher: new FormControl(event.teamMatcher),
 
@@ -207,7 +207,7 @@ export class EditPageComponent implements OnInit {
             minBaseIndex: new FormControl(subEvent.minBaseIndex),
             maxBaseIndex: new FormControl(subEvent.maxBaseIndex),
           });
-        }) ?? []
+        }) ?? [],
       ),
     });
   }
@@ -270,7 +270,8 @@ export class EditPageComponent implements OnInit {
               season: eventCompetition.season,
               contactEmail: eventCompetition.contactEmail,
               teamMatcher: eventCompetition.teamMatcher,
-              checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
+              checkEncounterForFilledIn:
+                eventCompetition.checkEncounterForFilledIn,
               exceptions:
                 eventCompetition.exceptions?.filter((e) => e.start && e.end) ??
                 [],
@@ -287,8 +288,8 @@ export class EditPageComponent implements OnInit {
               },
             },
           ],
-        }
-      )
+        },
+      ),
     );
 
     this.saved$.next(this.saved$.value + 1);
@@ -303,7 +304,7 @@ export class EditPageComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         courts: new FormControl(0),
-      }) as ExceptionType
+      }) as ExceptionType,
     );
   }
 
@@ -317,7 +318,7 @@ export class EditPageComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         name: new FormControl(),
-      }) as InfoEventType
+      }) as InfoEventType,
     );
   }
 

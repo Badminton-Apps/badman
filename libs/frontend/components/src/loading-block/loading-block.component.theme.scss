@@ -3,7 +3,6 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-
 @mixin color($theme) {
   badman-loading-block {
     $color-config: mat.get-color-config($theme);
@@ -11,11 +10,10 @@
     $isDark: map.get($color-config, 'is-dark');
     $background-color: mat.get-color-from-palette($background, 'app-bar');
 
-    .padding{
+    .padding {
       background-color: mat.get-color-from-palette($background, 'background');
     }
 
-    
     .animation-block {
       //  background: darkgray;
       // background: linear-gradient(to right, #eeeeee 10%, #dddddd 18%, #eeeeee 33%);
@@ -45,5 +43,3 @@
     $typography-config: mat.get-typography-config($theme);
   }
 }
-
-

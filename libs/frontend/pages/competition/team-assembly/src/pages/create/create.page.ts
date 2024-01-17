@@ -110,7 +110,6 @@ export class CreatePageComponent implements OnInit {
       team: teamControl,
       encounter: encounterControl,
     });
-    
 
     connect(this.teamId, teamControl.valueChanges, this.injector);
     connect(this.encounterId, encounterControl.valueChanges, this.injector);

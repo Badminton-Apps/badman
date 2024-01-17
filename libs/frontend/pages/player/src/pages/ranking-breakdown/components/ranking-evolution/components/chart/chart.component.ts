@@ -17,10 +17,7 @@ import {
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    NgApexchartsModule
-],
+  imports: [CommonModule, NgApexchartsModule],
 })
 export class ChartComponent implements OnInit {
   // options!: EChartsOption;

@@ -13,17 +13,11 @@
     matInput
     [formControl]="email"
     [errorStateMatcher]="matcher"
-    />
-    <!-- errors for email -->
-    @if (email.hasError('email')&& !email.hasError('required')) {
-      <mat-error>
-        {{ 'all.input.error.email' | translate }}
-      </mat-error>
-    }
-    @if (email.hasError('required')) {
-      <mat-error>
-        {{ 'all.input.error.required' | translate }}
-      </mat-error>
-    }
-  </mat-form-field>
-  
+  />
+  <!-- errors for email -->
+  @if (email.hasError('email')&& !email.hasError('required')) {
+  <mat-error> {{ 'all.input.error.email' | translate }} </mat-error>
+  } @if (email.hasError('required')) {
+  <mat-error> {{ 'all.input.error.required' | translate }} </mat-error>
+  }
+</mat-form-field>

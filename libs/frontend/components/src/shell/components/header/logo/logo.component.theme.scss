@@ -7,7 +7,7 @@
   badman-logo {
     $color-config: mat.get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
-    
+
     svg {
       fill: mat.get-color-from-palette($foreground, 'base');
     }
@@ -19,4 +19,3 @@
     $typography-config: mat.get-typography-config($theme);
   }
 }
-

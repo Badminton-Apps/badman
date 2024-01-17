@@ -12,8 +12,8 @@ import countriesList from './countries.json';
     CommonModule,
     MatSelectModule,
     TranslateModule,
-    ReactiveFormsModule
-],
+    ReactiveFormsModule,
+  ],
   templateUrl: './select-country.component.html',
   styleUrls: ['./select-country.component.scss'],
 })
@@ -21,7 +21,7 @@ export class SelectCountryComponent implements OnInit {
   countries = countriesList?.map((country) => country.code);
 
   @Input({ required: true })
-  group!: FormGroup
+  group!: FormGroup;
 
   @Input()
   controlName = 'country';

@@ -4,13 +4,10 @@
   @include upload-ranking.theme($theme);
 }
 
-
 @mixin typography($theme) {
   @include upload-ranking.typography($theme);
 }
 
-
 @mixin color($theme) {
   @include upload-ranking.color($theme);
 }
-

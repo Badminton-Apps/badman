@@ -72,7 +72,7 @@
       .index {
         @include mat.typography-level($typography-config, 'caption');
       }
-      
+
       .ranking {
         @include mat.typography-level($typography-config, 'caption');
       }
@@ -83,5 +83,3 @@
     }
   }
 }
-
-

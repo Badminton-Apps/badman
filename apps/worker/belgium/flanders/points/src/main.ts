@@ -23,11 +23,9 @@ async function bootstrapPointsService() {
   }, 200);
 }
 
-
 // if on development, bootstrap the service with the cluster
 if (process.env.NODE_ENV === 'development') {
   ClusterService.clusterize(bootstrapPointsService, cpus().length);
 } else {
   bootstrapPointsService();
 }
-

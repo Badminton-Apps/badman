@@ -96,8 +96,8 @@ const CHANGE_QUERY = gql`
     DateSelectorComponent,
     CommentsComponent,
     RequestDateComponent,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
 })
 export class ShowRequestsComponent implements OnInit {
   @Input()

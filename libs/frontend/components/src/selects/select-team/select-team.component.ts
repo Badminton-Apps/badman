@@ -56,8 +56,8 @@ import {
     MatInputModule,
     MatButtonModule,
     MatAutocompleteModule,
-    MatSelectModule
-],
+    MatSelectModule,
+  ],
   templateUrl: './select-team.component.html',
   styleUrls: ['./select-team.component.scss'],
 })

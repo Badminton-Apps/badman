@@ -24,8 +24,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatInputModule,
     MatSlideToggleModule,
-    TranslateModule
-], 
+    TranslateModule,
+  ],
   templateUrl: './add-event.component.html',
   styleUrls: ['./add-event.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -43,8 +43,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     PageHeaderComponent,
     HasClaimComponent,
     CompetitionEventsComponent,
-    SelectSeasonComponent
-],
+    SelectSeasonComponent,
+  ],
 })
 export class OverviewPageComponent implements OnInit {
   route = inject(ActivatedRoute);

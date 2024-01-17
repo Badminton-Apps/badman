@@ -42,8 +42,8 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     MatDividerModule,
     PageHeaderComponent,
     RankingTableComponent,
-    HasClaimComponent
-],
+    HasClaimComponent,
+  ],
 })
 export class DetailPageComponent {
   private route = inject(ActivatedRoute);
@@ -54,7 +54,7 @@ export class DetailPageComponent {
   systemService = inject(RankingSystemService);
 
   // route
-  private routeData= toSignal(this.route.data);
+  private routeData = toSignal(this.route.data);
 
   rankingSystem = computed(
     () => this.routeData()?.['rankingSystem'] as RankingSystem,

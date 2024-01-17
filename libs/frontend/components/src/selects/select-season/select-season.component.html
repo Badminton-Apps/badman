@@ -3,7 +3,7 @@
     <!-- year selection -->
     @if (this.seasons) {
       <mat-form-field>
-        <mat-label>{{'all.pickers.select-season' | translate}}</mat-label>
+        <mat-label>{{ 'all.pickers.select-season' | translate }}</mat-label>
         <mat-select formControlName="season">
           @for (season of this.seasons(); track season) {
             <mat-option [value]="season">

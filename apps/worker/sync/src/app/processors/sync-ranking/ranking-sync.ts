@@ -52,7 +52,7 @@ export class RankingSyncer {
 
   constructor(
     private readonly _visualService: VisualService,
-    private readonly rankingQ: Queue
+    private readonly rankingQ: Queue,
   ) {
     this.processor = new Processor(undefined, { logger: this.logger });
     this.xmlParser = new XMLParser();
@@ -104,7 +104,7 @@ export class RankingSyncer {
           startDate: startDate.toDate(),
           stopDate: stop?.toDate(),
         };
-      }
+      },
     ) as ProcessStep<RankingStepData>;
   }
 
@@ -118,7 +118,7 @@ export class RankingSyncer {
       }
 
       const categories = await this._visualService.getCategories(
-        ranking.visualCode
+        ranking.visualCode,
       );
 
       return categories?.map((c) => {
@@ -135,7 +135,7 @@ export class RankingSyncer {
       this.STEP_PUBLICATIONS,
       async (args: { transaction: Transaction }) => {
         const ranking = this.processor.getData<RankingStepData>(
-          this.STEP_RANKING
+          this.STEP_RANKING,
         );
 
         if (!ranking?.visualCode) {
@@ -144,7 +144,7 @@ export class RankingSyncer {
 
         const publications = await this._visualService.getPublications(
           ranking.visualCode,
-          false
+          false,
         );
 
         let pubs = publications
@@ -152,7 +152,7 @@ export class RankingSyncer {
           .map((publication) => {
             const momentDate = moment(
               publication.PublicationDate,
-              'YYYY-MM-DD'
+              'YYYY-MM-DD',
             );
             let canUpdate = false;
 
@@ -199,8 +199,7 @@ export class RankingSyncer {
         const lastUpdate = pubs?.filter((r) => r.usedForUpdate)?.slice(-1)?.[0];
         if (lastUpdate) {
           // store the latest publication in the calculationLastUpdate
-          ranking.system.updateLastUpdate =
-            lastUpdate.date.toDate();
+          ranking.system.updateLastUpdate = lastUpdate.date.toDate();
         }
 
         if (last || lastUpdate) {
@@ -214,12 +213,12 @@ export class RankingSyncer {
             ?.map((publication) => {
               const momentDate = moment(
                 publication.PublicationDate,
-                'YYYY-MM-DD'
+                'YYYY-MM-DD',
               );
               return momentDate;
             }),
         };
-      }
+      },
     );
   }
 
@@ -228,7 +227,7 @@ export class RankingSyncer {
       this.STEP_POINTS,
       async (args: { transaction: Transaction }) => {
         const ranking = this.processor.getData<RankingStepData>(
-          this.STEP_RANKING
+          this.STEP_RANKING,
         );
 
         const { visiblePublications } =
@@ -236,7 +235,7 @@ export class RankingSyncer {
           {};
 
         const categories = this.processor.getData<CategoriesStepData[]>(
-          this.STEP_CATEGORIES
+          this.STEP_CATEGORIES,
         );
 
         if (!ranking?.visualCode) {
@@ -249,7 +248,7 @@ export class RankingSyncer {
           places: Map<string, RankingPlace>,
           newPlayers: Map<string, Player>,
           type: 'single' | 'double' | 'mix',
-          gender: 'M' | 'F'
+          gender: 'M' | 'F',
         ) => {
           if (!category) {
             this.logger.error(`No category defined?`);
@@ -260,17 +259,17 @@ export class RankingSyncer {
           const rankingPoints = await this._visualService.getPoints(
             ranking.visualCode,
             publication.code,
-            category
+            category,
           );
 
           const memberIds = rankingPoints?.map(
             (points) =>
               correctWrongPlayers({ memberId: `${points.Player1.MemberID}` })
-                .memberId
+                .memberId,
           );
 
           this.logger.debug(
-            `Getting ${memberIds?.length} players for ${publication.name} ${type} ${gender}`
+            `Getting ${memberIds?.length} players for ${publication.name} ${type} ${gender}`,
           );
 
           const players = await Player.findAll({
@@ -301,7 +300,7 @@ export class RankingSyncer {
 
             if (!memberId) {
               this.logger.error(
-                `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`
+                `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`,
               );
               continue;
             }
@@ -321,13 +320,13 @@ export class RankingSyncer {
                   firstName,
                   lastName: lastName.join(' '),
                   gender,
-                })
+                }),
               );
               players.push(foundPlayer);
 
               if (!foundPlayer.memberId) {
                 this.logger.error(
-                  `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`
+                  `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`,
                 );
                 continue;
               }
@@ -337,7 +336,7 @@ export class RankingSyncer {
 
             if (!foundPlayer.id) {
               this.logger.error(
-                `No id found for ${points.Player1.Name} ${points.Player1.MemberID}`
+                `No id found for ${points.Player1.Name} ${points.Player1.MemberID}`,
               );
               continue;
             }
@@ -361,7 +360,7 @@ export class RankingSyncer {
                   [`${type}Rank`]: points.Rank,
                   systemId: ranking.system.id,
                   gender,
-                })
+                }),
               );
             }
 
@@ -370,7 +369,7 @@ export class RankingSyncer {
               foundPlayer.rankingLastPlaces != null
             ) {
               const place = foundPlayer.rankingLastPlaces.find(
-                (r) => r.systemId === ranking.system.id
+                (r) => r.systemId === ranking.system.id,
               );
               if (
                 place != null &&
@@ -397,7 +396,7 @@ export class RankingSyncer {
             }
 
             this.logger.debug(
-              `Getting single levels for ${publication.date.format('LLL')}`
+              `Getting single levels for ${publication.date.format('LLL')}`,
             );
             await pointsForCategory(
               publication,
@@ -406,7 +405,7 @@ export class RankingSyncer {
               rankingPlaces,
               newPlayers,
               'single',
-              'M'
+              'M',
             );
             await pointsForCategory(
               publication,
@@ -415,11 +414,11 @@ export class RankingSyncer {
               rankingPlaces,
               newPlayers,
               'single',
-              'F'
+              'F',
             );
 
             this.logger.debug(
-              `Getting double levels for ${publication.date.format('LLL')}`
+              `Getting double levels for ${publication.date.format('LLL')}`,
             );
             await pointsForCategory(
               publication,
@@ -428,7 +427,7 @@ export class RankingSyncer {
               rankingPlaces,
               newPlayers,
               'double',
-              'M'
+              'M',
             );
             await pointsForCategory(
               publication,
@@ -437,11 +436,11 @@ export class RankingSyncer {
               rankingPlaces,
               newPlayers,
               'double',
-              'F'
+              'F',
             );
 
             this.logger.debug(
-              `Getting mix levels for ${publication.date.format('LLL')}`
+              `Getting mix levels for ${publication.date.format('LLL')}`,
             );
             await pointsForCategory(
               publication,
@@ -450,7 +449,7 @@ export class RankingSyncer {
               rankingPlaces,
               newPlayers,
               'mix',
-              'M'
+              'M',
             );
             await pointsForCategory(
               publication,
@@ -459,13 +458,13 @@ export class RankingSyncer {
               rankingPlaces,
               newPlayers,
               'mix',
-              'F'
+              'F',
             );
 
             this.logger.debug(`Creating ${newPlayers.size} new players`);
             if (newPlayers.size > 0) {
               const newPlayersMap = Array.from(newPlayers).map(([, player]) =>
-                player.toJSON()
+                player.toJSON(),
               );
               await Player.bulkCreate(newPlayersMap, {
                 ignoreDuplicates: true,
@@ -475,11 +474,11 @@ export class RankingSyncer {
             }
 
             const instances = Array.from(rankingPlaces).map(([, place]) =>
-              place.toJSON()
+              place.toJSON(),
             );
 
             this.logger.debug(
-              `Creating/updating ${instances.length} ranking places`
+              `Creating/updating ${instances.length} ranking places`,
             );
 
             await RankingPlace.bulkCreate(instances, {
@@ -500,11 +499,11 @@ export class RankingSyncer {
             });
 
             this.logger.verbose(
-              `Finished processing ${instances.length} ranking places`
+              `Finished processing ${instances.length} ranking places`,
             );
           }
         }
-      }
+      },
     );
   }
 
@@ -515,7 +514,7 @@ export class RankingSyncer {
         try {
           const { hiddenPublications } =
             this.processor.getData<PublicationStepData>(
-              this.STEP_PUBLICATIONS
+              this.STEP_PUBLICATIONS,
             ) ?? {};
 
           if (hiddenPublications == null) {
@@ -541,8 +540,8 @@ export class RankingSyncer {
             if (points > 0) {
               this.logger.log(
                 `Removing points for ${publication.format(
-                  'LLL'
-                )} because it is not visible anymore`
+                  'LLL',
+                )} because it is not visible anymore`,
               );
               await RankingPlace.destroy({
                 where: {
@@ -557,7 +556,7 @@ export class RankingSyncer {
           this.logger.error('Error', e);
           throw e;
         }
-      }
+      },
     );
   }
 
@@ -575,7 +574,7 @@ export class RankingSyncer {
         // For now we only check if it's the last update
 
         const lastPublication = visiblePublications?.sort(
-          (a, b) => b.date.valueOf() - a.date.valueOf()
+          (a, b) => b.date.valueOf() - a.date.valueOf(),
         )?.[0];
 
         if (lastPublication == null) {
@@ -594,7 +593,7 @@ export class RankingSyncer {
 
         if (playersWithMissingRankings.length > 0) {
           this.logger.log(
-            `Queueing ${playersWithMissingRankings.length} players for ranking creation`
+            `Queueing ${playersWithMissingRankings.length} players for ranking creation`,
           );
 
           // qyueu them for ranking check on low priority
@@ -608,11 +607,11 @@ export class RankingSyncer {
                 priority: 9999,
                 removeOnFail: true,
                 removeOnComplete: true,
-              }
+              },
             );
           }
         }
-      }
+      },
     );
   }
 }

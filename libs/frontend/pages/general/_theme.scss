@@ -4,7 +4,6 @@
 @use './src/pages/changelog/changelog.page.theme.scss' as detail;
 @use './src/pages/faq/faq.page.theme.scss' as faq;
 
-
 @mixin typography($theme) {
   @include detail.typography($theme);
   @include faq.typography($theme);
@@ -14,8 +13,6 @@
   @include detail.color($theme);
   @include faq.color($theme);
 }
-
-
 
 @mixin theme($theme) {
   $color-config: mat.get-color-config($theme);

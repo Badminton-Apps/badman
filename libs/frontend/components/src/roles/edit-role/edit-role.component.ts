@@ -61,8 +61,8 @@ const roleQuery = gql`
     MatListModule,
     PlayerSearchComponent,
     ClaimComponent,
-    BadmanBlockModule
-],
+    BadmanBlockModule,
+  ],
   templateUrl: './edit-role.component.html',
   styleUrls: ['./edit-role.component.scss'],
 })
@@ -110,9 +110,9 @@ export class EditRoleComponent implements OnInit {
         })
         .valueChanges.pipe(
           shareReplay(1),
-          map((result) => new Role(result.data.role))
+          map((result) => new Role(result.data.role)),
         ),
-      { injector: this.injector }
+      { injector: this.injector },
     );
 
     this.claims = toSignal(
@@ -144,12 +144,12 @@ export class EditRoleComponent implements OnInit {
               toArray(),
               map((items) => {
                 return { category: obs.key, claims: items };
-              })
+              }),
             );
           }),
-          toArray()
+          toArray(),
         ),
-      { injector: this.injector }
+      { injector: this.injector },
     );
   }
 
@@ -209,7 +209,7 @@ export class EditRoleComponent implements OnInit {
               },
             },
           ],
-        })
+        }),
       );
     }
   }
@@ -235,7 +235,7 @@ export class EditRoleComponent implements OnInit {
               },
             },
           ],
-        })
+        }),
       );
     }
   }
@@ -268,7 +268,7 @@ export class EditRoleComponent implements OnInit {
             },
           },
         ],
-      })
+      }),
     );
   }
 }

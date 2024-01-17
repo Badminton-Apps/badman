@@ -47,8 +47,8 @@ import { RANKING_CONFIG } from '../../injection';
     MatCheckboxModule,
     MatInputModule,
     MatFormFieldModule,
-    MatDatepickerModule
-],
+    MatDatepickerModule,
+  ],
   templateUrl: './upload-ranking.dialog.html',
   styleUrls: ['./upload-ranking.dialog.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -149,7 +149,7 @@ export class UploadRankingDialogComponent {
     formData.append('createNewPlayers', this.createNewPlayers.toString());
     formData.append('rankingDate', this.rankingDate.toISOString());
     formData.append('updateRanking', this.updateRanking.toString());
- 
+
     try {
       const result = await lastValueFrom(
         this.http.post<{ message: boolean }>(
@@ -165,7 +165,6 @@ export class UploadRankingDialogComponent {
       }
 
       this.dialogRef.close();
-
     } catch (error) {
       console.error(error);
     } finally {

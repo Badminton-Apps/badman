@@ -37,8 +37,8 @@ import { debounceTime, filter, switchMap } from 'rxjs/operators';
     MatInputModule,
     HasClaimComponent,
     MatSelectModule,
-    TranslateModule
-],
+    TranslateModule,
+  ],
 })
 export class EditPlayerFieldsComponent implements OnInit {
   @Input()
@@ -52,25 +52,25 @@ export class EditPlayerFieldsComponent implements OnInit {
   constructor(
     private claimService: ClaimService,
     private apollo: Apollo,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
     const firstNameControl = new FormControl(
       this.player.firstName,
-      Validators.required
+      Validators.required,
     );
     const lastNameControl = new FormControl(
       this.player.lastName,
-      Validators.required
+      Validators.required,
     );
     const memberIdControl = new FormControl(
       this.player.memberId,
-      Validators.required
+      Validators.required,
     );
     const genderControl = new FormControl(
       this.player.gender,
-      Validators.required
+      Validators.required,
     );
     const subControl = new FormControl(this.player.sub);
 
@@ -102,7 +102,7 @@ export class EditPlayerFieldsComponent implements OnInit {
             v.lastName !== this.player.lastName ||
             v.memberId !== this.player.memberId ||
             v.sub !== this.player.sub ||
-            v.gender !== this.player.gender
+            v.gender !== this.player.gender,
         ),
         switchMap(() =>
           this.apollo.mutate<{ updatePlayer: Player }>({
@@ -127,8 +127,8 @@ export class EditPlayerFieldsComponent implements OnInit {
                 sub: this.fg.value.sub,
               },
             },
-          })
-        )
+          }),
+        ),
       )
       .subscribe(() => {
         this._snackBar.open('Saved', undefined, {

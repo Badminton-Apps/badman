@@ -3,20 +3,24 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnInit
+  OnInit,
 } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ClaimService } from '@badman/frontend-auth';
-import { HasClaimComponent, SelectCountryComponent, SelectCountrystateComponent } from '@badman/frontend-components';
+import {
+  HasClaimComponent,
+  SelectCountryComponent,
+  SelectCountrystateComponent,
+} from '@badman/frontend-components';
 import { UseForTeamName } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -36,8 +40,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
     HasClaimComponent,
     SelectCountryComponent,
-    SelectCountrystateComponent
-],
+    SelectCountrystateComponent,
+  ],
 })
 export class ClubFieldsComponent implements OnInit {
   @Input({ required: true })
@@ -82,7 +86,7 @@ export class ClubFieldsComponent implements OnInit {
         abbreviation: new FormControl('', Validators.required),
         useForTeamName: new FormControl(
           UseForTeamName.NAME,
-          Validators.required
+          Validators.required,
         ),
         country: new FormControl('', Validators.required),
         subdivision: new FormControl('', Validators.required),

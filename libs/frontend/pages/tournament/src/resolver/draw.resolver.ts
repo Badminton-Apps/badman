@@ -10,7 +10,7 @@ export class DrawResolver {
   constructor(
     private apollo: Apollo,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -65,7 +65,7 @@ export class DrawResolver {
           return new DrawTournament(result.data.drawTournament);
         }),
 
-        first()
+        first(),
       );
   }
 }

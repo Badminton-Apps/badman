@@ -10,4 +10,3 @@ export * from './sidebar/banner';
 export * from './sidebar/user-shortcuts';
 export * from './sidebar/service-status';
 // end:ng42.barrel
-

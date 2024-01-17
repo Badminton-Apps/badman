@@ -46,8 +46,8 @@ import { debounceTime } from 'rxjs';
     MatOptionModule,
     MatSelectModule,
     MatSlideToggleModule,
-    PageHeaderComponent
-],
+    PageHeaderComponent,
+  ],
   selector: 'badman-ranking-system-fields',
   templateUrl: './ranking-system-fields.component.html',
   styleUrls: ['./ranking-system-fields.component.scss'],

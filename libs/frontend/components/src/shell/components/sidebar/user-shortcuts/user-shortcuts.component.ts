@@ -20,8 +20,8 @@ import { map, Observable } from 'rxjs';
     MatDividerModule,
     RouterModule,
     MatExpansionModule,
-    MatIconModule
-],
+    MatIconModule,
+  ],
   templateUrl: './user-shortcuts.component.html',
   styleUrls: ['./user-shortcuts.component.scss'],
 })
@@ -44,7 +44,7 @@ export class UserShortcutsComponent implements OnInit {
             (club) =>
               club.clubMembership?.end === undefined ||
               club.clubMembership?.end === null ||
-              club.clubMembership?.end > new Date()
+              club.clubMembership?.end > new Date(),
           )
           .sort((a, b) => {
             // sort by membership type, first normal then loan
@@ -70,7 +70,7 @@ export class UserShortcutsComponent implements OnInit {
             return 0;
           });
         return user;
-      })
+      }),
     );
   }
 }

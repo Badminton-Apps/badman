@@ -28,4 +28,3 @@ export class ScriptModule implements OnModuleInit {
     this.logger.log('Script finished');
   }
 }
- 

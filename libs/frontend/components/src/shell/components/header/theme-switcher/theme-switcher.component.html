@@ -3,11 +3,7 @@
 </button>
 <mat-menu #Lang="matMenu">
   @for (theme of this.colorSchemaService.schemes; track theme) {
-    <button
-      mat-menu-item
-      [value]="theme"
-      (click)="setTheme(theme)"
-      >
+    <button mat-menu-item [value]="theme" (click)="setTheme(theme)">
       {{ 'all.themes.' + theme | translate }}
     </button>
   }

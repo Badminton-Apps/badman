@@ -2,7 +2,14 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import { Club, EventCompetition } from '@badman/frontend-models';
-import { combineLatest, map, Observable, startWith, switchMap, tap } from 'rxjs';
+import {
+  combineLatest,
+  map,
+  Observable,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
@@ -35,8 +42,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MatIconModule,
     MatButtonModule,
     MatProgressBarModule,
-    OverlayModule
-],
+    OverlayModule,
+  ],
 })
 export class ClubViewComponent implements OnInit {
   overlayOpen = '';
@@ -53,7 +60,7 @@ export class ClubViewComponent implements OnInit {
   ngOnInit(): void {
     this.clubs$ = combineLatest([
       this.eventControl.valueChanges,
-      this.yearControl.valueChanges
+      this.yearControl.valueChanges,
     ]).pipe(
       tap(() => (this.loading = true)),
 
@@ -70,7 +77,7 @@ export class ClubViewComponent implements OnInit {
                   },
                 },
               };
-            })
+            }),
           );
         } else {
           return this._apollo.query<{
@@ -105,7 +112,7 @@ export class ClubViewComponent implements OnInit {
             ...new Set(
               result.data.eventCompetition.subEventCompetitions
                 ?.map((s) => s?.eventEntries?.map((e) => e.team?.clubId))
-                ?.flat()
+                ?.flat(),
             ),
           ],
         };
@@ -125,7 +132,11 @@ export class ClubViewComponent implements OnInit {
           };
         }>({
           query: gql`
-            query Clubs($where: JSONObject, $availabilityWhere: JSONObject, $teamsWhere: JSONObject) {
+            query Clubs(
+              $where: JSONObject
+              $availabilityWhere: JSONObject
+              $teamsWhere: JSONObject
+            ) {
               clubs(where: $where) {
                 rows {
                   id
@@ -184,28 +195,29 @@ export class ClubViewComponent implements OnInit {
               year: this.yearControl.value,
             },
             teamsWhere: {
-              year: this.eventControl.value
-            }
+              year: this.eventControl.value,
+            },
           },
         });
       }),
 
-      map((result) =>
-        result.data.clubs?.rows.map(
-          (node) => new Club(node) as Club & { hasLocation: boolean }
-        )
+      map(
+        (result) =>
+          result.data.clubs?.rows.map(
+            (node) => new Club(node) as Club & { hasLocation: boolean },
+          ),
       ),
       map((clubs) => {
         // Sort by name
         clubs = clubs.sort((a, b) =>
-          (a.name ?? '').localeCompare(b.name ?? '')
+          (a.name ?? '').localeCompare(b.name ?? ''),
         );
 
         clubs = clubs.map?.((club) => {
           club.hasLocation =
             club?.locations?.some(
               (location) =>
-                location?.availibilities?.[0]?.days?.length ?? 0 <= 0
+                location?.availibilities?.[0]?.days?.length ?? 0 <= 0,
             ) ?? false;
 
           club.teams = club.teams?.filter((team) => {
@@ -218,7 +230,7 @@ export class ClubViewComponent implements OnInit {
           return (club.teams ?? []).length > 0;
         });
       }),
-      tap(() => (this.loading = false))
+      tap(() => (this.loading = false)),
     );
 
     this.events$ = this.yearControl.valueChanges.pipe(
@@ -249,13 +261,13 @@ export class ClubViewComponent implements OnInit {
               closeDate: { $gte: new Date().toISOString() },
             },
           },
-        })
+        }),
       ),
       map((result) =>
         result.data.eventCompetitions.rows.map(
-          (node) => new EventCompetition(node)
-        )
-      )
+          (node) => new EventCompetition(node),
+        ),
+      ),
     );
   }
 }

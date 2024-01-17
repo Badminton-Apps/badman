@@ -30,14 +30,13 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDialogModule,
     MatInputModule,
     MatDatepickerModule,
-    MatSlideToggleModule
-],
+    MatSlideToggleModule,
+  ],
   templateUrl: './set-encounter-date.component.html',
   styleUrls: ['./set-encounter-date.component.scss'],
   standalone: true,
 })
 export class SetEncounterDateDialogComponent implements OnInit {
-  
   dateControl?: FormControl;
   updateBadman?: FormControl;
   updateVisual?: FormControl;
@@ -46,7 +45,7 @@ export class SetEncounterDateDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SetEncounterDateDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { date: Date; }
+    public data: { date: Date },
   ) {}
 
   ngOnInit(): void {

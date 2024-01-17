@@ -10,7 +10,7 @@ import { Rule } from './_rule.base';
 export type PlayerMaxGamesRuleParams = {
   player: Partial<Player>;
   max: number;
-}
+};
 
 /**
  * Checks if a player has max 1 single game and 2 double game
@@ -34,7 +34,7 @@ export class PlayerMaxGamesRule extends Rule {
     // Check if a player has max 1 single game and 2 double game
 
     const singlePlayers = [single1, single2, single3, single4].filter(
-      (p) => p !== undefined
+      (p) => p !== undefined,
     );
 
     const uniqueSinglePlayers = [...new Set(singlePlayers)];
@@ -60,7 +60,7 @@ export class PlayerMaxGamesRule extends Rule {
 
     if (type == SubEventTypeEnum.MX) {
       doublePlayers = [...(double1 ?? []), ...(double2 ?? [])].filter(
-        (p) => p !== undefined
+        (p) => p !== undefined,
       );
 
       const mixedPlayers = [...(double3 ?? []), ...(double4 ?? [])];

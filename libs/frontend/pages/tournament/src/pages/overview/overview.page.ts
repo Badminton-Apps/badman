@@ -93,8 +93,8 @@ const FETCH_TOURNAMENTS = gql`
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatDialogModule
-],
+    MatDialogModule,
+  ],
 })
 export class OverviewPageComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['name', 'firstDay', 'official', 'menu'];

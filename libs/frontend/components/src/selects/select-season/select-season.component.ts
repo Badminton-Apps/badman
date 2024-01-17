@@ -38,8 +38,8 @@ import { map, takeUntil } from 'rxjs/operators';
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
-    MatSelectModule
-],
+    MatSelectModule,
+  ],
   templateUrl: './select-season.component.html',
   styleUrls: ['./select-season.component.scss'],
 })

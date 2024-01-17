@@ -19,13 +19,13 @@
   }
 }
 
-.levels{
+.levels {
   display: flex;
   flex-direction: row;
   gap: 1rem;
   flex-wrap: wrap;
 
-  badman-show-level{
+  badman-show-level {
     cursor: pointer;
   }
 }

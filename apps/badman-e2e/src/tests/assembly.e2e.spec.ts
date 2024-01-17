@@ -26,7 +26,9 @@ test.describe('Assembly page', () => {
     });
 
     test('We can select encounter', async ({ page }) => {
-      await expect(page.locator('badman-assembly')).toBeVisible({ timeout: 60_000});
+      await expect(page.locator('badman-assembly')).toBeVisible({
+        timeout: 60_000,
+      });
     });
 
     test('Players of team have been loaded', async ({ page }) => {
@@ -34,7 +36,7 @@ test.describe('Assembly page', () => {
         .locator('badman-assembly-player')
         .filter({ hasText: 'M 8-8-8' });
 
-      await expect(player888M).toBeVisible({ timeout: 60_000});
+      await expect(player888M).toBeVisible({ timeout: 60_000 });
     });
 
     // test('We can drage a male to the males dubbles', async ({ page }) => {

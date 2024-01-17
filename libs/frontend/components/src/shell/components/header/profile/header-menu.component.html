@@ -4,7 +4,7 @@
     mat-icon-button
     [matMenuTriggerFor]="menu"
     aria-label="button for more option menu"
-    >
+  >
     <mat-icon>more_vert</mat-icon>
   </button>
 }
@@ -14,35 +14,34 @@
     class="avatar-button"
     [matMenuTriggerFor]="menu"
     aria-label="button for more option menu"
-    >
+  >
     <img
       class="avatar"
       [src]="authenticateService.user?.picture"
       [alt]="'profile picture' + authenticateService.user?.fullName"
       loading="lazy"
-      />
-      {{ authenticateService.user?.firstName }}
-    </button>
-  }
-  <mat-menu #menu="matMenu">
-    @if (authenticateService.user?.loggedIn) {
-      @if (authenticateService.user?.fullName) {
-        <div
-          mat-menu-item
-          [routerLink]="['/', 'player', authenticateService.user?.slug]"
-          >
-          {{ authenticateService.user?.fullName }}
-        </div>
-      }
-      <button mat-menu-item (click)="logout()">Logout</button>
-      <a
+    />
+    {{ authenticateService.user?.firstName }}
+  </button>
+}
+<mat-menu #menu="matMenu">
+  @if (authenticateService.user?.loggedIn) {
+    @if (authenticateService.user?.fullName) {
+      <div
         mat-menu-item
-        [routerLink]="['/', 'player', authenticateService.user?.slug, 'settings']"
-        >Settings</a
-        >
-        <mat-divider></mat-divider>
-      }
-      <badman-language></badman-language>
-      <badman-theme-switcher></badman-theme-switcher>
-    </mat-menu>
-    
+        [routerLink]="['/', 'player', authenticateService.user?.slug]"
+      >
+        {{ authenticateService.user?.fullName }}
+      </div>
+    }
+    <button mat-menu-item (click)="logout()">Logout</button>
+    <a
+      mat-menu-item
+      [routerLink]="['/', 'player', authenticateService.user?.slug, 'settings']"
+      >Settings</a
+    >
+    <mat-divider></mat-divider>
+  }
+  <badman-language></badman-language>
+  <badman-theme-switcher></badman-theme-switcher>
+</mat-menu>

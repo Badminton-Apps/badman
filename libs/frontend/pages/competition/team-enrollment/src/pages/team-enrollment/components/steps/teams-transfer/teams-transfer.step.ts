@@ -61,8 +61,8 @@ export type TeamForm = FormGroup<{
     MatProgressBarModule,
     FormsModule,
     ReactiveFormsModule,
-    TranslateModule
-],
+    TranslateModule,
+  ],
   templateUrl: './teams-transfer.step.html',
   styleUrls: ['./teams-transfer.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

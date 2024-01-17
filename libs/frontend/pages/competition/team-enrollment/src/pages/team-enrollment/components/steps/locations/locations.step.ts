@@ -38,8 +38,8 @@ import {
     MatDialogModule,
     MatButtonModule,
     MatProgressBarModule,
-    LocationComponent
-],
+    LocationComponent,
+  ],
   templateUrl: './locations.step.html',
   styleUrls: ['./locations.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -72,13 +72,13 @@ export class LocationsStepComponent implements OnInit {
     private apollo: Apollo,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
     if (this.group) {
       this.control = this.group?.get(
-        this.controlName
+        this.controlName,
       ) as FormArray<LocationForm>;
     }
 
@@ -107,10 +107,10 @@ export class LocationsStepComponent implements OnInit {
 
     combineLatest([
       clubId$.pipe(
-        startWith(this.group.get(this.clubControlName)?.value || this.clubId)
+        startWith(this.group.get(this.clubControlName)?.value || this.clubId),
       ),
       season$.pipe(
-        startWith(this.group.get(this.seasonControlName)?.value || this.season)
+        startWith(this.group.get(this.seasonControlName)?.value || this.season),
       ),
     ])
       .pipe(
@@ -169,12 +169,13 @@ export class LocationsStepComponent implements OnInit {
                 },
               },
             },
-          })
+          }),
         ),
         takeUntil(this.destroy$),
-        map((result) =>
-          result.data?.locations?.map((location) => new Location(location))
-        )
+        map(
+          (result) =>
+            result.data?.locations?.map((location) => new Location(location)),
+        ),
       )
       ?.subscribe((locations) => {
         if (locations) {
@@ -183,12 +184,12 @@ export class LocationsStepComponent implements OnInit {
             // filter out the locations that are not available for the current season
             // if no availibilities are set, use the one from previous season
             let availibilty = location.availibilities?.find(
-              (availibility) => availibility.season === this.season
+              (availibility) => availibility.season === this.season,
             );
 
             if (!availibilty) {
               const lastSeason = (location.availibilities?.find(
-                (availibility) => availibility.season === this.season - 1
+                (availibility) => availibility.season === this.season - 1,
               ) ?? {
                 days: [],
               }) as Availability;
@@ -210,8 +211,8 @@ export class LocationsStepComponent implements OnInit {
                     startTime: this.formBuilder.control(day.startTime),
                     endTime: this.formBuilder.control(day.endTime),
                     courts: this.formBuilder.control(day.courts),
-                  })
-                ) ?? []
+                  }),
+                ) ?? [],
               ),
               exceptions: this.formBuilder.array(
                 availibilty?.exceptions?.map((exception) =>
@@ -219,8 +220,8 @@ export class LocationsStepComponent implements OnInit {
                     start: this.formBuilder.control(exception.start),
                     end: this.formBuilder.control(exception.end),
                     courts: this.formBuilder.control(exception.courts),
-                  })
-                ) ?? []
+                  }),
+                ) ?? [],
               ),
             }) as LocationAvailibilityForm;
 
@@ -271,9 +272,9 @@ export class LocationsStepComponent implements OnInit {
             phone: this.formBuilder.control(location?.phone),
             fax: this.formBuilder.control(location?.fax),
             availibilities: this.formBuilder.array(
-              [] as LocationAvailibilityForm[]
+              [] as LocationAvailibilityForm[],
             ),
-          }) as LocationForm
+          }) as LocationForm,
         );
       });
     });

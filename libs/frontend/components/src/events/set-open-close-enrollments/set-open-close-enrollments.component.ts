@@ -28,21 +28,20 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    MatDatepickerModule
-],
+    MatDatepickerModule,
+  ],
   templateUrl: './set-open-close-enrollments.component.html',
   styleUrls: ['./set-open-close-enrollments.component.scss'],
   standalone: true,
 })
 export class OpenCloseDateDialogComponent implements OnInit {
-  
   openControl?: FormControl;
   closeControl?: FormControl;
 
   constructor(
     public dialogRef: MatDialogRef<OpenCloseDateDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { openDate: Date; closeDate: Date;  }
+    public data: { openDate: Date; closeDate: Date },
   ) {}
 
   ngOnInit(): void {

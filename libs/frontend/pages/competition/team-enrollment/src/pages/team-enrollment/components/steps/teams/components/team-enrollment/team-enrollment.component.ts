@@ -31,8 +31,8 @@ import { EnrollmentMessageComponent } from '@badman/frontend-components';
     FormsModule,
     TeamComponent,
     EnrollmentMessageComponent,
-    TranslateModule
-],
+    TranslateModule,
+  ],
   templateUrl: './team-enrollment.component.html',
   styleUrls: ['./team-enrollment.component.scss'],
 })

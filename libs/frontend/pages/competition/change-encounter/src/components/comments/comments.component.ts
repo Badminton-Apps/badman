@@ -52,8 +52,8 @@ const COMMENTS_QUERY = gql`
     TranslateModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
-],
+    MatInputModule,
+  ],
 })
 export class CommentsComponent implements OnInit, OnChanges {
   // injects
@@ -98,15 +98,18 @@ export class CommentsComponent implements OnInit, OnChanges {
                   },
                 },
               },
-            }).valueChanges
+            }).valueChanges,
         ),
-        map((result) =>
-          result.data.comments?.map((c) => new Comment(c))?.sort(sortComments)
-        )
+        map(
+          (result) =>
+            result.data.comments
+              ?.map((c) => new Comment(c))
+              ?.sort(sortComments),
+        ),
       ),
       {
         injector: this.injector,
-      }
+      },
     );
   }
 
@@ -159,18 +162,18 @@ export class CommentsComponent implements OnInit, OnChanges {
         catchError((err) => {
           console.error(err);
           return of(null);
-        })
+        }),
       )
       .subscribe((result) => {
         if (result && result.data && result.data.addComment) {
           this.snackBar.open(
             this.translate.instant(
-              'all.competition.change-encounter.comment-added'
+              'all.competition.change-encounter.comment-added',
             ),
             'OK',
             {
               duration: 4000,
-            }
+            },
           );
           this.commentControl.setValue('');
         }

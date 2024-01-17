@@ -91,8 +91,8 @@ export type LocationForm = FormGroup<{
     MatInputModule,
     MatSnackBarModule,
     HasClaimComponent,
-    BadmanBlockModule
-],
+    BadmanBlockModule,
+  ],
 })
 export class ClubEditLocationComponent implements OnInit {
   @Output() whenEdit = new EventEmitter<Location>();
@@ -116,7 +116,7 @@ export class ClubEditLocationComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private apollo: Apollo,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
   ) {}
 
   expanded = {
@@ -133,7 +133,7 @@ export class ClubEditLocationComponent implements OnInit {
 
   ngOnInit(): void {
     const availibilty = this.location.availibilities?.find(
-      (availibility) => availibility.season === this.season
+      (availibility) => availibility.season === this.season,
     );
 
     this.days = this.formBuilder.array(
@@ -143,8 +143,8 @@ export class ClubEditLocationComponent implements OnInit {
           startTime: this.formBuilder.control(day.startTime),
           endTime: this.formBuilder.control(day.endTime),
           courts: this.formBuilder.control(day.courts),
-        })
-      ) ?? []
+        }),
+      ) ?? [],
     ) as FormArray<LocationavDayType>;
 
     this.exceptions = this.formBuilder.array(
@@ -153,8 +153,8 @@ export class ClubEditLocationComponent implements OnInit {
           start: this.formBuilder.control(exception.start),
           end: this.formBuilder.control(exception.end),
           courts: this.formBuilder.control(exception.courts),
-        })
-      ) ?? []
+        }),
+      ) ?? [],
     ) as FormArray<LocationExceptionType>;
 
     this.control = this.formBuilder.group({
@@ -183,7 +183,7 @@ export class ClubEditLocationComponent implements OnInit {
         startTime: new FormControl(),
         endTime: new FormControl(),
         courts: new FormControl(),
-      }) as LocationavDayType
+      }) as LocationavDayType,
     );
     this.expanded.days = true;
   }
@@ -198,7 +198,7 @@ export class ClubEditLocationComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         courts: new FormControl(0),
-      }) as LocationExceptionType
+      }) as LocationExceptionType,
     );
 
     this.showCourts.push({
@@ -235,7 +235,7 @@ export class ClubEditLocationComponent implements OnInit {
               exceptions: availibility?.exceptions,
             },
           },
-        })
+        }),
       );
     } else {
       observables.push(
@@ -256,7 +256,7 @@ export class ClubEditLocationComponent implements OnInit {
               exceptions: availibility.exceptions,
             },
           },
-        })
+        }),
       );
     }
 

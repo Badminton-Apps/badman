@@ -1,25 +1,23 @@
 <!-- notification list -->
 <mat-list>
-  @if (notifications$ | async; as notifications) {
-    @for (notification of notifications; track notification; let last = $last) {
-      <div mat-list-item>
-        <span
-          matLine
-          [innerHTML]="'all.settings.notifications.messages.' + notification.type | translate: getParams(notification)"
-        ></span>
-        <button mat-icon-button (click)="readNotification(notification)">
-          <mat-icon>archive</mat-icon>
-        </button>
-      </div>
-      @if (!last) {
-        <mat-divider></mat-divider>
-      }
-    }
-  } @else {
-    <div mat-list-item>
-      <mat-icon>notifications_off</mat-icon>
-      <span matLine>{{ 'all.notifications.noNotifications' | translate }}</span>
-    </div>
+  @if (notifications$ | async; as notifications) { @for (notification of
+  notifications; track notification; let last = $last) {
+  <div mat-list-item>
+    <span
+      matLine
+      [innerHTML]="'all.settings.notifications.messages.' + notification.type | translate: getParams(notification)"
+    ></span>
+    <button mat-icon-button (click)="readNotification(notification)">
+      <mat-icon>archive</mat-icon>
+    </button>
+  </div>
+  @if (!last) {
+  <mat-divider></mat-divider>
+  } } } @else {
+  <div mat-list-item>
+    <mat-icon>notifications_off</mat-icon>
+    <span matLine>{{ 'all.notifications.noNotifications' | translate }}</span>
+  </div>
   }
 </mat-list>
 <ng-template #noNotifications>
