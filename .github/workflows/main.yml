@@ -55,7 +55,7 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
-      node-version: ${{ vars.NODE_ENV }}
+      node-version: ${{ vars.NODE_VERSION }}
       main-branch-name: ${{ inputs.prod-release && 'main' || 'develop' }}
       output-affected-projects: true
       parallel-commands-on-agents: |
@@ -73,7 +73,7 @@ jobs:
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
-      node-version: ${{ vars.NODE_ENV }}
+      node-version: ${{ vars.NODE_VERSION }}
       number-of-agents: 3
       timeout: 15
 
@@ -97,7 +97,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ vars.NODE_ENV }}
+          node-version: ${{ vars.NODE_VERSION }}
 
       - name: install dependencies for release
         run: npm --prefix \scripts install
