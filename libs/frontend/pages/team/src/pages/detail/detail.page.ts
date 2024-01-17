@@ -1,25 +1,12 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  PLATFORM_ID,
-  TransferState,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Injector, PLATFORM_ID, TransferState, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import {
-  PageHeaderComponent,
-  RecentGamesComponent,
-  UpcomingGamesComponent,
-} from '@badman/frontend-components';
+import { PageHeaderComponent, RecentGamesComponent, UpcomingGamesComponent } from '@badman/frontend-components';
 import { EventEntry, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
@@ -76,10 +63,7 @@ export class DetailPageComponent {
         type: 'website',
         keywords: ['team', 'badminton'],
       });
-      this.breadcrumbService.set(
-        'club/:id',
-        this.route.snapshot.data['club'].name,
-      );
+      this.breadcrumbService.set('club/:id', this.route.snapshot.data['club'].name);
       this.breadcrumbService.set('club/:id/team/:id', teamName);
 
       this._loadEntry();
@@ -123,19 +107,13 @@ export class DetailPageComponent {
       })
       .pipe(
         takeUntil(this.destroy$),
-        transferState(
-          `teamEntries-${this.team().id}-${year}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`teamEntries-${this.team().id}-${year}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data?.team?.entry) {
             return undefined;
           }
 
-          return new EventEntry(
-            result?.data?.team?.entry as Partial<EventEntry>,
-          );
+          return new EventEntry(result?.data?.team?.entry as Partial<EventEntry>);
         }),
       )
       .subscribe((entry) => {

@@ -26,11 +26,9 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'calculateUpdates',
-          { transaction: t },
-        );
+        await queryInterface.removeColumn({ tableName: 'RankingSystems', schema: 'ranking' }, 'calculateUpdates', {
+          transaction: t,
+        });
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

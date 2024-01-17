@@ -17,17 +17,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-  BadmanBlockModule,
-  PlayerSearchComponent,
-} from '@badman/frontend-components';
-import {
-  Club,
-  EntryCompetitionPlayer,
-  Player,
-  SubEventCompetition,
-  Team,
-} from '@badman/frontend-models';
+import { BadmanBlockModule, PlayerSearchComponent } from '@badman/frontend-components';
+import { Club, EntryCompetitionPlayer, Player, SubEventCompetition, Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { PickEventDialogComponent } from '../../../../dialogs';
 
@@ -55,9 +46,7 @@ import { PickEventDialogComponent } from '../../../../dialogs';
 export class ClubEditTeamComponent implements OnInit {
   @Output() whenPlayerAdded = new EventEmitter<Partial<Player>>();
   @Output() whenPlayerRemoved = new EventEmitter<Partial<Player>>();
-  @Output() whenPlayerMetaUpdated = new EventEmitter<
-    Partial<EntryCompetitionPlayer>
-  >();
+  @Output() whenPlayerMetaUpdated = new EventEmitter<Partial<EntryCompetitionPlayer>>();
   @Output() whenSubEventChanged = new EventEmitter<{
     event: string;
     subEvent: string;
@@ -89,10 +78,7 @@ export class ClubEditTeamComponent implements OnInit {
     this.players = this.team.entry?.meta?.competition?.players;
 
     this.where = {
-      gender:
-        this.team.type == 'MX' || this.team.type == 'NATIONAL'
-          ? undefined
-          : this.team.type,
+      gender: this.team.type == 'MX' || this.team.type == 'NATIONAL' ? undefined : this.team.type,
     };
   }
 

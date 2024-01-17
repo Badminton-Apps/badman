@@ -63,9 +63,9 @@ export class RankingSystemService {
   primary = computed(() => this.state().rankingSystem?.primary);
 
   // sources
-  private servicesLoaded$ = of(
-    sessionStorage.getItem(WATCH_SYSTEM_ID_KEY),
-  ).pipe(switchMap((saved) => this._loadSystem(saved)));
+  private servicesLoaded$ = of(sessionStorage.getItem(WATCH_SYSTEM_ID_KEY)).pipe(
+    switchMap((saved) => this._loadSystem(saved)),
+  );
 
   //sources
   sources$ = merge(
@@ -84,31 +84,19 @@ export class RankingSystemService {
       watchSystem: (_state, action$: Observable<string>) =>
         action$.pipe(
           tap((id) => sessionStorage.setItem(WATCH_SYSTEM_ID_KEY, id)),
-          switchMap((id) =>
-            this._loadSystem(id).pipe(
-              map((system) => ({ rankingSystem: system, loaded: true })),
-            ),
-          ),
+          switchMap((id) => this._loadSystem(id).pipe(map((system) => ({ rankingSystem: system, loaded: true })))),
         ),
       clearWatchSystem: (_state, action$: Observable<void>) =>
         action$.pipe(
           tap(() => sessionStorage.removeItem(WATCH_SYSTEM_ID_KEY)),
-          switchMap(() =>
-            this._loadSystem().pipe(
-              map((system) => ({ rankingSystem: system, loaded: true })),
-            ),
-          ),
+          switchMap(() => this._loadSystem().pipe(map((system) => ({ rankingSystem: system, loaded: true })))),
         ),
       deleteSystem: (_state, action$: Observable<string>) =>
         action$.pipe(
           // delete system
           switchMap((id) => this._deleteSystem(id)),
           // load the default system
-          switchMap(() =>
-            this._loadSystem().pipe(
-              map((system) => ({ rankingSystem: system, loaded: true })),
-            ),
-          ),
+          switchMap(() => this._loadSystem().pipe(map((system) => ({ rankingSystem: system, loaded: true })))),
         ),
     },
   });

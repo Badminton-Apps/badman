@@ -121,10 +121,7 @@ export class CheckEncounterProcessor {
         attributes: ['id', 'visualCode', 'date', 'homeTeamId', 'awayTeamId'],
         where: {
           date: {
-            [Op.between]: [
-              moment().subtract(14, 'days').toDate(),
-              moment().toDate(),
-            ],
+            [Op.between]: [moment().subtract(14, 'days').toDate(), moment().toDate()],
           },
           acceptedOn: null,
           visualCode: {
@@ -199,12 +196,9 @@ export class CheckEncounterProcessor {
 
   @Process(Sync.CheckEncounter)
   async syncEncounter(job: Job<{ encounterId: string }>) {
-    const encounter = await EncounterCompetition.findByPk(
-      job.data.encounterId,
-      {
-        include: includes,
-      },
-    );
+    const encounter = await EncounterCompetition.findByPk(job.data.encounterId, {
+      include: includes,
+    });
 
     if (!encounter) {
       this.logger.error(`Encounter ${job.data.encounterId} not found`);
@@ -245,18 +239,9 @@ export class CheckEncounterProcessor {
         this.logger.verbose(`Encounter ${encounter.visualCode} has no time`);
         return;
       }
-      const { entered, enteredOn } = await detailEntered(
-        { page },
-        { logger: this.logger },
-      );
-      const { accepted, acceptedOn } = await detailAccepted(
-        { page },
-        { logger: this.logger },
-      );
-      const { hasComment } = await detailComment(
-        { page },
-        { logger: this.logger },
-      );
+      const { entered, enteredOn } = await detailEntered({ page }, { logger: this.logger });
+      const { accepted, acceptedOn } = await detailAccepted({ page }, { logger: this.logger });
+      const { hasComment } = await detailComment({ page }, { logger: this.logger });
       const enteredMoment = moment(enteredOn);
       const hoursPassed = moment().diff(encounter.date, 'hour');
 
@@ -280,32 +265,20 @@ export class CheckEncounterProcessor {
           let hoursPassedEntered = moment().diff(enteredMoment, 'hour');
 
           // was entered on time
-          const enteredOnTime = enteredMoment.isSameOrBefore(
-            moment(encounter.date).add(36, 'hour'),
-          );
+          const enteredOnTime = enteredMoment.isSameOrBefore(moment(encounter.date).add(36, 'hour'));
           if (!enteredOnTime) {
             // if entered late we give it 36 hours to comment after the encounter was filled in
-            hoursPassedEntered = moment().diff(
-              enteredMoment.clone().add(36, 'hour'),
-              'hour',
-            );
+            hoursPassedEntered = moment().diff(enteredMoment.clone().add(36, 'hour'), 'hour');
           }
 
           // Check if anough time has passed for auto accepting
           if (hoursPassedEntered > 36) {
-            this.logger.debug(
-              `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
-            );
+            this.logger.debug(`Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`);
 
-            const succesfull = await acceptEncounter(
-              { page },
-              { logger: this.logger },
-            );
+            const succesfull = await acceptEncounter({ page }, { logger: this.logger });
             if (!succesfull) {
               // we failed to accept the encounter for some reason, notify the user
-              this.logger.warn(
-                `Could not auto accept encounter ${encounter.visualCode}`,
-              );
+              this.logger.warn(`Could not auto accept encounter ${encounter.visualCode}`);
               this.notificationService.notifyEncounterNotAccepted(encounter);
             }
           } else {
@@ -321,17 +294,14 @@ export class CheckEncounterProcessor {
       // Update our local data
       if (entered) {
         if (!enteredMoment.isValid()) {
-          this.logger.error(
-            `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`,
-          );
+          this.logger.error(`Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`);
           return;
         }
 
         encounter.enteredOn = enteredMoment.toDate();
 
         try {
-          const { endedOn, startedOn, usedShuttle, gameLeader } =
-            await detailInfo({ page }, { logger: this.logger });
+          const { endedOn, startedOn, usedShuttle, gameLeader } = await detailInfo({ page }, { logger: this.logger });
 
           this.logger.debug(
             `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`,
@@ -342,22 +312,17 @@ export class CheckEncounterProcessor {
           encounter.shuttle = usedShuttle || undefined;
 
           if (gameLeader && gameLeader.length > 0) {
-            const gameLeaderPlayer = await this.searchService.searchPlayers(
-              this.searchService.getParts(gameLeader),
-              [
-                {
-                  memberId: {
-                    [Op.ne]: null,
-                  },
+            const gameLeaderPlayer = await this.searchService.searchPlayers(this.searchService.getParts(gameLeader), [
+              {
+                memberId: {
+                  [Op.ne]: null,
                 },
-              ],
-            );
+              },
+            ]);
 
             if (gameLeaderPlayer && gameLeaderPlayer.length > 0) {
               if (gameLeaderPlayer.length > 1) {
-                this.logger.warn(
-                  `Found multiple players for game leader ${gameLeader}`,
-                );
+                this.logger.warn(`Found multiple players for game leader ${gameLeader}`);
               } else {
                 await encounter.setGameLeader(gameLeaderPlayer[0]);
               }
@@ -373,9 +338,7 @@ export class CheckEncounterProcessor {
         const acceptedMoment = moment(acceptedOn);
 
         if (!acceptedMoment.isValid()) {
-          this.logger.error(
-            `Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`,
-          );
+          this.logger.error(`Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`);
           return;
         }
 

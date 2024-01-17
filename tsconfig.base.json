@@ -16,31 +16,21 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@badman/backend-assembly": [
-        "libs/backend/competition/assembly/src/index.ts"
-      ],
-      "@badman/backend-authorization": [
-        "libs/backend/authorization/src/index.ts"
-      ],
+      "@badman/backend-assembly": ["libs/backend/competition/assembly/src/index.ts"],
+      "@badman/backend-authorization": ["libs/backend/authorization/src/index.ts"],
       "@badman/backend-cache": ["libs/backend/cache/src/index.ts"],
       "@badman/backend-cluster": ["libs/backend/cluster/src/index.ts"],
       "@badman/backend-compile": ["libs/backend/compile/src/index.ts"],
       "@badman/backend-database": ["libs/backend/database/src/index.ts"],
-      "@badman/backend-enrollment": [
-        "libs/backend/competition/enrollment/src/index.ts"
-      ],
+      "@badman/backend-enrollment": ["libs/backend/competition/enrollment/src/index.ts"],
       "@badman/backend-generator": ["libs/backend/generator/src/index.ts"],
       "@badman/backend-graphql": ["libs/backend/graphql/src/index.ts"],
       "@badman/backend-health": ["libs/backend/health/src/index.ts"],
       "@badman/backend-logging": ["libs/backend/logging/src/index.ts"],
       "@badman/backend-mailing": ["libs/backend/mailing/src/index.ts"],
       "@badman/backend-micro": ["libs/backend/micro/src/index.ts"],
-      "@badman/backend-notifications": [
-        "libs/backend/notifications/src/index.ts"
-      ],
-      "@badman/backend-orchestrator": [
-        "libs/backend/orchestrator/src/index.ts"
-      ],
+      "@badman/backend-notifications": ["libs/backend/notifications/src/index.ts"],
+      "@badman/backend-orchestrator": ["libs/backend/orchestrator/src/index.ts"],
       "@badman/backend-pupeteer": ["libs/backend/pupeteer/src/index.ts"],
       "@badman/backend-queue": ["libs/backend/queue/src/index.ts"],
       "@badman/backend-ranking": ["libs/backend/ranking/src/index.ts"],
@@ -50,38 +40,22 @@
       "@badman/backend-visual": ["libs/backend/visual/src/index.ts"],
       "@badman/backend-websockets": ["libs/backend/websockets/src/index.ts"],
       "@badman/backend/comp-tet": ["libs/backend/comp-tet/src/index.ts"],
-      "@badman/belgium-flanders-games": [
-        "libs/backend/belgium/flanders/games/src/index.ts"
-      ],
-      "@badman/belgium-flanders-places": [
-        "libs/backend/belgium/flanders/places/src/index.ts"
-      ],
-      "@badman/belgium-flanders-points": [
-        "libs/backend/belgium/flanders/points/src/index.ts"
-      ],
+      "@badman/belgium-flanders-games": ["libs/backend/belgium/flanders/games/src/index.ts"],
+      "@badman/belgium-flanders-places": ["libs/backend/belgium/flanders/places/src/index.ts"],
+      "@badman/belgium-flanders-points": ["libs/backend/belgium/flanders/points/src/index.ts"],
       "@badman/frontend-auth": ["libs/frontend/modules/auth/src/index.ts"],
-      "@badman/frontend-change-encounter": [
-        "libs/frontend/pages/competition/change-encounter/src/index.ts"
-      ],
+      "@badman/frontend-change-encounter": ["libs/frontend/pages/competition/change-encounter/src/index.ts"],
       "@badman/frontend-club": ["libs/frontend/pages/club/src/index.ts"],
-      "@badman/frontend-competition": [
-        "libs/frontend/pages/competition/event/src/index.ts"
-      ],
+      "@badman/frontend-competition": ["libs/frontend/pages/competition/event/src/index.ts"],
       "@badman/frontend-components": ["libs/frontend/components/src/index.ts"],
       "@badman/frontend-cp": ["libs/frontend/modules/cp/src/index.ts"],
       "@badman/frontend-excel": ["libs/frontend/modules/excel/src/index.ts"],
       "@badman/frontend-general": ["libs/frontend/pages/general/src/index.ts"],
-      "@badman/frontend-graphql": [
-        "libs/frontend/modules/graphql/src/index.ts"
-      ],
-      "@badman/frontend-html-injects": [
-        "libs/frontend/modules/html-injects/src/index.ts"
-      ],
+      "@badman/frontend-graphql": ["libs/frontend/modules/graphql/src/index.ts"],
+      "@badman/frontend-html-injects": ["libs/frontend/modules/html-injects/src/index.ts"],
       "@badman/frontend-jobs": ["libs/frontend/pages/job/src/index.ts"],
       "@badman/frontend-models": ["libs/frontend/models/src/index.ts"],
-      "@badman/frontend-notifications": [
-        "libs/frontend/pages/notifications/src/index.ts"
-      ],
+      "@badman/frontend-notifications": ["libs/frontend/pages/notifications/src/index.ts"],
       "@badman/frontend-pdf": ["libs/frontend/modules/pdf/src/index.ts"],
       "@badman/frontend-player": ["libs/frontend/pages/player/src/index.ts"],
       "@badman/frontend-queue": ["libs/frontend/modules/queue/src/index.ts"],
@@ -89,21 +63,11 @@
       "@badman/frontend-role": ["libs/frontend/pages/role/src/index.ts"],
       "@badman/frontend-seo": ["libs/frontend/modules/seo/src/index.ts"],
       "@badman/frontend-team": ["libs/frontend/pages/team/src/index.ts"],
-      "@badman/frontend-team-assembly": [
-        "libs/frontend/pages/competition/team-assembly/src/index.ts"
-      ],
-      "@badman/frontend-team-enrollment": [
-        "libs/frontend/pages/competition/team-enrollment/src/index.ts"
-      ],
-      "@badman/frontend-tournament": [
-        "libs/frontend/pages/tournament/src/index.ts"
-      ],
-      "@badman/frontend-translation": [
-        "libs/frontend/modules/translation/src/index.ts"
-      ],
-      "@badman/frontend-twizzit": [
-        "libs/frontend/modules/twizzit/src/index.ts"
-      ],
+      "@badman/frontend-team-assembly": ["libs/frontend/pages/competition/team-assembly/src/index.ts"],
+      "@badman/frontend-team-enrollment": ["libs/frontend/pages/competition/team-enrollment/src/index.ts"],
+      "@badman/frontend-tournament": ["libs/frontend/pages/tournament/src/index.ts"],
+      "@badman/frontend-translation": ["libs/frontend/modules/translation/src/index.ts"],
+      "@badman/frontend-twizzit": ["libs/frontend/modules/twizzit/src/index.ts"],
       "@badman/frontend-utils": ["libs/frontend/modules/utils/src/index.ts"],
       "@badman/frontend-vitals": ["libs/frontend/modules/vitals/src/index.ts"],
       "@badman/utils": ["libs/utils/src/index.ts"]

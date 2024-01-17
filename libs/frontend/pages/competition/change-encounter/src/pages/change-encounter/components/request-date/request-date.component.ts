@@ -65,13 +65,11 @@ export class RequestDateComponent implements OnInit {
           this.tootltipSelected = undefined;
         } else {
           this.group.get('selected')?.disable();
-          this.tootltipSelected =
-            'all.competition.change-encounter.warnings.home-accept';
+          this.tootltipSelected = 'all.competition.change-encounter.warnings.home-accept';
         }
       } else {
         this.group.get('selected')?.disable();
-        this.tootltipSelected =
-          'all.competition.change-encounter.warnings.missing-availability';
+        this.tootltipSelected = 'all.competition.change-encounter.warnings.missing-availability';
       }
     });
   }

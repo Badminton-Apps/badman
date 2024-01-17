@@ -7,13 +7,7 @@
 <!-- the input for the verification mail -->
 <mat-form-field>
   <mat-label>{{ 'all.input.email' | translate }}</mat-label>
-  <input
-    type="email"
-    [required]="true"
-    matInput
-    [formControl]="email"
-    [errorStateMatcher]="matcher"
-  />
+  <input type="email" [required]="true" matInput [formControl]="email" [errorStateMatcher]="matcher" />
   <!-- errors for email -->
   @if (email.hasError('email')&& !email.hasError('required')) {
   <mat-error> {{ 'all.input.error.email' | translate }} </mat-error>

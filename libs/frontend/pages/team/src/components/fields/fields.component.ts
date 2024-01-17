@@ -7,10 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
-import {
-  HasClaimComponent,
-  PlayerSearchComponent,
-} from '@badman/frontend-components';
+import { HasClaimComponent, PlayerSearchComponent } from '@badman/frontend-components';
 import { Player } from '@badman/frontend-models';
 import { SubEventType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';

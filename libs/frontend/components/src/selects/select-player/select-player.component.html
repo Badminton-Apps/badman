@@ -1,11 +1,6 @@
 <mat-form-field>
   <mat-label>{{ this.label ?? 'search.player' | translate }}</mat-label>
-  <input
-    type="text"
-    matInput
-    [formControl]="formControl"
-    [matAutocomplete]="auto"
-  />
+  <input type="text" matInput [formControl]="formControl" [matAutocomplete]="auto" />
   <mat-autocomplete
     #auto="matAutocomplete"
     [displayWith]="displayFn"

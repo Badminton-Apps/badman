@@ -1,19 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -56,22 +43,10 @@ export class EditPlayerFieldsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const firstNameControl = new FormControl(
-      this.player.firstName,
-      Validators.required,
-    );
-    const lastNameControl = new FormControl(
-      this.player.lastName,
-      Validators.required,
-    );
-    const memberIdControl = new FormControl(
-      this.player.memberId,
-      Validators.required,
-    );
-    const genderControl = new FormControl(
-      this.player.gender,
-      Validators.required,
-    );
+    const firstNameControl = new FormControl(this.player.firstName, Validators.required);
+    const lastNameControl = new FormControl(this.player.lastName, Validators.required);
+    const memberIdControl = new FormControl(this.player.memberId, Validators.required);
+    const genderControl = new FormControl(this.player.gender, Validators.required);
     const subControl = new FormControl(this.player.sub);
 
     memberIdControl.disable();

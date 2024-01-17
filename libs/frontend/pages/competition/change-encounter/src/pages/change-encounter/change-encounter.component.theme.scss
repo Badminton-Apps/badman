@@ -3,10 +3,8 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use './components/list-encounters/list-encounters.component.theme.scss' as
-  list-encounters;
-@use './components/show-requests/show-requests.component.theme.scss' as
-  show-requests;
+@use './components/list-encounters/list-encounters.component.theme.scss' as list-encounters;
+@use './components/show-requests/show-requests.component.theme.scss' as show-requests;
 
 @mixin color($theme) {
   badman-change-encounter {

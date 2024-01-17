@@ -1,8 +1,4 @@
-import {
-  AssemblyValidationData,
-  AssemblyOutput,
-  AssemblyValidationError,
-} from '../../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export type TeamSubeventIndexRuleParams = {

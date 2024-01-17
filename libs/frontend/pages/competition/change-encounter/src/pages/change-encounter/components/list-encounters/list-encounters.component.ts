@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -18,14 +13,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { combineLatest, of } from 'rxjs';
-import {
-  distinctUntilChanged,
-  map,
-  pairwise,
-  startWith,
-  switchMap,
-  takeUntil,
-} from 'rxjs/operators';
+import { distinctUntilChanged, map, pairwise, startWith, switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-list-encounters',
@@ -80,9 +68,7 @@ export class ListEncountersComponent implements OnInit {
 
   ngOnInit() {
     if (this.group) {
-      this.control = this.group?.get(
-        this.controlName,
-      ) as FormControl<EncounterCompetition>;
+      this.control = this.group?.get(this.controlName) as FormControl<EncounterCompetition>;
     }
 
     if (!this.control) {
@@ -104,10 +90,7 @@ export class ListEncountersComponent implements OnInit {
 
       combineLatest([
         previous.valueChanges.pipe(startWith(null)),
-        ...updateOnControls.map(
-          (control) =>
-            control?.valueChanges?.pipe(startWith(() => control?.value)),
-        ),
+        ...updateOnControls.map((control) => control?.valueChanges?.pipe(startWith(() => control?.value))),
       ])
         .pipe(
           takeUntil(this.destroy$),
@@ -134,24 +117,16 @@ export class ListEncountersComponent implements OnInit {
           // semester 2 = highest year
 
           // get the lowest year
-          const lowestYear = Math.min(
-            ...encounters.map((r) => r.date?.getFullYear() || 0),
-          );
+          const lowestYear = Math.min(...encounters.map((r) => r.date?.getFullYear() || 0));
 
-          this.encountersSem1 = encounters.filter(
-            (r) => r.date?.getFullYear() === lowestYear,
-          );
+          this.encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === lowestYear);
 
-          this.encountersSem2 = encounters.filter(
-            (r) => r.date?.getFullYear() !== lowestYear,
-          );
+          this.encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear);
 
           const params = this.activatedRoute.snapshot.queryParams;
 
           if (params && params[this.controlName]) {
-            const foundEncounter = encounters.find(
-              (r) => r.id == params[this.controlName],
-            );
+            const foundEncounter = encounters.find((r) => r.id == params[this.controlName]);
 
             if (foundEncounter) {
               this.selectEncounter(foundEncounter);
@@ -212,10 +187,7 @@ export class ListEncountersComponent implements OnInit {
         encounterCompetitions: { rows: EncounterCompetition[] };
       }>({
         query: gql`
-          query ListEncounterQuery(
-            $where: JSONObject
-            $order: [SortOrderType!]
-          ) {
+          query ListEncounterQuery($where: JSONObject, $order: [SortOrderType!]) {
             encounterCompetitions(where: $where, order: $order) {
               rows {
                 id
@@ -275,12 +247,7 @@ export class ListEncountersComponent implements OnInit {
         },
       })
       .pipe(
-        map(
-          (result) =>
-            result.data.encounterCompetitions?.rows.map(
-              (r) => new EncounterCompetition(r),
-            ),
-        ),
+        map((result) => result.data.encounterCompetitions?.rows.map((r) => new EncounterCompetition(r))),
         map((e) =>
           e.sort((a, b) => {
             if (!a.date || !b.date) {

@@ -1,16 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';

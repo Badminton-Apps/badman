@@ -21,8 +21,7 @@ export class OrchestratorBase implements OnModuleInit {
     private readonly queue: Queue,
     private readonly renderService: RenderService,
   ) {
-    const configuredTimeout =
-      this.configSerivce.get<string>('RENDER_WAIT_TIME');
+    const configuredTimeout = this.configSerivce.get<string>('RENDER_WAIT_TIME');
 
     if (configuredTimeout) {
       this.timeoutTime = parseInt(configuredTimeout);
@@ -32,11 +31,7 @@ export class OrchestratorBase implements OnModuleInit {
   async onModuleInit() {
     await this._updateStatuses();
 
-    this.logger.debug(
-      `[${this.serviceName}] Updated status to ${
-        this.hasStarted ? 'started' : 'stopped'
-      }`,
-    );
+    this.logger.debug(`[${this.serviceName}] Updated status to ${this.hasStarted ? 'started' : 'stopped'}`);
   }
 
   @Cron('*/1 * * * *')
@@ -45,9 +40,7 @@ export class OrchestratorBase implements OnModuleInit {
   }
 
   async startServer(): Promise<void> {
-    this.logger.log(
-      `[${this.serviceName}] Starting worker for queue ${this.queue.name}`,
-    );
+    this.logger.log(`[${this.serviceName}] Starting worker for queue ${this.queue.name}`);
 
     const service = await this._getService();
     await this.renderService.startService(service);
@@ -58,9 +51,7 @@ export class OrchestratorBase implements OnModuleInit {
   }
 
   async stopServer(): Promise<void> {
-    this.logger.log(
-      `[${this.serviceName}] Stopping worker for queue ${this.queue.name}`,
-    );
+    this.logger.log(`[${this.serviceName}] Stopping worker for queue ${this.queue.name}`);
     const service = await this._getService();
     await this.renderService.suspendService(service);
     this.gateway.server?.emit(EVENTS.SERVICE.SERVICE_STOPPED, {
@@ -85,9 +76,7 @@ export class OrchestratorBase implements OnModuleInit {
   private async _updateStatuses() {
     const service = await this._getService();
     if (!service.renderId) {
-      this.logger.log(
-        `[${this.serviceName}] No render id found, skipping status update`,
-      );
+      this.logger.log(`[${this.serviceName}] No render id found, skipping status update`);
       return;
     }
     const render = await this.renderService.getService(service);
@@ -135,9 +124,7 @@ export class OrchestratorBase implements OnModuleInit {
           return;
         }
 
-        this.logger.debug(
-          `[${this.serviceName}] No more jobs in queue, stopping worker`,
-        );
+        this.logger.debug(`[${this.serviceName}] No more jobs in queue, stopping worker`);
         this.stopServer();
         this.hasStarted = false;
       }

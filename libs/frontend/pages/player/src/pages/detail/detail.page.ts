@@ -1,14 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  PLATFORM_ID,
-  TransferState,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Injector, PLATFORM_ID, TransferState, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -108,9 +99,7 @@ export class DetailPageComponent {
 
         const lastNames = `${this.player().lastName}`.split(' ');
         if ((lastNames ?? []).length > 0) {
-          this.initials = `${this.player().firstName?.[0]}${lastNames?.[
-            lastNames.length - 1
-          ][0]}`.toUpperCase();
+          this.initials = `${this.player().firstName?.[0]}${lastNames?.[lastNames.length - 1][0]}`.toUpperCase();
         }
       },
       {
@@ -121,23 +110,13 @@ export class DetailPageComponent {
 
     this.hasMenu$ = combineLatest([
       this.auth.loggedIn$ ?? of(false),
-      this.claim.hasAnyClaims$([
-        'edit-any:player',
-        this.player().id + '_edit:player',
-        'change:job',
-      ]),
+      this.claim.hasAnyClaims$(['edit-any:player', this.player().id + '_edit:player', 'change:job']),
     ]).pipe(
       takeUntil(this.destroy$),
-      map(
-        ([loggedIn, hasClaim]) =>
-          loggedIn && (hasClaim || this.player().sub === null),
-      ),
+      map(([loggedIn, hasClaim]) => loggedIn && (hasClaim || this.player().sub === null)),
     );
 
-    this.canClaim$ = combineLatest([
-      this.auth.loggedIn$ ?? of(false),
-      this.auth.user$ ?? of(null),
-    ]).pipe(
+    this.canClaim$ = combineLatest([this.auth.loggedIn$ ?? of(false), this.auth.user$ ?? of(null)]).pipe(
       takeUntil(this.destroy$),
 
       map(([loggedIn, user]) => loggedIn && !user.id),
@@ -145,9 +124,7 @@ export class DetailPageComponent {
   }
 
   getPlayer(game: Game, player: number, team: number) {
-    const playerInGame = game.players?.find(
-      (p) => p.player === player && p.team === team,
-    );
+    const playerInGame = game.players?.find((p) => p.player === player && p.team === team);
     return playerInGame?.fullName || 'Unknown';
   }
 
@@ -173,11 +150,7 @@ export class DetailPageComponent {
       .pipe(
         takeUntil(this.destroy$),
         map((result) => result.data.player.teams?.map((t) => new Team(t))),
-        transferState(
-          `teamsPlayer-${this.player().id}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`teamsPlayer-${this.player().id}`, this.stateTransfer, this.platformId),
       )
       .subscribe((teams) => {
         if (!teams) {
@@ -211,10 +184,7 @@ export class DetailPageComponent {
   }
 
   removePlayer() {
-    const dialogData = new ConfirmDialogModel(
-      'all.club.delete.player.title',
-      'all.club.delete.player.description',
-    );
+    const dialogData = new ConfirmDialogModel('all.club.delete.player.title', 'all.club.delete.player.description');
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',

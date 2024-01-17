@@ -23,13 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  Club,
-  EntryCompetitionPlayer,
-  SubEventCompetition,
-  Team,
-  ValidationResult,
-} from '@badman/frontend-models';
+import { Club, EntryCompetitionPlayer, SubEventCompetition, Team, ValidationResult } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import {
   LevelType,
@@ -44,13 +38,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import {
-  BehaviorSubject,
-  Observable,
-  combineLatest,
-  lastValueFrom,
-  of,
-} from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, lastValueFrom, of } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -171,9 +159,7 @@ export class TeamsStepComponent implements OnInit {
   ngOnInit() {
     let existed = false;
     if (this.group) {
-      this.control = this.group?.get(
-        this.controlName,
-      ) as FormGroup<FormArrayOfTeams>;
+      this.control = this.group?.get(this.controlName) as FormGroup<FormArrayOfTeams>;
 
       existed = true;
     }
@@ -199,29 +185,16 @@ export class TeamsStepComponent implements OnInit {
         takeUntil(this.destroy$),
         distinctUntilChanged(
           (a, b) =>
-            (a.F?.length ?? 0) +
-              (a.M?.length ?? 0) +
-              (a.MX?.length ?? 0) +
-              (a.NATIONAL?.length ?? 0) ===
-            (b.F?.length ?? 0) +
-              (b.M?.length ?? 0) +
-              (b.MX?.length ?? 0) +
-              (b.NATIONAL?.length ?? 0),
+            (a.F?.length ?? 0) + (a.M?.length ?? 0) + (a.MX?.length ?? 0) + (a.NATIONAL?.length ?? 0) ===
+            (b.F?.length ?? 0) + (b.M?.length ?? 0) + (b.MX?.length ?? 0) + (b.NATIONAL?.length ?? 0),
         ),
       )
       .subscribe(() => {
         // initial teamnumbers from 1 to maxlevel
         for (const type of this.eventTypes) {
-          const maxLevel = Math.max(
-            ...(this.control?.value?.[type]?.map(
-              (t) => t.team?.teamNumber ?? 0,
-            ) ?? [0]),
-          );
+          const maxLevel = Math.max(...(this.control?.value?.[type]?.map((t) => t.team?.teamNumber ?? 0) ?? [0]));
 
-          this.teamNumbers[type] = Array.from(
-            { length: maxLevel },
-            (_, i) => i + 1,
-          );
+          this.teamNumbers[type] = Array.from({ length: maxLevel }, (_, i) => i + 1);
         }
       });
 
@@ -273,13 +246,9 @@ export class TeamsStepComponent implements OnInit {
       }) as TeamForm,
     );
 
-    const ref = this.snackBar.open(
-      `Team ${team.name} added at the end`,
-      'Scroll naar team',
-      {
-        duration: 2000,
-      },
-    );
+    const ref = this.snackBar.open(`Team ${team.name} added at the end`, 'Scroll naar team', {
+      duration: 2000,
+    });
 
     this.changedector.markForCheck();
 
@@ -345,9 +314,7 @@ export class TeamsStepComponent implements OnInit {
       // sort teams in control
 
       const teams = this.control?.get(type) as FormArray<TeamForm>;
-      teams.controls.sort((a: TeamForm, b: TeamForm) =>
-        sortTeams(a.value.team as Team, b.value.team as Team),
-      );
+      teams.controls.sort((a: TeamForm, b: TeamForm) => sortTeams(a.value.team as Team, b.value.team as Team));
 
       this.changedector.markForCheck();
     });
@@ -360,12 +327,7 @@ export class TeamsStepComponent implements OnInit {
     return this.validationResult?.teams?.find((t) => t.id === id);
   }
 
-  private changeNumber(
-    oldNumber: number,
-    newNumber: number,
-    club: Club,
-    type: SubEventTypeEnum,
-  ) {
+  private changeNumber(oldNumber: number, newNumber: number, club: Club, type: SubEventTypeEnum) {
     const teams = this.control?.get(type) as FormArray<TeamForm>;
     // iterate over all controls and update the team number / name
     teams.controls.forEach((t) => {
@@ -418,24 +380,15 @@ export class TeamsStepComponent implements OnInit {
     let teamName = '';
     switch (club?.useForTeamName ?? UseForTeamName.NAME) {
       case UseForTeamName.FULL_NAME:
-        teamName = `${club.fullName} ${team.teamNumber}${getLetterForRegion(
-          team.type as SubEventTypeEnum,
-          'vl',
-        )}`;
+        teamName = `${club.fullName} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
         break;
       case UseForTeamName.ABBREVIATION:
-        teamName = `${club.abbreviation} ${team.teamNumber}${getLetterForRegion(
-          team.type as SubEventTypeEnum,
-          'vl',
-        )}`;
+        teamName = `${club.abbreviation} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
         break;
 
       default:
       case UseForTeamName.NAME:
-        teamName = `${club.name} ${team.teamNumber}${getLetterForRegion(
-          team.type as SubEventTypeEnum,
-          'vl',
-        )}`;
+        teamName = `${club.name} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
         break;
     }
 
@@ -469,16 +422,12 @@ export class TeamsStepComponent implements OnInit {
           teamNumber: team.team.teamNumber,
           subEventId: team.entry.subEventId,
           link: team.team.link,
-          players: team.team?.players
-            ?.map((p) => p.id)
-            ?.filter((p) => p) as string[],
+          players: team.team?.players?.map((p) => p.id)?.filter((p) => p) as string[],
           backupPlayers: team.team.players
             ?.filter((p) => p.membershipType == TeamMembershipType.BACKUP)
             ?.map((p) => p.id)
             ?.filter((p) => p) as string[],
-          basePlayers: team.entry?.players
-            ?.map((p) => p.id)
-            ?.filter((p) => p) as string[],
+          basePlayers: team.entry?.players?.map((p) => p.id)?.filter((p) => p) as string[],
         });
       });
     }
@@ -588,18 +537,11 @@ export class TeamsStepComponent implements OnInit {
         });
       }),
       map((result) => {
-        const subEvents =
-          result.data.subEventCompetitions?.map(
-            (subEvent) => new SubEventCompetition(subEvent),
-          ) ?? [];
+        const subEvents = result.data.subEventCompetitions?.map((subEvent) => new SubEventCompetition(subEvent)) ?? [];
 
         return {
-          M: subEvents
-            .filter((subEvent) => subEvent.eventType === 'M')
-            .sort(sortSubEventOrder),
-          F: subEvents
-            .filter((subEvent) => subEvent.eventType === 'F')
-            .sort(sortSubEventOrder),
+          M: subEvents.filter((subEvent) => subEvent.eventType === 'M').sort(sortSubEventOrder),
+          F: subEvents.filter((subEvent) => subEvent.eventType === 'F').sort(sortSubEventOrder),
           MX: subEvents
             .filter(
               (subEvent) =>
@@ -625,19 +567,13 @@ export class TeamsStepComponent implements OnInit {
   private _maxLevels(subs: SubEventCompetition[]) {
     return {
       PROV: Math.max(
-        ...(subs
-          ?.filter((s) => s.eventCompetition?.type === LevelType.PROV)
-          .map((s) => s.level ?? 0) ?? []),
+        ...(subs?.filter((s) => s.eventCompetition?.type === LevelType.PROV).map((s) => s.level ?? 0) ?? []),
       ),
       LIGA: Math.max(
-        ...(subs
-          ?.filter((s) => s.eventCompetition?.type === LevelType.LIGA)
-          .map((s) => s.level ?? 0) ?? []),
+        ...(subs?.filter((s) => s.eventCompetition?.type === LevelType.LIGA).map((s) => s.level ?? 0) ?? []),
       ),
       NATIONAL: Math.max(
-        ...(subs
-          ?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL)
-          .map((s) => s.level ?? 0) ?? []),
+        ...(subs?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL).map((s) => s.level ?? 0) ?? []),
       ),
     };
   }
@@ -660,17 +596,9 @@ export class TeamsStepComponent implements OnInit {
           continue;
         }
 
-        const initial = this.getInitialSubEvent(
-          team as TeamFormValue,
-          subs,
-          maxLevels,
-        );
+        const initial = this.getInitialSubEvent(team as TeamFormValue, subs, maxLevels);
         if (initial) {
-          control
-            ?.at(i)
-            ?.get('entry')
-            ?.get<string>('subEventId')
-            ?.patchValue(initial);
+          control?.at(i)?.get('entry')?.get<string>('subEventId')?.patchValue(initial);
         }
       }
     }
@@ -699,9 +627,7 @@ export class TeamsStepComponent implements OnInit {
         }
       }
 
-      subEventId = subs?.find(
-        (sub) => sub.level === newLevel && type === sub.eventCompetition?.type,
-      )?.id;
+      subEventId = subs?.find((sub) => sub.level === newLevel && type === sub.eventCompetition?.type)?.id;
     } else if (team.team?.entry?.standing?.faller) {
       let newLevel = level + 1;
 
@@ -716,14 +642,10 @@ export class TeamsStepComponent implements OnInit {
         }
       }
 
-      subEventId = subs?.find(
-        (sub) => sub.level === newLevel && sub.eventCompetition?.type === type,
-      )?.id;
+      subEventId = subs?.find((sub) => sub.level === newLevel && sub.eventCompetition?.type === type)?.id;
     } else {
       subEventId = subs?.find(
-        (sub) =>
-          sub.level === team.team?.entry?.subEventCompetition?.level &&
-          type === sub.eventCompetition?.type,
+        (sub) => sub.level === team.team?.entry?.subEventCompetition?.level && type === sub.eventCompetition?.type,
       )?.id;
     }
 

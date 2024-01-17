@@ -1,23 +1,11 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatDialogModule,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Apollo, gql, MutationResult } from 'apollo-angular';
-import {
-  BehaviorSubject,
-  catchError,
-  finalize,
-  forkJoin,
-  map,
-  Observable,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, catchError, finalize, forkJoin, map, Observable, tap } from 'rxjs';
 import {
   EventCompetition,
   RankingGroup,
@@ -86,9 +74,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
       const groupNames = groups.map((g) => `group-${g.id}`);
 
       // Delete removed
-      const removed = Object.keys(this.selection).filter((s) =>
-        groupNames.includes(s),
-      );
+      const removed = Object.keys(this.selection).filter((s) => groupNames.includes(s));
       removed.forEach((element) => this.selection.delete(element));
 
       // Initialize new
@@ -116,13 +102,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         map((result) => result.data.rankingGroups),
         tap((groups) => {
           this.groups = groups;
-          const unique = [
-            ...new Set(
-              subEvents
-                ?.map((s) => s.rankingGroups?.map((r: RankingGroup) => r.id))
-                .flat(),
-            ),
-          ];
+          const unique = [...new Set(subEvents?.map((s) => s.rankingGroups?.map((r: RankingGroup) => r.id)).flat())];
 
           if (unique.length === 0) {
             // setting default to 'Adults'
@@ -136,20 +116,14 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
           } else {
             const initialGroups: RankingGroup[] = [];
             for (const subEvent of subEvents ?? []) {
-              if (
-                subEvent.rankingGroups &&
-                (subEvent.rankingGroups ?? []).length > 0
-              ) {
+              if (subEvent.rankingGroups && (subEvent.rankingGroups ?? []).length > 0) {
                 for (const group of subEvent.rankingGroups) {
                   if (initialGroups.findIndex((g) => g.id == group.id) === -1) {
                     initialGroups.push(group);
                   }
                   const key = `group-${group.id}`;
                   if (!this.selection.has(key)) {
-                    this.selection.set(
-                      key,
-                      new SelectionModel<SubEvent>(true, []),
-                    );
+                    this.selection.set(key, new SelectionModel<SubEvent>(true, []));
                   }
                   this.selection.get(key)?.select(subEvent);
                 }
@@ -179,9 +153,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
   masterToggle(group: string) {
     this.isAllSelected(group)
       ? this.selection.get(group)?.clear()
-      : this.dataSource?.data.forEach(
-          (row) => this.selection.get(group)?.select(row),
-        );
+      : this.dataSource?.data.forEach((row) => this.selection.get(group)?.select(row));
   }
 
   /** The label for the checkbox on the passed row */
@@ -189,18 +161,14 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
     if (!row) {
       return `${this.isAllSelected(groupId) ? 'select' : 'deselect'} all`;
     }
-    return `${
-      this.selection.get(groupId)?.isSelected(row) ? 'deselect' : 'select'
-    } row ${row.name}`;
+    return `${this.selection.get(groupId)?.isSelected(row) ? 'deselect' : 'select'} row ${row.name}`;
   }
 
   async assignRankingGroups() {
     this.loading = true;
     const mutations: Observable<MutationResult>[] = [];
 
-    const selectedGroups: string[] = this.selectedGroups.value?.map(
-      (r: RankingGroup) => r.id,
-    );
+    const selectedGroups: string[] = this.selectedGroups.value?.map((r: RankingGroup) => r.id);
 
     for (const group of this.groups) {
       if (!group.id) {
@@ -217,17 +185,11 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         }
 
         if (this.useSame) {
-          if (
-            subEvent.rankingGroups?.find((r) => r.id == group.id) &&
-            !selectedGroups.includes(group.id)
-          ) {
+          if (subEvent.rankingGroups?.find((r) => r.id == group.id) && !selectedGroups.includes(group.id)) {
             removed.push(subEvent.id);
           }
 
-          if (
-            !subEvent.rankingGroups?.find((r) => r.id == group.id) &&
-            selectedGroups.includes(group.id)
-          ) {
+          if (!subEvent.rankingGroups?.find((r) => r.id == group.id) && selectedGroups.includes(group.id)) {
             added.push(subEvent.id);
           }
         } else {
@@ -258,11 +220,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         mutations.push(
           this.apollo.mutate({
             mutation: gql`
-              mutation RemoveSubEventsToRankingGroup(
-                $rankingGroupId: ID!
-                $competitions: [ID!]
-                $tournaments: [ID!]
-              ) {
+              mutation RemoveSubEventsToRankingGroup($rankingGroupId: ID!, $competitions: [ID!], $tournaments: [ID!]) {
                 removeSubEventsToRankingGroup(
                   rankingGroupId: $rankingGroupId
                   competitions: $competitions
@@ -289,11 +247,7 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         mutations.push(
           this.apollo.mutate({
             mutation: gql`
-              mutation AddSubEventsToRankingGroup(
-                $rankingGroupId: ID!
-                $competitions: [ID!]
-                $tournaments: [ID!]
-              ) {
+              mutation AddSubEventsToRankingGroup($rankingGroupId: ID!, $competitions: [ID!], $tournaments: [ID!]) {
                 addSubEventsToRankingGroup(
                   rankingGroupId: $rankingGroupId
                   competitions: $competitions

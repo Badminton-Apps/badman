@@ -1,18 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -57,11 +45,7 @@ export class RoleFieldsComponent implements OnInit {
     });
 
     for (const claim of this.claims) {
-      this.selectedClaims.push(
-        ...claim.claims.filter(
-          (c) => this.role.claims?.some((rc) => rc.name === c.name),
-        ),
-      );
+      this.selectedClaims.push(...claim.claims.filter((c) => this.role.claims?.some((rc) => rc.name === c.name)));
     }
   }
 

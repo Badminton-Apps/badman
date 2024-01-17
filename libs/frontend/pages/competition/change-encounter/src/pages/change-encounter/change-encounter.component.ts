@@ -1,12 +1,6 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  computed,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -62,18 +56,12 @@ export class ChangeEncounterComponent implements OnInit {
   translateService = inject(TranslateService);
 
   isHandset = toSignal(
-    this.breakpointObserver
-      .observe(['(max-width: 959.98px)'])
-      .pipe(map((result) => result.matches)),
+    this.breakpointObserver.observe(['(max-width: 959.98px)']).pipe(map((result) => result.matches)),
   );
 
-  hasPermission = toSignal(
-    this.claimService.hasAnyClaims$(['change-any:encounter']),
-  );
+  hasPermission = toSignal(this.claimService.hasAnyClaims$(['change-any:encounter']));
 
-  canSelectSeason = computed(
-    () => this.hasPermission() || this.versionInfo.beta,
-  );
+  canSelectSeason = computed(() => this.hasPermission() || this.versionInfo.beta);
 
   formGroup?: FormGroup;
 
@@ -101,10 +89,7 @@ export class ChangeEncounterComponent implements OnInit {
           type: 'website',
           keywords: ['club', 'badminton'],
         });
-        this.breadcrumbsService.set(
-          'competition/change-encounter',
-          changeEncounterKey,
-        );
+        this.breadcrumbsService.set('competition/change-encounter', changeEncounterKey);
       });
   }
 }

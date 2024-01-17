@@ -1,21 +1,5 @@
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
-import {
-  Column,
-  DataType,
-  Default,
-  IsUUID,
-  Model,
-  PrimaryKey,
-  Table,
-  Unique,
-} from 'sequelize-typescript';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { Column, DataType, Default, IsUUID, Model, PrimaryKey, Table, Unique } from 'sequelize-typescript';
 
 @Table({
   timestamps: true,
@@ -57,7 +41,4 @@ export class ServiceUpdateInput extends PartialType(
 ) {}
 
 @InputType()
-export class ServiceNewInput extends PartialType(
-  OmitType(ServiceUpdateInput, ['id'] as const),
-  InputType,
-) {}
+export class ServiceNewInput extends PartialType(OmitType(ServiceUpdateInput, ['id'] as const), InputType) {}

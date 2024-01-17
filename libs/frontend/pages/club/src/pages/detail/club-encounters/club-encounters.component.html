@@ -1,11 +1,6 @@
 <div class="filters">
   <div class="filters-team">
-    <badman-select-team
-      [group]="filter"
-      controlName="teams"
-      [multiple]="true"
-      autoSelect="all"
-    ></badman-select-team>
+    <badman-select-team [group]="filter" controlName="teams" [multiple]="true" autoSelect="all"></badman-select-team>
   </div>
   <div class="filters-encounter" [formGroup]="filter">
     <mat-slide-toggle formControlName="changedDate">{{
@@ -30,10 +25,7 @@
     <h3>{{ 'all.club.titles.encounters' | translate }}</h3>
     <div class="loading">
       @if (this.loading()) {
-        <mat-progress-bar
-          color="accent"
-          mode="indeterminate"
-        ></mat-progress-bar>
+        <mat-progress-bar color="accent" mode="indeterminate"></mat-progress-bar>
       }
     </div>
     <mat-nav-list role="list">
@@ -69,18 +61,11 @@
               }"
               >{{ encounter.away?.name }}</span
             >
-            @if (
-              (encounter.homeScore ?? -1) > 0 && (encounter.awayScore ?? -1) > 0
-            ) {
-              <span
-                >&nbsp;({{ encounter.homeScore }} -
-                {{ encounter.awayScore }})</span
-              >
+            @if ((encounter.homeScore ?? -1) > 0 && (encounter.awayScore ?? -1) > 0) {
+              <span>&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span>
             }
           </span>
-          <span matListItemLine>{{
-            encounter?.date | amDateFormat: 'llll'
-          }}</span>
+          <span matListItemLine>{{ encounter?.date | amDateFormat: 'llll' }}</span>
         </mat-list-item>
       }
     </mat-nav-list>

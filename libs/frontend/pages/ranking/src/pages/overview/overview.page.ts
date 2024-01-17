@@ -1,20 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  PLATFORM_ID,
-  TemplateRef,
-  TransferState,
-  ViewChild,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { Component, PLATFORM_ID, TemplateRef, TransferState, ViewChild, effect, inject, signal } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -28,10 +14,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import {
-  HasClaimComponent,
-  PageHeaderComponent,
-} from '@badman/frontend-components';
+import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -39,16 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import {
-  catchError,
-  filter,
-  map,
-  of,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { catchError, filter, map, of, startWith, switchMap, takeUntil, tap } from 'rxjs';
 
 const FETCH_SYSTEMS = gql`
   query GetSystemsQuery($order: [SortOrderType!], $skip: Int, $take: Int) {
@@ -217,28 +191,16 @@ export class OverviewPageComponent {
           this.copyingSystem.set(true);
           return this.apollo.mutate({
             mutation: gql`
-              mutation CopyRankingSystem(
-                $id: ID!
-                $copyFromStartDate: DateTime
-                $copyToEndDate: DateTime
-              ) {
-                copyRankingSystem(
-                  id: $id
-                  copyFromStartDate: $copyFromStartDate
-                  copyToEndDate: $copyToEndDate
-                ) {
+              mutation CopyRankingSystem($id: ID!, $copyFromStartDate: DateTime, $copyToEndDate: DateTime) {
+                copyRankingSystem(id: $id, copyFromStartDate: $copyFromStartDate, copyToEndDate: $copyToEndDate) {
                   id
                 }
               }
             `,
             variables: {
               id: system.id,
-              copyFromStartDate: this.showDatePicker
-                ? this.copySystemFormGroup.value.start
-                : undefined,
-              copyToEndDate: this.showDatePicker
-                ? this.copySystemFormGroup.value.end
-                : undefined,
+              copyFromStartDate: this.showDatePicker ? this.copySystemFormGroup.value.start : undefined,
+              copyToEndDate: this.showDatePicker ? this.copySystemFormGroup.value.end : undefined,
             },
             refetchQueries: [
               {

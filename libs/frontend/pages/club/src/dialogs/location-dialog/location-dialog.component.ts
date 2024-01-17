@@ -1,9 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  MatDialogModule,
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { Club, Location } from '@badman/frontend-models';

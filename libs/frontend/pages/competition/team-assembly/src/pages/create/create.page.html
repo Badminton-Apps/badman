@@ -1,19 +1,9 @@
 <h1>{{'all.competition.team-assembly.title' | translate}}</h1>
 @if (this.formGroup) {
 <section class="select-encounter">
-  <badman-select-season
-    [group]="formGroup"
-    [updateUrl]="true"
-  ></badman-select-season>
-  <badman-select-club
-    [group]="formGroup"
-    [updateUrl]="true"
-  ></badman-select-club>
-  <badman-select-team
-    [updateUrl]="true"
-    [updateOn]="['club', 'season']"
-    [group]="formGroup"
-  ></badman-select-team>
+  <badman-select-season [group]="formGroup" [updateUrl]="true"></badman-select-season>
+  <badman-select-club [group]="formGroup" [updateUrl]="true"></badman-select-club>
+  <badman-select-team [updateUrl]="true" [updateOn]="['club', 'season']" [group]="formGroup"></badman-select-team>
   <badman-select-encounter
     [group]="formGroup"
     [updateUrl]="true"
@@ -34,12 +24,7 @@
       <mat-icon>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button
-        mat-menu-item
-        [class.spinner]="this.saveLoading"
-        [disabled]="this.saveLoading"
-        (click)="this.save()"
-      >
+      <button mat-menu-item [class.spinner]="this.saveLoading" [disabled]="this.saveLoading" (click)="this.save()">
         <mat-icon>save</mat-icon>
         {{'all.button.save' | translate}}
       </button>
@@ -53,29 +38,20 @@
     [encounterId]="this.encounterId"
   ></badman-assembly-v2> -->
 
-  <badman-assembly
-    (validationOverview)="this.templateUpdated($event)"
-    [group]="formGroup"
-  ></badman-assembly>
+  <badman-assembly (validationOverview)="this.templateUpdated($event)" [group]="formGroup"></badman-assembly>
 </section>
 <ng-template #validationWarnings>
   <h2 matDialogTitle>There are warnings</h2>
   <mat-dialog-content>
     @if (this.validationOverview?.template) {
     <div>
-      <ng-container
-        *ngTemplateOutlet="this.validationOverview?.template!"
-      ></ng-container>
+      <ng-container *ngTemplateOutlet="this.validationOverview?.template!"></ng-container>
     </div>
     }
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button [matDialogClose]="true">
-      {{'all.button.agree' | translate}}
-    </button>
-    <button mat-button matDialogClose color="primary">
-      {{'all.button.cancel' | translate}}
-    </button>
+    <button mat-button [matDialogClose]="true">{{'all.button.agree' | translate}}</button>
+    <button mat-button matDialogClose color="primary">{{'all.button.cancel' | translate}}</button>
   </mat-dialog-actions>
 </ng-template>
 }

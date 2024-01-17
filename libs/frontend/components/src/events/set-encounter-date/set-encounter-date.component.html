@@ -6,21 +6,14 @@
   @if (dateControl) {
     <div>
       <mat-form-field>
-        <mat-label>{{
-          'all.competition.change-encounter.choose-date' | translate
-        }}</mat-label>
+        <mat-label>{{ 'all.competition.change-encounter.choose-date' | translate }}</mat-label>
         <input
           matInput
           [ngxMatDatetimePicker]="openPicker"
-          [placeholder]="
-            'all.competition.change-encounter.choose-date' | translate
-          "
+          [placeholder]="'all.competition.change-encounter.choose-date' | translate"
           [formControl]="dateControl"
         />
-        <ngx-mat-datepicker-toggle
-          matSuffix
-          [for]="$any(openPicker)"
-        ></ngx-mat-datepicker-toggle>
+        <ngx-mat-datepicker-toggle matSuffix [for]="$any(openPicker)"></ngx-mat-datepicker-toggle>
         <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
       </mat-form-field>
     </div>

@@ -20,11 +20,9 @@ module.exports = {
           { transaction: t },
         );
 
-        await queryInterface.removeColumn(
-          { tableName: 'RankingSystems', schema: 'ranking' },
-          'runDate',
-          { transaction: t },
-        );
+        await queryInterface.removeColumn({ tableName: 'RankingSystems', schema: 'ranking' }, 'runDate', {
+          transaction: t,
+        });
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();

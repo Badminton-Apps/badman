@@ -1,19 +1,8 @@
 <form [formGroup]="recentGames.filter" class="filter">
-  <mat-button-toggle-group
-    name="team types"
-    aria-label="team types"
-    multiple
-    formControlName="choices"
-  >
-    <mat-button-toggle value="S">{{
-      'all.game.types.single' | translate
-    }}</mat-button-toggle>
-    <mat-button-toggle value="D">{{
-      'all.game.types.double' | translate
-    }}</mat-button-toggle>
-    <mat-button-toggle value="MX">{{
-      'all.game.types.mix' | translate
-    }}</mat-button-toggle>
+  <mat-button-toggle-group name="team types" aria-label="team types" multiple formControlName="choices">
+    <mat-button-toggle value="S">{{ 'all.game.types.single' | translate }}</mat-button-toggle>
+    <mat-button-toggle value="D">{{ 'all.game.types.double' | translate }}</mat-button-toggle>
+    <mat-button-toggle value="MX">{{ 'all.game.types.mix' | translate }}</mat-button-toggle>
   </mat-button-toggle-group>
 </form>
 @for (game of recentGames.games(); track game.id) {

@@ -8,9 +8,7 @@ module.exports = {
       try {
         console.log('Creating EXTENSION');
         // create system schema
-        await queryInterface.sequelize.query(
-          'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";',
-        );
+        await queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
 
         console.log('Creating SCHEMA');
         await queryInterface.createSchema('system', { transaction: t });

@@ -8,11 +8,7 @@ import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import {
-  ApexAxisChartSeries,
-  ApexOptions,
-  NgApexchartsModule,
-} from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { combineLatest, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -128,24 +124,12 @@ export class DetailAvgPageComponent implements OnInit {
   ngOnInit(): void {
     combineLatest([
       this.route.data,
-      this.translate.get([
-        'all.competition.title',
-        'all.competition.avg-level',
-      ]),
+      this.translate.get(['all.competition.title', 'all.competition.avg-level']),
     ]).subscribe(([data, translations]) => {
       this.eventCompetition = data['eventCompetition'];
-      this.breadcrumbsService.set(
-        '@eventCompetition',
-        this.eventCompetition.name || '',
-      );
-      this.breadcrumbsService.set(
-        'competition',
-        translations['all.competition.title'],
-      );
-      this.breadcrumbsService.set(
-        'competition/:id/avg-level',
-        translations['all.competition.avg-level'],
-      );
+      this.breadcrumbsService.set('@eventCompetition', this.eventCompetition.name || '');
+      this.breadcrumbsService.set('competition', translations['all.competition.title']);
+      this.breadcrumbsService.set('competition/:id/avg-level', translations['all.competition.avg-level']);
     });
 
     this.subEvents$ = this._getAvgLevel();
@@ -153,9 +137,7 @@ export class DetailAvgPageComponent implements OnInit {
 
   chartXAxis(subEvents: SubEventCompetition[], eventType: 'M' | 'F' | 'MX') {
     return {
-      categories: subEvents
-        .filter((s) => s.eventType == eventType)
-        .map((s) => s.name),
+      categories: subEvents.filter((s) => s.eventType == eventType).map((s) => s.name),
     } as ApexOptions['xaxis'];
   }
 
@@ -171,9 +153,7 @@ export class DetailAvgPageComponent implements OnInit {
 
     const genderData = filteredSubEvents
       .map((subEvent) => {
-        const genderData = subEvent.averageLevel?.find(
-          (a) => a.gender == gender,
-        );
+        const genderData = subEvent.averageLevel?.find((a) => a.gender == gender);
         return {
           avgerage: genderData?.[chartType] as number,
           count: genderData?.[`${chartType}Count`] as number,
@@ -196,11 +176,7 @@ export class DetailAvgPageComponent implements OnInit {
     ] as ApexAxisChartSeries;
   }
 
-  chartTitle(
-    gender: 'M' | 'F',
-    chartType: 'single' | 'double' | 'mix',
-    eventType: 'M' | 'F' | 'MX',
-  ) {
+  chartTitle(gender: 'M' | 'F', chartType: 'single' | 'double' | 'mix', eventType: 'M' | 'F' | 'MX') {
     return {
       text: `Reeks: ${eventType}, Geslacht: ${gender}, Dicipline: ${chartType}`,
       align: 'center',
@@ -224,35 +200,15 @@ export class DetailAvgPageComponent implements OnInit {
   }
 
   private convertToCSV(data: SubEventCompetition[]): string {
-    const headers = [
-      'name',
-      'gender',
-      'single',
-      'singleCount',
-      'double',
-      'doubleCount',
-      'mix',
-      'mixCount',
-    ];
+    const headers = ['name', 'gender', 'single', 'singleCount', 'double', 'doubleCount', 'mix', 'mixCount'];
     // const rows = data.map((row) => [row.name, row.data.join(';')]);
     const rows = data
       .map((row) => {
         const data = row.averageLevel?.map((a) => {
-          return [
-            a.gender,
-            a.single,
-            a.singleCount,
-            a.double,
-            a.doubleCount,
-            a.mix,
-            a.mixCount,
-          ];
+          return [a.gender, a.single, a.singleCount, a.double, a.doubleCount, a.mix, a.mixCount];
         });
 
-        return data?.map((r) => [
-          `${row.name} - ${row.eventType}`,
-          r.join(','),
-        ]);
+        return data?.map((r) => [`${row.name} - ${row.eventType}`, r.join(',')]);
       })
       .flat();
 
@@ -293,9 +249,7 @@ export class DetailAvgPageComponent implements OnInit {
       .pipe(
         take(1),
         map((result) => {
-          return result.data.eventCompetition.subEventCompetitions?.map(
-            (s) => new SubEventCompetition(s),
-          );
+          return result.data.eventCompetition.subEventCompetitions?.map((s) => new SubEventCompetition(s));
         }),
       );
   }

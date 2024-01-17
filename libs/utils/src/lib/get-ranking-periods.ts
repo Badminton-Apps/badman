@@ -58,10 +58,7 @@ export function getRankingPeriods<
 
     if (lastUpdate.isAfter(from, 'day')) {
       while (lastUpdate.isAfter(from, 'day')) {
-        lastUpdate.subtract(
-          system.updateIntervalAmount,
-          system.updateIntervalUnit,
-        );
+        lastUpdate.subtract(system.updateIntervalAmount, system.updateIntervalUnit);
       }
     }
 
@@ -80,10 +77,7 @@ export function getRankingPeriods<
         // no logic for day
       }
 
-      if (
-        lastUpdate.isSameOrBefore(to, 'day') &&
-        lastUpdate.isSameOrAfter(from, 'day')
-      ) {
+      if (lastUpdate.isSameOrBefore(to, 'day') && lastUpdate.isSameOrAfter(from, 'day')) {
         updates.push({
           date: lastUpdate.clone(),
           updatePossible: true,
@@ -96,28 +90,19 @@ export function getRankingPeriods<
     // get the last calculation on the first iteration before the from date
     if (lastCalculation.isBefore(from, 'day')) {
       while (lastCalculation.isBefore(from, 'day')) {
-        lastCalculation.add(
-          system.calculationIntervalAmount,
-          system.calculationIntervalUnit,
-        );
+        lastCalculation.add(system.calculationIntervalAmount, system.calculationIntervalUnit);
       }
     }
 
     if (lastCalculation.isAfter(from, 'day')) {
       while (lastCalculation.isAfter(from, 'day')) {
-        lastCalculation.subtract(
-          system.calculationIntervalAmount,
-          system.calculationIntervalUnit,
-        );
+        lastCalculation.subtract(system.calculationIntervalAmount, system.calculationIntervalUnit);
       }
     }
 
     lastCalculation.startOf(system.calculationIntervalUnit);
     while (lastCalculation.isSameOrBefore(to, 'day')) {
-      lastCalculation.add(
-        system.calculationIntervalAmount,
-        system.calculationIntervalUnit,
-      );
+      lastCalculation.add(system.calculationIntervalAmount, system.calculationIntervalUnit);
 
       if (system.calculationIntervalUnit === 'months') {
         lastCalculation.isoWeekday(system.calculationDayOfWeek + 7);
@@ -131,18 +116,11 @@ export function getRankingPeriods<
       }
 
       // if update already exists, don't add it again
-      if (
-        updates.find((u) =>
-          u.date.isSame(lastCalculation, system.calculationIntervalUnit),
-        )
-      ) {
+      if (updates.find((u) => u.date.isSame(lastCalculation, system.calculationIntervalUnit))) {
         continue;
       }
 
-      if (
-        lastCalculation.isSameOrBefore(to, 'day') &&
-        lastCalculation.isSameOrAfter(from, 'day')
-      ) {
+      if (lastCalculation.isSameOrBefore(to, 'day') && lastCalculation.isSameOrAfter(from, 'day')) {
         updates.push({
           date: lastCalculation.clone(),
           updatePossible: false,

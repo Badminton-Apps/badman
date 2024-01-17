@@ -1,9 +1,5 @@
 import { CronJob, RankingSystem } from '@badman/backend-database';
-import {
-  RankingQueue,
-  SyncQueue,
-  UpdateRankingJob,
-} from '@badman/backend-queue';
+import { RankingQueue, SyncQueue, UpdateRankingJob } from '@badman/backend-queue';
 import { ConfigType, getRankingPeriods } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -152,9 +148,7 @@ export class CronService implements OnModuleInit {
     this.logger.verbose(`Removing old jobs`);
 
     // remove jobs starting with name 'Update Ranking" for systems that are not in the database anymore
-    const jobNames = jobs
-      .map((j) => j.name)
-      .filter((j) => j.startsWith('Update Ranking'));
+    const jobNames = jobs.map((j) => j.name).filter((j) => j.startsWith('Update Ranking'));
     const systemNames = systems.map((s) => `Update Ranking ${s.name}`);
 
     const toRemove = jobNames.filter((j) => !systemNames.includes(j));
@@ -179,9 +173,7 @@ export class CronService implements OnModuleInit {
       onTick: async () => {
         this.logger.verbose(`Queueing ${job.name}`);
 
-        const system = await RankingSystem.findByPk(
-          (job.meta!.arguments as unknown as { systemId: string }).systemId,
-        );
+        const system = await RankingSystem.findByPk((job.meta!.arguments as unknown as { systemId: string }).systemId);
 
         if (!system) {
           throw new Error(`System not found`);

@@ -8,12 +8,7 @@ import countriesList from './countries.json';
 @Component({
   selector: 'badman-select-country',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatSelectModule,
-    TranslateModule,
-    ReactiveFormsModule,
-  ],
+  imports: [CommonModule, MatSelectModule, TranslateModule, ReactiveFormsModule],
   templateUrl: './select-country.component.html',
   styleUrls: ['./select-country.component.scss'],
 })

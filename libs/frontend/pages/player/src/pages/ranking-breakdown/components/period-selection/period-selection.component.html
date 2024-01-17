@@ -9,16 +9,8 @@
     <mat-icon>calendar_today</mat-icon>
   </button>
   <mat-menu #appMenu="matMenu">
-    <div
-      (click)="$event.stopPropagation()"
-      (keydown)="$event.stopPropagation()"
-    >
-      <mat-calendar
-        #calendar
-        (selectedChange)="customPeriod($event)"
-        [dateClass]="dateClass"
-      >
-      </mat-calendar>
+    <div (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <mat-calendar #calendar (selectedChange)="customPeriod($event)" [dateClass]="dateClass"> </mat-calendar>
       <div class="period-selection-calender-hint">
         <div class="info">
           <p class="point">{{ 'all.breakdown.update.point' | translate }}</p>

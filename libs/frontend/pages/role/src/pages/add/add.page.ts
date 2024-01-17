@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-  TransferState,
-} from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Claim, Club, Role } from '@badman/frontend-models';
@@ -13,14 +7,7 @@ import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import {
-  Observable,
-  groupBy,
-  lastValueFrom,
-  map,
-  mergeMap,
-  toArray,
-} from 'rxjs';
+import { Observable, groupBy, lastValueFrom, map, mergeMap, toArray } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { RoleFieldsComponent } from '../../components';
 
@@ -28,13 +15,7 @@ import { RoleFieldsComponent } from '../../components';
   templateUrl: './add.page.html',
   styleUrls: ['./add.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    RoleFieldsComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule, RoleFieldsComponent],
 })
 export class AddPageComponent implements OnInit {
   role!: Role;
@@ -92,11 +73,7 @@ export class AddPageComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          'clubTeamsKey-' + this.club.id,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState('clubTeamsKey-' + this.club.id, this.stateTransfer, this.platformId),
         map((x) => x?.data.claims?.map((c) => new Claim(c))),
         mergeMap((claims) => claims ?? []),
         groupBy((category) => category.category ?? 'Other'),

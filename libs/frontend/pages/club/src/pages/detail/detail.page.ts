@@ -1,15 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {
-  Component,
-  Inject,
-  Injector,
-  OnInit,
-  PLATFORM_ID,
-  Signal,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Inject, Injector, OnInit, PLATFORM_ID, Signal, computed, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -139,9 +129,7 @@ export class DetailPageComponent implements OnInit {
 
   hasPermission = toSignal(this.claimService.hasAnyClaims$(['edit-any:club']));
 
-  canViewEncounter = computed(
-    () => this.hasPermission() || this.versionInfo.beta,
-  );
+  canViewEncounter = computed(() => this.hasPermission() || this.versionInfo.beta);
 
   ngOnInit(): void {
     this.filter = this.formBuilder.group({
@@ -188,19 +176,14 @@ export class DetailPageComponent implements OnInit {
             throw new Error('No eventCompetitions');
           }
           return this.authService.hasAnyClaims$(
-            result.data.eventCompetitions.rows.map(
-              (row) => `${row.id}_view:enrollment-competition`,
-            ),
+            result.data.eventCompetitions.rows.map((row) => `${row.id}_view:enrollment-competition`),
           );
         }),
       ) ?? of(false),
       { injector: this.injector },
     );
 
-    this.canViewEnrollments = computed(
-      () =>
-        this.canViewEnrollmentForClub?.() || this.canViewEnrollmentForEvent?.(),
-    );
+    this.canViewEnrollments = computed(() => this.canViewEnrollmentForClub?.() || this.canViewEnrollmentForEvent?.());
   }
 
   setTab(index: number) {
@@ -228,9 +211,7 @@ export class DetailPageComponent implements OnInit {
 
   async downloadTwizzit() {
     const season = this.filter.get('season')?.value;
-    await lastValueFrom(
-      this.twizzitService.downloadTwizzit(this.club(), season),
-    );
+    await lastValueFrom(this.twizzitService.downloadTwizzit(this.club(), season));
   }
 
   addPlayer() {

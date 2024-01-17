@@ -2,14 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import { Club, EventCompetition } from '@badman/frontend-models';
-import {
-  combineLatest,
-  map,
-  Observable,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { combineLatest, map, Observable, startWith, switchMap, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
@@ -58,10 +51,7 @@ export class ClubViewComponent implements OnInit {
   constructor(private _apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.clubs$ = combineLatest([
-      this.eventControl.valueChanges,
-      this.yearControl.valueChanges,
-    ]).pipe(
+    this.clubs$ = combineLatest([this.eventControl.valueChanges, this.yearControl.valueChanges]).pipe(
       tap(() => (this.loading = true)),
 
       switchMap(([eventId]) => {
@@ -71,9 +61,7 @@ export class ClubViewComponent implements OnInit {
               return {
                 data: {
                   eventCompetition: {
-                    subEventCompetitions: e
-                      .map((e) => e.subEventCompetitions)
-                      .flat(),
+                    subEventCompetitions: e.map((e) => e.subEventCompetitions).flat(),
                   },
                 },
               };
@@ -132,11 +120,7 @@ export class ClubViewComponent implements OnInit {
           };
         }>({
           query: gql`
-            query Clubs(
-              $where: JSONObject
-              $availabilityWhere: JSONObject
-              $teamsWhere: JSONObject
-            ) {
+            query Clubs($where: JSONObject, $availabilityWhere: JSONObject, $teamsWhere: JSONObject) {
               clubs(where: $where) {
                 rows {
                   id
@@ -201,24 +185,14 @@ export class ClubViewComponent implements OnInit {
         });
       }),
 
-      map(
-        (result) =>
-          result.data.clubs?.rows.map(
-            (node) => new Club(node) as Club & { hasLocation: boolean },
-          ),
-      ),
+      map((result) => result.data.clubs?.rows.map((node) => new Club(node) as Club & { hasLocation: boolean })),
       map((clubs) => {
         // Sort by name
-        clubs = clubs.sort((a, b) =>
-          (a.name ?? '').localeCompare(b.name ?? ''),
-        );
+        clubs = clubs.sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''));
 
         clubs = clubs.map?.((club) => {
           club.hasLocation =
-            club?.locations?.some(
-              (location) =>
-                location?.availibilities?.[0]?.days?.length ?? 0 <= 0,
-            ) ?? false;
+            club?.locations?.some((location) => location?.availibilities?.[0]?.days?.length ?? 0 <= 0) ?? false;
 
           club.teams = club.teams?.filter((team) => {
             return (team.entry?.meta?.competition?.teamIndex ?? 0) > 0;
@@ -263,11 +237,7 @@ export class ClubViewComponent implements OnInit {
           },
         }),
       ),
-      map((result) =>
-        result.data.eventCompetitions.rows.map(
-          (node) => new EventCompetition(node),
-        ),
-      ),
+      map((result) => result.data.eventCompetitions.rows.map((node) => new EventCompetition(node))),
     );
   }
 }

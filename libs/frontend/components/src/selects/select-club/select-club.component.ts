@@ -1,22 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Inject,
-  Input,
-  OnInit,
-  PLATFORM_ID,
-  TransferState,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import {
-  MatAutocompleteModule,
-  MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
+import { Component, Inject, Input, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
@@ -136,16 +121,8 @@ export class SelectClubComponent implements OnInit {
         switchMap(([allClubs, , all, user, params]) => {
           if (this.needsPermission && !all) {
             return this.claimSerice.claims$.pipe(
-              map(
-                (r) =>
-                  r?.filter((x) => x?.indexOf(this.singleClubPermission) != -1),
-              ),
-              map(
-                (r) =>
-                  r?.map(
-                    (c) => c?.replace(`_${this.singleClubPermission}`, ''),
-                  ),
-              ),
+              map((r) => r?.filter((x) => x?.indexOf(this.singleClubPermission) != -1)),
+              map((r) => r?.map((c) => c?.replace(`_${this.singleClubPermission}`, ''))),
               switchMap((ids) => {
                 const filtered = allClubs.filter((c) => {
                   if (c.id == null) {
@@ -178,8 +155,7 @@ export class SelectClubComponent implements OnInit {
           const paramClubId = params.get('club');
 
           if (paramClubId) {
-            const foundClub =
-              rows?.find((r) => r.id == paramClubId)?.id ?? null;
+            const foundClub = rows?.find((r) => r.id == paramClubId)?.id ?? null;
             this.selectClub(foundClub, false);
           } else if (rows?.length == 1 && this.autoSelect) {
             this.selectClub(rows[0].id, false);
@@ -197,8 +173,7 @@ export class SelectClubComponent implements OnInit {
               ?.map((r) => r.id);
 
             if (clubIds) {
-              const foundClub =
-                this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null;
+              const foundClub = this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null;
 
               if (foundClub) {
                 this.selectClub(foundClub, false);
@@ -233,10 +208,7 @@ export class SelectClubComponent implements OnInit {
     }
   }
 
-  selectClub(
-    event?: MatAutocompleteSelectedEvent | MatSelectChange | string | null,
-    removeOtherParams = true,
-  ) {
+  selectClub(event?: MatAutocompleteSelectedEvent | MatSelectChange | string | null, removeOtherParams = true) {
     let id: string | undefined;
     if (event instanceof MatAutocompleteSelectedEvent) {
       id = event.option.value;
@@ -340,8 +312,7 @@ export class SelectClubComponent implements OnInit {
     return (this.clubs ?? []).filter(
       (option) =>
         option?.name?.toLowerCase().includes(filterValue) ||
-        (filterValue.length == 16 &&
-          option.id?.toLowerCase().includes(filterValue)),
+        (filterValue.length == 16 && option.id?.toLowerCase().includes(filterValue)),
     );
   }
 

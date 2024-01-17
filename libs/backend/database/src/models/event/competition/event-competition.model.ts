@@ -1,13 +1,5 @@
 import { LevelType, UsedRankingTiming } from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BuildOptions,
   HasManyAddAssociationMixin,
@@ -164,7 +156,6 @@ export class EventCompetition extends Model {
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   usedRankingUnit!: 'months' | 'weeks' | 'days';
 
-  
   get usedRanking(): UsedRankingTiming {
     return {
       amount: this.usedRankingAmount,
@@ -207,34 +198,13 @@ export class EventCompetition extends Model {
 
   // Has many SubEventCompetition
   getSubEventCompetitions!: HasManyGetAssociationsMixin<SubEventCompetition>;
-  setSubEventCompetitions!: HasManySetAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  addSubEventCompetitions!: HasManyAddAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  addSubEventCompetition!: HasManyAddAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  removeSubEventCompetition!: HasManyRemoveAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  removeSubEventCompetitions!: HasManyRemoveAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  hasSubEventCompetition!: HasManyHasAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  hasSubEventCompetitions!: HasManyHasAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
+  setSubEventCompetitions!: HasManySetAssociationsMixin<SubEventCompetition, string>;
+  addSubEventCompetitions!: HasManyAddAssociationsMixin<SubEventCompetition, string>;
+  addSubEventCompetition!: HasManyAddAssociationMixin<SubEventCompetition, string>;
+  removeSubEventCompetition!: HasManyRemoveAssociationMixin<SubEventCompetition, string>;
+  removeSubEventCompetitions!: HasManyRemoveAssociationsMixin<SubEventCompetition, string>;
+  hasSubEventCompetition!: HasManyHasAssociationMixin<SubEventCompetition, string>;
+  hasSubEventCompetitions!: HasManyHasAssociationsMixin<SubEventCompetition, string>;
   countSubEventCompetitions!: HasManyCountAssociationsMixin;
 
   // Has many Comment

@@ -79,10 +79,7 @@
     <mat-cell *matCellDef="let game">
       <!-- show game number -->
       @if (game?.dropsNextPeriod) {
-        <div
-          class="drops"
-          [matTooltip]="'all.breakdown.drops-next-period' | translate"
-        >
+        <div class="drops" [matTooltip]="'all.breakdown.drops-next-period' | translate">
           <mat-icon>update_disabled</mat-icon>
         </div>
       }
@@ -90,28 +87,16 @@
   </ng-container>
   <!-- Item Column -->
   <ng-container matColumnDef="date">
-    <mat-header-cell *matHeaderCellDef>{{
-      'all.breakdown.date' | translate
-    }}</mat-header-cell>
-    <mat-cell
-      *matCellDef="let game"
-      attr.data-label="{{ 'all.breakdown.date' | translate }}"
-    >
-      <span>{{
-        !!game.playedAt ? (game.playedAt | amDateFormat: this.dateFormat) : ''
-      }}</span>
+    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.date' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.date' | translate }}">
+      <span>{{ !!game.playedAt ? (game.playedAt | amDateFormat: this.dateFormat) : '' }}</span>
     </mat-cell>
     <mat-footer-cell *matFooterCellDef></mat-footer-cell>
   </ng-container>
   <!-- team Column -->
   <ng-container matColumnDef="team">
-    <mat-header-cell *matHeaderCellDef>{{
-      'all.breakdown.team' | translate
-    }}</mat-header-cell>
-    <mat-cell
-      *matCellDef="let game"
-      attr.data-label="{{ 'all.breakdown.team' | translate }}"
-    >
+    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.team' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.team' | translate }}">
       @if (game.team?.[0]) {
         <div>
           {{ game.team?.[0].fullName }}
@@ -134,13 +119,8 @@
   </ng-container>
   <!-- opponent Column -->
   <ng-container matColumnDef="opponent">
-    <mat-header-cell *matHeaderCellDef>{{
-      'all.breakdown.opponent' | translate
-    }}</mat-header-cell>
-    <mat-cell
-      *matCellDef="let game"
-      attr.data-label="{{ 'all.breakdown.opponent' | translate }}"
-    >
+    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.opponent' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.opponent' | translate }}">
       @if (game.opponent?.[0]) {
         <div>
           {{ game.opponent?.[0].fullName }}
@@ -163,13 +143,8 @@
   </ng-container>
   <!-- points Column -->
   <ng-container matColumnDef="points">
-    <mat-header-cell *matHeaderCellDef>{{
-      'all.breakdown.points' | translate
-    }}</mat-header-cell>
-    <mat-cell
-      *matCellDef="let game"
-      attr.data-label="{{ 'points' | translate }}"
-    >
+    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.points' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'points' | translate }}">
       @if (game.type === 'WON') {
         {{ game.points }}
       }
@@ -253,10 +228,7 @@
   <!-- points Column -->
   <ng-container matColumnDef="delete">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-    <mat-cell
-      *matCellDef="let game"
-      attr.data-label="{{ 'actions' | translate }}"
-    >
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'actions' | translate }}">
       <div class="hidden-when-not-hovered">
         <button mat-icon-button (click)="this.deleteGame(game)">
           <mat-icon>delete</mat-icon>
@@ -298,28 +270,16 @@
     <mat-cell *matCellDef=""></mat-cell>
   </ng-container>
   <ng-container matColumnDef="date">
-    <mat-header-cell *matHeaderCellDef>{{
-      'all.breakdown.date' | translate
-    }}</mat-header-cell>
-    <mat-cell
-      *matCellDef="let game"
-      attr.data-label="{{ 'all.breakdown.date' | translate }}"
-    >
-      <span>{{
-        !!game.playedAt ? (game.playedAt | amDateFormat: this.dateFormat) : ''
-      }}</span>
+    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.date' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.date' | translate }}">
+      <span>{{ !!game.playedAt ? (game.playedAt | amDateFormat: this.dateFormat) : '' }}</span>
     </mat-cell>
     <mat-footer-cell *matFooterCellDef></mat-footer-cell>
   </ng-container>
   <!-- team Column -->
   <ng-container matColumnDef="team">
-    <mat-header-cell *matHeaderCellDef>{{
-      'all.breakdown.team' | translate
-    }}</mat-header-cell>
-    <mat-cell
-      *matCellDef="let game"
-      attr.data-label="{{ 'all.breakdown.team' | translate }}"
-    >
+    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.team' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.team' | translate }}">
       @if (game.team?.[0]) {
         <div>
           {{ game.team?.[0].fullName }}
@@ -342,13 +302,8 @@
   </ng-container>
   <!-- opponent Column -->
   <ng-container matColumnDef="opponent">
-    <mat-header-cell *matHeaderCellDef>{{
-      'all.breakdown.opponent' | translate
-    }}</mat-header-cell>
-    <mat-cell
-      *matCellDef="let game"
-      attr.data-label="{{ 'all.breakdown.opponent' | translate }}"
-    >
+    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.opponent' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.opponent' | translate }}">
       @if (game.opponent?.[0]) {
         <div>
           {{ game.opponent?.[0].fullName }}
@@ -371,13 +326,8 @@
   </ng-container>
   <!-- points Column -->
   <ng-container matColumnDef="points">
-    <mat-header-cell *matHeaderCellDef>{{
-      'all.breakdown.points' | translate
-    }}</mat-header-cell>
-    <mat-cell
-      *matCellDef="let game"
-      attr.data-label="{{ 'points' | translate }}"
-    >
+    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.points' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'points' | translate }}">
       @if (game.type === 'WON') {
         {{ game.points }}
       }

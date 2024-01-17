@@ -3,9 +3,7 @@
 </h2>
 <mat-dialog-content>
   <form [formGroup]="this.formGroup">
-    <mat-slide-toggle formControlName="won">{{
-      'all.breakdown.add-game.won' | translate
-    }}</mat-slide-toggle>
+    <mat-slide-toggle formControlName="won">{{ 'all.breakdown.add-game.won' | translate }}</mat-slide-toggle>
     <div class="game">
       <div class="team1">
         <div class="player1">
@@ -97,12 +95,7 @@
   <button mat-button (click)="onDismiss()">
     {{ 'all.button.no' | translate }}
   </button>
-  <button
-    mat-raised-button
-    cdkFocusInitial
-    color="primary"
-    (click)="onConfirm()"
-  >
+  <button mat-raised-button cdkFocusInitial color="primary" (click)="onConfirm()">
     {{ 'all.button.yes' | translate }}
   </button>
 </mat-dialog-actions>

@@ -1,17 +1,14 @@
 @use '@angular/material' as mat;
 
-@use './src/games/recent-games/recent-games.component.theme.scss' as
-  recent-games;
-@use './src/games/upcoming-games/upcoming-games.component.theme.scss' as
-  upcoming-games;
+@use './src/games/recent-games/recent-games.component.theme.scss' as recent-games;
+@use './src/games/upcoming-games/upcoming-games.component.theme.scss' as upcoming-games;
 @use './src/landing/components/beta/beta.component.theme.scss' as beta;
 @use './src/block/block.component.theme.scss' as block;
 @use './src/loading-block/loading-block.component.theme.scss' as loading-block;
 @use './src/page-header/page-header.component.theme.scss' as page-header;
 @use './src/player-search/player-search.component.theme.scss' as player-search;
 @use './src/selects/select-club/select-club.component.theme.scss' as select-club;
-@use './src/selects/select-player/select-player.component.theme.scss' as
-  select-player;
+@use './src/selects/select-player/select-player.component.theme.scss' as select-player;
 @use './src/roles/edit-role/edit-role.component.theme.scss' as edit-role;
 @use './src/shell/theme' as shell;
 @use './src/standing/standing.component.theme.scss' as standing;

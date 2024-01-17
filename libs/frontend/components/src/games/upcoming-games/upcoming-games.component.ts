@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  inject,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 
@@ -46,11 +39,7 @@ export class UpcomingGamesComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      !changes['clubid']?.previousValue &&
-      !changes['teamId']?.previousValue &&
-      !changes['teams']?.previousValue
-    ) {
+    if (!changes['clubid']?.previousValue && !changes['teamId']?.previousValue && !changes['teams']?.previousValue) {
       return;
     }
 
@@ -58,8 +47,7 @@ export class UpcomingGamesComponent implements OnInit, OnChanges {
     if (
       changes['clubid']?.currentValue !== changes['clubid']?.previousValue ||
       changes['teamId']?.currentValue !== changes['teamId']?.previousValue ||
-      JSON.stringify(changes['teams']?.currentValue) !==
-        JSON.stringify(changes['teams']?.previousValue)
+      JSON.stringify(changes['teams']?.currentValue) !== JSON.stringify(changes['teams']?.previousValue)
     ) {
       this._setIds();
     }

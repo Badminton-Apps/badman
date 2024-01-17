@@ -1,22 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Inject,
-  Input,
-  OnInit,
-  PLATFORM_ID,
-  TransferState,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import {
-  MatAutocompleteModule,
-  MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
+import { Component, Inject, Input, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -125,10 +110,7 @@ export class SelectTeamComponent implements OnInit {
 
       this.teams$ = combineLatest([
         previous.valueChanges.pipe(startWith(null)),
-        ...updateOnControls.map(
-          (control) =>
-            control?.valueChanges?.pipe(startWith(() => control?.value)),
-        ),
+        ...updateOnControls.map((control) => control?.valueChanges?.pipe(startWith(() => control?.value))),
       ]).pipe(
         takeUntil(this.destroy$),
         distinctUntilChanged(),
@@ -194,12 +176,9 @@ export class SelectTeamComponent implements OnInit {
         )
         .subscribe(({ teams, teamsUser }) => {
           let foundTeam: Team[] | undefined = undefined;
-          const teamId =
-            this.activatedRoute.snapshot?.queryParamMap?.get('team');
+          const teamId = this.activatedRoute.snapshot?.queryParamMap?.get('team');
 
-          const allTeams = teams
-            ?.map((group) => group.teams)
-            ?.reduce((acc, teams) => acc.concat(teams), []);
+          const allTeams = teams?.map((group) => group.teams)?.reduce((acc, teams) => acc.concat(teams), []);
 
           if (teamId && teams.length > 0) {
             // Check all groups if the team is in there
@@ -214,11 +193,7 @@ export class SelectTeamComponent implements OnInit {
           }
 
           if (foundTeam && foundTeam.length > 0) {
-            this.control.setValue(
-              this.multiple
-                ? foundTeam.map((team) => team.id ?? '')
-                : foundTeam[0].id ?? '',
-            );
+            this.control.setValue(this.multiple ? foundTeam.map((team) => team.id ?? '') : foundTeam[0].id ?? '');
             this._updateUrl(
               foundTeam.map((team) => team.id ?? ''),
               teamId == null,
@@ -308,11 +283,7 @@ export class SelectTeamComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          `clubTeamsKey-${clubId}}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`clubTeamsKey-${clubId}}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.teams) {
             throw new Error('No club');
@@ -339,11 +310,7 @@ export class SelectTeamComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          `captainOfTeam-${userId}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`captainOfTeam-${userId}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.teams) {
             throw new Error('No club');
@@ -354,9 +321,7 @@ export class SelectTeamComponent implements OnInit {
   }
 
   selectAll(options: { type: string; teams: Team[] }[]) {
-    this.control.setValue(
-      options.map((option) => option.teams?.map((team) => team.id)).flat(),
-    );
+    this.control.setValue(options.map((option) => option.teams?.map((team) => team.id)).flat());
   }
 
   deselectAll() {
