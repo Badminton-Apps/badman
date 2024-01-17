@@ -1,25 +1,12 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  Input,
-  OnInit,
-  PLATFORM_ID,
-  Signal,
-  TransferState,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Injector, Input, OnInit, PLATFORM_ID, Signal, TransferState, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
-import {
-  LoadingBlockComponent,
-  SelectTeamComponent,
-} from '@badman/frontend-components';
+import { LoadingBlockComponent, SelectTeamComponent } from '@badman/frontend-components';
 import { EncounterCompetition } from '@badman/frontend-models';
 import { getCurrentSeason, sortEncounters } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -145,18 +132,14 @@ export class ClubEncountersComponent implements OnInit {
         map((result) => {
           return result?.data?.encounterCompetitions.rows;
         }),
-        map(
-          (encounters) =>
-            encounters?.map((encounter) => new EncounterCompetition(encounter)),
-        ),
+        map((encounters) => encounters?.map((encounter) => new EncounterCompetition(encounter))),
         map((encounters) => encounters?.sort(sortEncounters)),
         map(
           (encounters) =>
             // if the change is not null and not accepted
             encounters?.filter((encounter) =>
               this.filter?.value?.openEncounters ?? false
-                ? encounter.encounterChange?.id != null &&
-                  !encounter.encounterChange?.accepted
+                ? encounter.encounterChange?.id != null && !encounter.encounterChange?.accepted
                 : true,
             ),
         ),
@@ -181,10 +164,7 @@ export class ClubEncountersComponent implements OnInit {
         openEncounters: new FormControl(false),
       });
     }
-    if (
-      (this.filter.get('club')?.value?.id ?? this.filter.get('club')?.value) !==
-      this.clubId()
-    ) {
+    if ((this.filter.get('club')?.value?.id ?? this.filter.get('club')?.value) !== this.clubId()) {
       this.filter.get('club')?.setValue({ id: this.clubId() });
     }
 

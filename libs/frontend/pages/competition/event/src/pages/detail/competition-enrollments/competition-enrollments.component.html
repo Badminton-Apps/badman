@@ -1,15 +1,8 @@
 @if (eventCompetition) {
   <div class="filter">
-    <badman-select-club
-      [control]="this.clubControl"
-      [allowDeselect]="true"
-      [autoSelect]="false"
-    />
+    <badman-select-club [control]="this.clubControl" [allowDeselect]="true" [autoSelect]="false" />
   </div>
-  <mat-table
-    #table
-    [dataSource]="eventCompetition()?.subEventCompetitions ?? []"
-  >
+  <mat-table #table [dataSource]="eventCompetition()?.subEventCompetitions ?? []">
     <!--- Note that these columns can be defined in any order.
       The actual rendered columns are set as a property on the row definition" -->
     <!-- Position Column -->
@@ -17,9 +10,7 @@
       <mat-header-cell *matHeaderCellDef>
         {{ 'all.competition.subevent.title' | translate }}
       </mat-header-cell>
-      <mat-cell *matCellDef="let subevent">
-        {{ subevent.name }} {{ subevent.eventType }}
-      </mat-cell>
+      <mat-cell *matCellDef="let subevent"> {{ subevent.name }} {{ subevent.eventType }} </mat-cell>
     </ng-container>
     <ng-container matColumnDef="entries">
       <mat-header-cell *matHeaderCellDef> </mat-header-cell>
@@ -34,17 +25,12 @@
         @if (loadingValidations()) {
           loading... ({{ progress() }} / {{ total() }})
         }
-        @if (
-          !loadingValidations() && validationsForSubevent.get(subevent.id);
-          as validation
-        ) {
+        @if (!loadingValidations() && validationsForSubevent.get(subevent.id); as validation) {
           @if (validation.errors) {
             <mat-icon
               [matBadge]="validation.errors"
               class="invalid"
-              [matTooltip]="
-                'all.competition.team-enrollment.errors.title' | translate
-              "
+              [matTooltip]="'all.competition.team-enrollment.errors.title' | translate"
               >error</mat-icon
             >
           }
@@ -52,9 +38,7 @@
             <mat-icon
               [matBadge]="validation.warnings"
               class="warning"
-              [matTooltip]="
-                'all.competition.team-enrollment.warnings.title' | translate
-              "
+              [matTooltip]="'all.competition.team-enrollment.warnings.title' | translate"
               >warning</mat-icon
             >
           }
@@ -79,33 +63,21 @@
       @for (entry of subevent.eventEntries; track entry) {
         <div>
           <mat-expansion-panel>
-            <mat-expansion-panel-header
-              [collapsedHeight]="'auto'"
-              [expandedHeight]="'auto'"
-            >
+            <mat-expansion-panel-header [collapsedHeight]="'auto'" [expandedHeight]="'auto'">
               <div class="panel-header">
                 {{ entry.team.name }}
                 @if (entry?.meta?.competition?.teamIndex) {
                   <span class="team-index">
-                    ({{ 'all.team.team-index' | translate }}:{{
-                      entry?.meta?.competition?.teamIndex
-                    }})
+                    ({{ 'all.team.team-index' | translate }}:{{ entry?.meta?.competition?.teamIndex }})
                   </span>
                 }
                 <!-- show errors with label -->
-                @if (
-                  !loadingValidations() &&
-                    validationsForTeam.get(entry.team.id);
-                  as validation
-                ) {
+                @if (!loadingValidations() && validationsForTeam.get(entry.team.id); as validation) {
                   @if (validation.errors.length > 0) {
                     <mat-icon
                       [matBadge]="validation.errors.length"
                       class="invalid"
-                      [matTooltip]="
-                        'all.competition.team-enrollment.errors.title'
-                          | translate
-                      "
+                      [matTooltip]="'all.competition.team-enrollment.errors.title' | translate"
                       >error</mat-icon
                     >
                   }
@@ -114,10 +86,7 @@
                     <mat-icon
                       [matBadge]="validation.warnings.length"
                       class="warning"
-                      [matTooltip]="
-                        'all.competition.team-enrollment.warnings.title'
-                          | translate
-                      "
+                      [matTooltip]="'all.competition.team-enrollment.warnings.title' | translate"
                       >warning</mat-icon
                     >
                   }
@@ -134,14 +103,9 @@
                 <mat-divider />
                 <badman-block-content>
                   <mat-list role="list">
-                    @for (
-                      player of entry?.meta?.competition?.players ?? [];
-                      track player
-                    ) {
+                    @for (player of entry?.meta?.competition?.players ?? []; track player) {
                       <mat-list-item role="listitem">
-                        <span matListItemTitle>{{
-                          player.player.fullName
-                        }}</span>
+                        <span matListItemTitle>{{ player.player.fullName }}</span>
                         <span matListItemLine
                           >{{ player.single }}- {{ player.double }} -
                           {{ player.mix }}
@@ -153,41 +117,27 @@
               </badman-block>
               <badman-block class="captain">
                 <badman-block-header>
-                  <badman-block-title>{{
-                    'all.team.title.base-fields' | translate
-                  }}</badman-block-title>
+                  <badman-block-title>{{ 'all.team.title.base-fields' | translate }}</badman-block-title>
                 </badman-block-header>
                 <mat-divider />
                 <badman-block-content>
                   <mat-list role="list">
                     @if (entry?.meta?.competition?.teamIndex) {
                       <mat-list-item role="listitem">
-                        <span matListItemTitle>{{
-                          entry?.meta?.competition?.teamIndex
-                        }}</span>
-                        <span matListItemLine>{{
-                          'all.team.team-index' | translate
-                        }}</span>
+                        <span matListItemTitle>{{ entry?.meta?.competition?.teamIndex }}</span>
+                        <span matListItemLine>{{ 'all.team.team-index' | translate }}</span>
                       </mat-list-item>
                     }
                     <mat-list-item role="listitem">
-                      <span matListItemTitle>{{
-                        entry?.team?.captain?.fullName
-                      }}</span>
-                      <span matListItemLine>{{
-                        'all.team.title.captain' | translate
-                      }}</span>
+                      <span matListItemTitle>{{ entry?.team?.captain?.fullName }}</span>
+                      <span matListItemLine>{{ 'all.team.title.captain' | translate }}</span>
                     </mat-list-item>
                     <mat-list-item role="listitem">
                       <span matListItemTitle
-                        >{{
-                          'all.days.' + entry?.team?.preferredDay | translate
-                        }}
-                        - {{ entry?.team?.preferredTime }}</span
+                        >{{ 'all.days.' + entry?.team?.preferredDay | translate }} -
+                        {{ entry?.team?.preferredTime }}</span
                       >
-                      <span matListItemLine>{{
-                        'all.team.prefferd.title' | translate
-                      }}</span>
+                      <span matListItemLine>{{ 'all.team.prefferd.title' | translate }}</span>
                     </mat-list-item>
                   </mat-list>
                 </badman-block-content>
@@ -200,18 +150,12 @@
                 </badman-block-header>
                 <mat-divider />
                 <badman-block-content>
-                  @if (
-                    !loadingValidations() &&
-                      validationsForTeam.get(entry.team.id);
-                    as validation
-                  ) {
+                  @if (!loadingValidations() && validationsForTeam.get(entry.team.id); as validation) {
                     @if (validation.errors.length > 0) {
                       <ul class="error-list">
                         @for (error of validation.errors; track error) {
                           <li>
-                            <badman-enrollment-message
-                              [validation]="error"
-                            ></badman-enrollment-message>
+                            <badman-enrollment-message [validation]="error"></badman-enrollment-message>
                           </li>
                         }
                       </ul>
@@ -220,22 +164,14 @@
                       <ul class="warning-list">
                         @for (warnings of validation.warnings; track warnings) {
                           <li>
-                            <badman-enrollment-message
-                              [validation]="warnings"
-                            ></badman-enrollment-message>
+                            <badman-enrollment-message [validation]="warnings"></badman-enrollment-message>
                           </li>
                         }
                       </ul>
                     }
-                    @if (
-                      validation.errors.length === 0 &&
-                      validation.warnings.length === 0
-                    ) {
+                    @if (validation.errors.length === 0 && validation.warnings.length === 0) {
                       <div class="no-errors">
-                        {{
-                          'all.competition.team-assembly.errors.none'
-                            | translate
-                        }}
+                        {{ 'all.competition.team-assembly.errors.none' | translate }}
                       </div>
                     }
                   }

@@ -6,8 +6,7 @@
           <mat-expansion-panel-header>
             <mat-panel-title>
               @if (group[0]) {
-                {{ group[0].rankingDate | date }} - {{ group[0].single }} -
-                {{ group[0].double }} - {{ group[0].mix }}
+                {{ group[0].rankingDate | date }} - {{ group[0].single }} - {{ group[0].double }} - {{ group[0].mix }}
               }
               @if (!group[0]) {
                 {{ 'all.ranking.next-ranking' | translate }}
@@ -30,37 +29,23 @@
                     *
                   }
                 </span>
-                @if (
-                  place.rankingDate?.getDate() === 15 &&
-                  place.rankingDate?.getMonth() === 4
-                ) {
+                @if (place.rankingDate?.getDate() === 15 && place.rankingDate?.getMonth() === 4) {
                   <span matListItemLine>
                     {{ 'all.ranking.may-ranking' | translate }}
                   </span>
                 }
-                @if (
-                  place.singlePoints || place.doublePoints || place.mixPoints
-                ) {
+                @if (place.singlePoints || place.doublePoints || place.mixPoints) {
                   <span matListItemLine>
                     @if (place.singlePoints) {
-                      <span
-                        >{{ 'all.ranking.single' | translate }}:
-                        {{ place.singlePoints }}</span
-                      >
+                      <span>{{ 'all.ranking.single' | translate }}: {{ place.singlePoints }}</span>
                     }
                     -
                     @if (place.doublePoints) {
-                      <span
-                        >{{ 'all.ranking.double' | translate }}:
-                        {{ place.doublePoints }}</span
-                      >
+                      <span>{{ 'all.ranking.double' | translate }}: {{ place.doublePoints }}</span>
                     }
                     -
                     @if (place.mixPoints) {
-                      <span
-                        >{{ 'all.ranking.mix' | translate }}:
-                        {{ place.mixPoints }}</span
-                      >
+                      <span>{{ 'all.ranking.mix' | translate }}: {{ place.mixPoints }}</span>
                     }
                   </span>
                 }

@@ -24,13 +24,7 @@
           "apps/badman/src/sitemap.xml",
           "apps/badman/src/ads.txt"
         ],
-        "allowedCommonJsDependencies": [
-          "moment",
-          "file-saver",
-          "seed-to-color",
-          "joi",
-          "quill"
-        ],
+        "allowedCommonJsDependencies": ["moment", "file-saver", "seed-to-color", "joi", "quill"],
         "styles": [
           "apps/badman/src/styles.scss",
           "node_modules/quill/dist/quill.bubble.css",

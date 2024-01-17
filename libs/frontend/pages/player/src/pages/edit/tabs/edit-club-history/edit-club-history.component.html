@@ -6,10 +6,7 @@
     <mat-list-item (click)="this.editClubMembership(club)">
       <span matListItemTitle>{{ club.fullName }}</span>
       <span matListItemLine>
-        <span
-          >{{ 'all.club.start' | translate }}:
-          {{ club.clubMembership?.start | amLocal | amDateFormat: 'LL' }}</span
-        >
+        <span>{{ 'all.club.start' | translate }}: {{ club.clubMembership?.start | amLocal | amDateFormat: 'LL' }}</span>
       </span>
       @if (club.clubMembership?.end) {
         <span matListItemLine
@@ -17,19 +14,11 @@
           {{ club.clubMembership?.end | amLocal | amDateFormat: 'LL' }}
         </span>
       }
-      @if (
-        !club.clubMembership?.end &&
-        club.clubMembership?.membershipType === 'NORMAL'
-      ) {
+      @if (!club.clubMembership?.end && club.clubMembership?.membershipType === 'NORMAL') {
         <span matListItemLine>{{ 'all.club.current' | translate }}</span>
       }
-      @if (
-        !club.clubMembership?.end &&
-        club.clubMembership?.membershipType === 'LOAN'
-      ) {
-        <span matListItemLine>{{
-          'all.club.membership-types.loan' | translate
-        }}</span>
+      @if (!club.clubMembership?.end && club.clubMembership?.membershipType === 'LOAN') {
+        <span matListItemLine>{{ 'all.club.membership-types.loan' | translate }}</span>
       }
     </mat-list-item>
   }

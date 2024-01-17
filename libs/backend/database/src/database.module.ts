@@ -5,13 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { slugifyModel } from 'sequelize-slugify';
 import { Model } from 'sequelize-typescript';
-import {
-  Club,
-  EventCompetition,
-  EventTournament,
-  Player,
-  Team,
-} from './models';
+import { Club, EventCompetition, EventTournament, Player, Team } from './models';
 import { SequelizeConfigProvider } from './provider';
 import { loadTest } from './_testing/load-test';
 import { Sequelize } from 'sequelize-typescript';

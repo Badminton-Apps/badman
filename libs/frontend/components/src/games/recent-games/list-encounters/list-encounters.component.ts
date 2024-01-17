@@ -14,12 +14,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
-import {
-  EncounterCompetition,
-  Game,
-  GamePlayer,
-  Team,
-} from '@badman/frontend-models';
+import { EncounterCompetition, Game, GamePlayer, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { GameType, gameLabel } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -106,8 +101,7 @@ export class ListEncountersComponent implements OnInit, OnChanges {
       return null;
     }
 
-    const gameType = encounter.drawCompetition?.subEventCompetition
-      ?.eventType as 'M' | 'F' | 'MX';
+    const gameType = encounter.drawCompetition?.subEventCompetition?.eventType as 'M' | 'F' | 'MX';
     const gameNumber = game.order ?? 0;
 
     return gameLabel(gameType, gameNumber) as string[];
@@ -134,11 +128,7 @@ export class ListEncountersComponent implements OnInit, OnChanges {
         };
       }>({
         query: gql`
-          query RecentGames(
-            $where: JSONObject
-            $take: Int
-            $order: [SortOrderType!]
-          ) {
+          query RecentGames($where: JSONObject, $take: Int, $order: [SortOrderType!]) {
             encounterCompetitions(where: $where, order: $order, take: $take) {
               rows {
                 id
@@ -190,17 +180,9 @@ export class ListEncountersComponent implements OnInit, OnChanges {
       })
       .pipe(
         takeUntil(this.destroy$),
-        transferState(
-          `recentKey-${this.teamId ?? this.clubId}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`recentKey-${this.teamId ?? this.clubId}`, this.stateTransfer, this.platformId),
         map((result) => {
-          return (
-            result?.data.encounterCompetitions.rows?.map(
-              (encounter) => new EncounterCompetition(encounter),
-            ) ?? []
-          );
+          return result?.data.encounterCompetitions.rows?.map((encounter) => new EncounterCompetition(encounter)) ?? [];
         }),
       )
       .subscribe((encounters) => {

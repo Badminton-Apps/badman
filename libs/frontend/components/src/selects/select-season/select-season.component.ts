@@ -1,22 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Inject,
-  Injector,
-  Input,
-  OnInit,
-  PLATFORM_ID,
-  Signal,
-  TransferState,
-  inject,
-} from '@angular/core';
+import { Component, Inject, Injector, Input, OnInit, PLATFORM_ID, Signal, TransferState, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -32,14 +17,7 @@ import { map, takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'badman-select-season',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-  ],
+  imports: [CommonModule, TranslateModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, MatSelectModule],
   templateUrl: './select-season.component.html',
   styleUrls: ['./select-season.component.scss'],
 })
@@ -92,32 +70,24 @@ export class SelectSeasonComponent implements OnInit {
     const previous = this.group?.get(this.dependsOn);
 
     if (previous && this.type === 'club') {
-      previous.valueChanges
-        .pipe(startWith(previous.value), takeUntil(this.destroy$))
-        .subscribe((value) => {
-          const clubId = `${value?.id ?? value}`;
-          // if the clubId is a uuid continue
-          if (
-            !clubId?.match(
-              /^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/,
-            )
-          ) {
-            return;
-          }
+      previous.valueChanges.pipe(startWith(previous.value), takeUntil(this.destroy$)).subscribe((value) => {
+        const clubId = `${value?.id ?? value}`;
+        // if the clubId is a uuid continue
+        if (!clubId?.match(/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/)) {
+          return;
+        }
 
-          this._setYearsForClub({
-            id: clubId,
-          } as Club);
+        this._setYearsForClub({
+          id: clubId,
+        } as Club);
 
-          // update url on change
-          if (this.updateUrl) {
-            this.control.valueChanges
-              .pipe(takeUntil(this.destroy$))
-              .subscribe((value) => {
-                this._updateUrl(value, false);
-              });
-          }
-        });
+        // update url on change
+        if (this.updateUrl) {
+          this.control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+            this._updateUrl(value, false);
+          });
+        }
+      });
     }
 
     if (!previous && this.type === 'event') {
@@ -138,11 +108,7 @@ export class SelectSeasonComponent implements OnInit {
           `,
         })
         .pipe(
-          transferState(
-            `eventCompetitions-seasons`,
-            this.stateTransfer,
-            this.platformId,
-          ),
+          transferState(`eventCompetitions-seasons`, this.stateTransfer, this.platformId),
           map((result) => {
             if (!result?.data.eventCompetitionSeasons) {
               throw new Error('No teams');
@@ -178,11 +144,7 @@ export class SelectSeasonComponent implements OnInit {
           },
         })
         .pipe(
-          transferState(
-            `club-${club.id}-seasons`,
-            this.stateTransfer,
-            this.platformId,
-          ),
+          transferState(`club-${club.id}-seasons`, this.stateTransfer, this.platformId),
           map((result) => {
             if (!result?.data.teams) {
               throw new Error('No teams');

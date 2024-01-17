@@ -44,13 +44,9 @@
         {{encounterCompetition.shuttle}}</mat-chip
       >
       } @if (encounterCompetition.startHour && encounterCompetition.endHour) {
-      <mat-chip>
-        {{encounterCompetition.startHour}} - {{encounterCompetition.endHour}}
-      </mat-chip>
+      <mat-chip> {{encounterCompetition.startHour}} - {{encounterCompetition.endHour}} </mat-chip>
       } @if (encounterCompetition.gameLeader?.fullName) {
-      <mat-chip
-        [matTooltip]="'all.competition.encounters.gameleader' | translate"
-      >
+      <mat-chip [matTooltip]="'all.competition.encounters.gameleader' | translate">
         {{encounterCompetition.gameLeader?.fullName}}
       </mat-chip>
       }
@@ -67,16 +63,13 @@
   <div class="team1" [ngClass]="{ winner: game.winner === 1 }">
     @if (this.getPlayer(game, 1, 1); as playerT1P1) {
     <a class="player player1" [routerLink]="['/player', playerT1P1?.slug]">
-      {{ playerT1P1.fullName }} @if (this.getRanking(playerT1P1, game); as
-      ranking) {
+      {{ playerT1P1.fullName }} @if (this.getRanking(playerT1P1, game); as ranking) {
       <span>({{ ranking }})</span>
       }
     </a>
-    } @if ( this.game.gameType !== 'S' && this.getPlayer(game, 2, 1); as
-    playerT1P2 ) {
+    } @if ( this.game.gameType !== 'S' && this.getPlayer(game, 2, 1); as playerT1P2 ) {
     <a class="player player2" [routerLink]="['/player', playerT1P2?.slug]">
-      {{ playerT1P2.fullName }} @if (this.getRanking(playerT1P2, game); as
-      ranking) {
+      {{ playerT1P2.fullName }} @if (this.getRanking(playerT1P2, game); as ranking) {
       <span>({{ ranking }})</span>
       }
     </a>
@@ -92,16 +85,13 @@
   <div class="team2" [ngClass]="{ winner: game.winner === 2 }">
     @if (this.getPlayer(game, 1, 2); as playerT2P1) {
     <a class="player player1" [routerLink]="['/player', playerT2P1?.slug]">
-      {{ playerT2P1.fullName }} @if (this.getRanking(playerT2P1, game); as
-      ranking) {
+      {{ playerT2P1.fullName }} @if (this.getRanking(playerT2P1, game); as ranking) {
       <span>({{ ranking }})</span>
       }
     </a>
-    } @if ( this.game.gameType !== 'S' && this.getPlayer(game, 2, 2); as
-    playerT2P2 ) {
+    } @if ( this.game.gameType !== 'S' && this.getPlayer(game, 2, 2); as playerT2P2 ) {
     <a class="player player2" [routerLink]="['/player', playerT2P2?.slug]">
-      {{ playerT2P2.fullName }} @if (this.getRanking(playerT2P2, game); as
-      ranking) {
+      {{ playerT2P2.fullName }} @if (this.getRanking(playerT2P2, game); as ranking) {
       <span>({{ ranking }})</span>
       }
     </a>

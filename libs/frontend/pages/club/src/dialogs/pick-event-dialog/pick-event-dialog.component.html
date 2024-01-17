@@ -3,9 +3,7 @@
   <mat-dialog-content [formGroup]="selectForm">
     <!-- select dropdown events -->
     <mat-form-field>
-      <mat-label>{{
-        'all.pickers.select-event-competition' | translate
-      }}</mat-label>
+      <mat-label>{{ 'all.pickers.select-event-competition' | translate }}</mat-label>
       <mat-select formControlName="event">
         @for (event of this.events; track event) {
           <mat-option [value]="event.id">
@@ -15,24 +13,16 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field>
-      <mat-label>{{
-        'all.pickers.select-subevent-competition' | translate
-      }}</mat-label>
+      <mat-label>{{ 'all.pickers.select-subevent-competition' | translate }}</mat-label>
       <mat-select formControlName="subEvent">
         @for (subEvent of this.subEvents; track subEvent) {
-          <mat-option [value]="subEvent.id">
-            {{ subEvent?.name }} {{ subEvent?.eventType }}
-          </mat-option>
+          <mat-option [value]="subEvent.id"> {{ subEvent?.name }} {{ subEvent?.eventType }} </mat-option>
         }
       </mat-select>
     </mat-form-field>
   </mat-dialog-content>
   <mat-dialog-actions>
-    <button
-      mat-raised-button
-      color="primary"
-      [mat-dialog-close]="this.selectForm.value"
-    >
+    <button mat-raised-button color="primary" [mat-dialog-close]="this.selectForm.value">
       {{ 'all.button.create' | translate }}
     </button>
     <button mat-button>

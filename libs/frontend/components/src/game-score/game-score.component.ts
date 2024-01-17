@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,23 +8,14 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'badman-game-score',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    TranslateModule,
-  ],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './game-score.component.html',
   styleUrls: ['./game-score.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameScoreComponentComponent implements OnInit {
   readonly separators = '[-_,=/]';
-  readonly pattern =
-    '^([1-9]|[1-2][0-9]|30)[\\s]*' +
-    this.separators +
-    '[\\s]*([1-9]|[1-2][0-9]|30)$';
+  readonly pattern = '^([1-9]|[1-2][0-9]|30)[\\s]*' + this.separators + '[\\s]*([1-9]|[1-2][0-9]|30)$';
 
   @Input()
   gameScoreForm?: FormGroup;
@@ -62,14 +48,9 @@ export class GameScoreComponentComponent implements OnInit {
     }
 
     // set the value of the input field
-    if (
-      this.gameScoreForm?.get('team1')?.value &&
-      this.gameScoreForm?.get('team2')?.value
-    ) {
+    if (this.gameScoreForm?.get('team1')?.value && this.gameScoreForm?.get('team2')?.value) {
       this.inputValue?.setValue(
-        `${this.gameScoreForm?.get('team1')?.value} - ${this.gameScoreForm?.get(
-          'team2',
-        )?.value}`,
+        `${this.gameScoreForm?.get('team1')?.value} - ${this.gameScoreForm?.get('team2')?.value}`,
       );
     }
   }
@@ -109,9 +90,7 @@ export class GameScoreComponentComponent implements OnInit {
     }
 
     this.inputValue?.setValue(
-      `${this.gameScoreForm?.get('team1')?.value} - ${this.gameScoreForm?.get(
-        'team2',
-      )?.value}`,
+      `${this.gameScoreForm?.get('team1')?.value} - ${this.gameScoreForm?.get('team2')?.value}`,
     );
 
     if (team1 > team2) {

@@ -2,10 +2,7 @@ import { Logtail } from '@logtail/node';
 import { LogtailTransport } from '@logtail/winston';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import {
-  utilities as nestWinstonModuleUtilities,
-  WinstonModule,
-} from 'nest-winston';
+import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston';
 import { ILoggingConfig } from './interfaces/logging.config';
 import { ConfigType } from '@badman/utils';
@@ -28,17 +25,15 @@ export class LoggingModule {
       return info;
     });
 
-    const logFileFormat = format.printf(
-      ({ level, message, timestamp, stack }) => {
-        let resultMessage = `${timestamp} ${level}: ${message}`;
+    const logFileFormat = format.printf(({ level, message, timestamp, stack }) => {
+      let resultMessage = `${timestamp} ${level}: ${message}`;
 
-        if (stack) {
-          resultMessage += `${JSON.stringify(stack)}`;
-        }
+      if (stack) {
+        resultMessage += `${JSON.stringify(stack)}`;
+      }
 
-        return resultMessage;
-      },
-    );
+      return resultMessage;
+    });
 
     return {
       module: LoggingModule,
@@ -68,13 +63,10 @@ export class LoggingModule {
                 transports: [
                   new LogtailTransport(logtail),
                   new transports.Console({
-                    format: nestWinstonModuleUtilities.format.nestLike(
-                      'Badman',
-                      {
-                        colors: true,
-                        prettyPrint: true,
-                      },
-                    ),
+                    format: nestWinstonModuleUtilities.format.nestLike('Badman', {
+                      colors: true,
+                      prettyPrint: true,
+                    }),
                   }),
                 ],
               };

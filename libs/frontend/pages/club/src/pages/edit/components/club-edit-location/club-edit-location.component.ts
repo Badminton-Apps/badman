@@ -1,19 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -26,10 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-  BadmanBlockModule,
-  HasClaimComponent,
-} from '@badman/frontend-components';
+import { BadmanBlockModule, HasClaimComponent } from '@badman/frontend-components';
 import { Club, Location } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -132,9 +116,7 @@ export class ClubEditLocationComponent implements OnInit {
   }[] = [];
 
   ngOnInit(): void {
-    const availibilty = this.location.availibilities?.find(
-      (availibility) => availibility.season === this.season,
-    );
+    const availibilty = this.location.availibilities?.find((availibility) => availibility.season === this.season);
 
     this.days = this.formBuilder.array(
       availibilty?.days?.map((day) =>

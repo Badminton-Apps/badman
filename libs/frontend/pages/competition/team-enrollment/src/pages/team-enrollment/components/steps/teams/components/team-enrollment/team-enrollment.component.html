@@ -22,9 +22,7 @@
   </div>
   <div class="information">
     @if (validation?.minBaseIndex) {
-      <div>
-        Min/max {{ validation?.minBaseIndex }} - {{ validation?.maxBaseIndex }}
-      </div>
+      <div>Min/max {{ validation?.minBaseIndex }} - {{ validation?.maxBaseIndex }}</div>
     }
     <div>Team: {{ validation?.teamIndex }}</div>
     <div>Base: {{ validation?.baseIndex }}</div>
@@ -33,9 +31,7 @@
         <ul class="error-list">
           @for (error of validation?.errors; track error) {
             <li>
-              <badman-enrollment-message
-                [validation]="error"
-              ></badman-enrollment-message>
+              <badman-enrollment-message [validation]="error"></badman-enrollment-message>
             </li>
           }
         </ul>
@@ -44,17 +40,12 @@
         <ul class="warning-list">
           @for (warnings of validation?.warnings; track warnings) {
             <li>
-              <badman-enrollment-message
-                [validation]="warnings"
-              ></badman-enrollment-message>
+              <badman-enrollment-message [validation]="warnings"></badman-enrollment-message>
             </li>
           }
         </ul>
       }
-      @if (
-        (validation?.errors?.length ?? 0) === 0 &&
-        (validation?.warnings?.length ?? 0) === 0
-      ) {
+      @if ((validation?.errors?.length ?? 0) === 0 && (validation?.warnings?.length ?? 0) === 0) {
         <div class="no-errors">
           {{ 'all.competition.team-assembly.errors.none' | translate }}
         </div>

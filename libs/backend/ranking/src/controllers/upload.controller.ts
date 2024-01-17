@@ -20,20 +20,10 @@ export class UploadRankingController {
     const mappedData = await this._readFile(file, 10);
 
     // filter out competition members
-    const filteredData = mappedData.filter(
-      (row) => row.role === 'Competitiespeler',
-    );
+    const filteredData = mappedData.filter((row) => row.role === 'Competitiespeler');
 
     // Get headers
-    const headerRow = [
-      'memberId',
-      'role',
-      'firstName',
-      'lastName',
-      'single',
-      'doubles',
-      'mixed',
-    ];
+    const headerRow = ['memberId', 'role', 'firstName', 'lastName', 'single', 'doubles', 'mixed'];
     // Return the first 10 rows
     return [headerRow, ...filteredData];
   }
@@ -43,22 +33,14 @@ export class UploadRankingController {
   async process(@File() file: MultipartFile, @Res() res: FastifyReply) {
     const mappedData = await this._readFile(file);
 
-    const updateCompStatus =
-      (file.fields['updateCompStatus'] as MultipartValue)?.value === 'true';
-    const updateRanking =
-      (file.fields['updateRanking'] as MultipartValue)?.value === 'true';
-    const rankingDate = moment(
-      (file.fields['rankingDate'] as MultipartValue)?.value as string,
-    );
-    const removeAllRanking =
-      (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
-    const updatePossible =
-      (file.fields['updatePossible'] as MultipartValue)?.value === 'true';
-    const rankingSystemId = (file.fields['rankingSystemId'] as MultipartValue)
-      ?.value as string;
+    const updateCompStatus = (file.fields['updateCompStatus'] as MultipartValue)?.value === 'true';
+    const updateRanking = (file.fields['updateRanking'] as MultipartValue)?.value === 'true';
+    const rankingDate = moment((file.fields['rankingDate'] as MultipartValue)?.value as string);
+    const removeAllRanking = (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
+    const updatePossible = (file.fields['updatePossible'] as MultipartValue)?.value === 'true';
+    const rankingSystemId = (file.fields['rankingSystemId'] as MultipartValue)?.value as string;
 
-    const createNewPlayers =
-      (file.fields['createNewPlayers'] as MultipartValue)?.value === 'true';
+    const createNewPlayers = (file.fields['createNewPlayers'] as MultipartValue)?.value === 'true';
 
     if (updateRanking && !rankingDate.isValid()) {
       throw new Error('Invalid ranking date');
@@ -81,10 +63,7 @@ export class UploadRankingController {
       });
   }
 
-  private async _readFile(
-    file: MultipartFile,
-    rows: number | undefined = undefined,
-  ) {
+  private async _readFile(file: MultipartFile, rows: number | undefined = undefined) {
     const workbook = XLSX.read(await file.toBuffer(), {
       dense: true,
       sheetRows: rows,
@@ -103,17 +82,12 @@ export class UploadRankingController {
     const players = new Map<string, MembersRolePerGroupData>();
 
     workbook.SheetNames.forEach((sheetName) => {
-      const data = XLSX.utils.sheet_to_json<bbfRating>(
-        workbook.Sheets[sheetName],
-      );
+      const data = XLSX.utils.sheet_to_json<bbfRating>(workbook.Sheets[sheetName]);
       for (const row of data) {
         let player = players.get(row['P1Memberid']);
 
         if (!player) {
-          const names = [
-            row['P1Lastname']?.trim(),
-            row['P1Middlename']?.trim(),
-          ]?.filter((name) => !!name);
+          const names = [row['P1Lastname']?.trim(), row['P1Middlename']?.trim()]?.filter((name) => !!name);
 
           player = {
             memberId: row['P1Memberid'],
@@ -154,11 +128,9 @@ export class UploadRankingController {
 
     return data?.map((row) => {
       // combine lastname 2, middlename and lastname to a single last name
-      const names = [
-        row['lastname']?.trim(),
-        row['middlename']?.trim(),
-        row['lastname2']?.trim(),
-      ]?.filter((name) => !!name);
+      const names = [row['lastname']?.trim(), row['middlename']?.trim(), row['lastname2']?.trim()]?.filter(
+        (name) => !!name,
+      );
 
       return {
         memberId: row['memberid'],

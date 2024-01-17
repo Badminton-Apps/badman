@@ -3,11 +3,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -15,11 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { InMemoryCache } from '@apollo/client/cache';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
-import {
-  DrawCompetition,
-  EventCompetition,
-  SubEventCompetition,
-} from '@badman/frontend-models';
+import { DrawCompetition, EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -71,10 +63,7 @@ export class RisersFallersDialogComponent implements OnInit {
         subEventCompetitions: SubEventCompetition[];
       }>({
         query: gql`
-          query GetSubEventsWithRisersAndFallers(
-            $where: JSONObject!
-            $order: [SortOrderType!]
-          ) {
+          query GetSubEventsWithRisersAndFallers($where: JSONObject!, $order: [SortOrderType!]) {
             subEventCompetitions(where: $where, order: $order) {
               id
               name
@@ -107,37 +96,28 @@ export class RisersFallersDialogComponent implements OnInit {
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
-        const subEvents = result.data.subEventCompetitions?.map(
-          (subEvent) => new SubEventCompetition(subEvent),
-        );
+        const subEvents = result.data.subEventCompetitions?.map((subEvent) => new SubEventCompetition(subEvent));
 
-        const drawCompetitions = subEvents
-          .map((subEvent) => subEvent.drawCompetitions)
-          .flat() as DrawCompetition[];
+        const drawCompetitions = subEvents.map((subEvent) => subEvent.drawCompetitions).flat() as DrawCompetition[];
 
         this.dataSource = new MatTableDataSource(drawCompetitions);
-        this.originalData = drawCompetitions.map(
-          (drawCompetition) => ({ ...drawCompetition }) as DrawCompetition,
-        );
+        this.originalData = drawCompetitions.map((drawCompetition) => ({ ...drawCompetition }) as DrawCompetition);
       });
   }
 
   save() {
     this.loading = true;
     // find all draw competitions with changed risers/fallers
-    const changedDrawCompetitions = this.dataSource.data.filter(
-      (drawCompetition) => {
-        const originalDrawCompetition = this.originalData.find(
-          (originalDrawCompetition) =>
-            originalDrawCompetition.id === drawCompetition.id,
-        );
+    const changedDrawCompetitions = this.dataSource.data.filter((drawCompetition) => {
+      const originalDrawCompetition = this.originalData.find(
+        (originalDrawCompetition) => originalDrawCompetition.id === drawCompetition.id,
+      );
 
-        return (
-          originalDrawCompetition?.risers !== drawCompetition.risers ||
-          originalDrawCompetition?.fallers !== drawCompetition.fallers
-        );
-      },
-    );
+      return (
+        originalDrawCompetition?.risers !== drawCompetition.risers ||
+        originalDrawCompetition?.fallers !== drawCompetition.fallers
+      );
+    });
 
     const obs = changedDrawCompetitions.map((drawCompetition) => {
       return this.apollo.mutate<{

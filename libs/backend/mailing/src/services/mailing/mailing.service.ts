@@ -30,8 +30,7 @@ export class MailingService {
     private compileService: CompileService,
     private configService: ConfigService<ConfigType>,
   ) {
-    this.subjectPrefix =
-      this.configService.get<string>('MAIL_SUBJECT_PREFIX') || '';
+    this.subjectPrefix = this.configService.get<string>('MAIL_SUBJECT_PREFIX') || '';
   }
 
   async sendTestMail() {
@@ -76,8 +75,7 @@ export class MailingService {
       ],
     });
 
-    const eventCompetition = event?.subEventCompetition
-      ?.eventCompetition as EventCompetition;
+    const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
 
     moment.locale('nl-be');
     const options = {
@@ -134,8 +132,7 @@ export class MailingService {
       ],
     });
 
-    const eventCompetition = event?.subEventCompetition
-      ?.eventCompetition as EventCompetition;
+    const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
     moment.locale('nl-be');
     const options = {
       from: 'info@badman.app',
@@ -195,8 +192,7 @@ export class MailingService {
       ],
     });
 
-    const eventCompetition = event?.subEventCompetition
-      ?.eventCompetition as EventCompetition;
+    const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
 
     // mail to captain
     moment.locale('nl-be');
@@ -251,8 +247,7 @@ export class MailingService {
 
     const location = await encounter.getLocation();
 
-    const eventCompetition = event?.subEventCompetition
-      ?.eventCompetition as EventCompetition;
+    const eventCompetition = event?.subEventCompetition?.eventCompetition as EventCompetition;
 
     //  mail to reponsible
     moment.locale('nl-be');
@@ -391,9 +386,7 @@ export class MailingService {
     const options = {
       from: 'info@badman.app',
       to: to.email,
-      subject: `Synchronisatie ${event.name} was ${
-        success ? 'succesvol' : 'niet succesvol'
-      }`,
+      subject: `Synchronisatie ${event.name} was ${success ? 'succesvol' : 'niet succesvol'}`,
       template: 'syncFinished',
       context: {
         event: event.toJSON(),
@@ -537,15 +530,11 @@ export class MailingService {
           return;
         }
         const to = options.to ?? [];
-        const cc = (
-          Array.isArray(options.cc) ? options.cc : [options.cc] ?? []
-        ) as string[];
+        const cc = (Array.isArray(options.cc) ? options.cc : [options.cc] ?? []) as string[];
         options.to = ['glenn.latomme@gmail.com'];
         options.cc = [];
 
-        options.subject += ` overwritten email original(to: ${to?.join(
-          ',',
-        )}, cc: ${cc.join(',')}) `;
+        options.subject += ` overwritten email original(to: ${to?.join(',')}, cc: ${cc.join(',')}) `;
       }
 
       await this._transporter?.sendMail(options);

@@ -1,16 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import {
-  DrawCompetition,
-  DrawTournament,
-  Location,
-} from '@badman/frontend-models';
+import { DrawCompetition, DrawTournament, Location } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { NgMapsGoogleModule } from '@ng-maps/google';

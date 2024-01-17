@@ -2,12 +2,7 @@
   <div title>{{'all.jobs.title' | translate}}</div>
 
   <div actions>
-    <button
-      (click)="$event.stopPropagation()"
-      mat-icon-button
-      [matMenuTriggerFor]="menu"
-      title="more options"
-    >
+    <button (click)="$event.stopPropagation()" mat-icon-button [matMenuTriggerFor]="menu" title="more options">
       <mat-icon>more_vert</mat-icon>
     </button>
 
@@ -25,9 +20,7 @@
         The actual rendered columns are set as a property on the row definition" -->
 
   <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>
-      {{ 'all.input.name' | translate }}
-    </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'all.input.name' | translate }}</th>
     <td mat-cell *matCellDef="let element">
       <a [routerLink]="[element?.id]">{{ element.name }}</a>
     </td>
@@ -40,16 +33,12 @@
 
   <ng-container matColumnDef="lastRun">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Finish last run</th>
-    <td mat-cell *matCellDef="let element">
-      {{ element.lastRun | amCalendar }}
-    </td>
+    <td mat-cell *matCellDef="let element">{{ element.lastRun | amCalendar }}</td>
   </ng-container>
 
   <ng-container matColumnDef="nextRun">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Next run</th>
-    <td mat-cell *matCellDef="let element">
-      {{ element.nextRun | amCalendar }}
-    </td>
+    <td mat-cell *matCellDef="let element">{{ element.nextRun | amCalendar }}</td>
   </ng-container>
 
   <ng-container matColumnDef="running">
@@ -67,9 +56,7 @@
       <mat-menu #rankingSystemMenu="matMenu">
         <button mat-menu-item (click)="openDialog(element)">Queue Job</button>
 
-        <button mat-menu-item [routerLink]="[element.id, 'edit']">
-          {{ 'all.button.edit' | translate }}
-        </button>
+        <button mat-menu-item [routerLink]="[element.id, 'edit']">{{ 'all.button.edit' | translate }}</button>
       </mat-menu>
     </td>
   </ng-container>
@@ -109,45 +96,25 @@
       <div class="date">
         <mat-form-field>
           <mat-label>Start date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="pickerFrom"
-            [(ngModel)]="data.meta.arguments.fromDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="pickerFrom"
-          ></mat-datepicker-toggle>
+          <input matInput [matDatepicker]="pickerFrom" [(ngModel)]="data.meta.arguments.fromDate" />
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
           <mat-datepicker #pickerFrom></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
           <mat-label>End date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="pickerTo"
-            [(ngModel)]="data.meta.arguments.toDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="pickerTo"
-          ></mat-datepicker-toggle>
+          <input matInput [matDatepicker]="pickerTo" [(ngModel)]="data.meta.arguments.toDate" />
+          <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
           <mat-datepicker #pickerTo></mat-datepicker>
         </mat-form-field>
       </div>
 
       <div class="calculate">
-        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePoints"
-          >Calculate points</mat-slide-toggle
-        >
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePoints">Calculate points</mat-slide-toggle>
         <!-- caption -->
 
-        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePlaces"
-          >Calculate places</mat-slide-toggle
-        >
-        <mat-slide-toggle [(ngModel)]="data.meta.arguments.recalculatePoints"
-          >Re-Calculate points</mat-slide-toggle
-        >
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePlaces">Calculate places</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.recalculatePoints">Re-Calculate points</mat-slide-toggle>
       </div>
     </div>
   </mat-dialog-content>

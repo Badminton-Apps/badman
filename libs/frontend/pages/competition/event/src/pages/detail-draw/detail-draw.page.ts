@@ -1,11 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -15,11 +9,7 @@ import {
   StandingComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import {
-  DrawCompetition,
-  EventCompetition,
-  Team,
-} from '@badman/frontend-models';
+import { DrawCompetition, EventCompetition, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -72,10 +62,7 @@ export class DetailDrawCompetitionComponent implements OnInit {
         type: 'website',
         keywords: ['event', 'competition', 'badminton'],
       });
-      this.breadcrumbsService.set(
-        '@eventCompetition',
-        this.eventCompetition.name || '',
-      );
+      this.breadcrumbsService.set('@eventCompetition', this.eventCompetition.name || '');
       this.breadcrumbsService.set('@drawCompetition', drawCompetitionName);
 
       this.teams = this.drawCompetition?.eventEntries?.map((e) => {

@@ -1,12 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
@@ -60,9 +55,7 @@ export class TeamPlayersComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormArray<
-        FormControl<TeamPlayer>
-      >;
+      this.control = this.group?.get(this.controlName) as FormArray<FormControl<TeamPlayer>>;
     }
 
     if (!this.control) {
@@ -80,8 +73,7 @@ export class TeamPlayersComponent implements OnInit {
     }
 
     if (this.group?.value.type) {
-      this.wherePlayer['gender'] =
-        this.group?.value.type === 'MX' ? undefined : this.group?.value.type;
+      this.wherePlayer['gender'] = this.group?.value.type === 'MX' ? undefined : this.group?.value.type;
     }
   }
 
@@ -94,16 +86,12 @@ export class TeamPlayersComponent implements OnInit {
     }
 
     if (this.control && newPlayer != null) {
-      this.control.push(
-        new FormControl<TeamPlayer>(newPlayer) as FormControl<TeamPlayer>,
-      );
+      this.control.push(new FormControl<TeamPlayer>(newPlayer) as FormControl<TeamPlayer>);
     }
   }
 
   async playerRemoved(player: TeamPlayer) {
-    const index = this.control?.value.findIndex(
-      (p: TeamPlayer) => p.id === player.id,
-    );
+    const index = this.control?.value.findIndex((p: TeamPlayer) => p.id === player.id);
 
     if (index !== undefined && index !== null && index >= 0) {
       this.control?.removeAt(index);
@@ -112,9 +100,7 @@ export class TeamPlayersComponent implements OnInit {
 
   playerMembershipTypeChanged(player: TeamPlayer, type: MatSelectChange) {
     // find the player in the array and update the type
-    const index = this.group
-      ?.get('players')
-      ?.value.findIndex((p: TeamPlayer) => p.id === player.id);
+    const index = this.group?.get('players')?.value.findIndex((p: TeamPlayer) => p.id === player.id);
 
     const fc = this.group?.get('players');
 

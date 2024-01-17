@@ -16,8 +16,5 @@
 </badman-page-header>
 
 @if(this.drawTournament) {
-<badman-standing
-  [type]="'players'"
-  [entries]="drawTournament.eventEntries!"
-></badman-standing>
+<badman-standing [type]="'players'" [entries]="drawTournament.eventEntries!"></badman-standing>
 }

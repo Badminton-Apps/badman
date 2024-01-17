@@ -1,19 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,19 +11,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PlayerSearchComponent } from '@badman/frontend-components';
-import {
-  EntryCompetitionPlayer,
-  Player,
-  RankingPlace,
-  RankingSystem,
-  Team,
-  TeamPlayer,
-} from '@badman/frontend-models';
-import {
-  TeamMembershipType,
-  getCurrentSeason,
-  getIndexFromPlayers,
-} from '@badman/utils';
+import { EntryCompetitionPlayer, Player, RankingPlace, RankingSystem, Team, TeamPlayer } from '@badman/frontend-models';
+import { TeamMembershipType, getCurrentSeason, getIndexFromPlayers } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -114,40 +90,31 @@ export class TeamComponent implements OnInit {
   ngOnInit(): void {
     this.checkTeam();
 
-    this.team.valueChanges
-      .pipe(takeUntil(this.destroy$), startWith(this.team.value))
-      .subscribe(() => {
-        this.expanded.team = this.team?.value?.link == null ?? true;
-        if (this.team?.value?.type && this.team?.value?.players) {
-          this.teamIndex = getIndexFromPlayers(
-            this.team.value.type,
-            this.team.value.players?.map((p) => ({
-              id: p.id,
-              gender: p.gender,
-              single: p.rankingPlaces?.[0]?.single ?? 12,
-              double: p.rankingPlaces?.[0]?.double ?? 12,
-              mix: p.rankingPlaces?.[0]?.mix ?? 12,
-            })),
-          );
-        }
-      });
+    this.team.valueChanges.pipe(takeUntil(this.destroy$), startWith(this.team.value)).subscribe(() => {
+      this.expanded.team = this.team?.value?.link == null ?? true;
+      if (this.team?.value?.type && this.team?.value?.players) {
+        this.teamIndex = getIndexFromPlayers(
+          this.team.value.type,
+          this.team.value.players?.map((p) => ({
+            id: p.id,
+            gender: p.gender,
+            single: p.rankingPlaces?.[0]?.single ?? 12,
+            double: p.rankingPlaces?.[0]?.double ?? 12,
+            mix: p.rankingPlaces?.[0]?.mix ?? 12,
+          })),
+        );
+      }
+    });
 
-    this.basePlayers.valueChanges
-      .pipe(takeUntil(this.destroy$), startWith(this.basePlayers.value))
-      .subscribe(() => {
-        if (this.basePlayers.value && this.team?.value?.type) {
-          this.baseIndex = getIndexFromPlayers(
-            this.team.value.type,
-            this.basePlayers.value,
-          );
-        }
-      });
+    this.basePlayers.valueChanges.pipe(takeUntil(this.destroy$), startWith(this.basePlayers.value)).subscribe(() => {
+      if (this.basePlayers.value && this.team?.value?.type) {
+        this.baseIndex = getIndexFromPlayers(this.team.value.type, this.basePlayers.value);
+      }
+    });
   }
 
   removePlayerFromTeam(player: Player) {
-    const newPlayers = this.team.value.players?.filter(
-      (p) => p.id !== player.id,
-    );
+    const newPlayers = this.team.value.players?.filter((p) => p.id !== player.id);
 
     this.team.value.players = newPlayers;
     this.team.patchValue(this.team.value);
@@ -197,11 +164,7 @@ export class TeamComponent implements OnInit {
       mix: ranking.data.rankingPlaces?.[0]?.mix ?? 12,
     } as EntryCompetitionPlayer;
 
-    this.basePlayers.push(
-      this.formBuilder.control(
-        newPlayer,
-      ) as FormControl<EntryCompetitionPlayer>,
-    );
+    this.basePlayers.push(this.formBuilder.control(newPlayer) as FormControl<EntryCompetitionPlayer>);
 
     this.checkTeam();
   }
@@ -221,13 +184,9 @@ export class TeamComponent implements OnInit {
     this.hasWarning = false;
     this.warningMessage = '';
 
-    this.baseCount = this.team.value.players?.filter(
-      (p) => p.membershipType === TeamMembershipType.REGULAR,
-    ).length;
+    this.baseCount = this.team.value.players?.filter((p) => p.membershipType === TeamMembershipType.REGULAR).length;
 
-    this.backupCount = this.team.value.players?.filter(
-      (p) => p.membershipType === TeamMembershipType.BACKUP,
-    ).length;
+    this.backupCount = this.team.value.players?.filter((p) => p.membershipType === TeamMembershipType.BACKUP).length;
 
     // check if all required fields are set (captainId, preferredDay, prefferdTime, email, phone)
     const warnings = [];

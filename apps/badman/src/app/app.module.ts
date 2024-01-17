@@ -1,10 +1,4 @@
-import {
-  APP_ID,
-  inject,
-  isDevMode,
-  NgModule,
-  SecurityContext,
-} from '@angular/core';
+import { APP_ID, inject, isDevMode, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
 import { GraphQLModule } from '@badman/frontend-graphql';
@@ -48,78 +42,64 @@ import { RANKING_CONFIG } from '@badman/frontend-ranking';
 const APP_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('@badman/frontend-components').then((m) => m.LandingComponent),
+    loadComponent: () => import('@badman/frontend-components').then((m) => m.LandingComponent),
     data: {
       animation: 'landing',
     },
   },
   {
     path: 'policy',
-    loadComponent: () =>
-      import('@badman/frontend-components').then(
-        (m) => m.PrivacyPolicyComponent,
-      ),
+    loadComponent: () => import('@badman/frontend-components').then((m) => m.PrivacyPolicyComponent),
     data: {
       animation: 'landing',
     },
   },
   {
     path: 'club',
-    loadChildren: () =>
-      import('@badman/frontend-club').then((m) => m.ClubModule),
+    loadChildren: () => import('@badman/frontend-club').then((m) => m.ClubModule),
     data: {
       animation: 'club',
     },
   },
   {
     path: 'player',
-    loadChildren: () =>
-      import('@badman/frontend-player').then((m) => m.PlayerModule),
+    loadChildren: () => import('@badman/frontend-player').then((m) => m.PlayerModule),
     data: {
       animation: 'player',
     },
   },
   {
     path: 'ranking',
-    loadChildren: () =>
-      import('@badman/frontend-ranking').then((m) => m.RankingModule),
+    loadChildren: () => import('@badman/frontend-ranking').then((m) => m.RankingModule),
     data: {
       animation: 'ranking',
     },
   },
   {
     path: 'competition',
-    loadChildren: () =>
-      import('@badman/frontend-competition').then((m) => m.CompetitionModule),
+    loadChildren: () => import('@badman/frontend-competition').then((m) => m.CompetitionModule),
     data: {
       breadcrumb: 'all.competition.title',
     },
   },
   {
     path: 'tournament',
-    loadChildren: () =>
-      import('@badman/frontend-tournament').then((m) => m.TournamentModule),
+    loadChildren: () => import('@badman/frontend-tournament').then((m) => m.TournamentModule),
     data: {
       breadcrumb: 'all.tournament.title',
     },
   },
   {
     path: 'notifications',
-    loadChildren: () =>
-      import('@badman/frontend-notifications').then(
-        (m) => m.NotificationsModule,
-      ),
+    loadChildren: () => import('@badman/frontend-notifications').then((m) => m.NotificationsModule),
   },
   {
     path: 'general',
-    loadChildren: () =>
-      import('@badman/frontend-general').then((m) => m.GeneralModule),
+    loadChildren: () => import('@badman/frontend-general').then((m) => m.GeneralModule),
   },
   {
     path: 'jobs',
-    loadChildren: () =>
-      import('@badman/frontend-jobs').then((m) => m.JobModule),
+    loadChildren: () => import('@badman/frontend-jobs').then((m) => m.JobModule),
   },
 ];
 @NgModule({
@@ -138,8 +118,7 @@ const APP_ROUTES: Routes = [
       useRefreshTokens: true,
       useRefreshTokensFallback: true,
       authorizationParams: {
-        redirect_uri:
-          typeof window !== 'undefined' ? window.location.origin : '',
+        redirect_uri: typeof window !== 'undefined' ? window.location.origin : '',
         audience: 'ranking-simulation',
       },
       httpInterceptor: {

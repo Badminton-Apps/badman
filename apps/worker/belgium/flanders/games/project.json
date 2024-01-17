@@ -49,9 +49,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/apps/worker/belgium/flanders/games"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/apps/worker/belgium/flanders/games"],
       "options": {
         "jestConfig": "apps/worker/belgium/flanders/games/jest.config.js"
       }

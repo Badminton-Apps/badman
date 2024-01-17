@@ -2,9 +2,7 @@
   <mat-label>Select country</mat-label>
   <mat-select [formControlName]="controlName">
     @for (country of countries; track country) {
-      <mat-option [value]="country">{{
-        'all.countries.' + country + '.name' | translate
-      }}</mat-option>
+      <mat-option [value]="country">{{ 'all.countries.' + country + '.name' | translate }}</mat-option>
     }
   </mat-select>
 </mat-form-field>

@@ -35,18 +35,10 @@
     <mat-checkbox [(ngModel)]="removeAllRanking"
       >{{'all.ranking.upload.remove-current-ranking' | translate}}</mat-checkbox
     >
-    <mat-checkbox [(ngModel)]="competitionStatus"
-      >{{'all.ranking.upload.comp-status' | translate}}</mat-checkbox
-    >
-    <mat-checkbox [(ngModel)]="updateRanking"
-      >{{'all.ranking.upload.update-ranking' | translate}}</mat-checkbox
-    >
-    <mat-checkbox [(ngModel)]="createNewPlayers"
-      >{{'all.ranking.upload.create-new-players' | translate}}</mat-checkbox
-    >
-    <mat-checkbox [(ngModel)]="updatePossible"
-      >{{'all.ranking.upload.update-possible' | translate}}</mat-checkbox
-    >
+    <mat-checkbox [(ngModel)]="competitionStatus">{{'all.ranking.upload.comp-status' | translate}}</mat-checkbox>
+    <mat-checkbox [(ngModel)]="updateRanking">{{'all.ranking.upload.update-ranking' | translate}}</mat-checkbox>
+    <mat-checkbox [(ngModel)]="createNewPlayers">{{'all.ranking.upload.create-new-players' | translate}}</mat-checkbox>
+    <mat-checkbox [(ngModel)]="updatePossible">{{'all.ranking.upload.update-possible' | translate}}</mat-checkbox>
   </div>
   <h3>{{'all.ranking.upload.preview' | translate}}</h3>
   <table mat-table [dataSource]="previewData">

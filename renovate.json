@@ -26,13 +26,7 @@
     {
       "groupName": "jest monorepo",
       "matchSourceUrls": ["https://github.com/kulshekhar/ts-jest"],
-      "matchPackageNames": [
-        "@types/jest",
-        "jest",
-        "jest-environment-jsdom",
-        "jest-preset-angular",
-        "ts-jest"
-      ]
+      "matchPackageNames": ["@types/jest", "jest", "jest-environment-jsdom", "jest-preset-angular", "ts-jest"]
     },
     {
       "extends": "monorepo:angular",

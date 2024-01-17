@@ -40,9 +40,7 @@ import { ConfigType } from '@badman/utils';
         const plugins = [];
 
         if (process.env.NODE_ENV !== 'production') {
-          plugins.push(
-            ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-          );
+          plugins.push(ApolloServerPluginLandingPageLocalDefault({ footer: false }));
         } else if (process.env.NODE_ENV === 'production') {
           plugins.push(
             ApolloServerPluginLandingPageProductionDefault({

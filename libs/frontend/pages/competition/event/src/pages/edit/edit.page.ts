@@ -1,20 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  OnInit,
-  Signal,
-  TemplateRef,
-  inject,
-} from '@angular/core';
+import { Component, Injector, OnInit, Signal, TemplateRef, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -173,20 +160,12 @@ export class EditPageComponent implements OnInit {
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),
-      season: new FormControl(event.season, [
-        Validators.required,
-        Validators.min(2000),
-        Validators.max(3000),
-      ]),
+      season: new FormControl(event.season, [Validators.required, Validators.min(2000), Validators.max(3000)]),
       contactEmail: new FormControl(event.contactEmail, Validators.required),
-      checkEncounterForFilledIn: new FormControl(
-        event.checkEncounterForFilledIn,
-      ),
+      checkEncounterForFilledIn: new FormControl(event.checkEncounterForFilledIn),
       teamMatcher: new FormControl(event.teamMatcher),
 
-      usedRankingUnit: new FormControl(event.usedRankingUnit, [
-        Validators.required,
-      ]),
+      usedRankingUnit: new FormControl(event.usedRankingUnit, [Validators.required]),
       usedRankingAmount: new FormControl(event.usedRankingAmount, [
         Validators.required,
         Validators.min(1),
@@ -236,10 +215,7 @@ export class EditPageComponent implements OnInit {
               },
             })
             .subscribe((r) => {
-              this.router.navigate([
-                '/competition',
-                r.data?.copyEventCompetition?.slug,
-              ]);
+              this.router.navigate(['/competition', r.data?.copyEventCompetition?.slug]);
             });
         }
       });
@@ -252,44 +228,35 @@ export class EditPageComponent implements OnInit {
     });
 
     await lastValueFrom(
-      this.apollo.mutate<{ updateEventCompetition: Partial<EventCompetition> }>(
-        {
-          mutation: gql`
-            mutation UpdateEventCompetition(
-              $data: EventCompetitionUpdateInput!
-            ) {
-              updateEventCompetition(data: $data) {
-                id
-              }
+      this.apollo.mutate<{ updateEventCompetition: Partial<EventCompetition> }>({
+        mutation: gql`
+          mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
+            updateEventCompetition(data: $data) {
+              id
             }
-          `,
-          variables: {
-            data: {
+          }
+        `,
+        variables: {
+          data: {
+            id: eventCompetition.id,
+            name: eventCompetition.name,
+            season: eventCompetition.season,
+            contactEmail: eventCompetition.contactEmail,
+            teamMatcher: eventCompetition.teamMatcher,
+            checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
+            exceptions: eventCompetition.exceptions?.filter((e) => e.start && e.end) ?? [],
+            infoEvents: eventCompetition.infoEvents?.filter((e) => e.start && e.end) ?? [],
+          },
+        },
+        refetchQueries: [
+          {
+            query: EVENT_QUERY,
+            variables: {
               id: eventCompetition.id,
-              name: eventCompetition.name,
-              season: eventCompetition.season,
-              contactEmail: eventCompetition.contactEmail,
-              teamMatcher: eventCompetition.teamMatcher,
-              checkEncounterForFilledIn:
-                eventCompetition.checkEncounterForFilledIn,
-              exceptions:
-                eventCompetition.exceptions?.filter((e) => e.start && e.end) ??
-                [],
-              infoEvents:
-                eventCompetition.infoEvents?.filter((e) => e.start && e.end) ??
-                [],
             },
           },
-          refetchQueries: [
-            {
-              query: EVENT_QUERY,
-              variables: {
-                id: eventCompetition.id,
-              },
-            },
-          ],
-        },
-      ),
+        ],
+      }),
     );
 
     this.saved$.next(this.saved$.value + 1);

@@ -38,12 +38,7 @@ export class RankingTableComponent implements OnInit {
   @Input()
   id: string | null = null;
 
-  displayedColumns = [
-    'level',
-    'pointsToGoUp',
-    'pointsToGoDown',
-    'pointsWhenWinningAgainst',
-  ];
+  displayedColumns = ['level', 'pointsToGoUp', 'pointsToGoDown', 'pointsWhenWinningAgainst'];
 
   system = this.rankingSystemService.system as Signal<RankingSystem>;
 
@@ -61,22 +56,14 @@ export class RankingTableComponent implements OnInit {
     }
 
     let level = this.system().amountOfLevels ?? 0;
-    return this.system().pointsWhenWinningAgainst?.map(
-      (winning: number, index: number) => {
-        return {
-          level: level--,
-          pointsToGoUp:
-            level !== 0
-              ? Math.round(this.system().pointsToGoUp?.[index] ?? 0)
-              : null,
-          pointsToGoDown:
-            index === 0
-              ? null
-              : Math.round(this.system().pointsToGoDown?.[index - 1] ?? 0),
-          pointsWhenWinningAgainst: Math.round(winning),
-        } as RankingScoreTable;
-      },
-    );
+    return this.system().pointsWhenWinningAgainst?.map((winning: number, index: number) => {
+      return {
+        level: level--,
+        pointsToGoUp: level !== 0 ? Math.round(this.system().pointsToGoUp?.[index] ?? 0) : null,
+        pointsToGoDown: index === 0 ? null : Math.round(this.system().pointsToGoDown?.[index - 1] ?? 0),
+        pointsWhenWinningAgainst: Math.round(winning),
+      } as RankingScoreTable;
+    });
   }) as () => RankingScoreTable[];
 
   _loadRanking(systemId: string | null) {
@@ -104,11 +91,7 @@ export class RankingTableComponent implements OnInit {
           },
         })
         .pipe(
-          transferState(
-            'rankingKey-' + systemId,
-            this.transferState,
-            this.platformId,
-          ),
+          transferState('rankingKey-' + systemId, this.transferState, this.platformId),
           map((result) => {
             if (!result?.data.rankingSystem) {
               throw new Error('No player');

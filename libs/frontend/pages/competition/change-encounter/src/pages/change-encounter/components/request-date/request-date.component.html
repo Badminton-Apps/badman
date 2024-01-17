@@ -10,23 +10,15 @@
   <mat-form-field class="availability">
     <mat-label>{{ 'all.competition.home' | translate }}</mat-label>
     <mat-select formControlName="availabilityHome" required>
-      <mat-option value="POSSIBLE">{{
-        'all.competition.change-encounter.possible' | translate
-      }}</mat-option>
-      <mat-option value="NOT_POSSIBLE">{{
-        'all.competition.change-encounter.not-possible' | translate
-      }}</mat-option>
+      <mat-option value="POSSIBLE">{{ 'all.competition.change-encounter.possible' | translate }}</mat-option>
+      <mat-option value="NOT_POSSIBLE">{{ 'all.competition.change-encounter.not-possible' | translate }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="availability">
     <mat-label>{{ 'all.competition.away' | translate }}</mat-label>
     <mat-select formControlName="availabilityAway" required>
-      <mat-option value="POSSIBLE">{{
-        'all.competition.change-encounter.possible' | translate
-      }}</mat-option>
-      <mat-option value="NOT_POSSIBLE">{{
-        'all.competition.change-encounter.not-possible' | translate
-      }}</mat-option>
+      <mat-option value="POSSIBLE">{{ 'all.competition.change-encounter.possible' | translate }}</mat-option>
+      <mat-option value="NOT_POSSIBLE">{{ 'all.competition.change-encounter.not-possible' | translate }}</mat-option>
     </mat-select>
   </mat-form-field>
   <div class="actions">
@@ -47,10 +39,7 @@
     ) {
       <div
         class="changed-location"
-        [matTooltip]="
-          'all.competition.change-encounter.warnings.location-change'
-            | translate
-        "
+        [matTooltip]="'all.competition.change-encounter.warnings.location-change' | translate"
       >
         <mat-icon color="warn">warning</mat-icon>
       </div>

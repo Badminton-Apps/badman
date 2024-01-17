@@ -66,15 +66,9 @@
         </button>
         }
       </div>
-      <badman-game-score
-        [gameScoreForm]="$any(cont?.get('set1')?.get('score'))"
-      ></badman-game-score>
-      <badman-game-score
-        [gameScoreForm]="$any(cont?.get('set2')?.get('score'))"
-      ></badman-game-score>
-      <badman-game-score
-        [gameScoreForm]="$any(cont?.get('set3')?.get('score'))"
-      ></badman-game-score>
+      <badman-game-score [gameScoreForm]="$any(cont?.get('set1')?.get('score'))"></badman-game-score>
+      <badman-game-score [gameScoreForm]="$any(cont?.get('set2')?.get('score'))"></badman-game-score>
+      <badman-game-score [gameScoreForm]="$any(cont?.get('set3')?.get('score'))"></badman-game-score>
     </div>
     }
   </ng-container>
@@ -83,12 +77,8 @@
 <!-- menu template for changing the player -->
 <mat-menu #appMenu="matMenu">
   <ng-template matMenuContent let-player="player" let-game="game">
-    <button mat-menu-item (click)="this.openDialog(player, game, 'injured')">
-      Gebleseerd
-    </button>
-    <button mat-menu-item (click)="this.openDialog(player, game, 'quit')">
-      Opgegeven
-    </button>
+    <button mat-menu-item (click)="this.openDialog(player, game, 'injured')">Gebleseerd</button>
+    <button mat-menu-item (click)="this.openDialog(player, game, 'quit')">Opgegeven</button>
     <button mat-menu-item>...</button>
   </ng-template>
 </mat-menu>

@@ -1,19 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-  TransferState,
-  ViewChild,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, TransferState, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -46,12 +33,7 @@ import { BehaviorSubject, lastValueFrom, merge } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 
 const FETCH_TOURNAMENTS = gql`
-  query GetEventsTournament(
-    $where: JSONObject
-    $order: [SortOrderType!]
-    $skip: Int
-    $take: Int
-  ) {
+  query GetEventsTournament($where: JSONObject, $order: [SortOrderType!], $skip: Int, $take: Int) {
     eventTournaments(where: $where, order: $order, skip: $skip, take: $take) {
       count
       rows {
@@ -137,12 +119,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
 
-    merge(
-      this.sort.sortChange,
-      this.paginator.page,
-      this.filter.valueChanges,
-      this.update$,
-    )
+    merge(this.sort.sortChange, this.paginator.page, this.filter.valueChanges, this.update$)
       .pipe(
         startWith({}),
         switchMap(() => {
@@ -239,9 +216,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           }
           return {
             count: result.data.eventTournaments.count,
-            items: result.data.eventTournaments.rows.map(
-              (team) => new EventTournament(team),
-            ),
+            items: result.data.eventTournaments.rows.map((team) => new EventTournament(team)),
           };
         }),
       );
@@ -267,15 +242,9 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       })
       .subscribe(() => {
         this.update$.next(true);
-        this.matSnackBar.open(
-          `Tournament ${tournament.name} is ${
-            offical ? 'official' : 'unofficial'
-          }`,
-          'Close',
-          {
-            duration: 2000,
-          },
-        );
+        this.matSnackBar.open(`Tournament ${tournament.name} is ${offical ? 'official' : 'unofficial'}`, 'Close', {
+          duration: 2000,
+        });
       });
   }
 
@@ -292,9 +261,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    await lastValueFrom(
-      this.jobsService.syncEventById({ id: eventTournament.visualCode }),
-    );
+    await lastValueFrom(this.jobsService.syncEventById({ id: eventTournament.visualCode }));
   }
 
   async addEvent() {
@@ -324,9 +291,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
         this.apollo
           .mutate({
             mutation: gql`
-              mutation UpdateEventTournament(
-                $data: EventTournamentUpdateInput!
-              ) {
+              mutation UpdateEventTournament($data: EventTournamentUpdateInput!) {
                 updateEventTournament(data: $data) {
                   id
                 }
@@ -341,23 +306,16 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
             },
           })
           .subscribe(() => {
-            this.matSnackBar.open(
-              `Tournament ${tournament.name} open/close dates updated`,
-              'Close',
-              {
-                duration: 2000,
-              },
-            );
+            this.matSnackBar.open(`Tournament ${tournament.name} open/close dates updated`, 'Close', {
+              duration: 2000,
+            });
           });
       }
     });
   }
 
   removeEvent(tournament: EventTournament) {
-    const dialogData = new ConfirmDialogModel(
-      'all.tournament.delete.title',
-      'all.tournament.delete.description',
-    );
+    const dialogData = new ConfirmDialogModel('all.tournament.delete.title', 'all.tournament.delete.description');
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',
@@ -384,13 +342,10 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
               query: FETCH_TOURNAMENTS,
               variables: {
                 where: {
-                  official:
-                    this.filter.value?.official == true ? true : undefined,
+                  official: this.filter.value?.official == true ? true : undefined,
                   $or: [
                     {
-                      name: this.filter.value?.name
-                        ? { $iLike: `%${this.filter.value.name}%` }
-                        : undefined,
+                      name: this.filter.value?.name ? { $iLike: `%${this.filter.value.name}%` } : undefined,
                     },
                     {
                       visualCode: this.filter.value?.name,

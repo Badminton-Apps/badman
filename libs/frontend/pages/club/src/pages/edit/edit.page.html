@@ -4,33 +4,20 @@
   }
   <div noPerm>{{ club.name }}</div>
 </badman-has-claim>
-<badman-has-claim
-  [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']"
->
+<badman-has-claim [any]="[club.id + '_edit:role', club.id + '_edit:club', 'edit-any:club']">
   <h2>
     Roles
-    <badman-has-claim
-      [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']"
-    >
-      <badman-add-role
-        (whenRoleAdded)="addRole()"
-        linkType="club"
-        [linkId]="this.club.id!"
-      />
+    <badman-has-claim [any]="[club.id + '_add:role', club.id + '_edit:club', 'edit-any:club']">
+      <badman-add-role (whenRoleAdded)="addRole()" linkType="club" [linkId]="this.club.id!" />
     </badman-has-claim>
   </h2>
   <div class="roles">
     @for ( role of this.roles$ | async; track role) { @if (role.id) {
-    <badman-edit-role
-      [roleId]="role.id"
-      [type]="[securityTypes.CLUB, securityTypes.TEAM]"
-    />
+    <badman-edit-role [roleId]="role.id" [type]="[securityTypes.CLUB, securityTypes.TEAM]" />
     } }
   </div>
 </badman-has-claim>
-<badman-has-claim
-  [any]="['change-base:team', club.id + '_edit:club', 'edit-any:club']"
->
+<badman-has-claim [any]="['change-base:team', club.id + '_edit:club', 'edit-any:club']">
   <mat-divider />
   <mat-form-field>
     <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>

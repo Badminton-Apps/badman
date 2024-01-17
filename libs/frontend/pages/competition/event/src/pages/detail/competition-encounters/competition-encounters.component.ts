@@ -1,15 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  Input,
-  OnInit,
-  PLATFORM_ID,
-  Signal,
-  TransferState,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Injector, Input, OnInit, PLATFORM_ID, Signal, TransferState, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
@@ -17,14 +7,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { RouterModule } from '@angular/router';
-import {
-  LoadingBlockComponent,
-  SelectTeamComponent,
-} from '@badman/frontend-components';
-import {
-  EncounterCompetition,
-  EventCompetition,
-} from '@badman/frontend-models';
+import { LoadingBlockComponent, SelectTeamComponent } from '@badman/frontend-components';
+import { EncounterCompetition, EventCompetition } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
@@ -140,8 +124,7 @@ export class CompetitionEncountersComponent implements OnInit {
             // if the change is not null and not accepted
             encounters?.filter((encounter) =>
               this.filter?.value?.openEncounters ?? false
-                ? encounter.encounterChange?.id != null &&
-                  !encounter.encounterChange?.accepted
+                ? encounter.encounterChange?.id != null && !encounter.encounterChange?.accepted
                 : true,
             ),
         ),

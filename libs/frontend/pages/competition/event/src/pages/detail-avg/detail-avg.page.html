@@ -11,8 +11,7 @@
   <div class="gender">
     @for (chartType of chartTypes; track chartType) {
     <div>
-      @if (chartSeries(subEvents, gender, chartType, eventType); as data) { @if
-      (data) {
+      @if (chartSeries(subEvents, gender, chartType, eventType); as data) { @if (data) {
       <apx-chart
         [series]="data"
         [chart]="chartOptions.chart!"

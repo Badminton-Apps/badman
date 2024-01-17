@@ -30,10 +30,7 @@ import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-plac
 })
 export class EditRankingAllComponent implements OnInit {
   allPlaces$?: Observable<[RankingPlace | undefined, RankingPlace[]][]>;
-  query$?: QueryRef<
-    { player: Partial<Player> },
-    { playerId: string; system: string }
-  >;
+  query$?: QueryRef<{ player: Partial<Player> }, { playerId: string; system: string }>;
 
   currentOpen?: string;
   system!: RankingSystem;
@@ -98,10 +95,7 @@ export class EditRankingAllComponent implements OnInit {
           throw new Error('System id is not set');
         }
 
-        this.query$ = this.appollo.watchQuery<
-          { player: Partial<Player> },
-          { playerId: string; system: string }
-        >({
+        this.query$ = this.appollo.watchQuery<{ player: Partial<Player> }, { playerId: string; system: string }>({
           query: gql`
             query AllRanking($playerId: ID!, $system: String) {
               player(id: $playerId) {
@@ -132,9 +126,7 @@ export class EditRankingAllComponent implements OnInit {
           map((player) => {
             const allPlaces: Map<Date, RankingPlace[]> = new Map();
             allPlaces[Symbol.iterator] = function* () {
-              yield* [...allPlaces.entries()].sort(
-                (a, b) => b[0]?.getTime() - a[0]?.getTime(),
-              );
+              yield* [...allPlaces.entries()].sort((a, b) => b[0]?.getTime() - a[0]?.getTime());
             };
 
             const sorted = player.rankingPlaces?.sort((a, b) => {
@@ -164,8 +156,7 @@ export class EditRankingAllComponent implements OnInit {
               }
             }
 
-            const returnBlock: [RankingPlace | undefined, RankingPlace[]][] =
-              [];
+            const returnBlock: [RankingPlace | undefined, RankingPlace[]][] = [];
 
             for (const [, places] of allPlaces) {
               if (!places) {
@@ -194,66 +185,57 @@ export class EditRankingAllComponent implements OnInit {
         },
       })
       .afterClosed()
-      .subscribe(
-        (result: {
-          action?: 'update' | 'remove' | 'new';
-          place: RankingPlace;
-        }) => {
-          if (result?.action) {
-            let mutation;
+      .subscribe((result: { action?: 'update' | 'remove' | 'new'; place: RankingPlace }) => {
+        if (result?.action) {
+          let mutation;
 
-            switch (result.action) {
-              case 'update':
-                mutation = this.appollo.mutate({
-                  mutation: gql`
-                    mutation UpdateRankingPlace(
-                      $rankingPlace: RankingPlaceUpdateInput!
-                    ) {
-                      updateRankingPlace(data: $rankingPlace) {
-                        id
-                      }
+          switch (result.action) {
+            case 'update':
+              mutation = this.appollo.mutate({
+                mutation: gql`
+                  mutation UpdateRankingPlace($rankingPlace: RankingPlaceUpdateInput!) {
+                    updateRankingPlace(data: $rankingPlace) {
+                      id
                     }
-                  `,
-                  variables: {
-                    rankingPlace: result.place,
-                  },
-                });
-                break;
-              case 'new':
-                mutation = this.appollo.mutate({
-                  mutation: gql`
-                    mutation UpdateRankingPlace(
-                      $rankingPlace: RankingPlaceNewInput!
-                    ) {
-                      newRankingPlace(data: $rankingPlace) {
-                        id
-                      }
+                  }
+                `,
+                variables: {
+                  rankingPlace: result.place,
+                },
+              });
+              break;
+            case 'new':
+              mutation = this.appollo.mutate({
+                mutation: gql`
+                  mutation UpdateRankingPlace($rankingPlace: RankingPlaceNewInput!) {
+                    newRankingPlace(data: $rankingPlace) {
+                      id
                     }
-                  `,
-                  variables: {
-                    rankingPlace: result.place,
-                  },
-                });
-                break;
+                  }
+                `,
+                variables: {
+                  rankingPlace: result.place,
+                },
+              });
+              break;
 
-              case 'remove':
-                mutation = this.appollo.mutate({
-                  mutation: gql`
-                    mutation RemoveRankingPlace($id: ID!) {
-                      removeRankingPlace(id: $id)
-                    }
-                  `,
-                  variables: {
-                    id: result.place.id,
-                  },
-                });
+            case 'remove':
+              mutation = this.appollo.mutate({
+                mutation: gql`
+                  mutation RemoveRankingPlace($id: ID!) {
+                    removeRankingPlace(id: $id)
+                  }
+                `,
+                variables: {
+                  id: result.place.id,
+                },
+              });
 
-                break;
-            }
-
-            lastValueFrom(mutation).then(() => this.query$?.refetch());
+              break;
           }
-        },
-      );
+
+          lastValueFrom(mutation).then(() => this.query$?.refetch());
+        }
+      });
   }
 }

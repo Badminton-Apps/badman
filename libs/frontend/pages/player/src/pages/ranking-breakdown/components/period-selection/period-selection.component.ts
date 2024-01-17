@@ -1,18 +1,8 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Input,
-  Signal,
-  ViewChild,
-  computed,
-  signal,
-} from '@angular/core';
+import { Component, Input, Signal, ViewChild, computed, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MatCalendarCellClassFunction,
-  MatDatepickerModule,
-} from '@angular/material/datepicker';
+import { MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
@@ -112,22 +102,14 @@ export class PeriodSelectionComponent {
     }
 
     const endPeriod = moment(targetDate);
-    const startPeriod = endPeriod
-      .clone()
-      .subtract(this.system().periodAmount, this.system().periodUnit);
+    const startPeriod = endPeriod.clone().subtract(this.system().periodAmount, this.system().periodUnit);
     const gamePeriod = startPeriod
       .clone()
-      .subtract(
-        this.system().updateIntervalAmount,
-        this.system().updateIntervalUnit,
-      );
+      .subtract(this.system().updateIntervalAmount, this.system().updateIntervalUnit);
 
     const nextPeriod = startPeriod
       .clone()
-      .add(
-        this.system().calculationIntervalAmount,
-        this.system().calculationIntervalUnit,
-      );
+      .add(this.system().calculationIntervalAmount, this.system().calculationIntervalUnit);
 
     this.period?.patchValue({
       start: startPeriod,

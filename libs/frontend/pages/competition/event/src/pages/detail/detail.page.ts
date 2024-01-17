@@ -1,15 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  OnInit,
-  Signal,
-  TemplateRef,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Injector, OnInit, Signal, TemplateRef, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -96,9 +86,7 @@ export class DetailPageComponent implements OnInit {
 
   hasPermission = toSignal(this.claimService.hasAnyClaims$(['edit-any:club']));
 
-  canViewEncounter = computed(
-    () => this.hasPermission() || this.versionInfo.beta,
-  );
+  canViewEncounter = computed(() => this.hasPermission() || this.versionInfo.beta);
   copyYearControl = new FormControl();
 
   eventCompetition!: EventCompetition;
@@ -119,34 +107,26 @@ export class DetailPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    combineLatest([
-      this.route.data,
-      this.translate.get(['all.competition.title']),
-    ])
+    combineLatest([this.route.data, this.translate.get(['all.competition.title'])])
       .pipe(takeUntil(this.destroy$))
       .subscribe(([data, translations]) => {
         this.eventCompetition = data['eventCompetition'];
-        this.subEvents = this.eventCompetition.subEventCompetitions
-          ?.sort(sortSubEvents)
-          ?.reduce(
-            (acc, subEventCompetition) => {
-              const eventType = subEventCompetition.eventType || 'Unknown';
-              const subEvents = acc.find((x) => x.eventType === eventType)
-                ?.subEvents;
-              if (subEvents) {
-                subEvents.push(subEventCompetition);
-              } else {
-                acc.push({ eventType, subEvents: [subEventCompetition] });
-              }
-              return acc;
-            },
-            [] as { eventType: string; subEvents: SubEventCompetition[] }[],
-          );
+        this.subEvents = this.eventCompetition.subEventCompetitions?.sort(sortSubEvents)?.reduce(
+          (acc, subEventCompetition) => {
+            const eventType = subEventCompetition.eventType || 'Unknown';
+            const subEvents = acc.find((x) => x.eventType === eventType)?.subEvents;
+            if (subEvents) {
+              subEvents.push(subEventCompetition);
+            } else {
+              acc.push({ eventType, subEvents: [subEventCompetition] });
+            }
+            return acc;
+          },
+          [] as { eventType: string; subEvents: SubEventCompetition[] }[],
+        );
 
         const eventCompetitionName = `${this.eventCompetition.name}`;
-        this.copyYearControl.setValue(
-          (this.eventCompetition.season || new Date().getFullYear()) + 1,
-        );
+        this.copyYearControl.setValue((this.eventCompetition.season || new Date().getFullYear()) + 1);
 
         this.seoService.update({
           title: eventCompetitionName,
@@ -155,10 +135,7 @@ export class DetailPageComponent implements OnInit {
           keywords: ['event', 'competition', 'badminton'],
         });
         this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
-        this.breadcrumbsService.set(
-          'competition',
-          translations['all.competition.title'],
-        );
+        this.breadcrumbsService.set('competition', translations['all.competition.title']);
 
         this.canViewEnrollments = toSignal(
           this.authService.hasAnyClaims$([
@@ -220,10 +197,7 @@ export class DetailPageComponent implements OnInit {
       }),
     );
 
-    this.router.navigate([
-      '/competition',
-      result.data?.copyEventCompetition?.slug,
-    ]);
+    this.router.navigate(['/competition', result.data?.copyEventCompetition?.slug]);
   }
 
   setOpenCloseEnrollents() {
@@ -245,9 +219,7 @@ export class DetailPageComponent implements OnInit {
         this.apollo
           .mutate({
             mutation: gql`
-              mutation UpdateEventCompetition(
-                $data: EventCompetitionUpdateInput!
-              ) {
+              mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
                 updateEventCompetition(data: $data) {
                   id
                 }
@@ -262,13 +234,9 @@ export class DetailPageComponent implements OnInit {
             },
           })
           .subscribe(() => {
-            this.matSnackBar.open(
-              `Competition ${this.eventCompetition.name} open/close dates updated`,
-              'Close',
-              {
-                duration: 2000,
-              },
-            );
+            this.matSnackBar.open(`Competition ${this.eventCompetition.name} open/close dates updated`, 'Close', {
+              duration: 2000,
+            });
           });
       }
     });
@@ -294,9 +262,7 @@ export class DetailPageComponent implements OnInit {
         this.apollo
           .mutate({
             mutation: gql`
-              mutation UpdateEventCompetition(
-                $data: EventCompetitionUpdateInput!
-              ) {
+              mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
                 updateEventCompetition(data: $data) {
                   id
                 }
@@ -307,19 +273,14 @@ export class DetailPageComponent implements OnInit {
                 id: this.eventCompetition.id,
                 changeOpenDate: this.eventCompetition.changeOpenDate,
                 changeCloseDate: this.eventCompetition.changeCloseDate,
-                changeCloseRequestDate:
-                  this.eventCompetition.changeCloseRequestDate,
+                changeCloseRequestDate: this.eventCompetition.changeCloseRequestDate,
               },
             },
           })
           .subscribe(() => {
-            this.matSnackBar.open(
-              `Competition ${this.eventCompetition.name} open/close dates updated`,
-              'Close',
-              {
-                duration: 2000,
-              },
-            );
+            this.matSnackBar.open(`Competition ${this.eventCompetition.name} open/close dates updated`, 'Close', {
+              duration: 2000,
+            });
           });
       }
     });
@@ -344,9 +305,7 @@ export class DetailPageComponent implements OnInit {
       })
       .subscribe(() => {
         this.matSnackBar.open(
-          `Competition ${this.eventCompetition.name} is ${
-            offical ? 'official' : 'unofficial'
-          }`,
+          `Competition ${this.eventCompetition.name} is ${offical ? 'official' : 'unofficial'}`,
           'Close',
           {
             duration: 2000,
@@ -361,9 +320,7 @@ export class DetailPageComponent implements OnInit {
       return;
     }
 
-    await lastValueFrom(
-      this.jobsService.syncEventById({ id: this.eventCompetition.visualCode }),
-    );
+    await lastValueFrom(this.jobsService.syncEventById({ id: this.eventCompetition.visualCode }));
   }
 
   async downloadCpFile() {
@@ -371,9 +328,7 @@ export class DetailPageComponent implements OnInit {
   }
 
   async downloadBasePlayers() {
-    await lastValueFrom(
-      this.excelService.getBaseplayersEnrollment(this.eventCompetition),
-    );
+    await lastValueFrom(this.excelService.getBaseplayersEnrollment(this.eventCompetition));
   }
 
   setTab(index: number) {

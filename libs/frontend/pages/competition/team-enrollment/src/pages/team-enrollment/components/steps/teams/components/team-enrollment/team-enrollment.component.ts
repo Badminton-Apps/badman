@@ -1,20 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import {
-  EntryCompetitionPlayer,
-  SubEventCompetition,
-  Team,
-  TeamValidationResult,
-} from '@badman/frontend-models';
+import { EntryCompetitionPlayer, SubEventCompetition, Team, TeamValidationResult } from '@badman/frontend-models';
 import { SubEventType, SubEventTypeEnum } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { TeamComponent } from '../team';
@@ -70,8 +59,6 @@ export class TeamEnrollmentComponent implements OnInit {
     const entry = this.group.get('entry');
 
     this.subEvent = entry?.get('subEventId') as FormControl<string>;
-    this.players = entry?.get('players') as FormArray<
-      FormControl<EntryCompetitionPlayer>
-    >;
+    this.players = entry?.get('players') as FormArray<FormControl<EntryCompetitionPlayer>>;
   }
 }

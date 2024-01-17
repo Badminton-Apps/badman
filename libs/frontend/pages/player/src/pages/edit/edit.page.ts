@@ -1,10 +1,5 @@
 import { CommonModule, Location } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -92,11 +87,9 @@ export class EditPageComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.activatedRoute.queryParams
-        .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-        .subscribe((params) => {
-          this.selectedTabIndex = params['tab'];
-        });
+      this.activatedRoute.queryParams.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((params) => {
+        this.selectedTabIndex = params['tab'];
+      });
     }, 0);
   }
 

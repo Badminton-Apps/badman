@@ -17,11 +17,7 @@ export class PushService {
     const pushEnabledKey = configService.get<boolean>('PUSH_ENABLED');
 
     if (publicVapidKey && privateVapidKey && pushEnabledKey) {
-      setVapidDetails(
-        'mailto:info@badman.app',
-        publicVapidKey,
-        privateVapidKey,
-      );
+      setVapidDetails('mailto:info@badman.app', publicVapidKey, privateVapidKey);
       this.isPushEnabled = true;
 
       this.logger.debug('Push notifications enabled');
@@ -47,13 +43,9 @@ export class PushService {
       } catch (error) {
         if (error instanceof WebPushError && error.statusCode === 410) {
           // Remove unused subscription
-          settings.pushSubscriptions = settings.pushSubscriptions.filter(
-            (s) => s.endpoint !== sub.endpoint,
-          );
+          settings.pushSubscriptions = settings.pushSubscriptions.filter((s) => s.endpoint !== sub.endpoint);
           settings.changed('pushSubscriptions', true);
-          this.logger.debug(
-            `Removed subscription for player ${player?.fullName} (${sub.endpoint})`,
-          );
+          this.logger.debug(`Removed subscription for player ${player?.fullName} (${sub.endpoint})`);
           await settings.save();
         } else {
           this.logger.error(error);

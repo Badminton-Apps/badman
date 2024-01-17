@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Apollo, gql } from 'apollo-angular';
@@ -21,14 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './edit-club-history.component.html',
   styleUrls: ['./edit-club-history.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    MatListModule,
-    TranslateModule,
-    MomentModule,
-    MatDialogModule,
-    MatButtonModule,
-  ],
+  imports: [CommonModule, MatListModule, TranslateModule, MomentModule, MatDialogModule, MatButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditClubHistoryComponent implements OnInit {
@@ -40,11 +28,7 @@ export class EditClubHistoryComponent implements OnInit {
   clubs$!: Observable<Club[]>;
 
   fetchPlayer = gql`
-    query ClubHistory(
-      $playerId: ID!
-      $includeHistorical: Boolean
-      $order: [SortOrderType!]
-    ) {
+    query ClubHistory($playerId: ID!, $includeHistorical: Boolean, $order: [SortOrderType!]) {
       player(id: $playerId) {
         id
         fullName
@@ -85,11 +69,7 @@ export class EditClubHistoryComponent implements OnInit {
       ),
       map((r) => r?.data?.player?.clubs.map((c) => new Club(c))),
       map((r) =>
-        r.sort(
-          (a, b) =>
-            (b?.clubMembership?.start?.getTime() ?? 0) -
-            (a?.clubMembership?.start?.getTime() ?? 0),
-        ),
+        r.sort((a, b) => (b?.clubMembership?.start?.getTime() ?? 0) - (a?.clubMembership?.start?.getTime() ?? 0)),
       ),
     );
   }
@@ -107,9 +87,7 @@ export class EditClubHistoryComponent implements OnInit {
             this.appollo
               .mutate<{ updateClubPlayerMembership: boolean }>({
                 mutation: gql`
-                  mutation UpdateClubPlayerMembership(
-                    $data: ClubPlayerMembershipUpdateInput!
-                  ) {
+                  mutation UpdateClubPlayerMembership($data: ClubPlayerMembershipUpdateInput!) {
                     updateClubPlayerMembership(data: $data)
                   }
                 `,
@@ -149,9 +127,7 @@ export class EditClubHistoryComponent implements OnInit {
             this.appollo
               .mutate<{ addPlayerToClub: boolean }>({
                 mutation: gql`
-                  mutation AddPlayerToClub(
-                    $data: ClubPlayerMembershipNewInput!
-                  ) {
+                  mutation AddPlayerToClub($data: ClubPlayerMembershipNewInput!) {
                     addPlayerToClub(data: $data)
                   }
                 `,

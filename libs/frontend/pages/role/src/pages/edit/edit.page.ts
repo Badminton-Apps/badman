@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-  TransferState,
-} from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Claim, Club, Role } from '@badman/frontend-models';
@@ -22,13 +16,7 @@ import { RoleFieldsComponent } from '../../components';
   templateUrl: './edit.page.html',
   styleUrls: ['./edit.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    RoleFieldsComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule, RoleFieldsComponent],
 })
 export class EditPageComponent implements OnInit {
   role!: Role;
@@ -110,11 +98,7 @@ export class EditPageComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          'clubTeamsKey-' + this.club.id,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState('clubTeamsKey-' + this.club.id, this.stateTransfer, this.platformId),
         map((x) => x?.data.claims?.map((c) => new Claim(c))),
         mergeMap((claims) => claims ?? []),
         groupBy((category) => category.category ?? 'Other'),

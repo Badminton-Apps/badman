@@ -1,9 +1,4 @@
-import {
-  RankingSystems,
-  SubEventTypeEnum,
-  TeamMembershipType,
-  getCurrentSeason,
-} from '@badman/utils';
+import { RankingSystems, SubEventTypeEnum, TeamMembershipType, getCurrentSeason } from '@badman/utils';
 import { ClubBuilder } from './clubBuilder';
 import { EventCompetitionBuilder } from './eventCompetitionBuilder';
 import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
@@ -73,9 +68,7 @@ function addRankingSystem() {
 }
 
 function addEvent(season: number, id?: string) {
-  const encounter = EncounterCompetitionBuilder.Create(id).WithDate(
-    new Date(`${season}-10-15`),
-  );
+  const encounter = EncounterCompetitionBuilder.Create(id).WithDate(new Date(`${season}-10-15`));
   const draw = DrawCompetitionBuilder.Create().WithName('Test draw');
 
   const subEvent = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX)
@@ -176,10 +169,7 @@ function addClub(
         .WithRanking(9, 9, 9)
         .WithDate(new Date(`${season}-05-09`)),
     );
-  const team = TeamBuilder.Create(SubEventTypeEnum.MX, teamId)
-    .WithName('team 1G')
-    .WithSeason(season)
-    .WithTeamNumber(1);
+  const team = TeamBuilder.Create(SubEventTypeEnum.MX, teamId).WithName('team 1G').WithSeason(season).WithTeamNumber(1);
 
   const club = ClubBuilder.Create(clubId)
     .WithName(name)

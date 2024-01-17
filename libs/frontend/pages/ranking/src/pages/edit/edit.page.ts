@@ -1,14 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  PLATFORM_ID,
-  TransferState,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Injector, PLATFORM_ID, TransferState, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -180,14 +171,8 @@ export class EditPageComponent {
     await lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation AddRankingGroupToRankingSystem(
-            $rankingSystemId: ID!
-            $rankingGroupId: ID!
-          ) {
-            addRankingGroupToRankingSystem(
-              rankingSystemId: $rankingSystemId
-              rankingGroupId: $rankingGroupId
-            ) {
+          mutation AddRankingGroupToRankingSystem($rankingSystemId: ID!, $rankingGroupId: ID!) {
+            addRankingGroupToRankingSystem(rankingSystemId: $rankingSystemId, rankingGroupId: $rankingGroupId) {
               id
             }
           }
@@ -203,24 +188,12 @@ export class EditPageComponent {
       panelClass: 'success',
     });
   }
-  async removeGroup({
-    systemId,
-    groupId,
-  }: {
-    systemId: string;
-    groupId: string;
-  }) {
+  async removeGroup({ systemId, groupId }: { systemId: string; groupId: string }) {
     await lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation RemoveRankingGroupToRankingSystem(
-            $rankingSystemId: ID!
-            $rankingGroupId: ID!
-          ) {
-            removeRankingGroupToRankingSystem(
-              rankingSystemId: $rankingSystemId
-              rankingGroupId: $rankingGroupId
-            ) {
+          mutation RemoveRankingGroupToRankingSystem($rankingSystemId: ID!, $rankingGroupId: ID!) {
+            removeRankingGroupToRankingSystem(rankingSystemId: $rankingSystemId, rankingGroupId: $rankingGroupId) {
               id
             }
           }
@@ -253,11 +226,7 @@ export class EditPageComponent {
           }
           return new RankingSystem(result.data.rankingSystem);
         }),
-        transferState(
-          `teamsPlayer-${this.systemId()}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`teamsPlayer-${this.systemId()}`, this.stateTransfer, this.platformId),
       )
       .subscribe((system) => {
         if (!system) {
@@ -288,15 +257,9 @@ export class EditPageComponent {
           if (!result?.data.rankingGroups) {
             throw new Error('No Systems');
           }
-          return result.data.rankingGroups.map(
-            (group) => new RankingGroup(group),
-          );
+          return result.data.rankingGroups.map((group) => new RankingGroup(group));
         }),
-        transferState(
-          `teamsPlayer-${this.systemId()}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`teamsPlayer-${this.systemId()}`, this.stateTransfer, this.platformId),
       )
       .subscribe((groups) => {
         if (!groups) {

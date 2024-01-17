@@ -1,14 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Injector,
-  Input,
-  OnChanges,
-  OnInit,
-  Signal,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, Input, OnChanges, OnInit, Signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -100,12 +91,7 @@ export class CommentsComponent implements OnInit, OnChanges {
               },
             }).valueChanges,
         ),
-        map(
-          (result) =>
-            result.data.comments
-              ?.map((c) => new Comment(c))
-              ?.sort(sortComments),
-        ),
+        map((result) => result.data.comments?.map((c) => new Comment(c))?.sort(sortComments)),
       ),
       {
         injector: this.injector,
@@ -166,15 +152,9 @@ export class CommentsComponent implements OnInit, OnChanges {
       )
       .subscribe((result) => {
         if (result && result.data && result.data.addComment) {
-          this.snackBar.open(
-            this.translate.instant(
-              'all.competition.change-encounter.comment-added',
-            ),
-            'OK',
-            {
-              duration: 4000,
-            },
-          );
+          this.snackBar.open(this.translate.instant('all.competition.change-encounter.comment-added'), 'OK', {
+            duration: 4000,
+          });
           this.commentControl.setValue('');
         }
       });

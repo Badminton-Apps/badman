@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { EventCompetition } from '@badman/frontend-models';
@@ -19,12 +14,7 @@ import { map, takeUntil, tap } from 'rxjs/operators';
   templateUrl: './select-event.component.html',
   styleUrls: ['./select-event.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule],
 })
 export class SelectEventComponent implements OnInit {
   private destroy$ = injectDestroy();
@@ -42,9 +32,7 @@ export class SelectEventComponent implements OnInit {
   initialId?: string;
 
   @Input()
-  control = new FormControl<EventCompetition | null>(null, [
-    Validators.required,
-  ]);
+  control = new FormControl<EventCompetition | null>(null, [Validators.required]);
 
   events$!: Observable<EventCompetition[]>;
 
@@ -81,10 +69,7 @@ export class SelectEventComponent implements OnInit {
       })
       .pipe(
         takeUntil(this.destroy$),
-        map(
-          ({ data }) =>
-            data.eventCompetitions.rows?.map((e) => new EventCompetition(e)),
-        ),
+        map(({ data }) => data.eventCompetitions.rows?.map((e) => new EventCompetition(e))),
         tap((events) => {
           if (this.initialId) {
             const initialEvent = events.find((e) => e.id === this.initialId);

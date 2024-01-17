@@ -32,22 +32,12 @@
   </mat-dialog-content>
   <mat-dialog-actions>
     @if (!location.id) {
-      <button
-        mat-raised-button
-        color="primary"
-        [disabled]="!this.location.name"
-        (click)="this.create(location)"
-      >
+      <button mat-raised-button color="primary" [disabled]="!this.location.name" (click)="this.create(location)">
         {{ 'all.button.create' | translate }}
       </button>
     }
     @if (location.id) {
-      <button
-        mat-raised-button
-        color="primary"
-        [disabled]="!this.location.name"
-        (click)="this.update(location)"
-      >
+      <button mat-raised-button color="primary" [disabled]="!this.location.name" (click)="this.update(location)">
         {{ 'all.button.save' | translate }}
       </button>
     }

@@ -1,46 +1,19 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  Input,
-  OnInit,
-  Signal,
-  ViewChild,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Injector, Input, OnInit, Signal, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import {
-  EventCompetition,
-  EventEntry,
-  Location,
-} from '@badman/frontend-models';
+import { EventCompetition, EventEntry, Location } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { map, switchMap } from 'rxjs';
 
-import {
-  GoogleMapsModule,
-  MapInfoWindow,
-  MapMarker,
-} from '@angular/google-maps';
-import {
-  MatCheckboxChange,
-  MatCheckboxModule,
-} from '@angular/material/checkbox';
+import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'badman-competition-map',
   standalone: true,
-  imports: [
-    CommonModule,
-    GoogleMapsModule,
-    MatProgressBarModule,
-    MatCheckboxModule,
-  ],
+  imports: [CommonModule, GoogleMapsModule, MatProgressBarModule, MatCheckboxModule],
   templateUrl: './competition-map.component.html',
   styleUrls: ['./competition-map.component.scss'],
   providers: [provideAnimations()],
@@ -108,9 +81,7 @@ export class CompetitionMapComponent implements OnInit {
             id: this.eventId,
           },
         })
-        .valueChanges.pipe(
-          map((res) => new EventCompetition(res.data.eventCompetition)),
-        ),
+        .valueChanges.pipe(map((res) => new EventCompetition(res.data.eventCompetition))),
       {
         injector: this.injector,
       },
@@ -147,9 +118,7 @@ export class CompetitionMapComponent implements OnInit {
         ),
         map((res) => res.data.eventEntries),
         map((eventEntries) => {
-          const clubIds = new Set(
-            eventEntries.map((eventEntry) => eventEntry.team?.club?.id),
-          );
+          const clubIds = new Set(eventEntries.map((eventEntry) => eventEntry.team?.club?.id));
           return [...clubIds] as string[];
         }),
         switchMap((clubIds) =>
@@ -157,10 +126,7 @@ export class CompetitionMapComponent implements OnInit {
             locations: Partial<Location[]>;
           }>({
             query: gql`
-              query GetLocation(
-                $where: JSONObject
-                $availibilitiesWhere: JSONObject
-              ) {
+              query GetLocation($where: JSONObject, $availibilitiesWhere: JSONObject) {
                 locations(where: $where) {
                   id
                   name
@@ -194,9 +160,7 @@ export class CompetitionMapComponent implements OnInit {
         ),
         map((res) => res.data.locations),
         map((locations) => locations.map((location) => new Location(location))),
-        map((locations) =>
-          locations.filter((location) => location.availibilities?.length > 0),
-        ),
+        map((locations) => locations.filter((location) => location.availibilities?.length > 0)),
       ),
       {
         injector: this.injector,
@@ -210,9 +174,7 @@ export class CompetitionMapComponent implements OnInit {
         }
 
         this.subEvents.set(
-          (this.eventCompetition?.()?.subEventCompetitions?.map(
-            (subEvent) => subEvent.id,
-          ) ?? []) as string[],
+          (this.eventCompetition?.()?.subEventCompetitions?.map((subEvent) => subEvent.id) ?? []) as string[],
         );
       },
       {

@@ -1,16 +1,8 @@
 <form (ngSubmit)="this.update()" [formGroup]="roleForm">
-  <p class="description">
-    When field isn't required (see '*') leave empty for disable limitation
-  </p>
+  <p class="description">When field isn't required (see '*') leave empty for disable limitation</p>
   <mat-form-field>
     <mat-label>{{ 'all.input.name' | translate }}</mat-label>
-    <input
-      matInput
-      formControlName="name"
-      alt="name"
-      autocomplete="name"
-      required
-    />
+    <input matInput formControlName="name" alt="name" autocomplete="name" required />
   </mat-form-field>
   @for (group of this.claims; track group) {
     <h2>{{ group.category }}</h2>

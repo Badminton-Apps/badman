@@ -3,10 +3,8 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use './tabs/edit-ranking-all/edit-ranking-all.component.theme' as
-  edit-ranking-all;
-@use './tabs/edit-permissions/edit-permissions.component.theme' as
-  edit-permissions;
+@use './tabs/edit-ranking-all/edit-ranking-all.component.theme' as edit-ranking-all;
+@use './tabs/edit-permissions/edit-permissions.component.theme' as edit-permissions;
 
 @mixin color($theme) {
   @include edit-ranking-all.color($theme);

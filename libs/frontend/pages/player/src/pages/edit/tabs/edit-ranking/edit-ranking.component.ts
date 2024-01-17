@@ -1,12 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -71,11 +65,7 @@ export class EditRankingComponent implements OnInit {
       }),
       this.update$,
     ]).pipe(
-      map(([x]) =>
-        x.data?.rankingSystems?.length > 0
-          ? new RankingSystem(x.data.rankingSystems[0])
-          : null,
-      ),
+      map(([x]) => (x.data?.rankingSystems?.length > 0 ? new RankingSystem(x.data.rankingSystems[0]) : null)),
       mergeMap((system) =>
         combineLatest([
           of(system),
@@ -113,18 +103,15 @@ export class EditRankingComponent implements OnInit {
     );
 
     getRanings$.subscribe(({ system, player }) => {
-      const singleControl = new FormControl(
-        player?.lastRanking?.single ?? system?.amountOfLevels ?? 0,
-        [Validators.required],
-      );
-      const doubleControl = new FormControl(
-        player?.lastRanking?.double ?? system?.amountOfLevels ?? 0,
-        [Validators.required],
-      );
-      const mixControl = new FormControl(
-        player?.lastRanking?.mix ?? system?.amountOfLevels ?? 0,
-        [Validators.required],
-      );
+      const singleControl = new FormControl(player?.lastRanking?.single ?? system?.amountOfLevels ?? 0, [
+        Validators.required,
+      ]);
+      const doubleControl = new FormControl(player?.lastRanking?.double ?? system?.amountOfLevels ?? 0, [
+        Validators.required,
+      ]);
+      const mixControl = new FormControl(player?.lastRanking?.mix ?? system?.amountOfLevels ?? 0, [
+        Validators.required,
+      ]);
 
       if (!system) {
         throw new Error('System is not set');
@@ -200,11 +187,7 @@ export class EditRankingComponent implements OnInit {
           newRankingPlace?: Player;
         }>(mutation)
         .subscribe((result) => {
-          this.invalidatePlayerRanking(
-            new Player(
-              result?.data?.updateRankingPlace ?? result?.data?.newRankingPlace,
-            ),
-          );
+          this.invalidatePlayerRanking(new Player(result?.data?.updateRankingPlace ?? result?.data?.newRankingPlace));
           this.update$.next(null);
 
           this._snackBar.open('Saved', undefined, {

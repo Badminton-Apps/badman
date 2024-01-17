@@ -1,21 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  EncounterCompetition,
-  EventCompetition,
-  Player,
-  Team,
-} from '@badman/frontend-models';
+import { EncounterCompetition, EventCompetition, Player, Team } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
-import {
-  Observable,
-  delay,
-  distinctUntilChanged,
-  filter,
-  map,
-  shareReplay,
-  switchMap,
-} from 'rxjs';
+import { Observable, delay, distinctUntilChanged, filter, map, shareReplay, switchMap } from 'rxjs';
 import { ValidationMessage, ValidationResult } from '../../models/validation';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import moment from 'moment';
@@ -159,11 +146,7 @@ export class AssemblyService {
         this.apollo
           .query<{ team: Partial<Team> }>({
             query: gql`
-              query TeamInfo(
-                $id: ID!
-                $rankingWhere: JSONObject
-                $lastRankginWhere: JSONObject
-              ) {
+              query TeamInfo($id: ID!, $rankingWhere: JSONObject, $lastRankginWhere: JSONObject) {
                 team(id: $id) {
                   id
                   captainId
@@ -234,12 +217,7 @@ export class AssemblyService {
     // Combine _getEvent and _getEncounter
     return this._getEvent(encounterId).pipe(
       map((event) => {
-        if (
-          !event ||
-          !event.season ||
-          !event.usedRankingUnit ||
-          !event.usedRankingAmount
-        ) {
+        if (!event || !event.season || !event.usedRankingUnit || !event.usedRankingAmount) {
           throw new Error('No event');
         }
 
@@ -294,11 +272,7 @@ export class AssemblyService {
         },
       })
       .pipe(
-        map(
-          (result) =>
-            result?.data.encounterCompetition?.drawCompetition
-              ?.subEventCompetition,
-        ),
+        map((result) => result?.data.encounterCompetition?.drawCompetition?.subEventCompetition),
         map((result) => {
           if (!result?.eventCompetition) {
             throw new Error('No event');
@@ -362,27 +336,17 @@ export class AssemblyService {
             return {
               titulars: {
                 index: data.data?.assemblyValidation.titularsIndex ?? 0,
-                players: data.data?.assemblyValidation.titularsPlayers?.map(
-                  (p) => ({
-                    ...p,
-                    sum:
-                      p.single +
-                      p.double +
-                      ((state()?.team?.type ?? 'MX') === 'MX' ? p.mix : 0),
-                  }),
-                ),
+                players: data.data?.assemblyValidation.titularsPlayers?.map((p) => ({
+                  ...p,
+                  sum: p.single + p.double + ((state()?.team?.type ?? 'MX') === 'MX' ? p.mix : 0),
+                })),
               },
               base: {
                 index: data.data?.assemblyValidation.baseTeamIndex ?? 0,
-                players: data.data?.assemblyValidation.baseTeamPlayers?.map(
-                  (p) => ({
-                    ...p,
-                    sum:
-                      p.single +
-                      p.double +
-                      ((state()?.team?.type ?? 'MX') === 'MX' ? p.mix : 0),
-                  }),
-                ),
+                players: data.data?.assemblyValidation.baseTeamPlayers?.map((p) => ({
+                  ...p,
+                  sum: p.single + p.double + ((state()?.team?.type ?? 'MX') === 'MX' ? p.mix : 0),
+                })),
               },
               errors: data.data?.assemblyValidation.errors ?? [],
               warnings: data.data?.assemblyValidation.warnings ?? [],
@@ -400,10 +364,7 @@ export class AssemblyService {
           })),
         ),
 
-      setSingle: (
-        _,
-        action$: Observable<{ index: 1 | 2 | 3 | 4; player: Player }>,
-      ) =>
+      setSingle: (_, action$: Observable<{ index: 1 | 2 | 3 | 4; player: Player }>) =>
         action$.pipe(
           map((data) => ({
             [`single${data.index}`]: data.player,
@@ -421,10 +382,7 @@ export class AssemblyService {
         action$.pipe(
           map((data) => {
             const key = `double${data.index}` as keyof AssemblyState;
-            const current = (state()[key] ?? []) as [
-              Player | undefined,
-              Player | undefined,
-            ];
+            const current = (state()[key] ?? []) as [Player | undefined, Player | undefined];
 
             current[data.index2] = data.player;
 
@@ -452,14 +410,8 @@ export class AssemblyService {
       type: () => state().team?.type,
 
       metaPlayers: () => state().team?.entry?.meta?.competition?.players ?? [],
-      regularPlayers: () =>
-        state().team?.players?.filter(
-          (p) => p.membershipType === TeamMembershipType.REGULAR,
-        ) ?? [],
-      backupPlayers: () =>
-        state().team?.players?.filter(
-          (p) => p.membershipType === TeamMembershipType.BACKUP,
-        ) ?? [],
+      regularPlayers: () => state().team?.players?.filter((p) => p.membershipType === TeamMembershipType.REGULAR) ?? [],
+      backupPlayers: () => state().team?.players?.filter((p) => p.membershipType === TeamMembershipType.BACKUP) ?? [],
     }),
   });
 }

@@ -12,10 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import {
-  HasClaimComponent,
-  PageHeaderComponent,
-} from '@badman/frontend-components';
+import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
 import { CronJob } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
@@ -58,14 +55,7 @@ export class OverviewPageComponent {
   @ViewChild('rankingTemplate', { static: true })
   rankingTemplate!: TemplateRef<HTMLElement>;
 
-  displayedColumns: string[] = [
-    'name',
-    'cronTime',
-    'lastRun',
-    'nextRun',
-    'running',
-    'options',
-  ];
+  displayedColumns: string[] = ['name', 'cronTime', 'lastRun', 'nextRun', 'running', 'options'];
 
   openDialog(cron: CronJob) {
     let template: TemplateRef<HTMLElement>;

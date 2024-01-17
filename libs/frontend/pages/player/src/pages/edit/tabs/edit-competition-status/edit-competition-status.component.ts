@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -19,13 +14,7 @@ import { debounceTime, map } from 'rxjs';
   templateUrl: './edit-competition-status.component.html',
   styleUrls: ['./edit-competition-status.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    HasClaimComponent,
-    MatSlideToggleModule,
-    ReactiveFormsModule,
-    TranslateModule,
-  ],
+  imports: [CommonModule, HasClaimComponent, MatSlideToggleModule, ReactiveFormsModule, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCompetitionStatusComponent implements OnInit {

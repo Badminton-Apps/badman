@@ -28,22 +28,16 @@
       <div class="manual-selection">
         @if (this.locations) {
           <mat-form-field>
-            <mat-label>{{
-              'all.competition.change-encounter.choose-location' | translate
-            }}</mat-label>
+            <mat-label>{{ 'all.competition.change-encounter.choose-location' | translate }}</mat-label>
             <mat-select [formControl]="manualLocationControl">
               @for (location of this.locations; track location) {
-                <mat-option [value]="location.id">{{
-                  location.name
-                }}</mat-option>
+                <mat-option [value]="location.id">{{ location.name }}</mat-option>
               }
             </mat-select>
           </mat-form-field>
         }
         <mat-form-field>
-          <mat-label>{{
-            'all.competition.change-encounter.choose-date' | translate
-          }}</mat-label>
+          <mat-label>{{ 'all.competition.change-encounter.choose-date' | translate }}</mat-label>
           <input
             matInput
             [ngxMatDatetimePicker]="openPicker"
@@ -54,23 +48,12 @@
             [matDatepickerFilter]="filterDate"
             [formControl]="manualDateControl"
           />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="$any(openPicker)"
-          ></mat-datepicker-toggle>
-          <ngx-mat-datetime-picker [stepMinute]="15" #openPicker>
-          </ngx-mat-datetime-picker>
+          <mat-datepicker-toggle matSuffix [for]="$any(openPicker)"></mat-datepicker-toggle>
+          <ngx-mat-datetime-picker [stepMinute]="15" #openPicker> </ngx-mat-datetime-picker>
         </mat-form-field>
         <button
           mat-icon-button
-          (click)="
-            this.selectDay(
-              manualDateControl.value,
-              undefined,
-              manualLocationControl.value,
-              9999
-            )
-          "
+          (click)="this.selectDay(manualDateControl.value, undefined, manualLocationControl.value, 9999)"
         >
           <mat-icon>check</mat-icon>
         </button>
@@ -79,18 +62,11 @@
   </div>
   <div class="botton-row">
     <small>Klik op een uur om deze te selecteren</small> <br />
-    <badman-has-claim
-      [any]="[this.data.homeClubId + '_edit:club', 'edit-any:club']"
-    >
-      <small noPerm
-        >Vraag aan de club verantwoordelijke om een Speelmomenten toe te
-        voegen</small
-      >
+    <badman-has-claim [any]="[this.data.homeClubId + '_edit:club', 'edit-any:club']">
+      <small noPerm>Vraag aan de club verantwoordelijke om een Speelmomenten toe te voegen</small>
       <small
         >Speelmomenten wijzigen:
-        <a
-          [routerLink]="['/', 'club', this.data.homeClubId, 'edit']"
-          (click)="this.dialogRef.close()"
+        <a [routerLink]="['/', 'club', this.data.homeClubId, 'edit']" (click)="this.dialogRef.close()"
           >Club > Edit > Locatie
         </a></small
       >
@@ -99,10 +75,7 @@
 </div>
 <div class="calendar">
   @if (!this.loadingCal) {
-    <div
-      class="calendar-table"
-      [ngStyle]="{ 'grid-template-columns': gridTemplateColumns }"
-    >
+    <div class="calendar-table" [ngStyle]="{ 'grid-template-columns': gridTemplateColumns }">
       @for (weekDay of weekDayNames; track weekDay) {
         <div class="calendar-day weekday">
           {{ weekDay | titlecase }}
@@ -115,9 +88,7 @@
               <div class="selection">
                 <span class="day">{{ row.date.getDate() }}</span>
                 @if (row.date.getDate() === 1) {
-                  <span class="momth">
-                    {{ monthNames[row.date.getMonth()] | titlecase }}</span
-                  >
+                  <span class="momth"> {{ monthNames[row.date.getMonth()] | titlecase }}</span>
                 }
               </div>
             </div>
@@ -126,28 +97,17 @@
             <div class="calendar-day-content">
               <div class="day-events">
                 @for (info of dayInfo.dayEvents; track info) {
-                  <div
-                    class="day-event"
-                    [ngStyle]="{ 'background-color': info.color }"
-                  >
+                  <div class="day-event" [ngStyle]="{ 'background-color': info.color }">
                     {{ info.name }}
                   </div>
                 }
               </div>
               @for (loc of dayInfo.locations; track loc) {
-                <div
-                  class="location picable"
-                  (click)="
-                    selectDay(row.date, loc.time, loc.locationId, loc.space)
-                  "
-                >
+                <div class="location picable" (click)="selectDay(row.date, loc.time, loc.locationId, loc.space)">
                   <span class="id">{{ loc.locationIndex }}</span>
                   <span class="time">{{ loc.time }} - </span>
                   <span class="courts">
-                    {{
-                      'all.competition.change-encounter.calendar.remaining'
-                        | translate: { amount: loc.space }
-                    }}
+                    {{ 'all.competition.change-encounter.calendar.remaining' | translate: { amount: loc.space } }}
                     @if (loc.requested.length) {
                       <span>
                         ({{
@@ -163,9 +123,7 @@
                         <div class="event-team">
                           <div
                             [ngStyle]="{
-                              'border-color': this.teamColors.get(
-                                enc.homeTeamId ?? ''
-                              )
+                              'border-color': this.teamColors.get(enc.homeTeamId ?? '')
                             }"
                             class="event-color"
                           ></div>
@@ -182,17 +140,12 @@
                     @for (enc of loc.removed; track enc) {
                       <div
                         class="home-event"
-                        [matTooltip]="
-                          'all.competition.change-encounter.calendar.removed'
-                            | translate
-                        "
+                        [matTooltip]="'all.competition.change-encounter.calendar.removed' | translate"
                       >
                         <div class="event-team">
                           <div
                             [ngStyle]="{
-                              'border-color': this.teamColors.get(
-                                enc.homeTeamId ?? ''
-                              )
+                              'border-color': this.teamColors.get(enc.homeTeamId ?? '')
                             }"
                             class="event-color"
                           ></div>
@@ -209,17 +162,12 @@
                     @for (enc of loc.requested; track enc) {
                       <div
                         class="home-event"
-                        [matTooltip]="
-                          'all.competition.change-encounter.calendar.requested'
-                            | translate
-                        "
+                        [matTooltip]="'all.competition.change-encounter.calendar.requested' | translate"
                       >
                         <div class="event-team">
                           <div
                             [ngStyle]="{
-                              'border-color': this.teamColors.get(
-                                enc.homeTeamId ?? ''
-                              )
+                              'border-color': this.teamColors.get(enc.homeTeamId ?? '')
                             }"
                             class="event-color"
                           ></div>
@@ -236,10 +184,7 @@
               }
               <div class="event other-events">
                 @if (dayInfo.other.length > 0) {
-                  <small>{{
-                    'all.competition.change-encounter.calendar.other-games'
-                      | translate
-                  }}</small>
+                  <small>{{ 'all.competition.change-encounter.calendar.other-games' | translate }}</small>
                 }
                 @for (enc of dayInfo.other; track enc) {
                   <div class="event-name">
@@ -261,17 +206,10 @@
   <div class="sidebar">
     @if (this.data.home ? this.homeTeams : this.awayTeams; as teams) {
       <div class="home-teams">
-        @if (
-          this.data.home ? this.data.homeClubId : this.data.awayClubId;
-          as clubId
-        ) {
+        @if (this.data.home ? this.data.homeClubId : this.data.awayClubId; as clubId) {
           <div class="show">
-            <button mat-stroked-button (click)="showAllTeams(teams, clubId)">
-              Show all
-            </button>
-            <button mat-stroked-button (click)="hideAllTeams(clubId)">
-              Hide all
-            </button>
+            <button mat-stroked-button (click)="showAllTeams(teams, clubId)">Show all</button>
+            <button mat-stroked-button (click)="hideAllTeams(clubId)">Hide all</button>
           </div>
           <div class="teams">
             @for (team of teams; track team) {
@@ -289,17 +227,10 @@
     }
     @if (this.data.home ? this.awayTeams : this.homeTeams; as teams) {
       <div class="away-teams">
-        @if (
-          this.data.home ? this.data.awayClubId : this.data.homeClubId;
-          as clubId
-        ) {
+        @if (this.data.home ? this.data.awayClubId : this.data.homeClubId; as clubId) {
           <div class="show">
-            <button mat-stroked-button (click)="showAllTeams(teams, clubId)">
-              Show all
-            </button>
-            <button mat-stroked-button (click)="hideAllTeams(clubId)">
-              Hide all
-            </button>
+            <button mat-stroked-button (click)="showAllTeams(teams, clubId)">Show all</button>
+            <button mat-stroked-button (click)="hideAllTeams(clubId)">Hide all</button>
           </div>
           <div class="teams">
             @for (team of teams; track team) {

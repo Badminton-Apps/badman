@@ -1,13 +1,7 @@
 <form (keydown.enter)="$event.preventDefault()">
   <mat-form-field>
     <mat-label>{{ this.label | translate }}</mat-label>
-    <input
-      type="text"
-      matInput
-      [formControl]="formControl"
-      [matAutocomplete]="auto"
-      (blur)="this.inputBlur()"
-    />
+    <input type="text" matInput [formControl]="formControl" [matAutocomplete]="auto" (blur)="this.inputBlur()" />
     @if (this.loading) {
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     }
@@ -31,11 +25,7 @@
           @if (option.memberId) {
             <small class="member-id">({{ option.memberId }}) </small>
           }
-          @if (
-            option.clubs &&
-            option.clubs.length > 0 &&
-            option.clubs[0].id !== this.clubId
-          ) {
+          @if (option.clubs && option.clubs.length > 0 && option.clubs[0].id !== this.clubId) {
             <small>{{ option.clubs[0].name }}</small>
           }
         </mat-option>
@@ -55,10 +45,7 @@
           @if (validationFunction(option); as validation) {
             <mat-option
               [value]="option"
-              [disabled]="
-                this.ignorePlayersIds!.indexOf(option.id!) >= 0 ||
-                !validation.valid
-              "
+              [disabled]="this.ignorePlayersIds!.indexOf(option.id!) >= 0 || !validation.valid"
             >
               @if (option.fullName) {
                 {{ option.fullName }}
@@ -68,11 +55,7 @@
               @if (option.memberId) {
                 <small class="member-id">({{ option.memberId }}) </small>
               }
-              @if (
-                option.clubs &&
-                option.clubs.length > 0 &&
-                option.clubs[0].id !== this.clubId
-              ) {
+              @if (option.clubs && option.clubs.length > 0 && option.clubs[0].id !== this.clubId) {
                 <small>{{ option.clubs[0].name }}</small>
               }
               @if (validation.message) {

@@ -3,35 +3,17 @@
   <div title>{{this.player().fullName}}</div>
   <div subTitle>
     <div class="sub-text">
-      <ng-container
-        ><a [routerLink]="['/', 'club', this.club()?.slug]"
-          >{{this.club()?.name}}</a
-        ></ng-container
-      >@if (this.club()?.name && this.player().memberId) { -
-      }{{this.player().memberId}}
+      <ng-container><a [routerLink]="['/', 'club', this.club()?.slug]">{{this.club()?.name}}</a></ng-container
+      >@if (this.club()?.name && this.player().memberId) { - }{{this.player().memberId}}
     </div>
     @if (this.player().id) {
     <div class="levels">
-      <badman-show-level
-        [routerLink]="['ranking', 'single']"
-        [playerId]="this.playerId"
-        type="single"
-      />
-      <badman-show-level
-        [routerLink]="['ranking', 'double']"
-        [playerId]="this.playerId"
-        type="double"
-      />
-      <badman-show-level
-        [routerLink]="['ranking', 'mix']"
-        [playerId]="this.playerId"
-        type="mix"
-      />
+      <badman-show-level [routerLink]="['ranking', 'single']" [playerId]="this.playerId" type="single" />
+      <badman-show-level [routerLink]="['ranking', 'double']" [playerId]="this.playerId" type="double" />
+      <badman-show-level [routerLink]="['ranking', 'mix']" [playerId]="this.playerId" type="mix" />
     </div>
     }
-    <div class="click-for-breakdown">
-      {{ 'all.breakdown.hint' | translate }}
-    </div>
+    <div class="click-for-breakdown">{{ 'all.breakdown.hint' | translate }}</div>
   </div>
   <div actions>
     <button mat-icon-button class="favorite" title="favorite">
@@ -43,13 +25,9 @@
     </button>
     <mat-menu #menu="matMenu">
       @if (this.canClaim$ | async) {
-      <button mat-menu-item (click)="this.claimAccount()">
-        {{ 'all.player.menu.claim' | translate }}
-      </button>
+      <button mat-menu-item (click)="this.claimAccount()">{{ 'all.player.menu.claim' | translate }}</button>
       }
-      <badman-has-claim
-        [any]="['edit-any:player', this.player().id + '_edit:player']"
-      >
+      <badman-has-claim [any]="['edit-any:player', this.player().id + '_edit:player']">
         <button mat-menu-item [routerLink]="'edit'">
           <mat-icon>edit</mat-icon>
           <span>{{'all.player.menu.edit' | translate}}</span>
@@ -79,10 +57,7 @@
       {{ 'all.game.upcoming.title' | translate }}
     </h3>
     @if (this.hasTeams()) {
-    <badman-upcoming-games
-      [clubId]="club()?.id"
-      [teams]="this.teams()"
-    ></badman-upcoming-games>
+    <badman-upcoming-games [clubId]="club()?.id" [teams]="this.teams()"></badman-upcoming-games>
     }
   </section>
 </section>

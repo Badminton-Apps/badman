@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -20,40 +15,19 @@ import { AuthenticateService } from '@badman/frontend-auth';
 import { SelectClubComponent } from '@badman/frontend-components';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject, filter, pairwise, startWith, takeUntil } from 'rxjs';
-import {
-  CLUB,
-  COMMENTS,
-  EMAIL,
-  EVENTS,
-  LOCATIONS,
-  TEAMS,
-} from '../../../../../forms';
+import { CLUB, COMMENTS, EMAIL, EVENTS, LOCATIONS, TEAMS } from '../../../../../forms';
 
 export class DirectErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    form: FormGroupDirective | NgForm | null,
-  ): boolean {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
 
 @Component({
   selector: 'badman-club-step',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TranslateModule,
-    MatInputModule,
-    SelectClubComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslateModule, MatInputModule, SelectClubComponent],
   templateUrl: './club.step.html',
   styleUrls: ['./club.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -87,9 +61,7 @@ export class ClubStepComponent implements OnInit {
   ngOnInit() {
     if (this.group) {
       this.valueId = this.group?.get(this.controlName) as FormControl<string>;
-      this.email = this.group?.get(
-        this.controlEmailName,
-      ) as FormControl<string>;
+      this.email = this.group?.get(this.controlEmailName) as FormControl<string>;
     }
 
     if (!this.valueId) {
@@ -132,11 +104,7 @@ export class ClubStepComponent implements OnInit {
         takeUntil(this.destroy$),
         filter(
           (value) =>
-            value?.length === 36 &&
-            value[8] === '-' &&
-            value[13] === '-' &&
-            value[18] === '-' &&
-            value[23] === '-',
+            value?.length === 36 && value[8] === '-' && value[13] === '-' && value[18] === '-' && value[23] === '-',
         ),
         startWith(this.group.value?.[this.controlName]),
         pairwise(),

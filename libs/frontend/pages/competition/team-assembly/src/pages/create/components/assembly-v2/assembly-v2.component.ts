@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  Input,
-  Signal,
-  effect,
-  inject,
-} from '@angular/core';
+import { Component, Injector, Input, Signal, effect, inject } from '@angular/core';
 import { Player } from '@badman/frontend-models';
 import { AssemblyService } from './assembly.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -83,10 +76,7 @@ export class AssemblyV2Component {
       return false;
     }
 
-    return (
-      this.data.state['metaPlayers']()?.find((p: Player) => p.id === id)
-        ?.levelException ?? false
-    );
+    return this.data.state['metaPlayers']()?.find((p: Player) => p.id === id)?.levelException ?? false;
   }
 
   onResized(event: ResizeResult) {

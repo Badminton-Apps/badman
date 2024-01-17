@@ -1,14 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Injector,
-  Input,
-  OnInit,
-  effect,
-  inject,
-  Signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, Input, OnInit, effect, inject, Signal } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { TranslateService } from '@ngx-translate/core';
@@ -35,10 +26,7 @@ export class ShowLevelComponent implements OnInit {
   type!: 'single' | 'double' | 'mix';
 
   upgrade!: 'singlePoints' | 'doublePoints' | 'mixPoints';
-  downgrade!:
-    | 'singlePointsDowngrade'
-    | 'doublePointsDowngrade'
-    | 'mixPointsDowngrade';
+  downgrade!: 'singlePointsDowngrade' | 'doublePointsDowngrade' | 'mixPointsDowngrade';
 
   tooltip = '';
 
@@ -72,29 +60,17 @@ export class ShowLevelComponent implements OnInit {
 
     const level = this.showLevelService.rankingPlace()?.[this.type] ?? maxLevel;
 
-    const nextLevel =
-      level == 1
-        ? undefined
-        : this.rankingService.system()!.pointsToGoUp?.[maxLevel - level];
+    const nextLevel = level == 1 ? undefined : this.rankingService.system()!.pointsToGoUp?.[maxLevel - level];
 
-    const prevLevel =
-      this.rankingService.system()!.pointsToGoDown?.[maxLevel - (level + 1)];
+    const prevLevel = this.rankingService.system()!.pointsToGoDown?.[maxLevel - (level + 1)];
 
     this.canUpgrade =
-      level == 1
-        ? false
-        : (this.showLevelService.rankingPlace()?.[this.upgrade] ?? 0) >=
-          (nextLevel ?? -1);
+      level == 1 ? false : (this.showLevelService.rankingPlace()?.[this.upgrade] ?? 0) >= (nextLevel ?? -1);
     this.canDowngrade =
-      level == maxLevel
-        ? false
-        : (this.showLevelService.rankingPlace()?.[this.downgrade] ?? 0) <=
-          (prevLevel ?? -1);
+      level == maxLevel ? false : (this.showLevelService.rankingPlace()?.[this.downgrade] ?? 0) <= (prevLevel ?? -1);
 
     if (nextLevel) {
-      this.tooltip = `${this.translate.instant(
-        'all.breakdown.upgrade',
-      )}: > ${nextLevel}`;
+      this.tooltip = `${this.translate.instant('all.breakdown.upgrade')}: > ${nextLevel}`;
     }
 
     if (prevLevel && nextLevel) {
@@ -102,9 +78,7 @@ export class ShowLevelComponent implements OnInit {
     }
 
     if (prevLevel) {
-      this.tooltip += `${this.translate.instant(
-        'all.breakdown.downgrade',
-      )}: < ${prevLevel}`;
+      this.tooltip += `${this.translate.instant('all.breakdown.downgrade')}: < ${prevLevel}`;
     }
   }
 }

@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
@@ -17,13 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./standing.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    RouterModule,
-    MatTableModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, TranslateModule, RouterModule, MatTableModule, MatIconModule],
 })
 export class StandingComponent implements OnInit {
   @Input()
@@ -40,9 +29,7 @@ export class StandingComponent implements OnInit {
     this.entries = this.entries.filter((e) => e.standing);
 
     // Sort by postion
-    this.entries?.sort(
-      (a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0),
-    );
+    this.entries?.sort((a, b) => (a.standing?.position ?? 0) - (b.standing?.position ?? 0));
 
     if (this.type == 'players') {
       this.displayedColumns = [
@@ -58,15 +45,7 @@ export class StandingComponent implements OnInit {
         'totalPointsWon',
         'totalPointsLost',
       ];
-      this.displayedColumnsHeaders = [
-        'position',
-        'name',
-        'points',
-        'played',
-        'games',
-        'sets',
-        'totalPoints',
-      ];
+      this.displayedColumnsHeaders = ['position', 'name', 'points', 'played', 'games', 'sets', 'totalPoints'];
     } else {
       this.displayedColumns = [
         'position',

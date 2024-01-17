@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControlOptions,
   FormControl,
@@ -22,15 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { DocumentNode, FragmentDefinitionNode } from 'graphql';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import {
-  Observable,
-  debounceTime,
-  filter,
-  lastValueFrom,
-  map,
-  switchMap,
-  takeUntil,
-} from 'rxjs';
+import { Observable, debounceTime, filter, lastValueFrom, map, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'badman-select-player',
@@ -148,8 +135,7 @@ export class SelectPlayerComponent implements OnInit {
         map(
           (result) =>
             result?.data?.players?.rows?.filter(
-              (value, index, self) =>
-                self.findIndex((m) => m.id === value.id) === index,
+              (value, index, self) => self.findIndex((m) => m.id === value.id) === index,
             ),
         ),
         map((players) => players?.map((p) => new Player(p))),
@@ -215,10 +201,7 @@ export class SelectPlayerComponent implements OnInit {
     }
   }
 
-  private _playerSearchWhere(args?: {
-    query?: string;
-    where?: { [key: string]: unknown };
-  }) {
+  private _playerSearchWhere(args?: { query?: string; where?: { [key: string]: unknown } }) {
     const parts = args?.query
       ?.toLowerCase()
       .replace(/[;\\\\/:*?"<>|&',]/, ' ')

@@ -79,17 +79,12 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      !changes['playerId']?.currentValue ||
-      !changes['playerId']?.previousValue
-    ) {
+    if (!changes['playerId']?.currentValue || !changes['playerId']?.previousValue) {
       return;
     }
 
     // Reset the list when the playerId changes
-    if (
-      changes['playerId'].currentValue !== changes['playerId'].previousValue
-    ) {
+    if (changes['playerId'].currentValue !== changes['playerId'].previousValue) {
       this.recentGames.filter.patchValue({
         choices: ['S', 'D', 'MX'],
         playerId: changes['playerId'].currentValue,
@@ -106,10 +101,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   getWonStatusForPlayer(game: Game) {
-    return (
-      (game.winner == 1 && this.isTeamOfPlayer(game, 1)) ||
-      (game.winner == 2 && this.isTeamOfPlayer(game, 2))
-    );
+    return (game.winner == 1 && this.isTeamOfPlayer(game, 1)) || (game.winner == 2 && this.isTeamOfPlayer(game, 2));
   }
 
   isTeamOfPlayer(game: Game, team: number) {
@@ -156,9 +148,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
       tooltip,
       upgrade: result === GameBreakdownType.LOST_UPGRADE,
       downgrade: result === GameBreakdownType.LOST_DOWNGRADE,
-      show:
-        result !== GameBreakdownType.LOST_IGNORED &&
-        (rankingPoint?.points ?? -1) >= 0,
+      show: result !== GameBreakdownType.LOST_IGNORED && (rankingPoint?.points ?? -1) >= 0,
     };
   }
 

@@ -1,18 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Input,
-  Output,
-} from '@angular/core';
-import {
-  FormGroup,
-  Validators,
-  FormControl,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Input, Output } from '@angular/core';
+import { FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -77,93 +65,30 @@ export class RankingSystemFieldsComponent implements OnInit {
     this.rankingSystemForm = new FormGroup({
       id: new FormControl(this.system.id, Validators.required),
       name: new FormControl(this.system.name, Validators.required),
-      rankingSystem: new FormControl(
-        this.system.rankingSystem,
-        Validators.required,
-      ),
-      amountOfLevels: new FormControl(
-        this.system.amountOfLevels,
-        Validators.required,
-      ),
-      procentWinning: new FormControl(
-        this.system.procentWinning,
-        Validators.required,
-      ),
-      procentWinningPlus1: new FormControl(
-        this.system.procentWinningPlus1,
-        Validators.required,
-      ),
-      procentLosing: new FormControl(
-        this.system.procentLosing,
-        Validators.required,
-      ),
+      rankingSystem: new FormControl(this.system.rankingSystem, Validators.required),
+      amountOfLevels: new FormControl(this.system.amountOfLevels, Validators.required),
+      procentWinning: new FormControl(this.system.procentWinning, Validators.required),
+      procentWinningPlus1: new FormControl(this.system.procentWinningPlus1, Validators.required),
+      procentLosing: new FormControl(this.system.procentLosing, Validators.required),
       latestXGamesToUse: new FormControl(this.system.latestXGamesToUse),
-      minNumberOfGamesUsedForUpgrade: new FormControl(
-        this.system.minNumberOfGamesUsedForUpgrade,
-        Validators.required,
-      ),
-      maxDiffLevels: new FormControl(
-        this.system.maxDiffLevels,
-        Validators.required,
-      ),
-      updateIntervalAmount: new FormControl(
-        this.system.updateIntervalAmount,
-        Validators.required,
-      ),
-      updateIntervalUnit: new FormControl(
-        this.system.updateIntervalUnit,
-        Validators.required,
-      ),
-      updateDayOfWeek: new FormControl(
-        this.system.updateDayOfWeek,
-        Validators.required,
-      ),
+      minNumberOfGamesUsedForUpgrade: new FormControl(this.system.minNumberOfGamesUsedForUpgrade, Validators.required),
+      maxDiffLevels: new FormControl(this.system.maxDiffLevels, Validators.required),
+      updateIntervalAmount: new FormControl(this.system.updateIntervalAmount, Validators.required),
+      updateIntervalUnit: new FormControl(this.system.updateIntervalUnit, Validators.required),
+      updateDayOfWeek: new FormControl(this.system.updateDayOfWeek, Validators.required),
 
-      periodAmount: new FormControl(
-        this.system.periodAmount,
-        Validators.required,
-      ),
+      periodAmount: new FormControl(this.system.periodAmount, Validators.required),
       periodUnit: new FormControl(this.system.periodUnit, Validators.required),
-      calculationIntervalAmount: new FormControl(
-        this.system.calculationIntervalAmount,
-        Validators.required,
-      ),
-      calculationIntervalUnit: new FormControl(
-        this.system.calculationIntervalUnit,
-        Validators.required,
-      ),
-      calculationDayOfWeek: new FormControl(
-        this.system.calculationDayOfWeek,
-        Validators.required,
-      ),
-      differenceForDowngradeSingle: new FormControl(
-        this.system.differenceForDowngradeSingle,
-        Validators.required,
-      ),
-      differenceForDowngradeDouble: new FormControl(
-        this.system.differenceForDowngradeDouble,
-        Validators.required,
-      ),
-      differenceForDowngradeMix: new FormControl(
-        this.system.differenceForDowngradeMix,
-        Validators.required,
-      ),
-      differenceForUpgradeSingle: new FormControl(
-        this.system.differenceForUpgradeSingle,
-        Validators.required,
-      ),
-      differenceForUpgradeDouble: new FormControl(
-        this.system.differenceForUpgradeDouble,
-        Validators.required,
-      ),
-      differenceForUpgradeMix: new FormControl(
-        this.system.differenceForUpgradeMix,
-        Validators.required,
-      ),
-      startingType: new FormControl(
-        this.system.startingType,
-        Validators.required,
-      ),
+      calculationIntervalAmount: new FormControl(this.system.calculationIntervalAmount, Validators.required),
+      calculationIntervalUnit: new FormControl(this.system.calculationIntervalUnit, Validators.required),
+      calculationDayOfWeek: new FormControl(this.system.calculationDayOfWeek, Validators.required),
+      differenceForDowngradeSingle: new FormControl(this.system.differenceForDowngradeSingle, Validators.required),
+      differenceForDowngradeDouble: new FormControl(this.system.differenceForDowngradeDouble, Validators.required),
+      differenceForDowngradeMix: new FormControl(this.system.differenceForDowngradeMix, Validators.required),
+      differenceForUpgradeSingle: new FormControl(this.system.differenceForUpgradeSingle, Validators.required),
+      differenceForUpgradeDouble: new FormControl(this.system.differenceForUpgradeDouble, Validators.required),
+      differenceForUpgradeMix: new FormControl(this.system.differenceForUpgradeMix, Validators.required),
+      startingType: new FormControl(this.system.startingType, Validators.required),
       primary: new FormControl(this.system.primary),
       calculateUpdates: new FormControl(this.system.calculateUpdates),
       maxLevelUpPerChange: new FormControl(this.system.maxLevelUpPerChange),
@@ -175,13 +100,11 @@ export class RankingSystemFieldsComponent implements OnInit {
 
     this.rakingGroupForm = new FormControl(this.system.rankingGroups);
 
-    this.rankingSystemForm.valueChanges
-      .pipe(debounceTime(600))
-      .subscribe((value) => {
-        if (this.rankingSystemForm.valid) {
-          this.whenUpdated.next(value);
-        }
-      });
+    this.rankingSystemForm.valueChanges.pipe(debounceTime(600)).subscribe((value) => {
+      if (this.rankingSystemForm.valid) {
+        this.whenUpdated.next(value);
+      }
+    });
   }
 
   onGroupChange(event: MatSelectChange) {
@@ -190,9 +113,7 @@ export class RankingSystemFieldsComponent implements OnInit {
       (group: RankingGroup) => !this.system.rankingGroups?.includes(group),
     );
     // find groups removed
-    const removedGroups = this.system.rankingGroups?.filter(
-      (group) => !event.value.includes(group),
-    );
+    const removedGroups = this.system.rankingGroups?.filter((group) => !event.value.includes(group));
 
     // emit events
     addedGroups?.forEach((group) => {
@@ -222,10 +143,7 @@ export class RankingSystemFieldsComponent implements OnInit {
         systemId: this.system.id,
       });
 
-      this.system.rankingGroups?.splice(
-        this.system.rankingGroups?.indexOf(group),
-        1,
-      );
+      this.system.rankingGroups?.splice(this.system.rankingGroups?.indexOf(group), 1);
     });
   }
 

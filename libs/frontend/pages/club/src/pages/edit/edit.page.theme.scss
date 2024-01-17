@@ -3,10 +3,8 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use './components/club-edit-location/club-edit-location.component.theme.scss'
-  as club-edit-location;
-@use './components/club-edit-team/club-edit-team.component.theme.scss' as
-  club-edit-team;
+@use './components/club-edit-location/club-edit-location.component.theme.scss' as club-edit-location;
+@use './components/club-edit-team/club-edit-team.component.theme.scss' as club-edit-team;
 
 @mixin color($theme) {
   badman-club-edit {

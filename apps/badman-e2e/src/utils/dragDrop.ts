@@ -1,10 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 
-export const dragDrop = async (
-  page: Page,
-  originElement: Locator,
-  destinationElement: Locator,
-) => {
+export const dragDrop = async (page: Page, originElement: Locator, destinationElement: Locator) => {
   // check if we can have bot elements on screen
   await originElement.scrollIntoViewIfNeeded();
   await destinationElement.scrollIntoViewIfNeeded();

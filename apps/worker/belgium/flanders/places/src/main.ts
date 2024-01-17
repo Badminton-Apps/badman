@@ -5,15 +5,12 @@ import { cpus } from 'node:os';
 import { AppModule } from './app/app.module';
 
 async function bootstrapPlacessService() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.TCP,
-      options: {
-        port: 4002,
-      },
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+    transport: Transport.TCP,
+    options: {
+      port: 4002,
     },
-  );
+  });
   await app.listen();
 }
 

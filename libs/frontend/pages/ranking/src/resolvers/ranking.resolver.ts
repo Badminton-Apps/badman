@@ -44,11 +44,7 @@ export class RankingSystemResolver {
         },
       })
       .pipe(
-        transferState(
-          'rankingKey-' + systemId,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState('rankingKey-' + systemId, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.rankingSystem) {
             throw new Error('No player');

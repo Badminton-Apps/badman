@@ -1,17 +1,5 @@
-import {
-  getLetterForRegion,
-  SubEventTypeEnum,
-  UseForTeamName,
-} from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { getLetterForRegion, SubEventTypeEnum, UseForTeamName } from '@badman/utils';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -117,17 +105,7 @@ export class Team extends Model {
   link!: string;
 
   @Field(() => String, { nullable: true })
-  @Column(
-    DataType.ENUM(
-      'sunday',
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-    ),
-  )
+  @Column(DataType.ENUM('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'))
   preferredDay?: string;
 
   @BelongsToMany(() => Location, () => TeamLocationCompetition)
@@ -219,46 +197,28 @@ export class Team extends Model {
     }
   }
 
-  static async generateName(
-    instance: Team,
-    options?: CreateOptions,
-    club?: Club,
-  ) {
-    club =
-      club ?? (await instance.getClub({ transaction: options?.transaction }));
+  static async generateName(instance: Team, options?: CreateOptions, club?: Club) {
+    club = club ?? (await instance.getClub({ transaction: options?.transaction }));
 
     switch (club?.useForTeamName ?? UseForTeamName.NAME) {
       case UseForTeamName.FULL_NAME:
-        instance.name = `${club.fullName} ${
-          instance.teamNumber
-        }${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.fullName} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
         break;
       case UseForTeamName.ABBREVIATION:
-        instance.name = `${club.abbreviation} ${
-          instance.teamNumber
-        }${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.abbreviation} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
         break;
 
       default:
       case UseForTeamName.NAME:
-        instance.name = `${club.name} ${
-          instance.teamNumber
-        }${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.name} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
         break;
     }
   }
 
-  static async generateAbbreviation(
-    instance: Team,
-    options?: CreateOptions,
-    club?: Club,
-  ) {
-    club =
-      club ?? (await instance.getClub({ transaction: options?.transaction }));
+  static async generateAbbreviation(instance: Team, options?: CreateOptions, club?: Club) {
+    club = club ?? (await instance.getClub({ transaction: options?.transaction }));
 
-    instance.abbreviation = `${club.abbreviation} ${
-      instance.teamNumber
-    }${getLetterForRegion(instance.type, 'vl')}`;
+    instance.abbreviation = `${club.abbreviation} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
   }
   // #endregion
 
@@ -284,14 +244,8 @@ export class Team extends Model {
   setSubEvents!: BelongsToManySetAssociationsMixin<SubEventCompetition, string>;
   addSubEvents!: BelongsToManyAddAssociationsMixin<SubEventCompetition, string>;
   addSubEvent!: BelongsToManyAddAssociationMixin<SubEventCompetition, string>;
-  removeSubEvent!: BelongsToManyRemoveAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  removeSubEvents!: BelongsToManyRemoveAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
+  removeSubEvent!: BelongsToManyRemoveAssociationMixin<SubEventCompetition, string>;
+  removeSubEvents!: BelongsToManyRemoveAssociationsMixin<SubEventCompetition, string>;
   hasSubEvent!: BelongsToManyHasAssociationMixin<SubEventCompetition, string>;
   hasSubEvents!: BelongsToManyHasAssociationsMixin<SubEventCompetition, string>;
   countSubEvent!: BelongsToManyCountAssociationsMixin;
@@ -301,14 +255,8 @@ export class Team extends Model {
   setHomeEncounters!: HasManySetAssociationsMixin<EncounterCompetition, string>;
   addHomeEncounters!: HasManyAddAssociationsMixin<EncounterCompetition, string>;
   addHomeEncounter!: HasManyAddAssociationMixin<EncounterCompetition, string>;
-  removeHomeEncounter!: HasManyRemoveAssociationMixin<
-    EncounterCompetition,
-    string
-  >;
-  removeHomeEncounters!: HasManyRemoveAssociationsMixin<
-    EncounterCompetition,
-    string
-  >;
+  removeHomeEncounter!: HasManyRemoveAssociationMixin<EncounterCompetition, string>;
+  removeHomeEncounters!: HasManyRemoveAssociationsMixin<EncounterCompetition, string>;
   hasHomeEncounter!: HasManyHasAssociationMixin<EncounterCompetition, string>;
   hasHomeEncounters!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
   countHomeEncounters!: HasManyCountAssociationsMixin;
@@ -318,14 +266,8 @@ export class Team extends Model {
   setAwayEncounters!: HasManySetAssociationsMixin<EncounterCompetition, string>;
   addAwayEncounters!: HasManyAddAssociationsMixin<EncounterCompetition, string>;
   addAwayEncounter!: HasManyAddAssociationMixin<EncounterCompetition, string>;
-  removeAwayEncounter!: HasManyRemoveAssociationMixin<
-    EncounterCompetition,
-    string
-  >;
-  removeAwayEncounters!: HasManyRemoveAssociationsMixin<
-    EncounterCompetition,
-    string
-  >;
+  removeAwayEncounter!: HasManyRemoveAssociationMixin<EncounterCompetition, string>;
+  removeAwayEncounters!: HasManyRemoveAssociationsMixin<EncounterCompetition, string>;
   hasAwayEncounter!: HasManyHasAssociationMixin<EncounterCompetition, string>;
   hasAwayEncounters!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
   countAwayEncounters!: HasManyCountAssociationsMixin;
@@ -363,15 +305,7 @@ export class Team extends Model {
 
 @InputType()
 export class TeamUpdateInput extends PartialType(
-  OmitType(Team, [
-    'createdAt',
-    'updatedAt',
-    'club',
-    'players',
-    'captain',
-    'roles',
-    'entry',
-  ] as const),
+  OmitType(Team, ['createdAt', 'updatedAt', 'club', 'players', 'captain', 'roles', 'entry'] as const),
   InputType,
 ) {
   // Include the entry

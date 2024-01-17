@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  Input,
-  OnInit,
-  PLATFORM_ID,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { LoggedinUser, AuthenticateService } from '@badman/frontend-auth';
@@ -17,13 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'badman-beta',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    RouterModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, MatCardModule, RouterModule, MatButtonModule, MatIconModule],
   templateUrl: './beta.component.html',
   styleUrls: ['./beta.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

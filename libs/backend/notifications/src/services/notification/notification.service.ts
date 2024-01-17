@@ -37,10 +37,7 @@ export class NotificationService {
     private configService: ConfigService<ConfigType>,
   ) {}
 
-  async notifyEncounterChange(
-    encounter: EncounterCompetition,
-    homeTeamRequests: boolean,
-  ) {
+  async notifyEncounterChange(encounter: EncounterCompetition, homeTeamRequests: boolean) {
     const homeTeam = await encounter.getHome({
       include: [
         {
@@ -65,15 +62,8 @@ export class NotificationService {
     const newReqTeam = homeTeamRequests ? homeTeam : awayTeam;
     const confReqTeam = homeTeamRequests ? awayTeam : homeTeam;
 
-    const notifierNew = new CompetitionEncounterChangeNewRequestNotifier(
-      this.mailing,
-      this.push,
-    );
-    const notifierConform =
-      new CompetitionEncounterChangeConfirmationRequestNotifier(
-        this.mailing,
-        this.push,
-      );
+    const notifierNew = new CompetitionEncounterChangeNewRequestNotifier(this.mailing, this.push);
+    const notifierConform = new CompetitionEncounterChangeConfirmationRequestNotifier(this.mailing, this.push);
 
     if (newReqTeam.captain && newReqTeam.email) {
       notifierNew.notify(
@@ -94,15 +84,8 @@ export class NotificationService {
     }
   }
 
-  async notifyEncounterChangeFinished(
-    encounter: EncounterCompetition,
-    locationHasChanged: boolean,
-  ) {
-    const notifierFinished =
-      new CompetitionEncounterChangeFinishRequestNotifier(
-        this.mailing,
-        this.push,
-      );
+  async notifyEncounterChangeFinished(encounter: EncounterCompetition, locationHasChanged: boolean) {
+    const notifierFinished = new CompetitionEncounterChangeFinishRequestNotifier(this.mailing, this.push);
     const homeTeam = await encounter.getHome({
       include: [
         {
@@ -148,10 +131,7 @@ export class NotificationService {
   }
 
   async notifyEncounterNotEntered(encounter: EncounterCompetition) {
-    const notifierNotEntered = new CompetitionEncounterNotEnteredNotifier(
-      this.mailing,
-      this.push,
-    );
+    const notifierNotEntered = new CompetitionEncounterNotEnteredNotifier(this.mailing, this.push);
 
     const homeTeam = await encounter.getHome({
       include: [
@@ -163,9 +143,7 @@ export class NotificationService {
     });
 
     // Property was loaded when sending notification
-    const eventId =
-      encounter.drawCompetition?.subEventCompetition?.eventCompetition
-        ?.visualCode;
+    const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
     const matchId = encounter.visualCode;
     const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
@@ -180,10 +158,7 @@ export class NotificationService {
   }
 
   async notifyEncounterNotAccepted(encounter: EncounterCompetition) {
-    const notifierNotAccepted = new CompetitionEncounterNotAcceptedNotifier(
-      this.mailing,
-      this.push,
-    );
+    const notifierNotAccepted = new CompetitionEncounterNotAcceptedNotifier(this.mailing, this.push);
     const awayTeam = await encounter.getAway({
       include: [
         {
@@ -194,9 +169,7 @@ export class NotificationService {
     });
 
     // Property was loaded when sending notification
-    const eventId =
-      encounter.drawCompetition?.subEventCompetition?.eventCompetition
-        ?.visualCode;
+    const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
     const matchId = encounter.visualCode;
     const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
@@ -212,10 +185,7 @@ export class NotificationService {
 
   async notifySyncFinished(
     userId: string,
-    {
-      event,
-      success,
-    }: { event?: EventCompetition | EventTournament; success: boolean },
+    { event, success }: { event?: EventCompetition | EventTournament; success: boolean },
   ) {
     const notifierSyncFinished = success
       ? new EventSyncedSuccessNotifier(this.mailing, this.push)
@@ -225,25 +195,12 @@ export class NotificationService {
     const url = `${this.configService.get('CLIENT_URL')}/events/${event?.id}`;
 
     if (user?.email && event?.id && url && user?.slug) {
-      notifierSyncFinished.notify(
-        user,
-        event?.id,
-        { event, success },
-        { email: user?.email, url, slug: user?.slug },
-      );
+      notifierSyncFinished.notify(user, event?.id, { event, success }, { email: user?.email, url, slug: user?.slug });
     }
   }
 
-  async notifyEnrollment(
-    userId: string,
-    clubId: string,
-    season: number,
-    email: string,
-  ) {
-    const notifierEnrollment = new ClubEnrollmentNotifier(
-      this.mailing,
-      this.push,
-    );
+  async notifyEnrollment(userId: string, clubId: string, season: number, email: string) {
+    const notifierEnrollment = new ClubEnrollmentNotifier(this.mailing, this.push);
 
     const user = await Player.findByPk(userId);
     if (!user) {
@@ -311,12 +268,7 @@ export class NotificationService {
       ],
     });
 
-    const ids = club?.teams
-      ?.map(
-        (team) =>
-          team?.entry?.meta?.competition?.players.map((player) => player.id),
-      )
-      .flat();
+    const ids = club?.teams?.map((team) => team?.entry?.meta?.competition?.players.map((player) => player.id)).flat();
 
     // fetch all baseaplayers
     const players = await Player.findAll({
@@ -372,8 +324,7 @@ export class NotificationService {
     }
 
     if (!encounter?.drawCompetition?.subEventCompetition) {
-      encounter.drawCompetition.subEventCompetition =
-        await encounter?.drawCompetition?.getSubEventCompetition();
+      encounter.drawCompetition.subEventCompetition = await encounter?.drawCompetition?.getSubEventCompetition();
     }
 
     if (!encounter?.drawCompetition?.subEventCompetition?.eventCompetition) {
@@ -389,19 +340,11 @@ export class NotificationService {
       encounter.away = await encounter?.getAway();
     }
 
-    const urlBadman = `${this.configService.get(
-      'CLIENT_URL',
-    )}/competition/${encounter?.drawCompetition?.subEventCompetition
-      ?.eventCompetition?.id}/draw/${encounter?.drawCompetition
-      ?.id}/encounter/${encounter?.id}`;
+    const urlBadman = `${this.configService.get('CLIENT_URL')}/competition/${encounter?.drawCompetition
+      ?.subEventCompetition?.eventCompetition?.id}/draw/${encounter?.drawCompetition?.id}/encounter/${encounter?.id}`;
 
     if (user?.email && encounter?.id && url && user?.slug) {
-      notifier.notify(
-        user,
-        encounter.id,
-        { encounter, url, urlBadman },
-        { email: user?.email, slug: user?.slug },
-      );
+      notifier.notify(user, encounter.id, { encounter, url, urlBadman }, { email: user?.email, slug: user?.slug });
     }
   }
 }

@@ -48,22 +48,15 @@ export class UserShortcutsComponent implements OnInit {
           )
           .sort((a, b) => {
             // sort by membership type, first normal then loan
-            if (
-              a.clubMembership?.membershipType ===
-              b.clubMembership?.membershipType
-            ) {
+            if (a.clubMembership?.membershipType === b.clubMembership?.membershipType) {
               return 0;
             }
 
-            if (
-              a.clubMembership?.membershipType === ClubMembershipType.NORMAL
-            ) {
+            if (a.clubMembership?.membershipType === ClubMembershipType.NORMAL) {
               return -1;
             }
 
-            if (
-              b.clubMembership?.membershipType === ClubMembershipType.NORMAL
-            ) {
+            if (b.clubMembership?.membershipType === ClubMembershipType.NORMAL) {
               return 1;
             }
 

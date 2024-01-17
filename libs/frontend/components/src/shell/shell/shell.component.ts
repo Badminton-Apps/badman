@@ -1,10 +1,4 @@
-import {
-  Component,
-  inject,
-  Inject,
-  isDevMode,
-  PLATFORM_ID,
-} from '@angular/core';
+import { Component, inject, Inject, isDevMode, PLATFORM_ID } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -27,18 +21,10 @@ import {
   Router,
   RouterModule,
 } from '@angular/router';
-import {
-  ServiceWorkerModule,
-  SwUpdate,
-  VersionReadyEvent,
-} from '@angular/service-worker';
+import { ServiceWorkerModule, SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { ClaimService } from '@badman/frontend-auth';
 import { RankingSystemService } from '@badman/frontend-graphql';
-import {
-  GOOGLEADS_CONFIG_TOKEN,
-  GoogleAdsConfiguration,
-  VERSION_INFO,
-} from '@badman/frontend-html-injects';
+import { GOOGLEADS_CONFIG_TOKEN, GoogleAdsConfiguration, VERSION_INFO } from '@badman/frontend-html-injects';
 import { Banner } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -99,9 +85,7 @@ export class ShellComponent {
   banner?: Banner;
 
   isHandset = toSignal(
-    this.breakpointObserver
-      .observe(['(max-width: 959.98px)'])
-      .pipe(map((result) => result.matches)),
+    this.breakpointObserver.observe(['(max-width: 959.98px)']).pipe(map((result) => result.matches)),
   );
 
   canEnroll$!: Observable<boolean>;
@@ -122,19 +106,12 @@ export class ShellComponent {
     snackBar: MatSnackBar,
     private auth: ClaimService,
   ) {
-    this.banner = new Banner(
-      config.publisherId,
-      config.slots.sidebar,
-      config.enabled,
-      config.debug,
-    );
+    this.banner = new Banner(config.publisherId, config.slots.sidebar, config.enabled, config.debug);
 
     if (isPlatformBrowser(this.platformId)) {
       updates.versionUpdates
         .pipe(
-          filter(
-            (evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY',
-          ),
+          filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'),
           map((evt) => ({
             type: 'UPDATE_AVAILABLE',
             current: evt.currentVersion,
@@ -176,16 +153,11 @@ export class ShellComponent {
         .pipe(
           map(
             (events) =>
-              (events?.data?.eventTournaments?.count ?? 0) != 0 ||
-              (events?.data?.eventCompetitions?.count ?? 0) != 0,
+              (events?.data?.eventTournaments?.count ?? 0) != 0 || (events?.data?.eventCompetitions?.count ?? 0) != 0,
           ),
         );
 
-      this.canEnroll$ = combineLatest([
-        canAnyEnroll$,
-        canviewEnroll$,
-        openEnrollments,
-      ]).pipe(
+      this.canEnroll$ = combineLatest([canAnyEnroll$, canviewEnroll$, openEnrollments]).pipe(
         map(([canAnyEnroll, canViewEnroll, openEnrollments]) => {
           return canAnyEnroll || (canViewEnroll && openEnrollments);
         }),
@@ -214,19 +186,14 @@ export class ShellComponent {
         .pipe(
           map(
             (events) =>
-              (events?.data?.eventTournaments?.count ?? 0) != 0 ||
-              (events?.data?.eventCompetitions?.count ?? 0) != 0,
+              (events?.data?.eventTournaments?.count ?? 0) != 0 || (events?.data?.eventCompetitions?.count ?? 0) != 0,
           ),
         );
 
       const canAnyChange$ = this.auth.hasClaim$('change-any:encounter');
       const canviewChange$ = this.auth.hasClaim$('*change:encounter');
 
-      this.canChange$ = combineLatest([
-        canAnyChange$,
-        canviewChange$,
-        openChangeEncounter,
-      ]).pipe(
+      this.canChange$ = combineLatest([canAnyChange$, canviewChange$, openChangeEncounter]).pipe(
         map(([canAnyChange, canViewChange, openChangeEncounter]) => {
           return canAnyChange || (canViewChange && openChangeEncounter);
         }),

@@ -3,8 +3,7 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use './competition-events/competition-events.component.theme.scss' as
-  competition-events;
+@use './competition-events/competition-events.component.theme.scss' as competition-events;
 
 @mixin color($theme) {
   badman-competition-overview {

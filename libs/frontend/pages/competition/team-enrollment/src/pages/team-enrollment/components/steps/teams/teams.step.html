@@ -1,11 +1,7 @@
 <div class="description">
   {{'all.competition.team-enrollment.select-teams-description' | translate}}
-  <p class="error">
-    {{'all.competition.team-enrollment.example-error' | translate}}
-  </p>
-  <p class="warning">
-    {{'all.competition.team-enrollment.example-warning' | translate}}
-  </p>
+  <p class="error">{{'all.competition.team-enrollment.example-error' | translate}}</p>
+  <p class="warning">{{'all.competition.team-enrollment.example-warning' | translate}}</p>
 </div>
 @if (subEvents$ | async; as subEvents) { @for (type of eventTypes; track type) {
 <div class="type">
@@ -16,8 +12,8 @@
   </button>
 </div>
 <div class="teams-container">
-  @if (getTypeArray(type); as groups) { @for (group of groups.controls; track
-  group) { @if (group.get('team')?.value?.id) {
+  @if (getTypeArray(type); as groups) { @for (group of groups.controls; track group) { @if
+  (group.get('team')?.value?.id) {
   <badman-team-enrollment
     [attr.data-anchor]="group.get('team')?.value?.id"
     class="team"
@@ -31,9 +27,7 @@
   >
   </badman-team-enrollment>
   } } } @else {
-  <div class="no-teams">
-    {{'all.competition.team-enrollment.no-teams' | translate}}
-  </div>
+  <div class="no-teams">{{'all.competition.team-enrollment.no-teams' | translate}}</div>
   }
 </div>
 }
@@ -52,9 +46,7 @@
     </mat-form-field>
   </div>
   <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="">
-      {{'all.button.cancel' | translate}}
-    </button>
+    <button mat-button [mat-dialog-close]="">{{'all.button.cancel' | translate}}</button>
     <button
       mat-button
       [mat-dialog-close]="{
@@ -68,6 +60,4 @@
   </div>
 </ng-template>
 }
-<ng-template #loading>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar
-></ng-template>
+<ng-template #loading> <mat-progress-bar mode="indeterminate"></mat-progress-bar></ng-template>

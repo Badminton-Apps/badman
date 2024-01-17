@@ -3,11 +3,9 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use './competition-enrollments/competition-enrollments.component.theme.scss' as
-  competition-enrollments;
+@use './competition-enrollments/competition-enrollments.component.theme.scss' as competition-enrollments;
 @use './competition-map/competition-map.component.theme.scss' as competition-map;
-@use './competition-encounters/competition-encounters.component.theme.scss' as
-  competition-encounters;
+@use './competition-encounters/competition-encounters.component.theme.scss' as competition-encounters;
 
 @mixin color($theme) {
   badman-competition-detail {

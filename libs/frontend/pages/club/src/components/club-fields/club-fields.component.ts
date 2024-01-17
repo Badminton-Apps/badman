@@ -1,26 +1,11 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ClaimService } from '@badman/frontend-auth';
-import {
-  HasClaimComponent,
-  SelectCountryComponent,
-  SelectCountrystateComponent,
-} from '@badman/frontend-components';
+import { HasClaimComponent, SelectCountryComponent, SelectCountrystateComponent } from '@badman/frontend-components';
 import { UseForTeamName } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -84,10 +69,7 @@ export class ClubFieldsComponent implements OnInit {
         clubId: new FormControl('', Validators.required),
         fullName: new FormControl('', Validators.required),
         abbreviation: new FormControl('', Validators.required),
-        useForTeamName: new FormControl(
-          UseForTeamName.NAME,
-          Validators.required,
-        ),
+        useForTeamName: new FormControl(UseForTeamName.NAME, Validators.required),
         country: new FormControl('', Validators.required),
         subdivision: new FormControl('', Validators.required),
       }) as FormGroup<{

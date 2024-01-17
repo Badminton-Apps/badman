@@ -37,7 +37,7 @@ export class PlayerBuilder {
     this.player.firstName = firstName;
     this.player.lastName = lastName;
     this.player.slug = `${firstName}-${lastName}`;
-    
+
     return this;
   }
 

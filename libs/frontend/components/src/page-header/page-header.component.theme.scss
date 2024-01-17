@@ -21,10 +21,7 @@
       &,
       &:visited,
       &:hover {
-        color: mat.get-color-from-palette(
-          map.get($color-config, 'primary'),
-          500
-        );
+        color: mat.get-color-from-palette(map.get($color-config, 'primary'), 500);
       }
     }
   }

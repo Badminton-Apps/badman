@@ -1,5 +1,5 @@
 //This fixture is used to access the home page and we use this in our tests.
-import { test as base } from "@playwright/test";
+import { test as base } from '@playwright/test';
 import AssemblyPage from './pages/assembly.page';
 import HomePage from './pages/home.page';
 
@@ -19,4 +19,4 @@ export const badmanTest = base.extend<testFixture>({
     await use(assemblyPage);
   },
 });
-export { expect } from "@playwright/test";
+export { expect } from '@playwright/test';

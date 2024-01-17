@@ -19,33 +19,19 @@
     </th>
     <td mat-cell *matCellDef="let element">
       @if (type === 'team') {
-        <a
-          class="has-team"
-          [routerLink]="[
-            '/club',
-            element.team?.club?.slug,
-            'team',
-            element.team?.slug
-          ]"
-        >
+        <a class="has-team" [routerLink]="['/club', element.team?.club?.slug, 'team', element.team?.slug]">
           {{ element.team?.name }}
         </a>
       }
       @if (type === 'players') {
         <div>
-          <a
-            class="has-user"
-            [routerLink]="['/player', element.players[0]?.slug]"
-          >
+          <a class="has-user" [routerLink]="['/player', element.players[0]?.slug]">
             <!-- Name -->
             <span>{{ element.players[0]?.fullName }}</span>
           </a>
           @if (element.players[1]) {
             <br />
-            <a
-              class="has-user"
-              [routerLink]="['/player', element.players[1]?.slug]"
-            >
+            <a class="has-user" [routerLink]="['/player', element.players[1]?.slug]">
               <!-- Name -->
               <span>{{ element.players[1]?.fullName }}</span>
             </a>

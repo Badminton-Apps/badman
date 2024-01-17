@@ -1,24 +1,8 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  Input,
-  OnInit,
-  PLATFORM_ID,
-  Signal,
-  TransferState,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Injector, Input, OnInit, PLATFORM_ID, Signal, TransferState, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -40,13 +24,7 @@ import {
   HasClaimComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
-import {
-  Club,
-  Comment,
-  EventCompetition,
-  Location,
-  Team,
-} from '@badman/frontend-models';
+import { Club, Comment, EventCompetition, Location, Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
@@ -84,15 +62,9 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
   providers: [provideAnimations()],
   animations: [
     trigger('detailExpand', [
-      state(
-        'collapsed',
-        style({ height: '0px', minHeight: '0', visibility: 'hidden' }),
-      ),
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
       state('expanded', style({ height: '*', visibility: 'visible' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
@@ -220,9 +192,7 @@ export class ClubCompetitionComponent implements OnInit {
         map((result) => result?.data?.teams?.map((t) => new Team(t))),
         tap((teams) => {
           // unique set of events
-          const events = teams?.map(
-            (team) => team.entry?.subEventCompetition?.eventCompetition,
-          );
+          const events = teams?.map((team) => team.entry?.subEventCompetition?.eventCompetition);
           const uniqueEvents = [...new Set(events)];
 
           if (uniqueEvents?.length) {

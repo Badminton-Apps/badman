@@ -10,14 +10,7 @@ import { ListGamesComponent } from './list-games/list-games.component';
 @Component({
   selector: 'badman-recent-games',
   standalone: true,
-  imports: [
-    CommonModule,
-    MomentModule,
-    TranslateModule,
-    RouterModule,
-    ListEncountersComponent,
-    ListGamesComponent,
-  ],
+  imports: [CommonModule, MomentModule, TranslateModule, RouterModule, ListEncountersComponent, ListGamesComponent],
 
   templateUrl: './recent-games.component.html',
   styleUrls: ['./recent-games.component.scss'],

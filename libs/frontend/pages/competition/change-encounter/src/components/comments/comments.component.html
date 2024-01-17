@@ -24,14 +24,8 @@
   </div>
   <div class="new-comment">
     <mat-form-field>
-      <mat-label>{{
-        'all.competition.change-encounter.comment' | translate
-      }}</mat-label>
-      <textarea
-        matInput
-        [formControl]="this.commentControl"
-        rows="5"
-      ></textarea>
+      <mat-label>{{ 'all.competition.change-encounter.comment' | translate }}</mat-label>
+      <textarea matInput [formControl]="this.commentControl" rows="5"></textarea>
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="addComment()">
       {{ 'all.button.add-comment' | translate }}

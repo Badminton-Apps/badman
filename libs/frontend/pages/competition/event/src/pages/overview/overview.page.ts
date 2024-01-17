@@ -88,10 +88,7 @@ export class OverviewPageComponent implements OnInit {
         type: 'website',
         keywords: ['event', 'competition', 'badminton'],
       });
-      this.breadcrumbsService.set(
-        'competition',
-        translations['all.competition.title'],
-      );
+      this.breadcrumbsService.set('competition', translations['all.competition.title']);
     });
   }
 

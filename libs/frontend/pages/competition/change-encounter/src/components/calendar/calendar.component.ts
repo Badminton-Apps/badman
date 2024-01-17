@@ -1,18 +1,9 @@
 import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MatCheckboxChange,
-  MatCheckboxModule,
-} from '@angular/material/checkbox';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -25,13 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent } from '@badman/frontend-components';
-import {
-  EncounterChangeDate,
-  EncounterCompetition,
-  EventCompetition,
-  Location,
-  Team,
-} from '@badman/frontend-models';
+import { EncounterChangeDate, EncounterCompetition, EventCompetition, Location, Team } from '@badman/frontend-models';
 import { getCurrentSeason, sortTeams } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -98,10 +83,7 @@ export class CalendarComponent implements OnInit {
   > = new Map();
   public dayEvents: Map<string, string[]> = new Map();
 
-  public changeRequests: Map<
-    string,
-    { request: EncounterChangeDate; encounter: EncounterCompetition }[]
-  > = new Map();
+  public changeRequests: Map<string, { request: EncounterChangeDate; encounter: EncounterCompetition }[]> = new Map();
   public teamColors = new Map<string, string>();
   public homeTeams: Team[] = [];
   public awayTeams: Team[] = [];
@@ -168,15 +150,7 @@ export class CalendarComponent implements OnInit {
     this.season = getCurrentSeason(this.firstDayOfMonth);
     this.monthNames = moment.months();
     const weekdays = moment.weekdays();
-    this.weekDayNames = [
-      weekdays[1],
-      weekdays[2],
-      weekdays[3],
-      weekdays[4],
-      weekdays[5],
-      weekdays[6],
-      weekdays[0],
-    ];
+    this.weekDayNames = [weekdays[1], weekdays[2], weekdays[3], weekdays[4], weekdays[5], weekdays[6], weekdays[0]];
 
     this.minDate = moment([this.season, 8, 1]).toDate();
     this.maxDate = moment([this.season + 1, 4, 1])
@@ -282,9 +256,7 @@ export class CalendarComponent implements OnInit {
             const wDay = moment(day);
             const format = wDay.format('YYYY-MM-DD');
 
-            if (
-              wDay.locale('en').format('dddd').toLocaleLowerCase() === aDay.day
-            ) {
+            if (wDay.locale('en').format('dddd').toLocaleLowerCase() === aDay.day) {
               if (!this.availibilities.has(format)) {
                 this.availibilities.set(format, []);
               }
@@ -323,11 +295,7 @@ export class CalendarComponent implements OnInit {
 
         // for each day in the exception
         // push the exception to the exceptions map
-        for (
-          let day = start.clone();
-          day.isSameOrBefore(end);
-          day.add(1, 'day')
-        ) {
+        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, 'day')) {
           const format = day.format('YYYY-MM-DD');
 
           // clear out the exceptions
@@ -354,11 +322,7 @@ export class CalendarComponent implements OnInit {
 
         // for each day in the exception
         // push the exception to the exceptions map
-        for (
-          let day = start.clone();
-          day.isSameOrBefore(end);
-          day.add(1, 'day')
-        ) {
+        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, 'day')) {
           const format = day.format('YYYY-MM-DD');
 
           if (!this.dayEvents.has(format)) {
@@ -392,12 +356,7 @@ export class CalendarComponent implements OnInit {
       const enc = this.encounters.get(date);
       const locations = day.info.locations;
 
-      if (
-        enc?.some(
-          (e) => this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId),
-        ) ||
-        locations?.length > 0
-      ) {
+      if (enc?.some((e) => this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId)) || locations?.length > 0) {
         // if any of the teams is visible
         hasActivityOnDay[weekdayName] = true;
       }
@@ -432,17 +391,11 @@ export class CalendarComponent implements OnInit {
     return weeks;
   }
 
-  private async _loadEncountersBetween(
-    start: moment.Moment,
-    end: moment.Moment,
-  ) {
+  private async _loadEncountersBetween(start: moment.Moment, end: moment.Moment) {
     this.encounters.clear();
     this.changeRequests.clear();
 
-    const teams = [
-      ...(this.homeTeams?.map((t) => t.id) ?? []),
-      ...(this.awayTeams?.map((t) => t.id) ?? []),
-    ];
+    const teams = [...(this.homeTeams?.map((t) => t.id) ?? []), ...(this.awayTeams?.map((t) => t.id) ?? [])];
 
     // get all encounters where any of the teams is home or away
 
@@ -456,10 +409,7 @@ export class CalendarComponent implements OnInit {
         }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetHomeEncountersForTeams(
-              $where: JSONObject
-              $order: [SortOrderType!]
-            ) {
+            query GetHomeEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
                 count
                 rows {
@@ -520,10 +470,7 @@ export class CalendarComponent implements OnInit {
         }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetHomeEncountersForTeams(
-              $where: JSONObject
-              $order: [SortOrderType!]
-            ) {
+            query GetHomeEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
                 count
                 rows {
@@ -578,10 +525,7 @@ export class CalendarComponent implements OnInit {
         ),
     );
 
-    for (const encounter of [
-      ...homeEncounters.encounters,
-      ...awayEncounters.encounters,
-    ]) {
+    for (const encounter of [...homeEncounters.encounters, ...awayEncounters.encounters]) {
       const date = moment(encounter.date).format('YYYY-MM-DD');
 
       if (!this.encounters.has(date)) {
@@ -640,13 +584,7 @@ export class CalendarComponent implements OnInit {
             id: this.data.homeTeamId,
           },
         })
-        .pipe(
-          map(
-            (x) =>
-              new Team(x.data.team)?.entry?.subEventCompetition
-                ?.eventCompetition,
-          ),
-        ),
+        .pipe(map((x) => new Team(x.data.team)?.entry?.subEventCompetition?.eventCompetition)),
     );
   }
 
@@ -731,17 +669,12 @@ export class CalendarComponent implements OnInit {
 
   private _setColors(teams: Team[]) {
     for (const team of teams) {
-      this.teamColors.set(
-        team?.id ?? '',
-        `#${randomLightColor(team?.name ?? '')}`,
-      );
+      this.teamColors.set(team?.id ?? '', `#${randomLightColor(team?.name ?? '')}`);
     }
   }
 
   private _showVisible(teams: Team[]) {
-    const homeTeamsStorage = localStorage
-      .getItem(`visible_teams_${this.data.homeClubId}`)
-      ?.split(',');
+    const homeTeamsStorage = localStorage.getItem(`visible_teams_${this.data.homeClubId}`)?.split(',');
 
     const homeTeams = teams
       ?.filter((team) => {
@@ -759,9 +692,7 @@ export class CalendarComponent implements OnInit {
         return team.id;
       });
 
-    const awayTeamsStorage = localStorage
-      .getItem(`visible_teams_${this.data.awayClubId}`)
-      ?.split(',');
+    const awayTeamsStorage = localStorage.getItem(`visible_teams_${this.data.awayClubId}`)?.split(',');
     const awayTeams = teams
       ?.filter((team) => {
         if (awayTeamsStorage && awayTeamsStorage.length > 0 && team.id) {
@@ -801,25 +732,14 @@ export class CalendarComponent implements OnInit {
     this._loadMonth();
   }
 
-  public selectDay(
-    d?: Date,
-    time?: string,
-    locationId?: string,
-    space?: number,
-  ) {
+  public selectDay(d?: Date, time?: string, locationId?: string, space?: number) {
     const date = moment(d);
 
     if ((space ?? 0) <= 0) {
-      this.snack.open(
-        this.translate.instant(
-          'all.competition.change-encounter.calendar.no-space',
-        ),
-        'Ok',
-        {
-          // duration: 4000,
-          panelClass: 'error',
-        },
-      );
+      this.snack.open(this.translate.instant('all.competition.change-encounter.calendar.no-space'), 'Ok', {
+        // duration: 4000,
+        panelClass: 'error',
+      });
       return;
     }
 
@@ -867,10 +787,7 @@ export class CalendarComponent implements OnInit {
     const exceptions = this.exceptions.get(format);
 
     // only load availibility stating from 1st of september untill last of may
-    if (
-      (day.month() < 8 && day.year() == this.season) ||
-      (day.month() > 4 && day.year() == this.season + 1)
-    ) {
+    if ((day.month() < 8 && day.year() == this.season) || (day.month() > 4 && day.year() == this.season + 1)) {
       return dayInfo;
     }
 
@@ -889,9 +806,7 @@ export class CalendarComponent implements OnInit {
           space: Math.floor(availibility.courts / 2),
           time: availibility.time,
           locationId: availibility.locationId,
-          locationIndex:
-            this.locations.findIndex((l) => l.id === availibility.locationId) +
-            1,
+          locationIndex: this.locations.findIndex((l) => l.id === availibility.locationId) + 1,
           encounters: [],
           removed: [],
           requested: [],
@@ -900,9 +815,7 @@ export class CalendarComponent implements OnInit {
 
       for (const exception of exceptions ?? []) {
         // find availibility for location
-        const availibility = dayInfo.locations.find(
-          (l) => l.locationId === exception.locationId,
-        );
+        const availibility = dayInfo.locations.find((l) => l.locationId === exception.locationId);
 
         if (availibility) {
           availibility.space = Math.floor(exception.courts / 2);
@@ -912,16 +825,11 @@ export class CalendarComponent implements OnInit {
 
     if (encounters) {
       for (const encounter of encounters) {
-        const infoIndex = dayInfo.locations.findIndex(
-          (l) => l.locationId === encounter.locationId,
-        );
+        const infoIndex = dayInfo.locations.findIndex((l) => l.locationId === encounter.locationId);
 
         if (infoIndex >= 0) {
           // if there is an request
-          if (
-            encounter.encounterChange &&
-            !encounter.encounterChange.accepted
-          ) {
+          if (encounter.encounterChange && !encounter.encounterChange.accepted) {
             dayInfo.locations[infoIndex].removed.push(encounter);
           } else {
             // if the home team is visible
@@ -930,18 +838,13 @@ export class CalendarComponent implements OnInit {
             }
           }
 
-          dayInfo.locations[infoIndex].space = Math.max(
-            0,
-            dayInfo.locations[infoIndex].space - 1,
-          );
+          dayInfo.locations[infoIndex].space = Math.max(0, dayInfo.locations[infoIndex].space - 1);
         }
       }
     }
 
     for (const request of changeRequests ?? []) {
-      const infoIndex = dayInfo.locations.findIndex(
-        (l) => l.locationId === request?.request?.locationId,
-      );
+      const infoIndex = dayInfo.locations.findIndex((l) => l.locationId === request?.request?.locationId);
 
       if (infoIndex >= 0) {
         dayInfo.locations[infoIndex].requested.push(request.encounter);
@@ -969,11 +872,7 @@ export class CalendarComponent implements OnInit {
     );
   }
 
-  public changeVisibleTeams(
-    event: MatCheckboxChange,
-    teamId: string,
-    clubId: string,
-  ) {
+  public changeVisibleTeams(event: MatCheckboxChange, teamId: string, clubId: string) {
     if (!teamId) {
       return;
     }
@@ -984,16 +883,10 @@ export class CalendarComponent implements OnInit {
     if (event.checked) {
       this.visibleTeams?.[clubId].push(teamId);
     } else {
-      this.visibleTeams?.[clubId].splice(
-        this.visibleTeams?.[clubId].indexOf(teamId),
-        1,
-      );
+      this.visibleTeams?.[clubId].splice(this.visibleTeams?.[clubId].indexOf(teamId), 1);
     }
 
-    localStorage.setItem(
-      `visible_teams_${clubId}`,
-      this.visibleTeams?.[clubId]?.join(',') ?? '',
-    );
+    localStorage.setItem(`visible_teams_${clubId}`, this.visibleTeams?.[clubId]?.join(',') ?? '');
 
     this._loadMonth();
   }
@@ -1009,10 +902,7 @@ export class CalendarComponent implements OnInit {
       }
       return t.id;
     });
-    localStorage.setItem(
-      `visible_teams_${clubId}`,
-      this.visibleTeams?.[clubId]?.join(','),
-    );
+    localStorage.setItem(`visible_teams_${clubId}`, this.visibleTeams?.[clubId]?.join(','));
 
     this._loadMonth();
   }

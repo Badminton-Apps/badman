@@ -1,8 +1,4 @@
 @if (claims$ | async; as claims) {
 <h1>Edit Role</h1>
-<badman-role-fields
-  [role]="role"
-  [claims]="claims"
-  (save)="this.update($event, club)"
-></badman-role-fields>
+<badman-role-fields [role]="role" [claims]="claims" (save)="this.update($event, club)"></badman-role-fields>
 }

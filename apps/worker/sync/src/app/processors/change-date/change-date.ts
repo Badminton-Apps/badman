@@ -48,17 +48,15 @@ export class SyncDateProcessor {
         return;
       }
 
-      const url = `${this.configService.get('VR_API')}/Tournament/${
-        event.visualCode
-      }/Match/${encounter.visualCode}/Date`;
+      const url = `${this.configService.get('VR_API')}/Tournament/${event.visualCode}/Match/${
+        encounter.visualCode
+      }/Date`;
 
       const body = `
     <TournamentMatch>
         <TournamentID>${event.visualCode}</TournamentID>
         <MatchID>${encounter.visualCode}</MatchID>
-        <MatchDate>${moment(encounter.date)
-          .tz('Europe/Brussels')
-          .format(this.visualFormat)}</MatchDate>
+        <MatchDate>${moment(encounter.date).tz('Europe/Brussels').format(this.visualFormat)}</MatchDate>
     </TournamentMatch>
   `;
 

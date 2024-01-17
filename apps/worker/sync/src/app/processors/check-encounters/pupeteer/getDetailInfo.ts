@@ -2,25 +2,13 @@ import { waitForSelector } from '@badman/backend-pupeteer';
 import { Logger } from '@nestjs/common';
 import { Page } from 'puppeteer';
 
-const startHourOptions = [
-  'Aanvangsuur Ontmoeting',
-  'Beginuur',
-  'Aanvangsuur',
-  'Heure de début',
-] as const;
+const startHourOptions = ['Aanvangsuur Ontmoeting', 'Beginuur', 'Aanvangsuur', 'Heure de début'] as const;
 
-const endHourOptions = [
-  'Einduur ontmoeting',
-  'Einduur',
-  'Heure de fin',
-] as const;
+const endHourOptions = ['Einduur ontmoeting', 'Einduur', 'Heure de fin'] as const;
 
 const shuttleOptions = ['Gebruikte shuttle', 'Volant'] as const;
 
-const gameLeaderOptions = [
-  'Wedstrijdleider',
-  'Responsable Interclubs',
-] as const;
+const gameLeaderOptions = ['Wedstrijdleider', 'Responsable Interclubs'] as const;
 
 export async function detailInfo(
   pupeteer: {
@@ -74,8 +62,7 @@ export async function detailInfo(
           const tdTxt = (await td?.evaluate((el) => el.textContent)) || '';
 
           // get the first group and second group from the regex, first are the hours and second are the minutes
-          const timeMatch =
-            /(0[0-9]|1[0-9]|2[0-3])[:u.h]([0-5][0-9])?.*/gim.exec(tdTxt);
+          const timeMatch = /(0[0-9]|1[0-9]|2[0-3])[:u.h]([0-5][0-9])?.*/gim.exec(tdTxt);
           if (timeMatch && timeMatch.length > 0) {
             startedOn = `${timeMatch[1]}:${timeMatch[2] ?? 0}`;
           }
@@ -83,8 +70,7 @@ export async function detailInfo(
           const td = await row.$('td');
           const tdTxt = (await td?.evaluate((el) => el.textContent)) || '';
 
-          const timeMatch =
-            /(0[0-9]|1[0-9]|2[0-3])[:u.h]([0-5][0-9])?.*/gim.exec(tdTxt);
+          const timeMatch = /(0[0-9]|1[0-9]|2[0-3])[:u.h]([0-5][0-9])?.*/gim.exec(tdTxt);
           if (timeMatch && timeMatch.length > 0) {
             endedOn = `${timeMatch[1]}:${timeMatch[2] ?? 0}`;
           }

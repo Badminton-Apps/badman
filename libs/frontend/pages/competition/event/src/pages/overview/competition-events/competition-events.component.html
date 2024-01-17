@@ -24,11 +24,7 @@
             </badman-block-subtitle>
             <badman-block-actions align="end">
               <badman-has-claim [any]="['edit:competition']">
-                <button
-                  (click)="$event.stopPropagation()"
-                  mat-icon-button
-                  [matMenuTriggerFor]="menu"
-                >
+                <button (click)="$event.stopPropagation()" mat-icon-button [matMenuTriggerFor]="menu">
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
@@ -41,10 +37,7 @@
                       <mat-icon>delete</mat-icon>
                       <span>Delete</span>
                     </button>
-                    <button
-                      mat-menu-item
-                      (click)="this.setRisersFallers(event)"
-                    >
+                    <button mat-menu-item (click)="this.setRisersFallers(event)">
                       <mat-icon>swap_vert</mat-icon>
                       <span>Set risers/fallers</span>
                     </button>
@@ -52,14 +45,9 @@
                       <mat-icon>lock</mat-icon>
                       <span>Set open/close date</span>
                     </button>
-                    <button
-                      mat-menu-item
-                      (click)="this.makeOfficial(event, !event.official)"
-                    >
+                    <button mat-menu-item (click)="this.makeOfficial(event, !event.official)">
                       <mat-icon>verified_user</mat-icon>
-                      <span
-                        >{{ event.official ? 'Unmake' : 'Make' }} official</span
-                      >
+                      <span>{{ event.official ? 'Unmake' : 'Make' }} official</span>
                     </button>
                   </badman-has-claim>
                   <badman-has-claim [any]="['change:job']">
@@ -80,11 +68,6 @@
 @if (loading()) {
   <section class="events">
     <h3>{{ 'all.club.titles.teams' | translate }}</h3>
-    <badman-loading-block
-      [items]="9"
-      height="74px"
-      width="250px"
-      direction="row"
-    />
+    <badman-loading-block [items]="9" height="74px" width="250px" direction="row" />
   </section>
 }

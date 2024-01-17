@@ -1,17 +1,12 @@
 @if ((control?.controls?.length ?? 0) > 0) {
 <ng-container [formGroup]="group">
   <div class="row">
-    <button mat-stroked-button (click)="addLocation()">
-      {{ 'all.button.add-location' | translate }}
-    </button>
+    <button mat-stroked-button (click)="addLocation()">{{ 'all.button.add-location' | translate }}</button>
   </div>
   <ng-container formArrayName="locations">
     @for (location of control?.controls; track location; let i = $index) {
     <div class="row" [formGroupName]="i">
-      <badman-location
-        (whenLocationUpdate)="this.editLocation(i)"
-        [group]="location"
-      ></badman-location>
+      <badman-location (whenLocationUpdate)="this.editLocation(i)" [group]="location"></badman-location>
     </div>
     }
   </ng-container>

@@ -32,27 +32,16 @@
             }"
             >{{ encounter.away?.name }}</span
           >
-          @if (
-            (encounter.homeScore ?? -1) > 0 || (encounter.awayScore ?? -1) > 0
-          ) {
-            <span
-              >&nbsp;({{ encounter.homeScore }} -
-              {{ encounter.awayScore }})</span
-            >
+          @if ((encounter.homeScore ?? -1) > 0 || (encounter.awayScore ?? -1) > 0) {
+            <span>&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span>
           }
         </span>
-        <span matListItemLine>{{
-          encounter?.date | amDateFormat: 'llll'
-        }}</span>
+        <span matListItemLine>{{ encounter?.date | amDateFormat: 'llll' }}</span>
       </mat-list-item>
     }
   </mat-nav-list>
   <ng-template #noMoreEncounters>
-    <span
-      matListItemLine
-      class="no-more-encounters"
-      translate="all.competition.encounters.no-more"
-    ></span>
+    <span matListItemLine class="no-more-encounters" translate="all.competition.encounters.no-more"></span>
   </ng-template>
   <ng-template #noHome let-upcoming="upcoming">
     <span>

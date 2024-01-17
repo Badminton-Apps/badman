@@ -1,22 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import {
-  MatCheckboxChange,
-  MatCheckboxModule,
-} from '@angular/material/checkbox';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { SelectEventComponent } from '@badman/frontend-components';
 import { EventCompetition } from '@badman/frontend-models';
 import { LevelType, SubEventType, levelTypeSort } from '@badman/utils';
@@ -24,25 +9,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { lastValueFrom } from 'rxjs';
-import {
-  distinctUntilChanged,
-  pairwise,
-  startWith,
-  takeUntil,
-} from 'rxjs/operators';
+import { distinctUntilChanged, pairwise, startWith, takeUntil } from 'rxjs/operators';
 import { EVENTS, SEASON, TEAMS } from '../../../../../forms';
 import { TeamForm } from '../teams-transfer';
 
 @Component({
   selector: 'badman-events-step',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    SelectEventComponent,
-    ReactiveFormsModule,
-    MatCheckboxModule,
-  ],
+  imports: [CommonModule, TranslateModule, SelectEventComponent, ReactiveFormsModule, MatCheckboxModule],
   templateUrl: './events.step.html',
   styleUrls: ['./events.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -73,9 +47,7 @@ export class EventsStepComponent implements OnInit {
   @Input()
   seasonControlName = SEASON;
 
-  provFormControl = new FormControl<EventCompetition | null>(null, [
-    Validators.required,
-  ]);
+  provFormControl = new FormControl<EventCompetition | null>(null, [Validators.required]);
   provInitialId?: string;
 
   checkboxes: {
@@ -93,9 +65,7 @@ export class EventsStepComponent implements OnInit {
 
   ngOnInit() {
     if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<
-        { name: LevelType; id: string }[]
-      >;
+      this.control = this.group?.get(this.controlName) as FormControl<{ name: LevelType; id: string }[]>;
     }
 
     if (!this.control) {
@@ -111,19 +81,13 @@ export class EventsStepComponent implements OnInit {
       .subscribe(([old, event]) => {
         // there was an old event, we need to remove it from the control
         if (old?.id) {
-          this.control?.setValue(
-            this.control?.value?.filter(
-              (value) => value.name != LevelType.PROV,
-            ) ?? [],
-          );
+          this.control?.setValue(this.control?.value?.filter((value) => value.name != LevelType.PROV) ?? []);
         }
 
         // there is a new event, we need to add it to the control
         if (event?.id) {
           this.control?.setValue([
-            ...(this.control?.value?.filter(
-              (value) => value.name != LevelType.PROV,
-            ) ?? []),
+            ...(this.control?.value?.filter((value) => value.name != LevelType.PROV) ?? []),
             {
               name: LevelType.PROV,
               id: event?.id,
@@ -148,9 +112,7 @@ export class EventsStepComponent implements OnInit {
     }
 
     if (!event.checked) {
-      this.control?.setValue(
-        this.control?.value?.filter((value) => value.name != name) ?? [],
-      );
+      this.control?.setValue(this.control?.value?.filter((value) => value.name != name) ?? []);
       return;
     }
 
@@ -226,24 +188,10 @@ export class EventsStepComponent implements OnInit {
         // find if any team was selected previous year or if current year is already present select those
         const competitions: EventCompetition[] = [];
 
-        [
-          ...(teams.F ?? []),
-          ...(teams.M ?? []),
-          ...(teams.MX ?? []),
-          ...(teams.NATIONAL ?? []),
-        ].forEach((t) => {
+        [...(teams.F ?? []), ...(teams.M ?? []), ...(teams.MX ?? []), ...(teams.NATIONAL ?? [])].forEach((t) => {
           if (t.team?.entry?.subEventCompetition?.eventCompetition) {
-            if (
-              !competitions.find(
-                (c) =>
-                  c.id ==
-                  (t.team?.entry?.subEventCompetition?.eventCompetition?.id ??
-                    ''),
-              )
-            ) {
-              competitions.push(
-                t.team?.entry.subEventCompetition.eventCompetition,
-              );
+            if (!competitions.find((c) => c.id == (t.team?.entry?.subEventCompetition?.eventCompetition?.id ?? ''))) {
+              competitions.push(t.team?.entry.subEventCompetition.eventCompetition);
             }
           }
         });
@@ -278,8 +226,7 @@ export class EventsStepComponent implements OnInit {
               })
               .subscribe((result) => {
                 // strip years from event name (PBO competitie 2023-2024)
-                const nameWithoutYears =
-                  prov.name?.replace(/\d{4}-\d{4}/, '') ?? '';
+                const nameWithoutYears = prov.name?.replace(/\d{4}-\d{4}/, '') ?? '';
 
                 const find = result.data?.eventCompetitions?.rows?.find(
                   (c) => (c.name?.indexOf(nameWithoutYears) ?? -1) > -1,
@@ -289,10 +236,7 @@ export class EventsStepComponent implements OnInit {
                   this.provInitialId = find.id;
                 }
 
-                this.select(
-                  { checked: true } as MatCheckboxChange,
-                  LevelType.PROV,
-                );
+                this.select({ checked: true } as MatCheckboxChange, LevelType.PROV);
                 this.cdr.markForCheck();
               });
           }
@@ -302,10 +246,7 @@ export class EventsStepComponent implements OnInit {
           }
 
           if (competitions?.some((c) => c.type == 'NATIONAL')) {
-            this.select(
-              { checked: true } as MatCheckboxChange,
-              LevelType.NATIONAL,
-            );
+            this.select({ checked: true } as MatCheckboxChange, LevelType.NATIONAL);
           }
         }
         this.cdr.detectChanges();

@@ -21,10 +21,7 @@
     <h3>{{ 'all.competition.encounters.title' | translate }}</h3>
     <div class="loading">
       @if (this.loading()) {
-        <mat-progress-bar
-          color="accent"
-          mode="indeterminate"
-        ></mat-progress-bar>
+        <mat-progress-bar color="accent" mode="indeterminate"></mat-progress-bar>
       }
     </div>
     <mat-nav-list role="list">
@@ -60,27 +57,16 @@
               }"
               >{{ encounter.away?.name }}</span
             >
-            @if (
-              (encounter.homeScore ?? -1) > 0 && (encounter.awayScore ?? -1) > 0
-            ) {
-              <span
-                >&nbsp;({{ encounter.homeScore }} -
-                {{ encounter.awayScore }})</span
-              >
+            @if ((encounter.homeScore ?? -1) > 0 && (encounter.awayScore ?? -1) > 0) {
+              <span>&nbsp;({{ encounter.homeScore }} - {{ encounter.awayScore }})</span>
             }
           </span>
-          <span matListItemLine>{{
-            encounter?.date | amDateFormat: 'llll'
-          }}</span>
+          <span matListItemLine>{{ encounter?.date | amDateFormat: 'llll' }}</span>
         </mat-list-item>
       }
       <!-- no encounters -->
       @if (this.encounters()?.length === 0) {
-        <span
-          matListItemLine
-          class="no-more-encounters"
-          translate="all.competition.encounters.no-more"
-        ></span>
+        <span matListItemLine class="no-more-encounters" translate="all.competition.encounters.no-more"></span>
       }
     </mat-nav-list>
   </section>

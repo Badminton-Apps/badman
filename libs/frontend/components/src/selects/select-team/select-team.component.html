@@ -18,11 +18,7 @@
             </button>
           }
           @for (group of teams; track group) {
-            <mat-optgroup
-              [label]="
-                'all.pickers.select-team-groups.' + group.type | translate
-              "
-            >
+            <mat-optgroup [label]="'all.pickers.select-team-groups.' + group.type | translate">
               @for (option of group.teams; track option) {
                 <mat-option [value]="option.id">
                   {{ option.name }}

@@ -34,15 +34,12 @@
               <mat-panel-title fxFlex="200px">
                 {{ club.name }}
                 @if (!club.hasLocation) {
-                  <mat-icon
-                    matTooltip="Geen beschikbaarheden ingevuld, gelieve de club te contacteren"
+                  <mat-icon matTooltip="Geen beschikbaarheden ingevuld, gelieve de club te contacteren"
                     >warning</mat-icon
                   >
                 }
               </mat-panel-title>
-              <mat-panel-description
-                >{{ club.teams?.length }} Teams</mat-panel-description
-              >
+              <mat-panel-description>{{ club.teams?.length }} Teams</mat-panel-description>
             </mat-expansion-panel-header>
             <div class="mat-subheading-2">Locations</div>
             @for (location of club.locations; track location) {
@@ -50,20 +47,12 @@
                 <div class="location-title">{{ location.name }}</div>
                 <div class="location-item">
                   @if (location.availibilities[0].days.length <= 0) {
-                    <div>
-                      Geen beschikbaarheden ingevuld, gelieve de club te
-                      contacteren
-                    </div>
+                    <div>Geen beschikbaarheden ingevuld, gelieve de club te contacteren</div>
                   } @else {
                     <div>
-                      @for (
-                        availibilty of location.availibilities;
-                        track availibilty
-                      ) {
+                      @for (availibilty of location.availibilities; track availibilty) {
                         <div>
-                          <span class="location-sub-title">{{
-                            'competition.enrollment.play-day' | translate
-                          }}</span>
+                          <span class="location-sub-title">{{ 'competition.enrollment.play-day' | translate }}</span>
                           <ul>
                             @for (day of availibilty.days; track day) {
                               <li>
@@ -77,20 +66,13 @@
                             }
                           </ul>
                           <span class="location-sub-title">{{
-                            'all.competition.team-enrollment.exceptions'
-                              | translate
+                            'all.competition.team-enrollment.exceptions' | translate
                           }}</span>
-                          @if (
-                            !availibilty.exceptions ||
-                            availibilty.exceptions.length === 0
-                          ) {
+                          @if (!availibilty.exceptions || availibilty.exceptions.length === 0) {
                             <small> <br />Geen uitzonderingen </small>
                           }
                           <ul>
-                            @for (
-                              exception of availibilty.exceptions;
-                              track exception
-                            ) {
+                            @for (exception of availibilty.exceptions; track exception) {
                               <li>
                                 {{ exception.start | amDateFormat: 'LL' }}
                                 {{ 'all.breakdown.untill' | translate }}
@@ -117,9 +99,7 @@
                   (click)="overlayOpen = team.id ?? ''"
                 >
                   <span
-                    >{{ team.name }} ({{
-                      team.entry?.meta?.competition?.teamIndex
-                    }}) -
+                    >{{ team.name }} ({{ team.entry?.meta?.competition?.teamIndex }}) -
                     {{ team.entry?.subEventCompetition?.name }}
                     {{ team.entry?.subEventCompetition?.eventType }}</span
                   >
@@ -137,15 +117,10 @@
                     @if (team.entry; as entry) {
                       index: {{ entry.meta?.competition?.teamIndex }}
                       <ul>
-                        @for (
-                          player of entry.meta?.competition?.players;
-                          track player
-                        ) {
+                        @for (player of entry.meta?.competition?.players; track player) {
                           <li>
-                            {{ player?.player?.fullName }} ({{
-                              player?.single
-                            }}
-                            - {{ player?.double }} - {{ player?.mix }})
+                            {{ player?.player?.fullName }} ({{ player?.single }} - {{ player?.double }} -
+                            {{ player?.mix }})
                           </li>
                         }
                       </ul>

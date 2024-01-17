@@ -37,9 +37,7 @@
   <badman-has-claim [any]="['edit:faq', 'add:faq']">
     @if (questionBeingEdited) {
     <mat-card-actions>
-      <button mat-raised-button color="primary" (click)="saveEdit(question)">
-        Save
-      </button>
+      <button mat-raised-button color="primary" (click)="saveEdit(question)">Save</button>
       <button mat-button (click)="cancelEdit()">Cancel</button>
       <button mat-button (click)="deleteQuestion(question)">Delete</button>
     </mat-card-actions>

@@ -2,10 +2,8 @@
   <div title>{{this.rankingSystem().name}}</div>
   <div subTitle>
     <mat-chip-listbox>
-      <mat-chip
-        [matTooltip]="this.rankingSystem().calculationLastUpdate?.toLocaleDateString() ?? ''"
-        >{{'all.ranking.last-update' | translate}}:
-        {{this.rankingSystem().calculationLastUpdate |amTimeAgo }}</mat-chip
+      <mat-chip [matTooltip]="this.rankingSystem().calculationLastUpdate?.toLocaleDateString() ?? ''"
+        >{{'all.ranking.last-update' | translate}}: {{this.rankingSystem().calculationLastUpdate |amTimeAgo }}</mat-chip
       >
     </mat-chip-listbox>
   </div>

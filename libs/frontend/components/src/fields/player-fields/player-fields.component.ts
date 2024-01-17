@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -45,34 +40,22 @@ export class PlayerFieldsComponent implements OnInit {
     }
 
     if (group.get('firstName') == null) {
-      const firstNameControl = new FormControl(
-        inputData?.firstName,
-        Validators.required,
-      );
+      const firstNameControl = new FormControl(inputData?.firstName, Validators.required);
       group.addControl('firstName', firstNameControl);
     }
 
     if (group.get('lastName') == null) {
-      const lastNameControl = new FormControl(
-        inputData?.lastName,
-        Validators.required,
-      );
+      const lastNameControl = new FormControl(inputData?.lastName, Validators.required);
       group.addControl('lastName', lastNameControl);
     }
 
     if (group.get('gender') == null) {
-      const genderControl = new FormControl(
-        inputData?.gender,
-        Validators.required,
-      );
+      const genderControl = new FormControl(inputData?.gender, Validators.required);
       group.addControl('gender', genderControl);
     }
 
     if (group.get('memberId') == null) {
-      const memberIdControl = new FormControl(
-        inputData?.memberId,
-        Validators.required,
-      );
+      const memberIdControl = new FormControl(inputData?.memberId, Validators.required);
       group.addControl('memberId', memberIdControl);
     }
 

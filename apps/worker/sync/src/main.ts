@@ -2,20 +2,13 @@ import { WorkerSyncModule } from './app/app.module';
 
 import { NestFactory } from '@nestjs/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
 import { RedisIoAdapter } from '@badman/backend-websockets';
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(
-    WorkerSyncModule,
-    new FastifyAdapter(),
-    {
-      bufferLogs: true,
-    },
-  );
+  const app = await NestFactory.create<NestFastifyApplication>(WorkerSyncModule, new FastifyAdapter(), {
+    bufferLogs: true,
+  });
 
   const configService = app.get<ConfigService>(ConfigService);
 

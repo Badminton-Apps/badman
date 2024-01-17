@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthenticateService, LoggedinUser } from '@badman/frontend-auth';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
@@ -55,16 +49,14 @@ export class LandingComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    combineLatest([this.translate.get('all.landing.title')]).subscribe(
-      ([title]) => {
-        this.seoService.update({
-          title,
-          description: title,
-          type: 'website',
-          keywords: ['badman', 'badminton'],
-        });
-      },
-    );
+    combineLatest([this.translate.get('all.landing.title')]).subscribe(([title]) => {
+      this.seoService.update({
+        title,
+        description: title,
+        type: 'website',
+        keywords: ['badman', 'badminton'],
+      });
+    });
 
     this.user$ = this.authenticateService.user$;
     this.teams$ = this.user$.pipe(
@@ -88,9 +80,7 @@ export class LandingComponent implements OnInit {
               playerId: user.id,
             },
           })
-          .pipe(
-            map((result) => result.data.player.teams?.map((t) => new Team(t))),
-          ),
+          .pipe(map((result) => result.data.player.teams?.map((t) => new Team(t)))),
       ),
     );
   }

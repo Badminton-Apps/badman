@@ -1,24 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  OnInit,
-  Output,
-  PLATFORM_ID,
-  TransferState,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import {
-  MatAutocompleteModule,
-  MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
+import { Component, EventEmitter, Inject, Input, OnInit, Output, PLATFORM_ID, TransferState } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
@@ -120,10 +103,7 @@ export class SelectEncounterComponent implements OnInit {
 
       this.encounters$ = combineLatest([
         previous.valueChanges.pipe(startWith(null)),
-        ...updateOnControls.map(
-          (control) =>
-            control?.valueChanges?.pipe(startWith(() => control?.value)),
-        ),
+        ...updateOnControls.map((control) => control?.valueChanges?.pipe(startWith(() => control?.value))),
       ]).pipe(
         takeUntil(this.destroy$),
         startWith(null),
@@ -152,17 +132,14 @@ export class SelectEncounterComponent implements OnInit {
 
       this.encounters$.subscribe((encounters) => {
         let foundEncounter: EncounterCompetition | null = null;
-        const encounterId =
-          this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
+        const encounterId = this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
 
         if (encounterId && encounters.length > 0) {
           foundEncounter = encounters.find((r) => r.id == encounterId) ?? null;
         }
 
         if (!foundEncounter) {
-          const future = encounters.filter((r) =>
-            moment(r.date).isSameOrAfter(),
-          );
+          const future = encounters.filter((r) => moment(r.date).isSameOrAfter());
           if (future.length > 0) {
             foundEncounter = future[0];
           }
@@ -253,17 +230,8 @@ export class SelectEncounterComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          `teamEncounterKey-${teamId}`,
-          this.transferState,
-          this.platformId,
-        ),
-        map(
-          (result) =>
-            result?.data.encounterCompetitions?.rows.map(
-              (r) => new EncounterCompetition(r),
-            ) ?? [],
-        ),
+        transferState(`teamEncounterKey-${teamId}`, this.transferState, this.platformId),
+        map((result) => result?.data.encounterCompetitions?.rows.map((r) => new EncounterCompetition(r)) ?? []),
         map((c) => {
           return c?.map((r) => {
             if (r.home?.id === teamId) {

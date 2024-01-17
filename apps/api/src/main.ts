@@ -7,10 +7,7 @@ import { Logger, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { NestFactory } from '@nestjs/core';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
@@ -93,11 +90,7 @@ async function bootstrap() {
     }
   });
 
-  Logger.debug(
-    `🚀 Application is running on: ${await app.getUrl()}. level: ${configService.get(
-      'NODE_ENV',
-    )}`,
-  );
+  Logger.debug(`🚀 Application is running on: ${await app.getUrl()}. level: ${configService.get('NODE_ENV')}`);
 }
 
 try {

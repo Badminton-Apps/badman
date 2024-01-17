@@ -2,10 +2,8 @@
 @use './src/pages/overview/overview.page.theme.scss' as overview;
 @use './src/pages/detail/detail.page.theme.scss' as detail;
 @use './src/pages/detail-draw/detail-draw.page.theme.scss' as detail-draw;
-@use './src/pages/edit-encounter/edit-encounter.page.theme.scss' as
-  edit-encounter;
-@use './src/pages/detail-encounter/detail-encounter.page.theme.scss' as
-  detail-encounter;
+@use './src/pages/edit-encounter/edit-encounter.page.theme.scss' as edit-encounter;
+@use './src/pages/detail-encounter/detail-encounter.page.theme.scss' as detail-encounter;
 
 @mixin typography($theme) {
   @include detail.typography($theme);
