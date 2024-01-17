@@ -2,29 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, PLATFORM_ID, TransferState } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogModel,
-} from '@badman/frontend-components';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '@badman/frontend-components';
 import { Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { SubEventType, TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, map, pairwise, startWith, take } from 'rxjs';
-import {
-  PLAYERS_CONTROL,
-  TeamFieldComponent,
-  TeamPlayersComponent,
-} from '../../components';
+import { PLAYERS_CONTROL, TeamFieldComponent, TeamPlayersComponent } from '../../components';
 
 const PLAYERS_QUERY = gql`
   query TeamPlayers($teamId: ID!) {
@@ -105,24 +93,17 @@ export class EditDialogComponent {
   private _listenForPlayers() {
     this.group
       ?.get(PLAYERS_CONTROL)
-      ?.valueChanges.pipe(
-        startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []),
-        pairwise(),
-      )
+      ?.valueChanges.pipe(startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []), pairwise())
       .subscribe(([prev, curr]: [TeamPlayer[], TeamPlayer[]]) => {
         if (!prev || !curr) {
           return;
         }
 
         // filter out the new players
-        const newPlayers = curr.filter(
-          (c) => !prev.some((p) => p?.id === c?.id),
-        );
+        const newPlayers = curr.filter((c) => !prev.some((p) => p?.id === c?.id));
 
         // filter out the removed players
-        const removedPlayers = prev.filter(
-          (p) => !curr.some((c) => c?.id === p?.id),
-        );
+        const removedPlayers = prev.filter((p) => !curr.some((c) => c?.id === p?.id));
 
         // if there are new players
         for (const player of newPlayers) {
@@ -149,19 +130,9 @@ export class EditDialogComponent {
         },
       })
       .valueChanges.pipe(
-        transferState(
-          `teamPlayers-${this.data.team.id}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
-        map(
-          (result) => result?.data.team.players?.map((t) => new TeamPlayer(t)),
-        ),
-        map(
-          (players) =>
-            players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ??
-            undefined,
-        ),
+        transferState(`teamPlayers-${this.data.team.id}`, this.stateTransfer, this.platformId),
+        map((result) => result?.data.team.players?.map((t) => new TeamPlayer(t))),
+        map((players) => players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ?? undefined),
         take(1),
       );
   }
@@ -239,10 +210,7 @@ export class EditDialogComponent {
       await lastValueFrom(
         this.apollo.mutate({
           mutation: gql`
-            mutation RemovePlayerFromTeamMutation(
-              $playerId: ID!
-              $teamId: ID!
-            ) {
+            mutation RemovePlayerFromTeamMutation($playerId: ID!, $teamId: ID!) {
               removePlayerFromTeam(playerId: $playerId, teamId: $teamId) {
                 id
               }
@@ -258,23 +226,12 @@ export class EditDialogComponent {
     }
   }
 
-  playerMembershipTypeChanged(args: {
-    player: TeamPlayer;
-    type: TeamMembershipType;
-  }) {
+  playerMembershipTypeChanged(args: { player: TeamPlayer; type: TeamMembershipType }) {
     this.apollo
       .mutate({
         mutation: gql`
-          mutation UpdateTeamPlayerMembership(
-            $teamId: ID!
-            $playerId: ID!
-            $membershipType: String!
-          ) {
-            updateTeamPlayerMembership(
-              teamId: $teamId
-              playerId: $playerId
-              membershipType: $membershipType
-            ) {
+          mutation UpdateTeamPlayerMembership($teamId: ID!, $playerId: ID!, $membershipType: String!) {
+            updateTeamPlayerMembership(teamId: $teamId, playerId: $playerId, membershipType: $membershipType) {
               id
               membershipType
               teamId
@@ -297,10 +254,7 @@ export class EditDialogComponent {
   }
 
   removeTeam() {
-    const dialogData = new ConfirmDialogModel(
-      'all.club.delete.team.title',
-      'all.club.delete.team.description',
-    );
+    const dialogData = new ConfirmDialogModel('all.club.delete.team.title', 'all.club.delete.team.description');
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',

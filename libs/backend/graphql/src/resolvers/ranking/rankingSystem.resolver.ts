@@ -8,20 +8,8 @@ import {
   RankingPoint,
   RankingPlace,
 } from '@badman/backend-database';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
@@ -37,9 +25,7 @@ export class RankingSystemResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => RankingSystem)
-  async rankingSystem(
-    @Args('id', { type: () => ID, nullable: true }) id?: string,
-  ): Promise<RankingSystem> {
+  async rankingSystem(@Args('id', { type: () => ID, nullable: true }) id?: string): Promise<RankingSystem> {
     const rankingSystem =
       (id ?? null) != null
         ? await RankingSystem.findByPk(id)
@@ -73,22 +59,14 @@ export class RankingSystemResolver {
   }
 
   @ResolveField(() => [RankingGroup])
-  async rankingGroups(
-    @Parent() system: RankingSystem,
-    @Args() listArgs: ListArgs,
-  ): Promise<RankingGroup[]> {
+  async rankingGroups(@Parent() system: RankingSystem, @Args() listArgs: ListArgs): Promise<RankingGroup[]> {
     return system.getRankingGroups(ListArgs.toFindOptions(listArgs));
   }
 
   @Mutation(() => RankingSystem)
-  async updateRankingSystem(
-    @User() user: Player,
-    @Args('data') updateRankingSystemData: RankingSystemUpdateInput,
-  ) {
+  async updateRankingSystem(@User() user: Player, @Args('data') updateRankingSystemData: RankingSystemUpdateInput) {
     if (!(await user.hasAnyPermission(['edit:ranking']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`,
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     // Do transaction
     const transaction = await this._sequelize.transaction();
@@ -96,9 +74,7 @@ export class RankingSystemResolver {
     try {
       const dbSystem = await RankingSystem.findByPk(updateRankingSystemData.id);
       if (!dbSystem) {
-        throw new NotFoundException(
-          `${RankingSystem.name}: ${updateRankingSystemData.id}`,
-        );
+        throw new NotFoundException(`${RankingSystem.name}: ${updateRankingSystemData.id}`);
       }
 
       // New system is now primary
@@ -140,9 +116,7 @@ export class RankingSystemResolver {
     @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string,
   ) {
     if (!(await user.hasAnyPermission(['edit:ranking']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`,
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     // Do transaction
     const transaction = await this._sequelize.transaction();
@@ -150,9 +124,7 @@ export class RankingSystemResolver {
     try {
       const dbSystem = await RankingSystem.findByPk(rankingSystemId);
       if (!dbSystem) {
-        throw new NotFoundException(
-          `${RankingSystem.name}: ${rankingSystemId}`,
-        );
+        throw new NotFoundException(`${RankingSystem.name}: ${rankingSystemId}`);
       }
 
       const dbGroup = await RankingGroup.findByPk(rankingGroupId);
@@ -184,9 +156,7 @@ export class RankingSystemResolver {
     @Args('rankingGroupId', { type: () => ID }) rankingGroupId: string,
   ) {
     if (!(await user.hasAnyPermission(['edit:ranking']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`,
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     // Do transaction
     const transaction = await this._sequelize.transaction();
@@ -194,9 +164,7 @@ export class RankingSystemResolver {
     try {
       const dbSystem = await RankingSystem.findByPk(rankingSystemId);
       if (!dbSystem) {
-        throw new NotFoundException(
-          `${RankingSystem.name}: ${rankingSystemId}`,
-        );
+        throw new NotFoundException(`${RankingSystem.name}: ${rankingSystemId}`);
       }
 
       const dbGroup = await RankingGroup.findByPk(rankingGroupId);
@@ -231,9 +199,7 @@ export class RankingSystemResolver {
     copyToEndDate?: Date,
   ) {
     if (!(await user.hasAnyPermission(['edit:ranking']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to copy a system`,
-      );
+      throw new UnauthorizedException(`You do not have permission to copy a system`);
     }
 
     // Do transaction
@@ -278,13 +244,7 @@ export class RankingSystemResolver {
       this.logger.debug(`New System ${newSystem.name} (${newSystem.id})`);
 
       if (copyFromStartDate || copyToEndDate) {
-        await this._copyPlaces(
-          dbSystem,
-          newSystem,
-          copyFromStartDate,
-          copyToEndDate,
-          transaction,
-        );
+        await this._copyPlaces(dbSystem, newSystem, copyFromStartDate, copyToEndDate, transaction);
       }
 
       // copy ranking groups
@@ -319,9 +279,7 @@ export class RankingSystemResolver {
     copyToEndDate?: Date,
   ) {
     if (!(await user.hasAnyPermission(['edit:ranking']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to copy a system`,
-      );
+      throw new UnauthorizedException(`You do not have permission to copy a system`);
     }
 
     // Do transaction
@@ -340,19 +298,11 @@ export class RankingSystemResolver {
 
       if (copyFromStartDate || copyToEndDate) {
         // remove all places and points
-        await this._copyPlaces(
-          sourceSystem,
-          destinationSystem,
-          copyFromStartDate,
-          copyToEndDate,
-          transaction,
-        );
+        await this._copyPlaces(sourceSystem, destinationSystem, copyFromStartDate, copyToEndDate, transaction);
       }
 
       await transaction?.commit();
-      this.logger.log(
-        `Copied places ${sourceSystem.name} to ${destinationSystem.name}`,
-      );
+      this.logger.log(`Copied places ${sourceSystem.name} to ${destinationSystem.name}`);
       return sourceSystem;
     } catch (e) {
       this.logger.error('rollback', e);
@@ -362,14 +312,9 @@ export class RankingSystemResolver {
   }
 
   @Mutation(() => Boolean)
-  async removeRankingSystem(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-  ) {
+  async removeRankingSystem(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission(['edit:ranking']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`,
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     // Do transaction
     const transaction = await this._sequelize.transaction();
@@ -457,29 +402,11 @@ export class RankingSystemResolver {
       this.logger.debug(
         `Copy places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`,
       );
-      await this._copyRankingLastPlaces(
-        sourceSystem.id,
-        destinationSystem.id,
-        from,
-        to,
-        transaction,
-      );
+      await this._copyRankingLastPlaces(sourceSystem.id, destinationSystem.id, from, to, transaction);
 
-      await this._copyRankingPoints(
-        sourceSystem.id,
-        destinationSystem.id,
-        from,
-        to,
-        transaction,
-      );
+      await this._copyRankingPoints(sourceSystem.id, destinationSystem.id, from, to, transaction);
 
-      await this._copyRankingPlaces(
-        sourceSystem.id,
-        destinationSystem.id,
-        from,
-        to,
-        transaction,
-      );
+      await this._copyRankingPlaces(sourceSystem.id, destinationSystem.id, from, to, transaction);
 
       this.logger.debug(
         `Copied places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`,

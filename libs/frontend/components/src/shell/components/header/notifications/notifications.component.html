@@ -16,17 +16,9 @@
       >notifications</mat-icon
     >
   </button>
-  <ng-template
-    cdkConnectedOverlay
-    [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayOpen]="isOpen()"
-  >
+  <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="isOpen()">
     <div class="notification-overlay">
-      @for (
-        notification of notifications();
-        track notification;
-        let last = $last
-      ) {
+      @for (notification of notifications(); track notification; let last = $last) {
         <div
           class="list-item"
           [ngClass]="{
@@ -36,8 +28,7 @@
           <span
             matLine
             [innerHTML]="
-              'all.settings.notifications.messages.' + notification.type
-                | translate: getParams(notification)
+              'all.settings.notifications.messages.' + notification.type | translate: getParams(notification)
             "
           ></span>
         </div>

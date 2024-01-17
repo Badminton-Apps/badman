@@ -88,18 +88,13 @@ export class SubEventViewComponent implements OnInit {
         event.subEventCompetitions = event.subEventCompetitions ?? [];
 
         // Sort by level
-        event.subEventCompetitions =
-          event.subEventCompetitions.sort(sortSubEvents);
+        event.subEventCompetitions = event.subEventCompetitions.sort(sortSubEvents);
 
         // Filter entries
-        event.subEventCompetitions = event.subEventCompetitions.map(
-          (subEvent) => {
-            subEvent.eventEntries = subEvent.eventEntries?.filter(
-              (entry) => entry.meta !== null,
-            );
-            return subEvent;
-          },
-        );
+        event.subEventCompetitions = event.subEventCompetitions.map((subEvent) => {
+          subEvent.eventEntries = subEvent.eventEntries?.filter((entry) => entry.meta !== null);
+          return subEvent;
+        });
 
         return event.subEventCompetitions;
       }),
@@ -132,11 +127,7 @@ export class SubEventViewComponent implements OnInit {
           },
         }),
       ),
-      map((result) =>
-        result.data.eventCompetitions.rows.map(
-          (node) => new EventCompetition(node),
-        ),
-      ),
+      map((result) => result.data.eventCompetitions.rows.map((node) => new EventCompetition(node))),
     );
   }
 }

@@ -1,20 +1,11 @@
 @if (!authenticateService.user?.loggedIn) {
   <button mat-button (click)="login()">Log in</button>
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="menu"
-    aria-label="button for more option menu"
-  >
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="button for more option menu">
     <mat-icon>more_vert</mat-icon>
   </button>
 }
 @if (authenticateService.user?.loggedIn) {
-  <button
-    mat-button
-    class="avatar-button"
-    [matMenuTriggerFor]="menu"
-    aria-label="button for more option menu"
-  >
+  <button mat-button class="avatar-button" [matMenuTriggerFor]="menu" aria-label="button for more option menu">
     <img
       class="avatar"
       [src]="authenticateService.user?.picture"
@@ -27,19 +18,12 @@
 <mat-menu #menu="matMenu">
   @if (authenticateService.user?.loggedIn) {
     @if (authenticateService.user?.fullName) {
-      <div
-        mat-menu-item
-        [routerLink]="['/', 'player', authenticateService.user?.slug]"
-      >
+      <div mat-menu-item [routerLink]="['/', 'player', authenticateService.user?.slug]">
         {{ authenticateService.user?.fullName }}
       </div>
     }
     <button mat-menu-item (click)="logout()">Logout</button>
-    <a
-      mat-menu-item
-      [routerLink]="['/', 'player', authenticateService.user?.slug, 'settings']"
-      >Settings</a
-    >
+    <a mat-menu-item [routerLink]="['/', 'player', authenticateService.user?.slug, 'settings']">Settings</a>
     <mat-divider></mat-divider>
   }
   <badman-language></badman-language>

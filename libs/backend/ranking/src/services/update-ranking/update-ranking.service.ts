@@ -55,11 +55,7 @@ export class UpdateRankingService {
         // else use the lowest ranking of single, double and mixed
         if (
           Math.min(member.single, member.doubles, member.mixed) <
-          Math.min(
-            existingMember.single,
-            existingMember.doubles,
-            existingMember.mixed,
-          )
+          Math.min(existingMember.single, existingMember.doubles, existingMember.mixed)
         ) {
           acc[currentIndex] = member;
         }
@@ -79,9 +75,7 @@ export class UpdateRankingService {
 
       for (const chunk of chunks) {
         // filter out distinct ids from the chunk
-        const distinctChunkIds = chunk
-          .map((d) => d.memberId)
-          .filter((d) => !distinctIds.find((p) => p === d));
+        const distinctChunkIds = chunk.map((d) => d.memberId).filter((d) => !distinctIds.find((p) => p === d));
 
         const players = await Player.findAll({
           attributes: ['id', 'memberId', 'competitionPlayer', 'gender'],
@@ -96,9 +90,7 @@ export class UpdateRankingService {
       }
 
       // find all players that are not in the database
-      const newPlayers = data.filter(
-        (d) => !distinctIds.find((p) => p === d.memberId),
-      );
+      const newPlayers = data.filter((d) => !distinctIds.find((p) => p === d.memberId));
 
       // Create new players
       this._logger.debug(`Create new players: ${options.createNewPlayers}`);
@@ -115,9 +107,7 @@ export class UpdateRankingService {
         let playersProcessed = 0;
         for (const chunk of chunks) {
           playersProcessed += chunk.length;
-          this._logger.verbose(
-            `Processing ${playersProcessed} of ${newPlayers.length} players`,
-          );
+          this._logger.verbose(`Processing ${playersProcessed} of ${newPlayers.length} players`);
 
           await Player.bulkCreate(
             chunk?.map((newp) => {
@@ -145,13 +135,9 @@ export class UpdateRankingService {
       }
 
       // Update comp status
-      this._logger.debug(
-        `Update competition status: ${options.updateCompStatus}`,
-      );
+      this._logger.debug(`Update competition status: ${options.updateCompStatus}`);
       if (options.updateCompStatus) {
-        const memberIdsComp = data
-          ?.filter((p) => p.role === 'Competitiespeler')
-          ?.map((d) => d.memberId);
+        const memberIdsComp = data?.filter((p) => p.role === 'Competitiespeler')?.map((d) => d.memberId);
 
         const newCompPlayers = await Player.findAll({
           attributes: ['id', 'memberId', 'competitionPlayer'],
@@ -240,9 +226,7 @@ export class UpdateRankingService {
 
             if (!place) {
               if (!options.removeAllRanking) {
-                this._logger.verbose(
-                  `Create new ranking place for player: ${player.id}`,
-                );
+                this._logger.verbose(`Create new ranking place for player: ${player.id}`);
               }
 
               place = new RankingPlace();
@@ -260,9 +244,7 @@ export class UpdateRankingService {
             place.updatePossible = options.updatePossible;
 
             if (place.changed() != false) {
-              this._logger.verbose(
-                `Update ranking place for player: ${player.id}`,
-              );
+              this._logger.verbose(`Update ranking place for player: ${player.id}`);
               toUpdate.push(place);
             }
           }
@@ -315,16 +297,10 @@ export class UpdateRankingService {
   }
 
   // set competition status
-  async setCompetitionStatus(
-    idd: string[],
-    status: boolean,
-    transaction?: Transaction,
-  ) {
+  async setCompetitionStatus(idd: string[], status: boolean, transaction?: Transaction) {
     transaction = transaction || (await this._sequelize.transaction());
 
-    this._logger.verbose(
-      `Set competition status: ${status}, amount: ${idd.length}`,
-    );
+    this._logger.verbose(`Set competition status: ${status}, amount: ${idd.length}`);
 
     if (idd.length === 0) {
       return;

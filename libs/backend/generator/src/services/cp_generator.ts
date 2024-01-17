@@ -9,12 +9,7 @@ import {
   Team,
 } from '@badman/backend-database';
 import { EnrollmentValidationService } from '@badman/backend-enrollment';
-import {
-  ConfigType,
-  I18nTranslations,
-  SubEventTypeEnum,
-  TeamMembershipType,
-} from '@badman/utils';
+import { ConfigType, I18nTranslations, SubEventTypeEnum, TeamMembershipType } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { existsSync } from 'fs';
@@ -100,10 +95,7 @@ export class CpGeneratorService {
       this.logger.error('ADODB not found');
       return;
     }
-    const { connection, existed, destination } = await this._getConnection(
-      ADODB,
-      event,
-    );
+    const { connection, existed, destination } = await this._getConnection(ADODB, event);
 
     await this._prepCPfile(event, connection, existed);
 
@@ -134,11 +126,7 @@ export class CpGeneratorService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async _prepCPfile(
-    event: EventCompetition,
-    connection: AdobdbOpen,
-    existed = false,
-  ) {
+  private async _prepCPfile(event: EventCompetition, connection: AdobdbOpen, existed = false) {
     // delete existing data
     const queries = [
       'DELETE FROM TournamentDay;',
@@ -183,11 +171,7 @@ export class CpGeneratorService {
     // if the cp file is new,
     if (!existed) {
       //  we need to set a new unicode
-      queries.push(
-        `UPDATE settings SET [value] = "${moment().format(
-          'YYYYMMDDHHmmssSSSS',
-        )}" where [name] = "unicode"`,
-      );
+      queries.push(`UPDATE settings SET [value] = "${moment().format('YYYYMMDDHHmmssSSSS')}" where [name] = "unicode"`);
 
       // we need to clear the director settings
       queries.push(
@@ -203,9 +187,7 @@ export class CpGeneratorService {
       );
 
       // Set the name
-      queries.push(
-        `UPDATE settings SET [value] = "${event.name}" where [name] = "tournament"`,
-      );
+      queries.push(`UPDATE settings SET [value] = "${event.name}" where [name] = "tournament"`);
     }
 
     await connection.transaction(queries);
@@ -224,14 +206,8 @@ export class CpGeneratorService {
   }
 
   private async _getConnection(adodb: AdodbType, event: EventCompetition) {
-    const original = join(
-      process.cwd(),
-      `libs/backend/generator/assets/empty.cp`,
-    );
-    const destination = join(
-      process.cwd(),
-      `libs/backend/generator/assets/${event.name}.cp`,
-    );
+    const original = join(process.cwd(), `libs/backend/generator/assets/empty.cp`);
+    const destination = join(process.cwd(), `libs/backend/generator/assets/${event.name}.cp`);
 
     const existed = existsSync(destination);
 
@@ -271,10 +247,7 @@ export class CpGeneratorService {
       const gender = this._getGender(subEvent.eventType);
       const queryEvent = `INSERT INTO Event(name, gender, eventtype, league, sortorder) VALUES("${subEvent.name}", ${gender}, 2, ${gender},${i});`;
       // this.logger.verbose(`Query: ${queryEvent}`);
-      const eventRes = await connection.execute<Identity>(
-        queryEvent,
-        `SELECT @@Identity AS id`,
-      );
+      const eventRes = await connection.execute<Identity>(queryEvent, `SELECT @@Identity AS id`);
 
       const responseEvent = eventRes[0];
       const event = {
@@ -287,10 +260,7 @@ export class CpGeneratorService {
       for (const stage of this.stages) {
         const queryStage = `INSERT INTO stage(name, event, displayorder, stagetype) VALUES("${stage.name}","${responseEvent.id}", "${stage.displayOrder}", "${stage.stagetype}");`;
         // this.logger.verbose(`Query: ${queryStage}`);
-        const stageRes = await connection.execute<Identity>(
-          queryStage,
-          `SELECT @@Identity AS id`,
-        );
+        const stageRes = await connection.execute<Identity>(queryStage, `SELECT @@Identity AS id`);
         const responseStage = stageRes[0];
 
         // check if the event has the name
@@ -338,10 +308,7 @@ export class CpGeneratorService {
             club.name || '',
           )}", "${club.clubId}", 19, "${club.abbreviation}")`;
           // this.logger.verbose(`Query: ${queryClub}`);
-          const clubRes = await connection.execute<Identity>(
-            queryClub,
-            `SELECT @@Identity AS id`,
-          );
+          const clubRes = await connection.execute<Identity>(queryClub, `SELECT @@Identity AS id`);
           const responseClub = clubRes[0];
           clubList.set(club.id, {
             cpId: responseClub.id,
@@ -378,16 +345,11 @@ export class CpGeneratorService {
       for (const location of locations) {
         const queryLocation = `INSERT INTO Location(name, address, postalcode, city, phone, clubid) VALUES ("${this._sqlEscaped(
           location.name || '',
-        )}", "${this._sqlEscaped(location.street || '')} ${
-          location.streetNumber
-        }", "${location.postalcode}", "${location.city}", "${
-          location.phone
-        }", ${cpId} )`;
+        )}", "${this._sqlEscaped(location.street || '')} ${location.streetNumber}", "${location.postalcode}", "${
+          location.city
+        }", "${location.phone}", ${cpId} )`;
         // this.logger.verbose(`Query: ${queryLocation}`);
-        const locationRes = await connection.execute<Identity>(
-          queryLocation,
-          `SELECT @@Identity AS id`,
-        );
+        const locationRes = await connection.execute<Identity>(queryLocation, `SELECT @@Identity AS id`);
 
         const responseLocation = locationRes[0];
         locationList.set(location.id, {
@@ -455,9 +417,7 @@ export class CpGeneratorService {
 
           const captainName = captain?.fullName;
           const dayofweek = this._getDayOfWeek(team.preferredDay);
-          const plantime = team.preferredTime
-            ? `#${team.preferredTime}#`
-            : 'NULL';
+          const plantime = team.preferredTime ? `#${team.preferredTime}#` : 'NULL';
           const teamName = `${team.name} (${index})`;
 
           const prefLoc1 = locations.get(teamLocations[0]?.id)?.cpId ?? 'NULL';
@@ -467,19 +427,14 @@ export class CpGeneratorService {
             teamName,
           )}", ${internalClubId}, 19, #${moment(entry.createdAt).format(
             'MM/DD/YYYY HH:MM:ss',
-          )}#, "${captainName}", "${this._sqlEscaped(
-            team.phone,
-          )}", "${this._sqlEscaped(
+          )}#, "${captainName}", "${this._sqlEscaped(team.phone)}", "${this._sqlEscaped(
             team.email,
           )}", ${dayofweek}, ${plantime}, ${prefLoc1}, ${prefLoc2}
       )`;
 
           try {
             // this.logger.verbose(`Query: ${queryTeam}`);
-            const teamRes = await connection.execute<Identity>(
-              queryTeam,
-              `SELECT @@Identity AS id`,
-            );
+            const teamRes = await connection.execute<Identity>(queryTeam, `SELECT @@Identity AS id`);
             const response = teamRes[0];
             teamList.set(team.id, {
               cpId: response.id,
@@ -564,14 +519,9 @@ export class CpGeneratorService {
         const queryPlayer = `INSERT INTO Player(name, firstname, gender, memberid, club, foreignid, dob) VALUES (
         "${this._sqlEscaped(dbPlayer.lastName)}", "${this._sqlEscaped(
           dbPlayer.firstName,
-        )}", ${gender}, ${this._sqlEscaped(
-          dbPlayer?.memberId,
-        )}, ${internalClubId?.cpId}, NULL, NULL)`;
+        )}", ${gender}, ${this._sqlEscaped(dbPlayer?.memberId)}, ${internalClubId?.cpId}, NULL, NULL)`;
         // this.logger.verbose(`Query: ${queryPlayer}`);
-        const playerRes = await connection.execute<Identity>(
-          queryPlayer,
-          `SELECT @@Identity AS id`,
-        );
+        const playerRes = await connection.execute<Identity>(queryPlayer, `SELECT @@Identity AS id`);
 
         const response = playerRes[0];
         playerList.set(dbPlayer.id, {
@@ -582,11 +532,9 @@ export class CpGeneratorService {
         const entryPlayer = players.find((p) => p.id === dbPlayer.id);
 
         queries.push(
-          `INSERT INTO PlayerlevelEntry(leveltype, playerid, level1, level2, level3) VALUES (1, ${
-            response.id
-          }, ${entryPlayer?.single ?? -1}, ${entryPlayer?.double ?? -1}, ${
-            entryPlayer?.mix ?? -1
-          })`,
+          `INSERT INTO PlayerlevelEntry(leveltype, playerid, level1, level2, level3) VALUES (1, ${response.id}, ${
+            entryPlayer?.single ?? -1
+          }, ${entryPlayer?.double ?? -1}, ${entryPlayer?.mix ?? -1})`,
         );
       }
     }
@@ -596,22 +544,16 @@ export class CpGeneratorService {
 
       const query = players?.map((p) => {
         if (!p?.id) {
-          this.logger.error(
-            `Team ${dbTeam.name}(${dbTeam.id}) has invalid players`,
-          );
+          this.logger.error(`Team ${dbTeam.name}(${dbTeam.id}) has invalid players`);
         }
 
         const player = playerList.get(p.id ?? '');
 
         if (!player?.cpId) {
-          this.logger.error(
-            `Team ${dbTeam.name}(${dbTeam.id}) has invalid players`,
-          );
+          this.logger.error(`Team ${dbTeam.name}(${dbTeam.id}) has invalid players`);
         }
 
-        return [
-          `INSERT INTO TeamPlayer(team, player, status) VALUES (${cpId}, ${player?.cpId}, 1)`,
-        ];
+        return [`INSERT INTO TeamPlayer(team, player, status) VALUES (${cpId}, ${player?.cpId}, 1)`];
       });
       queries.push(...query.flat());
     }
@@ -650,10 +592,7 @@ export class CpGeneratorService {
 
       const entryQuery = `INSERT INTO Entry(event, team) VALUES ("${subEvent?.cpId}", "${cpId}")`;
       // this.logger.verbose(`Query: ${entryQuery}`);
-      const entryRes = await connection.execute<Identity>(
-        entryQuery,
-        `SELECT @@Identity AS id`,
-      );
+      const entryRes = await connection.execute<Identity>(entryQuery, `SELECT @@Identity AS id`);
 
       const stageQuery = `INSERT INTO stageentry(entry, stage) VALUES (${entryRes[0].id}, ${subEvent?.['Main Draw']})`;
       // this.logger.verbose(`Query: ${stageQuery}`);
@@ -695,9 +634,7 @@ export class CpGeneratorService {
 
     for (const [, { dbClub }] of clubs) {
       // find the teams of the club
-      const teamsOfClub = [...teams.values()].filter(
-        (t) => t.dbTeam.clubId === dbClub.id,
-      );
+      const teamsOfClub = [...teams.values()].filter((t) => t.dbTeam.clubId === dbClub.id);
 
       const validation = await this._validation.fetchAndValidate(
         {
@@ -709,18 +646,10 @@ export class CpGeneratorService {
             teamNumber: t.dbTeam.teamNumber,
             basePlayers: [...(t.dbEntry?.meta?.competition?.players ?? [])],
             players: (t.dbTeam.players ?? [])
-              .filter(
-                (p) =>
-                  p.TeamPlayerMembership.membershipType ===
-                  TeamMembershipType.REGULAR,
-              )
+              .filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.REGULAR)
               .map((p) => p.id),
             backupPlayers: (t.dbTeam.players ?? [])
-              .filter(
-                (p) =>
-                  p.TeamPlayerMembership.membershipType ===
-                  TeamMembershipType.BACKUP,
-              )
+              .filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.BACKUP)
               .map((p) => p.id),
             subEventId: t.dbEntry?.subEventId,
           })),
@@ -746,15 +675,11 @@ export class CpGeneratorService {
           const teaminput = teams.get(team.id);
 
           if (!teaminput) {
-            this.logger.warn(
-              `Team ${team.id} is not in the list of teams of the club ${dbClub.name}(${dbClub.id})`,
-            );
+            this.logger.warn(`Team ${team.id} is not in the list of teams of the club ${dbClub.name}(${dbClub.id})`);
             continue;
           }
 
-          this.logger.verbose(
-            `Team ${teaminput.dbTeam.name}(${team.id}) has ${team.errors?.length} errors`,
-          );
+          this.logger.verbose(`Team ${teaminput.dbTeam.name}(${team.id}) has ${team.errors?.length} errors`);
 
           memos.set(teaminput.cpId, {
             errors: (team.errors?.map((e) => {
@@ -774,9 +699,7 @@ export class CpGeneratorService {
             comments: comments?.map((c) => `${c.message}`),
           });
         } catch (e) {
-          this.logger.verbose(
-            `Error while processing team ${team.id} of club ${dbClub.name}(${dbClub.id})`,
-          );
+          this.logger.verbose(`Error while processing team ${team.id} of club ${dbClub.name}(${dbClub.id})`);
           this.logger.error(e);
         }
       }

@@ -9,11 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import {
-  HasClaimComponent,
-  PageHeaderComponent,
-  RankingTableComponent,
-} from '@badman/frontend-components';
+import { HasClaimComponent, PageHeaderComponent, RankingTableComponent } from '@badman/frontend-components';
 import { JobsService } from '@badman/frontend-queue';
 import { RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
@@ -56,9 +52,7 @@ export class DetailPageComponent {
   // route
   private routeData = toSignal(this.route.data);
 
-  rankingSystem = computed(
-    () => this.routeData()?.['rankingSystem'] as RankingSystem,
-  );
+  rankingSystem = computed(() => this.routeData()?.['rankingSystem'] as RankingSystem);
   systemName = computed(() => this.rankingSystem()?.name);
 
   constructor() {

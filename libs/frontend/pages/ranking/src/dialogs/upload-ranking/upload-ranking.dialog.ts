@@ -1,16 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  inject,
-} from '@angular/core';
-import {
-  MatDialogModule,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, inject } from '@angular/core';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RankingSystem } from '@badman/frontend-models';
 
 import { HttpClient, HttpEventType } from '@angular/common/http';
@@ -112,14 +102,10 @@ export class UploadRankingDialogComponent {
     formData.append('file', this.uploadedFile, this.uploadedFile.name);
 
     this.uploadProgress$ = this.http
-      .post<MembersRolePerGroupData[]>(
-        `${this.config.api}/upload/preview`,
-        formData,
-        {
-          reportProgress: true,
-          observe: 'events',
-        },
-      )
+      .post<MembersRolePerGroupData[]>(`${this.config.api}/upload/preview`, formData, {
+        reportProgress: true,
+        observe: 'events',
+      })
       .subscribe((event) => {
         if (event.type === HttpEventType.Response) {
           this.headerRow = (event.body?.[0] || []) as string[];
@@ -152,10 +138,7 @@ export class UploadRankingDialogComponent {
 
     try {
       const result = await lastValueFrom(
-        this.http.post<{ message: boolean }>(
-          `${this.config.api}/upload/process`,
-          formData,
-        ),
+        this.http.post<{ message: boolean }>(`${this.config.api}/upload/process`, formData),
       );
 
       if (result?.message) {

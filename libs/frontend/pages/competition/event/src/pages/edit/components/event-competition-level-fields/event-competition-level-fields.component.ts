@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -49,15 +42,8 @@ export class EventCompetitionLevelFieldsComponent implements OnInit {
 
   ngOnInit(): void {
     this.formGroup.get('level')?.valueChanges.subscribe((r) => {
-      const type =
-        this.type === LevelType.PROV
-          ? 'Provinciale'
-          : this.type === LevelType.LIGA
-            ? 'Liga'
-            : 'Nationale';
-      this.formGroup
-        .get('name')
-        ?.setValue(`${r}e ${type}`, { emitEvent: false });
+      const type = this.type === LevelType.PROV ? 'Provinciale' : this.type === LevelType.LIGA ? 'Liga' : 'Nationale';
+      this.formGroup.get('name')?.setValue(`${r}e ${type}`, { emitEvent: false });
     });
   }
 }

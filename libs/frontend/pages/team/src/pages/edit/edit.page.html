@@ -1,20 +1,10 @@
 @if (this.group) { @if (this.group) {
 <div class="fields">
-  <badman-team-fields
-    [group]="this.group"
-    [teamNumbers]="this.teamNumbers"
-  ></badman-team-fields>
-  <badman-team-player
-    (typeChanged)="playerMembershipTypeChanged($event)"
-    [group]="this.group"
-  ></badman-team-player>
+  <badman-team-fields [group]="this.group" [teamNumbers]="this.teamNumbers"></badman-team-fields>
+  <badman-team-player (typeChanged)="playerMembershipTypeChanged($event)" [group]="this.group"></badman-team-player>
 </div>
 } @else {
 <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 } }
-<button mat-stroked-button (click)="removeTeam()">
-  {{ 'all.button.delete' | translate }}
-</button>
-<button mat-raised-button (click)="saveTeam()" color="primary">
-  {{ 'all.button.save' | translate }}
-</button>
+<button mat-stroked-button (click)="removeTeam()">{{ 'all.button.delete' | translate }}</button>
+<button mat-raised-button (click)="saveTeam()" color="primary">{{ 'all.button.save' | translate }}</button>

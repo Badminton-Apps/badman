@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -29,13 +22,7 @@ type CommentForm = {
 @Component({
   selector: 'badman-comments-step',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-  ],
+  imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './comments.step.html',
   styleUrls: ['./comments.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -72,9 +59,7 @@ export class CommentsStepComponent implements OnInit {
 
   ngOnInit() {
     if (this.group) {
-      this.control = this.group?.get(
-        this.controlName,
-      ) as FormGroup<CommentForm>;
+      this.control = this.group?.get(this.controlName) as FormGroup<CommentForm>;
     }
 
     if (!this.control) {
@@ -111,9 +96,7 @@ export class CommentsStepComponent implements OnInit {
               (result) =>
                 events?.map((event) => ({
                   ...event,
-                  comment: result?.find(
-                    (comment) => comment.linkId === event.id,
-                  )?.message,
+                  comment: result?.find((comment) => comment.linkId === event.id)?.message,
                 })),
             ),
           );
@@ -160,8 +143,6 @@ export class CommentsStepComponent implements OnInit {
           },
         },
       })
-      .pipe(
-        map((result) => (result?.data?.comments ?? []) as Partial<Comment>[]),
-      );
+      .pipe(map((result) => (result?.data?.comments ?? []) as Partial<Comment>[]));
   }
 }

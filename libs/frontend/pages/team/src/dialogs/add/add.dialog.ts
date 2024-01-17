@@ -2,11 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Team, TeamPlayer } from '@badman/frontend-models';
 import { SubEventType, getCurrentSeason } from '@badman/utils';
@@ -18,14 +14,7 @@ import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
   templateUrl: './add.dialog.html',
   styleUrls: ['./add.dialog.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    TeamFieldComponent,
-    TeamPlayersComponent,
-    MatDialogModule,
-    MatButtonModule,
-  ],
+  imports: [CommonModule, TranslateModule, TeamFieldComponent, TeamPlayersComponent, MatDialogModule, MatButtonModule],
 })
 export class AddDialogComponent {
   group?: FormGroup;

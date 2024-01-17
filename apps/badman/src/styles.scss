@@ -6,16 +6,12 @@
 @use './badman.theme' as root-theme;
 
 @use '../../../libs/frontend/components/theme' as frontend-components;
-@use '../../../libs/frontend/pages/competition/team-assembly/theme' as
-  frontend-assembly;
+@use '../../../libs/frontend/pages/competition/team-assembly/theme' as frontend-assembly;
 @use '../../../libs/frontend/pages/club/theme' as frontend-club;
-@use '../../../libs/frontend/pages/competition/event/theme' as
-  frontend-competition;
-@use '../../../libs/frontend/pages/competition/change-encounter/theme' as
-  frontend-change-encounter;
+@use '../../../libs/frontend/pages/competition/event/theme' as frontend-competition;
+@use '../../../libs/frontend/pages/competition/change-encounter/theme' as frontend-change-encounter;
 @use '../../../libs/frontend/pages/tournament/theme' as frontend-tournament;
-@use '../../../libs/frontend/pages/competition/team-enrollment/theme' as
-  frontend-team-enrollement;
+@use '../../../libs/frontend/pages/competition/team-enrollment/theme' as frontend-team-enrollement;
 @use '../../../libs/frontend/pages/player/theme' as frontend-player;
 @use '../../../libs/frontend/pages/ranking/theme' as frontend-ranking;
 @use '../../../libs/frontend/pages/role/theme' as frontend-role;

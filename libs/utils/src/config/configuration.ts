@@ -1,9 +1,7 @@
 import Joi from 'joi';
 
 export const configSchema = Joi.object({
-  NODE_ENV: Joi.string()
-    .valid('development', 'production', 'test', 'beta')
-    .default('development'),
+  NODE_ENV: Joi.string().valid('development', 'production', 'test', 'beta').default('development'),
 
   DB_STORAGE: Joi.string().optional(),
   DB_IP: Joi.when('NODE_ENV', {

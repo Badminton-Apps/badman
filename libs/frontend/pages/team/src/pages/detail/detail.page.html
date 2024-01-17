@@ -2,15 +2,13 @@
   <div title>{{team().name}}</div>
   @if (this.entry()) {
   <div subTitle>
-    @if (this.entry()?.drawCompetition?.id) {
-    #{{this.entry()?.standing?.position}}/{{this.entry()?.standing?.size}} in
+    @if (this.entry()?.drawCompetition?.id) { #{{this.entry()?.standing?.position}}/{{this.entry()?.standing?.size}} in
     <a
       [routerLink]="['/competition', this.entry()?.subEventCompetition?.eventCompetition?.slug, 'draw', this.entry()?.drawCompetition?.id ]"
       >{{this.entry()?.subEventCompetition?.eventCompetition?.name}}</a
     >
     } @if (!this.entry()?.drawCompetition?.id && this.entry()?.id) {
-    <a
-      [routerLink]="['/competition', this.entry()?.subEventCompetition?.eventCompetition?.slug ]"
+    <a [routerLink]="['/competition', this.entry()?.subEventCompetition?.eventCompetition?.slug ]"
       >{{this.entry()?.subEventCompetition?.eventCompetition?.name}}</a
     >
     }

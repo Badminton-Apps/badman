@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
@@ -97,10 +92,9 @@ export class SettingsPageComponent implements OnInit {
           if (setting === null || setting === undefined) {
             return;
           }
-          const encounterChangeConfirmationNotificationControl =
-            new FormControl(
-              this.getValues(setting.encounterChangeConfirmationNotification),
-            );
+          const encounterChangeConfirmationNotificationControl = new FormControl(
+            this.getValues(setting.encounterChangeConfirmationNotification),
+          );
 
           const encounterChangeFinishedNotificationControl = new FormControl(
             this.getValues(setting.encounterChangeFinishedNotification),
@@ -117,27 +111,16 @@ export class SettingsPageComponent implements OnInit {
           const encounterNotEnteredNotificationControl = new FormControl(
             this.getValues(setting.encounterNotEnteredNotification),
           );
-          const syncSuccessNotification = new FormControl(
-            this.getValues(setting.syncSuccessNotification),
-          );
-          const syncFailedNotification = new FormControl(
-            this.getValues(setting.syncFailedNotification),
-          );
+          const syncSuccessNotification = new FormControl(this.getValues(setting.syncSuccessNotification));
+          const syncFailedNotification = new FormControl(this.getValues(setting.syncFailedNotification));
 
-          const clubEnrollmentNotification = new FormControl(
-            this.getValues(setting.clubEnrollmentNotification),
-          );
+          const clubEnrollmentNotification = new FormControl(this.getValues(setting.clubEnrollmentNotification));
           this.settingsForm = new FormGroup({
-            encounterChangeConfirmationNotification:
-              encounterChangeConfirmationNotificationControl,
-            encounterChangeFinishedNotification:
-              encounterChangeFinishedNotificationControl,
-            encounterChangeNewNotification:
-              encounterChangeNewNotificationControl,
-            encounterNotAcceptedNotification:
-              encounterNotAcceptedNotificationControl,
-            encounterNotEnteredNotification:
-              encounterNotEnteredNotificationControl,
+            encounterChangeConfirmationNotification: encounterChangeConfirmationNotificationControl,
+            encounterChangeFinishedNotification: encounterChangeFinishedNotificationControl,
+            encounterChangeNewNotification: encounterChangeNewNotificationControl,
+            encounterNotAcceptedNotification: encounterNotAcceptedNotificationControl,
+            encounterNotEnteredNotification: encounterNotEnteredNotificationControl,
             syncSuccessNotification: syncSuccessNotification,
             syncFailedNotification: syncFailedNotification,
             clubEnrollmentNotification: clubEnrollmentNotification,
@@ -217,13 +200,9 @@ export class SettingsPageComponent implements OnInit {
               .get('encounterNotEnteredNotification')
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           syncSuccessNotification:
-            this.settingsForm
-              .get('syncSuccessNotification')
-              ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
+            this.settingsForm.get('syncSuccessNotification')?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           syncFailedNotification:
-            this.settingsForm
-              .get('syncFailedNotification')
-              ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
+            this.settingsForm.get('syncFailedNotification')?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           language: this.settingsForm.get('language')?.value ?? 'en',
         },
       })

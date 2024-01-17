@@ -1,11 +1,7 @@
 <ng-container [formGroup]="group">
   <mat-form-field>
     <mat-label>{{ 'all.pickers.select-encounter' | translate }}</mat-label>
-    <mat-select
-      [formControl]="control"
-      required
-      (selectionChange)="this.selectEncounter($event)"
-    >
+    <mat-select [formControl]="control" required (selectionChange)="this.selectEncounter($event)">
       @for (encounter of this.encounters$ | async; track encounter) {
         <mat-option [value]="encounter.id">
           <span>{{ encounter.date | amDateFormat: 'llll' }} </span>

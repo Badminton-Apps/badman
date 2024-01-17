@@ -6,15 +6,12 @@ import { ClusterService } from '@badman/backend-cluster';
 import { cpus } from 'node:os';
 
 async function bootstrapPointsService() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.TCP,
-      options: {
-        port: 4003,
-      },
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+    transport: Transport.TCP,
+    options: {
+      port: 4003,
     },
-  );
+  });
 
   await app.listen();
 

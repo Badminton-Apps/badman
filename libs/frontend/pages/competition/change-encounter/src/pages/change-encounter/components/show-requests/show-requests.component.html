@@ -11,16 +11,14 @@
           @if (
             encounter.visualCode &&
             encounter.drawCompetition?.visualCode &&
-            encounter.drawCompetition?.subEventCompetition?.eventCompetition
-              ?.visualCode
+            encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode
           ) {
             <a
               mat-icon-button
               target="_blank"
               [href]="
                 'https://www.toernooi.nl/sport/teammatch.aspx?id=' +
-                encounter.drawCompetition?.subEventCompetition?.eventCompetition
-                  ?.visualCode +
+                encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode +
                 '&match=' +
                 encounter.visualCode
               "
@@ -33,19 +31,13 @@
         @if (!this.formGroupRequest.get('accepted')?.value) {
           <div class="caption">
             <p>
-              {{
-                'all.competition.change-encounter.disclaimer-submit' | translate
-              }}
+              {{ 'all.competition.change-encounter.disclaimer-submit' | translate }}
             </p>
           </div>
           <div class="dates">
             <div class="date-list">
               <ng-container formArrayName="dates">
-                @for (
-                  date of dateControls.controls;
-                  track date;
-                  let i = $index
-                ) {
+                @for (date of dateControls.controls; track date; let i = $index) {
                   <badman-request-date
                     [group]="date"
                     [encounter]="this.encounter"
@@ -63,8 +55,7 @@
                           | i18nPlural
                             : {
                                 '=1': 'all.competition.change-encounter.show-not-availible.singular',
-                                other:
-                                  'all.competition.change-encounter.show-not-availible.plural'
+                                other: 'all.competition.change-encounter.show-not-availible.plural'
                               }
                           | translate
                             : {
@@ -74,18 +65,12 @@
                     </mat-panel-title>
                   </mat-expansion-panel-header>
                   <div class="date-list" formArrayName="notAvailibleDates">
-                    @for (
-                      date of dateControlsNotAvailible.controls;
-                      track date;
-                      let i = $index
-                    ) {
+                    @for (date of dateControlsNotAvailible.controls; track date; let i = $index) {
                       <badman-request-date
                         [group]="date"
                         [encounter]="this.encounter"
                         [home]="this.home"
-                        (removeDate)="
-                          this.removeDate(dateControlsNotAvailible, i)
-                        "
+                        (removeDate)="this.removeDate(dateControlsNotAvailible, i)"
                       ></badman-request-date>
                     }
                   </div>
@@ -104,12 +89,7 @@
                 >
                   {{ 'all.competition.change-encounter.add-date' | translate }}
                 </button>
-                <button
-                  mat-raised-button
-                  color="primary"
-                  type="submit"
-                  [disabled]="this.running"
-                >
+                <button mat-raised-button color="primary" type="submit" [disabled]="this.running">
                   {{ 'all.button.submit' | translate }}
                 </button>
                 <button
@@ -122,25 +102,14 @@
                   {{ 'all.button.cancel' | translate }}
                 </button>
                 <badman-has-claim [any]="['change-any:encounter']">
-                  <button
-                    (click)="this.changeDate()"
-                    type="button"
-                    mat-stroked-button
-                  >
-                    Change date
-                  </button>
+                  <button (click)="this.changeDate()" type="button" mat-stroked-button>Change date</button>
                 </badman-has-claim>
               </div>
               @if (!this.requestClosed && requestClosing) {
                 <div class="caption">
                   <p>
-                    {{
-                      'all.competition.change-encounter.warnings.closing'
-                        | translate
-                    }}
-                    <strong class="warning">{{
-                      requestClosing | amCalendar
-                    }}</strong>
+                    {{ 'all.competition.change-encounter.warnings.closing' | translate }}
+                    <strong class="warning">{{ requestClosing | amCalendar }}</strong>
                   </p>
                 </div>
               }
@@ -158,11 +127,7 @@
         }
       </form>
       <badman-comments
-        [clubId]="
-          this.home
-            ? this.encounter.home?.clubId!
-            : this.encounter.away?.clubId!
-        "
+        [clubId]="this.home ? this.encounter.home?.clubId! : this.encounter.away?.clubId!"
         [encounter]="this.encounter"
       ></badman-comments>
     }
@@ -178,10 +143,7 @@
     </p>
     @if (data.changedLocation) {
       <p>
-        {{
-          'all.competition.change-encounter.warnings.selected-different-location'
-            | translate
-        }}
+        {{ 'all.competition.change-encounter.warnings.selected-different-location' | translate }}
       </p>
     }
   </mat-dialog-content>

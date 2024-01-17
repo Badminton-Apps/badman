@@ -28,15 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, ReplaySubject, lastValueFrom, merge, of } from 'rxjs';
-import {
-  debounceTime,
-  filter,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
+import { debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { PlayerFieldsComponent } from '../fields';
 
 @Component({
@@ -126,9 +118,9 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       this.setPlayer();
     }
     if (changes['ignorePlayers']) {
-      this.ignorePlayersIds = (
-        this.ignorePlayers?.map((r) => r.id) ?? []
-      ).filter((v, i, a) => a.indexOf(v) === i) as string[];
+      this.ignorePlayersIds = (this.ignorePlayers?.map((r) => r.id) ?? []).filter(
+        (v, i, a) => a.indexOf(v) === i,
+      ) as string[];
     }
   }
 
@@ -145,17 +137,12 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       tap(() => (this.loading = true)),
       debounceTime(600),
       switchMap((r) => {
-        this.clubId =
-          this.club instanceof Club ? this.club?.id : this.club ?? undefined;
+        this.clubId = this.club instanceof Club ? this.club?.id : this.club ?? undefined;
         const obs = this.clubId
           ? this.apollo
               .query<{ club: { players: Player[] } }>({
                 query: gql`
-                  query GetClubPlayers(
-                    $id: ID!
-                    $where: JSONObject
-                    $personal: Boolean!
-                  ) {
+                  query GetClubPlayers($id: ID!, $where: JSONObject, $personal: Boolean!) {
                     club(id: $id) {
                       id
                       players(where: $where) {
@@ -181,9 +168,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                   personal: this.includePersonal ?? false,
                 },
               })
-              .pipe(
-                map((x) => x.data?.club?.players?.map((r) => new Player(r))),
-              )
+              .pipe(map((x) => x.data?.club?.players?.map((r) => new Player(r))))
           : of([]);
 
         return obs.pipe(
@@ -237,10 +222,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       map(
         (result: Player[]) =>
           // Distinct by id
-          result?.filter(
-            (value, index, self) =>
-              self.findIndex((m) => m.id === value.id) === index,
-          ),
+          result?.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index),
       ),
       tap(() => {
         this.loading = false;
@@ -347,8 +329,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                   variables: {
                     data: {
                       memberId: this.newPlayerFormGroup?.value.memberId?.trim(),
-                      firstName:
-                        this.newPlayerFormGroup?.value.firstName?.trim(),
+                      firstName: this.newPlayerFormGroup?.value.firstName?.trim(),
                       lastName: this.newPlayerFormGroup?.value.lastName?.trim(),
                       gender: this.newPlayerFormGroup?.value.gender?.trim(),
                     },
@@ -386,10 +367,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
     }
   }
 
-  private _playerSearchWhere(args?: {
-    query?: string;
-    where?: { [key: string]: unknown };
-  }) {
+  private _playerSearchWhere(args?: { query?: string; where?: { [key: string]: unknown } }) {
     const parts = args?.query
       ?.toLowerCase()
       .replace(/[;\\\\/:*?"<>|&',]/, ' ')

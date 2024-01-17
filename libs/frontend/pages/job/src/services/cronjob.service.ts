@@ -53,9 +53,7 @@ export class CronJobService {
     })
     .pipe(
       map((res) => res.data?.cronJobs?.map((item) => new CronJob(item)) ?? []),
-      map((cronJobs) =>
-        cronJobs.sort((a, b) => `${a.name}`.localeCompare(`${b.name}`)),
-      ),
+      map((cronJobs) => cronJobs.sort((a, b) => `${a.name}`.localeCompare(`${b.name}`))),
     );
 
   sources$ = merge(

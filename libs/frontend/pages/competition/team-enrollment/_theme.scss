@@ -1,7 +1,6 @@
 @use '@angular/material' as mat;
 
-@use './src/pages/team-enrollment/team-enrollment.page.theme.scss' as
-  team-enrollment;
+@use './src/pages/team-enrollment/team-enrollment.page.theme.scss' as team-enrollment;
 
 @mixin typography($theme) {
   @include team-enrollment.typography($theme);

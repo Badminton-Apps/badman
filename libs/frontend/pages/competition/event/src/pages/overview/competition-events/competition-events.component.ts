@@ -103,10 +103,7 @@ export class CompetitionEventsComponent implements OnInit {
             };
           }>({
             query: gql`
-              query GetEventsCompetition(
-                $where: JSONObject
-                $order: [SortOrderType!]
-              ) {
+              query GetEventsCompetition($where: JSONObject, $order: [SortOrderType!]) {
                 eventCompetitions(where: $where, order: $order) {
                   count
                   rows {
@@ -145,18 +142,12 @@ export class CompetitionEventsComponent implements OnInit {
             },
           }).valueChanges;
         }),
-        transferState(
-          `competitions-${this.filter?.value.official ?? true}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`competitions-${this.filter?.value.official ?? true}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.eventCompetitions) {
             throw new Error('No competitions found');
           }
-          return result.data.eventCompetitions.rows.map(
-            (team) => new EventCompetition(team),
-          );
+          return result.data.eventCompetitions.rows.map((team) => new EventCompetition(team));
         }),
         tap(() => {
           this.loading.set(false);
@@ -188,9 +179,7 @@ export class CompetitionEventsComponent implements OnInit {
         this.apollo
           .mutate({
             mutation: gql`
-              mutation UpdateEventCompetition(
-                $data: EventCompetitionUpdateInput!
-              ) {
+              mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
                 updateEventCompetition(data: $data) {
                   id
                 }
@@ -205,13 +194,9 @@ export class CompetitionEventsComponent implements OnInit {
             },
           })
           .subscribe(() => {
-            this.snackBar.open(
-              `Competition ${competition.name} open/close dates updated`,
-              'Close',
-              {
-                duration: 2000,
-              },
-            );
+            this.snackBar.open(`Competition ${competition.name} open/close dates updated`, 'Close', {
+              duration: 2000,
+            });
             this.changeDetectorRef.detectChanges();
           });
       }
@@ -236,15 +221,9 @@ export class CompetitionEventsComponent implements OnInit {
         },
       })
       .subscribe(() => {
-        this.snackBar.open(
-          `Competition ${competition.name} is ${
-            offical ? 'official' : 'unofficial'
-          }`,
-          'Close',
-          {
-            duration: 2000,
-          },
-        );
+        this.snackBar.open(`Competition ${competition.name} is ${offical ? 'official' : 'unofficial'}`, 'Close', {
+          duration: 2000,
+        });
 
         this.changeDetectorRef.detectChanges();
       });
@@ -256,8 +235,6 @@ export class CompetitionEventsComponent implements OnInit {
       return;
     }
 
-    await lastValueFrom(
-      this.jobsService.syncEventById({ id: competition.visualCode }),
-    );
+    await lastValueFrom(this.jobsService.syncEventById({ id: competition.visualCode }));
   }
 }

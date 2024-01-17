@@ -1,13 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  Input,
-  OnInit,
-  PLATFORM_ID,
-  TransferState,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';

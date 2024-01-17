@@ -1,30 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import {
-  MatDialogModule,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SelectPlayerComponent } from '@badman/frontend-components';
-import {
-  Game,
-  Player,
-  GamePlayer,
-  RankingPoint,
-  RankingSystem,
-} from '@badman/frontend-models';
+import { Game, Player, GamePlayer, RankingPoint, RankingSystem } from '@badman/frontend-models';
 import { GameType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { gql } from 'apollo-angular';
@@ -159,10 +144,8 @@ export class AddGameComponent implements OnInit {
     const p1t2Points = this._getWinningPoints(this.p1t2Level.value);
     const p2t2Points = this._getWinningPoints(this.p2t2Level.value);
 
-    const team1Points =
-      this.data.type == 'single' ? p1t1Points : (p1t1Points + p2t1Points) / 2;
-    const team2Points =
-      this.data.type == 'single' ? p1t2Points : (p1t2Points + p2t2Points) / 2;
+    const team1Points = this.data.type == 'single' ? p1t1Points : (p1t1Points + p2t1Points) / 2;
+    const team2Points = this.data.type == 'single' ? p1t2Points : (p1t2Points + p2t2Points) / 2;
 
     players.push({
       ...(this.p1t1.value as Partial<Player>),
@@ -216,12 +199,7 @@ export class AddGameComponent implements OnInit {
 
     const game = new Game({
       id: uuidv4(),
-      gameType:
-        this.data.type == 'single'
-          ? GameType.S
-          : this.data.type == 'double'
-            ? GameType.D
-            : GameType.MX,
+      gameType: this.data.type == 'single' ? GameType.S : this.data.type == 'double' ? GameType.D : GameType.MX,
       winner: t1won ? 1 : 0,
       rankingPoints,
       players,
@@ -236,8 +214,7 @@ export class AddGameComponent implements OnInit {
   }
 
   private _getWinningPoints(level: number): number {
-    const index =
-      (this.data?.system?.pointsWhenWinningAgainst?.length ?? 0) - level;
+    const index = (this.data?.system?.pointsWhenWinningAgainst?.length ?? 0) - level;
 
     return this.data?.system?.pointsWhenWinningAgainst?.[index] ?? 0;
   }

@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EncounterCompetition, GamePlayer } from '@badman/frontend-models';
@@ -15,14 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'badman-replace-player',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatDialogModule,
-    MatButtonModule,
-    TranslateModule,
-  ],
+  imports: [CommonModule, MatFormFieldModule, MatSelectModule, MatDialogModule, MatButtonModule, TranslateModule],
   templateUrl: './replace-player.component.html',
   styleUrls: ['./replace-player.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

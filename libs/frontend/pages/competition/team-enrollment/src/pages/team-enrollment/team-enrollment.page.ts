@@ -1,12 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -81,25 +75,17 @@ export class TeamEnrollmentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.translate
-      .get(['all.competition.team-enrollment.title', 'all.competition.title'])
-      .subscribe((enrollemnt) => {
-        this.seoService.update({
-          title: enrollemnt['all.competition.team-enrollment.title'],
-          description: enrollemnt['all.competition.team-enrollment.title'],
-          type: 'website',
-          keywords: ['team', 'enrollemnt'],
-        });
-
-        this.breadcrumbService.set(
-          'competition',
-          enrollemnt['all.competition.title'],
-        );
-        this.breadcrumbService.set(
-          'competition/enrollment',
-          enrollemnt['all.competition.team-enrollment.title'],
-        );
+    this.translate.get(['all.competition.team-enrollment.title', 'all.competition.title']).subscribe((enrollemnt) => {
+      this.seoService.update({
+        title: enrollemnt['all.competition.team-enrollment.title'],
+        description: enrollemnt['all.competition.team-enrollment.title'],
+        type: 'website',
+        keywords: ['team', 'enrollemnt'],
       });
+
+      this.breadcrumbService.set('competition', enrollemnt['all.competition.title']);
+      this.breadcrumbService.set('competition/enrollment', enrollemnt['all.competition.team-enrollment.title']);
+    });
   }
 
   save() {

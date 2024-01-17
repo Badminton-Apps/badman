@@ -1,15 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  Input,
-  OnInit,
-  Signal,
-  inject,
-  computed,
-  ViewChild,
-  TemplateRef,
-} from '@angular/core';
+import { Component, Injector, Input, OnInit, Signal, inject, computed, ViewChild, TemplateRef } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Claim, Player, Role } from '@badman/frontend-models';
 import { SecurityType } from '@badman/utils';

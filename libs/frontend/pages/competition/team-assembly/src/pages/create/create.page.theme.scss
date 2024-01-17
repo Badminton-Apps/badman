@@ -4,8 +4,7 @@
 @use '@angular/material' as mat;
 @use './components/assembly/assembly.component.theme' as assembly;
 @use './components/assembly-v2/assembly-v2.component.theme' as assembly-v2;
-@use './components/team-assembly-player/team-assembly-player.component.theme' as
-  team-assembly-player;
+@use './components/team-assembly-player/team-assembly-player.component.theme' as team-assembly-player;
 
 @mixin color($theme) {
   @include assembly.color($theme);

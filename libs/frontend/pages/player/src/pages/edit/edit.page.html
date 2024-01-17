@@ -12,23 +12,12 @@
   @if (this.hasRankingPermission) {
   <mat-tab label="Ranking" id="ranking-tab">
     <div class="tab-content">
-      <div class="tab-content-header">
-        {{ 'all.ranking.last-ranking' | translate }}
-      </div>
+      <div class="tab-content-header">{{ 'all.ranking.last-ranking' | translate }}</div>
       <badman-edit-ranking fxFlex [player]="player"></badman-edit-ranking>
-      <div class="tab-content-header">
-        {{ 'all.input.competitionplayer' | translate }}
-      </div>
-      <badman-edit-competition-status
-        [player]="player"
-      ></badman-edit-competition-status>
-      <div class="tab-content-header">
-        {{ 'all.ranking.all-ranking' | translate }}
-      </div>
-      <badman-edit-ranking-all
-        fxFlex
-        [player]="player"
-      ></badman-edit-ranking-all>
+      <div class="tab-content-header">{{ 'all.input.competitionplayer' | translate }}</div>
+      <badman-edit-competition-status [player]="player"></badman-edit-competition-status>
+      <div class="tab-content-header">{{ 'all.ranking.all-ranking' | translate }}</div>
+      <badman-edit-ranking-all fxFlex [player]="player"></badman-edit-ranking-all>
     </div>
   </mat-tab>
   } @if (this.hasClubHistoryPermission) {

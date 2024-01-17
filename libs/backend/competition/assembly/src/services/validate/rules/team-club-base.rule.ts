@@ -1,9 +1,5 @@
 import { Player } from '@badman/backend-database';
-import {
-  AssemblyValidationData,
-  AssemblyOutput,
-  AssemblyValidationError,
-} from '../../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export type TeamClubBaseRuleParams = {
@@ -14,18 +10,7 @@ export type TeamClubBaseRuleParams = {
  */
 export class TeamClubBaseRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
-    const {
-      otherMeta,
-      single1,
-      single2,
-      single3,
-      single4,
-      double1,
-      double2,
-      double3,
-      double4,
-      subtitudes,
-    } = assembly;
+    const { otherMeta, single1, single2, single3, single4, double1, double2, double3, double4, subtitudes } = assembly;
 
     const playersError = [
       ...new Set(
@@ -43,16 +28,13 @@ export class TeamClubBaseRule extends Rule {
       ),
     ] as Player[];
 
-    const playersWarn = [
-      ...new Set([...(subtitudes ?? [])].filter((p) => p != undefined)),
-    ];
+    const playersWarn = [...new Set([...(subtitudes ?? [])].filter((p) => p != undefined))];
 
     const errors = [] as AssemblyValidationError<TeamClubBaseRuleParams>[];
     const warnings = [] as AssemblyValidationError<TeamClubBaseRuleParams>[];
 
     for (const oMeta of otherMeta ?? []) {
-      const metaPlayers =
-        (oMeta?.competition?.players?.map((p) => p.id) as string[]) ?? [];
+      const metaPlayers = (oMeta?.competition?.players?.map((p) => p.id) as string[]) ?? [];
       if (metaPlayers) {
         errors.push(...this.checkGroup(playersError, metaPlayers));
         warnings.push(...this.checkGroup(playersWarn, metaPlayers));

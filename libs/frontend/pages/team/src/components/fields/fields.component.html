@@ -9,24 +9,14 @@
           <mat-form-field>
             <mat-label>Type</mat-label>
             <mat-select formControlName="type">
-              <mat-option value="M">{{
-                'all.team.types.male' | translate
-              }}</mat-option>
-              <mat-option value="F">{{
-                'all.team.types.female' | translate
-              }}</mat-option>
-              <mat-option value="MX">{{
-                'all.team.types.mix' | translate
-              }}</mat-option>
-              <mat-option value="NATIONAL">{{
-                'all.team.types.national' | translate
-              }}</mat-option>
+              <mat-option value="M">{{ 'all.team.types.male' | translate }}</mat-option>
+              <mat-option value="F">{{ 'all.team.types.female' | translate }}</mat-option>
+              <mat-option value="MX">{{ 'all.team.types.mix' | translate }}</mat-option>
+              <mat-option value="NATIONAL">{{ 'all.team.types.national' | translate }}</mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field>
-            <mat-label>{{
-              'all.team.change-number.number' | translate
-            }}</mat-label>
+            <mat-label>{{ 'all.team.change-number.number' | translate }}</mat-label>
             <mat-select formControlName="teamNumber">
               @for (tn of this.options; track tn) {
                 <mat-option [value]="tn">{{ tn }}</mat-option>
@@ -51,27 +41,15 @@
       [clearOnSelection]="false"
       (whenSelectPlayer)="this.onCaptainSelect($event)"
     ></badman-player-search>
-    <badman-has-claim
-      [any]="['details-any:team', this.group.value.clubId + '_details:team']"
-    >
+    <badman-has-claim [any]="['details-any:team', this.group.value.clubId + '_details:team']">
       <div class="captain-info">
         <mat-form-field class="email">
           <mat-label>{{ 'all.input.email' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="email"
-            alt="email"
-            autocomplete="email"
-          />
+          <input matInput formControlName="email" alt="email" autocomplete="email" />
         </mat-form-field>
         <mat-form-field class="phone">
           <mat-label>{{ 'all.input.phone' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="phone"
-            alt="phone"
-            autocomplete="phone"
-          />
+          <input matInput formControlName="phone" alt="phone" autocomplete="phone" />
         </mat-form-field>
       </div>
       <div noPerm>
@@ -83,37 +61,18 @@
       <mat-form-field class="day">
         <mat-label>{{ 'all.input.day' | translate }}</mat-label>
         <mat-select formControlName="preferredDay">
-          <mat-option value="monday">{{
-            'all.days.monday' | translate
-          }}</mat-option>
-          <mat-option value="tuesday">{{
-            'all.days.tuesday' | translate
-          }}</mat-option>
-          <mat-option value="wednesday">{{
-            'all.days.wednesday' | translate
-          }}</mat-option>
-          <mat-option value="thursday">{{
-            'all.days.thursday' | translate
-          }}</mat-option>
-          <mat-option value="friday">{{
-            'all.days.friday' | translate
-          }}</mat-option>
-          <mat-option value="saturday">{{
-            'all.days.saturday' | translate
-          }}</mat-option>
-          <mat-option value="sunday">{{
-            'all.days.sunday' | translate
-          }}</mat-option>
+          <mat-option value="monday">{{ 'all.days.monday' | translate }}</mat-option>
+          <mat-option value="tuesday">{{ 'all.days.tuesday' | translate }}</mat-option>
+          <mat-option value="wednesday">{{ 'all.days.wednesday' | translate }}</mat-option>
+          <mat-option value="thursday">{{ 'all.days.thursday' | translate }}</mat-option>
+          <mat-option value="friday">{{ 'all.days.friday' | translate }}</mat-option>
+          <mat-option value="saturday">{{ 'all.days.saturday' | translate }}</mat-option>
+          <mat-option value="sunday">{{ 'all.days.sunday' | translate }}</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field class="time">
         <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
-        <input
-          matInput
-          type="time"
-          step="900"
-          formControlName="preferredTime"
-        />
+        <input matInput type="time" step="900" formControlName="preferredTime" />
       </mat-form-field>
     </div>
   </form>

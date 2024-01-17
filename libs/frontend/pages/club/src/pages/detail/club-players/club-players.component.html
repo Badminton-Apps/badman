@@ -6,9 +6,7 @@
         <div class="player">
           <div [routerLink]="['/player', player.player.slug]">
             <span class="name">{{ player.player.fullName }}</span>
-            <span class="playerteams"
-              >{{ player.teams }} {{ 'all.team.teams' | translate }}</span
-            >
+            <span class="playerteams">{{ player.teams }} {{ 'all.team.teams' | translate }}</span>
           </div>
         </div>
       }
@@ -17,11 +15,6 @@
 } @else {
   <section class="players">
     <h3>{{ 'all.club.titles.players' | translate }}</h3>
-    <badman-loading-block
-      [items]="25"
-      height="74px"
-      width="250px"
-      direction="row"
-    />
+    <badman-loading-block [items]="25" height="74px" width="250px" direction="row" />
   </section>
 }

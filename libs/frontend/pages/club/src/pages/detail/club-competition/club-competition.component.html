@@ -13,9 +13,7 @@
           <span class="team-name">{{ team.name }}</span>
           @if (team?.entry?.meta?.competition?.teamIndex) {
             <span class="team-index"
-              >({{ 'all.team.team-index' | translate }}:{{
-                team?.entry?.meta?.competition?.teamIndex
-              }})
+              >({{ 'all.team.team-index' | translate }}:{{ team?.entry?.meta?.competition?.teamIndex }})
             </span>
           }
         </div>
@@ -33,25 +31,17 @@
       <mat-cell *matCellDef="let team">
         @if ((team?.entry?.enrollmentValidation?.errors ?? []).length > 0) {
           <mat-icon
-            [matBadge]="
-              (team?.entry?.enrollmentValidation?.errors ?? []).length
-            "
+            [matBadge]="(team?.entry?.enrollmentValidation?.errors ?? []).length"
             class="invalid"
-            [matTooltip]="
-              'all.competition.team-enrollment.errors.title' | translate
-            "
+            [matTooltip]="'all.competition.team-enrollment.errors.title' | translate"
             >error</mat-icon
           >
         }
         @if ((team?.entry?.enrollmentValidation?.warnings ?? []).length > 0) {
           <mat-icon
-            [matBadge]="
-              (team?.entry?.enrollmentValidation?.warnings ?? []).length
-            "
+            [matBadge]="(team?.entry?.enrollmentValidation?.warnings ?? []).length"
             class="warning"
-            [matTooltip]="
-              'all.competition.team-enrollment.warnings.title' | translate
-            "
+            [matTooltip]="'all.competition.team-enrollment.warnings.title' | translate"
             >warning</mat-icon
           >
         }
@@ -75,22 +65,15 @@
       <div class="base-players">
         <badman-block class="base">
           <badman-block-header>
-            <badman-block-title>{{
-              'all.competition.team-enrollment.players.base' | translate
-            }}</badman-block-title>
+            <badman-block-title>{{ 'all.competition.team-enrollment.players.base' | translate }}</badman-block-title>
           </badman-block-header>
           <mat-divider />
           <badman-block-content>
             <mat-list role="list">
-              @for (
-                player of team?.entry?.meta?.competition?.players ?? [];
-                track player
-              ) {
+              @for (player of team?.entry?.meta?.competition?.players ?? []; track player) {
                 <mat-list-item role="listitem">
                   <span matListItemTitle>{{ player.player.fullName }}</span>
-                  <span matListItemLine
-                    >{{ player.single }}- {{ player.double }} - {{ player.mix }}
-                  </span>
+                  <span matListItemLine>{{ player.single }}- {{ player.double }} - {{ player.mix }} </span>
                 </mat-list-item>
               }
             </mat-list>
@@ -98,75 +81,50 @@
         </badman-block>
         <badman-block class="captain">
           <badman-block-header>
-            <badman-block-title>{{
-              'all.team.title.base-fields' | translate
-            }}</badman-block-title>
+            <badman-block-title>{{ 'all.team.title.base-fields' | translate }}</badman-block-title>
           </badman-block-header>
           <mat-divider />
           <badman-block-content>
             <mat-list role="list">
               @if (team?.entry?.meta?.competition?.teamIndex) {
                 <mat-list-item role="listitem">
-                  <span matListItemTitle>{{
-                    team?.entry?.meta?.competition?.teamIndex
-                  }}</span>
-                  <span matListItemLine>{{
-                    'all.team.team-index' | translate
-                  }}</span>
+                  <span matListItemTitle>{{ team?.entry?.meta?.competition?.teamIndex }}</span>
+                  <span matListItemLine>{{ 'all.team.team-index' | translate }}</span>
                 </mat-list-item>
               }
               <mat-list-item role="listitem">
                 <span matListItemTitle>{{ team?.captain?.fullName }}</span>
-                <span matListItemLine>{{
-                  'all.team.title.captain' | translate
-                }}</span>
+                <span matListItemLine>{{ 'all.team.title.captain' | translate }}</span>
               </mat-list-item>
               <mat-list-item role="listitem">
                 <span matListItemTitle
-                  >{{ 'all.days.' + team?.preferredDay | translate }} -
-                  {{ team?.preferredTime }}</span
+                  >{{ 'all.days.' + team?.preferredDay | translate }} - {{ team?.preferredTime }}</span
                 >
-                <span matListItemLine>{{
-                  'all.team.prefferd.title' | translate
-                }}</span>
+                <span matListItemLine>{{ 'all.team.prefferd.title' | translate }}</span>
               </mat-list-item>
             </mat-list>
           </badman-block-content>
         </badman-block>
         <badman-block class="validations">
           <badman-block-header>
-            <badman-block-title>{{
-              'all.competition.team-enrollment.validations' | translate
-            }}</badman-block-title>
+            <badman-block-title>{{ 'all.competition.team-enrollment.validations' | translate }}</badman-block-title>
           </badman-block-header>
           <mat-divider />
           <badman-block-content>
             @if ((team?.entry?.enrollmentValidation?.errors?.length ?? 0) > 0) {
               <ul class="error-list">
-                @for (
-                  error of team?.entry?.enrollmentValidation?.errors;
-                  track error
-                ) {
+                @for (error of team?.entry?.enrollmentValidation?.errors; track error) {
                   <li>
-                    <badman-enrollment-message
-                      [validation]="error"
-                    ></badman-enrollment-message>
+                    <badman-enrollment-message [validation]="error"></badman-enrollment-message>
                   </li>
                 }
               </ul>
             }
-            @if (
-              (team?.entry?.enrollmentValidation?.warnings?.length ?? 0) > 0
-            ) {
+            @if ((team?.entry?.enrollmentValidation?.warnings?.length ?? 0) > 0) {
               <ul class="warning-list">
-                @for (
-                  warnings of team?.entry?.enrollmentValidation?.warnings;
-                  track warnings
-                ) {
+                @for (warnings of team?.entry?.enrollmentValidation?.warnings; track warnings) {
                   <li>
-                    <badman-enrollment-message
-                      [validation]="warnings"
-                    ></badman-enrollment-message>
+                    <badman-enrollment-message [validation]="warnings"></badman-enrollment-message>
                   </li>
                 }
               </ul>
@@ -238,10 +196,7 @@
             <span>{{ this.location.fax }}</span>
           }
           <div class="days">
-            @for (
-              availibility of this.location?.availibilities ?? [];
-              track availibility
-            ) {
+            @for (availibility of this.location?.availibilities ?? []; track availibility) {
               <div>
                 <h4>
                   {{ 'all.competition.team-enrollment.play-days' | translate }}
@@ -255,9 +210,7 @@
                         {{ 'all.breakdown.untill' | translate }}
                         {{ day.endTime }}</span
                       >
-                      <span matListItemLine>
-                        {{ day.courts }} {{ 'all.input.courts' | translate }}
-                      </span>
+                      <span matListItemLine> {{ day.courts }} {{ 'all.input.courts' | translate }} </span>
                     </mat-list-item>
                   }
                 </mat-list>
@@ -265,10 +218,7 @@
                   {{ 'all.competition.team-enrollment.exceptions' | translate }}
                 </h4>
                 <mat-list role="list">
-                  @for (
-                    exception of availibility?.exceptions ?? [];
-                    track exception
-                  ) {
+                  @for (exception of availibility?.exceptions ?? []; track exception) {
                     <mat-list-item role="listitem">
                       <span matListItemTitle>
                         {{ exception.start | amDateFormat: 'L' }}

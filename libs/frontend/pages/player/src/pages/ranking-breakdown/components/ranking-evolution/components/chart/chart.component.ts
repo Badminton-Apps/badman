@@ -184,18 +184,12 @@ export class ChartComponent implements OnInit {
       return;
     }
 
-    this.nextLevel =
-      this.system.pointsToGoUp?.[
-        (this.system.amountOfLevels ?? 12) - lastLevel
-      ];
+    this.nextLevel = this.system.pointsToGoUp?.[(this.system.amountOfLevels ?? 12) - lastLevel];
 
     if (lastLevel === 12) {
       return;
     }
-    this.prevLevel =
-      this.system.pointsToGoUp?.[
-        (this.system.amountOfLevels ?? 12) - lastLevel + 1
-      ];
+    this.prevLevel = this.system.pointsToGoUp?.[(this.system.amountOfLevels ?? 12) - lastLevel + 1];
   }
 
   generateUpdateLines() {
@@ -204,9 +198,7 @@ export class ChartComponent implements OnInit {
       const updateDate = moment(this.system.updateLastUpdate);
 
       // get min date
-      const minDate = moment.min(
-        this.rankingPlaces.map((r) => moment(r.rankingDate)),
-      );
+      const minDate = moment.min(this.rankingPlaces.map((r) => moment(r.rankingDate)));
 
       // go back starting from max date untill min date
       // the interval is the calculation interval
@@ -217,10 +209,7 @@ export class ChartComponent implements OnInit {
           borderColor: '#3d99f566',
         });
 
-        updateDate.subtract(
-          this.system.updateIntervalAmount,
-          this.system.updateIntervalUnit,
-        );
+        updateDate.subtract(this.system.updateIntervalAmount, this.system.updateIntervalUnit);
       }
     }
 

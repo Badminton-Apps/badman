@@ -44,9 +44,7 @@ export class PlaceService {
     }
     this._logger.log(`Calculatting places for ${system.name}, ${calcDate}`);
 
-    const start = moment(calcDate)
-      .subtract(system.periodAmount, system.periodUnit)
-      .toDate();
+    const start = moment(calcDate).subtract(system.periodAmount, system.periodUnit).toDate();
     const stop = moment(calcDate).toDate();
 
     const where = {
@@ -94,9 +92,7 @@ export class PlaceService {
     const duration = moment.duration(moment(endTime).diff(moment(startTime)));
     const average = duration.asMilliseconds() / players.length;
     this._logger.log(
-      `Calculated ${
-        players.length
-      } places in ${duration.asSeconds()} seconds, average ${average} ms per player`,
+      `Calculated ${players.length} places in ${duration.asSeconds()} seconds, average ${average} ms per player`,
     );
 
     if (options?.updateRanking) {
@@ -133,12 +129,6 @@ export class PlaceService {
         }
       | undefined,
   ) {
-    this.belgiumFlandersPlaceService.newPlaceForPlayer(
-      player,
-      system,
-      stop,
-      start,
-      options,
-    );
+    this.belgiumFlandersPlaceService.newPlaceForPlayer(player, system, stop, start, options);
   }
 }

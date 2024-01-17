@@ -83,14 +83,12 @@ export class ClubTeamsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.filter?.valueChanges
-      .pipe(startWith(this.filter?.value), takeUntil(this.destroy$))
-      .subscribe((newValue) => {
-        this.clubTeamsService.filter.patchValue({
-          season: newValue.season,
-          choices: newValue.choices,
-        });
+    this.filter?.valueChanges.pipe(startWith(this.filter?.value), takeUntil(this.destroy$)).subscribe((newValue) => {
+      this.clubTeamsService.filter.patchValue({
+        season: newValue.season,
+        choices: newValue.choices,
       });
+    });
   }
 
   editTeam(team: Team) {

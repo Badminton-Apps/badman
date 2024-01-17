@@ -1,17 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -22,11 +11,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Subject, combineLatest, of } from 'rxjs';
 import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CLUB, LOCATIONS, SEASON } from '../../../../../forms';
-import {
-  LocationAvailibilityForm,
-  LocationComponent,
-  LocationForm,
-} from './components';
+import { LocationAvailibilityForm, LocationComponent, LocationForm } from './components';
 
 @Component({
   selector: 'badman-locations-step',
@@ -77,9 +62,7 @@ export class LocationsStepComponent implements OnInit {
 
   ngOnInit() {
     if (this.group) {
-      this.control = this.group?.get(
-        this.controlName,
-      ) as FormArray<LocationForm>;
+      this.control = this.group?.get(this.controlName) as FormArray<LocationForm>;
     }
 
     if (!this.control) {
@@ -100,18 +83,12 @@ export class LocationsStepComponent implements OnInit {
       }
     }
 
-    const clubId$ =
-      this.group.get(this.clubControlName)?.valueChanges ?? of(this.clubId);
-    const season$ =
-      this.group.get(this.seasonControlName)?.valueChanges ?? of(this.season);
+    const clubId$ = this.group.get(this.clubControlName)?.valueChanges ?? of(this.clubId);
+    const season$ = this.group.get(this.seasonControlName)?.valueChanges ?? of(this.season);
 
     combineLatest([
-      clubId$.pipe(
-        startWith(this.group.get(this.clubControlName)?.value || this.clubId),
-      ),
-      season$.pipe(
-        startWith(this.group.get(this.seasonControlName)?.value || this.season),
-      ),
+      clubId$.pipe(startWith(this.group.get(this.clubControlName)?.value || this.clubId)),
+      season$.pipe(startWith(this.group.get(this.seasonControlName)?.value || this.season)),
     ])
       .pipe(
         tap(([clubId, season]) => {
@@ -125,10 +102,7 @@ export class LocationsStepComponent implements OnInit {
         switchMap(([clubId, season]) =>
           this.apollo.query<{ locations: Location[] }>({
             query: gql`
-              query Locations(
-                $where: JSONObject
-                $availibilitiesWhere: JSONObject
-              ) {
+              query Locations($where: JSONObject, $availibilitiesWhere: JSONObject) {
                 locations(where: $where) {
                   id
                   name
@@ -172,10 +146,7 @@ export class LocationsStepComponent implements OnInit {
           }),
         ),
         takeUntil(this.destroy$),
-        map(
-          (result) =>
-            result.data?.locations?.map((location) => new Location(location)),
-        ),
+        map((result) => result.data?.locations?.map((location) => new Location(location))),
       )
       ?.subscribe((locations) => {
         if (locations) {
@@ -183,9 +154,7 @@ export class LocationsStepComponent implements OnInit {
           locations.forEach((location) => {
             // filter out the locations that are not available for the current season
             // if no availibilities are set, use the one from previous season
-            let availibilty = location.availibilities?.find(
-              (availibility) => availibility.season === this.season,
-            );
+            let availibilty = location.availibilities?.find((availibility) => availibility.season === this.season);
 
             if (!availibilty) {
               const lastSeason = (location.availibilities?.find(
@@ -271,9 +240,7 @@ export class LocationsStepComponent implements OnInit {
             state: this.formBuilder.control(location?.state),
             phone: this.formBuilder.control(location?.phone),
             fax: this.formBuilder.control(location?.fax),
-            availibilities: this.formBuilder.array(
-              [] as LocationAvailibilityForm[],
-            ),
+            availibilities: this.formBuilder.array([] as LocationAvailibilityForm[]),
           }) as LocationForm,
         );
       });

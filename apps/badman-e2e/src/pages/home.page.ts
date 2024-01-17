@@ -8,7 +8,6 @@ export default class HomePage {
 
   readonly ranking: Locator;
 
-
   constructor(page: Page) {
     setup(page);
     this.page = page;

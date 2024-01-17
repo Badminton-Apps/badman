@@ -25,11 +25,7 @@ export async function acceptEncounter(
     // find the input type submit with value 'Bevestig'
     const selector = `input[type="submit"][value="Uitslag bevestigen"]`;
     const targetPage = page;
-    const button = await waitForSelector(
-      selector,
-      targetPage,
-      pupeteer.timeout,
-    );
+    const button = await waitForSelector(selector, targetPage, pupeteer.timeout);
 
     // if button not found return false
     if (!button) {

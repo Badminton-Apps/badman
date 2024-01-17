@@ -1,20 +1,11 @@
 @if (this.user$ | async; as user) {
   @if (user.loggedIn && user.slug) {
     <mat-nav-list>
-      <a
-        mat-list-item
-        (click)="whenNavigate.next()"
-        [routerLink]="['/player', user.slug]"
-        routerLinkActive="active"
-      >
+      <a mat-list-item (click)="whenNavigate.next()" [routerLink]="['/player', user.slug]" routerLinkActive="active">
         {{ 'all.shell.sidebar.persnal.games' | translate }}
       </a>
       @if (user?.clubs && (user.clubs?.length ?? 0) === 1) {
-        <a
-          mat-list-item
-          (click)="whenNavigate.next()"
-          [routerLink]="['/club', user.clubs![0].slug]"
-        >
+        <a mat-list-item (click)="whenNavigate.next()" [routerLink]="['/club', user.clubs![0].slug]">
           {{ 'all.shell.sidebar.persnal.club' | translate }}
         </a>
       }
@@ -42,9 +33,7 @@
                 >
                   {{ club.name }}
                   @if (club.clubMembership?.membershipType === 'LOAN') {
-                    <small class="loan">{{
-                      'all.club.membership-types.loan' | translate
-                    }}</small>
+                    <small class="loan">{{ 'all.club.membership-types.loan' | translate }}</small>
                   }
                 </a>
               </mat-nav-list>

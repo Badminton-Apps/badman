@@ -1,13 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
@@ -116,19 +110,12 @@ export class LocationComponent implements OnInit {
 
   ngOnInit(): void {
     this.breakpointObserver
-      .observe([
-        Breakpoints.XSmall,
-        Breakpoints.Small,
-        Breakpoints.Medium,
-        Breakpoints.Large,
-        Breakpoints.XLarge,
-      ])
+      .observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         for (const query of Object.keys(result.breakpoints)) {
           if (result.breakpoints[query]) {
-            this.isSmallScreen =
-              query === Breakpoints.Small || query === Breakpoints.XSmall;
+            this.isSmallScreen = query === Breakpoints.Small || query === Breakpoints.XSmall;
             break;
           }
         }
@@ -136,9 +123,7 @@ export class LocationComponent implements OnInit {
 
     let created = false;
     if (this.group) {
-      const localControl = this.group.get(
-        this.controlName,
-      ) as FormArray<LocationAvailibilityForm>;
+      const localControl = this.group.get(this.controlName) as FormArray<LocationAvailibilityForm>;
       // there should be one created by default
       this.control = localControl.controls.at(0) as LocationAvailibilityForm;
     }
@@ -154,14 +139,10 @@ export class LocationComponent implements OnInit {
     }
 
     if (this.group && created) {
-      (
-        this.group.get(this.controlName) as FormArray<LocationAvailibilityForm>
-      ).push(this.control);
+      (this.group.get(this.controlName) as FormArray<LocationAvailibilityForm>).push(this.control);
     }
 
-    this.exceptions = this.control.get(
-      'exceptions',
-    ) as FormArray<LocationExceptionType>;
+    this.exceptions = this.control.get('exceptions') as FormArray<LocationExceptionType>;
 
     if (this.exceptions.length !== 0) {
       this.expanded.exceptions = true;

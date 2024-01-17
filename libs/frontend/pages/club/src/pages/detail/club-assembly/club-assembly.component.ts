@@ -1,13 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Input,
-  OnInit,
-  Signal,
-  computed,
-  effect,
-  inject,
-} from '@angular/core';
+import { Component, Input, OnInit, Signal, computed, effect, inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -16,11 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import {
-  HasClaimComponent,
-  RecentGamesComponent,
-  UpcomingGamesComponent,
-} from '@badman/frontend-components';
+import { HasClaimComponent, RecentGamesComponent, UpcomingGamesComponent } from '@badman/frontend-components';
 import { Club } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -53,9 +41,7 @@ export class ClubAssemblyComponent implements OnInit {
 
   columns = computed(() => [
     'player',
-    ...(this.clubAssemblyService.state
-      .teams()
-      ?.map((team) => team.name ?? 'empty') ?? []),
+    ...(this.clubAssemblyService.state.teams()?.map((team) => team.name ?? 'empty') ?? []),
   ]);
 
   // Inputs
@@ -73,13 +59,11 @@ export class ClubAssemblyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.filter?.valueChanges
-      .pipe(startWith(this.filter?.value), takeUntil(this.destroy$))
-      .subscribe((newValue) => {
-        this.clubAssemblyService.filter.patchValue({
-          season: newValue.season,
-          choices: newValue.choices,
-        });
+    this.filter?.valueChanges.pipe(startWith(this.filter?.value), takeUntil(this.destroy$)).subscribe((newValue) => {
+      this.clubAssemblyService.filter.patchValue({
+        season: newValue.season,
+        choices: newValue.choices,
       });
+    });
   }
 }

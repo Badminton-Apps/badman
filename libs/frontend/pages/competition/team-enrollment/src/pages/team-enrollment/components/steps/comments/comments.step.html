@@ -3,10 +3,7 @@
 <ng-container [formGroup]="control">
   @for (type of levelTypes; track type) { @if (showComments[type]) {
   <mat-form-field class="comment" [formGroupName]="type">
-    <mat-label
-      >{{ 'all.competition.team-enrollment.comments.' + type |lowercase |
-      translate }}</mat-label
-    >
+    <mat-label>{{ 'all.competition.team-enrollment.comments.' + type |lowercase | translate }}</mat-label>
     <textarea
       matInput
       cdkTextareaAutosize

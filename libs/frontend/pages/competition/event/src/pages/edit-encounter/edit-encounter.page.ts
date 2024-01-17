@@ -1,17 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-} from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -87,10 +76,7 @@ export class EditEncounterComponent implements OnInit {
       });
       this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
       this.breadcrumbsService.set('@drawCompetition', drawCompetitionName);
-      this.breadcrumbsService.set(
-        '@encounterCompetition',
-        encounterCompetitionName,
-      );
+      this.breadcrumbsService.set('@encounterCompetition', encounterCompetitionName);
 
       this.createForm();
     });
@@ -128,20 +114,12 @@ export class EditEncounterComponent implements OnInit {
             }),
           }),
           team1: this.formBuilder.group({
-            player1: this.formBuilder.control(
-              this.getPlayer(game.players, 1, 1),
-            ),
-            player2: this.formBuilder.control(
-              this.getPlayer(game.players, 1, 2),
-            ),
+            player1: this.formBuilder.control(this.getPlayer(game.players, 1, 1)),
+            player2: this.formBuilder.control(this.getPlayer(game.players, 1, 2)),
           }),
           team2: this.formBuilder.group({
-            player1: this.formBuilder.control(
-              this.getPlayer(game.players, 2, 1),
-            ),
-            player2: this.formBuilder.control(
-              this.getPlayer(game.players, 2, 2),
-            ),
+            player1: this.formBuilder.control(this.getPlayer(game.players, 2, 1)),
+            player2: this.formBuilder.control(this.getPlayer(game.players, 2, 2)),
           }),
         }),
       );
@@ -155,9 +133,7 @@ export class EditEncounterComponent implements OnInit {
   }
 
   private getPlayer(players?: GamePlayer[], team?: number, player?: number) {
-    return players?.find(
-      (playerGame) => playerGame.team === team && playerGame.player === player,
-    );
+    return players?.find((playerGame) => playerGame.team === team && playerGame.player === player);
   }
 
   onSubmit() {
@@ -173,8 +149,7 @@ export class EditEncounterComponent implements OnInit {
   }
 
   getGameLabel(game: number) {
-    const gameType = this.encounterCompetition.drawCompetition
-      ?.subEventCompetition?.eventType as 'M' | 'F' | 'MX';
+    const gameType = this.encounterCompetition.drawCompetition?.subEventCompetition?.eventType as 'M' | 'F' | 'MX';
 
     if (!gameType) {
       return [];

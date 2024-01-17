@@ -1,11 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -85,10 +79,7 @@ export class OverviewPageComponent implements OnInit {
       keywords: ['notification', 'badminton'],
     });
 
-    if (
-      isPlatformBrowser(this.platformId) &&
-      this.notifService.notifications$ != undefined
-    ) {
+    if (isPlatformBrowser(this.platformId) && this.notifService.notifications$ != undefined) {
       this.notifications$ = this.notifService.notifications$.pipe(
         switchMap((notifications) => {
           return this.apollo
@@ -103,15 +94,10 @@ export class OverviewPageComponent implements OnInit {
             })
             .pipe(
               map((result) => {
-                if (
-                  result.data.notifications == undefined ||
-                  result.data.notifications.length == 0
-                ) {
+                if (result.data.notifications == undefined || result.data.notifications.length == 0) {
                   return undefined;
                 }
-                return result.data.notifications?.map(
-                  (n) => new Notification(n),
-                );
+                return result.data.notifications?.map((n) => new Notification(n));
               }),
             );
         }),

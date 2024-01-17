@@ -46,9 +46,7 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/apps/worker/belgium/flanders/points"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/apps/worker/belgium/flanders/points"],
       "options": {
         "jestConfig": "apps/worker/belgium/flanders/points/jest.config.js"
       }

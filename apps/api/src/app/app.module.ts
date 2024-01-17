@@ -66,8 +66,6 @@ export class AppModule {
   private readonly logger = new Logger(AppModule.name);
 
   constructor(configService: ConfigService<ConfigType>) {
-    this.logger.log(
-      `${AppModule.name} loaded, env: ${configService.get('NODE_ENV')}`,
-    );
+    this.logger.log(`${AppModule.name} loaded, env: ${configService.get('NODE_ENV')}`);
   }
 }

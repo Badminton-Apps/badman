@@ -1,14 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  Injector,
-  OnInit,
-  TemplateRef,
-  ViewChild,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, Injector, OnInit, TemplateRef, ViewChild, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
@@ -119,10 +110,7 @@ export class CreatePageComponent implements OnInit {
     this.selectedEventControl?.setValue(encounter);
   }
 
-  templateUpdated(template: {
-    valid: boolean;
-    template: TemplateRef<HTMLElement>;
-  }) {
+  templateUpdated(template: { valid: boolean; template: TemplateRef<HTMLElement> }) {
     this.validationOverview = template;
   }
 
@@ -180,12 +168,9 @@ export class CreatePageComponent implements OnInit {
       }),
     );
 
-    const encounter = new EncounterCompetition(
-      result.data.encounterCompetition,
-    );
-    const fileName = `${moment(encounter?.date).format(
-      'YYYY-MM-DD HH:mm',
-    )} - ${encounter?.home?.name} vs ${encounter?.away?.name}.pdf`;
+    const encounter = new EncounterCompetition(result.data.encounterCompetition);
+    const fileName = `${moment(encounter?.date).format('YYYY-MM-DD HH:mm')} - ${encounter?.home?.name} vs ${encounter
+      ?.away?.name}.pdf`;
 
     // Generate pdf
     this.pdfService
@@ -200,22 +185,12 @@ export class CreatePageComponent implements OnInit {
         single3: this.formGroup?.get('single3')?.value?.id,
         single4: this.formGroup?.get('single4')?.value?.id,
 
-        double1: this.formGroup
-          ?.get('double1')
-          ?.value?.map((r: Player) => r.id),
-        double2: this.formGroup
-          ?.get('double2')
-          ?.value?.map((r: Player) => r.id),
-        double3: this.formGroup
-          ?.get('double3')
-          ?.value?.map((r: Player) => r.id),
-        double4: this.formGroup
-          ?.get('double4')
-          ?.value?.map((r: Player) => r.id),
+        double1: this.formGroup?.get('double1')?.value?.map((r: Player) => r.id),
+        double2: this.formGroup?.get('double2')?.value?.map((r: Player) => r.id),
+        double3: this.formGroup?.get('double3')?.value?.map((r: Player) => r.id),
+        double4: this.formGroup?.get('double4')?.value?.map((r: Player) => r.id),
 
-        subtitudes: this.formGroup
-          ?.get('subtitudes')
-          ?.value?.map((r: Player) => r.id),
+        subtitudes: this.formGroup?.get('subtitudes')?.value?.map((r: Player) => r.id),
       })
       .subscribe((pdf) => {
         const url = window.URL.createObjectURL(pdf);
@@ -282,22 +257,12 @@ export class CreatePageComponent implements OnInit {
           single3: this.formGroup?.get('single3')?.value?.id,
           single4: this.formGroup?.get('single4')?.value?.id,
 
-          double1: this.formGroup
-            ?.get('double1')
-            ?.value?.map((r: Player) => r.id),
-          double2: this.formGroup
-            ?.get('double2')
-            ?.value?.map((r: Player) => r.id),
-          double3: this.formGroup
-            ?.get('double3')
-            ?.value?.map((r: Player) => r.id),
-          double4: this.formGroup
-            ?.get('double4')
-            ?.value?.map((r: Player) => r.id),
+          double1: this.formGroup?.get('double1')?.value?.map((r: Player) => r.id),
+          double2: this.formGroup?.get('double2')?.value?.map((r: Player) => r.id),
+          double3: this.formGroup?.get('double3')?.value?.map((r: Player) => r.id),
+          double4: this.formGroup?.get('double4')?.value?.map((r: Player) => r.id),
 
-          subtitudes: this.formGroup
-            ?.get('subtitudes')
-            ?.value?.map((r: Player) => r.id),
+          subtitudes: this.formGroup?.get('subtitudes')?.value?.map((r: Player) => r.id),
         },
       },
       refetchQueries: () => [
