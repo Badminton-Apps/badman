@@ -42,7 +42,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
     timeout: 120_000,
-    // stdout: 'pipe',
+    stdout: 'pipe',
     // stderr: 'pipe',
   },
 });
