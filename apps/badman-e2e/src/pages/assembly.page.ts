@@ -34,7 +34,6 @@ export default class AssemblyPage {
   readonly overlay: Locator;
 
   constructor(page: Page) {
-    setup(page);
     this.page = page;
 
     this.clubInput = page.locator('badman-select-club input');
@@ -65,6 +64,7 @@ export default class AssemblyPage {
   }
 
   async goto() {
+    await setup(this.page);
     await this.page.goto('/competition/assembly');
   }
 
