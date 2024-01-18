@@ -34,7 +34,6 @@ export default class AssemblyPage {
   readonly overlay: Locator;
 
   constructor(page: Page) {
-    setup(page);
     this.page = page;
 
     this.clubInput = page.locator('badman-select-club input');
@@ -65,7 +64,11 @@ export default class AssemblyPage {
   }
 
   async goto() {
+    await setup(this.page);
     await this.page.goto('/competition/assembly');
+    await this.page.waitForResponse(
+      (resp) => resp.url().includes('/api/v1/translate/i18n') && resp.status() === 200,
+    );
   }
 
   /**
@@ -77,8 +80,15 @@ export default class AssemblyPage {
     await this.page.keyboard.press('ArrowDown');
     await this.page.keyboard.press('Enter');
 
+    await this.page.waitForResponse(
+      (resp) => resp.url().includes('/graphql') && resp.status() === 200,
+    );
+
     // wait for season to be loaded
-    await this.page.waitForSelector('badman-select-season');
+    await this.page.waitForSelector('badman-select-season', {
+      // this can take a wile on CI
+      timeout: 120_000,
+    });
   }
 
   /**

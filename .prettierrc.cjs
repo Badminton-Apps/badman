@@ -9,5 +9,5 @@ module.exports = {
   singleQuote: true,
 
   pugSingleQuote: false,
-  printWidth: 120,
+  printWidth: 100,
 };
