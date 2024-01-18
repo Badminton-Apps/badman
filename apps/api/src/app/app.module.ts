@@ -22,7 +22,7 @@ import { join } from 'path';
 import versionPackage from '../version.json';
 
 const productionModules = [];
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
   productionModules.push(
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'badman'),

@@ -99,6 +99,8 @@ export default class AssemblyPage {
     // click on the mat-label in this.teamInput
     this.teamSelect.locator('mat-label').click();
 
+    await this.overlay.locator('mat-option').isVisible();
+
     // find team in overlay
     const teamItem = this.overlay.locator('mat-option').filter({
       hasText: team,
