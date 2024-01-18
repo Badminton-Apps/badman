@@ -9,13 +9,13 @@ export default class HomePage {
   readonly ranking: Locator;
 
   constructor(page: Page) {
-    setup(page);
     this.page = page;
 
     this.ranking = page.locator('section.ranking');
   }
 
   async goto() {
+    await setup(this.page);
     await this.page.goto('/');
   }
 }
