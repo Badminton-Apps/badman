@@ -14,7 +14,7 @@ bTest.describe('Landing page', () => {
 
     bTest('Select encounter', async ({ assemblyPage }) => {
       await expect(assemblyPage.encounterSelect).toContainText('against BC Tandpasta 1G');
-      await expect(assemblyPage.playerList).toBeVisible({ timeout: 60_000 });
+      await expect(assemblyPage.playerList).toBeVisible();
     });
 
     bTest('Player 8888 should be visible', async ({ assemblyPage }) => {

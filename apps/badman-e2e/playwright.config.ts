@@ -25,23 +25,24 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 2,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : 1,
-  /* Timeout for each test */
-  // timeout: 120_000,
+  workers: process.env.CI ? 1 : '20%',
+  /* Timeout for each test, on average our test takes 3 seconds, so 10 should be plenty */
+  timeout: 60_000,
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    video: 'on-first-retry',
+    video: process.env.CI ? 'off' : 'on-first-retry',
   },
   reporter: [['html'], [process.env.CI ? 'github' : 'list']],
-  /* We build our client and then it's hosted via the api */
+  /* We build our projects and then api hosts itself and the client */
   webServer: {
-    command: 'npx nx build badman && npx nx serve api',
+    command: 'npx nx run-many -t build -p badman,api && node dist/apps/api/main.js',
     url: `${baseURL}/api/health`,
     reuseExistingServer: !process.env.CI,
     cwd: workspaceRoot,
+    // Our build + serve takes a while, so we need to increase the timeout.
     timeout: 120_000,
     stdout: 'pipe',
     // stderr: 'pipe',
