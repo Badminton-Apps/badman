@@ -44,7 +44,7 @@ export default defineConfig({
     cwd: workspaceRoot,
     // Our build + serve takes a while, so we need to increase the timeout.
     timeout: 120_000,
-    stdout: 'pipe',
+    // stdout: 'pipe',
     // stderr: 'pipe',
   },
 
