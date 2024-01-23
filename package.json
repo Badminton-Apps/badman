@@ -192,6 +192,7 @@
     "@nx/playwright": "17.2.8",
     "@nx/web": "17.2.8",
     "@nx/workspace": "17.2.8",
+    "@nxrocks/nx-flutter": "^8.1.0",
     "@playwright/test": "^1.41.0",
     "@prettier/plugin-pug": "^3.0.0",
     "@schematics/angular": "17.0.3",
