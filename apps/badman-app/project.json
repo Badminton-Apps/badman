@@ -150,6 +150,26 @@
       "outputs": [
         "{workspaceRoot}/apps/badman-app/build"
       ]
+    },
+    "flutter": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter",
+        "cwd": "apps/badman-app"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/badman-app/build"
+      ]
+    },
+    "dart": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm dart",
+        "cwd": "apps/badman-app"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/badman-app/build"
+      ]
     }
   },
   "tags": []
