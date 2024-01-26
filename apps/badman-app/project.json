@@ -1,0 +1,156 @@
+{
+  "name": "badman-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/badman-app/src",
+  "projectType": "application",
+  "targets": {
+    "analyze": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter analyze",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter clean",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "format": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm dart format apps/badman-app/*",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter test",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "doctor": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter doctor",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "assemble": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter assemble",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "attach": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter attach",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "drive": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter drive",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "gen-l10n": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter gen-l10n",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "install": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter install",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "run": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter run",
+        "cwd": "apps/badman-app"
+      }
+    },
+    "build-aar": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter build aar",
+        "cwd": "apps/badman-app"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/badman-app/build"
+      ]
+    },
+    "build-apk": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter build apk",
+        "cwd": "apps/badman-app"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/badman-app/build"
+      ]
+    },
+    "build-appbundle": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter build appbundle",
+        "cwd": "apps/badman-app"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/badman-app/build"
+      ]
+    },
+    "build-bundle": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter build bundle",
+        "cwd": "apps/badman-app"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/badman-app/build"
+      ]
+    },
+    "build-ios": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter build ios",
+        "cwd": "apps/badman-app"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/badman-app/build"
+      ]
+    },
+    "build-ios-framework": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter build ios-framework",
+        "cwd": "apps/badman-app"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/badman-app/build"
+      ]
+    },
+    "build-ipa": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "fvm flutter build ipa",
+        "cwd": "apps/badman-app"
+      },
+      "outputs": [
+        "{workspaceRoot}/apps/badman-app/build"
+      ]
+    }
+  },
+  "tags": []
+}

@@ -5,6 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "App",
+      "type": "dart",
+      "request": "launch",
+      "program": "apps/badman-app/lib/main.dart"
+    },
+    {
       "name": "Server",
       "type": "node",
       "request": "attach",
@@ -44,5 +50,6 @@
       "remoteRoot": "/usr/src",
       "restart": true
     }
+
   ]
 }
