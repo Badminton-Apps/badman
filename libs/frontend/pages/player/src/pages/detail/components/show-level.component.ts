@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Injector, Input, OnInit, effect, inject, Signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Injector,
+  Input,
+  OnInit,
+  Signal,
+  computed,
+  effect,
+  inject,
+} from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,10 +38,45 @@ export class ShowLevelComponent implements OnInit {
   upgrade!: 'singlePoints' | 'doublePoints' | 'mixPoints';
   downgrade!: 'singlePointsDowngrade' | 'doublePointsDowngrade' | 'mixPointsDowngrade';
 
-  tooltip = '';
+  tooltip = computed(() => {
+    let tooltip = '';
+    if (this.nextLevel()) {
+      tooltip = `${this.translate.instant('all.breakdown.upgrade')}: > ${this.nextLevel()}`;
+    }
 
-  canUpgrade = false;
-  canDowngrade = false;
+    if (this.prevLevel() && this.nextLevel()) {
+      tooltip += '\n';
+    }
+
+    if (this.prevLevel()) {
+      tooltip += `${this.translate.instant('all.breakdown.downgrade')}: < ${this.prevLevel()}`;
+    }
+
+    return tooltip;
+  });
+
+  maxLevel = computed(() => this.rankingService.system()?.amountOfLevels ?? 12);
+  level = computed(() => this.showLevelService.rankingPlace()?.[this.type] ?? this.maxLevel());
+  nextLevel = computed(() =>
+    this.level() == 1
+      ? undefined
+      : this.rankingService.system()!.pointsToGoUp?.[this.maxLevel() - this.level()],
+  );
+  prevLevel = computed(() =>
+    this.level() == this.maxLevel()
+      ? undefined
+      : this.rankingService.system()!.pointsToGoDown?.[this.maxLevel() - (this.level() + 1)],
+  );
+  canUpgrade = computed(() =>
+    this.level() == 1
+      ? false
+      : (this.showLevelService.rankingPlace()?.[this.upgrade] ?? 0) >= (this.nextLevel() ?? -1),
+  );
+  canDowngrade = computed(() =>
+    this.level() == this.maxLevel()
+      ? false
+      : (this.showLevelService.rankingPlace()?.[this.downgrade] ?? 0) <= (this.prevLevel() ?? -1),
+  );
 
   ngOnInit() {
     effect(
@@ -48,37 +93,5 @@ export class ShowLevelComponent implements OnInit {
 
     this.upgrade = `${this.type}Points`;
     this.downgrade = `${this.type}PointsDowngrade`;
-
-    effect(() => this.canUpgradeOrDowngrade(), {
-      injector: this.injector,
-    });
-  }
-
-  canUpgradeOrDowngrade() {
-    this.tooltip = '';
-    const maxLevel = this.rankingService.system()?.amountOfLevels ?? 12;
-
-    const level = this.showLevelService.rankingPlace()?.[this.type] ?? maxLevel;
-
-    const nextLevel = level == 1 ? undefined : this.rankingService.system()!.pointsToGoUp?.[maxLevel - level];
-
-    const prevLevel = this.rankingService.system()!.pointsToGoDown?.[maxLevel - (level + 1)];
-
-    this.canUpgrade =
-      level == 1 ? false : (this.showLevelService.rankingPlace()?.[this.upgrade] ?? 0) >= (nextLevel ?? -1);
-    this.canDowngrade =
-      level == maxLevel ? false : (this.showLevelService.rankingPlace()?.[this.downgrade] ?? 0) <= (prevLevel ?? -1);
-
-    if (nextLevel) {
-      this.tooltip = `${this.translate.instant('all.breakdown.upgrade')}: > ${nextLevel}`;
-    }
-
-    if (prevLevel && nextLevel) {
-      this.tooltip += '\n';
-    }
-
-    if (prevLevel) {
-      this.tooltip += `${this.translate.instant('all.breakdown.downgrade')}: < ${prevLevel}`;
-    }
   }
 }
