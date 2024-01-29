@@ -272,7 +272,7 @@ export class UpdateRankingService {
 
       // update player gender
       const memberIdsMale = data?.filter((p) => p.gender === 'M')?.map((d) => d.memberId);
-      const memberIdsFemale = data?.filter((p) => p.gender === 'M')?.map((d) => d.memberId);
+      const memberIdsFemale = data?.filter((p) => p.gender === 'F')?.map((d) => d.memberId);
 
       const malePlayers = await Player.findAll({
         attributes: ['id', 'memberId', 'gender'],
