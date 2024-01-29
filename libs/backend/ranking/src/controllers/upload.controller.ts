@@ -137,6 +137,7 @@ export class UploadRankingController {
         memberId: row['memberid'],
         firstName: row['firstname'],
         lastName: names?.join(' '),
+        gender: row['gender'],
         single: row['PlayerLevelSingle'],
         doubles: row['PlayerLevelDouble'],
         mixed: row['PlayerLevelMixed'],
@@ -162,6 +163,7 @@ interface exportMembers {
   lastname: string;
   middlename: string;
   lastname2: string;
+  gender: 'V' | 'M';
   PlayerLevelSingle: number;
   PlayerLevelDouble: number;
   PlayerLevelMixed: number;
