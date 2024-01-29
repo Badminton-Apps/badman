@@ -271,24 +271,41 @@ export class UpdateRankingService {
       }
 
       // update player gender
-      for (const d of data) {
-        const player = distinctPlayers.find((p) => p.memberId === d.memberId);
-        if (!player) {
-          continue;
-        }
+      const memberIdsMale = data?.filter((p) => p.gender === 'M')?.map((d) => d.memberId);
+      const memberIdsFemale = data?.filter((p) => p.gender === 'M')?.map((d) => d.memberId);
 
-        // set the gender
-        switch (d.gender) {
-          case 'M':
-            player.gender = 'M';
-            break;
-          case 'V':
-            player.gender = 'F';
-            break;
-        }
+      const malePlayers = await Player.findAll({
+        attributes: ['id', 'memberId', 'gender'],
+        where: {
+          memberId: {
+            [Op.in]: memberIdsMale,
+          },
+          competitionPlayer: false,
+        },
+        transaction,
+      });
 
-        await player.save({ transaction });
-      }
+      const femalePlayers = await Player.findAll({
+        attributes: ['id', 'memberId', 'gender'],
+        where: {
+          memberId: {
+            [Op.in]: memberIdsFemale,
+          },
+          competitionPlayer: true,
+        },
+        transaction,
+      });
+
+      await this.setGender(
+        malePlayers.map((p) => p.id),
+        'M',
+        transaction,
+      );
+      await this.setGender(
+        femalePlayers.map((p) => p.id),
+        'F',
+        transaction,
+      );
 
       this._logger.debug('Commit transaction');
       await transaction.commit();
@@ -309,12 +326,12 @@ export class UpdateRankingService {
   }
 
   // set competition status
-  async setCompetitionStatus(idd: string[], status: boolean, transaction?: Transaction) {
+  async setCompetitionStatus(id: string[], status: boolean, transaction?: Transaction) {
     transaction = transaction || (await this._sequelize.transaction());
 
-    this._logger.verbose(`Set competition status: ${status}, amount: ${idd.length}`);
+    this._logger.verbose(`Set competition status: ${status}, amount: ${id.length}`);
 
-    if (idd.length === 0) {
+    if (id.length === 0) {
       return;
     }
 
@@ -324,7 +341,30 @@ export class UpdateRankingService {
       },
       {
         where: {
-          id: idd,
+          id: id,
+        },
+        transaction,
+      },
+    );
+  }
+
+  // set gender
+  async setGender(id: string[], gender: 'M' | 'F', transaction?: Transaction) {
+    transaction = transaction || (await this._sequelize.transaction());
+
+    this._logger.verbose(`Set gender to: ${gender}, amount: ${id.length}`);
+
+    if (id.length === 0) {
+      return;
+    }
+
+    await Player.update(
+      {
+        gender,
+      },
+      {
+        where: {
+          id: id,
         },
         transaction,
       },
