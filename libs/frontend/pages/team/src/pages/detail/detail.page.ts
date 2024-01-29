@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { PageHeaderComponent, RecentGamesComponent, UpcomingGamesComponent } from '@badman/frontend-components';
+import { HasClaimComponent, PageHeaderComponent, RecentGamesComponent, UpcomingGamesComponent } from '@badman/frontend-components';
 import { EventEntry, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
@@ -32,6 +32,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     RecentGamesComponent,
     UpcomingGamesComponent,
     PageHeaderComponent,
+    HasClaimComponent,
   ],
 })
 export class DetailPageComponent {
