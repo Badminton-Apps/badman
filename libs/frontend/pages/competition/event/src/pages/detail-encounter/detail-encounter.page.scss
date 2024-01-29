@@ -11,6 +11,7 @@
 .game {
   display: grid;
   grid-template-columns: 50px 1fr 300px 1fr;
+  max-width: 750px;
 
   .sets {
     display: flex;
