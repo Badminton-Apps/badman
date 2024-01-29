@@ -58,10 +58,12 @@
 
 .recent-games {
   flex: 1 1 auto;
+  max-width: 500px;
 }
 
 .upcoming-games {
   flex: 1 1 250px;
+  max-width: 350px;
 
   @media (max-width: 959.98px) {
     flex: 1;
