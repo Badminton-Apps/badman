@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.6...v6.130.0-beta.7) (2024-01-29)
+
+
+### Features
+
+* set the date based on the file ([27a90b8](https://github.com/Badminton-Apps/badman/commit/27a90b8273070b811cdbf41197e8eace07f0de36))
+* settting gender new way ([622e5cf](https://github.com/Badminton-Apps/badman/commit/622e5cf7c8ad64cf50a2074b257b69c73ea99150))
+
+
+### Bug Fixes
+
+* copy gender to export ([a35f999](https://github.com/Badminton-Apps/badman/commit/a35f9993515533480c8d3b5471e838a751b32d4e))
+* debuging ([e668f8f](https://github.com/Badminton-Apps/badman/commit/e668f8fe044e8fe5e1df9baf6875d957412fecdf))
+* fetch the correct player list ([ed7b241](https://github.com/Badminton-Apps/badman/commit/ed7b241819f376d2368244c863575919031566fb))
+
 ## [6.130.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.5...v6.130.0-beta.6) (2024-01-29)
 
 
