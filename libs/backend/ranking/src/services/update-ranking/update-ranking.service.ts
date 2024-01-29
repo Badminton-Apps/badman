@@ -277,10 +277,8 @@ export class UpdateRankingService {
       const malePlayers = await Player.findAll({
         attributes: ['id', 'memberId', 'gender'],
         where: {
-          memberId: {
-            [Op.in]: memberIdsMale,
-          },
-          competitionPlayer: false,
+          memberId: memberIdsMale,
+          gender: 'F',
         },
         transaction,
       });
@@ -288,10 +286,8 @@ export class UpdateRankingService {
       const femalePlayers = await Player.findAll({
         attributes: ['id', 'memberId', 'gender'],
         where: {
-          memberId: {
-            [Op.in]: memberIdsFemale,
-          },
-          competitionPlayer: true,
+          memberId: memberIdsFemale,
+          gender: 'M',
         },
         transaction,
       });
