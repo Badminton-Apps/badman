@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.FinalizeBundleTask
+
 plugins {
     id "com.android.application"
     id "kotlin-android"
@@ -22,9 +24,20 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def flutterMinimumAndroidSdkVersion = localProperties.getProperty('flutter.minSdkVersion')
+if (flutterMinimumAndroidSdkVersion == null) {
+    flutterMinimumAndroidSdkVersion = '16'
+}
+
+def flutterCompileSdkVersion = localProperties.getProperty('flutter.compileSdkVersion')
+if (flutterCompileSdkVersion == null) {
+    flutterCompileSdkVersion = '28'
+}
+
+
 android {
-    namespace "app.badman.badman_app"
-    compileSdkVersion flutter.compileSdkVersion
+    namespace "app.badman"
+    compileSdkVersion flutterCompileSdkVersion.toInteger()
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -42,22 +55,37 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "app.badman.badman_app"
+        applicationId "app.badman"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion flutterMinimumAndroidSdkVersion.toInteger()
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        archivesBaseName = "${applicationId}.${versionName}"
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
         }
     }
+
+    // applicationVariants.all { variant ->
+    //     def artifactName = "${variant.applicationId}.${variant.versionName}"
+        
+    //     variant.outputs.all {
+    //         outputFileName = "${artifactName}.apk"
+    //     }
+
+    //     tasks.named("sign${variant.name.capitalize()}Bundle", FinalizeBundleTask) {
+    //         File file = finalBundleFile.asFile.get()
+    //         File finalFile = new File(file.parentFile, "${artifactName}.aab")
+    //         finalBundleFile.set(finalFile)
+    //     }
+    // }
+
+    
 }
 
 flutter {

@@ -1,4 +1,4 @@
-package app.badman.badman_app
+package app.badman
 
 import io.flutter.embedding.android.FlutterActivity
 
