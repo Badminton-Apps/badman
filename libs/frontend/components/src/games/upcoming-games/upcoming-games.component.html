@@ -20,8 +20,7 @@
             [ngTemplateOutlet]="hasHome"
             [ngTemplateOutletContext]="{ upcoming: upcoming }"
           ></ng-container>
-        }
-        @if (!this.upcommingGames.hasHomeTeam()) {
+        } @else {
           <ng-container
             [ngTemplateOutlet]="noHome"
             [ngTemplateOutletContext]="{ upcoming: upcoming }"
@@ -32,22 +31,22 @@
   }
   @if (this.upcommingGames.loading()) {
     <badman-loading-block [items]="5" height="56px" />
+  } @else {
+    <mat-list-item role="listitem">
+      <!--  a button to load more -->
+      @if (!this.upcommingGames.endReached()) {
+        <button mat-button (click)="loadMore()">
+          {{ 'all.competition.load-more' | translate }}
+        </button>
+      } @else {
+        <span
+          matListItem
+          class="no-more-encounters"
+          translate="all.competition.encounters.no-more"
+        ></span>
+      }
+    </mat-list-item>
   }
-  <mat-list-item role="listitem">
-    <!--  a button to load more -->
-    @if (!this.upcommingGames.endReached() && !this.upcommingGames.loading()) {
-      <button mat-button (click)="loadMore()">
-        {{ 'all.competition.load-more' | translate }}
-      </button>
-    }
-    @if (this.upcommingGames.endReached() && !this.upcommingGames.loading()) {
-      <span
-        matListItem
-        class="no-more-encounters"
-        translate="all.competition.encounters.no-more"
-      ></span>
-    }
-  </mat-list-item>
 </mat-list>
 
 <ng-template #noHome let-upcoming="upcoming">
@@ -62,6 +61,7 @@
     >{{ 'all.competition.' + (upcoming.showingForHomeTeam ? 'home' : 'away') | translate }}
     -
   </span>
+
   @if (upcoming.showingForHomeTeam && upcoming?.home?.club?.slug) {
     <a [routerLink]="['/club', upcoming.home.club.slug, 'team', upcoming.home?.slug]">{{
       upcoming.home?.name
@@ -72,7 +72,10 @@
       upcoming.away?.name
     }}</a>
   }
+
   <span>&nbsp;{{ 'all.competition.vs' | translate }}&nbsp;</span>
+
+  
   @if (upcoming.showingForHomeTeam && upcoming?.away?.club?.slug) {
     <a [routerLink]="['/club', upcoming.away.club.slug, 'team', upcoming.away?.slug]">{{
       upcoming.away?.name
