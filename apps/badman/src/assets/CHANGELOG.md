@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.6](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.5...v6.130.0-beta.6) (2024-01-29)
+
+
+### Bug Fixes
+
+* always show season ([c57c61b](https://github.com/Badminton-Apps/badman/commit/c57c61b707c01aab651a416f7134c985d19a2cc6))
+* limit width of upcomming games ([3978a6d](https://github.com/Badminton-Apps/badman/commit/3978a6d191aea57d39c3f569a29ed782b8a76221))
+* max width for encounter datil ([1aa5341](https://github.com/Badminton-Apps/badman/commit/1aa53416a1677c55f4f7c9f6343ab6a8eaffa056))
+* max-width for club overview ([0c7d721](https://github.com/Badminton-Apps/badman/commit/0c7d721be153643c0d228cafbbba62b662df0669))
+* permissions for team edit ([48067fb](https://github.com/Badminton-Apps/badman/commit/48067fb9a77cda6f80093046b5d962f8815100fd))
+* ranking can be fully signaled ([73c12af](https://github.com/Badminton-Apps/badman/commit/73c12af6bc305e4a34550332ba9a94fadef1918a))
+* setting gender via export ([0473238](https://github.com/Badminton-Apps/badman/commit/0473238a821eed10b28f1b045dae9d0c3b3ac617))
+* showing no-more-encounters only once ([7262312](https://github.com/Badminton-Apps/badman/commit/726231254b0bc48b55a1b8dc852b82fefce32d30))
+
 ## [6.130.0-beta.5](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.4...v6.130.0-beta.5) (2024-01-18)
 
 
