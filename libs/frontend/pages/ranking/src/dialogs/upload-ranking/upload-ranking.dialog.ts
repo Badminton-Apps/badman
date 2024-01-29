@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  inject,
+} from '@angular/core';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RankingSystem } from '@badman/frontend-models';
 
@@ -19,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RANKING_CONFIG } from '../../injection';
+import moment from 'moment';
 
 @Component({
   selector: 'badman-upload-ranking',
@@ -96,6 +103,15 @@ export class UploadRankingDialogComponent {
 
     if (!this.uploadedFile) {
       return;
+    }
+
+    // if the filename has 'exportMembersRolePerGroup-' then the part after is the date in DDMMYYYY format set the ranking date to that
+    if (this.uploadedFile.name.includes('exportMembersRolePerGroup-')) {
+      const datePart = this.uploadedFile.name.split('exportMembersRolePerGroup-')[1];
+      const date = moment(datePart, 'DDMMYYYY');
+      if (date.isValid()) {
+        this.rankingDate = date.toDate();
+      }
     }
 
     const formData = new FormData();
