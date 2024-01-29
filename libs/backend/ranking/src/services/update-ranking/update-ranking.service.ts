@@ -75,7 +75,9 @@ export class UpdateRankingService {
 
       for (const chunk of chunks) {
         // filter out distinct ids from the chunk
-        const distinctChunkIds = chunk.map((d) => d.memberId).filter((d) => !distinctIds.find((p) => p === d));
+        const distinctChunkIds = chunk
+          .map((d) => d.memberId)
+          .filter((d) => !distinctIds.find((p) => p === d));
 
         const players = await Player.findAll({
           attributes: ['id', 'memberId', 'competitionPlayer', 'gender'],
@@ -137,7 +139,9 @@ export class UpdateRankingService {
       // Update comp status
       this._logger.debug(`Update competition status: ${options.updateCompStatus}`);
       if (options.updateCompStatus) {
-        const memberIdsComp = data?.filter((p) => p.role === 'Competitiespeler')?.map((d) => d.memberId);
+        const memberIdsComp = data
+          ?.filter((p) => p.role === 'Competitiespeler')
+          ?.map((d) => d.memberId);
 
         const newCompPlayers = await Player.findAll({
           attributes: ['id', 'memberId', 'competitionPlayer'],
@@ -273,7 +277,15 @@ export class UpdateRankingService {
           continue;
         }
 
-        player.gender = d.gender == 'M' ? 'M' : 'F';
+        // set the gender
+        switch (d.gender) {
+          case 'M':
+            player.gender = 'M';
+            break;
+          case 'V':
+            player.gender = 'F';
+            break;
+        }
 
         await player.save({ transaction });
       }
