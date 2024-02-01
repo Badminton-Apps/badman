@@ -1,5 +1,4 @@
 import { CompileOptions, CompileService } from '@badman/backend-compile';
-import { ConfigType } from '@badman/utils';
 import {
   Club,
   Comment,
@@ -10,6 +9,7 @@ import {
   Player,
   SubEventCompetition,
 } from '@badman/backend-database';
+import { ConfigType } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { writeFile } from 'fs/promises';
@@ -516,7 +516,8 @@ export class MailingService {
         );
 
         if (process.env.NODE_ENV === 'development') {
-          await writeFile(`${options.template}.html`, compiled);
+          await writeFile(`mails/${options.template}.html`, compiled);
+          this.logger.debug(`Mail saved to mail/${options.template}.html`);
         }
 
         return;
@@ -534,7 +535,9 @@ export class MailingService {
         options.to = ['glenn.latomme@gmail.com'];
         options.cc = [];
 
-        options.subject += ` overwritten email original(to: ${to?.join(',')}, cc: ${cc.join(',')}) `;
+        options.subject += ` overwritten email original(to: ${to?.join(',')}, cc: ${cc.join(
+          ',',
+        )}) `;
       }
 
       await this._transporter?.sendMail(options);
