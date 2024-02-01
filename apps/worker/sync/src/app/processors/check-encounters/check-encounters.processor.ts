@@ -9,7 +9,7 @@ import {
   Team,
 } from '@badman/backend-database';
 import { NotificationService } from '@badman/backend-notifications';
-import { accepCookies, getBrowser } from '@badman/backend-pupeteer';
+import { accepCookies, getBrowser, signIn } from '@badman/backend-pupeteer';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { SearchService } from '@badman/backend-search';
 import { ConfigType } from '@badman/utils';
@@ -82,14 +82,19 @@ const includes = [
 })
 export class CheckEncounterProcessor {
   private readonly logger = new Logger(CheckEncounterProcessor.name);
-
+  
+  private readonly _username?: string;
+  private readonly _password?: string;
   private readonly autoAcceptClubs = ['smash-for-fun', 'herne', 'opslag'];
 
   constructor(
     private notificationService: NotificationService,
     private searchService: SearchService,
     private configService: ConfigService<ConfigType>,
-  ) {}
+  ) {
+    this._username = configService.get('VR_API_USER');
+    this._password = configService.get('VR_API_PASS');
+  }
 
   @Process(Sync.CheckEncounters)
   async syncEncounters() {
@@ -249,6 +254,8 @@ export class CheckEncounterProcessor {
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
       );
 
+      this.notificationService.notifyEncounterNotAccepted(encounter);
+     
       // not entered and passed 24 hours and no comment
       if (!entered && hoursPassed > 24 && !hasComment) {
         this.notificationService.notifyEncounterNotEntered(encounter);
@@ -274,7 +281,7 @@ export class CheckEncounterProcessor {
           // Check if anough time has passed for auto accepting
           if (hoursPassedEntered > 36) {
             this.logger.debug(`Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`);
-
+            await signIn({ page }, this._username, this._password);
             const succesfull = await acceptEncounter({ page }, { logger: this.logger });
             if (!succesfull) {
               // we failed to accept the encounter for some reason, notify the user
