@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.7...v6.130.0-beta.8) (2024-02-01)
+
+
+### Features
+
+* adding mail drop location ([177466a](https://github.com/Badminton-Apps/badman/commit/177466a8d83abac32ed725f0a9312516a09aec50))
+* adding signing ([79a484f](https://github.com/Badminton-Apps/badman/commit/79a484fd8347b064963339976eed46b2b1bbf6ef))
+
 ## [6.130.0-beta.7](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.6...v6.130.0-beta.7) (2024-01-29)
 
 
