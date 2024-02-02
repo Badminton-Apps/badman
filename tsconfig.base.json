@@ -44,7 +44,9 @@
       "@badman/belgium-flanders-places": ["libs/backend/belgium/flanders/places/src/index.ts"],
       "@badman/belgium-flanders-points": ["libs/backend/belgium/flanders/points/src/index.ts"],
       "@badman/frontend-auth": ["libs/frontend/modules/auth/src/index.ts"],
-      "@badman/frontend-change-encounter": ["libs/frontend/pages/competition/change-encounter/src/index.ts"],
+      "@badman/frontend-change-encounter": [
+        "libs/frontend/pages/competition/change-encounter/src/index.ts"
+      ],
       "@badman/frontend-club": ["libs/frontend/pages/club/src/index.ts"],
       "@badman/frontend-competition": ["libs/frontend/pages/competition/event/src/index.ts"],
       "@badman/frontend-components": ["libs/frontend/components/src/index.ts"],
@@ -63,8 +65,12 @@
       "@badman/frontend-role": ["libs/frontend/pages/role/src/index.ts"],
       "@badman/frontend-seo": ["libs/frontend/modules/seo/src/index.ts"],
       "@badman/frontend-team": ["libs/frontend/pages/team/src/index.ts"],
-      "@badman/frontend-team-assembly": ["libs/frontend/pages/competition/team-assembly/src/index.ts"],
-      "@badman/frontend-team-enrollment": ["libs/frontend/pages/competition/team-enrollment/src/index.ts"],
+      "@badman/frontend-team-assembly": [
+        "libs/frontend/pages/competition/team-assembly/src/index.ts"
+      ],
+      "@badman/frontend-team-enrollment": [
+        "libs/frontend/pages/competition/team-enrollment/src/index.ts"
+      ],
       "@badman/frontend-tournament": ["libs/frontend/pages/tournament/src/index.ts"],
       "@badman/frontend-translation": ["libs/frontend/modules/translation/src/index.ts"],
       "@badman/frontend-twizzit": ["libs/frontend/modules/twizzit/src/index.ts"],
