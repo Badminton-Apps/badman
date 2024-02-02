@@ -24,7 +24,6 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
       "configurations": {
         "ci": {
           "ci": true,
