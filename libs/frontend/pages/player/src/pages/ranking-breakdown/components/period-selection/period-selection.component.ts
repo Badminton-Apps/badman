@@ -53,14 +53,11 @@ export class PeriodSelectionComponent {
       return [];
     }
 
-    const result = getRankingPeriods(
+    return getRankingPeriods(
       this.system(),
       this.viewingDate().clone().startOf('month').subtract(1, 'day'),
       this.viewingDate().clone().endOf('month').add(1, 'day'),
     );
-
-    console.log('updates', result);
-    return result;
   });
 
   dateClass: MatCalendarCellClassFunction<Moment> = (cellDate, view) => {
@@ -102,7 +99,9 @@ export class PeriodSelectionComponent {
     }
 
     const endPeriod = moment(targetDate);
-    const startPeriod = endPeriod.clone().subtract(this.system().periodAmount, this.system().periodUnit);
+    const startPeriod = endPeriod
+      .clone()
+      .subtract(this.system().periodAmount, this.system().periodUnit);
     const gamePeriod = startPeriod
       .clone()
       .subtract(this.system().updateIntervalAmount, this.system().updateIntervalUnit);

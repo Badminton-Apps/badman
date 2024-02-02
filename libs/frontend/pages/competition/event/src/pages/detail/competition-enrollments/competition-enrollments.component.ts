@@ -243,8 +243,8 @@ export class CompetitionEnrollmentsComponent implements OnInit {
               const subEventValidation = this.validationsForSubevent.get(result.subEventId);
 
               this.validationsForSubevent.set(result.subEventId, {
-                errors: (subEventValidation?.errors ?? 0) + result.enrollmentValidation.errors?.length ?? 0,
-                warnings: (subEventValidation?.warnings ?? 0) + result.enrollmentValidation.warnings?.length ?? 0,
+                errors: (subEventValidation?.errors ?? 0) + result.enrollmentValidation.errors.length,
+                warnings: (subEventValidation?.warnings ?? 0) + result.enrollmentValidation.warnings.length,
               });
             }
 

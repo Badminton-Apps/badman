@@ -91,7 +91,7 @@ export class TeamComponent implements OnInit {
     this.checkTeam();
 
     this.team.valueChanges.pipe(takeUntil(this.destroy$), startWith(this.team.value)).subscribe(() => {
-      this.expanded.team = this.team?.value?.link == null ?? true;
+      this.expanded.team = this.team?.value?.link == null;
       if (this.team?.value?.type && this.team?.value?.players) {
         this.teamIndex = getIndexFromPlayers(
           this.team.value.type,
