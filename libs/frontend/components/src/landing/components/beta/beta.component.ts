@@ -1,19 +1,18 @@
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   Inject,
-  Input,
   OnInit,
   PLATFORM_ID,
+  input
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { LoggedinUser, AuthenticateService } from '@badman/frontend-auth';
-import { Observable } from 'rxjs';
-import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { input } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { AuthenticateService, LoggedinUser } from '@badman/frontend-auth';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'badman-beta',

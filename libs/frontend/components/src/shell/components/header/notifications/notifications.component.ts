@@ -100,6 +100,6 @@ export class NotificationComponent {
         bufferCount(1),
         concatMap((buffer) => forkJoin(buffer)),
       )
-      .subscribe(() => {});
+      .subscribe();
   }
 }

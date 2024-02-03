@@ -1,8 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { combineLatest, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Component, OnInit, input } from '@angular/core';
 import {
   EventCompetition,
   Player,
@@ -10,7 +7,9 @@ import {
   Team,
   ValidationMessage,
 } from '@badman/frontend-models';
-import { input } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Observable, combineLatest, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-enrollment-message',

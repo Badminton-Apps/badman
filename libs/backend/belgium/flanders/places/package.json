@@ -5,8 +5,8 @@
   "dependencies": {
     "tslib": "^2.6.2",
     "@nestjs/common": "^10.2.7",
-    "@badman/backend-database": "workspace:*",
-    "@badman/utils": "workspace:*",
+    "@badman/backend-database": "0.0.1",
+    "@badman/utils": "0.0.1",
     "moment": "^2.29.4",
     "sequelize": "^6.33.0"
   }
