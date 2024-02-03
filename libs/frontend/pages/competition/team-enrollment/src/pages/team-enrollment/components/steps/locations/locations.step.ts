@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  input,
+} from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -32,25 +38,18 @@ import { LocationAvailibilityForm, LocationComponent, LocationForm } from './com
 export class LocationsStepComponent implements OnInit {
   destroy$ = new Subject<void>();
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  control?: FormArray<LocationForm>;
+  control = input<FormArray<LocationForm>>();
+  protected internalControl!: FormArray<LocationForm>;
 
-  @Input()
-  controlName = LOCATIONS;
+  controlName = input(LOCATIONS);
 
-  @Input()
-  clubControlName = CLUB;
+  clubControlName = input(CLUB);
 
-  @Input()
+  seasonControlName = input(SEASON);
+
   clubId?: string;
-
-  @Input()
-  seasonControlName = SEASON;
-
-  @Input()
   season = getCurrentSeason();
 
   constructor(
@@ -61,19 +60,23 @@ export class LocationsStepComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormArray<LocationForm>;
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as FormArray<LocationForm>;
     }
 
-    if (!this.control) {
-      this.control = new FormArray<LocationForm>([]);
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group()?.get(this.controlName()) as FormArray<LocationForm>;
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (!this.internalControl) {
+      this.internalControl = new FormArray<LocationForm>([]);
     }
 
-    if (this.group === undefined) {
+    if (this.group()) {
+      this.group().addControl(this.controlName(), this.control());
+    }
+
+    if (this.group() === undefined) {
       if (this.clubId == undefined) {
         throw new Error('No clubId provided');
       }
@@ -83,12 +86,12 @@ export class LocationsStepComponent implements OnInit {
       }
     }
 
-    const clubId$ = this.group.get(this.clubControlName)?.valueChanges ?? of(this.clubId);
-    const season$ = this.group.get(this.seasonControlName)?.valueChanges ?? of(this.season);
+    const clubId$ = this.group().get(this.clubControlName())?.valueChanges ?? of(this.clubId);
+    const season$ = this.group().get(this.seasonControlName())?.valueChanges ?? of(this.season);
 
     combineLatest([
-      clubId$.pipe(startWith(this.group.get(this.clubControlName)?.value || this.clubId)),
-      season$.pipe(startWith(this.group.get(this.seasonControlName)?.value || this.season)),
+      clubId$.pipe(startWith(this.group().get(this.clubControlName())?.value || this.clubId)),
+      season$.pipe(startWith(this.group().get(this.seasonControlName())?.value || this.season)),
     ])
       .pipe(
         tap(([clubId, season]) => {
@@ -150,11 +153,13 @@ export class LocationsStepComponent implements OnInit {
       )
       ?.subscribe((locations) => {
         if (locations) {
-          this.control?.clear();
+          this.control()?.clear();
           locations.forEach((location) => {
             // filter out the locations that are not available for the current season
             // if no availibilities are set, use the one from previous season
-            let availibilty = location.availibilities?.find((availibility) => availibility.season === this.season);
+            let availibilty = location.availibilities?.find(
+              (availibility) => availibility.season === this.season,
+            );
 
             if (!availibilty) {
               const lastSeason = (location.availibilities?.find(
@@ -208,7 +213,7 @@ export class LocationsStepComponent implements OnInit {
               availibilities: this.formBuilder.array([availibyForm]),
             }) as LocationForm;
 
-            this.control?.push(group);
+            this.control()?.push(group);
           });
 
           this.changeDetectorRef.markForCheck();
@@ -228,7 +233,7 @@ export class LocationsStepComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe((location?: Location) => {
-        this.control?.push(
+        this.control()?.push(
           this.formBuilder.group({
             id: this.formBuilder.control(location?.id),
             name: this.formBuilder.control(location?.name),
@@ -248,11 +253,11 @@ export class LocationsStepComponent implements OnInit {
   }
 
   removeLocation(index: number) {
-    this.control?.removeAt(index);
+    this.control()?.removeAt(index);
   }
 
   editLocation(index: number) {
-    const control = this.control?.at(index) as FormGroup;
+    const control = this.control()?.at(index) as FormGroup;
 
     import('@badman/frontend-club').then((m) => {
       const dialogRef = this.dialog.open(m.LocationDialogComponent, {

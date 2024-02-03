@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  input,
+} from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { SelectEventComponent } from '@badman/frontend-components';
@@ -16,7 +22,13 @@ import { TeamForm } from '../teams-transfer';
 @Component({
   selector: 'badman-events-step',
   standalone: true,
-  imports: [CommonModule, TranslateModule, SelectEventComponent, ReactiveFormsModule, MatCheckboxModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    SelectEventComponent,
+    ReactiveFormsModule,
+    MatCheckboxModule,
+  ],
   templateUrl: './events.step.html',
   styleUrls: ['./events.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,20 +44,22 @@ export class EventsStepComponent implements OnInit {
 
   levelTypes = Object.values(LevelType).sort(levelTypeSort);
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  control?: FormControl<{ name: LevelType; id: string }[] | null>;
+  control = input<
+    FormControl<
+      | {
+          name: LevelType;
+          id: string;
+        }[]
+      | null
+    >
+  >();
 
-  @Input()
-  controlName = EVENTS;
-
-  @Input()
-  teamsControlName = TEAMS;
-
-  @Input()
-  seasonControlName = SEASON;
+  controlName = input(EVENTS);
+  protected internalControl!: FormControl<{ name: LevelType; id: string }[]>;
+  teamsControlName = input(TEAMS);
+  seasonControlName = input(SEASON);
 
   provFormControl = new FormControl<EventCompetition | null>(null, [Validators.required]);
   provInitialId?: string;
@@ -64,16 +78,24 @@ export class EventsStepComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<{ name: LevelType; id: string }[]>;
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as FormControl<{ name: LevelType; id: string }[]>;
     }
 
-    if (!this.control) {
-      this.control = new FormControl<{ name: LevelType; id: string }[]>([]);
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group().get(this.controlName()) as FormControl<
+        { name: LevelType; id: string }[]
+      >;
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (!this.internalControl) {
+      this.internalControl = new FormControl<{ name: LevelType; id: string }[]>([]) as FormControl<
+        { name: LevelType; id: string }[]
+      >;
+    }
+
+    if (this.group()) {
+      this.group().addControl(this.controlName(), this.internalControl);
     }
 
     this.provFormControl.valueChanges
@@ -81,13 +103,15 @@ export class EventsStepComponent implements OnInit {
       .subscribe(([old, event]) => {
         // there was an old event, we need to remove it from the control
         if (old?.id) {
-          this.control?.setValue(this.control?.value?.filter((value) => value.name != LevelType.PROV) ?? []);
+          this.internalControl?.setValue(
+            this.internalControl?.value?.filter((value) => value.name != LevelType.PROV) ?? [],
+          );
         }
 
         // there is a new event, we need to add it to the control
         if (event?.id) {
-          this.control?.setValue([
-            ...(this.control?.value?.filter((value) => value.name != LevelType.PROV) ?? []),
+          this.internalControl?.setValue([
+            ...(this.internalControl?.value?.filter((value) => value.name != LevelType.PROV) ?? []),
             {
               name: LevelType.PROV,
               id: event?.id,
@@ -112,7 +136,9 @@ export class EventsStepComponent implements OnInit {
     }
 
     if (!event.checked) {
-      this.control?.setValue(this.control?.value?.filter((value) => value.name != name) ?? []);
+      this.internalControl?.setValue(
+        this.internalControl?.value?.filter((value) => value.name != name) ?? [],
+      );
       return;
     }
 
@@ -149,8 +175,8 @@ export class EventsStepComponent implements OnInit {
     }
 
     // if the checkbox is checked, we need to add the event to the control
-    this.control?.setValue([
-      ...(this.control?.value?.filter((value) => value.name != name) ?? []),
+    this.internalControl?.setValue([
+      ...(this.internalControl?.value?.filter((value) => value.name != name) ?? []),
       {
         name,
         id: resultEvent,
@@ -159,7 +185,7 @@ export class EventsStepComponent implements OnInit {
   }
 
   private _loadInitialEvents() {
-    const teams = this.group.get(this.teamsControlName) as FormGroup<{
+    const teams = this.group().get(this.teamsControlName()) as FormGroup<{
       [key in SubEventType]: FormArray<TeamForm>;
     }>;
 
@@ -188,9 +214,18 @@ export class EventsStepComponent implements OnInit {
         // find if any team was selected previous year or if current year is already present select those
         const competitions: EventCompetition[] = [];
 
-        [...(teams.F ?? []), ...(teams.M ?? []), ...(teams.MX ?? []), ...(teams.NATIONAL ?? [])].forEach((t) => {
+        [
+          ...(teams.F ?? []),
+          ...(teams.M ?? []),
+          ...(teams.MX ?? []),
+          ...(teams.NATIONAL ?? []),
+        ].forEach((t) => {
           if (t.team?.entry?.subEventCompetition?.eventCompetition) {
-            if (!competitions.find((c) => c.id == (t.team?.entry?.subEventCompetition?.eventCompetition?.id ?? ''))) {
+            if (
+              !competitions.find(
+                (c) => c.id == (t.team?.entry?.subEventCompetition?.eventCompetition?.id ?? ''),
+              )
+            ) {
               competitions.push(t.team?.entry.subEventCompetition.eventCompetition);
             }
           }

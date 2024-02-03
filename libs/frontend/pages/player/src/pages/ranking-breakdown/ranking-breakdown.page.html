@@ -13,13 +13,13 @@
       <mat-option value="mix">{{ 'all.ranking.mix' | translate }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <badman-period-selection [system]="system" [period]="periodFilter"></badman-period-selection>
+  <badman-period-selection [system]="system()" [period]="periodFilter"></badman-period-selection>
 </form>
 @if(!this.loadingGames()){
 <badman-list-games
-  [system]="system"
+  [system]="system()"
   [games]="games() ?? []"
-  [player]="player"
+  [player]="player()"
   [formGroup]="this.gameFilter"
 ></badman-list-games>
 } @else {

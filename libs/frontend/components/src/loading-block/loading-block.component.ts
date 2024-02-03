@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'badman-loading-block',
@@ -9,32 +9,19 @@ import { Component, HostBinding, Input } from '@angular/core';
   styleUrls: ['./loading-block.component.scss'],
 })
 export class LoadingBlockComponent {
-  @Input()
-  items = 3;
+  items = input(3);
 
+  height = input('35px');
 
-  @Input()
-  height = '35px';
+  subHeight = input<string >();
 
-  @Input()
-  subHeight?: string;
+  width = input('100%');
 
-  @Input()
-  width = '100%';
+  direction = input('column');
 
-  @Input()
-  @HostBinding('style.flex-direction')
-  direction = 'column';
+  gap = input('1rem');
 
-  @Input()
-  @HostBinding('style.gap')
-  gap = '1rem';
+  subGap = input('0.25rem');
 
-  @Input()
-  subGap = '0.25rem';
-
-  @Input()
-  borderRadius = '0.25rem';
-
-
+  borderRadius = input('0.25rem');
 }

@@ -10,20 +10,27 @@ import { MatListModule } from '@angular/material/list';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { MatButtonModule } from '@angular/material/button';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-edit-club-history',
   templateUrl: './edit-club-history.component.html',
   styleUrls: ['./edit-club-history.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatListModule, TranslateModule, MomentModule, MatDialogModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatListModule,
+    TranslateModule,
+    MomentModule,
+    MatDialogModule,
+    MatButtonModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditClubHistoryComponent implements OnInit {
   update$ = new BehaviorSubject(null);
 
-  @Input()
-  player!: Player;
+  player = input.required<Player>();
 
   clubs$!: Observable<Club[]>;
 
@@ -62,14 +69,17 @@ export class EditClubHistoryComponent implements OnInit {
           fetchPolicy: 'no-cache',
           query: this.fetchPlayer,
           variables: {
-            playerId: this.player.id,
+            playerId: this.player().id,
             includeHistorical: true,
           },
         }),
       ),
       map((r) => r?.data?.player?.clubs.map((c) => new Club(c))),
       map((r) =>
-        r.sort((a, b) => (b?.clubMembership?.start?.getTime() ?? 0) - (a?.clubMembership?.start?.getTime() ?? 0)),
+        r.sort(
+          (a, b) =>
+            (b?.clubMembership?.start?.getTime() ?? 0) - (a?.clubMembership?.start?.getTime() ?? 0),
+        ),
       ),
     );
   }
@@ -132,7 +142,7 @@ export class EditClubHistoryComponent implements OnInit {
                   }
                 `,
                 variables: {
-                  data: { ...r.data, playerId: this.player.id },
+                  data: { ...r.data, playerId: this.player().id },
                 },
               })
               .subscribe(() => {

@@ -10,6 +10,7 @@ import {
   Team,
   ValidationMessage,
 } from '@badman/frontend-models';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-enrollment-message',
@@ -19,19 +20,19 @@ import {
   styleUrls: ['./enrollment-message.component.scss'],
 })
 export class EnrollmentMessageComponent implements OnInit {
-  @Input() validation?: ValidationMessage;
+  validation = input<ValidationMessage | undefined>();
 
   translatedMessage$?: Observable<string>;
 
   constructor(private translate: TranslateService) {}
 
   ngOnInit(): void {
-    if (this.validation?.message == undefined) return;
+    if (this.validation()?.message == undefined) return;
 
     this.translatedMessage$ = this._getParams().pipe(
       switchMap((params) => {
-        return this.translate.get(`${this.validation?.message}`, params);
-      })
+        return this.translate.get(`${this.validation()?.message}`, params);
+      }),
     );
   }
 
@@ -61,21 +62,21 @@ export class EnrollmentMessageComponent implements OnInit {
           ...minLevel,
           ...event,
         };
-      })
+      }),
     );
   }
 
   private _getIndex() {
-    const teamIndex = this.validation?.params?.['teamIndex'] as string;
-    const baseIndex = this.validation?.params?.['baseIndex'] as string;
-    const minIndex = this.validation?.params?.['minIndex'] as string;
-    const maxIndex = this.validation?.params?.['maxIndex'] as string;
+    const teamIndex = this.validation()?.params?.['teamIndex'] as string;
+    const baseIndex = this.validation()?.params?.['baseIndex'] as string;
+    const minIndex = this.validation()?.params?.['minIndex'] as string;
+    const maxIndex = this.validation()?.params?.['maxIndex'] as string;
 
     return of({ teamIndex, minIndex, maxIndex, baseIndex });
   }
 
   private _getTeam() {
-    const team = this.validation?.params?.['team'] as Partial<Team>;
+    const team = this.validation()?.params?.['team'] as Partial<Team>;
 
     return of({ team });
   }
@@ -85,27 +86,21 @@ export class EnrollmentMessageComponent implements OnInit {
       [key: string]: unknown;
     } = {};
 
-    if (this.validation?.params?.['minLevel']) {
-      const minLevel = this.validation?.params?.['minLevel'];
+    if (this.validation()?.params?.['minLevel']) {
+      const minLevel = this.validation()?.params?.['minLevel'];
       params['minLevel'] = minLevel;
     }
-    if (this.validation?.params?.['rankingType']) {
-      const rankingType = this.validation?.params?.['rankingType'];
-      params['rankingType'] = this.translate
-        .instant(`all.ranking.${rankingType}`)
-        .toLowerCase();
+    if (this.validation()?.params?.['rankingType']) {
+      const rankingType = this.validation()?.params?.['rankingType'];
+      params['rankingType'] = this.translate.instant(`all.ranking.${rankingType}`).toLowerCase();
     }
 
     return of(params);
   }
 
   private _getEvent() {
-    const event = this.validation?.params?.[
-      'event'
-    ] as Partial<EventCompetition>;
-    const subEvent = this.validation?.params?.[
-      'subEvent'
-    ] as Partial<SubEventCompetition>;
+    const event = this.validation()?.params?.['event'] as Partial<EventCompetition>;
+    const subEvent = this.validation()?.params?.['subEvent'] as Partial<SubEventCompetition>;
 
     return of({ event, subEvent });
   }
@@ -115,8 +110,8 @@ export class EnrollmentMessageComponent implements OnInit {
       [key: string]: unknown;
     } = {};
 
-    if (this.validation?.params?.['player']) {
-      let player = this.validation?.params?.['player'] as Partial<Player>;
+    if (this.validation()?.params?.['player']) {
+      let player = this.validation()?.params?.['player'] as Partial<Player>;
 
       if (player.gender) {
         player = {
@@ -132,7 +127,7 @@ export class EnrollmentMessageComponent implements OnInit {
   }
 
   private _getRequiredGender() {
-    const gender = this.validation?.params?.['gender'] as string;
+    const gender = this.validation()?.params?.['gender'] as string;
     if (!gender) return of(undefined);
 
     return of(this._getGender(gender));

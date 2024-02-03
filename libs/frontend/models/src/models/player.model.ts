@@ -10,7 +10,7 @@ import { TeamMembershipType } from '@badman/utils';
 import { Team } from './team.model';
 
 export class Player {
-  id?: string;
+  id!: string;
   _fullName?: string;
   email?: string;
   phone?: string;
@@ -41,7 +41,11 @@ export class Player {
   setting?: Setting;
 
   constructor(args?: Partial<Player>) {
-    this.id = args?.id;
+    if (!args?.id) {
+      console.error(`${this.constructor.name} needs an id`);
+      return;
+    }
+    this.id = args.id;
     this.memberId = args?.memberId;
     this.gender = args?.gender;
     this.email = args?.email;

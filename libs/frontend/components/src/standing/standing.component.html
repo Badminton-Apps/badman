@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="entries" class="standing">
+<table mat-table [dataSource]="entries()" class="standing">
   <ng-container matColumnDef="position">
     <th mat-header-cell colspan="2" *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let element">{{ element.standing?.position }}</td>
@@ -18,12 +18,15 @@
       {{ 'all.event.standing.name' | translate }}
     </th>
     <td mat-cell *matCellDef="let element">
-      @if (type === 'team') {
-        <a class="has-team" [routerLink]="['/club', element.team?.club?.slug, 'team', element.team?.slug]">
+      @if (type() === 'team') {
+        <a
+          class="has-team"
+          [routerLink]="['/club', element.team?.club?.slug, 'team', element.team?.slug]"
+        >
           {{ element.team?.name }}
         </a>
       }
-      @if (type === 'players') {
+      @if (type() === 'players') {
         <div>
           <a class="has-user" [routerLink]="['/player', element.players[0]?.slug]">
             <!-- Name -->

@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, ReplaySubject, merge } from 'rxjs';
 import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
+import { input } from '@angular/core';
 
 type SearchType = { id: string; name: string; slug: string };
 
@@ -29,8 +33,7 @@ type SearchType = { id: string; name: string; slug: string };
   styleUrls: ['./search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit {
-  @Input()
-  label = 'all.search.placeholder';
+  label = input('all.search.placeholder');
 
   formControl!: FormControl;
   filteredOptions$!: Observable<
@@ -94,9 +97,10 @@ export class SearchBoxComponent implements OnInit {
         }),
       ),
       // Distinct by id
-      map(
-        (result) =>
-          result?.data?.search?.filter((value, index, self) => self.findIndex((m) => m?.id === value?.id) === index),
+      map((result) =>
+        result?.data?.search?.filter(
+          (value, index, self) => self.findIndex((m) => m?.id === value?.id) === index,
+        ),
       ),
     );
 

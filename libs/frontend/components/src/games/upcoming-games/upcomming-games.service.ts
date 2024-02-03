@@ -6,7 +6,15 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { connect } from 'ngxtension/connect';
 import { EMPTY, Subject, merge } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, map, mergeMap, startWith, switchMap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  mergeMap,
+  startWith,
+  switchMap,
+} from 'rxjs/operators';
 interface RecentGamesState {
   games: EncounterCompetition[];
   loading: boolean;
@@ -26,7 +34,6 @@ export class UpcommingGamesService {
 
   filter = new FormGroup({
     teamIds: new FormControl<string[]>([]),
-    teamId: new FormControl<string>(''),
     clubId: new FormControl<string>(''),
   });
 
@@ -184,7 +191,9 @@ export class UpcommingGamesService {
           return EMPTY;
         }),
         map((result) => {
-          return result?.data?.encounterCompetitions?.rows?.map((encounter) => new EncounterCompetition(encounter));
+          return result?.data?.encounterCompetitions?.rows?.map(
+            (encounter) => new EncounterCompetition(encounter),
+          );
         }),
         map((encounters) => this._setHome(filter.clubId, filter.teamId, encounters ?? [])),
         map((games) => ({

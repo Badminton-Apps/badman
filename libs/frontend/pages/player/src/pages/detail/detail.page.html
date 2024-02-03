@@ -3,14 +3,27 @@
   <div title>{{this.player().fullName}}</div>
   <div subTitle>
     <div class="sub-text">
-      <ng-container><a [routerLink]="['/', 'club', this.club()?.slug]">{{this.club()?.name}}</a></ng-container
+      <ng-container
+        ><a [routerLink]="['/', 'club', this.club()?.slug]">{{this.club()?.name}}</a></ng-container
       >@if (this.club()?.name && this.player().memberId) { - }{{this.player().memberId}}
     </div>
     @if (this.player().id) {
     <div class="levels">
-      <badman-show-level [routerLink]="['ranking', 'single']" [playerId]="this.playerId" type="single" />
-      <badman-show-level [routerLink]="['ranking', 'double']" [playerId]="this.playerId" type="double" />
-      <badman-show-level [routerLink]="['ranking', 'mix']" [playerId]="this.playerId" type="mix" />
+      <badman-show-level
+        [routerLink]="['ranking', 'single']"
+        [playerId]="this.playerId()"
+        type="single"
+      />
+      <badman-show-level
+        [routerLink]="['ranking', 'double']"
+        [playerId]="this.playerId()"
+        type="double"
+      />
+      <badman-show-level
+        [routerLink]="['ranking', 'mix']"
+        [playerId]="this.playerId()"
+        type="mix"
+      />
     </div>
     }
     <div class="click-for-breakdown">{{ 'all.breakdown.hint' | translate }}</div>
@@ -25,7 +38,9 @@
     </button>
     <mat-menu #menu="matMenu">
       @if (this.canClaim$ | async) {
-      <button mat-menu-item (click)="this.claimAccount()">{{ 'all.player.menu.claim' | translate }}</button>
+      <button mat-menu-item (click)="this.claimAccount()">
+        {{ 'all.player.menu.claim' | translate }}
+      </button>
       }
       <badman-has-claim [any]="['edit-any:player', this.player().id + '_edit:player']">
         <button mat-menu-item [routerLink]="'edit'">

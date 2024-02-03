@@ -4,12 +4,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnInit,
   SimpleChanges,
   ViewChild,
   inject,
+  input,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,14 +48,14 @@ import { RecentGamesService } from '../recent-games.service';
 export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   recentGames = inject(RecentGamesService);
 
-  @Input() playerId?: string;
+  playerId = input.required<string>();
 
   @ViewChild('bottomObserver', { static: false }) bottomObserver!: ElementRef;
 
   ngOnInit() {
     this.recentGames.filter.setValue({
       choices: ['S', 'D', 'MX'],
-      playerId: this.playerId ?? '',
+      playerId: this.playerId() ?? '',
     });
   }
 
@@ -101,14 +101,17 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   getWonStatusForPlayer(game: Game) {
-    return (game.winner == 1 && this.isTeamOfPlayer(game, 1)) || (game.winner == 2 && this.isTeamOfPlayer(game, 2));
+    return (
+      (game.winner == 1 && this.isTeamOfPlayer(game, 1)) ||
+      (game.winner == 2 && this.isTeamOfPlayer(game, 2))
+    );
   }
 
   isTeamOfPlayer(game: Game, team: number) {
     return game.players
       ?.filter((p) => p.team == team)
       ?.map((p) => p.id)
-      ?.includes(this.playerId);
+      ?.includes(this.playerId());
   }
 
   getPoints(game: Game, team: number) {

@@ -1,5 +1,5 @@
-@if (group) {
-  <form [formGroup]="group">
+@if (group()) {
+  <form [formGroup]="group()">
     <badman-has-claim [any]="['details-any:team']">
       <h2>
         <div>{{ 'all.team.title.base-fields' | translate }}</div>
@@ -34,14 +34,14 @@
     </badman-has-claim>
     <h2>{{ 'all.team.title.captain' | translate }}</h2>
     <badman-player-search
-      [player]="this.group.value?.captainId"
+      [player]="this.group().value?.captainId"
       [includePersonal]="true"
       [allowCreation]="true"
-      [club]="this.group.value.clubId"
+      [club]="this.group().value.clubId"
       [clearOnSelection]="false"
       (whenSelectPlayer)="this.onCaptainSelect($event)"
     ></badman-player-search>
-    <badman-has-claim [any]="['details-any:team', this.group.value.clubId + '_details:team']">
+    <badman-has-claim [any]="['details-any:team', this.group().value.clubId + '_details:team']">
       <div class="captain-info">
         <mat-form-field class="email">
           <mat-label>{{ 'all.input.email' | translate }}</mat-label>

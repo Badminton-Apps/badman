@@ -1,6 +1,6 @@
-@if (this.show$ | async) {
+@if (this.show()) {
   <ng-content></ng-content>
-}
-@if ((this.show$ | async) === false) {
+} @else {
   <ng-content select="[noPerm]"></ng-content>
 }
+

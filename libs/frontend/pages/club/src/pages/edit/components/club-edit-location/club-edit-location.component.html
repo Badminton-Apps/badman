@@ -1,17 +1,17 @@
 <badman-block>
   <badman-block-header>
-    <badman-block-title>{{ location.name }}</badman-block-title>
+    <badman-block-title>{{ location().name }}</badman-block-title>
     <badman-block-actions align="end">
       <button mat-icon-button [matMenuTriggerFor]="options">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #options="matMenu">
-        <button mat-menu-item (click)="this.whenEdit.next(location)">
+        <button mat-menu-item (click)="this.whenEdit.next(location())">
           {{ 'all.button.edit' | translate }}
         </button>
-        <badman-has-claim [any]="[club.id + '_remove:location', 'edit-any:club']">
+        <badman-has-claim [any]="[club().id + '_remove:location()', 'edit-any:club()']">
           <mat-divider></mat-divider>
-          <button mat-menu-item (click)="this.whenDelete.next(location)">
+          <button mat-menu-item (click)="this.whenDelete.next(location())">
             {{ 'all.button.delete' | translate }}
           </button>
         </badman-has-claim>
@@ -20,22 +20,22 @@
   </badman-block-header>
   <mat-divider></mat-divider>
   <badman-block-content>
-    <!-- <span *ngIf="this.location.street">{{ this.location.street }} </span>
-  <span *ngIf="this.location.streetNumber">{{
-    this.location.streetNumber
+    <!-- <span *ngIf="this.location().street">{{ this.location().street }} </span>
+  <span *ngIf="this.location().streetNumber">{{
+    this.location().streetNumber
   }}</span>
   <br />
-  <span *ngIf="this.location.postalcode"
-    >{{ this.location.postalcode }}
+  <span *ngIf="this.location().postalcode"
+    >{{ this.location().postalcode }}
   </span>
-  <span *ngIf="this.location.city">{{ this.location.city }}</span
+  <span *ngIf="this.location().city">{{ this.location().city }}</span
     ><br />
-    <span *ngIf="this.location.state">{{ this.location.state }}</span
+    <span *ngIf="this.location().state">{{ this.location().state }}</span
       ><br />
-      <span *ngIf="this.location.phone">{{ this.location.phone }}</span>
-      <span *ngIf="this.location.fax">{{ this.location.fax }}</span> -->
-    @if (this.control) {
-      <section class="availibilty" [formGroup]="this.control">
+      <span *ngIf="this.location().phone">{{ this.location().phone }}</span>
+      <span *ngIf="this.location().fax">{{ this.location().fax }}</span> -->
+    @if (this.internalControl) {
+      <section class="availibilty" [formGroup]="this.internalControl">
         <div class="days">
           <div class="expandable-item" (click)="expanded.days = !expanded.days">
             <div>{{ this.days.length }} {{ 'all.locations.days' | translate }}</div>
@@ -56,11 +56,19 @@
                       <mat-label>{{ 'all.input.day' | translate }}</mat-label>
                       <mat-select formControlName="day">
                         <mat-option value="monday">{{ 'all.days.monday' | translate }}</mat-option>
-                        <mat-option value="tuesday">{{ 'all.days.tuesday' | translate }}</mat-option>
-                        <mat-option value="wednesday">{{ 'all.days.wednesday' | translate }}</mat-option>
-                        <mat-option value="thursday">{{ 'all.days.thursday' | translate }}</mat-option>
+                        <mat-option value="tuesday">{{
+                          'all.days.tuesday' | translate
+                        }}</mat-option>
+                        <mat-option value="wednesday">{{
+                          'all.days.wednesday' | translate
+                        }}</mat-option>
+                        <mat-option value="thursday">{{
+                          'all.days.thursday' | translate
+                        }}</mat-option>
                         <mat-option value="friday">{{ 'all.days.friday' | translate }}</mat-option>
-                        <mat-option value="saturday">{{ 'all.days.saturday' | translate }}</mat-option>
+                        <mat-option value="saturday">{{
+                          'all.days.saturday' | translate
+                        }}</mat-option>
                         <mat-option value="sunday">{{ 'all.days.sunday' | translate }}</mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -128,7 +136,9 @@
                   <div class="courts">
                     <button
                       mat-icon-button
-                      [matTooltip]="'all.competition.team-enrollment.locations.courts-hint' | translate"
+                      [matTooltip]="
+                        'all.competition.team-enrollment.locations.courts-hint' | translate
+                      "
                       (click)="this.showCourts[i].manualOpen = !this.showCourts[i].manualOpen"
                     >
                       @if (this.showCourts[i].manualOpen) {

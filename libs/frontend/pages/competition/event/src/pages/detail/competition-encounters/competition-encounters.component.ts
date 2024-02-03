@@ -1,11 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, Input, OnInit, PLATFORM_ID, Signal, TransferState, inject, signal } from '@angular/core';
+import {
+  Component,
+  Injector,
+  OnInit,
+  PLATFORM_ID,
+  Signal,
+  TransferState,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
+import { input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LoadingBlockComponent, SelectTeamComponent } from '@badman/frontend-components';
 import { EncounterCompetition, EventCompetition } from '@badman/frontend-models';
@@ -45,19 +55,25 @@ export class CompetitionEncountersComponent implements OnInit {
   loading = signal(true);
 
   // Inputs
-  @Input({ required: true }) eventId?: string;
+  eventId = input.required<string>();
 
-  @Input() filter!: FormGroup;
+  filter = input<FormGroup>(
+    new FormGroup({
+      event: new FormControl(),
+      changedDate: new FormControl(false),
+      changedLocation: new FormControl(false),
+    }),
+  );
 
   ngOnInit(): void {
     this._setupFilter();
 
     this.encounters = toSignal(
-      this.filter?.valueChanges?.pipe(
+      this.filter()?.valueChanges?.pipe(
         tap(() => {
           this.loading.set(true);
         }),
-        startWith(this.filter.value ?? {}),
+        startWith(this.filter().value ?? {}),
         switchMap((filter) => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const where: Record<string, any> = {};
@@ -105,7 +121,7 @@ export class CompetitionEncountersComponent implements OnInit {
               }
             `,
             variables: {
-              id: this.eventId,
+              id: this.eventId(),
               where,
             },
           }).valueChanges;
@@ -119,14 +135,13 @@ export class CompetitionEncountersComponent implements OnInit {
               ?.flat(2)
               ?.filter((e) => !!e) ?? [],
         ),
-        map(
-          (encounters) =>
-            // if the change is not null and not accepted
-            encounters?.filter((encounter) =>
-              this.filter?.value?.openEncounters ?? false
-                ? encounter.encounterChange?.id != null && !encounter.encounterChange?.accepted
-                : true,
-            ),
+        map((encounters) =>
+          // if the change is not null and not accepted
+          encounters?.filter((encounter) =>
+            this.filter()?.value?.openEncounters ?? false
+              ? encounter.encounterChange?.id != null && !encounter.encounterChange?.accepted
+              : true,
+          ),
         ),
         tap(() => {
           this.loading.set(false);
@@ -137,27 +152,20 @@ export class CompetitionEncountersComponent implements OnInit {
   }
 
   private _setupFilter() {
-    if (!this.filter) {
-      this.filter = new FormGroup({
-        event: new FormControl(this.eventId),
-        changedDate: new FormControl(false),
-        changedLocation: new FormControl(false),
-      });
-    }
-    if (this.filter.get('event')?.value !== this.eventId) {
-      this.filter.get('event')?.setValue(this.eventId);
+    if (this.filter().get('event')?.value !== this.eventId()) {
+      this.filter().get('event')?.setValue(this.eventId());
     }
 
-    if (!this.filter.get('changedDate')?.value) {
-      this.filter.addControl('changedDate', new FormControl(false));
+    if (!this.filter().get('changedDate')?.value) {
+      this.filter().addControl('changedDate', new FormControl(false));
     }
 
-    if (!this.filter.get('changedLocation')?.value) {
-      this.filter.addControl('changedLocation', new FormControl(false));
+    if (!this.filter().get('changedLocation')?.value) {
+      this.filter().addControl('changedLocation', new FormControl(false));
     }
 
-    if (!this.filter.get('openEncounters')?.value) {
-      this.filter.addControl('openEncounters', new FormControl(false));
+    if (!this.filter().get('openEncounters')?.value) {
+      this.filter().addControl('openEncounters', new FormControl(false));
     }
   }
 }

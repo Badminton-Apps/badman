@@ -1,13 +1,13 @@
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
   Inject,
-  Input,
   OnInit,
   PLATFORM_ID,
+  input,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Banner } from '@badman/frontend-models';
 
 @Component({
@@ -16,15 +16,14 @@ import { Banner } from '@badman/frontend-models';
   imports: [CommonModule],
   templateUrl: './banner.component.html',
   styleUrls: ['./banner.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BannerComponent implements OnInit {
-  @Input()
-  banner!: Banner;
+  banner = input.required<Banner>();
 
   constructor(
     private elementRef: ElementRef,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {

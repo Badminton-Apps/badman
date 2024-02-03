@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,27 +10,25 @@ import { ListGamesComponent } from './list-games/list-games.component';
 @Component({
   selector: 'badman-recent-games',
   standalone: true,
-  imports: [CommonModule, MomentModule, TranslateModule, RouterModule, ListEncountersComponent, ListGamesComponent],
+  imports: [
+    CommonModule,
+    MomentModule,
+    TranslateModule,
+    RouterModule,
+    ListEncountersComponent,
+    ListGamesComponent,
+  ],
 
   templateUrl: './recent-games.component.html',
   styleUrls: ['./recent-games.component.scss'],
 })
-export class RecentGamesComponent implements OnInit {
-  @Input() clubId?: string;
-  @Input() teamId?: string;
-  @Input() playerId?: string;
+export class RecentGamesComponent {
+  teams = input<Team | Team[]>();
+  clubId = input<string>();
+  playerId = input<string>();
 
-  @Input() type: 'encounter' | 'game' = 'encounter';
-
-  @Input() teams!: Team | Team[];
-
-  ngOnInit() {
-    if (!this.teamId && !this.clubId && this.teams instanceof Team) {
-      this.teamId = this.teams.id;
-    }
-
-    if (!this.teamId && !this.clubId && this.playerId) {
-      this.type = 'game';
-    }
-  }
+  typeInput = input<'encounter' | 'game'>();
+  type = computed(() =>
+    this.typeInput() ?? (!this.clubId() && this.playerId()) ? 'game' : 'encounter',
+  );
 }

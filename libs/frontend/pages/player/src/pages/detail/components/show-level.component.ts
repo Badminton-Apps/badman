@@ -3,12 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   Injector,
-  Input,
   OnInit,
-  Signal,
   computed,
   effect,
   inject,
+  input,
 } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RankingSystemService } from '@badman/frontend-graphql';
@@ -29,11 +28,8 @@ export class ShowLevelComponent implements OnInit {
   private readonly injector = inject(Injector);
   private readonly translate = inject(TranslateService);
 
-  @Input({ required: true })
-  playerId!: Signal<string>;
-
-  @Input({ required: true })
-  type!: 'single' | 'double' | 'mix';
+  playerId = input.required<string>();
+  type = input.required<'single' | 'double' | 'mix'>();
 
   upgrade!: 'singlePoints' | 'doublePoints' | 'mixPoints';
   downgrade!: 'singlePointsDowngrade' | 'doublePointsDowngrade' | 'mixPointsDowngrade';
@@ -56,7 +52,7 @@ export class ShowLevelComponent implements OnInit {
   });
 
   maxLevel = computed(() => this.rankingService.system()?.amountOfLevels ?? 12);
-  level = computed(() => this.showLevelService.rankingPlace()?.[this.type] ?? this.maxLevel());
+  level = computed(() => this.showLevelService.rankingPlace()?.[this.type()] ?? this.maxLevel());
   nextLevel = computed(() =>
     this.level() == 1
       ? undefined
@@ -91,7 +87,7 @@ export class ShowLevelComponent implements OnInit {
       },
     );
 
-    this.upgrade = `${this.type}Points`;
-    this.downgrade = `${this.type}PointsDowngrade`;
+    this.upgrade = `${this.type()}Points`;
+    this.downgrade = `${this.type()}PointsDowngrade`;
   }
 }

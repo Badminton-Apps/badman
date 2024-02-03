@@ -1,16 +1,21 @@
-<div class="general" [formGroup]="this.group">
+<div class="general" [formGroup]="this.group()">
   <div>
-    <span class="name">{{ group.value.name }}</span>
+    <span class="name">{{ group().value.name }}</span>
   </div>
   <div class="change">
     <!-- edit location -->
-    <button mat-icon-button class="edit-button" aria-label="edit location" (click)="this.whenLocationUpdate.next()">
+    <button
+      mat-icon-button
+      class="edit-button"
+      aria-label="edit location"
+      (click)="this.whenLocationUpdate.next()"
+    >
       <mat-icon>edit</mat-icon>
     </button>
   </div>
 </div>
-@if (this.control) {
-  <ng-container [formGroup]="this.control">
+@if (this.control()) {
+  <ng-container [formGroup]="this.internalControl">
     <div class="days">
       <div class="expandable-item" (click)="expanded.days = !expanded.days">
         <div>
@@ -34,7 +39,9 @@
                   <mat-select formControlName="day">
                     <mat-option value="monday">{{ 'all.days.monday' | translate }}</mat-option>
                     <mat-option value="tuesday">{{ 'all.days.tuesday' | translate }}</mat-option>
-                    <mat-option value="wednesday">{{ 'all.days.wednesday' | translate }}</mat-option>
+                    <mat-option value="wednesday">{{
+                      'all.days.wednesday' | translate
+                    }}</mat-option>
                     <mat-option value="thursday">{{ 'all.days.thursday' | translate }}</mat-option>
                     <mat-option value="friday">{{ 'all.days.friday' | translate }}</mat-option>
                     <mat-option value="saturday">{{ 'all.days.saturday' | translate }}</mat-option>

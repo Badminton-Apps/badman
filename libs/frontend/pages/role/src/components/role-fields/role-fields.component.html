@@ -4,7 +4,7 @@
     <mat-label>{{ 'all.input.name' | translate }}</mat-label>
     <input matInput formControlName="name" alt="name" autocomplete="name" required />
   </mat-form-field>
-  @for (group of this.claims; track group) {
+  @for (group of this.claims(); track group) {
     <h2>{{ group.category }}</h2>
     @for (claim of group.claims; track claim) {
       <badman-claim
