@@ -1,6 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  input,
+} from '@angular/core';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -11,9 +23,19 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, Subscription, combineLatest, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { CLUB, SEASON, TEAMS } from '../../../../../forms';
+
 export type TeamFormValue = {
   team: Team;
   entry: {
@@ -49,28 +71,26 @@ export type TeamForm = FormGroup<{
 export class TeamsTransferStepComponent implements OnInit {
   private destroy$ = injectDestroy();
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  control?: FormGroup<{
+  control = input<
+    FormGroup<{
+      [key in SubEventType]: FormArray<TeamForm>;
+    }>
+  >();
+  protected internalControl!: FormGroup<{
     [key in SubEventType]: FormArray<TeamForm>;
   }>;
 
-  @Input()
-  controlName = TEAMS;
+  controlName = input(TEAMS);
 
-  @Input()
-  clubControlName = CLUB;
+  clubControlName = input(CLUB);
 
-  @Input()
-  clubId?: string;
+  clubId = input<string | undefined>();
 
-  @Input()
-  seasonControlName = SEASON;
+  seasonControlName = input(SEASON);
 
-  @Input()
-  season?: number;
+  season = input<number | undefined>();
 
   teamsForm?: FormControl[] = [];
   newTeamsForm?: FormControl[] = [];
@@ -88,14 +108,20 @@ export class TeamsTransferStepComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormGroup<{
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as FormGroup<{
         [key in SubEventType]: FormArray<TeamForm>;
       }>;
     }
 
-    if (!this.control) {
-      this.control = new FormGroup({
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group()?.get(this.controlName()) as FormGroup<{
+        [key in SubEventType]: FormArray<TeamForm>;
+      }>;
+    }
+
+    if (!this.internalControl) {
+      this.internalControl = new FormGroup({
         M: new FormArray<TeamForm>([]),
         F: new FormArray<TeamForm>([]),
         MX: new FormArray<TeamForm>([]),
@@ -103,16 +129,16 @@ export class TeamsTransferStepComponent implements OnInit {
       });
     }
 
-    if (this.group && !this.group?.get(this.controlName)) {
-      this.group.addControl(this.controlName, this.control);
+    if (this.group() && !this.group()?.get(this.controlName())) {
+      this.group()?.addControl(this.controlName(), this.internalControl);
     }
 
-    if (this.group === undefined) {
-      if (this.clubId == undefined) {
+    if (this.group() === undefined) {
+      if (this.clubId() == undefined) {
         throw new Error('No clubId provided');
       }
 
-      if (this.season == undefined) {
+      if (this.season() == undefined) {
         throw new Error('No season provided');
       }
     }
@@ -121,23 +147,26 @@ export class TeamsTransferStepComponent implements OnInit {
     let season$: Observable<number>;
 
     // fetch clubId
-    if (this.group) {
-      clubid$ = this.group?.valueChanges.pipe(
-        map((value) => value?.[this.clubControlName]),
-        startWith(this.group.value?.[this.clubControlName]),
+    if (this.group()) {
+      clubid$ = this.group()?.valueChanges.pipe(
+        map((value) => value?.[this.clubControlName()]),
+        startWith(this.group()?.value?.[this.clubControlName()]),
       );
 
-      season$ = this.group?.valueChanges.pipe(
-        map((value) => value?.[this.seasonControlName]),
-        startWith(this.group.value?.[this.seasonControlName]),
+      season$ = this.group()?.valueChanges.pipe(
+        map((value) => value?.[this.seasonControlName()]),
+        startWith(this.group()?.value?.[this.seasonControlName()]),
         filter((value) => value !== undefined),
       );
     } else {
-      clubid$ = of(this.clubId as string);
-      season$ = of(this.season as number);
+      clubid$ = of(this.clubId() as string);
+      season$ = of(this.season() as number);
     }
 
-    this.teams$ = combineLatest([clubid$.pipe(distinctUntilChanged()), season$.pipe(distinctUntilChanged())])?.pipe(
+    this.teams$ = combineLatest([
+      clubid$.pipe(distinctUntilChanged()),
+      season$.pipe(distinctUntilChanged()),
+    ])?.pipe(
       takeUntil(this.destroy$),
       switchMap(([clubId, season]) =>
         this.apollo
@@ -292,12 +321,14 @@ export class TeamsTransferStepComponent implements OnInit {
           const control = new FormControl(team.selected);
           this.teamsForm?.push(control);
           this.teamSubscriptions.push(
-            control.valueChanges.pipe(startWith(team.selected), takeUntil(this.destroy$)).subscribe((value) => {
-              if (value == null) {
-                return;
-              }
-              this.select(value, team);
-            }),
+            control.valueChanges
+              .pipe(startWith(team.selected), takeUntil(this.destroy$))
+              .subscribe((value) => {
+                if (value == null) {
+                  return;
+                }
+                this.select(value, team);
+              }),
           );
         }
 
@@ -305,12 +336,14 @@ export class TeamsTransferStepComponent implements OnInit {
           const control = new FormControl(team.selected);
           this.newTeamsForm?.push(control);
           this.teamSubscriptions.push(
-            control.valueChanges.pipe(startWith(team.selected), takeUntil(this.destroy$)).subscribe((value) => {
-              if (value == null) {
-                return;
-              }
-              this.select(value, team);
-            }),
+            control.valueChanges
+              .pipe(startWith(team.selected), takeUntil(this.destroy$))
+              .subscribe((value) => {
+                if (value == null) {
+                  return;
+                }
+                this.select(value, team);
+              }),
           );
         }
       }),
@@ -319,7 +352,7 @@ export class TeamsTransferStepComponent implements OnInit {
 
   select(selected: boolean, team: Team & { selected: boolean }) {
     // if the team is already selected, we don't need to do anything
-    const typedControl = this.control?.get(team.type ?? '') as FormArray<TeamForm>;
+    const typedControl = this.internalControl?.get(team.type ?? '') as FormArray<TeamForm>;
 
     const index = typedControl.value?.findIndex((t) => t.team?.link == team.link);
 

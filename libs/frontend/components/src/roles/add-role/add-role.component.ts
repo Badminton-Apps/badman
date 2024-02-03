@@ -1,11 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Apollo, gql } from 'apollo-angular';
 import { iif, of, switchMap } from 'rxjs';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-add-role',
@@ -18,11 +27,9 @@ export class AddRoleComponent {
   private apollo = inject(Apollo);
   private dialog = inject(MatDialog);
 
-  @Input({ required: true })
-  linkId!: string;
+  linkId = input.required<string>();
 
-  @Input({ required: true })
-  linkType!: string;
+  linkType = input.required<string>();
 
   @ViewChild('newRoleTemplate')
   newRoleTemplateRef?: TemplateRef<HTMLElement>;
@@ -53,8 +60,8 @@ export class AddRoleComponent {
               variables: {
                 data: {
                   name: result,
-                  linkType: this.linkType,
-                  linkId: this.linkId,
+                  linkType: this.linkType(),
+                  linkId: this.linkId(),
                   claims: [],
                 },
               },

@@ -3,7 +3,7 @@ import { EventEntry } from '../entry.model';
 import { Player } from '../player.model';
 
 export class Event {
-  id?: string;
+  id!: string;
   slug?: string;
   name?: string;
   eventType?: EventType;
@@ -27,8 +27,13 @@ export class Event {
   eventEntries?: EventEntry[];
 
   constructor({ ...args }: Partial<Event>) {
-    this.name = args.name;
+    if (!args?.id) {
+      console.error(`${this.constructor.name} needs an id`);
+      return;
+    }
     this.id = args.id;
+
+    this.name = args.name;
     this.slug = args.slug;
     this.fileName = args.fileName;
     this.official = args?.official;

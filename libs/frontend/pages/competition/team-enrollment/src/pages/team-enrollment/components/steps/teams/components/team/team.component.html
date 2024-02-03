@@ -1,20 +1,25 @@
 <div class="general">
   <div>
-    <span class="name">{{ team.value.name }}</span>
+    <span class="name">{{ team().value.name }}</span>
   </div>
   <div class="change">
     <!-- change number -->
     <button
       mat-icon-button
       class="change-button"
-      aria-label="Change team number"
-      (click)="this.changeTeamNumber.next(team.value)"
-      [matTooltip]="'all.team.change-number.tooltip' | translate"
+      aria-label="Change team() number"
+      (click)="this.changeTeamNumber.next(team().value)"
+      [matTooltip]="'all.team().change-number.tooltip' | translate"
     >
       <mat-icon>swap_horiz</mat-icon>
     </button>
-    <!-- remove team -->
-    <button mat-icon-button class="remove-button" aria-label="Remove team" (click)="this.removeTeam.next(team.value)">
+    <!-- remove team() -->
+    <button
+      mat-icon-button
+      class="remove-button"
+      aria-label="Remove team()"
+      (click)="this.removeTeam.next(team().value)"
+    >
       <mat-icon>delete</mat-icon>
     </button>
   </div>
@@ -27,7 +32,7 @@
       [matTooltipDisabled]="!hasWarning"
       matTooltipClass="tooltip-multi-line"
     >
-      {{ 'all.team.title.base-fields' | translate }}
+      {{ 'all.team().title.base-fields' | translate }}
       @if (hasWarning) {
         <mat-icon>warning</mat-icon>
       }
@@ -46,7 +51,7 @@
         <div class="prefferd">
           <mat-form-field class="day">
             <mat-label>{{ 'all.input.day' | translate }}</mat-label>
-            <mat-select [required]="true" [(value)]="team.value.preferredDay">
+            <mat-select [required]="true" [(value)]="team().value.preferredDay">
               <mat-option value="monday">{{ 'all.days.monday' | translate }}</mat-option>
               <mat-option value="tuesday">{{ 'all.days.tuesday' | translate }}</mat-option>
               <mat-option value="wednesday">{{ 'all.days.wednesday' | translate }}</mat-option>
@@ -58,28 +63,34 @@
           </mat-form-field>
           <mat-form-field class="time">
             <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
-            <input [required]="true" matInput type="time" step="900" [(ngModel)]="team.value.preferredTime" />
+            <input
+              [required]="true"
+              matInput
+              type="time"
+              step="900"
+              [(ngModel)]="team().value.preferredTime"
+            />
           </mat-form-field>
         </div>
         <div class="captain">
-          <p>{{ 'all.team.title.captain' | translate }}</p>
+          <p>{{ 'all.team().title.captain' | translate }}</p>
           <badman-player-search
-            [player]="team.value.captainId"
+            [player]="team().value.captainId"
             [includePersonal]="true"
             [allowCreation]="true"
-            [club]="team.value.clubId"
+            [club]="team().value.clubId"
             [clearOnSelection]="false"
-            (whenSelectPlayer)="team.value.captainId = $event.id"
+            (whenSelectPlayer)="team().value.captainId = $event.id"
           ></badman-player-search>
         </div>
         <div class="contact">
           <mat-form-field class="email">
             <mat-label>{{ 'all.input.email' | translate }}</mat-label>
-            <input matInput type="email" [required]="true" [(ngModel)]="team.value.email" />
+            <input matInput type="email" [required]="true" [(ngModel)]="team().value.email" />
           </mat-form-field>
           <mat-form-field class="phone">
             <mat-label>{{ 'all.input.phone' | translate }}</mat-label>
-            <input matInput [required]="true" [(ngModel)]="team.value.phone" />
+            <input matInput [required]="true" [(ngModel)]="team().value.phone" />
           </mat-form-field>
         </div>
       </div>
@@ -109,27 +120,30 @@
   <mat-divider></mat-divider>
   @if (expanded.regular) {
     <div>
-      @for (player of this.team.value.players; track player) {
+      @for (player of this.team().value.players; track player) {
         <div class="player">
           <div class="name">
             {{ player.fullName }}
             <span class="ranking">
               {{ player.lastRanking?.single }} -
               {{ player.lastRanking?.double }}
-              @if (team.value.type === 'MX') {
+              @if (team().value.type === 'MX') {
                 - {{ player.lastRanking?.mix }}
               }
               ({{
                 (player.lastRanking?.single ?? 12) +
                   (player.lastRanking?.double ?? 12) +
-                  (team.value.type === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
+                  (team().value.type === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
               }})</span
             >
           </div>
           <div class="type">
             <mat-form-field>
               <mat-label>Type</mat-label>
-              <mat-select [(value)]="player.membershipType" (selectionChange)="changePlayerType(player, $event.value)">
+              <mat-select
+                [(value)]="player.membershipType"
+                (selectionChange)="changePlayerType(player, $event.value)"
+              >
                 @for (type of types; track type) {
                   <mat-option [value]="type">
                     {{ 'all.player.' + type | lowercase | translate }}
@@ -148,7 +162,7 @@
       <badman-player-search
         [allowCreation]="false"
         [searchOutsideClub]="true"
-        [club]="this.team.value.clubId"
+        [club]="this.team().value.clubId"
         [label]="'Voeg speler toe'"
         (whenSelectPlayer)="addPlayerToTeam($event)"
       ></badman-player-search>
@@ -169,16 +183,16 @@
   </div>
   <mat-divider></mat-divider>
   <div [hidden]="!expanded.base">
-    @for (b of basePlayers.value; track b) {
+    @for (b of basePlayers().value; track b) {
       <div class="player">
         <div class="name">
           {{ b.player.fullName }}
           <span class="ranking">
             {{ b.single }} - {{ b.double }}
-            @if (team.value.type === 'MX') {
+            @if (team().value.type === 'MX') {
               - {{ b.mix }}
             }
-            ({{ b.single + b.double + (team.value.type === 'MX' ? b.mix : 0) }})</span
+            ({{ b.single + b.double + (team().value.type === 'MX' ? b.mix : 0) }})</span
           >
         </div>
         <div class="delete">
@@ -191,7 +205,7 @@
     <badman-player-search
       [allowCreation]="false"
       [searchOutsideClub]="true"
-      [club]="this.team.value.clubId"
+      [club]="this.team().value.clubId"
       [label]="'Voeg speler toe'"
       (whenSelectPlayer)="addBasePlayerToTeam($event)"
     ></badman-player-search>

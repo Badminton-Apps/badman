@@ -1,6 +1,6 @@
 <mat-form-field>
-  @if (label) {
-    <mat-label>{{ label | translate }}</mat-label>
+  @if (label()) {
+    <mat-label>{{ label() | translate }}</mat-label>
   }
   <input matInput [formControl]="this.inputValue!" (blur)="onBlur()" [pattern]="this.pattern" />
   @if (this.inputValue?.valid === false) {

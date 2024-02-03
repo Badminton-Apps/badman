@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -14,14 +14,19 @@ import { debounceTime, map } from 'rxjs';
   templateUrl: './edit-competition-status.component.html',
   styleUrls: ['./edit-competition-status.component.scss'],
   standalone: true,
-  imports: [CommonModule, HasClaimComponent, MatSlideToggleModule, ReactiveFormsModule, TranslateModule],
+  imports: [
+    CommonModule,
+    HasClaimComponent,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    TranslateModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCompetitionStatusComponent implements OnInit {
   playerForm!: FormGroup;
 
-  @Input()
-  player!: Player;
+  player = input.required<Player>();
 
   constructor(
     private apollo: Apollo,
@@ -29,7 +34,7 @@ export class EditCompetitionStatusComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const compPlayer = new FormControl(this.player.competitionPlayer);
+    const compPlayer = new FormControl(this.player().competitionPlayer);
 
     this.playerForm = new FormGroup({
       compPlayer: compPlayer,
@@ -51,7 +56,7 @@ export class EditCompetitionStatusComponent implements OnInit {
             `,
             variables: {
               data: {
-                id: this.player.id,
+                id: this.player().id,
                 competitionPlayer: compPlayer.value,
               },
             },

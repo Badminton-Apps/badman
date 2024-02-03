@@ -61,7 +61,7 @@
   <mat-step>
     <ng-template matStepLabel>{{ 'all.competition.team-enrollment.select-teams' | translate }}</ng-template>
     <ng-template matStepContent>
-      <badman-teams-step [group]="this.formGroup"></badman-teams-step>
+      <badman-teams-step [group]="this.formGroup" [system]="this.systemService.system()!"></badman-teams-step>
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
         <button

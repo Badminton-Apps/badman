@@ -39,10 +39,10 @@
 <section class="games">
   <section class="recent-games">
     <h3>{{"all.game.recent.title" | translate}}</h3>
-    <badman-recent-games [teamId]="team().id"></badman-recent-games>
+    <badman-recent-games [teams]="team()"></badman-recent-games>
   </section>
   <section class="upcoming-games">
     <h3>{{"all.game.upcoming.title" | translate}}</h3>
-    <badman-upcoming-games [teamId]="team().id"></badman-upcoming-games>
+    <badman-upcoming-games [teams]="team()"></badman-upcoming-games>
   </section>
 </section>

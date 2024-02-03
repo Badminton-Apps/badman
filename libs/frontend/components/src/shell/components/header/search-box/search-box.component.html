@@ -1,5 +1,10 @@
 <form class="header" (keydown.enter)="$event.preventDefault()">
-  <input type="text" [placeholder]="this.label | translate" [formControl]="formControl" [matAutocomplete]="auto" />
+  <input
+    type="text"
+    [placeholder]="this.label() | translate"
+    [formControl]="formControl"
+    [matAutocomplete]="auto"
+  />
   <mat-autocomplete
     #auto="matAutocomplete"
     (optionSelected)="selectedPlayer($event)"

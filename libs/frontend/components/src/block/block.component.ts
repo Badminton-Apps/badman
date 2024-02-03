@@ -6,6 +6,7 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-block',
@@ -105,19 +106,19 @@ export class BadmanBlockSubtitleDirective {
 })
 export class BadmanBlockActionsDirective {
   /** Position of the actions inside the card. */
-  @Input() align: 'start' | 'end' = 'start';
+  align = input<'start' | 'end'>('start');
 
   @HostBinding('class')
   hostClass = 'badman-block-actions';
 
   @HostBinding('class.badman-block-actions-align-end')
   get isAtEnd() {
-    return this.align === 'end';
+    return this.align() === 'end';
   }
 
   @HostBinding('class.badman-block-actions-align-start')
   get isAtStart() {
-    return this.align === 'start';
+    return this.align() === 'start';
   }
 }
 

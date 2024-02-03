@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Injector, Input, OnChanges, OnInit, Signal, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Injector,
+  Input,
+  OnChanges,
+  OnInit,
+  Signal,
+  inject,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +23,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { of, Subject } from 'rxjs';
 import { catchError, take, map, switchMap, startWith } from 'rxjs/operators';
+import { input } from '@angular/core';
 
 const COMMENTS_QUERY = gql`
   query GetEncounterComments($where: JSONObject) {
@@ -62,11 +72,9 @@ export class CommentsComponent implements OnInit, OnChanges {
   update$ = new Subject<void>();
 
   // inputs
-  @Input({ required: true })
-  clubId!: string;
+  clubId = input.required<string>();
 
-  @Input({ required: true })
-  encounter!: EncounterCompetition;
+  encounter = input.required<EncounterCompetition>();
 
   // forms
   commentControl = new FormControl<string>('');
@@ -83,7 +91,7 @@ export class CommentsComponent implements OnInit, OnChanges {
               query: COMMENTS_QUERY,
               variables: {
                 where: {
-                  linkId: this.encounter?.id,
+                  linkId: this.encounter()?.id,
                   linkType: {
                     $or: ['home_comment_change', 'away_comment_change'],
                   },
@@ -124,9 +132,9 @@ export class CommentsComponent implements OnInit, OnChanges {
         variables: {
           data: {
             message: this.commentControl.value,
-            linkId: this.encounter?.id,
+            linkId: this.encounter()?.id,
             linkType: 'encounterChange',
-            clubId: this.clubId,
+            clubId: this.clubId(),
           },
         },
         refetchQueries: [
@@ -134,7 +142,7 @@ export class CommentsComponent implements OnInit, OnChanges {
             query: COMMENTS_QUERY,
             variables: {
               where: {
-                linkId: this.encounter?.id,
+                linkId: this.encounter()?.id,
                 linkType: {
                   $or: ['home_comment_change', 'away_comment_change'],
                 },
@@ -152,9 +160,13 @@ export class CommentsComponent implements OnInit, OnChanges {
       )
       .subscribe((result) => {
         if (result && result.data && result.data.addComment) {
-          this.snackBar.open(this.translate.instant('all.competition.change-encounter.comment-added'), 'OK', {
-            duration: 4000,
-          });
+          this.snackBar.open(
+            this.translate.instant('all.competition.change-encounter.comment-added'),
+            'OK',
+            {
+              duration: 4000,
+            },
+          );
           this.commentControl.setValue('');
         }
       });

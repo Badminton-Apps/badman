@@ -1,4 +1,4 @@
-<form [formGroup]="formGroup">
+<form [formGroup]="formGroup()">
   <div>
     <mat-slide-toggle formControlName="includedIgnored">
       {{ 'all.breakdown.notUsed' | translate }}:
@@ -70,7 +70,7 @@
 <mat-table #breakdownTable [dataSource]="dataSource">
   <!-- Game count -->
   <ng-container matColumnDef="count">
-    <mat-header-cell *matHeaderCellDef>{{ games.length }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ currGames().length }}</mat-header-cell>
     <mat-cell *matCellDef="let game; let i = index"> #{{ i + 1 }} </mat-cell>
   </ng-container>
   <!-- Drops next period -->

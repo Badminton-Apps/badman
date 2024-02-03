@@ -1,5 +1,5 @@
 <div class="filters">
-  <div class="filters-encounter" [formGroup]="filter">
+  <div class="filters-encounter" [formGroup]="filter()">
     <mat-slide-toggle formControlName="changedDate">{{
       'all.competition.encounters.change-date' | translate
     }}</mat-slide-toggle>
@@ -12,7 +12,7 @@
   </div>
 </div>
 <p class="filters-notes">
-  @if (this.filter.get('changedLocation')?.value) {
+  @if (this.filter().get('changedLocation')?.value) {
     {{ 'all.competition.encounters.change-location-note' | translate }}
   }
 </p>
@@ -66,7 +66,11 @@
       }
       <!-- no encounters -->
       @if (this.encounters()?.length === 0) {
-        <span matListItemLine class="no-more-encounters" translate="all.competition.encounters.no-more"></span>
+        <span
+          matListItemLine
+          class="no-more-encounters"
+          translate="all.competition.encounters.no-more"
+        ></span>
       }
     </mat-nav-list>
   </section>

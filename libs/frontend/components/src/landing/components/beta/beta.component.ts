@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { LoggedinUser, AuthenticateService } from '@badman/frontend-auth';
@@ -6,6 +13,7 @@ import { Observable } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-beta',
@@ -16,8 +24,7 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BetaComponent implements OnInit {
-  @Input()
-  version?: string;
+  version = input<string | undefined>();
 
   user$?: Observable<LoggedinUser>;
 

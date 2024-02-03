@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  input,
+} from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,22 +35,26 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
 })
 export class EventCompetitionLevelFieldsComponent implements OnInit {
-  @Input()
-  subEvent: SubEventCompetition = {} as SubEventCompetition;
+  subEvent = input<SubEventCompetition>({} as SubEventCompetition);
 
-  @Input()
-  type?: LevelType;
+  type = input<LevelType>();
 
-  @Input()
-  formGroup!: FormGroup;
+  formGroup = input.required<FormGroup>();
 
   @Output()
   whenDelete = new EventEmitter<SubEventCompetition>();
 
   ngOnInit(): void {
-    this.formGroup.get('level')?.valueChanges.subscribe((r) => {
-      const type = this.type === LevelType.PROV ? 'Provinciale' : this.type === LevelType.LIGA ? 'Liga' : 'Nationale';
-      this.formGroup.get('name')?.setValue(`${r}e ${type}`, { emitEvent: false });
-    });
+    this.formGroup()
+      .get('level')
+      ?.valueChanges.subscribe((r) => {
+        const type =
+          this.type() === LevelType.PROV
+            ? 'Provinciale'
+            : this.type() === LevelType.LIGA
+              ? 'Liga'
+              : 'Nationale';
+        this.formGroup().get('name')?.setValue(`${r}e ${type}`, { emitEvent: false });
+      });
   }
 }

@@ -8,12 +8,17 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { HasClaimComponent, RecentGamesComponent, UpcomingGamesComponent } from '@badman/frontend-components';
+import {
+  HasClaimComponent,
+  RecentGamesComponent,
+  UpcomingGamesComponent,
+} from '@badman/frontend-components';
 import { Club } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs';
 import { CanPlay, ClubAssemblyService } from './club-assembly.service';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-club-assembly',
@@ -45,25 +50,27 @@ export class ClubAssemblyComponent implements OnInit {
   ]);
 
   // Inputs
-  @Input({ required: true }) club!: Signal<Club>;
-  @Input() filter?: FormGroup;
+  club = input.required<Signal<Club>>();
+  filter = input<FormGroup | undefined>();
 
   canPlay = CanPlay;
 
   constructor() {
     effect(() => {
       this.clubAssemblyService.filter.patchValue({
-        clubId: this.club().id,
+        clubId: this.club()().id,
       });
     });
   }
 
   ngOnInit(): void {
-    this.filter?.valueChanges.pipe(startWith(this.filter?.value), takeUntil(this.destroy$)).subscribe((newValue) => {
-      this.clubAssemblyService.filter.patchValue({
-        season: newValue.season,
-        choices: newValue.choices,
+    this.filter()
+      ?.valueChanges.pipe(startWith(this.filter()?.value), takeUntil(this.destroy$))
+      .subscribe((newValue) => {
+        this.clubAssemblyService.filter.patchValue({
+          season: newValue.season,
+          choices: newValue.choices,
+        });
       });
-    });
   }
 }

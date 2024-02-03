@@ -1,13 +1,13 @@
 <div aria-hidden="true">
-  @if (this.banner.enabled) {
+  @if (this.banner().enabled) {
     <ins
       class="adsbygoogle adslot_1"
-      [attr.data-ad-client]="this.banner.adClient"
-      [attr.data-ad-slot]="this.banner.adSlot"
+      [attr.data-ad-client]="this.banner().adClient"
+      [attr.data-ad-slot]="this.banner().adSlot"
     >
     </ins>
   }
-  @if (!this.banner.enabled) {
+  @if (!this.banner().enabled) {
     <div class="debug-adslot"></div>
   }
 </div>

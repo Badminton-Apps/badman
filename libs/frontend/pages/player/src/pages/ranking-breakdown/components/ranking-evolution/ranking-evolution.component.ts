@@ -1,5 +1,13 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+  input,
+} from '@angular/core';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -17,11 +25,9 @@ import { ChartComponent } from './components';
   imports: [CommonModule, TranslateModule, ChartComponent],
 })
 export class RankingEvolutionComponent implements OnInit {
-  @Input()
-  player!: Player;
+  player = input.required<Player>();
 
-  @Input()
-  system!: RankingSystem;
+  system = input.required<RankingSystem>();
 
   rankingPlaces$?: Observable<{
     single: rankingPlace[];
@@ -120,13 +126,13 @@ export class RankingEvolutionComponent implements OnInit {
           }
         `,
         variables: {
-          playerId: this.player.id,
-          rankingType: this.system.id,
+          playerId: this.player().id,
+          rankingType: this.system().id,
         },
       })
       .pipe(
         transferState(
-          'player-ranking-places' + this.player.id + this.system.id + '-state',
+          'player-ranking-places' + this.player().id + this.system().id + '-state',
           this.stateTransfer,
           this.platformId,
         ),

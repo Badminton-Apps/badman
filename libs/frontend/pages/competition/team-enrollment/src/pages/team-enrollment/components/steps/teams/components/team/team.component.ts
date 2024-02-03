@@ -1,6 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  Signal,
+  computed,
+  input,
+} from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,8 +26,20 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PlayerSearchComponent } from '@badman/frontend-components';
-import { EntryCompetitionPlayer, Player, RankingPlace, RankingSystem, Team, TeamPlayer } from '@badman/frontend-models';
-import { TeamMembershipType, getCurrentSeason, getIndexFromPlayers } from '@badman/utils';
+import {
+  EntryCompetitionPlayer,
+  Player,
+  RankingPlace,
+  RankingSystem,
+  Team,
+  TeamPlayer,
+} from '@badman/frontend-models';
+import {
+  SubEventTypeEnum,
+  TeamMembershipType,
+  getCurrentSeason,
+  getIndexFromPlayers,
+} from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -43,17 +70,20 @@ import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
 export class TeamComponent implements OnInit {
   destroy$ = new Subject<void>();
 
-  @Input()
-  team!: FormControl<Team>;
+  team = input.required<FormControl<Team>>();
+  teamType = computed(() => {
+    if (!this.team()?.value?.type) {
+      throw new Error('No team type');
+    }
 
-  @Input()
-  basePlayers!: FormArray<FormControl<EntryCompetitionPlayer>>;
+    return this.team().value.type;
+  }) as Signal<SubEventTypeEnum>;
 
-  @Input()
-  system!: RankingSystem;
+  basePlayers = input.required<FormArray<FormControl<EntryCompetitionPlayer>>>();
 
-  @Input()
-  season: number = getCurrentSeason();
+  system = input.required<RankingSystem>();
+
+  season = input<number>(getCurrentSeason());
 
   @Output()
   editTeam = new EventEmitter<Team>();
@@ -90,41 +120,45 @@ export class TeamComponent implements OnInit {
   ngOnInit(): void {
     this.checkTeam();
 
-    this.team.valueChanges.pipe(takeUntil(this.destroy$), startWith(this.team.value)).subscribe(() => {
-      this.expanded.team = this.team?.value?.link == null;
-      if (this.team?.value?.type && this.team?.value?.players) {
-        this.teamIndex = getIndexFromPlayers(
-          this.team.value.type,
-          this.team.value.players?.map((p) => ({
-            id: p.id,
-            gender: p.gender,
-            single: p.rankingPlaces?.[0]?.single ?? 12,
-            double: p.rankingPlaces?.[0]?.double ?? 12,
-            mix: p.rankingPlaces?.[0]?.mix ?? 12,
-          })),
-        );
-      }
-    });
+    this.team()
+      .valueChanges.pipe(takeUntil(this.destroy$), startWith(this.team().value))
+      .subscribe(() => {
+        this.expanded.team = this.team()?.value?.link == null;
+        if (this.team()?.value?.type && this.team()?.value?.players) {
+          this.teamIndex = getIndexFromPlayers(
+            this.teamType(),
+            this.team().value.players?.map((p) => ({
+              id: p.id,
+              gender: p.gender,
+              single: p.rankingPlaces?.[0]?.single ?? 12,
+              double: p.rankingPlaces?.[0]?.double ?? 12,
+              mix: p.rankingPlaces?.[0]?.mix ?? 12,
+            })),
+          );
+        }
+      });
 
-    this.basePlayers.valueChanges.pipe(takeUntil(this.destroy$), startWith(this.basePlayers.value)).subscribe(() => {
-      if (this.basePlayers.value && this.team?.value?.type) {
-        this.baseIndex = getIndexFromPlayers(this.team.value.type, this.basePlayers.value);
-      }
-    });
+    this.basePlayers()
+      ?.valueChanges.pipe(takeUntil(this.destroy$), startWith(this.basePlayers().value))
+      .subscribe(() => {
+        if (this.basePlayers().value && this.team()?.value?.type) {
+          this.baseIndex = getIndexFromPlayers(this.teamType(), this.basePlayers().value);
+        }
+      });
   }
 
   removePlayerFromTeam(player: Player) {
-    const newPlayers = this.team.value.players?.filter((p) => p.id !== player.id);
+    const newPlayers = this.team().value.players?.filter((p) => p.id !== player.id);
 
-    this.team.value.players = newPlayers;
-    this.team.patchValue(this.team.value);
+    this.team().value.players = newPlayers;
+    this.team().patchValue(this.team().value);
 
     this.checkTeam();
   }
 
   async addPlayerToTeam(player: Player) {
     // Check if player is already in team
-    if (this.team.value.players?.find((p) => p.id === player.id)) {
+    if (this.team().value.players?.find((p) => p.id === player.id)) {
       this.snackbar.open('Player is already in team', 'Close', {
         duration: 3000,
       });
@@ -133,7 +167,7 @@ export class TeamComponent implements OnInit {
 
     const ranking = await this.getRanking(player);
 
-    const newPlayers = this.team.value.players?.concat(
+    const newPlayers = this.team().value.players?.concat(
       new TeamPlayer({
         ...player,
         rankingPlaces: ranking.data?.rankingPlaces ?? [],
@@ -141,15 +175,15 @@ export class TeamComponent implements OnInit {
       }),
     );
 
-    this.team.value.players = newPlayers;
-    this.team.patchValue(this.team.value);
+    this.team().value.players = newPlayers;
+    this.team().patchValue(this.team().value);
 
     this.checkTeam();
   }
 
   async addBasePlayerToTeam(player: Player) {
     // Check if player is already in team
-    if (this.basePlayers?.value.find((p) => p.id === player.id)) {
+    if (this.basePlayers().value.find((p) => p.id === player.id)) {
       this.snackbar.open('Player is already in baseteam', 'Close', {
         duration: 3000,
       });
@@ -164,14 +198,16 @@ export class TeamComponent implements OnInit {
       mix: ranking.data.rankingPlaces?.[0]?.mix ?? 12,
     } as EntryCompetitionPlayer;
 
-    this.basePlayers.push(this.formBuilder.control(newPlayer) as FormControl<EntryCompetitionPlayer>);
+    this.basePlayers().push(
+      this.formBuilder.control(newPlayer) as FormControl<EntryCompetitionPlayer>,
+    );
 
     this.checkTeam();
   }
 
   removeBasePlayerFromTeam(id: string) {
-    const index = this.basePlayers?.value.findIndex((p) => p.id === id);
-    this.basePlayers.removeAt(index);
+    const index = this.basePlayers().value.findIndex((p) => p.id === id);
+    this.basePlayers().removeAt(index);
     this.checkTeam();
   }
 
@@ -184,29 +220,33 @@ export class TeamComponent implements OnInit {
     this.hasWarning = false;
     this.warningMessage = '';
 
-    this.baseCount = this.team.value.players?.filter((p) => p.membershipType === TeamMembershipType.REGULAR).length;
+    this.baseCount = this.team().value.players?.filter(
+      (p) => p.membershipType === TeamMembershipType.REGULAR,
+    ).length;
 
-    this.backupCount = this.team.value.players?.filter((p) => p.membershipType === TeamMembershipType.BACKUP).length;
+    this.backupCount = this.team().value.players?.filter(
+      (p) => p.membershipType === TeamMembershipType.BACKUP,
+    ).length;
 
     // check if all required fields are set (captainId, preferredDay, prefferdTime, email, phone)
     const warnings = [];
-    if (this.team.value.captainId == null) {
+    if (this.team().value.captainId == null) {
       warnings.push('No captain selected');
     }
 
-    if (this.team.value.preferredDay == null) {
+    if (this.team().value.preferredDay == null) {
       warnings.push('No preferred day selected');
     }
 
-    if (this.team.value.preferredTime == null) {
+    if (this.team().value.preferredTime == null) {
       warnings.push('No preferred time selected');
     }
 
-    if (this.team.value.email == null) {
+    if (this.team().value.email == null) {
       warnings.push('No email selected');
     }
 
-    if (this.team.value.phone == null) {
+    if (this.team().value.phone == null) {
       warnings.push('No phone selected');
     }
 
@@ -232,10 +272,10 @@ export class TeamComponent implements OnInit {
         variables: {
           where: {
             playerId: player.id,
-            systemId: this.system?.id,
+            systemId: this.system()?.id,
 
             rankingDate: {
-              $lte: moment([this.season, 5, 10]).toISOString(),
+              $lte: moment([this.season(), 5, 10]).toISOString(),
             },
           },
           order: [

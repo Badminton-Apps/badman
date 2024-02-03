@@ -1,24 +1,14 @@
 import { Inject, Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 
-import {
-  distinctUntilChanged,
-  map,
-  shareReplay,
-  startWith,
-  tap,
-} from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, startWith, tap } from 'rxjs/operators';
 
 import { Claim } from '@badman/frontend-models';
-import {
-  BehaviorSubject,
-  Observable,
-  ReplaySubject,
-  combineLatest,
-} from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, combineLatest } from 'rxjs';
 import { AuthenticateService } from './authenticate.service';
 import { InMemoryCache } from '@apollo/client/core';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
+import { computedAsync } from 'ngxtension/computed-async';
 
 @Injectable({
   providedIn: 'root',
@@ -27,27 +17,42 @@ export class ClaimService {
   claims$ = new ReplaySubject<string[] | undefined>(1);
   private update$ = new BehaviorSubject(null);
 
+  claims = computedAsync(() => this.claims$);
+
   constructor(
     private apollo: Apollo,
     @Inject(APOLLO_CACHE) private cache: InMemoryCache,
-    authService: AuthenticateService
+    authService: AuthenticateService,
   ) {
     combineLatest([authService.user$, this.update$])
       .pipe(
         map(([player]) => player?.permissions ?? []),
         distinctUntilChanged((a, b) => a.length === b.length),
         shareReplay(),
-        startWith(undefined)
+        startWith(undefined),
       )
       .subscribe((claims) => {
         this.claims$.next(claims);
       });
   }
 
-  hasClaim$(claim: string): Observable<boolean> {
-    return this.claims$.pipe(
-      map((userClaims) => this.includes(userClaims, claim))
+  hasClaim(claim: string): boolean {
+    return this.includes(this.claims(), claim);
+  }
+
+  hasAllClaims(claims: string[]): boolean {
+    return claims.reduce((acc: boolean, claim) => acc && this.includes(this.claims(), claim), true);
+  }
+
+  hasAnyClaims(claims: string[]): boolean {
+    return claims.reduce(
+      (acc: boolean, claim) => acc || this.includes(this.claims(), claim),
+      false,
     );
+  }
+
+  hasClaim$(claim: string): Observable<boolean> {
+    return this.claims$.pipe(map((userClaims) => this.includes(userClaims, claim)));
   }
 
   hasAllClaims$(claims: string[]): Observable<boolean> {
@@ -55,24 +60,21 @@ export class ClaimService {
       map((userClaims) => {
         return claims.reduce(
           (acc: boolean, claim) => acc && this.includes(userClaims, claim),
-          true
+          true,
         );
       }),
       distinctUntilChanged(),
-      shareReplay()
+      shareReplay(),
     );
   }
 
   hasAnyClaims$(claims: string[]): Observable<boolean> {
     return this.claims$.pipe(
       map((userClaims) =>
-        claims.reduce(
-          (acc: boolean, claim) => acc || this.includes(userClaims, claim),
-          false
-        )
+        claims.reduce((acc: boolean, claim) => acc || this.includes(userClaims, claim), false),
       ),
       shareReplay(),
-      distinctUntilChanged()
+      distinctUntilChanged(),
     );
   }
 
@@ -120,16 +122,8 @@ export class ClaimService {
     return this.apollo
       .mutate<{ claims: Claim[] }>({
         mutation: gql`
-          mutation UpdateClaimUser(
-            $claimId: ID!
-            $playerId: ID!
-            $active: Boolean!
-          ) {
-            updateGlobalClaimUser(
-              claimId: $claimId
-              playerId: $playerId
-              active: $active
-            ) {
+          mutation UpdateClaimUser($claimId: ID!, $playerId: ID!, $active: Boolean!) {
+            updateGlobalClaimUser(claimId: $claimId, playerId: $playerId, active: $active) {
               id
             }
           }
@@ -153,9 +147,7 @@ export class ClaimService {
     }
 
     if (claim.indexOf('*') >= 0) {
-      const found = claims.find(
-        (r) => r?.indexOf(claim.replace('*', '')) != -1
-      );
+      const found = claims.find((r) => r?.indexOf(claim.replace('*', '')) != -1);
       return found != null && found != undefined;
     } else {
       return claims?.includes(claim);

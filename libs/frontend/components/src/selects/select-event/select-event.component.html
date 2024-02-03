@@ -1,6 +1,6 @@
 <mat-form-field>
   <mat-label>Pick an event</mat-label>
-  <mat-select [formControl]="this.control" required>
+  <mat-select [formControl]="this.control()" required>
     @for (option of this.events$ | async; track option) {
       <mat-option [value]="option">
         {{ option.name }}
