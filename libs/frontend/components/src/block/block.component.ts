@@ -3,11 +3,9 @@ import {
   Component,
   Directive,
   HostBinding,
-  Input,
   ViewEncapsulation,
+  input
 } from '@angular/core';
-import { input } from '@angular/core';
-
 @Component({
   selector: 'badman-block',
   templateUrl: './block.component.html',
