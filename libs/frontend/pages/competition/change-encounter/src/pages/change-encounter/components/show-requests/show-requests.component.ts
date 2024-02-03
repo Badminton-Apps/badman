@@ -3,13 +3,20 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnInit,
   TemplateRef,
   ViewChild,
+  input,
   signal,
 } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -24,7 +31,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ClaimService } from '@badman/frontend-auth';
 import { HasClaimComponent, SetEncounterDateDialogComponent } from '@badman/frontend-components';
-import { Comment, EncounterChange, EncounterChangeDate, EncounterCompetition } from '@badman/frontend-models';
+import {
+  Comment,
+  EncounterChange,
+  EncounterChangeDate,
+  EncounterCompetition,
+} from '@badman/frontend-models';
 import { ChangeEncounterAvailability, getCurrentSeasonPeriod } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -82,11 +94,9 @@ const CHANGE_QUERY = gql`
   ],
 })
 export class ShowRequestsComponent implements OnInit {
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  dependsOn = 'encounter';
+  dependsOn = input('encounter');
 
   formGroupRequest!: FormGroup;
   previous?: AbstractControl;
@@ -118,7 +128,7 @@ export class ShowRequestsComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.previous = this.group.get(this.dependsOn) ?? undefined;
+    this.previous = this.group().get(this.dependsOn()) ?? undefined;
     if (this.previous) {
       this.requests$ = this.previous.valueChanges.pipe(
         tap((encounter: EncounterCompetition) => {
@@ -137,7 +147,7 @@ export class ShowRequestsComponent implements OnInit {
           if (encounter == null) {
             this.changeDetector.detectChanges();
           } else {
-            this.home = this.group.get('team')?.value == encounter?.home?.id;
+            this.home = this.group().get('team')?.value == encounter?.home?.id;
           }
         }),
         filter((value) => value !== null),
@@ -184,16 +194,21 @@ export class ShowRequestsComponent implements OnInit {
         }),
       );
     } else {
-      console.warn(`Dependency ${this.dependsOn} not found`, this.previous);
+      console.warn(`Dependency ${this.dependsOn()} not found`, this.previous);
     }
   }
 
   addDate() {
     let lastDate = this.encounter.date;
-    const dates = [...this.dateControls.getRawValue(), ...this.dateControlsNotAvailible.getRawValue()];
+    const dates = [
+      ...this.dateControls.getRawValue(),
+      ...this.dateControlsNotAvailible.getRawValue(),
+    ];
     if (dates && dates.length > 0) {
       // get the last date
-      lastDate = dates.map((d) => d?.['calendar']?.['date']).reduce((a, b) => (a > b ? a : b)) as Date;
+      lastDate = dates
+        .map((d) => d?.['calendar']?.['date'])
+        .reduce((a, b) => (a > b ? a : b)) as Date;
     }
 
     let newDate = moment(lastDate).add(1, 'week');
@@ -225,9 +240,13 @@ export class ShowRequestsComponent implements OnInit {
     }
 
     if (!this.formGroupRequest.valid) {
-      this.snackBar.open(this.translate.instant('competition.change-encounter.errors.invalid'), 'OK', {
-        duration: 4000,
-      });
+      this.snackBar.open(
+        this.translate.instant('competition.change-encounter.errors.invalid'),
+        'OK',
+        {
+          duration: 4000,
+        },
+      );
 
       this.formGroupRequest.markAllAsTouched();
 
@@ -266,9 +285,13 @@ export class ShowRequestsComponent implements OnInit {
     if (change.dates == null || (change.dates?.length ?? 0) == 0) {
       if (this.home) {
         // hometeam always needs to add at least one date
-        this.snackBar.open(this.translate.instant('competition.change-encounter.errors.select-one-date'), 'OK', {
-          duration: 4000,
-        });
+        this.snackBar.open(
+          this.translate.instant('competition.change-encounter.errors.select-one-date'),
+          'OK',
+          {
+            duration: 4000,
+          },
+        );
         this.running = false;
         return;
       }
@@ -306,21 +329,29 @@ export class ShowRequestsComponent implements OnInit {
           }),
         );
 
-        const teamControl = this.group.get('team');
+        const teamControl = this.group().get('team');
         if (!teamControl) {
           throw new Error('Team control not found');
         }
 
         teamControl.setValue(teamControl.value);
-        this.group.get(this.dependsOn)?.setValue(null);
-        this.snackBar.open(await this.translate.instant('all.competition.change-encounter.requested'), 'OK', {
-          duration: 4000,
-        });
+        this.group().get(this.dependsOn())?.setValue(null);
+        this.snackBar.open(
+          await this.translate.instant('all.competition.change-encounter.requested'),
+          'OK',
+          {
+            duration: 4000,
+          },
+        );
       } catch (error) {
         console.error(error);
-        this.snackBar.open(await this.translate.instant('all.competition.change-encounter.requested-failed'), 'OK', {
-          duration: 4000,
-        });
+        this.snackBar.open(
+          await this.translate.instant('all.competition.change-encounter.requested-failed'),
+          'OK',
+          {
+            duration: 4000,
+          },
+        );
       } finally {
         this.running = false;
         this.changeDetector.detectChanges();

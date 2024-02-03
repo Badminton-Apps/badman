@@ -5,7 +5,6 @@ import {
   Component,
   ElementRef,
   Inject,
-  Input,
   OnInit,
   PLATFORM_ID,
   QueryList,
@@ -13,6 +12,7 @@ import {
   TransferState,
   ViewChild,
   ViewChildren,
+  input,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +23,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Club, EntryCompetitionPlayer, SubEventCompetition, Team, ValidationResult } from '@badman/frontend-models';
+import {
+  Club,
+  EntryCompetitionPlayer,
+  RankingSystem,
+  SubEventCompetition,
+  Team,
+  ValidationResult,
+} from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import {
   LevelType,
@@ -103,23 +110,18 @@ export class TeamsStepComponent implements OnInit {
   // get striug array  of event types
   eventTypes = Object.values(SubEventTypeEnum);
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  control?: FormGroup<FormArrayOfTeams>;
+  control = input<FormGroup<FormArrayOfTeams>>();
+  protected internalControl!: FormGroup<FormArrayOfTeams>;
 
-  @Input()
-  controlName = TEAMS;
+  controlName = input(TEAMS);
 
-  @Input()
-  seasonControlName = SEASON;
+  seasonControlName = input(SEASON);
 
-  @Input()
-  clubControlName = CLUB;
+  clubControlName = input(CLUB);
 
-  @Input()
-  eventsControlName = EVENTS;
+  eventsControlName = input(EVENTS);
 
   @ViewChildren(TeamEnrollmentComponent, { read: ElementRef })
   teamReferences: QueryList<ElementRef<HTMLElement>> | undefined;
@@ -142,9 +144,10 @@ export class TeamsStepComponent implements OnInit {
   };
   clubs$!: Observable<Club>;
   season!: number;
+  system = input.required<RankingSystem>();
 
   getTypeArray(type: SubEventType) {
-    return this.control?.controls[type] as FormArray<TeamForm>;
+    return this.internalControl?.controls[type] as FormArray<TeamForm>;
   }
 
   constructor(
@@ -158,14 +161,19 @@ export class TeamsStepComponent implements OnInit {
 
   ngOnInit() {
     let existed = false;
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormGroup<FormArrayOfTeams>;
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as FormGroup<FormArrayOfTeams>;
+      existed = true;
+    }
+
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group().get(this.controlName()) as FormGroup<FormArrayOfTeams>;
 
       existed = true;
     }
 
-    if (!this.control) {
-      this.control = new FormGroup({
+    if (this.internalControl) {
+      this.internalControl = new FormGroup({
         M: new FormArray<TeamForm>([]),
         F: new FormArray<TeamForm>([]),
         MX: new FormArray<TeamForm>([]),
@@ -173,36 +181,44 @@ export class TeamsStepComponent implements OnInit {
       });
     }
 
-    if (this.group && !existed) {
-      this.group.addControl(this.controlName, this.control);
+    if (this.group() && !existed) {
+      this.group().addControl(this.controlName(), this.internalControl);
     }
 
-    this.control.setErrors({ loading: true });
+    this.internalControl.setErrors({ loading: true });
 
     // update the teamnumbers object when the lenght of the control changes
-    this.control.valueChanges
+    this.internalControl.valueChanges
       .pipe(
         takeUntil(this.destroy$),
         distinctUntilChanged(
           (a, b) =>
-            (a.F?.length ?? 0) + (a.M?.length ?? 0) + (a.MX?.length ?? 0) + (a.NATIONAL?.length ?? 0) ===
-            (b.F?.length ?? 0) + (b.M?.length ?? 0) + (b.MX?.length ?? 0) + (b.NATIONAL?.length ?? 0),
+            (a.F?.length ?? 0) +
+              (a.M?.length ?? 0) +
+              (a.MX?.length ?? 0) +
+              (a.NATIONAL?.length ?? 0) ===
+            (b.F?.length ?? 0) +
+              (b.M?.length ?? 0) +
+              (b.MX?.length ?? 0) +
+              (b.NATIONAL?.length ?? 0),
         ),
       )
       .subscribe(() => {
         // initial teamnumbers from 1 to maxlevel
         for (const type of this.eventTypes) {
-          const maxLevel = Math.max(...(this.control?.value?.[type]?.map((t) => t.team?.teamNumber ?? 0) ?? [0]));
+          const maxLevel = Math.max(
+            ...(this.internalControl?.value?.[type]?.map((t) => t.team?.teamNumber ?? 0) ?? [0]),
+          );
 
           this.teamNumbers[type] = Array.from({ length: maxLevel }, (_, i) => i + 1);
         }
       });
 
     this.clubs$ = this._getClubs();
-    combineLatest([this.control?.valueChanges, this.update$])
+    combineLatest([this.internalControl?.valueChanges, this.update$])
       .pipe(
         takeUntil(this.destroy$),
-        startWith([this.control?.value]),
+        startWith([this.internalControl?.value]),
         debounceTime(200),
         switchMap(([v]) => this.validateEnrollment(v as FormArrayOfTeamsValue)),
       )
@@ -216,14 +232,14 @@ export class TeamsStepComponent implements OnInit {
     this.subEvents$ = this._getSubEvents();
     this.subEvents$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
       this.setInitialSubEvents(subs);
-      this.control?.setErrors({ loading: false });
+      this.internalControl?.setErrors({ loading: false });
       this.changedector.markForCheck();
     });
-    this.season = this.group?.get(SEASON)?.value as number;
+    this.season = this.group().get(SEASON)?.value as number;
   }
 
   async addTeam(type: SubEventType) {
-    const teams = this.control?.get(type) as FormArray<TeamForm>;
+    const teams = this.internalControl?.get(type) as FormArray<TeamForm>;
     const club = await lastValueFrom(this.clubs$);
 
     const teamNumber = teams.length + 1;
@@ -274,7 +290,7 @@ export class TeamsStepComponent implements OnInit {
     if (!team.type) return;
     const club = await lastValueFrom(this.clubs$);
 
-    const teams = this.control?.get(team.type) as FormArray<TeamForm>;
+    const teams = this.internalControl?.get(team.type) as FormArray<TeamForm>;
     const index = teams.controls.findIndex((t) => t.value.team?.id === team.id);
 
     if (index < 0) return;
@@ -313,8 +329,10 @@ export class TeamsStepComponent implements OnInit {
       this.changeNumber(team.teamNumber, newNumber, club, type);
       // sort teams in control
 
-      const teams = this.control?.get(type) as FormArray<TeamForm>;
-      teams.controls.sort((a: TeamForm, b: TeamForm) => sortTeams(a.value.team as Team, b.value.team as Team));
+      const teams = this.internalControl?.get(type) as FormArray<TeamForm>;
+      teams.controls.sort((a: TeamForm, b: TeamForm) =>
+        sortTeams(a.value.team as Team, b.value.team as Team),
+      );
 
       this.changedector.markForCheck();
     });
@@ -328,7 +346,7 @@ export class TeamsStepComponent implements OnInit {
   }
 
   private changeNumber(oldNumber: number, newNumber: number, club: Club, type: SubEventTypeEnum) {
-    const teams = this.control?.get(type) as FormArray<TeamForm>;
+    const teams = this.internalControl?.get(type) as FormArray<TeamForm>;
     // iterate over all controls and update the team number / name
     teams.controls.forEach((t) => {
       const tControl = t.get('team');
@@ -462,7 +480,7 @@ export class TeamsStepComponent implements OnInit {
       `,
       variables: {
         enrollment: {
-          season: this.group.get(this.seasonControlName)?.value,
+          season: this.group().get(this.seasonControlName())?.value,
           teams,
         },
       },
@@ -470,7 +488,7 @@ export class TeamsStepComponent implements OnInit {
   }
 
   private _getClubs() {
-    const clubId = this.group.get(this.clubControlName)?.value;
+    const clubId = this.group().get(this.clubControlName())?.value;
     return this.apollo
       .query<{ club: Club }>({
         query: gql`
@@ -498,14 +516,14 @@ export class TeamsStepComponent implements OnInit {
   }
 
   private _getSubEvents() {
-    const eventsVal$ = this.group.get(this.eventsControlName)?.valueChanges;
+    const eventsVal$ = this.group().get(this.eventsControlName())?.valueChanges;
 
     if (!eventsVal$) {
       throw new Error('Events control not found');
     }
 
     return eventsVal$.pipe(
-      startWith(this.group.get(this.eventsControlName)?.value),
+      startWith(this.group().get(this.eventsControlName())?.value),
       filter((events) => !!events && events.length > 0),
       distinctUntilChanged(),
       switchMap((events: { name: LevelType; id: string }[]) => {
@@ -537,7 +555,9 @@ export class TeamsStepComponent implements OnInit {
         });
       }),
       map((result) => {
-        const subEvents = result.data.subEventCompetitions?.map((subEvent) => new SubEventCompetition(subEvent)) ?? [];
+        const subEvents =
+          result.data.subEventCompetitions?.map((subEvent) => new SubEventCompetition(subEvent)) ??
+          [];
 
         return {
           M: subEvents.filter((subEvent) => subEvent.eventType === 'M').sort(sortSubEventOrder),
@@ -567,13 +587,19 @@ export class TeamsStepComponent implements OnInit {
   private _maxLevels(subs: SubEventCompetition[]) {
     return {
       PROV: Math.max(
-        ...(subs?.filter((s) => s.eventCompetition?.type === LevelType.PROV).map((s) => s.level ?? 0) ?? []),
+        ...(subs
+          ?.filter((s) => s.eventCompetition?.type === LevelType.PROV)
+          .map((s) => s.level ?? 0) ?? []),
       ),
       LIGA: Math.max(
-        ...(subs?.filter((s) => s.eventCompetition?.type === LevelType.LIGA).map((s) => s.level ?? 0) ?? []),
+        ...(subs
+          ?.filter((s) => s.eventCompetition?.type === LevelType.LIGA)
+          .map((s) => s.level ?? 0) ?? []),
       ),
       NATIONAL: Math.max(
-        ...(subs?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL).map((s) => s.level ?? 0) ?? []),
+        ...(subs
+          ?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL)
+          .map((s) => s.level ?? 0) ?? []),
       ),
     };
   }
@@ -582,7 +608,7 @@ export class TeamsStepComponent implements OnInit {
     [key in SubEventType]: SubEventCompetition[];
   }) {
     for (const type of this.eventTypes) {
-      const control = this.control?.get(type) as FormArray<TeamForm>;
+      const control = this.internalControl?.get(type) as FormArray<TeamForm>;
       if (!control) {
         continue;
       }
@@ -627,7 +653,9 @@ export class TeamsStepComponent implements OnInit {
         }
       }
 
-      subEventId = subs?.find((sub) => sub.level === newLevel && type === sub.eventCompetition?.type)?.id;
+      subEventId = subs?.find(
+        (sub) => sub.level === newLevel && type === sub.eventCompetition?.type,
+      )?.id;
     } else if (team.team?.entry?.standing?.faller) {
       let newLevel = level + 1;
 
@@ -642,10 +670,14 @@ export class TeamsStepComponent implements OnInit {
         }
       }
 
-      subEventId = subs?.find((sub) => sub.level === newLevel && sub.eventCompetition?.type === type)?.id;
+      subEventId = subs?.find(
+        (sub) => sub.level === newLevel && sub.eventCompetition?.type === type,
+      )?.id;
     } else {
       subEventId = subs?.find(
-        (sub) => sub.level === team.team?.entry?.subEventCompetition?.level && type === sub.eventCompetition?.type,
+        (sub) =>
+          sub.level === team.team?.entry?.subEventCompetition?.level &&
+          type === sub.eventCompetition?.type,
       )?.id;
     }
 

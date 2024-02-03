@@ -91,17 +91,24 @@
   <div subTitle>
     <mat-chip-listbox>
       <mat-chip
-        >{{ 'all.competition.team-enrollment.title' | translate }}: {{ (this.eventCompetition.allowEnlisting ?? false ?
-        'all.competition.team-enrollment.open' : 'all.competition.team-enrollment.closed' ) | translate }}</mat-chip
+        >{{ 'all.competition.team-enrollment.title' | translate }}: {{
+        (this.eventCompetition.allowEnlisting ?? false ? 'all.competition.team-enrollment.open' :
+        'all.competition.team-enrollment.closed' ) | translate }}</mat-chip
       >
       @if (eventCompetition.lastSync) {
-      <mat-chip> {{ 'all.event.last-sync' | translate }}: {{ eventCompetition.lastSync | amCalendar }} </mat-chip>
+      <mat-chip>
+        {{ 'all.event.last-sync' | translate }}: {{ eventCompetition.lastSync | amCalendar }}
+      </mat-chip>
       }
     </mat-chip-listbox>
   </div>
 </badman-page-header>
 }
-<mat-tab-group mat-stretch-tabs="false" [selectedIndex]="currentTab()" (selectedIndexChange)="setTab($event)">
+<mat-tab-group
+  mat-stretch-tabs="false"
+  [selectedIndex]="currentTab()"
+  (selectedIndexChange)="setTab($event)"
+>
   <mat-tab [label]="'all.competition.subevent.title' | translate">
     @if (subEvents) {
     <div class="subEvents">
@@ -113,13 +120,16 @@
           <mat-card-header>
             <mat-card-title>{{ sub.name }} {{ sub.eventType }}</mat-card-title>
             <mat-card-subtitle
-              >Max Level: {{ sub.maxLevel }}, index: {{ sub.minBaseIndex }} - {{ sub.maxBaseIndex }}</mat-card-subtitle
+              >Max Level: {{ sub.maxLevel }}, index: {{ sub.minBaseIndex }} - {{ sub.maxBaseIndex
+              }}</mat-card-subtitle
             >
           </mat-card-header>
           <div class="draw">
             @for (draw of sub.drawCompetitions; track draw) {
             <div>
-              <button mat-button [routerLink]="['draw', draw.id]">{{ draw.name }} ({{ draw.size }} teams)</button>
+              <button mat-button [routerLink]="['draw', draw.id]">
+                {{ draw.name }} ({{ draw.size }} teams)
+              </button>
             </div>
             }
           </div>
@@ -133,7 +143,7 @@
   @if (this.canViewEnrollments?.()) {
   <mat-tab [label]="'all.competition.map.title' | translate">
     <ng-template matTabContent>
-      <badman-competition-map [eventId]="eventCompetition.id" />
+      <badman-competition-map [eventId]="this.eventCompetition.id" />
     </ng-template>
   </mat-tab>
   } @if (this.canViewEncounter()) {

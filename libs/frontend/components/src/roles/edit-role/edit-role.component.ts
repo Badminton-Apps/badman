@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, Input, OnInit, Signal, inject, computed, ViewChild, TemplateRef } from '@angular/core';
+import {
+  Component,
+  Injector,
+  Input,
+  OnInit,
+  Signal,
+  inject,
+  computed,
+  ViewChild,
+  TemplateRef,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Claim, Player, Role } from '@badman/frontend-models';
 import { SecurityType } from '@badman/utils';
@@ -17,6 +27,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ClaimComponent } from '../claim';
 import { BadmanBlockModule } from '../../block';
 import { MatListModule } from '@angular/material/list';
+import { input } from '@angular/core';
 
 const roleQuery = gql`
   query GetRole($id: ID!) {
@@ -61,11 +72,9 @@ export class EditRoleComponent implements OnInit {
   private apollo = inject(Apollo);
   private dialog = inject(MatDialog);
 
-  @Input({ required: true })
-  roleId!: string;
+  roleId = input.required<string>();
 
-  @Input({ required: true })
-  type!: SecurityType[] | SecurityType;
+  type = input.required<SecurityType[] | SecurityType>();
 
   role?: Signal<Role | undefined>;
   claims?: Signal<{ category: string; claims: Claim[] }[] | undefined>;
@@ -95,7 +104,7 @@ export class EditRoleComponent implements OnInit {
         .watchQuery<{ role: Partial<Role> }>({
           query: roleQuery,
           variables: {
-            id: this.roleId,
+            id: this.roleId(),
           },
         })
         .valueChanges.pipe(
@@ -121,7 +130,7 @@ export class EditRoleComponent implements OnInit {
           `,
           variables: {
             where: {
-              type: this.type,
+              type: this.type(),
             },
           },
         })

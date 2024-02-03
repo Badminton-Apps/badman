@@ -7,11 +7,14 @@
           <mat-icon>close</mat-icon>
         </button>
       </mat-card-title>
-      <mat-card-subtitle>Version {{ this.version }}</mat-card-subtitle>
+      <mat-card-subtitle>Version {{ this.version() }}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <p>Hello, this is a beta version of the app. Please report any bugs you find to Glenn.</p>
-      <p>This version is still in development. Please be aware that the layout and colors will change.</p>
+      <p>Hello, this is a beta version() of the app. Please report any bugs you find to Glenn.</p>
+      <p>
+        This version() is still in development. Please be aware that the layout and colors will
+        change.
+      </p>
       <p>
         Mailing notification have been disabled by default, you can re-enable them by
         @if (this.user$ | async; as user) {

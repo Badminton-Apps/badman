@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,9 +22,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatSelectModule,
   ],
 })
-export class PlayerFieldsComponent implements OnInit {
-  @Input()
-  group?: FormGroup;
+export class PlayerFieldsComponent {
+  group = input<FormGroup>(PlayerFieldsComponent.newPlayerForm());
 
   static newPlayerForm(
     inputData?: {
@@ -60,11 +59,5 @@ export class PlayerFieldsComponent implements OnInit {
     }
 
     return group;
-  }
-
-  ngOnInit() {
-    if (!this.group) {
-      this.group = PlayerFieldsComponent.newPlayerForm();
-    }
   }
 }

@@ -5,6 +5,7 @@ import { DrawCompetition, DrawTournament, Location } from '@badman/frontend-mode
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { NgMapsGoogleModule } from '@ng-maps/google';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-draw-locations-map',
@@ -17,10 +18,7 @@ import { NgMapsGoogleModule } from '@ng-maps/google';
 export class DrawLocationMapComponent implements OnInit {
   locations: Location[] = [];
 
-  @Input({
-    required: true,
-  })
-  drawTournament!: DrawTournament;
+  drawTournament = input.required<DrawTournament>();
 
   constructor(private apollo: Apollo) {}
 
@@ -56,7 +54,7 @@ export class DrawLocationMapComponent implements OnInit {
     `;
 
     const variables = {
-      id: this.drawTournament.id,
+      id: this.drawTournament().id,
       where: {
         season: 2023,
       }, // You can add filters to the "where" object if needed

@@ -1,21 +1,21 @@
-@for (i of [].constructor(this.items); track i; let last = $last) {
+@for (i of [].constructor(this.items()); track i; let last = $last) {
   <div>
     <div
       class="animation-block"
       [ngStyle]="{
-        'border-radius': borderRadius,
-        height: height,
-        width: width
+        'border-radius': borderRadius(),
+        height: height(),
+        width: width()
       }"
     ></div>
-    @if (subHeight) {
+    @if (subHeight()) {
       <div
         class="animation-block sub-item"
         [ngStyle]="{
-          'border-radius': borderRadius,
-          height: subHeight,
-          width: width,
-          'margin-top': subGap
+          'border-radius': borderRadius(),
+          height: subHeight(),
+          width: width(),
+          'margin-top': subGap()
         }"
       ></div>
     }

@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, Injector, Input, OnInit, PLATFORM_ID, Signal, TransferState, inject } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Injector,
+  OnInit,
+  PLATFORM_ID,
+  Signal,
+  TransferState,
+  inject,
+  input,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,7 +27,14 @@ import { map, takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'badman-select-season',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ReactiveFormsModule, FormsModule, MatFormFieldModule, MatSelectModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+  ],
   templateUrl: './select-season.component.html',
   styleUrls: ['./select-season.component.scss'],
 })
@@ -26,23 +43,18 @@ export class SelectSeasonComponent implements OnInit {
 
   injector = inject(Injector);
 
-  @Input()
-  controlName = 'season';
+  controlName = input('season');
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  dependsOn = 'club';
+  dependsOn = input('club');
 
-  @Input()
-  type: 'event' | 'club' = 'club';
+  type = input<'event' | 'club'>('club');
 
-  @Input()
-  updateUrl = false;
+  updateUrl = input(false);
 
-  @Input()
-  control = new FormControl();
+  control = input<FormControl<number>>();
+  protected internalControl!: FormControl<number>;
 
   seasons?: Signal<number[]>;
 
@@ -55,42 +67,48 @@ export class SelectSeasonComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<number>;
+    if (this.control()) {
+      this.internalControl = this.control() as FormControl<number>;
     }
 
-    if (!this.control) {
-      this.control = new FormControl<string | null>(null);
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group().get(this.controlName()) as FormControl<number>;
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (!this.internalControl) {
+      this.internalControl = new FormControl<number>(getCurrentSeason()) as FormControl<number>;
     }
 
-    const previous = this.group?.get(this.dependsOn);
-
-    if (previous && this.type === 'club') {
-      previous.valueChanges.pipe(startWith(previous.value), takeUntil(this.destroy$)).subscribe((value) => {
-        const clubId = `${value?.id ?? value}`;
-        // if the clubId is a uuid continue
-        if (!clubId?.match(/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/)) {
-          return;
-        }
-
-        this._setYearsForClub({
-          id: clubId,
-        } as Club);
-
-        // update url on change
-        if (this.updateUrl) {
-          this.control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-            this._updateUrl(value, false);
-          });
-        }
-      });
+    if (this.group()) {
+      this.group().addControl(this.controlName(), this.internalControl);
     }
 
-    if (!previous && this.type === 'event') {
+    const previous = this.group().get(this.dependsOn());
+
+    if (previous && this.type() === 'club') {
+      previous.valueChanges
+        .pipe(startWith(previous.value), takeUntil(this.destroy$))
+        .subscribe((value) => {
+          const clubId = `${value?.id ?? value}`;
+          // if the clubId is a uuid continue
+          if (!clubId?.match(/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/)) {
+            return;
+          }
+
+          this._setYearsForClub({
+            id: clubId,
+          } as Club);
+
+          // update url on change
+          if (this.updateUrl()) {
+            this.internalControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+              this._updateUrl(value, false);
+            });
+          }
+        });
+    }
+
+    if (!previous && this.type() === 'event') {
       this._setYearsForEventCompetition();
     }
   }
@@ -163,14 +181,14 @@ export class SelectSeasonComponent implements OnInit {
     );
   }
 
-  private _updateUrl(value: string, removeOtherParams = false) {
-    if (this.updateUrl && value) {
+  private _updateUrl(value: number, removeOtherParams = false) {
+    if (this.updateUrl() && value) {
       const queryParams: { [key: string]: string | undefined } = {
-        [this.controlName]: value,
+        [this.controlName()]: `${value}`,
       };
 
       if (removeOtherParams) {
-        queryParams[this.dependsOn] = undefined;
+        queryParams[this.dependsOn()] = undefined;
       }
 
       // check if the current url is the same as the new url

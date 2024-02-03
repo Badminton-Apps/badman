@@ -1,5 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, Input, OnInit, Signal, ViewChild, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  Injector,
+  Input,
+  OnInit,
+  Signal,
+  ViewChild,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -9,6 +20,7 @@ import { map, switchMap } from 'rxjs';
 
 import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-competition-map',
@@ -56,7 +68,7 @@ export class CompetitionMapComponent implements OnInit {
   selectedLocation = signal<Location | undefined>(undefined);
 
   // Inputs
-  @Input({ required: true }) eventId?: string;
+  eventId = input.required<string>();
 
   ngOnInit(): void {
     this.eventCompetition = toSignal(
@@ -78,7 +90,7 @@ export class CompetitionMapComponent implements OnInit {
             }
           `,
           variables: {
-            id: this.eventId,
+            id: this.eventId(),
           },
         })
         .valueChanges.pipe(map((res) => new EventCompetition(res.data.eventCompetition))),
@@ -174,7 +186,8 @@ export class CompetitionMapComponent implements OnInit {
         }
 
         this.subEvents.set(
-          (this.eventCompetition?.()?.subEventCompetitions?.map((subEvent) => subEvent.id) ?? []) as string[],
+          (this.eventCompetition?.()?.subEventCompetitions?.map((subEvent) => subEvent.id) ??
+            []) as string[],
         );
       },
       {

@@ -1,7 +1,7 @@
 <badman-block>
   <badman-block-header>
     <badman-block-title>
-      {{ team.name }}
+      {{ team().name }}
       @if (teamIndex) {
         <small>({{ teamIndex }})</small>
       }
@@ -10,9 +10,9 @@
       <a
         (click)="changeSubEvent()"
         [matTooltipDisabled]="!subEvent"
-        [matTooltip]="'all.team.change-event.change' | translate"
+        [matTooltip]="'all.team().change-event.change' | translate"
       >
-        {{ subEvent ? subEvent.name : ('all.team.change-event.pick' | translate) }}
+        {{ subEvent ? subEvent.name : ('all.team().change-event.pick' | translate) }}
       </a>
     </badman-block-subtitle>
   </badman-block-header>
@@ -36,7 +36,7 @@
               }
               <span class="sub-text">
                 {{ player.single }} - {{ player.double }}
-                @if (team.type === 'MX') {
+                @if (team().type === 'MX') {
                   - {{ player.mix }}
                 }
               </span>
@@ -73,12 +73,12 @@
         [ignorePlayers]="this.players"
         [allowCreation]="true"
         [where]="this.where"
-        [club]="this.club"
+        [club]="this.club()"
       ></badman-player-search>
     }
     @if (!this.subEvent) {
       <p class="no-event">
-        {{ 'all.team.change-event.select-event-hint' | translate }}
+        {{ 'all.team().change-event.select-event-hint' | translate }}
       </p>
     }
   </badman-block-content>
@@ -90,15 +90,36 @@
       <form class="edit-ranking" [formGroup]="this.changeRankingFormGroup">
         <mat-form-field>
           <mat-label>{{ 'all.ranking.single' | translate }}</mat-label>
-          <input matInput type="number" formControlName="single" alt="single" autocomplete="single" required />
+          <input
+            matInput
+            type="number"
+            formControlName="single"
+            alt="single"
+            autocomplete="single"
+            required
+          />
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{ 'all.ranking.double' | translate }}</mat-label>
-          <input matInput type="number" formControlName="double" alt="double" autocomplete="double" required />
+          <input
+            matInput
+            type="number"
+            formControlName="double"
+            alt="double"
+            autocomplete="double"
+            required
+          />
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{ 'all.ranking.mix' | translate }}</mat-label>
-          <input matInput type="number" formControlName="mix" alt="mix" autocomplete="mix" required />
+          <input
+            matInput
+            type="number"
+            formControlName="mix"
+            alt="mix"
+            autocomplete="mix"
+            required
+          />
         </mat-form-field>
       </form>
     }

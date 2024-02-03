@@ -1,0 +1,1942 @@
+Starting the app...
+No or package-lock file found. Running npm start
+
+> badman-mono@6.130.0-beta.8 start
+> nx serve
+
+
+> nx run badman:serve:development
+
+- Building...
+[37mApplication bundle generation failed. [18.954 seconds][39m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/game-score/game-score.component.html:3:18:[39m[22m
+[1m[31m[37m      3 │     <mat-label>{{ [32mlabel[37m() | translate }}</mat-label>[39m[22m
+[1m[31m        ╵                   [32m~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component GameScoreComponentComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/game-score/game-score.component.ts:13:15:[39m[22m
+[1m[31m[37m      13 │   templateUrl: [32m'./game-score.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/game-score/game-score.component.ts:44:6:[39m[22m
+[1m[31m[37m      44 │       [32mthis.gameScoreForm()![37m = new FormGroup({[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/game-score/game-score.component.ts:50:12:[39m[22m
+[1m[31m[37m      50 │             [32m[37mthis.gameScoreForm() = new FormGroup({[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:81:40:[39m[22m
+[1m[31m[37m      81 │     if (this.teams() instanceof Team && [32mthis.teams()[37m.id) {[39m[22m
+[1m[31m         ╵                                         [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components[39m[22m[1m[31m/src/games/recent-games/list-encounters/list-encounters.component.ts:81:53:[39m[22m
+[1m[31m[37m      81 │     if (this.teams() instanceof Team && this.teams().[32mid[37m) {[39m[22m
+[1m[31m         ╵                                                      [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:82:19:[39m[22m
+[1m[31m[37m      82 │       teamids.push([32mthis.teams()[37m.id);[39m[22m
+[1m[31m         ╵                    [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:82:32:[39m[22m
+[1m[31m[37m      82 │       teamids.push(this.teams().[32mid[37m);[39m[22m
+[1m[31m         ╵                                 [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:86:22:[39m[22m
+[1m[31m[37m      86 │       teamids.push(...[32mthis.teams()[37m.map((t) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                       [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'map' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'map' does not exist on type 'Team'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:86:35:[39m[22m
+[1m[31m[37m      86 │       teamids.push(...this.teams().[32mmap[37m((t) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                                    [32m~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS7006: Parameter 't' implicitly has an 'any' type.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    lib[39m[22m[1m[31ms/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:86:40:[39m[22m
+[1m[31m[37m      86 │       teamids.push(...this.teams().map(([32mt[37m) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                                         [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-games/list-games.component.ts:115:17:[39m[22m
+[1m[31m[37m      115 │       ?.includes([32mthis.playerId()[37m);[39m[22m
+[1m[31m          ╵                  [32m~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:33:12:[39m[22m
+[1m[31m[37m      33 │             [32m[37mthis.teamId() = this.teams().id;[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:36:12:[39m[22m
+[1m[31m[37m      36 │             [32m[37mthis.type() = 'game';[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:37:6:[39m[22m
+[1m[31m[37m      37 │       [32mthis.teamId()[37m = this.teams().id;[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:37:22:[39m[22m
+[1m[31m[37m      37 │       this.teamId() = [32mthis.teams()[37m.id;[39m[22m
+[1m[31m         ╵                       [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339[39m[22m[1m[31m: Property 'id' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:37:35:[39m[22m
+[1m[31m[37m      37 │       this.teamId() = this.teams().[32mid[37m;[39m[22m
+[1m[31m         ╵                                    [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:41:6:[39m[22m
+[1m[31m[37m      41 │       [32mthis.type()[37m = 'game';[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:69:40:[39m[22m
+[1m[31m[37m      69 │     if (this.teams() instanceof Team && [32mthis.teams()[37m.id) {[39m[22m
+[1m[31m         ╵                                         [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:69:53:[39m[22m
+[1m[31m[37m      69 │     if (this.teams() instanceof Team && this.teams().[32mid[37m) {[39m[22m
+[1m[31m         ╵                                                      [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:70:19:[39m[22m
+[1m[31m[37m      70 │       teamids.push([32mthis.teams()[37m.id);[39m[22m
+[1m[31m         ╵                    [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'Team | Tea[39m[22m[1m[31mm[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:70:32:[39m[22m
+[1m[31m[37m      70 │       teamids.push(this.teams().[32mid[37m);[39m[22m
+[1m[31m         ╵                                 [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:74:22:[39m[22m
+[1m[31m[37m      74 │       teamids.push(...[32mthis.teams()[37m.map((t) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                       [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'map' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'map' does not exist on type 'Team'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:74:35:[39m[22m
+[1m[31m[37m      74 │       teamids.push(...this.teams().[32mmap[37m((t) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                                    [32m~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS7006: Parameter 't' implicitly has an 'any' type.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:74:40:[39m[22m
+[1m[31m[37m      74 │       teamids.push(...this.teams().map(([32mt[37m) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                                         [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string[]'.[39m[22m
+[1m[31m  Type 'string' is not assignable to type 'string[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/has-claim/has-claim.component.ts:33:36:[39m[22m
+[1m[31m[37m      33 │           ? this.auth.hasAnyClaims$([32mthis.any()![37m)[39m[22m
+[1m[31m         ╵                                     [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1m[39m[22m[1m[31mTS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'string[]' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/has-claim/has-claim.component.ts:34:32:[39m[22m
+[1m[31m[37m      34 │           : this.auth.hasClaim$([32mthis.any()![37m),[39m[22m
+[1m[31m         ╵                                 [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string[]'.[39m[22m
+[1m[31m  Type 'string' is not assignable to type 'string[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/has-claim/has-claim.component.ts:41:36:[39m[22m
+[1m[31m[37m      41 │           ? this.auth.hasAllClaims$([32mthis.all()![37m)[39m[22m
+[1m[31m         ╵                                     [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'string[]' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/has-claim/has-claim.component.ts:42:32:[39m[22m
+[1m[31m[37m      42 │           : this.auth.hasClaim$([32mthis.all()![37m),[39m[22m
+[1m[31m         ╵                                 [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Parser Error: Missing expected } at column 58 in [{[39m[22m
+[1m[31m        'border-radius': borderRadius(),[39m[22m
+[1m[31m        height(): height(),[39m[22m
+[1m[31m        width(): width()[39m[22m
+[1m[31m      }] in C:/Users/glenn/Documents/Code/Badminton-Apps/badman/libs/frontend/components/src/loading-block/loading-block.component.html@4:17[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.html:5:17:[39m[22m
+[1m[31m[37m      5 │       [ngStyle]="[32m{[37m[39m[22m
+[1m[31m        ╵                  [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component LoadingBlockComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.compo[39m[22m[1m[31mnent.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./loading-block.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Parser Error: Missing expected } at column 58 in [{[39m[22m
+[1m[31m        'border-radius': borderRadius(),[39m[22m
+[1m[31m        height(): height(),[39m[22m
+[1m[31m        width(): width()[39m[22m
+[1m[31m      }] in C:/Users/glenn/Documents/Code/Badminton-Apps/badman/libs/frontend/components/src/loading-block/loading-block.component.html@4:17[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.html:11:9:[39m[22m
+[1m[31m[37m      11 │     @if ([32msubHeight()[37m) {[39m[22m
+[1m[31m         ╵          [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component LoadingBlockComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./loading-block.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Parser Error: Missing expected } at column 58 in [{[39m[22m
+[1m[31m        'border-radius': borderRadius(),[39m[22m
+[1m[31m        height(): height(),[39m[22m
+[1m[31m        width(): width()[39m[22m
+[1m[31m      }] in C:/Users/glenn/Documents/Code/Badminton-Apps/badman/libs/frontend/components/src/loading-block/loading-block.component.html@4:17[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.html:14:19:[39m[22m
+[1m[31m[37m      14 │         [ngStyle]="[32m{[37m[39m[22m
+[1m[31m         ╵                    [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component LoadingBlockComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./loading-block.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Parser Error: Missing expected } at column 62 in [{[39m[22m
+[1m[31m          'border-radius': borderRad[39m[22m[1m[31mius(),[39m[22m
+[1m[31m          height(): subHeight(),[39m[22m
+[1m[31m          width(): width(),[39m[22m
+[1m[31m          'margin-top': subGap()[39m[22m
+[1m[31m        }] in C:/Users/glenn/Documents/Code/Badminton-Apps/badman/libs/frontend/components/src/loading-block/loading-block.component.html@13:19[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.html:14:19:[39m[22m
+[1m[31m[37m      14 │         [ngStyle]="[32m{[37m[39m[22m
+[1m[31m         ╵                    [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component LoadingBlockComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./loading-block.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/player-search/player-search.component.html:82:27:[39m[22m
+[1m[31m[37m      82 │     <badman-player-fields [[32mgroup[37m]="newPlayerFormGroup"></badman-pl...[39m[22m
+[1m[31m         ╵                            [32m~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component PlayerSearchComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/player-search/player-search.component.ts:52:15:[39m[22m
+[1m[31m[37m      52 │   templateUrl: [32m'./player-search.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'string | Club'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/player-search/player-search.component.ts:137:65:[39m[22m
+[1m[31m[37m      137 │ ...b() instanceof Club ? this.club()?.[32mid[37m : this.club() ?? undefined;[39m[22m
+[1m[31m          ╵                                       [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][39m[22m[1m[31m[0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/roles/claim/claim.component.html:2:10:[39m[22m
+[1m[31m[37m      2 │   claim().[32mdescription[37m[39m[22m
+[1m[31m        ╵           [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClaimComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/roles/claim/claim.component.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./claim.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:94:6:[39m[22m
+[1m[31m[37m      94 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:98:6:[39m[22m
+[1m[31m[37m      98 │       [32mthis.control()[37m = new FormControl<string | null>(null);[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:117:53:[39m[22m
+[1m[31m[37m      117 │ ...r?.filter((x) => x?.indexOf([32mthis.singleClubPermission()[37m) != -1)),[39m[22m
+[1m[31m          ╵                                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-co[39m[22m[1m[31mmpiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:128:18:[39m[22m
+[1m[31m[37m      128 │                   [32mthis.useAutocomplete()[37m = false;[39m[22m
+[1m[31m          ╵                   [32m~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:162:12:[39m[22m
+[1m[31m[37m      162 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m          ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:165:12:[39m[22m
+[1m[31m[37m      165 │             [32m[37mthis.control() = new FormControl(null);[39m[22m
+[1m[31m          ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:187:24:[39m[22m
+[1m[31m[37m      187 │                         [32m[37mthis.useAutocomplete() = false;[39m[22m
+[1m[31m          ╵                         [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:27:6:[39m[22m
+[1m[31m[37m      27 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:31:6:[39m[22m
+[1m[31m[37m      31 │       [32mthis.control()[37m = new FormControl<string | null>('be');[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment[39m[22m[1m[31m target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:34:12:[39m[22m
+[1m[31m[37m      34 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:37:12:[39m[22m
+[1m[31m[37m      37 │             [32m[37mthis.control() = new FormControl('be');[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:39:4:[39m[22m
+[1m[31m[37m      39 │     [32mthis.control()[37m.setValue('be');[39m[22m
+[1m[31m         ╵     [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:40:4:[39m[22m
+[1m[31m[37m      40 │     [32mthis.control()[37m.disable();[39m[22m
+[1m[31m         ╵     [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.html:1:15:[39m[22m
+[1m[31m[37m      1 │ <ng-container [[32mformGroup[37m]="group()">[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component SelectEncounterComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:56:15:[39m[22m
+[1m[31m[37m      56 │   templateUrl: [32m'./select-encounter.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assi[39m[22m[1m[31mgnment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:89:6:[39m[22m
+[1m[31m[37m      89 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:89:12:[39m[22m
+[1m[31m[37m      89 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:92:12:[39m[22m
+[1m[31m[37m      92 │             [32m[37mthis.control() = new FormControl(null);[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:93:6:[39m[22m
+[1m[31m[37m      93 │       [32mthis.control()[37m = new FormControl<string | null>(null);[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:96:8:[39m[22m
+[1m[31m[37m      96 │     if ([32mthis.formGroup()[37m.get(this.controlName()) === null) {[39m[22m
+[1m[31m         ╵         [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:98:6:[39m[22m
+[1m[31m[37m      98 │       [32mthis.formGroup()[37m.addControl(this.controlName(), this.formCo[39m[22m[1m[31mn...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:100:25:[39m[22m
+[1m[31m[37m      100 │       this.formControl = [32mthis.formGroup()[37m.get(this.controlName())...[39m[22m
+[1m[31m          ╵                          [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:102:16:[39m[22m
+[1m[31m[37m      102 │                 [32m[37mthis.where() = {[39m[22m
+[1m[31m          ╵                 [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:104:23:[39m[22m
+[1m[31m[37m      104 │       const previous = [32mthis.formGroup()[37m.get(this.dependsOn()!);[39m[22m
+[1m[31m          ╵                        [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:121:10:[39m[22m
+[1m[31m[37m      121 │           [32mthis.where()[37m = {[39m[22m
+[1m[31m          ╵           [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.html:1:15:[39m[22m
+[1m[31m[37m      1 │ <ng-container [[32mformGroup[37m]="group()">[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component SelectSeasonComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/sel[39m[22m[1m[31mect-season/select-season.component.ts:39:15:[39m[22m
+[1m[31m[37m      39 │   templateUrl: [32m'./select-season.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.ts:67:12:[39m[22m
+[1m[31m[37m      67 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.ts:70:12:[39m[22m
+[1m[31m[37m      70 │             [32m[37mthis.control() = new FormControl(null);[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.ts:71:6:[39m[22m
+[1m[31m[37m      71 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.ts:75:6:[39m[22m
+[1m[31m[37m      75 │       [32mthis.control()[37m = new FormControl<string | null>(null);[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-state/select-state.component.ts:37:6:[39m[22m
+[1m[31m[37m      37 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-state/select-state.component.ts:38:12:[39m[22m
+[1m[31m[37m      38 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-state/select-state.component.ts:41:6:[39m[22m
+[1m[31m[37m      41 │       [32mthis.control()[37m = new FormControl<string | null>('be');[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-state/select-state.component.ts:41:12:[39m[22m
+[1m[31m[37m      41 │             [32m[37mthis.control() = new FormControl('be');[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Cannot parse expression. @for loop expression must match the pattern "<identifier> of <expression>"[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.html:20:16:[39m[22m
+[1m[31m[37m      20 │           @for ([32mgroup() of teams[37m; track group()) {[39m[22m
+[1m[31m         ╵                 [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component SelectTeamComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:50:15:[39m[22m
+[1m[31m[37m      50 │   templateUrl: [32m'./select-team.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:39:12:[39m[22m
+[1m[31m[37m      39 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;9[39m[22m[1m[31m7mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:42:12:[39m[22m
+[1m[31m[37m      42 │             [32m[37mthis.control() = new FormControl(null);[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:85:6:[39m[22m
+[1m[31m[37m      85 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:89:6:[39m[22m
+[1m[31m[37m      89 │       [32mthis.control()[37m = new FormControl<string[] | null>(null);[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.html:2:21:[39m[22m
+[1m[31m[37m      2 │   @if (this.banner().[32menabled[37m) {[39m[22m
+[1m[31m        ╵                      [32m~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component BannerComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.ts:18:15:[39m[22m
+[1m[31m[37m      18 │   templateUrl: [32m'./banner.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.html:5:43:[39m[22m
+[1m[31m[37m      5 │       [attr.data-ad-client]="this.banner().[32madClient[37m"[39m[22m
+[1m[31m        ╵            [39m[22m[1m[31m                                [32m~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component BannerComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.ts:18:15:[39m[22m
+[1m[31m[37m      18 │   templateUrl: [32m'./banner.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.html:6:41:[39m[22m
+[1m[31m[37m      6 │       [attr.data-ad-slot]="this.banner().[32madSlot[37m"[39m[22m
+[1m[31m        ╵                                          [32m~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component BannerComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.ts:18:15:[39m[22m
+[1m[31m[37m      18 │   templateUrl: [32m'./banner.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.html:10:22:[39m[22m
+[1m[31m[37m      10 │   @if (!this.banner().[32menabled[37m) {[39m[22m
+[1m[31m         ╵                       [32m~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component BannerComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.ts:18:15:[39m[22m
+[1m[31m[37m      18 │   templateUrl: [32m'./banner.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'EventEntry[] | undefined' is not assignable to type 'CdkTableDataSourceInput<EventEntry>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.html:1:18:[39m[22m
+[1m[31m[37m      1 │ <table mat-table [[32mdataSource[37m]="entries()" class="standing">[39m[22m
+[1m[31m        ╵                   [32m~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m[1m[31m  Error occurs in the template of component StandingComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.ts:12:15:[39m[22m
+[1m[31m[37m      12 │   templateUrl: [32m'./standing.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.ts:28:4:[39m[22m
+[1m[31m[37m      28 │     [32mthis.entries()[37m = this.entries().filter((e) => e.standing);[39m[22m
+[1m[31m         ╵     [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.ts:28:21:[39m[22m
+[1m[31m[37m      28 │     this.entries() = [32mthis.entries()[37m.filter((e) => e.standing);[39m[22m
+[1m[31m         ╵                      [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.ts:289:8:[39m[22m
+[1m[31m[37m      289 │         [32m[37mthis.entries() = this.entries().filter((e) => e.standing);[39m[22m
+[1m[31m          ╵         [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/components/club-fields/club-fields.component.ts:31:12:[39m[22m
+[1m[31m[37m      31 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/components/club-fields/club-fields.component.ts:34:12:[39m[22m
+[1m[31m[37m      34 │             [32m[37mthis.control() = new FormGroup({[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [[39m[22m[1m[31m1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/components/club-fields/club-fields.component.ts:66:6:[39m[22m
+[1m[31m[37m      66 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/components/club-fields/club-fields.component.ts:78:6:[39m[22m
+[1m[31m[37m      78 │       [32mthis.control()[37m = new FormGroup({[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-competition/club-competition.component.ts:118:20:[39m[22m
+[1m[31m[37m      118 │           startWith([32mthis.filter()[37m.value.season ?? {}),[39m[22m
+[1m[31m          ╵                     [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-competition/club-competition.component.ts:226:20:[39m[22m
+[1m[31m[37m      226 │           startWith([32mthis.filter()[37m.value.season ?? {}),[39m[22m
+[1m[31m          ╵                     [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.html:4:7:[39m[22m
+[1m[31m[37m      4 │       [[32mgroup[37m]="filter()"[39m[22m
+[1m[31m        ╵        [32m~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClubEncountersComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:43:15:[39m[22m
+[1m[31m[37m      43 │   templat[39m[22m[1m[31meUrl: [32m'./club-encounters.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.html:10:34:[39m[22m
+[1m[31m[37m      10 │   <div class="filters-encounter" [[32mformGroup[37m]="filter()">[39m[22m
+[1m[31m         ╵                                   [32m~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClubEncountersComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:43:15:[39m[22m
+[1m[31m[37m      43 │   templateUrl: [32m'./club-encounters.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.html:25:19:[39m[22m
+[1m[31m[37m      25 │ @if (this.filter().[32mget[37m('changedLocation')?.value) {[39m[22m
+[1m[31m         ╵                    [32m~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClubEncountersComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:43:15:[39m[22m
+[1m[31m[37m      43 │   templateUrl: [32m'./club-encounters.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:67:18:[39m[22m
+[1m[31m[37m      67 │         startWith([32mthis.filter()[37m.value ?? {}),[39m[22m
+[1m[31m         ╵                   [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS23[39m[22m[1m[31m64: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:167:6:[39m[22m
+[1m[31m[37m      167 │       [32mthis.filter()[37m = new FormGroup({[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:178:7:[39m[22m
+[1m[31m[37m      178 │       ([32mthis.filter()[37m.get('club')?.value?.id ?? this.filter().get(...[39m[22m
+[1m[31m          ╵        [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:178:47:[39m[22m
+[1m[31m[37m      178 │ ...et('club')?.value?.id ?? [32mthis.filter()[37m.get('club')?.value) !==...[39m[22m
+[1m[31m          ╵                             [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:180:6:[39m[22m
+[1m[31m[37m      180 │       [32mthis.filter()[37m.get('club')?.setValue({ id: this.clubId()() });[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:183:9:[39m[22m
+[1m[31m[37m      183 │     if (![32mthis.filter()[37m.get('teams')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-e[39m[22m[1m[31mncounters/club-encounters.component.ts:184:6:[39m[22m
+[1m[31m[37m      184 │       [32mthis.filter()[37m.addControl('teams', new FormControl([]));[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:187:9:[39m[22m
+[1m[31m[37m      187 │     if (![32mthis.filter()[37m.get('season')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:188:6:[39m[22m
+[1m[31m[37m      188 │       [32mthis.filter()[37m.addControl('season', new FormControl(getCurre...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:191:9:[39m[22m
+[1m[31m[37m      191 │     if (![32mthis.filter()[37m.get('changedDate')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:192:6:[39m[22m
+[1m[31m[37m      192 │       [32mthis.filter()[37m.addControl('changedDate', new FormControl(fal...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:195:9:[39m[22m
+[1m[31m[37m      195 │     if (![32mthis.filter()[37m.get('changedLocation')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mE[39m[22m[1m[31mRROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:196:6:[39m[22m
+[1m[31m[37m      196 │       [32mthis.filter()[37m.addControl('changedLocation', new FormControl...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:199:9:[39m[22m
+[1m[31m[37m      199 │     if (![32mthis.filter()[37m.get('onlyHomeGames')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:200:6:[39m[22m
+[1m[31m[37m      200 │       [32mthis.filter()[37m.addControl('onlyHomeGames', new FormControl(t...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:201:12:[39m[22m
+[1m[31m[37m      201 │             [32m[37mthis.filter() = new FormGroup({[39m[22m
+[1m[31m          ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:203:9:[39m[22m
+[1m[31m[37m      203 │     if (![32mthis.filter()[37m.get('openEncounters')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:204:6:[39m[22m
+[1m[31m[37m      204 │       [32mthis.filter()[37m.addControl('ope[39m[22m[1m[31mnEncounters', new FormControl(...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:54:6:[39m[22m
+[1m[31m[37m      54 │       [32mthis.filter()[37m = new FormGroup({[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:60:49:[39m[22m
+[1m[31m[37m      60 │ ...filter()?.valueChanges.pipe(startWith([32mthis.filter()[37m.value ?? {})),[39m[22m
+[1m[31m         ╵                                          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2493: Tuple type '[Observable<any> | undefined]' of length '1' has no element at index '1'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:67:20:[39m[22m
+[1m[31m[37m      67 │           ([filter, [32mclubId[37m]) =>[39m[22m
+[1m[31m         ╵                     [32m~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:79:12:[39m[22m
+[1m[31m[37m      79 │             [32m[37mthis.filter() = new FormGroup({[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'season' does not exist on type 'Observable<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:87:34:[39m[22m
+[1m[31m[37m      87 │                   season: filter?.[32mseason[37m,[39m[22m
+[1m[31m         ╵                                   [32m~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'choices' does not exist on type 'Obs[39m[22m[1m[31mervable<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:88:32:[39m[22m
+[1m[31m[37m      88 │                   type: filter?.[32mchoices[37m,[39m[22m
+[1m[31m         ╵                                 [32m~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG9: Property 'id' does not exist on type 'InputSignal<Club, Club>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/edit/components/club-edit-location/club-edit-location.component.html:12:39:[39m[22m
+[1m[31m[37m      12 │ ...<badman-has-claim [any]="[club.[32mid[37m + '_remove:location()', 'edit...[39m[22m
+[1m[31m         ╵                                   [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClubEditLocationComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/edit/components/club-edit-location/club-edit-location.component.ts:71:15:[39m[22m
+[1m[31m[37m      71 │   templateUrl: [32m'./club-edit-location.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'LocationAvailibilityForm | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/edit/components/club-edit-location/club-edit-location.component.html:38:36:[39m[22m
+[1m[31m[37m      38 │       <section class="availibilty" [[32mformGroup[37m]="this.control()">[39m[22m
+[1m[31m         ╵                                     [32m~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClubEditLocationComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/edit/components/club-edit-location/club-edit-location.component.ts:71:15:[39m[22m
+[1m[31m[37m      71 │   templateUrl: [32m'./club-edit-location.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment[39m[22m[1m[31m expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/edit/components/club-edit-location/club-edit-location.component.ts:154:4:[39m[22m
+[1m[31m[37m      154 │     [32mthis.control()[37m = this.formBuilder.group({[39m[22m
+[1m[31m          ╵     [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/edit/components/club-edit-location/club-edit-location.component.ts:300:8:[39m[22m
+[1m[31m[37m      300 │         [32m[37mthis.control() = this.formBuilder.group({[39m[22m
+[1m[31m          ╵         [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[37mWatch mode enabled. Watching for file changes...[39m
+- Changes detected. Rebuilding...
+[37mApplication bundle generation failed. [3.551 seconds][39m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/game-score/game-score.component.html:3:18:[39m[22m
+[1m[31m[37m      3 │     <mat-label>{{ [32mlabel[37m() | translate }}</mat-label>[39m[22m
+[1m[31m        ╵                   [32m~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component GameScoreComponentComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/game-score/game-score.component.ts:13:15:[39m[22m
+[1m[31m[37m      13 │   templateUrl: [32m'./game-score.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/game-score/game-score.component.ts:44:6:[39m[22m
+[1m[31m[37m      44 │       [32mthis.gameScoreForm()![37m = new FormGroup({[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/game-score/game-score.component.ts:50:12:[39m[22m
+[1m[31m[37m      50 │             [32m[37mthis.gameScoreForm() = new FormGroup({[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:81:40:[39m[22m
+[1m[31m[37m      81 │     if (this.teams() instanceof Team && [32mthis.teams()[37m.id) {[39m[22m
+[1m[31m         ╵                                         [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components[39m[22m[1m[31m/src/games/recent-games/list-encounters/list-encounters.component.ts:81:53:[39m[22m
+[1m[31m[37m      81 │     if (this.teams() instanceof Team && this.teams().[32mid[37m) {[39m[22m
+[1m[31m         ╵                                                      [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:82:19:[39m[22m
+[1m[31m[37m      82 │       teamids.push([32mthis.teams()[37m.id);[39m[22m
+[1m[31m         ╵                    [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:82:32:[39m[22m
+[1m[31m[37m      82 │       teamids.push(this.teams().[32mid[37m);[39m[22m
+[1m[31m         ╵                                 [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:86:22:[39m[22m
+[1m[31m[37m      86 │       teamids.push(...[32mthis.teams()[37m.map((t) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                       [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'map' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'map' does not exist on type 'Team'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:86:35:[39m[22m
+[1m[31m[37m      86 │       teamids.push(...this.teams().[32mmap[37m((t) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                                    [32m~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS7006: Parameter 't' implicitly has an 'any' type.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    lib[39m[22m[1m[31ms/frontend/components/src/games/recent-games/list-encounters/list-encounters.component.ts:86:40:[39m[22m
+[1m[31m[37m      86 │       teamids.push(...this.teams().map(([32mt[37m) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                                         [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/list-games/list-games.component.ts:115:17:[39m[22m
+[1m[31m[37m      115 │       ?.includes([32mthis.playerId()[37m);[39m[22m
+[1m[31m          ╵                  [32m~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:33:12:[39m[22m
+[1m[31m[37m      33 │             [32m[37mthis.teamId() = this.teams().id;[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:36:12:[39m[22m
+[1m[31m[37m      36 │             [32m[37mthis.type() = 'game';[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:37:6:[39m[22m
+[1m[31m[37m      37 │       [32mthis.teamId()[37m = this.teams().id;[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:37:22:[39m[22m
+[1m[31m[37m      37 │       this.teamId() = [32mthis.teams()[37m.id;[39m[22m
+[1m[31m         ╵                       [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339[39m[22m[1m[31m: Property 'id' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:37:35:[39m[22m
+[1m[31m[37m      37 │       this.teamId() = this.teams().[32mid[37m;[39m[22m
+[1m[31m         ╵                                    [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/recent-games/recent-games.component.ts:41:6:[39m[22m
+[1m[31m[37m      41 │       [32mthis.type()[37m = 'game';[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:69:40:[39m[22m
+[1m[31m[37m      69 │     if (this.teams() instanceof Team && [32mthis.teams()[37m.id) {[39m[22m
+[1m[31m         ╵                                         [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:69:53:[39m[22m
+[1m[31m[37m      69 │     if (this.teams() instanceof Team && this.teams().[32mid[37m) {[39m[22m
+[1m[31m         ╵                                                      [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:70:19:[39m[22m
+[1m[31m[37m      70 │       teamids.push([32mthis.teams()[37m.id);[39m[22m
+[1m[31m         ╵                    [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'Team | Tea[39m[22m[1m[31mm[]'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'Team[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:70:32:[39m[22m
+[1m[31m[37m      70 │       teamids.push(this.teams().[32mid[37m);[39m[22m
+[1m[31m         ╵                                 [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:74:22:[39m[22m
+[1m[31m[37m      74 │       teamids.push(...[32mthis.teams()[37m.map((t) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                       [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'map' does not exist on type 'Team | Team[]'.[39m[22m
+[1m[31m  Property 'map' does not exist on type 'Team'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:74:35:[39m[22m
+[1m[31m[37m      74 │       teamids.push(...this.teams().[32mmap[37m((t) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                                    [32m~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS7006: Parameter 't' implicitly has an 'any' type.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/games/upcoming-games/upcoming-games.component.ts:74:40:[39m[22m
+[1m[31m[37m      74 │       teamids.push(...this.teams().map(([32mt[37m) => t.id ?? ''));[39m[22m
+[1m[31m         ╵                                         [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string[]'.[39m[22m
+[1m[31m  Type 'string' is not assignable to type 'string[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/has-claim/has-claim.component.ts:33:36:[39m[22m
+[1m[31m[37m      33 │           ? this.auth.hasAnyClaims$([32mthis.any()![37m)[39m[22m
+[1m[31m         ╵                                     [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1m[39m[22m[1m[31mTS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'string[]' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/has-claim/has-claim.component.ts:34:32:[39m[22m
+[1m[31m[37m      34 │           : this.auth.hasClaim$([32mthis.any()![37m),[39m[22m
+[1m[31m         ╵                                 [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string[]'.[39m[22m
+[1m[31m  Type 'string' is not assignable to type 'string[]'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/has-claim/has-claim.component.ts:41:36:[39m[22m
+[1m[31m[37m      41 │           ? this.auth.hasAllClaims$([32mthis.all()![37m)[39m[22m
+[1m[31m         ╵                                     [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'string[]' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/has-claim/has-claim.component.ts:42:32:[39m[22m
+[1m[31m[37m      42 │           : this.auth.hasClaim$([32mthis.all()![37m),[39m[22m
+[1m[31m         ╵                                 [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Parser Error: Missing expected } at column 58 in [{[39m[22m
+[1m[31m        'border-radius': borderRadius(),[39m[22m
+[1m[31m        height(): height(),[39m[22m
+[1m[31m        width(): width()[39m[22m
+[1m[31m      }] in C:/Users/glenn/Documents/Code/Badminton-Apps/badman/libs/frontend/components/src/loading-block/loading-block.component.html@4:17[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.html:5:17:[39m[22m
+[1m[31m[37m      5 │       [ngStyle]="[32m{[37m[39m[22m
+[1m[31m        ╵                  [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component LoadingBlockComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.compo[39m[22m[1m[31mnent.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./loading-block.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Parser Error: Missing expected } at column 58 in [{[39m[22m
+[1m[31m        'border-radius': borderRadius(),[39m[22m
+[1m[31m        height(): height(),[39m[22m
+[1m[31m        width(): width()[39m[22m
+[1m[31m      }] in C:/Users/glenn/Documents/Code/Badminton-Apps/badman/libs/frontend/components/src/loading-block/loading-block.component.html@4:17[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.html:11:9:[39m[22m
+[1m[31m[37m      11 │     @if ([32msubHeight()[37m) {[39m[22m
+[1m[31m         ╵          [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component LoadingBlockComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./loading-block.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Parser Error: Missing expected } at column 58 in [{[39m[22m
+[1m[31m        'border-radius': borderRadius(),[39m[22m
+[1m[31m        height(): height(),[39m[22m
+[1m[31m        width(): width()[39m[22m
+[1m[31m      }] in C:/Users/glenn/Documents/Code/Badminton-Apps/badman/libs/frontend/components/src/loading-block/loading-block.component.html@4:17[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.html:14:19:[39m[22m
+[1m[31m[37m      14 │         [ngStyle]="[32m{[37m[39m[22m
+[1m[31m         ╵                    [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component LoadingBlockComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./loading-block.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Parser Error: Missing expected } at column 62 in [{[39m[22m
+[1m[31m          'border-radius': borderRad[39m[22m[1m[31mius(),[39m[22m
+[1m[31m          height(): subHeight(),[39m[22m
+[1m[31m          width(): width(),[39m[22m
+[1m[31m          'margin-top': subGap()[39m[22m
+[1m[31m        }] in C:/Users/glenn/Documents/Code/Badminton-Apps/badman/libs/frontend/components/src/loading-block/loading-block.component.html@13:19[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.html:14:19:[39m[22m
+[1m[31m[37m      14 │         [ngStyle]="[32m{[37m[39m[22m
+[1m[31m         ╵                    [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component LoadingBlockComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/loading-block/loading-block.component.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./loading-block.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/player-search/player-search.component.html:82:27:[39m[22m
+[1m[31m[37m      82 │     <badman-player-fields [[32mgroup[37m]="newPlayerFormGroup"></badman-pl...[39m[22m
+[1m[31m         ╵                            [32m~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component PlayerSearchComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/player-search/player-search.component.ts:52:15:[39m[22m
+[1m[31m[37m      52 │   templateUrl: [32m'./player-search.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'id' does not exist on type 'string | Club'.[39m[22m
+[1m[31m  Property 'id' does not exist on type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/player-search/player-search.component.ts:137:65:[39m[22m
+[1m[31m[37m      137 │ ...b() instanceof Club ? this.club()?.[32mid[37m : this.club() ?? undefined;[39m[22m
+[1m[31m          ╵                                       [32m~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][39m[22m[1m[31m[0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/roles/claim/claim.component.html:2:10:[39m[22m
+[1m[31m[37m      2 │   claim().[32mdescription[37m[39m[22m
+[1m[31m        ╵           [32m~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClaimComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/roles/claim/claim.component.ts:9:15:[39m[22m
+[1m[31m[37m      9 │   templateUrl: [32m'./claim.component.html'[37m,[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:94:6:[39m[22m
+[1m[31m[37m      94 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:98:6:[39m[22m
+[1m[31m[37m      98 │       [32mthis.control()[37m = new FormControl<string | null>(null);[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'string'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:117:53:[39m[22m
+[1m[31m[37m      117 │ ...r?.filter((x) => x?.indexOf([32mthis.singleClubPermission()[37m) != -1)),[39m[22m
+[1m[31m          ╵                                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-co[39m[22m[1m[31mmpiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:128:18:[39m[22m
+[1m[31m[37m      128 │                   [32mthis.useAutocomplete()[37m = false;[39m[22m
+[1m[31m          ╵                   [32m~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:162:12:[39m[22m
+[1m[31m[37m      162 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m          ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:165:12:[39m[22m
+[1m[31m[37m      165 │             [32m[37mthis.control() = new FormControl(null);[39m[22m
+[1m[31m          ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-club/select-club.component.ts:187:24:[39m[22m
+[1m[31m[37m      187 │                         [32m[37mthis.useAutocomplete() = false;[39m[22m
+[1m[31m          ╵                         [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:27:6:[39m[22m
+[1m[31m[37m      27 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:31:6:[39m[22m
+[1m[31m[37m      31 │       [32mthis.control()[37m = new FormControl<string | null>('be');[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment[39m[22m[1m[31m target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:34:12:[39m[22m
+[1m[31m[37m      34 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:37:12:[39m[22m
+[1m[31m[37m      37 │             [32m[37mthis.control() = new FormControl('be');[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:39:4:[39m[22m
+[1m[31m[37m      39 │     [32mthis.control()[37m.setValue('be');[39m[22m
+[1m[31m         ╵     [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-country/select-country.component.ts:40:4:[39m[22m
+[1m[31m[37m      40 │     [32mthis.control()[37m.disable();[39m[22m
+[1m[31m         ╵     [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.html:1:15:[39m[22m
+[1m[31m[37m      1 │ <ng-container [[32mformGroup[37m]="group()">[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component SelectEncounterComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:56:15:[39m[22m
+[1m[31m[37m      56 │   templateUrl: [32m'./select-encounter.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assi[39m[22m[1m[31mgnment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:89:6:[39m[22m
+[1m[31m[37m      89 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:89:12:[39m[22m
+[1m[31m[37m      89 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:92:12:[39m[22m
+[1m[31m[37m      92 │             [32m[37mthis.control() = new FormControl(null);[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-encounter/select-encounter.component.ts:93:6:[39m[22m
+[1m[31m[37m      93 │       [32mthis.control()[37m = new FormControl<string | null>(null);[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:96:8:[39m[22m
+[1m[31m[37m      96 │     if ([32mthis.formGroup()[37m.get(this.controlName()) === null) {[39m[22m
+[1m[31m         ╵         [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:98:6:[39m[22m
+[1m[31m[37m      98 │       [32mthis.formGroup()[37m.addControl(this.controlName(), this.formCo[39m[22m[1m[31mn...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:100:25:[39m[22m
+[1m[31m[37m      100 │       this.formControl = [32mthis.formGroup()[37m.get(this.controlName())...[39m[22m
+[1m[31m          ╵                          [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:102:16:[39m[22m
+[1m[31m[37m      102 │                 [32m[37mthis.where() = {[39m[22m
+[1m[31m          ╵                 [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:104:23:[39m[22m
+[1m[31m[37m      104 │       const previous = [32mthis.formGroup()[37m.get(this.dependsOn()!);[39m[22m
+[1m[31m          ╵                        [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-player/select-player.component.ts:121:10:[39m[22m
+[1m[31m[37m      121 │           [32mthis.where()[37m = {[39m[22m
+[1m[31m          ╵           [32m~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.html:1:15:[39m[22m
+[1m[31m[37m      1 │ <ng-container [[32mformGroup[37m]="group()">[39m[22m
+[1m[31m        ╵                [32m~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component SelectSeasonComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/sel[39m[22m[1m[31mect-season/select-season.component.ts:39:15:[39m[22m
+[1m[31m[37m      39 │   templateUrl: [32m'./select-season.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.ts:67:12:[39m[22m
+[1m[31m[37m      67 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.ts:70:12:[39m[22m
+[1m[31m[37m      70 │             [32m[37mthis.control() = new FormControl(null);[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.ts:71:6:[39m[22m
+[1m[31m[37m      71 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-season/select-season.component.ts:75:6:[39m[22m
+[1m[31m[37m      75 │       [32mthis.control()[37m = new FormControl<string | null>(null);[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-state/select-state.component.ts:37:6:[39m[22m
+[1m[31m[37m      37 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-state/select-state.component.ts:38:12:[39m[22m
+[1m[31m[37m      38 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-state/select-state.component.ts:41:6:[39m[22m
+[1m[31m[37m      41 │       [32mthis.control()[37m = new FormControl<string | null>('be');[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-state/select-state.component.ts:41:12:[39m[22m
+[1m[31m[37m      41 │             [32m[37mthis.control() = new FormControl('be');[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Cannot parse expression. @for loop expression must match the pattern "<identifier> of <expression>"[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.html:20:16:[39m[22m
+[1m[31m[37m      20 │           @for ([32mgroup() of teams[37m; track group()) {[39m[22m
+[1m[31m         ╵                 [32m~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component SelectTeamComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:50:15:[39m[22m
+[1m[31m[37m      50 │   templateUrl: [32m'./select-team.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:39:12:[39m[22m
+[1m[31m[37m      39 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;9[39m[22m[1m[31m7mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:42:12:[39m[22m
+[1m[31m[37m      42 │             [32m[37mthis.control() = new FormControl(null);[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:85:6:[39m[22m
+[1m[31m[37m      85 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/selects/select-team/select-team.component.ts:89:6:[39m[22m
+[1m[31m[37m      89 │       [32mthis.control()[37m = new FormControl<string[] | null>(null);[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.html:2:21:[39m[22m
+[1m[31m[37m      2 │   @if (this.banner().[32menabled[37m) {[39m[22m
+[1m[31m        ╵                      [32m~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component BannerComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.ts:18:15:[39m[22m
+[1m[31m[37m      18 │   templateUrl: [32m'./banner.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.html:5:43:[39m[22m
+[1m[31m[37m      5 │       [attr.data-ad-client]="this.banner().[32madClient[37m"[39m[22m
+[1m[31m        ╵            [39m[22m[1m[31m                                [32m~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component BannerComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.ts:18:15:[39m[22m
+[1m[31m[37m      18 │   templateUrl: [32m'./banner.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.html:6:41:[39m[22m
+[1m[31m[37m      6 │       [attr.data-ad-slot]="this.banner().[32madSlot[37m"[39m[22m
+[1m[31m        ╵                                          [32m~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component BannerComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.ts:18:15:[39m[22m
+[1m[31m[37m      18 │   templateUrl: [32m'./banner.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.html:10:22:[39m[22m
+[1m[31m[37m      10 │   @if (!this.banner().[32menabled[37m) {[39m[22m
+[1m[31m         ╵                       [32m~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component BannerComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/shell/components/sidebar/banner/banner.component.ts:18:15:[39m[22m
+[1m[31m[37m      18 │   templateUrl: [32m'./banner.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'EventEntry[] | undefined' is not assignable to type 'CdkTableDataSourceInput<EventEntry>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.html:1:18:[39m[22m
+[1m[31m[37m      1 │ <table mat-table [[32mdataSource[37m]="entries()" class="standing">[39m[22m
+[1m[31m        ╵                   [32m~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m[1m[31m  Error occurs in the template of component StandingComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.ts:12:15:[39m[22m
+[1m[31m[37m      12 │   templateUrl: [32m'./standing.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.ts:28:4:[39m[22m
+[1m[31m[37m      28 │     [32mthis.entries()[37m = this.entries().filter((e) => e.standing);[39m[22m
+[1m[31m         ╵     [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.ts:28:21:[39m[22m
+[1m[31m[37m      28 │     this.entries() = [32mthis.entries()[37m.filter((e) => e.standing);[39m[22m
+[1m[31m         ╵                      [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/components/src/standing/standing.component.ts:289:8:[39m[22m
+[1m[31m[37m      289 │         [32m[37mthis.entries() = this.entries().filter((e) => e.standing);[39m[22m
+[1m[31m          ╵         [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/components/club-fields/club-fields.component.ts:31:12:[39m[22m
+[1m[31m[37m      31 │             [32m[37mthis.control() = this.group()?.get(this.controlName());[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/components/club-fields/club-fields.component.ts:34:12:[39m[22m
+[1m[31m[37m      34 │             [32m[37mthis.control() = new FormGroup({[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [[39m[22m[1m[31m1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/components/club-fields/club-fields.component.ts:66:6:[39m[22m
+[1m[31m[37m      66 │       [32mthis.control()[37m = this.group()!?.get(this.controlName()) as F...[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/components/club-fields/club-fields.component.ts:78:6:[39m[22m
+[1m[31m[37m      78 │       [32mthis.control()[37m = new FormGroup({[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-competition/club-competition.component.ts:118:20:[39m[22m
+[1m[31m[37m      118 │           startWith([32mthis.filter()[37m.value.season ?? {}),[39m[22m
+[1m[31m          ╵                     [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-competition/club-competition.component.ts:226:20:[39m[22m
+[1m[31m[37m      226 │           startWith([32mthis.filter()[37m.value.season ?? {}),[39m[22m
+[1m[31m          ╵                     [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.html:4:7:[39m[22m
+[1m[31m[37m      4 │       [[32mgroup[37m]="filter()"[39m[22m
+[1m[31m        ╵        [32m~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClubEncountersComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:43:15:[39m[22m
+[1m[31m[37m      43 │   templat[39m[22m[1m[31meUrl: [32m'./club-encounters.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Type 'FormGroup<any> | undefined' is not assignable to type 'FormGroup<any>'.[39m[22m
+[1m[31m  Type 'undefined' is not assignable to type 'FormGroup<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.html:10:34:[39m[22m
+[1m[31m[37m      10 │   <div class="filters-encounter" [[32mformGroup[37m]="filter()">[39m[22m
+[1m[31m         ╵                                   [32m~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClubEncountersComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:43:15:[39m[22m
+[1m[31m[37m      43 │   templateUrl: [32m'./club-encounters.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG2: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.html:25:19:[39m[22m
+[1m[31m[37m      25 │ @if (this.filter().[32mget[37m('changedLocation')?.value) {[39m[22m
+[1m[31m         ╵                    [32m~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m  Error occurs in the template of component ClubEncountersComponent.[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:43:15:[39m[22m
+[1m[31m[37m      43 │   templateUrl: [32m'./club-encounters.component.html'[37m,[39m[22m
+[1m[31m         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:67:18:[39m[22m
+[1m[31m[37m      67 │         startWith([32mthis.filter()[37m.value ?? {}),[39m[22m
+[1m[31m         ╵                   [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS23[39m[22m[1m[31m64: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:167:6:[39m[22m
+[1m[31m[37m      167 │       [32mthis.filter()[37m = new FormGroup({[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:178:7:[39m[22m
+[1m[31m[37m      178 │       ([32mthis.filter()[37m.get('club')?.value?.id ?? this.filter().get(...[39m[22m
+[1m[31m          ╵        [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:178:47:[39m[22m
+[1m[31m[37m      178 │ ...et('club')?.value?.id ?? [32mthis.filter()[37m.get('club')?.value) !==...[39m[22m
+[1m[31m          ╵                             [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:180:6:[39m[22m
+[1m[31m[37m      180 │       [32mthis.filter()[37m.get('club')?.setValue({ id: this.clubId()() });[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:183:9:[39m[22m
+[1m[31m[37m      183 │     if (![32mthis.filter()[37m.get('teams')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-e[39m[22m[1m[31mncounters/club-encounters.component.ts:184:6:[39m[22m
+[1m[31m[37m      184 │       [32mthis.filter()[37m.addControl('teams', new FormControl([]));[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:187:9:[39m[22m
+[1m[31m[37m      187 │     if (![32mthis.filter()[37m.get('season')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:188:6:[39m[22m
+[1m[31m[37m      188 │       [32mthis.filter()[37m.addControl('season', new FormControl(getCurre...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:191:9:[39m[22m
+[1m[31m[37m      191 │     if (![32mthis.filter()[37m.get('changedDate')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:192:6:[39m[22m
+[1m[31m[37m      192 │       [32mthis.filter()[37m.addControl('changedDate', new FormControl(fal...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:195:9:[39m[22m
+[1m[31m[37m      195 │     if (![32mthis.filter()[37m.get('changedLocation')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mE[39m[22m[1m[31mRROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:196:6:[39m[22m
+[1m[31m[37m      196 │       [32mthis.filter()[37m.addControl('changedLocation', new FormControl...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:199:9:[39m[22m
+[1m[31m[37m      199 │     if (![32mthis.filter()[37m.get('onlyHomeGames')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:200:6:[39m[22m
+[1m[31m[37m      200 │       [32mthis.filter()[37m.addControl('onlyHomeGames', new FormControl(t...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:201:12:[39m[22m
+[1m[31m[37m      201 │             [32m[37mthis.filter() = new FormGroup({[39m[22m
+[1m[31m          ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:203:9:[39m[22m
+[1m[31m[37m      203 │     if (![32mthis.filter()[37m.get('openEncounters')?.value) {[39m[22m
+[1m[31m          ╵          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-encounters/club-encounters.component.ts:204:6:[39m[22m
+[1m[31m[37m      204 │       [32mthis.filter()[37m.addControl('ope[39m[22m[1m[31mnEncounters', new FormControl(...[39m[22m
+[1m[31m          ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2364: The left-hand side of an assignment expression must be a variable or a property access.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:54:6:[39m[22m
+[1m[31m[37m      54 │       [32mthis.filter()[37m = new FormGroup({[39m[22m
+[1m[31m         ╵       [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2532: Object is possibly 'undefined'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:60:49:[39m[22m
+[1m[31m[37m      60 │ ...filter()?.valueChanges.pipe(startWith([32mthis.filter()[37m.value ?? {})),[39m[22m
+[1m[31m         ╵                                          [32m~~~~~~~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2493: Tuple type '[Observable<any> | undefined]' of length '1' has no element at index '1'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:67:20:[39m[22m
+[1m[31m[37m      67 │           ([filter, [32mclubId[37m]) =>[39m[22m
+[1m[31m         ╵                     [32m~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid assignment target[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:79:12:[39m[22m
+[1m[31m[37m      79 │             [32m[37mthis.filter() = new FormGroup({[39m[22m
+[1m[31m         ╵             [32m^[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'season' does not exist on type 'Observable<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:87:34:[39m[22m
+[1m[31m[37m      87 │                   season: filter?.[32mseason[37m,[39m[22m
+[1m[31m         ╵                                   [32m~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'choices' does not exist on type 'Obs[39m[22m[1m[31mervable<any>'.[0m [1m[35m[plugin angular-compiler][0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m    libs/frontend/pages/club/src/pages/detail/club-players/club-players.component.ts:88:32:[39m[22m
+[1m[31m[37m      88 │                   type: filter?.[32mchoices[37m,[39m[22m
+[1m[31m         ╵                                 [32m~~~~~~~[0m[39m[22m
+[1m[31m[39m[22m
+[1m[31m[39m[22m
+Terminate batch job (Y/N)? 

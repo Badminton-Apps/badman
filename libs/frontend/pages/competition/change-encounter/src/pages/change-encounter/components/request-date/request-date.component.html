@@ -1,31 +1,39 @@
-<ng-container [formGroup]="this.group">
+<ng-container [formGroup]="this.group()">
   <badman-date-selector
-    [homeClubId]="encounter.home!.clubId"
-    [awayClubId]="encounter.away!.clubId"
-    [homeTeamId]="encounter.home!.id"
-    [awayTeamId]="encounter.away!.id"
-    [home]="this.home"
+    [homeClubId]="encounter().home!.clubId"
+    [awayClubId]="encounter().away!.clubId"
+    [homeTeamId]="encounter().home!.id"
+    [awayTeamId]="encounter().away!.id"
+    [home]="this.home()"
     formControlName="calendar"
   ></badman-date-selector>
   <mat-form-field class="availability">
     <mat-label>{{ 'all.competition.home' | translate }}</mat-label>
     <mat-select formControlName="availabilityHome" required>
-      <mat-option value="POSSIBLE">{{ 'all.competition.change-encounter.possible' | translate }}</mat-option>
-      <mat-option value="NOT_POSSIBLE">{{ 'all.competition.change-encounter.not-possible' | translate }}</mat-option>
+      <mat-option value="POSSIBLE">{{
+        'all.competition.change-encounter.possible' | translate
+      }}</mat-option>
+      <mat-option value="NOT_POSSIBLE">{{
+        'all.competition.change-encounter.not-possible' | translate
+      }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="availability">
     <mat-label>{{ 'all.competition.away' | translate }}</mat-label>
     <mat-select formControlName="availabilityAway" required>
-      <mat-option value="POSSIBLE">{{ 'all.competition.change-encounter.possible' | translate }}</mat-option>
-      <mat-option value="NOT_POSSIBLE">{{ 'all.competition.change-encounter.not-possible' | translate }}</mat-option>
+      <mat-option value="POSSIBLE">{{
+        'all.competition.change-encounter.possible' | translate
+      }}</mat-option>
+      <mat-option value="NOT_POSSIBLE">{{
+        'all.competition.change-encounter.not-possible' | translate
+      }}</mat-option>
     </mat-select>
   </mat-form-field>
   <div class="actions">
     <div [matTooltip]="tootltipSelected ?? '' | translate">
       <mat-checkbox class="selected" formControlName="selected"> </mat-checkbox>
     </div>
-    @if (!group.get('id')!.value) {
+    @if (!group().get('id')!.value) {
       <div class="delete">
         <button mat-icon-button (click)="removeDate.next()" type="button">
           <mat-icon>delete</mat-icon>
@@ -33,9 +41,9 @@
       </div>
     }
     @if (
-      encounter.locationId &&
-      this.group.get('calendar')?.value?.locationId &&
-      encounter.locationId !== this.group.get('calendar')?.value?.locationId
+      encounter().locationId &&
+      this.group().get('calendar')?.value?.locationId &&
+      encounter().locationId !== this.group().get('calendar')?.value?.locationId
     ) {
       <div
         class="changed-location"

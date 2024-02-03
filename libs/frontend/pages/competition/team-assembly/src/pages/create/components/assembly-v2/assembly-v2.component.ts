@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgxResize, ResizeResult } from 'ngxtension/resize';
 import { AssemblyMessageComponent } from '../assembly-message/assembly-message.component';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-assembly-v2',
@@ -29,16 +30,16 @@ export class AssemblyV2Component {
   data = inject(AssemblyService);
   private readonly injector = inject(Injector);
 
-  @Input({ required: true }) teamId!: Signal<string | undefined>;
-  @Input({ required: true }) encounterId!: Signal<string | undefined>;
+  teamId = input.required<Signal<string | undefined>>();
+  encounterId = input.required<Signal<string | undefined>>();
 
   notSmallScreen = true;
 
   constructor() {
     effect(() => {
       this.data.state.setInfo({
-        teamId: this.teamId(),
-        encounterId: this.encounterId(),
+        teamId: this.teamId()(),
+        encounterId: this.encounterId()(),
       });
     });
   }
@@ -76,7 +77,9 @@ export class AssemblyV2Component {
       return false;
     }
 
-    return this.data.state['metaPlayers']()?.find((p: Player) => p.id === id)?.levelException ?? false;
+    return (
+      this.data.state['metaPlayers']()?.find((p: Player) => p.id === id)?.levelException ?? false
+    );
   }
 
   onResized(event: ResizeResult) {

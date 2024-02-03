@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +13,14 @@ import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { combineLatest, of } from 'rxjs';
-import { distinctUntilChanged, map, pairwise, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  map,
+  pairwise,
+  startWith,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators';
 
 @Component({
   selector: 'badman-list-encounters',
@@ -36,25 +43,20 @@ import { distinctUntilChanged, map, pairwise, startWith, switchMap, takeUntil } 
 export class ListEncountersComponent implements OnInit {
   private destroy$ = injectDestroy();
 
-  @Input()
-  controlName = 'encounter';
+  controlName = input('encounter');
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  dependsOn = 'team';
+  dependsOn = input('team');
 
-  @Input()
-  updateOn = ['team', 'season'];
+  updateOn = input(['team', 'season']);
 
-  @Input()
-  updateUrl = false;
+  updateUrl = input(false);
 
-  @Input()
-  showCompact: boolean | undefined = false;
+  showCompact = input<boolean | undefined>(false);
 
-  control!: FormControl<EncounterCompetition | null>;
+  control = input<FormControl<EncounterCompetition>>();
+  protected internalControl!: FormControl<EncounterCompetition | null>;
 
   encountersSem1!: EncounterCompetition[];
   encountersSem2!: EncounterCompetition[];
@@ -67,30 +69,38 @@ export class ListEncountersComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<EncounterCompetition>;
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as FormControl<EncounterCompetition>;
     }
 
-    if (!this.control) {
-      this.control = new FormControl<EncounterCompetition | null>(null);
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group().get(
+        this.controlName(),
+      ) as FormControl<EncounterCompetition>;
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (!this.internalControl) {
+      this.internalControl = new FormControl<EncounterCompetition | null>(null);
     }
-    const previous = this.group?.get(this.dependsOn);
+
+    if (this.group()) {
+      this.group().addControl(this.controlName(), this.internalControl);
+    }
+    const previous = this.group().get(this.dependsOn());
     if (!previous) {
-      console.warn(`Dependency ${this.dependsOn} not found`, previous);
+      console.warn(`Dependency ${this.dependsOn()} not found`, previous);
     } else {
       // get all the controls that we need to update on when change
-      const updateOnControls = this.updateOn
-        ?.filter((controlName) => controlName !== this.dependsOn)
-        .map((controlName) => this.group?.get(controlName))
+      const updateOnControls = this.updateOn()
+        ?.filter((controlName) => controlName !== this.dependsOn())
+        .map((controlName) => this.group().get(controlName))
         .filter((control) => control != null) as FormControl[];
 
       combineLatest([
         previous.valueChanges.pipe(startWith(null)),
-        ...updateOnControls.map((control) => control?.valueChanges?.pipe(startWith(() => control?.value))),
+        ...updateOnControls.map((control) =>
+          control?.valueChanges?.pipe(startWith(() => control?.value)),
+        ),
       ])
         .pipe(
           takeUntil(this.destroy$),
@@ -100,7 +110,7 @@ export class ListEncountersComponent implements OnInit {
           switchMap(([prev, next]) => {
             if (prev != null && prev !== next) {
               // Reset the team on club change
-              this.control.setValue(null);
+              this.internalControl.setValue(null);
             }
 
             // Check if the next is a UUID
@@ -125,8 +135,8 @@ export class ListEncountersComponent implements OnInit {
 
           const params = this.activatedRoute.snapshot.queryParams;
 
-          if (params && params[this.controlName]) {
-            const foundEncounter = encounters.find((r) => r.id == params[this.controlName]);
+          if (params && params[this.controlName()]) {
+            const foundEncounter = encounters.find((r) => r.id == params[this.controlName()]);
 
             if (foundEncounter) {
               this.selectEncounter(foundEncounter);
@@ -148,14 +158,14 @@ export class ListEncountersComponent implements OnInit {
     if (!event?.id) {
       throw new Error('No id');
     }
-    this.control.setValue(event);
+    this.internalControl.setValue(event);
     this._updateUrl(event.id);
   }
 
   private _updateUrl(encounterId: string) {
-    if (this.updateUrl && encounterId) {
+    if (this.updateUrl() && encounterId) {
       const queryParams: { [key: string]: string | undefined } = {
-        [this.controlName]: encounterId,
+        [this.controlName()]: encounterId,
       };
 
       // check if the current url is the same as the new url
@@ -247,7 +257,9 @@ export class ListEncountersComponent implements OnInit {
         },
       })
       .pipe(
-        map((result) => result.data.encounterCompetitions?.rows.map((r) => new EncounterCompetition(r))),
+        map((result) =>
+          result.data.encounterCompetitions?.rows.map((r) => new EncounterCompetition(r)),
+        ),
         map((e) =>
           e.sort((a, b) => {
             if (!a.date || !b.date) {

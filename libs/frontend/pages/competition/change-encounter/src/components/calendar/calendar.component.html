@@ -28,7 +28,9 @@
       <div class="manual-selection">
         @if (this.locations) {
           <mat-form-field>
-            <mat-label>{{ 'all.competition.change-encounter.choose-location' | translate }}</mat-label>
+            <mat-label>{{
+              'all.competition.change-encounter.choose-location' | translate
+            }}</mat-label>
             <mat-select [formControl]="manualLocationControl">
               @for (location of this.locations; track location) {
                 <mat-option [value]="location.id">{{ location.name }}</mat-option>
@@ -53,7 +55,9 @@
         </mat-form-field>
         <button
           mat-icon-button
-          (click)="this.selectDay(manualDateControl.value, undefined, manualLocationControl.value, 9999)"
+          (click)="
+            this.selectDay(manualDateControl.value, undefined, manualLocationControl.value, 9999)
+          "
         >
           <mat-icon>check</mat-icon>
         </button>
@@ -66,7 +70,9 @@
       <small noPerm>Vraag aan de club verantwoordelijke om een Speelmomenten toe te voegen</small>
       <small
         >Speelmomenten wijzigen:
-        <a [routerLink]="['/', 'club', this.data.homeClubId, 'edit']" (click)="this.dialogRef.close()"
+        <a
+          [routerLink]="['/', 'club', this.data.homeClubId, 'edit']"
+          (click)="this.dialogRef.close()"
           >Club > Edit > Locatie
         </a></small
       >
@@ -103,11 +109,17 @@
                 }
               </div>
               @for (loc of dayInfo.locations; track loc) {
-                <div class="location picable" (click)="selectDay(row.date, loc.time, loc.locationId, loc.space)">
+                <div
+                  class="location picable"
+                  (click)="selectDay(row.date, loc.time, loc.locationId, loc.space)"
+                >
                   <span class="id">{{ loc.locationIndex }}</span>
                   <span class="time">{{ loc.time }} - </span>
                   <span class="courts">
-                    {{ 'all.competition.change-encounter.calendar.remaining' | translate: { amount: loc.space } }}
+                    {{
+                      'all.competition.change-encounter.calendar.remaining'
+                        | translate: { amount: loc.space }
+                    }}
                     @if (loc.requested.length) {
                       <span>
                         ({{
@@ -140,7 +152,9 @@
                     @for (enc of loc.removed; track enc) {
                       <div
                         class="home-event"
-                        [matTooltip]="'all.competition.change-encounter.calendar.removed' | translate"
+                        [matTooltip]="
+                          'all.competition.change-encounter.calendar.removed' | translate
+                        "
                       >
                         <div class="event-team">
                           <div
@@ -162,7 +176,9 @@
                     @for (enc of loc.requested; track enc) {
                       <div
                         class="home-event"
-                        [matTooltip]="'all.competition.change-encounter.calendar.requested' | translate"
+                        [matTooltip]="
+                          'all.competition.change-encounter.calendar.requested' | translate
+                        "
                       >
                         <div class="event-team">
                           <div
@@ -184,7 +200,9 @@
               }
               <div class="event other-events">
                 @if (dayInfo.other.length > 0) {
-                  <small>{{ 'all.competition.change-encounter.calendar.other-games' | translate }}</small>
+                  <small>{{
+                    'all.competition.change-encounter.calendar.other-games' | translate
+                  }}</small>
                 }
                 @for (enc of dayInfo.other; track enc) {
                   <div class="event-name">
@@ -216,7 +234,7 @@
               <div>
                 <mat-checkbox
                   (change)="changeVisibleTeams($event, team.id!, clubId)"
-                  [checked]="visibleTeams?.[clubId]?.includes(team.id ?? '')"
+                  [checked]="visibleTeams?.[clubId]?.includes(team.id)"
                   >{{ team.name }}</mat-checkbox
                 >
               </div>
@@ -237,7 +255,7 @@
               <div>
                 <mat-checkbox
                   (change)="changeVisibleTeams($event, team.id!, clubId)"
-                  [checked]="visibleTeams?.[clubId]?.includes(team.id ?? '')"
+                  [checked]="visibleTeams?.[clubId]?.includes(team.id)"
                   >{{ team.name }}</mat-checkbox
                 >
               </div>

@@ -1,4 +1,4 @@
-<form [formGroup]="group">
+<form [formGroup]="group()">
   <p class="description">{{ 'all.input.required' | translate }}</p>
   <div class="name">
     <mat-form-field>
@@ -13,32 +13,21 @@
 
     <mat-form-field>
       <mat-label>{{ 'all.input.abbreviation' | translate }}</mat-label>
-      <input
-        matInput
-        formControlName="abbreviation"
-        alt="abbreviation"
-        required
-      />
+      <input matInput formControlName="abbreviation" alt="abbreviation" required />
     </mat-form-field>
   </div>
 
   <badman-has-claim [any]="['edit:state']">
     <div class="country">
-      <badman-select-country [group]="group"></badman-select-country>
-      <badman-select-state [group]="group"></badman-select-state>
+      <badman-select-country [group]="group()"></badman-select-country>
+      <badman-select-state [group]="group()"></badman-select-state>
     </div>
   </badman-has-claim>
 
   <div>
     <mat-form-field>
       <mat-label>{{ 'all.club.number' | translate }}</mat-label>
-      <input
-        matInput
-        formControlName="clubId"
-        alt="clubId"
-        required
-        type="number"
-      />
+      <input matInput formControlName="clubId" alt="clubId" required type="number" />
     </mat-form-field>
   </div>
 
@@ -53,22 +42,15 @@
       <mat-form-field>
         <mat-label>{{ 'all.team.usedForTeam.select' | translate }}</mat-label>
         <mat-select formControlName="useForTeamName" required>
-          <mat-option value="name">{{
-            'all.input.name' | translate
-          }}</mat-option>
-          <mat-option value="fullName">{{
-            'all.input.fullName' | translate
-          }}</mat-option>
-          <mat-option value="abbreviation">{{
-            'all.input.abbreviation' | translate
-          }}</mat-option>
+          <mat-option value="name">{{ 'all.input.name' | translate }}</mat-option>
+          <mat-option value="fullName">{{ 'all.input.fullName' | translate }}</mat-option>
+          <mat-option value="abbreviation">{{ 'all.input.abbreviation' | translate }}</mat-option>
         </mat-select>
       </mat-form-field>
 
       <div id="example">
         <span>{{
-          'all.team.usedForTeam.example'
-            | translate : { teamName: this.exampleTeamName }
+          'all.team.usedForTeam.example' | translate: { teamName: this.exampleTeamName }
         }}</span>
       </div>
     </div>

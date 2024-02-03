@@ -19,6 +19,7 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { first, map } from 'rxjs';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-ranking-table',
@@ -35,16 +36,15 @@ export class RankingTableComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly injector = inject(Injector);
 
-  @Input()
-  id: string | null = null;
+  id = input<string | null>(null);
 
   displayedColumns = ['level', 'pointsToGoUp', 'pointsToGoDown', 'pointsWhenWinningAgainst'];
 
   system = this.rankingSystemService.system as Signal<RankingSystem>;
 
   ngOnInit() {
-    if (this.id !== null) {
-      this.system = toSignal(this._loadRanking(this.id), {
+    if (this.id() !== null) {
+      this.system = toSignal(this._loadRanking(this.id()), {
         injector: this.injector,
       }) as Signal<RankingSystem>;
     }
@@ -60,7 +60,8 @@ export class RankingTableComponent implements OnInit {
       return {
         level: level--,
         pointsToGoUp: level !== 0 ? Math.round(this.system().pointsToGoUp?.[index] ?? 0) : null,
-        pointsToGoDown: index === 0 ? null : Math.round(this.system().pointsToGoDown?.[index - 1] ?? 0),
+        pointsToGoDown:
+          index === 0 ? null : Math.round(this.system().pointsToGoDown?.[index - 1] ?? 0),
         pointsWhenWinningAgainst: Math.round(winning),
       } as RankingScoreTable;
     });

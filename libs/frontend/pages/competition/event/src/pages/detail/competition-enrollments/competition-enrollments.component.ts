@@ -28,6 +28,7 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { from } from 'rxjs';
 import { bufferCount, concatMap, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-competition-enrollments',
@@ -90,8 +91,8 @@ export class CompetitionEnrollmentsComponent implements OnInit {
   clubControl = new FormControl();
 
   // Inputs
-  @Input({ required: true }) eventId?: string;
-  @Input() season?: number;
+  eventId = input.required<string>();
+  season = input<number | undefined>();
 
   displayedColumns: string[] = ['name', 'entries', 'validations'];
 
@@ -167,7 +168,7 @@ export class CompetitionEnrollmentsComponent implements OnInit {
                 }
               `,
               variables: {
-                eventCompetitionId: this.eventId,
+                eventCompetitionId: this.eventId(),
                 order: [
                   {
                     field: 'eventType',
@@ -187,12 +188,12 @@ export class CompetitionEnrollmentsComponent implements OnInit {
           }
 
           // Filter out the subEventCompetitions that do not include the selected club
-          const filteredSubEventCompetitions = result.data.eventCompetition.subEventCompetitions?.filter(
-            (subEventCompetition) =>
+          const filteredSubEventCompetitions =
+            result.data.eventCompetition.subEventCompetitions?.filter((subEventCompetition) =>
               subEventCompetition.eventEntries?.some(
                 (eventEntry) => eventEntry.team?.club?.id === this.clubControl.value,
               ),
-          );
+            );
 
           // Filter the eventEntries within each filtered subEventCompetition
           const filteredEventCompetition = {
@@ -243,8 +244,10 @@ export class CompetitionEnrollmentsComponent implements OnInit {
               const subEventValidation = this.validationsForSubevent.get(result.subEventId);
 
               this.validationsForSubevent.set(result.subEventId, {
-                errors: (subEventValidation?.errors ?? 0) + result.enrollmentValidation.errors.length,
-                warnings: (subEventValidation?.warnings ?? 0) + result.enrollmentValidation.warnings.length,
+                errors:
+                  (subEventValidation?.errors ?? 0) + result.enrollmentValidation.errors.length,
+                warnings:
+                  (subEventValidation?.warnings ?? 0) + result.enrollmentValidation.warnings.length,
               });
             }
 

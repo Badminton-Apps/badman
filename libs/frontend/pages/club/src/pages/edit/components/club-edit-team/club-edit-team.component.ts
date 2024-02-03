@@ -3,11 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   OnInit,
   Output,
   TemplateRef,
   ViewChild,
+  input,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BadmanBlockModule, PlayerSearchComponent } from '@badman/frontend-components';
-import { Club, EntryCompetitionPlayer, Player, SubEventCompetition, Team } from '@badman/frontend-models';
+import {
+  Club,
+  EntryCompetitionPlayer,
+  Player,
+  SubEventCompetition,
+  Team,
+} from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { PickEventDialogComponent } from '../../../../dialogs';
 
@@ -52,11 +58,9 @@ export class ClubEditTeamComponent implements OnInit {
     subEvent: string;
   }>();
 
-  @Input()
-  club!: Club;
+  club = input.required<Club>();
 
-  @Input()
-  team!: Team;
+  team = input.required<Team>();
 
   subEvent?: SubEventCompetition;
 
@@ -72,13 +76,14 @@ export class ClubEditTeamComponent implements OnInit {
   constructor(private readonly dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.subEvent = this.team.entry?.subEventCompetition;
+    this.subEvent = this.team().entry?.subEventCompetition;
 
-    this.teamIndex = this.team.entry?.meta?.competition?.teamIndex;
-    this.players = this.team.entry?.meta?.competition?.players;
+    this.teamIndex = this.team().entry?.meta?.competition?.teamIndex;
+    this.players = this.team().entry?.meta?.competition?.players;
 
     this.where = {
-      gender: this.team.type == 'MX' || this.team.type == 'NATIONAL' ? undefined : this.team.type,
+      gender:
+        this.team().type == 'MX' || this.team().type == 'NATIONAL' ? undefined : this.team().type,
     };
   }
 
@@ -86,7 +91,7 @@ export class ClubEditTeamComponent implements OnInit {
     this.dialog
       .open(PickEventDialogComponent, {
         data: {
-          season: this.team.season,
+          season: this.team().season,
           eventId: this.subEvent?.eventCompetition?.id,
           subEventId: this.subEvent?.id,
         },

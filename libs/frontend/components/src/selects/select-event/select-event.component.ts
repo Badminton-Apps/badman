@@ -8,6 +8,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-select-event',
@@ -19,29 +20,26 @@ import { map, takeUntil, tap } from 'rxjs/operators';
 export class SelectEventComponent implements OnInit {
   private destroy$ = injectDestroy();
 
-  @Input()
-  controlName = 'event';
+  controlName = input('event');
 
-  @Input()
-  formGroup!: FormGroup;
+  formGroup = input<FormGroup | undefined>();
 
-  @Input()
-  where: { [key: string]: unknown } = {};
+  where = input<{
+    [key: string]: unknown;
+  }>({});
 
-  @Input()
-  initialId?: string;
+  initialId = input<string | undefined>();
 
-  @Input()
-  control = new FormControl<EventCompetition | null>(null, [Validators.required]);
+  control = input(new FormControl<EventCompetition | null>(null, [Validators.required]));
 
   events$!: Observable<EventCompetition[]>;
 
   constructor(private apollo: Apollo) {}
 
   ngOnInit() {
-    if (this.formGroup) {
-      if (!this.formGroup.get(this.controlName)) {
-        this.formGroup.addControl(this.controlName, this.control);
+    if (this.formGroup()) {
+      if (!this.formGroup()!.get(this.controlName())) {
+        this.formGroup()!.addControl(this.controlName(), this.control());
       }
     }
 
@@ -64,17 +62,17 @@ export class SelectEventComponent implements OnInit {
           }
         `,
         variables: {
-          where: this.where,
+          where: this.where(),
         },
       })
       .pipe(
         takeUntil(this.destroy$),
         map(({ data }) => data.eventCompetitions.rows?.map((e) => new EventCompetition(e))),
         tap((events) => {
-          if (this.initialId) {
-            const initialEvent = events.find((e) => e.id === this.initialId);
+          if (this.initialId()) {
+            const initialEvent = events.find((e) => e.id === this.initialId()!);
             if (initialEvent) {
-              this.control.setValue(initialEvent);
+              this.control().setValue(initialEvent);
             }
           }
         }),

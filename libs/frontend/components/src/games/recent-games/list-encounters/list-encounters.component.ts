@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
   OnChanges,
   OnInit,
   PLATFORM_ID,
   TransferState,
   effect,
   inject,
+  input,
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -49,9 +49,8 @@ export class ListEncountersComponent implements OnInit, OnChanges {
   private platformId = inject(PLATFORM_ID);
   private destroy$ = injectDestroy();
 
-  @Input() clubId?: string;
-  @Input() teamId?: string;
-  @Input() teams!: Team | Team[];
+  clubId = input<string>();
+  teams = input<Team | Team[]>();
 
   teamids = signal<string[]>([]);
   recentEncounters = signal<EncounterCompetition[]>([]);
@@ -73,16 +72,12 @@ export class ListEncountersComponent implements OnInit, OnChanges {
   private _setIds() {
     const teamids: string[] = [];
 
-    if (this.teamId) {
-      teamids.push(this.teamId);
+    if (this.teams() instanceof Team) {
+      teamids.push((this.teams() as Team).id);
     }
 
-    if (this.teams instanceof Team && this.teams.id) {
-      teamids.push(this.teams.id);
-    }
-
-    if (this.teams instanceof Array) {
-      teamids.push(...this.teams.map((t) => t.id ?? ''));
+    if (this.teams() instanceof Array) {
+      teamids.push(...(this.teams() as Team[]).map((t) => t.id ?? ''));
     }
 
     this.teamids.set(teamids);
@@ -180,9 +175,17 @@ export class ListEncountersComponent implements OnInit, OnChanges {
       })
       .pipe(
         takeUntil(this.destroy$),
-        transferState(`recentKey-${this.teamId ?? this.clubId}`, this.stateTransfer, this.platformId),
+        transferState(
+          `recentKey-${this.teamids().join(',') ?? this.clubId()}`,
+          this.stateTransfer,
+          this.platformId,
+        ),
         map((result) => {
-          return result?.data.encounterCompetitions.rows?.map((encounter) => new EncounterCompetition(encounter)) ?? [];
+          return (
+            result?.data.encounterCompetitions.rows?.map(
+              (encounter) => new EncounterCompetition(encounter),
+            ) ?? []
+          );
         }),
       )
       .subscribe((encounters) => {

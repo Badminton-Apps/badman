@@ -1,10 +1,13 @@
-@for (player of this.control?.value; track player) {
+@for (player of this.internalControl.value; track player) {
   <div class="player">
     <div class="name">{{ player.fullName }}</div>
     <div class="type">
       <mat-form-field>
         <mat-label>Type</mat-label>
-        <mat-select [(value)]="player.membershipType" (selectionChange)="playerMembershipTypeChanged(player, $event)">
+        <mat-select
+          [(value)]="player.membershipType"
+          (selectionChange)="playerMembershipTypeChanged(player, $event)"
+        >
           @for (type of types; track type) {
             <mat-option [value]="type">
               {{ 'all.player.' + type | lowercase | translate }}
@@ -23,7 +26,7 @@
 <badman-player-search
   [allowCreation]="false"
   [searchOutsideClub]="false"
-  [club]="this.group?.value?.clubId"
+  [club]="this.group()?.value?.clubId"
   [label]="'Voeg speler toe'"
   [where]="this.wherePlayer"
   (whenSelectPlayer)="playerAdded($event)"

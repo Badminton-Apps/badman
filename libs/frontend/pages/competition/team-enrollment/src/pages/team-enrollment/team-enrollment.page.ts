@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -25,6 +25,7 @@ import {
 } from './components';
 import { minAmountOfTeams } from './validators';
 import { MatIconModule } from '@angular/material/icon';
+import { RankingSystemService } from '@badman/frontend-graphql';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -49,6 +50,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
+
+  systemService = inject(RankingSystemService);
 
   formGroup: FormGroup = new FormGroup({
     [SEASON]: new FormControl(getCurrentSeason(), [Validators.required]),

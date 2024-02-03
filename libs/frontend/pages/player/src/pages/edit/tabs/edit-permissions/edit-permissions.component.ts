@@ -1,18 +1,18 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnInit,
+  input,
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Apollo, gql } from 'apollo-angular';
-import { combineLatest, Observable } from 'rxjs';
-import { groupBy, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
-import { Claim, Player } from '@badman/frontend-models';
 import { ClaimService } from '@badman/frontend-auth';
-import { CommonModule } from '@angular/common';
 import { ClaimComponent } from '@badman/frontend-components';
+import { Claim, Player } from '@badman/frontend-models';
+import { Apollo, gql } from 'apollo-angular';
+import { Observable, combineLatest } from 'rxjs';
+import { groupBy, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-edit-permissions',
@@ -27,18 +27,17 @@ export class EditPermissionsComponent implements OnInit {
 
   selectedClaims: string[] = [];
 
-  @Input()
-  player!: Player;
+  player = input.required<Player>();
 
   constructor(
     private apollo: Apollo,
     private claimService: ClaimService,
     private _snackBar: MatSnackBar,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    if (!this.player?.id) {
+    if (!this.player()?.id) {
       throw new Error('No player');
     }
 
@@ -84,7 +83,7 @@ export class EditPermissionsComponent implements OnInit {
           }
         `,
         variables: {
-          playerId: this.player.id,
+          playerId: this.player().id,
         },
       })
       .pipe(map((x) => x.data?.player?.claims?.map((c) => new Claim(c))));
@@ -98,24 +97,22 @@ export class EditPermissionsComponent implements OnInit {
           toArray(),
           map((items) => {
             return { category: obs.key, claims: items };
-          })
+          }),
         );
       }),
-      toArray()
+      toArray(),
     );
 
-    combineLatest([claims$, playerClaims$]).subscribe(
-      ([claims, playerClaims]) => {
-        this.selectedClaims = claims
-          .filter((c) => playerClaims.some((pc) => pc.id === c.id))
-          ?.map((c) => `${c.id}`);
-        this.changeDetector.markForCheck();
-      }
-    );
+    combineLatest([claims$, playerClaims$]).subscribe(([claims, playerClaims]) => {
+      this.selectedClaims = claims
+        .filter((c) => playerClaims.some((pc) => pc.id === c.id))
+        ?.map((c) => `${c.id}`);
+      this.changeDetector.markForCheck();
+    });
   }
 
   claimChanged(claim: Claim, checked: boolean) {
-    if (!this.player?.id) {
+    if (!this.player()?.id) {
       throw new Error('No player');
     }
     if (!claim?.id) {
@@ -125,26 +122,22 @@ export class EditPermissionsComponent implements OnInit {
     this.apollo
       .mutate<{ claims: Claim[] }>({
         mutation: gql`
-          mutation ClaimPlayer(
-            $playerId: ID!
-            $claimId: ID!
-            $active: Boolean!
-          ) {
+          mutation ClaimPlayer($playerId: ID!, $claimId: ID!, $active: Boolean!) {
             assignClaim(claimId: $claimId, playerId: $playerId, active: $active)
           }
         `,
         variables: {
           claimId: claim.id,
-          playerId: this.player.id,
+          playerId: this.player().id,
           active: checked,
         },
       })
       .pipe(
         take(1),
         tap(() => {
-          this.claimService.clearUserCache([this.player?.id ?? '']);
+          this.claimService.clearUserCache([this.player()?.id ?? '']);
           this.claimService.reloadProfile();
-        })
+        }),
       )
       .subscribe(() => {
         this._snackBar.open('Saved', undefined, {

@@ -31,6 +31,7 @@ import { Apollo } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { ClubTeamsService } from './club-teams.service';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-club-teams',
@@ -62,8 +63,8 @@ export class ClubTeamsComponent implements OnInit {
   private destroy$ = injectDestroy();
 
   // Inputs
-  @Input({ required: true }) clubId!: Signal<string>;
-  @Input() filter?: FormGroup;
+  clubId = input.required<Signal<string>>();
+  filter = input<FormGroup | undefined>();
 
   // Outputs
   @Output() whenTeamEdit = new EventEmitter<void>();
@@ -77,18 +78,20 @@ export class ClubTeamsComponent implements OnInit {
   constructor() {
     effect(() => {
       this.clubTeamsService.filter.patchValue({
-        clubId: this.clubId(),
+        clubId: this.clubId()(),
       });
     });
   }
 
   ngOnInit(): void {
-    this.filter?.valueChanges.pipe(startWith(this.filter?.value), takeUntil(this.destroy$)).subscribe((newValue) => {
-      this.clubTeamsService.filter.patchValue({
-        season: newValue.season,
-        choices: newValue.choices,
+    this.filter()
+      ?.valueChanges.pipe(startWith(this.filter()?.value), takeUntil(this.destroy$))
+      .subscribe((newValue) => {
+        this.clubTeamsService.filter.patchValue({
+          season: newValue.season,
+          choices: newValue.choices,
+        });
       });
-    });
   }
 
   editTeam(team: Team) {
@@ -121,8 +124,8 @@ export class ClubTeamsComponent implements OnInit {
         .open(m.AddDialogComponent, {
           data: {
             team: {
-              clubId: this.clubId,
-              season: this.filter?.value.season,
+              clubId: this.clubId(),
+              season: this.filter()?.value.season,
             },
             teamNumbers: {
               [SubEventTypeEnum.M]: this.clubTeamsService

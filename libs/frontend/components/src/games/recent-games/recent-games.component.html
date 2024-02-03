@@ -1,6 +1,8 @@
-@if (this.type === 'encounter') {
-  <badman-list-encounters [clubId]="this.clubId" [teamId]="this.teamId" [teams]="this.teams"></badman-list-encounters>
-}
-@if (this.type === 'game') {
-  <badman-list-games [playerId]="this.playerId"></badman-list-games>
+@switch (this.type()) {
+  @case ('encounter') {
+    <badman-list-encounters [clubId]="this.clubId()" [teams]="this.teams()" />
+  }
+  @case ('game') {
+    <badman-list-games [playerId]="this.playerId()!" />
+  }
 }

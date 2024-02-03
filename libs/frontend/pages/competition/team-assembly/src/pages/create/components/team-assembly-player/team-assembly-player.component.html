@@ -1,18 +1,22 @@
 <div>
-  @if ((player.competitionPlayer ?? false) === false) {
-    <mat-icon [matTooltip]="'all.competition.team-assembly.errors.comp-status' | translate: { player: player }">
+  @if ((player().competitionPlayer ?? false) === false) {
+    <mat-icon
+      [matTooltip]="'all.competition.team-assembly.errors.comp-status' | translate: { player: player() }"
+    >
       warning
     </mat-icon>
   }
   <div>
-    {{ player.fullName }}
-    @if (levelException) {
-      <span class="level-exception" [matTooltip]="'all.competition.team-assembly.level-exemption' | translate"
+    {{ player().fullName }}
+    @if (levelException()) {
+      <span
+        class="level-exception"
+        [matTooltip]="'all.competition.team-assembly.level-exemption' | translate"
         ><mat-icon>lock</mat-icon></span
       >
     }
     <span class="ranking">
-      {{ ranking }}
+      {{ ranking() }}
     </span>
   </div>
 </div>

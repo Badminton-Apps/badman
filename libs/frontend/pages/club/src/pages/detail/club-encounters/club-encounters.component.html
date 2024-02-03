@@ -1,8 +1,13 @@
 <div class="filters">
   <div class="filters-team">
-    <badman-select-team [group]="filter" controlName="teams" [multiple]="true" autoSelect="all"></badman-select-team>
+    <badman-select-team
+      [group]="filter()"
+      controlName="teams"
+      [multiple]="true"
+      autoSelect="all"
+    ></badman-select-team>
   </div>
-  <div class="filters-encounter" [formGroup]="filter">
+  <div class="filters-encounter" [formGroup]="filter()">
     <mat-slide-toggle formControlName="changedDate">{{
       'all.club.encounters.change-date' | translate
     }}</mat-slide-toggle>
@@ -17,7 +22,7 @@
     }}</mat-slide-toggle>
   </div>
 </div>
-@if (this.filter.get('changedLocation')?.value) {
+@if (this.filter().get('changedLocation')?.value) {
   {{ 'all.club.encounters.change-location-note' | translate }}
 }
 @if (this.encounters()) {

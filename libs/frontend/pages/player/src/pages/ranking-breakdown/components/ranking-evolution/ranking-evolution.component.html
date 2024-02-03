@@ -4,21 +4,21 @@
       <badman-chart
         [title]="'all.ranking.single' | translate"
         [rankingPlaces]="rankingPlaces.single"
-        [system]="this.system"
+        [system]="this.system()"
       ></badman-chart>
     }
     @if (rankingPlaces.double) {
       <badman-chart
         [title]="'all.ranking.double' | translate"
         [rankingPlaces]="rankingPlaces.double"
-        [system]="this.system"
+        [system]="this.system()"
       ></badman-chart>
     }
     @if (rankingPlaces.mix) {
       <badman-chart
         [title]="'all.ranking.mix' | translate"
         [rankingPlaces]="rankingPlaces.mix"
-        [system]="this.system"
+        [system]="this.system()"
       ></badman-chart>
     }
   }

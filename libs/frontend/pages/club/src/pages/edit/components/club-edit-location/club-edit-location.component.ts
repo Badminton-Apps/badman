@@ -1,6 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  input,
+} from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -11,7 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BadmanBlockModule, HasClaimComponent } from '@badman/frontend-components';
 import { Club, Location } from '@badman/frontend-models';
@@ -82,17 +95,14 @@ export class ClubEditLocationComponent implements OnInit {
   @Output() whenEdit = new EventEmitter<Location>();
   @Output() whenDelete = new EventEmitter<Location>();
 
-  @Input()
-  club!: Club;
+  club = input.required<Club>();
 
-  @Input()
-  location!: Location;
+  location = input.required<Location>();
 
-  @Input()
-  control?: LocationAvailibilityForm;
+  control = input<LocationAvailibilityForm>();
+  protected internalControl!: LocationAvailibilityForm;
 
-  @Input()
-  season?: number;
+  season = input<number | undefined>();
 
   days!: FormArray<LocationavDayType>;
   exceptions!: FormArray<LocationExceptionType>;
@@ -116,7 +126,9 @@ export class ClubEditLocationComponent implements OnInit {
   }[] = [];
 
   ngOnInit(): void {
-    const availibilty = this.location.availibilities?.find((availibility) => availibility.season === this.season);
+    const availibilty = this.location().availibilities?.find(
+      (availibility) => availibility.season === this.season(),
+    );
 
     this.days = this.formBuilder.array(
       availibilty?.days?.map((day) =>
@@ -139,12 +151,18 @@ export class ClubEditLocationComponent implements OnInit {
       ) ?? [],
     ) as FormArray<LocationExceptionType>;
 
-    this.control = this.formBuilder.group({
-      id: this.formBuilder.control(availibilty?.id),
-      season: this.formBuilder.control(availibilty?.season ?? this.season),
-      days: this.days,
-      exceptions: this.exceptions,
-    }) as LocationAvailibilityForm;
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as LocationAvailibilityForm;
+    }
+
+    if (!this.internalControl) {
+      this.internalControl = this.formBuilder.group({
+        id: this.formBuilder.control(availibilty?.id),
+        season: this.formBuilder.control(availibilty?.season ?? this.season()),
+        days: this.days,
+        exceptions: this.exceptions,
+      }) as LocationAvailibilityForm;
+    }
 
     if (this.exceptions.length !== 0) {
       this.expanded.exceptions = true;
@@ -197,7 +215,7 @@ export class ClubEditLocationComponent implements OnInit {
 
   save() {
     const observables = [];
-    const availibility = this.control?.value;
+    const availibility = this.control()?.value;
 
     if (!availibility?.id) {
       observables.push(
@@ -211,8 +229,8 @@ export class ClubEditLocationComponent implements OnInit {
           `,
           variables: {
             data: {
-              season: this?.season,
-              locationId: this.location.id,
+              season: this?.season(),
+              locationId: this.location().id,
               days: availibility?.days,
               exceptions: availibility?.exceptions,
             },
@@ -232,8 +250,8 @@ export class ClubEditLocationComponent implements OnInit {
           variables: {
             data: {
               id: availibility.id,
-              season: this.season,
-              locationId: this.location.id,
+              season: this.season(),
+              locationId: this.location().id,
               days: availibility.days,
               exceptions: availibility.exceptions,
             },

@@ -12,13 +12,15 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  computed,
   EventEmitter,
   inject,
   Inject,
-  Input,
+  input,
   OnInit,
   Output,
   PLATFORM_ID,
+  signal,
   TemplateRef,
   TransferState,
   ViewChild,
@@ -144,11 +146,18 @@ export class AssemblyComponent implements OnInit {
   breakpointObserver = inject(BreakpointObserver);
 
   isHandset = toSignal(
-    this.breakpointObserver.observe(['(max-width: 959.98px)']).pipe(map((result) => result.matches)),
+    this.breakpointObserver
+      .observe(['(max-width: 959.98px)'])
+      .pipe(map((result) => result.matches)),
   );
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
+
+  type = signal<string | undefined>(undefined);
+
+  wherePlayer = computed(() => ({
+    gender: this.type() === 'MX' ? undefined : this.type,
+  }));
 
   @ViewChild('validationOverview')
   validationTemplateRef?: TemplateRef<HTMLElement>;
@@ -166,7 +175,7 @@ export class AssemblyComponent implements OnInit {
     'single3List',
     'single4List',
     'double1List',
-    'double2List',
+
     'double3List',
     'double4List',
   ];
@@ -211,10 +220,6 @@ export class AssemblyComponent implements OnInit {
     players: [],
   };
 
-  wherePlayer = {
-    gender: this.type === 'MX' ? undefined : this.type,
-  };
-
   captionSingle1Prefix = '';
   captionSingle2Prefix = '';
   captionSingle3Prefix = '';
@@ -235,8 +240,6 @@ export class AssemblyComponent implements OnInit {
   captionDouble4 = 'all.competition.team-assembly.double4';
 
   updatedAssembly$ = new Subject();
-
-  type?: string;
 
   team?: Team;
   club!: string;
@@ -259,7 +262,10 @@ export class AssemblyComponent implements OnInit {
       return false;
     }
 
-    return this.team?.entry?.meta?.competition?.players?.find((p) => p.id === id)?.levelException ?? false;
+    return (
+      this.team?.entry?.meta?.competition?.players?.find((p) => p.id === id)?.levelException ??
+      false
+    );
   }
 
   constructor(
@@ -274,23 +280,23 @@ export class AssemblyComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.group.addControl('single1', new FormControl());
-    this.group.addControl('single2', new FormControl());
-    this.group.addControl('single3', new FormControl());
-    this.group.addControl('single4', new FormControl());
-    this.group.addControl('double1', new FormControl());
-    this.group.addControl('double2', new FormControl());
-    this.group.addControl('double3', new FormControl());
-    this.group.addControl('double4', new FormControl());
-    this.group.addControl('subtitudes', new FormControl());
-    this.group.addControl('captain', new FormControl());
+    this.group().addControl('single1', new FormControl());
+    this.group().addControl('single2', new FormControl());
+    this.group().addControl('single3', new FormControl());
+    this.group().addControl('single4', new FormControl());
+    this.group().addControl('double1', new FormControl());
+    this.group().addControl('double2', new FormControl());
+    this.group().addControl('double3', new FormControl());
+    this.group().addControl('double4', new FormControl());
+    this.group().addControl('subtitudes', new FormControl());
+    this.group().addControl('captain', new FormControl());
 
-    const encounterCntrl = this.group.get('encounter');
+    const encounterCntrl = this.group().get('encounter');
     if (!encounterCntrl) {
       throw new Error('encounter is not set');
     }
 
-    const teamCntrl = this.group.get('team');
+    const teamCntrl = this.group().get('team');
     if (!teamCntrl) {
       throw new Error('team is not set');
     }
@@ -311,15 +317,15 @@ export class AssemblyComponent implements OnInit {
           this.updatedAssembly$
             .pipe(
               tap(() => {
-                this.group.get('single1')?.setValue(this.single1[0]);
-                this.group.get('single2')?.setValue(this.single2[0]);
-                this.group.get('single3')?.setValue(this.single3[0]);
-                this.group.get('single4')?.setValue(this.single4[0]);
-                this.group.get('double1')?.setValue(this.double1);
-                this.group.get('double2')?.setValue(this.double2);
-                this.group.get('double3')?.setValue(this.double3);
-                this.group.get('double4')?.setValue(this.double4);
-                this.group.get('subtitudes')?.setValue(this.substitutes);
+                this.group().get('single1')?.setValue(this.single1[0]);
+                this.group().get('single2')?.setValue(this.single2[0]);
+                this.group().get('single3')?.setValue(this.single3[0]);
+                this.group().get('single4')?.setValue(this.single4[0]);
+                this.group().get('double1')?.setValue(this.double1);
+                this.group().get('double2')?.setValue(this.double2);
+                this.group().get('double3')?.setValue(this.double3);
+                this.group().get('double4')?.setValue(this.double4);
+                this.group().get('subtitudes')?.setValue(this.substitutes);
                 this._sortLists();
               }),
               switchMap(() => {
@@ -337,15 +343,15 @@ export class AssemblyComponent implements OnInit {
     this.loaded = false;
 
     // Clear everything
-    this.group.get('single1')?.reset();
-    this.group.get('single2')?.reset();
-    this.group.get('single3')?.reset();
-    this.group.get('single4')?.reset();
-    this.group.get('double1')?.reset();
-    this.group.get('double2')?.reset();
-    this.group.get('double3')?.reset();
-    this.group.get('double4')?.reset();
-    this.group.get('subtitudes')?.reset();
+    this.group().get('single1')?.reset();
+    this.group().get('single2')?.reset();
+    this.group().get('single3')?.reset();
+    this.group().get('single4')?.reset();
+    this.group().get('double1')?.reset();
+    this.group().get('double2')?.reset();
+    this.group().get('double3')?.reset();
+    this.group().get('double4')?.reset();
+    this.group().get('subtitudes')?.reset();
 
     this.single1 = [];
     this.single2 = [];
@@ -360,8 +366,8 @@ export class AssemblyComponent implements OnInit {
     this.substitutes = [];
 
     // Get values
-    this.club = this.group.get('club')?.value;
-    const teamId = this.group.get('team')?.value;
+    this.club = this.group().get('club')?.value;
+    const teamId = this.group().get('team')?.value;
 
     this._getTeam(encounterId, teamId).subscribe(async (team) => {
       this.players = team.players.reduce(
@@ -393,7 +399,9 @@ export class AssemblyComponent implements OnInit {
         });
       }
 
-      this.group.get('captain')?.setValue(saved?.captainId || team.captainId);
+      this.group()
+        .get('captain')
+        ?.setValue(saved?.captainId || team.captainId);
 
       // fetch all players that are in the assembly, but not in the current players list
       await Promise.all(
@@ -410,7 +418,12 @@ export class AssemblyComponent implements OnInit {
             ...(saved?.assembly?.subtitudes ?? []),
           ]),
         ]
-          ?.filter((id) => ![this.players?.BACKUP, this.players?.REGULAR].flat(1).find((player) => player?.id === id))
+          ?.filter(
+            (id) =>
+              ![this.players?.BACKUP, this.players?.REGULAR]
+                .flat(1)
+                .find((player) => player?.id === id),
+          )
           ?.filter((id) => id != null && id !== '' && id !== undefined)
           .map((id) => this.addPlayer({ id } as Player)),
       );
@@ -472,7 +485,11 @@ export class AssemblyComponent implements OnInit {
           query: gql`
             ${PLAYER_INFO}
 
-            query getPlayerInfo($playerId: ID!, $rankingWhere: JSONObject, $lastRankginWhere: JSONObject) {
+            query getPlayerInfo(
+              $playerId: ID!
+              $rankingWhere: JSONObject
+              $lastRankginWhere: JSONObject
+            ) {
               player(id: $playerId) {
                 ...PlayerInfo
               }
@@ -505,7 +522,7 @@ export class AssemblyComponent implements OnInit {
       players: info.baseTeamPlayers?.map((p) => {
         return {
           ...p,
-          sum: p.single + p.double + ((this.type ?? 'MX') === 'MX' ? p.mix : 0),
+          sum: p.single + p.double + ((this.type() ?? 'MX') === 'MX' ? p.mix : 0),
         } as Player & {
           single: number;
           double: number;
@@ -519,7 +536,7 @@ export class AssemblyComponent implements OnInit {
       players: info.titularsPlayers?.map((p) => {
         return {
           ...p,
-          sum: p.single + p.double + ((this.type ?? 'MX') === 'MX' ? p.mix : 0),
+          sum: p.single + p.double + ((this.type() ?? 'MX') === 'MX' ? p.mix : 0),
         } as Player & {
           single: number;
           double: number;
@@ -540,7 +557,7 @@ export class AssemblyComponent implements OnInit {
   }
 
   selectedCaptain(player: Player) {
-    this.group.get('captain')?.setValue(player.id);
+    this.group().get('captain')?.setValue(player.id);
   }
 
   canDropPredicate = (item: CdkDrag, drop: CdkDropList<Player[]>) => {
@@ -579,7 +596,7 @@ export class AssemblyComponent implements OnInit {
     }
 
     const checkCorrectGender = () => {
-      if (this.type == 'MX') {
+      if (this.type() == 'MX') {
         if (drop.id == 'double1List' && item.data.gender == 'F') {
           return false;
         } else if (drop.id == 'double2List' && item.data.gender == 'M') {
@@ -590,9 +607,15 @@ export class AssemblyComponent implements OnInit {
           } else {
             return drop.data.filter((r) => r.gender == 'F').length != 1;
           }
-        } else if ((drop.id == 'single1List' || drop.id == 'single2List') && item.data.gender == 'F') {
+        } else if (
+          (drop.id == 'single1List' || drop.id == 'single2List') &&
+          item.data.gender == 'F'
+        ) {
           return false;
-        } else if ((drop.id == 'single3List' || drop.id == 'single4List') && item.data.gender == 'M') {
+        } else if (
+          (drop.id == 'single3List' || drop.id == 'single4List') &&
+          item.data.gender == 'M'
+        ) {
           return false;
         }
       }
@@ -611,7 +634,10 @@ export class AssemblyComponent implements OnInit {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      if (event.container.id == 'playerList' && event.container.data?.map((r) => r.id).includes(event.item.data.id)) {
+      if (
+        event.container.id == 'playerList' &&
+        event.container.data?.map((r) => r.id).includes(event.item.data.id)
+      ) {
         event.previousContainer.data.splice(event.previousIndex, 1);
         this.updatedAssembly$.next(true);
         return;
@@ -635,9 +661,19 @@ export class AssemblyComponent implements OnInit {
           return;
         }
 
-        copyArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+        copyArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex,
+        );
       } else {
-        transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex,
+        );
       }
 
       if (event.container.id !== 'substitudeList') {
@@ -779,14 +815,22 @@ export class AssemblyComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(`eventForEncounter-${encounterCompetitionId}`, this.stateTransfer, this.platformId),
+        transferState(
+          `eventForEncounter-${encounterCompetitionId}`,
+          this.stateTransfer,
+          this.platformId,
+        ),
         map((result) => result?.data.encounterCompetition?.drawCompetition?.subEventCompetition),
         map((result) => {
           if (!result?.eventCompetition) {
             throw new Error('No event');
           }
 
-          this.type = result?.eventType;
+          if (!result.eventType) {
+            throw new Error('No event type');
+          }
+
+          this.type.set(result.eventType);
 
           return new EventCompetition(result?.eventCompetition);
         }),
@@ -831,21 +875,31 @@ export class AssemblyComponent implements OnInit {
         `,
         variables: {
           assembly: {
-            captainId: this.group.get('captain')?.value,
-            teamId: this.group.get('team')?.value,
-            encounterId: this.group.get('encounter')?.value,
+            captainId: this.group().get('captain')?.value,
+            teamId: this.group().get('team')?.value,
+            encounterId: this.group().get('encounter')?.value,
 
-            single1: this.group.get('single1')?.value?.id,
-            single2: this.group.get('single2')?.value?.id,
-            single3: this.group.get('single3')?.value?.id,
-            single4: this.group.get('single4')?.value?.id,
+            single1: this.group().get('single1')?.value?.id,
+            single2: this.group().get('single2')?.value?.id,
+            single3: this.group().get('single3')?.value?.id,
+            single4: this.group().get('single4')?.value?.id,
 
-            double1: this.group.get('double1')?.value?.map((r: Player) => r.id),
-            double2: this.group.get('double2')?.value?.map((r: Player) => r.id),
-            double3: this.group.get('double3')?.value?.map((r: Player) => r.id),
-            double4: this.group.get('double4')?.value?.map((r: Player) => r.id),
+            double1: this.group()
+              .get('double1')
+              ?.value?.map((r: Player) => r.id),
+            double2: this.group()
+              .get('double2')
+              ?.value?.map((r: Player) => r.id),
+            double3: this.group()
+              .get('double3')
+              ?.value?.map((r: Player) => r.id),
+            double4: this.group()
+              .get('double4')
+              ?.value?.map((r: Player) => r.id),
 
-            subtitudes: this.group.get('subtitudes')?.value?.map((r: Player) => r.id),
+            subtitudes: this.group()
+              .get('subtitudes')
+              ?.value?.map((r: Player) => r.id),
           },
         },
       })
@@ -869,12 +923,12 @@ export class AssemblyComponent implements OnInit {
       const playerA =
         (a.lastRanking?.single ?? 12) +
         (a.lastRanking?.double ?? 12) +
-        (this.type == 'MX' ? a.lastRanking?.mix ?? 12 : 12);
+        (this.type() == 'MX' ? a.lastRanking?.mix ?? 12 : 12);
 
       const playerB =
         (b.lastRanking?.single ?? 12) +
         (b.lastRanking?.double ?? 12) +
-        (this.type == 'MX' ? b.lastRanking?.mix ?? 12 : 12);
+        (this.type() == 'MX' ? b.lastRanking?.mix ?? 12 : 12);
 
       // If the same return single
       if (playerA == playerB) {
@@ -906,7 +960,7 @@ export class AssemblyComponent implements OnInit {
     this.double1 = this.double1.sort(sortDouble);
     this.double2 = this.double2.sort(sortDouble);
 
-    if (this.type == 'MX') {
+    if (this.type() == 'MX') {
       this.double3 = this.double3.sort(sortMix);
       this.double4 = this.double4.sort(sortMix);
     } else {
@@ -916,7 +970,7 @@ export class AssemblyComponent implements OnInit {
   }
 
   private _setTranslations() {
-    if (this.type == 'M') {
+    if (this.type() == 'M') {
       this.captionSingle1Prefix = 'all.gender.males';
       this.captionSingle2Prefix = 'all.gender.males';
       this.captionSingle3Prefix = 'all.gender.males';
@@ -935,7 +989,7 @@ export class AssemblyComponent implements OnInit {
       this.captionSingle2 = 'all.competition.team-assembly.single2';
       this.captionSingle3 = 'all.competition.team-assembly.single3';
       this.captionSingle4 = 'all.competition.team-assembly.single4';
-    } else if (this.type == 'F') {
+    } else if (this.type() == 'F') {
       this.captionSingle1Prefix = 'all.gender.females';
       this.captionSingle2Prefix = 'all.gender.females';
       this.captionSingle3Prefix = 'all.gender.females';
@@ -1020,7 +1074,9 @@ export class AssemblyComponent implements OnInit {
           if (!result?.data?.encounterCompetition) {
             throw new Error('No encounterCompetition');
           }
-          return result.data.encounterCompetition?.assemblies?.map((assembly) => new Assembly(assembly));
+          return result.data.encounterCompetition?.assemblies?.map(
+            (assembly) => new Assembly(assembly),
+          );
         }),
       );
   }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -35,8 +35,7 @@ export class EditRankingAllComponent implements OnInit {
   currentOpen?: string;
   system!: RankingSystem;
 
-  @Input()
-  player!: Player;
+  player = input.required<Player>();
 
   constructor(
     private systemService: RankingSystemService,
@@ -79,11 +78,11 @@ export class EditRankingAllComponent implements OnInit {
       .subscribe((system) => {
         this.system = system;
 
-        if (!this.player) {
+        if (!this.player()) {
           throw new Error('Player is not set');
         }
 
-        if (!this.player.id) {
+        if (!this.player().id) {
           throw new Error('Player id is not set');
         }
 
@@ -95,7 +94,10 @@ export class EditRankingAllComponent implements OnInit {
           throw new Error('System id is not set');
         }
 
-        this.query$ = this.appollo.watchQuery<{ player: Partial<Player> }, { playerId: string; system: string }>({
+        this.query$ = this.appollo.watchQuery<
+          { player: Partial<Player> },
+          { playerId: string; system: string }
+        >({
           query: gql`
             query AllRanking($playerId: ID!, $system: String) {
               player(id: $playerId) {
@@ -115,7 +117,7 @@ export class EditRankingAllComponent implements OnInit {
             }
           `,
           variables: {
-            playerId: this.player.id,
+            playerId: this.player().id,
             system: this.system.id,
           },
         });
@@ -179,7 +181,7 @@ export class EditRankingAllComponent implements OnInit {
         data: {
           place: {
             ...place,
-            playerId: this.player.id,
+            playerId: this.player().id,
           },
           system: this.system,
         },

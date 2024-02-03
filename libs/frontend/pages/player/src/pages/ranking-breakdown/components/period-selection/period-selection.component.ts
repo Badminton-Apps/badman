@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Signal, ViewChild, computed, signal } from '@angular/core';
+import { Component, ViewChild, computed, input, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
@@ -35,13 +35,15 @@ import { MomentModule } from 'ngx-moment';
   ],
 })
 export class PeriodSelectionComponent {
-  @Input() period!: FormGroup<{
-    start: FormControl<Moment>;
-    end: FormControl<Moment>;
-    game: FormControl<Moment>;
-    next: FormControl<Moment>;
-  }>;
-  @Input() system!: Signal<RankingSystem>;
+  period = input.required<
+    FormGroup<{
+      start: FormControl<Moment>;
+      end: FormControl<Moment>;
+      game: FormControl<Moment>;
+      next: FormControl<Moment>;
+    }>
+  >();
+  system = input.required<RankingSystem>();
 
   @ViewChild(MatMenuTrigger) trigger?: MatMenuTrigger;
   minDateInUpdate?: Moment;
@@ -110,7 +112,7 @@ export class PeriodSelectionComponent {
       .clone()
       .add(this.system().calculationIntervalAmount, this.system().calculationIntervalUnit);
 
-    this.period?.patchValue({
+    this.period()?.patchValue({
       start: startPeriod,
       end: endPeriod,
       game: gamePeriod,
