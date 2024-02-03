@@ -3,13 +3,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   Injector,
-  Input,
   OnInit,
   PLATFORM_ID,
   Signal,
   TransferState,
   computed,
   inject,
+  input
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatTableModule } from '@angular/material/table';
@@ -19,7 +19,6 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { first, map } from 'rxjs';
-import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-ranking-table',

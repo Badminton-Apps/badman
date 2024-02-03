@@ -3,7 +3,7 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
+  input,
   Output,
   TemplateRef,
   ViewChild,
@@ -14,7 +14,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Apollo, gql } from 'apollo-angular';
 import { iif, of, switchMap } from 'rxjs';
-import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-add-role',
