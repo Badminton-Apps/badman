@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.8...v6.130.0-beta.9) (2024-02-05)
+
+
+### Features
+
+* signal based inputs ([9f55333](https://github.com/Badminton-Apps/badman/commit/9f55333e8f5ab42a0052536eb37e331b71e02f9f))
+* updated packages ([b3557cc](https://github.com/Badminton-Apps/badman/commit/b3557cc87f34d934e025fb23ba8751d6ecd0de18))
+
+
+### Bug Fixes
+
+* **deps:** update dependency nodemailer to v6.9.9 [security] ([2ede572](https://github.com/Badminton-Apps/badman/commit/2ede572ef83ec7d19f6c55d2296b4e65496cb7c5))
+* linting ([eb54086](https://github.com/Badminton-Apps/badman/commit/eb5408619a6ca3e49b8e3ae1b994ca703dcc1206))
+
 ## [6.130.0-beta.8](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.7...v6.130.0-beta.8) (2024-02-01)
 
 
