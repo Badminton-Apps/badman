@@ -3,11 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   Injector,
-  Input,
   OnChanges,
   OnInit,
   Signal,
   inject,
+  input,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,9 +21,8 @@ import { sortComments } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { of, Subject } from 'rxjs';
-import { catchError, take, map, switchMap, startWith } from 'rxjs/operators';
-import { input } from '@angular/core';
+import { Subject, of } from 'rxjs';
+import { catchError, map, startWith, switchMap, take } from 'rxjs/operators';
 
 const COMMENTS_QUERY = gql`
   query GetEncounterComments($where: JSONObject) {
