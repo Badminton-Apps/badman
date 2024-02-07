@@ -1,5 +1,5 @@
 <badman-page-header>
-  <div avatar>{{ this.initials }}</div>
+  <div avatar>{{ this.initials() }}</div>
   <div title>{{this.player().fullName}}</div>
   <div subTitle>
     <div class="sub-text">
@@ -32,12 +32,12 @@
     <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
     </button>
-    @if (this.hasMenu$ | async) {
+    @if (this.hasMenu()) {
     <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      @if (this.canClaim$ | async) {
+      @if (this.canClaim()) {
       <button mat-menu-item (click)="this.claimAccount()">
         {{ 'all.player.menu.claim' | translate }}
       </button>
