@@ -13,6 +13,7 @@ export default class AssemblyPage {
   readonly clubInput: Locator;
   readonly teamSelect: Locator;
   readonly encounterSelect: Locator;
+  readonly seasonSelect: Locator;
 
   readonly single1List: Locator;
   readonly single2List: Locator;
@@ -39,6 +40,7 @@ export default class AssemblyPage {
     this.clubInput = page.locator('badman-select-club input');
     this.teamSelect = page.locator('badman-select-team');
     this.encounterSelect = page.locator('badman-select-encounter');
+    this.seasonSelect = page.locator('badman-select-season');
 
     this.header = page.locator('h1');
 
@@ -85,10 +87,7 @@ export default class AssemblyPage {
     );
 
     // wait for season to be loaded
-    await this.page.waitForSelector('badman-select-season', {
-      // this can take a wile on CI
-      timeout: 120_000,
-    });
+    await this.seasonSelect.waitFor({ state: 'visible' });
   }
 
   /**
@@ -97,7 +96,7 @@ export default class AssemblyPage {
    */
   async selectTeam(team: string) {
     // click on the mat-label in this.teamInput
-    this.teamSelect.locator('mat-label').click();
+    await this.teamSelect.locator('mat-label').click();
 
     await this.overlay.locator('mat-option').isVisible();
 
