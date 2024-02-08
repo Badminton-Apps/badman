@@ -1,36 +1,18 @@
 {
-  "name": "backend-competition-enrollment",
+  "name": "backend-assembly",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/backend/competition/enrollment/src",
+  "sourceRoot": "libs/backend/competition/assembly/src",
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:swc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/backend/competition/enrollment",
-        "tsConfig": "libs/backend/competition/enrollment/tsconfig.lib.json",
-        "packageJson": "libs/backend/competition/enrollment/package.json",
-        "main": "libs/backend/competition/enrollment/src/index.ts",
-        "assets": ["libs/backend/competition/enrollment/*.md"]
-      }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs backend-competition-enrollment {args.ver} {args.tag}"
-      },
-      "dependsOn": ["build"]
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/backend/competition/enrollment/jest.config.ts"
+        "outputPath": "dist/libs/backend/competition/assembly",
+        "tsConfig": "libs/backend/competition/assembly/tsconfig.lib.json",
+        "packageJson": "libs/backend/competition/assembly/package.json",
+        "main": "libs/backend/competition/assembly/src/index.ts",
+        "assets": ["libs/backend/competition/assembly/*.md"]
       }
     }
   },

@@ -17,7 +17,7 @@ export class CompetitionEncounterNotEnteredNotifier extends Notifier<
 > {
   protected linkType = 'encounterCompetition';
   protected type: keyof NotificationOptionsTypes = 'encounterNotEnteredNotification';
-  protected allowedAmount = 1;
+  protected override allowedAmount = 1;
 
   private readonly options = (url: string, encounter: EncounterCompetition) => {
     return {

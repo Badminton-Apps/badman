@@ -72,7 +72,7 @@ export class PlayerRankingType extends PartialType(
 @ObjectType()
 export class TeamEnrollmentOutput {
   @Field(() => ID)
-  id!: string;
+  override id!: string;
 
   @Field(() => ID, { nullable: true })
   linkId?: string;

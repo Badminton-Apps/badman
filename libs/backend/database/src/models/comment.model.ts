@@ -44,13 +44,7 @@ export class Comment extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
-
-  @Field(() => Date, { nullable: true })
-  updatedAt?: Date;
-
-  @Field(() => Date, { nullable: true })
-  createdAt?: Date;
+  override id!: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.TEXT)
