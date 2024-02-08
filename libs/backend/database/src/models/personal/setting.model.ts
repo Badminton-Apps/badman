@@ -42,7 +42,7 @@ export class Setting extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Field(() => String, { nullable: true })
   @Column({
