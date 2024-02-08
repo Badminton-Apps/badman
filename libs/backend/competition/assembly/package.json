@@ -1,10 +1,10 @@
 {
   "name": "@badman/backend-assembly",
   "version": "0.0.1",
-  "type": "commonjs",
   "dependencies": {
-    "@badman/backend-database": "workspace:*",
-    "@badman/backend-translate": "workspace:*",
-    "@badman/backend-compile": "workspace:*"
-  }
+    "tslib": "^2.3.0"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts"
 }

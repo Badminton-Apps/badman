@@ -63,7 +63,7 @@ export class EventEntry extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @BelongsTo(() => Team, 'teamId')
   team?: Relation<Team>;

@@ -4,42 +4,11 @@
   "sourceRoot": "apps/scripts/src",
   "projectType": "application",
   "targets": {
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
-      "options": {
-        "target": "node",
-        "compiler": "tsc",
-        "outputPath": "dist/apps/scripts",
-        "main": "apps/scripts/src/main.ts",
-        "tsConfig": "apps/scripts/tsconfig.app.json",
-        "assets": [
-          {
-            "glob": "**/*",
-            "input": "libs/backend/translate/assets",
-            "output": "assets"
-          }
-        ],
-        "webpackConfig": "apps/scripts/webpack.config.js"
-      },
-      "configurations": {
-        "development": {},
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false
-        }
-      }
-    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "scripts:build",
-        "port": 9240,
-        "inspect": "inspect",
-        "host": "0.0.0.0"
+        "buildTarget": "scripts:build"
       },
       "configurations": {
         "development": {
@@ -48,17 +17,6 @@
         "production": {
           "buildTarget": "scripts:build:production"
         }
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/scripts"],
-      "options": {
-        "jestConfig": "apps/scripts/jest.config.js"
       }
     }
   },
