@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/micro/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []

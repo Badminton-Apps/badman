@@ -6,19 +6,14 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/graphql",
         "tsConfig": "libs/backend/graphql/tsconfig.lib.json",
         "packageJson": "libs/backend/graphql/package.json",
         "main": "libs/backend/graphql/src/index.ts",
-        "assets": [
-          "libs/backend/graphql/*.md"
-        ]
-      },
-      "dependsOn": ["^build"]
+        "assets": ["libs/backend/graphql/*.md"]
+      }
     }
   },
   "tags": []

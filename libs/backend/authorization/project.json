@@ -6,19 +6,14 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/authorization",
         "tsConfig": "libs/backend/authorization/tsconfig.lib.json",
         "packageJson": "libs/backend/authorization/package.json",
         "main": "libs/backend/authorization/src/index.ts",
-        "assets": [
-          "libs/backend/authorization/*.md"
-        ]
-      },
-      "dependsOn": ["^build"]
+        "assets": ["libs/backend/authorization/*.md"]
+      }
     }
   },
   "tags": []
