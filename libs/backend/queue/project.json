@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/queue/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []

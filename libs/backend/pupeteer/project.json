@@ -6,19 +6,14 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/pupeteer",
         "tsConfig": "libs/backend/pupeteer/tsconfig.lib.json",
         "packageJson": "libs/backend/pupeteer/package.json",
         "main": "libs/backend/pupeteer/src/index.ts",
-        "assets": [
-          "libs/backend/pupeteer/*.md"
-        ]
-      },
-      "dependsOn": ["^build"]
+        "assets": ["libs/backend/pupeteer/*.md"]
+      }
     }
   },
   "tags": []

@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/notifications/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []

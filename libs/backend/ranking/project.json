@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/ranking/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []

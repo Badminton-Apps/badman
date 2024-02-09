@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/cache/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []

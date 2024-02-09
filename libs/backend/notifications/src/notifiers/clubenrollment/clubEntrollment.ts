@@ -22,7 +22,7 @@ export class ClubEnrollmentNotifier extends Notifier<
 > {
   protected linkType = 'club';
   protected type: keyof NotificationOptionsTypes = 'clubEnrollmentNotification';
-  protected allowedInterval: unitOfTime.Diff = 'minute';
+  protected override allowedInterval: unitOfTime.Diff = 'minute';
 
   private readonly options = (club: Club) => {
     return {

@@ -6,19 +6,14 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/compile",
         "tsConfig": "libs/backend/compile/tsconfig.lib.json",
         "packageJson": "libs/backend/compile/package.json",
         "main": "libs/backend/compile/src/index.ts",
-        "assets": [
-          "libs/backend/compile/*.md"
-        ]
-      },
-      "dependsOn": ["^build"]
+        "assets": ["libs/backend/compile/*.md"]
+      }
     }
   },
   "tags": []

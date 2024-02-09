@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/twizzit/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []

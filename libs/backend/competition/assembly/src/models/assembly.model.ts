@@ -17,7 +17,7 @@ import { AssemblyValidationError } from './error.model';
 @InputType()
 export class AssemblyInput {
   @Field(() => ID, { nullable: true })
-  encounterId?: string;
+  encounterId!: string;
 
   @Field(() => ID)
   teamId!: string;

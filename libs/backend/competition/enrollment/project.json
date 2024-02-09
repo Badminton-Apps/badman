@@ -1,18 +1,18 @@
 {
-  "name": "backend-assembly",
+  "name": "backend-enrollment",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/backend/competition/assembly/src",
+  "sourceRoot": "libs/backend/competition/enrollment/src",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/backend/competition/assembly",
-        "tsConfig": "libs/backend/competition/assembly/tsconfig.lib.json",
-        "packageJson": "libs/backend/competition/assembly/package.json",
-        "main": "libs/backend/competition/assembly/src/index.ts",
-        "assets": ["libs/backend/competition/assembly/*.md"]
+        "outputPath": "dist/libs/backend/competition/enrollment",
+        "tsConfig": "libs/backend/competition/enrollment/tsconfig.lib.json",
+        "packageJson": "libs/backend/competition/enrollment/package.json",
+        "main": "libs/backend/competition/enrollment/src/index.ts",
+        "assets": ["libs/backend/competition/enrollment/*.md"]
       }
     }
   },

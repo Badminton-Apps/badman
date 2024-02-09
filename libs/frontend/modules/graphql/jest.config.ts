@@ -3,7 +3,6 @@ export default {
   displayName: 'frontend-graphql',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
   coverageDirectory: '../../../../coverage/libs/frontend/modules/graphql',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

@@ -1,15 +1,15 @@
 {
-  "name": "frontend-pages-ranking",
+  "name": "frontend-ranking",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "library",
   "sourceRoot": "libs/frontend/pages/ranking/src",
   "prefix": "badman",
+  "tags": [],
+  "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/angular:package",
+      "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "tsConfig": "libs/frontend/pages/ranking/tsconfig.lib.json",
         "project": "libs/frontend/pages/ranking/ng-package.json"
       },
       "configurations": {
@@ -20,19 +20,7 @@
           "tsConfig": "libs/frontend/pages/ranking/tsconfig.lib.json"
         }
       },
-      "defaultConfiguration": "development"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/frontend/pages/ranking/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
+      "defaultConfiguration": "production"
     }
-  },
-  "tags": []
+  }
 }

@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/translate/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []
