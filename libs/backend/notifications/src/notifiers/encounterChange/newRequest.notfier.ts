@@ -14,7 +14,7 @@ export class CompetitionEncounterChangeNewRequestNotifier extends Notifier<{
   protected linkType = 'encounterCompetition';
   protected type: keyof NotificationOptionsTypes =
     'encounterChangeNewNotification';
-  protected allowedInterval: unitOfTime.Diff = 'hour';
+  protected override allowedInterval: unitOfTime.Diff = 'hour';
 
   private readonly options = (encounter: EncounterCompetition) => {
     return {

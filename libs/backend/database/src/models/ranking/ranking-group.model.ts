@@ -47,7 +47,7 @@ export class RankingGroup extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Unique
   @Field(() => String, { nullable: true })

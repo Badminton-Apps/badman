@@ -29,7 +29,7 @@ export class RequestLink extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Field(() => String, {nullable: true })
   @Column(DataType.STRING)
