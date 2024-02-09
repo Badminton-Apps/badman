@@ -49,7 +49,7 @@ export class Availability extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)

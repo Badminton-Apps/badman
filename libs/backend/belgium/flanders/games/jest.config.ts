@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'belgium-flanders-games',
+  displayName: 'belgium-flanders-game',
   preset: '../../../../../jest.preset.js',
   testEnvironment: 'node',
   transform: {

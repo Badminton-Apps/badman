@@ -42,7 +42,7 @@ export class EncounterChangeDate extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)

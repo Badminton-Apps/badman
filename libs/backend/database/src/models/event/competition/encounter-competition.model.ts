@@ -54,7 +54,7 @@ export class EncounterCompetition extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)

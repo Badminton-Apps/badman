@@ -1,5 +1,5 @@
 {
-  "name": "belgium-flanders-points",
+  "name": "belgium-flanders-point",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/belgium/flanders/points/src",
   "projectType": "library",
@@ -13,17 +13,6 @@
         "packageJson": "libs/backend/belgium/flanders/points/package.json",
         "main": "libs/backend/belgium/flanders/points/src/index.ts",
         "assets": ["libs/backend/belgium/flanders/points/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/backend/belgium/flanders/points/jest.config.ts"
       }
     }
   },

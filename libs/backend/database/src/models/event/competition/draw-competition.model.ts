@@ -55,7 +55,7 @@ export class DrawCompetition extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Unique('DrawCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })

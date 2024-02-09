@@ -1,0 +1,40 @@
+name: Release Workflow
+
+on:
+  # manual trigger
+  workflow_dispatch:
+    inputs:
+      # main branch name
+      prod-release:
+        description: 'Do prod release'
+        required: true
+        default: false
+        type: boolean
+      # main branch name
+      e2e-tests:
+        description: 'Do e2e tests'
+        required: true
+        default: true
+        type: boolean
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+run-name: ${{ inputs.prod-release && 'Prod' || 'Beta' }} release ${{ inputs.e2e-tests && 'with E2E tests' || '' }}
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - uses: nrwl/nx-set-shas@v4
+      - run: npx nx start-ci-run --stop-agents-after="e2e-ci"
+      - run: npx nx affected -t lint test build e2e-ci

@@ -59,7 +59,7 @@ export class SubEventTournament extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Unique('SubEventTournaments_unique_constraint')
   @Field(() => String, { nullable: true })

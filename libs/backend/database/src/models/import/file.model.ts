@@ -29,7 +29,7 @@ export class ImporterFile extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Unique('unique_constraint')
   @Field(() => String, {nullable: true })

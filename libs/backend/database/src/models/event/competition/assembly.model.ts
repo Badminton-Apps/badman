@@ -30,7 +30,7 @@ export class Assembly extends Model<Assembly> {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Field(() => AssemblyType, { nullable: true })
   @Column({

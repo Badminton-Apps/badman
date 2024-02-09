@@ -6,25 +6,19 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/backend/twizzit",
         "tsConfig": "libs/backend/twizzit/tsconfig.lib.json",
         "packageJson": "libs/backend/twizzit/package.json",
         "main": "libs/backend/twizzit/src/index.ts",
-        "assets": ["libs/backend-twizzit/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/twizzit"],
-      "options": {
-        "jestConfig": "libs/backend/twizzit/jest.config.ts"
-      }
+        "assets": [
+          "libs/backend/twizzit/*.md"
+        ]
+      },
+      "dependsOn": ["^build"]
     }
   },
   "tags": []

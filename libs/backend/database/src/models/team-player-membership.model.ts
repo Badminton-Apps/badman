@@ -34,7 +34,7 @@ export class TeamPlayerMembership extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @ForeignKey(() => Player)
   @AllowNull(false)

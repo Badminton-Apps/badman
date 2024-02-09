@@ -6,24 +6,19 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/backend/database",
         "tsConfig": "libs/backend/database/tsconfig.lib.json",
         "packageJson": "libs/backend/database/package.json",
-        "main": "libs/backend/database/src/index.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/database"],
-      "options": {
-        "jestConfig": "libs/backend/database/jest.config.js"
-      }
+        "main": "libs/backend/database/src/index.ts",
+        "assets": [
+          "libs/backend/database/*.md"
+        ]
+      },
+      "dependsOn": ["^build"]
     }
   },
   "tags": []
