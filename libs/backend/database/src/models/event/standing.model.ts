@@ -32,6 +32,12 @@ export class Standing extends Model {
   @Column(DataType.UUIDV4)
   override id!: string;
 
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
+
   @BelongsTo(() => EventEntry, 'entryId')
   entry?: Relation<EventEntry>;
 

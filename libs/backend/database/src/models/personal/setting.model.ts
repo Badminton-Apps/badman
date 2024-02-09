@@ -44,6 +44,12 @@ export class Setting extends Model {
   @Column(DataType.UUIDV4)
   override id!: string;
 
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
+
   @Field(() => String, { nullable: true })
   @Column({
     type: DataType.STRING,

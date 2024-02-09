@@ -32,6 +32,12 @@ export class Assembly extends Model<Assembly> {
   @Column(DataType.UUIDV4)
   override id!: string;
 
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
+
   @Field(() => AssemblyType, { nullable: true })
   @Column({
     type: DataType.JSON,
