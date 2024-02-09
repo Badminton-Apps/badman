@@ -1,9 +1,8 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-pages-tournament',
+  displayName: 'frontend-tournament',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
   coverageDirectory: '../../../../coverage/libs/frontend/pages/tournament',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

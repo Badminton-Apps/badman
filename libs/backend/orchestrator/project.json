@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/orchestrator/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []

@@ -93,7 +93,6 @@ export class UploadRankingController {
             memberId: row['P1Memberid'],
             firstName: row['P1Firstname'],
             lastName: names.join(' '),
-            gender: row['gender'],
             role: 'Competitiespeler',
           } as MembersRolePerGroupData;
         }

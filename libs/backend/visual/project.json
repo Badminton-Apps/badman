@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/visual/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []

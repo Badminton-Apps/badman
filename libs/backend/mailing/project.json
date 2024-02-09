@@ -17,8 +17,7 @@
         "assets": [
           "libs/backend/mailing/*.md"
         ]
-      },
-      "dependsOn": ["^build"]
+      }
     }
   },
   "tags": []

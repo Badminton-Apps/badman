@@ -1,9 +1,8 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-pages-role',
+  displayName: 'frontend-role',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
   coverageDirectory: '../../../../coverage/libs/frontend/pages/role',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
