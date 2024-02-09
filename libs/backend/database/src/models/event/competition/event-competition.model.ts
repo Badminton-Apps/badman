@@ -54,6 +54,12 @@ export class EventCompetition extends Model {
   @Column(DataType.UUIDV4)
   override id!: string;
 
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
+
   @Unique('EventCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)

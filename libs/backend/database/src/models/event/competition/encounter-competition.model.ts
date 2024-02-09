@@ -57,6 +57,12 @@ export class EncounterCompetition extends Model {
   override id!: string;
 
   @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
+
+  @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   date?: Date;
 
