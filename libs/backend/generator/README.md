@@ -1,7 +1,11 @@
-# api-generator
+# backend-generator
 
 This library was generated with [Nx](https://nx.dev).
 
+## Building
+
+Run `nx build backend-generator` to build the library.
+
 ## Running unit tests
 
-Run `nx test api-generator` to execute the unit tests via [Jest](https://jestjs.io).
+Run `nx test backend-generator` to execute the unit tests via [Jest](https://jestjs.io).

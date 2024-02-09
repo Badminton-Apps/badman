@@ -515,7 +515,7 @@ export class MailingService {
           } as CompileOptions),
         );
 
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env['NODE_ENV'] === 'development') {
           await writeFile(`mails/${options.template}.html`, compiled);
           this.logger.debug(`Mail saved to mail/${options.template}.html`);
         }
