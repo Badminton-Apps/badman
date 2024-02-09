@@ -65,6 +65,12 @@ export class EventEntry extends Model {
   @Column(DataType.UUIDV4)
   override id!: string;
 
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
+
   @BelongsTo(() => Team, 'teamId')
   team?: Relation<Team>;
 
