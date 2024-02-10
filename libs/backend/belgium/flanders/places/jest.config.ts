@@ -3,6 +3,7 @@ export default {
   displayName: 'belgium-flanders-place',
   preset: '../../../../../jest.preset.js',
   testEnvironment: 'node',
+  passWithNoTests: true,
   transform: {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },

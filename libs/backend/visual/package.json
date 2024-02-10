@@ -3,7 +3,18 @@
   "version": "0.0.1",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "tslib": "^2.3.0"
+    "axios": "^1.6.7",
+    "axios-retry": "^4.0.0",
+    "fast-xml-parser": "^4.3.4",
+    "@nestjs/common": "^10.3.1",
+    "@nestjs/config": "^3.1.1",
+    "axios-rate-limit": "^1.3.0",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.44",
+    "cache-manager": "5.4.0",
+    "@nestjs/cache-manager": "^2.2.0",
+    "@badman/backend-cache": "0.0.1",
+    "@badman/utils": "0.0.1"
   },
   "type": "commonjs",
   "main": "./src/index.js",

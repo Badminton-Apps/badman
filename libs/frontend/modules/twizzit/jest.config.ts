@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-twizzit',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/modules/twizzit',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

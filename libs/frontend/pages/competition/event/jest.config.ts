@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-event',
   preset: '../../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../../coverage/libs/frontend/pages/competition/event',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
