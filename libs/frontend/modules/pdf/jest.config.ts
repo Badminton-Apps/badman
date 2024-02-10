@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-pdf',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/modules/pdf',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

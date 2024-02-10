@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-cp',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/modules/cp',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

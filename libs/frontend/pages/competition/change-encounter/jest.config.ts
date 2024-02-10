@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-change-encounter',
   preset: '../../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../../coverage/libs/frontend/pages/competition/change-encounter',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

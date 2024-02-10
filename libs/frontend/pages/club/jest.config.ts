@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-club',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/club',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

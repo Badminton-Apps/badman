@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-notifications',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/notifications',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
