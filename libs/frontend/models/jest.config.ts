@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-models',
   preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../coverage/libs/frontend/models',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

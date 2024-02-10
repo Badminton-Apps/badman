@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-ranking',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/ranking',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

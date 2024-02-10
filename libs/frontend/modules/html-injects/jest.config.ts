@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-html-injects',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/modules/html-injects',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

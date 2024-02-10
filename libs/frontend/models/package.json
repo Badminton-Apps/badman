@@ -2,11 +2,9 @@
   "name": "@badman/frontend-models",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^17.1.0",
-    "@angular/core": "^17.1.0"
+    "@badman/utils": "0.0.1",
+    "moment": "^2.30.1"
   },
-  "dependencies": {
-    "tslib": "^2.3.0"
-  },
+  "dependencies": {},
   "sideEffects": false
 }

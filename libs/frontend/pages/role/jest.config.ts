@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-role',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/role',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

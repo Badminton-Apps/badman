@@ -3,6 +3,7 @@ export default {
   displayName: 'frontend-player',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/player',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
