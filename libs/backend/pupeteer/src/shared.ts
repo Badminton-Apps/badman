@@ -2,7 +2,7 @@ import { ElementHandle, launch, Page } from 'puppeteer';
 
 export async function getBrowser(headless = true) {
   return await launch({
-    headless: headless ? 'new' : false,
+    headless: headless ? true : false,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
