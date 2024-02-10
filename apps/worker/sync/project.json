@@ -8,7 +8,10 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "worker-sync:build"
+        "buildTarget": "worker-sync:build",
+        "port": 9231,
+        "inspect": "inspect",
+        "host": "0.0.0.0"
       },
       "configurations": {
         "development": {

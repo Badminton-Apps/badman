@@ -17,6 +17,9 @@
     ],
     "sharedGlobals": []
   },
+  "release": {
+    "projects": ["badman", "worker-sync", "worker-ranking"]
+  },
   "targetDefaults": {
     "@angular-devkit/build-angular:application": {
       "cache": true,
