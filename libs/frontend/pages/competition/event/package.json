@@ -21,7 +21,7 @@
     "@badman/frontend-components": "0.0.1",
     "ng-apexcharts": "^1.8.0",
     "xng-breadcrumb": "^10.0.2",
-    "@ng-maps/google": "^5.0.4",
+    "@ng-maps/google": "^6.0.0",
     "@badman/frontend-seo": "0.0.1",
     "@badman/frontend-queue": "0.0.1",
     "@badman/utils": "0.0.1",
