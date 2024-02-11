@@ -21,6 +21,7 @@ export class CronService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    this.logger.verbose('Scheduling crons');
     await this.queueSystems();
     await this.queueCrons();
 
@@ -173,7 +174,9 @@ export class CronService implements OnModuleInit {
       onTick: async () => {
         this.logger.verbose(`Queueing ${job.name}`);
 
-        const system = await RankingSystem.findByPk((job.meta!.arguments as unknown as { systemId: string }).systemId);
+        const system = await RankingSystem.findByPk(
+          (job.meta!.arguments as unknown as { systemId: string }).systemId,
+        );
 
         if (!system) {
           throw new Error(`System not found`);
