@@ -22,7 +22,7 @@
       "conventionalCommits": true
     }
   },
-  
+
   "targetDefaults": {
     "@angular-devkit/build-angular:application": {
       "cache": true,
@@ -43,6 +43,12 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "e2e": {
+      "dependsOn": ["^build"]
+    },
+    "e2e-ci": {
+      "dependsOn": ["^build"]
     }
   },
   "plugins": [

@@ -15,7 +15,9 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
 
     this.logger.log(`Loading ${env} config`);
 
-    const models = Object.values(sequelizeModels).filter((m) => m.prototype instanceof Model) as ModelCtor[];
+    const models = Object.values(sequelizeModels).filter(
+      (m) => m.prototype instanceof Model,
+    ) as ModelCtor[];
 
     const logging = this.configService.get<boolean>('DB_LOGGING') ? console.log : false;
 
