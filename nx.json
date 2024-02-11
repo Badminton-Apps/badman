@@ -18,11 +18,11 @@
     "sharedGlobals": []
   },
   "release": {
-    "projects": ["badman", "worker-sync", "worker-ranking"],
     "version": {
       "conventionalCommits": true
     }
   },
+  
   "targetDefaults": {
     "@angular-devkit/build-angular:application": {
       "cache": true,
