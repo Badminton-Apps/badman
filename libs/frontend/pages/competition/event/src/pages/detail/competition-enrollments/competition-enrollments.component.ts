@@ -2,7 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
-import { Component, Injector, Input, OnInit, Signal, effect, inject, signal } from '@angular/core';
+import { Component, Injector, OnInit, Signal, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -28,7 +28,6 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { from } from 'rxjs';
 import { bufferCount, concatMap, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
-import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-competition-enrollments',

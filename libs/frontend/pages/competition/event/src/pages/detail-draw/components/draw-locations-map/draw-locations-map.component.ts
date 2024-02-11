@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DrawCompetition, DrawTournament, Location } from '@badman/frontend-models';
+import { NgMapsGoogleModule } from '@ng-maps/google';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { NgMapsGoogleModule } from '@ng-maps/google';
-import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-draw-locations-map',

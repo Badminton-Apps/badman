@@ -15,7 +15,7 @@
     "@ngx-translate/core": "^15.0.0",
     "rxjs": "~7.8.1",
     "@badman/frontend-models": "0.0.1",
-    "@ng-maps/places": "^5.0.1",
+    "@ng-maps/places": "^6.0.0",
     "apollo-angular": "^6.0.0",
     "ngxtension": "^2.0.0",
     "@badman/frontend-graphql": "0.0.1",
