@@ -1,0 +1,15 @@
+{
+  "name": "@badman/backend-queue",
+  "version": "0.0.1",
+  "dependencies": {
+    "@swc/helpers": "~0.5.2",
+    "@nestjs/common": "^10.3.1",
+    "@nestjs/config": "^3.1.1",
+    "@nestjs/bull": "^10.0.1",
+    "@badman/utils": "0.0.1"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "devDependencies": {}
+}
