@@ -1,0 +1,12 @@
+{
+  "name": "@badman/frontend-html-injects",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^17.1.0",
+    "@angular/core": "^17.1.0",
+    "@ng-maps/google": "^5.0.4",
+    "@googlemaps/js-api-loader": "^1.16.2"
+  },
+  "dependencies": {},
+  "sideEffects": false
+}

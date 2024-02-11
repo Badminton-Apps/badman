@@ -1,0 +1,13 @@
+{
+  "name": "@badman/backend-pupeteer",
+  "version": "0.0.1",
+  "dependencies": {
+    "@swc/helpers": "~0.5.2",
+    "puppeteer": "^21.10.0",
+    "@nestjs/common": "^10.3.1"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "devDependencies": {}
+}
