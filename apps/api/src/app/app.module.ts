@@ -36,14 +36,14 @@ const envFilePath = process.env.NODE_ENV === 'test' ? '.env.test' : undefined;
 @Module({
   imports: [
     ...productionModules,
-    // CleanEnvironmentModule.forPredicate(envFilePath, () => process.env.NODE_ENV === 'test'),
+    CleanEnvironmentModule.forPredicate(envFilePath, () => process.env.NODE_ENV === 'test'),
     ConfigModule.forRoot({
       cache: true,
       validationSchema: configSchema,
       load: [load],
-      // expandVariables: true,
-      // envFilePath: envFilePath,
-      // ignoreEnvVars: process.env.NODE_ENV === 'test',
+      expandVariables: true,
+      envFilePath: envFilePath,
+      ignoreEnvVars: process.env.NODE_ENV === 'test',
     }),
     AuthorizationModule,
     GrapqhlModule,
