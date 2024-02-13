@@ -68,9 +68,6 @@ export default class AssemblyPage {
   async goto() {
     await setup(this.page);
     await this.page.goto('/competition/assembly');
-    await this.page.waitForResponse(
-      (resp) => resp.url().includes('/api/v1/translate/i18n') && resp.status() === 200,
-    );
   }
 
   /**

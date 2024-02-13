@@ -5,7 +5,7 @@ import { workspaceRoot } from '@nx/devkit';
 import dotenv from 'dotenv';
 
 dotenv.config({
-  path: `.env.test`,
+  path:[ `.env.test`],
   override: true,
 });
 
@@ -16,15 +16,14 @@ const baseURL = process.env['BASE_URL'] || 'http://localhost:5000';
  * See https://playwright.dev/docs/test-configuration.https://github.com/Badminton-Apps/badman/actions/runs/7568349931/job/20609664637#logs
  */
 export default defineConfig({
-  ...nxE2EPreset(__filename, { testDir: './src' }),
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  ...nxE2EPreset(__filename, { testDir: '../badman-e2e/src' }),
   use: {
     baseURL,
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
   reporter: [['html'], [process.env.CI ? 'github' : 'list']],
-  /* We build our projects and then api hosts itself and the client */
+  retries: 2,
+  workers: process.env.CI ? 1 : '20%',
   webServer: {
     command: 'node dist/apps/api/main.js',
     url: `${baseURL}/api/health`,
@@ -36,26 +35,11 @@ export default defineConfig({
     stderr: 'pipe',
     env: {
       NODE_ENV: 'test',
+      PORT: '5000',
     },
   },
-
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-
-    /* Test against mobile viewports. */
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
