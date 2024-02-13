@@ -24,9 +24,10 @@ import { CleanEnvironmentModule } from './clean-environment.module';
 
 const productionModules = [];
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
+  Logger.debug(`Adding static file serving to folder: ${join(__dirname, '..', 'badman')}`);
   productionModules.push(
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'badman'),
+      rootPath: join(__dirname, '..', 'badman', 'browser'),
       exclude: ['api/*', '/graphql'],
     }),
   );
