@@ -1,9 +1,12 @@
 :host {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+  display: block
+  ;
+  & > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 }
-
 
 .animation-block {
   animation: placeholderShimmer 5s linear 0s infinite normal forwards;

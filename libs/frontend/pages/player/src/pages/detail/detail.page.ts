@@ -61,21 +61,21 @@ import { ShowLevelComponent } from './components/show-level.component';
   ],
 })
 export class DetailPageComponent {
-  // Dependencies
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private breadcrumbService = inject(BreadcrumbService);
-  private seoService = inject(SeoService);
-  private apollo = inject(Apollo);
-  private stateTransfer = inject(TransferState);
-  private platformId = inject(PLATFORM_ID);
-  private dialog = inject(MatDialog);
-  private snackBar = inject(MatSnackBar);
-  private translate = inject(TranslateService);
-  private claim = inject(ClaimService);
-  private auth = inject(AuthenticateService);
-  private destroy$ = injectDestroy();
-  private injector = inject(Injector);
+  // private
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly seoService = inject(SeoService);
+  private readonly apollo = inject(Apollo);
+  private readonly stateTransfer = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
+  private readonly claim = inject(ClaimService);
+  private readonly auth = inject(AuthenticateService);
+  private readonly destroy$ = injectDestroy();
+  private readonly injector = inject(Injector);
 
   // route
   private queryParams = toSignal(this.route.queryParamMap);

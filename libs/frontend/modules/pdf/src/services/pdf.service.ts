@@ -13,7 +13,7 @@ export class PdfService {
   ) {}
 
   getTeamAssembly(input: {
-    systemId: string;
+    systemId: string | null;
     captainId: string;
     teamId: string;
     encounterId: string;

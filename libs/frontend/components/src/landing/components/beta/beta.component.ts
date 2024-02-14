@@ -2,17 +2,17 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   OnInit,
   PLATFORM_ID,
-  input
+  computed,
+  inject,
+  input,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { AuthenticateService, LoggedinUser } from '@badman/frontend-auth';
-import { Observable } from 'rxjs';
+import { AuthenticateService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-beta',
@@ -23,21 +23,18 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BetaComponent implements OnInit {
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly authenticateService = inject(AuthenticateService);
+
   version = input<string | undefined>();
 
-  user$?: Observable<LoggedinUser>;
+  user = computed(() => this.authenticateService.userSignal());
+  loggedIn = computed(() => this.authenticateService.loggedInSignal());
 
   // store the state of the beta message in local storage
   hideBetaMessage = false;
 
-  constructor(
-    private authenticateService: AuthenticateService,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
-
   ngOnInit() {
-    this.user$ = this.authenticateService.user$;
-
     if (isPlatformBrowser(this.platformId)) {
       const hideBetaMessage = localStorage.getItem('hideBetaMessage');
       if (hideBetaMessage != undefined) {
