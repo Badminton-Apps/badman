@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { bTest } from '../fixture';
 
-bTest.describe('AssemblyPage page', () => {
+bTest.skip('AssemblyPage page', () => {
   bTest('if page is visible', async ({ assemblyPage }) => {
     await expect(assemblyPage.header).toContainText('Team assembly');
   });

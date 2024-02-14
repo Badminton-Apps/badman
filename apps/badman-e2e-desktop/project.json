@@ -4,4 +4,5 @@
   "sourceRoot": "apps/badman-e2e-desktop/src",
   "projectType": "application",
   "implicitDependencies": ["badman-e2e"]
+
 }
