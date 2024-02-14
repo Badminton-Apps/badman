@@ -17,13 +17,10 @@
       </p>
       <p>
         Mailing notification have been disabled by default, you can re-enable them by
-        @if (this.user$ | async; as user) {
-          @if (user.loggedIn) {
-            <a [routerLink]="['/', 'player', user.slug, 'settings']">going to your settings</a>
-          }
-          @if (!user.loggedIn) {
-            logging in, and going to your settings
-          }
+        @if (loggedIn()) {
+          <a [routerLink]="['/', 'player', user()?.slug]">going to your settings</a>
+        } @else {
+          logging in, and going to your settings
         }
       </p>
     </mat-card-content>
