@@ -77,14 +77,18 @@ export class RankingSystemResolver {
         throw new NotFoundException(`${RankingSystem.name}: ${updateRankingSystemData.id}`);
       }
 
-      // New system is now primary
-      if (updateRankingSystemData.primary == true) {
-        // Set other systems to false
+      // If the system is now primary, we need to set all other systems to false
+      if (dbSystem.primary == false && updateRankingSystemData.primary == true) {
+        // set all other systems to false
         await RankingSystem.update(
-          { primary: false },
+          {
+            primary: false,
+          },
           {
             where: {
-              primary: true,
+              id: {
+                [Op.ne]: updateRankingSystemData.id,
+              },
             },
             transaction,
           },
@@ -92,11 +96,7 @@ export class RankingSystemResolver {
       }
 
       // Update system
-      await dbSystem.update(updateRankingSystemData, {
-        transaction,
-      });
-
-      const dbEvent = await RankingSystem.findByPk(updateRankingSystemData.id, {
+      const dbEvent = await dbSystem.update(updateRankingSystemData, {
         transaction,
       });
 
