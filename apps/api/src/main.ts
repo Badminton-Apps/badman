@@ -32,7 +32,7 @@ async function bootstrap() {
   if (configService.get<string>('NODE_ENV') === 'test') {
     const redisMemoryServer = new RedisMemoryServer({
       instance: {
-        port: 6379,
+        port: configService.get('REDIS_PORT') || 6379,
       },
     });
 
