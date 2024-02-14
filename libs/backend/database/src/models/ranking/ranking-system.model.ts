@@ -76,13 +76,13 @@ export class RankingSystem extends Model {
   @Column(DataType.NUMBER)
   amountOfLevels!: number;
 
-  @Field(() => Int)
+  @Field(() => Number)
   @Column(DataType.NUMBER)
   procentWinning!: number;
-  @Field(() => Int)
+  @Field(() => Number)
   @Column(DataType.NUMBER)
   procentWinningPlus1!: number;
-  @Field(() => Int)
+  @Field(() => Number)
   @Column(DataType.NUMBER)
   procentLosing!: number;
   @Field(() => Int, { nullable: true })
