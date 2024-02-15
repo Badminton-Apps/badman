@@ -3,9 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  Injector,
   OnInit,
   Output,
   effect,
+  inject,
   input,
 } from '@angular/core';
 import {
@@ -42,18 +44,17 @@ import { debounceTime, filter, switchMap } from 'rxjs/operators';
   ],
 })
 export class EditPlayerFieldsComponent implements OnInit {
+  private readonly claimService = inject(ClaimService);
+  private readonly apollo = inject(Apollo);
+  private readonly _snackBar = inject(MatSnackBar);
+  private readonly injector = inject(Injector);
+
   player = input.required<Player>();
 
   @Output()
   playerChanged = new EventEmitter<Partial<Player>>();
 
   fg!: FormGroup;
-
-  constructor(
-    private claimService: ClaimService,
-    private apollo: Apollo,
-    private _snackBar: MatSnackBar,
-  ) {}
 
   ngOnInit(): void {
     const firstNameControl = new FormControl(this.player().firstName, Validators.required);
@@ -65,12 +66,17 @@ export class EditPlayerFieldsComponent implements OnInit {
     memberIdControl.disable();
     subControl.disable();
 
-    effect(() => {
-      if (this.claimService.hasClaim('link:player')) {
-        memberIdControl.enable();
-        subControl.enable();
-      }
-    });
+    effect(
+      () => {
+        if (this.claimService.hasClaim('link:player')) {
+          memberIdControl.enable();
+          subControl.enable();
+        }
+      },
+      {
+        injector: this.injector,
+      },
+    );
 
     this.fg = new FormGroup({
       firstName: firstNameControl,
