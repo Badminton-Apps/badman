@@ -1,15 +1,15 @@
 {
   "name": "frontend-job",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "library",
   "sourceRoot": "libs/frontend/pages/job/src",
   "prefix": "badman",
+  "tags": [],
+  "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/angular:package",
+      "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "tsConfig": "libs/frontend/pages/job/tsconfig.lib.json",
         "project": "libs/frontend/pages/job/ng-package.json"
       },
       "configurations": {
@@ -21,17 +21,6 @@
         }
       },
       "defaultConfiguration": "production"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/frontend/pages/job/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

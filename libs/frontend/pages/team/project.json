@@ -1,15 +1,15 @@
 {
-  "name": "frontend-pages-team",
+  "name": "frontend-team",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "library",
   "sourceRoot": "libs/frontend/pages/team/src",
   "prefix": "badman",
+  "tags": [],
+  "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/angular:package",
+      "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "tsConfig": "libs/frontend/pages/team/tsconfig.lib.json",
         "project": "libs/frontend/pages/team/ng-package.json"
       },
       "configurations": {
@@ -21,18 +21,6 @@
         }
       },
       "defaultConfiguration": "production"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/frontend/pages/team/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
     }
-  },
-  "tags": []
+  }
 }

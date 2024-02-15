@@ -27,18 +27,18 @@ export class Faq extends Model {
     super(values, options);
   }
 
-  @Field(() => Date, {nullable: true })
-  updatedAt?: Date;
-
-  @Field(() => Date, {nullable: true })
-  createdAt?: Date;
-
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Field(() => String)
   @Column(DataType.STRING)

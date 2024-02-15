@@ -347,10 +347,10 @@ export class AssemblyValidationService {
 
   async fetchAndValidate(
     data: {
-      systemId?: string;
       teamId: string;
-
-      encounterId?: string;
+      encounterId: string;
+      
+      systemId?: string;
 
       single1?: string;
       single2?: string;

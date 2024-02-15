@@ -61,3 +61,4 @@ assembly.html
 files/
 .nx/cache
 playwright-report/
+blob-report/

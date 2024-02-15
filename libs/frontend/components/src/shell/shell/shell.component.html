@@ -15,7 +15,9 @@
     </mat-toolbar>
     <div class="sidebar-items">
       <div>
-        <badman-user-shortcuts (whenNavigate)="isHandset() && drawer.close()"></badman-user-shortcuts>
+        <badman-user-shortcuts
+          (whenNavigate)="isHandset() && drawer.close()"
+        ></badman-user-shortcuts>
         <mat-nav-list>
           <mat-list-item (click)="expanded.general = !expanded.general">
             <div class="expandable-item">
@@ -30,12 +32,18 @@
           </mat-list-item>
           <div [hidden]="!expanded.general">
             <mat-nav-list>
-              <a mat-list-item (click)="isHandset() && drawer.close()" [routerLink]="['/general', 'faq']">{{
-                'all.shell.sidebar.general.faq' | translate
-              }}</a>
-              <a mat-list-item (click)="isHandset() && drawer.close()" [routerLink]="['/general', 'changelog']">{{
-                'all.shell.sidebar.general.changelog' | translate
-              }}</a>
+              <a
+                mat-list-item
+                (click)="isHandset() && drawer.close()"
+                [routerLink]="['/general', 'faq']"
+                >{{ 'all.shell.sidebar.general.faq' | translate }}</a
+              >
+              <a
+                mat-list-item
+                (click)="isHandset() && drawer.close()"
+                [routerLink]="['/general', 'changelog']"
+                >{{ 'all.shell.sidebar.general.changelog' | translate }}</a
+              >
             </mat-nav-list>
           </div>
           <mat-list-item (click)="expanded.competition = !expanded.competition">
@@ -50,14 +58,20 @@
           </mat-list-item>
           <div [hidden]="!expanded.competition">
             <mat-nav-list>
-              <a mat-list-item (click)="isHandset() && drawer.close()" [routerLink]="['/competition']">{{
-                'all.shell.sidebar.competition.overview' | translate
-              }}</a>
-              <a mat-list-item (click)="isHandset() && drawer.close()" [routerLink]="['/competition', 'assembly']">{{
-                'all.shell.sidebar.competition.assembly' | translate
-              }}</a>
+              <a
+                mat-list-item
+                (click)="isHandset() && drawer.close()"
+                [routerLink]="['/competition']"
+                >{{ 'all.shell.sidebar.competition.overview' | translate }}</a
+              >
+              <a
+                mat-list-item
+                (click)="isHandset() && drawer.close()"
+                [routerLink]="['/competition', 'assembly']"
+                >{{ 'all.shell.sidebar.competition.assembly' | translate }}</a
+              >
               <badman-has-claim [any]="['*_enlist:team', 'enlist-any:team']">
-                @if (this.canEnroll$ | async) {
+                @if (this.canEnroll()) {
                   <a
                     mat-list-item
                     (click)="isHandset() && drawer.close()"
@@ -67,7 +81,7 @@
                 }
               </badman-has-claim>
               <badman-has-claim [any]="['*_change:encounter', 'change-any:encounter']">
-                @if (this.canChange$ | async) {
+                @if (this.canChange()) {
                   <a
                     mat-list-item
                     (click)="isHandset() && drawer.close()"

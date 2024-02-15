@@ -89,14 +89,14 @@ export class RankingSystemService {
       clearWatchSystem: (_state, action$: Observable<void>) =>
         action$.pipe(
           tap(() => sessionStorage.removeItem(WATCH_SYSTEM_ID_KEY)),
-          switchMap(() => this._loadSystem().pipe(map((system) => ({ rankingSystem: system, loaded: true })))),
+          switchMap(() => this._loadSystem(null).pipe(map((system) => ({ rankingSystem: system, loaded: true })))),
         ),
       deleteSystem: (_state, action$: Observable<string>) =>
         action$.pipe(
           // delete system
           switchMap((id) => this._deleteSystem(id)),
           // load the default system
-          switchMap(() => this._loadSystem().pipe(map((system) => ({ rankingSystem: system, loaded: true })))),
+          switchMap(() => this._loadSystem(null).pipe(map((system) => ({ rankingSystem: system, loaded: true })))),
         ),
     },
   });
@@ -108,7 +108,7 @@ export class RankingSystemService {
       }>({
         query: SYSTEM_QUERY,
         variables: {
-          id,
+          id: id ?? null,
         },
       })
       .pipe(map((res) => new RankingSystem(res.data?.rankingSystem)));

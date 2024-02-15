@@ -39,7 +39,7 @@ export class ClubPlayerMembership extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @ForeignKey(() => Player)
   @AllowNull(false)

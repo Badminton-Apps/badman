@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, PLATFORM_ID, TransferState, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  Injector,
+  PLATFORM_ID,
+  TransferState,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,10 +33,11 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable, combineLatest, lastValueFrom, of } from 'rxjs';
+import { Observable, lastValueFrom } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShowLevelComponent } from './components/show-level.component';
+
 @Component({
   selector: 'badman-player-detail',
   templateUrl: './detail.page.html',
@@ -51,21 +61,21 @@ import { ShowLevelComponent } from './components/show-level.component';
   ],
 })
 export class DetailPageComponent {
-  // Dependencies
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private breadcrumbService = inject(BreadcrumbService);
-  private seoService = inject(SeoService);
-  private apollo = inject(Apollo);
-  private stateTransfer = inject(TransferState);
-  private platformId = inject(PLATFORM_ID);
-  private dialog = inject(MatDialog);
-  private snackBar = inject(MatSnackBar);
-  private translate = inject(TranslateService);
-  private claim = inject(ClaimService);
-  private auth = inject(AuthenticateService);
-  private destroy$ = injectDestroy();
-  private injector = inject(Injector);
+  // private
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly seoService = inject(SeoService);
+  private readonly apollo = inject(Apollo);
+  private readonly stateTransfer = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
+  private readonly claim = inject(ClaimService);
+  private readonly auth = inject(AuthenticateService);
+  private readonly destroy$ = injectDestroy();
+  private readonly injector = inject(Injector);
 
   // route
   private queryParams = toSignal(this.route.queryParamMap);
@@ -76,10 +86,23 @@ export class DetailPageComponent {
   playerId = computed(() => this.player()?.id as string);
   club = computed(() => this.player().clubs?.[0]);
 
-  initials?: string;
+  initials = computed(() => {
+    const lastNames = `${this.player().lastName}`.split(' ');
+    return `${this.player().firstName?.[0]}${lastNames?.[lastNames.length - 1][0]}`.toUpperCase();
+  });
 
   teams = signal<Team[]>([]);
   hasTeams = computed(() => this.teams()?.length > 0);
+
+  hasMenu = computed(
+    () =>
+      this.auth.loggedInSignal() &&
+      this.claim.hasAnyClaims(['edit-any:player', this.player().id + '_edit:player', 'change:job']),
+  );
+
+  canClaim = computed(
+    () => this.auth.loggedInSignal() && !this.auth.userSignal()?.id && !this.player().sub,
+  );
 
   hasMenu$?: Observable<boolean>;
   canClaim$?: Observable<boolean>;
@@ -96,30 +119,11 @@ export class DetailPageComponent {
           keywords: ['player', 'badminton'],
         });
         this.breadcrumbService.set('player/:id', this.player().fullName);
-
-        const lastNames = `${this.player().lastName}`.split(' ');
-        if ((lastNames ?? []).length > 0) {
-          this.initials = `${this.player().firstName?.[0]}${lastNames?.[lastNames.length - 1][0]}`.toUpperCase();
-        }
       },
       {
-        allowSignalWrites: true,
+        // allowSignalWrites: true,
         injector: this.injector,
       },
-    );
-
-    this.hasMenu$ = combineLatest([
-      this.auth.loggedIn$ ?? of(false),
-      this.claim.hasAnyClaims$(['edit-any:player', this.player().id + '_edit:player', 'change:job']),
-    ]).pipe(
-      takeUntil(this.destroy$),
-      map(([loggedIn, hasClaim]) => loggedIn && (hasClaim || this.player().sub === null)),
-    );
-
-    this.canClaim$ = combineLatest([this.auth.loggedIn$ ?? of(false), this.auth.user$ ?? of(null)]).pipe(
-      takeUntil(this.destroy$),
-
-      map(([loggedIn, user]) => loggedIn && !user.id),
     );
   }
 
@@ -184,7 +188,10 @@ export class DetailPageComponent {
   }
 
   removePlayer() {
-    const dialogData = new ConfirmDialogModel('all.club.delete.player.title', 'all.club.delete.player.description');
+    const dialogData = new ConfirmDialogModel(
+      'all.club.delete.player.title',
+      'all.club.delete.player.description',
+    );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',

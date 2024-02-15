@@ -4,7 +4,6 @@ import {
   Component,
   EventEmitter,
   Injector,
-  Input,
   OnInit,
   Output,
   PLATFORM_ID,
@@ -12,6 +11,7 @@ import {
   TransferState,
   effect,
   inject,
+  input,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,8 +31,6 @@ import { Apollo } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { ClubTeamsService } from './club-teams.service';
-import { input } from '@angular/core';
-
 @Component({
   selector: 'badman-club-teams',
   standalone: true,
