@@ -10,9 +10,9 @@
       <a
         (click)="changeSubEvent()"
         [matTooltipDisabled]="!subEvent"
-        [matTooltip]="'all.team().change-event.change' | translate"
+        [matTooltip]="'all.team.change-event.change' | translate"
       >
-        {{ subEvent ? subEvent.name : ('all.team().change-event.pick' | translate) }}
+        {{ subEvent ? subEvent.name : ('all.team.change-event.pick' | translate) }}
       </a>
     </badman-block-subtitle>
   </badman-block-header>
@@ -78,7 +78,7 @@
     }
     @if (!this.subEvent) {
       <p class="no-event">
-        {{ 'all.team().change-event.select-event-hint' | translate }}
+        {{ 'all.team.change-event.select-event-hint' | translate }}
       </p>
     }
   </badman-block-content>

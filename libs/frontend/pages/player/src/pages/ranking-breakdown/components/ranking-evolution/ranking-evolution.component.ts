@@ -104,11 +104,10 @@ export class RankingEvolutionComponent implements OnInit {
     return this.apollo
       .query<{ player: Partial<Player> }>({
         query: gql`
-          # Write your query or mutation here
-          query GetPlayerEvolutionQuery($playerId: ID!, $rankingType: ID!) {
+          query GetPlayerEvolutionQuery($playerId: ID!, $where: JSONObject) {
             player(id: $playerId) {
               id
-              rankingPlaces(where: { systemId: $rankingType }) {
+              rankingPlaces(where: $where) {
                 id
                 rankingDate
                 singlePoints
@@ -121,13 +120,16 @@ export class RankingEvolutionComponent implements OnInit {
                 doublePointsDowngrade
                 double
                 updatePossible
+                systemId
               }
             }
           }
         `,
         variables: {
           playerId: this.player().id,
-          rankingType: this.system().id,
+          where: {
+            systemId: this.system().id,
+          }
         },
       })
       .pipe(

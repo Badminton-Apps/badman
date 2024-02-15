@@ -41,7 +41,7 @@ export class ChartComponent implements OnInit {
 
   system = input.required<RankingSystem>();
 
-  probablyInacurate = input<moment.Moment>(moment('2018-07-31T22:00:00.000Z'));
+  startedCalc = input<moment.Moment>(moment('2023-12-31T23:00:00.000Z'));
 
   maxPoints = 0;
 
@@ -141,7 +141,21 @@ export class ChartComponent implements OnInit {
       tooltip: {},
       annotations: {
         yaxis: annotations,
-        xaxis: [],
+        xaxis: [
+          {
+            x: this.startedCalc().valueOf(),
+            borderColor: '#3d99f5',
+            label: {
+              borderColor: '#3d99f5',
+              style: {
+                color: '#fff',
+                background: '#3d99f5',
+              },
+              position: 'center',
+              text: 'Started points',
+            },
+          },
+        ],
       },
     };
   }

@@ -9,7 +9,7 @@
       class="change-button"
       aria-label="Change team() number"
       (click)="this.changeTeamNumber.next(team().value)"
-      [matTooltip]="'all.team().change-number.tooltip' | translate"
+      [matTooltip]="'all.team.change-number.tooltip' | translate"
     >
       <mat-icon>swap_horiz</mat-icon>
     </button>
@@ -32,7 +32,7 @@
       [matTooltipDisabled]="!hasWarning"
       matTooltipClass="tooltip-multi-line"
     >
-      {{ 'all.team().title.base-fields' | translate }}
+      {{ 'all.team.title.base-fields' | translate }}
       @if (hasWarning) {
         <mat-icon>warning</mat-icon>
       }
@@ -73,7 +73,7 @@
           </mat-form-field>
         </div>
         <div class="captain">
-          <p>{{ 'all.team().title.captain' | translate }}</p>
+          <p>{{ 'all.team.title.captain' | translate }}</p>
           <badman-player-search
             [player]="team().value.captainId"
             [includePersonal]="true"

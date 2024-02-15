@@ -90,7 +90,9 @@ async function bootstrap() {
     }
   });
 
-  Logger.debug(`🚀 Application is running on: ${await app.getUrl()}. level: ${configService.get('NODE_ENV')}`);
+  Logger.debug(
+    `🚀 Application is running on: ${await app.getUrl()}. level: ${configService.get('NODE_ENV')}`,
+  );
 }
 
 try {
