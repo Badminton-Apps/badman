@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.10](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.9...v6.130.0-beta.10) (2024-02-15)
+
+
+### Features
+
+* all moved to newest version of nx ([fb01ebc](https://github.com/Badminton-Apps/badman/commit/fb01ebc2cbf5c69aff72c939e5ca6f1e004a9c6d))
+* allowing decimals for the percentages ([6434a6c](https://github.com/Badminton-Apps/badman/commit/6434a6cb45e3185189e8bc3129ae807184b4924d))
+* e2e mobile and desktop are 2 separate commands now to speed things up ([2dc5811](https://github.com/Badminton-Apps/badman/commit/2dc58111f32f2f66f6ca14aacdbcc7604d2168b9))
+* easy conversions done ([b513abb](https://github.com/Badminton-Apps/badman/commit/b513abb9abfcdd07d183ea9d47db3757ddd1d748))
+* it's all one big project ([dfa4897](https://github.com/Badminton-Apps/badman/commit/dfa4897664904d7cd3f14d0193ba0d68e85b87b2))
+* more updates ([c2bfcd9](https://github.com/Badminton-Apps/badman/commit/c2bfcd938376c40c75020f9a0c08bb3a78130878))
+
+
+### Bug Fixes
+
+* assembly double 2 missing in list list ([b0cd9aa](https://github.com/Badminton-Apps/badman/commit/b0cd9aac5d457cdf1ee3860fed21121ba37dd7b3))
+* only set the primray system if now needed ([30c690a](https://github.com/Badminton-Apps/badman/commit/30c690a22e5f084bb3b9bd265d0e782313106776))
+* separating test and production configs ([7cce824](https://github.com/Badminton-Apps/badman/commit/7cce824a4a91c29123878fa02c4f2b07e8a55e1b))
+* testing now working with new pipelines ([0c7a81f](https://github.com/Badminton-Apps/badman/commit/0c7a81f3429b12bdb4165e1e826edf8004ab30b1))
+* updated the packages ([20a8f4b](https://github.com/Badminton-Apps/badman/commit/20a8f4b2183c6937d561dc7d1784a3e8438f00ef))
+* watching system should default to null ([06d53a6](https://github.com/Badminton-Apps/badman/commit/06d53a6b42f698064b7ed287120a3aa9846516db))
+
 ## [6.130.0-beta.9](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.8...v6.130.0-beta.9) (2024-02-05)
 
 
