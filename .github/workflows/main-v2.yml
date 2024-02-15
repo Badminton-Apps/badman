@@ -1,4 +1,4 @@
-name: Release Workflow
+name: Release Workflow v2
 
 on:
   # manual trigger
