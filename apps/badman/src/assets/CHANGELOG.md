@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.11](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.10...v6.130.0-beta.11) (2024-02-15)
+
+
+### Bug Fixes
+
+* protect ranking by systemId's ([bf30ebb](https://github.com/Badminton-Apps/badman/commit/bf30ebb3fd625ad98f64177a89cf0fe60cb29f1e))
+* set correct drop locations ([0f592d4](https://github.com/Badminton-Apps/badman/commit/0f592d4ba3c4b94d3030cfd82c7b2bfc6d3407ab))
+* temp workaround for user not loaded untill loggedin ([046925f](https://github.com/Badminton-Apps/badman/commit/046925f5ccebe9b03c76c6e66852624f61ffdb44))
+* typo's in the translation keys ([25ae67b](https://github.com/Badminton-Apps/badman/commit/25ae67b38d4a450d6d4246f8c089ee91df53a717))
+
 ## [6.130.0-beta.10](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.9...v6.130.0-beta.10) (2024-02-15)
 
 
