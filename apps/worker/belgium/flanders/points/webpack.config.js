@@ -11,20 +11,8 @@ module.exports = {
       compiler: 'tsc',
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
-      assets: [
-        './src/assets',
-        {
-          glob: '**/*',
-          input: 'libs/backend/mailing/src/compile',
-          output: 'compile/libs/mailing',
-        },
-        {
-          glob: '**/*',
-          input: 'libs/backend/translate/assets',
-          output: 'assets',
-        },
-      ],
-      optimzation: false,
+      assets: ['./src/assets'],
+      optimization: false,
       outputHashing: 'none',
     }),
   ],
