@@ -4,9 +4,9 @@
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
-    "@angular/forms": "~17.1.2",
-    "@angular/material": "~17.1.2",
-    "@angular/router": "~17.1.2",
+    "@angular/forms": "~17.2.1",
+    "@angular/material": "~17.2.0",
+    "@angular/router": "~17.2.1",
     "@badman/frontend-components": "0.0.1",
     "@badman/frontend-models": "0.0.1",
     "@badman/utils": "0.0.1",

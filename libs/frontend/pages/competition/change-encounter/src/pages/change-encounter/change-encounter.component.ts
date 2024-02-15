@@ -56,12 +56,14 @@ export class ChangeEncounterComponent implements OnInit {
   translateService = inject(TranslateService);
 
   isHandset = toSignal(
-    this.breakpointObserver.observe(['(max-width: 959.98px)']).pipe(map((result) => result.matches)),
+    this.breakpointObserver
+      .observe(['(max-width: 959.98px)'])
+      .pipe(map((result) => result.matches)),
   );
 
-  hasPermission = toSignal(this.claimService.hasAnyClaims$(['change-any:encounter']));
-
-  canSelectSeason = computed(() => this.hasPermission() || this.versionInfo.beta);
+  canSelectSeason = computed(
+    () => this.claimService.hasAnyClaims(['change-any:encounter']) || this.versionInfo.beta,
+  );
 
   formGroup?: FormGroup;
 

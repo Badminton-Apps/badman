@@ -37,7 +37,12 @@
 </badman-page-header>
 
 <form [formGroup]="filter" class="filter">
-  <mat-button-toggle-group name="team types" aria-label="team types" multiple formControlName="choices">
+  <mat-button-toggle-group
+    name="team types"
+    aria-label="team types"
+    multiple
+    formControlName="choices"
+  >
     <mat-button-toggle value="M">{{'all.gender.male' | translate }}</mat-button-toggle>
     <mat-button-toggle value="F">{{'all.gender.female' | translate }}</mat-button-toggle>
     <mat-button-toggle value="MX">{{'all.gender.mix' | translate }}</mat-button-toggle>
@@ -45,7 +50,11 @@
   </mat-button-toggle-group>
   <badman-select-season [group]="this.filter"></badman-select-season>
 </form>
-<mat-tab-group mat-stretch-tabs="false" [selectedIndex]="currentTab()" (selectedIndexChange)="setTab($event)">
+<mat-tab-group
+  mat-stretch-tabs="false"
+  [selectedIndex]="currentTab()"
+  (selectedIndexChange)="setTab($event)"
+>
   <mat-tab [label]="'all.club.titles.teams' | translate">
     <badman-club-teams [clubId]="this.clubId" [filter]="this.filter" />
   </mat-tab>
@@ -66,7 +75,7 @@
       <badman-club-encounters [clubId]="this.clubId" [filter]="this.filter" />
     </ng-template>
   </mat-tab>
-  } @if (this.canViewEnrollments?.()) {
+  } @if (this.canViewEnrollments()) {
   <mat-tab [label]="'all.competition.team-enrollment.title' | translate">
     <ng-template matTabContent>
       <badman-club-competition [clubId]="this.clubId" [filter]="this.filter" />

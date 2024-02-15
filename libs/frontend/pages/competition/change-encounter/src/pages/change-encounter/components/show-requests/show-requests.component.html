@@ -78,14 +78,14 @@
               }
             </div>
           </div>
-          @if (!this.requestClosed || (admin$ | async)) {
+          @if (!this.requestClosed || this.isAdmin()) {
             <div class="submit">
               <div>
                 <button
                   mat-stroked-button
                   (click)="this.addDate()"
                   type="button"
-                  [disabled]="this.requestClosed && (admin$ | async) === false"
+                  [disabled]="this.requestClosed && this.isAdmin() === false"
                 >
                   {{ 'all.competition.change-encounter.add-date' | translate }}
                 </button>
@@ -102,7 +102,9 @@
                   {{ 'all.button.cancel' | translate }}
                 </button>
                 <badman-has-claim [any]="['change-any:encounter']">
-                  <button (click)="this.changeDate()" type="button" mat-stroked-button>Change date</button>
+                  <button (click)="this.changeDate()" type="button" mat-stroked-button>
+                    Change date
+                  </button>
                 </badman-has-claim>
               </div>
               @if (!this.requestClosed && requestClosing) {

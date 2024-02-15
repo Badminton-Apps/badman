@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, effect, inject, input } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -40,10 +40,10 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubStepComponent implements OnInit {
+  private authenticateService = inject(AuthenticateService);
+
   destroy$ = new Subject<void>();
   matcher = new DirectErrorStateMatcher();
-
-  constructor(private authenticateService: AuthenticateService) {}
 
   group = input<FormGroup>();
   controlClub = input<FormControl<string>>(new FormControl());
@@ -53,8 +53,9 @@ export class ClubStepComponent implements OnInit {
   protected internalControlEmail!: FormControl<string>;
 
   controlName = input(CLUB);
-
   controlEmailName = input(EMAIL);
+
+  user = this.authenticateService.userSignal;
 
   ngOnInit() {
     if (this.controlClub() != undefined) {
@@ -100,9 +101,10 @@ export class ClubStepComponent implements OnInit {
       this.group()?.addControl(this.controlEmailName(), this.internalControlEmail);
     }
 
-    this.authenticateService.user$.subscribe(() => {
-      if (this.authenticateService.user?.email && !localStorageEmail) {
-        this.controlEmail()?.setValue(this.authenticateService.user?.email);
+    effect(() => {
+      const userEmail = this.user()?.email;
+      if (!!this.controlEmail()?.value && userEmail && !localStorageEmail) {
+        this.controlEmail()?.setValue(userEmail);
       }
     });
 

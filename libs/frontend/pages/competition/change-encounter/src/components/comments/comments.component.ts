@@ -57,14 +57,14 @@ const COMMENTS_QUERY = gql`
 })
 export class CommentsComponent implements OnInit, OnChanges {
   // injects
-  private userService = inject(AuthenticateService);
+  private authenticateService = inject(AuthenticateService);
   private apollo = inject(Apollo);
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
   private injector = inject(Injector);
 
   // signals
-  user = toSignal(this.userService.user$);
+  user = this.authenticateService.userSignal;
   comments!: Signal<Comment[] | undefined>;
 
   //

@@ -1,18 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 
 import { debounceTime, map, switchMap, take, tap } from 'rxjs/operators';
 
 import { SwPush } from '@angular/service-worker';
 import { Claim, Notification } from '@badman/frontend-models';
-import {
-  BehaviorSubject,
-  ReplaySubject,
-  combineLatest,
-  lastValueFrom,
-  of,
-} from 'rxjs';
+import { BehaviorSubject, ReplaySubject, combineLatest, lastValueFrom, of } from 'rxjs';
 import { AuthenticateService } from './authenticate.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 const QUERY = gql`
   query GetNotifications($order: [SortOrderType!]) {
@@ -58,17 +53,17 @@ const QUERY = gql`
   providedIn: 'root',
 })
 export class NotificationService {
+  private readonly apollo = inject(Apollo);
+  private readonly authService = inject(AuthenticateService);
+  private readonly swPush = inject(SwPush);
+
   notifications$ = new ReplaySubject<Notification[] | undefined>(1);
   update$ = new BehaviorSubject(null);
   readonly VAPID_PUBLIC_KEY =
     'BNLv_q5Q5wfDi75nas8b_eZKIKz8QOkgXi-jrKyzzr18AfQCYIhUvswR_AOBZQqEVGi_EGdSBidCK_oYDpy1zXk';
 
-  constructor(
-    private apollo: Apollo,
-    private authService: AuthenticateService,
-    private swPush: SwPush,
-  ) {
-    combineLatest([this.authService.user$, this.update$])
+  constructor() {
+    combineLatest([toObservable(this.authService.userSignal), this.update$])
       .pipe(
         debounceTime(1000),
         switchMap(([player]) => {
@@ -126,8 +121,6 @@ export class NotificationService {
       );
   }
 
-  
-
   async subscribeToNotifications() {
     if (this.swPush.isEnabled) {
       try {
@@ -138,9 +131,7 @@ export class NotificationService {
         await lastValueFrom(
           this.apollo.mutate({
             mutation: gql`
-              mutation AddPushSubScription(
-                $subscription: PushSubscriptionInputType!
-              ) {
+              mutation AddPushSubScription($subscription: PushSubscriptionInputType!) {
                 addPushSubScription(subscription: $subscription)
               }
             `,

@@ -54,6 +54,9 @@ jobs:
 
           # create nx report
           npx playwright merge-reports --reporter=html,github ./blob-reports
+
+          ## for copy pasting in shell
+          # npx playwright show-report
       
       - uses: actions/upload-artifact@v3
         if: always()

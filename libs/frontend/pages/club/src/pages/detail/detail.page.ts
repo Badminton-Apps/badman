@@ -1,5 +1,15 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, Injector, OnInit, PLATFORM_ID, Signal, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Injector,
+  OnInit,
+  PLATFORM_ID,
+  Signal,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -30,9 +40,10 @@ import { TwizzitService } from '@badman/frontend-twizzit';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
+import { computedAsync } from 'ngxtension/computed-async';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Subject, lastValueFrom, of } from 'rxjs';
-import { filter, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { Subject, lastValueFrom } from 'rxjs';
+import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
 import { ClubCompetitionComponent } from './club-competition/club-competition.component';
@@ -83,12 +94,6 @@ export class DetailPageComponent implements OnInit {
   } = inject(VERSION_INFO);
   private destroy$ = injectDestroy();
 
-  // signals
-  seasons?: Signal<number[]>;
-  canViewEnrollmentForClub?: Signal<boolean | undefined>;
-  canViewEnrollmentForEvent?: Signal<boolean | undefined>;
-  canViewEnrollments?: Signal<boolean | undefined>;
-
   // route
   private queryParams = toSignal(this.route.queryParamMap);
   private routeParams = toSignal(this.route.paramMap);
@@ -127,9 +132,61 @@ export class DetailPageComponent implements OnInit {
     return isPlatformBrowser(this.platformId);
   }
 
-  hasPermission = toSignal(this.claimService.hasAnyClaims$(['edit-any:club']));
-
+  hasPermission = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
   canViewEncounter = computed(() => this.hasPermission() || this.versionInfo.beta);
+  canViewEnrollmentForClub = computed(() =>
+    this.authService.hasAnyClaims([
+      'view-any:enrollment-competition',
+      `${this.club().id}_view:enrollment-competition`,
+    ]),
+  );
+
+  season = computedAsync(() =>
+    this.filter.get('season')?.valueChanges.pipe(startWith(this.filter.get('season')?.value)),
+  );
+
+  competitionIdsForSeason = computedAsync(() =>
+    this.apollo
+      .query<{
+        eventCompetitions: {
+          rows: Partial<EventCompetition>[];
+        };
+      }>({
+        query: gql`
+          query CompetitionIdsForSeason($where: JSONObject) {
+            eventCompetitions(where: $where) {
+              rows {
+                id
+              }
+            }
+          }
+        `,
+        variables: {
+          where: {
+            season: this.season(),
+          },
+        },
+      })
+      .pipe(
+        map((result) => {
+          if (!result?.data.eventCompetitions) {
+            throw new Error('No eventCompetitions');
+          }
+          return result.data.eventCompetitions.rows.map((row) => row.id as string);
+        }),
+        startWith([] as string[]),
+      ),
+  );
+
+  canViewEnrollmentForEvent = computed(() => {
+    return this.authService.hasAnyClaims(
+      this.competitionIdsForSeason()?.map((id) => `${id}_view:enrollment-competition`) ?? [],
+    );
+  });
+
+  canViewEnrollments = computed(
+    () => this.canViewEnrollmentForClub?.() || this.canViewEnrollmentForEvent?.(),
+  );
 
   ngOnInit(): void {
     this.filter = this.formBuilder.group({
@@ -137,53 +194,6 @@ export class DetailPageComponent implements OnInit {
       season: getCurrentSeason(),
       club: this.club(),
     });
-
-    this.canViewEnrollmentForClub = toSignal(
-      this.authService.hasAnyClaims$([
-        'view-any:enrollment-competition',
-        `${this.club().id}_view:enrollment-competition`,
-      ]),
-      { injector: this.injector },
-    );
-
-    this.canViewEnrollmentForEvent = toSignal(
-      this.filter.get('season')?.valueChanges.pipe(
-        startWith(this.filter.get('season')?.value),
-        switchMap((season) => {
-          return this.apollo.query<{
-            eventCompetitions: {
-              rows: Partial<EventCompetition>[];
-            };
-          }>({
-            query: gql`
-              query CompetitionIdsForSeason($where: JSONObject) {
-                eventCompetitions(where: $where) {
-                  rows {
-                    id
-                  }
-                }
-              }
-            `,
-            variables: {
-              where: {
-                season: season,
-              },
-            },
-          });
-        }),
-        switchMap((result) => {
-          if (!result?.data.eventCompetitions) {
-            throw new Error('No eventCompetitions');
-          }
-          return this.authService.hasAnyClaims$(
-            result.data.eventCompetitions.rows.map((row) => `${row.id}_view:enrollment-competition`),
-          );
-        }),
-      ) ?? of(false),
-      { injector: this.injector },
-    );
-
-    this.canViewEnrollments = computed(() => this.canViewEnrollmentForClub?.() || this.canViewEnrollmentForEvent?.());
   }
 
   setTab(index: number) {

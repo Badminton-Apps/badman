@@ -5,6 +5,7 @@ import {
   EventEmitter,
   OnInit,
   Output,
+  effect,
   input,
 } from '@angular/core';
 import {
@@ -64,8 +65,8 @@ export class EditPlayerFieldsComponent implements OnInit {
     memberIdControl.disable();
     subControl.disable();
 
-    this.claimService.hasClaim$('link:player').subscribe((r) => {
-      if (r) {
+    effect(() => {
+      if (this.claimService.hasClaim('link:player')) {
         memberIdControl.enable();
         subControl.enable();
       }

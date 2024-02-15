@@ -9,7 +9,6 @@ export default defineConfig({
     PORT: `5000`,
     REDIS_PORT: `6379`,
   }),
-  // outputDir: 'badman-e2e-desktop-results',
   reporter: [
     [
       'blob',
