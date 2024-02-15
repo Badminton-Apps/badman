@@ -39,12 +39,12 @@
       @if (this.filteredOptions$ | async; as filterdOptions) {
         @if (filterdOptions.length === 0 && this.allowCreation()) {
           <mat-option [value]="this.formControl.value">
-            {{ 'all.player().search.create' | translate }}
+            {{ 'all.player.search.create' | translate }}
           </mat-option>
         }
         @if (filterdOptions.length === 0 && !this.allowCreation()) {
           <mat-option [value]="this.formControl.value" [disabled]="true">
-            {{ 'all.player().search.not-found' | translate }}
+            {{ 'all.player.search.not-found' | translate }}
           </mat-option>
         }
         @for (option of filterdOptions; track option.id) {
@@ -77,7 +77,7 @@
   </mat-form-field>
 </form>
 <ng-template #newPlayer>
-  <h2 matDialogTitle>{{ 'all.player().menu.add' | translate }}</h2>
+  <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
   <mat-dialog-content>
     <badman-player-fields [group]="newPlayerFormGroup"></badman-player-fields>
   </mat-dialog-content>

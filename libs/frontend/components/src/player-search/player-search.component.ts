@@ -90,7 +90,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       return (this.club() as Club).id;
     }
     return this.club();
-  });
+  }) as () => string | undefined;
 
   ignorePlayers = input<Partial<Player>[] | undefined>();
 
@@ -165,7 +165,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                     query: r,
                     where: this.where(),
                   }),
-                  id: this.clubId,
+                  id: this.clubId(),
                   personal: this.includePersonal() ?? false,
                 },
               })
