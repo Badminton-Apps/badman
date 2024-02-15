@@ -1,17 +1,12 @@
 /* eslint-disable */
 export default {
-  displayName: 'utils',
+  displayName: 'backend-authorization',
   preset: '../../jest.preset.js',
-  globals: {},
   testEnvironment: 'node',
+  passWithNoTests: true,
   transform: {
-    '^.+\\.[tj]sx?$': [
-      'ts-jest',
-      {
-        tsconfig: '<rootDir>/tsconfig.spec.json',
-      },
-    ],
+    '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/utils',
+  moduleFileExtensions: ['ts', 'js', 'html'],
+  coverageDirectory: '../../coverage/libs/backend/authorization',
 };

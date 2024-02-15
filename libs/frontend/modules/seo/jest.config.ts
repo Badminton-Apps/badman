@@ -3,7 +3,7 @@ export default {
   displayName: 'frontend-seo',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/modules/seo',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

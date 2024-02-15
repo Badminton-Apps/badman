@@ -784,6 +784,7 @@ export class CpGeneratorService {
         return 7;
       default:
         this.logger.warn('no day?', day);
+        return 1;
     }
   }
 
@@ -808,6 +809,7 @@ export class CpGeneratorService {
 
       default:
         this.logger.warn('no gender?', gender);
+        return null;
     }
   }
 

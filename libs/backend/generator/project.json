@@ -6,24 +6,17 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/backend/generator",
         "tsConfig": "libs/backend/generator/tsconfig.lib.json",
         "packageJson": "libs/backend/generator/package.json",
         "main": "libs/backend/generator/src/index.ts",
-        "assets": ["libs/backend-generator/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/generator"],
-      "options": {
-        "jestConfig": "libs/backend/generator/jest.config.js"
+        "assets": [
+          "libs/backend/generator/*.md"
+        ]
       }
     }
   },

@@ -3,7 +3,7 @@ export default {
   displayName: 'frontend-job',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/job',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

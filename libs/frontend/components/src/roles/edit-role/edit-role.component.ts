@@ -2,32 +2,31 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   Injector,
-  Input,
   OnInit,
   Signal,
-  inject,
-  computed,
-  ViewChild,
   TemplateRef,
+  ViewChild,
+  computed,
+  inject,
+  input,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Claim, Player, Role } from '@badman/frontend-models';
 import { SecurityType } from '@badman/utils';
+import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom } from 'rxjs';
 import { groupBy, map, mergeMap, shareReplay, toArray } from 'rxjs/operators';
-import { PlayerSearchComponent } from '../../player-search';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ClaimComponent } from '../claim';
 import { BadmanBlockModule } from '../../block';
-import { MatListModule } from '@angular/material/list';
-import { input } from '@angular/core';
+import { PlayerSearchComponent } from '../../player-search';
+import { ClaimComponent } from '../claim';
 
 const roleQuery = gql`
   query GetRole($id: ID!) {

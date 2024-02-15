@@ -1,5 +1,0 @@
-apps/api/*
-apps/scripts/*
-apps/worker/*
-
-libs/backend/*

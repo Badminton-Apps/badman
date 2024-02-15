@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,13 +28,13 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
   styleUrls: ['./header-menu.component.scss'],
 })
 export class HeaderMenuComponent {
-  constructor(public authenticateService: AuthenticateService) {}
+  auth = inject(AuthenticateService);
 
   logout() {
-    this.authenticateService.logout().subscribe();
+    this.auth.state.logout();
   }
 
   login() {
-    this.authenticateService.login()?.subscribe();
+    this.auth.state.login();
   }
 }

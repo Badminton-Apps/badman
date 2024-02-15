@@ -1,5 +1,18 @@
 {
   "name": "@badman/backend-logging",
   "version": "0.0.1",
-  "type": "commonjs"
+  "dependencies": {
+    "@swc/helpers": "~0.5.2",
+    "@logtail/node": "~0.4.19",
+    "@logtail/winston": "^0.4.19",
+    "@nestjs/common": "^10.3.1",
+    "@nestjs/config": "^3.1.1",
+    "nest-winston": "^1.9.4",
+    "winston": "^3.11.0",
+    "@badman/utils": "0.0.1"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "devDependencies": {}
 }

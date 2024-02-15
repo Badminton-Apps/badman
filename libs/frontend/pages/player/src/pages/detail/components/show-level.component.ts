@@ -56,12 +56,12 @@ export class ShowLevelComponent implements OnInit {
   nextLevel = computed(() =>
     this.level() == 1
       ? undefined
-      : this.rankingService.system()!.pointsToGoUp?.[this.maxLevel() - this.level()],
+      : this.rankingService.system()?.pointsToGoUp?.[this.maxLevel() - this.level()],
   );
   prevLevel = computed(() =>
     this.level() == this.maxLevel()
       ? undefined
-      : this.rankingService.system()!.pointsToGoDown?.[this.maxLevel() - (this.level() + 1)],
+      : this.rankingService.system()?.pointsToGoDown?.[this.maxLevel() - (this.level() + 1)],
   );
   canUpgrade = computed(() =>
     this.level() == 1
@@ -77,9 +77,14 @@ export class ShowLevelComponent implements OnInit {
   ngOnInit() {
     effect(
       () => {
+        const id = this.rankingService.systemId();
+        if (!id) {
+          return;
+        }
+
         this.showLevelService.state.getRanking({
           id: this.playerId(),
-          systemId: this.rankingService.systemId()!,
+          systemId: id,
         });
       },
       {

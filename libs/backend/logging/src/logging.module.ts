@@ -16,12 +16,12 @@ export class LoggingModule {
   // create a for root async method
   static forRoot(config?: ILoggingConfig) {
     const addAppNameFormat = format((info) => {
-      info.appname = config?.name || 'Badman';
+      info['appname'] = config?.name || 'Badman';
       return info;
     });
 
     const addVersionNumberFormat = format((info) => {
-      info.version = config?.version || '0.0.0';
+      info['version'] = config?.version || '0.0.0';
       return info;
     });
 

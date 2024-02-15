@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -8,7 +8,6 @@ import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
-import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-select-event',
@@ -38,8 +37,8 @@ export class SelectEventComponent implements OnInit {
 
   ngOnInit() {
     if (this.formGroup()) {
-      if (!this.formGroup()!.get(this.controlName())) {
-        this.formGroup()!.addControl(this.controlName(), this.control());
+      if (!this.formGroup()?.get(this.controlName())) {
+        this.formGroup()?.addControl(this.controlName(), this.control());
       }
     }
 
@@ -70,7 +69,7 @@ export class SelectEventComponent implements OnInit {
         map(({ data }) => data.eventCompetitions.rows?.map((e) => new EventCompetition(e))),
         tap((events) => {
           if (this.initialId()) {
-            const initialEvent = events.find((e) => e.id === this.initialId()!);
+            const initialEvent = events.find((e) => e.id === this.initialId());
             if (initialEvent) {
               this.control().setValue(initialEvent);
             }

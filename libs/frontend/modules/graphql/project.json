@@ -1,15 +1,15 @@
 {
   "name": "frontend-graphql",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "library",
   "sourceRoot": "libs/frontend/modules/graphql/src",
   "prefix": "badman",
+  "tags": [],
+  "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/angular:package",
+      "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "tsConfig": "libs/frontend/modules/graphql/tsconfig.lib.json",
         "project": "libs/frontend/modules/graphql/ng-package.json"
       },
       "configurations": {
@@ -21,17 +21,6 @@
         }
       },
       "defaultConfiguration": "production"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/frontend/modules/graphql/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": []
+  }
 }

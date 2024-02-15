@@ -1,5 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, TransferState, input, signal } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Injector,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+  computed,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -48,6 +60,15 @@ import {
   styleUrls: ['./select-club.component.scss'],
 })
 export class SelectClubComponent implements OnInit {
+  private readonly apollo = inject(Apollo);
+  private readonly claimSerice = inject(ClaimService);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly authService = inject(AuthenticateService);
+  private readonly transferState = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly injector = inject(Injector);
+
   destroy$ = new Subject<void>();
 
   group = input<FormGroup>();
@@ -82,15 +103,14 @@ export class SelectClubComponent implements OnInit {
 
   allowDeselect = input(false);
 
-  constructor(
-    private apollo: Apollo,
-    private claimSerice: ClaimService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private authService: AuthenticateService,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
+  hasSingleClub = computed(() =>
+    this.claimSerice.hasAllClaims([`*_${this.singleClubPermission()}`]),
+  );
+
+  hasAllClubs = computed(() => this.claimSerice.hasAllClaims([`${this.allClubPermission()}`]));
+
+  user = this.authService.userSignal;
+
 
   ngOnInit() {
     if (this.control()) {
@@ -111,9 +131,9 @@ export class SelectClubComponent implements OnInit {
 
     combineLatest([
       this._getClubs(),
-      this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission()}`]),
-      this.claimSerice.hasAllClaims$([`${this.allClubPermission()}`]),
-      this.authService.user$.pipe(startWith(undefined)),
+      toObservable(this.hasSingleClub, { injector: this.injector }),
+      toObservable(this.hasAllClubs, { injector: this.injector }),
+      toObservable(this.user, { injector: this.injector }),
       this.activatedRoute.queryParamMap,
     ])
       .pipe(

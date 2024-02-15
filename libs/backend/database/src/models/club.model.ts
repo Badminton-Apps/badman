@@ -77,6 +77,12 @@ export class Club extends Model {
   @Column(DataType.UUIDV4)
   override id!: string;
 
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
+
   @Unique('club_number_unique')
   @Index
   @AllowNull(false)

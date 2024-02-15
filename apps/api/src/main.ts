@@ -16,16 +16,6 @@ import compression from '@fastify/compress';
 import RedisMemoryServer from 'redis-memory-server';
 
 async function bootstrap() {
-  if (process.env.NODE_ENV === 'test') {
-    const redisMemoryServer = new RedisMemoryServer({
-      instance: {
-        port: 6379,
-      },
-    });
-
-    await redisMemoryServer.start();
-  }
-
   Logger.debug('Starting application');
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -38,6 +28,16 @@ async function bootstrap() {
   );
   const configService = app.get<ConfigService>(ConfigService);
   Logger.debug('Application created');
+
+  if (configService.get<string>('NODE_ENV') === 'test') {
+    const redisMemoryServer = new RedisMemoryServer({
+      instance: {
+        port: configService.get('REDIS_PORT') || 6379,
+      },
+    });
+
+    await redisMemoryServer.start();
+  }
 
   app.setGlobalPrefix('api');
   Logger.debug('Set global prefix');

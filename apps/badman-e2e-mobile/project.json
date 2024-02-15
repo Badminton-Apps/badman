@@ -1,0 +1,7 @@
+{
+  "name": "badman-e2e-mobile",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/badman-e2e-mobile/src",
+  "projectType": "application",
+  "implicitDependencies": ["badman-e2e"]
+}

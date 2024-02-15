@@ -140,7 +140,7 @@
     </div>
     }
   </mat-tab>
-  @if (this.canViewEnrollments?.()) {
+  @if (this.canViewEnrollments()) {
   <mat-tab [label]="'all.competition.map.title' | translate">
     <ng-template matTabContent>
       <badman-competition-map [eventId]="this.eventCompetition.id" />
@@ -152,7 +152,7 @@
       <badman-competition-encounters [eventId]="this.eventCompetition.id" />
     </ng-template>
   </mat-tab>
-  } @if (this.canViewEnrollments?.()) {
+  } @if (this.canViewEnrollments()) {
   <mat-tab [label]="'all.competition.team-enrollment.title' | translate">
     <ng-template matTabContent>
       <badman-competition-enrollments [eventId]="this.eventCompetition.id" />

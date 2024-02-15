@@ -1,47 +1,50 @@
-@if (this.user$ | async; as user) {
-  @if (user.loggedIn && user.slug) {
-    <mat-nav-list>
-      <a mat-list-item (click)="whenNavigate.next()" [routerLink]="['/player', user.slug]" routerLinkActive="active">
-        {{ 'all.shell.sidebar.persnal.games' | translate }}
+@if (loggedIn() && user()?.slug) {
+  <mat-nav-list>
+    <a
+      mat-list-item
+      (click)="whenNavigate.next()"
+      [routerLink]="['/player', user()?.slug]"
+      routerLinkActive="active"
+    >
+      {{ 'all.shell.sidebar.persnal.games' | translate }}
+    </a>
+    @if (clubs().length === 1) {
+      <a mat-list-item (click)="whenNavigate.next()" [routerLink]="['/club', clubs()[0].slug]">
+        {{ 'all.shell.sidebar.persnal.club' | translate }}
       </a>
-      @if (user?.clubs && (user.clubs?.length ?? 0) === 1) {
-        <a mat-list-item (click)="whenNavigate.next()" [routerLink]="['/club', user.clubs![0].slug]">
-          {{ 'all.shell.sidebar.persnal.club' | translate }}
-        </a>
-      }
-      @if (user?.clubs && (user.clubs?.length ?? 0) > 1) {
-        <mat-list-item (click)="expanded.club = !expanded.club">
-          <div class="expandable-item">
-            <div>{{ 'all.club.titles.plural' | translate }}</div>
-            @if (!expanded.club) {
-              <mat-icon>expand_more</mat-icon>
-            }
-            @if (expanded.club) {
-              <mat-icon>expand_less</mat-icon>
-            }
-          </div>
-        </mat-list-item>
-        <div [hidden]="!expanded.club">
-          <mat-nav-list>
-            @for (club of user.clubs; track club) {
-              <mat-nav-list>
-                <a
-                  mat-list-item
-                  (click)="whenNavigate.next()"
-                  [routerLink]="['/club', club.slug]"
-                  routerLinkActive="active"
-                >
-                  {{ club.name }}
-                  @if (club.clubMembership?.membershipType === 'LOAN') {
-                    <small class="loan">{{ 'all.club.membership-types.loan' | translate }}</small>
-                  }
-                </a>
-              </mat-nav-list>
-            }
-          </mat-nav-list>
+    }
+    @if (clubs().length > 1) {
+      <mat-list-item (click)="expanded.club = !expanded.club">
+        <div class="expandable-item">
+          <div>{{ 'all.club.titles.plural' | translate }}</div>
+          @if (!expanded.club) {
+            <mat-icon>expand_more</mat-icon>
+          }
+          @if (expanded.club) {
+            <mat-icon>expand_less</mat-icon>
+          }
         </div>
-      }
-      <mat-divider></mat-divider>
-    </mat-nav-list>
-  }
+      </mat-list-item>
+      <div [hidden]="!expanded.club">
+        <mat-nav-list>
+          @for (club of clubs(); track club) {
+            <mat-nav-list>
+              <a
+                mat-list-item
+                (click)="whenNavigate.next()"
+                [routerLink]="['/club', club.slug]"
+                routerLinkActive="active"
+              >
+                {{ club.name }}
+                @if (club.clubMembership?.membershipType === 'LOAN') {
+                  <small class="loan">{{ 'all.club.membership-types.loan' | translate }}</small>
+                }
+              </a>
+            </mat-nav-list>
+          }
+        </mat-nav-list>
+      </div>
+    }
+    <mat-divider></mat-divider>
+  </mat-nav-list>
 }

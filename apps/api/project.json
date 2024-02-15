@@ -4,47 +4,6 @@
   "sourceRoot": "apps/api/src",
   "projectType": "application",
   "targets": {
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
-      "options": {
-        "target": "node",
-        "compiler": "tsc",
-        "outputPath": "dist/apps/api",
-        "main": "apps/api/src/main.ts",
-        "tsConfig": "apps/api/tsconfig.app.json",
-        "assets": [
-          "apps/api/src/assets",
-          {
-            "glob": "**/*",
-            "input": "libs/backend/translate/assets",
-            "output": "assets"
-          },
-          {
-            "glob": "**/*",
-            "input": "libs/backend/competition/assembly/src/compile",
-            "output": "compile/libs/assembly"
-          },
-          {
-            "glob": "**/*",
-            "input": "libs/backend/mailing/src/compile",
-            "output": "compile/libs/mailing"
-          }
-        ],
-        "webpackConfig": "apps/api/webpack.config.js"
-      },
-      "configurations": {
-        "development": {
-          "optimization": false
-        },
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false
-        }
-      }
-    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
@@ -58,17 +17,6 @@
         "production": {
           "buildTarget": "api:build:production"
         }
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "apps/api/jest.config.ts"
       }
     }
   },
