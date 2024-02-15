@@ -32,6 +32,7 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'badman-select-team',
@@ -71,6 +72,7 @@ export class SelectTeamComponent implements OnInit {
   protected internalControl!: FormControl<string[] | string | null>;
 
   teams$?: Observable<{ type: string; teams: Team[] }[]>;
+  user$ = toObservable(this.authenticateService.userSignal);
 
   constructor(
     private apollo: Apollo,
@@ -162,7 +164,7 @@ export class SelectTeamComponent implements OnInit {
           concatMap((teams) =>
             this.autoSelect() === 'user'
               ? // if authenticated, find where the user is captain
-                this.authenticateService.user$.pipe(
+                this.user$.pipe(
                   switchMap((user) => {
                     if (!user?.id) {
                       return of(undefined);

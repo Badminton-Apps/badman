@@ -1056,7 +1056,7 @@ export class AssemblyComponent implements OnInit {
           id: encounterId,
           where: {
             captainId,
-            playerId: this.authenticateService?.user?.id,
+            playerId: this.authenticateService?.userSignal()?.id,
           },
         },
       })

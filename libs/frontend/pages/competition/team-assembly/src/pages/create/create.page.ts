@@ -281,7 +281,7 @@ export class CreatePageComponent implements OnInit {
             id: this.formGroup?.get('encounter')?.value,
             where: {
               captainId: this.formGroup?.get('captain')?.value,
-              playerId: this.authenticateService?.user?.id,
+              playerId: this.authenticateService?.userSignal()?.id,
             },
           },
         },

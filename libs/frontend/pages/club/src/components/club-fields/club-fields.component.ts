@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, input } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -49,6 +49,8 @@ type ClubFieldsForm = FormGroup<{
   ],
 })
 export class ClubFieldsComponent implements OnInit {
+  private readonly claimService = inject(ClaimService);
+
   group = input.required<FormGroup>();
 
   controlName = input('country');
@@ -67,20 +69,22 @@ export class ClubFieldsComponent implements OnInit {
   );
 
   exampleTeamName?: string;
+  
 
-  constructor(private claimService: ClaimService) {}
+  canEditAnyClub = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
+
 
   ngOnInit() {
     if (this.group() && !this.group().get(this.controlName())) {
       this.group().addControl(this.controlName(), this.control());
     }
 
-    this.group().disable();
-    this.claimService.hasAnyClaims$(['edit-any:club']).subscribe((r) => {
-      if (r) {
+    effect(() => {
+      this.group().disable();
+      if (this.canEditAnyClub()) {
         this.group().enable();
       }
-    });
+    })
 
     this.group().valueChanges.subscribe(() => this._setExampleTeamName());
 
