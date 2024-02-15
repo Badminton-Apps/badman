@@ -1,5 +1,6 @@
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { Inject, Injectable, Injector, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
+import { Injectable, Injector, PLATFORM_ID, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   ActivatedRouteSnapshot,
@@ -11,26 +12,18 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, filter, map } from 'rxjs';
 import { AuthenticateService, ClaimService } from '../services';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard {
-  private authService?: AuthenticateService;
-
-  constructor(
-    private claimService: ClaimService,
-    private snackBar: MatSnackBar,
-    private router: Router,
-    private translate: TranslateService,
-    private injector: Injector,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.authService = inject(AuthenticateService);
-    }
-  }
+  private readonly claimService = inject(ClaimService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+  private readonly injector = inject(Injector);
+  private readonly authService = inject(AuthenticateService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   canActivate(
     next: ActivatedRouteSnapshot,
