@@ -19,14 +19,26 @@ export class CalculationService {
     EventEmitter.defaultMaxListeners = Infinity;
   }
 
-  public async updateRanking(system: string | RankingSystem, args?: UpdateRankingJob, transaction?: Transaction) {
+  public async updateRanking(
+    system: string | RankingSystem,
+    args?: UpdateRankingJob,
+    transaction?: Transaction,
+  ) {
     if (typeof system === 'string') {
       system = (await RankingSystem.findByPk(system, {
         include: [{ model: RankingGroup }],
       })) as RankingSystem;
     }
 
-    const { fromDate, toDate, periods, recalculatePoints, calculatePlaces, calculatePoints, calculateRanking } = {
+    const {
+      fromDate,
+      toDate,
+      periods,
+      recalculatePoints,
+      calculatePlaces,
+      calculatePoints,
+      calculateRanking,
+    } = {
       // Default values
       recalculatePoints: false,
       calculatePoints: true,
@@ -62,7 +74,10 @@ export class CalculationService {
       }
 
       const minUpdatePlace = moment(updates[0].date);
-      const minUpdatePoints = moment(updates[0].date).subtract(system.periodAmount, system.periodUnit);
+      const minUpdatePoints = moment(updates[0].date).subtract(
+        system.periodAmount,
+        system.periodUnit,
+      );
       const maxUpdate = moment(updates[updates.length - 1].date);
 
       this.logger.log(
@@ -139,7 +154,9 @@ export class CalculationService {
         const stopUpdate = moment();
         const duration = moment.duration(stopUpdate.diff(startUpdate));
 
-        this.logger.log(`Simulation for ${system.name} finished in ${duration.asSeconds()} seconds`);
+        this.logger.log(
+          `Simulation for ${system.name} finished in ${duration.asSeconds()} seconds`,
+        );
       }
 
       if (transaction) {
