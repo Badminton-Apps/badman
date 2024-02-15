@@ -1,5 +1,5 @@
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { Inject, Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { Inject, Injectable, Injector, PLATFORM_ID, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   ActivatedRouteSnapshot,
@@ -9,8 +9,9 @@ import {
   UrlTree,
 } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable, filter, map } from 'rxjs';
 import { AuthenticateService, ClaimService } from '../services';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,7 @@ export class AuthGuard {
     private snackBar: MatSnackBar,
     private router: Router,
     private translate: TranslateService,
+    private injector: Injector,
     @Inject(PLATFORM_ID) private platformId: string,
   ) {
     if (isPlatformBrowser(this.platformId)) {
@@ -44,22 +46,30 @@ export class AuthGuard {
       return false;
     }
 
-    if (this.authService.loggedInSignal()) {
-      if (this.hasPermissions(next)) {
-        return true;
-      }
+    // wait for to be logged in
+    return toObservable(this.authService.state, { injector: this.injector }).pipe(
+      filter((loginState) => loginState.loaded),
+      map((loginState) => {
+        if (loginState.user?.loggedIn) {
+          if (this.hasPermissions(next)) {
+            return true;
+          }
 
-      // we dont' have the permissions
-      this.snackBar.open(this.translate.instant('all.permission.no-perm'));
-      this.router.navigate(['/']);
-    } else {
-      // we are not logged in
-      this.authService.login(false, {
-        appState: { target: state.url },
-      });
-    }
+          console.log(`No permission for ${state.url} for ${loginState.user?.slug}`);
 
-    return false;
+          // we dont' have the permissions
+          this.snackBar.open(this.translate.instant('all.permission.no-perm'));
+          this.router.navigate(['/']);
+        } else {
+          // we are not logged in
+          this.authService?.login(false, {
+            appState: { target: state.url },
+          });
+        }
+
+        return false;
+      }),
+    );
   }
 
   private hasPermissions(next: ActivatedRouteSnapshot) {
