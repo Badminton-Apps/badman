@@ -4,27 +4,6 @@
   "sourceRoot": "apps/worker/belgium/flanders/places/src",
   "projectType": "application",
   "targets": {
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
-      "options": {
-        "target": "node",
-        "compiler": "tsc",
-        "outputPath": "dist/apps/worker/belgium/flanders/places",
-        "main": "apps/worker/belgium/flanders/places/src/main.ts",
-        "tsConfig": "apps/worker/belgium/flanders/places/tsconfig.app.json",
-        "assets": ["apps/worker/belgium/flanders/places/src/assets"],
-        "webpackConfig": "apps/worker/belgium/flanders/places/webpack.config.js"
-      },
-      "configurations": {
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false
-        }
-      }
-    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
@@ -41,17 +20,6 @@
         "production": {
           "buildTarget": "worker-belgium-flanders-places:build:production"
         }
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/worker/belgium/flanders/places"],
-      "options": {
-        "jestConfig": "apps/worker/belgium/flanders/places/jest.config.js"
       }
     }
   },

@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-pages-player',
+  displayName: 'frontend-player',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/player',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

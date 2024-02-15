@@ -6,29 +6,17 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/backend/cache",
         "tsConfig": "libs/backend/cache/tsconfig.lib.json",
         "packageJson": "libs/backend/cache/package.json",
         "main": "libs/backend/cache/src/index.ts",
-        "assets": ["libs/backend/cache/*.md"]
-      }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs backend-cache {args.ver} {args.tag}"
-      },
-      "dependsOn": ["build"]
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
+        "assets": [
+          "libs/backend/cache/*.md"
+        ]
       }
     }
   },

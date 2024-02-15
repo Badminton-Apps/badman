@@ -30,7 +30,11 @@
     </mat-list-item>
   }
   @if (this.upcommingGames.loading()) {
-    <badman-loading-block [items]="5" height="56px" />
+    <badman-loading-block
+      [items]="this.upcommingGames.itemsPerPage"
+      height="56px"
+      direction="column"
+    />
   } @else {
     <mat-list-item role="listitem">
       <!--  a button to load more -->
@@ -75,7 +79,6 @@
 
   <span>&nbsp;{{ 'all.competition.vs' | translate }}&nbsp;</span>
 
-  
   @if (upcoming.showingForHomeTeam && upcoming?.away?.club?.slug) {
     <a [routerLink]="['/club', upcoming.away.club.slug, 'team', upcoming.away?.slug]">{{
       upcoming.away?.name

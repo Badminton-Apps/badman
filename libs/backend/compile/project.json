@@ -1,6 +1,6 @@
 {
   "name": "backend-compile",
-  "$schema": "..\\..\\..\\node_modules\\nx\\schemas\\project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/compile/src",
   "projectType": "library",
   "targets": {
@@ -11,18 +11,8 @@
         "outputPath": "dist/libs/backend/compile",
         "tsConfig": "libs/backend/compile/tsconfig.lib.json",
         "packageJson": "libs/backend/compile/package.json",
-        "main": "libs/backend/compile/src/index.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/compile"],
-      "options": {
-        "jestConfig": "libs/backend/compile/jest.config.js"
+        "main": "libs/backend/compile/src/index.ts",
+        "assets": ["libs/backend/compile/*.md"]
       }
     }
   },

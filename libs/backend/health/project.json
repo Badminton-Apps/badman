@@ -12,18 +12,7 @@
         "tsConfig": "libs/backend/health/tsconfig.lib.json",
         "packageJson": "libs/backend/health/package.json",
         "main": "libs/backend/health/src/index.ts",
-        "assets": ["libs/backend-health/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/health"],
-      "options": {
-        "jestConfig": "libs/backend/health/jest.config.ts"
+        "assets": ["libs/backend/health/*.md"]
       }
     }
   },

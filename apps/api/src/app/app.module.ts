@@ -13,31 +13,38 @@ import { NotificationsModule } from '@badman/backend-notifications';
 import { OrchestratorModule } from '@badman/backend-orchestrator';
 import { QueueModule } from '@badman/backend-queue';
 import { SearchModule } from '@badman/backend-search';
-import { SocketModule } from '@badman/backend-websockets';
 import { TranslateModule } from '@badman/backend-translate';
 import { TwizzitModule } from '@badman/backend-twizzit';
+import { SocketModule } from '@badman/backend-websockets';
 import { ConfigType, configSchema, load } from '@badman/utils';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import versionPackage from '../version.json';
+import { CleanEnvironmentModule } from './clean-environment.module';
 
 const productionModules = [];
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
+  Logger.debug(`Adding static file serving to folder: ${join(__dirname, '..', 'badman')}`);
   productionModules.push(
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'badman'),
+      rootPath: join(__dirname, '..', 'badman', 'browser'),
       exclude: ['api/*', '/graphql'],
     }),
   );
 }
+const envFilePath = process.env.NODE_ENV === 'test' ? '.env.test' : undefined;
 
 @Module({
   imports: [
     ...productionModules,
+    CleanEnvironmentModule.forPredicate(envFilePath, () => process.env.NODE_ENV === 'test'),
     ConfigModule.forRoot({
       cache: true,
       validationSchema: configSchema,
       load: [load],
+      expandVariables: true,
+      envFilePath: envFilePath,
+      ignoreEnvVars: process.env.NODE_ENV === 'test',
     }),
     AuthorizationModule,
     GrapqhlModule,

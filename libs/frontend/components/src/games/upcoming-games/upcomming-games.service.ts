@@ -30,7 +30,7 @@ interface RecentGamesState {
 export class UpcommingGamesService {
   private apollo = inject(Apollo);
 
-  private gamesPerPage = 10;
+  itemsPerPage = 10;
 
   filter = new FormGroup({
     teamIds: new FormControl<string[]>([]),
@@ -95,7 +95,7 @@ export class UpcommingGamesService {
         return {
           ...state,
           games: [...state.games, ...response.games],
-          endReached: response.games.length < this.gamesPerPage,
+          endReached: response.games.length < this.itemsPerPage,
           loading: false,
         };
       });
@@ -181,8 +181,8 @@ export class UpcommingGamesService {
               field: 'date',
             },
           ],
-          skip: (this.page() - 1) * this.gamesPerPage, // Skip the previous pages
-          take: this.gamesPerPage, // Load only the current page
+          skip: (this.page() - 1) * this.itemsPerPage, // Skip the previous pages
+          take: this.itemsPerPage, // Load only the current page
         },
       })
       .pipe(

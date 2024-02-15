@@ -175,7 +175,7 @@ export class AssemblyComponent implements OnInit {
     'single3List',
     'single4List',
     'double1List',
-
+    'double2List',
     'double3List',
     'double4List',
   ];
@@ -595,36 +595,28 @@ export class AssemblyComponent implements OnInit {
       return false;
     }
 
-    const checkCorrectGender = () => {
-      if (this.type() == 'MX') {
-        if (drop.id == 'double1List' && item.data.gender == 'F') {
-          return false;
-        } else if (drop.id == 'double2List' && item.data.gender == 'M') {
-          return false;
-        } else if (drop.id == 'double3List' || drop.id == 'double4List') {
-          if (item.data.gender == 'M') {
-            return drop.data.filter((r) => r.gender == 'M').length != 1;
-          } else {
-            return drop.data.filter((r) => r.gender == 'F').length != 1;
-          }
-        } else if (
-          (drop.id == 'single1List' || drop.id == 'single2List') &&
-          item.data.gender == 'F'
-        ) {
-          return false;
-        } else if (
-          (drop.id == 'single3List' || drop.id == 'single4List') &&
-          item.data.gender == 'M'
-        ) {
-          return false;
+    if (this.type() == 'MX') {
+      if (drop.id == 'double1List' && item.data.gender == 'F') {
+        return false;
+      } else if (drop.id == 'double2List' && item.data.gender == 'M') {
+        return false;
+      } else if (drop.id == 'double3List' || drop.id == 'double4List') {
+        if (item.data.gender == 'M') {
+          return drop.data.filter((r) => r.gender == 'M').length != 1;
+        } else {
+          return drop.data.filter((r) => r.gender == 'F').length != 1;
         }
+      } else if (
+        (drop.id == 'single1List' || drop.id == 'single2List') &&
+        item.data.gender == 'F'
+      ) {
+        return false;
+      } else if (
+        (drop.id == 'single3List' || drop.id == 'single4List') &&
+        item.data.gender == 'M'
+      ) {
+        return false;
       }
-      return true;
-    };
-
-    const isCorrectGender = checkCorrectGender();
-    if (!isCorrectGender) {
-      return false;
     }
 
     return true;
@@ -1053,7 +1045,7 @@ export class AssemblyComponent implements OnInit {
   };
 
   private _loadSaved(encounterId: string, captainId?: string) {
-    if (!this.authenticateService.loggedIn) {
+    if (!this.authenticateService.loggedInSignal) {
       return of([]);
     }
 
@@ -1064,7 +1056,7 @@ export class AssemblyComponent implements OnInit {
           id: encounterId,
           where: {
             captainId,
-            playerId: this.authenticateService?.user?.id,
+            playerId: this.authenticateService?.userSignal()?.id,
           },
         },
       })

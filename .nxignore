@@ -1,3 +1,4 @@
 *.cp
 !empty.cp
 *.ldb
+scripts/

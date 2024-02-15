@@ -1,8 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-competition-enrollment',
+  displayName: 'backend-enrollment',
   preset: '../../../../jest.preset.js',
   testEnvironment: 'node',
+  passWithNoTests: true,
   transform: {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },

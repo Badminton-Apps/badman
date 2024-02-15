@@ -7,12 +7,12 @@
   "tags": ["type:app", "scope:client"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser-esbuild",
+      "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/badman",
         "index": "apps/badman/src/index.html",
-        "main": "apps/badman/src/main.ts",
+        "browser": "apps/badman/src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "apps/badman/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
@@ -24,7 +24,7 @@
           "apps/badman/src/sitemap.xml",
           "apps/badman/src/ads.txt"
         ],
-        "allowedCommonJsDependencies": ["moment", "file-saver", "seed-to-color", "joi", "quill"],
+        "allowedCommonJsDependencies": ["moment", "file-saver", "seed-to-color", "joi", "quill", "apexcharts"],
         "styles": [
           "apps/badman/src/styles.scss",
           "node_modules/quill/dist/quill.bubble.css",
@@ -35,8 +35,7 @@
           "node_modules/material-icons/iconfont/material-icons.css"
         ],
         "scripts": ["node_modules/apexcharts/dist/apexcharts.js"],
-        "serviceWorker": true,
-        "ngswConfigPath": "apps/badman/ngsw-config.json"
+        "serviceWorker": "apps/badman/ngsw-config.json"
       },
       "configurations": {
         "production": {
@@ -103,14 +102,12 @@
           "outputHashing": "all"
         },
         "development": {
-          "buildOptimizer": false,
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
         },
         "dev-beta": {
-          "buildOptimizer": false,
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true,
@@ -151,16 +148,6 @@
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
         "buildTarget": "badman:build"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "apps/badman/jest.config.ts"
       }
     }
   }

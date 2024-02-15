@@ -1,6 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, OnInit, Signal, TemplateRef, computed, effect, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  Component,
+  Injector,
+  OnInit,
+  TemplateRef,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -24,20 +32,20 @@ import {
 import { CpService } from '@badman/frontend-cp';
 import { ExcelService } from '@badman/frontend-excel';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
-import { JobsService } from '@badman/frontend-queue';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
+import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
 import { sortSubEvents } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 import { combineLatest, lastValueFrom } from 'rxjs';
 import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { CompetitionEncountersComponent } from './competition-encounters/competition-encounters.component';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
-import { injectDestroy } from 'ngxtension/inject-destroy';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -81,11 +89,16 @@ export class DetailPageComponent implements OnInit {
   private destroy$ = injectDestroy();
 
   // signals
-  canViewEnrollments?: Signal<boolean | undefined>;
+
   currentTab = signal(0);
 
-  hasPermission = toSignal(this.claimService.hasAnyClaims$(['edit-any:club']));
-
+  hasPermission = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
+  canViewEnrollments = computed(() =>
+    this.claimService.hasAnyClaims([
+      'view-any:enrollment-competition',
+      `${this.eventCompetition.id}_view:enrollment-competition`,
+    ]),
+  );
   canViewEncounter = computed(() => this.hasPermission() || this.versionInfo.beta);
   copyYearControl = new FormControl();
 
@@ -126,7 +139,9 @@ export class DetailPageComponent implements OnInit {
         );
 
         const eventCompetitionName = `${this.eventCompetition.name}`;
-        this.copyYearControl.setValue((this.eventCompetition.season || new Date().getFullYear()) + 1);
+        this.copyYearControl.setValue(
+          (this.eventCompetition.season || new Date().getFullYear()) + 1,
+        );
 
         this.seoService.update({
           title: eventCompetitionName,
@@ -136,14 +151,6 @@ export class DetailPageComponent implements OnInit {
         });
         this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
         this.breadcrumbsService.set('competition', translations['all.competition.title']);
-
-        this.canViewEnrollments = toSignal(
-          this.authService.hasAnyClaims$([
-            'view-any:enrollment-competition',
-            `${this.eventCompetition.id}_view:enrollment-competition`,
-          ]),
-          { injector: this.injector },
-        );
 
         effect(
           () => {
@@ -234,9 +241,13 @@ export class DetailPageComponent implements OnInit {
             },
           })
           .subscribe(() => {
-            this.matSnackBar.open(`Competition ${this.eventCompetition.name} open/close dates updated`, 'Close', {
-              duration: 2000,
-            });
+            this.matSnackBar.open(
+              `Competition ${this.eventCompetition.name} open/close dates updated`,
+              'Close',
+              {
+                duration: 2000,
+              },
+            );
           });
       }
     });
@@ -278,9 +289,13 @@ export class DetailPageComponent implements OnInit {
             },
           })
           .subscribe(() => {
-            this.matSnackBar.open(`Competition ${this.eventCompetition.name} open/close dates updated`, 'Close', {
-              duration: 2000,
-            });
+            this.matSnackBar.open(
+              `Competition ${this.eventCompetition.name} open/close dates updated`,
+              'Close',
+              {
+                duration: 2000,
+              },
+            );
           });
       }
     });

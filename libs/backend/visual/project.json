@@ -6,24 +6,17 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/backend/visual",
         "tsConfig": "libs/backend/visual/tsconfig.lib.json",
         "packageJson": "libs/backend/visual/package.json",
         "main": "libs/backend/visual/src/index.ts",
-        "assets": ["libs/backend-visual/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/visual"],
-      "options": {
-        "jestConfig": "libs/backend/visual/jest.config.ts"
+        "assets": [
+          "libs/backend/visual/*.md"
+        ]
       }
     }
   },

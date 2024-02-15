@@ -6,6 +6,7 @@ import {
   OnInit,
   TemplateRef,
   ViewChild,
+  computed,
   input,
   signal,
 } from '@angular/core';
@@ -111,7 +112,7 @@ export class ShowRequestsComponent implements OnInit {
   requestClosed = false;
   requestClosing!: moment.Moment;
 
-  admin$ = this.claimService.hasAnyClaims$(['change-any:encounter']);
+  isAdmin = computed(() => this.claimService.hasAnyClaims(['change-any:encounter']));
 
   comments = signal<Comment[]>([]);
 

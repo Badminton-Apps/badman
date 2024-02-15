@@ -21,25 +21,9 @@ import {
   Team,
   TeamPlayerMembershipType,
 } from '@badman/backend-database';
-import {
-  getCurrentSeason,
-  getRankingProtected,
-  IsUUID,
-} from '@badman/utils';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { getCurrentSeason, getRankingProtected, IsUUID } from '@badman/utils';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs, queryFixer, WhereArgs } from '../../utils';
@@ -76,9 +60,7 @@ export class PlayersResolver {
   }
 
   @Query(() => PagedPlayer)
-  async players(
-    @Args() listArgs: ListArgs,
-  ): Promise<{ count: number; rows: Player[] }> {
+  async players(@Args() listArgs: ListArgs): Promise<{ count: number; rows: Player[] }> {
     return Player.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
@@ -111,18 +93,12 @@ export class PlayersResolver {
   }
 
   @ResolveField(() => [Claim])
-  async claims(
-    @Parent() player: Player,
-    @Args() listArgs: ListArgs,
-  ): Promise<Claim[]> {
+  async claims(@Parent() player: Player, @Args() listArgs: ListArgs): Promise<Claim[]> {
     return player.getClaims(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Notification])
-  async notifications(
-    @User() user: Player,
-    @Args() listArgs: ListArgs,
-  ): Promise<Notification[]> {
+  async notifications(@User() user: Player, @Args() listArgs: ListArgs): Promise<Notification[]> {
     return user.getNotifications(ListArgs.toFindOptions(listArgs));
   }
 
@@ -186,10 +162,7 @@ export class PlayersResolver {
   }
 
   @ResolveField(() => [Game])
-  async games(
-    @Parent() player: Player,
-    @Args() listArgs: ListArgs,
-  ): Promise<Game[]> {
+  async games(@Parent() player: Player, @Args() listArgs: ListArgs): Promise<Game[]> {
     return player.getGames(ListArgs.toFindOptions(listArgs));
   }
 
@@ -199,8 +172,7 @@ export class PlayersResolver {
     @Args() listArgs: ListArgs,
     @Args('season', {
       nullable: true,
-      description:
-        'Include the inactive teams (this overwrites the active filter if given)',
+      description: 'Include the inactive teams (this overwrites the active filter if given)',
     })
     season?: number,
   ): Promise<Team[]> {
@@ -223,9 +195,7 @@ export class PlayersResolver {
       description: 'Include the historical clubs',
     })
     historical?: boolean,
-  ): Promise<
-    (Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined
-  > {
+  ): Promise<(Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
 
     if (!historical) {
@@ -247,9 +217,7 @@ export class PlayersResolver {
   @Mutation(() => Player)
   async createPlayer(@User() user: Player, @Args('data') data: PlayerNewInput) {
     if (!(await user.hasAnyPermission(['add:player']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to create a player`,
-      );
+      throw new UnauthorizedException(`You do not have permission to create a player`);
     }
 
     // Do transaction
@@ -273,19 +241,9 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Player)
-  async updatePlayer(
-    @User() user: Player,
-    @Args('data') data: PlayerUpdateInput,
-  ) {
-    if (
-      !(await user.hasAnyPermission([
-        `${data.id}_edit:player`,
-        'edit-any:player',
-      ]))
-    ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this player`,
-      );
+  async updatePlayer(@User() user: Player, @Args('data') data: PlayerUpdateInput) {
+    if (!(await user.hasAnyPermission([`${data.id}_edit:player`, 'edit-any:player']))) {
+      throw new UnauthorizedException(`You do not have permission to edit this player`);
     }
 
     // Do transaction
@@ -312,14 +270,9 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Boolean)
-  async removePlayer(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-  ) {
+  async removePlayer(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission(['delete:player']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to delete this player`,
-      );
+      throw new UnauthorizedException(`You do not have permission to delete this player`);
     }
 
     // Do transaction
@@ -457,9 +410,7 @@ export class GamePlayersResolver extends PlayersResolver {
     });
 
     if (!game) {
-      throw new NotFoundException(
-        `${Game.name}: ${player.GamePlayerMembership.gameId}`,
-      );
+      throw new NotFoundException(`${Game.name}: ${player.GamePlayerMembership.gameId}`);
     }
 
     const places = await RankingPlace.findAll({
@@ -481,7 +432,7 @@ export class TeamPlayerResolver extends PlayersResolver {
   protected override readonly logger = new Logger(TeamPlayerResolver.name);
 
   @ResolveField(() => [RankingLastPlace])
-  async rankingLastPlaces(
+  override async rankingLastPlaces(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
   ): Promise<RankingLastPlace[]> {
@@ -502,9 +453,7 @@ export class TeamPlayerResolver extends PlayersResolver {
         });
 
         if (!system) {
-          throw new NotFoundException(
-            `${RankingSystem.name}: ${place.systemId}`,
-          );
+          throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
         }
 
         place.single = place.single ?? system.amountOfLevels;
@@ -519,7 +468,7 @@ export class TeamPlayerResolver extends PlayersResolver {
   @ResolveField(() => [RankingPlace], {
     description: '(Default) sorting: DESC \n\r(Default) take: 1',
   })
-  async rankingPlaces(
+  override async rankingPlaces(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
   ): Promise<RankingPlace[]> {
@@ -544,9 +493,7 @@ export class TeamPlayerResolver extends PlayersResolver {
         });
 
         if (!system) {
-          throw new NotFoundException(
-            `${RankingSystem.name}: ${place.systemId}`,
-          );
+          throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
         }
 
         place.single = place.single ?? system.amountOfLevels;

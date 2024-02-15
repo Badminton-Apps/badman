@@ -1,6 +1,7 @@
 import Joi from 'joi';
 
 export const configSchema = Joi.object({
+  // default values
   NODE_ENV: Joi.string().valid('development', 'production', 'test', 'beta').default('development'),
 
   DB_STORAGE: Joi.string().optional(),

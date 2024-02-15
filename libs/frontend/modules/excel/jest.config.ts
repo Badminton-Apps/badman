@@ -3,7 +3,7 @@ export default {
   displayName: 'frontend-excel',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/modules/excel',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

@@ -1,5 +1,13 @@
 import { CommonModule, Location } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +18,6 @@ import { Player } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import {
@@ -44,57 +51,49 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditPageComponent implements OnInit, AfterViewInit {
+export class EditPageComponent implements AfterViewInit {
+  private readonly seoService = inject(SeoService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly breadcrumbsService = inject(BreadcrumbService);
+  private readonly claimService = inject(ClaimService);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly location = inject(Location);
   private destroy$ = injectDestroy();
 
-  player!: Player;
+  private routeData = toSignal(this.route.data);
+
+  player = computed(() => this.routeData()?.['player'] as Player);
+
+  // player!: Player;
   selectedTabIndex?: number;
 
-  hasRankingPermission = false;
-  hasClubHistoryPermission = false;
-  hasPermissionPermission = false;
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private breadcrumbsService: BreadcrumbService,
-    private claimService: ClaimService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private location: Location,
-  ) {}
+  hasRankingPermission = computed(() =>
+    this.claimService.hasAnyClaims(['edit:ranking', 'status:competition']),
+  );
+  hasClubHistoryPermission = computed(() => this.claimService.hasAnyClaims(['membership:club']));
+  hasPermissionPermission = computed(() => this.claimService.hasAnyClaims(['edit:ranking']));
 
-  ngOnInit(): void {
-    combineLatest([
-      this.route.data,
-      this.hasPermission(['edit:ranking', 'status:competition']),
-      this.hasPermission(['membership:club']),
-      this.hasPermission(['edit:ranking']),
-    ]).subscribe(([data, rankingPerm, clubHistoryPerm, permissionPerm]) => {
-      this.player = data['player'];
+  constructor() {
+    effect(() => {
       this.seoService.update({
-        title: `${this.player.fullName}`,
-        description: `Player ${this.player.fullName}`,
+        title: `${this.player().fullName}`,
+        description: `Player ${this.player().fullName}`,
         type: 'website',
         keywords: ['player', 'badminton'],
       });
-      this.breadcrumbsService.set('player/:id', this.player.fullName);
-
-      this.hasRankingPermission = rankingPerm;
-      this.hasClubHistoryPermission = clubHistoryPerm;
-      this.hasPermissionPermission = permissionPerm;
+      this.breadcrumbsService.set('player/:id', this.player().fullName);
     });
   }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.activatedRoute.queryParams.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe((params) => {
-        this.selectedTabIndex = params['tab'];
-      });
+      this.activatedRoute.queryParams
+        .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+        .subscribe((params) => {
+          this.selectedTabIndex = params['tab'];
+        });
     }, 0);
-  }
-
-  public hasPermission(claim: string[]) {
-    return this.claimService.hasAnyClaims$(claim);
   }
 
   onTabChange(selectedTabIndex: number): void {

@@ -59,7 +59,13 @@ export class RankingSystem extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Unique
   @Field(() => String, { nullable: true })
@@ -70,13 +76,13 @@ export class RankingSystem extends Model {
   @Column(DataType.NUMBER)
   amountOfLevels!: number;
 
-  @Field(() => Int)
+  @Field(() => Number)
   @Column(DataType.NUMBER)
   procentWinning!: number;
-  @Field(() => Int)
+  @Field(() => Number)
   @Column(DataType.NUMBER)
   procentWinningPlus1!: number;
-  @Field(() => Int)
+  @Field(() => Number)
   @Column(DataType.NUMBER)
   procentLosing!: number;
   @Field(() => Int, { nullable: true })

@@ -5,25 +5,18 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/js:swc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/backend/websockets",
         "tsConfig": "libs/backend/websockets/tsconfig.lib.json",
         "packageJson": "libs/backend/websockets/package.json",
         "main": "libs/backend/websockets/src/index.ts",
-        "assets": ["libs/backend/websockets/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "libs/backend/websockets/jest.config.ts"
+        "assets": [
+          "libs/backend/websockets/*.md"
+        ]
       }
     }
   },

@@ -5,7 +5,7 @@ describe('ChangedEncountersService', () => {
   let service: ChangedEncountersService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const module = await Test.createTestingModule({
       providers: [ChangedEncountersService],
     }).compile();
 

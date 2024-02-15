@@ -7,6 +7,7 @@ import { Component, input } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './loading-block.component.html',
   styleUrls: ['./loading-block.component.scss'],
+    
 })
 export class LoadingBlockComponent {
   items = input(3);

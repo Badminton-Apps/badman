@@ -6,6 +6,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 function bootstrap() {
   platformBrowserDynamic()
     .bootstrapModule(AppModule, {
+      // ngZone: 'noop',
       providers: [provideAnimations()],
     })
     .catch((err) => console.error(err));

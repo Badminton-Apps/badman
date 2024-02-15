@@ -1,28 +1,22 @@
 {
   "name": "backend-ranking",
-  "$schema": "..\\..\\..\\node_modules\\nx\\schemas\\project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/ranking/src",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/backend/ranking",
         "tsConfig": "libs/backend/ranking/tsconfig.lib.json",
         "packageJson": "libs/backend/ranking/package.json",
-        "main": "libs/backend/ranking/src/index.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/ranking"],
-      "options": {
-        "jestConfig": "libs/backend/ranking/jest.config.js"
+        "main": "libs/backend/ranking/src/index.ts",
+        "assets": [
+          "libs/backend/ranking/*.md"
+        ]
       }
     }
   },
