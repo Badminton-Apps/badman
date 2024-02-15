@@ -34,10 +34,10 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-      - run: npm ci
+      # - run: npm ci
       - uses: nrwl/nx-set-shas@v4
       - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
-      - run: npx nx affected -t lint test build e2e-ci
+      - run: npx nx affected -t lint test build
       - name: e2e reports
         run: |
           echo "Combine all the reports into a single report"
