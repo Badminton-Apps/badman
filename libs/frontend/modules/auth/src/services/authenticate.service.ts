@@ -1,12 +1,11 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Inject, Injectable, Injector, PLATFORM_ID, computed, inject } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 import { PopupLoginOptions, RedirectLoginOptions } from '@auth0/auth0-spa-js';
 import { Player } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
-import { BehaviorSubject, Observable, from, fromEvent, iif, merge, of } from 'rxjs';
-import { catchError, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { Observable, from, fromEvent, iif, merge, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 export interface AuthState {
   user: LoggedinUser | null;
@@ -134,61 +133,6 @@ export class AuthenticateService {
         ),
     },
   });
-
-  user$!: Observable<LoggedinUser>;
-
-  #user = new BehaviorSubject<LoggedinUser | null>(null);
-  get user() {
-    return this.#user.value;
-  }
-
-  #loggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  get loggedIn() {
-    return this.#loggedIn.value;
-  }
-
-  constructor(
-    @Inject(PLATFORM_ID) private _platformId: string,
-    private injector: Injector,
-  ) {
-    if (isPlatformBrowser(this._platformId)) {
-      this.authService = this.injector.get(AuthService);
-    } else {
-      this.loggedIn$ = of(false);
-    }
-
-    const fetchInfo = this.apollo
-      .query<{ me: Partial<Player> }>({
-        query: PROFILE_QUERY,
-        fetchPolicy: 'network-only',
-      })
-      .pipe(
-        switchMap((result) => {
-          return (
-            this.authService?.user$.pipe(
-              // return null if there is an error
-              map((user) => ({ ...user, ...result.data.me })),
-            ) ?? of({})
-          );
-        }),
-        map((result) => {
-          const user = new LoggedinUser(result as Partial<LoggedinUser>);
-          user.loggedIn = true;
-          return user;
-        }),
-      );
-
-    this.user$ = this.loggedIn$.pipe(
-      switchMap((loggedIn) =>
-        iif(() => loggedIn, fetchInfo, of({ loggedIn: false } as LoggedinUser)),
-      ),
-      shareReplay(),
-      tap((user) => {
-        this.#user.next(user);
-        this.#loggedIn.next(user.loggedIn);
-      }),
-    );
-  }
 
   logout() {
     return from(this.apollo.client.resetStore()).pipe(

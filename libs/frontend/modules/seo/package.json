@@ -4,7 +4,7 @@
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
-    "@angular/platform-browser": "~17.1.2"
+    "@angular/platform-browser": "~17.2.1"
   },
   "dependencies": {},
   "sideEffects": false
