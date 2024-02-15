@@ -36,7 +36,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - uses: nrwl/nx-set-shas@v4
-      - run: npx nx-cloud start-ci-run
+      - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
       - run: npx nx affected -t lint test build e2e-ci
       - name: e2e reports
         run: |
