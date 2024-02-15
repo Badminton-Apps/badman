@@ -142,19 +142,20 @@ export class ChartComponent implements OnInit {
       annotations: {
         yaxis: annotations,
         xaxis: [
-          {
-            x: this.startedCalc().valueOf(),
-            borderColor: '#3d99f5',
-            label: {
-              borderColor: '#3d99f5',
-              style: {
-                color: '#fff',
-                background: '#3d99f5',
-              },
-              position: 'center',
-              text: 'Started points',
-            },
-          },
+          // we can use this to mark where we started calculating
+          // {
+          //   x: this.startedCalc().valueOf(),
+          //   borderColor: '#3d99f5',
+          //   label: {
+          //     borderColor: '#3d99f5',
+          //     style: {
+          //       color: '#fff',
+          //       background: '#3d99f5',
+          //     },
+          //     position: 'center',
+          //     text: 'Started points',
+          //   },
+          // },
         ],
       },
     };
