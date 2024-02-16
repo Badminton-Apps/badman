@@ -22,7 +22,13 @@
       "conventionalCommits": true
     }
   },
-
+  "tasksRunnerOptions": {
+    "default": {
+      "options": {
+        "parallel": 5
+      }
+    }
+  },
   "targetDefaults": {
     "@angular-devkit/build-angular:application": {
       "cache": true,
