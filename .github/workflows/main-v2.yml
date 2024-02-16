@@ -16,7 +16,6 @@ on:
         required: true
         default: true
         type: boolean
-  pull_request:
 
 # Needed for nx-set-shas when run on the main branch
 permissions:
@@ -40,6 +39,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Set Git config
         run: |
           git config --local user.email "info@badman.app"
@@ -59,7 +59,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.prod-release && 'main' || 'develop' }}
           fetch-depth: 0
+
       - uses: actions/setup-node@v3
         with:
           node-version: 20
@@ -78,12 +80,10 @@ jobs:
       # create release on master en develop
       - name: Create release
         run: nx release
-        if: ${{ github.ref == 'refs/heads/develop' }} || ${{ github.ref == 'refs/heads/main' }}
 
       # deploy the new packages
-      - name: Deploy 
+      - name: Deploy
         run: npx nx affected -t deploy
-        if: ${{ github.ref == 'refs/heads/develop' }} || ${{ github.ref == 'refs/heads/main' }}
         env:
           API_HOOK: ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
           WORKER_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
