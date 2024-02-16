@@ -97,7 +97,7 @@ jobs:
 
       # deploy the new packages
       - name: Deploy 
-        run: npx nx affected -t deploy
+        run: npx nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
           WORKER_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
