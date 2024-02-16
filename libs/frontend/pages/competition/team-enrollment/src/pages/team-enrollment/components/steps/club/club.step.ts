@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, effect, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Injector,
+  OnInit,
+  effect,
+  inject,
+  input,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -13,8 +21,9 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { SelectClubComponent } from '@badman/frontend-components';
+import { IsUUID } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subject, filter, pairwise, startWith, takeUntil } from 'rxjs';
+import { Subject, distinctUntilChanged, filter, pairwise, startWith, takeUntil } from 'rxjs';
 import { CLUB, COMMENTS, EMAIL, EVENTS, LOCATIONS, TEAMS } from '../../../../../forms';
 
 export class DirectErrorStateMatcher implements ErrorStateMatcher {
@@ -40,13 +49,14 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubStepComponent implements OnInit {
-  private authenticateService = inject(AuthenticateService);
+  private readonly authenticateService = inject(AuthenticateService);
+  private readonly injector = inject(Injector);
 
   destroy$ = new Subject<void>();
   matcher = new DirectErrorStateMatcher();
 
   group = input<FormGroup>();
-  controlClub = input<FormControl<string>>(new FormControl());
+  controlClub = input<FormControl<string>>();
   protected internalControlClub!: FormControl<string>;
 
   controlEmail = input<FormControl<string>>();
@@ -101,24 +111,23 @@ export class ClubStepComponent implements OnInit {
       this.group()?.addControl(this.controlEmailName(), this.internalControlEmail);
     }
 
-    effect(() => {
-      const userEmail = this.user()?.email;
-      if (!!this.controlEmail()?.value && userEmail && !localStorageEmail) {
-        this.controlEmail()?.setValue(userEmail);
-      }
-    });
+    effect(
+      () => {
+        const userEmail = this.user()?.email;
+        if (!!this.controlEmail()?.value && userEmail && !localStorageEmail) {
+          this.controlEmail()?.setValue(userEmail);
+        }
+      },
+      {
+        injector: this.injector,
+      },
+    );
 
     this.internalControlClub?.valueChanges
       .pipe(
         takeUntil(this.destroy$),
-        filter(
-          (value) =>
-            value?.length === 36 &&
-            value[8] === '-' &&
-            value[13] === '-' &&
-            value[18] === '-' &&
-            value[23] === '-',
-        ),
+        filter(IsUUID),
+        distinctUntilChanged(),
         startWith(this.group()?.value?.[this.controlName()]),
         pairwise(),
       )
