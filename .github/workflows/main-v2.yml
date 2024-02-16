@@ -85,7 +85,7 @@ jobs:
 
       # create release on master en develop
       - name: Create release
-        run: nx release
+        run: npx nx release
 
       # deploy the new packages
       - name: Deploy
