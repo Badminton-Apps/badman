@@ -67,7 +67,9 @@ export class ShowLevelService {
           ),
           map((res) => res.data?.player),
           map((player) => ({
-            rankingPlace: player?.rankingLastPlaces?.[0] ? new RankingPlace(player.rankingLastPlaces[0]) : null,
+            rankingPlace: player?.rankingLastPlaces?.[0]
+              ? new RankingPlace(player.rankingLastPlaces[0])
+              : null,
             loaded: true,
           })),
         ),

@@ -1,14 +1,6 @@
 import { getIndexFromPlayers } from '@badman/utils';
 import { NotFoundException } from '@nestjs/common';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import moment from 'moment';
 import {
   BelongsToGetAssociationMixin,
@@ -38,11 +30,7 @@ import { EntryMetaType } from '../../types';
 import { Player } from '../player.model';
 import { RankingPlace, RankingSystem } from '../ranking';
 import { Team } from '../team.model';
-import {
-  DrawCompetition,
-  EventCompetition,
-  SubEventCompetition,
-} from './competition';
+import { DrawCompetition, EventCompetition, SubEventCompetition } from './competition';
 import { Standing } from './standing.model';
 import { DrawTournament, SubEventTournament } from './tournament';
 import { Relation } from '../../wrapper';
@@ -173,10 +161,7 @@ export class EventEntry extends Model {
 
   // Belongs to TournamentSubEvent
   getSubEventTournament!: BelongsToGetAssociationMixin<SubEventTournament>;
-  setSubEventTournament!: BelongsToSetAssociationMixin<
-    SubEventTournament,
-    string
-  >;
+  setSubEventTournament!: BelongsToSetAssociationMixin<SubEventTournament, string>;
 
   // Belongs to TournamentDraw
   getDrawTournament!: BelongsToGetAssociationMixin<DrawTournament>;
@@ -184,10 +169,7 @@ export class EventEntry extends Model {
 
   // Belongs to TournamentSubEvent
   getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;
-  setSubEventCompetition!: BelongsToSetAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
+  setSubEventCompetition!: BelongsToSetAssociationMixin<SubEventCompetition, string>;
 
   // Belongs to drawCompetition
   getDrawCompetition!: BelongsToGetAssociationMixin<DrawCompetition>;
@@ -200,10 +182,7 @@ export class EventEntry extends Model {
   // recalculate competition index
   @BeforeUpdate
   @BeforeCreate
-  static async recalculateCompetitionIndex(
-    instance: EventEntry,
-    options: SaveOptions
-  ) {
+  static async recalculateCompetitionIndex(instance: EventEntry, options: SaveOptions) {
     if (!instance.changed('meta')) {
       return;
     }
@@ -245,7 +224,7 @@ export class EventEntry extends Model {
     usedRankingDate.set('year', dbSubEvent.eventCompetition.season);
     usedRankingDate.set(
       dbSubEvent.eventCompetition.usedRankingUnit,
-      dbSubEvent.eventCompetition.usedRankingAmount
+      dbSubEvent.eventCompetition.usedRankingAmount,
     );
 
     const startRanking = usedRankingDate.clone().set('date', 0);
@@ -264,28 +243,20 @@ export class EventEntry extends Model {
       transaction: options?.transaction,
     });
 
-    instance.meta.competition.players = instance.meta?.competition.players?.map(
-      (r) => {
-        const ranking = dbRanking.find((ranking) => ranking.playerId === r.id);
-        return {
-          ...r,
-          single:
-            ((r?.single ?? -1) == -1 ? ranking?.single : r?.single) ??
-            dbSystem.amountOfLevels,
-          double:
-            ((r?.double ?? -1) == -1 ? ranking?.double : r?.double) ??
-            dbSystem.amountOfLevels,
-          mix:
-            ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ??
-            dbSystem.amountOfLevels,
-        };
-      }
-    );
+    instance.meta.competition.players = instance.meta?.competition.players?.map((r) => {
+      const ranking = dbRanking.find((ranking) => ranking.playerId === r.id);
+      return {
+        ...r,
+        single: ((r?.single ?? -1) == -1 ? ranking?.single : r?.single) ?? dbSystem.amountOfLevels,
+        double: ((r?.double ?? -1) == -1 ? ranking?.double : r?.double) ?? dbSystem.amountOfLevels,
+        mix: ((r?.mix ?? -1) == -1 ? ranking?.mix : r?.mix) ?? dbSystem.amountOfLevels,
+      };
+    });
 
     const team = await instance.getTeam();
     instance.meta.competition.teamIndex = getIndexFromPlayers(
       team.type,
-      instance.meta?.competition.players
+      instance.meta?.competition.players,
     );
   }
 }
@@ -344,7 +315,7 @@ export class EventEntryUpdateInput extends PartialType(
     'team',
     'meta',
   ] as const),
-  InputType
+  InputType,
 ) {
   @Field(() => EventEntryMetaInput, { nullable: true })
   meta?: EventEntryMetaInput;
@@ -353,7 +324,7 @@ export class EventEntryUpdateInput extends PartialType(
 @InputType()
 export class EventEntryNewInput extends PartialType(
   OmitType(EventEntryUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}
 
 export interface Meta {

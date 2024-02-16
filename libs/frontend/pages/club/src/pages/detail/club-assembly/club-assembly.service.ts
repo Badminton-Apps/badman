@@ -69,7 +69,9 @@ export class ClubAssemblyService {
       this.getTeams(filter).pipe(
         map((teams) => teams.sort(sortTeams)),
         switchMap((teams) =>
-          this.getPlayers(teams, this.filter.value).pipe(map((players) => ({ teams, players, loaded: true }))),
+          this.getPlayers(teams, this.filter.value).pipe(
+            map((players) => ({ teams, players, loaded: true })),
+          ),
         ),
       ),
     ),
@@ -295,7 +297,8 @@ export class ClubAssemblyService {
     reason?: string;
     base?: boolean;
   } {
-    const base = (team.entry?.meta?.competition?.players?.findIndex((p) => p.id == player.id) ?? -1) > -1;
+    const base =
+      (team.entry?.meta?.competition?.players?.findIndex((p) => p.id == player.id) ?? -1) > -1;
 
     // base players can play in their own team
     if (base) {
@@ -310,27 +313,43 @@ export class ClubAssemblyService {
     if (player.gender == 'M' && team.type == SubEventTypeEnum.F) {
       return {
         canPlay: CanPlay.Na,
-        reason: this.translateService.instant('all.competition.club-assembly.warnings.other-gender', {
-          player,
-          playerGender: this.translateService.instant(`all.gender.longs.${player.gender.toUpperCase()}`).toLowerCase(),
-          teamType: this.translateService.instant(`all.team.types.long.${team.type.toUpperCase()}`).toLowerCase(),
-        }),
+        reason: this.translateService.instant(
+          'all.competition.club-assembly.warnings.other-gender',
+          {
+            player,
+            playerGender: this.translateService
+              .instant(`all.gender.longs.${player.gender.toUpperCase()}`)
+              .toLowerCase(),
+            teamType: this.translateService
+              .instant(`all.team.types.long.${team.type.toUpperCase()}`)
+              .toLowerCase(),
+          },
+        ),
       };
     } else if (player.gender == 'F' && team.type == SubEventTypeEnum.M) {
       return {
         canPlay: CanPlay.Na,
-        reason: this.translateService.instant('all.competition.club-assembly.warnings.other-gender', {
-          player,
-          playerGender: this.translateService.instant(`all.gender.longs.${player.gender.toUpperCase()}`).toLowerCase(),
-          teamType: this.translateService.instant(`all.team.types.long.${team.type.toUpperCase()}`).toLowerCase(),
-        }),
+        reason: this.translateService.instant(
+          'all.competition.club-assembly.warnings.other-gender',
+          {
+            player,
+            playerGender: this.translateService
+              .instant(`all.gender.longs.${player.gender.toUpperCase()}`)
+              .toLowerCase(),
+            teamType: this.translateService
+              .instant(`all.team.types.long.${team.type.toUpperCase()}`)
+              .toLowerCase(),
+          },
+        ),
       };
     }
 
     // if player is part of meta competition, he can't play in any teams with a higher number
 
-    const teamsWherePlayerIsBase = otherTeams?.find(
-      (t) => t.entry?.meta?.competition?.players?.find((p) => p.id == player.id && p.gender == player.gender),
+    const teamsWherePlayerIsBase = otherTeams?.find((t) =>
+      t.entry?.meta?.competition?.players?.find(
+        (p) => p.id == player.id && p.gender == player.gender,
+      ),
     );
 
     if (teamsWherePlayerIsBase) {
@@ -350,9 +369,12 @@ export class ClubAssemblyService {
       ) {
         return {
           canPlay: CanPlay.No,
-          reason: this.translateService.instant('all.competition.club-assembly.warnings.base-subevent', {
-            player,
-          }),
+          reason: this.translateService.instant(
+            'all.competition.club-assembly.warnings.base-subevent',
+            {
+              player,
+            },
+          ),
         };
       }
     }
@@ -364,7 +386,11 @@ export class ClubAssemblyService {
       const single = ranking.single ?? 12;
       const double = ranking.double ?? 12;
       const mix = ranking.mix ?? 12;
-      const minLevel = Math.min(single ?? 12, double ?? 12, team.type == SubEventTypeEnum.MX ? mix : 12);
+      const minLevel = Math.min(
+        single ?? 12,
+        double ?? 12,
+        team.type == SubEventTypeEnum.MX ? mix : 12,
+      );
 
       if (event) {
         const types = [];
@@ -384,12 +410,17 @@ export class ClubAssemblyService {
         if (types.length) {
           return {
             canPlay: CanPlay.No,
-            reason: this.translateService.instant('all.competition.club-assembly.warnings.min-level', {
-              player,
-              maxLevel: event.maxLevel,
-              level: minLevel,
-              type: types?.map((t) => this.translateService.instant(`all.game.types.${t}`).toLowerCase())?.join(', '),
-            }),
+            reason: this.translateService.instant(
+              'all.competition.club-assembly.warnings.min-level',
+              {
+                player,
+                maxLevel: event.maxLevel,
+                level: minLevel,
+                type: types
+                  ?.map((t) => this.translateService.instant(`all.game.types.${t}`).toLowerCase())
+                  ?.join(', '),
+              },
+            ),
           };
         }
       }
@@ -398,15 +429,20 @@ export class ClubAssemblyService {
         // check if the player is better then any of the meta players (if he is not part of the meta)
         for (const entryPlayer of team.entry?.meta?.competition?.players ?? []) {
           const entrySum =
-            entryPlayer.single + entryPlayer.double + (team.type == SubEventTypeEnum.MX ? entryPlayer.mix : 0);
+            entryPlayer.single +
+            entryPlayer.double +
+            (team.type == SubEventTypeEnum.MX ? entryPlayer.mix : 0);
           const playerSum = single + double + (team.type == SubEventTypeEnum.MX ? mix : 0);
 
           if (playerSum < entrySum && entryPlayer.gender == player.gender) {
             return {
               canPlay: CanPlay.Maybe,
-              reason: this.translateService.instant('all.competition.club-assembly.warnings.better-meta', {
-                player,
-              }),
+              reason: this.translateService.instant(
+                'all.competition.club-assembly.warnings.better-meta',
+                {
+                  player,
+                },
+              ),
             };
           }
         }

@@ -1,8 +1,4 @@
-import {
-  EnrollmentValidationData,
-  EnrollmentValidationError,
-  RuleResult,
-} from '../../../models';
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**

@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/translate",
         "tsConfig": "libs/backend/translate/tsconfig.lib.json",
         "packageJson": "libs/backend/translate/package.json",
         "main": "libs/backend/translate/src/index.ts",
-        "assets": [
-          "libs/backend/translate/*.md"
-        ]
+        "assets": ["libs/backend/translate/*.md"]
       }
     }
   },

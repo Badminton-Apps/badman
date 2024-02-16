@@ -15,7 +15,7 @@ module.exports = {
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -27,11 +27,9 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.removeColumn(
-          { tableName: 'Roles', schema: 'security' },
-          'locked',
-          { transaction: t }
-        );
+        await queryInterface.removeColumn({ tableName: 'Roles', schema: 'security' }, 'locked', {
+          transaction: t,
+        });
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

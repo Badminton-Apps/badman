@@ -6,9 +6,11 @@ import { first, map } from 'rxjs/operators';
 
 @Injectable()
 export class FaqResolver {
-  constructor(private apollo: Apollo,
+  constructor(
+    private apollo: Apollo,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string) {}
+    @Inject(PLATFORM_ID) private platformId: string,
+  ) {}
 
   resolve() {
     return this.apollo
@@ -31,7 +33,7 @@ export class FaqResolver {
           }
           return result.data.faqs.map((faq) => new Faq(faq));
         }),
-        first()
+        first(),
       );
   }
 }

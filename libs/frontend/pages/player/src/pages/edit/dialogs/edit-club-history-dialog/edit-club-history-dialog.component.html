@@ -59,7 +59,9 @@
       (click)="this.onUpdate()"
       [disabled]="!(this.clubFormGroup.valid && this.membershipFormGroup.valid)"
       [matTooltip]="
-        this.clubFormGroup.valid && this.membershipFormGroup.valid ? null : ('all.club.form.invalid' | translate)
+        this.clubFormGroup.valid && this.membershipFormGroup.valid
+          ? null
+          : ('all.club.form.invalid' | translate)
       "
     >
       {{ 'all.button.save' | translate }}

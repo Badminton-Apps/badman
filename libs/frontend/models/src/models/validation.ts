@@ -19,8 +19,6 @@ export type TeamValidationResult = {
 
   isNewTeam: boolean;
   possibleOldTeam: boolean;
-
-  
 };
 
 export type ValidationMessage = {

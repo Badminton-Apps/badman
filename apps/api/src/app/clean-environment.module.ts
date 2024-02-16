@@ -1,6 +1,6 @@
-import { DynamicModule, Module } from '@nestjs/common'
-import { parse } from 'dotenv'
-import fs from 'fs'
+import { DynamicModule, Module } from '@nestjs/common';
+import { parse } from 'dotenv';
+import fs from 'fs';
 
 @Module({})
 export class CleanEnvironmentModule {
@@ -10,22 +10,21 @@ export class CleanEnvironmentModule {
    * @param environmentFilePath
    * @param predicate
    */
-  static forPredicate (environmentFilePath?: string, predicate?: () => boolean): DynamicModule {
+  static forPredicate(environmentFilePath?: string, predicate?: () => boolean): DynamicModule {
     if (predicate === undefined || predicate()) {
-      const environmentData = fs.readFileSync(environmentFilePath ?? '.env', { encoding: 'utf8' })
+      const environmentData = fs.readFileSync(environmentFilePath ?? '.env', { encoding: 'utf8' });
 
-      const parsed = new Set(Object.keys(parse(environmentData)))
+      const parsed = new Set(Object.keys(parse(environmentData)));
 
       for (const name of Object.keys(process.env)) {
         if (parsed.has(name)) {
-          delete process.env[name]
+          delete process.env[name];
         }
       }
     }
 
-
     return {
-      module: CleanEnvironmentModule
-    }
+      module: CleanEnvironmentModule,
+    };
   }
 }

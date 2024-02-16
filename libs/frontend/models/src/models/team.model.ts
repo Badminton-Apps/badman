@@ -43,7 +43,7 @@ export class Team {
       return;
     }
     this.id = args.id;
-    
+
     this.slug = args?.slug;
     this.name = args?.name;
     this.teamNumber = args?.teamNumber;

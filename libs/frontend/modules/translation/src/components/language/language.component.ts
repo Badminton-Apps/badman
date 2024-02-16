@@ -1,4 +1,7 @@
-import { NgxMatMomentAdapter, NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+import {
+  NgxMatMomentAdapter,
+  NgxMatMomentModule,
+} from '@angular-material-components/moment-adapter';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +17,14 @@ import { setLanguage } from '../../factory';
   templateUrl: './language.component.html',
   styleUrls: ['./language.component.scss'],
   standalone: true,
-  imports: [CommonModule, NgxMatMomentModule, TranslateModule, MatMenuModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    NgxMatMomentModule,
+    TranslateModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
 })
 export class LanguageComponent implements OnInit {
   current!: string;

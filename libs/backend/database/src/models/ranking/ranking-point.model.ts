@@ -37,7 +37,7 @@ export class RankingPoint extends Model {
   @Field(() => ID)
   @Column(DataType.UUIDV4)
   override id!: string;
-  
+
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
 

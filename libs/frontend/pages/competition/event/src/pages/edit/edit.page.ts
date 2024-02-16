@@ -160,7 +160,11 @@ export class EditPageComponent implements OnInit {
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),
-      season: new FormControl(event.season, [Validators.required, Validators.min(2000), Validators.max(3000)]),
+      season: new FormControl(event.season, [
+        Validators.required,
+        Validators.min(2000),
+        Validators.max(3000),
+      ]),
       contactEmail: new FormControl(event.contactEmail, Validators.required),
       checkEncounterForFilledIn: new FormControl(event.checkEncounterForFilledIn),
       teamMatcher: new FormControl(event.teamMatcher),

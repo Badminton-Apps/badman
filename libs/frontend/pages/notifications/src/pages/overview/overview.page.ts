@@ -94,7 +94,10 @@ export class OverviewPageComponent implements OnInit {
             })
             .pipe(
               map((result) => {
-                if (result.data.notifications == undefined || result.data.notifications.length == 0) {
+                if (
+                  result.data.notifications == undefined ||
+                  result.data.notifications.length == 0
+                ) {
                   return undefined;
                 }
                 return result.data.notifications?.map((n) => new Notification(n));

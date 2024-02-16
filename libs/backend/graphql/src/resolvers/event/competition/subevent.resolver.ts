@@ -10,14 +10,7 @@ import {
 } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
 import { Inject, Logger, NotFoundException } from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, ID, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -31,7 +24,7 @@ export class SubEventCompetitionResolver {
 
   @Query(() => SubEventCompetition)
   async subEventCompetition(
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ): Promise<SubEventCompetition> {
     const subEventCompetition = await SubEventCompetition.findByPk(id);
 
@@ -42,38 +35,30 @@ export class SubEventCompetitionResolver {
   }
 
   @Query(() => [SubEventCompetition])
-  async subEventCompetitions(
-    @Args() listArgs: ListArgs
-  ): Promise<SubEventCompetition[]> {
+  async subEventCompetitions(@Args() listArgs: ListArgs): Promise<SubEventCompetition[]> {
     return SubEventCompetition.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => EventCompetition)
-  async eventCompetition(
-    @Parent() subEvent: SubEventCompetition
-  ): Promise<EventCompetition> {
+  async eventCompetition(@Parent() subEvent: SubEventCompetition): Promise<EventCompetition> {
     return subEvent.getEventCompetition();
   }
 
   @ResolveField(() => [DrawCompetition])
   async drawCompetitions(
     @Parent() subEvent: SubEventCompetition,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<DrawCompetition[]> {
     return subEvent.getDrawCompetitions(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [RankingGroup])
-  async rankingGroups(
-    @Parent() subEvent: SubEventCompetition
-  ): Promise<RankingGroup[]> {
+  async rankingGroups(@Parent() subEvent: SubEventCompetition): Promise<RankingGroup[]> {
     return subEvent.getRankingGroups();
   }
 
   @ResolveField(() => [EventEntry])
-  async eventEntries(
-    @Parent() subEvent: SubEventCompetition
-  ): Promise<EventEntry[]> {
+  async eventEntries(@Parent() subEvent: SubEventCompetition): Promise<EventEntry[]> {
     return subEvent.getEventEntries();
   }
 
@@ -83,12 +68,10 @@ export class SubEventCompetitionResolver {
     nullable: true,
   })
   async averageLevel(
-    @Parent() subEvent: SubEventCompetition
+    @Parent() subEvent: SubEventCompetition,
   ): Promise<SubEventCompetitionAverageLevel[]> {
     const cacheKey = `subevent-competition-average-level-${subEvent.id}`;
-    const cached = await this._cacheManager.get<
-      SubEventCompetitionAverageLevel[]
-    >(cacheKey);
+    const cached = await this._cacheManager.get<SubEventCompetitionAverageLevel[]>(cacheKey);
     if (cached) {
       return cached;
     }
@@ -97,19 +80,19 @@ export class SubEventCompetitionResolver {
 
     // Get the draws and encounters for this sub event
     const draws = await subEvent.getDrawCompetitions();
-    const encounters = await Promise.all(
-      draws.map((draw) => draw.getEncounterCompetitions())
-    ).then((encounters) => encounters.flat());
+    const encounters = await Promise.all(draws.map((draw) => draw.getEncounterCompetitions())).then(
+      (encounters) => encounters.flat(),
+    );
 
     // Get all the games for the encounters
-    const games = await Promise.all(
-      encounters.map((encounter) => encounter.getGames())
-    ).then((games) => games.flat());
+    const games = await Promise.all(encounters.map((encounter) => encounter.getGames())).then(
+      (games) => games.flat(),
+    );
 
     // get all players
-    const players = await Promise.all(
-      games.map((game) => game.getPlayers())
-    ).then((players) => players.flat());
+    const players = await Promise.all(games.map((game) => game.getPlayers())).then((players) =>
+      players.flat(),
+    );
 
     this.logger.debug(`Found ${players.length} players`);
 
@@ -142,29 +125,19 @@ export class SubEventCompetitionResolver {
     });
 
     if (!primarySystem) {
-      throw new NotFoundException(
-        `${RankingSystem.name}: primary ranking system not found`
-      );
+      throw new NotFoundException(`${RankingSystem.name}: primary ranking system not found`);
     }
 
     // skip male average calculation if the event is female only
     if (subEvent.eventType !== SubEventTypeEnum.F) {
       // Get the current ranking place for the players
-      const avg = await this.getMaleAverages(
-        primarySystem,
-        uniquePlayersMale,
-        countPerMale
-      );
+      const avg = await this.getMaleAverages(primarySystem, uniquePlayersMale, countPerMale);
       avagrages.push(avg);
     }
 
     // skip female average calculation if the event is male only
     if (subEvent.eventType !== SubEventTypeEnum.M) {
-      const avg = await this.getFemaleAverages(
-        primarySystem,
-        uniquePlayersFeMale,
-        countPerFemale
-      );
+      const avg = await this.getFemaleAverages(primarySystem, uniquePlayersFeMale, countPerFemale);
 
       avagrages.push(avg);
     }
@@ -184,7 +157,7 @@ export class SubEventCompetitionResolver {
   private async getMaleAverages(
     primarySystem: RankingSystem,
     uniquePlayersMale: Set<string>,
-    countPerMale: Map<string, number>
+    countPerMale: Map<string, number>,
   ) {
     const rankingPlacesMale = await RankingLastPlace.findAll({
       where: {
@@ -256,7 +229,7 @@ export class SubEventCompetitionResolver {
   private async getFemaleAverages(
     primarySystem: RankingSystem,
     uniquePlayersFeMale: Set<string>,
-    countPerFemale: Map<string, number>
+    countPerFemale: Map<string, number>,
   ) {
     const rankingPlacesFemale = await RankingLastPlace.findAll({
       where: {

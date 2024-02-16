@@ -98,7 +98,7 @@ export class EnrollmentValidationService {
           .concat(teams.map((t) => t.backupPlayers))
           .concat(teams.map((t) => t.basePlayers))
           .flat(1)
-          .filter((p) => !instanceOfEntryCompetitionPlayer(p)) as string[]
+          .filter((p) => !instanceOfEntryCompetitionPlayer(p)) as string[],
       ),
     ];
 
@@ -109,25 +109,17 @@ export class EnrollmentValidationService {
         .concat(teams.map((t) => t.backupPlayers))
         .concat(teams.map((t) => t.basePlayers))
         .flat(1)
-        .filter((p) =>
-          instanceOfEntryCompetitionPlayer(p)
-        ) as EntryCompetitionPlayer[]
+        .filter((p) => instanceOfEntryCompetitionPlayer(p)) as EntryCompetitionPlayer[]
     ).filter((p, index, self) => {
       return index === self.findIndex((e) => e?.id === p?.id);
     });
 
-    const eixistingPlayerIds = [
-      ...new Set(existingPlayers.map((p) => p?.id)),
-    ]?.filter((p) => p !== null && p !== undefined) as string[];
+    const eixistingPlayerIds = [...new Set(existingPlayers.map((p) => p?.id))]?.filter(
+      (p) => p !== null && p !== undefined,
+    ) as string[];
 
     const dbPlayers = await Player.findAll({
-      attributes: [
-        'id',
-        'gender',
-        'competitionPlayer',
-        'firstName',
-        'lastName',
-      ],
+      attributes: ['id', 'gender', 'competitionPlayer', 'firstName', 'lastName'],
       where: {
         id: stringPlayerIds,
       },
@@ -147,13 +139,7 @@ export class EnrollmentValidationService {
     });
 
     const dbPlayersEntry = await Player.findAll({
-      attributes: [
-        'id',
-        'gender',
-        'competitionPlayer',
-        'firstName',
-        'lastName',
-      ],
+      attributes: ['id', 'gender', 'competitionPlayer', 'firstName', 'lastName'],
       where: {
         id: eixistingPlayerIds,
       },
@@ -166,30 +152,26 @@ export class EnrollmentValidationService {
         }
 
         const playersForTeam = this.getPlayers(
-          [t.players ?? [], t.backupPlayers ?? [], t.basePlayers ?? []]?.flat(
-            1
-          ),
+          [t.players ?? [], t.backupPlayers ?? [], t.basePlayers ?? []]?.flat(1),
           dbPlayers,
           dbPlayersEntry,
-          system
+          system,
         );
 
         const basePlayers = playersForTeam.filter((p) =>
           t.basePlayers
             ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
-            .includes(p.id)
+            .includes(p.id),
         );
 
         const teamPlayers = playersForTeam.filter((p) =>
-          t.players
-            ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
-            .includes(p.id)
+          t.players?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id),
         );
 
         const backupPlayers = playersForTeam.filter((p) =>
           t.backupPlayers
             ?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p))
-            .includes(p.id)
+            .includes(p.id),
         );
 
         const teamIndex = getIndexFromPlayers(t.type, teamPlayers);
@@ -197,7 +179,7 @@ export class EnrollmentValidationService {
 
         const preTeam = previousSeasonTeams.find((p) => p.link === t.link);
 
-        if (!t.id){
+        if (!t.id) {
           throw new Error('No team id found');
         }
 
@@ -235,12 +217,10 @@ export class EnrollmentValidationService {
    */
   async validate(
     enrollment: EnrollmentValidationData,
-    validators: Rule[]
+    validators: Rule[],
   ): Promise<EnrollmentOutput> {
     // get all errors and warnings from the validators in parallel
-    const results = await Promise.all(
-      validators.map((v) => v.validate(enrollment))
-    );
+    const results = await Promise.all(validators.map((v) => v.validate(enrollment)));
 
     const teams: TeamEnrollmentOutput[] = [];
 
@@ -249,9 +229,7 @@ export class EnrollmentValidationService {
         continue;
       }
 
-      const ruleResults = results?.map((r) =>
-        r?.find((t) => t.teamId === team.team?.id)
-      );
+      const ruleResults = results?.map((r) => r?.find((t) => t.teamId === team.team?.id));
 
       const errors =
         ruleResults
@@ -266,17 +244,11 @@ export class EnrollmentValidationService {
       const valid = ruleResults?.every((r) => r?.valid);
 
       const uniqueErrors = errors.filter((error, index, self) => {
-        return (
-          index ===
-          self.findIndex((e) => JSON.stringify(e) === JSON.stringify(error))
-        );
+        return index === self.findIndex((e) => JSON.stringify(e) === JSON.stringify(error));
       }) as EnrollmentValidationError[];
 
       const uniqueWarnings = warnings.filter((warning, index, self) => {
-        return (
-          index ===
-          self.findIndex((w) => JSON.stringify(w) === JSON.stringify(warning))
-        );
+        return index === self.findIndex((w) => JSON.stringify(w) === JSON.stringify(warning));
       }) as EnrollmentValidationError[];
 
       teams.push({
@@ -326,17 +298,15 @@ export class EnrollmentValidationService {
     players: (string | EntryCompetitionPlayer)[],
     withRanking: Player[],
     withoutRanking: Player[],
-    system?: RankingSystem
+    system?: RankingSystem,
   ): EntryCompetitionPlayer[] {
     if (!system) {
       throw new Error('No ranking system provided');
     }
 
-    const stringPlayerIds = players.filter(
-      (p) => !instanceOfEntryCompetitionPlayer(p)
-    ) as string[];
+    const stringPlayerIds = players.filter((p) => !instanceOfEntryCompetitionPlayer(p)) as string[];
     const eixistingPlayerIds = players.filter((p) =>
-      instanceOfEntryCompetitionPlayer(p)
+      instanceOfEntryCompetitionPlayer(p),
     ) as EntryCompetitionPlayer[];
 
     const addedPlayes: EntryCompetitionPlayer[] = [];
@@ -379,7 +349,7 @@ export class EnrollmentValidationService {
         Math.min(
           ranking?.single ?? system.amountOfLevels,
           ranking?.double ?? system.amountOfLevels,
-          ranking?.mix ?? system.amountOfLevels
+          ranking?.mix ?? system.amountOfLevels,
         ) + 2;
 
       // if the player has a missing rankingplace, we set the lowest possible ranking
@@ -408,7 +378,7 @@ class EnrollmentInput {
 }
 
 class EnrollmentInputTeam extends PartialType(
-  PickType(Team, ['id', 'name', 'type', 'link', 'teamNumber'] as const)
+  PickType(Team, ['id', 'name', 'type', 'link', 'teamNumber'] as const),
 ) {
   basePlayers?: (string | EntryCompetitionPlayer)[];
   players?: (string | EntryCompetitionPlayer)[];
@@ -417,7 +387,7 @@ class EnrollmentInputTeam extends PartialType(
 }
 
 const instanceOfEntryCompetitionPlayer = (
-  obj: EntryCompetitionPlayer | string | undefined
+  obj: EntryCompetitionPlayer | string | undefined,
 ): obj is EntryCompetitionPlayer => {
   return typeof obj !== 'string';
 };

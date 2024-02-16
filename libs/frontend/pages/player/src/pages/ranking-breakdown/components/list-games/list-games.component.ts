@@ -6,7 +6,7 @@ import {
   Component,
   OnInit,
   computed,
-  input
+  input,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';

@@ -1,6 +1,15 @@
 import { QueueName, Simulation, Sync } from '@badman/backend-queue';
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
-import { Column, DataType, Default, IsUUID, Model, PrimaryKey, Table, Unique } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  Default,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique,
+} from 'sequelize-typescript';
 import { CronJobMetaType } from '../../types';
 
 @Table({
@@ -70,7 +79,10 @@ export class CronJobUpdateInput extends PartialType(
 ) {}
 
 @InputType()
-export class CronJobNewInput extends PartialType(OmitType(CronJobUpdateInput, ['id'] as const), InputType) {}
+export class CronJobNewInput extends PartialType(
+  OmitType(CronJobUpdateInput, ['id'] as const),
+  InputType,
+) {}
 
 export type CronJobMeta = QueueCronJob;
 

@@ -1,9 +1,5 @@
 import { SubEventTypeEnum } from '@badman/utils';
-import {
-  AssemblyValidationData,
-  AssemblyOutput,
-  AssemblyValidationError,
-} from '../../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 import { Player } from '@badman/backend-database';
 
@@ -35,9 +31,7 @@ export class TeamSubsIndexRule extends Rule {
             sum:
               (player.single ?? system.amountOfLevels) +
               (player.double ?? system.amountOfLevels) +
-              (type == SubEventTypeEnum.MX
-                ? player.mix ?? system.amountOfLevels
-                : 0),
+              (type == SubEventTypeEnum.MX ? player.mix ?? system.amountOfLevels : 0),
           };
         })
         .filter((p) => p)
@@ -52,9 +46,7 @@ export class TeamSubsIndexRule extends Rule {
         const sum =
           (subRanking.single ?? system.amountOfLevels) +
           (subRanking.double ?? system.amountOfLevels) +
-          (type == SubEventTypeEnum.MX
-            ? subRanking.mix ?? system.amountOfLevels
-            : 0);
+          (type == SubEventTypeEnum.MX ? subRanking.mix ?? system.amountOfLevels : 0);
 
         // find all players with higher sum
         const higherPlayers = sortedPlayers?.filter((p) => p.sum > sum);
@@ -62,8 +54,7 @@ export class TeamSubsIndexRule extends Rule {
         if (higherPlayers) {
           for (const higherPlayer of higherPlayers) {
             warnings.push({
-              message:
-                'all.competition.team-assembly.warnings.subtitute-team-index',
+              message: 'all.competition.team-assembly.warnings.subtitute-team-index',
               params: {
                 subtitute: higherPlayer,
               },

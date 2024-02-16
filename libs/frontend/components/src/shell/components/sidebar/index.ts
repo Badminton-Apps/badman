@@ -2,4 +2,3 @@
 export * from './banner';
 export * from './user-shortcuts';
 // end:ng42.barrel
-

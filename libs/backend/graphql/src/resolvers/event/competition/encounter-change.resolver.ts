@@ -50,13 +50,11 @@ export class EncounterChangeCompetitionResolver {
   constructor(
     private _sequelize: Sequelize,
     @InjectQueue(SyncQueue) private syncQueue: Queue,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) {}
 
   @Query(() => EncounterChange)
-  async encounterChange(
-    @Args('id', { type: () => ID }) id: string
-  ): Promise<EncounterChange> {
+  async encounterChange(@Args('id', { type: () => ID }) id: string): Promise<EncounterChange> {
     const encounterCompetition = await EncounterChange.findByPk(id);
 
     if (!encounterCompetition) {
@@ -67,40 +65,30 @@ export class EncounterChangeCompetitionResolver {
 
   @Query(() => PagedEncounterChange)
   async encounterChanges(
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EncounterChange[] }> {
     return EncounterChange.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [EncounterChangeDate])
-  async dates(
-    @Parent() encounterChange: EncounterChange
-  ): Promise<EncounterChangeDate[]> {
+  async dates(@Parent() encounterChange: EncounterChange): Promise<EncounterChangeDate[]> {
     return encounterChange.getDates();
   }
-
-  
 
   @Mutation(() => EncounterChange)
   async updateEncounterChange(
     @User() user: Player,
-    @Args('data') updateChangeEncounter: EncounterChangeUpdateInput
+    @Args('data') updateChangeEncounter: EncounterChangeUpdateInput,
   ): Promise<EncounterChange> {
-    const encounterChange = await EncounterChange.findByPk(
-      updateChangeEncounter.id
-    );
+    const encounterChange = await EncounterChange.findByPk(updateChangeEncounter.id);
 
     if (!encounterChange) {
       throw new NotFoundException(updateChangeEncounter.id);
     }
-    const encounter = await EncounterCompetition.findByPk(
-      encounterChange.encounterId
-    );
+    const encounter = await EncounterCompetition.findByPk(encounterChange.encounterId);
 
     if (!encounter) {
-      throw new NotFoundException(
-        `${EncounterCompetition.name}: ${encounterChange.encounterId}`
-      );
+      throw new NotFoundException(`${EncounterCompetition.name}: ${encounterChange.encounterId}`);
     }
 
     const homeTeam = await encounter.getHome();
@@ -113,9 +101,7 @@ export class EncounterChangeCompetitionResolver {
         'change-any:encounter',
       ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this encounter`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this encounter`);
     }
 
     return encounterChange.update(updateChangeEncounter);
@@ -124,31 +110,22 @@ export class EncounterChangeCompetitionResolver {
   @Mutation(() => EncounterChange)
   async addChangeEncounter(
     @User() user: Player,
-    @Args('data') newChangeEncounter: EncounterChangeNewInput
+    @Args('data') newChangeEncounter: EncounterChangeNewInput,
   ): Promise<EncounterChange> {
-    const encounter = await EncounterCompetition.findByPk(
-      newChangeEncounter.encounterId
-    );
+    const encounter = await EncounterCompetition.findByPk(newChangeEncounter.encounterId);
 
     if (!encounter) {
       throw new NotFoundException(
-        `${EncounterCompetition.name}: ${newChangeEncounter.encounterId}`
+        `${EncounterCompetition.name}: ${newChangeEncounter.encounterId}`,
       );
     }
 
-    const team = newChangeEncounter.home
-      ? await encounter.getHome()
-      : await encounter.getAway();
+    const team = newChangeEncounter.home ? await encounter.getHome() : await encounter.getAway();
 
     if (
-      !(await user.hasAnyPermission([
-        `${team.clubId}_change:encounter`,
-        'change-any:encounter',
-      ]))
+      !(await user.hasAnyPermission([`${team.clubId}_change:encounter`, 'change-any:encounter']))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this encounter`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this encounter`);
     }
     const transaction = await this._sequelize.transaction();
     let encounterChange: EncounterChange;
@@ -170,9 +147,7 @@ export class EncounterChangeCompetitionResolver {
 
       // Set the state
       if (newChangeEncounter.accepted) {
-        const selectedDates = newChangeEncounter.dates?.filter(
-          (r) => r.selected === true
-        );
+        const selectedDates = newChangeEncounter.dates?.filter((r) => r.selected === true);
         if (selectedDates?.length !== 1) {
           // Multiple dates were selected
           throw new Error('Multiple dates selected');
@@ -195,11 +170,11 @@ export class EncounterChangeCompetitionResolver {
           encounter.locationId = selectedDates[0].locationId;
           locationHasChanged = true;
         }
-        
+
         // Save cahnges
         // Must be before Sync Queue is triggered (othrwise wrong date is passed)
         await encounter.save({ transaction });
-       
+
         // Accept
         await this.syncQueue.add(
           Sync.ChangeDate,
@@ -209,7 +184,7 @@ export class EncounterChangeCompetitionResolver {
           {
             removeOnComplete: true,
             removeOnFail: false,
-          }
+          },
         );
 
         encounterChange.accepted = true;
@@ -217,9 +192,7 @@ export class EncounterChangeCompetitionResolver {
         encounterChange.accepted = false;
       }
       await encounterChange.save({ transaction });
-      this.logger.debug(
-        `Change encounter ${encounter.id}: ${encounterChange.accepted}`
-      );
+      this.logger.debug(`Change encounter ${encounter.id}: ${encounterChange.accepted}`);
 
       const draw = await encounter.getDrawCompetition({
         attributes: ['id'],
@@ -244,8 +217,8 @@ export class EncounterChangeCompetitionResolver {
         .isBefore(
           moment.tz(
             draw?.subEventCompetition?.eventCompetition?.changeCloseRequestDate,
-            'europe/brussels'
-          )
+            'europe/brussels',
+          ),
         );
 
       await this.changeOrUpdate(
@@ -253,7 +226,7 @@ export class EncounterChangeCompetitionResolver {
         newChangeEncounter,
         transaction,
         dates,
-        canRequestNewDates
+        canRequestNewDates,
       );
 
       // find if any date was selected
@@ -266,20 +239,14 @@ export class EncounterChangeCompetitionResolver {
 
     // Notify the user
     if (newChangeEncounter.accepted) {
-      this.notificationService.notifyEncounterChangeFinished(
-        encounter,
-        locationHasChanged
-      );
+      this.notificationService.notifyEncounterChangeFinished(encounter, locationHasChanged);
 
       // check if the location has changed
       if (locationHasChanged) {
         // this.notificationService.notifyEncounterLocationChanged(encounter);
       }
     } else {
-      this.notificationService.notifyEncounterChange(
-        encounter,
-        newChangeEncounter.home ?? false
-      );
+      this.notificationService.notifyEncounterChange(encounter, newChangeEncounter.home ?? false);
     }
 
     return encounterChange;
@@ -289,7 +256,7 @@ export class EncounterChangeCompetitionResolver {
     change: EncounterChangeNewInput,
     transaction: Transaction,
     existingDates: EncounterChangeDate[],
-    canRequestNewDates: boolean
+    canRequestNewDates: boolean,
   ) {
     change.dates = change.dates
       ?.map((r) => {
@@ -303,7 +270,7 @@ export class EncounterChangeCompetitionResolver {
     for (const date of change.dates ?? []) {
       // Check if the encounter has alredy a change for this date
       let encounterChangeDate = existingDates.find(
-        (r) => r.date?.getTime() === date.date?.getTime()
+        (r) => r.date?.getTime() === date.date?.getTime(),
       );
 
       if (!encounterChangeDate && !canRequestNewDates) {
@@ -333,9 +300,7 @@ export class EncounterChangeCompetitionResolver {
 
     // Remove dates in the change request but not in existing dates
     for (const date of existingDates) {
-      if (
-        !change.dates?.find((r) => r.date?.getTime() === date.date?.getTime())
-      ) {
+      if (!change.dates?.find((r) => r.date?.getTime() === date.date?.getTime())) {
         await date.destroy({ transaction });
       }
     }
@@ -344,14 +309,10 @@ export class EncounterChangeCompetitionResolver {
 
 @Resolver(() => EncounterChangeDate)
 export class EncounterChangeDateCompetitionResolver {
-  private readonly logger = new Logger(
-    EncounterChangeDateCompetitionResolver.name
-  );
+  private readonly logger = new Logger(EncounterChangeDateCompetitionResolver.name);
 
   @ResolveField(() => Location)
-  async dates(
-    @Parent() encounterChangeDate: EncounterChangeDate
-  ): Promise<Location> {
+  async dates(@Parent() encounterChangeDate: EncounterChangeDate): Promise<Location> {
     return encounterChangeDate.getLocation();
   }
 }

@@ -35,7 +35,7 @@ module.exports = {
             createdAt: sequelize.DataTypes.DATE,
             updatedAt: sequelize.DataTypes.DATE,
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

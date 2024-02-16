@@ -105,7 +105,9 @@ export class Team extends Model {
   link!: string;
 
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'))
+  @Column(
+    DataType.ENUM('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'),
+  )
   preferredDay?: string;
 
   @BelongsToMany(() => Location, () => TeamLocationCompetition)
@@ -305,7 +307,15 @@ export class Team extends Model {
 
 @InputType()
 export class TeamUpdateInput extends PartialType(
-  OmitType(Team, ['createdAt', 'updatedAt', 'club', 'players', 'captain', 'roles', 'entry'] as const),
+  OmitType(Team, [
+    'createdAt',
+    'updatedAt',
+    'club',
+    'players',
+    'captain',
+    'roles',
+    'entry',
+  ] as const),
   InputType,
 ) {
   // Include the entry

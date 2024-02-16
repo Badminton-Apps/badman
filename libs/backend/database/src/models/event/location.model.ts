@@ -1,12 +1,4 @@
-import {
-  Field,
-  Float,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, Float, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -162,34 +154,13 @@ export class Location extends Model {
 
   // Belongs to many EventTournament
   getEventTournaments!: BelongsToManyGetAssociationsMixin<EventTournament>;
-  setEventTournaments!: BelongsToManySetAssociationsMixin<
-    EventTournament,
-    string
-  >;
-  addEventTournaments!: BelongsToManyAddAssociationsMixin<
-    EventTournament,
-    string
-  >;
-  addEventTournament!: BelongsToManyAddAssociationMixin<
-    EventTournament,
-    string
-  >;
-  removeEventTournament!: BelongsToManyRemoveAssociationMixin<
-    EventTournament,
-    string
-  >;
-  removeEventTournaments!: BelongsToManyRemoveAssociationsMixin<
-    EventTournament,
-    string
-  >;
-  hasEventTournament!: BelongsToManyHasAssociationMixin<
-    EventTournament,
-    string
-  >;
-  hasEventTournaments!: BelongsToManyHasAssociationsMixin<
-    EventTournament,
-    string
-  >;
+  setEventTournaments!: BelongsToManySetAssociationsMixin<EventTournament, string>;
+  addEventTournaments!: BelongsToManyAddAssociationsMixin<EventTournament, string>;
+  addEventTournament!: BelongsToManyAddAssociationMixin<EventTournament, string>;
+  removeEventTournament!: BelongsToManyRemoveAssociationMixin<EventTournament, string>;
+  removeEventTournaments!: BelongsToManyRemoveAssociationsMixin<EventTournament, string>;
+  hasEventTournament!: BelongsToManyHasAssociationMixin<EventTournament, string>;
+  hasEventTournaments!: BelongsToManyHasAssociationsMixin<EventTournament, string>;
   countEventTournament!: BelongsToManyCountAssociationsMixin;
 
   // Has many Court
@@ -220,7 +191,7 @@ export class PointInput {
 @InputType()
 export class LocationUpdateInput extends PartialType(
   OmitType(Location, ['createdAt', 'updatedAt', 'coordinates'] as const),
-  InputType
+  InputType,
 ) {
   @Field(() => PointInput)
   coordinates?: {
@@ -232,5 +203,5 @@ export class LocationUpdateInput extends PartialType(
 @InputType()
 export class LocationNewInput extends PartialType(
   OmitType(LocationUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

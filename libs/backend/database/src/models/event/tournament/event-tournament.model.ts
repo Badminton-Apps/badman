@@ -11,14 +11,7 @@ import {
   Unique,
 } from 'sequelize-typescript';
 
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType
-} from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -56,7 +49,7 @@ export class EventTournament extends Model {
   constructor(values?: Partial<EventTournament>, options?: BuildOptions) {
     super(values, options);
   }
- 
+
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -144,34 +137,13 @@ export class EventTournament extends Model {
 
   // Has many subEvent
   getSubEventTournaments!: HasManyGetAssociationsMixin<SubEventTournament>;
-  setSubEventTournaments!: HasManySetAssociationsMixin<
-    SubEventTournament,
-    string
-  >;
-  addSubEventTournaments!: HasManyAddAssociationsMixin<
-    SubEventTournament,
-    string
-  >;
-  addsubEventTournament!: HasManyAddAssociationMixin<
-    SubEventTournament,
-    string
-  >;
-  removesubEventTournament!: HasManyRemoveAssociationMixin<
-    SubEventTournament,
-    string
-  >;
-  removeSubEventTournaments!: HasManyRemoveAssociationsMixin<
-    SubEventTournament,
-    string
-  >;
-  hassubEventTournament!: HasManyHasAssociationMixin<
-    SubEventTournament,
-    string
-  >;
-  hasSubEventTournaments!: HasManyHasAssociationsMixin<
-    SubEventTournament,
-    string
-  >;
+  setSubEventTournaments!: HasManySetAssociationsMixin<SubEventTournament, string>;
+  addSubEventTournaments!: HasManyAddAssociationsMixin<SubEventTournament, string>;
+  addsubEventTournament!: HasManyAddAssociationMixin<SubEventTournament, string>;
+  removesubEventTournament!: HasManyRemoveAssociationMixin<SubEventTournament, string>;
+  removeSubEventTournaments!: HasManyRemoveAssociationsMixin<SubEventTournament, string>;
+  hassubEventTournament!: HasManyHasAssociationMixin<SubEventTournament, string>;
+  hasSubEventTournaments!: HasManyHasAssociationsMixin<SubEventTournament, string>;
   countSubEventTournaments!: HasManyCountAssociationsMixin;
 
   // Belongs to many Location
@@ -200,11 +172,11 @@ export class EventTournament extends Model {
 @InputType()
 export class EventTournamentUpdateInput extends PartialType(
   OmitType(EventTournament, ['createdAt', 'updatedAt', 'roles'] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class EventTournamentNewInput extends PartialType(
   OmitType(EventTournamentUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

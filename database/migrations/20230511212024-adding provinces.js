@@ -34,7 +34,7 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -44,7 +44,7 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -57,7 +57,7 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -70,7 +70,7 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -83,7 +83,7 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -96,7 +96,7 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         // Add 2 claims to the database
@@ -108,7 +108,7 @@ module.exports = {
           claims,
           {
             transaction: t,
-          }
+          },
         );
 
         // update the clubs with the new state and country
@@ -122,27 +122,27 @@ module.exports = {
 
         await queryInterface.sequelize.query(
           `UPDATE "Clubs" SET "state" = 'BE-VAN', "country" = 'be' WHERE "clubId" > '10000' AND "clubId" < '20000'`,
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           `UPDATE "Clubs" SET "state" = 'BE-VBR', "country" = 'be' WHERE "clubId" > '20000' AND "clubId" < '30000'`,
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           `UPDATE "Clubs" SET "state" = 'BE-VOV', "country" = 'be' WHERE "clubId" > '30000' AND "clubId" < '40000'`,
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           `UPDATE "Clubs" SET "state" = 'BE-VWV', "country" = 'be' WHERE "clubId" > '40000' AND "clubId" < '50000'`,
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           `UPDATE "Clubs" SET "state" = 'BE-VLI', "country" = 'be' WHERE "clubId" > '70000' AND "clubId" < '80000'`,
-          { transaction: t }
+          { transaction: t },
         );
 
         // update the eventCompetitions with the new state and country
@@ -155,29 +155,28 @@ module.exports = {
 
         await queryInterface.sequelize.query(
           `UPDATE "event"."EventCompetitions" SET "state" = 'BE-VAN', "country" = 'be', "type"= 'PROV' WHERE lower("name") LIKE lower('PBA Competitie %')`,
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           `UPDATE "event"."EventCompetitions" SET "state" = 'BE-VBR', "country" = 'be', "type"= 'PROV' WHERE lower("name") LIKE lower('VVBBC Competitie %')`,
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           `UPDATE "event"."EventCompetitions" SET "state" = 'BE-VOV', "country" = 'be', "type"= 'PROV' WHERE lower("name") LIKE lower('PBO Competitie %')`,
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           `UPDATE "event"."EventCompetitions" SET "state" = 'BE-VWV', "country" = 'be', "type"= 'PROV' WHERE lower("name") LIKE lower('WVBF Competitie %')`,
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           `UPDATE "event"."EventCompetitions" SET "state" = 'BE-VLI', "country" = 'be', "type"= 'PROV' WHERE lower("name") LIKE lower('Limburgse interclubcompetitie %')`,
-          { transaction: t }
+          { transaction: t },
         );
-
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();
@@ -202,7 +201,7 @@ module.exports = {
             schema: 'event',
           },
           'state',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
@@ -211,7 +210,7 @@ module.exports = {
             schema: 'event',
           },
           'country',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
@@ -220,7 +219,7 @@ module.exports = {
             schema: 'event',
           },
           'state',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
@@ -229,7 +228,7 @@ module.exports = {
             schema: 'event',
           },
           'country',
-          { transaction: t }
+          { transaction: t },
         );
 
         // Remove 2 claims from the database
@@ -245,7 +244,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err);

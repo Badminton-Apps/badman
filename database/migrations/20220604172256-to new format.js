@@ -11,7 +11,7 @@ module.exports = {
             schema: 'ranking',
           },
           'RankingGroupSubEventTournamentMemberships',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -20,7 +20,7 @@ module.exports = {
             schema: 'ranking',
           },
           'RankingGroupSubEventCompetitionMemberships',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.renameTable(
           {
@@ -28,7 +28,7 @@ module.exports = {
             schema: 'ranking',
           },
           'RankingSystemRankingGroupMemberships',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.renameTable(
           {
@@ -36,7 +36,7 @@ module.exports = {
             schema: 'ranking',
           },
           'RankingGroups',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -45,7 +45,7 @@ module.exports = {
             schema: 'ranking',
           },
           'RankingLastPlaces',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -54,7 +54,7 @@ module.exports = {
             schema: 'ranking',
           },
           'RankingPlaces',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -63,7 +63,7 @@ module.exports = {
             schema: 'ranking',
           },
           'RankingPoints',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -72,7 +72,7 @@ module.exports = {
             schema: 'ranking',
           },
           'RankingSystems',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -81,7 +81,7 @@ module.exports = {
             schema: 'public',
           },
           'ClubPlayerMemberships',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameColumn(
@@ -91,7 +91,7 @@ module.exports = {
           },
           'SystemId',
           'systemId',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.renameColumn(
           {
@@ -100,7 +100,7 @@ module.exports = {
           },
           'GameId',
           'gameId',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.renameColumn(
           {
@@ -109,7 +109,7 @@ module.exports = {
           },
           'SystemId',
           'systemId',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -129,7 +129,7 @@ module.exports = {
           },
           'systemId',
           'SystemId',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.renameColumn(
           {
@@ -138,7 +138,7 @@ module.exports = {
           },
           'gameId',
           'GameId',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.renameColumn(
           {
@@ -147,7 +147,7 @@ module.exports = {
           },
           'systemId',
           'SystemId',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.renameTable(
           {
@@ -155,7 +155,7 @@ module.exports = {
             schema: 'ranking',
           },
           'GroupSystems',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.renameTable(
           {
@@ -163,7 +163,7 @@ module.exports = {
             schema: 'ranking',
           },
           'Groups',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -172,7 +172,7 @@ module.exports = {
             schema: 'ranking',
           },
           'LastPlaces',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -181,7 +181,7 @@ module.exports = {
             schema: 'ranking',
           },
           'Places',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -190,7 +190,7 @@ module.exports = {
             schema: 'ranking',
           },
           'Points',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -199,7 +199,7 @@ module.exports = {
             schema: 'ranking',
           },
           'Systems',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.renameTable(
           {
@@ -207,7 +207,7 @@ module.exports = {
             schema: 'ranking',
           },
           'GroupSubEventTournaments',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -216,7 +216,7 @@ module.exports = {
             schema: 'ranking',
           },
           'GroupSubEventCompetitions',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.renameTable(
@@ -225,7 +225,7 @@ module.exports = {
             schema: 'public',
           },
           'ClubMemberships',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

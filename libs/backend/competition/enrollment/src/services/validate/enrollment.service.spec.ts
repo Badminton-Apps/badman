@@ -90,11 +90,9 @@ describe('EnrollmentValidationService', () => {
     //   encounter = await encounterBuilder.Build();
   });
 
-
   test('should be defined', () => {
     expect(service).toBeDefined();
   });
-
 
   // describe('Doubles Male team checks', () => {
   //   let player666: Player;

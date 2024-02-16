@@ -5,7 +5,7 @@ import {
   Directive,
   HostBinding,
   ViewEncapsulation,
-  input
+  input,
 } from '@angular/core';
 @Component({
   selector: 'badman-block',

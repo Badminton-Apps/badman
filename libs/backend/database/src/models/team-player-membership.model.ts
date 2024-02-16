@@ -14,7 +14,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique
+  Unique,
 } from 'sequelize-typescript';
 import { ClubPlayerMembership } from './club-player-membership.model';
 import { Player } from './player.model';
@@ -66,10 +66,7 @@ export class TeamPlayerMembership extends Model {
   start?: Date;
 
   @AfterCreate
-  static async checkIfPlayerIsInClub(
-    instance: TeamPlayerMembership,
-    options: SaveOptions
-  ) {
+  static async checkIfPlayerIsInClub(instance: TeamPlayerMembership, options: SaveOptions) {
     const team = await Team.findByPk(instance.teamId, {
       transaction: options.transaction,
     });
@@ -108,10 +105,7 @@ export class TeamPlayerMembership extends Model {
   }
 
   @AfterBulkCreate
-  static async checkIfPlayersIsInClub(
-    instances: TeamPlayerMembership[],
-    options: SaveOptions
-  ) {
+  static async checkIfPlayersIsInClub(instances: TeamPlayerMembership[], options: SaveOptions) {
     for (const team of instances) {
       await this.checkIfPlayerIsInClub(team, options);
     }

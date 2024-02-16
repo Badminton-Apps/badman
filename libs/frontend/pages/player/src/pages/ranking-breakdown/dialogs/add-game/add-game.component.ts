@@ -199,7 +199,12 @@ export class AddGameComponent implements OnInit {
 
     const game = new Game({
       id: uuidv4(),
-      gameType: this.data.type == 'single' ? GameType.S : this.data.type == 'double' ? GameType.D : GameType.MX,
+      gameType:
+        this.data.type == 'single'
+          ? GameType.S
+          : this.data.type == 'double'
+            ? GameType.D
+            : GameType.MX,
       winner: t1won ? 1 : 0,
       rankingPoints,
       players,

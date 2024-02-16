@@ -10,7 +10,7 @@ export async function getViaRanking(
     page: null,
     timeout: 5000,
   },
-  player: Player
+  player: Player,
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {
@@ -67,7 +67,7 @@ export async function getViaRanking(
   if (count === 0) {
     return;
   }
-  
+
   {
     const targetPage = page;
     const selector = ['#ulSearchSuggest > li:nth-child(1) > a'];
@@ -93,7 +93,6 @@ export async function getViaRanking(
     });
     await targetPage.waitForNavigation();
   }
-
 
   return url;
 }

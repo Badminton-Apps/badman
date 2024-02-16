@@ -9,7 +9,9 @@
             <div>
               {{ player.fullName }}
               @if (isException(player?.id)) {
-                <span class="level-exception" [matTooltip]="'all.competition.team-assembly.level-exemption' | translate"
+                <span
+                  class="level-exception"
+                  [matTooltip]="'all.competition.team-assembly.level-exemption' | translate"
                   ><mat-icon inline="true">lock</mat-icon></span
                 >
               }
@@ -34,7 +36,9 @@
             <div>
               {{ player.fullName }}
               @if (isException(player?.id)) {
-                <span class="level-exception" [matTooltip]="'all.competition.team-assembly.level-exemption' | translate"
+                <span
+                  class="level-exception"
+                  [matTooltip]="'all.competition.team-assembly.level-exemption' | translate"
                   ><mat-icon inline="true">lock</mat-icon></span
                 >
               }

@@ -60,7 +60,10 @@ export class SearchService {
     });
   }
 
-  async searchCompetitionEvents(parts: string[], queries: WhereOptions[] = []): Promise<EventCompetition[]> {
+  async searchCompetitionEvents(
+    parts: string[],
+    queries: WhereOptions[] = [],
+  ): Promise<EventCompetition[]> {
     for (const part of parts) {
       queries.push({
         [Op.or]: [{ name: { [this.like]: `%${part}%` } }],
@@ -74,7 +77,10 @@ export class SearchService {
     });
   }
 
-  async searchTournamnetsEvents(parts: string[], queries: WhereOptions[] = []): Promise<EventTournament[]> {
+  async searchTournamnetsEvents(
+    parts: string[],
+    queries: WhereOptions[] = [],
+  ): Promise<EventTournament[]> {
     for (const part of parts) {
       queries.push({
         [Op.or]: [{ name: { [this.like]: `%${part}%` } }],
@@ -91,7 +97,10 @@ export class SearchService {
   async searchClubs(parts: string[], queries: WhereOptions[] = []): Promise<Club[]> {
     for (const part of parts) {
       queries.push({
-        [Op.or]: [{ name: { [this.like]: `%${part}%` } }, { abbreviation: { [this.like]: `%${part}%` } }],
+        [Op.or]: [
+          { name: { [this.like]: `%${part}%` } },
+          { abbreviation: { [this.like]: `%${part}%` } },
+        ],
       });
     }
 

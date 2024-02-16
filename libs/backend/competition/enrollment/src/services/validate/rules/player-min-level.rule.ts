@@ -1,9 +1,5 @@
 import { SubEventTypeEnum } from '@badman/utils';
-import {
-  EnrollmentValidationData,
-  EnrollmentValidationError,
-  RuleResult,
-} from '../../../models';
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -12,13 +8,7 @@ import { Rule } from './_rule.base';
 export class PlayerMinLevelRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
-    for (const {
-      system,
-      team,
-      teamPlayers,
-      basePlayers,
-      subEvent,
-    } of enrollment.teams) {
+    for (const { system, team, teamPlayers, basePlayers, subEvent } of enrollment.teams) {
       if (!subEvent?.maxLevel || !team?.id || !system?.amountOfLevels) {
         continue;
       }
@@ -33,8 +23,7 @@ export class PlayerMinLevelRule extends Rule {
             !player.levelException
           ) {
             errors.push({
-              message:
-                'all.competition.team-enrollment.errors.player-min-level',
+              message: 'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -52,8 +41,7 @@ export class PlayerMinLevelRule extends Rule {
             !player.levelException
           ) {
             errors.push({
-              message:
-                'all.competition.team-enrollment.errors.player-min-level',
+              message: 'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -72,8 +60,7 @@ export class PlayerMinLevelRule extends Rule {
             !player.levelException
           ) {
             errors.push({
-              message:
-                'all.competition.team-enrollment.errors.player-min-level',
+              message: 'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -93,8 +80,7 @@ export class PlayerMinLevelRule extends Rule {
             !player.levelException
           ) {
             warnings.push({
-              message:
-                'all.competition.team-enrollment.errors.player-min-level',
+              message: 'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -112,8 +98,7 @@ export class PlayerMinLevelRule extends Rule {
             !player.levelException
           ) {
             warnings.push({
-              message:
-                'all.competition.team-enrollment.errors.player-min-level',
+              message: 'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -132,8 +117,7 @@ export class PlayerMinLevelRule extends Rule {
             !player.levelException
           ) {
             warnings.push({
-              message:
-                'all.competition.team-enrollment.errors.player-min-level',
+              message: 'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,

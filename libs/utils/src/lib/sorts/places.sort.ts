@@ -5,7 +5,7 @@ export const sortPlaces = (
   b?: Partial<{
     rankingDate: Date;
   }>,
-  order: 'asc' | 'desc' = 'desc'
+  order: 'asc' | 'desc' = 'desc',
 ) => {
   if (!a?.rankingDate) {
     return 1;

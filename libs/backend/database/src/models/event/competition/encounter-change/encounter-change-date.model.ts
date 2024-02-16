@@ -1,12 +1,5 @@
 import { ChangeEncounterAvailability } from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -99,17 +92,12 @@ export class EncounterChangeDate extends Model {
 
 @InputType()
 export class EncounterChangeDateUpdateInput extends PartialType(
-  OmitType(EncounterChangeDate, [
-    'createdAt',
-    'updatedAt',
-    'encounterChange',
-    'location',
-  ] as const),
-  InputType
+  OmitType(EncounterChangeDate, ['createdAt', 'updatedAt', 'encounterChange', 'location'] as const),
+  InputType,
 ) {}
 
 @InputType()
 export class EncounterChangeDateNewInput extends PartialType(
   OmitType(EncounterChangeDateUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

@@ -19,19 +19,15 @@ export class SubEventCompetition extends SubEvent {
     this.teams = args?.teams?.map((t) => new Team(t));
 
     this.eventCompetition =
-      args?.eventCompetition != null
-        ? new EventCompetition(args.eventCompetition)
-        : undefined;
+      args?.eventCompetition != null ? new EventCompetition(args.eventCompetition) : undefined;
     this.drawCompetitions = args?.drawCompetitions?.map(
       (d) =>
         new DrawCompetition({
           ...d,
           subEventCompetition: this,
-        })
+        }),
     );
-    this.averageLevel = args?.averageLevel?.map(
-      (a) => new SubEventCompetitionAverageLevel(a)
-    );
+    this.averageLevel = args?.averageLevel?.map((a) => new SubEventCompetitionAverageLevel(a));
   }
 }
 

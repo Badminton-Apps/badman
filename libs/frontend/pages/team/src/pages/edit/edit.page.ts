@@ -200,8 +200,16 @@ export class EditPageComponent implements OnInit {
     this.apollo
       .mutate({
         mutation: gql`
-          mutation UpdateTeamPlayerMembership($teamId: ID!, $playerId: ID!, $membershipType: String!) {
-            updateTeamPlayerMembership(teamId: $teamId, playerId: $playerId, membershipType: $membershipType) {
+          mutation UpdateTeamPlayerMembership(
+            $teamId: ID!
+            $playerId: ID!
+            $membershipType: String!
+          ) {
+            updateTeamPlayerMembership(
+              teamId: $teamId
+              playerId: $playerId
+              membershipType: $membershipType
+            ) {
               id
               membershipType
               teamId
@@ -224,7 +232,10 @@ export class EditPageComponent implements OnInit {
   }
 
   removeTeam() {
-    const dialogData = new ConfirmDialogModel('all.club.delete.team.title', 'all.club.delete.team.description');
+    const dialogData = new ConfirmDialogModel(
+      'all.club.delete.team.title',
+      'all.club.delete.team.description',
+    );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',

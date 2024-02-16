@@ -9,7 +9,7 @@ import {
   TransferState,
   computed,
   inject,
-  input
+  input,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatTableModule } from '@angular/material/table';

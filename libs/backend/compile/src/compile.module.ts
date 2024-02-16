@@ -29,9 +29,7 @@ export class CompileModule {
     };
   }
 
-  static forRootAsync(
-    options: CompileModuleRegisterAsyncOptions
-  ): DynamicModule {
+  static forRootAsync(options: CompileModuleRegisterAsyncOptions): DynamicModule {
     return {
       global: options.isGlobal,
       module: CompileModule,
@@ -40,9 +38,7 @@ export class CompileModule {
     };
   }
 
-  static createAsyncProviders(
-    options: CompileModuleRegisterAsyncOptions
-  ): Provider[] {
+  static createAsyncProviders(options: CompileModuleRegisterAsyncOptions): Provider[] {
     if (options.useFactory || options.useExisting) {
       return [CompileModule.createAsyncOptionsProvider(options)];
     }
@@ -57,9 +53,7 @@ export class CompileModule {
     ];
   }
 
-  static createAsyncOptionsProvider(
-    options: CompileModuleRegisterAsyncOptions
-  ): Provider {
+  static createAsyncOptionsProvider(options: CompileModuleRegisterAsyncOptions): Provider {
     if (options.useFactory) {
       return {
         provide: COMPILE_OPTIONS_TOKEN,
@@ -68,14 +62,11 @@ export class CompileModule {
       };
     }
 
-    const inject = [
-      (options.useClass || options.useExisting) as Type<CompileOptionsFactory>,
-    ];
+    const inject = [(options.useClass || options.useExisting) as Type<CompileOptionsFactory>];
 
     return {
       provide: COMPILE_OPTIONS_TOKEN,
-      useFactory: (factory: CompileOptionsFactory) =>
-        factory.createCompileOptions(),
+      useFactory: (factory: CompileOptionsFactory) => factory.createCompileOptions(),
       inject,
     };
   }

@@ -43,9 +43,13 @@ export class PushService {
       } catch (error) {
         if (error instanceof WebPushError && error.statusCode === 410) {
           // Remove unused subscription
-          settings.pushSubscriptions = settings.pushSubscriptions.filter((s) => s.endpoint !== sub.endpoint);
+          settings.pushSubscriptions = settings.pushSubscriptions.filter(
+            (s) => s.endpoint !== sub.endpoint,
+          );
           settings.changed('pushSubscriptions', true);
-          this.logger.debug(`Removed subscription for player ${player?.fullName} (${sub.endpoint})`);
+          this.logger.debug(
+            `Removed subscription for player ${player?.fullName} (${sub.endpoint})`,
+          );
           await settings.save();
         } else {
           this.logger.error(error);

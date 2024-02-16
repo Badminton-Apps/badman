@@ -111,10 +111,16 @@ export class SettingsPageComponent implements OnInit {
           const encounterNotEnteredNotificationControl = new FormControl(
             this.getValues(setting.encounterNotEnteredNotification),
           );
-          const syncSuccessNotification = new FormControl(this.getValues(setting.syncSuccessNotification));
-          const syncFailedNotification = new FormControl(this.getValues(setting.syncFailedNotification));
+          const syncSuccessNotification = new FormControl(
+            this.getValues(setting.syncSuccessNotification),
+          );
+          const syncFailedNotification = new FormControl(
+            this.getValues(setting.syncFailedNotification),
+          );
 
-          const clubEnrollmentNotification = new FormControl(this.getValues(setting.clubEnrollmentNotification));
+          const clubEnrollmentNotification = new FormControl(
+            this.getValues(setting.clubEnrollmentNotification),
+          );
           this.settingsForm = new FormGroup({
             encounterChangeConfirmationNotification: encounterChangeConfirmationNotificationControl,
             encounterChangeFinishedNotification: encounterChangeFinishedNotificationControl,
@@ -200,9 +206,13 @@ export class SettingsPageComponent implements OnInit {
               .get('encounterNotEnteredNotification')
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           syncSuccessNotification:
-            this.settingsForm.get('syncSuccessNotification')?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
+            this.settingsForm
+              .get('syncSuccessNotification')
+              ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           syncFailedNotification:
-            this.settingsForm.get('syncFailedNotification')?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
+            this.settingsForm
+              .get('syncFailedNotification')
+              ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           language: this.settingsForm.get('language')?.value ?? 'en',
         },
       })

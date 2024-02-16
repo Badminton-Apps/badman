@@ -20,7 +20,7 @@ export const sortStanding = (
     setsLost?: number;
     totalPointsWon?: number;
     totalPointsLost?: number;
-  }
+  },
 ) => {
   const nonOptionalA = {
     points: a?.points || 0,
@@ -58,15 +58,9 @@ export const sortStanding = (
     return 1;
   }
 
-  if (
-    nonOptionalA.won - nonOptionalA.lost >
-    nonOptionalB.won - nonOptionalB.lost
-  ) {
+  if (nonOptionalA.won - nonOptionalA.lost > nonOptionalB.won - nonOptionalB.lost) {
     return -1;
-  } else if (
-    nonOptionalA.won - nonOptionalA.lost <
-    nonOptionalB.won - nonOptionalB.lost
-  ) {
+  } else if (nonOptionalA.won - nonOptionalA.lost < nonOptionalB.won - nonOptionalB.lost) {
     return 1;
   }
 
@@ -82,10 +76,7 @@ export const sortStanding = (
     return 1;
   }
 
-  if (
-    nonOptionalA.setsWon - nonOptionalA.setsLost >
-    nonOptionalB.setsWon - nonOptionalB.setsLost
-  ) {
+  if (nonOptionalA.setsWon - nonOptionalA.setsLost > nonOptionalB.setsWon - nonOptionalB.setsLost) {
     return -1;
   } else if (
     nonOptionalA.setsWon - nonOptionalA.setsLost <

@@ -1,8 +1,4 @@
-import {
-  EncounterCompetition,
-  NotificationOptionsTypes,
-  Player,
-} from '@badman/backend-database';
+import { EncounterCompetition, NotificationOptionsTypes, Player } from '@badman/backend-database';
 import { Notifier } from '../notifier.base';
 import { RequestOptions } from 'web-push';
 import { unitOfTime } from 'moment';
@@ -12,8 +8,7 @@ export class CompetitionEncounterChangeNewRequestNotifier extends Notifier<{
   isHome: boolean;
 }> {
   protected linkType = 'encounterCompetition';
-  protected type: keyof NotificationOptionsTypes =
-    'encounterChangeNewNotification';
+  protected type: keyof NotificationOptionsTypes = 'encounterChangeNewNotification';
   protected override allowedInterval: unitOfTime.Diff = 'hour';
 
   private readonly options = (encounter: EncounterCompetition) => {
@@ -30,13 +25,10 @@ export class CompetitionEncounterChangeNewRequestNotifier extends Notifier<{
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition; isHome: boolean },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string }
+    args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
-    await this.pushService.sendNotification(
-      player,
-      this.options(data.encounter)
-    );
+    await this.pushService.sendNotification(player, this.options(data.encounter));
   }
 
   async notifyEmail(
@@ -44,7 +36,7 @@ export class CompetitionEncounterChangeNewRequestNotifier extends Notifier<{
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition; isHome: boolean },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string }
+    args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
     const email = args?.email ?? player.email;
@@ -66,7 +58,7 @@ export class CompetitionEncounterChangeNewRequestNotifier extends Notifier<{
         slug: player.slug,
       },
       data.encounter,
-      data.isHome
+      data.isHome,
     );
   }
 
@@ -75,7 +67,7 @@ export class CompetitionEncounterChangeNewRequestNotifier extends Notifier<{
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition; isHome: boolean },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string }
+    args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();

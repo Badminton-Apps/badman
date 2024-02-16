@@ -5,7 +5,7 @@ export const sortGames = (
   b: Partial<{
     playedAt: Date;
   }>,
-  order: 'asc' | 'desc' = 'desc'
+  order: 'asc' | 'desc' = 'desc',
 ) => {
   if (!a.playedAt) {
     return 1;

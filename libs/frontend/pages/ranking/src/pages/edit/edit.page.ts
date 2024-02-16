@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, PLATFORM_ID, TransferState, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  Injector,
+  PLATFORM_ID,
+  TransferState,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -172,7 +181,10 @@ export class EditPageComponent {
       this.apollo.mutate({
         mutation: gql`
           mutation AddRankingGroupToRankingSystem($rankingSystemId: ID!, $rankingGroupId: ID!) {
-            addRankingGroupToRankingSystem(rankingSystemId: $rankingSystemId, rankingGroupId: $rankingGroupId) {
+            addRankingGroupToRankingSystem(
+              rankingSystemId: $rankingSystemId
+              rankingGroupId: $rankingGroupId
+            ) {
               id
             }
           }
@@ -193,7 +205,10 @@ export class EditPageComponent {
       this.apollo.mutate({
         mutation: gql`
           mutation RemoveRankingGroupToRankingSystem($rankingSystemId: ID!, $rankingGroupId: ID!) {
-            removeRankingGroupToRankingSystem(rankingSystemId: $rankingSystemId, rankingGroupId: $rankingGroupId) {
+            removeRankingGroupToRankingSystem(
+              rankingSystemId: $rankingSystemId
+              rankingGroupId: $rankingGroupId
+            ) {
               id
             }
           }

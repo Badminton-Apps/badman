@@ -1,7 +1,9 @@
 <div>
   @if ((player().competitionPlayer ?? false) === false) {
     <mat-icon
-      [matTooltip]="'all.competition.team-assembly.errors.comp-status' | translate: { player: player() }"
+      [matTooltip]="
+        'all.competition.team-assembly.errors.comp-status' | translate: { player: player() }
+      "
     >
       warning
     </mat-icon>

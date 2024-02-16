@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/search",
         "tsConfig": "libs/backend/search/tsconfig.lib.json",
         "packageJson": "libs/backend/search/package.json",
         "main": "libs/backend/search/src/index.ts",
-        "assets": [
-          "libs/backend/search/*.md"
-        ]
+        "assets": ["libs/backend/search/*.md"]
       }
     }
   },

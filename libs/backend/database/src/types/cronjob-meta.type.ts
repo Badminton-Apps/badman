@@ -14,4 +14,7 @@ export class CronJobMetaType {
 
 // input type for EntryCmopetitionPlayer
 @InputType()
-export class CronJobMetaInputType extends PartialType(OmitType(CronJobMetaType, [] as const), InputType) {}
+export class CronJobMetaInputType extends PartialType(
+  OmitType(CronJobMetaType, [] as const),
+  InputType,
+) {}

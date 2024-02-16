@@ -12,7 +12,7 @@ block content
       | Onderstaande ploegen werden ingeschreven voor het volgende competitieseizoen #{ years }.
       | Zolang je deze niet meer wijzigt, blijft de inschrijving exact zoals hieronder behouden.
       | Wil je toch nog uitschrijven? Contacteer dan:
-      a(href='mailto:info@badmintonvlaanderen.be') info@badmintonvlaanderen.be.
+      a(href="mailto:info@badmintonvlaanderen.be") info@badmintonvlaanderen.be.
       br
       br
       | Bedankt en tot volgend seizoen!
@@ -22,8 +22,8 @@ block content
       table
         each team in club.teams
           tr
-            td(style='padding-top: 12px', valign='top')
-              div(yle='font-size:16px;width:100%')
+            td(style="padding-top: 12px", valign="top")
+              div(yle="font-size:16px;width:100%")
                 p
                   //- (#{ team.abbreviation })
                   strong Team:
@@ -33,13 +33,13 @@ block content
                   if team && team.entry && team.entry.subEventCompetition && team.entry.subEventCompetition.eventCompetition && team.entry.subEventCompetition.name
                     | #{ " " }#{ team.entry.subEventCompetition.eventCompetition.name } - #{ team.entry.subEventCompetition.name }
                   else
-                    strong(style='color: red') Geen afdeling gekozen
+                    strong(style="color: red") Geen afdeling gekozen
                   br
                   strong Kapitein:
                   if team.captain
                     | #{ " " }#{ team.captain.firstName }#{ " " }#{ team.captain.lastName } (#{ team.email }, #{ team.phone })
                   else
-                    strong(style='color: red') Kapitein niet ingevuld.
+                    strong(style="color: red") Kapitein niet ingevuld.
                   br
                   strong Basisspelers:
                   ul
@@ -58,8 +58,8 @@ block content
       table
         each location in locations
           tr
-            td(style='padding-top: 12px', valign='top')
-              div(style='font-size: 16px; width: 100%')
+            td(style="padding-top: 12px", valign="top")
+              div(style="font-size: 16px; width: 100%")
                 p
                   h4 #{ location.name }
                   each availability in location.availabilities
@@ -94,8 +94,8 @@ block content
       table
         each comment in comments
           tr
-            td(style='padding-top: 12px', valign='top')
-              div(style='font-size: 16px; width: 100%')
+            td(style="padding-top: 12px", valign="top")
+              div(style="font-size: 16px; width: 100%")
                 p
                   strong Reeks: #{ comment.competition.name }
                   br
@@ -105,6 +105,6 @@ block content
                   br
                   strong Bericht:
                   br
-                  span(style='white-space: pre-wrap') #{ comment.message }
+                  span(style="white-space: pre-wrap") #{ comment.message }
     else
       p Er werden geen opmerkingen ingevuld.

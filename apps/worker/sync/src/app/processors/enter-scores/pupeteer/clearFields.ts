@@ -8,7 +8,7 @@ export async function clearFields(
   } = {
     page: null,
     timeout: 5000,
-  }
+  },
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {
@@ -22,7 +22,7 @@ export async function clearFields(
         window.scroll(x, y);
       },
       0,
-      595
+      595,
     );
   }
   {
@@ -30,7 +30,7 @@ export async function clearFields(
     const element = await waitForSelectors(
       [['aria/Velden legen'], ['#btnResetSubMatches']],
       targetPage,
-      timeout
+      timeout,
     );
     await element.click({ offset: { x: 62, y: 7.015625 } });
   }
@@ -44,27 +44,23 @@ export async function clearFields(
         ],
       ],
       targetPage,
-      timeout
+      timeout,
     );
     await element.click({ offset: { x: 16.859375, y: 7.5 } });
   }
   {
     const targetPage = page;
     await targetPage.evaluate(
-      () =>
-        ((<HTMLInputElement>document.getElementById('matchfield_2')).value = '')
+      () => ((<HTMLInputElement>document.getElementById('matchfield_2')).value = ''),
     );
     await targetPage.evaluate(
-      () =>
-        ((<HTMLInputElement>document.getElementById('matchfield_4')).value = '')
+      () => ((<HTMLInputElement>document.getElementById('matchfield_4')).value = ''),
     );
     await targetPage.evaluate(
-      () =>
-        ((<HTMLInputElement>document.getElementById('matchfield_5')).value = '')
+      () => ((<HTMLInputElement>document.getElementById('matchfield_5')).value = ''),
     );
     await targetPage.evaluate(
-      () =>
-        ((<HTMLInputElement>document.getElementById('matchfield_6')).value = '')
+      () => ((<HTMLInputElement>document.getElementById('matchfield_6')).value = ''),
     );
   }
   {
@@ -74,7 +70,7 @@ export async function clearFields(
         window.scroll(x, y);
       },
       0,
-      0
+      0,
     );
   }
 }

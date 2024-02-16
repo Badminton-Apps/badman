@@ -1,7 +1,4 @@
-export async function runParallel<T>(
-  promises: Promise<T>[],
-  parallelism = 10,
-): Promise<T[]> {
+export async function runParallel<T>(promises: Promise<T>[], parallelism = 10): Promise<T[]> {
   const results: T[] = [];
   let runningPromises = 0;
   let currentIndex = 0;

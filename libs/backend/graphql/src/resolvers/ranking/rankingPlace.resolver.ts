@@ -5,20 +5,8 @@ import {
   RankingPlaceUpdateInput,
   RankingSystem,
 } from '@badman/backend-database';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
@@ -31,9 +19,7 @@ export class RankingPlaceResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => RankingPlace)
-  async rankingPlace(
-    @Args('id', { type: () => ID }) id: string,
-  ): Promise<RankingPlace> {
+  async rankingPlace(@Args('id', { type: () => ID }) id: string): Promise<RankingPlace> {
     let place = await RankingPlace.findByPk(id);
 
     if (!place) {
@@ -68,9 +54,7 @@ export class RankingPlaceResolver {
         });
 
         if (!system) {
-          throw new NotFoundException(
-            `${RankingSystem.name}: ${place.systemId}`,
-          );
+          throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
         }
 
         place = getRankingProtected(place, system);
@@ -81,9 +65,7 @@ export class RankingPlaceResolver {
   }
 
   @ResolveField(() => RankingSystem)
-  async rankingSystem(
-    @Parent() rankingPlace: RankingPlace,
-  ): Promise<RankingSystem> {
+  async rankingSystem(@Parent() rankingPlace: RankingPlace): Promise<RankingSystem> {
     return rankingPlace.getRankingSystem();
   }
 
@@ -104,25 +86,18 @@ export class RankingPlaceResolver {
         'edit-any:player',
       ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`,
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const rankingPlace = await RankingPlace.findByPk(
-        updateRankingPlaceData.id,
-        {
-          transaction,
-        },
-      );
+      const rankingPlace = await RankingPlace.findByPk(updateRankingPlaceData.id, {
+        transaction,
+      });
 
       if (!rankingPlace) {
-        throw new NotFoundException(
-          `${RankingPlace.name}: ${updateRankingPlaceData.id}`,
-        );
+        throw new NotFoundException(`${RankingPlace.name}: ${updateRankingPlaceData.id}`);
       }
 
       // Update rankingPlace
@@ -152,9 +127,7 @@ export class RankingPlaceResolver {
         'edit-any:player',
       ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`,
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     // Do transaction
@@ -165,16 +138,11 @@ export class RankingPlaceResolver {
       });
 
       if (!player) {
-        throw new NotFoundException(
-          `${Player.name}: ${newRankingPlaceData.playerId}`,
-        );
+        throw new NotFoundException(`${Player.name}: ${newRankingPlaceData.playerId}`);
       }
 
       // Update club
-      const place = await RankingPlace.create(
-        { ...newRankingPlaceData },
-        { transaction },
-      );
+      const place = await RankingPlace.create({ ...newRankingPlaceData }, { transaction });
 
       // Commit transaction
       await transaction.commit();
@@ -187,10 +155,7 @@ export class RankingPlaceResolver {
     }
   }
   @Mutation(() => Boolean)
-  async removeRankingPlace(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-  ) {
+  async removeRankingPlace(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     const rankingPlace = await RankingPlace.findByPk(id);
 
     if (!rankingPlace) {
@@ -198,14 +163,9 @@ export class RankingPlaceResolver {
     }
 
     if (
-      !(await user.hasAnyPermission([
-        `${rankingPlace.playerId}_edit:player`,
-        'edit-any:player',
-      ]))
+      !(await user.hasAnyPermission([`${rankingPlace.playerId}_edit:player`, 'edit-any:player']))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`,
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     // Do transaction

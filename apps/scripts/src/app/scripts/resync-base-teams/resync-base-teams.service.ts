@@ -1,9 +1,4 @@
-import {
-  EventCompetition,
-  Player,
-  RankingPlace,
-  RankingSystem,
-} from '@badman/backend-database';
+import { EventCompetition, Player, RankingPlace, RankingSystem } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import { Sequelize } from 'sequelize-typescript';
@@ -35,9 +30,7 @@ export class ResyncBaseTeamsService {
 
   private async setPlayerIndexes(transaction?: Transaction) {
     const workbook = XLSX.readFile('./Lijst_index_seizoen_2022-2023.xlsx');
-    const rows = XLSX.utils.sheet_to_json<Row>(
-      workbook.Sheets[workbook.SheetNames[0]]
-    );
+    const rows = XLSX.utils.sheet_to_json<Row>(workbook.Sheets[workbook.SheetNames[0]]);
 
     const primarySystem = await RankingSystem.findOne({
       where: {
@@ -135,9 +128,7 @@ export class ResyncBaseTeamsService {
         });
 
         if (entries.length === 0) {
-          this.logger.debug(
-            `No entry found for ${subEvent.name} in ${event.name}`
-          );
+          this.logger.debug(`No entry found for ${subEvent.name} in ${event.name}`);
           continue;
         }
 

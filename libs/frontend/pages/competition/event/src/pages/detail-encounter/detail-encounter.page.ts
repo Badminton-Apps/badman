@@ -10,9 +10,19 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { GameScoreComponentComponent, HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
+import {
+  GameScoreComponentComponent,
+  HasClaimComponent,
+  PageHeaderComponent,
+} from '@badman/frontend-components';
 import { JobsService } from '@badman/frontend-queue';
-import { DrawCompetition, EncounterCompetition, EventCompetition, Game, GamePlayer } from '@badman/frontend-models';
+import {
+  DrawCompetition,
+  EncounterCompetition,
+  EventCompetition,
+  Game,
+  GamePlayer,
+} from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { GameType, gameLabel } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -87,7 +97,10 @@ export class DetailEncounterComponent implements OnInit {
   }
 
   getGameLabel(game: number) {
-    const gameType = this.encounterCompetition.drawCompetition?.subEventCompetition?.eventType as 'M' | 'F' | 'MX';
+    const gameType = this.encounterCompetition.drawCompetition?.subEventCompetition?.eventType as
+      | 'M'
+      | 'F'
+      | 'MX';
 
     if (!gameType) {
       return [];

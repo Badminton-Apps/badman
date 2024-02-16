@@ -14,7 +14,7 @@ import { FaqResolver } from './resolvers';
         component: FaqPageComponent,
         resolve: {
           faqs: FaqResolver,
-        }
+        },
       },
       {
         path: 'changelog',

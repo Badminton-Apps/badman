@@ -72,7 +72,6 @@ export class LocationsStepComponent implements OnInit {
       this.internalControl = new FormArray<LocationForm>([]);
     }
 
-
     if (this.group()) {
       this.group().addControl(this.controlName(), this.control());
     }

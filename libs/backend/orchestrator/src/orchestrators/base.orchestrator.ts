@@ -32,10 +32,12 @@ export class OrchestratorBase implements OnModuleInit {
     if (this.configSerivce.get<string>('NODE_ENV') === 'test') {
       return;
     }
-    
+
     await this._updateStatuses();
 
-    this.logger.debug(`[${this.serviceName}] Updated status to ${this.hasStarted ? 'started' : 'stopped'}`);
+    this.logger.debug(
+      `[${this.serviceName}] Updated status to ${this.hasStarted ? 'started' : 'stopped'}`,
+    );
   }
 
   @Cron('*/1 * * * *')
@@ -43,7 +45,7 @@ export class OrchestratorBase implements OnModuleInit {
     if (this.configSerivce.get<string>('NODE_ENV') === 'test') {
       return;
     }
-    
+
     await this._checkAndStartStopIfNeeded();
   }
 

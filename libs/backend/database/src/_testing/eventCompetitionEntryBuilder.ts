@@ -5,7 +5,6 @@ import { PlayerBuilder } from './playerBuilder';
 import { TeamBuilder } from './teamBuilder';
 
 export class EventCompetitionEntryBuilder {
-
   private build = false;
 
   private entry: EventEntry;
@@ -82,12 +81,11 @@ export class EventCompetitionEntryBuilder {
     this.entry.teamId = id;
     return this;
   }
-  
 
   ForTeam(team: TeamBuilder): EventCompetitionEntryBuilder {
     this.team = team;
     return this;
-  } 
+  }
 
   async Build(rebuild = false): Promise<EventEntry> {
     if (this.build && !rebuild) {
@@ -95,13 +93,12 @@ export class EventCompetitionEntryBuilder {
     }
 
     try {
-
       if (this.basePlayers) {
         this.entry.meta = {
           competition: {
             players: [],
             teamIndex: this.index,
-          }, 
+          },
         };
       }
 
@@ -113,7 +110,7 @@ export class EventCompetitionEntryBuilder {
           single: basePlayer.single,
           double: basePlayer.double,
           mix: basePlayer.mix,
-        }); 
+        });
       }
 
       await this.entry.save();

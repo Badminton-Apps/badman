@@ -12,45 +12,38 @@ module.exports = {
           {
             type: sequelize.DataTypes.TEXT,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           'UPDATE "security"."Claims" SET "type" = LOWER("type");',
-          { transaction: t }
+          { transaction: t },
         );
 
         // drop the old enum
-        await queryInterface.sequelize.query(
-          'DROP TYPE "security"."enum_Claims_type";',
-          { transaction: t }
-        );
+        await queryInterface.sequelize.query('DROP TYPE "security"."enum_Claims_type";', {
+          transaction: t,
+        });
 
         await queryInterface.changeColumn(
           { tableName: 'Claims', schema: 'security' },
           'type',
           {
-            type: sequelize.DataTypes.ENUM(
-              'global',
-              'club',
-              'team',
-              'competition',
-              'tournament'
-            ),
+            type: sequelize.DataTypes.ENUM('global', 'club', 'team', 'competition', 'tournament'),
             allowNull: false,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         // update the constraint Claims_name_category_key to also include type
         await queryInterface.sequelize.query(
           'ALTER TABLE "security"."Claims" DROP CONSTRAINT "Claims_name_category_key";',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           'ALTER TABLE "security"."Claims" ADD CONSTRAINT "Claims_name_category_type_key" UNIQUE ("name", "category", "type");',
-          { transaction: t }
+          { transaction: t },
         );
 
         // add claims for tournament and competition
@@ -99,7 +92,7 @@ module.exports = {
               type: 'club',
             },
           ],
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -117,19 +110,18 @@ module.exports = {
           {
             type: sequelize.DataTypes.TEXT,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           'UPDATE "security"."Claims" SET "type" = UPPER("type");',
-          { transaction: t }
+          { transaction: t },
         );
 
         // drop the old enum
-        await queryInterface.sequelize.query(
-          'DROP TYPE "security"."enum_Claims_type";',
-          { transaction: t }
-        );
+        await queryInterface.sequelize.query('DROP TYPE "security"."enum_Claims_type";', {
+          transaction: t,
+        });
 
         await queryInterface.changeColumn(
           { tableName: 'Claims', schema: 'security' },
@@ -138,18 +130,18 @@ module.exports = {
             type: sequelize.DataTypes.ENUM('GLOBAL', 'CLUB', 'TEAM'),
             allowNull: false,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         // update the constraint Claims_name_category_key to also include type
         await queryInterface.sequelize.query(
           'ALTER TABLE "security"."Claims" DROP CONSTRAINT "Claims_name_category_type_key";',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.sequelize.query(
           'ALTER TABLE "security"."Claims" ADD CONSTRAINT "Claims_name_category_key" UNIQUE ("name", "category");',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.bulkDelete(
@@ -162,7 +154,7 @@ module.exports = {
               'view:enrollment-tournament',
             ],
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

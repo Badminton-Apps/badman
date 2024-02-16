@@ -158,10 +158,15 @@ export class AssemblyValidationService {
       };
     }
 
-    meta.competition.players = getBestPlayers(team.type, meta.competition.players) as EntryCompetitionPlayer[];
+    meta.competition.players = getBestPlayers(
+      team.type,
+      meta.competition.players,
+    ) as EntryCompetitionPlayer[];
 
     // Other teams meta
-    const otherMeta = (filteredMemberships?.filter((m) => m.teamId !== teamId)?.map((m) => m.meta) ?? []) as Meta[];
+    const otherMeta = (filteredMemberships
+      ?.filter((m) => m.teamId !== teamId)
+      ?.map((m) => m.meta) ?? []) as Meta[];
 
     const year = event?.season;
     const usedRankingDate = moment();
@@ -173,7 +178,15 @@ export class AssemblyValidationService {
     const endRanking = moment(usedRankingDate).endOf('month');
     const players = idPlayers
       ? await Player.findAll({
-          attributes: ['id', 'gender', 'competitionPlayer', 'memberId', 'fullName', 'firstName', 'lastName'],
+          attributes: [
+            'id',
+            'gender',
+            'competitionPlayer',
+            'memberId',
+            'fullName',
+            'firstName',
+            'lastName',
+          ],
           where: {
             id: {
               [Op.in]: idPlayers,
@@ -208,7 +221,15 @@ export class AssemblyValidationService {
 
     const subs = idSubs
       ? await Player.findAll({
-          attributes: ['id', 'gender', 'memberId', 'competitionPlayer', 'fullName', 'firstName', 'lastName'],
+          attributes: [
+            'id',
+            'gender',
+            'memberId',
+            'competitionPlayer',
+            'fullName',
+            'firstName',
+            'lastName',
+          ],
           where: {
             id: {
               [Op.in]: idSubs,
@@ -261,7 +282,8 @@ export class AssemblyValidationService {
       otherMeta,
 
       teamIndex: titularsTeam.index,
-      teamPlayers: (titularsTeam.players?.map((p) => players.find((pl) => pl.id === p.id)) ?? []) as Player[],
+      teamPlayers: (titularsTeam.players?.map((p) => players.find((pl) => pl.id === p.id)) ??
+        []) as Player[],
 
       encounter,
       draw,
@@ -349,7 +371,7 @@ export class AssemblyValidationService {
     data: {
       teamId: string;
       encounterId: string;
-      
+
       systemId?: string;
 
       single1?: string;
