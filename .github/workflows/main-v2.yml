@@ -83,6 +83,11 @@ jobs:
       # - run: npx nx-cloud record -- nx format:check
       - run: npx nx affected -t lint test build
 
+      - name: Set Git config
+        run: |
+          git config --local user.email "info@badman.app"
+          git config --local user.name "Badman Releaser"
+    
       # create release on master en develop
       - name: Create release
         run: npx nx release
