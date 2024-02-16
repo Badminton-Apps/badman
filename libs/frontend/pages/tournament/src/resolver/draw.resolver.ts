@@ -24,6 +24,7 @@ export class DrawResolver {
               id # needed for caching
               name
               visualCode
+              type
               eventEntries {
                 id
                 players {
