@@ -110,10 +110,10 @@
       </div>
 
       <div class="calculate">
-        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePoints">Calculate points</mat-slide-toggle>
         <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePlaces">Calculate places</mat-slide-toggle>
-        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculateRanking">Calculate ranking</mat-slide-toggle>
-        <mat-slide-toggle [(ngModel)]="data.meta.arguments.recalculatePoints">Re-Calculate points</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculateRanking">Allow changing of level</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePoints">Calculate points from games</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.recalculatePoints">Re-Calculate points from games period before</mat-slide-toggle>
       </div>
     </div>
   </mat-dialog-content>
