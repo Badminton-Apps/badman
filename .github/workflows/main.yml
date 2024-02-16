@@ -62,7 +62,6 @@ jobs:
         npx nx affected --target=build --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
         npx nx affected --target=lint --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
         npx nx affected --target=test --configuration ${{ inputs.prod-release && 'production' || 'beta'}}  --ci
-        # npx nx affected --target=server
       timeout: 15
 
   agents:

@@ -24,29 +24,12 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: nx run-many -t e2e
-      - name: e2e reports
-        run: |
-          echo "Combine all the reports into a single report"
-          # check if the "blob-reports" root directory exists and if it does, remove it and recreate it
-          if [ -d "blob-reports" ]; then
-            rm -rf blob-reports
-          fi
-
-          # create the "blob-reports" root directory
-          mkdir blob-reports
-
-          # copy all the reports into the "blob-reports" root directory
-          cp apps/**/blob-report/*.zip ./blob-reports
-
-          # create nx report
-          npx playwright merge-reports --reporter=html,github ./blob-reports
-
-          ## for copy pasting in shell
-          # npx playwright show-report        
+        run: npm run e2e
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
           path: dist/.playwright/apps/badman-e2e/test-output
           retention-days: 30
+
+          
