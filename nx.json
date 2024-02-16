@@ -20,6 +20,12 @@
   "release": {
     "version": {
       "conventionalCommits": true
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github",
+        "file": "apps/badman/src/assets/CHANGELOG.md"
+      }
     }
   },
   "tasksRunnerOptions": {
