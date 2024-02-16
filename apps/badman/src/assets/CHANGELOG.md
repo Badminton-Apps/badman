@@ -1,3 +1,14 @@
+## 6.130.0-beta.13 (2024-02-16)
+
+
+### 🩹 Fixes
+
+- wrong description ([f9ceaaf1a](https://github.com/Badminton-Apps/badman/commit/f9ceaaf1a))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
