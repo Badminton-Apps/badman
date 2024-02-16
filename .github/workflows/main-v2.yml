@@ -16,6 +16,12 @@ on:
         required: true
         default: true
         type: boolean
+  pull_request:
+
+# Needed for nx-set-shas when run on the main branch
+permissions:
+  actions: read
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,29 +40,16 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+
       - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
       - run: npm ci
+
       - uses: nrwl/nx-set-shas@v4
+      # This line is needed for nx affected to work when CI is running on a PR
+      - run: git branch --track main origin/main
+      
+      - run: npx nx-cloud record -- nx format:check
       - run: npx nx affected -t lint test build
-      - name: e2e reports
-        run: |
-          echo "Combine all the reports into a single report"
-          # check if the "blob-reports" root directory exists and if it does, remove it and recreate it
-          if [ -d "blob-reports" ]; then
-            rm -rf blob-reports
-          fi
-
-          # create the "blob-reports" root directory
-          mkdir blob-reports
-
-          # copy all the reports into the "blob-reports" root directory
-          cp apps/**/blob-report/*.zip ./blob-reports
-
-          # create nx report
-          npx playwright merge-reports --reporter=html,github ./blob-reports
-
-          ## for copy pasting in shell
-          # npx playwright show-report
 
       - uses: actions/upload-artifact@v3
         if: always()
@@ -64,3 +57,8 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+  e2e:
+    name: E2E Tests
+    needs: [ main]
+    if: always() && inputs.e2e-tests && !cancelled() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled')
+    uses: ./.github/workflows/playwright-v2.yml
