@@ -1,21 +1,23 @@
 <!-- 3 text -->
-@if (this.control()) {
-<ng-container [formGroup]="this.internalControl">
-  @for (type of levelTypes; track type) { @if (showComments[type]) {
-  <mat-form-field class="comment" [formGroupName]="type">
-    <mat-label
-      >{{ 'all.competition.team-enrollment.comments.' + type |lowercase | translate }}</mat-label
-    >
-    <textarea
-      matInput
-      cdkTextareaAutosize
-      #autosize="cdkTextareaAutosize"
-      formControlName="comment"
-      cdkAutosizeMinRows="10"
-      cdkAutosizeMaxRows="30"
-      placeholder="Any other comments"
-    ></textarea>
-  </mat-form-field>
-  } }
-</ng-container>
+@if (this.internalControl) {
+  <ng-container [formGroup]="this.internalControl">
+    @for (type of levelTypes; track type) {
+      @if (showComments[type]) {
+        <mat-form-field class="comment" [formGroupName]="type">
+          <mat-label>{{
+            'all.competition.team-enrollment.comments.' + type | lowercase | translate
+          }}</mat-label>
+          <textarea
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            formControlName="comment"
+            cdkAutosizeMinRows="10"
+            cdkAutosizeMaxRows="30"
+            placeholder="Any other comments"
+          ></textarea>
+        </mat-form-field>
+      }
+    }
+  </ng-container>
 }

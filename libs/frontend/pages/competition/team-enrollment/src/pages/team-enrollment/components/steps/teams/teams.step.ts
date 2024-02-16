@@ -172,7 +172,7 @@ export class TeamsStepComponent implements OnInit {
       existed = true;
     }
 
-    if (this.internalControl) {
+    if (!this.internalControl) {
       this.internalControl = new FormGroup({
         M: new FormArray<TeamForm>([]),
         F: new FormArray<TeamForm>([]),

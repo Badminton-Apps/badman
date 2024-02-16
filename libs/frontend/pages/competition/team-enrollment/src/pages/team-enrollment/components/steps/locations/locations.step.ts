@@ -11,11 +11,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Availability, Location } from '@badman/frontend-models';
-import { getCurrentSeason } from '@badman/utils';
+import { IsUUID, getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Subject, combineLatest, of } from 'rxjs';
-import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CLUB, LOCATIONS, SEASON } from '../../../../../forms';
 import { LocationAvailibilityForm, LocationComponent, LocationForm } from './components';
 
@@ -72,6 +72,7 @@ export class LocationsStepComponent implements OnInit {
       this.internalControl = new FormArray<LocationForm>([]);
     }
 
+
     if (this.group()) {
       this.group().addControl(this.controlName(), this.control());
     }
@@ -90,7 +91,10 @@ export class LocationsStepComponent implements OnInit {
     const season$ = this.group().get(this.seasonControlName())?.valueChanges ?? of(this.season);
 
     combineLatest([
-      clubId$.pipe(startWith(this.group().get(this.clubControlName())?.value || this.clubId)),
+      clubId$.pipe(
+        filter(IsUUID),
+        startWith(this.group().get(this.clubControlName())?.value || this.clubId),
+      ),
       season$.pipe(startWith(this.group().get(this.seasonControlName())?.value || this.season)),
     ])
       .pipe(
@@ -153,7 +157,7 @@ export class LocationsStepComponent implements OnInit {
       )
       ?.subscribe((locations) => {
         if (locations) {
-          this.control()?.clear();
+          this.internalControl?.clear();
           locations.forEach((location) => {
             // filter out the locations that are not available for the current season
             // if no availibilities are set, use the one from previous season
@@ -213,7 +217,7 @@ export class LocationsStepComponent implements OnInit {
               availibilities: this.formBuilder.array([availibyForm]),
             }) as LocationForm;
 
-            this.control()?.push(group);
+            this.internalControl?.push(group);
           });
 
           this.changeDetectorRef.markForCheck();
@@ -233,7 +237,7 @@ export class LocationsStepComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe((location?: Location) => {
-        this.control()?.push(
+        this.internalControl?.push(
           this.formBuilder.group({
             id: this.formBuilder.control(location?.id),
             name: this.formBuilder.control(location?.name),
@@ -253,11 +257,11 @@ export class LocationsStepComponent implements OnInit {
   }
 
   removeLocation(index: number) {
-    this.control()?.removeAt(index);
+    this.internalControl?.removeAt(index);
   }
 
   editLocation(index: number) {
-    const control = this.control()?.at(index) as FormGroup;
+    const control = this.internalControl?.at(index) as FormGroup;
 
     import('@badman/frontend-club').then((m) => {
       const dialogRef = this.dialog.open(m.LocationDialogComponent, {

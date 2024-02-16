@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Inject,
   Injector,
   OnInit,
   PLATFORM_ID,
@@ -110,7 +109,6 @@ export class SelectClubComponent implements OnInit {
   hasAllClubs = computed(() => this.claimSerice.hasAllClaims([`${this.allClubPermission()}`]));
 
   user = this.authService.userSignal;
-
 
   ngOnInit() {
     if (this.control()) {
@@ -240,7 +238,6 @@ export class SelectClubComponent implements OnInit {
     } else {
       id = event as string;
     }
-
     if (!id) {
       return;
     }

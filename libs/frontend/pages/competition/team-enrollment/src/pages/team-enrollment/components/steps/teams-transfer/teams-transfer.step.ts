@@ -18,7 +18,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
-import { SubEventType, sortTeams } from '@badman/utils';
+import { IsUUID, SubEventType, sortTeams } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -151,6 +151,7 @@ export class TeamsTransferStepComponent implements OnInit {
       clubid$ = this.group()?.valueChanges.pipe(
         map((value) => value?.[this.clubControlName()]),
         startWith(this.group()?.value?.[this.clubControlName()]),
+        filter(IsUUID),
       );
 
       season$ = this.group()?.valueChanges.pipe(

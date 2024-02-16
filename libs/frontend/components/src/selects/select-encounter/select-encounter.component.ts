@@ -79,7 +79,7 @@ export class SelectEncounterComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
+    private route: ActivatedRoute,
     private transferState: TransferState,
     @Inject(PLATFORM_ID) private platformId: string,
   ) {}
@@ -147,7 +147,7 @@ export class SelectEncounterComponent implements OnInit {
 
       this.encounters$.subscribe((encounters) => {
         let foundEncounter: EncounterCompetition | null = null;
-        const encounterId = this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
+        const encounterId = this.route.snapshot?.queryParamMap?.get('encounter');
 
         if (encounterId && encounters.length > 0) {
           foundEncounter = encounters.find((r) => r.id == encounterId) ?? null;
@@ -198,7 +198,7 @@ export class SelectEncounterComponent implements OnInit {
       }
 
       this.router.navigate([], {
-        relativeTo: this.activatedRoute,
+        relativeTo: this.route,
         queryParams,
         queryParamsHandling: 'merge',
       });
