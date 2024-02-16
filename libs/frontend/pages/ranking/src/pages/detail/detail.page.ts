@@ -63,7 +63,7 @@ export class DetailPageComponent {
     effect(() => {
       this.seoService.update({
         title: `${this.systemName()}`,
-        description: `Player ${this.systemName()}`,
+        description: `Ranking system ${this.systemName()}`,
         type: 'website',
         keywords: ['ranking', 'badminton'],
       });
