@@ -13,7 +13,9 @@
           <span class="team-name">{{ team.name }}</span>
           @if (team?.entry?.meta?.competition?.teamIndex) {
             <span class="team-index"
-              >({{ 'all.team.team-index' | translate }}:{{ team?.entry?.meta?.competition?.teamIndex }})
+              >({{ 'all.team.team-index' | translate }}:{{
+                team?.entry?.meta?.competition?.teamIndex
+              }})
             </span>
           }
         </div>
@@ -65,7 +67,9 @@
       <div class="base-players">
         <badman-block class="base">
           <badman-block-header>
-            <badman-block-title>{{ 'all.competition.team-enrollment.players.base' | translate }}</badman-block-title>
+            <badman-block-title>{{
+              'all.competition.team-enrollment.players.base' | translate
+            }}</badman-block-title>
           </badman-block-header>
           <mat-divider />
           <badman-block-content>
@@ -73,7 +77,9 @@
               @for (player of team?.entry?.meta?.competition?.players ?? []; track player) {
                 <mat-list-item role="listitem">
                   <span matListItemTitle>{{ player.player.fullName }}</span>
-                  <span matListItemLine>{{ player.single }}- {{ player.double }} - {{ player.mix }} </span>
+                  <span matListItemLine
+                    >{{ player.single }}- {{ player.double }} - {{ player.mix }}
+                  </span>
                 </mat-list-item>
               }
             </mat-list>
@@ -98,7 +104,8 @@
               </mat-list-item>
               <mat-list-item role="listitem">
                 <span matListItemTitle
-                  >{{ 'all.days.' + team?.preferredDay | translate }} - {{ team?.preferredTime }}</span
+                  >{{ 'all.days.' + team?.preferredDay | translate }} -
+                  {{ team?.preferredTime }}</span
                 >
                 <span matListItemLine>{{ 'all.team.prefferd.title' | translate }}</span>
               </mat-list-item>
@@ -107,7 +114,9 @@
         </badman-block>
         <badman-block class="validations">
           <badman-block-header>
-            <badman-block-title>{{ 'all.competition.team-enrollment.validations' | translate }}</badman-block-title>
+            <badman-block-title>{{
+              'all.competition.team-enrollment.validations' | translate
+            }}</badman-block-title>
           </badman-block-header>
           <mat-divider />
           <badman-block-content>
@@ -210,7 +219,9 @@
                         {{ 'all.breakdown.untill' | translate }}
                         {{ day.endTime }}</span
                       >
-                      <span matListItemLine> {{ day.courts }} {{ 'all.input.courts' | translate }} </span>
+                      <span matListItemLine>
+                        {{ day.courts }} {{ 'all.input.courts' | translate }}
+                      </span>
                     </mat-list-item>
                   }
                 </mat-list>
