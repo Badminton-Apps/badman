@@ -210,7 +210,6 @@ export class EncounterCompetition extends Model {
   })
   assemblies?: Relation<Assembly[]>;
 
-
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment, {
     foreignKey: 'linkId',

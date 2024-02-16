@@ -41,9 +41,7 @@ export class CopyAvailibiltyRunner {
 
       // copy all availibilty from 2022 to 2023 where the location is the same and didn't exist in 2023
       for (const availibilty of season2023) {
-        const existing = season2022.find(
-          (a) => a.locationId === availibilty.locationId
-        );
+        const existing = season2022.find((a) => a.locationId === availibilty.locationId);
 
         if (!existing) {
           await new Availability({
@@ -54,7 +52,7 @@ export class CopyAvailibiltyRunner {
           }).save({ transaction });
         } else if ((existing?.days?.length ?? 0) <= 0) {
           this.logger.verbose(
-            `Days for ${availibilty.locationId} ${existing?.location?.name} ${existing?.days?.length} ${availibilty.days?.length}`
+            `Days for ${availibilty.locationId} ${existing?.location?.name} ${existing?.days?.length} ${availibilty.days?.length}`,
           );
 
           existing.days = availibilty.days;

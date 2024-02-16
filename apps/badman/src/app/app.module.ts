@@ -49,7 +49,8 @@ const APP_ROUTES: Routes = [
   },
   {
     path: 'policy',
-    loadComponent: () => import('@badman/frontend-components').then((m) => m.PrivacyPolicyComponent),
+    loadComponent: () =>
+      import('@badman/frontend-components').then((m) => m.PrivacyPolicyComponent),
     data: {
       animation: 'landing',
     },

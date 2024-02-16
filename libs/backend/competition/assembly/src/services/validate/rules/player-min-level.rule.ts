@@ -103,7 +103,11 @@ export class PlayerMinLevelRule extends Rule {
           });
         }
 
-        if (type === SubEventTypeEnum.MX && ranking.mix < subEvent.maxLevel && !metaPlayer?.levelException) {
+        if (
+          type === SubEventTypeEnum.MX &&
+          ranking.mix < subEvent.maxLevel &&
+          !metaPlayer?.levelException
+        ) {
           valid = false;
           errors.push({
             message: 'all.competition.team-assembly.errors.player-min-level',

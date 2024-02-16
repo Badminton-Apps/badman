@@ -73,8 +73,7 @@ export interface CompileOptionsFactory {
   createCompileOptions(): CompileModuleOptions;
 }
 
-export interface CompileModuleRegisterAsyncOptions
-  extends Pick<ModuleMetadata, 'imports'> {
+export interface CompileModuleRegisterAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
   isGlobal?: boolean;
   useClass?: Type<CompileOptionsFactory>;
   useExisting?: Type<CompileOptionsFactory>;

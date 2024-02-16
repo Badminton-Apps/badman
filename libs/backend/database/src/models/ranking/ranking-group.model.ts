@@ -60,16 +60,10 @@ export class RankingGroup extends Model {
   @Column(DataType.STRING)
   name?: string;
 
-  @BelongsToMany(
-    () => SubEventCompetition,
-    () => RankingGroupSubEventCompetitionMembership
-  )
+  @BelongsToMany(() => SubEventCompetition, () => RankingGroupSubEventCompetitionMembership)
   subEventCompetitions?: Relation<SubEventCompetition[]>;
 
-  @BelongsToMany(
-    () => SubEventTournament,
-    () => RankingGroupSubEventTournamentMembership
-  )
+  @BelongsToMany(() => SubEventTournament, () => RankingGroupSubEventTournamentMembership)
   subEventTournaments?: Relation<SubEventTournament[]>;
 
   @BelongsToMany(() => RankingSystem, () => RankingSystemRankingGroupMembership)
@@ -77,66 +71,24 @@ export class RankingGroup extends Model {
 
   // Belongs to many SubEventTournament
   getSubEventTournaments!: BelongsToManyGetAssociationsMixin<SubEventTournament>;
-  setSubEventTournaments!: BelongsToManySetAssociationsMixin<
-    SubEventTournament,
-    string
-  >;
-  addSubEventTournaments!: BelongsToManyAddAssociationsMixin<
-    SubEventTournament,
-    string
-  >;
-  addSubEventTournament!: BelongsToManyAddAssociationMixin<
-    SubEventTournament,
-    string
-  >;
-  removeSubEventTournament!: BelongsToManyRemoveAssociationMixin<
-    SubEventTournament,
-    string
-  >;
-  removeSubEventTournaments!: BelongsToManyRemoveAssociationsMixin<
-    SubEventTournament,
-    string
-  >;
-  hasSubEventTournament!: BelongsToManyHasAssociationMixin<
-    SubEventTournament,
-    string
-  >;
-  hasSubEventTournaments!: BelongsToManyHasAssociationsMixin<
-    SubEventTournament,
-    string
-  >;
+  setSubEventTournaments!: BelongsToManySetAssociationsMixin<SubEventTournament, string>;
+  addSubEventTournaments!: BelongsToManyAddAssociationsMixin<SubEventTournament, string>;
+  addSubEventTournament!: BelongsToManyAddAssociationMixin<SubEventTournament, string>;
+  removeSubEventTournament!: BelongsToManyRemoveAssociationMixin<SubEventTournament, string>;
+  removeSubEventTournaments!: BelongsToManyRemoveAssociationsMixin<SubEventTournament, string>;
+  hasSubEventTournament!: BelongsToManyHasAssociationMixin<SubEventTournament, string>;
+  hasSubEventTournaments!: BelongsToManyHasAssociationsMixin<SubEventTournament, string>;
   countSubEventTournament!: BelongsToManyCountAssociationsMixin;
 
   // Belongs to many SubEventCompetition
   getSubEventCompetitions!: BelongsToManyGetAssociationsMixin<SubEventCompetition>;
-  setSubEventCompetitions!: BelongsToManySetAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  addSubEventCompetitions!: BelongsToManyAddAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  addSubEventCompetition!: BelongsToManyAddAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  removeSubEventCompetition!: BelongsToManyRemoveAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  removeSubEventCompetitions!: BelongsToManyRemoveAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  hasSubEventCompetition!: BelongsToManyHasAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  hasSubEventCompetitions!: BelongsToManyHasAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
+  setSubEventCompetitions!: BelongsToManySetAssociationsMixin<SubEventCompetition, string>;
+  addSubEventCompetitions!: BelongsToManyAddAssociationsMixin<SubEventCompetition, string>;
+  addSubEventCompetition!: BelongsToManyAddAssociationMixin<SubEventCompetition, string>;
+  removeSubEventCompetition!: BelongsToManyRemoveAssociationMixin<SubEventCompetition, string>;
+  removeSubEventCompetitions!: BelongsToManyRemoveAssociationsMixin<SubEventCompetition, string>;
+  hasSubEventCompetition!: BelongsToManyHasAssociationMixin<SubEventCompetition, string>;
+  hasSubEventCompetitions!: BelongsToManyHasAssociationsMixin<SubEventCompetition, string>;
   countSubEventCompetition!: BelongsToManyCountAssociationsMixin;
 
   // Belongs to many RankingSystem

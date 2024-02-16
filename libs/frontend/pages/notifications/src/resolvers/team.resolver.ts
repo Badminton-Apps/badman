@@ -34,7 +34,7 @@ export class TeamResolver {
           return new Team(result.data.team);
         }),
         transferState<Team>(`team-${teamId}`),
-        first()
+        first(),
       );
   }
 }

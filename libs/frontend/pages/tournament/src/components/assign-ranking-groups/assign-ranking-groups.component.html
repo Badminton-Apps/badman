@@ -36,7 +36,8 @@
                 <mat-checkbox
                   (change)="$event ? masterToggle('group-' + subEventGroup.id) : null"
                   [checked]="
-                    selection.get('group-' + subEventGroup.id)?.hasValue() && isAllSelected('group-' + subEventGroup.id)
+                    selection.get('group-' + subEventGroup.id)?.hasValue() &&
+                    isAllSelected('group-' + subEventGroup.id)
                   "
                   [indeterminate]="
                     selection.get('group-' + subEventGroup.id)?.hasValue() &&

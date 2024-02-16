@@ -16,7 +16,9 @@
       <mat-label>{{ 'all.pickers.select-subevent-competition' | translate }}</mat-label>
       <mat-select formControlName="subEvent">
         @for (subEvent of this.subEvents; track subEvent) {
-          <mat-option [value]="subEvent.id"> {{ subEvent?.name }} {{ subEvent?.eventType }} </mat-option>
+          <mat-option [value]="subEvent.id">
+            {{ subEvent?.name }} {{ subEvent?.eventType }}
+          </mat-option>
         }
       </mat-select>
     </mat-form-field>

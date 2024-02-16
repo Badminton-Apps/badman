@@ -61,14 +61,16 @@ export class PickEventDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this._loadEvents().pipe(takeUntil(this.destroy$)).subscribe();
-    this.selectForm.controls.event.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((eventId) => {
-      if (!eventId) {
-        this.#subEvents.next([]);
-        return;
-      }
+    this.selectForm.controls.event.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((eventId) => {
+        if (!eventId) {
+          this.#subEvents.next([]);
+          return;
+        }
 
-      return this.onEventSelected(eventId);
-    });
+        return this.onEventSelected(eventId);
+      });
 
     if (this.data.eventId) {
       this.selectForm.controls.event.setValue(this.data.eventId);
@@ -111,7 +113,10 @@ export class PickEventDialogComponent implements OnInit {
         },
       })
       .pipe(
-        map((result) => result.data.eventCompetitions.rows?.map((row) => new EventCompetition(row)) ?? []),
+        map(
+          (result) =>
+            result.data.eventCompetitions.rows?.map((row) => new EventCompetition(row)) ?? [],
+        ),
         tap((events) => this.#events.next(events)),
       );
   }
@@ -138,7 +143,10 @@ export class PickEventDialogComponent implements OnInit {
         },
       })
       .pipe(
-        map((result) => result.data.subEventCompetitions?.map((row) => new SubEventCompetition(row)) ?? []),
+        map(
+          (result) =>
+            result.data.subEventCompetitions?.map((row) => new SubEventCompetition(row)) ?? [],
+        ),
         tap((subEvents) => this.#subEvents.next(subEvents)),
       );
   }

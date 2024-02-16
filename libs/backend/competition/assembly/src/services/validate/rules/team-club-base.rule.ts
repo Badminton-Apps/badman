@@ -10,7 +10,18 @@ export type TeamClubBaseRuleParams = {
  */
 export class TeamClubBaseRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
-    const { otherMeta, single1, single2, single3, single4, double1, double2, double3, double4, subtitudes } = assembly;
+    const {
+      otherMeta,
+      single1,
+      single2,
+      single3,
+      single4,
+      double1,
+      double2,
+      double3,
+      double4,
+      subtitudes,
+    } = assembly;
 
     const playersError = [
       ...new Set(

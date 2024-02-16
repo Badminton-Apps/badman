@@ -15,9 +15,10 @@
     [errorStateMatcher]="matcher"
   />
   <!-- errors for internalControlEmail -->
-  @if (internalControlEmail.hasError('email')&& !internalControlEmail.hasError('required')) {
-  <mat-error> {{ 'all.input.error.email' | translate }} </mat-error>
-  } @if (internalControlEmail.hasError('required')) {
-  <mat-error> {{ 'all.input.error.required' | translate }} </mat-error>
+  @if (internalControlEmail.hasError('email') && !internalControlEmail.hasError('required')) {
+    <mat-error> {{ 'all.input.error.email' | translate }} </mat-error>
+  }
+  @if (internalControlEmail.hasError('required')) {
+    <mat-error> {{ 'all.input.error.required' | translate }} </mat-error>
   }
 </mat-form-field>

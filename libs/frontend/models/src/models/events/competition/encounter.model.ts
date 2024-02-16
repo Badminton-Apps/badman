@@ -38,8 +38,7 @@ export class EncounterCompetition {
   constructor(args?: Partial<EncounterCompetition>) {
     this.id = args?.id;
     this.date = args?.date != null ? new Date(args?.date) : undefined;
-    this.originalDate =
-      args?.originalDate != null ? new Date(args?.originalDate) : undefined;
+    this.originalDate = args?.originalDate != null ? new Date(args?.originalDate) : undefined;
     this.drawCompetition =
       (args?.drawCompetition ?? null) != null
         ? new DrawCompetition(args?.drawCompetition)
@@ -49,18 +48,12 @@ export class EncounterCompetition {
     this.drawId = args?.drawId;
     this.visualCode = args?.visualCode;
     this.locationId = args?.locationId || args?.location?.id;
-    this.location =
-      (args?.location ?? null) != null
-        ? new Location(args?.location)
-        : undefined;
+    this.location = (args?.location ?? null) != null ? new Location(args?.location) : undefined;
 
     this.shuttle = args?.shuttle;
     this.startHour = args?.startHour;
     this.endHour = args?.endHour;
-    this.gameLeader =
-      (args?.gameLeader ?? null) != null
-        ? new Player(args?.gameLeader)
-        : undefined;
+    this.gameLeader = (args?.gameLeader ?? null) != null ? new Player(args?.gameLeader) : undefined;
 
     this.games = args?.games
       ?.map((g) => new Game(g))
@@ -69,14 +62,14 @@ export class EncounterCompetition {
           (a.order ?? null) != null
             ? a.order
             : (a.round ?? null) != null
-            ? parseInt(a.round?.replace('R', '') ?? '', 10)
-            : 0;
+              ? parseInt(a.round?.replace('R', '') ?? '', 10)
+              : 0;
         const bSort =
           (b.order ?? null) != null
             ? b.order
             : (b.round ?? null) != null
-            ? parseInt(b.round?.replace('R', '') ?? '', 10)
-            : 0;
+              ? parseInt(b.round?.replace('R', '') ?? '', 10)
+              : 0;
 
         return (aSort ?? 0) - (bSort ?? 0);
       });
@@ -86,9 +79,7 @@ export class EncounterCompetition {
     this.homeScore = args?.homeScore;
     this.awayScore = args?.awayScore;
     this.encounterChange =
-      args?.encounterChange != null
-        ? new EncounterChange(args.encounterChange)
-        : undefined;
+      args?.encounterChange != null ? new EncounterChange(args.encounterChange) : undefined;
 
     this.homeTeamId = args?.homeTeamId;
     this.awayTeamId = args?.awayTeamId;

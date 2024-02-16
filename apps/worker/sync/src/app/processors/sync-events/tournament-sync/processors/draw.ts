@@ -25,12 +25,12 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options: StepOptions
+    options: StepOptions,
   ) {
     if (!options) {
       options = {};
     }
-    
+
     options.logger = options.logger || new Logger(TournamentSyncDrawProcessor.name);
     super(options);
   }
@@ -50,17 +50,15 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
     if (!this.event) {
       throw new NotFoundException(`${EventTournament.name} not found`);
     }
-    
+
     const draws = await subEvent.getDrawTournaments({
       transaction: this.transaction,
     });
-    const canChange = moment()
-      .subtract(1, 'month')
-      .isBefore(this.event.firstDay);
+    const canChange = moment().subtract(1, 'month').isBefore(this.event.firstDay);
     const visualDraws = await this.visualService.getDraws(
       this.visualTournament.Code,
       internalId,
-      !canChange
+      !canChange,
     );
     for (const xmlDraw of visualDraws) {
       if (!xmlDraw) {
@@ -98,9 +96,9 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
             xmlDraw.TypeID === XmlDrawTypeID.Elimination
               ? DrawType.KO
               : xmlDraw.TypeID === XmlDrawTypeID.RoundRobin ||
-                xmlDraw.TypeID === XmlDrawTypeID.FullRoundRobin
-              ? DrawType.POULE
-              : DrawType.QUALIFICATION,
+                  xmlDraw.TypeID === XmlDrawTypeID.FullRoundRobin
+                ? DrawType.POULE
+                : DrawType.QUALIFICATION,
         }).save({ transaction: this.transaction });
       }
       this._dbDraws.push({

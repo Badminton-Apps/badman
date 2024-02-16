@@ -57,7 +57,7 @@ jobs:
 
           ## for copy pasting in shell
           # npx playwright show-report
-      
+
       - uses: actions/upload-artifact@v3
         if: always()
         with:

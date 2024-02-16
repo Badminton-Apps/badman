@@ -12,7 +12,7 @@ export async function hasTime(
   },
   args?: {
     logger?: Logger;
-  }
+  },
 ) {
   const { logger } = args || {};
   logger?.verbose('checkTime');

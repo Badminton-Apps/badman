@@ -1,6 +1,6 @@
 <badman-has-claim [any]="[club.id + '_edit:club', 'edit-any:club']">
   @if (clubGroup) {
-  <badman-club-fields [group]="clubGroup"></badman-club-fields>
+    <badman-club-fields [group]="clubGroup"></badman-club-fields>
   }
   <div noPerm>{{ club.name }}</div>
 </badman-has-claim>
@@ -12,9 +12,11 @@
     </badman-has-claim>
   </h2>
   <div class="roles">
-    @for ( role of this.roles$ | async; track role) { @if (role.id) {
-    <badman-edit-role [roleId]="role.id" [type]="[securityTypes.CLUB, securityTypes.TEAM]" />
-    } }
+    @for (role of this.roles$ | async; track role) {
+      @if (role.id) {
+        <badman-edit-role [roleId]="role.id" [type]="[securityTypes.CLUB, securityTypes.TEAM]" />
+      }
+    }
   </div>
 </badman-has-claim>
 <badman-has-claim [any]="['change-base:team', club.id + '_edit:club', 'edit-any:club']">
@@ -23,18 +25,12 @@
     <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
     <mat-select [formControl]="this.season">
       @for (option of this.seasons; track option) {
-      <mat-option [value]="option"> {{ option }} </mat-option>
+        <mat-option [value]="option"> {{ option }} </mat-option>
       }
     </mat-select>
   </mat-form-field>
 </badman-has-claim>
-<badman-has-claim
-  [any]="[
-    club.id + '_add:locations',
-    club.id + '_edit:club',
-    'edit-any:club'
-    ]"
->
+<badman-has-claim [any]="[club.id + '_add:locations', club.id + '_edit:club', 'edit-any:club']">
   <div class="options">
     <h2>
       Locations
@@ -45,38 +41,39 @@
   </div>
   <div class="locations">
     @for (location of this.locationForSeason$ | async; track location) {
-    <badman-club-edit-location
-      [location]="location"
-      [season]="this.season.value"
-      [club]="club"
-      (whenEdit)="this.onEditLocation($event, club)"
-      (whenDelete)="this.onDeleteLocation($event)"
-    >
-    </badman-club-edit-location>
+      <badman-club-edit-location
+        [location]="location"
+        [season]="this.season.value"
+        [club]="club"
+        (whenEdit)="this.onEditLocation($event, club)"
+        (whenDelete)="this.onDeleteLocation($event)"
+      >
+      </badman-club-edit-location>
     }
   </div>
 </badman-has-claim>
 <badman-has-claim [any]="['change-base:team']">
   <div class="options">
     <h2>
-      Base players @if (this.season.value) {
-      <button mat-icon-button (click)="addTeam()">
-        <mat-icon>add</mat-icon>
-      </button>
+      Base players
+      @if (this.season.value) {
+        <button mat-icon-button (click)="addTeam()">
+          <mat-icon>add</mat-icon>
+        </button>
       }
     </h2>
   </div>
   <div class="teams">
     @for (team of this.teamsForSeason$ | async; track team) {
-    <badman-club-edit-team
-      [team]="team"
-      [club]="club"
-      (whenPlayerAdded)="this.onAddBasePlayer($event, team)"
-      (whenPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
-      (whenPlayerMetaUpdated)="this.onPlayerMetaUpdated($event, team)"
-      (whenSubEventChanged)="this.onSubEventAssignedToTeam($event, team)"
-    >
-    </badman-club-edit-team>
+      <badman-club-edit-team
+        [team]="team"
+        [club]="club"
+        (whenPlayerAdded)="this.onAddBasePlayer($event, team)"
+        (whenPlayerRemoved)="this.onDeleteBasePlayer($event, team)"
+        (whenPlayerMetaUpdated)="this.onPlayerMetaUpdated($event, team)"
+        (whenSubEventChanged)="this.onSubEventAssignedToTeam($event, team)"
+      >
+      </badman-club-edit-team>
     }
   </div>
 </badman-has-claim>
@@ -98,7 +95,7 @@
       color="primary"
       [mat-dialog-close]="name.value"
       cdkFocusInitial
-      [disabled]="!name.value || (name?.value?.length ?? 0) <=3"
+      [disabled]="!name.value || (name?.value?.length ?? 0) <= 3"
     >
       Ok
     </button>

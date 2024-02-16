@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -48,7 +54,9 @@ export class EditClubHistoryDialogComponent implements OnInit {
 
   ngOnInit(): void {
     const clubControl = new FormControl(this.data.club?.id, [Validators.required]);
-    const startControl = new FormControl(this.data.club?.clubMembership?.start, [Validators.required]);
+    const startControl = new FormControl(this.data.club?.clubMembership?.start, [
+      Validators.required,
+    ]);
     const endControl = new FormControl(this.data.club?.clubMembership?.end);
     const membershipTypeControl = new FormControl(this.data.club?.clubMembership?.membershipType, [
       Validators.required,

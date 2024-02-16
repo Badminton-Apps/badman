@@ -29,7 +29,8 @@ export type PlayerOrderRuleParams = PlayerOrderRuleSingleParams | PlayerOrderRul
  */
 export class PlayerOrderRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
-    const { single1, single2, single3, single4, double1, double2, double3, double4, type, system } = assembly;
+    const { single1, single2, single3, single4, double1, double2, double3, double4, type, system } =
+      assembly;
 
     let errors = [] as AssemblyValidationError<PlayerOrderRuleParams>[];
 
@@ -55,7 +56,14 @@ export class PlayerOrderRule extends Rule {
     if (d3) errors.push(d3);
 
     if (type !== SubEventTypeEnum.MX) {
-      const d1 = this._checkDouble('double1', 'double2', system?.amountOfLevels, 'double', double1, double2);
+      const d1 = this._checkDouble(
+        'double1',
+        'double2',
+        system?.amountOfLevels,
+        'double',
+        double1,
+        double2,
+      );
       if (d1) errors.push(d1);
 
       const s2 = this._checkSingle(
@@ -69,7 +77,14 @@ export class PlayerOrderRule extends Rule {
 
       if (s2) errors.push(s2);
 
-      const d2 = this._checkDouble('double2', 'double3', system.amountOfLevels, 'double', double2, double3);
+      const d2 = this._checkDouble(
+        'double2',
+        'double3',
+        system.amountOfLevels,
+        'double',
+        double2,
+        double3,
+      );
 
       if (d2) errors.push(d2);
     }

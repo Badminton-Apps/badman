@@ -1,9 +1,5 @@
 import { Player } from '@badman/backend-database';
-import {
-  AssemblyValidationData,
-  AssemblyOutput,
-  AssemblyValidationError,
-} from '../../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export type PlayerCompStatusRuleParams = {
@@ -15,17 +11,8 @@ export type PlayerCompStatusRuleParams = {
  */
 export class PlayerCompStatusRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
-    const {
-      single1,
-      single2,
-      single3,
-      single4,
-      double1,
-      double2,
-      double3,
-      double4,
-      subtitudes,
-    } = assembly;
+    const { single1, single2, single3, single4, double1, double2, double3, double4, subtitudes } =
+      assembly;
 
     const errors = [] as AssemblyValidationError<PlayerCompStatusRuleParams>[];
     let valid = true;

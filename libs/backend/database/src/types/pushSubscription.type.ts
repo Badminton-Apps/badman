@@ -1,10 +1,4 @@
-import {
-  Field,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 
 @ObjectType({ description: 'An Exception' })
 export class PushSubscriptionKeysType {
@@ -28,7 +22,7 @@ export class PushSubscriptionType {
 @InputType()
 export class PushSubscriptionInputType extends PartialType(
   OmitType(PushSubscriptionType, ['keys'] as const),
-  InputType
+  InputType,
 ) {
   @Field(() => PushSubscriptionKeysInputType, { nullable: true })
   keys?: PushSubscriptionKeys;
@@ -37,7 +31,7 @@ export class PushSubscriptionInputType extends PartialType(
 @InputType()
 export class PushSubscriptionKeysInputType extends PartialType(
   OmitType(PushSubscriptionKeysType, [] as const),
-  InputType
+  InputType,
 ) {}
 
 export interface PushSubscription {

@@ -15,7 +15,7 @@ module.exports = {
           {
             type: sequelize.DataTypes.DECIMAL(10, 2),
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -36,7 +36,7 @@ module.exports = {
           {
             type: sequelize.DataTypes.INTEGER,
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

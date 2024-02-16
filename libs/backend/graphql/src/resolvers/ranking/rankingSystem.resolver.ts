@@ -25,7 +25,9 @@ export class RankingSystemResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => RankingSystem)
-  async rankingSystem(@Args('id', { type: () => ID, nullable: true }) id?: string): Promise<RankingSystem> {
+  async rankingSystem(
+    @Args('id', { type: () => ID, nullable: true }) id?: string,
+  ): Promise<RankingSystem> {
     const rankingSystem =
       (id ?? null) != null
         ? await RankingSystem.findByPk(id)
@@ -59,12 +61,18 @@ export class RankingSystemResolver {
   }
 
   @ResolveField(() => [RankingGroup])
-  async rankingGroups(@Parent() system: RankingSystem, @Args() listArgs: ListArgs): Promise<RankingGroup[]> {
+  async rankingGroups(
+    @Parent() system: RankingSystem,
+    @Args() listArgs: ListArgs,
+  ): Promise<RankingGroup[]> {
     return system.getRankingGroups(ListArgs.toFindOptions(listArgs));
   }
 
   @Mutation(() => RankingSystem)
-  async updateRankingSystem(@User() user: Player, @Args('data') updateRankingSystemData: RankingSystemUpdateInput) {
+  async updateRankingSystem(
+    @User() user: Player,
+    @Args('data') updateRankingSystemData: RankingSystemUpdateInput,
+  ) {
     if (!(await user.hasAnyPermission(['edit:ranking']))) {
       throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
@@ -298,7 +306,13 @@ export class RankingSystemResolver {
 
       if (copyFromStartDate || copyToEndDate) {
         // remove all places and points
-        await this._copyPlaces(sourceSystem, destinationSystem, copyFromStartDate, copyToEndDate, transaction);
+        await this._copyPlaces(
+          sourceSystem,
+          destinationSystem,
+          copyFromStartDate,
+          copyToEndDate,
+          transaction,
+        );
       }
 
       await transaction?.commit();
@@ -402,7 +416,13 @@ export class RankingSystemResolver {
       this.logger.debug(
         `Copy places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`,
       );
-      await this._copyRankingLastPlaces(sourceSystem.id, destinationSystem.id, from, to, transaction);
+      await this._copyRankingLastPlaces(
+        sourceSystem.id,
+        destinationSystem.id,
+        from,
+        to,
+        transaction,
+      );
 
       await this._copyRankingPoints(sourceSystem.id, destinationSystem.id, from, to, transaction);
 

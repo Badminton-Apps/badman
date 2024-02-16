@@ -7,7 +7,7 @@ export const canExecute = async (
     anyPermissions?: string[];
     allPermissions?: string[];
   },
-  message?: string
+  message?: string,
 ) => {
   if ((user ?? null) === null) {
     throw new UnauthorizedException({
@@ -17,7 +17,7 @@ export const canExecute = async (
   }
 
   if (permissions?.anyPermissions && permissions?.anyPermissions.length > 0) {
-    if (!await user.hasAnyPermission(permissions.anyPermissions)) {
+    if (!(await user.hasAnyPermission(permissions.anyPermissions))) {
       Logger.warn("User tried something it should't have done", {
         required: {
           anyClaim: permissions.anyPermissions,
@@ -32,7 +32,7 @@ export const canExecute = async (
   }
 
   if (permissions?.allPermissions && permissions?.allPermissions.length > 0) {
-    if (!await user.hasAllPermission(permissions.allPermissions)) {
+    if (!(await user.hasAllPermission(permissions.allPermissions))) {
       Logger.warn("User tried something it should't have done", {
         required: {
           allClaim: permissions.allPermissions,

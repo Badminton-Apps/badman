@@ -129,7 +129,10 @@ export class DetailAvgPageComponent implements OnInit {
       this.eventCompetition = data['eventCompetition'];
       this.breadcrumbsService.set('@eventCompetition', this.eventCompetition.name || '');
       this.breadcrumbsService.set('competition', translations['all.competition.title']);
-      this.breadcrumbsService.set('competition/:id/avg-level', translations['all.competition.avg-level']);
+      this.breadcrumbsService.set(
+        'competition/:id/avg-level',
+        translations['all.competition.avg-level'],
+      );
     });
 
     this.subEvents$ = this._getAvgLevel();
@@ -176,7 +179,11 @@ export class DetailAvgPageComponent implements OnInit {
     ] as ApexAxisChartSeries;
   }
 
-  chartTitle(gender: 'M' | 'F', chartType: 'single' | 'double' | 'mix', eventType: 'M' | 'F' | 'MX') {
+  chartTitle(
+    gender: 'M' | 'F',
+    chartType: 'single' | 'double' | 'mix',
+    eventType: 'M' | 'F' | 'MX',
+  ) {
     return {
       text: `Reeks: ${eventType}, Geslacht: ${gender}, Dicipline: ${chartType}`,
       align: 'center',
@@ -200,7 +207,16 @@ export class DetailAvgPageComponent implements OnInit {
   }
 
   private convertToCSV(data: SubEventCompetition[]): string {
-    const headers = ['name', 'gender', 'single', 'singleCount', 'double', 'doubleCount', 'mix', 'mixCount'];
+    const headers = [
+      'name',
+      'gender',
+      'single',
+      'singleCount',
+      'double',
+      'doubleCount',
+      'mix',
+      'mixCount',
+    ];
     // const rows = data.map((row) => [row.name, row.data.join(';')]);
     const rows = data
       .map((row) => {
@@ -249,7 +265,9 @@ export class DetailAvgPageComponent implements OnInit {
       .pipe(
         take(1),
         map((result) => {
-          return result.data.eventCompetition.subEventCompetitions?.map((s) => new SubEventCompetition(s));
+          return result.data.eventCompetition.subEventCompetitions?.map(
+            (s) => new SubEventCompetition(s),
+          );
         }),
       );
   }

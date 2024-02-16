@@ -38,7 +38,7 @@ export class ImporterFile extends Model {
   override createdAt?: Date;
 
   @Unique('unique_constraint')
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   name?: string;
 
@@ -48,32 +48,32 @@ export class ImporterFile extends Model {
   type?: EventImportType;
 
   @Unique('unique_constraint')
-  @Field(() => Date, {nullable: true })
+  @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   firstDay?: Date;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   fileLocation?: string;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   dates?: string;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   linkCode?: string;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   visualCode?: string;
 
   @Default(false)
-  @Field(() => Boolean, {nullable: true })
+  @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
   importing?: boolean;
 
-  @Field(() => Int, {nullable: true })
+  @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
   tournamentNumber?: number;
 }

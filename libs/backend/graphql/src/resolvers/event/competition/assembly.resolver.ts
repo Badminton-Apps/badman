@@ -1,8 +1,4 @@
-import {
-  AssemblyInput,
-  AssemblyOutput,
-  AssemblyValidationService,
-} from '@badman/backend-assembly';
+import { AssemblyInput, AssemblyOutput, AssemblyValidationService } from '@badman/backend-assembly';
 import { User } from '@badman/backend-authorization';
 import {
   Assembly,
@@ -13,14 +9,7 @@ import {
 } from '@badman/backend-database';
 import { getRankingProtected, sortPlayers } from '@badman/utils';
 import { Logger, NotFoundException } from '@nestjs/common';
-import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 @Resolver(() => AssemblyOutput)
 export class AssemblyResolver {
@@ -30,9 +19,7 @@ export class AssemblyResolver {
   @Query(() => AssemblyOutput, {
     description: `Validate the assembly\n\r**note**: the levels are the ones from may!`,
   })
-  async assemblyValidation(
-    @Args('assembly') assembly: AssemblyInput,
-  ): Promise<AssemblyOutput> {
+  async assemblyValidation(@Args('assembly') assembly: AssemblyInput): Promise<AssemblyOutput> {
     return this.assemblyService.fetchAndValidate(
       assembly,
       AssemblyValidationService.defaultValidators(),
@@ -40,9 +27,7 @@ export class AssemblyResolver {
   }
 
   @ResolveField(() => [PlayerRankingType])
-  async titularsPlayers(
-    @Parent() assembly: AssemblyOutput,
-  ): Promise<PlayerRankingType[]> {
+  async titularsPlayers(@Parent() assembly: AssemblyOutput): Promise<PlayerRankingType[]> {
     if (!assembly.titularsPlayerData) return [];
 
     const p = await Player.findAll({
@@ -56,16 +41,14 @@ export class AssemblyResolver {
     const system = await RankingSystem.findByPk(assembly.systemId);
 
     if (!system) {
-      throw new NotFoundException(
-        `${RankingSystem.name}: ${assembly.systemId}`,
-      );
+      throw new NotFoundException(`${RankingSystem.name}: ${assembly.systemId}`);
     }
 
     return p
       .map((player) => {
         const place = getRankingProtected(
-          assembly.titularsPlayerData?.find((p) => p.id === player.id)
-            ?.rankingPlaces?.[0] ?? ({} as RankingPlace),
+          assembly.titularsPlayerData?.find((p) => p.id === player.id)?.rankingPlaces?.[0] ??
+            ({} as RankingPlace),
           system,
         );
 
@@ -80,9 +63,7 @@ export class AssemblyResolver {
   }
 
   @ResolveField(() => [PlayerRankingType])
-  async baseTeamPlayers(
-    @Parent() assembly: AssemblyOutput,
-  ): Promise<PlayerRankingType[]> {
+  async baseTeamPlayers(@Parent() assembly: AssemblyOutput): Promise<PlayerRankingType[]> {
     if (!assembly.basePlayersData) return [];
 
     const p = await Player.findAll({
@@ -94,20 +75,15 @@ export class AssemblyResolver {
     return p
       .map((player) => ({
         ...player.toJSON(),
-        single: assembly.basePlayersData?.find((p) => p.id === player.id)
-          ?.single,
-        double: assembly.basePlayersData?.find((p) => p.id === player.id)
-          ?.double,
+        single: assembly.basePlayersData?.find((p) => p.id === player.id)?.single,
+        double: assembly.basePlayersData?.find((p) => p.id === player.id)?.double,
         mix: assembly.basePlayersData?.find((p) => p.id === player.id)?.mix,
       }))
       ?.sort(sortPlayers);
   }
 
   @Mutation(() => Boolean)
-  async createAssembly(
-    @User() user: Player,
-    @Args('assembly') assembly: AssemblyInput,
-  ) {
+  async createAssembly(@User() user: Player, @Args('assembly') assembly: AssemblyInput) {
     if (!assembly) throw new Error('Assembly is required');
     if (!assembly.encounterId) throw new Error('Encounter is required');
     if (!assembly.teamId) throw new Error('Team is required');

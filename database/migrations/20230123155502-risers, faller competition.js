@@ -15,7 +15,7 @@ module.exports = {
           allowNull: false,
           defaultValue: 1,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.addColumn(
@@ -26,7 +26,7 @@ module.exports = {
           allowNull: false,
           defaultValue: 1,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.addColumn(
@@ -37,7 +37,7 @@ module.exports = {
           allowNull: false,
           defaultValue: 1,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.addColumn(
@@ -48,7 +48,7 @@ module.exports = {
           allowNull: false,
           defaultValue: 0,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       // drop encounter accepted column
@@ -60,7 +60,7 @@ module.exports = {
           allowNull: false,
           defaultValue: false,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.addColumn(
@@ -71,7 +71,7 @@ module.exports = {
           allowNull: false,
           defaultValue: false,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       try {
@@ -87,37 +87,33 @@ module.exports = {
       await queryInterface.removeColumn(
         { tableName: 'DrawCompetitions', schema: 'event' },
         'risers',
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.removeColumn(
         { tableName: 'DrawCompetitions', schema: 'event' },
         'fallers',
-        { transaction: t }
+        { transaction: t },
       );
       await queryInterface.removeColumn(
         { tableName: 'DrawTournaments', schema: 'event' },
         'risers',
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.removeColumn(
         { tableName: 'DrawTournaments', schema: 'event' },
         'fallers',
-        { transaction: t }
+        { transaction: t },
       );
 
-      await queryInterface.removeColumn(
-        { tableName: 'Standings', schema: 'event' },
-        'riser',
-        { transaction: t }
-      );
+      await queryInterface.removeColumn({ tableName: 'Standings', schema: 'event' }, 'riser', {
+        transaction: t,
+      });
 
-      await queryInterface.removeColumn(
-        { tableName: 'Standings', schema: 'event' },
-        'faller',
-        { transaction: t }
-      );
+      await queryInterface.removeColumn({ tableName: 'Standings', schema: 'event' }, 'faller', {
+        transaction: t,
+      });
 
       try {
       } catch (err) {

@@ -91,10 +91,7 @@ export class SubEventTournament extends Model {
   @Column(DataType.STRING)
   visualCode?: string;
 
-  @BelongsToMany(
-    () => RankingGroup,
-    () => RankingGroupSubEventTournamentMembership
-  )
+  @BelongsToMany(() => RankingGroup, () => RankingGroupSubEventTournamentMembership)
   rankingGroups?: Relation<RankingGroup[]>;
 
   @Field(() => [DrawTournament], { nullable: true })
@@ -131,14 +128,8 @@ export class SubEventTournament extends Model {
   setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
   addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
   addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
-  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
-    RankingGroup,
-    string
-  >;
-  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<
-    RankingGroup,
-    string
-  >;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
+  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<RankingGroup, string>;
   hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
   hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
   countRankingGroup!: BelongsToManyCountAssociationsMixin;
@@ -149,10 +140,7 @@ export class SubEventTournament extends Model {
   addDrawTournaments!: HasManyAddAssociationsMixin<DrawTournament, string>;
   addDrawTournament!: HasManyAddAssociationMixin<DrawTournament, string>;
   removeDrawTournament!: HasManyRemoveAssociationMixin<DrawTournament, string>;
-  removeDrawTournaments!: HasManyRemoveAssociationsMixin<
-    DrawTournament,
-    string
-  >;
+  removeDrawTournaments!: HasManyRemoveAssociationsMixin<DrawTournament, string>;
   hasDrawTournament!: HasManyHasAssociationMixin<DrawTournament, string>;
   hasDrawTournaments!: HasManyHasAssociationsMixin<DrawTournament, string>;
   countDrawTournaments!: HasManyCountAssociationsMixin;

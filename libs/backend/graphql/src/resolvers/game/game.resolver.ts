@@ -9,14 +9,7 @@ import {
   RankingSystem,
 } from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, ID, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
 import { getRankingProtected } from '@badman/utils';
 
@@ -38,17 +31,12 @@ export class GamesResolver {
   }
 
   @ResolveField(() => [RankingPoint])
-  async rankingPoints(
-    @Parent() game: Game,
-    @Args() listArgs: ListArgs,
-  ): Promise<RankingPoint[]> {
+  async rankingPoints(@Parent() game: Game, @Args() listArgs: ListArgs): Promise<RankingPoint[]> {
     return game.getRankingPoints(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => EncounterCompetition)
-  async competition(
-    @Parent() game: Game,
-  ): Promise<EncounterCompetition | null> {
+  async competition(@Parent() game: Game): Promise<EncounterCompetition | null> {
     if (game.linkType == 'competition') {
       return game.getCompetition();
     }
@@ -65,9 +53,7 @@ export class GamesResolver {
   }
 
   @ResolveField(() => [GamePlayerMembershipType])
-  async players(
-    @Parent() game: Game,
-  ): Promise<(Player & GamePlayerMembership)[][]> {
+  async players(@Parent() game: Game): Promise<(Player & GamePlayerMembership)[][]> {
     const players = (await game.getPlayers()) as (Player & {
       GamePlayerMembership: GamePlayerMembership;
     })[];
@@ -92,32 +78,27 @@ export class GamesResolver {
       });
     }
 
-    return players?.map(
-      (gamePlayer: Player & { GamePlayerMembership: GamePlayerMembership }) => {
-        if (hasNull) {
-          if (!system) {
-            throw new NotFoundException('No primary ranking system found');
-          }
-          
-          const place = getRankingProtected(
-            gamePlayer.GamePlayerMembership,
-            system,
-          );
-
-          return {
-            ...gamePlayer.GamePlayerMembership.toJSON(),
-            ...gamePlayer.toJSON(),
-            single: place.single,
-            double: place.double,
-            mix: place.mix,
-          };
+    return players?.map((gamePlayer: Player & { GamePlayerMembership: GamePlayerMembership }) => {
+      if (hasNull) {
+        if (!system) {
+          throw new NotFoundException('No primary ranking system found');
         }
+
+        const place = getRankingProtected(gamePlayer.GamePlayerMembership, system);
 
         return {
           ...gamePlayer.GamePlayerMembership.toJSON(),
           ...gamePlayer.toJSON(),
+          single: place.single,
+          double: place.double,
+          mix: place.mix,
         };
-      },
-    );
+      }
+
+      return {
+        ...gamePlayer.GamePlayerMembership.toJSON(),
+        ...gamePlayer.toJSON(),
+      };
+    });
   }
 }

@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  effect,
+  inject,
+  input,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -69,10 +77,8 @@ export class ClubFieldsComponent implements OnInit {
   );
 
   exampleTeamName?: string;
-  
 
   canEditAnyClub = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
-
 
   ngOnInit() {
     if (this.group() && !this.group().get(this.controlName())) {
@@ -84,7 +90,7 @@ export class ClubFieldsComponent implements OnInit {
       if (this.canEditAnyClub()) {
         this.group().enable();
       }
-    })
+    });
 
     this.group().valueChanges.subscribe(() => this._setExampleTeamName());
 

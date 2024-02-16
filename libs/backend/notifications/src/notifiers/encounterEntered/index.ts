@@ -2,4 +2,3 @@
 export * from './notAccepted';
 export * from './notEntered';
 // end:ng42.barrel
-

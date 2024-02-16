@@ -95,7 +95,7 @@ export class CompetitionEventsComponent implements OnInit {
       }>;
     }
 
-    if (!this.internalFilter ) {
+    if (!this.internalFilter) {
       this.internalFilter = new FormGroup({
         season: new FormControl(getCurrentSeason()),
         official: new FormControl(true),

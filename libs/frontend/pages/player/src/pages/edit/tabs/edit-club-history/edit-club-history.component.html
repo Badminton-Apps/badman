@@ -6,7 +6,10 @@
     <mat-list-item (click)="this.editClubMembership(club)">
       <span matListItemTitle>{{ club.fullName }}</span>
       <span matListItemLine>
-        <span>{{ 'all.club.start' | translate }}: {{ club.clubMembership?.start | amLocal | amDateFormat: 'LL' }}</span>
+        <span
+          >{{ 'all.club.start' | translate }}:
+          {{ club.clubMembership?.start | amLocal | amDateFormat: 'LL' }}</span
+        >
       </span>
       @if (club.clubMembership?.end) {
         <span matListItemLine

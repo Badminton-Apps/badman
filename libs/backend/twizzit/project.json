@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/twizzit",
         "tsConfig": "libs/backend/twizzit/tsconfig.lib.json",
         "packageJson": "libs/backend/twizzit/package.json",
         "main": "libs/backend/twizzit/src/index.ts",
-        "assets": [
-          "libs/backend/twizzit/*.md"
-        ]
+        "assets": ["libs/backend/twizzit/*.md"]
       }
     }
   },

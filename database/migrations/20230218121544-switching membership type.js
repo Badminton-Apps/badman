@@ -22,7 +22,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
 
         await queryInterface.removeColumn(
@@ -33,7 +33,7 @@ module.exports = {
           'base',
           {
             transaction: t,
-          }
+          },
         );
 
         console.log('Done');
@@ -56,13 +56,13 @@ module.exports = {
           'membershipType',
           {
             transaction: t,
-          }
+          },
         );
 
         // delete enum
         await queryInterface.sequelize.query(
           `DROP TYPE "enum_TeamPlayerMemberships_membershipType"`,
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -78,7 +78,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err);

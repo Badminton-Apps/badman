@@ -81,15 +81,13 @@ export class CreateLocationAvailibiltyRunner {
           transaction,
         });
 
-        this.logger.verbose(
-          `Fixing availibilty for ${encountes.length} encounters`
-        );
+        this.logger.verbose(`Fixing availibilty for ${encountes.length} encounters`);
 
         const clubIds = [
           ...new Set(
             encountes
               .map((encounter) => encounter?.home?.clubId)
-              .filter((clubId) => clubId != null)
+              .filter((clubId) => clubId != null),
           ),
         ];
 
@@ -121,32 +119,32 @@ export class CreateLocationAvailibiltyRunner {
         for (const club of clubs) {
           // if more then one location, skip
           // if no locations, skip
-          if (
-            (club.locations?.length ?? 0) > 1 ||
-            club.locations?.length === 0
-          ) {
+          if ((club.locations?.length ?? 0) > 1 || club.locations?.length === 0) {
             continue;
           }
 
           // get all the encounters for this club
           const clubEncounters = encountes.filter(
-            (encounter) => encounter?.home?.clubId === club.id
+            (encounter) => encounter?.home?.clubId === club.id,
           );
 
           // group enocuntesr by day of the week and time
-          const groupedEncounters = clubEncounters.reduce((acc, encounter) => {
-            const day = moment(encounter.date).format('dddd').toLowerCase();
-            const time = moment(encounter.date).format('HH:mm');
-            const key = `${day}-${time}`;
+          const groupedEncounters = clubEncounters.reduce(
+            (acc, encounter) => {
+              const day = moment(encounter.date).format('dddd').toLowerCase();
+              const time = moment(encounter.date).format('HH:mm');
+              const key = `${day}-${time}`;
 
-            if (!acc[key]) {
-              acc[key] = [];
-            }
+              if (!acc[key]) {
+                acc[key] = [];
+              }
 
-            acc[key].push(encounter);
+              acc[key].push(encounter);
 
-            return acc;
-          }, {} as Record<string, EncounterCompetition[]>);
+              return acc;
+            },
+            {} as Record<string, EncounterCompetition[]>,
+          );
 
           // if more then 3 encounters on the same day and time, assume this was a day, create a location availibilty for that location, for that time, for that day of the week
           for (const key in groupedEncounters) {
@@ -157,9 +155,7 @@ export class CreateLocationAvailibiltyRunner {
               const location = club.locations?.[0];
 
               if (!location) {
-                this.logger.error(
-                  `No location for club ${club.id} ${club.name}`
-                );
+                this.logger.error(`No location for club ${club.id} ${club.name}`);
                 continue;
               }
 
@@ -181,15 +177,11 @@ export class CreateLocationAvailibiltyRunner {
               // add the day to the availibilty
               const availability = location.availabilities?.[0];
               if (!availability) {
-                this.logger.error(
-                  `No availibilty for location ${location.id} ${location.name}`
-                );
+                this.logger.error(`No availibilty for location ${location.id} ${location.name}`);
                 continue;
               }
 
-              const day = moment(encounters[0].date)
-                .format('dddd')
-                .toLowerCase() as
+              const day = moment(encounters[0].date).format('dddd').toLowerCase() as
                 | 'monday'
                 | 'tuesday'
                 | 'wednesday'
@@ -200,7 +192,7 @@ export class CreateLocationAvailibiltyRunner {
               const startTime = moment(encounters[0].date).format('HH:mm');
 
               const availibiltyDay = availability.days?.find(
-                (d) => d.day === day && d.startTime === startTime
+                (d) => d.day === day && d.startTime === startTime,
               );
 
               if (!availibiltyDay) {

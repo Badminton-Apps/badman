@@ -12,14 +12,17 @@ export type PlayerGenderRulePartnerParams = {
   player1: Partial<Player>;
   player2: Partial<Player>;
 };
-export type PlayerGenderRuleParams = PlayerGenderRuleIndividualParams | PlayerGenderRulePartnerParams;
+export type PlayerGenderRuleParams =
+  | PlayerGenderRuleIndividualParams
+  | PlayerGenderRulePartnerParams;
 
 /**
  * Checks if the player is the correct gender
  */
 export class PlayerGenderRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
-    const { single1, single2, single3, single4, double1, double2, double3, double4, type } = assembly;
+    const { single1, single2, single3, single4, double1, double2, double3, double4, type } =
+      assembly;
 
     const errors = [] as AssemblyValidationError<PlayerGenderRuleParams>[];
 

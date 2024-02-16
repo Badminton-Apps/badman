@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -123,13 +130,19 @@ export class RankingBreakdownPageComponent {
     const end = this.periodEndRoute() ?? null;
 
     // Default we take next update interval, if no end is given
-    const endPeriod = (end ?? null) == null ? moment(this.systemService.system()?.calculationLastUpdate) : moment(end);
+    const endPeriod =
+      (end ?? null) == null
+        ? moment(this.systemService.system()?.calculationLastUpdate)
+        : moment(end);
     const startPeriod = endPeriod
       .clone()
       .subtract(this.systemService.system()?.periodAmount, this.systemService.system()?.periodUnit);
     const gamePeriod = startPeriod
       .clone()
-      .subtract(this.systemService.system()?.updateIntervalAmount, this.systemService.system()?.updateIntervalUnit);
+      .subtract(
+        this.systemService.system()?.updateIntervalAmount,
+        this.systemService.system()?.updateIntervalUnit,
+      );
 
     const nextPeriod = startPeriod
       .clone()
@@ -148,7 +161,9 @@ export class RankingBreakdownPageComponent {
 
   private _loadGames() {
     return combineLatest([
-      this.gameFilter.get('gameType')?.valueChanges.pipe(startWith(this.gameFilter.value.gameType)) ?? of(null),
+      this.gameFilter
+        .get('gameType')
+        ?.valueChanges.pipe(startWith(this.gameFilter.value.gameType)) ?? of(null),
       this.periodFilter.get('game')?.valueChanges ?? of(null),
       this.periodFilter.get('end')?.valueChanges ?? of(null),
     ]).pipe(

@@ -13,12 +13,8 @@ export class RankingGroup {
     this.name = args.name;
     this.id = args.id;
 
-    this.subEventCompetitions = args?.subEventCompetitions?.map(
-      (g) => new SubEventCompetition(g)
-    );
-    this.subEventTournament = args?.subEventTournament?.map(
-      (g) => new SubEventTournament(g)
-    );
+    this.subEventCompetitions = args?.subEventCompetitions?.map((g) => new SubEventCompetition(g));
+    this.subEventTournament = args?.subEventTournament?.map((g) => new SubEventTournament(g));
     this.systems = args?.systems?.map((g) => new RankingSystem(g));
   }
 }

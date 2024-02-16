@@ -9,12 +9,12 @@ module.exports = {
         await queryInterface.removeColumn(
           { tableName: 'Notifications', schema: 'personal' },
           'message',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.removeColumn(
           { tableName: 'Notifications', schema: 'personal' },
           'title',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -33,7 +33,7 @@ module.exports = {
           type: sequelize.DataTypes.STRING,
           allowNull: true,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.addColumn(
@@ -43,9 +43,8 @@ module.exports = {
           type: sequelize.DataTypes.STRING,
           allowNull: true,
         },
-        { transaction: t }
+        { transaction: t },
       );
-
 
       try {
       } catch (err) {

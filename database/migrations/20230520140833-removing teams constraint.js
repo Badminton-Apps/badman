@@ -7,13 +7,9 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         // remove the constraint on the teams table teams_unique_constraint
-        await queryInterface.removeConstraint(
-          'Teams',
-          'teams_unique_constraint',
-          {
-            transaction: t,
-          }
-        );
+        await queryInterface.removeConstraint('Teams', 'teams_unique_constraint', {
+          transaction: t,
+        });
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();

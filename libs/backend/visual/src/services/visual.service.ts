@@ -8,7 +8,14 @@ import axiosRateLimit from 'axios-rate-limit';
 import { Moment } from 'moment';
 import moment from 'moment-timezone';
 import { performance } from 'perf_hooks';
-import { XmlMatch, XmlResult, XmlTeamMatch, XmlTournament, XmlTournamentDraw, XmlTournamentEvent } from '../utils';
+import {
+  XmlMatch,
+  XmlResult,
+  XmlTeamMatch,
+  XmlTournament,
+  XmlTournamentDraw,
+  XmlTournamentEvent,
+} from '../utils';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { CACHE_TTL } from '@badman/backend-cache';
@@ -63,7 +70,11 @@ export class VisualService {
     return [];
   }
 
-  async getMatches(tourneyId: string, drawId: string | number, useCache = true): Promise<(XmlTeamMatch | XmlMatch)[]> {
+  async getMatches(
+    tourneyId: string,
+    drawId: string | number,
+    useCache = true,
+  ): Promise<(XmlTeamMatch | XmlMatch)[]> {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Draw/${drawId}/Match`,
       useCache,
@@ -81,7 +92,11 @@ export class VisualService {
     return [];
   }
 
-  async getDraws(tourneyId: string, eventId: string | number, useCache = true): Promise<XmlTournamentDraw[]> {
+  async getDraws(
+    tourneyId: string,
+    eventId: string | number,
+    useCache = true,
+  ): Promise<XmlTournamentDraw[]> {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Event/${eventId}/Draw`,
       useCache,
@@ -90,7 +105,11 @@ export class VisualService {
     return this._asArray(parsed.TournamentDraw);
   }
 
-  async getDraw(tourneyId: string, drawId: string | number, useCache = true): Promise<XmlTournamentDraw> {
+  async getDraw(
+    tourneyId: string,
+    drawId: string | number,
+    useCache = true,
+  ): Promise<XmlTournamentDraw> {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Draw/${drawId}`,
       useCache,
@@ -109,7 +128,10 @@ export class VisualService {
   }
 
   async getTournament(tourneyId: string, useCache = true) {
-    const result = await this._getFromApi(`${this._configService.get('VR_API')}/Tournament/${tourneyId}`, useCache);
+    const result = await this._getFromApi(
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}`,
+      useCache,
+    );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.Tournament as XmlTournament;
   }

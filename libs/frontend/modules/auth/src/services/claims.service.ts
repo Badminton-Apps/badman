@@ -20,7 +20,7 @@ export class ClaimService {
 
   claims = computedAsync(() => this.claims$);
   user$ = toObservable(this.authService.userSignal);
-  
+
   constructor() {
     combineLatest([this.user$, this.update$])
       .pipe(

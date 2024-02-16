@@ -255,18 +255,21 @@ export class UpdateRankingService {
 
           this._logger.debug(`Update ${toUpdate.length} places`);
 
-          await RankingPlace.bulkCreate(toUpdate?.map((p) => p.toJSON()), {
-            updateOnDuplicate: [
-              'single',
-              'double',
-              'mix',
-              'singlePoints',
-              'doublePoints',
-              'mixPoints',
-              'updatePossible',
-            ],
-            transaction,
-          });
+          await RankingPlace.bulkCreate(
+            toUpdate?.map((p) => p.toJSON()),
+            {
+              updateOnDuplicate: [
+                'single',
+                'double',
+                'mix',
+                'singlePoints',
+                'doublePoints',
+                'mixPoints',
+                'updatePossible',
+              ],
+              transaction,
+            },
+          );
         }
       }
 

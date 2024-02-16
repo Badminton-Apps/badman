@@ -20,7 +20,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
 
         console.log('Getting all Competition Events');
@@ -30,12 +30,10 @@ module.exports = {
           {
             type: queryInterface.sequelize.QueryTypes.SELECT,
             transaction: t,
-          }
+          },
         );
 
-        console.log(
-          `Updating entries with ${competitionEvents.length} Competition Events`
-        );
+        console.log(`Updating entries with ${competitionEvents.length} Competition Events`);
         // Store the year of the Competition Event in the date column of the entry
         for (const competitionEvent of competitionEvents) {
           // update progress every 50 entries
@@ -43,7 +41,7 @@ module.exports = {
             console.log(
               `Progress: %${
                 (competitionEvents.indexOf(competitionEvent) / competitionEvents.length) * 100
-              }`
+              }`,
             );
           }
           await queryInterface.sequelize.query(
@@ -51,7 +49,7 @@ module.exports = {
             {
               type: queryInterface.sequelize.QueryTypes.UPDATE,
               transaction: t,
-            }
+            },
           );
         }
 
@@ -62,12 +60,10 @@ module.exports = {
           {
             type: queryInterface.sequelize.QueryTypes.SELECT,
             transaction: t,
-          }
+          },
         );
 
-        console.log(
-          `Updating entries with ${tournamentEvents.length} Tournament Events`
-        );
+        console.log(`Updating entries with ${tournamentEvents.length} Tournament Events`);
         // Store the firstDay of the Tournament Event in the date column of the entry
         for (const tournamentEvent of tournamentEvents) {
           // update progress every 50 entries
@@ -75,7 +71,7 @@ module.exports = {
             console.log(
               `Progress: %${
                 (tournamentEvents.indexOf(tournamentEvent) / tournamentEvents.length) * 100
-              }`
+              }`,
             );
           }
 
@@ -86,7 +82,7 @@ module.exports = {
             {
               type: queryInterface.sequelize.QueryTypes.UPDATE,
               transaction: t,
-            }
+            },
           );
         }
 
@@ -108,7 +104,7 @@ module.exports = {
         'date',
         {
           transaction: t,
-        }
+        },
       );
 
       try {

@@ -1,27 +1,37 @@
-@if(this.systemService.system()){
-<div class="mat-subheading-2">{{ 'all.breakdown.evolution' | translate }}</div>
-<badman-ranking-evolution [player]="player()" [system]="system()" fxLayout="row" fxLayout.lt-md="column">
-</badman-ranking-evolution>
-<div class="mat-subheading-2">{{ 'all.breakdown.pointsPerGame' | translate }}</div>
-@if (this.gameFilter) {
-<form [formGroup]="this.gameFilter">
-  <mat-form-field>
-    <mat-label>{{ 'all.game.types.title' | translate }}</mat-label>
-    <mat-select formControlName="gameType">
-      <mat-option value="single">{{ 'all.ranking.single' | translate }}</mat-option>
-      <mat-option value="double">{{ 'all.ranking.double' | translate }}</mat-option>
-      <mat-option value="mix">{{ 'all.ranking.mix' | translate }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <badman-period-selection [system]="system()" [period]="periodFilter"></badman-period-selection>
-</form>
-@if(!this.loadingGames()){
-<badman-list-games
-  [system]="system()"
-  [games]="games() ?? []"
-  [player]="player()"
-  [formGroup]="this.gameFilter"
-></badman-list-games>
-} @else {
-<mat-progress-bar mode="indeterminate"></mat-progress-bar>
-} } }
+@if (this.systemService.system()) {
+  <div class="mat-subheading-2">{{ 'all.breakdown.evolution' | translate }}</div>
+  <badman-ranking-evolution
+    [player]="player()"
+    [system]="system()"
+    fxLayout="row"
+    fxLayout.lt-md="column"
+  >
+  </badman-ranking-evolution>
+  <div class="mat-subheading-2">{{ 'all.breakdown.pointsPerGame' | translate }}</div>
+  @if (this.gameFilter) {
+    <form [formGroup]="this.gameFilter">
+      <mat-form-field>
+        <mat-label>{{ 'all.game.types.title' | translate }}</mat-label>
+        <mat-select formControlName="gameType">
+          <mat-option value="single">{{ 'all.ranking.single' | translate }}</mat-option>
+          <mat-option value="double">{{ 'all.ranking.double' | translate }}</mat-option>
+          <mat-option value="mix">{{ 'all.ranking.mix' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <badman-period-selection
+        [system]="system()"
+        [period]="periodFilter"
+      ></badman-period-selection>
+    </form>
+    @if (!this.loadingGames()) {
+      <badman-list-games
+        [system]="system()"
+        [games]="games() ?? []"
+        [player]="player()"
+        [formGroup]="this.gameFilter"
+      ></badman-list-games>
+    } @else {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
+  }
+}

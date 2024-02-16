@@ -9,4 +9,3 @@ export * from './select-country';
 export * from './select-state';
 
 // end:ng42.barrel
-

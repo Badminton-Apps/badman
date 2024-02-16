@@ -1,8 +1,4 @@
-import {
-  Player,
-  RankingLastPlace,
-  RankingPlace,
-} from '@badman/backend-database';
+import { Player, RankingLastPlace, RankingPlace } from '@badman/backend-database';
 import { Logger } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 
@@ -23,7 +19,7 @@ export class FixGendersRunner {
           gender: null,
         },
         transaction,
-      }); 
+      });
 
       // corret gender for incorrect places
       for (const place of lastplaces) {

@@ -58,7 +58,7 @@ export class RankingPlaceBuilder {
       return this.rankingPlace;
     }
 
-  try {
+    try {
       await this.rankingPlace.save();
     } catch (error) {
       console.error(error);

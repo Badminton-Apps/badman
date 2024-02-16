@@ -48,7 +48,9 @@ export class PointsService {
       throw new NotFoundException(`${RankingSystem.name}`);
     }
 
-    const start = moment(calcDate).subtract(system.calculationIntervalAmount, system.calculationIntervalUnit).toDate();
+    const start = moment(calcDate)
+      .subtract(system.calculationIntervalAmount, system.calculationIntervalUnit)
+      .toDate();
     const stop = moment(calcDate).toDate();
 
     this._logger.log(`Calculatting points for ${system.name}`);

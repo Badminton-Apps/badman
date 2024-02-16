@@ -14,7 +14,7 @@ module.exports = {
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -25,12 +25,11 @@ module.exports = {
 
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
-
       // drop encounter accepted column
       await queryInterface.removeColumn(
         { tableName: 'EventCompetitions', schema: 'event' },
         'checkEncounterForFilledIn',
-        { transaction: t }
+        { transaction: t },
       );
 
       try {

@@ -19,9 +19,7 @@ import { lastValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 export const APOLLO_CACHE = new InjectionToken<InMemoryCache>('apollo-cache');
-export const GRAPHQL_CONFIG_TOKEN = new InjectionToken<GraphqlConfiguration>(
-  'graphql.config'
-);
+export const GRAPHQL_CONFIG_TOKEN = new InjectionToken<GraphqlConfiguration>('graphql.config');
 
 export type GraphqlConfiguration = Readonly<{
   api: string;
@@ -33,7 +31,7 @@ export function createApollo(
   cache: InMemoryCache,
   injector: Injector,
   platformId: string,
-  config: GraphqlConfiguration
+  config: GraphqlConfiguration,
 ) {
   if (config.api === '') {
     throw new Error('GraphQL API URL is not set');
@@ -52,9 +50,7 @@ export function createApollo(
   const auth = setContext(async (_, { headers }) => {
     if (isBrowser) {
       const authService = injector.get(AuthService);
-      const isAuthenticated = await lastValueFrom(
-        authService.isAuthenticated$.pipe(take(1))
-      );
+      const isAuthenticated = await lastValueFrom(authService.isAuthenticated$.pipe(take(1)));
       if (isAuthenticated) {
         const token = await lastValueFrom(authService.getAccessTokenSilently());
         if (token) {
@@ -127,20 +123,12 @@ export function createApollo(
     {
       provide: APOLLO_OPTIONS,
       useFactory: createApollo,
-      deps: [
-        HttpLink,
-        APOLLO_CACHE,
-        Injector,
-        PLATFORM_ID,
-        GRAPHQL_CONFIG_TOKEN,
-      ],
+      deps: [HttpLink, APOLLO_CACHE, Injector, PLATFORM_ID, GRAPHQL_CONFIG_TOKEN],
     },
   ],
 })
 export class GraphQLModule {
-  static forRoot(
-    config: GraphqlConfiguration
-  ): ModuleWithProviders<GraphQLModule> {
+  static forRoot(config: GraphqlConfiguration): ModuleWithProviders<GraphQLModule> {
     return {
       ngModule: GraphQLModule,
       providers: [{ provide: GRAPHQL_CONFIG_TOKEN, useValue: config }],

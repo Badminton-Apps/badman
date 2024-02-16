@@ -13,12 +13,8 @@ export function autoSize(ws: xlsx.WorkSheet) {
   });
 
   // Autosize columns
-  const columnSizes = ws['!data']?.[indexWithMostColumns].map(
-    (_, columnIndex) =>
-      ws['!data']?.reduce(
-        (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
-        0
-      )
+  const columnSizes = ws['!data']?.[indexWithMostColumns].map((_, columnIndex) =>
+    ws['!data']?.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0),
   );
   ws['!cols'] = columnSizes?.map((width) => ({ width }));
 }

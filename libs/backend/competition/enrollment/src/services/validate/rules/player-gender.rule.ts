@@ -1,10 +1,6 @@
 import { EntryCompetitionPlayer, Team } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import {
-  EnrollmentValidationData,
-  EnrollmentValidationError,
-  RuleResult,
-} from '../../../models';
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -14,12 +10,7 @@ export class PlayerGenderRule extends Rule {
   async validate(enrollment: EnrollmentValidationData): Promise<RuleResult[]> {
     const results = [] as RuleResult[];
 
-    for (const {
-      basePlayers,
-      teamPlayers,
-      team,
-      backupPlayers,
-    } of enrollment.teams) {
+    for (const { basePlayers, teamPlayers, team, backupPlayers } of enrollment.teams) {
       if (!team?.id) {
         continue;
       }
@@ -29,19 +20,11 @@ export class PlayerGenderRule extends Rule {
 
       if (team?.type == SubEventTypeEnum.M) {
         errors.push(
-          ...this._checkGender(
-            [...(teamPlayers ?? []), ...(basePlayers ?? [])],
-            'M',
-            team
-          )
+          ...this._checkGender([...(teamPlayers ?? []), ...(basePlayers ?? [])], 'M', team),
         );
       } else if (team?.type == SubEventTypeEnum.F) {
         errors.push(
-          ...this._checkGender(
-            [...(teamPlayers ?? []), ...(basePlayers ?? [])],
-            'F',
-            team
-          )
+          ...this._checkGender([...(teamPlayers ?? []), ...(basePlayers ?? [])], 'F', team),
         );
       }
 
@@ -65,11 +48,9 @@ export class PlayerGenderRule extends Rule {
   private _checkGender(
     players: Partial<EntryCompetitionPlayer>[],
     gender: string,
-    team: Partial<Team> | Team
+    team: Partial<Team> | Team,
   ): EnrollmentValidationError[] {
-    const uniquePlayers = [
-      ...new Set(players?.filter((p) => p != undefined && p != null)),
-    ];
+    const uniquePlayers = [...new Set(players?.filter((p) => p != undefined && p != null))];
     const wrong = uniquePlayers?.filter((p) => p?.gender != gender);
     if (wrong) {
       return wrong.map((p) => ({

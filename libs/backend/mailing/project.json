@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/mailing",
         "tsConfig": "libs/backend/mailing/tsconfig.lib.json",
         "packageJson": "libs/backend/mailing/package.json",
         "main": "libs/backend/mailing/src/index.ts",
-        "assets": [
-          "libs/backend/mailing/*.md"
-        ]
+        "assets": ["libs/backend/mailing/*.md"]
       }
     }
   },

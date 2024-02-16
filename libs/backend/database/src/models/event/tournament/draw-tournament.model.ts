@@ -140,10 +140,7 @@ export class DrawTournament extends Model {
 
   // Belongs to SubEvent
   getSubEventTournament!: BelongsToGetAssociationMixin<SubEventTournament>;
-  setSubEventTournament!: BelongsToSetAssociationMixin<
-    SubEventTournament,
-    string
-  >;
+  setSubEventTournament!: BelongsToSetAssociationMixin<SubEventTournament, string>;
 
   // Has many EventEntries
   getEventEntries!: HasManyGetAssociationsMixin<EventEntry>;

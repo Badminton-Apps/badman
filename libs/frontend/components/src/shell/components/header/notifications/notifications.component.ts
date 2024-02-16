@@ -1,6 +1,13 @@
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -92,7 +99,9 @@ export class NotificationComponent {
     const notificationsToProcess =
       this.notifications()
         ?.filter((n) => n.read == false)
-        ?.map((notification) => this.notificationService.readNotification(notification, true).pipe(delay(50))) ?? [];
+        ?.map((notification) =>
+          this.notificationService.readNotification(notification, true).pipe(delay(50)),
+        ) ?? [];
 
     // process notifications one by one
     from(notificationsToProcess)

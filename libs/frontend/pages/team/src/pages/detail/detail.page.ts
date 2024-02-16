@@ -1,12 +1,26 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, PLATFORM_ID, TransferState, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  Injector,
+  PLATFORM_ID,
+  TransferState,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { HasClaimComponent, PageHeaderComponent, RecentGamesComponent, UpcomingGamesComponent } from '@badman/frontend-components';
+import {
+  HasClaimComponent,
+  PageHeaderComponent,
+  RecentGamesComponent,
+  UpcomingGamesComponent,
+} from '@badman/frontend-components';
 import { EventEntry, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';

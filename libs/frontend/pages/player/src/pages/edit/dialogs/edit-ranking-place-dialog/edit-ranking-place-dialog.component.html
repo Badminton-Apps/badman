@@ -5,19 +5,9 @@
       <div class="row">
         <mat-form-field>
           <mat-label>{{ 'all.input.date' | translate }}</mat-label>
-          <input
-            matInput
-            [matDatepicker]="rankingDate"
-            formControlName="rankingDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="rankingDate"
-          ></mat-datepicker-toggle>
-          <mat-datepicker
-            [dateClass]="this.dateClass"
-            #rankingDate
-          ></mat-datepicker>
+          <input matInput [matDatepicker]="rankingDate" formControlName="rankingDate" />
+          <mat-datepicker-toggle matSuffix [for]="rankingDate"></mat-datepicker-toggle>
+          <mat-datepicker [dateClass]="this.dateClass" #rankingDate></mat-datepicker>
         </mat-form-field>
 
         <button mat-stroked-button (click)="this.mayRanking($event)">
@@ -49,21 +39,11 @@
       <div class="row">
         <mat-form-field>
           <mat-label>{{ 'all.ranking.single-points' | translate }}</mat-label>
-          <input
-            matInput
-            type="number"
-            min="1"
-            formControlName="singlePoints"
-          />
+          <input matInput type="number" min="1" formControlName="singlePoints" />
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{ 'all.ranking.double-points' | translate }}</mat-label>
-          <input
-            matInput
-            type="number"
-            min="1"
-            formControlName="doublePoints"
-          />
+          <input matInput type="number" min="1" formControlName="doublePoints" />
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{ 'all.ranking.mix-points' | translate }}</mat-label>

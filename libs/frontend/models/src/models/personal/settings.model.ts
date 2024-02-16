@@ -11,15 +11,11 @@ export class Setting {
   language?: AvaliableLanguages;
 
   constructor({ ...args }: Partial<Setting>) {
-    this.encounterChangeConfirmationNotification =
-      args?.encounterChangeConfirmationNotification;
-    this.encounterChangeFinishedNotification =
-      args?.encounterChangeFinishedNotification;
+    this.encounterChangeConfirmationNotification = args?.encounterChangeConfirmationNotification;
+    this.encounterChangeFinishedNotification = args?.encounterChangeFinishedNotification;
     this.encounterChangeNewNotification = args?.encounterChangeNewNotification;
-    this.encounterNotAcceptedNotification =
-      args?.encounterNotAcceptedNotification;
-    this.encounterNotEnteredNotification =
-      args?.encounterNotEnteredNotification;
+    this.encounterNotAcceptedNotification = args?.encounterNotAcceptedNotification;
+    this.encounterNotEnteredNotification = args?.encounterNotEnteredNotification;
     this.syncSuccessNotification = args?.syncSuccessNotification;
     this.syncFailedNotification = args?.syncFailedNotification;
     this.clubEnrollmentNotification = args?.clubEnrollmentNotification;

@@ -1,9 +1,11 @@
 <badman-page-header>
-  <div title>{{this.rankingSystem().name}}</div>
+  <div title>{{ this.rankingSystem().name }}</div>
   <div subTitle>
     <mat-chip-listbox>
-      <mat-chip [matTooltip]="this.rankingSystem().calculationLastUpdate?.toLocaleDateString() ?? ''"
-        >{{'all.ranking.last-update' | translate}}: {{this.rankingSystem().calculationLastUpdate |amTimeAgo }}</mat-chip
+      <mat-chip
+        [matTooltip]="this.rankingSystem().calculationLastUpdate?.toLocaleDateString() ?? ''"
+        >{{ 'all.ranking.last-update' | translate }}:
+        {{ this.rankingSystem().calculationLastUpdate | amTimeAgo }}</mat-chip
       >
     </mat-chip-listbox>
   </div>
@@ -35,7 +37,7 @@
       </badman-has-claim>
 
       <badman-has-claim [any]="['edit:ranking']">
-        <button mat-menu-item [routerLink]="[ 'edit']">
+        <button mat-menu-item [routerLink]="['edit']">
           <mat-icon>edit</mat-icon>
           {{ 'all.button.edit' | translate }}
         </button>

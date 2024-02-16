@@ -15,14 +15,7 @@ import { ClubMembershipType } from '@badman/utils';
 import { BuildOptions } from 'sequelize';
 import { Club } from './club.model';
 import { Player } from './player.model';
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import { Relation } from '../wrapper';
 
 @Table({
@@ -84,11 +77,11 @@ export class ClubPlayerMembership extends Model {
 @InputType()
 export class ClubPlayerMembershipUpdateInput extends PartialType(
   OmitType(ClubPlayerMembership, ['createdAt', 'updatedAt'] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class ClubPlayerMembershipNewInput extends PartialType(
   OmitType(ClubPlayerMembershipUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

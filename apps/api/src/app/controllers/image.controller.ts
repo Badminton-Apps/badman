@@ -22,10 +22,7 @@ export class ImageController {
   }
 
   @Get('/')
-  async getImage(
-    @Res() res: FastifyReply,
-    @Query() query: { title: string; description: string }
-  ) {
+  async getImage(@Res() res: FastifyReply, @Query() query: { title: string; description: string }) {
     const title = this.formatTitle(query.title);
     const description = query.description;
 
@@ -78,16 +75,14 @@ export class ImageController {
       (
         prev: { done: boolean; index: number; position?: number | undefined },
         cur: string,
-        index: number
+        index: number,
       ): { done: boolean; index: number; position?: number | undefined } => {
         if (prev?.done) return prev;
         const endLastWord: number = prev?.position || 0;
         const position: number = endLastWord + 1 + cur.length;
-        return position >= maxChars
-          ? { done: true, index }
-          : { done: false, position, index };
+        return position >= maxChars ? { done: true, index } : { done: false, position, index };
       },
-      { done: false, index: -1, position: undefined }
+      { done: false, index: -1, position: undefined },
     );
 
     // Using the index, build a string for this line ...

@@ -1,11 +1,4 @@
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -106,7 +99,7 @@ export class EncounterChange extends Model {
 @InputType()
 export class EncounterChangeUpdateInput extends PartialType(
   OmitType(EncounterChange, ['createdAt', 'updatedAt', 'dates'] as const),
-  InputType
+  InputType,
 ) {
   @Field(() => Boolean, { nullable: true })
   home?: boolean;
@@ -118,7 +111,7 @@ export class EncounterChangeUpdateInput extends PartialType(
 @InputType()
 export class EncounterChangeNewInput extends PartialType(
   OmitType(EncounterChangeUpdateInput, ['id', 'dates'] as const),
-  InputType
+  InputType,
 ) {
   @Field(() => [EncounterChangeDateNewInput], { nullable: true })
   dates?: Relation<EncounterChangeDate[]>;

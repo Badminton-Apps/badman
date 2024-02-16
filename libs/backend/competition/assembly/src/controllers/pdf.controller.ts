@@ -10,7 +10,15 @@ import { lastValueFrom, take } from 'rxjs';
 import { AssemblyValidationData, AssemblyValidationError } from '../models';
 import { AssemblyValidationService } from '../services';
 
-type gameType = 'single1' | 'single2' | 'single3' | 'single4' | 'double1' | 'double2' | 'double3' | 'double4';
+type gameType =
+  | 'single1'
+  | 'single2'
+  | 'single3'
+  | 'single4'
+  | 'double1'
+  | 'double2'
+  | 'double3'
+  | 'double4';
 
 type inputBody = {
   systemId: string;
@@ -78,7 +86,10 @@ export class AssemblyController {
       input.subtitudes,
     );
 
-    const validation = await this.assemblyService.validate(data, AssemblyValidationService.defaultValidators());
+    const validation = await this.assemblyService.validate(
+      data,
+      AssemblyValidationService.defaultValidators(),
+    );
 
     let homeTeam: Team;
     let awayTeam: Team;
@@ -188,7 +199,9 @@ export class AssemblyController {
       context.doubles?.find((p) => p?.player1?.exception) ||
       context.doubles?.find((p) => p?.player2?.exception)
     ) {
-      context.exception = this.i18nService.translate('all.competition.team-assembly.level-exemption');
+      context.exception = this.i18nService.translate(
+        'all.competition.team-assembly.level-exemption',
+      );
     }
 
     return this.compileService
@@ -207,17 +220,23 @@ export class AssemblyController {
 
     const games = params['game'] as gameType;
     if (games != undefined) {
-      params['game'] = this.i18nService.translate(`all.competition.team-assembly.${games}`).toLocaleLowerCase();
+      params['game'] = this.i18nService
+        .translate(`all.competition.team-assembly.${games}`)
+        .toLocaleLowerCase();
     }
 
     const games1 = params['game1'] as gameType;
     if (games1 != undefined) {
-      params['game1'] = this.i18nService.translate(`all.competition.team-assembly.${games1}`).toLocaleLowerCase();
+      params['game1'] = this.i18nService
+        .translate(`all.competition.team-assembly.${games1}`)
+        .toLocaleLowerCase();
     }
 
     const games2 = params['game2'] as gameType;
     if (games2 != undefined) {
-      params['game2'] = this.i18nService.translate(`all.competition.team-assembly.${games2}`).toLocaleLowerCase();
+      params['game2'] = this.i18nService
+        .translate(`all.competition.team-assembly.${games2}`)
+        .toLocaleLowerCase();
     }
     warn.params = params;
   }
@@ -283,7 +302,11 @@ export class AssemblyController {
       based.push(player.id);
     }
 
-    if (data.teamPlayers?.map((p) => p.id).indexOf(player.id) !== -1 && indexed && indexed.indexOf(player.id) === -1) {
+    if (
+      data.teamPlayers?.map((p) => p.id).indexOf(player.id) !== -1 &&
+      indexed &&
+      indexed.indexOf(player.id) === -1
+    ) {
       prepped.team = true;
       indexed.push(player.id);
     }
@@ -311,15 +334,20 @@ export class AssemblyController {
       data.type === 'MX' ? player.rankingLastPlaces?.[0]?.mix ?? 12 : 12,
     );
 
-    prepped.exception = data.meta?.competition?.players?.find((p) => p.id === player.id)?.levelException;
+    prepped.exception = data.meta?.competition?.players?.find(
+      (p) => p.id === player.id,
+    )?.levelException;
 
     // if a ranking is not availible use 2 higher then the best ranking but cannot be higher then 12
     // if the best ranking is higher then 12 use 12
     // if no ranking is availible use 12
 
-    const single = player.rankingLastPlaces?.[0]?.single ?? (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
-    const double = player.rankingLastPlaces?.[0]?.double ?? (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
-    const mix = player.rankingLastPlaces?.[0]?.mix ?? (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
+    const single =
+      player.rankingLastPlaces?.[0]?.single ?? (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
+    const double =
+      player.rankingLastPlaces?.[0]?.double ?? (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
+    const mix =
+      player.rankingLastPlaces?.[0]?.mix ?? (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
 
     prepped.rankingLastPlace = {
       single,

@@ -10,22 +10,21 @@ export async function enterEditMode(
     page: null,
     timeout: 5000,
   },
-  encounter: EncounterCompetition
+  encounter: EncounterCompetition,
 ) {
   const { page } = pupeteer;
   if (!page) {
     throw new Error('No page provided');
   }
   const matchId = encounter.visualCode;
-  const eventId =
-    encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
+  const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
 
   {
     const targetPage = page;
     const promises = [];
     promises.push(targetPage.waitForNavigation());
     await targetPage.goto(
-      `https://www.toernooi.nl/sport/matchresult.aspx?id=${eventId}&match=${matchId}`
+      `https://www.toernooi.nl/sport/matchresult.aspx?id=${eventId}&match=${matchId}`,
     );
     await runParallel(promises);
   }

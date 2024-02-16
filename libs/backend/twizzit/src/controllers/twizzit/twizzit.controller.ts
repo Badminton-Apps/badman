@@ -12,7 +12,7 @@ export class TwizzitController {
   @Get('games')
   async getTwizzitGames(
     @Res() response: FastifyReply,
-    @Query() query: { year: number; clubId: string }
+    @Query() query: { year: number; clubId: string },
   ) {
     const games = await this._export.gamesExport(query.year, query.clubId);
 
@@ -40,10 +40,7 @@ export class TwizzitController {
     const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
 
     response.header('Content-Type', 'text/csv');
-    response.header(
-      'Content-Disposition',
-      `attachment; filename="twizzit.xlsx"`
-    );
+    response.header('Content-Disposition', `attachment; filename="twizzit.xlsx"`);
 
     response.send(buffer);
 

@@ -28,38 +28,27 @@ export class BelgiumFlandersPointsService {
     }
 
     // ignore WO's
-    if (
-      (game.set1Team1 ?? null) === null &&
-      (game.set1Team2 ?? null) === null
-    ) {
+    if ((game.set1Team1 ?? null) === null && (game.set1Team2 ?? null) === null) {
       return [];
     }
 
-    const gamePlayesr = await this._getPlayersForGame(
-      game,
-      system,
-      transaction,
-    );
+    const gamePlayesr = await this._getPlayersForGame(game, system, transaction);
 
     const player1Team1 = gamePlayesr.find(
       (player) =>
-        player.GamePlayerMembership.team === 1 &&
-        player.GamePlayerMembership.player === 1,
+        player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 1,
     );
     const player2Team1 = gamePlayesr.find(
       (player) =>
-        player.GamePlayerMembership.team === 1 &&
-        player.GamePlayerMembership.player === 2,
+        player.GamePlayerMembership.team === 1 && player.GamePlayerMembership.player === 2,
     );
     const player1Team2 = gamePlayesr.find(
       (player) =>
-        player.GamePlayerMembership.team === 2 &&
-        player.GamePlayerMembership.player === 1,
+        player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 1,
     );
     const player2Team2 = gamePlayesr.find(
       (player) =>
-        player.GamePlayerMembership.team === 2 &&
-        player.GamePlayerMembership.player === 2,
+        player.GamePlayerMembership.team === 2 && player.GamePlayerMembership.player === 2,
     );
 
     const {
@@ -160,18 +149,10 @@ export class BelgiumFlandersPointsService {
 
   private _getPointsForGame(
     game: Game,
-    player1Team1:
-      | (Player & { GamePlayerMembership: GamePlayerMembership })
-      | undefined,
-    player1Team2:
-      | (Player & { GamePlayerMembership: GamePlayerMembership })
-      | undefined,
-    player2Team1:
-      | (Player & { GamePlayerMembership: GamePlayerMembership })
-      | undefined,
-    player2Team2:
-      | (Player & { GamePlayerMembership: GamePlayerMembership })
-      | undefined,
+    player1Team1: (Player & { GamePlayerMembership: GamePlayerMembership }) | undefined,
+    player1Team2: (Player & { GamePlayerMembership: GamePlayerMembership }) | undefined,
+    player2Team1: (Player & { GamePlayerMembership: GamePlayerMembership }) | undefined,
+    player2Team2: (Player & { GamePlayerMembership: GamePlayerMembership }) | undefined,
     system: RankingSystem,
   ) {
     const points = {
@@ -201,7 +182,7 @@ export class BelgiumFlandersPointsService {
       },
       system,
     );
-    const rankingPlayer2Team1 = getRankingProtected( 
+    const rankingPlayer2Team1 = getRankingProtected(
       player2Team1?.rankingPlaces?.[0] ?? {
         single: player2Team1?.GamePlayerMembership.single,
         mix: player2Team1?.GamePlayerMembership.mix,
@@ -215,7 +196,7 @@ export class BelgiumFlandersPointsService {
         mix: player1Team2?.GamePlayerMembership.mix,
         double: player1Team2?.GamePlayerMembership.double,
       },
-      system,  
+      system,
     );
     const rankingPlayer2Team2 = getRankingProtected(
       player2Team2?.rankingPlaces?.[0] ?? {
@@ -245,28 +226,16 @@ export class BelgiumFlandersPointsService {
     }
 
     if (rankingPlayer1Team2) {
-      levelP1T2 = parseInt(
-        `${rankingPlayer1Team2[pointsFrom] ?? system.amountOfLevels}`,
-        10,
-      );
+      levelP1T2 = parseInt(`${rankingPlayer1Team2[pointsFrom] ?? system.amountOfLevels}`, 10);
     }
     if (rankingPlayer2Team2) {
-      levelP2T2 = parseInt(
-        `${rankingPlayer2Team2[pointsFrom] ?? system.amountOfLevels}`,
-        10,
-      );
+      levelP2T2 = parseInt(`${rankingPlayer2Team2[pointsFrom] ?? system.amountOfLevels}`, 10);
     }
     if (rankingPlayer1Team1) {
-      levelP1T1 = parseInt(
-        `${rankingPlayer1Team1[pointsFrom] ?? system.amountOfLevels}`,
-        10,
-      );
+      levelP1T1 = parseInt(`${rankingPlayer1Team1[pointsFrom] ?? system.amountOfLevels}`, 10);
     }
     if (rankingPlayer2Team1) {
-      levelP2T1 = parseInt(
-        `${rankingPlayer2Team1[pointsFrom] ?? system.amountOfLevels}`,
-        10,
-      );
+      levelP2T1 = parseInt(`${rankingPlayer2Team1[pointsFrom] ?? system.amountOfLevels}`, 10);
     }
 
     if (game.gameType === GameType.S) {
@@ -287,8 +256,7 @@ export class BelgiumFlandersPointsService {
     } else {
       if (game.winner === 1) {
         const wonPoints = Math.round(
-          (this._getWinningPoints(system, levelP1T2) +
-            this._getWinningPoints(system, levelP2T2)) /
+          (this._getWinningPoints(system, levelP1T2) + this._getWinningPoints(system, levelP2T2)) /
             2,
         );
         points.player1Team1Points = wonPoints;
@@ -297,12 +265,10 @@ export class BelgiumFlandersPointsService {
         points.player2Team2Points = 0;
 
         // Store the difference in levels
-        points.differenceInLevel =
-          (levelP1T1 + levelP2T1 - (levelP1T2 + levelP2T2)) / 2;
+        points.differenceInLevel = (levelP1T1 + levelP2T1 - (levelP1T2 + levelP2T2)) / 2;
       } else {
         const wonPoints = Math.round(
-          (this._getWinningPoints(system, levelP1T1) +
-            this._getWinningPoints(system, levelP2T1)) /
+          (this._getWinningPoints(system, levelP1T1) + this._getWinningPoints(system, levelP2T1)) /
             2,
         );
         points.player1Team2Points = wonPoints;
@@ -311,8 +277,7 @@ export class BelgiumFlandersPointsService {
         points.player2Team1Points = 0;
 
         // Store the difference in levels
-        points.differenceInLevel =
-          (levelP1T2 + levelP2T2 - (levelP1T1 + levelP2T1)) / 2;
+        points.differenceInLevel = (levelP1T2 + levelP2T2 - (levelP1T1 + levelP2T1)) / 2;
       }
     }
 
@@ -324,11 +289,7 @@ export class BelgiumFlandersPointsService {
     return Math.round(system.pointsWhenWinningAgainst[index]);
   }
 
-  private _getPlayersForGame(
-    game: Game,
-    system: RankingSystem,
-    transaction?: Transaction,
-  ) {
+  private _getPlayersForGame(game: Game, system: RankingSystem, transaction?: Transaction) {
     const hasAllItems = () => {
       const playerAmount = game.gameType === GameType.S ? 2 : 4;
 

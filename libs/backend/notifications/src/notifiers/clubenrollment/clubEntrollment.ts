@@ -35,7 +35,7 @@ export class ClubEnrollmentNotifier extends Notifier<
 
   async notifyPush(
     player: Player,
-    data: { club: Club; locations: Location[]; comments: Comment[] }
+    data: { club: Club; locations: Location[]; comments: Comment[] },
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
     await this.pushService.sendNotification(player, this.options(data.club));
@@ -43,10 +43,10 @@ export class ClubEnrollmentNotifier extends Notifier<
   async notifyEmail(
     player: Player,
     data: { club: Club; locations: Location[]; comments: Comment[] },
-    args?: { email: string; url: string }
+    args?: { email: string; url: string },
   ): Promise<void> {
     this.logger.debug(
-      `Sending Email to ${player.fullName} (${player.email}), target ${args?.email}`
+      `Sending Email to ${player.fullName} (${player.email}), target ${args?.email}`,
     );
     const email = args?.email ?? player.email;
 
@@ -68,7 +68,7 @@ export class ClubEnrollmentNotifier extends Notifier<
       },
       data.club,
       data.locations,
-      data.comments
+      data.comments,
     );
   }
 
@@ -77,7 +77,7 @@ export class ClubEnrollmentNotifier extends Notifier<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { club: Club; locations: Location[]; comments: Comment[] },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string }
+    args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();

@@ -10,7 +10,7 @@ export async function signIn(
     timeout: 5000,
   },
   username: string,
-  password: string
+  password: string,
 ) {
   const { page, timeout } = pupeteer;
 
@@ -26,12 +26,10 @@ export async function signIn(
     const element = await waitForSelectors(
       [
         ['aria/Log in'],
-        [
-          'body > div.content > div.masthead.masthead--fixed > div.masthead__user > a',
-        ],
+        ['body > div.content > div.masthead.masthead--fixed > div.masthead__user > a'],
       ],
       targetPage,
-      timeout
+      timeout,
     );
     await element.click({ offset: { x: 32.265625, y: 14.078125 } });
     await Promise.all(promises);
@@ -39,11 +37,7 @@ export async function signIn(
 
   {
     const targetPage = page;
-    const element = await waitForSelectors(
-      [['aria/Loginnaam'], ['#Login']],
-      targetPage,
-      timeout
-    );
+    const element = await waitForSelectors([['aria/Loginnaam'], ['#Login']], targetPage, timeout);
     await element.type(username);
   }
   {
@@ -51,7 +45,7 @@ export async function signIn(
     const element = await waitForSelectors(
       [['aria/Wachtwoord'], ['#Password']],
       targetPage,
-      timeout
+      timeout,
     );
     await element.type(password);
   }
@@ -59,11 +53,7 @@ export async function signIn(
     const targetPage = page;
     const promises = [];
     promises.push(targetPage.waitForNavigation());
-    const element = await waitForSelectors(
-      [['aria/INLOGGEN'], ['#btnLogin']],
-      targetPage,
-      timeout
-    );
+    const element = await waitForSelectors([['aria/INLOGGEN'], ['#btnLogin']], targetPage, timeout);
     await element.click({ offset: { x: 50.046875, y: 6.359375 } });
     await Promise.all(promises);
   }
@@ -75,7 +65,7 @@ export async function signIn(
     const element = await waitForSelectors(
       [['aria/Tennis[role="button"]'], ['#selectSport']],
       targetPage,
-      timeout
+      timeout,
     );
     await element.click({ offset: { x: 33, y: 23 } });
   }
@@ -91,7 +81,7 @@ export async function signIn(
         ],
       ],
       targetPage,
-      timeout
+      timeout,
     );
     await element.click({ offset: { x: 29.953125, y: 7.46875 } });
     await Promise.all(promises);

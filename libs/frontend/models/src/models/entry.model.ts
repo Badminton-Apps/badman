@@ -1,9 +1,4 @@
-import {
-  DrawCompetition,
-  SubEventCompetition,
-  DrawTournament,
-  SubEventTournament,
-} from './events';
+import { DrawCompetition, SubEventCompetition, DrawTournament, SubEventTournament } from './events';
 import { Player } from './player.model';
 import { Standing } from './standing.model';
 import { Team } from './team.model';
@@ -41,25 +36,20 @@ export class EventEntry {
         ? new SubEventCompetition(args?.subEventCompetition)
         : undefined;
     this.drawCompetition =
-      args?.drawCompetition != null
-        ? new DrawCompetition(args?.drawCompetition)
-        : undefined;
+      args?.drawCompetition != null ? new DrawCompetition(args?.drawCompetition) : undefined;
     this.subEventTournament =
       args?.subEventTournament != null
         ? new SubEventTournament(args?.subEventTournament)
         : undefined;
     this.drawTournament =
-      args?.drawTournament != null
-        ? new DrawTournament(args?.drawTournament)
-        : undefined;
+      args?.drawTournament != null ? new DrawTournament(args?.drawTournament) : undefined;
 
     this.subEventId = args?.subEventId;
     this.drawId = args?.drawId;
     this.teamId = args?.teamId;
 
     this.team = args?.team != null ? new Team(args?.team) : undefined;
-    this.standing =
-      args?.standing != null ? new Standing(args?.standing) : undefined;
+    this.standing = args?.standing != null ? new Standing(args?.standing) : undefined;
     this.players = args?.players?.map((p) => new Player(p));
 
     this.enrollmentValidation = args?.enrollmentValidation;

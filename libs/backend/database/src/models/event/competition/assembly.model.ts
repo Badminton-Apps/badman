@@ -17,7 +17,6 @@ import { Team } from '../../team.model';
 import { EncounterCompetition } from './encounter-competition.model';
 import { Relation } from '../../../wrapper';
 
-
 @Table({
   timestamps: true,
   tableName: 'Assemblies',

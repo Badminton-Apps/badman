@@ -1,9 +1,7 @@
 include ./row.pug
 
 mixin players(singles, doubles, type)
-  .grid.text-xs(
-    class="grid-cols-[45px_30px_5fr_1.2fr_2fr_2fr_2fr_2fr_2fr] grid-rows-[1fr_repeat(12,26px)]"
-  )
+  .grid.text-xs(class="grid-cols-[45px_30px_5fr_1.2fr_2fr_2fr_2fr_2fr_2fr] grid-rows-[1fr_repeat(12,26px)]")
     .col-span-2.p-1.border.border-black.border-solid
     .p-1.border.border-l-0.border-black.border-solid Naam
     .p-1.border.border-l-0.border-black.border-solid Klas.
@@ -32,9 +30,7 @@ mixin players(singles, doubles, type)
       .text-gray-500.italic(class="text-[0.8em]")
         | (mei vorig seizoen)
 
-    .col-start-2.row-start-2.border-solid.border-black.border.border-t-0.flex(
-      class="row-end-[14]"
-    )
+    .col-start-2.row-start-2.border-solid.border-black.border.border-t-0.flex(class="row-end-[14]")
       .text-center.leading-6.m-auto(class="max-w-[1em] text-[2em]") T I T U L A R I S S E N
 
     each double, index in doubles

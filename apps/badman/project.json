@@ -24,7 +24,14 @@
           "apps/badman/src/sitemap.xml",
           "apps/badman/src/ads.txt"
         ],
-        "allowedCommonJsDependencies": ["moment", "file-saver", "seed-to-color", "joi", "quill", "apexcharts"],
+        "allowedCommonJsDependencies": [
+          "moment",
+          "file-saver",
+          "seed-to-color",
+          "joi",
+          "quill",
+          "apexcharts"
+        ],
         "styles": [
           "apps/badman/src/styles.scss",
           "node_modules/quill/dist/quill.bubble.css",
@@ -65,7 +72,11 @@
               "with": "apps/badman/src/environments/environment.prod.ts"
             }
           ],
-          "optimization": true
+          "optimization": true,
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true
         },
         "beta": {
           "budgets": [

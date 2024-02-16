@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, PLATFORM_ID, TemplateRef, TransferState, ViewChild, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  PLATFORM_ID,
+  TemplateRef,
+  TransferState,
+  ViewChild,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -191,15 +200,25 @@ export class OverviewPageComponent {
           this.copyingSystem.set(true);
           return this.apollo.mutate({
             mutation: gql`
-              mutation CopyRankingSystem($id: ID!, $copyFromStartDate: DateTime, $copyToEndDate: DateTime) {
-                copyRankingSystem(id: $id, copyFromStartDate: $copyFromStartDate, copyToEndDate: $copyToEndDate) {
+              mutation CopyRankingSystem(
+                $id: ID!
+                $copyFromStartDate: DateTime
+                $copyToEndDate: DateTime
+              ) {
+                copyRankingSystem(
+                  id: $id
+                  copyFromStartDate: $copyFromStartDate
+                  copyToEndDate: $copyToEndDate
+                ) {
                   id
                 }
               }
             `,
             variables: {
               id: system.id,
-              copyFromStartDate: this.showDatePicker ? this.copySystemFormGroup.value.start : undefined,
+              copyFromStartDate: this.showDatePicker
+                ? this.copySystemFormGroup.value.start
+                : undefined,
               copyToEndDate: this.showDatePicker ? this.copySystemFormGroup.value.end : undefined,
             },
             refetchQueries: [

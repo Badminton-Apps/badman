@@ -32,9 +32,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { SingleBracketInterpolation } from './services';
 import { AuthenticateService } from '@badman/frontend-auth';
 
-export const TRANSLATE_CONFIG = new InjectionToken<ITranslateConfig>(
-  'TRANSLATE_CONFIG'
-);
+export const TRANSLATE_CONFIG = new InjectionToken<ITranslateConfig>('TRANSLATE_CONFIG');
 
 @NgModule({
   imports: [
@@ -73,9 +71,7 @@ export const TRANSLATE_CONFIG = new InjectionToken<ITranslateConfig>(
   ],
 })
 export class TranslationModule {
-  public static forRoot(
-    config: ITranslateConfig
-  ): ModuleWithProviders<TranslationModule> {
+  public static forRoot(config: ITranslateConfig): ModuleWithProviders<TranslationModule> {
     return {
       ngModule: TranslationModule,
       providers: [{ provide: TRANSLATE_CONFIG, useValue: config }],

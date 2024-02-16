@@ -14,7 +14,14 @@ import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
   templateUrl: './add.dialog.html',
   styleUrls: ['./add.dialog.scss'],
   standalone: true,
-  imports: [CommonModule, TranslateModule, TeamFieldComponent, TeamPlayersComponent, MatDialogModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    TeamFieldComponent,
+    TeamPlayersComponent,
+    MatDialogModule,
+    MatButtonModule,
+  ],
 })
 export class AddDialogComponent {
   group?: FormGroup;

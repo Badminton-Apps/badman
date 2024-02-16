@@ -87,25 +87,19 @@ export class AssignClubToPlayers {
 
     // Enable filtering
     ws1['!autofilter'] = {
-      ref: xlsx.utils.encode_range(
-        xlsx.utils.decode_range(ws1['!ref'] as string)
-      ),
+      ref: xlsx.utils.encode_range(xlsx.utils.decode_range(ws1['!ref'] as string)),
     };
     xlsx.utils.book_append_sheet(wb, ws1, 'Log');
 
     const ws2 = xlsx.utils.json_to_sheet(this.unkownClubs);
     ws2['!autofilter'] = {
-      ref: xlsx.utils.encode_range(
-        xlsx.utils.decode_range(ws2['!ref'] as string)
-      ),
+      ref: xlsx.utils.encode_range(xlsx.utils.decode_range(ws2['!ref'] as string)),
     };
     xlsx.utils.book_append_sheet(wb, ws2, 'Unknown Clubs');
 
     const ws3 = xlsx.utils.json_to_sheet(this.unkownPlayers);
     ws3['!autofilter'] = {
-      ref: xlsx.utils.encode_range(
-        xlsx.utils.decode_range(ws3['!ref'] as string)
-      ),
+      ref: xlsx.utils.encode_range(xlsx.utils.decode_range(ws3['!ref'] as string)),
     };
     xlsx.utils.book_append_sheet(wb, ws3, 'Unknown Players');
 
@@ -126,14 +120,14 @@ export class AssignClubToPlayers {
       }
     >,
     clubs: Map<string, Club>,
-    transaction: Transaction
+    transaction: Transaction,
   ) {
     for (const player of players.values()) {
       const club = clubs.get(player.groupname);
 
       if (club == null) {
         this.logger.warn(
-          `No club found for player ${player.player.firstName} ${player.player.lastName} for club ${player.groupname}`
+          `No club found for player ${player.player.firstName} ${player.player.lastName} for club ${player.groupname}`,
         );
 
         this.unkownClubs.push({
@@ -155,7 +149,7 @@ export class AssignClubToPlayers {
           clubMembership.ClubPlayerMembership.end === null
         ) {
           this.logger.verbose(
-            `Curremt club of player ${player.player.firstName} ${player.player.lastName} is ${clubMembership.name}`
+            `Curremt club of player ${player.player.firstName} ${player.player.lastName} is ${clubMembership.name}`,
           );
 
           this.log.push({
@@ -167,7 +161,7 @@ export class AssignClubToPlayers {
           });
         } else if (clubMembership.ClubPlayerMembership.end != null) {
           this.logger.verbose(
-            `Set end date for player ${player.player.firstName} ${player.player.lastName} for club ${clubMembership.name}`
+            `Set end date for player ${player.player.firstName} ${player.player.lastName} for club ${clubMembership.name}`,
           );
           clubMembership.ClubPlayerMembership.end = new Date(`${season}-05-01`);
 
@@ -182,12 +176,12 @@ export class AssignClubToPlayers {
                 playerId: clubMembership.ClubPlayerMembership.playerId,
               },
               transaction,
-            }
+            },
           );
 
           if (affected === 0) {
             throw new Error(
-              `No club membership found for player ${player.player.firstName} ${player.player.lastName} for club ${clubMembership.name}`
+              `No club membership found for player ${player.player.firstName} ${player.player.lastName} for club ${clubMembership.name}`,
             );
           }
 
@@ -204,13 +198,11 @@ export class AssignClubToPlayers {
       // if no club membership exists for the club, create one
       if (
         player.player.clubs?.find(
-          (c) =>
-            c.ClubPlayerMembership?.clubId === club.id &&
-            c.ClubPlayerMembership?.end == null
+          (c) => c.ClubPlayerMembership?.clubId === club.id && c.ClubPlayerMembership?.end == null,
         ) == null
       ) {
         this.logger.verbose(
-          `Create club membership for player ${player.player.firstName} ${player.player.lastName} for club ${club.name}`
+          `Create club membership for player ${player.player.firstName} ${player.player.lastName} for club ${club.name}`,
         );
 
         this.log.push({
@@ -240,10 +232,10 @@ export class AssignClubToPlayers {
         groupname: string;
       }
     >,
-    clubs: Map<string, Club>
+    clubs: Map<string, Club>,
   ) {
     const Loanxlsx = xlsx.readFile(
-      'apps/scripts/src/app/scripts/assign-clubs-to-players/Uitleningen 2023-2024.xlsx'
+      'apps/scripts/src/app/scripts/assign-clubs-to-players/Uitleningen 2023-2024.xlsx',
     );
     const LoanSheet = Loanxlsx.Sheets[Loanxlsx.SheetNames[0]];
     const LoanJson = xlsx.utils.sheet_to_json<{
@@ -273,7 +265,7 @@ export class AssignClubToPlayers {
       const newClub = clubs.get(loan['Club die ontleent']);
 
       this.logger.verbose(
-        `Loan player ${player.firstName} ${player.lastName} from ${oldClub?.name} to ${newClub?.name}`
+        `Loan player ${player.firstName} ${player.lastName} from ${oldClub?.name} to ${newClub?.name}`,
       );
 
       this.log.push({
@@ -289,9 +281,7 @@ export class AssignClubToPlayers {
   async loadClubs(season: number, transaction: Transaction) {
     this.logger.verbose(`Loading clubs`);
     const clubsxlsx = xlsx.readFile(
-      `apps/scripts/src/app/scripts/assign-clubs-to-players/Clubs ${season}-${
-        season + 1
-      }.xlsx`
+      `apps/scripts/src/app/scripts/assign-clubs-to-players/Clubs ${season}-${season + 1}.xlsx`,
     );
     const clubsSheet = clubsxlsx.Sheets[clubsxlsx.SheetNames[0]];
     let clubsJson = xlsx.utils.sheet_to_json<{
@@ -305,15 +295,13 @@ export class AssignClubToPlayers {
     }>(clubsSheet);
 
     clubsJson = clubsJson?.filter(
-      (c) => c.ClubNumber != null && c.MembershipName == 'Competitiespeler'
+      (c) => c.ClubNumber != null && c.MembershipName == 'Competitiespeler',
     );
 
     const clubs = await Club.findAll({
       attributes: ['id', 'name', 'clubId'],
       where: {
-        clubId: clubsJson
-          .map((c) => parseInt(c.ClubNumber))
-          ?.filter((c) => c != null && c > 0),
+        clubId: clubsJson.map((c) => parseInt(c.ClubNumber))?.filter((c) => c != null && c > 0),
       },
     });
 
@@ -326,9 +314,7 @@ export class AssignClubToPlayers {
         if (cjson.ClubNumber == 'BV' || cjson.ClubNumber == 'LFBB-JE') {
           continue;
         }
-        this.logger.verbose(
-          `Created club ${cjson.ClubName} with id ${cjson.ClubNumber}`
-        );
+        this.logger.verbose(`Created club ${cjson.ClubName} with id ${cjson.ClubNumber}`);
 
         club = new Club({
           clubId: parseInt(cjson.ClubNumber),
@@ -349,7 +335,7 @@ export class AssignClubToPlayers {
   async loadPlayers(season: number, transaction: Transaction) {
     this.logger.verbose(`Loading players`);
     const playersxlsx = xlsx.readFile(
-      `apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`
+      `apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`,
     );
     const playersSheet = playersxlsx.Sheets[playersxlsx.SheetNames[0]];
     let playersJson = xlsx.utils.sheet_to_json<{
@@ -360,7 +346,7 @@ export class AssignClubToPlayers {
     }>(playersSheet);
 
     playersJson = playersJson?.filter(
-      (c) => c.memberid != null && c.memberid != '' && c.memberid != undefined
+      (c) => c.memberid != null && c.memberid != '' && c.memberid != undefined,
     );
 
     const players = await Player.findAll({

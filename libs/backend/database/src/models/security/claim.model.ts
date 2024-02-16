@@ -1,11 +1,4 @@
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -51,7 +44,7 @@ export class Claim extends Model {
   @Field(() => ID)
   @Column(DataType.UUIDV4)
   override id!: string;
-  
+
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
 
@@ -75,9 +68,7 @@ export class Claim extends Model {
   category?: string;
 
   @Field(() => String, { nullable: true })
-  @Column(
-    DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM)
-  )
+  @Column(DataType.ENUM(SecurityType.GLOBAL, SecurityType.CLUB, SecurityType.TEAM))
   type?: SecurityType;
 
   @BelongsToMany(() => Player, () => PlayerClaimMembership)
@@ -111,11 +102,11 @@ export class Claim extends Model {
 @InputType()
 export class ClaimUpdateInput extends PartialType(
   OmitType(Claim, ['createdAt', 'updatedAt'] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class ClaimNewInput extends PartialType(
   OmitType(ClaimUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

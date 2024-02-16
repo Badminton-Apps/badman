@@ -10,16 +10,14 @@ export async function gotoEncounterPage(
     page: null,
     timeout: 5000,
   },
-  encounter: EncounterCompetition
+  encounter: EncounterCompetition,
 ) {
   const { page } = pupeteer;
   if (!page) {
     throw new Error('No page provided');
   }
   const matchId = encounter.visualCode;
-  const eventId =
-    encounter.drawCompetition?.subEventCompetition?.eventCompetition
-      ?.visualCode;
+  const eventId = encounter.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode;
   const url = `https://www.toernooi.nl/sport/teammatch.aspx?id=${eventId}&match=${matchId}`;
 
   {

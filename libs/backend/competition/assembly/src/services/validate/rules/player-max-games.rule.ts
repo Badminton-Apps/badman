@@ -13,7 +13,8 @@ export type PlayerMaxGamesRuleParams = {
  */
 export class PlayerMaxGamesRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
-    const { single1, single2, single3, single4, double1, double2, double3, double4, type } = assembly;
+    const { single1, single2, single3, single4, double1, double2, double3, double4, type } =
+      assembly;
 
     const errors = [] as AssemblyValidationError<PlayerMaxGamesRuleParams>[];
 
@@ -65,9 +66,12 @@ export class PlayerMaxGamesRule extends Rule {
         }
       }
     } else {
-      doublePlayers = [...(double1 ?? []), ...(double2 ?? []), ...(double3 ?? []), ...(double4 ?? [])].filter(
-        (p) => p !== undefined,
-      );
+      doublePlayers = [
+        ...(double1 ?? []),
+        ...(double2 ?? []),
+        ...(double3 ?? []),
+        ...(double4 ?? []),
+      ].filter((p) => p !== undefined);
     }
 
     const uniqueDoublePlayers = [...new Set(doublePlayers)];

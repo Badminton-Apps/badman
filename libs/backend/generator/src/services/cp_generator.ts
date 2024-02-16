@@ -171,7 +171,9 @@ export class CpGeneratorService {
     // if the cp file is new,
     if (!existed) {
       //  we need to set a new unicode
-      queries.push(`UPDATE settings SET [value] = "${moment().format('YYYYMMDDHHmmssSSSS')}" where [name] = "unicode"`);
+      queries.push(
+        `UPDATE settings SET [value] = "${moment().format('YYYYMMDDHHmmssSSSS')}" where [name] = "unicode"`,
+      );
 
       // we need to clear the director settings
       queries.push(
@@ -349,7 +351,10 @@ export class CpGeneratorService {
           location.city
         }", "${location.phone}", ${cpId} )`;
         // this.logger.verbose(`Query: ${queryLocation}`);
-        const locationRes = await connection.execute<Identity>(queryLocation, `SELECT @@Identity AS id`);
+        const locationRes = await connection.execute<Identity>(
+          queryLocation,
+          `SELECT @@Identity AS id`,
+        );
 
         const responseLocation = locationRes[0];
         locationList.set(location.id, {
@@ -434,7 +439,10 @@ export class CpGeneratorService {
 
           try {
             // this.logger.verbose(`Query: ${queryTeam}`);
-            const teamRes = await connection.execute<Identity>(queryTeam, `SELECT @@Identity AS id`);
+            const teamRes = await connection.execute<Identity>(
+              queryTeam,
+              `SELECT @@Identity AS id`,
+            );
             const response = teamRes[0];
             teamList.set(team.id, {
               cpId: response.id,
@@ -521,7 +529,10 @@ export class CpGeneratorService {
           dbPlayer.firstName,
         )}", ${gender}, ${this._sqlEscaped(dbPlayer?.memberId)}, ${internalClubId?.cpId}, NULL, NULL)`;
         // this.logger.verbose(`Query: ${queryPlayer}`);
-        const playerRes = await connection.execute<Identity>(queryPlayer, `SELECT @@Identity AS id`);
+        const playerRes = await connection.execute<Identity>(
+          queryPlayer,
+          `SELECT @@Identity AS id`,
+        );
 
         const response = playerRes[0];
         playerList.set(dbPlayer.id, {
@@ -553,7 +564,9 @@ export class CpGeneratorService {
           this.logger.error(`Team ${dbTeam.name}(${dbTeam.id}) has invalid players`);
         }
 
-        return [`INSERT INTO TeamPlayer(team, player, status) VALUES (${cpId}, ${player?.cpId}, 1)`];
+        return [
+          `INSERT INTO TeamPlayer(team, player, status) VALUES (${cpId}, ${player?.cpId}, 1)`,
+        ];
       });
       queries.push(...query.flat());
     }
@@ -675,11 +688,15 @@ export class CpGeneratorService {
           const teaminput = teams.get(team.id);
 
           if (!teaminput) {
-            this.logger.warn(`Team ${team.id} is not in the list of teams of the club ${dbClub.name}(${dbClub.id})`);
+            this.logger.warn(
+              `Team ${team.id} is not in the list of teams of the club ${dbClub.name}(${dbClub.id})`,
+            );
             continue;
           }
 
-          this.logger.verbose(`Team ${teaminput.dbTeam.name}(${team.id}) has ${team.errors?.length} errors`);
+          this.logger.verbose(
+            `Team ${teaminput.dbTeam.name}(${team.id}) has ${team.errors?.length} errors`,
+          );
 
           memos.set(teaminput.cpId, {
             errors: (team.errors?.map((e) => {
@@ -699,7 +716,9 @@ export class CpGeneratorService {
             comments: comments?.map((c) => `${c.message}`),
           });
         } catch (e) {
-          this.logger.verbose(`Error while processing team ${team.id} of club ${dbClub.name}(${dbClub.id})`);
+          this.logger.verbose(
+            `Error while processing team ${team.id} of club ${dbClub.name}(${dbClub.id})`,
+          );
           this.logger.error(e);
         }
       }

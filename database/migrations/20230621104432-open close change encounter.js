@@ -16,9 +16,9 @@ module.exports = {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
-  
+
         await queryInterface.addColumn(
           {
             tableName: 'EventCompetitions',
@@ -29,9 +29,9 @@ module.exports = {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
-  
+
         await queryInterface.addColumn(
           {
             tableName: 'EventCompetitions',
@@ -42,9 +42,8 @@ module.exports = {
             type: sequelize.DataTypes.DATE,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
-
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();
@@ -61,16 +60,16 @@ module.exports = {
             schema: 'event',
           },
           'changeOpenDate',
-          { transaction: t }
+          { transaction: t },
         );
-  
+
         await queryInterface.removeColumn(
           {
             tableName: 'EventCompetitions',
             schema: 'event',
           },
           'changeCloseDate',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
@@ -79,7 +78,7 @@ module.exports = {
             schema: 'event',
           },
           'changeCloseRequestDate',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

@@ -7,20 +7,8 @@ import {
   Standing,
   SubEventCompetition,
 } from '@badman/backend-database';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 import { User } from '@badman/backend-authorization';
 import { Sequelize } from 'sequelize-typescript';
@@ -33,9 +21,7 @@ export class DrawCompetitionResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => DrawCompetition)
-  async drawCompetition(
-    @Args('id', { type: () => ID }) id: string
-  ): Promise<DrawCompetition> {
+  async drawCompetition(@Args('id', { type: () => ID }) id: string): Promise<DrawCompetition> {
     const drawCompetition = await DrawCompetition.findByPk(id);
 
     if (!drawCompetition) {
@@ -45,16 +31,12 @@ export class DrawCompetitionResolver {
   }
 
   @Query(() => [DrawCompetition])
-  async drawCompetitions(
-    @Args() listArgs: ListArgs
-  ): Promise<DrawCompetition[]> {
+  async drawCompetitions(@Args() listArgs: ListArgs): Promise<DrawCompetition[]> {
     return DrawCompetition.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => SubEventCompetition)
-  async subEventCompetition(
-    @Parent() draw: DrawCompetition
-  ): Promise<SubEventCompetition> {
+  async subEventCompetition(@Parent() draw: DrawCompetition): Promise<SubEventCompetition> {
     return draw.getSubEventCompetition();
   }
 
@@ -66,7 +48,7 @@ export class DrawCompetitionResolver {
   @ResolveField(() => [EncounterCompetition])
   async encounterCompetitions(
     @Parent() draw: DrawCompetition,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<EncounterCompetition[]> {
     return draw.getEncounterCompetitions(ListArgs.toFindOptions(listArgs));
   }
@@ -74,25 +56,19 @@ export class DrawCompetitionResolver {
   @Mutation(() => DrawCompetition)
   async updateDrawCompetition(
     @User() user: Player,
-    @Args('data') updateDrawCompetitionData: DrawCompetitionUpdateInput
+    @Args('data') updateDrawCompetitionData: DrawCompetitionUpdateInput,
   ): Promise<DrawCompetition> {
-    if (!await user.hasAnyPermission([`edit:competition`])) {
-      throw new UnauthorizedException(
-        `You do not have permission to add a competition`
-      );
+    if (!(await user.hasAnyPermission([`edit:competition`]))) {
+      throw new UnauthorizedException(`You do not have permission to add a competition`);
     }
 
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const drawCompetitionDb = await DrawCompetition.findByPk(
-        updateDrawCompetitionData.id
-      );
+      const drawCompetitionDb = await DrawCompetition.findByPk(updateDrawCompetitionData.id);
 
       if (!drawCompetitionDb) {
-        throw new NotFoundException(
-          `${DrawCompetition.name}: ${updateDrawCompetitionData.id}`
-        );
+        throw new NotFoundException(`${DrawCompetition.name}: ${updateDrawCompetitionData.id}`);
       }
 
       // if the draws risers/fallers have changed, recalculate the standings
@@ -128,10 +104,7 @@ export class DrawCompetitionResolver {
           .forEach((standing) => (standing.riser = true));
 
         standings
-          .slice(
-            standings.length - (updateDrawCompetitionData.fallers ?? 0),
-            standings.length
-          )
+          .slice(standings.length - (updateDrawCompetitionData.fallers ?? 0), standings.length)
           .forEach((standing) => (standing.faller = true));
 
         // save the standings

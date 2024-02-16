@@ -1,13 +1,13 @@
 # Working with fixup commits
 
 This document provides information and guidelines for working with fixup commits:
+
 - [What are fixup commits](#about-fixup-commits)
 - [Why use fixup commits](#why-fixup-commits)
 - [Creating fixup commits](#create-fixup-commits)
 - [Squashing fixup commits](#squash-fixup-commits)
 
 [This blog post](https://thoughtbot.com/blog/autosquashing-git-commits) is also a good resource on the subject.
-
 
 ## <a name="about-fixup-commits"></a> What are fixup commits
 
@@ -34,7 +34,6 @@ fix: second commit
 fixup! feat: first commit
 ```
 
-
 ## <a name="why-fixup-commits"></a> Why use fixup commits
 
 So, when are fixup commits useful?
@@ -47,7 +46,6 @@ However, amending an existing commit with the changes makes it difficult for the
 Here is where fixup commits come in handy.
 By addressing review feedback in fixup commits, you make it very straight forward for the reviewer to see what are the new changes that need to be reviewed and verify that their earlier feedback has been addressed.
 This can save a lot of effort, especially on larger Pull Requests (where having to re-review _all_ the changes is pretty wasteful).
-
 
 ## <a name="create-fixup-commits"></a> Creating fixup commits
 
@@ -64,8 +62,6 @@ git commit --fixup HEAD ...
 git commit --fixup <COMMIT_SHA> ...
 ```
 
-
-
 ### Rebasing to squash fixup commits
 
 The easiest way to re-order and squash any commit is via [rebasing interactively](https://git-scm.com/docs/git-rebase#_interactive_mode). You move a commit right after the one you want to squash it into in the rebase TODO list and change the corresponding action from `pick` to `fixup`.
@@ -73,11 +69,9 @@ The easiest way to re-order and squash any commit is via [rebasing interactively
 `Git` can do all these automatically for you if you pass the `--autosquash` option to `git rebase`.
 See the [`git` docs](https://git-scm.com/docs/git-rebase#Documentation/git-rebase.txt---autosquash) for more details.
 
-
 ### Additional options
 
 You may like to consider some optional configurations:
-
 
 #### Configuring `git` to auto-squash by default
 

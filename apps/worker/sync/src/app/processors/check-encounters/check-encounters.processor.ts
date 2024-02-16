@@ -82,7 +82,7 @@ const includes = [
 })
 export class CheckEncounterProcessor {
   private readonly logger = new Logger(CheckEncounterProcessor.name);
-  
+
   private readonly _username?: string;
   private readonly _password?: string;
   private readonly autoAcceptClubs = ['smash-for-fun', 'herne', 'opslag'];
@@ -255,7 +255,7 @@ export class CheckEncounterProcessor {
       );
 
       this.notificationService.notifyEncounterNotAccepted(encounter);
-     
+
       // not entered and passed 24 hours and no comment
       if (!entered && hoursPassed > 24 && !hasComment) {
         this.notificationService.notifyEncounterNotEntered(encounter);
@@ -272,7 +272,9 @@ export class CheckEncounterProcessor {
           let hoursPassedEntered = moment().diff(enteredMoment, 'hour');
 
           // was entered on time
-          const enteredOnTime = enteredMoment.isSameOrBefore(moment(encounter.date).add(36, 'hour'));
+          const enteredOnTime = enteredMoment.isSameOrBefore(
+            moment(encounter.date).add(36, 'hour'),
+          );
           if (!enteredOnTime) {
             // if entered late we give it 36 hours to comment after the encounter was filled in
             hoursPassedEntered = moment().diff(enteredMoment.clone().add(36, 'hour'), 'hour');
@@ -280,7 +282,9 @@ export class CheckEncounterProcessor {
 
           // Check if anough time has passed for auto accepting
           if (hoursPassedEntered > 36) {
-            this.logger.debug(`Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`);
+            this.logger.debug(
+              `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
+            );
             await signIn({ page }, this._username, this._password);
             const succesfull = await acceptEncounter({ page }, { logger: this.logger });
             if (!succesfull) {
@@ -301,14 +305,19 @@ export class CheckEncounterProcessor {
       // Update our local data
       if (entered) {
         if (!enteredMoment.isValid()) {
-          this.logger.error(`Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`);
+          this.logger.error(
+            `Entered on date is not valid: ${enteredOn} for encounter ${encounter.visualCode}`,
+          );
           return;
         }
 
         encounter.enteredOn = enteredMoment.toDate();
 
         try {
-          const { endedOn, startedOn, usedShuttle, gameLeader } = await detailInfo({ page }, { logger: this.logger });
+          const { endedOn, startedOn, usedShuttle, gameLeader } = await detailInfo(
+            { page },
+            { logger: this.logger },
+          );
 
           this.logger.debug(
             `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`,
@@ -319,13 +328,16 @@ export class CheckEncounterProcessor {
           encounter.shuttle = usedShuttle || undefined;
 
           if (gameLeader && gameLeader.length > 0) {
-            const gameLeaderPlayer = await this.searchService.searchPlayers(this.searchService.getParts(gameLeader), [
-              {
-                memberId: {
-                  [Op.ne]: null,
+            const gameLeaderPlayer = await this.searchService.searchPlayers(
+              this.searchService.getParts(gameLeader),
+              [
+                {
+                  memberId: {
+                    [Op.ne]: null,
+                  },
                 },
-              },
-            ]);
+              ],
+            );
 
             if (gameLeaderPlayer && gameLeaderPlayer.length > 0) {
               if (gameLeaderPlayer.length > 1) {
@@ -345,7 +357,9 @@ export class CheckEncounterProcessor {
         const acceptedMoment = moment(acceptedOn);
 
         if (!acceptedMoment.isValid()) {
-          this.logger.error(`Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`);
+          this.logger.error(
+            `Accepted on date is not valid: ${acceptedOn} for encounter ${encounter.visualCode}`,
+          );
           return;
         }
 

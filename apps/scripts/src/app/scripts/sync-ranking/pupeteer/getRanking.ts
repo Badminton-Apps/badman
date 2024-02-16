@@ -8,7 +8,7 @@ export async function getRanking(
   } = {
     page: null,
     timeout: 5000,
-  }
+  },
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {

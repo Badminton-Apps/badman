@@ -1,9 +1,4 @@
-import {
-  DrawTournament,
-  Standing,
-  EventEntry,
-  Game,
-} from '@badman/backend-database';
+import { DrawTournament, Standing, EventEntry, Game } from '@badman/backend-database';
 import { DrawStepData } from './draw';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
@@ -27,8 +22,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
       options = {};
     }
 
-    options.logger =
-      options.logger || new Logger(TournamentSyncStandingProcessor.name);
+    options.logger = options.logger || new Logger(TournamentSyncStandingProcessor.name);
     super(options);
 
     this.standingOptions = options || {};
@@ -37,10 +31,9 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
   public async process(): Promise<void> {
     await runParallel(
       this.draws?.map((e) => {
-        const filtered =
-          this.games?.filter((g) => g.linkId === e.draw.id) ?? [];
+        const filtered = this.games?.filter((g) => g.linkId === e.draw.id) ?? [];
         return this._processDraws(e.draw, filtered);
-      }) ?? []
+      }) ?? [],
     );
   }
 
@@ -65,21 +58,16 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     }
 
     for (const game of games) {
-      if (
-        game.status == GameStatus.WALKOVER ||
-        game.status == GameStatus.NO_MATCH
-      ) {
+      if (game.status == GameStatus.WALKOVER || game.status == GameStatus.NO_MATCH) {
         continue;
       }
 
       const playert1p1 = game.players?.find(
-        (e) =>
-          e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
+        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1,
       );
 
       const playert2p1 = game.players?.find(
-        (e) =>
-          e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
+        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1,
       );
 
       if (!playert1p1 || !playert2p1) {
@@ -179,31 +167,24 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     let position = 1;
 
     if (standings.size > 0) {
-      let sorted = [...standings.values()]
-        ?.sort(this.sortStandings())
-        ?.map((acc) => {
-          acc.position = position;
-          acc.size = standings.size;
+      let sorted = [...standings.values()]?.sort(this.sortStandings())?.map((acc) => {
+        acc.position = position;
+        acc.size = standings.size;
 
-          // Calculate if the team is promoted or relegated based on the position and the draw's amount of risers/fallers
-          if (draw.risers > 0 && position <= draw.risers) {
-            acc.riser = true;
-            acc.faller = false;
-          } else if (
-            draw.fallers > 0 &&
-            standings.size - position < draw.fallers
-          ) {
-            acc.riser = false;
-            acc.faller = true;
-          }
+        // Calculate if the team is promoted or relegated based on the position and the draw's amount of risers/fallers
+        if (draw.risers > 0 && position <= draw.risers) {
+          acc.riser = true;
+          acc.faller = false;
+        } else if (draw.fallers > 0 && standings.size - position < draw.fallers) {
+          acc.riser = false;
+          acc.faller = true;
+        }
 
-          position++;
-          return acc;
-        });
+        position++;
+        return acc;
+      });
 
-      sorted = sorted.filter(
-        (a, i) => sorted.findIndex((s) => a.id === s.id) === i
-      );
+      sorted = sorted.filter((a, i) => sorted.findIndex((s) => a.id === s.id) === i);
 
       await Standing.bulkCreate(
         sorted?.map((e) => e.toJSON()),
@@ -223,7 +204,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
             'totalPointsWon',
             'totalPointsLost',
           ],
-        }
+        },
       );
     }
   }
@@ -259,18 +240,9 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
   }
 
   private async _getEntries(games: Game[], subEventId: string) {
-    const keys = [
-      ...new Set(games?.map((g) => g.players?.map((p) => p?.id))?.flat()),
-    ];
+    const keys = [...new Set(games?.map((g) => g.players?.map((p) => p?.id))?.flat())];
     return await EventEntry.findAll({
-      attributes: [
-        'id',
-        'drawId',
-        'subEventId',
-        'meta',
-        'player1Id',
-        'player2Id',
-      ],
+      attributes: ['id', 'drawId', 'subEventId', 'meta', 'player1Id', 'player2Id'],
       where: {
         subEventId,
         [Op.or]: [
@@ -290,16 +262,12 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     });
   }
 
-  private async _getStanding(
-    draw: DrawTournament,
-    games: Game[],
-    entries: EventEntry[]
-  ) {
+  private async _getStanding(draw: DrawTournament, games: Game[], entries: EventEntry[]) {
     const playerStandings = new Map<string, Standing>();
     const setStandingTeam = async (
       entriesSubevent: EventEntry[],
       player1Id?: string,
-      player2Id?: string
+      player2Id?: string,
     ) => {
       const entriesDraw = entriesSubevent.filter((e) => e.drawId === draw.id);
       let entryDraw: EventEntry;
@@ -312,9 +280,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
           entryDraw = entriesDraw[0];
 
           // Destroy other entries
-          for (const entry of entriesDraw
-            .filter((d) => d.drawId === null)
-            .slice(1)) {
+          for (const entry of entriesDraw.filter((d) => d.drawId === null).slice(1)) {
             await entry.destroy({ transaction: this.transaction });
           }
         }
@@ -345,9 +311,7 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
           const meta = entriesSubevent.find((e) => e.meta != null)?.meta;
 
           // Delete all entries for this subEvent (except the one we may have created in previous step = drawId  is filled in)
-          for (const entry of entriesSubevent?.filter(
-            (e) => e.drawId === null
-          ) ?? []) {
+          for (const entry of entriesSubevent?.filter((e) => e.drawId === null) ?? []) {
             await entry.destroy({ transaction: this.transaction });
           }
 
@@ -380,21 +344,17 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
     // must be in for loop, standings can be set in parallel
     for (const game of games) {
       const playert1p1 = game.players?.find(
-        (e) =>
-          e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1
+        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 1,
       );
       const playert1p2 = game.players?.find(
-        (e) =>
-          e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 2
+        (e) => e.GamePlayerMembership.team == 1 && e.GamePlayerMembership.player == 2,
       );
 
       const playert2p1 = game.players?.find(
-        (e) =>
-          e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1
+        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 1,
       );
       const playert2p2 = game.players?.find(
-        (e) =>
-          e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 2
+        (e) => e.GamePlayerMembership.team == 2 && e.GamePlayerMembership.player == 2,
       );
 
       // we run on the first player as this should always be present (partner isn't availible in single)
@@ -403,10 +363,10 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
           entries.filter(
             (r) =>
               r.subEventId === draw.subeventId &&
-              (r.player1Id == playert1p1?.id || r.player1Id == playert1p2?.id)
+              (r.player1Id == playert1p1?.id || r.player1Id == playert1p2?.id),
           ),
           playert1p1?.id,
-          playert1p2?.id
+          playert1p2?.id,
         );
       }
       if (playert2p1 && !playerStandings.has(`${playert2p1.id}_${draw.id}`)) {
@@ -414,10 +374,10 @@ export class TournamentSyncStandingProcessor extends StepProcessor {
           entries.filter(
             (r) =>
               r.subEventId === draw.subeventId &&
-              (r.player1Id == playert2p1?.id || r.player1Id == playert2p2?.id)
+              (r.player1Id == playert2p1?.id || r.player1Id == playert2p2?.id),
           ),
           playert2p1?.id,
-          playert2p2?.id
+          playert2p2?.id,
         );
       }
     }

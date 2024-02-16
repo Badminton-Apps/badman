@@ -1,4 +1,9 @@
-import { RankingSystems, SubEventTypeEnum, TeamMembershipType, getCurrentSeason } from '@badman/utils';
+import {
+  RankingSystems,
+  SubEventTypeEnum,
+  TeamMembershipType,
+  getCurrentSeason,
+} from '@badman/utils';
 import { ClubBuilder } from './clubBuilder';
 import { EventCompetitionBuilder } from './eventCompetitionBuilder';
 import { DrawCompetitionBuilder } from './eventCompetitionDrawBuilder';
@@ -169,7 +174,10 @@ function addClub(
         .WithRanking(9, 9, 9)
         .WithDate(new Date(`${season}-05-09`)),
     );
-  const team = TeamBuilder.Create(SubEventTypeEnum.MX, teamId).WithName('team 1G').WithSeason(season).WithTeamNumber(1);
+  const team = TeamBuilder.Create(SubEventTypeEnum.MX, teamId)
+    .WithName('team 1G')
+    .WithSeason(season)
+    .WithTeamNumber(1);
 
   const club = ClubBuilder.Create(clubId)
     .WithName(name)

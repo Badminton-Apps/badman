@@ -96,12 +96,18 @@ export class RisersFallersDialogComponent implements OnInit {
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
-        const subEvents = result.data.subEventCompetitions?.map((subEvent) => new SubEventCompetition(subEvent));
+        const subEvents = result.data.subEventCompetitions?.map(
+          (subEvent) => new SubEventCompetition(subEvent),
+        );
 
-        const drawCompetitions = subEvents.map((subEvent) => subEvent.drawCompetitions).flat() as DrawCompetition[];
+        const drawCompetitions = subEvents
+          .map((subEvent) => subEvent.drawCompetitions)
+          .flat() as DrawCompetition[];
 
         this.dataSource = new MatTableDataSource(drawCompetitions);
-        this.originalData = drawCompetitions.map((drawCompetition) => ({ ...drawCompetition }) as DrawCompetition);
+        this.originalData = drawCompetitions.map(
+          (drawCompetition) => ({ ...drawCompetition }) as DrawCompetition,
+        );
       });
   }
 

@@ -3,10 +3,7 @@ mixin singlePlayer(player, type, game)
     class={ "border-b": game == 4, "border-b-0": game != 4, "border-t-2": game == 1 }
   ) #{ gameLabels[game + 3] }
   if player == null || player == undefined
-    +emptyPlayer(false)(
-      class!=attributes.class,
-      class={ "border-t-2": game == 1, "border-t-0": game }
-    )
+    +emptyPlayer(false)(class!=attributes.class, class={ "border-t-2": game == 1, "border-t-0": game })
   else
     +player(false, player, type)(
       class!=attributes.class,
@@ -19,10 +16,7 @@ mixin doublePlayer(double, type, game)
   ) #{ gameLabels[game-1] }
   if double == null || double == undefined
     +emptyPlayer(true).top-double-player(class!=attributes.class)
-    +emptyPlayer(false).top-double-player(
-      class!=attributes.class,
-      class={ "border-b-0": game == 4 }
-    )
+    +emptyPlayer(false).top-double-player(class!=attributes.class, class={ "border-b-0": game == 4 })
   else
     if double.player1 == null  || double.player1 == undefined
       +emptyPlayer(true).top-double-player(class!=attributes.class)
@@ -32,10 +26,7 @@ mixin doublePlayer(double, type, game)
     if double.player2 == null  || double.player2 == undefined
       +emptyPlayer(false)(class!=attributes.class, class={ "border-b-0": game == 4 })
     else
-      +player(false, double.player2, type)(
-        class!=attributes.class,
-        class={ "border-b-0": game == 4 }
-      )
+      +player(false, double.player2, type)(class!=attributes.class, class={ "border-b-0": game == 4 })
 
 mixin subPlayer(player)
   if player == null || player == undefined

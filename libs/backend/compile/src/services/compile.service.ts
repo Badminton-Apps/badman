@@ -33,12 +33,7 @@ import { I18nService } from 'nestjs-i18n';
 import { Browser } from 'puppeteer';
 import { Readable } from 'stream';
 import { COMPILE_OPTIONS_TOKEN } from '../constants';
-import {
-  CompileInterface,
-  CompileModuleOptions,
-  CompileOptions,
-  ViewOptions,
-} from '../interfaces';
+import { CompileInterface, CompileModuleOptions, CompileOptions, ViewOptions } from '../interfaces';
 
 @Injectable()
 export class CompileService implements CompileInterface, OnModuleInit {
@@ -59,14 +54,14 @@ export class CompileService implements CompileInterface, OnModuleInit {
       tap(() => {
         this.logger.debug('Browser activity');
         return CompileService.lastActivity.next(Date.now());
-      })
+      }),
     );
   }
 
   constructor(
     @Inject(COMPILE_OPTIONS_TOKEN)
     private readonly moduleOptions: CompileModuleOptions,
-    private readonly i18nService: I18nService<I18nTranslations>
+    private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
   onModuleInit() {
@@ -81,7 +76,7 @@ export class CompileService implements CompileInterface, OnModuleInit {
           if (CompileService.browserInstance$.value !== null) {
             this.logger.debug(
               'Closing browser due to inactivity',
-              CompileService.browserInstance$.value
+              CompileService.browserInstance$.value,
             );
             CompileService.browserInstance$.value.close();
             CompileService.browserInstance$.next(null);
@@ -103,7 +98,7 @@ export class CompileService implements CompileInterface, OnModuleInit {
         switchMap(() => {
           this.logger.debug('Creating browser');
           return from(getBrowser());
-        })
+        }),
       )
       .subscribe((browser: Browser) => {
         if (CompileService.browserInstance$.value !== null) {
@@ -121,13 +116,13 @@ export class CompileService implements CompileInterface, OnModuleInit {
   toReadable(template: string, options?: CompileOptions): Observable<Readable> {
     return this.toHtml(template, options).pipe(
       mergeMap((html: string) => from(this.toPdf(html, options))),
-      mergeMap((pdf: Buffer) => of(Readable.from(pdf)))
+      mergeMap((pdf: Buffer) => of(Readable.from(pdf))),
     );
   }
 
   toBuffer(template: string, options?: CompileOptions): Observable<Buffer> {
     return this.toHtml(template, options).pipe(
-      mergeMap((html: string) => from(this.toPdf(html, options)))
+      mergeMap((html: string) => from(this.toPdf(html, options))),
     );
   }
 
@@ -136,13 +131,9 @@ export class CompileService implements CompileInterface, OnModuleInit {
 
     const path = this.getTemplatePath(template, this.moduleOptions.view);
 
-    return this.generateHtmlFromTemplate(
-      path,
-      this.moduleOptions.view,
-      options?.locals
-    ).pipe(
+    return this.generateHtmlFromTemplate(path, this.moduleOptions.view, options?.locals).pipe(
       mergeMap((html: string) => of(this.prepareHtmlTemplate(html))),
-      take(1)
+      take(1),
     );
   }
 
@@ -180,7 +171,6 @@ export class CompileService implements CompileInterface, OnModuleInit {
       printBackground: options?.pdf?.printBackground ?? true,
       scale: options?.pdf?.scale ?? 1,
       preferCSSPageSize: options?.pdf?.preferCSSPageSize ?? true,
-      
     });
 
     if ((this.moduleOptions.debug ?? false) === true) {
@@ -195,17 +185,14 @@ export class CompileService implements CompileInterface, OnModuleInit {
     return pdf;
   }
 
-  private getTemplatePath(
-    template: string,
-    { root, extension, engine }: ViewOptions
-  ): string {
+  private getTemplatePath(template: string, { root, extension, engine }: ViewOptions): string {
     return join(root, 'templates', template, `html.${extension || engine}`);
   }
 
   private generateHtmlFromTemplate(
     template: string,
     { engine, engineOptions }: ViewOptions,
-    locals?: unknown
+    locals?: unknown,
   ): Observable<string> {
     const moment = momentTz;
     moment.tz.setDefault('Europe/Brussels');
@@ -213,10 +200,10 @@ export class CompileService implements CompileInterface, OnModuleInit {
 
     const translate = this.i18nService.translate.bind(this.i18nService);
 
-    return bindNodeCallback<
-      [string, ViewOptions['engineOptions'] | undefined],
-      [string]
-    >(consolidate[engine], asapScheduler)(
+    return bindNodeCallback<[string, ViewOptions['engineOptions'] | undefined], [string]>(
+      consolidate[engine],
+      asapScheduler,
+    )(
       template,
       Object.assign(
         {
@@ -224,8 +211,8 @@ export class CompileService implements CompileInterface, OnModuleInit {
           translate,
         },
         locals,
-        engineOptions
-      )
+        engineOptions,
+      ),
     );
   }
 

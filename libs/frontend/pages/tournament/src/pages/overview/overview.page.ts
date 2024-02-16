@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, TransferState, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  TransferState,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -242,9 +250,13 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       })
       .subscribe(() => {
         this.update$.next(true);
-        this.matSnackBar.open(`Tournament ${tournament.name} is ${offical ? 'official' : 'unofficial'}`, 'Close', {
-          duration: 2000,
-        });
+        this.matSnackBar.open(
+          `Tournament ${tournament.name} is ${offical ? 'official' : 'unofficial'}`,
+          'Close',
+          {
+            duration: 2000,
+          },
+        );
       });
   }
 
@@ -306,16 +318,23 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
             },
           })
           .subscribe(() => {
-            this.matSnackBar.open(`Tournament ${tournament.name} open/close dates updated`, 'Close', {
-              duration: 2000,
-            });
+            this.matSnackBar.open(
+              `Tournament ${tournament.name} open/close dates updated`,
+              'Close',
+              {
+                duration: 2000,
+              },
+            );
           });
       }
     });
   }
 
   removeEvent(tournament: EventTournament) {
-    const dialogData = new ConfirmDialogModel('all.tournament.delete.title', 'all.tournament.delete.description');
+    const dialogData = new ConfirmDialogModel(
+      'all.tournament.delete.title',
+      'all.tournament.delete.description',
+    );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',
@@ -345,7 +364,9 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
                   official: this.filter.value?.official == true ? true : undefined,
                   $or: [
                     {
-                      name: this.filter.value?.name ? { $iLike: `%${this.filter.value.name}%` } : undefined,
+                      name: this.filter.value?.name
+                        ? { $iLike: `%${this.filter.value.name}%` }
+                        : undefined,
                     },
                     {
                       visualCode: this.filter.value?.name,

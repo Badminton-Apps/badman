@@ -6,11 +6,10 @@ module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-
         // set all current accepted to true
         await queryInterface.sequelize.query(
           `UPDATE "event"."EncounterChanges" SET "accepted" = true`,
-          { transaction: t }
+          { transaction: t },
         );
 
         // set default column value to false
@@ -27,7 +26,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -51,7 +50,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err);

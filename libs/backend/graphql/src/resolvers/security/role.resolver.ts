@@ -1,24 +1,6 @@
-import {
-  Claim,
-  Player,
-  Role,
-  RoleNewInput,
-  RoleUpdateInput,
-} from '@badman/backend-database';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Claim, Player, Role, RoleNewInput, RoleUpdateInput } from '@badman/backend-database';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
@@ -44,41 +26,30 @@ export class RoleResolver {
   }
 
   @ResolveField(() => [Player])
-  async players(
-    @Parent() role: Role,
-    @Args() listArgs: ListArgs
-  ): Promise<Player[]> {
+  async players(@Parent() role: Role, @Args() listArgs: ListArgs): Promise<Player[]> {
     return role.getPlayers(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Claim])
-  async claims(
-    @Parent() role: Role,
-    @Args() listArgs: ListArgs
-  ): Promise<Claim[]> {
+  async claims(@Parent() role: Role, @Args() listArgs: ListArgs): Promise<Claim[]> {
     return role.getClaims(ListArgs.toFindOptions(listArgs));
   }
 
   @Mutation(() => Role)
-  async updateRole(
-    @User() user: Player,
-    @Args('data') updateRoleData: RoleUpdateInput
-  ) {
+  async updateRole(@User() user: Player, @Args('data') updateRoleData: RoleUpdateInput) {
     const dbRole = await Role.findByPk(updateRoleData.id);
     if (!dbRole) {
       throw new NotFoundException(`${Role.name}: ${updateRoleData.id}`);
     }
 
     if (
-      !await user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${dbRole.linkId}_edit:role`,
         `${dbRole.linkId}_edit:${dbRole.linkType}}`,
         'edit-any:club',
-      ])
+      ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     const transaction = await this._sequelize.transaction();
     try {
@@ -86,7 +57,7 @@ export class RoleResolver {
 
       await dbRole.setClaims(
         updateRoleData?.claims?.map((c) => c.id),
-        { transaction }
+        { transaction },
       );
 
       await transaction.commit();
@@ -99,25 +70,20 @@ export class RoleResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteRole(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string
-  ) {
+  async deleteRole(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     const dbRole = await Role.findByPk(id);
     if (!dbRole) {
       throw new NotFoundException(`${Role.name}: ${id}`);
     }
 
     if (
-      !await user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${dbRole.linkId}_edit:role`,
         `${dbRole.linkId}_edit:${dbRole.linkType}}`,
         'edit-any:club',
-      ])
+      ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
     const transaction = await this._sequelize.transaction();
     try {
@@ -132,20 +98,15 @@ export class RoleResolver {
   }
 
   @Mutation(() => Role)
-  async createRole(
-    @User() user: Player,
-    @Args('data') createRoleData: RoleNewInput
-  ) {
+  async createRole(@User() user: Player, @Args('data') createRoleData: RoleNewInput) {
     if (
-      !await user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${createRoleData.linkId}_edit:role`,
         `${createRoleData.linkId}_edit:${createRoleData.linkType}}`,
         'edit-any:club',
-      ])
+      ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     const transaction = await this._sequelize.transaction();
@@ -154,12 +115,12 @@ export class RoleResolver {
         { ...createRoleData },
         {
           transaction,
-        }
+        },
       );
 
       await dbRole.setClaims(
         createRoleData?.claims?.map((c) => c.id),
-        { transaction }
+        { transaction },
       );
 
       await transaction.commit();
@@ -175,7 +136,7 @@ export class RoleResolver {
   async addPlayerToRole(
     @User() user: Player,
     @Args('roleId', { type: () => ID }) roleId: string,
-    @Args('playerId', { type: () => ID }) playerId: string
+    @Args('playerId', { type: () => ID }) playerId: string,
   ) {
     const dbRole = await Role.findByPk(roleId);
 
@@ -184,15 +145,13 @@ export class RoleResolver {
     }
 
     if (
-      !await user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${dbRole.linkId}_edit:role`,
         `${dbRole.linkId}_edit:${dbRole.linkType}}`,
         'edit-any:club',
-      ])
+      ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     // Do transaction
@@ -224,7 +183,7 @@ export class RoleResolver {
   async removePlayerFromRole(
     @User() user: Player,
     @Args('roleId', { type: () => ID }) roleId: string,
-    @Args('playerId', { type: () => ID }) playerId: string
+    @Args('playerId', { type: () => ID }) playerId: string,
   ) {
     const dbRole = await Role.findByPk(roleId);
 
@@ -233,15 +192,13 @@ export class RoleResolver {
     }
 
     if (
-      !await user.hasAnyPermission([
+      !(await user.hasAnyPermission([
         `${dbRole.linkId}_edit:role`,
         `${dbRole.linkId}_edit:${dbRole.linkType}}`,
         'edit-any:club',
-      ])
+      ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     // Do transaction

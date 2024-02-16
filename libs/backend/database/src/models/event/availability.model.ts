@@ -1,12 +1,4 @@
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -96,14 +88,7 @@ export interface AvailabilityException {
 }
 
 export interface AvailabilityDay {
-  day:
-    | 'monday'
-    | 'tuesday'
-    | 'wednesday'
-    | 'thursday'
-    | 'friday'
-    | 'saturday'
-    | 'sunday';
+  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
   startTime?: string;
   endTime?: string;
   courts?: number;
@@ -111,14 +96,8 @@ export interface AvailabilityDay {
 
 @InputType()
 export class AvailabilityUpdateInput extends PartialType(
-  OmitType(Availability, [
-    'createdAt',
-    'updatedAt',
-    'location',
-    'days',
-    'exceptions',
-  ] as const),
-  InputType
+  OmitType(Availability, ['createdAt', 'updatedAt', 'location', 'days', 'exceptions'] as const),
+  InputType,
 ) {
   @Field(() => [AvailiblyDayInputType])
   days?: Relation<AvailabilityDay[]>;
@@ -130,7 +109,5 @@ export class AvailabilityUpdateInput extends PartialType(
 @InputType()
 export class AvailabilityNewInput extends PartialType(
   OmitType(AvailabilityUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}
-
-

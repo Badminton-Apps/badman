@@ -12,7 +12,7 @@ export async function detailComment(
   },
   args?: {
     logger?: Logger;
-  }
+  },
 ) {
   const { logger } = args || {};
   logger?.verbose('detailComment');

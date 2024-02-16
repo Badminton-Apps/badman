@@ -1,4 +1,4 @@
-import { SubEventTypeEnum } from "./enums";
+import { SubEventTypeEnum } from './enums';
 
 export const getLetterForRegion = (type?: SubEventTypeEnum, region?: 'vl' | 'wl') => {
   if (!type) {

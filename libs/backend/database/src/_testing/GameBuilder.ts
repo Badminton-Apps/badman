@@ -1,15 +1,10 @@
 import { GameType } from '@badman/utils';
-import {
-  DrawTournament,
-  EncounterCompetition,
-  Game,
-  GamePlayerMembership,
-} from '../models';
+import { DrawTournament, EncounterCompetition, Game, GamePlayerMembership } from '../models';
 import { PlayerBuilder } from './playerBuilder';
 
 export class GameBuilder {
   private build = false;
-  
+
   private game: Game;
 
   private players: {
@@ -34,12 +29,8 @@ export class GameBuilder {
   }
 
   WithSet(team1Score: number, team2Score: number): GameBuilder {
-    this.game[
-      `set${this.set}Team1` as 'set1Team1' | 'set2Team1' | 'set3Team1'
-    ] = team1Score;
-    this.game[
-      `set${this.set}Team2` as 'set1Team2' | 'set2Team2' | 'set3Team2'
-    ] = team2Score;
+    this.game[`set${this.set}Team1` as 'set1Team1' | 'set2Team1' | 'set3Team1'] = team1Score;
+    this.game[`set${this.set}Team2` as 'set1Team2' | 'set2Team2' | 'set3Team2'] = team2Score;
     this.set++;
 
     return this;
@@ -72,11 +63,7 @@ export class GameBuilder {
     return this;
   }
 
-  WithPlayer(
-    team: number,
-    player: number,
-    builder: PlayerBuilder
-  ): GameBuilder {
+  WithPlayer(team: number, player: number, builder: PlayerBuilder): GameBuilder {
     this.players.push({
       team,
       player,

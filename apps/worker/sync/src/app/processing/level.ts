@@ -1,11 +1,6 @@
 import moment from 'moment';
 import { Op, SaveOptions, Transaction } from 'sequelize';
-import {
-  Game,
-  Player,
-  RankingPlace,
-  RankingSystem,
-} from '@badman/backend-database';
+import { Game, Player, RankingPlace, RankingSystem } from '@badman/backend-database';
 import { GameType, getRankingProtected } from '@badman/utils';
 
 export class RankingProcessor {
@@ -21,8 +16,7 @@ export class RankingProcessor {
     );
 
     const systemDisintct = instances.filter(
-      (value, index, self) =>
-        self.findIndex((m) => m.systemId === value.systemId) === index,
+      (value, index, self) => self.findIndex((m) => m.systemId === value.systemId) === index,
     );
 
     const systems = await RankingSystem.findAll({
@@ -84,8 +78,7 @@ export class RankingProcessor {
 
       instance.single = place?.single;
       if (system.gamesForInactivty) {
-        instance.singleInactive =
-          (player.games?.length ?? 0) < system.gamesForInactivty;
+        instance.singleInactive = (player.games?.length ?? 0) < system.gamesForInactivty;
       }
     }
 
@@ -135,8 +128,7 @@ export class RankingProcessor {
 
       instance.double = place?.double;
       if (system.gamesForInactivty) {
-        instance.doubleInactive =
-          (player?.games?.length ?? 0) < system.gamesForInactivty;
+        instance.doubleInactive = (player?.games?.length ?? 0) < system.gamesForInactivty;
       }
     }
 
@@ -185,8 +177,7 @@ export class RankingProcessor {
 
       instance.mix = place?.mix;
       if (system.gamesForInactivty) {
-        instance.mixInactive =
-          (player?.games?.length ?? 0) < system.gamesForInactivty;
+        instance.mixInactive = (player?.games?.length ?? 0) < system.gamesForInactivty;
       }
     }
   }
@@ -198,10 +189,7 @@ export class RankingProcessor {
       transaction?: Transaction;
     },
   ): Promise<RankingPlace[]> {
-    if (
-      (rankingSystems === undefined || rankingSystems === null) &&
-      rankingPoints.length > 0
-    ) {
+    if ((rankingSystems === undefined || rankingSystems === null) && rankingPoints.length > 0) {
       rankingSystems = await RankingSystem.findAll({
         where: {
           id: {
@@ -214,14 +202,10 @@ export class RankingProcessor {
 
     return Promise.all(
       rankingPoints.map((rankingPoint) => {
-        const usedSystem = rankingSystems?.find(
-          (r) => r.id === rankingPoint.systemId,
-        );
+        const usedSystem = rankingSystems?.find((r) => r.id === rankingPoint.systemId);
 
         if (!usedSystem) {
-          throw new Error(
-            `No system found for rankingPoint ${rankingPoint.id}`,
-          );
+          throw new Error(`No system found for rankingPoint ${rankingPoint.id}`);
         }
 
         return getRankingProtected(rankingPoint, usedSystem);

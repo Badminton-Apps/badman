@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/cache",
         "tsConfig": "libs/backend/cache/tsconfig.lib.json",
         "packageJson": "libs/backend/cache/package.json",
         "main": "libs/backend/cache/src/index.ts",
-        "assets": [
-          "libs/backend/cache/*.md"
-        ]
+        "assets": ["libs/backend/cache/*.md"]
       }
     }
   },

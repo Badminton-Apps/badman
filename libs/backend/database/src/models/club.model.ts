@@ -1,13 +1,5 @@
 import { UseForTeamName } from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -284,11 +276,11 @@ export class ClubUpdateInput extends PartialType(
     'players',
     'locations',
   ] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class ClubNewInput extends PartialType(
   OmitType(ClubUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

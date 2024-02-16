@@ -49,7 +49,7 @@ export class TournamentSyncer {
     private pointService: PointsService,
     protected options?: {
       newGames?: boolean;
-    }
+    },
   ) {
     this.options = {
       newGames: false,
@@ -83,12 +83,12 @@ export class TournamentSyncer {
     this._eventStep = new TournamentSyncEventProcessor(
       args.xmlTournament,
       this.visualService,
-      options
+      options,
     );
     this._subEventStep = new TournamentSyncSubEventProcessor(
       args.xmlTournament,
       this.visualService,
-      options
+      options,
     );
 
     this._rankingStep = new TournamentSyncRankingProcessor(options);
@@ -96,28 +96,21 @@ export class TournamentSyncer {
     this._drawStep = new TournamentSyncDrawProcessor(
       args.xmlTournament,
       this.visualService,
-      options
+      options,
     );
 
     this._playerStep = new TournamentSyncPlayerProcessor(
       args.xmlTournament,
       this.visualService,
-      options
+      options,
     );
 
-    this._gameStep = new TournamentSyncGameProcessor(
-      args.xmlTournament,
-      this.visualService,
-      {
-        ...options,
-        newGames: this.options?.newGames,
-      }
-    );
+    this._gameStep = new TournamentSyncGameProcessor(args.xmlTournament, this.visualService, {
+      ...options,
+      newGames: this.options?.newGames,
+    });
 
-    this._pointStep = new TournamentSyncPointProcessor(
-      this.pointService,
-      options
-    );
+    this._pointStep = new TournamentSyncPointProcessor(this.pointService, options);
     this._standingStep = new TournamentSyncStandingProcessor({
       ...options,
       newGames: this.options?.newGames,
@@ -126,7 +119,7 @@ export class TournamentSyncer {
     await this.processor.process();
 
     return {
-      event: this.event
+      event: this.event,
     };
   }
 

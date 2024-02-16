@@ -1,9 +1,5 @@
 import { Club } from '../club.model';
-import {
-  EncounterCompetition,
-  EventCompetition,
-  EventTournament,
-} from '../events';
+import { EncounterCompetition, EventCompetition, EventTournament } from '../events';
 import { Player } from '../player.model';
 
 export class Notification {
@@ -27,18 +23,10 @@ export class Notification {
     this.type = args?.type;
     this.linkId = args?.linkId;
     this.linkType = args?.linkType;
-    this.encounter =
-      args?.encounter != null
-        ? new EncounterCompetition(args.encounter)
-        : undefined;
+    this.encounter = args?.encounter != null ? new EncounterCompetition(args.encounter) : undefined;
     this.competition =
-      args?.competition != null
-        ? new EventCompetition(args.competition)
-        : undefined;
-    this.tournament =
-      args?.tournament != null
-        ? new EventTournament(args.tournament)
-        : undefined;
+      args?.competition != null ? new EventCompetition(args.competition) : undefined;
+    this.tournament = args?.tournament != null ? new EventTournament(args.tournament) : undefined;
     this.club = args?.club != null ? new Club(args.club) : undefined;
     this.read = args?.read;
     this.meta = args?.meta;

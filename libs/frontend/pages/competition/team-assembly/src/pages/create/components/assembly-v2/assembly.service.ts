@@ -410,8 +410,10 @@ export class AssemblyService {
       type: () => state().team?.type,
 
       metaPlayers: () => state().team?.entry?.meta?.competition?.players ?? [],
-      regularPlayers: () => state().team?.players?.filter((p) => p.membershipType === TeamMembershipType.REGULAR) ?? [],
-      backupPlayers: () => state().team?.players?.filter((p) => p.membershipType === TeamMembershipType.BACKUP) ?? [],
+      regularPlayers: () =>
+        state().team?.players?.filter((p) => p.membershipType === TeamMembershipType.REGULAR) ?? [],
+      backupPlayers: () =>
+        state().team?.players?.filter((p) => p.membershipType === TeamMembershipType.BACKUP) ?? [],
     }),
   });
 }

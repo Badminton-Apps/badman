@@ -7,14 +7,13 @@ import { Component, input } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './loading-block.component.html',
   styleUrls: ['./loading-block.component.scss'],
-    
 })
 export class LoadingBlockComponent {
   items = input(3);
 
   height = input('35px');
 
-  subHeight = input<string >();
+  subHeight = input<string>();
 
   width = input('100%');
 

@@ -10,10 +10,7 @@ import {
   DataType,
   Index,
 } from 'sequelize-typescript';
-import {
-  BelongsToGetAssociationMixin,
-  BelongsToSetAssociationMixin,
-} from 'sequelize';
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize';
 import { Player } from './player.model';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Relation } from '../wrapper';
@@ -37,7 +34,7 @@ export class RequestLink extends Model {
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
 
-  @Field(() => String, {nullable: true })
+  @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   sub?: string;
 
@@ -46,7 +43,7 @@ export class RequestLink extends Model {
 
   @ForeignKey(() => Player)
   @Index
-  @Field(() => ID, {nullable: true })
+  @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   playerId?: string;
 

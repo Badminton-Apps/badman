@@ -78,17 +78,22 @@ export class TeamEnrollmentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.translate.get(['all.competition.team-enrollment.title', 'all.competition.title']).subscribe((enrollemnt) => {
-      this.seoService.update({
-        title: enrollemnt['all.competition.team-enrollment.title'],
-        description: enrollemnt['all.competition.team-enrollment.title'],
-        type: 'website',
-        keywords: ['team', 'enrollemnt'],
-      });
+    this.translate
+      .get(['all.competition.team-enrollment.title', 'all.competition.title'])
+      .subscribe((enrollemnt) => {
+        this.seoService.update({
+          title: enrollemnt['all.competition.team-enrollment.title'],
+          description: enrollemnt['all.competition.team-enrollment.title'],
+          type: 'website',
+          keywords: ['team', 'enrollemnt'],
+        });
 
-      this.breadcrumbService.set('competition', enrollemnt['all.competition.title']);
-      this.breadcrumbService.set('competition/enrollment', enrollemnt['all.competition.team-enrollment.title']);
-    });
+        this.breadcrumbService.set('competition', enrollemnt['all.competition.title']);
+        this.breadcrumbService.set(
+          'competition/enrollment',
+          enrollemnt['all.competition.team-enrollment.title'],
+        );
+      });
   }
 
   save() {

@@ -87,7 +87,9 @@ export class UploadRankingController {
         let player = players.get(row['P1Memberid']);
 
         if (!player) {
-          const names = [row['P1Lastname']?.trim(), row['P1Middlename']?.trim()]?.filter((name) => !!name);
+          const names = [row['P1Lastname']?.trim(), row['P1Middlename']?.trim()]?.filter(
+            (name) => !!name,
+          );
 
           player = {
             memberId: row['P1Memberid'],
@@ -128,9 +130,11 @@ export class UploadRankingController {
 
     return data?.map((row) => {
       // combine lastname 2, middlename and lastname to a single last name
-      const names = [row['lastname']?.trim(), row['middlename']?.trim(), row['lastname2']?.trim()]?.filter(
-        (name) => !!name,
-      );
+      const names = [
+        row['lastname']?.trim(),
+        row['middlename']?.trim(),
+        row['lastname2']?.trim(),
+      ]?.filter((name) => !!name);
 
       return {
         memberId: row['memberid'],

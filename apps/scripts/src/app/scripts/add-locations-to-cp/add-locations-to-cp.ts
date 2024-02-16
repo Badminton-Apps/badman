@@ -1,9 +1,4 @@
-import {
-  Club,
-  EventCompetition,
-  Location,
-  Team,
-} from '@badman/backend-database';
+import { Club, EventCompetition, Location, Team } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import xlsx from 'xlsx';
@@ -37,12 +32,12 @@ export class AddLocationsId {
   public async encountersWithLocations(
     eventId: string,
     cpClubs: CpClub[],
-    cplocations: CpLocation[]
+    cplocations: CpLocation[],
   ) {
     const event = await EventCompetition.findByPk(eventId);
 
     const teamMatches = xlsx.readFile(
-      `apps/scripts/src/app/scripts/add-locations-to-cp/exportteammatches391192 ${event?.name}.xlsx`
+      `apps/scripts/src/app/scripts/add-locations-to-cp/exportteammatches391192 ${event?.name}.xlsx`,
     );
     const teamMatchesSheet = teamMatches.Sheets[teamMatches.SheetNames[0]];
     const teamMatchesJson = xlsx.utils.sheet_to_json<{
@@ -75,9 +70,7 @@ export class AddLocationsId {
     const subEvents = await event?.getSubEventCompetitions();
 
     for (const teamMatch of teamMatchesJson) {
-      const subEvent = subEvents?.find(
-        (e) => e.visualCode === `${teamMatch.eventid}`
-      );
+      const subEvent = subEvents?.find((e) => e.visualCode === `${teamMatch.eventid}`);
 
       const draw = await subEvent?.getDrawCompetitions({
         where: {
@@ -144,14 +137,10 @@ export class AddLocationsId {
       const plannedTime = moment(teamMatch.plannedtime, 'DD-MM-YYYY HH:mm:ss');
 
       if (!plannedTime.isSame(encounter[0].date, 'minute')) {
-        this.logger.warn(
-          `Planned is not the same ${teamMatch.plannedtime} - ${encounter[0].date}`
-        );
+        this.logger.warn(`Planned is not the same ${teamMatch.plannedtime} - ${encounter[0].date}`);
       }
 
-      const locationsForClub = cplocations.filter(
-        (l) => l.clubid == cpClub?.id
-      );
+      const locationsForClub = cplocations.filter((l) => l.clubid == cpClub?.id);
 
       let usedLocationId: number | undefined = undefined;
 
@@ -167,22 +156,20 @@ export class AddLocationsId {
         const location = await encounter[0].getLocation();
 
         // find if any have the same name
-        const locationForClub = locationsForClub.find(
-          (l) => l.name === location?.name
-        );
+        const locationForClub = locationsForClub.find((l) => l.name === location?.name);
 
         if (locationForClub) {
           usedLocationId = locationForClub.id;
         } else {
           this.logger.warn(
-            `No location found for club ${home?.club?.name} and encounter ${encounter[0].id}`
+            `No location found for club ${home?.club?.name} and encounter ${encounter[0].id}`,
           );
         }
       }
 
       if (!usedLocationId) {
         this.logger.warn(
-          `No location found for club ${home?.club?.name} and encounter ${encounter[0].id}`
+          `No location found for club ${home?.club?.name} and encounter ${encounter[0].id}`,
         );
       }
 
@@ -191,8 +178,8 @@ export class AddLocationsId {
           teamMatch,
           home || null,
           cplocations?.find((l) => l.id == usedLocationId)?.name,
-          home?.club?.locations || []
-        )
+          home?.club?.locations || [],
+        ),
       );
     }
 
@@ -220,7 +207,7 @@ export class AddLocationsId {
 
     home?: Team | null,
     locationName?: string | undefined,
-    clubLocations?: Location[]
+    clubLocations?: Location[],
   ) {
     return [
       teamMatch.matchid,

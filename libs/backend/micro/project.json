@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/micro",
         "tsConfig": "libs/backend/micro/tsconfig.lib.json",
         "packageJson": "libs/backend/micro/package.json",
         "main": "libs/backend/micro/src/index.ts",
-        "assets": [
-          "libs/backend/micro/*.md"
-        ]
+        "assets": ["libs/backend/micro/*.md"]
       }
     }
   },

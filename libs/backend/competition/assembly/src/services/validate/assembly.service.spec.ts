@@ -23,11 +23,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Sequelize } from 'sequelize-typescript';
 
-import {
-  RankingSystems,
-  SubEventTypeEnum,
-  TeamMembershipType,
-} from '@badman/utils';
+import { RankingSystems, SubEventTypeEnum, TeamMembershipType } from '@badman/utils';
 import { AssemblyValidationError } from '../../models';
 import { AssemblyValidationService } from './assembly.service';
 import {
@@ -87,9 +83,7 @@ describe('AssemblyValidationService', () => {
 
     const drawBuilder = DrawCompetitionBuilder.Create().WithName('Test draw');
 
-    const subEventBuilder = SubEventCompetitionBuilder.Create(
-      SubEventTypeEnum.MX,
-    )
+    const subEventBuilder = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX)
       .WithName('Test SubEvent')
       .WithIndex(53, 70)
       .WitnMaxLevel(6);
@@ -100,9 +94,7 @@ describe('AssemblyValidationService', () => {
       .WithYear(2020)
       .WithUsedRanking({ amount: 4, unit: 'months' })
       .WithName('Test Event')
-      .WithSubEvent(
-        subEventBuilder.WithDraw(drawBuilder.WithEnouncter(encounterBuilder)),
-      )
+      .WithSubEvent(subEventBuilder.WithDraw(drawBuilder.WithEnouncter(encounterBuilder)))
       .Build();
 
     draw = await drawBuilder.Build();
@@ -264,80 +256,65 @@ describe('AssemblyValidationService', () => {
           [3, 4],
         ];
 
-        test.each(valid)(
-          'Single %p is better then Single %p',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`single${p2}`]: player888.id,
-                [`single${p1}`]: player777.id,
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(valid)('Single %p is better then Single %p', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`single${p2}`]: player888.id,
+              [`single${p1}`]: player777.id,
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
+          expect(validation).toBeDefined();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-single',
-            );
-            expect(error).toBeUndefined();
-          },
-        );
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+          );
+          expect(error).toBeUndefined();
+        });
 
-        test.each(valid)(
-          'Double %p is  better then Double %p',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${p2}`]: [player777.id, player888.id],
-                [`double${p1}`]: [player666.id, player888.id],
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(valid)('Double %p is  better then Double %p', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${p2}`]: [player777.id, player888.id],
+              [`double${p1}`]: [player666.id, player888.id],
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
+          expect(validation).toBeDefined();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-doubles',
-            );
-            expect(error).toBeUndefined();
-          },
-        );
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
+          );
+          expect(error).toBeUndefined();
+        });
 
-        test.each(valid)(
-          'Double %p is not better then Double %p by level',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${p2}`]: [player777.id, player888.id],
-                [`double${p1}`]: [player666.id, player999.id],
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(valid)('Double %p is not better then Double %p by level', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${p2}`]: [player777.id, player888.id],
+              [`double${p1}`]: [player666.id, player999.id],
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
+          expect(validation).toBeDefined();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-highest',
-            );
-            expect(error).toBeUndefined();
-          },
-        );
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+          );
+          expect(error).toBeUndefined();
+        });
       });
 
       describe('invalid', () => {
@@ -347,118 +324,103 @@ describe('AssemblyValidationService', () => {
           [3, 4],
         ];
 
-        test.each(invalid)(
-          'Single %p is not better then Single %p',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`single${p1}`]: player888.id,
-                [`single${p2}`]: player777.id,
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`single${p1}`]: player888.id,
+              [`single${p2}`]: player777.id,
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-single',
-            ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+          ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
 
-            expect(error).toBeDefined();
-            expect(error?.params?.['game1']).toBe(`single${p1}`);
-            expect(error?.params?.['game2']).toBe(`single${p2}`);
-            expect(error?.params?.['player1']?.['id']).toBe(player888.id);
-            expect(error?.params?.['player1']?.['ranking']).toBe(8);
+          expect(error).toBeDefined();
+          expect(error?.params?.['game1']).toBe(`single${p1}`);
+          expect(error?.params?.['game2']).toBe(`single${p2}`);
+          expect(error?.params?.['player1']?.['id']).toBe(player888.id);
+          expect(error?.params?.['player1']?.['ranking']).toBe(8);
 
-            expect(error?.params?.['player2']?.['id']).toBe(player777.id);
-            expect(error?.params?.['player2']?.['ranking']).toBe(7);
-          },
-        );
+          expect(error?.params?.['player2']?.['id']).toBe(player777.id);
+          expect(error?.params?.['player2']?.['ranking']).toBe(7);
+        });
 
-        test.each(invalid)(
-          'Double %p is better then Double %p',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${p1}`]: [player777.id, player888.id],
-                [`double${p2}`]: [player666.id, player888.id],
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(invalid)('Double %p is better then Double %p', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${p1}`]: [player777.id, player888.id],
+              [`double${p2}`]: [player666.id, player888.id],
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-doubles',
-            ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
+          ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
 
-            expect(error).toBeDefined();
-            expect(error?.params?.['game1']).toBe(`double${p1}`);
-            expect(error?.params?.['game2']).toBe(`double${p2}`);
-            // Team 1
-            expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-            expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-            expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-            expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          expect(error).toBeDefined();
+          expect(error?.params?.['game1']).toBe(`double${p1}`);
+          expect(error?.params?.['game2']).toBe(`double${p2}`);
+          // Team 1
+          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
+          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
+          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
+          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
-            // Team 2
-            expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-            expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-            expect(error?.params?.['team2player2']?.['id']).toBe(player888.id);
-            expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
-          },
-        );
+          // Team 2
+          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
+          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
+          expect(error?.params?.['team2player2']?.['id']).toBe(player888.id);
+          expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
+        });
 
-        test.each(invalid)(
-          'Double %p is not better then Double %p by level',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${p1}`]: [player777.id, player888.id],
-                [`double${p2}`]: [player666.id, player999.id],
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(invalid)('Double %p is not better then Double %p by level', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${p1}`]: [player777.id, player888.id],
+              [`double${p2}`]: [player666.id, player999.id],
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-highest',
-            ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
-            expect(error).toBeDefined();
-            expect(error?.params?.['game1']).toBe(`double${p1}`);
-            expect(error?.params?.['game2']).toBe(`double${p2}`);
-            // Team 1
-            expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-            expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-            expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-            expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+          ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
+          expect(error).toBeDefined();
+          expect(error?.params?.['game1']).toBe(`double${p1}`);
+          expect(error?.params?.['game2']).toBe(`double${p2}`);
+          // Team 1
+          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
+          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
+          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
+          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
-            // Team 2
-            expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-            expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-            expect(error?.params?.['team2player2']?.['id']).toBe(player999.id);
-            expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
-          },
-        );
+          // Team 2
+          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
+          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
+          expect(error?.params?.['team2player2']?.['id']).toBe(player999.id);
+          expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
+        });
       });
     });
 
@@ -481,9 +443,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.team-to-strong',
+            (e) => e.message === 'all.competition.team-assembly.errors.team-to-strong',
           );
           expect(error).toBeUndefined();
         });
@@ -508,9 +468,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.team-to-strong',
+            (e) => e.message === 'all.competition.team-assembly.errors.team-to-strong',
           ) as AssemblyValidationError<TeamSubeventIndexRuleParams>;
 
           expect(error).toBeDefined();
@@ -541,9 +499,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const warning = validation.warnings?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.warnings.subtitute-team-index',
+            (e) => e.message === 'all.competition.team-assembly.warnings.subtitute-team-index',
           ) as AssemblyValidationError<TeamSubsIndexRuleParams>;
 
           expect(warning).toBeDefined();
@@ -571,8 +527,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
           );
           expect(error).toBeUndefined();
         });
@@ -597,8 +552,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
@@ -623,8 +577,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const errors = validation.errors?.filter(
-            (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
           );
 
           expect(errors).toBeDefined();
@@ -653,9 +606,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-single-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-single-games',
           );
           expect(error).toBeUndefined();
         });
@@ -678,9 +629,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
           );
           expect(error).toBeUndefined();
         });
@@ -705,9 +654,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-single-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-single-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -732,9 +679,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -768,10 +713,8 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message ===
-                'all.competition.team-assembly.errors.player-genders' ||
-              e.message ===
-                'all.competition.team-assembly.errors.player-gender',
+              e.message === 'all.competition.team-assembly.errors.player-genders' ||
+              e.message === 'all.competition.team-assembly.errors.player-gender',
           );
           expect(error).toBeUndefined();
         });
@@ -781,59 +724,49 @@ describe('AssemblyValidationService', () => {
         // const games = [[1], [2], [3], [4]];
         const games = [[2]];
 
-        test.each(games)(
-          'should be invalid single if the player the wrong gender',
-          async (g) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`single${g}`]: player555.id,
-              },
-              [new PlayerGenderRule()],
-            );
+        test.each(games)('should be invalid single if the player the wrong gender', async (g) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`single${g}`]: player555.id,
+            },
+            [new PlayerGenderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-gender',
-            ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-gender',
+          ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
-            expect(error).toBeDefined();
-            expect(error?.params?.['player']?.['id']).toBe(player555.id);
-          },
-        );
+          expect(error).toBeDefined();
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+        });
 
-        test.each(games)(
-          'should be invalid double if the player the wrong gender',
-          async (g) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${g}`]: [player555.id, player666.id],
-              },
-              [new PlayerGenderRule()],
-            );
+        test.each(games)('should be invalid double if the player the wrong gender', async (g) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${g}`]: [player555.id, player666.id],
+            },
+            [new PlayerGenderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-gender',
-            ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-gender',
+          ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
-            expect(error).toBeDefined();
-            expect(error?.params?.['player']?.['id']).toBe(player555.id);
-          },
-        );
+          expect(error).toBeDefined();
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+        });
       });
     });
   });
@@ -962,9 +895,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-order-highest',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
           );
           expect(error).toBeUndefined();
         });
@@ -976,38 +907,33 @@ describe('AssemblyValidationService', () => {
           [3, 4],
         ];
 
-        test.each(invalid)(
-          'Single %p is not better then Single %p',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`single${p1}`]: player888.id,
-                [`single${p2}`]: player777.id,
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`single${p1}`]: player888.id,
+              [`single${p2}`]: player777.id,
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-single',
-            ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
-            expect(error).toBeDefined();
-            expect(error?.params?.['game1']).toBe(`single${p1}`);
-            expect(error?.params?.['game2']).toBe(`single${p2}`);
-            expect(error?.params?.['player1']?.['id']).toBe(player888.id);
-            expect(error?.params?.['player1']?.['ranking']).toBe(8);
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+          ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
+          expect(error).toBeDefined();
+          expect(error?.params?.['game1']).toBe(`single${p1}`);
+          expect(error?.params?.['game2']).toBe(`single${p2}`);
+          expect(error?.params?.['player1']?.['id']).toBe(player888.id);
+          expect(error?.params?.['player1']?.['ranking']).toBe(8);
 
-            expect(error?.params?.['player2']?.['id']).toBe(player777.id);
-            expect(error?.params?.['player2']?.['ranking']).toBe(7);
-          },
-        );
+          expect(error?.params?.['player2']?.['id']).toBe(player777.id);
+          expect(error?.params?.['player2']?.['ranking']).toBe(7);
+        });
 
         it('Mixed double is better then other', async () => {
           const validation = await service.fetchAndValidate(
@@ -1025,9 +951,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-order-doubles',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`mix3`);
@@ -1061,9 +985,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-order-highest',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
           ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
           expect(error).toBeDefined();
           expect(error?.params?.['game1']).toBe(`mix3`);
@@ -1103,9 +1025,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
           );
           expect(error).toBeUndefined();
         });
@@ -1128,9 +1048,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-mix-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-mix-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -1160,10 +1078,8 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message ===
-                'all.competition.team-assembly.errors.player-genders' ||
-              e.message ===
-                'all.competition.team-assembly.errors.player-gender',
+              e.message === 'all.competition.team-assembly.errors.player-genders' ||
+              e.message === 'all.competition.team-assembly.errors.player-gender',
           );
           expect(error).toBeUndefined();
         });
@@ -1186,9 +1102,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-genders',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-genders',
           ) as AssemblyValidationError<PlayerGenderRulePartnerParams>;
 
           expect(error).toBeDefined();
@@ -1212,9 +1126,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-genders',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-genders',
           ) as AssemblyValidationError<PlayerGenderRulePartnerParams>;
 
           expect(error).toBeDefined();
@@ -1243,9 +1155,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-min-level',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
           );
           expect(error).toBeUndefined();
         });
@@ -1270,9 +1180,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-min-level',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
           ) as AssemblyValidationError<PlayerMinLevelRuleParams>;
 
           expect(error).toBeDefined();
@@ -1488,8 +1396,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message === 'all.competition.team-assembly.errors.team-index',
+            (e) => e.message === 'all.competition.team-assembly.errors.team-index',
           );
           expect(error).toBeUndefined();
         });
@@ -1532,8 +1439,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message === 'all.competition.team-assembly.errors.team-index',
+            (e) => e.message === 'all.competition.team-assembly.errors.team-index',
           ) as AssemblyValidationError<TeamBaseIndexRuleParams>;
 
           expect(error).toBeDefined();
@@ -1563,9 +1469,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.club-base-other-team',
+            (e) => e.message === 'all.competition.team-assembly.errors.club-base-other-team',
           ) as AssemblyValidationError<TeamClubBaseRuleParams>;
 
           expect(error).toBeDefined();
@@ -1593,9 +1497,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-min-level',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
           );
           expect(error).toBeUndefined();
         });
@@ -1620,9 +1522,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-min-level',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-min-level',
           ) as AssemblyValidationError<PlayerMinLevelRuleParams>;
 
           expect(error).toBeDefined();
@@ -1782,80 +1682,65 @@ describe('AssemblyValidationService', () => {
           [3, 4],
         ];
 
-        test.each(valid)(
-          'Single %p is better then Single %p',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`single${p2}`]: player888.id,
-                [`single${p1}`]: player777.id,
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(valid)('Single %p is better then Single %p', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`single${p2}`]: player888.id,
+              [`single${p1}`]: player777.id,
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
+          expect(validation).toBeDefined();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-single',
-            );
-            expect(error).toBeUndefined();
-          },
-        );
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+          );
+          expect(error).toBeUndefined();
+        });
 
-        test.each(valid)(
-          'Double %p is  better then Double %p',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${p2}`]: [player777.id, player888.id],
-                [`double${p1}`]: [player666.id, player888.id],
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(valid)('Double %p is  better then Double %p', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${p2}`]: [player777.id, player888.id],
+              [`double${p1}`]: [player666.id, player888.id],
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
+          expect(validation).toBeDefined();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-doubles',
-            );
-            expect(error).toBeUndefined();
-          },
-        );
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
+          );
+          expect(error).toBeUndefined();
+        });
 
-        test.each(valid)(
-          'Double %p is not better then Double %p by level',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${p2}`]: [player777.id, player888.id],
-                [`double${p1}`]: [player666.id, player999.id],
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(valid)('Double %p is not better then Double %p by level', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${p2}`]: [player777.id, player888.id],
+              [`double${p1}`]: [player666.id, player999.id],
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
+          expect(validation).toBeDefined();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-highest',
-            );
-            expect(error).toBeUndefined();
-          },
-        );
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+          );
+          expect(error).toBeUndefined();
+        });
       });
 
       describe('invalid', () => {
@@ -1865,116 +1750,101 @@ describe('AssemblyValidationService', () => {
           [3, 4],
         ];
 
-        test.each(invalid)(
-          'Single %p is not better then Single %p',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`single${p1}`]: player888.id,
-                [`single${p2}`]: player777.id,
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`single${p1}`]: player888.id,
+              [`single${p2}`]: player777.id,
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-single',
-            ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
-            expect(error).toBeDefined();
-            expect(error?.params?.['game1']).toBe(`single${p1}`);
-            expect(error?.params?.['game2']).toBe(`single${p2}`);
-            expect(error?.params?.['player1']?.['id']).toBe(player888.id);
-            expect(error?.params?.['player1']?.['ranking']).toBe(8);
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-single',
+          ) as AssemblyValidationError<PlayerOrderRuleSingleParams>;
+          expect(error).toBeDefined();
+          expect(error?.params?.['game1']).toBe(`single${p1}`);
+          expect(error?.params?.['game2']).toBe(`single${p2}`);
+          expect(error?.params?.['player1']?.['id']).toBe(player888.id);
+          expect(error?.params?.['player1']?.['ranking']).toBe(8);
 
-            expect(error?.params?.['player2']?.['id']).toBe(player777.id);
-            expect(error?.params?.['player2']?.['ranking']).toBe(7);
-          },
-        );
+          expect(error?.params?.['player2']?.['id']).toBe(player777.id);
+          expect(error?.params?.['player2']?.['ranking']).toBe(7);
+        });
 
-        test.each(invalid)(
-          'Double %p is better then Double %p',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${p1}`]: [player777.id, player888.id],
-                [`double${p2}`]: [player666.id, player888.id],
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(invalid)('Double %p is better then Double %p', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${p1}`]: [player777.id, player888.id],
+              [`double${p2}`]: [player666.id, player888.id],
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-doubles',
-            ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
-            expect(error).toBeDefined();
-            expect(error?.params?.['game1']).toBe(`double${p1}`);
-            expect(error?.params?.['game2']).toBe(`double${p2}`);
-            // Team 1
-            expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-            expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-            expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-            expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-doubles',
+          ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
+          expect(error).toBeDefined();
+          expect(error?.params?.['game1']).toBe(`double${p1}`);
+          expect(error?.params?.['game2']).toBe(`double${p2}`);
+          // Team 1
+          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
+          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
+          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
+          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
-            // Team 2
-            expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-            expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-            expect(error?.params?.['team2player2']?.['id']).toBe(player888.id);
-            expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
-          },
-        );
+          // Team 2
+          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
+          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
+          expect(error?.params?.['team2player2']?.['id']).toBe(player888.id);
+          expect(error?.params?.['team2player2']?.['ranking']).toBe(8);
+        });
 
-        test.each(invalid)(
-          'Double %p is not better then Double %p by level',
-          async (p1, p2) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${p1}`]: [player777.id, player888.id],
-                [`double${p2}`]: [player666.id, player999.id],
-              },
-              [new PlayerOrderRule()],
-            );
+        test.each(invalid)('Double %p is not better then Double %p by level', async (p1, p2) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${p1}`]: [player777.id, player888.id],
+              [`double${p2}`]: [player666.id, player999.id],
+            },
+            [new PlayerOrderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-order-highest',
-            ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
-            expect(error).toBeDefined();
-            expect(error?.params?.['game1']).toBe(`double${p1}`);
-            expect(error?.params?.['game2']).toBe(`double${p2}`);
-            // Team 1
-            expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
-            expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
-            expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
-            expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-order-highest',
+          ) as AssemblyValidationError<PlayerOrderRuleDoubleParams>;
+          expect(error).toBeDefined();
+          expect(error?.params?.['game1']).toBe(`double${p1}`);
+          expect(error?.params?.['game2']).toBe(`double${p2}`);
+          // Team 1
+          expect(error?.params?.['team1player1']?.['id']).toBe(player777.id);
+          expect(error?.params?.['team1player1']?.['ranking']).toBe(7);
+          expect(error?.params?.['team1player2']?.['id']).toBe(player888.id);
+          expect(error?.params?.['team1player2']?.['ranking']).toBe(8);
 
-            // Team 2
-            expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
-            expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
-            expect(error?.params?.['team2player2']?.['id']).toBe(player999.id);
-            expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
-          },
-        );
+          // Team 2
+          expect(error?.params?.['team2player1']?.['id']).toBe(player666.id);
+          expect(error?.params?.['team2player1']?.['ranking']).toBe(6);
+          expect(error?.params?.['team2player2']?.['id']).toBe(player999.id);
+          expect(error?.params?.['team2player2']?.['ranking']).toBe(9);
+        });
       });
     });
 
@@ -1997,9 +1867,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.team-to-strong',
+            (e) => e.message === 'all.competition.team-assembly.errors.team-to-strong',
           );
           expect(error).toBeUndefined();
         });
@@ -2024,9 +1892,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.team-to-strong',
+            (e) => e.message === 'all.competition.team-assembly.errors.team-to-strong',
           ) as AssemblyValidationError<TeamSubeventIndexRuleParams>;
 
           expect(error).toBeDefined();
@@ -2056,8 +1922,7 @@ describe('AssemblyValidationService', () => {
           expect(validation).toBeDefined();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
           );
           expect(error).toBeUndefined();
         });
@@ -2082,8 +1947,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
           ) as AssemblyValidationError<PlayerCompStatusRuleParams>;
 
           expect(error).toBeDefined();
@@ -2108,8 +1972,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const errors = validation.errors?.filter(
-            (e) =>
-              e.message === 'all.competition.team-assembly.errors.comp-status-html',
+            (e) => e.message === 'all.competition.team-assembly.errors.comp-status-html',
           );
 
           expect(errors).toBeDefined();
@@ -2138,9 +2001,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-single-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-single-games',
           );
           expect(error).toBeUndefined();
         });
@@ -2163,9 +2024,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeTruthy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
           );
           expect(error).toBeUndefined();
         });
@@ -2190,9 +2049,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-single-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-single-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -2217,9 +2074,7 @@ describe('AssemblyValidationService', () => {
           expect(validation.valid).toBeFalsy();
 
           const error = validation.errors?.find(
-            (e) =>
-              e.message ===
-              'all.competition.team-assembly.errors.player-max-double-games',
+            (e) => e.message === 'all.competition.team-assembly.errors.player-max-double-games',
           ) as AssemblyValidationError<PlayerMaxGamesRuleParams>;
 
           expect(error).toBeDefined();
@@ -2253,10 +2108,8 @@ describe('AssemblyValidationService', () => {
 
           const error = validation.errors?.find(
             (e) =>
-              e.message ===
-                'all.competition.team-assembly.errors.player-genders' ||
-              e.message ===
-                'all.competition.team-assembly.errors.player-gender',
+              e.message === 'all.competition.team-assembly.errors.player-genders' ||
+              e.message === 'all.competition.team-assembly.errors.player-gender',
           );
           expect(error).toBeUndefined();
         });
@@ -2266,59 +2119,49 @@ describe('AssemblyValidationService', () => {
         // const games = [[1], [2], [3], [4]];
         const games = [[2]];
 
-        test.each(games)(
-          'should be invalid single if the player the wrong gender',
-          async (g) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`single${g}`]: player555.id,
-              },
-              [new PlayerGenderRule()],
-            );
+        test.each(games)('should be invalid single if the player the wrong gender', async (g) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`single${g}`]: player555.id,
+            },
+            [new PlayerGenderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-gender',
-            ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-gender',
+          ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
-            expect(error).toBeDefined();
-            expect(error?.params?.['player']?.['id']).toBe(player555.id);
-          },
-        );
+          expect(error).toBeDefined();
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+        });
 
-        test.each(games)(
-          'should be invalid double if the player the wrong gender',
-          async (g) => {
-            const validation = await service.fetchAndValidate(
-              {
-                systemId: system.id,
-                teamId: team?.id,
-                encounterId: encounter.id,
-                [`double${g}`]: [player555.id, player666.id],
-              },
-              [new PlayerGenderRule()],
-            );
+        test.each(games)('should be invalid double if the player the wrong gender', async (g) => {
+          const validation = await service.fetchAndValidate(
+            {
+              systemId: system.id,
+              teamId: team?.id,
+              encounterId: encounter.id,
+              [`double${g}`]: [player555.id, player666.id],
+            },
+            [new PlayerGenderRule()],
+          );
 
-            expect(validation).toBeDefined();
-            expect(validation.valid).toBeFalsy();
+          expect(validation).toBeDefined();
+          expect(validation.valid).toBeFalsy();
 
-            const error = validation.errors?.find(
-              (e) =>
-                e.message ===
-                'all.competition.team-assembly.errors.player-gender',
-            ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
+          const error = validation.errors?.find(
+            (e) => e.message === 'all.competition.team-assembly.errors.player-gender',
+          ) as AssemblyValidationError<PlayerGenderRuleIndividualParams>;
 
-            expect(error).toBeDefined();
-            expect(error?.params?.['player']?.['id']).toBe(player555.id);
-          },
-        );
+          expect(error).toBeDefined();
+          expect(error?.params?.['player']?.['id']).toBe(player555.id);
+        });
       });
     });
   });

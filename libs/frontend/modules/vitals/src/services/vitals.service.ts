@@ -6,9 +6,7 @@ import { AnalyticsConfig, ANALYTICS_CONFIG_TOKEN } from '../vitals.module';
   providedIn: 'root',
 })
 export class WebVitalsService {
-  constructor(
-    @Inject(ANALYTICS_CONFIG_TOKEN) private config: AnalyticsConfig
-  ) {}
+  constructor(@Inject(ANALYTICS_CONFIG_TOKEN) private config: AnalyticsConfig) {}
 
   public init(): void {
     this.reportWebVitals((data) => this.sendWebVitals(data));

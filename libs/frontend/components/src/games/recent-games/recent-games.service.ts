@@ -7,7 +7,15 @@ import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { connect } from 'ngxtension/connect';
 import { EMPTY, Subject, merge } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, map, mergeMap, startWith, switchMap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  mergeMap,
+  startWith,
+  switchMap,
+} from 'rxjs/operators';
 interface RecentGamesState {
   games: Game[];
   loading: boolean;

@@ -10,7 +10,7 @@ export class Processor {
     steps?: Map<string, ProcessStep<unknown>>,
     options?: {
       logger?: Logger;
-    }
+    },
   ) {
     this.procesSteps = steps ?? new Map();
     this.logger = options?.logger ?? new Logger();
@@ -20,12 +20,7 @@ export class Processor {
     if (!override && !this.procesSteps.has(step.name)) {
       this.procesSteps.set(step.name, step);
     } else {
-      this.logger.debug(
-        `Steps:`,
-        [...this.procesSteps.keys()],
-        'new Step',
-        step.name
-      );
+      this.logger.debug(`Steps:`, [...this.procesSteps.keys()], 'new Step', step.name);
       throw new Error('Step already exists');
     }
   }
@@ -33,9 +28,7 @@ export class Processor {
   getData<T>(stepName: string) {
     if (!this.procesSteps.has(stepName)) {
       throw new Error(
-        `Step ${stepName} not found, options: ${[
-          ...this.procesSteps.keys(),
-        ].join(', ')}`
+        `Step ${stepName} not found, options: ${[...this.procesSteps.keys()].join(', ')}`,
       );
     }
 
@@ -71,15 +64,11 @@ export class Processor {
       }
 
       this.logger.log(
-        `Finished step ${name}, time: ${timeUnits(
-          new Date().getTime() - start
-        )?.toString()}`
+        `Finished step ${name}, time: ${timeUnits(new Date().getTime() - start)?.toString()}`,
       );
     }
     this.logger.log(
-      `Finished processing, time: ${timeUnits(
-        new Date().getTime() - totalStart
-      )?.toString()}`
+      `Finished processing, time: ${timeUnits(new Date().getTime() - totalStart)?.toString()}`,
     );
   }
 }

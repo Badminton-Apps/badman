@@ -35,7 +35,7 @@ export async function accepCookies(
         ],
       ],
       targetPage,
-      timeout
+      timeout,
     );
     await element.click({ offset: { x: 1.890625, y: 21.453125 } });
     await Promise.all(promises);

@@ -11,7 +11,10 @@ import { Apollo, gql } from 'apollo-angular';
 export class AddClubComponent {
   club!: Club;
 
-  constructor(private apollo: Apollo, private router: Router) {}
+  constructor(
+    private apollo: Apollo,
+    private router: Router,
+  ) {}
 
   async add(club: Club) {
     this.club = club;
@@ -32,7 +35,7 @@ export class AddClubComponent {
             ...this.club,
           },
         },
-      })
+      }),
     );
     this.router.navigate(['club', newClub.data?.createClub.id]);
   }

@@ -15,7 +15,7 @@ module.exports = {
           'season',
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -36,7 +36,7 @@ module.exports = {
           'year',
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err);

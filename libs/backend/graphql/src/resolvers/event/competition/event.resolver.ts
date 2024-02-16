@@ -16,11 +16,7 @@ import {
 } from '@badman/backend-database';
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
 import { IsUUID } from '@badman/utils';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -55,9 +51,7 @@ export class EventCompetitionResolver {
   ) {}
 
   @Query(() => EventCompetition)
-  async eventCompetition(
-    @Args('id', { type: () => ID }) id: string,
-  ): Promise<EventCompetition> {
+  async eventCompetition(@Args('id', { type: () => ID }) id: string): Promise<EventCompetition> {
     const eventCompetition = IsUUID(id)
       ? await EventCompetition.findByPk(id)
       : await EventCompetition.findOne({
@@ -82,9 +76,7 @@ export class EventCompetitionResolver {
   @Query(() => [Number])
   async eventCompetitionSeasons(): Promise<number[]> {
     return EventCompetition.findAll({
-      attributes: [
-        [Sequelize.fn('DISTINCT', Sequelize.col('season')), 'season'],
-      ],
+      attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('season')), 'season']],
       order: [['season', 'DESC']],
       raw: true,
     }).then((result) => result.map((r) => r.season));
@@ -136,22 +128,16 @@ export class EventCompetitionResolver {
     @Args('data') updateEventCompetitionData: EventCompetitionUpdateInput,
   ): Promise<EventCompetition> {
     if (!(await user.hasAnyPermission([`edit:competition`]))) {
-      throw new UnauthorizedException(
-        `You do not have permission to add a competition`,
-      );
+      throw new UnauthorizedException(`You do not have permission to add a competition`);
     }
 
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const eventCompetitionDb = await EventCompetition.findByPk(
-        updateEventCompetitionData.id,
-      );
+      const eventCompetitionDb = await EventCompetition.findByPk(updateEventCompetitionData.id);
 
       if (!eventCompetitionDb) {
-        throw new NotFoundException(
-          `${EventCompetition.name}: ${updateEventCompetitionData.id}`,
-        );
+        throw new NotFoundException(`${EventCompetition.name}: ${updateEventCompetitionData.id}`);
       }
 
       if (eventCompetitionDb.official !== updateEventCompetitionData.official) {
@@ -168,9 +154,7 @@ export class EventCompetitionResolver {
         });
 
         if (!ranking) {
-          throw new NotFoundException(
-            `${RankingSystem.name}: primary system not found`,
-          );
+          throw new NotFoundException(`${RankingSystem.name}: primary system not found`);
         }
 
         const groups = await ranking.getRankingGroups({
@@ -213,10 +197,7 @@ export class EventCompetitionResolver {
       }
 
       // Update db
-      const result = await eventCompetitionDb.update(
-        updateEventCompetitionData,
-        { transaction },
-      );
+      const result = await eventCompetitionDb.update(updateEventCompetitionData, { transaction });
 
       // Commit transaction
       await transaction.commit();
@@ -238,9 +219,7 @@ export class EventCompetitionResolver {
     @Args('year', { type: () => Int }) year: number,
   ) {
     if (!(await user.hasAnyPermission([`add:competition`]))) {
-      throw new UnauthorizedException(
-        `You do not have permission to add a competition`,
-      );
+      throw new UnauthorizedException(`You do not have permission to add a competition`);
     }
     const transaction = await this._sequelize.transaction();
     try {
@@ -269,8 +248,7 @@ export class EventCompetitionResolver {
         transaction,
       });
       const newSubEvents = [];
-      for (const subEventCompetition of eventCompetitionDb.subEventCompetitions ??
-        []) {
+      for (const subEventCompetition of eventCompetitionDb.subEventCompetitions ?? []) {
         const newSubEventCompetitionDb = new SubEventCompetition({
           ...subEventCompetition.toJSON(),
           id: undefined,
@@ -301,14 +279,9 @@ export class EventCompetitionResolver {
   // }
 
   @Mutation(() => Boolean)
-  async removeEventCompetition(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-  ) {
+  async removeEventCompetition(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission([`delete:competition`]))) {
-      throw new UnauthorizedException(
-        `You do not have permission to add a competition`,
-      );
+      throw new UnauthorizedException(`You do not have permission to add a competition`);
     }
 
     const eventTournament = await EventCompetition.findByPk(id);

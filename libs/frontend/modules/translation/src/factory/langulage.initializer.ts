@@ -39,7 +39,7 @@ export function langulageInitializer(
       let savedLang = isPlatformBrowser(platform)
         ? (localStorage.getItem('translation.language') as AvaliableLanguages)
         : undefined;
-        
+
       if (!savedLang && isPlatformBrowser(platform)) {
         effect(
           () => {

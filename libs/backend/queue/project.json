@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/queue",
         "tsConfig": "libs/backend/queue/tsconfig.lib.json",
         "packageJson": "libs/backend/queue/package.json",
         "main": "libs/backend/queue/src/index.ts",
-        "assets": [
-          "libs/backend/queue/*.md"
-        ]
+        "assets": ["libs/backend/queue/*.md"]
       }
     }
   },

@@ -149,7 +149,10 @@ export class EditEncounterComponent implements OnInit {
   }
 
   getGameLabel(game: number) {
-    const gameType = this.encounterCompetition.drawCompetition?.subEventCompetition?.eventType as 'M' | 'F' | 'MX';
+    const gameType = this.encounterCompetition.drawCompetition?.subEventCompetition?.eventType as
+      | 'M'
+      | 'F'
+      | 'MX';
 
     if (!gameType) {
       return [];

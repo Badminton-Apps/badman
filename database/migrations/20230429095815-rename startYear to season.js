@@ -14,7 +14,7 @@ module.exports = {
         },
         'startYear',
         'season',
-        { transaction: t }
+        { transaction: t },
       );
 
       try {
@@ -34,7 +34,7 @@ module.exports = {
         },
         'season',
         'startYear',
-        { transaction: t }
+        { transaction: t },
       );
 
       try {

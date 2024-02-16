@@ -1,9 +1,5 @@
 import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import {
-  accepCookies,
-  getBrowser,
-  selectBadmninton,
-} from '@badman/backend-pupeteer';
+import { accepCookies, getBrowser, selectBadmninton } from '@badman/backend-pupeteer';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger, NotFoundException } from '@nestjs/common';
@@ -37,9 +33,7 @@ export class CheckRankingProcessor {
       throw new NotFoundException(`${Player.name}: ${playerId} not found`);
     }
 
-    this.logger.debug(
-      `Syncing ranking for ${player.fullName} (${player.memberId})`
-    );
+    this.logger.debug(`Syncing ranking for ${player.fullName} (${player.memberId})`);
     const primary = await RankingSystem.findOne({
       where: {
         primary: true,
@@ -49,7 +43,6 @@ export class CheckRankingProcessor {
     if (!primary) {
       throw new NotFoundException(`${RankingSystem.name}: primary not found`);
     }
-      
 
     if (!player.memberId) {
       this.logger.warn(`Player ${player.fullName} has no memberId`);
@@ -85,9 +78,9 @@ export class CheckRankingProcessor {
       // Processing player
       const result = await getViaRanking({ page }, player);
 
-      let single: number | undefined
-      let double: number | undefined
-      let mix: number | undefined
+      let single: number | undefined;
+      let double: number | undefined;
+      let mix: number | undefined;
 
       if (!result) {
         // ranking was not found
@@ -127,9 +120,7 @@ export class CheckRankingProcessor {
         return;
       }
 
-      this.logger.debug(
-        `Setting ranking for ${player.fullName}: ${single} ${double} ${mix}`
-      );
+      this.logger.debug(`Setting ranking for ${player.fullName}: ${single} ${double} ${mix}`);
 
       for (const rankingPlace of rankingPlaces) {
         // Update player

@@ -13,10 +13,7 @@ type SubEventSortInput = Partial<{
   level: number;
 }>;
 
-export const isFirstHigher = (
-  subEvent1?: SubEventSortInput,
-  subEvent2?: SubEventSortInput
-) => {
+export const isFirstHigher = (subEvent1?: SubEventSortInput, subEvent2?: SubEventSortInput) => {
   if (
     !subEvent1?.eventCompetition ||
     !subEvent1?.eventCompetition.type ||
@@ -35,14 +32,10 @@ export const isFirstHigher = (
     return 'same';
   }
 
-  if (
-    typeOrder[subEvent1.eventCompetition.type] <
-    typeOrder[subEvent2.eventCompetition.type]
-  ) {
+  if (typeOrder[subEvent1.eventCompetition.type] < typeOrder[subEvent2.eventCompetition.type]) {
     return 'better';
   } else if (
-    typeOrder[subEvent1.eventCompetition.type] ===
-    typeOrder[subEvent2.eventCompetition.type]
+    typeOrder[subEvent1.eventCompetition.type] === typeOrder[subEvent2.eventCompetition.type]
   ) {
     if (subEvent1?.level < subEvent2?.level) {
       return 'better';
@@ -52,10 +45,7 @@ export const isFirstHigher = (
   return 'lower';
 };
 
-export const sortSubEventOrder = (
-  a: SubEventSortInput,
-  b: SubEventSortInput
-) => {
+export const sortSubEventOrder = (a: SubEventSortInput, b: SubEventSortInput) => {
   // returns better, same or lower
   const order = isFirstHigher(a, b);
   if (order === 'better') {
@@ -73,5 +63,4 @@ export const levelTypeSort = (a: LevelType, b: LevelType) => {
     return 0;
   }
   return 1;
-}
-
+};
