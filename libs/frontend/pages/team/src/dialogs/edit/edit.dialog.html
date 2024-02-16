@@ -1,11 +1,17 @@
 <div mat-dialog-content>
   @if (this.group) {
-  <div class="fields">
-    <badman-team-fields [group]="this.group" [teamNumbers]="this.data.teamNumbers"></badman-team-fields>
-    <badman-team-player (typeChanged)="playerMembershipTypeChanged($event)" [group]="this.group"></badman-team-player>
-  </div>
+    <div class="fields">
+      <badman-team-fields
+        [group]="this.group"
+        [teamNumbers]="this.data.teamNumbers"
+      ></badman-team-fields>
+      <badman-team-player
+        (typeChanged)="playerMembershipTypeChanged($event)"
+        [group]="this.group"
+      ></badman-team-player>
+    </div>
   } @else {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   }
 </div>
 <mat-dialog-actions align="end">

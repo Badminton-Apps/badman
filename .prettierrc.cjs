@@ -10,4 +10,12 @@ module.exports = {
 
   pugSingleQuote: false,
   printWidth: 100,
+  overrides: [
+    {
+      files: '*.html',
+      options: {
+        parser: 'angular',
+      },
+    },
+  ],
 };

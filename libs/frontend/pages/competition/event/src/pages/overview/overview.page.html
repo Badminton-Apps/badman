@@ -1,5 +1,5 @@
 <badman-page-header>
-  <div title>{{'all.competition.title' | translate}}</div>
+  <div title>{{ 'all.competition.title' | translate }}</div>
 
   <div actions>
     <badman-has-claim [any]="['change:job']">
@@ -16,7 +16,7 @@
         <badman-has-claim [any]="['change:job']">
           <button mat-menu-item (click)="this.addEvent()">
             <mat-icon>sync</mat-icon>
-            <span>{{'all.competition.menu.add-event' | translate}}</span>
+            <span>{{ 'all.competition.menu.add-event' | translate }}</span>
           </button>
         </badman-has-claim>
       </mat-menu>

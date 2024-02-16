@@ -1,35 +1,38 @@
 @if (subEvents$ | async; as subEvents) {
-<div>
-  <!-- download -->
-  <button mat-icon-button (click)="downloadData(subEvents)">
-    <mat-icon>cloud_download</mat-icon>
-  </button>
-</div>
-@for (eventType of eventTypes; track eventType) {
-<div>
-  @for (gender of genders; track gender) {
-  <div class="gender">
-    @for (chartType of chartTypes; track chartType) {
-    <div>
-      @if (chartSeries(subEvents, gender, chartType, eventType); as data) { @if (data) {
-      <apx-chart
-        [series]="data"
-        [chart]="chartOptions.chart!"
-        [dataLabels]="chartOptions.dataLabels!"
-        [stroke]="chartOptions.stroke!"
-        [grid]="chartOptions.grid!"
-        [xaxis]="chartXAxis(subEvents, eventType)!"
-        [yaxis]="chartOptions.yaxis!"
-        [theme]="chartOptions.theme!"
-        [tooltip]="chartOptions.tooltip!"
-        [title]="chartTitle(gender, chartType, eventType )!"
-      ></apx-chart>
-      } }
-    </div>
-    }
+  <div>
+    <!-- download -->
+    <button mat-icon-button (click)="downloadData(subEvents)">
+      <mat-icon>cloud_download</mat-icon>
+    </button>
   </div>
+  @for (eventType of eventTypes; track eventType) {
+    <div>
+      @for (gender of genders; track gender) {
+        <div class="gender">
+          @for (chartType of chartTypes; track chartType) {
+            <div>
+              @if (chartSeries(subEvents, gender, chartType, eventType); as data) {
+                @if (data) {
+                  <apx-chart
+                    [series]="data"
+                    [chart]="chartOptions.chart!"
+                    [dataLabels]="chartOptions.dataLabels!"
+                    [stroke]="chartOptions.stroke!"
+                    [grid]="chartOptions.grid!"
+                    [xaxis]="chartXAxis(subEvents, eventType)!"
+                    [yaxis]="chartOptions.yaxis!"
+                    [theme]="chartOptions.theme!"
+                    [tooltip]="chartOptions.tooltip!"
+                    [title]="chartTitle(gender, chartType, eventType)!"
+                  ></apx-chart>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
   }
-</div>
-} } @else {
-<badman-loading-block />
+} @else {
+  <badman-loading-block />
 }

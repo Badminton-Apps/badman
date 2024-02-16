@@ -68,11 +68,16 @@
                 {{ entry.team.name }}
                 @if (entry?.meta?.competition?.teamIndex) {
                   <span class="team-index">
-                    ({{ 'all.team.team-index' | translate }}:{{ entry?.meta?.competition?.teamIndex }})
+                    ({{ 'all.team.team-index' | translate }}:{{
+                      entry?.meta?.competition?.teamIndex
+                    }})
                   </span>
                 }
                 <!-- show errors with label -->
-                @if (!loadingValidations() && validationsForTeam.get(entry.team.id); as validation) {
+                @if (
+                  !loadingValidations() && validationsForTeam.get(entry.team.id);
+                  as validation
+                ) {
                   @if (validation.errors.length > 0) {
                     <mat-icon
                       [matBadge]="validation.errors.length"
@@ -117,7 +122,9 @@
               </badman-block>
               <badman-block class="captain">
                 <badman-block-header>
-                  <badman-block-title>{{ 'all.team.title.base-fields' | translate }}</badman-block-title>
+                  <badman-block-title>{{
+                    'all.team.title.base-fields' | translate
+                  }}</badman-block-title>
                 </badman-block-header>
                 <mat-divider />
                 <badman-block-content>
@@ -150,12 +157,17 @@
                 </badman-block-header>
                 <mat-divider />
                 <badman-block-content>
-                  @if (!loadingValidations() && validationsForTeam.get(entry.team.id); as validation) {
+                  @if (
+                    !loadingValidations() && validationsForTeam.get(entry.team.id);
+                    as validation
+                  ) {
                     @if (validation.errors.length > 0) {
                       <ul class="error-list">
                         @for (error of validation.errors; track error) {
                           <li>
-                            <badman-enrollment-message [validation]="error"></badman-enrollment-message>
+                            <badman-enrollment-message
+                              [validation]="error"
+                            ></badman-enrollment-message>
                           </li>
                         }
                       </ul>
@@ -164,7 +176,9 @@
                       <ul class="warning-list">
                         @for (warnings of validation.warnings; track warnings) {
                           <li>
-                            <badman-enrollment-message [validation]="warnings"></badman-enrollment-message>
+                            <badman-enrollment-message
+                              [validation]="warnings"
+                            ></badman-enrollment-message>
                           </li>
                         }
                       </ul>
