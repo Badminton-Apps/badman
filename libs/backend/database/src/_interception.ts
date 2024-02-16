@@ -11,7 +11,7 @@ import {
 @ObjectType()
 export class GamePlayerMembershipType extends IntersectionType(
   OmitType(GamePlayerMembership, ['id'] as const),
-  Player
+  Player,
 ) {
   // TODO: move this to rankingplaces?
   @Field(() => RankingPlace, { nullable: true })
@@ -21,12 +21,11 @@ export class GamePlayerMembershipType extends IntersectionType(
 @ObjectType()
 export class ClubPlayerMembershipType extends IntersectionType(
   OmitType(ClubPlayerMembership, ['id'] as const),
-  Club
+  Club,
 ) {}
 
 @ObjectType()
 export class TeamPlayerMembershipType extends IntersectionType(
   OmitType(TeamPlayerMembership, ['id'] as const),
-  Player
+  Player,
 ) {}
-

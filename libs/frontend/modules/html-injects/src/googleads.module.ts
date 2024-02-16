@@ -1,11 +1,5 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import {
-  Inject,
-  InjectionToken,
-  ModuleWithProviders,
-  NgModule,
-  PLATFORM_ID,
-} from '@angular/core';
+import { Inject, InjectionToken, ModuleWithProviders, NgModule, PLATFORM_ID } from '@angular/core';
 
 function scriptconfig(): string {
   return `
@@ -13,8 +7,9 @@ function scriptconfig(): string {
 `;
 }
 
-export const GOOGLEADS_CONFIG_TOKEN =
-  new InjectionToken<GoogleAdsConfiguration>('googleads.config');
+export const GOOGLEADS_CONFIG_TOKEN = new InjectionToken<GoogleAdsConfiguration>(
+  'googleads.config',
+);
 
 export type GoogleAdsConfiguration = Readonly<{
   enabled: boolean;
@@ -67,9 +62,7 @@ export class GoogleAdsModule {
     }
   }
 
-  static forRoot(
-    config: GoogleAdsConfiguration,
-  ): ModuleWithProviders<GoogleAdsModule> {
+  static forRoot(config: GoogleAdsConfiguration): ModuleWithProviders<GoogleAdsModule> {
     return {
       ngModule: GoogleAdsModule,
       providers: [{ provide: GOOGLEADS_CONFIG_TOKEN, useValue: config }],

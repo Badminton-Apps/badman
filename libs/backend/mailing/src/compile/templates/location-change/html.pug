@@ -13,7 +13,7 @@ block content
       | De ontmoeting tussen #{ encounter.home.name } en #{ encounter.away.name } gaat nu door in
       strong #{ encounter.location.name }
     p
-      smalll Deze ontmoeting is deel van de competitie #{' '}
+      smalll Deze ontmoeting is deel van de competitie #{ ' ' }
       a(href=`${clientUrl}/competition/${event.id}`) #{ event.name }.
 
     p

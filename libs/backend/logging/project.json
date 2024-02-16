@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/logging",
         "tsConfig": "libs/backend/logging/tsconfig.lib.json",
         "packageJson": "libs/backend/logging/package.json",
         "main": "libs/backend/logging/src/index.ts",
-        "assets": [
-          "libs/backend/logging/*.md"
-        ]
+        "assets": ["libs/backend/logging/*.md"]
       }
     }
   },

@@ -12,7 +12,7 @@ export const sortPlayers = (
     double: number;
     mix: number;
     lastName: string;
-  }>
+  }>,
 ) => {
   // Women first
   if (a.gender === 'F' && b.gender !== 'F') {

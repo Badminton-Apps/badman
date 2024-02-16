@@ -129,7 +129,7 @@ export class RankingEvolutionComponent implements OnInit {
           playerId: this.player().id,
           where: {
             systemId: this.system().id,
-          }
+          },
         },
       })
       .pipe(

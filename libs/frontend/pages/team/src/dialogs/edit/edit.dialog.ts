@@ -2,7 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, PLATFORM_ID, TransferState } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '@badman/frontend-components';
@@ -132,7 +137,9 @@ export class EditDialogComponent {
       .valueChanges.pipe(
         transferState(`teamPlayers-${this.data.team.id}`, this.stateTransfer, this.platformId),
         map((result) => result?.data.team.players?.map((t) => new TeamPlayer(t))),
-        map((players) => players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ?? undefined),
+        map(
+          (players) => players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ?? undefined,
+        ),
         take(1),
       );
   }
@@ -230,8 +237,16 @@ export class EditDialogComponent {
     this.apollo
       .mutate({
         mutation: gql`
-          mutation UpdateTeamPlayerMembership($teamId: ID!, $playerId: ID!, $membershipType: String!) {
-            updateTeamPlayerMembership(teamId: $teamId, playerId: $playerId, membershipType: $membershipType) {
+          mutation UpdateTeamPlayerMembership(
+            $teamId: ID!
+            $playerId: ID!
+            $membershipType: String!
+          ) {
+            updateTeamPlayerMembership(
+              teamId: $teamId
+              playerId: $playerId
+              membershipType: $membershipType
+            ) {
               id
               membershipType
               teamId
@@ -254,7 +269,10 @@ export class EditDialogComponent {
   }
 
   removeTeam() {
-    const dialogData = new ConfirmDialogModel('all.club.delete.team.title', 'all.club.delete.team.description');
+    const dialogData = new ConfirmDialogModel(
+      'all.club.delete.team.title',
+      'all.club.delete.team.description',
+    );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',

@@ -1,6 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, TemplateRef, TransferState, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  TemplateRef,
+  TransferState,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SeoService } from '@badman/frontend-seo';
@@ -38,7 +52,16 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { BehaviorSubject, Observable, combineLatest, lastValueFrom } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  skip,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
@@ -255,14 +278,19 @@ export class EditPageComponent implements OnInit {
         tap((teams) => {
           // initial teamnumbers from 1 to maxlevel
           for (const type of this.eventTypes) {
-            const maxLevelM = Math.max(...(teams?.filter((t) => t.type === type).map((t) => t.teamNumber ?? 0) ?? []));
+            const maxLevelM = Math.max(
+              ...(teams?.filter((t) => t.type === type).map((t) => t.teamNumber ?? 0) ?? []),
+            );
             this.teamNumbers[type] = Array.from({ length: maxLevelM }, (_, i) => i + 1);
           }
         }),
         map((teams) => teams.sort(sortTeams)),
       );
 
-      this.locationForSeason$ = combineLatest([this.season.valueChanges, this.updateLocation$]).pipe(
+      this.locationForSeason$ = combineLatest([
+        this.season.valueChanges,
+        this.updateLocation$,
+      ]).pipe(
         takeUntil(this.destroy$),
         switchMap((season) => {
           return this.apollo.query<{ club: Club }>({
@@ -498,7 +526,11 @@ export class EditPageComponent implements OnInit {
       this.apollo.mutate({
         mutation: gql`
           mutation AddBasePlayerForSubEvent($playerId: ID!, $subEventId: ID!, $teamId: ID!) {
-            addBasePlayerForSubEvent(playerId: $playerId, subEventId: $subEventId, teamId: $teamId) {
+            addBasePlayerForSubEvent(
+              playerId: $playerId
+              subEventId: $subEventId
+              teamId: $teamId
+            ) {
               id
             }
           }
@@ -530,7 +562,11 @@ export class EditPageComponent implements OnInit {
       this.apollo.mutate({
         mutation: gql`
           mutation removeBasePlayerForSubEvent($playerId: ID!, $subEventId: ID!, $teamId: ID!) {
-            removeBasePlayerForSubEvent(playerId: $playerId, subEventId: $subEventId, teamId: $teamId) {
+            removeBasePlayerForSubEvent(
+              playerId: $playerId
+              subEventId: $subEventId
+              teamId: $teamId
+            ) {
               id
             }
           }

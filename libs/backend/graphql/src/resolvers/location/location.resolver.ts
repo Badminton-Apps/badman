@@ -6,11 +6,7 @@ import {
   LocationUpdateInput,
   Player,
 } from '@badman/backend-database';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -44,9 +40,7 @@ export class LocationResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Location)
-  async location(
-    @Args('id', { type: () => ID }) id: string,
-  ): Promise<Location | null> {
+  async location(@Args('id', { type: () => ID }) id: string): Promise<Location | null> {
     return Location.findByPk(id);
   }
 
@@ -91,15 +85,8 @@ export class LocationResolver {
         throw new NotFoundException(`${Club.name}: ${newLocationData.clubId}`);
       }
 
-      if (
-        !(await user.hasAnyPermission([
-          `${dbClub.id}_edit:location`,
-          'edit-any:club',
-        ]))
-      ) {
-        throw new UnauthorizedException(
-          `You do not have permission to add a competition`,
-        );
+      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club']))) {
+        throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
       const dbLocation = await Location.create(
@@ -137,20 +124,11 @@ export class LocationResolver {
       const dbLocation = await Location.findByPk(updateLocationData.id);
 
       if (!dbLocation) {
-        throw new NotFoundException(
-          `${Location.name}: ${updateLocationData.id}`,
-        );
+        throw new NotFoundException(`${Location.name}: ${updateLocationData.id}`);
       }
 
-      if (
-        !(await user.hasAnyPermission([
-          `${dbLocation.clubId}_edit:location`,
-          'edit-any:club',
-        ]))
-      ) {
-        throw new UnauthorizedException(
-          `You do not have permission to add a competition`,
-        );
+      if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club']))) {
+        throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
       await dbLocation.update(
@@ -193,15 +171,8 @@ export class LocationResolver {
         throw new NotFoundException(`${Location.name}: ${id}`);
       }
 
-      if (
-        !(await user.hasAnyPermission([
-          `${dbLocation.clubId}_edit:location`,
-          'edit-any:club',
-        ]))
-      ) {
-        throw new UnauthorizedException(
-          `You do not have permission to add a competition`,
-        );
+      if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club']))) {
+        throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
       await dbLocation.destroy({ transaction });

@@ -1,8 +1,4 @@
-import {
-  Player,
-  RankingLastPlace,
-  RankingSystem,
-} from '@badman/backend-database';
+import { Player, RankingLastPlace, RankingSystem } from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
 import {
   Args,
@@ -29,9 +25,7 @@ export class PagedLastRankingPlace {
 @Resolver(() => RankingLastPlace)
 export class LastRankingPlaceResolver {
   @Query(() => RankingLastPlace)
-  async rankingLastPlace(
-    @Args('id', { type: () => ID }) id: string
-  ): Promise<RankingLastPlace> {
+  async rankingLastPlace(@Args('id', { type: () => ID }) id: string): Promise<RankingLastPlace> {
     const lastRankingPlace = await RankingLastPlace.findByPk(id);
 
     if (!lastRankingPlace) {
@@ -41,16 +35,12 @@ export class LastRankingPlaceResolver {
   }
 
   @Query(() => [RankingLastPlace])
-  async rankingLastPlaces(
-    @Args() listArgs: ListArgs
-  ): Promise<RankingLastPlace[]> {
+  async rankingLastPlaces(@Args() listArgs: ListArgs): Promise<RankingLastPlace[]> {
     return RankingLastPlace.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => RankingSystem)
-  async rankingSystem(
-    @Parent() rankingPlace: RankingLastPlace
-  ): Promise<RankingSystem> {
+  async rankingSystem(@Parent() rankingPlace: RankingLastPlace): Promise<RankingSystem> {
     return rankingPlace.getRankingSystem();
   }
 

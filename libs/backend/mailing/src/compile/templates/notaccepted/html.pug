@@ -7,27 +7,30 @@ block title
 block content
   p.text-center
     p
-      | Beste #{captain}, 
+      | Beste #{ captain }, 
       br
       br
-      |   De ontmoeting 
-      strong #{encounter.home.name} 
+      |
+      | De ontmoeting
+      strong #{ encounter.home.name } 
       | tegen
-      strong #{encounter.away.name} 
-      | op 
-      strong #{date} 
+      strong #{ encounter.away.name } 
+      | op
+      strong #{ date } 
       | is nog niet geaccepteerd.
       br
     p
       a(href=`${url}`)
         | Ga naar ontmoeting
     p
-      | Met sportieve groeten, 
+      | Met sportieve groeten,
       br
-      |   Badman
+      |
+      | Badman
     p
       | Disclaimer:
       br
       small
-        |   Deze notificatie is nog in beta. Mocht je vragen of opmerkingen hebben, laat het ons weten via 
-        a(href='mailto:info@badmintonvlaanderen.be') badmintonvlaanderen
+        |
+        | Deze notificatie is nog in beta. Mocht je vragen of opmerkingen hebben, laat het ons weten via
+        a(href="mailto:info@badmintonvlaanderen.be") badmintonvlaanderen

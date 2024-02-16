@@ -13,7 +13,7 @@ export class RoleClaimMembership extends Model {
 
   @Field(() => Date, { nullable: true })
   override createdAt?: Date;
-  
+
   @ForeignKey(() => Role)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)

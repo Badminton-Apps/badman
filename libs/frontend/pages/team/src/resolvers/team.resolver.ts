@@ -10,7 +10,7 @@ export class TeamResolver {
   constructor(
     private apollo: Apollo,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -62,7 +62,7 @@ export class TeamResolver {
           }
           return new Team(result.data.team);
         }),
-        first()
+        first(),
       );
   }
 }

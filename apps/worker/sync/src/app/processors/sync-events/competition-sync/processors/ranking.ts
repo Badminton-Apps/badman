@@ -19,8 +19,7 @@ export class CompetitionSyncRankingProcessor extends StepProcessor {
       options = {};
     }
 
-    options.logger =
-      options.logger || new Logger(CompetitionSyncRankingProcessor.name);
+    options.logger = options.logger || new Logger(CompetitionSyncRankingProcessor.name);
     super(options);
   }
 
@@ -49,9 +48,7 @@ export class CompetitionSyncRankingProcessor extends StepProcessor {
     this.event.official = true;
     await this.event.save({ transaction: this.transaction });
 
-    await runParallel(
-      this.subEvents?.map((e) => this._addRankingGroups(e, groups)) ?? []
-    );
+    await runParallel(this.subEvents?.map((e) => this._addRankingGroups(e, groups)) ?? []);
   }
 
   private async _addRankingGroups(
@@ -61,7 +58,7 @@ export class CompetitionSyncRankingProcessor extends StepProcessor {
       subEvent: SubEventCompetition;
       internalId: number;
     },
-    groups: RankingGroup[]
+    groups: RankingGroup[],
   ) {
     await subEvent.addRankingGroups(groups, { transaction: this.transaction });
   }

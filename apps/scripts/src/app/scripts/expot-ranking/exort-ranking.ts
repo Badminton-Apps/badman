@@ -7,7 +7,13 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/backend-database';
-import { ClubMembershipType, GameBreakdownType, GameType, getGameResultType, runParallel } from '@badman/utils';
+import {
+  ClubMembershipType,
+  GameBreakdownType,
+  GameType,
+  getGameResultType,
+  runParallel,
+} from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import { Includeable, Op } from 'sequelize';
@@ -76,10 +82,16 @@ export class ExportBBFPlayers {
 
       await runParallel(
         players?.map(async (player) => {
-          const compGamesPlayer = compGames.filter((g) => g.players?.some((p) => p.id == player.id));
-          const tournamentGamesPlayer = tournamentGames.filter((g) => g.players?.some((p) => p.id == player.id));
+          const compGamesPlayer = compGames.filter((g) =>
+            g.players?.some((p) => p.id == player.id),
+          );
+          const tournamentGamesPlayer = tournamentGames.filter((g) =>
+            g.players?.some((p) => p.id == player.id),
+          );
 
-          this.output.push(this.processPlayer(player, compGamesPlayer, tournamentGamesPlayer, system, debug));
+          this.output.push(
+            this.processPlayer(player, compGamesPlayer, tournamentGamesPlayer, system, debug),
+          );
 
           if (processedPlayers % 100 === 0) {
             this.logger.verbose(
@@ -166,7 +178,9 @@ export class ExportBBFPlayers {
         slug: ['erika-verhoeven', 'gunther-van-loco', 'glenn-latomme'],
       });
     } else {
-      const playersxlsx = xlsx.readFile(`apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`);
+      const playersxlsx = xlsx.readFile(
+        `apps/scripts/src/app/shared-files/Players ${season}-${season + 1}.xlsx`,
+      );
       const playersSheet = playersxlsx.Sheets[playersxlsx.SheetNames[0]];
       let playersJson = xlsx.utils.sheet_to_json<{
         groupname: string;
@@ -179,7 +193,9 @@ export class ExportBBFPlayers {
         PlayerLevelMixed: string;
       }>(playersSheet);
 
-      playersJson = playersJson?.filter((c) => c.memberid != null && c.memberid != '' && c.memberid != undefined);
+      playersJson = playersJson?.filter(
+        (c) => c.memberid != null && c.memberid != '' && c.memberid != undefined,
+      );
       // ?.slice(0, 1000);
       orClause.push({ memberId: playersJson?.map((c) => c.memberid) });
     }
@@ -226,7 +242,10 @@ export class ExportBBFPlayers {
 
   async countGames(system: RankingSystem, players: Player[]) {
     const stop = moment(); // system.calculationLastUpdate;
-    const start = moment(system.calculationLastUpdate).subtract(system.periodAmount, system.periodUnit);
+    const start = moment(system.calculationLastUpdate).subtract(
+      system.periodAmount,
+      system.periodUnit,
+    );
 
     const sharedInclude = [
       {
@@ -281,8 +300,8 @@ export class ExportBBFPlayers {
     let index = 0;
 
     for (const game of games) {
-      const playerTeam = game.players?.find((r) => r.GamePlayerMembership.playerId === player.id)?.GamePlayerMembership
-        .team;
+      const playerTeam = game.players?.find((r) => r.GamePlayerMembership.playerId === player.id)
+        ?.GamePlayerMembership.team;
       const rankingPoint = game.rankingPoints?.find((x) => x.playerId == player.id);
       if (!rankingPoint) {
         continue;
@@ -340,8 +359,8 @@ export class ExportBBFPlayers {
     let index = 0;
 
     for (const game of games) {
-      const playerTeam = game.players?.find((r) => r.GamePlayerMembership.playerId === player.id)?.GamePlayerMembership
-        .team;
+      const playerTeam = game.players?.find((r) => r.GamePlayerMembership.playerId === player.id)
+        ?.GamePlayerMembership.team;
       const rankingPoint = game.rankingPoints?.find((x) => x.playerId == player.id);
       if (!rankingPoint) {
         continue;
@@ -356,7 +375,10 @@ export class ExportBBFPlayers {
 
       const gameResult = getGameResultType(game.winner == playerTeam, game.gameType, rankingPoint);
 
-      if (gameResult == GameBreakdownType.LOST_UPGRADE || gameResult == GameBreakdownType.LOST_DOWNGRADE) {
+      if (
+        gameResult == GameBreakdownType.LOST_UPGRADE ||
+        gameResult == GameBreakdownType.LOST_DOWNGRADE
+      ) {
         lostGames++;
       } else if (gameResult == GameBreakdownType.WON) {
         points.push(rankingPoint?.points ?? 0);

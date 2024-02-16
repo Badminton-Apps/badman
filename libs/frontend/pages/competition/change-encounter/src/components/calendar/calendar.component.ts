@@ -1,6 +1,12 @@
 import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnInit,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
@@ -16,7 +22,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent } from '@badman/frontend-components';
-import { EncounterChangeDate, EncounterCompetition, EventCompetition, Location, Team } from '@badman/frontend-models';
+import {
+  EncounterChangeDate,
+  EncounterCompetition,
+  EventCompetition,
+  Location,
+  Team,
+} from '@badman/frontend-models';
 import { getCurrentSeason, sortTeams } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -83,7 +95,10 @@ export class CalendarComponent implements OnInit {
   > = new Map();
   public dayEvents: Map<string, string[]> = new Map();
 
-  public changeRequests: Map<string, { request: EncounterChangeDate; encounter: EncounterCompetition }[]> = new Map();
+  public changeRequests: Map<
+    string,
+    { request: EncounterChangeDate; encounter: EncounterCompetition }[]
+  > = new Map();
   public teamColors = new Map<string, string>();
   public homeTeams: Team[] = [];
   public awayTeams: Team[] = [];
@@ -150,7 +165,15 @@ export class CalendarComponent implements OnInit {
     this.season = getCurrentSeason(this.firstDayOfMonth);
     this.monthNames = moment.months();
     const weekdays = moment.weekdays();
-    this.weekDayNames = [weekdays[1], weekdays[2], weekdays[3], weekdays[4], weekdays[5], weekdays[6], weekdays[0]];
+    this.weekDayNames = [
+      weekdays[1],
+      weekdays[2],
+      weekdays[3],
+      weekdays[4],
+      weekdays[5],
+      weekdays[6],
+      weekdays[0],
+    ];
 
     this.minDate = moment([this.season, 8, 1]).toDate();
     this.maxDate = moment([this.season + 1, 4, 1])
@@ -354,7 +377,10 @@ export class CalendarComponent implements OnInit {
       const enc = this.encounters.get(date);
       const locations = day.info.locations;
 
-      if (enc?.some((e) => this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId)) || locations?.length > 0) {
+      if (
+        enc?.some((e) => this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId)) ||
+        locations?.length > 0
+      ) {
         // if any of the teams is visible
         hasActivityOnDay[weekdayName] = true;
       }
@@ -393,7 +419,10 @@ export class CalendarComponent implements OnInit {
     this.encounters.clear();
     this.changeRequests.clear();
 
-    const teams = [...(this.homeTeams?.map((t) => t.id) ?? []), ...(this.awayTeams?.map((t) => t.id) ?? [])];
+    const teams = [
+      ...(this.homeTeams?.map((t) => t.id) ?? []),
+      ...(this.awayTeams?.map((t) => t.id) ?? []),
+    ];
 
     // get all encounters where any of the teams is home or away
 
@@ -672,7 +701,9 @@ export class CalendarComponent implements OnInit {
   }
 
   private _showVisible(teams: Team[]) {
-    const homeTeamsStorage = localStorage.getItem(`visible_teams_${this.data.homeClubId}`)?.split(',');
+    const homeTeamsStorage = localStorage
+      .getItem(`visible_teams_${this.data.homeClubId}`)
+      ?.split(',');
 
     const homeTeams = teams
       ?.filter((team) => {
@@ -690,7 +721,9 @@ export class CalendarComponent implements OnInit {
         return team.id;
       });
 
-    const awayTeamsStorage = localStorage.getItem(`visible_teams_${this.data.awayClubId}`)?.split(',');
+    const awayTeamsStorage = localStorage
+      .getItem(`visible_teams_${this.data.awayClubId}`)
+      ?.split(',');
     const awayTeams = teams
       ?.filter((team) => {
         if (awayTeamsStorage && awayTeamsStorage.length > 0 && team.id) {
@@ -734,10 +767,14 @@ export class CalendarComponent implements OnInit {
     const date = moment(d);
 
     if ((space ?? 0) <= 0) {
-      this.snack.open(this.translate.instant('all.competition.change-encounter.calendar.no-space'), 'Ok', {
-        // duration: 4000,
-        panelClass: 'error',
-      });
+      this.snack.open(
+        this.translate.instant('all.competition.change-encounter.calendar.no-space'),
+        'Ok',
+        {
+          // duration: 4000,
+          panelClass: 'error',
+        },
+      );
       return;
     }
 
@@ -785,7 +822,10 @@ export class CalendarComponent implements OnInit {
     const exceptions = this.exceptions.get(format);
 
     // only load availibility stating from 1st of september untill last of may
-    if ((day.month() < 8 && day.year() == this.season) || (day.month() > 4 && day.year() == this.season + 1)) {
+    if (
+      (day.month() < 8 && day.year() == this.season) ||
+      (day.month() > 4 && day.year() == this.season + 1)
+    ) {
       return dayInfo;
     }
 
@@ -842,7 +882,9 @@ export class CalendarComponent implements OnInit {
     }
 
     for (const request of changeRequests ?? []) {
-      const infoIndex = dayInfo.locations.findIndex((l) => l.locationId === request?.request?.locationId);
+      const infoIndex = dayInfo.locations.findIndex(
+        (l) => l.locationId === request?.request?.locationId,
+      );
 
       if (infoIndex >= 0) {
         dayInfo.locations[infoIndex].requested.push(request.encounter);

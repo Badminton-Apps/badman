@@ -141,7 +141,9 @@ export class RankingSyncer {
 
             // Create some margin
             const margin = firstMondayOfMonth.clone().add(2, 'days');
-            canUpdate = momentDate.isSame(firstMondayOfMonth) || momentDate.isBetween(firstMondayOfMonth, margin);
+            canUpdate =
+              momentDate.isSame(firstMondayOfMonth) ||
+              momentDate.isBetween(firstMondayOfMonth, margin);
           }
 
           if (this.fuckedDatesGoods.includes(momentDate.toISOString())) {
@@ -197,7 +199,8 @@ export class RankingSyncer {
     return new ProcessStep(this.STEP_POINTS, async (args: { transaction: Transaction }) => {
       const ranking = this.processor.getData<RankingStepData>(this.STEP_RANKING);
 
-      const { visiblePublications } = this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ?? {};
+      const { visiblePublications } =
+        this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ?? {};
 
       const categories = this.processor.getData<CategoriesStepData[]>(this.STEP_CATEGORIES);
 
@@ -219,13 +222,19 @@ export class RankingSyncer {
           return;
         }
 
-        const rankingPoints = await this._visualService.getPoints(ranking.visualCode, publication.code, category);
+        const rankingPoints = await this._visualService.getPoints(
+          ranking.visualCode,
+          publication.code,
+          category,
+        );
 
         const memberIds = rankingPoints?.map(
           (points) => correctWrongPlayers({ memberId: `${points.Player1.MemberID}` }).memberId,
         );
 
-        this.logger.debug(`Getting ${memberIds?.length} players for ${publication.name} ${type} ${gender}`);
+        this.logger.debug(
+          `Getting ${memberIds?.length} players for ${publication.name} ${type} ${gender}`,
+        );
 
         const players = await Player.findAll({
           attributes: ['id', 'memberId'],
@@ -254,7 +263,9 @@ export class RankingSyncer {
           let foundPlayer = players.find((p) => p.memberId === memberId);
 
           if (!memberId) {
-            this.logger.error(`No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`);
+            this.logger.error(
+              `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`,
+            );
             continue;
           }
 
@@ -277,7 +288,9 @@ export class RankingSyncer {
             players.push(foundPlayer);
 
             if (!foundPlayer.memberId) {
-              this.logger.error(`No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`);
+              this.logger.error(
+                `No memberId found for ${points.Player1.Name} ${points.Player1.MemberID}`,
+              );
               continue;
             }
 
@@ -313,7 +326,9 @@ export class RankingSyncer {
           }
 
           if (publication.usedForUpdate === false && foundPlayer.rankingLastPlaces != null) {
-            const place = foundPlayer.rankingLastPlaces.find((r) => r.systemId === ranking.system.id);
+            const place = foundPlayer.rankingLastPlaces.find(
+              (r) => r.systemId === ranking.system.id,
+            );
             if (place != null && place[type] != null && place[type] !== points.Level) {
               place[type] = points.Level;
               await place.save({ transaction: args.transaction });
@@ -428,13 +443,15 @@ export class RankingSyncer {
   protected removeInvisiblePublications(): ProcessStep {
     return new ProcessStep(this.STEP_REMOVED, async (args: { transaction: Transaction }) => {
       try {
-        const { hiddenPublications } = this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ?? {};
+        const { hiddenPublications } =
+          this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ?? {};
 
         if (hiddenPublications == null) {
           return;
         }
 
-        const { visualCode, system } = this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
+        const { visualCode, system } =
+          this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
 
         if (!visualCode) {
           throw new Error('No ranking found');
@@ -450,7 +467,9 @@ export class RankingSyncer {
           });
 
           if (points > 0) {
-            this.logger.log(`Removing points for ${publication.format('LLL')} because it is not visible anymore`);
+            this.logger.log(
+              `Removing points for ${publication.format('LLL')} because it is not visible anymore`,
+            );
             await RankingPlace.destroy({
               where: {
                 rankingDate: publication.toDate(),
@@ -471,11 +490,14 @@ export class RankingSyncer {
     return new ProcessStep(this.STEP_QUEUE, async (args: { transaction: Transaction }) => {
       const { system } = this.processor.getData<RankingStepData>(this.STEP_RANKING) ?? {};
 
-      const { visiblePublications } = this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ?? {};
+      const { visiblePublications } =
+        this.processor.getData<PublicationStepData>(this.STEP_PUBLICATIONS) ?? {};
 
       // For now we only check if it's the last update
 
-      const lastPublication = visiblePublications?.sort((a, b) => b.date.valueOf() - a.date.valueOf())?.[0];
+      const lastPublication = visiblePublications?.sort(
+        (a, b) => b.date.valueOf() - a.date.valueOf(),
+      )?.[0];
 
       if (lastPublication == null) {
         return;
@@ -492,7 +514,9 @@ export class RankingSyncer {
       });
 
       if (playersWithMissingRankings.length > 0) {
-        this.logger.log(`Queueing ${playersWithMissingRankings.length} players for ranking creation`);
+        this.logger.log(
+          `Queueing ${playersWithMissingRankings.length} players for ranking creation`,
+        );
 
         // qyueu them for ranking check on low priority
         for (const player of playersWithMissingRankings) {

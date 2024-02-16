@@ -10,11 +10,8 @@ export class EventTournament extends Event {
 
   constructor({ ...args }: Partial<EventTournament>) {
     super(args);
-    this.firstDay =
-      args?.firstDay != null ? new Date(args.firstDay) : undefined;
-    this.dates = (args.dates as unknown as string)
-      ?.split(',')
-      .map((x) => new Date(x));
+    this.firstDay = args?.firstDay != null ? new Date(args.firstDay) : undefined;
+    this.dates = (args.dates as unknown as string)?.split(',').map((x) => new Date(x));
     this.tournamentNumber = args.tournamentNumber;
     this.eventType = args.eventType ?? EventType.TOURNAMENT;
     this.subEventTournaments = args?.subEventTournaments

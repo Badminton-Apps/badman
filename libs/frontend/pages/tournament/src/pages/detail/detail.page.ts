@@ -130,9 +130,13 @@ export class DetailPageComponent implements OnInit {
             },
           })
           .subscribe(() => {
-            this.matSnackBar.open(`Tournament ${this.eventTournament.name} open/close dates updated`, 'Close', {
-              duration: 2000,
-            });
+            this.matSnackBar.open(
+              `Tournament ${this.eventTournament.name} open/close dates updated`,
+              'Close',
+              {
+                duration: 2000,
+              },
+            );
           });
       }
     });
@@ -199,7 +203,10 @@ export class DetailPageComponent implements OnInit {
   }
 
   removeEvent() {
-    const dialogData = new ConfirmDialogModel('all.tournament.delete.title', 'all.tournament.delete.description');
+    const dialogData = new ConfirmDialogModel(
+      'all.tournament.delete.title',
+      'all.tournament.delete.description',
+    );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '400px',

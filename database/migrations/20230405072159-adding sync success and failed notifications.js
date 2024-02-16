@@ -17,7 +17,7 @@ module.exports = {
             allowNull: false,
             defaultValue: 0,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -31,7 +31,7 @@ module.exports = {
             allowNull: false,
             defaultValue: 0,
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -49,7 +49,7 @@ module.exports = {
             schema: 'personal',
           },
           'syncSuccessNotification',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
@@ -58,7 +58,7 @@ module.exports = {
             schema: 'personal',
           },
           'syncFailedNotification',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

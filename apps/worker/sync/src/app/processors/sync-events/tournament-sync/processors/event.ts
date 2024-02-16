@@ -15,14 +15,13 @@ export class TournamentSyncEventProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions,
   ) {
     if (!options) {
       options = {};
     }
-    
-    options.logger =
-      options.logger || new Logger(TournamentSyncEventProcessor.name);
+
+    options.logger = options.logger || new Logger(TournamentSyncEventProcessor.name);
     super(options);
   }
 
@@ -50,13 +49,9 @@ export class TournamentSyncEventProcessor extends StepProcessor {
         dates.push(date.clone());
       }
 
-      const visualTournament = await this.visualService.getTournament(
-        this.visualTournament.Code
-      );
+      const visualTournament = await this.visualService.getTournament(this.visualTournament.Code);
 
-      this.logger.debug(
-        `EventTournament ${visualTournament.Name} not found, creating`
-      );
+      this.logger.debug(`EventTournament ${visualTournament.Name} not found, creating`);
       event = new EventTournament({
         name: visualTournament.Name,
         firstDay: visualTournament.StartDate,
@@ -66,10 +61,7 @@ export class TournamentSyncEventProcessor extends StepProcessor {
       });
     } else {
       // Later we will change the search function to use the tournament code
-      if (
-        event.visualCode === null ||
-        event.visualCode !== this.visualTournament.Code
-      ) {
+      if (event.visualCode === null || event.visualCode !== this.visualTournament.Code) {
         event.visualCode = this.visualTournament.Code;
       }
     }

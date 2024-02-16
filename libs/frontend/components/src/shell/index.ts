@@ -2,4 +2,3 @@
 export * from './components';
 export * from './shell';
 // end:ng42.barrel
-

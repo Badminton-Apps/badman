@@ -7,10 +7,7 @@ export interface IndexPlayer {
   mix: number;
   gender: 'M' | 'F';
 }
-export const getIndexFromPlayers = (
-  type: SubEventTypeEnum,
-  players: Partial<IndexPlayer>[]
-) => {
+export const getIndexFromPlayers = (type: SubEventTypeEnum, players: Partial<IndexPlayer>[]) => {
   const rankings: Partial<IndexPlayer>[] = [];
 
   for (const p of players) {
@@ -33,7 +30,7 @@ export const getIndexFromPlayers = (
 
   if (type !== 'MX') {
     const bestPlayers = getBestPlayers(type, rankings)?.map(
-      (r) => (r?.single ?? 12) + (r?.double ?? 12)
+      (r) => (r?.single ?? 12) + (r?.double ?? 12),
     );
     let missingIndex = 0;
     if (bestPlayers.length < 4) {
@@ -43,7 +40,7 @@ export const getIndexFromPlayers = (
     return bestPlayers.reduce((a, b) => a + b, missingIndex);
   } else {
     const bestPlayers = getBestPlayers(type, rankings)?.map(
-      (r) => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12)
+      (r) => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12),
     );
 
     let missingIndex = 0;
@@ -55,10 +52,7 @@ export const getIndexFromPlayers = (
   }
 };
 
-export const getBestPlayers = (
-  type: SubEventTypeEnum,
-  players: Partial<IndexPlayer>[]
-) => {
+export const getBestPlayers = (type: SubEventTypeEnum, players: Partial<IndexPlayer>[]) => {
   if (type !== 'MX') {
     const bestPlayers = players
       ?.sort((a, b) => {
@@ -99,13 +93,11 @@ export const getBestPlayers = (
 
 export const getBestPlayersFromTeam = (
   type: SubEventTypeEnum,
-  rankings: Partial<IndexPlayer>[]
+  rankings: Partial<IndexPlayer>[],
 ) => {
   if (type !== 'MX') {
     const bestPlayers = getBestPlayers(type, rankings);
-    const bestRankings = bestPlayers?.map(
-      (r) => (r?.single ?? 12) + (r?.double ?? 12)
-    );
+    const bestRankings = bestPlayers?.map((r) => (r?.single ?? 12) + (r?.double ?? 12));
 
     let missingIndex = 0;
     if (bestPlayers.length < 4) {
@@ -119,7 +111,7 @@ export const getBestPlayersFromTeam = (
   } else {
     const bestPlayers = getBestPlayers(type, rankings);
     const bestRankings = bestPlayers?.map(
-      (r) => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12)
+      (r) => (r?.single ?? 12) + (r?.double ?? 12) + (r?.mix ?? 12),
     );
 
     let missingIndex = 0;

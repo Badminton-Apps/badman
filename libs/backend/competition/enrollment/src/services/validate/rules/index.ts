@@ -11,4 +11,3 @@ export * from './team-riser-faller.rule';
 export * from './team-subevent.rule';
 export * from './team-subevent-index.rule';
 // end:ng42.barrel
-

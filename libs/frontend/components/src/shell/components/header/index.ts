@@ -5,4 +5,3 @@ export * from './profile';
 export * from './search-box';
 export * from './theme-switcher';
 // end:ng42.barrel
-

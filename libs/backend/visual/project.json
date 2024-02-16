@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/visual",
         "tsConfig": "libs/backend/visual/tsconfig.lib.json",
         "packageJson": "libs/backend/visual/package.json",
         "main": "libs/backend/visual/src/index.ts",
-        "assets": [
-          "libs/backend/visual/*.md"
-        ]
+        "assets": ["libs/backend/visual/*.md"]
       }
     }
   },

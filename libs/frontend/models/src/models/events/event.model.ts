@@ -17,8 +17,6 @@ export class Event {
   openDate?: Date;
   closeDate?: Date;
 
-
-
   allowEnlisting?: boolean;
 
   usedRankingUnit?: 'days' | 'weeks' | 'months';
@@ -47,8 +45,7 @@ export class Event {
     this.closeDate = args.closeDate ? new Date(args.closeDate) : undefined;
 
     if (this.openDate && this.closeDate) {
-      this.allowEnlisting =
-        this.openDate <= new Date() && this.closeDate >= new Date();
+      this.allowEnlisting = this.openDate <= new Date() && this.closeDate >= new Date();
     }
 
     this.usedRankingUnit = args.usedRankingUnit;

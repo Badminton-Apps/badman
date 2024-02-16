@@ -43,23 +43,10 @@ import { Club } from './club.model';
 import { Comment } from './comment.model';
 import { EventEntry, Game, GamePlayerMembership } from './event';
 import { RankingLastPlace, RankingPlace, RankingPoint } from './ranking';
-import {
-  Claim,
-  PlayerClaimMembership,
-  PlayerRoleMembership,
-  Role,
-} from './security';
+import { Claim, PlayerClaimMembership, PlayerRoleMembership, Role } from './security';
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { Team } from './team.model';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import { ClubPlayerMembershipType } from '../_interception';
 import { Notification, Setting } from './personal';
 import { TeamMembershipType } from '@badman/utils';
@@ -285,14 +272,8 @@ export class Player extends Model {
   setRankingLastPlaces!: HasManySetAssociationsMixin<RankingLastPlace, string>;
   addRankingLastPlaces!: HasManyAddAssociationsMixin<RankingLastPlace, string>;
   addLastRankingPlace!: HasManyAddAssociationMixin<RankingLastPlace, string>;
-  removeLastRankingPlace!: HasManyRemoveAssociationMixin<
-    RankingLastPlace,
-    string
-  >;
-  removeRankingLastPlaces!: HasManyRemoveAssociationsMixin<
-    RankingLastPlace,
-    string
-  >;
+  removeLastRankingPlace!: HasManyRemoveAssociationMixin<RankingLastPlace, string>;
+  removeRankingLastPlaces!: HasManyRemoveAssociationsMixin<RankingLastPlace, string>;
   hasLastRankingPlace!: HasManyHasAssociationMixin<RankingLastPlace, string>;
   hasRankingLastPlaces!: HasManyHasAssociationsMixin<RankingLastPlace, string>;
   countRankingLastPlaces!: HasManyCountAssociationsMixin;
@@ -359,9 +340,7 @@ export class Player extends Model {
     });
     claims = [
       ...claims,
-      ...roles
-        .map((r) => r?.claims?.map((c) => `${r.linkId}_${c.name}`))
-        .flat(),
+      ...roles.map((r) => r?.claims?.map((c) => `${r.linkId}_${c.name}`)).flat(),
     ].filter((x) => x !== null && x !== undefined);
 
     return claims as string[];
@@ -371,9 +350,7 @@ export class Player extends Model {
     if (!this.rankingPlaces) {
       return null;
     }
-    const placesInSystem = this.rankingPlaces.filter(
-      (x) => x.systemId === system
-    );
+    const placesInSystem = this.rankingPlaces.filter((x) => x.systemId === system);
 
     if (placesInSystem.length <= 0) {
       return {
@@ -384,15 +361,9 @@ export class Player extends Model {
     }
 
     return {
-      single:
-        placesInSystem.sort((a, b) => (a.single ?? 0) - (b.single ?? 0))?.[0]
-          ?.single || max,
-      double:
-        placesInSystem.sort((a, b) => (a.double ?? 0) - (b.double ?? 0))?.[0]
-          ?.double || max,
-      mix:
-        placesInSystem.sort((a, b) => (a.mix ?? 0) - (b.mix ?? 0))?.[0]?.mix ||
-        max,
+      single: placesInSystem.sort((a, b) => (a.single ?? 0) - (b.single ?? 0))?.[0]?.single || max,
+      double: placesInSystem.sort((a, b) => (a.double ?? 0) - (b.double ?? 0))?.[0]?.double || max,
+      mix: placesInSystem.sort((a, b) => (a.mix ?? 0) - (b.mix ?? 0))?.[0]?.mix || max,
     } as RankingPlace;
   }
 
@@ -402,9 +373,7 @@ export class Player extends Model {
       return false;
     }
 
-    return requiredPermissions.some((perm) =>
-      claims.some((claim) => claim === perm)
-    );
+    return requiredPermissions.some((perm) => claims.some((claim) => claim === perm));
   }
 
   async hasAllPermission(requiredPermissions: string[]) {
@@ -413,9 +382,7 @@ export class Player extends Model {
       return false;
     }
 
-    return requiredPermissions.every((perm) =>
-      claims.some((claim) => claim === perm)
-    );
+    return requiredPermissions.every((perm) => claims.some((claim) => claim === perm));
   }
 }
 
@@ -448,27 +415,27 @@ export class PlayerUpdateInput extends PartialType(
     'comments',
     'notifications',
   ] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class PlayerNewInput extends PartialType(
   OmitType(PlayerUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}
 
 @ObjectType()
 export class PlayerRankingType extends PartialType(
   OmitType(PlayerUpdateInput, ['sub', 'permissions'] as const),
-  ObjectType
+  ObjectType,
 ) {
-  @Field(() => Number, {nullable: true})
+  @Field(() => Number, { nullable: true })
   single?: number;
 
-  @Field(() => Number, {nullable: true})
+  @Field(() => Number, { nullable: true })
   double?: number;
 
-  @Field(() => Number, {nullable: true})
+  @Field(() => Number, { nullable: true })
   mix?: number;
 }
 

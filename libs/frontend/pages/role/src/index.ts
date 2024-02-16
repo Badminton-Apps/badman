@@ -1,2 +1,1 @@
 export * from './role.module';
-

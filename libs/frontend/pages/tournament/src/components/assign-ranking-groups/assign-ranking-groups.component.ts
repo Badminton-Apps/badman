@@ -102,7 +102,11 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         map((result) => result.data.rankingGroups),
         tap((groups) => {
           this.groups = groups;
-          const unique = [...new Set(subEvents?.map((s) => s.rankingGroups?.map((r: RankingGroup) => r.id)).flat())];
+          const unique = [
+            ...new Set(
+              subEvents?.map((s) => s.rankingGroups?.map((r: RankingGroup) => r.id)).flat(),
+            ),
+          ];
 
           if (unique.length === 0) {
             // setting default to 'Adults'
@@ -185,11 +189,17 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         }
 
         if (this.useSame) {
-          if (subEvent.rankingGroups?.find((r) => r.id == group.id) && !selectedGroups.includes(group.id)) {
+          if (
+            subEvent.rankingGroups?.find((r) => r.id == group.id) &&
+            !selectedGroups.includes(group.id)
+          ) {
             removed.push(subEvent.id);
           }
 
-          if (!subEvent.rankingGroups?.find((r) => r.id == group.id) && selectedGroups.includes(group.id)) {
+          if (
+            !subEvent.rankingGroups?.find((r) => r.id == group.id) &&
+            selectedGroups.includes(group.id)
+          ) {
             added.push(subEvent.id);
           }
         } else {
@@ -220,7 +230,11 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         mutations.push(
           this.apollo.mutate({
             mutation: gql`
-              mutation RemoveSubEventsToRankingGroup($rankingGroupId: ID!, $competitions: [ID!], $tournaments: [ID!]) {
+              mutation RemoveSubEventsToRankingGroup(
+                $rankingGroupId: ID!
+                $competitions: [ID!]
+                $tournaments: [ID!]
+              ) {
                 removeSubEventsToRankingGroup(
                   rankingGroupId: $rankingGroupId
                   competitions: $competitions
@@ -247,7 +261,11 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
         mutations.push(
           this.apollo.mutate({
             mutation: gql`
-              mutation AddSubEventsToRankingGroup($rankingGroupId: ID!, $competitions: [ID!], $tournaments: [ID!]) {
+              mutation AddSubEventsToRankingGroup(
+                $rankingGroupId: ID!
+                $competitions: [ID!]
+                $tournaments: [ID!]
+              ) {
                 addSubEventsToRankingGroup(
                   rankingGroupId: $rankingGroupId
                   competitions: $competitions

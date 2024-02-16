@@ -5,7 +5,7 @@ export const sortEncounters = (
   b: Partial<{
     date: Date;
   }>,
-  order: 'asc' | 'desc' = 'asc'
+  order: 'asc' | 'desc' = 'asc',
 ) => {
   if (!a.date) {
     return 1;

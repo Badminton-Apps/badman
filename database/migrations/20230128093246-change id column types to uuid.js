@@ -571,7 +571,7 @@ module.exports = {
             schema: foreignKeyInfo.source_schema,
           },
           foreignKeyInfo.constraint_name,
-          { transaction }
+          { transaction },
         );
       }
 
@@ -580,7 +580,7 @@ module.exports = {
       for (const tableName of tableNames) {
         await queryInterface.sequelize.query(
           `ALTER TABLE "${tableName.schema}"."${tableName.tableName}" ALTER COLUMN "id" TYPE uuid USING "id"::uuid;`,
-          { transaction }
+          { transaction },
         );
       }
 
@@ -589,7 +589,7 @@ module.exports = {
       for (const foreignKeyInfo of [...foreignKeys, ...otherForeignKeys]) {
         await queryInterface.sequelize.query(
           `ALTER TABLE "${foreignKeyInfo.source_schema}"."${foreignKeyInfo.source_table}" ALTER COLUMN "${foreignKeyInfo.source_column}" TYPE uuid USING "${foreignKeyInfo.source_column}"::uuid;`,
-          { transaction }
+          { transaction },
         );
       }
 
@@ -597,8 +597,8 @@ module.exports = {
       for (const foreignKeyInfo of foreignKeys) {
         console.log(
           `Progress ${foreignKeyInfo.constraint_name} %${Math.round(
-            (foreignKeys.indexOf(foreignKeyInfo) / foreignKeys.length) * 100
-          )}`
+            (foreignKeys.indexOf(foreignKeyInfo) / foreignKeys.length) * 100,
+          )}`,
         );
 
         await queryInterface.addConstraint(
@@ -620,7 +620,7 @@ module.exports = {
             onDelete: 'cascade',
             onUpdate: 'cascade',
             transaction,
-          }
+          },
         );
       }
     });
@@ -636,7 +636,7 @@ module.exports = {
             schema: foreignKeyInfo.source_schema,
           },
           foreignKeyInfo.constraint_name,
-          { transaction }
+          { transaction },
         );
       }
 
@@ -644,7 +644,7 @@ module.exports = {
       for (const tableName of tableNames) {
         await queryInterface.sequelize.query(
           `ALTER TABLE "${tableName.schema}"."${tableName.tableName}" ALTER COLUMN "id" TYPE varchar(255) USING "id"::varchar(255);`,
-          { transaction }
+          { transaction },
         );
       }
 
@@ -652,7 +652,7 @@ module.exports = {
       for (const foreignKeyInfo of [...foreignKeys, ...otherForeignKeys]) {
         await queryInterface.sequelize.query(
           `ALTER TABLE "${foreignKeyInfo.source_schema}"."${foreignKeyInfo.source_table}" ALTER COLUMN "${foreignKeyInfo.source_column}" TYPE varchar(255) USING "${foreignKeyInfo.source_column}"::varchar(255);`,
-          { transaction }
+          { transaction },
         );
       }
 
@@ -677,7 +677,7 @@ module.exports = {
             onDelete: 'cascade',
             onUpdate: 'cascade',
             transaction,
-          }
+          },
         );
       }
     });

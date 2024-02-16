@@ -20,7 +20,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -41,13 +41,13 @@ module.exports = {
           'membershipType',
           {
             transaction: t,
-          }
+          },
         );
 
         // delete enum
         await queryInterface.sequelize.query(
           `DROP TYPE "enum_ClubPlayerMemberships_membershipType"`,
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

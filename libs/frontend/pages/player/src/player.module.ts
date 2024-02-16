@@ -60,10 +60,7 @@ const MODULE_ROUTES: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild(MODULE_ROUTES),
-  ],
+  imports: [CommonModule, RouterModule.forChild(MODULE_ROUTES)],
   declarations: [],
   providers: [PlayerResolver],
 })

@@ -13,7 +13,7 @@ module.exports = {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -23,7 +23,7 @@ module.exports = {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -33,7 +33,7 @@ module.exports = {
             type: sequelize.DataTypes.INTEGER,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -50,7 +50,7 @@ module.exports = {
               key: 'id',
             },
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         console.log('Migrating data');
@@ -59,7 +59,7 @@ module.exports = {
           `select * from "ranking"."RankingSystems" where "primary" = true`,
           {
             transaction: t,
-          }
+          },
         );
 
         const primarySystem = systems[0];
@@ -68,7 +68,7 @@ module.exports = {
           `select * from "event"."Games" where "playedAt" > '2020-09-01'`,
           {
             transaction: t,
-          }
+          },
         );
 
         console.log(`Found ${games.length} games`);
@@ -78,17 +78,14 @@ module.exports = {
             `select * from "event"."GamePlayerMemberships" where "gameId" = '${game.id}'`,
             {
               transaction: t,
-            }
+            },
           );
 
           // print percentage of progress every 500 games
           const index = games.indexOf(game);
           if (index % 500 === 0) {
             console.log(
-              `Migrating ${index}/${games.length} (${(
-                (index / games.length) *
-                100
-              ).toFixed(2)}%)`
+              `Migrating ${index}/${games.length} (${((index / games.length) * 100).toFixed(2)}%)`,
             );
           }
 
@@ -101,7 +98,7 @@ module.exports = {
               }' order by "rankingDate" desc limit 1`,
               {
                 transaction: t,
-              }
+              },
             );
 
             if (level[0].length > 0) {
@@ -109,7 +106,7 @@ module.exports = {
                 `update "event"."GamePlayerMemberships" set "single" = ${level[0][0].single}, "double" = ${level[0][0].double}, "mix" = ${level[0][0].mix}, "systemId" = '${primarySystem.id}' where "gameId" = '${game.id}' and "playerId" = '${player.playerId}';`,
                 {
                   transaction: t,
-                }
+                },
               );
             }
           }
@@ -132,24 +129,24 @@ module.exports = {
         await queryInterface.removeColumn(
           { tableName: 'GamePlayerMemberships', schema: 'event' },
           'single',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.removeColumn(
           { tableName: 'GamePlayerMemberships', schema: 'event' },
           'double',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
           { tableName: 'GamePlayerMemberships', schema: 'event' },
           'mix',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
           { tableName: 'GamePlayerMemberships', schema: 'event' },
           'systemId',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

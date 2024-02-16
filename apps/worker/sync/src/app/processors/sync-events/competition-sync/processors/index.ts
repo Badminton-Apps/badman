@@ -12,4 +12,3 @@ export * from './ranking';
 export * from './standing';
 export * from './subEvent';
 // end:ng42.barrel
-

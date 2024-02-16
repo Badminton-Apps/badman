@@ -37,12 +37,20 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
-        await queryInterface.removeColumn({ tableName: 'RankingSystems', schema: 'ranking' }, 'calculationDayOfWeek', {
-          transaction: t,
-        });
-        await queryInterface.removeColumn({ tableName: 'RankingSystems', schema: 'ranking' }, 'updateDayOfWeek', {
-          transaction: t,
-        });
+        await queryInterface.removeColumn(
+          { tableName: 'RankingSystems', schema: 'ranking' },
+          'calculationDayOfWeek',
+          {
+            transaction: t,
+          },
+        );
+        await queryInterface.removeColumn(
+          { tableName: 'RankingSystems', schema: 'ranking' },
+          'updateDayOfWeek',
+          {
+            transaction: t,
+          },
+        );
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

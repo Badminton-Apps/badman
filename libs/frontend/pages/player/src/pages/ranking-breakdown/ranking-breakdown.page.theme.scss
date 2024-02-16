@@ -7,7 +7,6 @@
 @use './dialogs/add-game/add-game.component.theme.scss' as add-game;
 @use './components/list-games/list-games.component.theme.scss' as list-games;
 
-
 @mixin color($theme) {
   @include period-selection.color($theme);
   @include add-game.color($theme);

@@ -21,7 +21,9 @@
       </div>
       <div class="row">
         <mat-form-field>
-          <mat-label>{{ 'all.settings.notifications.encounterChange.confirmationNotification' | translate }}</mat-label>
+          <mat-label>{{
+            'all.settings.notifications.encounterChange.confirmationNotification' | translate
+          }}</mat-label>
           <mat-select
             formControlName="encounterChangeConfirmationNotification"
             alt="encounterChangeConfirmationNotification"
@@ -35,7 +37,9 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>{{ 'all.settings.notifications.encounterChange.finishedNotification' | translate }}</mat-label>
+          <mat-label>{{
+            'all.settings.notifications.encounterChange.finishedNotification' | translate
+          }}</mat-label>
           <mat-select
             formControlName="encounterChangeFinishedNotification"
             alt="encounterChangeFinishedNotification"
@@ -49,8 +53,14 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>{{ 'all.settings.notifications.encounterChange.newNotification' | translate }}</mat-label>
-          <mat-select formControlName="encounterChangeNewNotification" alt="encounterChangeNewNotification" multiple>
+          <mat-label>{{
+            'all.settings.notifications.encounterChange.newNotification' | translate
+          }}</mat-label>
+          <mat-select
+            formControlName="encounterChangeNewNotification"
+            alt="encounterChangeNewNotification"
+            multiple
+          >
             @for (type of this.notificationType; track type) {
               <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
@@ -65,8 +75,14 @@
     </div>
     <div class="row">
       <mat-form-field>
-        <mat-label>{{ 'all.settings.notifications.encounter.notAcceptedNotification' | translate }}</mat-label>
-        <mat-select formControlName="encounterNotAcceptedNotification" alt="encounterNotAcceptedNotification" multiple>
+        <mat-label>{{
+          'all.settings.notifications.encounter.notAcceptedNotification' | translate
+        }}</mat-label>
+        <mat-select
+          formControlName="encounterNotAcceptedNotification"
+          alt="encounterNotAcceptedNotification"
+          multiple
+        >
           @for (type of this.notificationType; track type) {
             <mat-option [value]="type.value">
               {{ type.viewValue | translate }}
@@ -75,8 +91,14 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field>
-        <mat-label>{{ 'all.settings.notifications.encounter.notEnteredNotification' | translate }}</mat-label>
-        <mat-select formControlName="encounterNotEnteredNotification" alt="encounterNotEnteredNotification" multiple>
+        <mat-label>{{
+          'all.settings.notifications.encounter.notEnteredNotification' | translate
+        }}</mat-label>
+        <mat-select
+          formControlName="encounterNotEnteredNotification"
+          alt="encounterNotEnteredNotification"
+          multiple
+        >
           @for (type of this.notificationType; track type) {
             <mat-option [value]="type.value">
               {{ type.viewValue | translate }}
@@ -92,7 +114,11 @@
       <div class="row">
         <mat-form-field>
           <mat-label>{{ 'all.settings.notifications.sync.success' | translate }}</mat-label>
-          <mat-select formControlName="syncSuccessNotification" alt="syncSuccessNotification" multiple>
+          <mat-select
+            formControlName="syncSuccessNotification"
+            alt="syncSuccessNotification"
+            multiple
+          >
             @for (type of this.notificationType; track type) {
               <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
@@ -102,7 +128,11 @@
         </mat-form-field>
         <mat-form-field>
           <mat-label>{{ 'all.settings.notifications.sync.failed' | translate }}</mat-label>
-          <mat-select formControlName="syncFailedNotification" alt="syncFailedNotification" multiple>
+          <mat-select
+            formControlName="syncFailedNotification"
+            alt="syncFailedNotification"
+            multiple
+          >
             @for (type of this.notificationType; track type) {
               <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
@@ -118,8 +148,14 @@
       </div>
       <div class="row">
         <mat-form-field>
-          <mat-label>{{ 'all.settings.notifications.enrollment.clubenrollment' | translate }}</mat-label>
-          <mat-select formControlName="clubEnrollmentNotification" alt="clubEnrollmentNotification" multiple>
+          <mat-label>{{
+            'all.settings.notifications.enrollment.clubenrollment' | translate
+          }}</mat-label>
+          <mat-select
+            formControlName="clubEnrollmentNotification"
+            alt="clubEnrollmentNotification"
+            multiple
+          >
             @for (type of this.notificationType; track type) {
               <mat-option [value]="type.value">
                 {{ type.viewValue | translate }}
@@ -131,6 +167,12 @@
     </badman-has-claim>
   </form>
 }
-<button mat-raised-button color="primary" (click)="save()" [class.spinner]="this.saving" [disabled]="this.saving">
+<button
+  mat-raised-button
+  color="primary"
+  (click)="save()"
+  [class.spinner]="this.saving"
+  [disabled]="this.saving"
+>
   save
 </button>

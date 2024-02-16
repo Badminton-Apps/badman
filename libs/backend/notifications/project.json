@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/backend/notifications",
         "tsConfig": "libs/backend/notifications/tsconfig.lib.json",
         "packageJson": "libs/backend/notifications/package.json",
         "main": "libs/backend/notifications/src/index.ts",
-        "assets": [
-          "libs/backend/notifications/*.md"
-        ]
+        "assets": ["libs/backend/notifications/*.md"]
       }
     }
   },

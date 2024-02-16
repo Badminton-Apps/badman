@@ -1,9 +1,5 @@
 import { Game, Player, RankingSystem } from '@badman/backend-database';
-import {
-  Badminton,
-  Simulation,
-  SimulationPointsJob,
-} from '@badman/backend-queue';
+import { Badminton, Simulation, SimulationPointsJob } from '@badman/backend-queue';
 import { BelgiumFlandersPointsService } from '@badman/belgium-flanders-points';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';

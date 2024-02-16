@@ -13,15 +13,14 @@ module.exports = {
                 schemaname = 'public' AND 
                 tablename  = 'SequelizeMeta'
             );`,
-          { transaction: t }
+          { transaction: t },
         );
 
         // Check if meta exsists This means we come from an old version of the database,
         if (meta[0].exists) {
-          await queryInterface.sequelize.query(
-            `truncate table "SequelizeMeta";`,
-            { transaction: t }
-          );
+          await queryInterface.sequelize.query(`truncate table "SequelizeMeta";`, {
+            transaction: t,
+          });
 
           // do some magic for the old database
           // TODO :P
@@ -2441,7 +2440,7 @@ module.exports = {
                 
                 
                   `,
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);

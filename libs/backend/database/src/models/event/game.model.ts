@@ -86,15 +86,7 @@ export class Game extends Model {
   gameType?: GameType;
 
   @Field(() => String, { nullable: true })
-  @Column(
-    DataType.ENUM(
-      'NORMAL',
-      'WALKOVER',
-      'RETIREMENT',
-      'DISQUALIFIED',
-      'NO_MATCH'
-    )
-  )
+  @Column(DataType.ENUM('NORMAL', 'WALKOVER', 'RETIREMENT', 'DISQUALIFIED', 'NO_MATCH'))
   status?: GameStatus;
 
   @Field(() => Int, { nullable: true })
@@ -174,23 +166,15 @@ export class Game extends Model {
 
   @AfterCreate
   @AfterUpdate
-  static async gameCreatedOrUpdated(
-    instance: Game,
-    options: CreateOptions | UpdateOptions
-  ) {
+  static async gameCreatedOrUpdated(instance: Game, options: CreateOptions | UpdateOptions) {
     await Game.onUpdate(instance, options);
   }
 
   @AfterBulkCreate
   @AfterBulkUpdate
-  static async gamesCreatedOrUpdated(
-    instances: Game[],
-    options: CreateOptions | UpdateOptions
-  ) {
+  static async gamesCreatedOrUpdated(instances: Game[], options: CreateOptions | UpdateOptions) {
     // Ignore duplicates
-    instances = instances.filter(
-      (a, i) => instances.findIndex((s) => a.linkId === s.linkId) === i
-    );
+    instances = instances.filter((a, i) => instances.findIndex((s) => a.linkId === s.linkId) === i);
 
     for (const instance of instances) {
       await Game.onUpdate(instance, options);
@@ -221,7 +205,7 @@ export class Game extends Model {
 
   static async updateEncounterScore(
     encounter: EncounterCompetition,
-    options: CreateOptions | UpdateOptions
+    options: CreateOptions | UpdateOptions,
   ) {
     // If the encounter already has a score, don't update it
     if ((encounter.homeScore ?? 0) + (encounter.awayScore ?? 0) > 0) {
@@ -237,14 +221,14 @@ export class Game extends Model {
         acc.away += game.winner === 2 ? 1 : 0;
         return acc;
       },
-      { home: 0, away: 0 }
+      { home: 0, away: 0 },
     );
     await encounter.update(
       {
         homeScore: scores.home,
         awayScore: scores.away,
       },
-      { transaction: options.transaction }
+      { transaction: options.transaction },
     );
   }
 

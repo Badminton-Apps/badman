@@ -61,8 +61,7 @@ export class RankingPlace {
     this.rankingSystem = args?.rankingSystem;
     this.updatePossible = args?.updatePossible;
     this.rank = args?.rank;
-    this.rankingDate =
-      args?.rankingDate != null ? new Date(args.rankingDate) : undefined;
+    this.rankingDate = args?.rankingDate != null ? new Date(args.rankingDate) : undefined;
     this.statisticUrl = args?.statisticUrl;
     this.primary = args?.primary;
     this.player = args?.player;

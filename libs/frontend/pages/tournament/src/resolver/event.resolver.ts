@@ -6,11 +6,11 @@ import { Apollo, gql } from 'apollo-angular';
 import { first, map } from 'rxjs/operators';
 
 @Injectable()
-export class EventResolver  {
+export class EventResolver {
   constructor(
     private apollo: Apollo,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -60,7 +60,7 @@ export class EventResolver  {
           return new EventTournament(result.data.eventTournament);
         }),
 
-        first()
+        first(),
       );
   }
 }

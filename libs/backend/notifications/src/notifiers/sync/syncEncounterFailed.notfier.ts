@@ -1,8 +1,4 @@
-import {
-  EncounterCompetition,
-  NotificationOptionsTypes,
-  Player,
-} from '@badman/backend-database';
+import { EncounterCompetition, NotificationOptionsTypes, Player } from '@badman/backend-database';
 import * as webPush from 'web-push';
 import { Notifier } from '../notifier.base';
 
@@ -28,7 +24,7 @@ export class SyncEncounterFailed extends Notifier<
         title: `Sync encounter mislukt`,
         body: `${event.encounter.home?.name} vs ${event.encounter.away?.name} hebben we niet succesvol kunnen controleren of het ingevuld is`,
       },
-    } as webPush.RequestOptions; 
+    } as webPush.RequestOptions;
 
     return notification;
   };

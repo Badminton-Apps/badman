@@ -35,9 +35,7 @@ export class DrawCompetitionBuilder {
     return this;
   }
 
-  WithEnouncter(
-    encounter: EncounterCompetitionBuilder,
-  ): DrawCompetitionBuilder {
+  WithEnouncter(encounter: EncounterCompetitionBuilder): DrawCompetitionBuilder {
     this.encounters.push(encounter);
     return this;
   }
@@ -63,7 +61,6 @@ export class DrawCompetitionBuilder {
       for (const entry of this.entries) {
         entry.WithDrawId(this.draw.id);
       }
-
     } catch (error) {
       console.error(error);
       throw error;

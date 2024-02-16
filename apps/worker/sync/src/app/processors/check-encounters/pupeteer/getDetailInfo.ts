@@ -2,7 +2,12 @@ import { waitForSelector } from '@badman/backend-pupeteer';
 import { Logger } from '@nestjs/common';
 import { Page } from 'puppeteer';
 
-const startHourOptions = ['Aanvangsuur Ontmoeting', 'Beginuur', 'Aanvangsuur', 'Heure de début'] as const;
+const startHourOptions = [
+  'Aanvangsuur Ontmoeting',
+  'Beginuur',
+  'Aanvangsuur',
+  'Heure de début',
+] as const;
 
 const endHourOptions = ['Einduur ontmoeting', 'Einduur', 'Heure de fin'] as const;
 

@@ -10,7 +10,7 @@ import {
 
 export class SystemGroupBuilder {
   private build = false;
-  
+
   private systemGroup: RankingGroup;
 
   private systems: string[] = [];
@@ -30,9 +30,7 @@ export class SystemGroupBuilder {
     return this;
   }
 
-  WithCompetition(
-    subEventCompetition: SubEventCompetition
-  ): SystemGroupBuilder {
+  WithCompetition(subEventCompetition: SubEventCompetition): SystemGroupBuilder {
     this.subEventCompetitions.push(subEventCompetition.id);
     return this;
   }

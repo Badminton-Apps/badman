@@ -1,9 +1,5 @@
 import { SubEventTypeEnum } from '@badman/utils';
-import {
-  EnrollmentValidationData,
-  RuleResult,
-  EnrollmentValidationError,
-} from '../../../models';
+import { EnrollmentValidationData, RuleResult, EnrollmentValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -21,8 +17,7 @@ export class PlayerBaseRule extends Rule {
           continue;
         }
 
-        const countMap =
-          playerCountMap.get(player.id) || new Map<SubEventTypeEnum, number>();
+        const countMap = playerCountMap.get(player.id) || new Map<SubEventTypeEnum, number>();
         const count = countMap.get(team.type) || 0;
         countMap.set(team.type, count + 1);
         playerCountMap.set(player.id, countMap);
@@ -49,7 +44,7 @@ export class PlayerBaseRule extends Rule {
             (t) =>
               t.team?.id != team.id &&
               t.team?.type === team.type &&
-              t.basePlayers?.includes(player)
+              t.basePlayers?.includes(player),
           );
 
           // generate the error message for each team

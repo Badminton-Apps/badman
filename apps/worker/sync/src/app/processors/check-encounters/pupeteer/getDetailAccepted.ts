@@ -13,7 +13,7 @@ export async function detailAccepted(
   },
   args?: {
     logger?: Logger;
-  }
+  },
 ) {
   const { logger } = args || {};
   logger?.verbose('detailAccepted');

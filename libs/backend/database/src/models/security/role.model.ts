@@ -1,12 +1,5 @@
 import { SecurityType } from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -31,7 +24,7 @@ import {
   IsUUID,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { Club } from '../club.model';
 import { EventCompetition, EventTournament } from '../event';
@@ -120,8 +113,8 @@ export class Role extends Model {
       SecurityType.CLUB,
       SecurityType.TEAM,
       SecurityType.COMPETITION,
-      SecurityType.TOURNAMENT
-    )
+      SecurityType.TOURNAMENT,
+    ),
   )
   linkType?: string;
 
@@ -167,7 +160,7 @@ export class Role extends Model {
 @InputType()
 export class RoleUpdateInput extends PartialType(
   OmitType(Role, ['createdAt', 'updatedAt', 'claims'] as const),
-  InputType
+  InputType,
 ) {
   @Field(() => [ClaimUpdateInput])
   claims?: Relation<Claim[]>;
@@ -176,5 +169,5 @@ export class RoleUpdateInput extends PartialType(
 @InputType()
 export class RoleNewInput extends PartialType(
   OmitType(RoleUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

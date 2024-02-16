@@ -9,7 +9,7 @@ export async function enterGameLeader(
     page: null,
     timeout: 5000,
   },
-  leader: string
+  leader: string,
 ) {
   if (!leader) {
     return;
@@ -35,7 +35,7 @@ export async function enterShuttle(
     page: null,
     timeout: 5000,
   },
-  shuttle: string
+  shuttle: string,
 ) {
   if (!shuttle) {
     return;
@@ -61,7 +61,7 @@ export async function enterStartHour(
     page: null,
     timeout: 5000,
   },
-  startHour: string
+  startHour: string,
 ) {
   if (!startHour) {
     return;
@@ -86,7 +86,7 @@ export async function enterEndHour(
     page: null,
     timeout: 5000,
   },
-  endHour: string
+  endHour: string,
 ) {
   if (!endHour) {
     return;

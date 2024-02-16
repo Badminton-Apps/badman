@@ -124,7 +124,8 @@ export class BelgiumFlandersPlacesService {
       transaction?: Transaction;
     },
   ) {
-    const { transaction, start, stop, lastRanking, lastRankingInactive, gameType, updateRanking } = options ?? {};
+    const { transaction, start, stop, lastRanking, lastRankingInactive, gameType, updateRanking } =
+      options ?? {};
 
     const games = await this._getGames(system, player, {
       start,
@@ -141,7 +142,8 @@ export class BelgiumFlandersPlacesService {
 
     const { upgrade, downgrade } = this._calculatePoints(
       system,
-      (games?.map((g) => g.rankingPoints?.[0])?.filter((g) => g != undefined) ?? []) as RankingPoint[],
+      (games?.map((g) => g.rankingPoints?.[0])?.filter((g) => g != undefined) ??
+        []) as RankingPoint[],
       gameType,
     );
 
@@ -249,7 +251,9 @@ export class BelgiumFlandersPlacesService {
     }
 
     if (gamesAmount <= system.gamesForInactivty) {
-      const start = moment(options.stop).subtract(system.inactivityAmount, system.inactivityUnit).toDate();
+      const start = moment(options.stop)
+        .subtract(system.inactivityAmount, system.inactivityUnit)
+        .toDate();
       const allGames = await this._getGames(system, player, {
         ...options,
         start: start,
@@ -284,7 +288,9 @@ export class BelgiumFlandersPlacesService {
           : 'differenceForUpgradeMix';
 
     // difference is a negative number when layers are higher
-    let pointsForUpgrade = points.filter((x) => (x.differenceInLevel ?? 0) >= (system[propUpgrade] ?? 0) * -1);
+    let pointsForUpgrade = points.filter(
+      (x) => (x.differenceInLevel ?? 0) >= (system[propUpgrade] ?? 0) * -1,
+    );
 
     // Filter out when there is a limit to use
     if (system.latestXGamesToUse) {
@@ -293,10 +299,15 @@ export class BelgiumFlandersPlacesService {
         .slice(0, system.latestXGamesToUse);
     }
 
-    const pointsUpgrade = this._findPointsAverage(pointsForUpgrade, system.minNumberOfGamesUsedForUpgrade);
+    const pointsUpgrade = this._findPointsAverage(
+      pointsForUpgrade,
+      system.minNumberOfGamesUsedForUpgrade,
+    );
 
     // difference is a negative number when layers are higher
-    let pointsForDowngrade = points.filter((x) => (x.differenceInLevel ?? 0) >= (system[propDowngrade] ?? 0) * -1);
+    let pointsForDowngrade = points.filter(
+      (x) => (x.differenceInLevel ?? 0) >= (system[propDowngrade] ?? 0) * -1,
+    );
 
     // Filter out when there is a limit to use
     if (system.latestXGamesToUse) {
@@ -305,7 +316,10 @@ export class BelgiumFlandersPlacesService {
         .slice(0, system.latestXGamesToUse);
     }
 
-    const pointsDowngrade = this._findPointsAverage(pointsForDowngrade, system.minNumberOfGamesUsedForDowngrade);
+    const pointsDowngrade = this._findPointsAverage(
+      pointsForDowngrade,
+      system.minNumberOfGamesUsedForDowngrade,
+    );
 
     return {
       upgrade: pointsUpgrade,
@@ -352,7 +366,8 @@ export class BelgiumFlandersPlacesService {
     // Check if can go up,
     // we start at our current level and go down in number (so higher rankings)
     for (let estimatedUpLevel = currentLevel; estimatedUpLevel >= 1; estimatedUpLevel--) {
-      const pointsNeededForNextLevel = system.pointsToGoUp[system.pointsToGoUp.length + 1 - estimatedUpLevel];
+      const pointsNeededForNextLevel =
+        system.pointsToGoUp[system.pointsToGoUp.length + 1 - estimatedUpLevel];
       if (pointsNeededForNextLevel > pointsUpgrade) {
         topLevelByUpgradePoints = estimatedUpLevel;
         break;
@@ -370,8 +385,13 @@ export class BelgiumFlandersPlacesService {
     }
 
     // if topLevel was lower then current level, this means we can go down
-    for (let estimatedDownLevel = currentLevel; estimatedDownLevel < system.amountOfLevels; estimatedDownLevel++) {
-      const pointsNeededForPreviousLevel = system.pointsToGoDown[system.pointsToGoDown.length - estimatedDownLevel];
+    for (
+      let estimatedDownLevel = currentLevel;
+      estimatedDownLevel < system.amountOfLevels;
+      estimatedDownLevel++
+    ) {
+      const pointsNeededForPreviousLevel =
+        system.pointsToGoDown[system.pointsToGoDown.length - estimatedDownLevel];
       if (pointsNeededForPreviousLevel < pointsDowngrade) {
         bottomLevelByDowngradePoints = estimatedDownLevel;
         break;

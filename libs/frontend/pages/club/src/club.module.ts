@@ -39,10 +39,7 @@ const MODULE_ROUTES: Routes = [
         children: [
           {
             path: 'role',
-            loadChildren: () =>
-              import('@badman/frontend-role').then(
-                (module) => module.RoleModule
-              ),
+            loadChildren: () => import('@badman/frontend-role').then((module) => module.RoleModule),
           },
           {
             path: '',
@@ -54,8 +51,7 @@ const MODULE_ROUTES: Routes = [
       {
         path: 'team',
         data: { breadcrumb: { skip: true } },
-        loadChildren: () =>
-          import('@badman/frontend-team').then((module) => module.TeamModule),
+        loadChildren: () => import('@badman/frontend-team').then((module) => module.TeamModule),
       },
     ],
   },

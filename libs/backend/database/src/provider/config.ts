@@ -27,7 +27,6 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
       logging,
     };
 
-
     if (dialect === 'postgres') {
       require('pg');
       // await import('pg');

@@ -27,12 +27,20 @@
         @for (subEvent of subEvents; track subEvent) {
           <mat-expansion-panel>
             <mat-expansion-panel-header>
-              <mat-panel-title fxFlex="200px">{{ subEvent.name }} {{ subEvent.eventType }}</mat-panel-title>
-              <mat-panel-description>{{ subEvent.eventEntries?.length }} Teams</mat-panel-description>
+              <mat-panel-title fxFlex="200px"
+                >{{ subEvent.name }} {{ subEvent.eventType }}</mat-panel-title
+              >
+              <mat-panel-description
+                >{{ subEvent.eventEntries?.length }} Teams</mat-panel-description
+              >
             </mat-expansion-panel-header>
             <ul>
               @for (entry of subEvent.eventEntries; track entry) {
-                <li cdkOverlayOrigin #trigger="cdkOverlayOrigin" (click)="overlayOpen = entry.team?.id ?? ''">
+                <li
+                  cdkOverlayOrigin
+                  #trigger="cdkOverlayOrigin"
+                  (click)="overlayOpen = entry.team?.id ?? ''"
+                >
                   {{ entry.team?.name }}
                   <ng-template
                     cdkConnectedOverlay
@@ -48,8 +56,8 @@
                       <ul>
                         @for (player of entry.meta?.competition?.players; track player) {
                           <li>
-                            {{ player?.player?.fullName }} ({{ player?.single }} - {{ player?.double }} -
-                            {{ player?.mix }})
+                            {{ player?.player?.fullName }} ({{ player?.single }} -
+                            {{ player?.double }} - {{ player?.mix }})
                           </li>
                         }
                       </ul>
