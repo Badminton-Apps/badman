@@ -34,7 +34,8 @@
               <mat-panel-title fxFlex="200px">
                 {{ club.name }}
                 @if (!club.hasLocation) {
-                  <mat-icon matTooltip="Geen beschikbaarheden ingevuld, gelieve de club te contacteren"
+                  <mat-icon
+                    matTooltip="Geen beschikbaarheden ingevuld, gelieve de club te contacteren"
                     >warning</mat-icon
                   >
                 }
@@ -52,7 +53,9 @@
                     <div>
                       @for (availibilty of location.availibilities; track availibilty) {
                         <div>
-                          <span class="location-sub-title">{{ 'competition.enrollment.play-day' | translate }}</span>
+                          <span class="location-sub-title">{{
+                            'competition.enrollment.play-day' | translate
+                          }}</span>
                           <ul>
                             @for (day of availibilty.days; track day) {
                               <li>
@@ -119,8 +122,8 @@
                       <ul>
                         @for (player of entry.meta?.competition?.players; track player) {
                           <li>
-                            {{ player?.player?.fullName }} ({{ player?.single }} - {{ player?.double }} -
-                            {{ player?.mix }})
+                            {{ player?.player?.fullName }} ({{ player?.single }} -
+                            {{ player?.double }} - {{ player?.mix }})
                           </li>
                         }
                       </ul>

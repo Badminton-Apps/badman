@@ -61,7 +61,9 @@
               @if (option.memberId) {
                 <small class="member-id">({{ option.memberId }}) </small>
               }
-              @if (option.clubs && option.clubs.length > 0 && option.clubs[0].id !== this.clubId()) {
+              @if (
+                option.clubs && option.clubs.length > 0 && option.clubs[0].id !== this.clubId()
+              ) {
                 <small>{{ option.clubs[0].name }}</small>
               }
               @if (validation.message) {

@@ -6,7 +6,8 @@
           <mat-expansion-panel-header>
             <mat-panel-title>
               @if (group[0]) {
-                {{ group[0].rankingDate | date }} - {{ group[0].single }} - {{ group[0].double }} - {{ group[0].mix }}
+                {{ group[0].rankingDate | date }} - {{ group[0].single }} - {{ group[0].double }} -
+                {{ group[0].mix }}
               }
               @if (!group[0]) {
                 {{ 'all.ranking.next-ranking' | translate }}

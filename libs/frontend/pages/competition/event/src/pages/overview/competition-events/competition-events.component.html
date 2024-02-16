@@ -24,7 +24,11 @@
             </badman-block-subtitle>
             <badman-block-actions align="end">
               <badman-has-claim [any]="['edit:competition']">
-                <button (click)="$event.stopPropagation()" mat-icon-button [matMenuTriggerFor]="menu">
+                <button
+                  (click)="$event.stopPropagation()"
+                  mat-icon-button
+                  [matMenuTriggerFor]="menu"
+                >
                   <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
