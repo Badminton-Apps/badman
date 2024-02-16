@@ -20,7 +20,7 @@ on:
 # Needed for nx-set-shas when run on the main branch
 permissions:
   actions: read
-  contents: read
+  contents: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -124,6 +124,10 @@ jobs:
 
           ## for copy pasting in shell
           # npx playwright show-report
+
+      - name: stop agents
+        run: npx nx-cloud complete-ci-run.
+        if: always()
 
       - uses: actions/upload-artifact@v3
         if: always() && ${{ inputs.e2e-tests }}
