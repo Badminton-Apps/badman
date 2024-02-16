@@ -4,7 +4,7 @@
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
-    "@badman/frontend-models": "0.0.1",
+    "@badman/frontend-models": "6.130.0-beta.13",
     "file-saver": "^2.0.5",
     "rxjs": "~7.8.1"
   },
