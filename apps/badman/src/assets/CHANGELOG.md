@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.130.0-beta.12](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.11...v6.130.0-beta.12) (2024-02-16)
+
+
+### Features
+
+* ability to load watch system via queryparam ([89ab28a](https://github.com/Badminton-Apps/badman/commit/89ab28a67a59b33d64cdaa4f3c42cd2f94f9a46e))
+* better labels ([d76db76](https://github.com/Badminton-Apps/badman/commit/d76db76e32b91b604e504e5df10407f6589b620a))
+* view transitions ([ddfa34e](https://github.com/Badminton-Apps/badman/commit/ddfa34e2e3d4bd3057e43ee4ff4d20bc52279dbd))
+
+
+### Bug Fixes
+
+* enrollment wasn't working ([9bd7fb5](https://github.com/Badminton-Apps/badman/commit/9bd7fb50bd1e8da036d7e82da7720bd0c1e9cfdf))
+
 ## [6.130.0-beta.11](https://github.com/Badminton-Apps/badman/compare/v6.130.0-beta.10...v6.130.0-beta.11) (2024-02-15)
 
 ### Bug Fixes
