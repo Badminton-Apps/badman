@@ -111,7 +111,9 @@ const APP_ROUTES: Routes = [
     GraphQLModule.forRoot({
       api: environment.graphql,
     }),
-    RouterModule.forRoot(APP_ROUTES),
+    RouterModule.forRoot(APP_ROUTES, {
+      enableViewTransitions: true,
+    }),
     AuthModule.forRoot({
       domain: 'badvlasim.eu.auth0.com',
       clientId: '2LqkYZMbrTTXEE0OMkQJLmpRrOVQheoF',
