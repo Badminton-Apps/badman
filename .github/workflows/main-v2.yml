@@ -21,6 +21,7 @@ on:
 permissions:
   actions: read
   contents: write
+  
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -89,8 +90,8 @@ jobs:
           git config --local user.name "Badman Releaser"
     
       # create release on master en develop
-      - name: Create release
-        run: npx nx release -y
+      # - name: Create release
+        # run: npx nx release
 
       # deploy the new packages
       - name: Deploy
