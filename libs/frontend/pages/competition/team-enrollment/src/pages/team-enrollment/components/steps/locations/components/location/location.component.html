@@ -14,7 +14,7 @@
     </button>
   </div>
 </div>
-@if (this.control()) {
+@if (this.internalControl) {
   <ng-container [formGroup]="this.internalControl">
     <div class="days">
       <div class="expandable-item" (click)="expanded.days = !expanded.days">

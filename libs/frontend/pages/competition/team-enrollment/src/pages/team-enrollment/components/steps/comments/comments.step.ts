@@ -111,7 +111,7 @@ export class CommentsStepComponent implements OnInit {
       )
       .subscribe((events) => {
         for (const levelType of this.levelTypes) {
-          const control = this.control()?.get(levelType);
+          const control = this.internalControl.get(levelType);
 
           if (control) {
             const event = events?.find((event) => event.name === levelType);
