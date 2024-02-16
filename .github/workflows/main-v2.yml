@@ -90,7 +90,7 @@ jobs:
     
       # create release on master en develop
       - name: Create release
-        run: npx nx release
+        run: npx nx release -y
 
       # deploy the new packages
       - name: Deploy
@@ -126,7 +126,7 @@ jobs:
           # npx playwright show-report
 
       - name: stop agents
-        run: npx nx-cloud complete-ci-run.
+        run: npx nx-cloud complete-ci-run
         if: always()
 
       - uses: actions/upload-artifact@v3
