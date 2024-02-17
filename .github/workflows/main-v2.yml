@@ -57,6 +57,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !cancelled() }}
     needs: [merge-dev-into-main]
+    outputs:
+      NEW_VERSION: ${{ steps.create_release.outputs.new_version  }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -91,6 +93,7 @@ jobs:
     
       # create release on master en develop
       - name: Create release
+        id: create_release
         run: node scripts/release.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -155,10 +158,10 @@ jobs:
           git config --local user.name "Badman Releaser"
       - name: Merge main back to develop
         run: |
-          git fetch --unshallow
+          git fetch --unshallow 
           git checkout develop
           git pull
-          git merge --no-ff origin/main 
+          git merge --no-ff origin/main -m "chore(release): v${{ needs.main.outputs.NEW_VERSION }}"
           # git merge --no-ff main -m "Merging main into develop"
           git push
       # deploy on beta if main branch
