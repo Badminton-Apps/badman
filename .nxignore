@@ -2,3 +2,4 @@
 !empty.cp
 *.ldb
 scripts/
+version.json

@@ -91,7 +91,7 @@ jobs:
     
       # create release on master en develop
       - name: Create release
-        run: npx nx release --skip-publish
+        run: node scripts/release.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
