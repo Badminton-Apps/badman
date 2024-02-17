@@ -31,6 +31,12 @@ export class EventCompetitionBuilder {
     return this;
   }
 
+  WithOfficial(official: boolean): EventCompetitionBuilder {
+    this.event.official = official;
+
+    return this;
+  }
+
   WithUsedRanking(usedRanking: UsedRankingTiming): EventCompetitionBuilder {
     this.event.usedRankingAmount = usedRanking.amount;
     this.event.usedRankingUnit = usedRanking.unit;

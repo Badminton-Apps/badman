@@ -1,7 +1,6 @@
 import { LevelType, UsedRankingTiming } from '@badman/utils';
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
-  BuildOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -43,14 +42,10 @@ import { SubEventCompetition } from './sub-event-competition.model';
 } as TableOptions)
 @ObjectType({ description: 'A EventCompetition' })
 export class EventCompetition extends Model {
-  constructor(values?: Partial<EventCompetition>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
   override id!: string;
 
