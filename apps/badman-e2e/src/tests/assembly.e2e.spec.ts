@@ -30,10 +30,15 @@ bTest.describe('AssemblyPage page', () => {
       );
       await expect(assemblyPage.playerList).toBeVisible();
 
-      // Player 8888 should be visible
-      const player = await assemblyPage.getPlayer(players.M8);
+      await expect(assemblyPage.double1List).toContainText('Men doubles');
+      await expect(assemblyPage.double2List).toContainText('Women doubles');
+      await expect(assemblyPage.double3List).toContainText('Mixed 1');
+      await expect(assemblyPage.double4List).toContainText('Mixed 2');
 
-      await expect(player).toBeVisible();
+      await expect(assemblyPage.single1List).toContainText('Men Single 1');
+      await expect(assemblyPage.single2List).toContainText('Men Single 2');
+      await expect(assemblyPage.single3List).toContainText('Women Single 1');
+      await expect(assemblyPage.single4List).toContainText('Women Single 2');
 
       // Drag player 8888 and 999 to singles reversed
       await assemblyPage.dragPlayer(players.M8, assemblyPage.single2List);
@@ -105,10 +110,15 @@ bTest.describe('AssemblyPage page', () => {
       );
       await expect(assemblyPage.playerList).toBeVisible();
 
-      // Player 8888 should be visible
-      const player = await assemblyPage.getPlayer(players.M8);
+      await expect(assemblyPage.double1List).toContainText('Men Double 1');
+      await expect(assemblyPage.double2List).toContainText('Men Double 2');
+      await expect(assemblyPage.double3List).toContainText('Men Double 3');
+      await expect(assemblyPage.double4List).toContainText('Men Double 4');
 
-      await expect(player).toBeVisible();
+      await expect(assemblyPage.single1List).toContainText('Men Single 1');
+      await expect(assemblyPage.single2List).toContainText('Men Single 2');
+      await expect(assemblyPage.single3List).toContainText('Men Single 3');
+      await expect(assemblyPage.single4List).toContainText('Men Single 4');
 
       // Drag player 8888 and 999 to doubles
       await assemblyPage.dragPlayer(players.M6, assemblyPage.double1List);
@@ -172,10 +182,15 @@ bTest.describe('AssemblyPage page', () => {
       );
       await expect(assemblyPage.playerList).toBeVisible();
 
-      // Player 8888 should be visible
-      const player = await assemblyPage.getPlayer(players.F8);
+      await expect(assemblyPage.double1List).toContainText('Women Double 1');
+      await expect(assemblyPage.double2List).toContainText('Women Double 2');
+      await expect(assemblyPage.double3List).toContainText('Women Double 3');
+      await expect(assemblyPage.double4List).toContainText('Women Double 4');
 
-      await expect(player).toBeVisible();
+      await expect(assemblyPage.single1List).toContainText('Women Single 1');
+      await expect(assemblyPage.single2List).toContainText('Women Single 2');
+      await expect(assemblyPage.single3List).toContainText('Women Single 3');
+      await expect(assemblyPage.single4List).toContainText('Women Single 4');
 
       // Drag player 8888 and 999 to doubles
       await assemblyPage.dragPlayer(players.F6, assemblyPage.double1List);
@@ -188,14 +203,14 @@ bTest.describe('AssemblyPage page', () => {
       // can't play more then 3 matches
       await expect(assemblyPage.double3List).not.toContainText(players.F7);
       await assemblyPage.dragPlayer(players.F8, assemblyPage.double3List);
-      await assemblyPage.dragPlayer(players.F9, assemblyPage.double3List);
+      await assemblyPage.dragPlayer(players.F5, assemblyPage.double3List);
 
       await assemblyPage.dragPlayer(players.F8, assemblyPage.double4List);
-      await assemblyPage.dragPlayer(players.F9, assemblyPage.double4List);
+      await assemblyPage.dragPlayer(players.F5, assemblyPage.double4List);
 
       // Drag player 8888 and 999 to singles reversed
       await assemblyPage.dragPlayer(players.F8, assemblyPage.single2List);
-      await assemblyPage.dragPlayer(players.F9, assemblyPage.single1List);
+      await assemblyPage.dragPlayer(players.F5, assemblyPage.single1List);
 
       await assemblyPage.dragPlayer(players.F6, assemblyPage.single3List);
       await assemblyPage.dragPlayer(players.F7, assemblyPage.single4List);
@@ -206,24 +221,32 @@ bTest.describe('AssemblyPage page', () => {
       await expect(assemblyPage.double2List).toContainText(players.F6);
       await expect(assemblyPage.double2List).toContainText(players.F7);
 
+      await expect(assemblyPage.double3List).toContainText(players.F5);
       await expect(assemblyPage.double3List).toContainText(players.F8);
-      await expect(assemblyPage.double3List).toContainText(players.F9);
 
       await expect(assemblyPage.double4List).toContainText(players.F8);
-      await expect(assemblyPage.double4List).toContainText(players.F9);
+      await expect(assemblyPage.double4List).toContainText(players.F5);
 
-      await expect(assemblyPage.single1List).toContainText(players.F9);
+      await expect(assemblyPage.single1List).toContainText(players.F5);
       await expect(assemblyPage.single2List).toContainText(players.F8);
 
       await expect(assemblyPage.single3List).toContainText(players.F6);
       await expect(assemblyPage.single4List).toContainText(players.F7);
 
-      await expect(assemblyPage.titulars.index).toContainText('Index: 60');
+      await expect(assemblyPage.titulars.index).toContainText('Index: 52');
       await expect(assemblyPage.validationOverview).toContainText(
-        `${players.F8} in single 2 has a higher index than ${players.F9} in single 1.`,
+        `Team index titulars equals 52 cannot be lower then allowed in the division 53F`,
       );
+
       await expect(assemblyPage.validationOverview).toContainText(
         `${players.F6} in single 3 has a higher index than ${players.F8} in single 2.`,
+      );
+      await expect(assemblyPage.validationOverview).toContainText(
+        `${players.F5} or ${players.F8} in double 3 has a better individual ranking then ${players.F6} or ${players.F7} on double 2`,
+      );
+
+      await expect(assemblyPage.validationOverview).toContainText(
+        `${players.F5} is not marked as a competition player`,
       );
     });
   });

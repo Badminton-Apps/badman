@@ -4,7 +4,7 @@ export const TestNames = {
     teams: {
       G1: 'BC Broodrooster 1G',
       M1: 'BC Broodrooster 1H',
-      F1: 'BC Broodrooster 1F',
+      F1: 'BC Broodrooster 1D',
     },
     players: {
       M6: 'M 6-6-6 BC Broodrooster',
@@ -24,8 +24,8 @@ export const TestNames = {
     name: 'BC Tandpasta',
     teams: {
       G1: 'BC Tandpasta 1G',
-      H1: 'BC Tandpasta 1H',
-      F1: 'BC Tandpasta 1F',
+      M1: 'BC Tandpasta 1H',
+      F1: 'BC Tandpasta 1D',
     },
     players: {
       M8: 'M 8-8-8 BC Tandpasta',
