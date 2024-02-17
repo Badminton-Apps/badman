@@ -148,7 +148,7 @@ function addEncounters(season: number) {
     .WithIndex(53, 70)
     .WitnMaxLevel(6);
 
-  const subEventF = SubEventCompetitionBuilder.Create(SubEventTypeEnum.M)
+  const subEventF = SubEventCompetitionBuilder.Create(SubEventTypeEnum.F)
     .WithName('Test SubEvent')
     .WithIndex(53, 70)
     .WitnMaxLevel(6);
