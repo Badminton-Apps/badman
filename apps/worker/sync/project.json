@@ -9,7 +9,7 @@
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "worker-sync:build",
-        "port": 9231,
+        "port": 9230,
         "inspect": "inspect",
         "host": "0.0.0.0"
       },

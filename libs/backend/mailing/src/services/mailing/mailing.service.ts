@@ -443,6 +443,7 @@ export class MailingService {
   private async _setupMailing() {
     if (this.initialized) return;
     if ((this.configService.get<boolean>('MAIL_ENABLED') ?? false) == false) {
+      this.logger.debug('Mailing disabled');
       return;
     }
 

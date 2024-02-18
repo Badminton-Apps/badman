@@ -151,7 +151,7 @@ export class CheckEncounterProcessor {
         for (const chunk of chunks) {
           this.logger.debug(
             `Processing cthunk of ${chunk.length} encounters, ${
-              encounters.count - encountersProcessed
+              encounters.count - encountersProcessed 
             } encounter left, ${chunks.length - chunksProcessed} chunks left`,
           );
           // Close browser if any
@@ -210,7 +210,7 @@ export class CheckEncounterProcessor {
       return;
     }
     // Create browser
-    const browser = await getBrowser();
+    const browser = await getBrowser(false);
     try {
       const page = await browser.newPage();
       page.setDefaultTimeout(10000);
