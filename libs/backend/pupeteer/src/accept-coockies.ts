@@ -17,6 +17,22 @@ export async function accepCookies(
   }
 
   {
+    await page.setRequestInterception(true);
+    page.on('request', (request) => {
+      // block any google analytics / ads requests
+
+      if (!request.isInterceptResolutionHandled()) {
+        if (request.url().includes('google-analytics') || request.url().includes('ads')) {
+          console.log('aborting', request.url());
+          request.abort();
+        }
+
+        request.continue();
+      }
+    });
+  }
+
+  {
     const targetPage = page;
     const promises = [];
     promises.push(targetPage.waitForNavigation());
