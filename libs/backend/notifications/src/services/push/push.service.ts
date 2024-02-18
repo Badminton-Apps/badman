@@ -26,6 +26,7 @@ export class PushService {
 
   async sendNotification(player?: Player, data?: RequestOptions) {
     if (!this.isPushEnabled) {
+      this.logger.debug('Push notifications are not enabled');
       return;
     }
 
