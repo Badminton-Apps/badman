@@ -1,5 +1,5 @@
 *.cp
 !empty.cp
 *.ldb
-# scripts/
+scripts/
 version.json
