@@ -58,32 +58,36 @@ export async function signIn(
     await Promise.all(promises);
   }
 
-  // Set BADMINTON as main ssport
+  // Set BADMINTON as main sport (optional)
+  try {
+    {
+      const targetPage = page;
+      const element = await waitForSelectors(
+        [['aria/Tennis[role="button"]'], ['#selectSport']],
+        targetPage,
+        timeout,
+      );
+      await element.click({ offset: { x: 33, y: 23 } });
+    }
 
-  {
-    const targetPage = page;
-    const element = await waitForSelectors(
-      [['aria/Tennis[role="button"]'], ['#selectSport']],
-      targetPage,
-      timeout,
-    );
-    await element.click({ offset: { x: 33, y: 23 } });
-  }
-  {
-    const targetPage = page;
-    const promises = [];
-    promises.push(targetPage.waitForNavigation());
-    const element = await waitForSelectors(
-      [
-        ['aria/Badminton[role="button"]'],
+    {
+      const targetPage = page;
+      const promises = [];
+      promises.push(targetPage.waitForNavigation());
+      const element = await waitForSelectors(
         [
-          'body > div.content > div.masthead.masthead--fixed > div.masthead__main > div.sport-selection.dropdown.open > div > ul > li:nth-child(3) > a',
+          ['aria/Badminton[role="button"]'],
+          [
+            'body > div.content > div.masthead.masthead--fixed > div.masthead__main > div.sport-selection.dropdown.open > div > ul > li:nth-child(3) > a',
+          ],
         ],
-      ],
-      targetPage,
-      timeout,
-    );
-    await element.click({ offset: { x: 29.953125, y: 7.46875 } });
-    await Promise.all(promises);
+        targetPage,
+        timeout,
+      );
+      await element.click({ offset: { x: 29.953125, y: 7.46875 } });
+      await Promise.all(promises);
+    }
+  } catch (error) {
+    console.error('Error setting sport', error);
   }
 }
