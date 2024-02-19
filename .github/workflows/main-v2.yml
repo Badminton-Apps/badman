@@ -118,7 +118,7 @@ jobs:
       # create release on master en develop
       - name: Create release
         id: create_release
-        run: node scripts/release.js
+        run: node scripts/release.js --dry-run=false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
