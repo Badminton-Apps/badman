@@ -90,7 +90,7 @@ jobs:
         run: npx nx run-many -t e2e
         if: ${{ inputs.e2e-tests }}
       - name: e2e reports
-        if: always() && ${{ inputs.e2e-tests }}
+        if: ${{ inputs.e2e-tests }} && always()
         run: |
           echo "Combine all the reports into a single report"
           # check if the "blob-reports" root directory exists and if it does, remove it and recreate it
@@ -137,7 +137,7 @@ jobs:
         if: always()
 
       - uses: actions/upload-artifact@v3
-        if: always() && ${{ inputs.e2e-tests }}
+        if: ${{ inputs.e2e-tests }} && always()
         with:
           name: playwright-report
           path: playwright-report/
