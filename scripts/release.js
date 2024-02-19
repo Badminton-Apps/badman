@@ -67,6 +67,10 @@ function updateVersion(filePath, newVersion) {
       verbose: options.verbose,
     });
 
+    
+    // update version.json files
+    walkDir('./apps', workspaceVersion);
+
     await releaseChangelog({
       versionData: projectsVersionData,
       version: workspaceVersion,
@@ -74,8 +78,6 @@ function updateVersion(filePath, newVersion) {
       verbose: options.verbose,
     });
 
-    // update version.json files
-    walkDir('./apps', workspaceVersion);
 
     core.exportVariable('NEW_VERSION', workspaceVersion);
     core.info(`New version: ${workspaceVersion}`);
