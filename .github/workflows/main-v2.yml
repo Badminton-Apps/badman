@@ -85,27 +85,6 @@ jobs:
 
       # - run: npx nx-cloud record -- nx format:check
       - run: npx nx affected -t lint test build
-
-      - name: Set Git config
-        run: |
-          git config --local user.email "info@badman.app"
-          git config --local user.name "Badman Releaser"
-    
-      # create release on master en develop
-      - name: Create release
-        id: create_release
-        run: node scripts/release.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # deploy the new packages
-      - name: Deploy 
-        run: npx nx affected -t deploy --no-agents
-        env:
-          API_HOOK: ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
-          WORKER_SYNC_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
-          WORKER_RANKING_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_RANKING_HOOK  || secrets.BETA_WORKER_RANKING_HOOK }}
-
       # if the e2e-tests input is true, run the e2e tests
       - name: Run Playwright tests
         run: nx run-many -t e2e
@@ -130,6 +109,28 @@ jobs:
 
           ## for copy pasting in shell
           # npx playwright show-report
+
+      - name: Set Git config
+        run: |
+          git config --local user.email "info@badman.app"
+          git config --local user.name "Badman Releaser"
+    
+      # create release on master en develop
+      - name: Create release
+        id: create_release
+        run: node scripts/release.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # deploy the new packages
+      - name: Deploy 
+        run: npx nx affected -t deploy --no-agents
+        env:
+          API_HOOK: ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
+          WORKER_SYNC_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
+          WORKER_RANKING_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_RANKING_HOOK  || secrets.BETA_WORKER_RANKING_HOOK }}
+
+
 
       - name: stop agents
         run: npx nx-cloud complete-ci-run
