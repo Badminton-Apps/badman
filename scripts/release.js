@@ -66,7 +66,6 @@ function updateVersion(filePath, newVersion) {
       dryRun: options.dryRun,
       verbose: options.verbose,
     });
-
     
     // update version.json files
     walkDir('./apps', workspaceVersion);
