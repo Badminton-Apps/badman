@@ -21,7 +21,6 @@ on:
 permissions:
   actions: read
   contents: write
-  
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -88,10 +87,11 @@ jobs:
       # if the e2e-tests input is true, run the e2e tests
       - name: Run Playwright tests
         run: npx nx run-many -t e2e
+        id: run-e2e-tests
         if: ${{ inputs.e2e-tests }}
       - name: e2e reports
-      # Always run if the e2e-tests input is true
-        if: ${{ inputs.e2e-tests }} && (success() || failure())
+        # Always run if the e2e-tests input is true
+        if: steps.run-e2e-tests.outcome == 'success' || steps.run-e2e-tests.outcome == 'failure'
         run: |
           echo "Combine all the reports into a single report"
           # check if the "blob-reports" root directory exists and if it does, remove it and recreate it
@@ -115,7 +115,7 @@ jobs:
         run: |
           git config --local user.email "info@badman.app"
           git config --local user.name "Badman Releaser"
-    
+
       # create release on master en develop
       - name: Create release
         id: create_release
@@ -124,14 +124,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # deploy the new packages
-      - name: Deploy 
+      - name: Deploy
         run: npx nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
           WORKER_SYNC_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
           WORKER_RANKING_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_RANKING_HOOK  || secrets.BETA_WORKER_RANKING_HOOK }}
-
-
 
       - name: stop agents
         run: npx nx-cloud complete-ci-run
