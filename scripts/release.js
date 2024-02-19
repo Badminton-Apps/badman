@@ -79,13 +79,6 @@ function updateVersion(filePath, newVersion) {
 
     core.exportVariable('NEW_VERSION', workspaceVersion);
     core.info(`New version: ${workspaceVersion}`);
-
-    // git push
-    if (!options.dryRun) {
-      core.info('Pushing changes to the repository');
-      const { execSync } = require('child_process');
-      execSync('git push --follow-tags', { stdio: 'inherit' });
-    }
   } catch (error) {
     core.setFailed(error.message);
   }
