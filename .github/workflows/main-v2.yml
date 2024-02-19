@@ -87,7 +87,7 @@ jobs:
       - run: npx nx affected -t lint test build
       # if the e2e-tests input is true, run the e2e tests
       - name: Run Playwright tests
-        run: nx run-many -t e2e
+        run: npx nx run-many -t e2e
         if: ${{ inputs.e2e-tests }}
       - name: e2e reports
         if: ${{ inputs.e2e-tests }}
