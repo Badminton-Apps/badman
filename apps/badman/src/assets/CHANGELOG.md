@@ -1,3 +1,18 @@
+## 6.130.0-beta.15 (2024-02-19)
+
+
+### 🩹 Fixes
+
+- some more descriptions ([babdcb39a](https://github.com/Badminton-Apps/badman/commit/babdcb39a))
+- should block ads ([5435054e4](https://github.com/Badminton-Apps/badman/commit/5435054e4))
+- should fix the google ads popup ([8b008a3e3](https://github.com/Badminton-Apps/badman/commit/8b008a3e3))
+- **backend-pupeteer:** Badminton can be set via separate function ([9b5b0f991](https://github.com/Badminton-Apps/badman/commit/9b5b0f991))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme @cskiwi
+
 ## 6.130.0-beta.13 (2024-02-16)
 
 
