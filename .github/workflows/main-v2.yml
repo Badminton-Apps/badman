@@ -103,8 +103,8 @@ jobs:
         run: npx nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
-          WORKER_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
-          RANKING_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_RANKING_HOOK  || secrets.BETA_WORKER_RANKING_HOOK }}
+          WORKER_SYNC_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
+          WORKER_RANKING_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_RANKING_HOOK  || secrets.BETA_WORKER_RANKING_HOOK }}
 
       # if the e2e-tests input is true, run the e2e tests
       - name: Run Playwright tests
