@@ -23,11 +23,11 @@ export async function accepCookies(
 
       if (!request.isInterceptResolutionHandled()) {
         if (request.url().includes('google-analytics') || request.url().includes('ads')) {
-          console.log('aborting', request.url());
+          // console.log('aborting', request.url());
           request.abort();
+        } else {
+          request.continue();
         }
-
-        request.continue();
       }
     });
   }
