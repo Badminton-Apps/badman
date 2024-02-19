@@ -90,7 +90,7 @@ jobs:
         run: npx nx run-many -t e2e
         if: ${{ inputs.e2e-tests }}
       - name: e2e reports
-        if: ${{ inputs.e2e-tests }}
+        if: always() && ${{ inputs.e2e-tests }}
         run: |
           echo "Combine all the reports into a single report"
           # check if the "blob-reports" root directory exists and if it does, remove it and recreate it
