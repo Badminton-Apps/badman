@@ -11,9 +11,8 @@ module.exports = {
       compiler: 'tsc',
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
-      assets: ['./src/assets'],
-      optimization: false,
       outputHashing: 'none',
+      optimization: process.env['NODE_ENV'] === 'production',
     }),
   ],
 };

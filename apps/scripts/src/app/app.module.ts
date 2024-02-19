@@ -1,11 +1,11 @@
 import { DatabaseModule } from '@badman/backend-database';
+import { configSchema, load } from '@badman/utils';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ExportBBFPlayers } from './scripts/expot-ranking/exort-ranking';
-import { configSchema, load } from '@badman/utils';
+import { OpenVisualService } from './scripts/visual/open-visual.service';
 
 @Module({
-  providers: [ExportBBFPlayers],
+  providers: [OpenVisualService],
   imports: [
     ConfigModule.forRoot({
       cache: true,
@@ -18,12 +18,13 @@ import { configSchema, load } from '@badman/utils';
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
 
-  constructor(private fixer: ExportBBFPlayers) {}
+  constructor(private fixer: OpenVisualService) {}
 
   async onModuleInit() {
     this.logger.log('Running script');
 
-    await this.fixer.process(2023, '98a5d635-fd7e-459d-ae09-93a9db49ffdf');
+    // await this.fixer.process(2023, '98a5d635-fd7e-459d-ae09-93a9db49ffdf');
+    await this.fixer.start();
 
     this.logger.log('Script finished');
   }

@@ -1,11 +1,12 @@
 import { ElementHandle, launch, Page } from 'puppeteer';
 
-export async function getBrowser(headless = true) {
+export async function getBrowser(headless = true, args = []) {
   return await launch({
     headless,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
+      ...args
       // '--single-process',
       // '--disable-dev-shm-usage', (allows for more memory, but doesn't work on the 512 MB instance)
     ],

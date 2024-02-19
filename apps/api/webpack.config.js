@@ -29,8 +29,9 @@ module.exports = {
           output: 'compile/libs/mailing',
         },
       ],
-      optimization: false,
+      optimization: process.env['NODE_ENV'] === 'production',
       outputHashing: 'none',
+      
     }),
   ],
 };
