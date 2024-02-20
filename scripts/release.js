@@ -3,6 +3,7 @@ const { releaseChangelog, releaseVersion } = require('nx/release');
 const yargs = require('yargs');
 const fs = require('fs');
 const path = require('path');
+const runExec = require('./run-exec');
 
 // Walk through directory recursively
 function walkDir(currentDir, newVersion) {
@@ -66,9 +67,12 @@ function updateVersion(filePath, newVersion) {
       dryRun: options.dryRun,
       verbose: options.verbose,
     });
-    
+
     // update version.json files
     walkDir('./apps', workspaceVersion);
+
+    // add version.json files
+    await runExec("find . -name 'version.json' -exec git add {} ;");
 
     await releaseChangelog({
       versionData: projectsVersionData,
@@ -76,7 +80,6 @@ function updateVersion(filePath, newVersion) {
       dryRun: options.dryRun,
       verbose: options.verbose,
     });
-
 
     core.exportVariable('NEW_VERSION', workspaceVersion);
     core.info(`New version: ${workspaceVersion}`);
