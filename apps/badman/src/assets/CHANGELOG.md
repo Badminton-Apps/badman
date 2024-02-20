@@ -1,3 +1,14 @@
+## 6.130.0-beta.17 (2024-02-20)
+
+
+### 🩹 Fixes
+
+- local packages can be any version ([0577e446a](https://github.com/Badminton-Apps/badman/commit/0577e446a))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.130.0-beta.16 (2024-02-20)
 
 
