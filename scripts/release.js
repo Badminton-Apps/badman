@@ -71,7 +71,7 @@ function updateVersion(filePath, newVersion) {
     // update version.json files
     walkDir('./apps', workspaceVersion);
 
-    // add version.json files
+    // add version.json files to git
     await runExec("find . -name 'version.json' -exec git add {} ;");
 
     await releaseChangelog({

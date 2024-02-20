@@ -3,9 +3,9 @@
   "version": "6.130.0-beta.16",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "@badman/backend-database": "6.130.0-beta.16",
-    "@badman/backend-queue": "6.130.0-beta.16",
-    "@badman/utils": "6.130.0-beta.16",
+    "@badman/backend-database": "*",
+    "@badman/backend-queue": "*",
+    "@badman/utils": "*",
     "@nestjs/bull": "^10.0.1",
     "@nestjs/common": "^10.3.1",
     "@nestjs/config": "^3.1.1",
@@ -13,7 +13,7 @@
     "bull": "^4.12.2",
     "cron": "3.1.6",
     "moment": "^2.30.1",
-    "@badman/backend-websockets": "6.130.0-beta.16"
+    "@badman/backend-websockets": "*"
   },
   "type": "commonjs",
   "main": "./src/index.js",
