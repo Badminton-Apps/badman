@@ -72,14 +72,13 @@ function updateVersion(filePath, newVersion) {
     walkDir('./apps', workspaceVersion);
 
     // // add version.json files to git
-    // await runExec("find . -name 'version.json' -exec git add {} ;");
+    await runExec("git add '**/**/version.json'");
 
     await releaseChangelog({
       versionData: projectsVersionData,
       version: workspaceVersion,
       dryRun: options.dryRun,
       verbose: options.verbose,
-      stageChanges: true,
     });
 
     core.exportVariable('NEW_VERSION', workspaceVersion);
