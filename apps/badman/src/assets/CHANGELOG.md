@@ -1,3 +1,14 @@
+## 6.130.0-beta.16 (2024-02-20)
+
+
+### 🩹 Fixes
+
+- translation for mixed doubles ([b434d077f](https://github.com/Badminton-Apps/badman/commit/b434d077f))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.130.0-beta.15 (2024-02-19)
 
 
