@@ -76,7 +76,7 @@ jobs:
             ${{ runner.os }}-node
 
       - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
-      - run: npm ci
+      - run: npm install
 
       - uses: nrwl/nx-set-shas@v4
       # This line is needed for nx affected to work when CI is running on a PR
