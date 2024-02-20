@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 import { input } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
@@ -32,7 +33,6 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'badman-select-team',

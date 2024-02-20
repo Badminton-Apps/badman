@@ -3,11 +3,11 @@
   "version": "6.130.0-beta.16",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "@badman/backend-database": "6.130.0-beta.16",
+    "@badman/backend-database": "*",
     "@nestjs/common": "^10.3.1",
     "@nestjs/config": "^3.1.1",
-    "@badman/backend-compile": "6.130.0-beta.16",
-    "@badman/utils": "6.130.0-beta.16",
+    "@badman/backend-compile": "*",
+    "@badman/utils": "*",
     "moment-timezone": "^0.5.44",
     "nodemailer": "^6.9.9",
     "rxjs": "~7.8.1"
