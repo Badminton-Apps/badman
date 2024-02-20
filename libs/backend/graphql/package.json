@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-graphql",
-  "version": "6.130.0-beta.16",
+  "version": "6.130.0-beta.17",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@nestjs/graphql": "^12.0.11",
