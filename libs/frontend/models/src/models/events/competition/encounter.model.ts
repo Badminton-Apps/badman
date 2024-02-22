@@ -5,6 +5,7 @@ import { Assembly } from './assembly.model';
 import { DrawCompetition } from './draw.model';
 import { EncounterChange } from './encounter-change.model';
 import { Player } from '../../player.model';
+import { sortGames } from '@badman/utils';
 
 export class EncounterCompetition {
   id?: string;
@@ -57,22 +58,7 @@ export class EncounterCompetition {
 
     this.games = args?.games
       ?.map((g) => new Game(g))
-      ?.sort((a, b) => {
-        const aSort =
-          (a.order ?? null) != null
-            ? a.order
-            : (a.round ?? null) != null
-              ? parseInt(a.round?.replace('R', '') ?? '', 10)
-              : 0;
-        const bSort =
-          (b.order ?? null) != null
-            ? b.order
-            : (b.round ?? null) != null
-              ? parseInt(b.round?.replace('R', '') ?? '', 10)
-              : 0;
-
-        return (aSort ?? 0) - (bSort ?? 0);
-      });
+      ?.sort(sortGames);
     this.home = args?.home != null ? new Team(args.home) : undefined;
     this.away = args?.away != null ? new Team(args.away) : undefined;
 
