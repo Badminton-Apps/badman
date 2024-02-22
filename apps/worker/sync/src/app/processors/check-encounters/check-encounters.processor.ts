@@ -210,7 +210,7 @@ export class CheckEncounterProcessor {
       return;
     }
     // Create browser
-    const browser = await getBrowser(false);
+    const browser = await getBrowser();
     try {
       const page = await browser.newPage();
       page.setDefaultTimeout(10000);
