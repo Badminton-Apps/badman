@@ -9,6 +9,7 @@ module.exports = {
     new NxWebpackPlugin({
       target: 'node',
       compiler: 'tsc',
+      sourceMap: true,
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
       assets: [
@@ -31,7 +32,6 @@ module.exports = {
       ],
       optimization: process.env['NODE_ENV'] === 'production',
       outputHashing: 'none',
-      
     }),
   ],
 };

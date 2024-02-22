@@ -1,6 +1,8 @@
 import { ElementHandle, launch, Page } from 'puppeteer';
 
 export async function getBrowser(headless = true, args = []) {
+  console.log(`Launching browser with headless: ${headless} and args: ${args.join(' ')}`);
+
   return await launch({
     headless,
     args: [
@@ -54,20 +56,6 @@ export async function waitForSelector(
   return element;
 }
 
-// export async function waitForElement(step, frame: Page, timeout: number) {
-//   const count = step.count || 1;
-//   const operator = step.operator || '>=';
-//   const comp = {
-//     '==': (a, b) => a === b,
-//     '>=': (a, b) => a >= b,
-//     '<=': (a, b) => a <= b,
-//   };
-//   const compFn = comp[operator];
-//   await waitForFunction(async () => {
-//     const elements = await querySelectorsAll(step.selectors, frame);
-//     return compFn(elements.length, count);
-//   }, timeout);
-// }
 
 export async function querySelectorsAll(selectors: string[], frame: Page) {
   for (const selector of selectors) {

@@ -133,6 +133,7 @@ export class RecentGamesService {
               playedAt
               gameType
               winner
+              status
               players {
                 id
                 slug
