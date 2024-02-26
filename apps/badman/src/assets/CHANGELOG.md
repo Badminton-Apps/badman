@@ -1,3 +1,15 @@
+## 6.130.0-beta.18 (2024-02-26)
+
+
+### 🩹 Fixes
+
+- cleanup ([b77902e22](https://github.com/Badminton-Apps/badman/commit/b77902e22))
+- sort games that singles are always last ([d5cda614e](https://github.com/Badminton-Apps/badman/commit/d5cda614e))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.130.0-beta.17 (2024-02-20)
 
 
