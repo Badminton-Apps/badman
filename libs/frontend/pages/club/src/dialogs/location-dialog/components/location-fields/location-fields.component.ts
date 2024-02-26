@@ -1,23 +1,22 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   OnInit,
   Output,
+  input,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { debounceTime } from 'rxjs/operators';
-import { Club, Location } from '@badman/frontend-models';
-import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatInputModule } from '@angular/material/input';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { NgMapsPlacesModule } from '@ng-maps/places';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { input } from '@angular/core';
+import { MatInputModule } from '@angular/material/input';
+import { Club, Location } from '@badman/frontend-models';
+import { NgMapsPlacesModule } from '@ng-maps/places';
+import { TranslateModule } from '@ngx-translate/core';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-location-fields',
