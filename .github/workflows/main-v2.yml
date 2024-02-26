@@ -79,6 +79,8 @@ jobs:
       - run: npm install
 
       - uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: main
 
       # - run: npx nx-cloud record -- nx format:check
       - run: npx nx affected -t lint test build
@@ -159,5 +161,6 @@ jobs:
           git fetch --unshallow 
           git checkout develop
           git pull
-          git merge --no-ff main -m "Merging main back develop"
+          git merge --no-ff origin/main -m "chore(release): v${{ needs.main.outputs.NEW_VERSION }}"
+          # git merge --no-ff main -m "Merging main back develop"
           git push
