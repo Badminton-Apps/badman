@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-micro",
-  "version": "6.130.0-beta.18",
+  "version": "6.130.0-beta.19",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@nestjs/common": "^10.3.1",
