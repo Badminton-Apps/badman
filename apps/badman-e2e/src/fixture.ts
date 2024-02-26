@@ -7,7 +7,7 @@ type testFixture = {
   homePage: HomePage;
   assemblyPage: AssemblyPage;
 };
-export const bTest = base.extend<testFixture>({
+export const test = base.extend<testFixture>({
   homePage: async ({ page }, use) => {
     const homePage = new HomePage(page);
     await homePage.goto();
