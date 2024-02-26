@@ -56,7 +56,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
 
         // Add 2 claims to the database
@@ -68,7 +68,7 @@ module.exports = {
           claims,
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err);
@@ -86,7 +86,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
 
         // Remove 2 claims from the database
@@ -102,7 +102,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err);

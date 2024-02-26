@@ -3,10 +3,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnInit,
   TemplateRef,
   ViewChild,
+  computed,
+  input,
   signal,
 } from '@angular/core';
 import {
@@ -30,20 +31,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ClaimService } from '@badman/frontend-auth';
-import {
-  HasClaimComponent,
-  SetEncounterDateDialogComponent,
-} from '@badman/frontend-components';
+import { HasClaimComponent, SetEncounterDateDialogComponent } from '@badman/frontend-components';
 import {
   Comment,
   EncounterChange,
   EncounterChangeDate,
   EncounterCompetition,
 } from '@badman/frontend-models';
-import {
-  ChangeEncounterAvailability,
-  getCurrentSeasonPeriod,
-} from '@badman/utils';
+import { ChangeEncounterAvailability, getCurrentSeasonPeriod } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -82,8 +77,6 @@ const CHANGE_QUERY = gql`
     FormsModule,
     TranslateModule,
     MomentModule,
-
-    // Material
     MatFormFieldModule,
     MatOptionModule,
     MatIconModule,
@@ -95,8 +88,6 @@ const CHANGE_QUERY = gql`
     MatProgressBarModule,
     MatExpansionModule,
     MatTooltipModule,
-
-    // Own
     DateSelectorComponent,
     CommentsComponent,
     RequestDateComponent,
@@ -104,11 +95,9 @@ const CHANGE_QUERY = gql`
   ],
 })
 export class ShowRequestsComponent implements OnInit {
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  dependsOn = 'encounter';
+  dependsOn = input('encounter');
 
   formGroupRequest!: FormGroup;
   previous?: AbstractControl;
@@ -123,7 +112,7 @@ export class ShowRequestsComponent implements OnInit {
   requestClosed = false;
   requestClosing!: moment.Moment;
 
-  admin$ = this.claimService.hasAnyClaims$(['change-any:encounter']);
+  isAdmin = computed(() => this.claimService.hasAnyClaims(['change-any:encounter']));
 
   comments = signal<Comment[]>([]);
 
@@ -140,18 +129,14 @@ export class ShowRequestsComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.previous = this.group.get(this.dependsOn) ?? undefined;
+    this.previous = this.group().get(this.dependsOn()) ?? undefined;
     if (this.previous) {
       this.requests$ = this.previous.valueChanges.pipe(
         tap((encounter: EncounterCompetition) => {
           this.encounter = encounter;
-          if (
-            encounter?.drawCompetition?.subEventCompetition?.eventCompetition
-              ?.changeCloseDate
-          ) {
+          if (encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.changeCloseDate) {
             this.requestClosing = moment(
-              encounter?.drawCompetition?.subEventCompetition?.eventCompetition
-                ?.changeCloseDate,
+              encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.changeCloseDate,
             );
             this.requestClosed = moment().isAfter(this.requestClosing);
           } else {
@@ -163,7 +148,7 @@ export class ShowRequestsComponent implements OnInit {
           if (encounter == null) {
             this.changeDetector.detectChanges();
           } else {
-            this.home = this.group.get('team')?.value == encounter?.home?.id;
+            this.home = this.group().get('team')?.value == encounter?.home?.id;
           }
         }),
         filter((value) => value !== null),
@@ -210,7 +195,7 @@ export class ShowRequestsComponent implements OnInit {
         }),
       );
     } else {
-      console.warn(`Dependency ${this.dependsOn} not found`, this.previous);
+      console.warn(`Dependency ${this.dependsOn()} not found`, this.previous);
     }
   }
 
@@ -295,18 +280,14 @@ export class ShowRequestsComponent implements OnInit {
         }),
     );
     const ids = dates.map((o) => o.date?.getTime());
-    change.dates = dates.filter(
-      ({ date }, index) => !ids.includes(date?.getTime(), index + 1),
-    );
+    change.dates = dates.filter(({ date }, index) => !ids.includes(date?.getTime(), index + 1));
     change.accepted = change.dates.some((r) => r.selected == true);
 
     if (change.dates == null || (change.dates?.length ?? 0) == 0) {
       if (this.home) {
         // hometeam always needs to add at least one date
         this.snackBar.open(
-          this.translate.instant(
-            'competition.change-encounter.errors.select-one-date',
-          ),
+          this.translate.instant('competition.change-encounter.errors.select-one-date'),
           'OK',
           {
             duration: 4000,
@@ -349,17 +330,15 @@ export class ShowRequestsComponent implements OnInit {
           }),
         );
 
-        const teamControl = this.group.get('team');
+        const teamControl = this.group().get('team');
         if (!teamControl) {
           throw new Error('Team control not found');
         }
 
         teamControl.setValue(teamControl.value);
-        this.group.get(this.dependsOn)?.setValue(null);
+        this.group().get(this.dependsOn())?.setValue(null);
         this.snackBar.open(
-          await this.translate.instant(
-            'all.competition.change-encounter.requested',
-          ),
+          await this.translate.instant('all.competition.change-encounter.requested'),
           'OK',
           {
             duration: 4000,
@@ -368,9 +347,7 @@ export class ShowRequestsComponent implements OnInit {
       } catch (error) {
         console.error(error);
         this.snackBar.open(
-          await this.translate.instant(
-            'all.competition.change-encounter.requested-failed',
-          ),
+          await this.translate.instant('all.competition.change-encounter.requested-failed'),
           'OK',
           {
             duration: 4000,
@@ -521,8 +498,7 @@ export class ShowRequestsComponent implements OnInit {
     if (
       dateChange.availabilityHome != null &&
       dateChange.availabilityAway != null &&
-      (dateChange.availabilityHome ==
-        ChangeEncounterAvailability.NOT_POSSIBLE ||
+      (dateChange.availabilityHome == ChangeEncounterAvailability.NOT_POSSIBLE ||
         dateChange.availabilityAway == ChangeEncounterAvailability.NOT_POSSIBLE)
     ) {
       this.dateControlsNotAvailible.push(dateControl);

@@ -3,4 +3,3 @@ export * from './components';
 
 export * from './landing.component';
 // end:ng42.barrel
-

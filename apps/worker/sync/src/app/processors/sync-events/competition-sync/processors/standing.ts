@@ -27,8 +27,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
       options = {};
     }
 
-    options.logger =
-      options.logger || new Logger(CompetitionSyncStandingProcessor.name);
+    options.logger = options.logger || new Logger(CompetitionSyncStandingProcessor.name);
     super(options);
 
     this.standingOptions = options || {};
@@ -42,14 +41,11 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
             ?.filter((g) => g.encounter.drawId === e.draw.id)
             ?.map((r) => r.encounter) ?? [];
         return this._processEncounters(e.draw, filtered);
-      }) ?? []
+      }) ?? [],
     );
   }
 
-  private async _processEncounters(
-    draw: DrawCompetition,
-    encounters: EncounterCompetition[]
-  ) {
+  private async _processEncounters(draw: DrawCompetition, encounters: EncounterCompetition[]) {
     if (encounters.length === 0) {
       return;
     }
@@ -67,7 +63,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
 
     for (const encounter of encounters) {
       if (!encounter.homeTeamId || !encounter.awayTeamId) {
-        continue; 
+        continue;
       }
 
       const homeTeam = teams.find((t) => t.id === encounter.homeTeamId);
@@ -114,8 +110,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
         awayStanding.points++;
       }
 
-      const encoutnerGames =
-        this.games?.filter((g) => g.linkId === encounter.id) ?? [];
+      const encoutnerGames = this.games?.filter((g) => g.linkId === encounter.id) ?? [];
 
       for (const game of encoutnerGames ?? []) {
         if (game.winner == 1) {
@@ -234,15 +229,12 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
             'riser',
             'faller',
           ],
-        }
+        },
       );
     }
   }
 
-  private async _getTeams(
-    draw: DrawCompetition,
-    encounters: EncounterCompetition[]
-  ) {
+  private async _getTeams(draw: DrawCompetition, encounters: EncounterCompetition[]) {
     const teams = new Map<string, Team>();
 
     await runParallel(
@@ -280,13 +272,10 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
             teams.set(awayTeam.id, awayTeam);
           }
         } catch (error) {
-          this.logger.error(
-            `Error fetching teams for encounter ${e.id}`,
-            error
-          );
+          this.logger.error(`Error fetching teams for encounter ${e.id}`, error);
           throw error;
         }
-      })
+      }),
     );
     return [...teams.values()];
   }
@@ -297,7 +286,7 @@ export class CompetitionSyncStandingProcessor extends StepProcessor {
     await runParallel(
       teams.map(async (team) => {
         teamStandings.set(team.id, await this._standingTeam(draw, team));
-      })
+      }),
     );
 
     return teamStandings;

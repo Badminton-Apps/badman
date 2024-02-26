@@ -9,7 +9,7 @@ import {
   Team,
 } from '@badman/backend-database';
 import { NotificationService } from '@badman/backend-notifications';
-import { accepCookies, getBrowser } from '@badman/backend-pupeteer';
+import { accepCookies, getBrowser, signIn } from '@badman/backend-pupeteer';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { SearchService } from '@badman/backend-search';
 import { ConfigType } from '@badman/utils';
@@ -83,13 +83,18 @@ const includes = [
 export class CheckEncounterProcessor {
   private readonly logger = new Logger(CheckEncounterProcessor.name);
 
+  private readonly _username?: string;
+  private readonly _password?: string;
   private readonly autoAcceptClubs = ['smash-for-fun', 'herne', 'opslag'];
 
   constructor(
     private notificationService: NotificationService,
     private searchService: SearchService,
     private configService: ConfigService<ConfigType>,
-  ) {}
+  ) {
+    this._username = configService.get('VR_API_USER');
+    this._password = configService.get('VR_API_PASS');
+  }
 
   @Process(Sync.CheckEncounters)
   async syncEncounters() {
@@ -121,10 +126,7 @@ export class CheckEncounterProcessor {
         attributes: ['id', 'visualCode', 'date', 'homeTeamId', 'awayTeamId'],
         where: {
           date: {
-            [Op.between]: [
-              moment().subtract(14, 'days').toDate(),
-              moment().toDate(),
-            ],
+            [Op.between]: [moment().subtract(14, 'days').toDate(), moment().toDate()],
           },
           acceptedOn: null,
           visualCode: {
@@ -149,7 +151,7 @@ export class CheckEncounterProcessor {
         for (const chunk of chunks) {
           this.logger.debug(
             `Processing cthunk of ${chunk.length} encounters, ${
-              encounters.count - encountersProcessed
+              encounters.count - encountersProcessed 
             } encounter left, ${chunks.length - chunksProcessed} chunks left`,
           );
           // Close browser if any
@@ -199,12 +201,9 @@ export class CheckEncounterProcessor {
 
   @Process(Sync.CheckEncounter)
   async syncEncounter(job: Job<{ encounterId: string }>) {
-    const encounter = await EncounterCompetition.findByPk(
-      job.data.encounterId,
-      {
-        include: includes,
-      },
-    );
+    const encounter = await EncounterCompetition.findByPk(job.data.encounterId, {
+      include: includes,
+    });
 
     if (!encounter) {
       this.logger.error(`Encounter ${job.data.encounterId} not found`);
@@ -245,24 +244,17 @@ export class CheckEncounterProcessor {
         this.logger.verbose(`Encounter ${encounter.visualCode} has no time`);
         return;
       }
-      const { entered, enteredOn } = await detailEntered(
-        { page },
-        { logger: this.logger },
-      );
-      const { accepted, acceptedOn } = await detailAccepted(
-        { page },
-        { logger: this.logger },
-      );
-      const { hasComment } = await detailComment(
-        { page },
-        { logger: this.logger },
-      );
+      const { entered, enteredOn } = await detailEntered({ page }, { logger: this.logger });
+      const { accepted, acceptedOn } = await detailAccepted({ page }, { logger: this.logger });
+      const { hasComment } = await detailComment({ page }, { logger: this.logger });
       const enteredMoment = moment(enteredOn);
       const hoursPassed = moment().diff(encounter.date, 'hour');
 
       this.logger.debug(
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
       );
+
+      this.notificationService.notifyEncounterNotAccepted(encounter);
 
       // not entered and passed 24 hours and no comment
       if (!entered && hoursPassed > 24 && !hasComment) {
@@ -285,10 +277,7 @@ export class CheckEncounterProcessor {
           );
           if (!enteredOnTime) {
             // if entered late we give it 36 hours to comment after the encounter was filled in
-            hoursPassedEntered = moment().diff(
-              enteredMoment.clone().add(36, 'hour'),
-              'hour',
-            );
+            hoursPassedEntered = moment().diff(enteredMoment.clone().add(36, 'hour'), 'hour');
           }
 
           // Check if anough time has passed for auto accepting
@@ -296,16 +285,11 @@ export class CheckEncounterProcessor {
             this.logger.debug(
               `Auto accepting encounter ${encounter.visualCode} for club ${encounter.away.name}`,
             );
-
-            const succesfull = await acceptEncounter(
-              { page },
-              { logger: this.logger },
-            );
+            await signIn({ page }, this._username, this._password);
+            const succesfull = await acceptEncounter({ page }, { logger: this.logger });
             if (!succesfull) {
               // we failed to accept the encounter for some reason, notify the user
-              this.logger.warn(
-                `Could not auto accept encounter ${encounter.visualCode}`,
-              );
+              this.logger.warn(`Could not auto accept encounter ${encounter.visualCode}`);
               this.notificationService.notifyEncounterNotAccepted(encounter);
             }
           } else {
@@ -330,8 +314,10 @@ export class CheckEncounterProcessor {
         encounter.enteredOn = enteredMoment.toDate();
 
         try {
-          const { endedOn, startedOn, usedShuttle, gameLeader } =
-            await detailInfo({ page }, { logger: this.logger });
+          const { endedOn, startedOn, usedShuttle, gameLeader } = await detailInfo(
+            { page },
+            { logger: this.logger },
+          );
 
           this.logger.debug(
             `Encounter started on ${startedOn} and ended on ${endedOn} by ${gameLeader}, used shuttle ${usedShuttle}`,
@@ -355,9 +341,7 @@ export class CheckEncounterProcessor {
 
             if (gameLeaderPlayer && gameLeaderPlayer.length > 0) {
               if (gameLeaderPlayer.length > 1) {
-                this.logger.warn(
-                  `Found multiple players for game leader ${gameLeader}`,
-                );
+                this.logger.warn(`Found multiple players for game leader ${gameLeader}`);
               } else {
                 await encounter.setGameLeader(gameLeaderPlayer[0]);
               }

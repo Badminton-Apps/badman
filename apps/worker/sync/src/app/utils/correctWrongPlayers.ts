@@ -17,27 +17,19 @@ export const correctWrongPlayers = (player: {
 } => {
   // Yaro Van Delsen
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Yaro' &&
-      player.lastName === 'Van Delsen') ||
-    (player.memberId === '98443' &&
-      player.firstName === 'Yaro' &&
-      player.lastName === 'Van Delsen')
+    (player.memberId === '' && player.firstName === 'Yaro' && player.lastName === 'Van Delsen') ||
+    (player.memberId === '98443' && player.firstName === 'Yaro' && player.lastName === 'Van Delsen')
   ) {
     return {
       ...player,
-      memberId: '50110338', 
+      memberId: '50110338',
     };
   }
 
   // Lien Lammertyn
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Lien' &&
-      player.lastName === 'Lammertyn') ||
-    (player.memberId === '94823' &&
-      player.firstName === 'Lien' &&
-      player.lastName === 'Lammertyn')
+    (player.memberId === '' && player.firstName === 'Lien' && player.lastName === 'Lammertyn') ||
+    (player.memberId === '94823' && player.firstName === 'Lien' && player.lastName === 'Lammertyn')
   ) {
     return {
       ...player,
@@ -47,12 +39,8 @@ export const correctWrongPlayers = (player: {
 
   // Charles Fouyn
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Charles' &&
-      player.lastName === 'Fouyn') ||
-    (player.memberId === '94823' &&
-      player.firstName === 'Charles' &&
-      player.lastName === 'Fouyn')
+    (player.memberId === '' && player.firstName === 'Charles' && player.lastName === 'Fouyn') ||
+    (player.memberId === '94823' && player.firstName === 'Charles' && player.lastName === 'Fouyn')
   ) {
     return {
       ...player,
@@ -62,12 +50,8 @@ export const correctWrongPlayers = (player: {
 
   // Iljo Van Delsen
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Iljo' &&
-      player.lastName === 'Van Delsen') ||
-    (player.memberId === '84412' &&
-      player.firstName === 'Iljo' &&
-      player.lastName === 'Van Delsen')
+    (player.memberId === '' && player.firstName === 'Iljo' && player.lastName === 'Van Delsen') ||
+    (player.memberId === '84412' && player.firstName === 'Iljo' && player.lastName === 'Van Delsen')
   ) {
     return {
       ...player,
@@ -77,12 +61,8 @@ export const correctWrongPlayers = (player: {
 
   // Noa Swinnen
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Noa' &&
-      player.lastName === 'Swinnen') ||
-    (player.memberId === '70299' &&
-      player.firstName === 'Noa' &&
-      player.lastName === 'Swinnen')
+    (player.memberId === '' && player.firstName === 'Noa' && player.lastName === 'Swinnen') ||
+    (player.memberId === '70299' && player.firstName === 'Noa' && player.lastName === 'Swinnen')
   ) {
     return {
       ...player,
@@ -92,12 +72,8 @@ export const correctWrongPlayers = (player: {
 
   // Wannes Soenen
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Wannes' &&
-      player.lastName === 'Soenen') ||
-    (player.memberId === '75425' &&
-      player.firstName === 'Wannes' &&
-      player.lastName === 'Soenen')
+    (player.memberId === '' && player.firstName === 'Wannes' && player.lastName === 'Soenen') ||
+    (player.memberId === '75425' && player.firstName === 'Wannes' && player.lastName === 'Soenen')
   ) {
     return {
       ...player,
@@ -107,12 +83,8 @@ export const correctWrongPlayers = (player: {
 
   // Liam Bauwens
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Liam' &&
-      player.lastName === 'Bauwens') ||
-    (player.memberId === '76198' &&
-      player.firstName === 'Liam' &&
-      player.lastName === 'Bauwens')
+    (player.memberId === '' && player.firstName === 'Liam' && player.lastName === 'Bauwens') ||
+    (player.memberId === '76198' && player.firstName === 'Liam' && player.lastName === 'Bauwens')
   ) {
     return {
       ...player,
@@ -122,9 +94,7 @@ export const correctWrongPlayers = (player: {
 
   // Andreas de Winné
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Andreas' &&
-      player.lastName === 'De Winné') ||
+    (player.memberId === '' && player.firstName === 'Andreas' && player.lastName === 'De Winné') ||
     (player.memberId === '79663' &&
       player.firstName === 'Andreas' &&
       player.lastName === 'De Winné')
@@ -152,15 +122,9 @@ export const correctWrongPlayers = (player: {
 
   // Arthur De Baere
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Arthur' &&
-      player.lastName === 'De Baere') ||
-    (player.memberId === '' &&
-      player.firstName === 'Arthur' &&
-      player.lastName === 'Debaere') ||
-    (player.memberId === '64263' &&
-      player.firstName === 'Arthur' &&
-      player.lastName === 'De Baere')
+    (player.memberId === '' && player.firstName === 'Arthur' && player.lastName === 'De Baere') ||
+    (player.memberId === '' && player.firstName === 'Arthur' && player.lastName === 'Debaere') ||
+    (player.memberId === '64263' && player.firstName === 'Arthur' && player.lastName === 'De Baere')
   ) {
     return {
       ...player,
@@ -169,11 +133,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Caitlyn De Bree
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Caitlyn' &&
-    player.lastName === 'De Bree'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Caitlyn' && player.lastName === 'De Bree') {
     return {
       ...player,
       memberId: '50130927',
@@ -182,12 +142,8 @@ export const correctWrongPlayers = (player: {
 
   // Jenny Bender
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Jenny' &&
-      player.lastName === 'Bender') ||
-    (player.memberId === '50073760' &&
-      player.firstName === 'Jenny' &&
-      player.lastName === 'Bender')
+    (player.memberId === '' && player.firstName === 'Jenny' && player.lastName === 'Bender') ||
+    (player.memberId === '50073760' && player.firstName === 'Jenny' && player.lastName === 'Bender')
   ) {
     return {
       ...player,
@@ -229,9 +185,7 @@ export const correctWrongPlayers = (player: {
 
   // Noa Dauphinais
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Noa' &&
-      player.lastName === 'Dauphinais') ||
+    (player.memberId === '' && player.firstName === 'Noa' && player.lastName === 'Dauphinais') ||
     (player.memberId === '30007379' &&
       player.firstName === 'Noa' &&
       player.lastName === 'Dauhphinais')
@@ -278,22 +232,14 @@ export const correctWrongPlayers = (player: {
     };
   }
   // Fae Boonen
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Fae' &&
-    player.lastName === 'Boonen'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Fae' && player.lastName === 'Boonen') {
     return {
       ...player,
       memberId: '50417193',
     };
   }
   // Amber Boonen
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Amber' &&
-    player.lastName === 'Boonen'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Amber' && player.lastName === 'Boonen') {
     return {
       ...player,
       memberId: '50281089',
@@ -334,12 +280,8 @@ export const correctWrongPlayers = (player: {
   }
   // Eubil Shannon Cabije
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Eubil' &&
-      player.lastName === 'Cabije') ||
-    (player.memberId === '50115058' &&
-      player.firstName === 'Eubil' &&
-      player.lastName === 'Cabije')
+    (player.memberId === '' && player.firstName === 'Eubil' && player.lastName === 'Cabije') ||
+    (player.memberId === '50115058' && player.firstName === 'Eubil' && player.lastName === 'Cabije')
   ) {
     return {
       ...player,
@@ -419,11 +361,7 @@ export const correctWrongPlayers = (player: {
     };
   }
   // Wolf Hoebeke
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Wolf' &&
-    player.lastName === 'Hoebeke'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Wolf' && player.lastName === 'Hoebeke') {
     return {
       ...player,
       memberId: '50414194',
@@ -468,11 +406,7 @@ export const correctWrongPlayers = (player: {
     };
   }
   // Kaat Keymolen
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Kaat' &&
-    player.lastName === 'Keymolen'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Kaat' && player.lastName === 'Keymolen') {
     return {
       ...player,
       memberId: '50923374',
@@ -491,11 +425,7 @@ export const correctWrongPlayers = (player: {
     };
   }
   // Seung Woo (Peter) Lee
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Seung Woo' &&
-    player.lastName === 'Lee'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Seung Woo' && player.lastName === 'Lee') {
     return {
       ...player,
       firstName: 'Seung Woo (Peter)',
@@ -565,9 +495,7 @@ export const correctWrongPlayers = (player: {
     (player.memberId === '50018619' &&
       player.firstName === 'Jimmy' &&
       player.lastName === 'Belien') ||
-    (player.memberId === '50018619' &&
-      player.firstName === 'Jimmy' &&
-      player.lastName === 'BeliëN')
+    (player.memberId === '50018619' && player.firstName === 'Jimmy' && player.lastName === 'BeliëN')
   ) {
     return {
       ...player,
@@ -622,9 +550,7 @@ export const correctWrongPlayers = (player: {
     (player.memberId === '30046469' &&
       player.firstName === 'StéPhane' &&
       player.lastName === 'Bol') ||
-    (player.memberId === '30046469' &&
-      player.firstName === 'Stephane' &&
-      player.lastName === 'Bol')
+    (player.memberId === '30046469' && player.firstName === 'Stephane' && player.lastName === 'Bol')
   ) {
     return {
       ...player,
@@ -927,11 +853,7 @@ export const correctWrongPlayers = (player: {
   }
 
   //  Marie Demy
-  if (
-    player.memberId === '30031652' &&
-    player.firstName === 'Mary' &&
-    player.lastName === 'Demy'
-  ) {
+  if (player.memberId === '30031652' && player.firstName === 'Mary' && player.lastName === 'Demy') {
     return {
       ...player,
       firstName: 'Marie',
@@ -1000,11 +922,7 @@ export const correctWrongPlayers = (player: {
     };
   }
   //  Els Duré
-  if (
-    player.memberId === '50073676' &&
-    player.firstName === 'Els' &&
-    player.lastName === 'Dure'
-  ) {
+  if (player.memberId === '50073676' && player.firstName === 'Els' && player.lastName === 'Dure') {
     return {
       ...player,
       lastName: 'Duré',
@@ -1238,9 +1156,7 @@ export const correctWrongPlayers = (player: {
     (player.memberId === '50055238' &&
       player.firstName === 'Maite' &&
       player.lastName === 'Lamont') ||
-    (player.memberId === '50055238' &&
-      player.firstName === 'MaïTé' &&
-      player.lastName === 'Lamont')
+    (player.memberId === '50055238' && player.firstName === 'MaïTé' && player.lastName === 'Lamont')
   ) {
     return {
       ...player,
@@ -1413,9 +1329,7 @@ export const correctWrongPlayers = (player: {
     (player.memberId === '485349' &&
       player.firstName === 'Leon' &&
       player.lastName === 'Nottelman') ||
-    (player.memberId === '485349' &&
-      player.firstName === 'LéOn' &&
-      player.lastName === 'Nottelman')
+    (player.memberId === '485349' && player.firstName === 'LéOn' && player.lastName === 'Nottelman')
   ) {
     return {
       ...player,
@@ -1424,11 +1338,7 @@ export const correctWrongPlayers = (player: {
   }
 
   //  Erik Oreel
-  if (
-    player.memberId === '890516' &&
-    player.firstName === 'Eric' &&
-    player.lastName === 'Oreel'
-  ) {
+  if (player.memberId === '890516' && player.firstName === 'Eric' && player.lastName === 'Oreel') {
     return {
       ...player,
       firstName: 'Erik',
@@ -1449,9 +1359,7 @@ export const correctWrongPlayers = (player: {
 
   //  Luisa Pagliara
   if (
-    (player.memberId === '' &&
-      player.firstName === 'Luisa' &&
-      player.lastName === 'Pagliara') ||
+    (player.memberId === '' && player.firstName === 'Luisa' && player.lastName === 'Pagliara') ||
     (player.memberId === '30081368' &&
       player.firstName === 'Louisa' &&
       player.lastName === 'Pagliara')
@@ -1545,9 +1453,7 @@ export const correctWrongPlayers = (player: {
     (player.memberId === '30056005' &&
       player.firstName === 'Remi' &&
       player.lastName === 'Rochet') ||
-    (player.memberId === '30056005' &&
-      player.firstName === 'RéMi' &&
-      player.lastName === 'Rochet')
+    (player.memberId === '30056005' && player.firstName === 'RéMi' && player.lastName === 'Rochet')
   ) {
     return {
       ...player,
@@ -1629,22 +1535,14 @@ export const correctWrongPlayers = (player: {
   }
 
   //  Koen Claessens
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Koen' &&
-    player.lastName === 'Claessens'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Koen' && player.lastName === 'Claessens') {
     return {
       ...player,
       memberId: '50057535',
     };
   }
   //  Serge Rusak
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Serge' &&
-    player.lastName === 'Rusak'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Serge' && player.lastName === 'Rusak') {
     return {
       ...player,
       memberId: '30035358',
@@ -1857,11 +1755,7 @@ export const correctWrongPlayers = (player: {
   }
 
   //  Noel Maes
-  if (
-    player.memberId === '50085646' &&
-    player.firstName === 'NoëL' &&
-    player.lastName === 'Maes'
-  ) {
+  if (player.memberId === '50085646' && player.firstName === 'NoëL' && player.lastName === 'Maes') {
     return {
       ...player,
       firstName: 'Noel',
@@ -2075,11 +1969,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // LéA Genson
-  if (
-    player.memberId === '1100' &&
-    player.firstName === 'LéA' &&
-    player.lastName === 'Genson'
-  ) {
+  if (player.memberId === '1100' && player.firstName === 'LéA' && player.lastName === 'Genson') {
     return {
       ...player,
       firstName: 'Lea',
@@ -3233,11 +3123,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Yau Dan
-  if (
-    player.memberId === '1297262' &&
-    player.firstName === 'Yau' &&
-    player.lastName === 'Dan'
-  ) {
+  if (player.memberId === '1297262' && player.firstName === 'Yau' && player.lastName === 'Dan') {
     return {
       ...player,
       firstName: 'Dan',
@@ -3395,11 +3281,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Tom Ellis
-  if (
-    player.memberId === '1290946' &&
-    player.firstName === 'Tom' &&
-    player.lastName === 'Ellis'
-  ) {
+  if (player.memberId === '1290946' && player.firstName === 'Tom' && player.lastName === 'Ellis') {
     return {
       ...player,
       firstName: 'Thomas',
@@ -3421,11 +3303,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Timms Ben
-  if (
-    player.memberId === '1236607' &&
-    player.firstName === 'Timms' &&
-    player.lastName === 'Ben'
-  ) {
+  if (player.memberId === '1236607' && player.firstName === 'Timms' && player.lastName === 'Ben') {
     return {
       ...player,
       firstName: 'Ben',
@@ -3684,11 +3562,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Ritzen Beau
-  if (
-    player.memberId === '863754' &&
-    player.firstName === 'Ritzen' &&
-    player.lastName === 'Beau'
-  ) {
+  if (player.memberId === '863754' && player.firstName === 'Ritzen' && player.lastName === 'Beau') {
     return {
       ...player,
       firstName: 'Beau',
@@ -4202,11 +4076,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Line Xia
-  if (
-    player.memberId === '30099095' &&
-    player.firstName === 'Line' &&
-    player.lastName === 'Xia'
-  ) {
+  if (player.memberId === '30099095' && player.firstName === 'Line' && player.lastName === 'Xia') {
     return {
       ...player,
       firstName: 'Line',
@@ -4241,11 +4111,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Lee Ka Wing
-  if (
-    player.memberId === '807115' &&
-    player.firstName === 'Lee' &&
-    player.lastName === 'Ka Wing'
-  ) {
+  if (player.memberId === '807115' && player.firstName === 'Lee' && player.lastName === 'Ka Wing') {
     return {
       ...player,
       firstName: 'Ka',
@@ -4685,11 +4551,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // éric Demay
-  if (
-    player.memberId === '6602425' &&
-    player.firstName === 'éric' &&
-    player.lastName === 'Demay'
-  ) {
+  if (player.memberId === '6602425' && player.firstName === 'éric' && player.lastName === 'Demay') {
     return {
       ...player,
       firstName: 'Eric',
@@ -4698,11 +4560,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Ellen Kania
-  if (
-    player.memberId === '554831' &&
-    player.firstName === 'Ellen' &&
-    player.lastName === 'Kania'
-  ) {
+  if (player.memberId === '554831' && player.firstName === 'Ellen' && player.lastName === 'Kania') {
     return {
       ...player,
       firstName: 'Mirella',
@@ -4736,11 +4594,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Dom Smith
-  if (
-    player.memberId === '1250420' &&
-    player.firstName === 'Dom' &&
-    player.lastName === 'Smith'
-  ) {
+  if (player.memberId === '1250420' && player.firstName === 'Dom' && player.lastName === 'Smith') {
     return {
       ...player,
       firstName: 'Dominique',
@@ -5278,11 +5132,7 @@ export const correctWrongPlayers = (player: {
   }
 
   // Elsa Danckers
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Elsa' &&
-    player.lastName === 'Danckers'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Elsa' && player.lastName === 'Danckers') {
     return {
       ...player,
       memberId: '267665',
@@ -5290,22 +5140,14 @@ export const correctWrongPlayers = (player: {
   }
 
   // Max Wieland
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Max' &&
-    player.lastName === 'Wieland'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Max' && player.lastName === 'Wieland') {
     return {
       ...player,
       memberId: '883398',
     };
   }
   // Novi Wieland
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Novi' &&
-    player.lastName === 'Wieland'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Novi' && player.lastName === 'Wieland') {
     return {
       ...player,
       memberId: '887043',
@@ -5313,11 +5155,7 @@ export const correctWrongPlayers = (player: {
   }
 
   //  Christian Fischer
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Christian' &&
-    player.lastName === 'Fischer'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Christian' && player.lastName === 'Fischer') {
     return {
       ...player,
       memberId: '66737',
@@ -5348,11 +5186,7 @@ export const correctWrongPlayers = (player: {
     };
   }
 
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Koen' &&
-    player.lastName === 'Claes'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Koen' && player.lastName === 'Claes') {
     return {
       ...player,
       memberId: undefined,
@@ -5368,21 +5202,13 @@ export const correctWrongPlayers = (player: {
       memberId: undefined,
     };
   }
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Guy' &&
-    player.lastName === 'Dilles'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Guy' && player.lastName === 'Dilles') {
     return {
       ...player,
       memberId: undefined,
     };
   }
-  if (
-    player.memberId === '' &&
-    player.firstName === 'Sergio' &&
-    player.lastName === 'Carrilho'
-  ) {
+  if (player.memberId === '' && player.firstName === 'Sergio' && player.lastName === 'Carrilho') {
     return {
       ...player,
       memberId: undefined,

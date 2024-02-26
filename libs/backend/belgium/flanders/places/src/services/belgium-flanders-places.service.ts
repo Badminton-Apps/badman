@@ -1,9 +1,4 @@
-import {
-  Player,
-  RankingPlace,
-  RankingPoint,
-  RankingSystem,
-} from '@badman/backend-database';
+import { Player, RankingPlace, RankingPoint, RankingSystem } from '@badman/backend-database';
 import { GameType, getRankingProtected } from '@badman/utils';
 import { Injectable } from '@nestjs/common';
 import moment from 'moment';
@@ -87,11 +82,7 @@ export class BelgiumFlandersPlacesService {
       gameType: GameType.D,
     });
 
-    const [single, mix, double] = await Promise.all([
-      singlePromise,
-      mixPromise,
-      doublePromise,
-    ]);
+    const [single, mix, double] = await Promise.all([singlePromise, mixPromise, doublePromise]);
 
     newRanking.single = single.level;
     newRanking.singleInactive = single.inactive;
@@ -112,7 +103,7 @@ export class BelgiumFlandersPlacesService {
       // Protections
       newRanking = getRankingProtected(newRanking, system);
       newRanking.updatePossible = true;
-    } else{
+    } else {
       newRanking.updatePossible = false;
     }
 
@@ -133,15 +124,8 @@ export class BelgiumFlandersPlacesService {
       transaction?: Transaction;
     },
   ) {
-    const {
-      transaction,
-      start,
-      stop,
-      lastRanking,
-      lastRankingInactive,
-      gameType,
-      updateRanking,
-    } = options ?? {};
+    const { transaction, start, stop, lastRanking, lastRankingInactive, gameType, updateRanking } =
+      options ?? {};
 
     const games = await this._getGames(system, player, {
       start,
@@ -216,10 +200,7 @@ export class BelgiumFlandersPlacesService {
 
     if (options.start && options.stop) {
       where['playedAt'] = {
-        [Op.between]: [
-          options.start?.toISOString(),
-          options.stop?.toISOString(),
-        ],
+        [Op.between]: [options.start?.toISOString(), options.stop?.toISOString()],
       };
     } else if (options.start) {
       where['playedAt'] = {
@@ -265,11 +246,7 @@ export class BelgiumFlandersPlacesService {
       gameType?: GameType;
     },
   ) {
-    if (
-      !system.inactivityAmount ||
-      !system.inactivityUnit ||
-      !system.gamesForInactivty
-    ) {
+    if (!system.inactivityAmount || !system.inactivityUnit || !system.gamesForInactivty) {
       return false;
     }
 
@@ -288,11 +265,7 @@ export class BelgiumFlandersPlacesService {
     return false;
   }
 
-  private _calculatePoints(
-    system: RankingSystem,
-    points: RankingPoint[],
-    gameType: GameType,
-  ) {
+  private _calculatePoints(system: RankingSystem, points: RankingPoint[], gameType: GameType) {
     if (!points.length) {
       return {
         upgrade: 0,
@@ -304,15 +277,15 @@ export class BelgiumFlandersPlacesService {
       gameType === GameType.S
         ? 'differenceForDowngradeSingle'
         : gameType === GameType.D
-        ? 'differenceForDowngradeDouble'
-        : 'differenceForDowngradeMix';
+          ? 'differenceForDowngradeDouble'
+          : 'differenceForDowngradeMix';
 
     const propUpgrade =
       gameType === GameType.S
         ? 'differenceForUpgradeSingle'
         : gameType === GameType.D
-        ? 'differenceForUpgradeDouble'
-        : 'differenceForUpgradeMix';
+          ? 'differenceForUpgradeDouble'
+          : 'differenceForUpgradeMix';
 
     // difference is a negative number when layers are higher
     let pointsForUpgrade = points.filter(
@@ -354,10 +327,7 @@ export class BelgiumFlandersPlacesService {
     };
   }
 
-  private _findPointsAverage(
-    rankingPoints: RankingPoint[],
-    limitMinGames?: number,
-  ) {
+  private _findPointsAverage(rankingPoints: RankingPoint[], limitMinGames?: number) {
     const avgPoints = rankingPoints.map((x) => x.points).filter((x) => x === 0);
     const wonPoints = rankingPoints
       .filter((x) => (x.points ?? 0) > 0)
@@ -395,11 +365,7 @@ export class BelgiumFlandersPlacesService {
 
     // Check if can go up,
     // we start at our current level and go down in number (so higher rankings)
-    for (
-      let estimatedUpLevel = currentLevel;
-      estimatedUpLevel >= 1;
-      estimatedUpLevel--
-    ) {
+    for (let estimatedUpLevel = currentLevel; estimatedUpLevel >= 1; estimatedUpLevel--) {
       const pointsNeededForNextLevel =
         system.pointsToGoUp[system.pointsToGoUp.length + 1 - estimatedUpLevel];
       if (pointsNeededForNextLevel > pointsUpgrade) {
@@ -425,9 +391,7 @@ export class BelgiumFlandersPlacesService {
       estimatedDownLevel++
     ) {
       const pointsNeededForPreviousLevel =
-        system.pointsToGoDown[
-          system.pointsToGoDown.length - estimatedDownLevel
-        ];
+        system.pointsToGoDown[system.pointsToGoDown.length - estimatedDownLevel];
       if (pointsNeededForPreviousLevel < pointsDowngrade) {
         bottomLevelByDowngradePoints = estimatedDownLevel;
         break;
@@ -435,10 +399,7 @@ export class BelgiumFlandersPlacesService {
     }
 
     const decrease = bottomLevelByDowngradePoints - currentLevel;
-    if (
-      system.maxLevelDownPerChange &&
-      decrease > system.maxLevelDownPerChange
-    ) {
+    if (system.maxLevelDownPerChange && decrease > system.maxLevelDownPerChange) {
       return currentLevel + system.maxLevelDownPerChange;
     } else {
       return bottomLevelByDowngradePoints;

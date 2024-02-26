@@ -1,9 +1,5 @@
 import { isFirstHigher } from '@badman/utils';
-import {
-  EnrollmentValidationData,
-  RuleResult,
-  EnrollmentValidationError,
-} from '../../../models';
+import { EnrollmentValidationData, RuleResult, EnrollmentValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -18,7 +14,6 @@ export class TeamRiserFallerRule extends Rule {
         continue;
       }
 
-
       const errors = [] as EnrollmentValidationError[];
 
       if (!subEvent) {
@@ -27,10 +22,7 @@ export class TeamRiserFallerRule extends Rule {
 
       if (
         previousSeasonTeam?.entry?.standing?.riser &&
-        isFirstHigher(
-          subEvent,
-          previousSeasonTeam?.entry?.subEventCompetition
-        ) !== 'better'
+        isFirstHigher(subEvent, previousSeasonTeam?.entry?.subEventCompetition) !== 'better'
       ) {
         errors.push({
           message: 'all.competition.team-enrollment.errors.riser',
@@ -40,10 +32,7 @@ export class TeamRiserFallerRule extends Rule {
         });
       } else if (
         previousSeasonTeam?.entry?.standing?.faller &&
-        isFirstHigher(
-          subEvent,
-          previousSeasonTeam?.entry?.subEventCompetition
-        ) !== 'lower'
+        isFirstHigher(subEvent, previousSeasonTeam?.entry?.subEventCompetition) !== 'lower'
       ) {
         errors.push({
           message: 'all.competition.team-enrollment.errors.faller',

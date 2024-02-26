@@ -1,8 +1,4 @@
-import {
-  EncounterCompetition,
-  NotificationOptionsTypes,
-  Player,
-} from '@badman/backend-database';
+import { EncounterCompetition, NotificationOptionsTypes, Player } from '@badman/backend-database';
 import * as webPush from 'web-push';
 import { Notifier } from '../notifier.base';
 
@@ -16,9 +12,8 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
   }
 > {
   protected linkType = 'encounterCompetition';
-  protected type: keyof NotificationOptionsTypes =
-    'encounterNotEnteredNotification';
-  protected allowedAmount = 1;
+  protected type: keyof NotificationOptionsTypes = 'encounterNotEnteredNotification';
+  protected override allowedAmount = 1;
 
   private readonly options = (url: string, encounter: EncounterCompetition) => {
     return {
@@ -39,7 +34,7 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
   async notifyPush(
     player: Player,
     data: { encounter: EncounterCompetition },
-    args?: { email: string; url: string }
+    args?: { email: string; url: string },
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
 
@@ -47,15 +42,12 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
       throw new Error('No url provided');
     }
 
-    await this.pushService.sendNotification(
-      player,
-      this.options(args?.url, data.encounter)
-    );
+    await this.pushService.sendNotification(player, this.options(args?.url, data.encounter));
   }
   async notifyEmail(
     player: Player,
     data: { encounter: EncounterCompetition },
-    args?: { email: string; url: string }
+    args?: { email: string; url: string },
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
 
@@ -81,7 +73,7 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
         slug: player.slug,
       },
       data.encounter,
-      args.url
+      args.url,
     );
   }
 
@@ -90,7 +82,7 @@ export class CompetitionEncounterNotAcceptedNotifier extends Notifier<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { encounter: EncounterCompetition },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string }
+    args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();

@@ -23,8 +23,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
     if (!options) {
       options = {};
     }
-    options.logger =
-      options.logger || new Logger(CompetitionSyncPointProcessor.name);
+    options.logger = options.logger || new Logger(CompetitionSyncPointProcessor.name);
     super(options);
   }
 
@@ -38,9 +37,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
     for (const subEvent of subEvents) {
       const index = subEvents.indexOf(subEvent);
       const progress = (index / subEvents.length) * 100;
-      this.logger.debug(
-        `Syncing points for ${subEvent.name} (${progress.toFixed(2)}%)`,
-      );
+      this.logger.debug(`Syncing points for ${subEvent.name} (${progress.toFixed(2)}%)`);
 
       const groups = await subEvent.getRankingGroups({
         include: [{ model: RankingSystem }],
@@ -49,7 +46,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
 
       for (const group of groups) {
         for (const rankingSystem of group.rankingSystems ?? []) {
-          const encounterIds= (
+          const encounterIds = (
             await subEvent.getDrawCompetitions({
               attributes: ['id'],
               include: [{ model: EncounterCompetition, attributes: ['id'] }],
@@ -65,14 +62,7 @@ export class CompetitionSyncPointProcessor extends StepProcessor {
           }
 
           const games = await Game.findAll({
-            attributes: [
-              'id',
-              'winner',
-              'set1Team1',
-              'set2Team2',
-              'playedAt',
-              'gameType',
-            ],
+            attributes: ['id', 'winner', 'set1Team1', 'set2Team2', 'playedAt', 'gameType'],
             where: {
               linkId: {
                 [Op.in]: encounterIds,

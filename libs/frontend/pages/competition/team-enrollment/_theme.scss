@@ -1,13 +1,23 @@
-@use './src/pages/team-enrollment/team-enrollment.page.theme.scss' as team-enrollment;
+@use '@angular/material' as mat;
 
-@mixin theme($theme) {
-  @include team-enrollment.theme($theme);
-}
+@use './src/pages/team-enrollment/team-enrollment.page.theme.scss' as team-enrollment;
 
 @mixin typography($theme) {
   @include team-enrollment.typography($theme);
 }
 
-@mixin colors($theme) {
+@mixin color($theme) {
   @include team-enrollment.color($theme);
+}
+
+@mixin theme($theme) {
+  $color-config: mat.get-color-config($theme);
+  @if $color-config != null {
+    @include color($theme);
+  }
+
+  $typography-config: mat.get-typography-config($theme);
+  @if $typography-config != null {
+    @include typography($theme);
+  }
 }

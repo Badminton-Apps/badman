@@ -8,6 +8,6 @@
   @include role-fields.typography($theme);
 }
 
-@mixin colors($theme) {
+@mixin color($theme) {
   @include role-fields.color($theme);
 }

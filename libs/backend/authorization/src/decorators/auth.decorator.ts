@@ -22,21 +22,19 @@ export class PermGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {
     this.jwksClient = new JwksClient({
       cache: true,
-      jwksUri: `${this.configService.get(
-        'AUTH0_ISSUER_URL'
-      )}/.well-known/jwks.json`,
+      jwksUri: `${this.configService.get('AUTH0_ISSUER_URL')}/.well-known/jwks.json`,
     });
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(
-      ALLOW_ANONYMOUS_META_KEY,
-      [context.getHandler(), context.getClass()]
-    );
+    const isPublic = this.reflector.getAllAndOverride<boolean>(ALLOW_ANONYMOUS_META_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
     if (isPublic) {
       // 💡 See this condition
       return true;

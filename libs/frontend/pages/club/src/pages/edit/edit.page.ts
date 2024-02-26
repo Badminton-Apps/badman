@@ -38,13 +38,7 @@ import {
   SelectCountrystateComponent,
 } from '@badman/frontend-components';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
-import {
-  Club,
-  EntryCompetitionPlayer,
-  Location,
-  Role,
-  Team,
-} from '@badman/frontend-models';
+import { Club, EntryCompetitionPlayer, Location, Role, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import {
   SecurityType,
@@ -57,12 +51,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import {
-  BehaviorSubject,
-  Observable,
-  combineLatest,
-  lastValueFrom,
-} from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, lastValueFrom } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -84,17 +73,12 @@ import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
   styleUrls: ['./edit.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
     RouterModule,
-
-    // Other modules
     MomentModule,
     TranslateModule,
-
-    // My Modules
     ClubEditLocationComponent,
     ClubEditTeamComponent,
     ClubFieldsComponent,
@@ -103,8 +87,6 @@ import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
     SelectCountrystateComponent,
     EditRoleComponent,
     AddRoleComponent,
-
-    // Material Modules
     MatButtonToggleModule,
     MatIconModule,
     MatInputModule,
@@ -195,12 +177,8 @@ export class EditPageComponent implements OnInit {
         name: new FormControl(this.club.name, [Validators.required]),
         clubId: new FormControl(this.club.clubId, [Validators.required]),
         fullName: new FormControl(this.club.fullName, [Validators.required]),
-        abbreviation: new FormControl(this.club.abbreviation, [
-          Validators.required,
-        ]),
-        useForTeamName: new FormControl(this.club.useForTeamName, [
-          Validators.required,
-        ]),
+        abbreviation: new FormControl(this.club.abbreviation, [Validators.required]),
+        useForTeamName: new FormControl(this.club.useForTeamName, [Validators.required]),
         country: new FormControl(this.club.country, [Validators.required]),
         state: new FormControl(this.club.state, [Validators.required]),
       }) as FormGroup<{
@@ -238,10 +216,7 @@ export class EditPageComponent implements OnInit {
         }
       });
 
-      this.teamsForSeason$ = combineLatest([
-        this.season.valueChanges,
-        this.updateTeams$,
-      ]).pipe(
+      this.teamsForSeason$ = combineLatest([this.season.valueChanges, this.updateTeams$]).pipe(
         takeUntil(this.destroy$),
         switchMap((season) => {
           return this.apollo.query<{ club: Club }>({
@@ -304,14 +279,9 @@ export class EditPageComponent implements OnInit {
           // initial teamnumbers from 1 to maxlevel
           for (const type of this.eventTypes) {
             const maxLevelM = Math.max(
-              ...(teams
-                ?.filter((t) => t.type === type)
-                .map((t) => t.teamNumber ?? 0) ?? []),
+              ...(teams?.filter((t) => t.type === type).map((t) => t.teamNumber ?? 0) ?? []),
             );
-            this.teamNumbers[type] = Array.from(
-              { length: maxLevelM },
-              (_, i) => i + 1,
-            );
+            this.teamNumbers[type] = Array.from({ length: maxLevelM }, (_, i) => i + 1);
           }
         }),
         map((teams) => teams.sort(sortTeams)),
@@ -400,11 +370,7 @@ export class EditPageComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          `clubRolesKey-${this.club.id}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`clubRolesKey-${this.club.id}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.roles) {
             throw new Error('No roles');
@@ -559,11 +525,7 @@ export class EditPageComponent implements OnInit {
     await lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation AddBasePlayerForSubEvent(
-            $playerId: ID!
-            $subEventId: ID!
-            $teamId: ID!
-          ) {
+          mutation AddBasePlayerForSubEvent($playerId: ID!, $subEventId: ID!, $teamId: ID!) {
             addBasePlayerForSubEvent(
               playerId: $playerId
               subEventId: $subEventId
@@ -584,10 +546,7 @@ export class EditPageComponent implements OnInit {
     this.updateTeams$.next(null);
   }
 
-  async onDeleteBasePlayer(
-    player: Partial<EntryCompetitionPlayer>,
-    team: Team,
-  ) {
+  async onDeleteBasePlayer(player: Partial<EntryCompetitionPlayer>, team: Team) {
     if (!team?.id) {
       throw new Error('No team id');
     }
@@ -602,11 +561,7 @@ export class EditPageComponent implements OnInit {
     await lastValueFrom(
       this.apollo.mutate({
         mutation: gql`
-          mutation removeBasePlayerForSubEvent(
-            $playerId: ID!
-            $subEventId: ID!
-            $teamId: ID!
-          ) {
+          mutation removeBasePlayerForSubEvent($playerId: ID!, $subEventId: ID!, $teamId: ID!) {
             removeBasePlayerForSubEvent(
               playerId: $playerId
               subEventId: $subEventId
@@ -627,10 +582,7 @@ export class EditPageComponent implements OnInit {
     this.updateTeams$.next(null);
   }
 
-  async onPlayerMetaUpdated(
-    player: Partial<EntryCompetitionPlayer>,
-    team: Team,
-  ) {
+  async onPlayerMetaUpdated(player: Partial<EntryCompetitionPlayer>, team: Team) {
     if (!team?.id) {
       throw new Error('No team id');
     }
@@ -652,11 +604,7 @@ export class EditPageComponent implements OnInit {
             $subEventId: ID!
             $player: EntryCompetitionPlayersInputType!
           ) {
-            updatePlayerMetaForSubEvent(
-              teamId: $teamId
-              subEventId: $subEventId
-              player: $player
-            ) {
+            updatePlayerMetaForSubEvent(teamId: $teamId, subEventId: $subEventId, player: $player) {
               id
             }
           }

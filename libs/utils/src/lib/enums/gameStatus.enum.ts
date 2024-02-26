@@ -5,4 +5,3 @@ export enum GameStatus {
   DISQUALIFIED = 'DISQUALIFIED',
   NO_MATCH = 'NO_MATCH',
 }
-

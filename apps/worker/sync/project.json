@@ -4,40 +4,6 @@
   "sourceRoot": "apps/worker/sync/src",
   "projectType": "application",
   "targets": {
-    "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
-      "options": {
-        "target": "node",
-        "compiler": "tsc",
-        "outputPath": "dist/apps/worker/sync",
-        "main": "apps/worker/sync/src/main.ts",
-        "tsConfig": "apps/worker/sync/tsconfig.app.json",
-        "assets": [
-          "apps/worker/sync/src/assets",
-          {
-            "glob": "**/*",
-            "input": "libs/backend/mailing/src/compile",
-            "output": "compile/libs/mailing"
-          },
-          {
-            "glob": "**/*",
-            "input": "libs/backend/translate/assets",
-            "output": "assets"
-          }
-        ],
-        "webpackConfig": "apps/worker/sync//webpack.config.js"
-      },
-      "configurations": {
-        "development": {},
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false
-        }
-      }
-    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
@@ -56,15 +22,10 @@
         }
       }
     },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/worker/sync"],
+    "deploy": {
+      "executor": "nx:run-commands",
       "options": {
-        "jestConfig": "apps/worker/sync/jest.config.js"
+        "command": "node ./scripts/render.js --app=worker_sync"
       }
     }
   },

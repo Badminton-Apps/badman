@@ -1,6 +1,6 @@
 {
   "name": "backend-mailing",
-  "$schema": "..\\..\\..\\node_modules\\nx\\schemas\\project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/mailing/src",
   "projectType": "library",
   "targets": {
@@ -11,18 +11,8 @@
         "outputPath": "dist/libs/backend/mailing",
         "tsConfig": "libs/backend/mailing/tsconfig.lib.json",
         "packageJson": "libs/backend/mailing/package.json",
-        "main": "libs/backend/mailing/src/index.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/mailing"],
-      "options": {
-        "jestConfig": "libs/backend/mailing/jest.config.js"
+        "main": "libs/backend/mailing/src/index.ts",
+        "assets": ["libs/backend/mailing/*.md"]
       }
     }
   },

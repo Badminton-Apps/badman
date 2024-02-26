@@ -1,11 +1,5 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import {
-  Inject,
-  InjectionToken,
-  ModuleWithProviders,
-  NgModule,
-  PLATFORM_ID,
-} from '@angular/core';
+import { Inject, InjectionToken, ModuleWithProviders, NgModule, PLATFORM_ID } from '@angular/core';
 
 function scriptconfig(projectId: string): string {
   return `(function (c, l, a, r, i, t, y) {
@@ -22,14 +16,12 @@ function scriptconfig(projectId: string): string {
   })(window, document, 'clarity', 'script', '${projectId}');`;
 }
 
-const CLARITY_CONFIG_TOKEN = new InjectionToken<ClarityConfiguration>(
-  'clarity.config'
-);
+const CLARITY_CONFIG_TOKEN = new InjectionToken<ClarityConfiguration>('clarity.config');
 
 export type ClarityConfiguration = Readonly<{
   enabled: boolean;
   projectId: string;
-  scriptType?:  "text/javascript" | string;
+  scriptType?: 'text/javascript' | string;
 }>;
 
 @NgModule({})
@@ -40,11 +32,11 @@ export class ClarityModule {
     @Inject(DOCUMENT)
     d: Document,
     @Inject(CLARITY_CONFIG_TOKEN)
-    { enabled, projectId, scriptType }: ClarityConfiguration
+    { enabled, projectId, scriptType }: ClarityConfiguration,
   ) {
     if (isPlatformBrowser(platformId) && enabled) {
-      const type = scriptType ?? "text/javascript";
-     
+      const type = scriptType ?? 'text/javascript';
+
       const script = d.createElement('script');
       script.type = type;
       script.innerHTML = scriptconfig(projectId);
@@ -52,9 +44,7 @@ export class ClarityModule {
     }
   }
 
-  static forRoot(
-    config: ClarityConfiguration
-  ): ModuleWithProviders<ClarityModule> {
+  static forRoot(config: ClarityConfiguration): ModuleWithProviders<ClarityModule> {
     return {
       ngModule: ClarityModule,
       providers: [{ provide: CLARITY_CONFIG_TOKEN, useValue: config }],

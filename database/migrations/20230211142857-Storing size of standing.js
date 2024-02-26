@@ -20,7 +20,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
 
         console.log('Done');
@@ -42,7 +42,7 @@ module.exports = {
           'size',
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err);

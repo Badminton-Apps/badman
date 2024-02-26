@@ -38,12 +38,11 @@ import { ConfigType } from '@badman/utils';
       inject: [ConfigService],
       useFactory: async (config: ConfigService<ConfigType>) => {
         const plugins = [];
+        const env = config.get<string>('NODE_ENV');
 
-        if (process.env.NODE_ENV !== 'production') {
-          plugins.push(
-            ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-          );
-        } else if (process.env.NODE_ENV === 'production') {
+        if (env !== 'production') {
+          plugins.push(ApolloServerPluginLandingPageLocalDefault({ footer: false }));
+        } else if (env === 'production') {
           plugins.push(
             ApolloServerPluginLandingPageProductionDefault({
               graphRef: config.get<string>('APOLLO_GRAPH_REF'),
@@ -86,7 +85,7 @@ import { ConfigType } from '@badman/utils';
     PlayerResolverModule,
     NotificationResolverModule,
     ServiceResolverModule,
-    CronJobResolverModule
+    CronJobResolverModule,
   ],
 })
 export class GrapqhlModule {}

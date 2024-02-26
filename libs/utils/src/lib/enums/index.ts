@@ -16,4 +16,3 @@ export * from './teamMembershipType.enum';
 export * from './usedRankingTiming.enum';
 export * from './useForTeams.enum';
 // end:ng42.barrel
-

@@ -55,14 +55,13 @@ jobs:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
       number-of-agents: 3
-      node-version: ${{ vars.NODE_ENV }}
+      node-version: ${{ vars.NODE_VERSION }}
       main-branch-name: ${{ inputs.prod-release && 'main' || 'develop' }}
       output-affected-projects: true
       parallel-commands-on-agents: |
-        npx nx affected --target=build --parallel=3 --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
-        npx nx affected --target=lint --parallel=3 --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
-        npx nx affected --target=test --parallel=3 --configuration ${{ inputs.prod-release && 'production' || 'beta'}}  --ci --code-coverage
-        # npx nx affected --target=server
+        npx nx affected --target=build --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
+        npx nx affected --target=lint --configuration ${{ inputs.prod-release && 'production' || 'beta'}} 
+        npx nx affected --target=test --configuration ${{ inputs.prod-release && 'production' || 'beta'}}  --ci
       timeout: 15
 
   agents:
@@ -73,7 +72,7 @@ jobs:
     secrets:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
     with:
-      node-version: ${{ vars.NODE_ENV }}
+      node-version: ${{ vars.NODE_VERSION }}
       number-of-agents: 3
       timeout: 15
 
@@ -97,7 +96,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ vars.NODE_ENV }}
+          node-version: ${{ vars.NODE_VERSION }}
 
       - name: install dependencies for release
         run: npm --prefix \scripts install

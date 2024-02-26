@@ -41,7 +41,7 @@ module.exports = {
           `ALTER TABLE "public"."Teams" DROP CONSTRAINT "teams_unique_constraint";`,
           {
             transaction: t,
-          }
+          },
         );
 
         // for (const foreignKeyInfo of otherForeignKeys) {
@@ -63,7 +63,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
 
         // delet all entries without a entry type
@@ -72,7 +72,7 @@ module.exports = {
           `DELETE FROM "event"."Entries" WHERE "entryType" IS NULL;`,
           {
             transaction: t,
-          }
+          },
         );
 
         // for all events where startyear is >= 2021 delete entries without meta
@@ -81,7 +81,7 @@ module.exports = {
           `DELETE FROM "event"."Entries" WHERE "entryType" = 'competition' and "subEventId" IN (SELECT "id" FROM "event"."SubEventCompetitions" WHERE "eventId" IN (SELECT "id" FROM "event"."EventCompetitions" WHERE "startYear" >= 2021)) and "meta" IS NULL;`,
           {
             transaction: t,
-          }
+          },
         );
 
         // update all teams and slug to use the year 2022
@@ -90,7 +90,7 @@ module.exports = {
           `UPDATE "public"."Teams" SET "year" = 2022, "slug" = CONCAT("slug", '-2022');`,
           {
             transaction: t,
-          }
+          },
         );
 
         // remove all inactive teams
@@ -99,7 +99,7 @@ module.exports = {
           `DELETE FROM "public"."Teams" WHERE "active" = false;`,
           {
             transaction: t,
-          }
+          },
         );
 
         // remove active fields
@@ -112,7 +112,7 @@ module.exports = {
           'active',
           {
             transaction: t,
-          }
+          },
         );
 
         // Create a link UUID column to link different years of the same team
@@ -129,7 +129,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
 
         // insert a unique link for each team
@@ -139,7 +139,7 @@ module.exports = {
 
           {
             transaction: t,
-          }
+          },
         );
 
         // Make link non null
@@ -148,7 +148,7 @@ module.exports = {
           `ALTER TABLE "public"."Teams" ALTER COLUMN "link" SET NOT NULL;`,
           {
             transaction: t,
-          }
+          },
         );
 
         // Update the unique constraint to use the year, clubid, teamnumber and type
@@ -157,7 +157,7 @@ module.exports = {
           `ALTER TABLE "public"."Teams" ADD CONSTRAINT "teams_unique_constraint" UNIQUE ("year", "clubId", "teamNumber", "type");`,
           {
             transaction: t,
-          }
+          },
         );
 
         console.log('Committing');
@@ -178,7 +178,7 @@ module.exports = {
           `ALTER TABLE "public"."Teams" DROP CONSTRAINT "teams_unique_constraint";`,
           {
             transaction: t,
-          }
+          },
         );
 
         await queryInterface.removeColumn(
@@ -189,7 +189,7 @@ module.exports = {
           'year',
           {
             transaction: t,
-          }
+          },
         );
 
         await queryInterface.addColumn(
@@ -205,14 +205,14 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
 
         await queryInterface.sequelize.query(
           `ALTER TABLE "public"."Teams" ADD CONSTRAINT "teams_unique_constraint" UNIQUE ("clubId", "teamNumber", "type");`,
           {
             transaction: t,
-          }
+          },
         );
 
         await queryInterface.removeColumn(
@@ -223,7 +223,7 @@ module.exports = {
           'link',
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err);

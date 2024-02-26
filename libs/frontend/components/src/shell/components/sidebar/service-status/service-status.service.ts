@@ -46,24 +46,18 @@ export class ServiceService {
         }
       `,
     })
-    .pipe(
-      map((res) => res.data?.services?.map((item) => new Service(item)) ?? []),
-    );
+    .pipe(map((res) => res.data?.services?.map((item) => new Service(item)) ?? []));
 
   starting$ = (state: Signal<ServicesState>) =>
     this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STARTING).pipe(
       map((service) => {
         if (!service.id) {
-          console.warn(
-            `No service id found in ${EVENTS.SERVICE.SERVICE_STARTING} event`,
-          );
+          console.warn(`No service id found in ${EVENTS.SERVICE.SERVICE_STARTING} event`);
         }
 
         return {
           services: state().services.map((item) =>
-            item.id === service.id
-              ? { ...item, status: 'starting' as const }
-              : item,
+            item.id === service.id ? { ...item, status: 'starting' as const } : item,
           ),
         };
       }),
@@ -73,16 +67,12 @@ export class ServiceService {
     this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STARTED).pipe(
       map((service) => {
         if (!service.id) {
-          console.warn(
-            `No service id found in ${EVENTS.SERVICE.SERVICE_STARTED} event`,
-          );
+          console.warn(`No service id found in ${EVENTS.SERVICE.SERVICE_STARTED} event`);
         }
 
         return {
           services: state().services.map((item) =>
-            item.id === service.id
-              ? { ...item, status: 'started' as const }
-              : item,
+            item.id === service.id ? { ...item, status: 'started' as const } : item,
           ),
         };
       }),
@@ -92,15 +82,11 @@ export class ServiceService {
     this.socket.fromEvent<{ id: string }>(EVENTS.SERVICE.SERVICE_STOPPED).pipe(
       map((service) => {
         if (!service.id) {
-          console.warn(
-            `No service id found in ${EVENTS.SERVICE.SERVICE_STOPPED} event`,
-          );
+          console.warn(`No service id found in ${EVENTS.SERVICE.SERVICE_STOPPED} event`);
         }
         return {
           services: state().services.map((item) =>
-            item.id === service.id
-              ? { ...item, status: 'stopped' as const }
-              : item,
+            item.id === service.id ? { ...item, status: 'stopped' as const } : item,
           ),
         };
       }),

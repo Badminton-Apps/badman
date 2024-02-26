@@ -3,10 +3,8 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 
-@use './components/club-edit-location/club-edit-location.component.theme.scss'
-  as club-edit-location;
-@use './components/club-edit-team/club-edit-team.component.theme.scss' as
-  club-edit-team;
+@use './components/club-edit-location/club-edit-location.component.theme.scss' as club-edit-location;
+@use './components/club-edit-team/club-edit-team.component.theme.scss' as club-edit-team;
 
 @mixin color($theme) {
   badman-club-edit {
@@ -24,17 +22,5 @@
     @include club-edit-team.typography($theme);
 
     $typography-config: mat.get-typography-config($theme);
-  }
-}
-
-@mixin theme($theme) {
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

@@ -3,9 +3,8 @@ export default {
   displayName: 'frontend-team-assembly',
   preset: '../../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
-  coverageDirectory:
-    '../../../../../coverage/libs/frontend/pages/competition/team-assembly',
+  passWithNoTests: true,
+  coverageDirectory: '../../../../../coverage/libs/frontend/pages/competition/team-assembly',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

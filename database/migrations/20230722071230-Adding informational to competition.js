@@ -16,7 +16,7 @@ module.exports = {
             type: sequelize.DataTypes.JSON,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -34,7 +34,7 @@ module.exports = {
             schema: 'event',
           },
           'infoEvents',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

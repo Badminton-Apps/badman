@@ -49,10 +49,7 @@ export class PointsService {
     }
 
     const start = moment(calcDate)
-      .subtract(
-        system.calculationIntervalAmount,
-        system.calculationIntervalUnit,
-      )
+      .subtract(system.calculationIntervalAmount, system.calculationIntervalUnit)
       .toDate();
     const stop = moment(calcDate).toDate();
 
@@ -77,14 +74,9 @@ export class PointsService {
 
     const groups = await system.getRankingGroups();
 
-    const { subEventsC, subEventsT } = await this._getSubEvents(
-      groups,
-      options?.transaction,
-    );
+    const { subEventsC, subEventsT } = await this._getSubEvents(groups, options?.transaction);
 
-    this._logger.debug(
-      `SubEventsC: ${subEventsC.length}, SubEventsT: ${subEventsT.length}`,
-    );
+    this._logger.debug(`SubEventsC: ${subEventsC.length}, SubEventsT: ${subEventsT.length}`);
 
     const games = await this._getGames(
       subEventsC,
@@ -124,9 +116,7 @@ export class PointsService {
     const duration = moment.duration(moment(endTime).diff(moment(startTime)));
     const average = duration.asMilliseconds() / games.length;
     this._logger.log(
-      `Calculated ${
-        games.length
-      } points in ${duration.asSeconds()} seconds, average ${average} ms per game`,
+      `Calculated ${games.length} points in ${duration.asSeconds()} seconds, average ${average} ms per game`,
     );
   }
 
@@ -138,9 +128,7 @@ export class PointsService {
   ) {
     const { transaction } = options ?? {};
 
-    this._logger.debug(
-      `Getting games between ${start.toISOString()} and ${stop.toISOString()}`,
-    );
+    this._logger.debug(`Getting games between ${start.toISOString()} and ${stop.toISOString()}`);
 
     const where = {
       playedAt: {
@@ -150,14 +138,7 @@ export class PointsService {
 
     const gamesC = await Game.findAll({
       where,
-      attributes: [
-        'id',
-        'playedAt',
-        'gameType',
-        'winner',
-        'set1Team1',
-        'set1Team2',
-      ],
+      attributes: ['id', 'playedAt', 'gameType', 'winner', 'set1Team1', 'set1Team2'],
       include: [
         {
           required: true,
@@ -180,14 +161,7 @@ export class PointsService {
 
     const gamesT = await Game.findAll({
       where,
-      attributes: [
-        'id',
-        'playedAt',
-        'gameType',
-        'winner',
-        'set1Team1',
-        'set1Team2',
-      ],
+      attributes: ['id', 'playedAt', 'gameType', 'winner', 'set1Team1', 'set1Team2'],
       include: [
         {
           model: DrawTournament,
@@ -204,10 +178,7 @@ export class PointsService {
     return [...gamesC, ...gamesT];
   }
 
-  private async _getSubEvents(
-    groups: RankingGroup[],
-    transaction?: Transaction,
-  ) {
+  private async _getSubEvents(groups: RankingGroup[], transaction?: Transaction) {
     let subEventsC: string[] = [];
     let subEventsT: string[] = [];
     for (const group of groups) {
@@ -240,10 +211,6 @@ export class PointsService {
       transaction?: Transaction;
     },
   ) {
-    return await this.belgiumFlandersPointsService.createRankingPointforGame(
-      system,
-      game,
-      options,
-    );
+    return await this.belgiumFlandersPointsService.createRankingPointforGame(system, game, options);
   }
 }

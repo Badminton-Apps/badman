@@ -3,16 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   OnInit,
   Output,
+  input,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -27,26 +22,24 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-
-    // Other modules
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-
-    // My Modules
     ClaimComponent,
   ],
 })
 export class RoleFieldsComponent implements OnInit {
-  @Input()
-  role: Role = {} as Role;
+  role = input<Role>({} as Role);
 
-  @Input()
-  claims!: { category: string; claims: Claim[] }[];
+  claims = input.required<
+    {
+      category: string;
+      claims: Claim[];
+    }[]
+  >();
 
   @Output() save = new EventEmitter<Role>();
 
@@ -55,17 +48,15 @@ export class RoleFieldsComponent implements OnInit {
   selectedClaims: Claim[] = [];
 
   ngOnInit() {
-    const nameControl = new FormControl(this.role.name, Validators.required);
+    const nameControl = new FormControl(this.role().name, Validators.required);
 
     this.roleForm = new FormGroup({
       name: nameControl,
     });
 
-    for (const claim of this.claims) {
+    for (const claim of this.claims()) {
       this.selectedClaims.push(
-        ...claim.claims.filter((c) =>
-          this.role.claims?.some((rc) => rc.name === c.name)
-        )
+        ...claim.claims.filter((c) => this.role().claims?.some((rc) => rc.name === c.name)),
       );
     }
   }
@@ -81,7 +72,7 @@ export class RoleFieldsComponent implements OnInit {
   update() {
     if (this.roleForm.valid) {
       this.save.next({
-        id: this.role.id,
+        id: this.role().id,
         ...this.roleForm.value,
         claims: this.selectedClaims.map((c) => {
           return {

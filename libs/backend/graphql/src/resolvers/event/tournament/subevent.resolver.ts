@@ -5,21 +5,14 @@ import {
   SubEventTournament,
 } from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, ID, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 
 @Resolver(() => SubEventTournament)
 export class SubEventTournamentResolver {
   @Query(() => SubEventTournament)
   async subEventTournament(
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ): Promise<SubEventTournament> {
     const subEventTournament = await SubEventTournament.findByPk(id);
 
@@ -30,31 +23,25 @@ export class SubEventTournamentResolver {
   }
 
   @Query(() => [SubEventTournament])
-  async subEventTournaments(
-    @Args() listArgs: ListArgs
-  ): Promise<SubEventTournament[]> {
+  async subEventTournaments(@Args() listArgs: ListArgs): Promise<SubEventTournament[]> {
     return SubEventTournament.findAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [DrawTournament])
   async drawTournaments(
     @Parent() subEvent: SubEventTournament,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<DrawTournament[]> {
     return subEvent.getDrawTournaments(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => EventTournament)
-  async eventTournament(
-    @Parent() subEvent: SubEventTournament
-  ): Promise<EventTournament> {
+  async eventTournament(@Parent() subEvent: SubEventTournament): Promise<EventTournament> {
     return subEvent.getEvent();
   }
 
   @ResolveField(() => [RankingGroup])
-  async rankingGroups(
-    @Parent() subEvent: SubEventTournament
-  ): Promise<RankingGroup[]> {
+  async rankingGroups(@Parent() subEvent: SubEventTournament): Promise<RankingGroup[]> {
     return subEvent.getRankingGroups();
   }
 

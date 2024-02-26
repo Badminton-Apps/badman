@@ -3,10 +3,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   Inject,
-  Input,
   OnInit,
   PLATFORM_ID,
   TransferState,
+  input,
 } from '@angular/core';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -25,11 +25,9 @@ import { ChartComponent } from './components';
   imports: [CommonModule, TranslateModule, ChartComponent],
 })
 export class RankingEvolutionComponent implements OnInit {
-  @Input()
-  player!: Player;
+  player = input.required<Player>();
 
-  @Input()
-  system!: RankingSystem;
+  system = input.required<RankingSystem>();
 
   rankingPlaces$?: Observable<{
     single: rankingPlace[];
@@ -44,7 +42,7 @@ export class RankingEvolutionComponent implements OnInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: string,
     private stateTransfer: TransferState,
-    private apollo: Apollo
+    private apollo: Apollo,
   ) {}
 
   ngOnInit(): void {
@@ -61,7 +59,7 @@ export class RankingEvolutionComponent implements OnInit {
               mix: rankingPlace[];
               double: rankingPlace[];
             },
-            value
+            value,
           ) => {
             return {
               single: [
@@ -96,9 +94,9 @@ export class RankingEvolutionComponent implements OnInit {
               ],
             };
           },
-          { single: [], double: [], mix: [] }
+          { single: [], double: [], mix: [] },
         );
-      })
+      }),
     );
   }
 
@@ -106,11 +104,10 @@ export class RankingEvolutionComponent implements OnInit {
     return this.apollo
       .query<{ player: Partial<Player> }>({
         query: gql`
-          # Write your query or mutation here
-          query GetPlayerEvolutionQuery($playerId: ID!, $rankingType: ID!) {
+          query GetPlayerEvolutionQuery($playerId: ID!, $where: JSONObject) {
             player(id: $playerId) {
               id
-              rankingPlaces(where: { systemId: $rankingType }) {
+              rankingPlaces(where: $where) {
                 id
                 rankingDate
                 singlePoints
@@ -123,23 +120,26 @@ export class RankingEvolutionComponent implements OnInit {
                 doublePointsDowngrade
                 double
                 updatePossible
+                systemId
               }
             }
           }
         `,
         variables: {
-          playerId: this.player.id,
-          rankingType: this.system.id,
+          playerId: this.player().id,
+          where: {
+            systemId: this.system().id,
+          },
         },
       })
       .pipe(
         transferState(
-          'player-ranking-places' + this.player.id + this.system.id + '-state',
+          'player-ranking-places' + this.player().id + this.system().id + '-state',
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((x) => x?.data?.player),
-        map((x) => x?.rankingPlaces?.map((x) => new RankingPlace(x)))
+        map((x) => x?.rankingPlaces?.map((x) => new RankingPlace(x))),
       );
   }
 }

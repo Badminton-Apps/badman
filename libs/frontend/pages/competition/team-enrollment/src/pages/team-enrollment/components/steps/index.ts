@@ -6,4 +6,3 @@ export * from './locations';
 export * from './teams';
 export * from './teams-transfer';
 // end:ng42.barrel
-

@@ -17,11 +17,7 @@ export class PushService {
     const pushEnabledKey = configService.get<boolean>('PUSH_ENABLED');
 
     if (publicVapidKey && privateVapidKey && pushEnabledKey) {
-      setVapidDetails(
-        'mailto:info@badman.app',
-        publicVapidKey,
-        privateVapidKey,
-      );
+      setVapidDetails('mailto:info@badman.app', publicVapidKey, privateVapidKey);
       this.isPushEnabled = true;
 
       this.logger.debug('Push notifications enabled');
@@ -30,6 +26,7 @@ export class PushService {
 
   async sendNotification(player?: Player, data?: RequestOptions) {
     if (!this.isPushEnabled) {
+      this.logger.debug('Push notifications are not enabled');
       return;
     }
 

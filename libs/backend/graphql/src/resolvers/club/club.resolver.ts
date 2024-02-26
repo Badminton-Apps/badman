@@ -14,11 +14,7 @@ import {
   Team,
 } from '@badman/backend-database';
 import { IsUUID } from '@badman/utils';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -67,49 +63,32 @@ export class ClubsResolver {
   }
 
   @Query(() => PagedClub)
-  async clubs(
-    @Args() listArgs: ListArgs
-  ): Promise<{ count: number; rows: Club[] }> {
+  async clubs(@Args() listArgs: ListArgs): Promise<{ count: number; rows: Club[] }> {
     return Club.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Team])
-  async teams(
-    @Parent() club: Club,
-    @Args() listArgs: ListArgs
-  ): Promise<Team[]> {
+  async teams(@Parent() club: Club, @Args() listArgs: ListArgs): Promise<Team[]> {
     return club.getTeams(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Location])
-  async locations(
-    @Parent() club: Club,
-    @Args() listArgs: ListArgs
-  ): Promise<Location[]> {
+  async locations(@Parent() club: Club, @Args() listArgs: ListArgs): Promise<Location[]> {
     return club.getLocations(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Comment])
-  async comments(
-    @Parent() club: Club,
-    @Args() listArgs: ListArgs
-  ): Promise<Comment[]> {
+  async comments(@Parent() club: Club, @Args() listArgs: ListArgs): Promise<Comment[]> {
     return club.getComments(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Role])
-  async roles(
-    @Parent() club: Club,
-    @Args() listArgs: ListArgs
-  ): Promise<Role[]> {
+  async roles(@Parent() club: Club, @Args() listArgs: ListArgs): Promise<Role[]> {
     return club.getRoles(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Player])
-  async players(
-    @Parent() club: Club,
-    @Args() listArgs: ListArgs
-  ): Promise<Player[]> {
+  async players(@Parent() club: Club, @Args() listArgs: ListArgs): Promise<Player[]> {
     const options = ListArgs.toFindOptions(listArgs);
 
     options.where = {
@@ -119,21 +98,15 @@ export class ClubsResolver {
 
     const players = await club.getPlayers(options);
     const distinctPlayers = players.filter(
-      (player, index, self) =>
-        index === self.findIndex((p) => p.id === player.id)
+      (player, index, self) => index === self.findIndex((p) => p.id === player.id),
     );
     return distinctPlayers;
   }
 
   @Mutation(() => Club)
-  async createClub(
-    @User() user: Player,
-    @Args('data') newClubData: ClubNewInput
-  ) {
+  async createClub(@User() user: Player, @Args('data') newClubData: ClubNewInput) {
     if (!(await user.hasAnyPermission(['add:club']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to add a club`
-      );
+      throw new UnauthorizedException(`You do not have permission to add a club`);
     }
 
     // Do transaction
@@ -153,14 +126,9 @@ export class ClubsResolver {
   }
 
   @Mutation(() => Club)
-  async removeClub(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string
-  ) {
+  async removeClub(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission(['remove:club']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to add a club`
-      );
+      throw new UnauthorizedException(`You do not have permission to add a club`);
     }
 
     // Do transaction
@@ -186,19 +154,9 @@ export class ClubsResolver {
   }
 
   @Mutation(() => Club)
-  async updateClub(
-    @User() user: Player,
-    @Args('data') updateClubData: ClubUpdateInput
-  ) {
-    if (
-      !(await user.hasAnyPermission([
-        `${updateClubData.id}_edit:club`,
-        'edit-any:club',
-      ]))
-    ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`
-      );
+  async updateClub(@User() user: Player, @Args('data') updateClubData: ClubUpdateInput) {
+    if (!(await user.hasAnyPermission([`${updateClubData.id}_edit:club`, 'edit-any:club']))) {
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     // Do transaction
@@ -239,17 +197,12 @@ export class ClubsResolver {
   @Mutation(() => Boolean)
   async addPlayerToClub(
     @User() user: Player,
-    @Args('data') addPlayerToClubData: ClubPlayerMembershipNewInput
+    @Args('data') addPlayerToClubData: ClubPlayerMembershipNewInput,
   ) {
     if (
-      !(await user.hasAnyPermission([
-        `${addPlayerToClubData.clubId}_edit:club`,
-        'edit-any:club',
-      ]))
+      !(await user.hasAnyPermission([`${addPlayerToClubData.clubId}_edit:club`, 'edit-any:club']))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     // Do transaction
@@ -263,14 +216,10 @@ export class ClubsResolver {
       });
 
       if (!club) {
-        throw new NotFoundException(
-          `${Club.name}: ${addPlayerToClubData.clubId}`
-        );
+        throw new NotFoundException(`${Club.name}: ${addPlayerToClubData.clubId}`);
       }
       if (!player) {
-        throw new NotFoundException(
-          `${Player.name}: ${addPlayerToClubData.playerId}`
-        );
+        throw new NotFoundException(`${Player.name}: ${addPlayerToClubData.playerId}`);
       }
 
       // Add player to club
@@ -296,27 +245,18 @@ export class ClubsResolver {
   async updateClubPlayerMembership(
     @User() user: Player,
     @Args('data')
-    updateClubPlayerMembershipData: ClubPlayerMembershipUpdateInput
+    updateClubPlayerMembershipData: ClubPlayerMembershipUpdateInput,
   ) {
-    const membership = await ClubPlayerMembership.findByPk(
-      updateClubPlayerMembershipData.id
-    );
+    const membership = await ClubPlayerMembership.findByPk(updateClubPlayerMembershipData.id);
 
     if (!membership) {
       throw new NotFoundException(
-        `${ClubPlayerMembership.name}: ${updateClubPlayerMembershipData.id}`
+        `${ClubPlayerMembership.name}: ${updateClubPlayerMembershipData.id}`,
       );
     }
 
-    if (
-      !(await user.hasAnyPermission([
-        `${membership.clubId}_edit:club`,
-        'edit-any:club',
-      ]))
-    ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`
-      );
+    if (!(await user.hasAnyPermission([`${membership.clubId}_edit:club`, 'edit-any:club']))) {
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     // Do transaction
@@ -338,25 +278,15 @@ export class ClubsResolver {
   }
 
   @Mutation(() => Boolean)
-  async removePlayerFromClub(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string
-  ) {
+  async removePlayerFromClub(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     const membership = await ClubPlayerMembership.findByPk(id);
 
     if (!membership) {
       throw new NotFoundException(`${ClubPlayerMembership.name}: ${id}`);
     }
 
-    if (
-      !(await user.hasAnyPermission([
-        `${membership.clubId}_edit:club`,
-        'edit-any:club',
-      ]))
-    ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this club`
-      );
+    if (!(await user.hasAnyPermission([`${membership.clubId}_edit:club`, 'edit-any:club']))) {
+      throw new UnauthorizedException(`You do not have permission to edit this club`);
     }
 
     // Do transaction
@@ -393,7 +323,7 @@ export class ClubsResolver {
 export class ClubPlayerResolver extends ClubsResolver {
   @ResolveField(() => ClubPlayerMembership, { nullable: true })
   async clubMembership(
-    @Parent() club: Club & { ClubPlayerMembership: ClubPlayerMembership }
+    @Parent() club: Club & { ClubPlayerMembership: ClubPlayerMembership },
   ): Promise<ClubPlayerMembership> {
     return club.ClubPlayerMembership;
   }

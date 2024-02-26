@@ -33,7 +33,7 @@ export class EventSyncedFailedNotifier extends Notifier<
 
   async notifyPush(
     player: Player,
-    data: { event: EventCompetition | EventTournament; success: boolean }
+    data: { event: EventCompetition | EventTournament; success: boolean },
   ): Promise<void> {
     this.logger.debug(`Sending Push to ${player.fullName}`);
     await this.pushService.sendNotification(player, this.options(data.event));
@@ -41,7 +41,7 @@ export class EventSyncedFailedNotifier extends Notifier<
   async notifyEmail(
     player: Player,
     data: { event: EventCompetition | EventTournament; success: boolean },
-    args?: { email: string }
+    args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
     const email = args?.email ?? player.email;
@@ -67,7 +67,7 @@ export class EventSyncedFailedNotifier extends Notifier<
         slug: player.slug,
       },
       data?.event,
-      false
+      false,
     );
   }
 
@@ -76,7 +76,7 @@ export class EventSyncedFailedNotifier extends Notifier<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { event: EventCompetition | EventTournament; success: boolean },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string }
+    args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();

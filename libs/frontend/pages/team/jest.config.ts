@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-pages-team',
+  displayName: 'frontend-team',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/team',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

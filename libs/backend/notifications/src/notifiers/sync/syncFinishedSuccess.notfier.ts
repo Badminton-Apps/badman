@@ -22,10 +22,7 @@ export class EventSyncedSuccessNotifier extends Notifier<
   protected type: keyof NotificationOptionsTypes = 'syncSuccessNotification';
   protected override allowedInterval = 'minute' as unitOfTime.Diff;
 
-  private readonly options = (
-    event?: EventCompetition | EventTournament,
-    url?: string
-  ) => {
+  private readonly options = (event?: EventCompetition | EventTournament, url?: string) => {
     let title = 'Synchronisatie succesvol';
     let body = 'Synchronisatie succesvol';
     let actions: { action: string; title: string }[] = [];
@@ -60,13 +57,10 @@ export class EventSyncedSuccessNotifier extends Notifier<
           success: boolean;
         }
       | undefined,
-    args?: { email: string; url: string } | undefined
+    args?: { email: string; url: string } | undefined,
   ) {
     this.logger.debug(`Sending Push to ${player.fullName}`);
-    await this.pushService.sendNotification(
-      player,
-      this.options(data?.event, args?.url)
-    );
+    await this.pushService.sendNotification(player, this.options(data?.event, args?.url));
   }
 
   async notifyEmail(
@@ -77,7 +71,7 @@ export class EventSyncedSuccessNotifier extends Notifier<
           success: boolean;
         }
       | undefined,
-    args?: { email: string; url: string } | undefined
+    args?: { email: string; url: string } | undefined,
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
 
@@ -91,7 +85,7 @@ export class EventSyncedSuccessNotifier extends Notifier<
       this.logger.debug(`No event found `);
       return;
     }
-    
+
     if (!player?.slug) {
       this.logger.debug(`No slug found for ${player.fullName}`);
       return;
@@ -105,7 +99,7 @@ export class EventSyncedSuccessNotifier extends Notifier<
       },
       data?.event,
       true,
-      args?.url
+      args?.url,
     );
   }
 
@@ -114,7 +108,7 @@ export class EventSyncedSuccessNotifier extends Notifier<
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     data: { event: EventCompetition | EventTournament; success: boolean },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    args?: { email: string }
+    args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Sms to ${player.fullName}`);
     return Promise.resolve();

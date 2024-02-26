@@ -1,4 +1,4 @@
-<ng-container *ngIf="!clubAssemblyService.loaded()">
+@if (!clubAssemblyService.loaded()) {
   <section class="teams">
     <h3>
       <mat-icon color="primary">groups</mat-icon>
@@ -6,22 +6,19 @@
     </h3>
     <mat-progress-bar color="accent" mode="indeterminate"></mat-progress-bar>
   </section>
-</ng-container>
-
-<ng-container *ngIf="clubAssemblyService.loaded()">
+}
+@if (clubAssemblyService.loaded()) {
   <section class="teams">
     <div class="title">
       <h3>
         <mat-icon color="primary">groups</mat-icon>
-        {{ 'all.club.titles.teams' | translate }}
+        {{ 'all.club.titles.matrix' | translate }}
       </h3>
     </div>
-
     <p>{{ 'all.competition.club-assembly.description' | translate }}</p>
     <p class="caption">
       {{ 'all.competition.club-assembly.note' | translate }}
     </p>
-
     <div class="player-teams-table">
       <table mat-table [dataSource]="clubAssemblyService.players()">
         <ng-container matColumnDef="player">
@@ -30,46 +27,41 @@
             {{ element.player?.lastName }}, {{ element.player?.firstName }}
           </td>
         </ng-container>
-
-        <ng-container
-          [matColumnDef]="team.name ?? ''"
-          *ngFor="let team of clubAssemblyService.teams()"
-        >
-          <th mat-header-cell *matHeaderCellDef>{{ team.name }}</th>
-          <td mat-cell *matCellDef="let element" class="can-play">
-            <mat-icon
-              *ngIf="element?.[team.name ?? ''].canPlay === canPlay.Yes"
-              [ngClass]="{
-                yes: !element?.[team.name ?? ''].base,
-                base: element?.[team.name ?? ''].base
-              }"
-              [matTooltip]="element?.[team.name ?? ''].reason"
-              >check</mat-icon
-            >
-            <mat-icon
-              *ngIf="element?.[team.name ?? ''].canPlay === canPlay.Maybe"
-              [matTooltip]="element?.[team.name ?? ''].reason"
-              class="maybe"
-              >warning</mat-icon
-            >
-            <mat-icon
-              *ngIf="element?.[team.name ?? ''].canPlay === canPlay.No"
-              [matTooltip]="element?.[team.name ?? ''].reason"
-              class="no"
-              >close</mat-icon
-            >
-            <mat-icon
-              *ngIf="element?.[team.name ?? ''].canPlay === canPlay.Na"
-              [matTooltip]="element?.[team.name ?? ''].reason"
-              class="na"
-              >remove</mat-icon
-            >
-          </td>
-        </ng-container>
-
+        @for (team of clubAssemblyService.teams(); track team) {
+          <ng-container [matColumnDef]="team.name ?? ''">
+            <th mat-header-cell *matHeaderCellDef>{{ team.name }}</th>
+            <td mat-cell *matCellDef="let element" class="can-play">
+              @if (element?.[team.name ?? ''].canPlay === canPlay.Yes) {
+                <mat-icon
+                  [ngClass]="{
+                    yes: !element?.[team.name ?? ''].base,
+                    base: element?.[team.name ?? ''].base
+                  }"
+                  [matTooltip]="element?.[team.name ?? ''].reason"
+                  >check</mat-icon
+                >
+              }
+              @if (element?.[team.name ?? ''].canPlay === canPlay.Maybe) {
+                <mat-icon [matTooltip]="element?.[team.name ?? ''].reason" class="maybe"
+                  >warning</mat-icon
+                >
+              }
+              @if (element?.[team.name ?? ''].canPlay === canPlay.No) {
+                <mat-icon [matTooltip]="element?.[team.name ?? ''].reason" class="no"
+                  >close</mat-icon
+                >
+              }
+              @if (element?.[team.name ?? ''].canPlay === canPlay.Na) {
+                <mat-icon [matTooltip]="element?.[team.name ?? ''].reason" class="na"
+                  >remove</mat-icon
+                >
+              }
+            </td>
+          </ng-container>
+        }
         <tr mat-header-row *matHeaderRowDef="columns(); sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: columns()"></tr>
       </table>
     </div>
   </section>
-</ng-container>
+}

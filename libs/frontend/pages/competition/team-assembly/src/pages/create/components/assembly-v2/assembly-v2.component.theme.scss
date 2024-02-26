@@ -1,0 +1,82 @@
+// info: https://material.angular.io/guide/theming-your-components
+
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+  $color-config: mat.get-color-config($theme);
+  $danger-palette: map.get($theme, danger);
+  $warn-palette: map.get($theme, 'warn');
+  $success-palette: map.get($theme, success);
+  $background: map.get($color-config, 'background');
+  $foreground: map.get($color-config, 'foreground');
+  $isDark: map.get($color-config, 'is-dark');
+
+  badman-assembly-v2 {
+    $primary-palette: map.get($color-config, 'primary');
+
+    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+
+    .information {
+      .team,
+      .base,
+      .errors {
+        border-color: $border-color;
+
+        .ranking {
+          @if ($isDark) {
+            color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
+          } @else {
+            color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
+          }
+        }
+      }
+    }
+
+    .drag {
+      border-color: $border-color;
+    }
+
+    label {
+      background-color: mat.get-color-from-palette($background, 'background');
+      color: mat.get-color-from-palette($foreground, 'secondary-text');
+    }
+
+    // Global colors for the validation (because I'm lazy to find out why the dialog is not working)
+    .validation-overview {
+      .error-list {
+        color: mat.get-color-from-palette($danger-palette, 300);
+      }
+      .warning-list {
+        color: mat.get-color-from-palette($warn-palette, 300);
+      }
+      .no-errors {
+        color: mat.get-color-from-palette($success-palette, 300);
+      }
+    }
+  }
+}
+
+@mixin typography($theme) {
+  badman-assembly-v2 {
+    $typography-config: mat.get-typography-config($theme);
+
+    label {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+
+    .information {
+      .index {
+        @include mat.typography-level($typography-config, 'caption');
+      }
+
+      .ranking {
+        @include mat.typography-level($typography-config, 'caption');
+      }
+    }
+
+    .team-info .add-player .permanent {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+  }
+}

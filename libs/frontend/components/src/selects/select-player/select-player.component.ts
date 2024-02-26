@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, input } from '@angular/core';
 import {
   AbstractControlOptions,
   FormControl,
@@ -22,15 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { DocumentNode, FragmentDefinitionNode } from 'graphql';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import {
-  Observable,
-  debounceTime,
-  filter,
-  lastValueFrom,
-  map,
-  switchMap,
-  takeUntil,
-} from 'rxjs';
+import { Observable, debounceTime, filter, lastValueFrom, map, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'badman-select-player',
@@ -40,11 +27,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-
-    // Core modules
     TranslateModule,
-
-    // Material Modules
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
@@ -56,20 +39,15 @@ import {
 export class SelectPlayerComponent implements OnInit {
   private destroy$ = injectDestroy();
 
-  @Input()
-  label?: string;
+  label = input<string | undefined>();
 
-  @Input()
-  controlName = 'player';
+  controlName = input('player');
 
-  @Input()
-  formGroup!: FormGroup;
+  formGroup = input.required<FormGroup>();
 
-  @Input()
-  dependsOn?: string;
+  dependsOn = input<string>();
 
-  @Input()
-  validators?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null;
+  validators = input<ValidatorFn | ValidatorFn[] | AbstractControlOptions | null | undefined>();
 
   formControl!: FormControl;
   filteredOptions$!: Observable<Player[]>;
@@ -77,8 +55,9 @@ export class SelectPlayerComponent implements OnInit {
   /**
    * Extra where queries for the player
    */
-  @Input()
-  where?: { [key: string]: unknown };
+  where = input<{
+    [key: string]: unknown;
+  }>({});
 
   /**
    * Allows to extend the query with a fragemnt, the root must be of type Player
@@ -92,8 +71,7 @@ export class SelectPlayerComponent implements OnInit {
    *   }
    * ```
    */
-  @Input()
-  fragment?: DocumentNode;
+  fragment = input<DocumentNode | undefined>();
 
   query!: DocumentNode;
   defaultUserInfoFragment = gql`
@@ -107,22 +85,22 @@ export class SelectPlayerComponent implements OnInit {
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    if (!this.formGroup) {
+    if (!this.formGroup()) {
       throw Error(`FormGroup is required`);
     }
 
-    if (this.formGroup.get(this.controlName) === null) {
-      this.formControl = new FormControl(null, this.validators);
-      this.formGroup.addControl(this.controlName, this.formControl);
+    if (this.formGroup().get(this.controlName()) === null) {
+      this.formControl = new FormControl(null, this.validators());
+      this.formGroup().addControl(this.controlName(), this.formControl);
     } else {
-      this.formControl = this.formGroup.get(this.controlName) as FormControl;
+      this.formControl = this.formGroup().get(this.controlName()) as FormControl;
     }
 
-    if (this.dependsOn) {
-      const previous = this.formGroup.get(this.dependsOn);
+    if (this.dependsOn() != undefined) {
+      const previous = this.formGroup().get(this.dependsOn() ?? '');
       if (!previous) {
-        console.error(`Dependency ${this.dependsOn} not found`, previous);
-        throw Error(`Dependency ${this.dependsOn} not found`);
+        console.error(`Dependency ${this.dependsOn()} not found`, previous);
+        throw Error(`Dependency ${this.dependsOn()} not found`);
       }
     }
 
@@ -136,25 +114,21 @@ export class SelectPlayerComponent implements OnInit {
         filter((x) => x?.length > 3),
         debounceTime(600),
         switchMap((query) => {
-          this.where = {
-            ...this.where,
-            ...this._playerSearchWhere({ query }),
-          };
-
           return this.apollo.query<{ players: { rows: Player[] } }>({
             query: this.query,
             variables: {
-              where: this.where,
+              where: {
+                ...this.where(),
+                ...this._playerSearchWhere({ query }),
+              },
             },
           });
         }),
         // Distinct by id
-        map(
-          (result) =>
-            result?.data?.players?.rows?.filter(
-              (value, index, self) =>
-                self.findIndex((m) => m.id === value.id) === index,
-            ),
+        map((result) =>
+          result?.data?.players?.rows?.filter(
+            (value, index, self) => self.findIndex((m) => m.id === value.id) === index,
+          ),
         ),
         map((players) => players?.map((p) => new Player(p))),
       );
@@ -185,7 +159,7 @@ export class SelectPlayerComponent implements OnInit {
   }
 
   private setQuery() {
-    const names = this.fragment?.definitions?.map((d) => {
+    const names = this.fragment()?.definitions?.map((d) => {
       if (d.kind === 'FragmentDefinition') {
         return (d as FragmentDefinitionNode).name.value;
       }
@@ -195,7 +169,7 @@ export class SelectPlayerComponent implements OnInit {
     if (names) {
       this.query = gql`
         ${this.defaultUserInfoFragment}
-        ${this.fragment}
+        ${this.fragment()}
         query Players($where: JSONObject) {
           players(where: $where) {
             rows {
@@ -219,10 +193,7 @@ export class SelectPlayerComponent implements OnInit {
     }
   }
 
-  private _playerSearchWhere(args?: {
-    query?: string;
-    where?: { [key: string]: unknown };
-  }) {
+  private _playerSearchWhere(args?: { query?: string; where?: { [key: string]: unknown } }) {
     const parts = args?.query
       ?.toLowerCase()
       .replace(/[;\\\\/:*?"<>|&',]/, ' ')

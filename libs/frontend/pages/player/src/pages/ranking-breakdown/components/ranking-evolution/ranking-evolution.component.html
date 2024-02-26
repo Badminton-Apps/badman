@@ -1,24 +1,25 @@
-<ng-container *ngIf="this.rankingPlaces$ | async as rankingPlaces">
-  <ng-container *ngIf="isBrowser">
-    <badman-chart
-      *ngIf="rankingPlaces.single"
-      [title]="'all.ranking.single' | translate"
-      [rankingPlaces]="rankingPlaces.single"
-      [system]="this.system"
-    ></badman-chart>
-
-    <badman-chart
-      *ngIf="rankingPlaces.double"
-      [title]="'all.ranking.double' | translate"
-      [rankingPlaces]="rankingPlaces.double"
-      [system]="this.system"
-    ></badman-chart>
-
-    <badman-chart
-      *ngIf="rankingPlaces.mix"
-      [title]="'all.ranking.mix' | translate"
-      [rankingPlaces]="rankingPlaces.mix"
-      [system]="this.system"
-    ></badman-chart>
-  </ng-container>
-</ng-container>
+@if (this.rankingPlaces$ | async; as rankingPlaces) {
+  @if (isBrowser) {
+    @if (rankingPlaces.single) {
+      <badman-chart
+        [title]="'all.ranking.single' | translate"
+        [rankingPlaces]="rankingPlaces.single"
+        [system]="this.system()"
+      ></badman-chart>
+    }
+    @if (rankingPlaces.double) {
+      <badman-chart
+        [title]="'all.ranking.double' | translate"
+        [rankingPlaces]="rankingPlaces.double"
+        [system]="this.system()"
+      ></badman-chart>
+    }
+    @if (rankingPlaces.mix) {
+      <badman-chart
+        [title]="'all.ranking.mix' | translate"
+        [rankingPlaces]="rankingPlaces.mix"
+        [system]="this.system()"
+      ></badman-chart>
+    }
+  }
+}

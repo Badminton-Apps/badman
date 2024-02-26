@@ -13,7 +13,7 @@ export class EventCompetition extends Event {
   teamMatcher?: string;
 
   exceptions?: Exception[];
-  infoEvents?: InfoEvent[]
+  infoEvents?: InfoEvent[];
 
   changeOpenDate?: Date;
   changeCloseDate?: Date;
@@ -30,13 +30,9 @@ export class EventCompetition extends Event {
     this.checkEncounterForFilledIn = args.checkEncounterForFilledIn;
     this.exceptions = args?.exceptions?.map((e) => new Exception(e));
     this.infoEvents = args?.infoEvents?.map((e) => new InfoEvent(e));
-    this.changeOpenDate = args.changeOpenDate
-      ? new Date(args.changeOpenDate)
-      : undefined;
+    this.changeOpenDate = args.changeOpenDate ? new Date(args.changeOpenDate) : undefined;
 
-    this.changeCloseDate = args.changeCloseDate
-      ? new Date(args.changeCloseDate)
-      : undefined;
+    this.changeCloseDate = args.changeCloseDate ? new Date(args.changeCloseDate) : undefined;
 
     this.changeCloseRequestDate = args.changeCloseRequestDate
       ? new Date(args.changeCloseRequestDate)

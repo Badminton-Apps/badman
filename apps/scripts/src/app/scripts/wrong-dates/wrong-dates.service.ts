@@ -48,10 +48,7 @@ export class WrongDatesService {
           return;
         }
 
-        const result = await this.visualService.getDate(
-          event.visualCode,
-          encounter.visualCode
-        );
+        const result = await this.visualService.getDate(event.visualCode, encounter.visualCode);
 
         const dateBrussels = moment.tz(result, 'Europe/Brussels');
 
@@ -66,8 +63,8 @@ export class WrongDatesService {
         if (gmtWrong.isSame(moment(encounter.date))) {
           wrongTimezone.push(
             `${home.name},${away.name},${gmtWrong.format(
-              this.visualFormat
-            )},${moment(encounter.date).format(this.visualFormat)}`
+              this.visualFormat,
+            )},${moment(encounter.date).format(this.visualFormat)}`,
           );
 
           // this.visualService.changeDate(
@@ -82,8 +79,8 @@ export class WrongDatesService {
         if (dateBrussels.isSame(moment(encounter.originalDate))) {
           notChanged.push(
             `${home.name},${away.name},${dateBrussels.format(
-              this.visualFormat
-            )},${moment(encounter.date).format(this.visualFormat)}`
+              this.visualFormat,
+            )},${moment(encounter.date).format(this.visualFormat)}`,
           );
 
           // this.visualService.changeDate(

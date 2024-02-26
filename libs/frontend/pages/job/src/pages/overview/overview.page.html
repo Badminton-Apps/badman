@@ -1,5 +1,5 @@
 <badman-page-header>
-  <div title>{{'all.jobs.title' | translate}}</div>
+  <div title>{{ 'all.jobs.title' | translate }}</div>
 
   <div actions>
     <button
@@ -14,7 +14,7 @@
     <mat-menu #menu="matMenu">
       <button mat-menu-item>
         <mat-icon>add</mat-icon>
-        <span>{{'all.ranking.menu.add-ranking' | translate}}</span>
+        <span>{{ 'all.ranking.menu.add-ranking' | translate }}</span>
       </button>
     </mat-menu>
   </div>
@@ -25,9 +25,7 @@
         The actual rendered columns are set as a property on the row definition" -->
 
   <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>
-      {{ 'all.input.name' | translate }}
-    </th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'all.input.name' | translate }}</th>
     <td mat-cell *matCellDef="let element">
       <a [routerLink]="[element?.id]">{{ element.name }}</a>
     </td>
@@ -40,16 +38,12 @@
 
   <ng-container matColumnDef="lastRun">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Finish last run</th>
-    <td mat-cell *matCellDef="let element">
-      {{ element.lastRun | amCalendar }}
-    </td>
+    <td mat-cell *matCellDef="let element">{{ element.lastRun | amCalendar }}</td>
   </ng-container>
 
   <ng-container matColumnDef="nextRun">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Next run</th>
-    <td mat-cell *matCellDef="let element">
-      {{ element.nextRun | amCalendar }}
-    </td>
+    <td mat-cell *matCellDef="let element">{{ element.nextRun | amCalendar }}</td>
   </ng-container>
 
   <ng-container matColumnDef="running">
@@ -81,7 +75,7 @@
 <!-- Dialog for  -->
 
 <ng-template #syncTemplate let-data>
-  <h2 mat-dialog-title>Queue Job "{{data.name}}"?</h2>
+  <h2 mat-dialog-title>Queue Job "{{ data.name }}"?</h2>
   <mat-dialog-content>
     <!-- have a json editor for the data.meta field -->
 
@@ -103,50 +97,37 @@
 </ng-template>
 
 <ng-template #rankingTemplate let-data>
-  <h2 mat-dialog-title>Queue Job "{{data.name}}"?</h2>
+  <h2 mat-dialog-title>Queue Job "{{ data.name }}"?</h2>
   <mat-dialog-content>
     <div class="job-arguments">
       <div class="date">
         <mat-form-field>
           <mat-label>Start date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="pickerFrom"
-            [(ngModel)]="data.meta.arguments.fromDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="pickerFrom"
-          ></mat-datepicker-toggle>
+          <input matInput [matDatepicker]="pickerFrom" [(ngModel)]="data.meta.arguments.fromDate" />
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
           <mat-datepicker #pickerFrom></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field>
           <mat-label>End date</mat-label>
-          <input
-            matInput
-            [matDatepicker]="pickerTo"
-            [(ngModel)]="data.meta.arguments.toDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="pickerTo"
-          ></mat-datepicker-toggle>
+          <input matInput [matDatepicker]="pickerTo" [(ngModel)]="data.meta.arguments.toDate" />
+          <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
           <mat-datepicker #pickerTo></mat-datepicker>
         </mat-form-field>
       </div>
 
       <div class="calculate">
-        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePoints"
-          >Calculate points</mat-slide-toggle
-        >
-        <!-- caption -->
-
         <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePlaces"
           >Calculate places</mat-slide-toggle
         >
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculateRanking"
+          >Allow changing of level</mat-slide-toggle
+        >
+        <mat-slide-toggle [(ngModel)]="data.meta.arguments.calculatePoints"
+          >Calculate points from games</mat-slide-toggle
+        >
         <mat-slide-toggle [(ngModel)]="data.meta.arguments.recalculatePoints"
-          >Re-Calculate points</mat-slide-toggle
+          >Re-Calculate points from games period before</mat-slide-toggle
         >
       </div>
     </div>

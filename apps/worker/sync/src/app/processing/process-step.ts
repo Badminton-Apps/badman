@@ -4,7 +4,7 @@ export class ProcessStep<T = void> {
   private _ran = false;
   constructor(
     public name: string,
-    public execute: (args?: any) => Promise<T>
+    public execute: (args?: any) => Promise<T>,
   ) {}
 
   public async executeStep(args?: any): Promise<boolean> {

@@ -1,4 +1,4 @@
-<ng-container *ngIf="this.location; else loading">
+@if (this.location) {
   <h2 mat-dialog-title>Edit location</h2>
   <mat-dialog-content>
     <badman-location-fields
@@ -6,8 +6,7 @@
       [location]="this.location"
       (whenLocationUpdate)="locationUpdated($event)"
     ></badman-location-fields>
-
-    <ng-container *ngIf="location.id && this.data.showAvailibilities">
+    @if (location.id && this.data.showAvailibilities) {
       <h3 mat-dialog-title>
         {{ 'all.competition.team-enrollment.availability' | translate }}
       </h3>
@@ -15,46 +14,45 @@
         <mat-form-field fxFlex>
           <mat-label>{{ 'all.pickers.select-year' | translate }}</mat-label>
           <mat-select [(value)]="selectedYear">
-            <mat-option *ngFor="let year of this.data.compYears" [value]="year">
-              {{ year }}
-            </mat-option>
+            @for (year of this.data.compYears; track year) {
+              <mat-option [value]="year">
+                {{ year }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
-
         <!-- <badman-location-availability
-          *ngIf="selectedYear"
-          [location]="location"
-          [year]="selectedYear!"
-          [club]="this.data.club"
-        ></badman-location-availability> -->
+        *ngIf="selectedYear"
+        [location]="location"
+        [year]="selectedYear!"
+        [club]="this.data.club"
+      ></badman-location-availability> -->
       </div>
-    </ng-container>
+    }
   </mat-dialog-content>
-
   <mat-dialog-actions>
-    <button
-      mat-raised-button
-      color="primary"
-      *ngIf="!location.id"
-      [disabled]="!this.location.name"
-      (click)="this.create(location)"
-    >
-      {{ 'all.button.create' | translate }}
-    </button>
-
-    <button
-      mat-raised-button
-      color="primary"
-      *ngIf="location.id"
-      [disabled]="!this.location.name"
-      (click)="this.update(location)"
-    >
-      {{ 'all.button.save' | translate }}
-    </button>
-
+    @if (!location.id) {
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!this.location.name"
+        (click)="this.create(location)"
+      >
+        {{ 'all.button.create' | translate }}
+      </button>
+    }
+    @if (location.id) {
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!this.location.name"
+        (click)="this.update(location)"
+      >
+        {{ 'all.button.save' | translate }}
+      </button>
+    }
     <button mat-button [mat-dialog-close]="location">Close</button>
   </mat-dialog-actions>
-</ng-container>
-<ng-template #loading>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar
-></ng-template>
+} @else {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}

@@ -1,13 +1,5 @@
-import {
-  EncounterCompetition,
-  EventCompetition,
-  Game,
-} from '@badman/backend-database';
-import {
-  VisualService,
-  XmlTeamMatch,
-  XmlTournament,
-} from '@badman/backend-visual';
+import { EncounterCompetition, EventCompetition, Game } from '@badman/backend-database';
+import { VisualService, XmlTeamMatch, XmlTournament } from '@badman/backend-visual';
 import { runParallel } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import moment from 'moment-timezone';
@@ -35,13 +27,12 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions & EncounterStepOptions
+    options?: StepOptions & EncounterStepOptions,
   ) {
     if (!options) {
       options = {};
     }
-    options.logger =
-      options.logger || new Logger(CompetitionSyncEncounterProcessor.name);
+    options.logger = options.logger || new Logger(CompetitionSyncEncounterProcessor.name);
     super(options);
 
     this.encounterOptions = options || {};
@@ -60,13 +51,13 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
     const encounters = await draw.getEncounterCompetitions({
       transaction: this.transaction,
     });
-    
+
     const canChange = moment().isAfter(`${this.event.season}-08-01`);
 
     const visualMatches = (await this.visualService.getMatches(
       this.visualTournament.Code,
       internalId,
-      !canChange
+      !canChange,
     )) as XmlTeamMatch[];
 
     for (const xmlTeamMatch of visualMatches) {
@@ -74,12 +65,8 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         continue;
       }
 
-      const matchDate = moment
-        .tz(xmlTeamMatch.MatchTime, 'Europe/Brussels')
-        .toDate();
-      const dbEncounters = encounters.filter(
-        (r) => r.visualCode === `${xmlTeamMatch.Code}`
-      );
+      const matchDate = moment.tz(xmlTeamMatch.MatchTime, 'Europe/Brussels').toDate();
+      const dbEncounters = encounters.filter((r) => r.visualCode === `${xmlTeamMatch.Code}`);
       let dbEncounter: EncounterCompetition | null = null;
 
       if (dbEncounters.length === 1) {
@@ -93,12 +80,10 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         await this._destroyEncounters(rest);
       }
 
-      const team1 = this.entries?.find(
-        (e) => e.xmlTeamName == xmlTeamMatch?.Team1?.Name
-      )?.entry?.team;
-      const team2 = this.entries?.find(
-        (e) => e.xmlTeamName == xmlTeamMatch?.Team2?.Name
-      )?.entry?.team;
+      const team1 = this.entries?.find((e) => e.xmlTeamName == xmlTeamMatch?.Team1?.Name)?.entry
+        ?.team;
+      const team2 = this.entries?.find((e) => e.xmlTeamName == xmlTeamMatch?.Team2?.Name)?.entry
+        ?.team;
 
       if (!team1) {
         this.logger.warn(`Team ${xmlTeamMatch?.Team1?.Name} not found`);
@@ -112,10 +97,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
         // FInd one with same teams
         dbEncounter =
           encounters.find(
-            (e) =>
-              e.homeTeamId === team1?.id &&
-              e.awayTeamId === team2?.id &&
-              e.drawId === draw.id
+            (e) => e.homeTeamId === team1?.id && e.awayTeamId === team2?.id && e.drawId === draw.id,
           ) || null;
 
         if (!dbEncounter) {
@@ -136,7 +118,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
       if (dbEncounter.date !== matchDate) {
         dbEncounter.date = matchDate;
         await dbEncounter.save({ transaction: this.transaction });
-      } 
+      }
 
       if (!Array.isArray(xmlTeamMatch.Sets?.Set)) {
         dbEncounter.homeScore = xmlTeamMatch.Sets?.Set?.Team1;
@@ -188,7 +170,7 @@ export class CompetitionSyncEncounterProcessor extends StepProcessor {
 
     // remove from db encounters
     this._dbEncounters = this._dbEncounters.filter(
-      (e) => !encounter.find((r) => r.id === e.encounter.id)
+      (e) => !encounter.find((r) => r.id === e.encounter.id),
     );
   }
 }

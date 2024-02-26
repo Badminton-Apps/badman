@@ -1,6 +1,6 @@
 import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { isPlatformBrowser, LOCATION_INITIALIZED } from '@angular/common';
-import { Injector, PLATFORM_ID } from '@angular/core';
+import { effect, Injector, PLATFORM_ID } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { AvaliableLanguages, languages } from '@badman/utils';
@@ -12,7 +12,7 @@ export function langulageInitializer(
   translate: TranslateService,
   injector: Injector,
   adapter: DateAdapter<NgxMatMomentAdapter>,
-  authenticateService: AuthenticateService
+  authenticateService: AuthenticateService,
 ) {
   return async () => {
     const setLang = async (savedLang?: AvaliableLanguages) => {
@@ -20,9 +20,7 @@ export function langulageInitializer(
         return;
       }
 
-      const values = languages.get(
-        savedLang ? savedLang : AvaliableLanguages.nl_BE
-      );
+      const values = languages.get(savedLang ? savedLang : AvaliableLanguages.nl_BE);
 
       if (!values) {
         return;
@@ -43,20 +41,25 @@ export function langulageInitializer(
         : undefined;
 
       if (!savedLang && isPlatformBrowser(platform)) {
-        authenticateService.user$.subscribe((user) => {
-          if (user.loggedIn) {
-            if (user?.setting?.language) {
-              savedLang = user.setting.language;
+        effect(
+          () => {
+            if (authenticateService.loggedInSignal()) {
+              if (authenticateService.userSignal()?.setting?.language) {
+                savedLang = authenticateService.userSignal()?.setting?.language;
+              }
             }
-          }
-          setLang(savedLang);
-        });
+            setLang(savedLang);
+          },
+          {
+            injector,
+          },
+        );
       }
 
       // Set language if saved
       setLang(savedLang ?? AvaliableLanguages.nl_BE);
     } catch (err) {
-      console.error('Error', err); 
+      console.error('Error', err);
     }
   };
 }
@@ -65,7 +68,7 @@ export async function setLanguage(
   translateFormat: string,
   momentFormat: string,
   dateAdapater: DateAdapter<NgxMatMomentAdapter>,
-  translateService: TranslateService
+  translateService: TranslateService,
 ) {
   // Set values
   await lastValueFrom(translateService.use(translateFormat));

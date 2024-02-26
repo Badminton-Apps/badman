@@ -1,14 +1,7 @@
 import { CompileService } from '@badman/backend-compile';
 import { Player, RankingLastPlace, Team } from '@badman/backend-database';
 import { I18nTranslations, gameLabel } from '@badman/utils';
-import {
-  Controller,
-  Logger,
-  Post,
-  Req,
-  Res,
-  StreamableFile,
-} from '@nestjs/common';
+import { Controller, Logger, Post, Req, Res, StreamableFile } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { readFile } from 'fs/promises';
 import moment from 'moment-timezone';
@@ -58,10 +51,7 @@ export class AssemblyController {
   ) {}
 
   @Post('team')
-  async teamAssembly(
-    @Req() req: FastifyRequest,
-    @Res({ passthrough: true }) res: FastifyReply,
-  ) {
+  async teamAssembly(@Req() req: FastifyRequest, @Res({ passthrough: true }) res: FastifyReply) {
     // compile the template that returns a buffer of the pdf
     const pdf$ = await this.getTeamAssemblyPdf(req.body as inputBody);
 
@@ -81,9 +71,10 @@ export class AssemblyController {
 
   private async getTeamAssemblyPdf(input: inputBody) {
     const data = await this.assemblyService.getValidationData(
-      input.systemId,
       input.teamId,
       input.encounterId,
+
+      input.systemId,
       input.single1,
       input.single2,
       input.single3,
@@ -127,20 +118,13 @@ export class AssemblyController {
     }
 
     const captain = await Player.findByPk(input.captainId);
-    const logo = await readFile(
-      `${__dirname}/compile/libs/assembly/images/logo.png`,
-      {
-        encoding: 'base64',
-      },
-    );
+    const logo = await readFile(`${__dirname}/compile/libs/assembly/images/logo.png`, {
+      encoding: 'base64',
+    });
 
-    const date = moment(data.encounter.date)
-      .tz('Europe/Brussels')
-      .format('DD-MM-YYYY HH:mm');
+    const date = moment(data.encounter.date).tz('Europe/Brussels').format('DD-MM-YYYY HH:mm');
 
-    this.logger.debug(
-      `Generating assembly for ${homeTeam.name} vs ${awayTeam.name} on ${date}`,
-    );
+    this.logger.debug(`Generating assembly for ${homeTeam.name} vs ${awayTeam.name} on ${date}`);
 
     const indexed: string[] = [];
     const based: string[] = [];
@@ -196,13 +180,9 @@ export class AssemblyController {
         this._processPlayer(data, indexed, based, data.single3),
         this._processPlayer(data, indexed, based, data.single4),
       ],
-      subtitudes: data.subtitudes?.map((player) =>
-        this._processPlayer(data, [], [], player),
-      ),
+      subtitudes: data.subtitudes?.map((player) => this._processPlayer(data, [], [], player)),
       type: data.type,
-      event: `${
-        data.type === 'M' ? 'Heren' : data.type === 'F' ? 'Dames' : 'Gemengd'
-      } ${data.draw?.name}`,
+      event: `${data.type === 'M' ? 'Heren' : data.type === 'F' ? 'Dames' : 'Gemengd'} ${data.draw?.name}`,
       isHomeTeam: isHomeTeam,
       validation: {
         ...validation,
@@ -236,10 +216,7 @@ export class AssemblyController {
   }
 
   private translateGame(warn: AssemblyValidationError<unknown>) {
-    const params: Record<string, unknown> = (warn.params || {}) as Record<
-      string,
-      unknown
-    >;
+    const params: Record<string, unknown> = (warn.params || {}) as Record<string, unknown>;
 
     const games = params['game'] as gameType;
     if (games != undefined) {
@@ -267,10 +244,7 @@ export class AssemblyController {
   private getLabels(data: AssemblyValidationData): string[] {
     const labels: string[] = [];
     for (let i = 0; i < 8; i++) {
-      const gameLabels = gameLabel(
-        data.subEvent?.eventType as 'M' | 'F' | 'MX',
-        i + 1,
-      );
+      const gameLabels = gameLabel(data.subEvent?.eventType as 'M' | 'F' | 'MX', i + 1);
       let labelMessage = '';
 
       for (const label of gameLabels) {
@@ -320,8 +294,7 @@ export class AssemblyController {
     };
 
     if (
-      data.meta?.competition?.players?.map((p) => p.id).indexOf(player.id) !==
-        -1 &&
+      data.meta?.competition?.players?.map((p) => p.id).indexOf(player.id) !== -1 &&
       based &&
       based.indexOf(player.id) === -1
     ) {
@@ -370,14 +343,11 @@ export class AssemblyController {
     // if no ranking is availible use 12
 
     const single =
-      player.rankingLastPlaces?.[0]?.single ??
-      (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
+      player.rankingLastPlaces?.[0]?.single ?? (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
     const double =
-      player.rankingLastPlaces?.[0]?.double ??
-      (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
+      player.rankingLastPlaces?.[0]?.double ?? (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
     const mix =
-      player.rankingLastPlaces?.[0]?.mix ??
-      (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
+      player.rankingLastPlaces?.[0]?.mix ?? (best < 12 ? (best == 11 ? 12 : best + 2) : 12);
 
     prepped.rankingLastPlace = {
       single,

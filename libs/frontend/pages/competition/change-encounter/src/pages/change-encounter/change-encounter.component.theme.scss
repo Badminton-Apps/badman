@@ -6,7 +6,6 @@
 @use './components/list-encounters/list-encounters.component.theme.scss' as list-encounters;
 @use './components/show-requests/show-requests.component.theme.scss' as show-requests;
 
-
 @mixin color($theme) {
   badman-change-encounter {
     @include list-encounters.color($theme);
@@ -30,15 +29,3 @@
     $typography-config: mat.get-typography-config($theme);
   }
 }
-
-@mixin theme($theme) {
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
-  }
-} 

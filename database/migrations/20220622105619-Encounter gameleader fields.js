@@ -24,7 +24,7 @@ module.exports = {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -37,7 +37,7 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.addColumn(
           {
@@ -49,7 +49,7 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.addColumn(
           {
@@ -61,7 +61,7 @@ module.exports = {
             type: sequelize.DataTypes.STRING,
             allowNull: true,
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -79,7 +79,7 @@ module.exports = {
             schema: 'event',
           },
           'gameLeaderId',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
@@ -88,7 +88,7 @@ module.exports = {
             schema: 'event',
           },
           'shuttle',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.removeColumn(
           {
@@ -96,7 +96,7 @@ module.exports = {
             schema: 'event',
           },
           'startHour',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.removeColumn(
           {
@@ -104,7 +104,7 @@ module.exports = {
             schema: 'event',
           },
           'endHour',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

@@ -1,9 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-pages-ranking',
+  displayName: 'frontend-ranking',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/ranking',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

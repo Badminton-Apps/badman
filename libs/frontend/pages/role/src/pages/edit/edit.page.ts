@@ -16,14 +16,7 @@ import { RoleFieldsComponent } from '../../components';
   templateUrl: './edit.page.html',
   styleUrls: ['./edit.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-
-    RoleFieldsComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule, RoleFieldsComponent],
 })
 export class EditPageComponent implements OnInit {
   role!: Role;
@@ -37,7 +30,7 @@ export class EditPageComponent implements OnInit {
     private breadcrumbsService: BreadcrumbService,
     private router: Router,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit(): void {
@@ -78,7 +71,7 @@ export class EditPageComponent implements OnInit {
         variables: {
           data: role,
         },
-      })
+      }),
     );
 
     await this.router.navigate(['/', 'club', club.id, 'edit']);
@@ -114,10 +107,10 @@ export class EditPageComponent implements OnInit {
             toArray(),
             map((items) => {
               return { category: obs.key, claims: items };
-            })
+            }),
           );
         }),
-        toArray()
+        toArray(),
       );
   }
 }

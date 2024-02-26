@@ -1,8 +1,4 @@
-import {
-  Player,
-  Notification,
-  NotificationOptionsTypes,
-} from '@badman/backend-database';
+import { Player, Notification, NotificationOptionsTypes } from '@badman/backend-database';
 import { MailingService } from '@badman/backend-mailing';
 import { NotificationType } from '@badman/utils';
 import { Logger } from '@nestjs/common';
@@ -20,7 +16,7 @@ export abstract class Notifier<T, A = { email: string }> {
 
   constructor(
     protected mailing: MailingService,
-    protected pushService: PushService
+    protected pushService: PushService,
   ) {}
 
   abstract notifyPush(player: Player, data?: T, args?: A): Promise<void>;
@@ -36,7 +32,7 @@ export abstract class Notifier<T, A = { email: string }> {
       email?: boolean;
       push?: boolean;
       sms?: boolean;
-    }
+    },
   ): Promise<void> {
     if (!player) {
       this.logger.warn(`Player not found`);
@@ -52,9 +48,7 @@ export abstract class Notifier<T, A = { email: string }> {
     const type = settings?.[this.type] as NotificationType;
 
     if (!type && !force) {
-      this.logger.debug(
-        `Notification ${this.type} disabled for ${player.fullName}`
-      );
+      this.logger.debug(`Notification ${this.type} disabled for ${player.fullName}`);
       return;
     }
 
@@ -78,20 +72,18 @@ export abstract class Notifier<T, A = { email: string }> {
 
     if (notification) {
       const lastSend = moment(notification.createdAt);
-      if (
-        moment().diff(lastSend, this.allowedInterval) < this.allowedIntervalUnit
-      ) {
+      if (moment().diff(lastSend, this.allowedInterval) < this.allowedIntervalUnit) {
         this.logger.debug(
           `Notification already sent to ${player.fullName} in the last ${
             this.allowedInterval
-          } (send on: ${lastSend.format('DD-MM-YYYY HH:mm:ss')})`
+          } (send on: ${lastSend.format('DD-MM-YYYY HH:mm:ss')})`,
         );
         return;
       }
 
       if (this.allowedAmount && totalAmount >= this.allowedAmount) {
         this.logger.debug(
-          `Notification already sent to ${player.fullName} enough (${totalAmount}) times`
+          `Notification already sent to ${player.fullName} enough (${totalAmount}) times`,
         );
         return;
       }

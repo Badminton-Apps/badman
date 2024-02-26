@@ -18,7 +18,7 @@ module.exports = {
         },
         {
           transaction: t,
-        }
+        },
       );
 
       await queryInterface.addColumn(
@@ -33,7 +33,7 @@ module.exports = {
         },
         {
           transaction: t,
-        }
+        },
       );
 
       try {
@@ -54,7 +54,7 @@ module.exports = {
         'lastSync',
         {
           transaction: t,
-        }
+        },
       );
 
       await queryInterface.removeColumn(
@@ -65,7 +65,7 @@ module.exports = {
         'lastSync',
         {
           transaction: t,
-        }
+        },
       );
 
       try {

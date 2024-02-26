@@ -12,11 +12,7 @@ import {
 } from '@badman/backend-database';
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
 import { IsUUID } from '@badman/utils';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -52,9 +48,7 @@ export class EventTournamentResolver {
   ) {}
 
   @Query(() => EventTournament)
-  async eventTournament(
-    @Args('id', { type: () => ID }) id: string,
-  ): Promise<EventTournament> {
+  async eventTournament(@Args('id', { type: () => ID }) id: string): Promise<EventTournament> {
     const eventTournament = IsUUID(id)
       ? await EventTournament.findByPk(id)
       : await EventTournament.findOne({
@@ -90,22 +84,16 @@ export class EventTournamentResolver {
     @Args('data') updateEventTournamentData: EventTournamentUpdateInput,
   ): Promise<EventTournament> {
     if (!(await user.hasAnyPermission([`edit-any:tournament`]))) {
-      throw new UnauthorizedException(
-        `You do not have permission to add a tournament`,
-      );
+      throw new UnauthorizedException(`You do not have permission to add a tournament`);
     }
 
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const eventTournamentDb = await EventTournament.findByPk(
-        updateEventTournamentData.id,
-      );
+      const eventTournamentDb = await EventTournament.findByPk(updateEventTournamentData.id);
 
       if (!eventTournamentDb) {
-        throw new NotFoundException(
-          `${EventTournament.name}: ${updateEventTournamentData.id}`,
-        );
+        throw new NotFoundException(`${EventTournament.name}: ${updateEventTournamentData.id}`);
       }
 
       if (eventTournamentDb.official !== updateEventTournamentData.official) {
@@ -187,14 +175,9 @@ export class EventTournamentResolver {
   // }
 
   @Mutation(() => Boolean)
-  async removeEventTournament(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-  ) {
+  async removeEventTournament(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission([`delete-any:tournament`]))) {
-      throw new UnauthorizedException(
-        `You do not have permission to detele a tournament`,
-      );
+      throw new UnauthorizedException(`You do not have permission to detele a tournament`);
     }
 
     const eventTournament = await EventTournament.findByPk(id);

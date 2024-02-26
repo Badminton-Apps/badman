@@ -1,19 +1,19 @@
 doctype strict
 // Emails use the XHTML Strict doctype
-html(lang='en')
+html(lang="en")
   head
     // The character set should be utf-8
-    meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
-    meta(name='viewport', content='width=device-width')
+    meta(http-equiv="Content-Type", content="text/html; charset=utf-8")
+    meta(name="viewport", content="width=device-width")
     style
       include foundation-emails.css
 
     block style
     |
-    table.body(data-made-with-foundation='')
+    table.body(data-made-with-foundation="")
       tr
-        td.float-center(align='center', valign='top')
-          table.container.body-drip.float-center(align='center')
+        td.float-center(align="center", valign="top")
+          table.container.body-drip.float-center(align="center")
             tbody
               tr
                 td
@@ -55,13 +55,11 @@ html(lang='en')
                                     tbody
                                       tr
                                         td(
-                                          height='16px',
-                                          style='font-size: 16px; line-height: 16px'
+                                          height="16px",
+                                          style="font-size: 16px; line-height: 16px"
                                         ) &nbsp;
                                   p.text-center
                                     | Copyright (C) 2021. All rights reserved.
                                     br
-                                    a(
-                                      href=`${clientUrl}/${settingsSlug}/settings`
-                                    ) Manage Email Notifications
+                                    a(href=`${clientUrl}/${settingsSlug}/settings`) Manage Email Notifications
                                 th.expander

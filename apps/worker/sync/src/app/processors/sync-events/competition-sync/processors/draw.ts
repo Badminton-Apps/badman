@@ -6,11 +6,7 @@ import {
 } from '@badman/backend-database';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import {
-  VisualService,
-  XmlDrawTypeID,
-  XmlTournament,
-} from '@badman/backend-visual';
+import { VisualService, XmlDrawTypeID, XmlTournament } from '@badman/backend-visual';
 
 import { SubEventStepData } from './subEvent';
 import { DrawType, runParallel } from '@badman/utils';
@@ -28,14 +24,13 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions,
   ) {
     if (!options) {
       options = {};
     }
 
-    options.logger =
-      options.logger || new Logger(CompetitionSyncDrawProcessor.name);
+    options.logger = options.logger || new Logger(CompetitionSyncDrawProcessor.name);
     super(options);
   }
 
@@ -54,10 +49,7 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
     const draws = await subEvent.getDrawCompetitions({
       transaction: this.transaction,
     });
-    const visualDraws = await this.visualService.getDraws(
-      this.visualTournament.Code,
-      internalId
-    );
+    const visualDraws = await this.visualService.getDraws(this.visualTournament.Code, internalId);
     for (const xmlDraw of visualDraws) {
       if (!xmlDraw) {
         continue;
@@ -92,9 +84,9 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
             xmlDraw.TypeID === XmlDrawTypeID.Elimination
               ? DrawType.KO
               : xmlDraw.TypeID === XmlDrawTypeID.RoundRobin ||
-                xmlDraw.TypeID === XmlDrawTypeID.FullRoundRobin
-              ? DrawType.POULE
-              : DrawType.QUALIFICATION,
+                  xmlDraw.TypeID === XmlDrawTypeID.FullRoundRobin
+                ? DrawType.POULE
+                : DrawType.QUALIFICATION,
         });
       }
       // update the draw

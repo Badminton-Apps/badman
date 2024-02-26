@@ -21,7 +21,7 @@ import { configSchema, load } from '@badman/utils';
     }),
     QueueModule,
     DatabaseModule,
-    BelgiumFlandersPlacesModule
+    BelgiumFlandersPlacesModule,
   ],
   providers: [PlacesProcessor],
 })

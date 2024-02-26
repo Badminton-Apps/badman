@@ -1,16 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,21 +19,15 @@ import { lastValueFrom } from 'rxjs';
   styleUrls: ['./faq.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     MatFormFieldModule,
-
-    // Own modules
     HasClaimComponent,
-
-    // Material
     MatCardModule,
     MatIconModule,
     MatButtonModule,
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,
-
     QuillModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,7 +42,7 @@ export class FaqPageComponent implements OnInit {
     private seoService: SeoService,
     private route: ActivatedRoute,
     private apollo: Apollo,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.editForm = formBuilder.group({
       question: '',
@@ -112,7 +96,7 @@ export class FaqPageComponent implements OnInit {
               answer: question.answer,
             },
           },
-        })
+        }),
       );
     } else {
       // Create question
@@ -133,7 +117,7 @@ export class FaqPageComponent implements OnInit {
               answer: question.answer,
             },
           },
-        })
+        }),
       );
       question.id = result.data?.createFaq.id;
     }
@@ -175,7 +159,7 @@ export class FaqPageComponent implements OnInit {
           variables: {
             id: question.id,
           },
-        })
+        }),
       );
 
       this.questions = this.questions.filter((q) => q.id !== question.id);

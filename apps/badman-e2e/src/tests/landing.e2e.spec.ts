@@ -1,30 +1,13 @@
-import { test, expect, Locator } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { bTest } from '../fixture';
 
-test.describe('Landing page', () => {
-  test.describe('Ranking section', () => {
-    let section: Locator;
-    test.beforeEach(async ({ page }) => {
-      await page.goto('/');
+bTest('Landing page', async ({ homePage }) => {
+  // if page is visible
+  await expect(homePage.ranking).toBeVisible();
 
-      // find section with class ranking
-      section = page.locator('section.ranking');
-    });
+  // if header is visible
+  await expect(homePage.ranking.locator('h3')).toContainText('Ranking table');
 
-    test('if section is visible', async () => {
-      await expect(section).toBeVisible();
-    });
-
-    test('if header is visible', async () => {
-      const header = section.locator('h3');
-
-      await expect(header).toBeVisible();
-      await expect(header).toContainText('Ranking tabel');
-    });
-
-    test('should contain 12 rows', async () => {
-      const cells = section.locator('tbody tr');
-
-      await expect(cells).toHaveCount(12);
-    });
-  });
+  // should contain 12 rows
+  await expect(homePage.ranking.locator('tbody tr')).toHaveCount(12);
 });

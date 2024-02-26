@@ -1,12 +1,8 @@
-<ng-container *ngIf="this.type === 'encounter'">
-  <badman-list-encounters
-    [clubId]="this.clubId"
-    [teamId]="this.teamId"
-    [teams]="this.teams"
-  ></badman-list-encounters>
-</ng-container>
-
-<ng-container *ngIf="this.type === 'game'">
-  <badman-list-games [playerId]="this.playerId"></badman-list-games>
-</ng-container>
-
+@switch (this.type()) {
+  @case ('encounter') {
+    <badman-list-encounters [clubId]="this.clubId()" [teams]="this.teams()" />
+  }
+  @case ('game') {
+    <badman-list-games [playerId]="this.playerId()!" />
+  }
+}

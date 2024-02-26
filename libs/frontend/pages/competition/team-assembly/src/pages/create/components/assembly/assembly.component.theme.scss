@@ -27,10 +27,7 @@
           @if ($isDark) {
             color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
           } @else {
-            color: lighten(
-              mat.get-color-from-palette($foreground, 'base'),
-              60%
-            );
+            color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
           }
         }
       }
@@ -72,7 +69,7 @@
       .index {
         @include mat.typography-level($typography-config, 'caption');
       }
-      
+
       .ranking {
         @include mat.typography-level($typography-config, 'caption');
       }
@@ -81,17 +78,5 @@
     .team-info .add-player .permanent {
       @include mat.typography-level($typography-config, 'caption');
     }
-  }
-}
-
-@mixin theme($theme) {
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

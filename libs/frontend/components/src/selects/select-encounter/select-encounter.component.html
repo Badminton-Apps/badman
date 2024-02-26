@@ -1,26 +1,27 @@
-<ng-container [formGroup]="group">
+<ng-container [formGroup]="group()">
   <mat-form-field>
     <mat-label>{{ 'all.pickers.select-encounter' | translate }}</mat-label>
     <mat-select
-      [formControl]="control"
+      [formControlName]="this.controlName()"
       required
       (selectionChange)="this.selectEncounter($event)"
     >
-      <ng-container *ngIf="this.encounters$ | async as encounters">
-        <mat-option *ngFor="let encounter of encounters" [value]="encounter.id">
-          <span>{{ encounter.date | amDateFormat : 'llll' }} </span>
+      @for (encounter of this.encounters$ | async; track encounter) {
+        <mat-option [value]="encounter.id">
+          <span>{{ encounter.date | amDateFormat: 'llll' }} </span>
           <span translate="all.competition.vs"></span>
-          <span *ngIf="encounter.showingForHomeTeam">
-            {{ encounter.away?.name }}</span
-          >
-          <span *ngIf="!encounter.showingForHomeTeam">
-            {{ encounter.home?.name }}</span
-          >
+          @if (encounter.showingForHomeTeam) {
+            <span> {{ encounter.away?.name }}</span>
+          } @else {
+            <span> {{ encounter.home?.name }}</span>
+          }
         </mat-option>
-      </ng-container>
+      }
     </mat-select>
-    <mat-error *ngIf="control?.hasError('required')">
-      {{ 'all.input.this-required' | translate }}
-    </mat-error>
+    @if (this.internalControl.hasError('required')) {
+      <mat-error>
+        {{ 'all.input.this-required' | translate }}
+      </mat-error>
+    }
   </mat-form-field>
 </ng-container>

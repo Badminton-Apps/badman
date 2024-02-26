@@ -32,8 +32,7 @@ export class Game {
 
   constructor({ ...args }: Partial<Game>) {
     const parsedType = (args?.gameType as unknown as 'D' | 'MX' | 'S') ?? null;
-    const parsedStatus =
-      (args?.status as unknown as GameStatus) ?? GameStatus.NORMAL;
+    const parsedStatus = (args?.status as unknown as GameStatus) ?? GameStatus.NORMAL;
 
     this.id = args?.id;
     this.playedAt = args.playedAt ? new Date(args.playedAt) : undefined;

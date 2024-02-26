@@ -1,13 +1,5 @@
 import { UseForTeamName } from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -76,6 +68,12 @@ export class Club extends Model {
   @Field(() => ID)
   @Column(DataType.UUIDV4)
   override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Unique('club_number_unique')
   @Index
@@ -278,11 +276,11 @@ export class ClubUpdateInput extends PartialType(
     'players',
     'locations',
   ] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class ClubNewInput extends PartialType(
   OmitType(ClubUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

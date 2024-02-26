@@ -8,11 +8,7 @@ import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import {
-  ApexAxisChartSeries,
-  ApexOptions,
-  NgApexchartsModule,
-} from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
 import { combineLatest, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -23,20 +19,13 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   styleUrls: ['./detail-avg.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
     TranslateModule,
-
-    // Other
     NgApexchartsModule,
-
-    // Material modules
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-
-    // My modules
     LoadingBlockComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -129,29 +118,20 @@ export class DetailAvgPageComponent implements OnInit {
     private readonly translate: TranslateService,
     private readonly breadcrumbsService: BreadcrumbService,
     private readonly route: ActivatedRoute,
-    private readonly apollo: Apollo
+    private readonly apollo: Apollo,
   ) {}
 
   ngOnInit(): void {
     combineLatest([
       this.route.data,
-      this.translate.get([
-        'all.competition.title',
-        'all.competition.avg-level',
-      ]),
+      this.translate.get(['all.competition.title', 'all.competition.avg-level']),
     ]).subscribe(([data, translations]) => {
       this.eventCompetition = data['eventCompetition'];
-      this.breadcrumbsService.set(
-        '@eventCompetition',
-        this.eventCompetition.name || ''
-      );
-      this.breadcrumbsService.set(
-        'competition',
-        translations['all.competition.title']
-      );
+      this.breadcrumbsService.set('@eventCompetition', this.eventCompetition.name || '');
+      this.breadcrumbsService.set('competition', translations['all.competition.title']);
       this.breadcrumbsService.set(
         'competition/:id/avg-level',
-        translations['all.competition.avg-level']
+        translations['all.competition.avg-level'],
       );
     });
 
@@ -160,9 +140,7 @@ export class DetailAvgPageComponent implements OnInit {
 
   chartXAxis(subEvents: SubEventCompetition[], eventType: 'M' | 'F' | 'MX') {
     return {
-      categories: subEvents
-        .filter((s) => s.eventType == eventType)
-        .map((s) => s.name),
+      categories: subEvents.filter((s) => s.eventType == eventType).map((s) => s.name),
     } as ApexOptions['xaxis'];
   }
 
@@ -170,7 +148,7 @@ export class DetailAvgPageComponent implements OnInit {
     subEvents: SubEventCompetition[],
     gender: 'M' | 'F',
     chartType: 'single' | 'double' | 'mix',
-    eventType: 'M' | 'F' | 'MX'
+    eventType: 'M' | 'F' | 'MX',
   ) {
     const filteredSubEvents = subEvents.filter((s) => s.eventType == eventType);
 
@@ -178,9 +156,7 @@ export class DetailAvgPageComponent implements OnInit {
 
     const genderData = filteredSubEvents
       .map((subEvent) => {
-        const genderData = subEvent.averageLevel?.find(
-          (a) => a.gender == gender
-        );
+        const genderData = subEvent.averageLevel?.find((a) => a.gender == gender);
         return {
           avgerage: genderData?.[chartType] as number,
           count: genderData?.[`${chartType}Count`] as number,
@@ -206,7 +182,7 @@ export class DetailAvgPageComponent implements OnInit {
   chartTitle(
     gender: 'M' | 'F',
     chartType: 'single' | 'double' | 'mix',
-    eventType: 'M' | 'F' | 'MX'
+    eventType: 'M' | 'F' | 'MX',
   ) {
     return {
       text: `Reeks: ${eventType}, Geslacht: ${gender}, Dicipline: ${chartType}`,
@@ -245,21 +221,10 @@ export class DetailAvgPageComponent implements OnInit {
     const rows = data
       .map((row) => {
         const data = row.averageLevel?.map((a) => {
-          return [
-            a.gender,
-            a.single,
-            a.singleCount,
-            a.double,
-            a.doubleCount,
-            a.mix,
-            a.mixCount,
-          ];
+          return [a.gender, a.single, a.singleCount, a.double, a.doubleCount, a.mix, a.mixCount];
         });
 
-        return data?.map((r) => [
-          `${row.name} - ${row.eventType}`,
-          r.join(','),
-        ]);
+        return data?.map((r) => [`${row.name} - ${row.eventType}`, r.join(',')]);
       })
       .flat();
 
@@ -301,9 +266,9 @@ export class DetailAvgPageComponent implements OnInit {
         take(1),
         map((result) => {
           return result.data.eventCompetition.subEventCompetitions?.map(
-            (s) => new SubEventCompetition(s)
+            (s) => new SubEventCompetition(s),
           );
-        })
+        }),
       );
   }
 }

@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ThemeSwitcherService } from '@badman/frontend-components';
 import { RankingSystem } from '@badman/frontend-models';
 import moment from 'moment';
 // import { EChartsOption } from 'echarts';
+import { input } from '@angular/core';
 import {
   ChartComponent as ApexChartComponent,
   ApexOptions,
@@ -17,14 +18,7 @@ import {
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-
-    // Material
-
-    // Other
-    NgApexchartsModule,
-  ],
+  imports: [CommonModule, NgApexchartsModule],
 })
 export class ChartComponent implements OnInit {
   // options!: EChartsOption;
@@ -33,23 +27,21 @@ export class ChartComponent implements OnInit {
 
   constructor(private themeSwitcher: ThemeSwitcherService) {}
 
-  @Input()
-  rankingPlaces!: {
-    level: number;
-    rankingDate: Date;
-    points: number;
-    pointsDowngrade: number;
-    updatePossible: boolean;
-  }[];
+  rankingPlaces = input<
+    {
+      level: number;
+      rankingDate: Date;
+      points: number;
+      pointsDowngrade: number;
+      updatePossible: boolean;
+    }[]
+  >([]);
 
-  @Input()
-  title!: string;
+  title = input<string>();
 
-  @Input()
-  system!: RankingSystem;
+  system = input.required<RankingSystem>();
 
-  @Input()
-  probablyInacurate: moment.Moment = moment('2018-07-31T22:00:00.000Z');
+  startedCalc = input<moment.Moment>(moment('2023-12-31T23:00:00.000Z'));
 
   maxPoints = 0;
 
@@ -123,7 +115,7 @@ export class ChartComponent implements OnInit {
         inverseOrder: true,
       },
       title: {
-        text: this.title,
+        text: this.title(),
       },
       xaxis: {
         type: 'datetime',
@@ -131,10 +123,10 @@ export class ChartComponent implements OnInit {
       yaxis: [
         {
           min: 0,
-          max: this.system.amountOfLevels,
+          max: this.system().amountOfLevels,
           reversed: true,
           seriesName: 'ranking',
-          tickAmount: this.system.amountOfLevels,
+          tickAmount: this.system().amountOfLevels,
         },
         {
           min: 0,
@@ -149,14 +141,29 @@ export class ChartComponent implements OnInit {
       tooltip: {},
       annotations: {
         yaxis: annotations,
-        xaxis: [],
+        xaxis: [
+          // we can use this to mark where we started calculating
+          // {
+          //   x: this.startedCalc().valueOf(),
+          //   borderColor: '#3d99f5',
+          //   label: {
+          //     borderColor: '#3d99f5',
+          //     style: {
+          //       color: '#fff',
+          //       background: '#3d99f5',
+          //     },
+          //     position: 'center',
+          //     text: 'Started points',
+          //   },
+          // },
+        ],
       },
     };
   }
 
   createSeries() {
     // sort places
-    this.rankingPlaces
+    this.rankingPlaces()
       .sort((a, b) => a.rankingDate.getTime() - b.rankingDate.getTime())
       .forEach((x) => {
         const rankingDate = moment(x.rankingDate);
@@ -191,29 +198,22 @@ export class ChartComponent implements OnInit {
       return;
     }
 
-    this.nextLevel =
-      this.system.pointsToGoUp?.[
-        (this.system.amountOfLevels ?? 12) - lastLevel
-      ];
+    this.nextLevel = this.system().pointsToGoUp?.[(this.system().amountOfLevels ?? 12) - lastLevel];
 
     if (lastLevel === 12) {
       return;
     }
     this.prevLevel =
-      this.system.pointsToGoUp?.[
-        (this.system.amountOfLevels ?? 12) - lastLevel + 1
-      ];
+      this.system().pointsToGoUp?.[(this.system().amountOfLevels ?? 12) - lastLevel + 1];
   }
 
   generateUpdateLines() {
     if (this.lines.length === 0) {
       // get max date
-      const updateDate = moment(this.system.updateLastUpdate);
+      const updateDate = moment(this.system().updateLastUpdate);
 
       // get min date
-      const minDate = moment.min(
-        this.rankingPlaces.map((r) => moment(r.rankingDate)),
-      );
+      const minDate = moment.min(this.rankingPlaces().map((r) => moment(r.rankingDate)));
 
       // go back starting from max date untill min date
       // the interval is the calculation interval
@@ -224,10 +224,7 @@ export class ChartComponent implements OnInit {
           borderColor: '#3d99f566',
         });
 
-        updateDate.subtract(
-          this.system.updateIntervalAmount,
-          this.system.updateIntervalUnit,
-        );
+        updateDate.subtract(this.system().updateIntervalAmount, this.system().updateIntervalUnit);
       }
     }
 

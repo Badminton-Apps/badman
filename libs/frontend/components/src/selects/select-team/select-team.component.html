@@ -1,34 +1,38 @@
-<ng-container *ngIf="this.group" [formGroup]="group">
-  <mat-form-field>
-    <mat-label>{{ 'all.pickers.select-team' | translate }}</mat-label>
-    <mat-select
-      [formControl]="control"
-      required
-      [multiple]="this.multiple"
-      (selectionChange)="this.selectTeam($event)"
-    >
-      <ng-container *ngIf="this.teams$ | async as teams">
-        <ng-container *ngIf="this.multiple">
-          <button mat-button (click)="selectAll(teams)">
-            {{ 'all.button.all' | translate }}
-          </button>
-          <button mat-button (click)="deselectAll()">
-            {{ 'all.button.none' | translate }}
-          </button>
-        </ng-container>
-        
-        <mat-optgroup
-          *ngFor="let group of teams"
-          [label]="'all.pickers.select-team-groups.' + group.type | translate"
-        >
-          <mat-option *ngFor="let option of group.teams" [value]="option.id">
-            {{ option.name }}
-          </mat-option>
-        </mat-optgroup>
-      </ng-container>
-    </mat-select>
-    <mat-error *ngIf="control?.hasError('required')">
-      {{ 'all.input.this-required' | translate }}
-    </mat-error>
-  </mat-form-field>
-</ng-container>
+@if (this.group()) {
+  <ng-container [formGroup]="group()">
+    <mat-form-field>
+      <mat-label>{{ 'all.pickers.select-team' | translate }}</mat-label>
+      <mat-select
+        [formControl]="internalControl"
+        required
+        [multiple]="this.multiple()"
+        (selectionChange)="this.selectTeam($event)"
+      >
+        @if (this.teams$ | async; as teams) {
+          @if (this.multiple()) {
+            <button mat-button (click)="selectAll(teams)">
+              {{ 'all.button.all' | translate }}
+            </button>
+            <button mat-button (click)="deselectAll()">
+              {{ 'all.button.none' | translate }}
+            </button>
+          }
+          @for (group of teams; track group) {
+            <mat-optgroup [label]="'all.pickers.select-team-groups.' + group.type | translate">
+              @for (option of group.teams; track option) {
+                <mat-option [value]="option.id">
+                  {{ option.name }}
+                </mat-option>
+              }
+            </mat-optgroup>
+          }
+        }
+      </mat-select>
+      @if (internalControl.hasError('required')) {
+        <mat-error>
+          {{ 'all.input.this-required' | translate }}
+        </mat-error>
+      }
+    </mat-form-field>
+  </ng-container>
+}

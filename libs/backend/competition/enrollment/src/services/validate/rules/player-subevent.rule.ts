@@ -54,7 +54,7 @@ export class PlayerSubEventRule extends Rule {
 
         // check if any enrollments are for the same subevent but different team
         const enrollmentSameSubEvent = playerInOtherTeam.filter(
-          (en) => en?.subEvent?.id === subEvent.id && en.team?.id !== team.id
+          (en) => en?.subEvent?.id === subEvent.id && en.team?.id !== team.id,
         );
 
         for (const otherTeam of enrollmentSameSubEvent) {

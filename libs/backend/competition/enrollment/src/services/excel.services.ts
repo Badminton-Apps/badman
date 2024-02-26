@@ -41,9 +41,7 @@ export class ExcelService {
           order: [['team', 'name', 'ASC']],
         });
         for (const entry of entries) {
-          for (const meta of entry.meta?.competition?.players?.sort(
-            sortPlayers,
-          ) ?? []) {
+          for (const meta of entry.meta?.competition?.players?.sort(sortPlayers) ?? []) {
             const player = await Player.findByPk(meta.id);
 
             if (!player) {
@@ -87,18 +85,13 @@ export class ExcelService {
 
     // Autosize columns
     const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
-      data.reduce(
-        (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
-        0,
-      ),
+      data.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0),
     );
     ws['!cols'] = columnSizes.map((width) => ({ width }));
 
     // Enable filtering
     ws['!autofilter'] = {
-      ref: XLSX.utils.encode_range(
-        XLSX.utils.decode_range(ws['!ref'] as string),
-      ),
+      ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws['!ref'] as string)),
     };
 
     XLSX.utils.book_append_sheet(wb, ws, 'Enrollment');

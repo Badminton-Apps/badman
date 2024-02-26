@@ -8,6 +8,6 @@
   @include overview.typography($theme);
 }
 
-@mixin colors($theme) {
+@mixin color($theme) {
   @include overview.color($theme);
 }

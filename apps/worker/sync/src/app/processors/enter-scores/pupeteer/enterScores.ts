@@ -11,7 +11,7 @@ export async function enterScores(
   },
   set: number,
   scores: string,
-  matchId: string
+  matchId: string,
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {

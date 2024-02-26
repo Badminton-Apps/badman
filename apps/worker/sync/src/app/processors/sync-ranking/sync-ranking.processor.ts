@@ -18,7 +18,7 @@ export class SyncRankingProcessor {
   constructor(
     private _sequelize: Sequelize,
     visualService: VisualService,
-    @InjectQueue(SyncQueue) readonly rankingQ: Queue
+    @InjectQueue(SyncQueue) readonly rankingQ: Queue,
   ) {
     this._rankingSync = new RankingSyncer(visualService, rankingQ);
   }
@@ -27,7 +27,7 @@ export class SyncRankingProcessor {
   async syncRanking(
     job: Job<{
       start: string;
-    }>
+    }>,
   ): Promise<void> {
     this.logger.debug(`Syncing Ranking, data: ${JSON.stringify(job.data)}`);
 
@@ -39,7 +39,7 @@ export class SyncRankingProcessor {
         'meta.queueName': SyncQueue,
       },
     });
-    
+
     if (!cronJob) {
       throw new Error('Job not found');
     }
@@ -66,7 +66,7 @@ export class SyncRankingProcessor {
       this.logger.error('Rolling back');
       await transaction.rollback();
       throw error;
-    } finally{
+    } finally {
       cronJob.amount--;
       cronJob.lastRun = new Date();
       await cronJob.save();

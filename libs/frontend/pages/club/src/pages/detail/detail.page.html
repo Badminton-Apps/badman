@@ -1,115 +1,86 @@
 <badman-page-header>
   <div avatar>{{ this.club().abbreviation }}</div>
-  <div title>{{this.club().name}}</div>
-
+  <div title>{{ this.club().name }}</div>
   <div subTitle>
-    <div class="clubId">{{this.club().clubId}}</div>
+    <div class="clubId">{{ this.club().clubId }}</div>
   </div>
-
   <div actions>
     <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
     </button>
-
     <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
       <mat-icon>more_vert</mat-icon>
     </button>
-
     <mat-menu #menu="matMenu">
-      <badman-has-claim
-        [any]="['edit-any:club', this.club().id + '_edit:club']"
-      >
+      <badman-has-claim [any]="['edit-any:club', this.club().id + '_edit:club']">
         <button mat-menu-item [routerLink]="['..', this.club().id, 'edit']">
           <mat-icon>edit</mat-icon>
-          <span>{{'all.button.edit' | translate}}</span>
+          <span>{{ 'all.button.edit' | translate }}</span>
         </button>
         <button mat-menu-item (click)="addPlayer()">
           <mat-icon>add</mat-icon>
-          <span>{{'all.club.menu.add-player' | translate}}</span>
+          <span>{{ 'all.club.menu.add-player' | translate }}</span>
         </button>
       </badman-has-claim>
       <badman-has-claim [any]="['edit-any:club']">
         <button mat-menu-item>
           <mat-icon>delete</mat-icon>
-          <span>{{'all.button.delete' | translate}}</span>
+          <span>{{ 'all.button.delete' | translate }}</span>
         </button>
       </badman-has-claim>
-
       <button mat-menu-item (click)="downloadTwizzit()">
         <mat-icon>download</mat-icon>
-        <span> {{'all.club.menu.twizzit' | translate}}</span>
+        <span> {{ 'all.club.menu.twizzit' | translate }}</span>
       </button>
     </mat-menu>
   </div>
 </badman-page-header>
 
-<ng-container>
-  <form [formGroup]="filter" class="filter">
-    <mat-button-toggle-group
-      name="team types"
-      aria-label="team types"
-      multiple
-      formControlName="choices"
-    >
-      <mat-button-toggle value="M"
-        >{{'all.gender.male' | translate }}</mat-button-toggle
-      >
-      <mat-button-toggle value="F"
-        >{{'all.gender.female' | translate }}</mat-button-toggle
-      >
-      <mat-button-toggle value="MX"
-        >{{'all.gender.mix' | translate }}</mat-button-toggle
-      >
-      <mat-button-toggle value="NATIONAL"
-        >{{'all.gender.national'| translate }}</mat-button-toggle
-      >
-    </mat-button-toggle-group>
-
-    <badman-select-season [group]="this.filter"></badman-select-season>
-  </form>
-
-  <mat-tab-group
-    mat-stretch-tabs="false"
-    [selectedIndex]="currentTab()"
-    (selectedIndexChange)="setTab($event)"
+<form [formGroup]="filter" class="filter">
+  <mat-button-toggle-group
+    name="team types"
+    aria-label="team types"
+    multiple
+    formControlName="choices"
   >
-    <mat-tab [label]="'all.club.titles.teams' | translate">
-      <badman-club-teams [clubId]="this.clubId" [filter]="this.filter" />
-    </mat-tab>
-    <mat-tab [label]="'all.club.titles.matrix' | translate">
+    <mat-button-toggle value="M">{{ 'all.gender.male' | translate }}</mat-button-toggle>
+    <mat-button-toggle value="F">{{ 'all.gender.female' | translate }}</mat-button-toggle>
+    <mat-button-toggle value="MX">{{ 'all.gender.mix' | translate }}</mat-button-toggle>
+    <mat-button-toggle value="NATIONAL">{{ 'all.gender.national' | translate }}</mat-button-toggle>
+  </mat-button-toggle-group>
+  <badman-select-season [group]="this.filter"></badman-select-season>
+</form>
+<mat-tab-group
+  mat-stretch-tabs="false"
+  [selectedIndex]="currentTab()"
+  (selectedIndexChange)="setTab($event)"
+>
+  <mat-tab [label]="'all.club.titles.teams' | translate">
+    <badman-club-teams [clubId]="this.clubId" [filter]="this.filter" />
+  </mat-tab>
+  <mat-tab [label]="'all.club.titles.matrix' | translate">
+    <ng-template matTabContent>
+      <badman-club-assembly [club]="this.club" [filter]="this.filter" />
+    </ng-template>
+  </mat-tab>
+  <mat-tab [label]="'all.club.titles.players' | translate">
+    <ng-template matTabContent>
+      <badman-club-players [clubId]="this.clubId" [filter]="this.filter" />
+    </ng-template>
+  </mat-tab>
+
+  @if (this.canViewEncounter()) {
+    <mat-tab [label]="'all.club.titles.encounters' | translate">
       <ng-template matTabContent>
-        <badman-club-assembly
-          [club]="this.club"
-          [filter]="this.filter"
-        />
+        <badman-club-encounters [clubId]="this.clubId" [filter]="this.filter" />
       </ng-template>
     </mat-tab>
-    <mat-tab [label]="'all.club.titles.players' | translate">
+  }
+  @if (this.canViewEnrollments()) {
+    <mat-tab [label]="'all.competition.team-enrollment.title' | translate">
       <ng-template matTabContent>
-        <badman-club-players [clubId]="this.clubId" [filter]="this.filter" />
+        <badman-club-competition [clubId]="this.clubId" [filter]="this.filter" />
       </ng-template>
     </mat-tab>
-    <mat-tab
-      [label]="'all.club.titles.encounters' | translate"
-      *ngIf="this.canViewEncounter()"
-    >
-      <ng-template matTabContent>
-        <badman-club-encounters
-        [clubId]="this.clubId"
-          [filter]="this.filter"
-        />
-      </ng-template>
-    </mat-tab>
-    <mat-tab
-      [label]="'all.competition.team-enrollment.title' | translate"
-      *ngIf="this.canViewEnrollments?.()"
-    >
-      <ng-template matTabContent>
-        <badman-club-competition
-          [clubId]="this.clubId"
-          [filter]="this.filter"
-        />
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
-</ng-container>
+  }
+</mat-tab-group>

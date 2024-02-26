@@ -1,6 +1,6 @@
 {
   "name": "backend-authorization",
-  "$schema": "..\\..\\..\\enode_modules\\nx\\schemas\\project-schema.json",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/authorization/src",
   "projectType": "library",
   "targets": {
@@ -12,18 +12,7 @@
         "tsConfig": "libs/backend/authorization/tsconfig.lib.json",
         "packageJson": "libs/backend/authorization/package.json",
         "main": "libs/backend/authorization/src/index.ts",
-        "assets": ["libs/backend-authorization/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/authorization"],
-      "options": {
-        "jestConfig": "libs/backend/authorization/jest.config.ts"
+        "assets": ["libs/backend/authorization/*.md"]
       }
     }
   },

@@ -3,9 +3,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
+  Injector,
   OnInit,
   Output,
+  effect,
+  inject,
+  input,
 } from '@angular/core';
 import {
   FormControl,
@@ -41,48 +44,39 @@ import { debounceTime, filter, switchMap } from 'rxjs/operators';
   ],
 })
 export class EditPlayerFieldsComponent implements OnInit {
-  @Input()
-  player!: Player;
+  private readonly claimService = inject(ClaimService);
+  private readonly apollo = inject(Apollo);
+  private readonly _snackBar = inject(MatSnackBar);
+  private readonly injector = inject(Injector);
+
+  player = input.required<Player>();
 
   @Output()
   playerChanged = new EventEmitter<Partial<Player>>();
 
   fg!: FormGroup;
 
-  constructor(
-    private claimService: ClaimService,
-    private apollo: Apollo,
-    private _snackBar: MatSnackBar
-  ) {}
-
   ngOnInit(): void {
-    const firstNameControl = new FormControl(
-      this.player.firstName,
-      Validators.required
-    );
-    const lastNameControl = new FormControl(
-      this.player.lastName,
-      Validators.required
-    );
-    const memberIdControl = new FormControl(
-      this.player.memberId,
-      Validators.required
-    );
-    const genderControl = new FormControl(
-      this.player.gender,
-      Validators.required
-    );
-    const subControl = new FormControl(this.player.sub);
+    const firstNameControl = new FormControl(this.player().firstName, Validators.required);
+    const lastNameControl = new FormControl(this.player().lastName, Validators.required);
+    const memberIdControl = new FormControl(this.player().memberId, Validators.required);
+    const genderControl = new FormControl(this.player().gender, Validators.required);
+    const subControl = new FormControl(this.player().sub);
 
     memberIdControl.disable();
     subControl.disable();
 
-    this.claimService.hasClaim$('link:player').subscribe((r) => {
-      if (r) {
-        memberIdControl.enable();
-        subControl.enable();
-      }
-    });
+    effect(
+      () => {
+        if (this.claimService.hasClaim('link:player')) {
+          memberIdControl.enable();
+          subControl.enable();
+        }
+      },
+      {
+        injector: this.injector,
+      },
+    );
 
     this.fg = new FormGroup({
       firstName: firstNameControl,
@@ -98,11 +92,11 @@ export class EditPlayerFieldsComponent implements OnInit {
         filter(() => this.fg.valid),
         filter(
           (v) =>
-            v.firstName !== this.player.firstName ||
-            v.lastName !== this.player.lastName ||
-            v.memberId !== this.player.memberId ||
-            v.sub !== this.player.sub ||
-            v.gender !== this.player.gender
+            v.firstName !== this.player().firstName ||
+            v.lastName !== this.player().lastName ||
+            v.memberId !== this.player().memberId ||
+            v.sub !== this.player().sub ||
+            v.gender !== this.player().gender,
         ),
         switchMap(() =>
           this.apollo.mutate<{ updatePlayer: Player }>({
@@ -119,7 +113,7 @@ export class EditPlayerFieldsComponent implements OnInit {
             `,
             variables: {
               data: {
-                id: this.player.id,
+                id: this.player().id,
                 firstName: this.fg.value.firstName,
                 lastName: this.fg.value.lastName,
                 memberId: this.fg.value.memberId,
@@ -127,8 +121,8 @@ export class EditPlayerFieldsComponent implements OnInit {
                 sub: this.fg.value.sub,
               },
             },
-          })
-        )
+          }),
+        ),
       )
       .subscribe(() => {
         this._snackBar.open('Saved', undefined, {

@@ -1,9 +1,5 @@
 import { Player, RankingPlace, RankingSystem } from '@badman/backend-database';
-import {
-  getBrowser,
-  accepCookies,
-  selectBadmninton,
-} from '@badman/backend-pupeteer';
+import { getBrowser, accepCookies, selectBadmninton } from '@badman/backend-pupeteer';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Browser } from 'puppeteer';
 import { Op } from 'sequelize';
@@ -38,7 +34,7 @@ export class SyncRankingService {
   }
 
   async syncRanking(playerId: string): Promise<void> {
-    let browser: Browser | undefined
+    let browser: Browser | undefined;
 
     const player = await Player.findByPk(playerId);
 
@@ -47,9 +43,7 @@ export class SyncRankingService {
       return;
     }
 
-    this.logger.debug(
-      `Syncing ranking for ${player.fullName} (${player.memberId})`
-    );
+    this.logger.debug(`Syncing ranking for ${player.fullName} (${player.memberId})`);
     const primary = await RankingSystem.findOne({
       where: {
         primary: true,
@@ -136,9 +130,7 @@ export class SyncRankingService {
         return;
       }
 
-      this.logger.debug(
-        `Setting ranking for ${player.fullName}: ${single} ${double} ${mix}`
-      );
+      this.logger.debug(`Setting ranking for ${player.fullName}: ${single} ${double} ${mix}`);
 
       for (const rankingPlace of rankingPlaces) {
         // Update player

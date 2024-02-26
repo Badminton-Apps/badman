@@ -2,6 +2,7 @@
   "name": "backend-search",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/backend/search/src",
+  "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nx/js:swc",
@@ -11,18 +12,7 @@
         "tsConfig": "libs/backend/search/tsconfig.lib.json",
         "packageJson": "libs/backend/search/package.json",
         "main": "libs/backend/search/src/index.ts",
-        "assets": ["libs/backend-search/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/libs/backend/search"],
-      "options": {
-        "jestConfig": "libs/backend/search/jest.config.js"
+        "assets": ["libs/backend/search/*.md"]
       }
     }
   },

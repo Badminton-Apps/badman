@@ -1,8 +1,4 @@
-import {
-  EncounterChange,
-  EncounterCompetition,
-  Team,
-} from '@badman/backend-database';
+import { EncounterChange, EncounterCompetition, Team } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
 import { writeFile } from 'fs/promises';
 import moment from 'moment';

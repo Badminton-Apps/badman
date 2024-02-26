@@ -1,4 +1,4 @@
-<ng-container *ngIf="authService.loggedIn$ | async">
+@if (authService.loggedInSignal()) {
   <button
     mat-icon-button
     aria-label="notifications"
@@ -16,16 +16,13 @@
       >notifications</mat-icon
     >
   </button>
-
   <ng-template
     cdkConnectedOverlay
     [cdkConnectedOverlayOrigin]="trigger"
     [cdkConnectedOverlayOpen]="isOpen()"
   >
     <div class="notification-overlay">
-      <ng-container
-        *ngFor="let notification of notifications(); let last = last"
-      >
+      @for (notification of notifications(); track notification; let last = $last) {
         <div
           class="list-item"
           [ngClass]="{
@@ -40,8 +37,10 @@
             "
           ></span>
         </div>
-        <mat-divider *ngIf="!last"></mat-divider>
-      </ng-container>
+        @if (!last) {
+          <mat-divider></mat-divider>
+        }
+      }
     </div>
   </ng-template>
-</ng-container>
+}

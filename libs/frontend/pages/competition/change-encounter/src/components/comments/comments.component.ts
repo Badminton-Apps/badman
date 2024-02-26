@@ -3,11 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   Injector,
-  Input,
   OnChanges,
   OnInit,
   Signal,
   inject,
+  input,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,8 +21,8 @@ import { sortComments } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
-import { of, Subject } from 'rxjs';
-import { catchError, take, map, switchMap, startWith } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { catchError, map, startWith, switchMap, take } from 'rxjs/operators';
 
 const COMMENTS_QUERY = gql`
   query GetEncounterComments($where: JSONObject) {
@@ -50,8 +50,6 @@ const COMMENTS_QUERY = gql`
     MomentModule,
     FormsModule,
     TranslateModule,
-
-    // Material
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -59,25 +57,23 @@ const COMMENTS_QUERY = gql`
 })
 export class CommentsComponent implements OnInit, OnChanges {
   // injects
-  private userService = inject(AuthenticateService);
+  private authenticateService = inject(AuthenticateService);
   private apollo = inject(Apollo);
   private snackBar = inject(MatSnackBar);
   private translate = inject(TranslateService);
   private injector = inject(Injector);
 
   // signals
-  user = toSignal(this.userService.user$);
+  user = this.authenticateService.userSignal;
   comments!: Signal<Comment[] | undefined>;
 
   //
   update$ = new Subject<void>();
 
   // inputs
-  @Input({ required: true })
-  clubId!: string;
+  clubId = input.required<string>();
 
-  @Input({ required: true })
-  encounter!: EncounterCompetition;
+  encounter = input.required<EncounterCompetition>();
 
   // forms
   commentControl = new FormControl<string>('');
@@ -94,21 +90,19 @@ export class CommentsComponent implements OnInit, OnChanges {
               query: COMMENTS_QUERY,
               variables: {
                 where: {
-                  linkId: this.encounter?.id,
+                  linkId: this.encounter()?.id,
                   linkType: {
                     $or: ['home_comment_change', 'away_comment_change'],
                   },
                 },
               },
-            }).valueChanges
+            }).valueChanges,
         ),
-        map((result) =>
-          result.data.comments?.map((c) => new Comment(c))?.sort(sortComments)
-        )
+        map((result) => result.data.comments?.map((c) => new Comment(c))?.sort(sortComments)),
       ),
       {
         injector: this.injector,
-      }
+      },
     );
   }
 
@@ -137,9 +131,9 @@ export class CommentsComponent implements OnInit, OnChanges {
         variables: {
           data: {
             message: this.commentControl.value,
-            linkId: this.encounter?.id,
+            linkId: this.encounter()?.id,
             linkType: 'encounterChange',
-            clubId: this.clubId,
+            clubId: this.clubId(),
           },
         },
         refetchQueries: [
@@ -147,7 +141,7 @@ export class CommentsComponent implements OnInit, OnChanges {
             query: COMMENTS_QUERY,
             variables: {
               where: {
-                linkId: this.encounter?.id,
+                linkId: this.encounter()?.id,
                 linkType: {
                   $or: ['home_comment_change', 'away_comment_change'],
                 },
@@ -161,18 +155,16 @@ export class CommentsComponent implements OnInit, OnChanges {
         catchError((err) => {
           console.error(err);
           return of(null);
-        })
+        }),
       )
       .subscribe((result) => {
         if (result && result.data && result.data.addComment) {
           this.snackBar.open(
-            this.translate.instant(
-              'competition.change-encounter.comment-added'
-            ),
+            this.translate.instant('all.competition.change-encounter.comment-added'),
             'OK',
             {
               duration: 4000,
-            }
+            },
           );
           this.commentControl.setValue('');
         }

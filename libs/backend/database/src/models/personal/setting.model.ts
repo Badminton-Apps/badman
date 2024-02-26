@@ -1,12 +1,4 @@
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import { BuildOptions } from 'sequelize';
 import {
   BelongsTo,
@@ -42,7 +34,13 @@ export class Setting extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Field(() => String, { nullable: true })
   @Column({
@@ -85,7 +83,6 @@ export class Setting extends Model {
     defaultValue: NotificationType.NONE,
   })
   encounterChangeNewNotification!: NotificationType;
-
 
   @Field(() => Int)
   @Column({
@@ -133,13 +130,13 @@ export class Setting extends Model {
 @InputType()
 export class SettingUpdateInput extends PartialType(
   OmitType(Setting, ['player', 'pushSubscriptions'] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class SettingNewInput extends PartialType(
   OmitType(SettingUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}
 
 export class NotificationOptionsTypes extends OmitType(Setting, [

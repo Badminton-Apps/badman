@@ -1,43 +1,20 @@
 import { ElementHandle, launch, Page } from 'puppeteer';
 
-export async function getBrowser(headless = true) {
+export async function getBrowser(headless = true, args = []) {
+  console.log(`Launching browser with headless: ${headless} and args: ${args.join(' ')}`);
+
   return await launch({
-    headless: headless ? 'new' : false,
+    headless,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
+      ...args
       // '--single-process',
       // '--disable-dev-shm-usage', (allows for more memory, but doesn't work on the 512 MB instance)
     ],
   });
 }
 
-export async function selectBadmninton(
-  pupeteer: {
-    page: Page | null;
-    timeout?: number;
-  } = {
-    page: null,
-    timeout: 5000,
-  }
-) {
-  const { page, timeout } = pupeteer;
-
-  if (!page) {
-    throw new Error('No page provided');
-  }
-
-  {
-    const targetPage = page;
-
-    await targetPage.goto(
-      'https://www.toernooi.nl/sportselection/setsportselection/2?returnUrl=%2F',
-      {
-        timeout,
-      }
-    );
-  }
-}
 
 export async function waitForSelector(
   selector: string[] | string,
@@ -47,7 +24,7 @@ export async function waitForSelector(
     visible?: boolean;
   } = {
     visible: false,
-  }
+  },
 ) {
   if (selector instanceof Array) {
     let element: ElementHandle<Element> | null = null;
@@ -64,9 +41,7 @@ export async function waitForSelector(
         throw new Error('Could not find element: ' + part);
       }
       element = (
-        await element.evaluateHandle((el) =>
-          el.shadowRoot ? el.shadowRoot : el
-        )
+        await element.evaluateHandle((el) => (el.shadowRoot ? el.shadowRoot : el))
       ).asElement() as ElementHandle<Element>;
     }
     if (!element) {
@@ -81,25 +56,8 @@ export async function waitForSelector(
   return element;
 }
 
-// export async function waitForElement(step, frame: Page, timeout: number) {
-//   const count = step.count || 1;
-//   const operator = step.operator || '>=';
-//   const comp = {
-//     '==': (a, b) => a === b,
-//     '>=': (a, b) => a >= b,
-//     '<=': (a, b) => a <= b,
-//   };
-//   const compFn = comp[operator];
-//   await waitForFunction(async () => {
-//     const elements = await querySelectorsAll(step.selectors, frame);
-//     return compFn(elements.length, count);
-//   }, timeout);
-// }
 
-export async function querySelectorsAll(
-  selectors: string[],
-  frame: Page
-) {
+export async function querySelectorsAll(selectors: string[], frame: Page) {
   for (const selector of selectors) {
     const result = await querySelectorAll(selector, frame);
     if (result.length) {
@@ -109,10 +67,7 @@ export async function querySelectorsAll(
   return [];
 }
 
-export async function querySelectorAll(
-  selector: string | string[],
-  frame: Page
-) {
+export async function querySelectorAll(selector: string | string[], frame: Page) {
   if (selector instanceof Array) {
     let elements: ElementHandle<Element>[] = [];
     let i = 0;
@@ -165,11 +120,7 @@ export async function waitForFunction(fn: () => unknown, timeout: number) {
   throw new Error('Timed out');
 }
 
-export async function waitForSelectors(
-  selectors: string[][],
-  frame: Page,
-  timeout?: number
-) {
+export async function waitForSelectors(selectors: string[][], frame: Page, timeout?: number) {
   for (const selector of selectors) {
     try {
       return await waitForSelector(selector, frame, timeout);
@@ -177,7 +128,5 @@ export async function waitForSelectors(
       console.error(err);
     }
   }
-  throw new Error(
-    'Could not find element for selectors: ' + JSON.stringify(selectors)
-  );
+  throw new Error('Could not find element for selectors: ' + JSON.stringify(selectors));
 }

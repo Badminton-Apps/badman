@@ -1,12 +1,4 @@
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -67,7 +59,13 @@ export class RankingSystem extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Unique
   @Field(() => String, { nullable: true })
@@ -78,13 +76,13 @@ export class RankingSystem extends Model {
   @Column(DataType.NUMBER)
   amountOfLevels!: number;
 
-  @Field(() => Int)
+  @Field(() => Number)
   @Column(DataType.NUMBER)
   procentWinning!: number;
-  @Field(() => Int)
+  @Field(() => Number)
   @Column(DataType.NUMBER)
   procentWinningPlus1!: number;
-  @Field(() => Int)
+  @Field(() => Number)
   @Column(DataType.NUMBER)
   procentLosing!: number;
   @Field(() => Int, { nullable: true })
@@ -274,14 +272,8 @@ export class RankingSystem extends Model {
   setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
   addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
   addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
-  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
-    RankingGroup,
-    string
-  >;
-  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<
-    RankingGroup,
-    string
-  >;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
+  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<RankingGroup, string>;
   hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
   hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
   countRankingGroup!: BelongsToManyCountAssociationsMixin;
@@ -365,8 +357,7 @@ export class RankingSystem extends Model {
         this._pointsWhenWinningAgainst[x] = 50;
       } else {
         this._pointsWhenWinningAgainst[x] =
-          (this._pointsWhenWinningAgainst[x - 1] * this.procentWinning) /
-          this.procentWinningPlus1;
+          (this._pointsWhenWinningAgainst[x - 1] * this.procentWinning) / this.procentWinningPlus1;
       }
     });
 
@@ -381,15 +372,12 @@ export class RankingSystem extends Model {
       );
     });
 
-    this._pointsWhenWinningAgainst = this._pointsWhenWinningAgainst.map((p) =>
-      Math.round(p),
-    );
+    this._pointsWhenWinningAgainst = this._pointsWhenWinningAgainst.map((p) => Math.round(p));
   }
 
   private _lfbbCaps() {
     this._pointsWhenWinningAgainst = [
-      10, 30, 45, 60, 75, 120, 165, 210, 255, 390, 525, 660, 795, 1200, 1605,
-      2010, 2415,
+      10, 30, 45, 60, 75, 120, 165, 210, 255, 390, 525, 660, 795, 1200, 1605, 2010, 2415,
     ];
     this._pointsToGoUp = [
       5, 20, 31, 38, 61, 83, 106, 128, 196, 263, 331, 398, 601, 803, 1006, 1208,

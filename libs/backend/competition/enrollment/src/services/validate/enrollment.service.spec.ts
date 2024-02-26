@@ -88,9 +88,9 @@ describe('EnrollmentValidationService', () => {
     //   draw = await drawBuilder.Build();
     //   subEvent = await subEventBuilder.Build();
     //   encounter = await encounterBuilder.Build();
-  }, 50000);
+  });
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(service).toBeDefined();
   });
 

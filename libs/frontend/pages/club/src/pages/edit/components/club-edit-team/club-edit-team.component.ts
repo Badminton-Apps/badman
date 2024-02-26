@@ -3,11 +3,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  Input,
   OnInit,
   Output,
   TemplateRef,
   ViewChild,
+  input,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,12 +35,9 @@ import { PickEventDialogComponent } from '../../../../dialogs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-
-    // Other modules
     MatListModule,
     MatIconModule,
     MatButtonModule,
@@ -48,8 +45,6 @@ import { PickEventDialogComponent } from '../../../../dialogs';
     MatDialogModule,
     MatMenuModule,
     MatInputModule,
-
-    // My Modules
     PlayerSearchComponent,
     BadmanBlockModule,
   ],
@@ -57,19 +52,15 @@ import { PickEventDialogComponent } from '../../../../dialogs';
 export class ClubEditTeamComponent implements OnInit {
   @Output() whenPlayerAdded = new EventEmitter<Partial<Player>>();
   @Output() whenPlayerRemoved = new EventEmitter<Partial<Player>>();
-  @Output() whenPlayerMetaUpdated = new EventEmitter<
-    Partial<EntryCompetitionPlayer>
-  >();
+  @Output() whenPlayerMetaUpdated = new EventEmitter<Partial<EntryCompetitionPlayer>>();
   @Output() whenSubEventChanged = new EventEmitter<{
     event: string;
     subEvent: string;
   }>();
 
-  @Input()
-  club!: Club;
+  club = input.required<Club>();
 
-  @Input()
-  team!: Team;
+  team = input.required<Team>();
 
   subEvent?: SubEventCompetition;
 
@@ -85,16 +76,14 @@ export class ClubEditTeamComponent implements OnInit {
   constructor(private readonly dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.subEvent = this.team.entry?.subEventCompetition;
+    this.subEvent = this.team().entry?.subEventCompetition;
 
-    this.teamIndex = this.team.entry?.meta?.competition?.teamIndex;
-    this.players = this.team.entry?.meta?.competition?.players;
+    this.teamIndex = this.team().entry?.meta?.competition?.teamIndex;
+    this.players = this.team().entry?.meta?.competition?.players;
 
     this.where = {
       gender:
-        this.team.type == 'MX' || this.team.type == 'NATIONAL'
-          ? undefined
-          : this.team.type,
+        this.team().type == 'MX' || this.team().type == 'NATIONAL' ? undefined : this.team().type,
     };
   }
 
@@ -102,7 +91,7 @@ export class ClubEditTeamComponent implements OnInit {
     this.dialog
       .open(PickEventDialogComponent, {
         data: {
-          season: this.team.season,
+          season: this.team().season,
           eventId: this.subEvent?.eventCompetition?.id,
           subEventId: this.subEvent?.id,
         },

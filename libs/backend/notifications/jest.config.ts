@@ -1,17 +1,12 @@
 /* eslint-disable */
 export default {
-  displayName: 'health',
+  displayName: 'backend-notifications',
   preset: '../../../jest.preset.js',
-  globals: {},
   testEnvironment: 'node',
+  passWithNoTests: true,
   transform: {
-    '^.+\\.[tj]s$': [
-      'ts-jest',
-      {
-        tsconfig: '<rootDir>/tsconfig.spec.json',
-      },
-    ],
+    '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../../coverage/libs/backend/health',
+  coverageDirectory: '../../../coverage/libs/backend/notifications',
 };

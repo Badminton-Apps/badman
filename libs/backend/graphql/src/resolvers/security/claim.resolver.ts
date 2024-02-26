@@ -1,9 +1,5 @@
 import { Claim, Player } from '@badman/backend-database';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { User } from '@badman/backend-authorization';
@@ -34,12 +30,10 @@ export class ClaimResolver {
     @User() user: Player,
     @Args('claimId', { type: () => ID }) claimId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
-    @Args('active') active: boolean
+    @Args('active') active: boolean,
   ): Promise<boolean> {
-    if (!await user.hasAnyPermission([`edit:claims`])) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit claims`
-      );
+    if (!(await user.hasAnyPermission([`edit:claims`]))) {
+      throw new UnauthorizedException(`You do not have permission to edit claims`);
     }
 
     const transaction = await this._sequelize.transaction();

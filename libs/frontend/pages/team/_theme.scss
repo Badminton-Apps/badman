@@ -1,16 +1,22 @@
+@use '@angular/material' as mat;
 @use './src/pages/detail/detail.page.theme.scss' as detail;
-
-@mixin theme($theme) {
-  @include detail.theme($theme);
-}
-
 
 @mixin typography($theme) {
   @include detail.typography($theme);
 }
 
-
-@mixin colors($theme) {
+@mixin color($theme) {
   @include detail.color($theme);
 }
 
+@mixin theme($theme) {
+  $color-config: mat.get-color-config($theme);
+  @if $color-config != null {
+    @include color($theme);
+  }
+
+  $typography-config: mat.get-typography-config($theme);
+  @if $typography-config != null {
+    @include typography($theme);
+  }
+}

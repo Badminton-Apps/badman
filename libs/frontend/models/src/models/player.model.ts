@@ -10,7 +10,7 @@ import { TeamMembershipType } from '@badman/utils';
 import { Team } from './team.model';
 
 export class Player {
-  id?: string;
+  id!: string;
   _fullName?: string;
   email?: string;
   phone?: string;
@@ -41,7 +41,11 @@ export class Player {
   setting?: Setting;
 
   constructor(args?: Partial<Player>) {
-    this.id = args?.id;
+    if (!args?.id) {
+      console.error(`${this.constructor.name} needs an id`);
+      return;
+    }
+    this.id = args.id;
     this.memberId = args?.memberId;
     this.gender = args?.gender;
     this.email = args?.email;
@@ -51,13 +55,9 @@ export class Player {
     this.lastName = args?.lastName;
     this._fullName = args?._fullName ?? args?.fullName;
     this.lastRanking =
-      (args?.lastRanking ?? null) != null
-        ? new RankingPlace(args?.lastRanking)
-        : undefined;
+      (args?.lastRanking ?? null) != null ? new RankingPlace(args?.lastRanking) : undefined;
     this.rankingSystem =
-      (args?.rankingSystem ?? null) != null
-        ? new RankingSystem(args?.rankingSystem)
-        : undefined;
+      (args?.rankingSystem ?? null) != null ? new RankingSystem(args?.rankingSystem) : undefined;
     this.games = args?.games?.map((g) => new Game(g));
     this.sub = args?.sub;
     this.slug = args?.slug;
@@ -66,20 +66,15 @@ export class Player {
     this.competitionPlayer = args?.competitionPlayer;
     this.clubs = args?.clubs?.map((club) => new Club(club));
     this.club = args?.club != null ? new Club(args?.club) : undefined;
-    this.setting =
-      args?.setting != null ? new Setting(args?.setting) : undefined;
-    this.notifications =
-      args?.notifications?.map((n) => new Notification(n)) ?? undefined;
-    this.updatedAt =
-      args?.updatedAt != null ? new Date(args.updatedAt) : undefined;
+    this.setting = args?.setting != null ? new Setting(args?.setting) : undefined;
+    this.notifications = args?.notifications?.map((n) => new Notification(n)) ?? undefined;
+    this.updatedAt = args?.updatedAt != null ? new Date(args.updatedAt) : undefined;
     this.claims = args?.claims?.map((c) => new Claim(c));
     this.teams = args?.teams?.map((t) => new Team(t));
     this.permissions = args?.permissions?.map((p) => p);
 
     this.rankingPlaces = args?.rankingPlaces?.map((r) => new RankingPlace(r));
-    this.rankingLastPlaces = args?.rankingLastPlaces?.map(
-      (r) => new RankingPlace(r)
-    );
+    this.rankingLastPlaces = args?.rankingLastPlaces?.map((r) => new RankingPlace(r));
     if ((this.lastRanking ?? null) == null) {
       let places: RankingPlace[] = [];
 
@@ -135,9 +130,7 @@ export class GamePlayer extends Player {
   constructor(args: Partial<GamePlayer>) {
     super(args);
 
-    this.rankingPlace = args?.rankingPlace
-      ? new RankingPlace(args?.rankingPlace)
-      : undefined;
+    this.rankingPlace = args?.rankingPlace ? new RankingPlace(args?.rankingPlace) : undefined;
     this.team = args?.team;
     this.player = args?.player;
     this.single = args?.single;
@@ -156,4 +149,3 @@ export class TeamPlayer extends Player {
     this.membershipType = args?.membershipType as TeamMembershipType;
   }
 }
-

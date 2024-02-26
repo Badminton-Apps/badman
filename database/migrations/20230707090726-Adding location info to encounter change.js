@@ -25,7 +25,7 @@ module.exports = {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
           },
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.addColumn(
           {
@@ -46,19 +46,19 @@ module.exports = {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         // set homescore to 0 if null
         await queryInterface.sequelize.query(
           `UPDATE "event"."EncounterCompetitions" SET "homeScore" = 0 WHERE "homeScore" IS NULL;`,
-          { transaction: t }
+          { transaction: t },
         );
 
         // set awayscore to 0 if null
         await queryInterface.sequelize.query(
           `UPDATE "event"."EncounterCompetitions" SET "awayScore" = 0 WHERE "awayScore" IS NULL;`,
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -76,7 +76,7 @@ module.exports = {
             schema: 'event',
           },
           'locationId',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.removeColumn(
           {
@@ -84,7 +84,7 @@ module.exports = {
             schema: 'event',
           },
           'locationId',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

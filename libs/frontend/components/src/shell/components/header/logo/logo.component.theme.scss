@@ -7,7 +7,7 @@
   badman-logo {
     $color-config: mat.get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
-    
+
     svg {
       fill: mat.get-color-from-palette($foreground, 'base');
     }
@@ -17,18 +17,5 @@
 @mixin typography($theme) {
   badman-logo {
     $typography-config: mat.get-typography-config($theme);
-  }
-}
-
-@mixin theme($theme) {
-  // Only apply theme on the correct element
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

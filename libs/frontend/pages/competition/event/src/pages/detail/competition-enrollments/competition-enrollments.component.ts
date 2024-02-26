@@ -1,23 +1,8 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  Input,
-  OnInit,
-  Signal,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, Injector, OnInit, Signal, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -36,24 +21,12 @@ import {
   LoadingBlockComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
-import {
-  EventCompetition,
-  EventEntry,
-  TeamValidationResult,
-} from '@badman/frontend-models';
+import { EventCompetition, EventEntry, TeamValidationResult } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { from } from 'rxjs';
-import {
-  bufferCount,
-  concatMap,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
+import { bufferCount, concatMap, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
 
 @Component({
@@ -71,7 +44,6 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     MatTooltipModule,
     MatBadgeModule,
     TranslateModule,
-
     CdkTableModule,
     CdkTreeModule,
     EnrollmentDetailRowDirective,
@@ -85,15 +57,9 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
   providers: [provideAnimations()],
   animations: [
     trigger('detailExpand', [
-      state(
-        'collapsed',
-        style({ height: '0px', minHeight: '0', visibility: 'hidden' }),
-      ),
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
       state('expanded', style({ height: '*', visibility: 'visible' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
@@ -124,8 +90,8 @@ export class CompetitionEnrollmentsComponent implements OnInit {
   clubControl = new FormControl();
 
   // Inputs
-  @Input({ required: true }) eventId?: string;
-  @Input() season?: number;
+  eventId = input.required<string>();
+  season = input<number | undefined>();
 
   displayedColumns: string[] = ['name', 'entries', 'validations'];
 
@@ -146,10 +112,7 @@ export class CompetitionEnrollmentsComponent implements OnInit {
               eventCompetition: Partial<EventCompetition>;
             }>({
               query: gql`
-                query EventEntries(
-                  $eventCompetitionId: ID!
-                  $order: [SortOrderType!]
-                ) {
+                query EventEntries($eventCompetitionId: ID!, $order: [SortOrderType!]) {
                   eventCompetition(id: $eventCompetitionId) {
                     id
                     subEventCompetitions(order: $order) {
@@ -204,7 +167,7 @@ export class CompetitionEnrollmentsComponent implements OnInit {
                 }
               `,
               variables: {
-                eventCompetitionId: this.eventId,
+                eventCompetitionId: this.eventId(),
                 order: [
                   {
                     field: 'eventType',
@@ -225,26 +188,21 @@ export class CompetitionEnrollmentsComponent implements OnInit {
 
           // Filter out the subEventCompetitions that do not include the selected club
           const filteredSubEventCompetitions =
-            result.data.eventCompetition.subEventCompetitions?.filter(
-              (subEventCompetition) =>
-                subEventCompetition.eventEntries?.some(
-                  (eventEntry) =>
-                    eventEntry.team?.club?.id === this.clubControl.value,
-                ),
+            result.data.eventCompetition.subEventCompetitions?.filter((subEventCompetition) =>
+              subEventCompetition.eventEntries?.some(
+                (eventEntry) => eventEntry.team?.club?.id === this.clubControl.value,
+              ),
             );
 
           // Filter the eventEntries within each filtered subEventCompetition
           const filteredEventCompetition = {
             ...result.data.eventCompetition,
-            subEventCompetitions: filteredSubEventCompetitions?.map(
-              (subEventCompetition) => ({
-                ...subEventCompetition,
-                eventEntries: subEventCompetition.eventEntries?.filter(
-                  (eventEntry) =>
-                    eventEntry.team?.club?.id === this.clubControl.value,
-                ),
-              }),
-            ),
+            subEventCompetitions: filteredSubEventCompetitions?.map((subEventCompetition) => ({
+              ...subEventCompetition,
+              eventEntries: subEventCompetition.eventEntries?.filter(
+                (eventEntry) => eventEntry.team?.club?.id === this.clubControl.value,
+              ),
+            })),
           };
 
           return filteredEventCompetition;
@@ -261,9 +219,7 @@ export class CompetitionEnrollmentsComponent implements OnInit {
       () => {
         this.loadingValidations.set(true);
         const eventIds = (this.eventCompetition?.()
-          ?.subEventCompetitions?.map(
-            (subEvent) => subEvent.eventEntries?.map((entry) => entry.id),
-          )
+          ?.subEventCompetitions?.map((subEvent) => subEvent.eventEntries?.map((entry) => entry.id))
           ?.flat()
           ?.filter((id) => !!id) ?? []) as string[];
 
@@ -279,30 +235,18 @@ export class CompetitionEnrollmentsComponent implements OnInit {
             this.progress.set(this.progress() + results.length);
 
             for (const result of results) {
-              if (
-                !result ||
-                !result.teamId ||
-                !result.subEventId ||
-                !result.enrollmentValidation
-              ) {
+              if (!result || !result.teamId || !result.subEventId || !result.enrollmentValidation) {
                 continue;
               }
-              this.validationsForTeam.set(
-                result.teamId,
-                result.enrollmentValidation,
-              );
+              this.validationsForTeam.set(result.teamId, result.enrollmentValidation);
 
-              const subEventValidation = this.validationsForSubevent.get(
-                result.subEventId,
-              );
+              const subEventValidation = this.validationsForSubevent.get(result.subEventId);
 
               this.validationsForSubevent.set(result.subEventId, {
                 errors:
-                  (subEventValidation?.errors ?? 0) +
-                    result.enrollmentValidation.errors?.length ?? 0,
+                  (subEventValidation?.errors ?? 0) + result.enrollmentValidation.errors.length,
                 warnings:
-                  (subEventValidation?.warnings ?? 0) +
-                    result.enrollmentValidation.warnings?.length ?? 0,
+                  (subEventValidation?.warnings ?? 0) + result.enrollmentValidation.warnings.length,
               });
             }
 
@@ -363,19 +307,12 @@ export class CompetitionEnrollmentsComponent implements OnInit {
   getValidationsForSubEvent(id: string) {
     const validations =
       this.eventCompetition?.()
-        ?.subEventCompetitions?.find(
-          (subEventCompetition) => subEventCompetition.id === id,
-        )
-        ?.eventEntries?.map((eventEntry) => eventEntry.enrollmentValidation) ??
-      [];
+        ?.subEventCompetitions?.find((subEventCompetition) => subEventCompetition.id === id)
+        ?.eventEntries?.map((eventEntry) => eventEntry.enrollmentValidation) ?? [];
 
     return {
-      errors: validations.filter(
-        (validation) => (validation?.errors?.length ?? 0) > 0,
-      ).length,
-      warnings: validations.filter(
-        (validation) => (validation?.warnings?.length ?? 0) > 0,
-      ).length,
+      errors: validations.filter((validation) => (validation?.errors?.length ?? 0) > 0).length,
+      warnings: validations.filter((validation) => (validation?.warnings?.length ?? 0) > 0).length,
     };
   }
 }

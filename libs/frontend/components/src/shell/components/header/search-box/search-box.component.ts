@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -12,13 +12,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, ReplaySubject, merge } from 'rxjs';
-import {
-  debounceTime,
-  filter,
-  map,
-  startWith,
-  switchMap,
-} from 'rxjs/operators';
+import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
 
 type SearchType = { id: string; name: string; slug: string };
 
@@ -28,7 +22,6 @@ type SearchType = { id: string; name: string; slug: string };
   imports: [
     CommonModule,
     TranslateModule,
-
     MatInputModule,
     MatButtonModule,
     MatIconModule,
@@ -39,8 +32,7 @@ type SearchType = { id: string; name: string; slug: string };
   styleUrls: ['./search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit {
-  @Input()
-  label = 'all.search.placeholder';
+  label = input('all.search.placeholder');
 
   formControl!: FormControl;
   filteredOptions$!: Observable<
@@ -104,12 +96,10 @@ export class SearchBoxComponent implements OnInit {
         }),
       ),
       // Distinct by id
-      map(
-        (result) =>
-          result?.data?.search?.filter(
-            (value, index, self) =>
-              self.findIndex((m) => m?.id === value?.id) === index,
-          ),
+      map((result) =>
+        result?.data?.search?.filter(
+          (value, index, self) => self.findIndex((m) => m?.id === value?.id) === index,
+        ),
       ),
     );
 
@@ -126,16 +116,16 @@ export class SearchBoxComponent implements OnInit {
 
     switch (event.option.value.__typename) {
       case 'Player':
-        this._navigate(['/player', event.option.value.slug]);
+        this._navigate(['/player', event.option.value.slug ?? event.option.value.id]);
         break;
       case 'EventCompetition':
-        this._navigate(['/competition', event.option.value.slug]);
+        this._navigate(['/competition', event.option.value.slug ?? event.option.value.id]);
         break;
       case 'EventTournament':
-        this._navigate(['/tournament', event.option.value.slug]);
+        this._navigate(['/tournament', event.option.value.slug ?? event.option.value.id]);
         break;
       case 'Club':
-        this._navigate(['/club', event.option.value.slug]);
+        this._navigate(['/club', event.option.value.slug ?? event.option.value.id]);
         break;
     }
   }

@@ -3,7 +3,7 @@ export default {
   displayName: 'frontend-auth',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
+  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/modules/auth',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

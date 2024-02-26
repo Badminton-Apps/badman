@@ -7,4 +7,3 @@ export * from './pushSubscription.type';
 export * from './assembly.type';
 export * from './slugify';
 // end:ng42.barrel
-

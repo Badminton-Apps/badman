@@ -1,10 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,20 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'badman-game-score',
   standalone: true,
-  imports: [
-    // common modules
-    CommonModule,
-
-    // Material Modules
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-
-    // Other modules
-    TranslateModule,
-
-    // Own Components
-  ],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './game-score.component.html',
   styleUrls: ['./game-score.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,15 +16,16 @@ import { TranslateModule } from '@ngx-translate/core';
 export class GameScoreComponentComponent implements OnInit {
   readonly separators = '[-_,=/]';
   readonly pattern =
-    '^([1-9]|[1-2][0-9]|30)[\\s]*' +
-    this.separators +
-    '[\\s]*([1-9]|[1-2][0-9]|30)$';
+    '^([1-9]|[1-2][0-9]|30)[\\s]*' + this.separators + '[\\s]*([1-9]|[1-2][0-9]|30)$';
 
-  @Input()
-  gameScoreForm?: FormGroup;
+  gameScoreForm = input<FormGroup>(
+    new FormGroup({
+      team1: new FormControl(),
+      team2: new FormControl(),
+    }),
+  );
 
-  @Input()
-  label?: string;
+  label = input<string>('');
 
   inputValue?: FormControl;
 
@@ -50,34 +33,21 @@ export class GameScoreComponentComponent implements OnInit {
     this.inputValue = new FormControl();
 
     // check if the formgroup is passed as input or create a new one
-    if (this.gameScoreForm) {
-      const team1 = this.gameScoreForm.get('team1') as FormControl;
-      const team2 = this.gameScoreForm.get('team2') as FormControl;
+    const team1 = this.gameScoreForm().get('team1') as FormControl;
+    const team2 = this.gameScoreForm().get('team2') as FormControl;
 
-      // if the first or second value is not passed as input, create a new one
-      if (!team1) {
-        this.gameScoreForm.addControl('team1', new FormControl());
-      }
-      if (!team2) {
-        this.gameScoreForm.addControl('team2', new FormControl());
-      }
-    } else {
-      this.gameScoreForm = new FormGroup({
-        team1: new FormControl(),
-        team2: new FormControl(),
-      });
+    // if the first or second value is not passed as input, create a new one
+    if (!team1) {
+      this.gameScoreForm().addControl('team1', new FormControl());
+    }
+    if (!team2) {
+      this.gameScoreForm().addControl('team2', new FormControl());
     }
 
-
     // set the value of the input field
-    if (
-      this.gameScoreForm?.get('team1')?.value &&
-      this.gameScoreForm?.get('team2')?.value
-    ) {
+    if (this.gameScoreForm().get('team1')?.value && this.gameScoreForm().get('team2')?.value) {
       this.inputValue?.setValue(
-        `${this.gameScoreForm?.get('team1')?.value} - ${
-          this.gameScoreForm?.get('team2')?.value
-        }`
+        `${this.gameScoreForm().get('team1')?.value} - ${this.gameScoreForm().get('team2')?.value}`,
       );
     }
   }
@@ -107,19 +77,17 @@ export class GameScoreComponentComponent implements OnInit {
       team2 = split[1];
     }
 
-    this.gameScoreForm?.get('team1')?.setValue(team1);
+    this.gameScoreForm().get('team1')?.setValue(team1);
 
     if (team1 && !team2) {
       team2 = this.getSecondValue(team1);
-      this.gameScoreForm?.get('team2')?.setValue(team2);
+      this.gameScoreForm().get('team2')?.setValue(team2);
     } else {
-      this.gameScoreForm?.get('team2')?.setValue(team2);
+      this.gameScoreForm().get('team2')?.setValue(team2);
     }
 
     this.inputValue?.setValue(
-      `${this.gameScoreForm?.get('team1')?.value} - ${
-        this.gameScoreForm?.get('team2')?.value
-      }`
+      `${this.gameScoreForm().get('team1')?.value} - ${this.gameScoreForm().get('team2')?.value}`,
     );
 
     if (team1 > team2) {

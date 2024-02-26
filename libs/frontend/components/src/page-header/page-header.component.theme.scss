@@ -21,10 +21,7 @@
       &,
       &:visited,
       &:hover {
-        color: mat.get-color-from-palette(
-          map.get($color-config, 'primary'),
-          500
-        );
+        color: mat.get-color-from-palette(map.get($color-config, 'primary'), 500);
       }
     }
   }
@@ -38,18 +35,5 @@
         @include mat.typography-level($typography-config, 'headline-4');
       }
     }
-  }
-}
-
-@mixin theme($theme) {
-  // Only apply theme on the correct element
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

@@ -6,13 +6,9 @@ interface CacheControlOptions {
   inheritMaxAge?: boolean;
 }
 
-export const CacheControl = ({
-  maxAge,
-  scope = 'PUBLIC',
-  inheritMaxAge,
-}: CacheControlOptions) =>
+export const CacheControl = ({ maxAge, scope = 'PUBLIC', inheritMaxAge }: CacheControlOptions) =>
   Directive(
     `@cacheControl(scope: ${scope}${
       maxAge !== undefined ? `, maxAge: ${maxAge}` : ''
-    }${inheritMaxAge ? `, inheritMaxAge: ${inheritMaxAge}` : ''})`
+    }${inheritMaxAge ? `, inheritMaxAge: ${inheritMaxAge}` : ''})`,
   );

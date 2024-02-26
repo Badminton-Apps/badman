@@ -1,12 +1,7 @@
+@use '@angular/material' as mat;
 @use './src/pages/detail/detail.page.theme.scss' as detail;
 @use './src/pages/edit/edit.page.theme.scss' as edit;
 @use './src/components/components.theme.scss' as components;
-
-@mixin theme($theme) {
-  @include detail.theme($theme);
-  @include edit.theme($theme);
-  @include components.theme($theme);
-}
 
 @mixin typography($theme) {
   @include detail.typography($theme);
@@ -14,8 +9,20 @@
   @include components.typography($theme);
 }
 
-@mixin colors($theme) {
+@mixin color($theme) {
   @include detail.color($theme);
   @include edit.color($theme);
-  @include components.colors($theme);
+  @include components.color($theme);
+}
+
+@mixin theme($theme) {
+  $color-config: mat.get-color-config($theme);
+  @if $color-config != null {
+    @include color($theme);
+  }
+
+  $typography-config: mat.get-typography-config($theme);
+  @if $typography-config != null {
+    @include typography($theme);
+  }
 }

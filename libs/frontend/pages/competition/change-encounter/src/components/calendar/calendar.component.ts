@@ -9,10 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MatCheckboxChange,
-  MatCheckboxModule,
-} from '@angular/material/checkbox';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -48,11 +45,8 @@ import { randomLightColor } from 'seed-to-color';
     RouterModule,
     ReactiveFormsModule,
     FormsModule,
-
     TranslateModule,
     NgxMatDatetimePickerModule,
-
-    // Material
     MatIconModule,
     MatInputModule,
     MatButtonModule,
@@ -64,8 +58,6 @@ import { randomLightColor } from 'seed-to-color';
     MatDatepickerModule,
     MatSelectModule,
     MatSnackBarModule,
-
-    // own
     HasClaimComponent,
   ],
   templateUrl: './calendar.component.html',
@@ -187,8 +179,6 @@ export class CalendarComponent implements OnInit {
     this.maxDate = moment([this.season + 1, 4, 1])
       .endOf('month')
       .toDate();
-
-    console.log(this.minDate, this.maxDate);
   }
 
   ngOnInit(): void {
@@ -287,9 +277,7 @@ export class CalendarComponent implements OnInit {
             const wDay = moment(day);
             const format = wDay.format('YYYY-MM-DD');
 
-            if (
-              wDay.locale('en').format('dddd').toLocaleLowerCase() === aDay.day
-            ) {
+            if (wDay.locale('en').format('dddd').toLocaleLowerCase() === aDay.day) {
               if (!this.availibilities.has(format)) {
                 this.availibilities.set(format, []);
               }
@@ -328,11 +316,7 @@ export class CalendarComponent implements OnInit {
 
         // for each day in the exception
         // push the exception to the exceptions map
-        for (
-          let day = start.clone();
-          day.isSameOrBefore(end);
-          day.add(1, 'day')
-        ) {
+        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, 'day')) {
           const format = day.format('YYYY-MM-DD');
 
           // clear out the exceptions
@@ -359,11 +343,7 @@ export class CalendarComponent implements OnInit {
 
         // for each day in the exception
         // push the exception to the exceptions map
-        for (
-          let day = start.clone();
-          day.isSameOrBefore(end);
-          day.add(1, 'day')
-        ) {
+        for (let day = start.clone(); day.isSameOrBefore(end); day.add(1, 'day')) {
           const format = day.format('YYYY-MM-DD');
 
           if (!this.dayEvents.has(format)) {
@@ -398,9 +378,7 @@ export class CalendarComponent implements OnInit {
       const locations = day.info.locations;
 
       if (
-        enc?.some(
-          (e) => this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId),
-        ) ||
+        enc?.some((e) => this._isVisible(e.homeTeamId) || this._isVisible(e.awayTeamId)) ||
         locations?.length > 0
       ) {
         // if any of the teams is visible
@@ -437,10 +415,7 @@ export class CalendarComponent implements OnInit {
     return weeks;
   }
 
-  private async _loadEncountersBetween(
-    start: moment.Moment,
-    end: moment.Moment,
-  ) {
+  private async _loadEncountersBetween(start: moment.Moment, end: moment.Moment) {
     this.encounters.clear();
     this.changeRequests.clear();
 
@@ -461,10 +436,7 @@ export class CalendarComponent implements OnInit {
         }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetHomeEncountersForTeams(
-              $where: JSONObject
-              $order: [SortOrderType!]
-            ) {
+            query GetHomeEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
                 count
                 rows {
@@ -525,10 +497,7 @@ export class CalendarComponent implements OnInit {
         }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetHomeEncountersForTeams(
-              $where: JSONObject
-              $order: [SortOrderType!]
-            ) {
+            query GetHomeEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
                 count
                 rows {
@@ -583,10 +552,7 @@ export class CalendarComponent implements OnInit {
         ),
     );
 
-    for (const encounter of [
-      ...homeEncounters.encounters,
-      ...awayEncounters.encounters,
-    ]) {
+    for (const encounter of [...homeEncounters.encounters, ...awayEncounters.encounters]) {
       const date = moment(encounter.date).format('YYYY-MM-DD');
 
       if (!this.encounters.has(date)) {
@@ -645,13 +611,7 @@ export class CalendarComponent implements OnInit {
             id: this.data.homeTeamId,
           },
         })
-        .pipe(
-          map(
-            (x) =>
-              new Team(x.data.team)?.entry?.subEventCompetition
-                ?.eventCompetition,
-          ),
-        ),
+        .pipe(map((x) => new Team(x.data.team)?.entry?.subEventCompetition?.eventCompetition)),
     );
   }
 
@@ -736,10 +696,7 @@ export class CalendarComponent implements OnInit {
 
   private _setColors(teams: Team[]) {
     for (const team of teams) {
-      this.teamColors.set(
-        team?.id ?? '',
-        `#${randomLightColor(team?.name ?? '')}`,
-      );
+      this.teamColors.set(team?.id ?? '', `#${randomLightColor(team?.name ?? '')}`);
     }
   }
 
@@ -806,19 +763,12 @@ export class CalendarComponent implements OnInit {
     this._loadMonth();
   }
 
-  public selectDay(
-    d?: Date,
-    time?: string,
-    locationId?: string,
-    space?: number,
-  ) {
+  public selectDay(d?: Date, time?: string, locationId?: string, space?: number) {
     const date = moment(d);
 
     if ((space ?? 0) <= 0) {
       this.snack.open(
-        this.translate.instant(
-          'all.competition.change-encounter.calendar.no-space',
-        ),
+        this.translate.instant('all.competition.change-encounter.calendar.no-space'),
         'Ok',
         {
           // duration: 4000,
@@ -894,9 +844,7 @@ export class CalendarComponent implements OnInit {
           space: Math.floor(availibility.courts / 2),
           time: availibility.time,
           locationId: availibility.locationId,
-          locationIndex:
-            this.locations.findIndex((l) => l.id === availibility.locationId) +
-            1,
+          locationIndex: this.locations.findIndex((l) => l.id === availibility.locationId) + 1,
           encounters: [],
           removed: [],
           requested: [],
@@ -905,9 +853,7 @@ export class CalendarComponent implements OnInit {
 
       for (const exception of exceptions ?? []) {
         // find availibility for location
-        const availibility = dayInfo.locations.find(
-          (l) => l.locationId === exception.locationId,
-        );
+        const availibility = dayInfo.locations.find((l) => l.locationId === exception.locationId);
 
         if (availibility) {
           availibility.space = Math.floor(exception.courts / 2);
@@ -917,16 +863,11 @@ export class CalendarComponent implements OnInit {
 
     if (encounters) {
       for (const encounter of encounters) {
-        const infoIndex = dayInfo.locations.findIndex(
-          (l) => l.locationId === encounter.locationId,
-        );
+        const infoIndex = dayInfo.locations.findIndex((l) => l.locationId === encounter.locationId);
 
         if (infoIndex >= 0) {
           // if there is an request
-          if (
-            encounter.encounterChange &&
-            !encounter.encounterChange.accepted
-          ) {
+          if (encounter.encounterChange && !encounter.encounterChange.accepted) {
             dayInfo.locations[infoIndex].removed.push(encounter);
           } else {
             // if the home team is visible
@@ -935,10 +876,7 @@ export class CalendarComponent implements OnInit {
             }
           }
 
-          dayInfo.locations[infoIndex].space = Math.max(
-            0,
-            dayInfo.locations[infoIndex].space - 1,
-          );
+          dayInfo.locations[infoIndex].space = Math.max(0, dayInfo.locations[infoIndex].space - 1);
         }
       }
     }
@@ -974,11 +912,7 @@ export class CalendarComponent implements OnInit {
     );
   }
 
-  public changeVisibleTeams(
-    event: MatCheckboxChange,
-    teamId: string,
-    clubId: string,
-  ) {
+  public changeVisibleTeams(event: MatCheckboxChange, teamId: string, clubId: string) {
     if (!teamId) {
       return;
     }
@@ -989,16 +923,10 @@ export class CalendarComponent implements OnInit {
     if (event.checked) {
       this.visibleTeams?.[clubId].push(teamId);
     } else {
-      this.visibleTeams?.[clubId].splice(
-        this.visibleTeams?.[clubId].indexOf(teamId),
-        1,
-      );
+      this.visibleTeams?.[clubId].splice(this.visibleTeams?.[clubId].indexOf(teamId), 1);
     }
 
-    localStorage.setItem(
-      `visible_teams_${clubId}`,
-      this.visibleTeams?.[clubId]?.join(',') ?? '',
-    );
+    localStorage.setItem(`visible_teams_${clubId}`, this.visibleTeams?.[clubId]?.join(',') ?? '');
 
     this._loadMonth();
   }
@@ -1014,10 +942,7 @@ export class CalendarComponent implements OnInit {
       }
       return t.id;
     });
-    localStorage.setItem(
-      `visible_teams_${clubId}`,
-      this.visibleTeams?.[clubId]?.join(','),
-    );
+    localStorage.setItem(`visible_teams_${clubId}`, this.visibleTeams?.[clubId]?.join(','));
 
     this._loadMonth();
   }

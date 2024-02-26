@@ -8,6 +8,12 @@ import { Claim } from './claim.model';
   schema: 'security',
 })
 export class PlayerClaimMembership extends Model {
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
+
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)

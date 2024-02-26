@@ -17,7 +17,7 @@ module.exports = {
             allowNull: false,
             defaultValue: 2,
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -35,7 +35,7 @@ module.exports = {
             schema: 'personal',
           },
           'synEncounterFailed',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

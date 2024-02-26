@@ -17,7 +17,6 @@
     } @else {
       $color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
     }
-    
 
     .player .sub-text {
       color: $color;
@@ -32,17 +31,5 @@
     .player .sub-text {
       @include mat.typography-level($typography-config, 'caption');
     }
-  }
-}
-
-@mixin theme($theme) {
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

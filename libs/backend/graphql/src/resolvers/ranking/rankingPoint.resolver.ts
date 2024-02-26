@@ -1,21 +1,12 @@
 import { Player, RankingPoint, RankingSystem } from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, ID, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
 
 @Resolver(() => RankingPoint)
 export class RankingPointResolver {
   @Query(() => RankingPoint)
-  async rankingPoint(
-    @Args('id', { type: () => ID }) id: string
-  ): Promise<RankingPoint> {
+  async rankingPoint(@Args('id', { type: () => ID }) id: string): Promise<RankingPoint> {
     let rankingPoint = await RankingPoint.findByPk(id);
 
     if (!rankingPoint) {

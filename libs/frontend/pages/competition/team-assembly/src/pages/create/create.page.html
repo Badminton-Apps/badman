@@ -1,29 +1,18 @@
-<h1>{{'all.competition.team-assembly.title' | translate}}</h1>
-
-<ng-container *ngIf="this.formGroup">
+<h1>{{ 'all.competition.team-assembly.title' | translate }}</h1>
+@if (this.formGroup) {
   <section class="select-encounter">
-    <badman-select-season
-      [group]="formGroup"
-      [updateUrl]="true"
-    ></badman-select-season>
-
-    <badman-select-club
-      [group]="formGroup"
-      [updateUrl]="true"
-    ></badman-select-club>
-
+    <badman-select-season [group]="formGroup" [updateUrl]="true"></badman-select-season>
+    <badman-select-club [group]="formGroup" [updateUrl]="true"></badman-select-club>
     <badman-select-team
       [updateUrl]="true"
       [updateOn]="['club', 'season']"
       [group]="formGroup"
     ></badman-select-team>
-
     <badman-select-encounter
       [group]="formGroup"
       [updateUrl]="true"
       (encounterSelected)="this.encounterSelected($event)"
     ></badman-select-encounter>
-
     <div class="download">
       <button
         class="download-assembly"
@@ -32,13 +21,12 @@
         [class.spinner]="this.pdfLoading"
         [disabled]="this.pdfLoading"
       >
-        {{'all.button.download' | translate}}
+        {{ 'all.button.download' | translate }}
       </button>
-      <ng-container *ngIf="this.authenticateService.loggedIn">
+      @if (loggedIn()) {
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>arrow_drop_down</mat-icon>
         </button>
-
         <mat-menu #menu="matMenu">
           <button
             mat-menu-item
@@ -47,36 +35,37 @@
             (click)="this.save()"
           >
             <mat-icon>save</mat-icon>
-            {{'all.button.save' | translate}}
+            {{ 'all.button.save' | translate }}
           </button>
-        </mat-menu></ng-container
-      >
+        </mat-menu>
+      }
     </div>
   </section>
-
   <section class="assembly">
+    <!-- <badman-assembly-v2
+    [teamId]="this.teamId"
+    [encounterId]="this.encounterId"
+  ></badman-assembly-v2> -->
+
     <badman-assembly
       (validationOverview)="this.templateUpdated($event)"
       [group]="formGroup"
     ></badman-assembly>
   </section>
-
   <ng-template #validationWarnings>
     <h2 matDialogTitle>There are warnings</h2>
     <mat-dialog-content>
-      <div *ngIf="this.validationOverview?.template">
-        <ng-container
-          *ngTemplateOutlet="this.validationOverview?.template!"
-        ></ng-container>
-      </div>
+      @if (this.validationOverview?.template) {
+        <div>
+          <ng-container *ngTemplateOutlet="this.validationOverview?.template!"></ng-container>
+        </div>
+      }
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button [matDialogClose]="true">
-        {{'all.button.agree' | translate}}
-      </button>
+      <button mat-button [matDialogClose]="true">{{ 'all.button.agree' | translate }}</button>
       <button mat-button matDialogClose color="primary">
-        {{'all.button.cancel' | translate}}
+        {{ 'all.button.cancel' | translate }}
       </button>
     </mat-dialog-actions>
   </ng-template>
-</ng-container>
+}

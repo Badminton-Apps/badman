@@ -1,10 +1,4 @@
-import {
-  Field,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 
 @ObjectType({ description: 'A Meta' })
 export class CronJobMetaType {

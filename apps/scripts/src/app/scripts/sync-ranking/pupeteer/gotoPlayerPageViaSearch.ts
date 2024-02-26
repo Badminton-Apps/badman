@@ -10,9 +10,9 @@ export async function searchPlayer(
     page: null,
     timeout: 5000,
   },
-  player: Player
+  player: Player,
 ) {
-  const { page, } = pupeteer;
+  const { page } = pupeteer;
   if (!page) {
     throw new Error('No page provided');
   }

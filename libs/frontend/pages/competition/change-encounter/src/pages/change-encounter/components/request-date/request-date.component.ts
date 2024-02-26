@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -7,11 +7,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { input } from '@angular/core';
 import { EncounterCompetition } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
-import { DateSelectorComponent } from '../../../../components';
 import { combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { DateSelectorComponent } from '../../../../components';
 
 @Component({
   selector: 'badman-request-date',
@@ -21,9 +22,7 @@ import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
     DateSelectorComponent,
     ReactiveFormsModule,
     FormsModule,
-
     TranslateModule,
-
     MatSelectModule,
     MatIconModule,
     MatButtonModule,
@@ -34,14 +33,11 @@ import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
   styleUrls: ['./request-date.component.scss'],
 })
 export class RequestDateComponent implements OnInit {
-  @Input({ required: true })
-  encounter!: EncounterCompetition;
+  encounter = input.required<EncounterCompetition>();
 
-  @Input({ required: true })
-  home!: boolean;
+  home = input.required<boolean>();
 
-  @Input({ required: true })
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
   @Output()
   removeDate = new EventEmitter<void>();
@@ -50,30 +46,32 @@ export class RequestDateComponent implements OnInit {
 
   ngOnInit() {
     combineLatest([
-      this.group.get('availabilityAway')?.valueChanges.pipe(
-        startWith(this.group.get('availabilityAway')?.value),
-        distinctUntilChanged(),
-        map((value) => value == 'POSSIBLE')
-      ) ?? of(false),
-      this.group.get('availabilityHome')?.valueChanges.pipe(
-        startWith(this.group.get('availabilityHome')?.value),
-        distinctUntilChanged(),
-        map((value) => value == 'POSSIBLE')
-      ) ?? of(false),
+      this.group()
+        .get('availabilityAway')
+        ?.valueChanges.pipe(
+          startWith(this.group().get('availabilityAway')?.value),
+          distinctUntilChanged(),
+          map((value) => value == 'POSSIBLE'),
+        ) ?? of(false),
+      this.group()
+        .get('availabilityHome')
+        ?.valueChanges.pipe(
+          startWith(this.group().get('availabilityHome')?.value),
+          distinctUntilChanged(),
+          map((value) => value == 'POSSIBLE'),
+        ) ?? of(false),
     ]).subscribe(([availabilityAway, availabilityHome]) => {
       if (availabilityAway && availabilityHome) {
-        if (this.home) {
-          this.group.get('selected')?.enable();
+        if (this.home()) {
+          this.group().get('selected')?.enable();
           this.tootltipSelected = undefined;
         } else {
-          this.group.get('selected')?.disable();
-          this.tootltipSelected =
-            'all.competition.change-encounter.warnings.home-accept';
+          this.group().get('selected')?.disable();
+          this.tootltipSelected = 'all.competition.change-encounter.warnings.home-accept';
         }
       } else {
-        this.group.get('selected')?.disable();
-        this.tootltipSelected =
-          'all.competition.change-encounter.warnings.missing-availability';
+        this.group().get('selected')?.disable();
+        this.tootltipSelected = 'all.competition.change-encounter.warnings.missing-availability';
       }
     });
   }

@@ -188,10 +188,7 @@ export class ClubAssemblyService {
     }
 
     const usedRankingDate = moment();
-    usedRankingDate.set(
-      'year',
-      filter.season ?? event?.season ?? getCurrentSeason(),
-    );
+    usedRankingDate.set('year', filter.season ?? event?.season ?? getCurrentSeason());
     usedRankingDate.set(event?.usedRankingUnit, event?.usedRankingAmount);
 
     // get first and last of the month
@@ -223,11 +220,7 @@ export class ClubAssemblyService {
                   double
                   mix
                 }
-                rankingPlaces(
-                  where: $rankingWhere
-                  order: $orderPlaces
-                  take: 1
-                ) {
+                rankingPlaces(where: $rankingWhere, order: $orderPlaces, take: 1) {
                   id
                   rankingDate
                   single
@@ -285,13 +278,8 @@ export class ClubAssemblyService {
               } as PlayerRow;
 
               for (const team of teams ?? []) {
-                const sameTypeTeams =
-                  teams?.filter((t) => t.type == team.type) ?? [];
-                row[team.name ?? ''] = this.getCanPlay(
-                  player,
-                  team,
-                  sameTypeTeams,
-                );
+                const sameTypeTeams = teams?.filter((t) => t.type == team.type) ?? [];
+                row[team.name ?? ''] = this.getCanPlay(player, team, sameTypeTeams);
               }
 
               return row;
@@ -310,9 +298,7 @@ export class ClubAssemblyService {
     base?: boolean;
   } {
     const base =
-      (team.entry?.meta?.competition?.players?.findIndex(
-        (p) => p.id == player.id,
-      ) ?? -1) > -1;
+      (team.entry?.meta?.competition?.players?.findIndex((p) => p.id == player.id) ?? -1) > -1;
 
     // base players can play in their own team
     if (base) {
@@ -360,31 +346,26 @@ export class ClubAssemblyService {
 
     // if player is part of meta competition, he can't play in any teams with a higher number
 
-    const teamsWherePlayerIsBase = otherTeams?.find(
-      (t) =>
-        t.entry?.meta?.competition?.players?.find(
-          (p) => p.id == player.id && p.gender == player.gender,
-        ),
+    const teamsWherePlayerIsBase = otherTeams?.find((t) =>
+      t.entry?.meta?.competition?.players?.find(
+        (p) => p.id == player.id && p.gender == player.gender,
+      ),
     );
 
     if (teamsWherePlayerIsBase) {
       if ((team.teamNumber ?? 0) > (teamsWherePlayerIsBase?.teamNumber ?? 0)) {
         return {
           canPlay: CanPlay.No,
-          reason: this.translateService.instant(
-            'all.competition.club-assembly.warnings.base',
-            {
-              player,
-            },
-          ),
+          reason: this.translateService.instant('all.competition.club-assembly.warnings.base', {
+            player,
+          }),
         };
       }
 
       // if the player is part of the base, all teams of that same subevent he can't play in
       if (
         team.id != teamsWherePlayerIsBase.id &&
-        teamsWherePlayerIsBase.entry?.subEventCompetition?.id ==
-          team.entry?.subEventCompetition?.id
+        teamsWherePlayerIsBase.entry?.subEventCompetition?.id == team.entry?.subEventCompetition?.id
       ) {
         return {
           canPlay: CanPlay.No,
@@ -422,11 +403,7 @@ export class ClubAssemblyService {
           types.push('double');
         }
 
-        if (
-          team.type == SubEventTypeEnum.MX &&
-          mix == minLevel &&
-          mix < (event.maxLevel ?? 12)
-        ) {
+        if (team.type == SubEventTypeEnum.MX && mix == minLevel && mix < (event.maxLevel ?? 12)) {
           types.push('mix');
         }
 
@@ -440,11 +417,7 @@ export class ClubAssemblyService {
                 maxLevel: event.maxLevel,
                 level: minLevel,
                 type: types
-                  ?.map((t) =>
-                    this.translateService
-                      .instant(`all.game.types.${t}`)
-                      .toLowerCase(),
-                  )
+                  ?.map((t) => this.translateService.instant(`all.game.types.${t}`).toLowerCase())
                   ?.join(', '),
               },
             ),
@@ -452,18 +425,14 @@ export class ClubAssemblyService {
         }
       }
 
-      if (
-        !team.entry?.meta?.competition?.players?.find((p) => p.id == player.id)
-      ) {
+      if (!team.entry?.meta?.competition?.players?.find((p) => p.id == player.id)) {
         // check if the player is better then any of the meta players (if he is not part of the meta)
-        for (const entryPlayer of team.entry?.meta?.competition?.players ??
-          []) {
+        for (const entryPlayer of team.entry?.meta?.competition?.players ?? []) {
           const entrySum =
             entryPlayer.single +
             entryPlayer.double +
             (team.type == SubEventTypeEnum.MX ? entryPlayer.mix : 0);
-          const playerSum =
-            single + double + (team.type == SubEventTypeEnum.MX ? mix : 0);
+          const playerSum = single + double + (team.type == SubEventTypeEnum.MX ? mix : 0);
 
           if (playerSum < entrySum && entryPlayer.gender == player.gender) {
             return {

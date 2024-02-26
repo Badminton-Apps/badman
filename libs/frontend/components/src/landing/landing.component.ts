@@ -2,23 +2,27 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
+  Injector,
   OnInit,
+  PLATFORM_ID,
+  TransferState,
+  computed,
+  effect,
   inject,
+  signal,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthenticateService, LoggedinUser } from '@badman/frontend-auth';
+import { AuthenticateService } from '@badman/frontend-auth';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
+import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { Observable, combineLatest, switchMap } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { UpcomingGamesComponent } from '../games';
 import { RankingTableComponent } from '../ranking-table';
-import { BetaComponent, ProfileOverviewComponent } from './components';
-import { LoadingBlockComponent } from '../loading-block';
+import { BetaComponent } from './components';
 
 @Component({
   selector: 'badman-landing',
@@ -26,39 +30,42 @@ import { LoadingBlockComponent } from '../loading-block';
   imports: [
     CommonModule,
     BetaComponent,
-
     TranslateModule,
     MatIconModule,
-
-    ProfileOverviewComponent,
     UpcomingGamesComponent,
     RankingTableComponent,
-    LoadingBlockComponent,
   ],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent implements OnInit {
-  private seoService = inject(SeoService);
-  private translate = inject(TranslateService);
+  // private
+  private readonly apollo = inject(Apollo);
+  private readonly seoService = inject(SeoService);
+  private readonly translate = inject(TranslateService);
+  private readonly injector = inject(Injector);
+  private readonly stateTransfer = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly authenticateService = inject(AuthenticateService);
 
-  user$?: Observable<LoggedinUser>;
-  teams$?: Observable<Team[]>;
-
-  constructor(
-    @Inject(VERSION_INFO)
-    public versionInfo: {
-      beta: boolean;
-      version: string;
-    },
-    private authenticateService: AuthenticateService,
-    private apollo: Apollo,
-  ) {}
+  // public
+  versionInfo = inject(VERSION_INFO);
+  // inputs
+  teams = signal<Team[]>([]);
+  // computed
+  hasTeams = computed(() => this.teams()?.length > 0);
+  user = computed(() => this.authenticateService.userSignal());
+  loggedIn = computed(() => this.authenticateService.loggedInSignal());
 
   ngOnInit() {
-    combineLatest([this.translate.get('all.landing.title')]).subscribe(
-      ([title]) => {
+    effect(
+      () => {
+        if (this.loggedIn()) {
+          this._loadTeamsForPlayer();
+        }
+
+        const title = this.translate.instant('all.landing.title');
         this.seoService.update({
           title,
           description: title,
@@ -66,34 +73,41 @@ export class LandingComponent implements OnInit {
           keywords: ['badman', 'badminton'],
         });
       },
+      {
+        // allowSignalWrites: true,
+        injector: this.injector,
+      },
     );
+  }
 
-    this.user$ = this.authenticateService.user$;
-    this.teams$ = this.user$.pipe(
-      filter((user) => user.loggedIn),
-      filter((user) => !!user.id),
-      switchMap((user) =>
-        this.apollo
-          .query<{ player: { teams: Partial<Team>[] } }>({
-            query: gql`
-              query ClubsAndTeams($playerId: ID!) {
-                player(id: $playerId) {
-                  id
-                  teams {
-                    id
-                    clubId
-                  }
-                }
+  private _loadTeamsForPlayer() {
+    this.apollo
+      .query<{ player: { teams: Partial<Team>[] } }>({
+        query: gql`
+          query ClubsAndTeams($playerId: ID!) {
+            player(id: $playerId) {
+              id
+              teams {
+                id
+                clubId
               }
-            `,
-            variables: {
-              playerId: user.id,
-            },
-          })
-          .pipe(
-            map((result) => result.data.player.teams?.map((t) => new Team(t))),
-          ),
-      ),
-    );
+            }
+          }
+        `,
+        variables: {
+          playerId: this.user()?.id,
+        },
+      })
+      .pipe(
+        map((result) => result.data.player.teams?.map((t) => new Team(t))),
+        transferState(`ClubsAndTeams-${this.user()?.id}`, this.stateTransfer, this.platformId),
+      )
+      .subscribe((teams) => {
+        if (!teams) {
+          return;
+        }
+
+        this.teams.set(teams);
+      });
   }
 }

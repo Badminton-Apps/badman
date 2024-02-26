@@ -1,10 +1,6 @@
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { PointsService } from '@badman/backend-ranking';
-import {
-  VisualService,
-  XmlTournament,
-  XmlTournamentTypeID,
-} from '@badman/backend-visual';
+import { VisualService, XmlTournament, XmlTournamentTypeID } from '@badman/backend-visual';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
@@ -13,11 +9,7 @@ import { CompetitionSyncer } from './competition-sync';
 import { TournamentSyncer } from './tournament-sync';
 import moment from 'moment';
 import { NotificationService } from '@badman/backend-notifications';
-import {
-  CronJob,
-  EventCompetition,
-  EventTournament,
-} from '@badman/backend-database';
+import { CronJob, EventCompetition, EventTournament } from '@badman/backend-database';
 
 @Processor({
   name: SyncQueue,
@@ -40,14 +32,8 @@ export class SyncEventsProcessor {
     private visualService: VisualService,
     private _sequelize: Sequelize,
   ) {
-    this._competitionSync = new CompetitionSyncer(
-      this.visualService,
-      pointService,
-    );
-    this._tournamentSync = new TournamentSyncer(
-      this.visualService,
-      pointService,
-    );
+    this._competitionSync = new CompetitionSyncer(this.visualService, pointService);
+    this._tournamentSync = new TournamentSyncer(this.visualService, pointService);
   }
 
   @Process(Sync.SyncEvents)
@@ -93,9 +79,7 @@ export class SyncEventsProcessor {
       const newDate = moment(job.data?.date ?? cronJob.lastRun);
       let newEvents: XmlTournament[] = [];
       if (job.data?.search?.length > 0) {
-        newEvents = newEvents.concat(
-          await this.visualService.searchEvents(job.data?.search),
-        );
+        newEvents = newEvents.concat(await this.visualService.searchEvents(job.data?.search));
       } else if (job.data?.id?.length > 0) {
         if (!Array.isArray(job.data?.id)) {
           job.data.id = [job.data.id];
@@ -110,9 +94,7 @@ export class SyncEventsProcessor {
           newEvents = newEvents.concat(await this.visualService.getEvent(id));
         }
       } else {
-        newEvents = newEvents.concat(
-          await this.visualService.getChangeEvents(newDate),
-        );
+        newEvents = newEvents.concat(await this.visualService.getChangeEvents(newDate));
       }
       newEvents = newEvents.sort((a, b) => {
         return moment(a.StartDate).valueOf() - moment(b.StartDate).valueOf();
@@ -126,9 +108,7 @@ export class SyncEventsProcessor {
         });
       }
 
-      this.logger.verbose(
-        `Found ${newEvents.length} new events after ${job.data?.startDate}`,
-      );
+      this.logger.verbose(`Found ${newEvents.length} new events after ${job.data?.startDate}`);
 
       let toProcess = newEvents.length;
       if (job.data?.limit) {
@@ -143,31 +123,22 @@ export class SyncEventsProcessor {
         const total = toProcess;
         const percent = Math.round((current / total) * 10000) / 100;
         job.progress(percent);
-        this.logger.debug(
-          `Processing ${xmlTournament?.Name}, ${percent}% (${i}/${total})`,
-        );
+        this.logger.debug(`Processing ${xmlTournament?.Name}, ${percent}% (${i}/${total})`);
 
         // Skip certain events
-        if (
-          (job.data?.skip?.length ?? 0) > 0 &&
-          job.data?.skip?.includes(xmlTournament?.Name)
-        ) {
+        if ((job.data?.skip?.length ?? 0) > 0 && job.data?.skip?.includes(xmlTournament?.Name)) {
           continue;
         }
 
         // Only process certain events
-        if (
-          (job.data?.only?.length ?? 0) > 0 &&
-          !job.data?.only?.includes(xmlTournament?.Name)
-        ) {
+        if ((job.data?.only?.length ?? 0) > 0 && !job.data?.only?.includes(xmlTournament?.Name)) {
           continue;
         }
 
         const transaction = await this._sequelize.transaction();
 
         try {
-          let resultData: { event: EventCompetition | EventTournament } | null =
-            null;
+          let resultData: { event: EventCompetition | EventTournament } | null = null;
           if (
             xmlTournament.TypeID === XmlTournamentTypeID.OnlineLeague ||
             xmlTournament.TypeID === XmlTournamentTypeID.TeamTournament
@@ -198,9 +169,7 @@ export class SyncEventsProcessor {
           this.logger.log(`Finished ${xmlTournament?.Name}`);
 
           if (job.data?.userId) {
-            const userIds = Array.isArray(job.data?.userId)
-              ? job.data?.userId
-              : [job.data?.userId];
+            const userIds = Array.isArray(job.data?.userId) ? job.data?.userId : [job.data?.userId];
 
             for (const userId of userIds) {
               await this.notificationService.notifySyncFinished(userId, {
@@ -214,9 +183,7 @@ export class SyncEventsProcessor {
           await transaction.rollback();
 
           if (job.data?.userId) {
-            const userIds = Array.isArray(job.data?.userId)
-              ? job.data?.userId
-              : [job.data?.userId];
+            const userIds = Array.isArray(job.data?.userId) ? job.data?.userId : [job.data?.userId];
 
             for (const userId of userIds) {
               await this.notificationService.notifySyncFinished(userId, {

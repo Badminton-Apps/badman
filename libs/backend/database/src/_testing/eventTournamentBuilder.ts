@@ -3,7 +3,7 @@ import { SubEventTournamentBuilder } from './eventTournamentSubEventBuilder';
 
 export class EventTournamentBuilder {
   private build = false;
-  
+
   private event: EventTournament;
 
   private subEvents: SubEventTournamentBuilder[] = [];

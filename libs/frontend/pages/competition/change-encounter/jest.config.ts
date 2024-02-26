@@ -1,11 +1,10 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-pages-competition-change-encounter',
+  displayName: 'frontend-change-encounter',
   preset: '../../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  globals: {},
-  coverageDirectory:
-    '../../../../../coverage/libs/frontend/pages/competition/change-encounter',
+  passWithNoTests: true,
+  coverageDirectory: '../../../../../coverage/libs/frontend/pages/competition/change-encounter',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

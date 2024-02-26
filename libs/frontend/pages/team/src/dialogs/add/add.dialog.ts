@@ -2,11 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Team, TeamPlayer } from '@badman/frontend-models';
 import { SubEventType, getCurrentSeason } from '@badman/utils';
@@ -21,12 +17,8 @@ import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
   imports: [
     CommonModule,
     TranslateModule,
-
-    // My Modules
     TeamFieldComponent,
     TeamPlayersComponent,
-
-    // Material
     MatDialogModule,
     MatButtonModule,
   ],
@@ -45,7 +37,7 @@ export class AddDialogComponent {
       teamNumbers: {
         [key in SubEventType]: number[];
       };
-    }
+    },
   ) {
     if (!this.group) {
       this.group = this.fb.group({

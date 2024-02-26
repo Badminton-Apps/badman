@@ -1,85 +1,77 @@
-<section class="events" *ngIf="this.events && !loading()">
-  <div class="title">
-    <h3>{{ 'all.competition.subevent.title' | translate }}</h3>
-  </div>
-  <div class="events-container">
-    <badman-block *ngFor="let event of events()">
-      <badman-block-header>
-        <badman-block-title>
-          <a [routerLink]="[event.slug]">{{ event.name }}</a>
-        </badman-block-title>
-        <badman-block-subtitle>
-          {{
-            event.subEventCompetitions?.length
-              | i18nPlural
-                : {
-                    '=0': 'all.competition.subevent.name.none',
-                    '=1': 'all.competition.subevent.name.singular',
-                    other: 'all.competition.subevent.name.plural'
-                  }
-              | translate : { count: event.subEventCompetitions?.length }
-          }}
-        </badman-block-subtitle>
-
-        <badman-block-actions align="end">
-          <badman-has-claim [any]="['edit:competition']">
-            <button
-              (click)="$event.stopPropagation()"
-              mat-icon-button
-              [matMenuTriggerFor]="menu"
-            >
-              <mat-icon>more_vert</mat-icon>
-            </button>
-
-            <mat-menu #menu="matMenu">
+@if (this.events && !loading()) {
+  <section class="events">
+    <div class="title">
+      <h3>{{ 'all.competition.subevent.title' | translate }}</h3>
+    </div>
+    <div class="events-container">
+      @for (event of events(); track event) {
+        <badman-block>
+          <badman-block-header>
+            <badman-block-title>
+              <a [routerLink]="[event.slug]">{{ event.name }}</a>
+            </badman-block-title>
+            <badman-block-subtitle>
+              {{
+                event.subEventCompetitions?.length
+                  | i18nPlural
+                    : {
+                        '=0': 'all.competition.subevent.name.none',
+                        '=1': 'all.competition.subevent.name.singular',
+                        other: 'all.competition.subevent.name.plural'
+                      }
+                  | translate: { count: event.subEventCompetitions?.length }
+              }}
+            </badman-block-subtitle>
+            <badman-block-actions align="end">
               <badman-has-claim [any]="['edit:competition']">
-                <button mat-menu-item [routerLink]="[event.slug, 'edit']">
-                  <mat-icon>edit</mat-icon>
-                  <span>Edit</span>
-                </button>
-                <button mat-menu-item>
-                  <mat-icon>delete</mat-icon>
-                  <span>Delete</span>
-                </button>
-                <button mat-menu-item (click)="this.setRisersFallers(event)">
-                  <mat-icon>swap_vert</mat-icon>
-                  <span>Set risers/fallers</span>
-                </button>
-                <button mat-menu-item (click)="this.setOpenClose(event)">
-                  <mat-icon>lock</mat-icon>
-                  <span>Set open/close date</span>
-                </button>
-
                 <button
-                  mat-menu-item
-                  (click)="this.makeOfficial(event, !event.official)"
+                  (click)="$event.stopPropagation()"
+                  mat-icon-button
+                  [matMenuTriggerFor]="menu"
                 >
-                  <mat-icon>verified_user</mat-icon>
-                  <span>{{ event.official ? 'Unmake' : 'Make' }} official</span>
+                  <mat-icon>more_vert</mat-icon>
                 </button>
+                <mat-menu #menu="matMenu">
+                  <badman-has-claim [any]="['edit:competition']">
+                    <button mat-menu-item [routerLink]="[event.slug, 'edit']">
+                      <mat-icon>edit</mat-icon>
+                      <span>Edit</span>
+                    </button>
+                    <button mat-menu-item>
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                    </button>
+                    <button mat-menu-item (click)="this.setRisersFallers(event)">
+                      <mat-icon>swap_vert</mat-icon>
+                      <span>Set risers/fallers</span>
+                    </button>
+                    <button mat-menu-item (click)="this.setOpenClose(event)">
+                      <mat-icon>lock</mat-icon>
+                      <span>Set open/close date</span>
+                    </button>
+                    <button mat-menu-item (click)="this.makeOfficial(event, !event.official)">
+                      <mat-icon>verified_user</mat-icon>
+                      <span>{{ event.official ? 'Unmake' : 'Make' }} official</span>
+                    </button>
+                  </badman-has-claim>
+                  <badman-has-claim [any]="['change:job']">
+                    <button mat-menu-item (click)="syncEvent(event)">
+                      <mat-icon>sync</mat-icon>
+                      <span>Sync</span>
+                    </button>
+                  </badman-has-claim>
+                </mat-menu>
               </badman-has-claim>
-              <badman-has-claim [any]="['change:job']">
-                <button mat-menu-item (click)="syncEvent(event)">
-                  <mat-icon>sync</mat-icon>
-                  <span>Sync</span>
-                </button>
-              </badman-has-claim>
-            </mat-menu>
-          </badman-has-claim>
-        </badman-block-actions>
-      </badman-block-header>
-    </badman-block>
-  </div>
-</section>
-
-<ng-container *ngIf="loading()">
+            </badman-block-actions>
+          </badman-block-header>
+        </badman-block>
+      }
+    </div>
+  </section>
+}
+@if (loading()) {
   <section class="events">
     <h3>{{ 'all.club.titles.teams' | translate }}</h3>
-    <badman-loading-block
-      [items]="9"
-      height="74px"
-      width="250px"
-      direction="row"
-    />
+    <badman-loading-block [items]="9" height="74px" width="250px" direction="row" />
   </section>
-</ng-container>
+}

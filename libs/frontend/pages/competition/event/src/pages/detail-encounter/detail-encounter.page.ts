@@ -1,11 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -42,14 +36,9 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // common modules
     CommonModule,
     RouterModule,
-
-    // Other modules
     TranslateModule,
-
-    // Material Modules
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
@@ -59,8 +48,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatMenuModule,
     MatDividerModule,
     MatTooltipModule,
-
-    // Own components
     GameScoreComponentComponent,
     PageHeaderComponent,
     HasClaimComponent,
@@ -103,24 +90,17 @@ export class DetailEncounterComponent implements OnInit {
           this.encounterCompetition.away?.name ?? '',
         ],
       });
-      this.breadcrumbsService.set(
-        '@eventCompetition',
-        this.eventCompetition.name ?? '',
-      );
-      this.breadcrumbsService.set(
-        '@drawCompetition',
-        this.drawCompetition.name ?? '',
-      );
-      this.breadcrumbsService.set(
-        '@encounterCompetition',
-        this.encounterCompetitionName,
-      );
+      this.breadcrumbsService.set('@eventCompetition', this.eventCompetition.name ?? '');
+      this.breadcrumbsService.set('@drawCompetition', this.drawCompetition.name ?? '');
+      this.breadcrumbsService.set('@encounterCompetition', this.encounterCompetitionName);
     });
   }
 
   getGameLabel(game: number) {
-    const gameType = this.encounterCompetition.drawCompetition
-      ?.subEventCompetition?.eventType as 'M' | 'F' | 'MX';
+    const gameType = this.encounterCompetition.drawCompetition?.subEventCompetition?.eventType as
+      | 'M'
+      | 'F'
+      | 'MX';
 
     if (!gameType) {
       return [];

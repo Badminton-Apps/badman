@@ -1,9 +1,5 @@
 import { Player, RankingSystem } from '@badman/backend-database';
-import {
-  Badminton,
-  Simulation,
-  SimulationPlaceJob,
-} from '@badman/backend-queue';
+import { Badminton, Simulation, SimulationPlaceJob } from '@badman/backend-queue';
 import { BelgiumFlandersPlacesService } from '@badman/belgium-flanders-places';
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
@@ -14,6 +10,7 @@ import { Job } from 'bull';
 })
 export class PlacesProcessor {
   private readonly logger = new Logger(PlacesProcessor.name);
+
   constructor(private readonly placesService: BelgiumFlandersPlacesService) {}
 
   @Process({

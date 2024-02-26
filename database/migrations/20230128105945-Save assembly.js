@@ -86,7 +86,7 @@ module.exports = {
           },
           {
             transaction: t,
-          }
+          },
         );
       } catch (err) {
         console.error('We errored with', err);
@@ -103,7 +103,7 @@ module.exports = {
         },
         {
           transaction: t,
-        }
+        },
       );
     });
   },

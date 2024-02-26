@@ -1,11 +1,4 @@
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -21,11 +14,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import {
-  EncounterCompetition,
-  EventCompetition,
-  EventTournament,
-} from '../event';
+import { EncounterCompetition, EventCompetition, EventTournament } from '../event';
 import { Player } from '../player.model';
 import { Club } from '../club.model';
 import { Relation } from '../../wrapper';
@@ -46,6 +35,12 @@ export class Notification extends Model {
   @Field(() => ID)
   @Column(DataType.UUIDV4)
   override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Field(() => Player, { nullable: true })
   @BelongsTo(() => Player, 'sendToId')
@@ -133,7 +128,7 @@ export class NotificationUpdateInput extends PartialType(
     'club',
     'sendTo',
   ] as const),
-  InputType
+  InputType,
 ) {}
 
 // @InputType()

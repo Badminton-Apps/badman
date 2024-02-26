@@ -12,7 +12,7 @@ export class CpService {
   constructor(
     private httpClient: HttpClient,
     @Inject(CP_CONFIG)
-    private config: ICpConfig
+    private config: ICpConfig,
   ) {}
 
   downloadCp(event: EventCompetition) {
@@ -29,7 +29,7 @@ export class CpService {
       })
       .pipe(
         take(1),
-        map((result) => saveAs(result, `${event.name}.cp`))
+        map((result) => saveAs(result, `${event.name}.cp`)),
       );
   }
 }

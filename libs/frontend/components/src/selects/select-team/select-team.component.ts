@@ -1,18 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Inject,
-  Input,
-  OnInit,
-  PLATFORM_ID,
-  TransferState,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
@@ -21,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
+import { input } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticateService } from '@badman/frontend-auth';
@@ -49,11 +39,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-
-    // Core modules
     TranslateModule,
-
-    // Material Modules
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
@@ -68,31 +54,25 @@ import {
 export class SelectTeamComponent implements OnInit {
   private destroy$ = injectDestroy();
 
-  @Input()
-  controlName = 'team';
+  controlName = input('team');
 
-  @Input({ required: true })
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  dependsOn = 'club';
+  dependsOn = input('club');
 
-  @Input()
-  updateOn = ['club'];
+  updateOn = input(['club']);
 
-  @Input()
-  updateUrl = false;
+  updateUrl = input(false);
 
-  @Input()
-  multiple = false;
+  multiple = input(false);
 
-  @Input()
-  autoSelect: 'user' | 'all' = 'user';
+  autoSelect = input<'user' | 'all'>('user');
 
-  @Input()
-  control = new FormControl();
+  control = input<FormControl<string[] | string | null>>();
+  protected internalControl!: FormControl<string[] | string | null>;
 
   teams$?: Observable<{ type: string; teams: Team[] }[]>;
+  user$ = toObservable(this.authenticateService.userSignal);
 
   constructor(
     private apollo: Apollo,
@@ -104,34 +84,41 @@ export class SelectTeamComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<string>;
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as FormControl<string[] | string | null>;
     }
 
-    if (!this.control) {
-      this.control = new FormControl<string[] | null>(null);
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group().get(this.controlName()) as FormControl<
+        string[] | string | null
+      >;
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (!this.internalControl) {
+      this.internalControl = new FormControl<string[] | string | null>(null) as FormControl<
+        string[] | string | null
+      >;
     }
 
-    const previous = this.group?.get(this.dependsOn);
+    if (this.group()) {
+      this.group().addControl(this.controlName(), this.internalControl);
+    }
+
+    const previous = this.group().get(this.dependsOn());
 
     if (!previous) {
-      console.warn(`Dependency ${this.dependsOn} not found`, previous);
+      console.warn(`Dependency ${this.dependsOn()} not found`, previous);
     } else {
       // get all the controls that we need to update on when change
-      const updateOnControls = this.updateOn
-        ?.filter((controlName) => controlName !== this.dependsOn)
-        .map((controlName) => this.group?.get(controlName))
+      const updateOnControls = this.updateOn()
+        ?.filter((controlName) => controlName !== this.dependsOn())
+        .map((controlName) => this.group().get(controlName))
         .filter((control) => control != null) as FormControl[];
 
       this.teams$ = combineLatest([
         previous.valueChanges.pipe(startWith(null)),
-        ...updateOnControls.map(
-          (control) =>
-            control?.valueChanges?.pipe(startWith(() => control?.value)),
+        ...updateOnControls.map((control) =>
+          control?.valueChanges?.pipe(startWith(() => control?.value)),
         ),
       ]).pipe(
         takeUntil(this.destroy$),
@@ -142,7 +129,7 @@ export class SelectTeamComponent implements OnInit {
         switchMap(([prev, next]) => {
           if (prev != null && prev !== next) {
             // Reset the team on club change
-            this.control.setValue(this.multiple ? [] : null);
+            this.internalControl.setValue(this.multiple() ? [] : null);
           }
 
           // Check if the next is a UUID
@@ -175,9 +162,9 @@ export class SelectTeamComponent implements OnInit {
       this.teams$
         ?.pipe(
           concatMap((teams) =>
-            this.autoSelect === 'user'
+            this.autoSelect() === 'user'
               ? // if authenticated, find where the user is captain
-                this.authenticateService.user$.pipe(
+                this.user$.pipe(
                   switchMap((user) => {
                     if (!user?.id) {
                       return of(undefined);
@@ -198,8 +185,7 @@ export class SelectTeamComponent implements OnInit {
         )
         .subscribe(({ teams, teamsUser }) => {
           let foundTeam: Team[] | undefined = undefined;
-          const teamId =
-            this.activatedRoute.snapshot?.queryParamMap?.get('team');
+          const teamId = this.activatedRoute.snapshot?.queryParamMap?.get('team');
 
           const allTeams = teams
             ?.map((group) => group.teams)
@@ -208,20 +194,18 @@ export class SelectTeamComponent implements OnInit {
           if (teamId && teams.length > 0) {
             // Check all groups if the team is in there
             foundTeam = allTeams?.filter((team) => team.id == teamId);
-          } else if (this.autoSelect === 'user') {
+          } else if (this.autoSelect() === 'user') {
             foundTeam = teams
               ?.map((group) => group.teams)
               ?.reduce((acc, teams) => acc.concat(teams), [])
               ?.filter((team) => team.id == teamsUser);
-          } else if (this.autoSelect === 'all') {
+          } else if (this.autoSelect() === 'all') {
             foundTeam = allTeams;
           }
 
           if (foundTeam && foundTeam.length > 0) {
-            this.control.setValue(
-              this.multiple
-                ? foundTeam.map((team) => team.id ?? '')
-                : foundTeam[0].id ?? '',
+            this.internalControl.setValue(
+              this.multiple() ? foundTeam.map((team) => team.id ?? '') : foundTeam[0].id ?? '',
             );
             this._updateUrl(
               foundTeam.map((team) => team.id ?? ''),
@@ -244,15 +228,15 @@ export class SelectTeamComponent implements OnInit {
     }
 
     // add id to the control
-    const newIds = this.multiple ? [...(this.control.value ?? []), id] : [id];
+    const newIds = this.multiple() ? [...(this.internalControl.value ?? []), id] : [id];
 
     this._updateUrl(newIds, true);
   }
 
   private _updateUrl(teamIds: string[], removeOtherParams = false) {
-    if (this.updateUrl && teamIds?.length) {
+    if (this.updateUrl() && teamIds?.length) {
       const queryParams: { [key: string]: string | undefined } = {
-        [this.controlName]: teamIds.join(','),
+        [this.controlName()]: teamIds.join(','),
       };
 
       if (removeOtherParams) {
@@ -300,7 +284,7 @@ export class SelectTeamComponent implements OnInit {
         `,
         variables: {
           where: {
-            season: this.group?.get('season')?.value ?? null,
+            season: this.group().get('season')?.value ?? null,
             clubId: clubId,
           },
           order: [
@@ -312,11 +296,7 @@ export class SelectTeamComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          `clubTeamsKey-${clubId}}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`clubTeamsKey-${clubId}}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.teams) {
             throw new Error('No club');
@@ -343,11 +323,7 @@ export class SelectTeamComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          `captainOfTeam-${userId}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`captainOfTeam-${userId}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.teams) {
             throw new Error('No club');
@@ -358,12 +334,12 @@ export class SelectTeamComponent implements OnInit {
   }
 
   selectAll(options: { type: string; teams: Team[] }[]) {
-    this.control.setValue(
+    this.internalControl.setValue(
       options.map((option) => option.teams?.map((team) => team.id)).flat(),
     );
   }
 
   deselectAll() {
-    this.control.setValue([]);
+    this.internalControl.setValue([]);
   }
 }

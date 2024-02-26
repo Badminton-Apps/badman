@@ -1,5 +1,16 @@
 {
   "name": "@badman/backend-translate",
-  "version": "0.0.1",
-  "type": "commonjs"
+  "version": "6.130.0-beta.17",
+  "dependencies": {
+    "@swc/helpers": "~0.5.2",
+    "@badman/backend-authorization": "*",
+    "@badman/utils": "*",
+    "@nestjs/common": "^10.3.1",
+    "fastify": "^4.26.0",
+    "nestjs-i18n": "^10.4.0"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "devDependencies": {}
 }

@@ -23,9 +23,9 @@ const MODULE_ROUTES: Routes = [
     },
     data: {
       breadcrumb: {
-        alias: 'role'
-      }
-    }
+        alias: 'role',
+      },
+    },
   },
 ];
 

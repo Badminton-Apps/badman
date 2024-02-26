@@ -1,11 +1,7 @@
 <div>
   <mat-form-field>
     <mat-label>Search</mat-label>
-    <input
-      (placeResult)="syncAutoComplete($event)"
-      [mapAutocomplete]="placesConfig"
-      matInput
-    />
+    <input (placeResult)="syncAutoComplete($event)" [mapAutocomplete]="placesConfig" matInput />
     <mat-icon color="primary" matSuffix>search</mat-icon>
   </mat-form-field>
 </div>
@@ -16,13 +12,7 @@
   <div>
     <mat-form-field>
       <mat-label>{{ 'all.input.name' | translate }}</mat-label>
-      <input
-        matInput
-        formControlName="name"
-        alt="name"
-        autocomplete="name"
-        required
-      />
+      <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
   </div>
 
@@ -54,12 +44,7 @@
   <div>
     <mat-form-field>
       <mat-label>{{ 'all.input.phone' | translate }}</mat-label>
-      <input
-        matInput
-        formControlName="phone"
-        alt="phone"
-        autocomplete="phone"
-      />
+      <input matInput formControlName="phone" alt="phone" autocomplete="phone" />
     </mat-form-field>
     <mat-form-field>
       <mat-label>{{ 'all.input.fax' | translate }}</mat-label>

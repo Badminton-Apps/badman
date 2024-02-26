@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, input } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -39,8 +39,7 @@ export class EditRankingComponent implements OnInit {
 
   allPlaces?: RankingPlace[][];
 
-  @Input()
-  player!: Player;
+  player = input.required<Player>();
 
   system?: RankingSystem;
   rankingPlace?: RankingPlace;
@@ -72,9 +71,7 @@ export class EditRankingComponent implements OnInit {
       this.update$,
     ]).pipe(
       map(([x]) =>
-        x.data?.rankingSystems?.length > 0
-          ? new RankingSystem(x.data.rankingSystems[0])
-          : null,
+        x.data?.rankingSystems?.length > 0 ? new RankingSystem(x.data.rankingSystems[0]) : null,
       ),
       mergeMap((system) =>
         combineLatest([
@@ -98,7 +95,7 @@ export class EditRankingComponent implements OnInit {
               }
             `,
             variables: {
-              playerId: this.player.id,
+              playerId: this.player().id,
               system: system?.id,
             },
           }),
@@ -121,10 +118,9 @@ export class EditRankingComponent implements OnInit {
         player?.lastRanking?.double ?? system?.amountOfLevels ?? 0,
         [Validators.required],
       );
-      const mixControl = new FormControl(
-        player?.lastRanking?.mix ?? system?.amountOfLevels ?? 0,
-        [Validators.required],
-      );
+      const mixControl = new FormControl(player?.lastRanking?.mix ?? system?.amountOfLevels ?? 0, [
+        Validators.required,
+      ]);
 
       if (!system) {
         throw new Error('System is not set');
@@ -143,10 +139,10 @@ export class EditRankingComponent implements OnInit {
 
   saveRanking() {
     if (this.rankingForm.valid) {
-      if (!this.player) {
+      if (!this.player()) {
         throw new Error('Player is not set');
       }
-      if (!this.player.id) {
+      if (!this.player().id) {
         throw new Error('Player id is not set');
       }
 
@@ -183,7 +179,7 @@ export class EditRankingComponent implements OnInit {
           variables: {
             data: {
               systemId: this.system?.id,
-              playerId: this.player.id,
+              playerId: this.player().id,
               single: +value.single,
               double: +value.double,
               mix: +value.mix,
@@ -201,9 +197,7 @@ export class EditRankingComponent implements OnInit {
         }>(mutation)
         .subscribe((result) => {
           this.invalidatePlayerRanking(
-            new Player(
-              result?.data?.updateRankingPlace ?? result?.data?.newRankingPlace,
-            ),
+            new Player(result?.data?.updateRankingPlace ?? result?.data?.newRankingPlace),
           );
           this.update$.next(null);
 

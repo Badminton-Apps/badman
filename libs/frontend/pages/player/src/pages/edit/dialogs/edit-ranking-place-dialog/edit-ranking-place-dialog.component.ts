@@ -8,22 +8,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MatCalendarCellClassFunction,
-  MatDatepickerModule,
-} from '@angular/material/datepicker';
-import {
-  MatDialogModule,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {
-  RankingPlace,
-  RankingSystem,
-} from '@badman/frontend-models';
+import { RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { RankingSystems } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
@@ -53,35 +43,21 @@ export class EditRankingPlaceDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<EditRankingPlaceDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { place: RankingPlace; system: RankingSystem }
+    public data: { place: RankingPlace; system: RankingSystem },
   ) {}
 
   ngOnInit(): void {
-    const singleControl = new FormControl(
-      this.data.place?.single,
-      Validators.required
-    );
-    const doubleControl = new FormControl(
-      this.data.place?.double,
-      Validators.required
-    );
-    const mixControl = new FormControl(
-      this.data.place?.mix,
-      Validators.required
-    );
+    const singleControl = new FormControl(this.data.place?.single, Validators.required);
+    const doubleControl = new FormControl(this.data.place?.double, Validators.required);
+    const mixControl = new FormControl(this.data.place?.mix, Validators.required);
 
     const singlePointsControl = new FormControl(this.data.place?.singlePoints);
     const doublePointsControl = new FormControl(this.data.place?.doublePoints);
     const mixPointsControl = new FormControl(this.data.place?.mixPoints);
 
-    const rankingDateControl = new FormControl(
-      this.data.place?.rankingDate,
-      Validators.required
-    );
+    const rankingDateControl = new FormControl(this.data.place?.rankingDate, Validators.required);
 
-    const updatePossibleControl = new FormControl(
-      this.data.place?.updatePossible
-    );
+    const updatePossibleControl = new FormControl(this.data.place?.updatePossible);
 
     this.rankingPlaceForm.addControl('single', singleControl);
     this.rankingPlaceForm.addControl('double', doubleControl);
@@ -105,11 +81,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
             this.data.system?.rankingSystem == RankingSystems.VISUAL ||
             this.data.system?.rankingSystem == RankingSystems.BVL
           ) {
-            if (
-              day == 1 &&
-              date < 8 &&
-              month % (this.data.system.updateIntervalAmount ?? 0) == 0
-            ) {
+            if (day == 1 && date < 8 && month % (this.data.system.updateIntervalAmount ?? 0) == 0) {
               return 'date-class-update';
             }
           }
@@ -137,11 +109,7 @@ export class EditRankingPlaceDialogComponent implements OnInit {
         }
       });
 
-    if (
-      !compEvent?.season ||
-      !compEvent?.usedRankingUnit ||
-      !compEvent?.usedRankingAmount
-    ) {
+    if (!compEvent?.season || !compEvent?.usedRankingUnit || !compEvent?.usedRankingAmount) {
       throw new Error('No event data');
     }
 

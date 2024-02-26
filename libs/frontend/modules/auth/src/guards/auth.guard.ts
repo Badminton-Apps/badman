@@ -1,5 +1,6 @@
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { Inject, Injectable, Injector, PLATFORM_ID } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
+import { Injectable, Injector, PLATFORM_ID, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   ActivatedRouteSnapshot,
@@ -9,140 +10,95 @@ import {
   UrlTree,
 } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subject, combineLatest, of } from 'rxjs';
-import {
-  debounceTime,
-  filter,
-  finalize,
-  map,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
+import { Observable, filter, map } from 'rxjs';
 import { AuthenticateService, ClaimService } from '../services';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard {
-  // Maybe use this for cokkies? https://github.com/ngx-utils/cookies/
-
-  private loader$ = new Subject<boolean>();
-  public loader = false;
-  private authService?: AuthenticateService;
-
-  constructor(
-    private claimService: ClaimService,
-    private snackBar: MatSnackBar,
-    private router: Router,
-    private translate: TranslateService,
-    private injector: Injector,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {
-    this.loader$.pipe(debounceTime(300)).subscribe((loader) => {
-      this.loader = loader;
-    });
-
-    if (isPlatformBrowser(this.platformId)) {
-      this.authService = this.injector.get(AuthenticateService);
-    }
-  }
+  private readonly claimService = inject(ClaimService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly router = inject(Router);
+  private readonly translate = inject(TranslateService);
+  private readonly injector = inject(Injector);
+  private readonly authService = inject(AuthenticateService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ): Observable<boolean> | Promise<boolean | UrlTree> | boolean {
-    this.loader$.next(true);
-
     // Check if we are on the server
     if (isPlatformServer(this.platformId)) {
       return true;
     }
 
-    if (!this.authService || !this.authService.loggedIn$) {
+    if (!this.authService) {
       console.warn('AuthGuard: No AuthService');
       return false;
     }
 
-    const auth$: Observable<boolean> = this.authService.loggedIn$.pipe(
-      switchMap((isAuthenticated) => {
-        if (!this.authService) {
-          console.warn('AuthGuard: No AuthService');
-          return of(true);
-        }
-
-        if (!isAuthenticated) {
-          return (
-            this.authService
-              .login(false, {
-                appState: { target: state.url },
-              })
-              ?.pipe(
-                map(() => {
-                  return true;
-                })
-              ) ?? of(true)
-          );
-        }
-
-        return of(true);
-      })
-    );
-
-    return auth$.pipe(
-      filter((isAuthenticated) => isAuthenticated),
-      switchMap(() => this.claimService.claims$),
-      filter((claims) => claims !== undefined),
-      switchMap(() => {
-        const permissionObsrevables$: Observable<boolean>[] = [];
-
-        if (next?.data?.['claims']) {
-          if (typeof next.data?.['claims'] === 'string') {
-            permissionObsrevables$.push(
-              this.claimService.hasClaim$(
-                this.replaceParams(next.params, [next.data?.['claims']])[0]
-              )
-            );
-          } else {
-            if (next.data?.['claims'].any) {
-              if (typeof next.data?.['claims'].any === 'string') {
-                next.data['claims'].any = [next.data?.['claims'].any];
-              }
-              permissionObsrevables$.push(
-                this.claimService.hasAnyClaims$(
-                  this.replaceParams(next.params, next.data?.['claims'].any)
-                )
-              );
-            } else if (next.data?.['claims'].all) {
-              if (typeof next.data?.['claims'].all === 'string') {
-                next.data['claims'].all = [next.data?.['claims'].all];
-              }
-              permissionObsrevables$.push(
-                this.claimService.hasAllClaims$(
-                  this.replaceParams(next.params, next.data?.['claims'].all)
-                )
-              );
-            }
+    // wait for to be logged in
+    return toObservable(this.authService.state, { injector: this.injector }).pipe(
+      filter((loginState) => loginState.loaded),
+      map((loginState) => {
+        if (loginState.user?.loggedIn) {
+          if (this.hasPermissions(next)) {
+            return true;
           }
-        } else {
-          permissionObsrevables$.push(of(true));
-        }
 
-        return combineLatest(permissionObsrevables$).pipe(
-          map((results: boolean[]) => {
-            return results.reduce((acc, value) => acc && value, true);
-          })
-        );
-      }),
-      tap((hasPermissions) => {
-        if (!hasPermissions) {
+          console.log(`No permission for ${state.url} for ${loginState.user?.slug}`);
+
+          // we dont' have the permissions
           this.snackBar.open(this.translate.instant('all.permission.no-perm'));
           this.router.navigate(['/']);
+        } else {
+          // we are not logged in
+          this.authService?.login(false, {
+            appState: { target: state.url },
+          });
         }
+
+        return false;
       }),
-      finalize(() => {
-        this.loader$.next(false);
-      })
     );
+  }
+
+  private hasPermissions(next: ActivatedRouteSnapshot) {
+    const permission: boolean[] = [];
+
+    if (next?.data?.['claims']) {
+      if (typeof next.data?.['claims'] === 'string') {
+        permission.push(
+          this.claimService.hasClaim(this.replaceParams(next.params, [next.data?.['claims']])[0]),
+        );
+      } else {
+        if (next.data?.['claims'].any) {
+          if (typeof next.data?.['claims'].any === 'string') {
+            next.data['claims'].any = [next.data?.['claims'].any];
+          }
+          permission.push(
+            this.claimService.hasAnyClaims(
+              this.replaceParams(next.params, next.data?.['claims'].any),
+            ),
+          );
+        } else if (next.data?.['claims'].all) {
+          if (typeof next.data?.['claims'].all === 'string') {
+            next.data['claims'].all = [next.data?.['claims'].all];
+          }
+          permission.push(
+            this.claimService.hasAllClaims(
+              this.replaceParams(next.params, next.data?.['claims'].all),
+            ),
+          );
+        }
+      }
+    } else {
+      permission.push(true);
+    }
+
+    return permission.reduce((acc, value) => acc && value, true);
   }
 
   private replaceParams(params: Params, claims: string[]): string[] {

@@ -25,7 +25,7 @@ module.exports = {
               references: {
                 model: {
                   tableName: 'Players',
-                  schema: 'public', 
+                  schema: 'public',
                 },
                 key: 'id',
               },
@@ -63,19 +63,13 @@ module.exports = {
               allowNull: false,
             },
           },
-          { transaction: t }
+          { transaction: t },
         );
-        
-   
 
         // index on playerid
-        await queryInterface.addIndex(
-          { tableName: 'Settings', schema: 'personal' },
-          ['playerId'],
-          {
-            transaction: t,
-          }
-        );
+        await queryInterface.addIndex({ tableName: 'Settings', schema: 'personal' }, ['playerId'], {
+          transaction: t,
+        });
 
         // notification table
         await queryInterface.createTable(
@@ -126,7 +120,7 @@ module.exports = {
             createdAt: sequelize.DataTypes.DATE,
             updatedAt: sequelize.DataTypes.DATE,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         // expand encounter with scores entered and scores accepted columns
@@ -138,15 +132,14 @@ module.exports = {
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t }
-        );    
-        
+          { transaction: t },
+        );
+
         // set all accepted encounters to true before 2022-10-08
         await queryInterface.sequelize.query(
           `UPDATE "event"."EncounterCompetitions" SET "accepted" = true WHERE "accepted" IS NULL AND "createdAt" < '2022-10-08'`,
-          { transaction: t }
+          { transaction: t },
         );
-
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();
@@ -156,7 +149,6 @@ module.exports = {
 
   down: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
-
       // drop settings schema
       await queryInterface.dropSchema('personal', { transaction: t });
 
@@ -164,7 +156,7 @@ module.exports = {
       await queryInterface.removeColumn(
         { tableName: 'EncounterCompetitions', schema: 'event' },
         'accepted',
-        { transaction: t }
+        { transaction: t },
       );
 
       try {

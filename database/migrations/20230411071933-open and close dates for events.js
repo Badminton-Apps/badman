@@ -5,16 +5,15 @@
 module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
-      
       console.log('Removing allowEnlisting column');
-      
+
       await queryInterface.removeColumn(
         {
           tableName: 'EventCompetitions',
           schema: 'event',
         },
         'allowEnlisting',
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.removeColumn(
@@ -23,7 +22,7 @@ module.exports = {
           schema: 'event',
         },
         'allowEnlisting',
-        { transaction: t }
+        { transaction: t },
       );
 
       console.log('Adding open and close dates for events');
@@ -38,7 +37,7 @@ module.exports = {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.addColumn(
@@ -51,7 +50,7 @@ module.exports = {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.addColumn(
@@ -64,7 +63,7 @@ module.exports = {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       await queryInterface.addColumn(
@@ -77,7 +76,7 @@ module.exports = {
           type: sequelize.DataTypes.DATE,
           allowNull: true,
         },
-        { transaction: t }
+        { transaction: t },
       );
 
       try {
@@ -97,7 +96,7 @@ module.exports = {
             schema: 'event',
           },
           'openDate',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
@@ -106,7 +105,7 @@ module.exports = {
             schema: 'event',
           },
           'closeDate',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
@@ -115,7 +114,7 @@ module.exports = {
             schema: 'event',
           },
           'openDate',
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.removeColumn(
@@ -124,7 +123,7 @@ module.exports = {
             schema: 'event',
           },
           'closeDate',
-          { transaction: t }
+          { transaction: t },
         );
 
         // Add allowEnlisting column
@@ -139,7 +138,7 @@ module.exports = {
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t }
+          { transaction: t },
         );
 
         await queryInterface.addColumn(
@@ -153,7 +152,7 @@ module.exports = {
             allowNull: false,
             defaultValue: false,
           },
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

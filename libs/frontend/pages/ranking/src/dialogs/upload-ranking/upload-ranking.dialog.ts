@@ -6,11 +6,7 @@ import {
   Inject,
   inject,
 } from '@angular/core';
-import {
-  MatDialogModule,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RankingSystem } from '@badman/frontend-models';
 
 import { HttpClient, HttpEventType } from '@angular/common/http';
@@ -29,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RANKING_CONFIG } from '../../injection';
+import moment from 'moment';
 
 @Component({
   selector: 'badman-upload-ranking',
@@ -38,8 +35,6 @@ import { RANKING_CONFIG } from '../../injection';
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
-
-    // Material modules
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
@@ -110,18 +105,23 @@ export class UploadRankingDialogComponent {
       return;
     }
 
+    // if the filename has 'exportMembersRolePerGroup-' then the part after is the date in DDMMYYYY format set the ranking date to that
+    if (this.uploadedFile.name.includes('exportMembersRolePerGroup-')) {
+      const datePart = this.uploadedFile.name.split('exportMembersRolePerGroup-')[1];
+      const date = moment(datePart, 'DDMMYYYY');
+      if (date.isValid()) {
+        this.rankingDate = date.toDate();
+      }
+    }
+
     const formData = new FormData();
     formData.append('file', this.uploadedFile, this.uploadedFile.name);
 
     this.uploadProgress$ = this.http
-      .post<MembersRolePerGroupData[]>(
-        `${this.config.api}/upload/preview`,
-        formData,
-        {
-          reportProgress: true,
-          observe: 'events',
-        },
-      )
+      .post<MembersRolePerGroupData[]>(`${this.config.api}/upload/preview`, formData, {
+        reportProgress: true,
+        observe: 'events',
+      })
       .subscribe((event) => {
         if (event.type === HttpEventType.Response) {
           this.headerRow = (event.body?.[0] || []) as string[];
@@ -151,13 +151,10 @@ export class UploadRankingDialogComponent {
     formData.append('createNewPlayers', this.createNewPlayers.toString());
     formData.append('rankingDate', this.rankingDate.toISOString());
     formData.append('updateRanking', this.updateRanking.toString());
- 
+
     try {
       const result = await lastValueFrom(
-        this.http.post<{ message: boolean }>(
-          `${this.config.api}/upload/process`,
-          formData,
-        ),
+        this.http.post<{ message: boolean }>(`${this.config.api}/upload/process`, formData),
       );
 
       if (result?.message) {
@@ -167,7 +164,6 @@ export class UploadRankingDialogComponent {
       }
 
       this.dialogRef.close();
-
     } catch (error) {
       console.error(error);
     } finally {

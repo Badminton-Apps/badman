@@ -29,8 +29,8 @@ export const environment = {
     },
   },
   vitals: {
-    url: "https://vitals.vercel-analytics.com/v1/vitals",
-    analyticsId: "zKT4xSXr0gDIdX4JmvpaUPwJwMG",
+    url: 'https://vitals.vercel-analytics.com/v1/vitals',
+    analyticsId: 'zKT4xSXr0gDIdX4JmvpaUPwJwMG',
     enabled: true,
   },
   version: packages.version,

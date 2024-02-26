@@ -46,8 +46,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       options = {};
     }
 
-    options.logger =
-      options.logger || new Logger(TournamentSyncGameProcessor.name);
+    options.logger = options.logger || new Logger(TournamentSyncGameProcessor.name);
     super(options);
 
     this.gameOptions = options || {};
@@ -61,9 +60,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    await runParallel(
-      this.draws?.map((e) => this._processSubevent(e.draw, e.internalId)) ?? [],
-    );
+    await runParallel(this.draws?.map((e) => this._processSubevent(e.draw, e.internalId)) ?? []);
 
     return this._games;
   }
@@ -77,13 +74,9 @@ export class TournamentSyncGameProcessor extends StepProcessor {
       transaction: this.transaction,
       // include: [Player]
     });
-    const subEvent = this.subEvents?.find(
-      (sub) => draw.subeventId === sub.subEvent.id,
-    )?.subEvent;
+    const subEvent = this.subEvents?.find((sub) => draw.subeventId === sub.subEvent.id)?.subEvent;
 
-    const isLastWeek = moment()
-      .subtract(2, 'week')
-      .isBefore(this.event.event.firstDay);
+    const isLastWeek = moment().subtract(2, 'week').isBefore(this.event.event.firstDay);
 
     const visualMatch = (await this.visualService.getMatches(
       this.visualTournament.Code,
@@ -100,12 +93,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
           : this.event.event.firstDay;
 
       // Check if encounter was before last run, skip if only process new events
-      if (
-        this.gameOptions.newGames &&
-        playedAt &&
-        this.lastRun &&
-        playedAt < this.lastRun
-      ) {
+      if (this.gameOptions.newGames && playedAt && this.lastRun && playedAt < this.lastRun) {
         continue;
       }
 
@@ -410,10 +398,8 @@ export class TournamentSyncGameProcessor extends StepProcessor {
 
       returnPlayer = [...(this.players?.values() ?? [])].find(
         (p) =>
-          (p.firstName === corrected.firstName &&
-            p.lastName === corrected.lastName) ||
-          (p.firstName === corrected.lastName &&
-            p.lastName === corrected.firstName),
+          (p.firstName === corrected.firstName && p.lastName === corrected.lastName) ||
+          (p.firstName === corrected.lastName && p.lastName === corrected.firstName),
       );
     }
     return returnPlayer;

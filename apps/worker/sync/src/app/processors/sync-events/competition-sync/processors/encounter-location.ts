@@ -1,10 +1,4 @@
-import {
-  Availability,
-  Club,
-  EventCompetition,
-  Location,
-  Team,
-} from '@badman/backend-database';
+import { Availability, Club, EventCompetition, Location, Team } from '@badman/backend-database';
 import { runParallel } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import moment from 'moment';
@@ -19,9 +13,7 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
     if (!options) {
       options = {};
     }
-    options.logger =
-      options.logger ||
-      new Logger(CompetitionSyncEncounterLocationProcessor.name);
+    options.logger = options.logger || new Logger(CompetitionSyncEncounterLocationProcessor.name);
     super(options);
   }
 
@@ -48,23 +40,24 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
     // get the encounters grouped by encounter.home?.clubId
     const clubEncounterMap = this.encounters
       ?.filter((e) => e.encounter.locationId == null)
-      ?.reduce((acc, encounter) => {
-        const team = teams.find(
-          (team) => team.id === encounter.encounter.homeTeamId
-        );
-        const clubId = team?.clubId;
-        if (!clubId) {
+      ?.reduce(
+        (acc, encounter) => {
+          const team = teams.find((team) => team.id === encounter.encounter.homeTeamId);
+          const clubId = team?.clubId;
+          if (!clubId) {
+            return acc;
+          }
+
+          if (!acc[clubId]) {
+            acc[clubId] = [];
+          }
+
+          acc[clubId].push(encounter);
+
           return acc;
-        }
-
-        if (!acc[clubId]) {
-          acc[clubId] = [];
-        }
-
-        acc[clubId].push(encounter);
-
-        return acc;
-      }, {} as Record<string, EncounterStepData[]>);
+        },
+        {} as Record<string, EncounterStepData[]>,
+      );
 
     // get all the clubs
     const clubs = await Club.findAll({
@@ -88,16 +81,11 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
     });
 
     await runParallel(
-      clubs.map((club) =>
-        this._processEncountersForClub(clubEncounterMap[club.id] ?? [], club)
-      )
+      clubs.map((club) => this._processEncountersForClub(clubEncounterMap[club.id] ?? [], club)),
     );
   }
 
-  private async _processEncountersForClub(
-    encounters: EncounterStepData[],
-    club: Club
-  ) {
+  private async _processEncountersForClub(encounters: EncounterStepData[], club: Club) {
     // for each encounter, check if the location is not set
     for (const encounter of encounters) {
       if (encounter.encounter.locationId) {
@@ -105,13 +93,11 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
       }
 
       // get the location for the club
-      const locations = club.locations?.filter(
-        (location) => location.availabilities?.length
-      );
+      const locations = club.locations?.filter((location) => location.availabilities?.length);
 
       if (!locations || !locations.length) {
         this.logger.warn(
-          `No locations found for club ${club.id} for encounter ${encounter.encounter.id}`
+          `No locations found for club ${club.id} for encounter ${encounter.encounter.id}`,
         );
         continue;
       }
@@ -142,22 +128,20 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
               });
 
               this.logger.debug(
-                `Checing if date ${momentdate.format(
-                  'YYYY-MM-DD HH:mm'
-                )} is between ${startTime
+                `Checing if date ${momentdate.format('YYYY-MM-DD HH:mm')} is between ${startTime
                   .clone()
                   .subtract(15, 'minutes')
                   .format('YYYY-MM-DD HH:mm')} and ${startTime
                   .clone()
                   .add(15, 'minutes')
-                  .format('YYYY-MM-DD HH:mm')}`
+                  .format('YYYY-MM-DD HH:mm')}`,
               );
 
               // check if the start time is whithin a 15 minute range of the encounter start time
               if (
                 momentdate.isBetween(
                   startTime.clone().subtract(15, 'minutes'),
-                  startTime.clone().add(15, 'minutes')
+                  startTime.clone().add(15, 'minutes'),
                 )
               ) {
                 options.push(location);
@@ -174,9 +158,7 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
 
       // if there are multiple locations, print a warning and pick the first
       if (options.length > 1) {
-        this.logger.warn(
-          `Multiple locations found for encounter ${encounter.encounter.id}`
-        );
+        this.logger.warn(`Multiple locations found for encounter ${encounter.encounter.id}`);
         encounter.encounter.locationId = options[0].id;
         await encounter.encounter.save({ transaction: this.transaction });
       }

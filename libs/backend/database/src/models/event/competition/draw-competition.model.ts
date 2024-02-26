@@ -29,15 +29,7 @@ import { EventEntry } from '../entry.model';
 import { EncounterCompetition } from './encounter-competition.model';
 import { SubEventCompetition } from './sub-event-competition.model';
 import { DrawType } from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import { Relation } from '../../../wrapper';
 
 @Table({
@@ -55,7 +47,13 @@ export class DrawCompetition extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Unique('DrawCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
@@ -114,38 +112,17 @@ export class DrawCompetition extends Model {
 
   // Belongs to SubEvent
   getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;
-  setSubEventCompetition!: BelongsToSetAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
+  setSubEventCompetition!: BelongsToSetAssociationMixin<SubEventCompetition, string>;
 
   // Has many Encounter
   getEncounterCompetitions!: HasManyGetAssociationsMixin<EncounterCompetition>;
-  setEncounterCompetitions!: HasManySetAssociationsMixin<
-    EncounterCompetition,
-    string
-  >;
-  addEncounterCompetitions!: HasManyAddAssociationsMixin<
-    EncounterCompetition,
-    string
-  >;
-  addEncounterCompetition!: HasManyAddAssociationMixin<
-    EncounterCompetition,
-    string
-  >;
-  removeEncounterCompetition!: HasManyRemoveAssociationMixin<
-    EncounterCompetition,
-    string
-  >;
-  removeEncounterCompetitions!: HasManyRemoveAssociationsMixin<
-    EncounterCompetition,
-    string
-  >;
+  setEncounterCompetitions!: HasManySetAssociationsMixin<EncounterCompetition, string>;
+  addEncounterCompetitions!: HasManyAddAssociationsMixin<EncounterCompetition, string>;
+  addEncounterCompetition!: HasManyAddAssociationMixin<EncounterCompetition, string>;
+  removeEncounterCompetition!: HasManyRemoveAssociationMixin<EncounterCompetition, string>;
+  removeEncounterCompetitions!: HasManyRemoveAssociationsMixin<EncounterCompetition, string>;
   hasEncounter!: HasManyHasAssociationMixin<EncounterCompetition, string>;
-  hasEncounterCompetitions!: HasManyHasAssociationsMixin<
-    EncounterCompetition,
-    string
-  >;
+  hasEncounterCompetitions!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
   countEncounterCompetitions!: HasManyCountAssociationsMixin;
 
   // Has many Entries
@@ -162,16 +139,12 @@ export class DrawCompetition extends Model {
 
 @InputType()
 export class DrawCompetitionUpdateInput extends PartialType(
-  OmitType(DrawCompetition, [
-    'createdAt',
-    'updatedAt',
-    'subEventCompetition',
-  ] as const),
-  InputType
+  OmitType(DrawCompetition, ['createdAt', 'updatedAt', 'subEventCompetition'] as const),
+  InputType,
 ) {}
 
 @InputType()
 export class DrawCompetitionNewInput extends PartialType(
   OmitType(DrawCompetitionUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

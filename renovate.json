@@ -1,9 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
-    "monorepo:nrwl"
-  ],
+  "extends": ["config:base", "monorepo:nrwl"],
   "semanticCommits": "enabled",
   "dependencyDashboardApproval": true,
   "rebaseWhen": "auto",
@@ -28,9 +25,7 @@
     },
     {
       "groupName": "jest monorepo",
-      "matchSourceUrls": [
-        "https://github.com/kulshekhar/ts-jest"
-      ],
+      "matchSourceUrls": ["https://github.com/kulshekhar/ts-jest"],
       "matchPackageNames": [
         "@types/jest",
         "jest",
@@ -41,18 +36,12 @@
     },
     {
       "extends": "monorepo:angular",
-      "matchPackageNames": [
-        "ng-packagr"
-      ]
+      "matchPackageNames": ["ng-packagr"]
     },
     {
       "groupName": "logtail monorepo",
-      "matchPackagePrefixes": [
-        "@logtail"
-      ]
+      "matchPackagePrefixes": ["@logtail"]
     }
   ],
-  "ignoreDeps": [
-    "@badman/*"
-  ]
+  "ignoreDeps": ["@badman/*"]
 }

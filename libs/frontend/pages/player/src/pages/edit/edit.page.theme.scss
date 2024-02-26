@@ -6,8 +6,6 @@
 @use './tabs/edit-ranking-all/edit-ranking-all.component.theme' as edit-ranking-all;
 @use './tabs/edit-permissions/edit-permissions.component.theme' as edit-permissions;
 
-
-
 @mixin color($theme) {
   @include edit-ranking-all.color($theme);
   @include edit-permissions.color($theme);
@@ -29,18 +27,5 @@
     .tab-content-header {
       @include mat.typography-level($typography-config, 'headline-6');
     }
-  }
-}
-
-@mixin theme($theme) {
-  // Only apply theme on the correct element
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

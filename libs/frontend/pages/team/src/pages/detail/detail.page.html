@@ -1,56 +1,55 @@
 <badman-page-header>
-  <div title>{{team().name}}</div>
-  <div subTitle *ngIf="this.entry()">
-    <ng-container *ngIf="this.entry()?.drawCompetition?.id">
-      #{{this.entry()?.standing?.position}}/{{this.entry()?.standing?.size}} in
-      <a
-        [routerLink]="['/competition', this.entry()?.subEventCompetition?.eventCompetition?.slug, 'draw', this.entry()?.drawCompetition?.id ]"
-        >{{this.entry()?.subEventCompetition?.eventCompetition?.name}}</a
-      >
-    </ng-container>
-
-    <ng-container
-      *ngIf="!this.entry()?.drawCompetition?.id && this.entry()?.id"
-    >
-      <a
-        [routerLink]="['/competition', this.entry()?.subEventCompetition?.eventCompetition?.slug ]"
-        >{{this.entry()?.subEventCompetition?.eventCompetition?.name}}</a
-      >
-    </ng-container>
-  </div>
-
+  <div title>{{ team().name }}</div>
+  @if (this.entry()) {
+    <div subTitle>
+      @if (this.entry()?.drawCompetition?.id) {
+        #{{ this.entry()?.standing?.position }}/{{ this.entry()?.standing?.size }} in
+        <a
+          [routerLink]="[
+            '/competition',
+            this.entry()?.subEventCompetition?.eventCompetition?.slug,
+            'draw',
+            this.entry()?.drawCompetition?.id
+          ]"
+          >{{ this.entry()?.subEventCompetition?.eventCompetition?.name }}</a
+        >
+      }
+      @if (!this.entry()?.drawCompetition?.id && this.entry()?.id) {
+        <a
+          [routerLink]="['/competition', this.entry()?.subEventCompetition?.eventCompetition?.slug]"
+          >{{ this.entry()?.subEventCompetition?.eventCompetition?.name }}</a
+        >
+      }
+    </div>
+  }
   <div actions>
     <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
     </button>
-
-    <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item [routerLink]="'edit'">
-        <mat-icon>edit</mat-icon>
-        <span>Edit</span>
+    <badman-has-claim [any]="['edit-any:club', this.team().clubId + '_edit:club']">
+      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+        <mat-icon>more_vert</mat-icon>
       </button>
-      <button mat-menu-item>
-        <mat-icon>delete</mat-icon>
-        <span>Delete</span>
-      </button>
-    </mat-menu>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item [routerLink]="'edit'">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </badman-has-claim>
   </div>
 </badman-page-header>
-
 <section class="games">
   <section class="recent-games">
-    <h3>{{"all.game.recent.title" | translate}}</h3>
-
-    <badman-recent-games [teamId]="team().id"></badman-recent-games>
+    <h3>{{ 'all.game.recent.title' | translate }}</h3>
+    <badman-recent-games [teams]="team()"></badman-recent-games>
   </section>
-
   <section class="upcoming-games">
-    <h3>{{"all.game.upcoming.title" | translate}}</h3>
-
-    <badman-upcoming-games [teamId]="team().id"></badman-upcoming-games>
+    <h3>{{ 'all.game.upcoming.title' | translate }}</h3>
+    <badman-upcoming-games [teams]="team()"></badman-upcoming-games>
   </section>
 </section>

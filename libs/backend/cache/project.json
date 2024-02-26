@@ -14,23 +14,6 @@
         "main": "libs/backend/cache/src/index.ts",
         "assets": ["libs/backend/cache/*.md"]
       }
-    },
-    "publish": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node tools/scripts/publish.mjs backend-cache {args.ver} {args.tag}"
-      },
-      "dependsOn": ["build"]
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
-      }
     }
   },
   "tags": []

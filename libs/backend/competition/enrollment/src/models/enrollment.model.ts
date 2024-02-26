@@ -32,7 +32,7 @@ export class EnrollmentInput {
 @InputType()
 export class EnrollmentInputTeam extends PartialType(
   PickType(Team, ['id', 'name', 'type', 'link', 'teamNumber'] as const),
-  InputType
+  InputType,
 ) {
   @Field(() => [ID], { nullable: true })
   basePlayers?: string[];
@@ -56,7 +56,7 @@ export class EnrollmentOutput {
 @ObjectType()
 export class PlayerRankingType extends PartialType(
   OmitType(PlayerUpdateInput, ['sub', 'permissions'] as const),
-  ObjectType
+  ObjectType,
 ) {
   @Field(() => Number)
   single?: number;

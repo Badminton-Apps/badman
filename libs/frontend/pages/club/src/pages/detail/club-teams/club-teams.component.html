@@ -1,112 +1,96 @@
-<ng-container *ngIf="this.clubTeamsService.loaded()">
+@if (this.clubTeamsService.loaded()) {
   <section class="teams">
     <div class="title">
       <h3>
         <mat-icon color="primary">groups</mat-icon>
         {{ 'all.club.titles.teams' | translate }}
       </h3>
-      <badman-has-claim [any]="['edit-any:club', this.clubId() + '_edit:club']">
+      <badman-has-claim [any]="['edit-any:club', this.clubId()() + '_edit:club']">
         <button mat-icon-button (click)="this.addTeam()">
           <mat-icon>add</mat-icon>
         </button>
       </badman-has-claim>
     </div>
     <div class="teams-container">
-      <div class="team" *ngFor="let team of this.clubTeamsService.teams()">
-        <div [routerLink]="['team', team.slug]">
-          <span class="name">{{ team.name }}</span>
-          <span class="event" *ngIf="team.entry?.subEventCompetition?.name">
-            <ng-container *ngIf="team.entry?.standing">
-              #{{ team.entry?.standing?.position }}/{{
-                team.entry?.standing?.size
-              }}
-              in </ng-container
-            >{{ team.entry?.subEventCompetition?.name }}</span
-          >
+      @for (team of this.clubTeamsService.teams(); track team) {
+        <div class="team">
+          <div [routerLink]="['team', team.slug]">
+            <span class="name">{{ team.name }}</span>
+            @if (team.entry?.subEventCompetition?.name) {
+              <span class="event">
+                @if (team.entry?.standing) {
+                  #{{ team.entry?.standing?.position }}/{{ team.entry?.standing?.size }}
+                  in
+                }
+                {{ team.entry?.subEventCompetition?.name }}</span
+              >
+            }
+          </div>
+          <!-- allow editing if the entry is empty -->
+          @if (this.whenTeamEdit) {
+            <badman-has-claim [any]="[this.clubId()() + '_edit:club', 'edit-any:club']">
+              <button
+                mat-icon-button
+                aria-label="edit team"
+                class="edit-button"
+                (click)="this.editTeam(team)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            </badman-has-claim>
+          }
         </div>
-
-        <!-- allow editing if the entry is empty -->
-        <badman-has-claim
-          [any]="[this.clubId() + '_edit:club', 'edit-any:club']"
-          *ngIf="this.whenTeamEdit"
-        >
-          <button
-            mat-icon-button
-            aria-label="edit team"
-            class="edit-button"
-            (click)="this.editTeam(team)"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-        </badman-has-claim>
-      </div>
+      }
     </div>
   </section>
-
-  <section class="games" *ngIf="this.clubTeamsService.teams().length > 0">
-    <section class="recent-games">
-      <h3>
-        <mat-icon color="primary">history</mat-icon>
-        {{ 'all.game.recent.title' | translate }}
-      </h3>
-      <badman-recent-games
-        *ngIf="isClient"
-        [clubId]="this.clubId()"
-        [teams]="this.clubTeamsService.teams()"
-      ></badman-recent-games>
+  @if (this.clubTeamsService.teams().length > 0) {
+    <section class="games">
+      <section class="recent-games">
+        <h3>
+          <mat-icon color="primary">history</mat-icon>
+          {{ 'all.game.recent.title' | translate }}
+        </h3>
+        @if (isClient) {
+          <badman-recent-games
+            [clubId]="this.clubId()()"
+            [teams]="this.clubTeamsService.teams()"
+          ></badman-recent-games>
+        }
+      </section>
+      <section class="upcoming-games">
+        <h3>
+          <mat-icon color="primary">calendar_month</mat-icon>
+          {{ 'all.game.upcoming.title' | translate }}
+        </h3>
+        <badman-upcoming-games
+          [clubId]="this.clubId()()"
+          [teams]="this.clubTeamsService.teams()"
+        ></badman-upcoming-games>
+      </section>
     </section>
-
-    <section class="upcoming-games">
-      <h3>
-        <mat-icon color="primary">calendar_month</mat-icon>
-        {{ 'all.game.upcoming.title' | translate }}
-      </h3>
-      <badman-upcoming-games
-        [clubId]="this.clubId()"
-        [teams]="this.clubTeamsService.teams()"
-      ></badman-upcoming-games>
-    </section>
-  </section>
-</ng-container>
-
-<ng-container *ngIf="!this.clubTeamsService.loaded()">
+  }
+} @else {
   <section class="teams">
     <h3>
       <mat-icon color="primary">groups</mat-icon>
       {{ 'all.club.titles.teams' | translate }}
     </h3>
-    <badman-loading-block
-      [items]="9"
-      height="74px"
-      width="250px"
-      direction="row"
-    />
+    <badman-loading-block [items]="9" height="74px" width="250px" direction="row" />
   </section>
-
   <section class="games">
     <section class="recent-games">
       <h3>
         <mat-icon color="primary">history</mat-icon>
         {{ 'all.game.recent.title' | translate }}
       </h3>
-      <badman-loading-block
-        height="24px"
-        subHeight="12px"
-        [items]="10"
-        width="400px"
-      />
+      <badman-loading-block height="24px" subHeight="12px" [items]="10" width="400px" />
     </section>
     <section class="upcoming-games">
       <h3>
         <mat-icon color="primary">calendar_month</mat-icon>
         {{ 'all.game.upcoming.title' | translate }}
       </h3>
-      <badman-loading-block
-        height="24px"
-        subHeight="12px"
-        [items]="10"
-        width="300px"
-      />
+      <badman-loading-block height="24px" subHeight="12px" [items]="10" width="300px" />
     </section>
   </section>
-</ng-container>
+}

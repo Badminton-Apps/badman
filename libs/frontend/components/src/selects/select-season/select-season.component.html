@@ -1,11 +1,13 @@
-<ng-container *ngIf="this.group" [formGroup]="group">
+<ng-container [formGroup]="group()">
   <!-- year selection -->
-  <mat-form-field *ngIf="this.seasons">
-    <mat-label>{{'all.pickers.select-season' | translate}}</mat-label>
-    <mat-select formControlName="season">
-      <mat-option *ngFor="let season of this.seasons()" [value]="season">
-        {{ season }} - {{ season + 1 }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+  @if (this.seasons) {
+    <mat-form-field>
+      <mat-label>{{ 'all.pickers.select-season' | translate }}</mat-label>
+      <mat-select [formControlName]="this.controlName()">
+        @for (season of this.seasons(); track season) {
+          <mat-option [value]="season"> {{ season }} - {{ season + 1 }} </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
 </ng-container>

@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, input } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Claim } from '@badman/frontend-models';
 
@@ -18,11 +12,9 @@ import { Claim } from '@badman/frontend-models';
   imports: [CommonModule, MatSlideToggleModule],
 })
 export class ClaimComponent {
-  @Input()
-  claim!: Claim;
+  claim = input<Claim>();
 
-  @Input()
-  value!: boolean;
+  value = input<boolean>();
 
   @Output()
   whenChange = new EventEmitter<boolean>();
