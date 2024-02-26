@@ -16,14 +16,14 @@ import { AssemblyValidationError } from './error.model';
 
 @InputType()
 export class AssemblyInput {
-  @Field(() => ID)
+  @Field(() => ID, { nullable: true })
   encounterId!: string;
 
   @Field(() => ID)
   teamId!: string;
 
   @Field(() => ID, { nullable: true })
-  systemId!: string;
+  systemId?: string;
 
   @Field(() => ID, { nullable: true })
   captainId?: string;
@@ -86,7 +86,6 @@ export class AssemblyOutput {
   titularsPlayerData?: Player[];
   basePlayersData?: EntryCompetitionPlayer[];
 }
-
 
 export class AssemblyValidationData {
   type?: SubEventTypeEnum;

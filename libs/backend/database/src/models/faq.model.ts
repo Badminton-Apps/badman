@@ -1,21 +1,6 @@
-import {
-  ObjectType,
-  Field,
-  ID,
-  InputType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { ObjectType, Field, ID, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { BuildOptions } from 'sequelize';
-import {
-  Table,
-  Default,
-  DataType,
-  IsUUID,
-  PrimaryKey,
-  Column,
-  Model,
-} from 'sequelize-typescript';
+import { Table, Default, DataType, IsUUID, PrimaryKey, Column, Model } from 'sequelize-typescript';
 
 @Table({
   timestamps: true,
@@ -27,18 +12,18 @@ export class Faq extends Model {
     super(values, options);
   }
 
-  @Field(() => Date, {nullable: true })
-  updatedAt?: Date;
-
-  @Field(() => Date, {nullable: true })
-  createdAt?: Date;
-
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Field(() => String)
   @Column(DataType.STRING)
@@ -52,11 +37,11 @@ export class Faq extends Model {
 @InputType()
 export class FaqUpdateInput extends PartialType(
   OmitType(Faq, ['createdAt', 'updatedAt'] as const),
-  InputType
+  InputType,
 ) {}
 
 @InputType()
 export class FaqNewInput extends PartialType(
   OmitType(FaqUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

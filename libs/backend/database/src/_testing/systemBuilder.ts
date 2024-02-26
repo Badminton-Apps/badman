@@ -2,20 +2,22 @@ import { RankingSystems } from '@badman/utils';
 import { RankingSystem } from '../models';
 import { SystemGroupBuilder } from './systemGroupBuilder';
 import { RankingPlaceBuilder } from './rankingPlaceBuilder';
+import { RankingLastPlaceBuilder } from './rankingLastPlaceBuilder';
 
 export class SystemBuilder {
   private build = false;
-  
+
   private system: RankingSystem;
 
   private groups: SystemGroupBuilder[] = [];
   private rankingPlaces: RankingPlaceBuilder[] = [];
+  private rankingLastPlaces: RankingLastPlaceBuilder[] = [];
 
   constructor(
     rankingSystem: RankingSystems,
     amountOfLevels: number,
     procentWinning: number,
-    procentWinningPlus1: number
+    procentWinningPlus1: number,
   ) {
     this.system = new RankingSystem({
       rankingSystem,
@@ -29,14 +31,9 @@ export class SystemBuilder {
     rankingSystem: RankingSystems,
     amountOfLevels: number,
     procentWinning: number,
-    procentWinningPlus1: number
+    procentWinningPlus1: number,
   ): SystemBuilder {
-    return new SystemBuilder(
-      rankingSystem,
-      amountOfLevels,
-      procentWinning,
-      procentWinningPlus1
-    );
+    return new SystemBuilder(rankingSystem, amountOfLevels, procentWinning, procentWinningPlus1);
   }
 
   WithName(name: string): SystemBuilder {
@@ -50,15 +47,11 @@ export class SystemBuilder {
     return this;
   }
 
-  WithcalculationIntervalAmount(
-    calculationIntervalAmount: number
-  ): SystemBuilder {
+  WithcalculationIntervalAmount(calculationIntervalAmount: number): SystemBuilder {
     this.system.calculationIntervalAmount = calculationIntervalAmount;
     return this;
   }
-  WithCalculationIntervalUnit(
-    calculationIntervalUnit: 'months' | 'weeks' | 'days'
-  ): SystemBuilder {
+  WithCalculationIntervalUnit(calculationIntervalUnit: 'months' | 'weeks' | 'days'): SystemBuilder {
     this.system.calculationIntervalUnit = calculationIntervalUnit;
     return this;
   }
@@ -66,9 +59,7 @@ export class SystemBuilder {
     this.system.updateIntervalAmount = updateIntervalAmount;
     return this;
   }
-  WithUpdateIntervalUnit(
-    updateIntervalUnit: 'months' | 'weeks' | 'days'
-  ): SystemBuilder {
+  WithUpdateIntervalUnit(updateIntervalUnit: 'months' | 'weeks' | 'days'): SystemBuilder {
     this.system.updateIntervalUnit = updateIntervalUnit;
     return this;
   }
@@ -84,15 +75,11 @@ export class SystemBuilder {
     this.system.procentLosing = procentLosing;
     return this;
   }
-  WithMinNumberOfGamesUsedForUpgrade(
-    minNumberOfGamesUsedForUpgrade: number
-  ): SystemBuilder {
+  WithMinNumberOfGamesUsedForUpgrade(minNumberOfGamesUsedForUpgrade: number): SystemBuilder {
     this.system.minNumberOfGamesUsedForUpgrade = minNumberOfGamesUsedForUpgrade;
     return this;
   }
-  WithMinNumberOfGamesUsedForDowngrade(
-    minNumberOfGamesUsedForDowngrade: number
-  ): SystemBuilder {
+  WithMinNumberOfGamesUsedForDowngrade(minNumberOfGamesUsedForDowngrade: number): SystemBuilder {
     this.system.minNumberOfGamesUsedForDowngrade = minNumberOfGamesUsedForDowngrade;
     return this;
   }
@@ -146,6 +133,11 @@ export class SystemBuilder {
     return this;
   }
 
+  WithrankingLastPlace(rankingPlace: RankingLastPlaceBuilder): SystemBuilder {
+    this.rankingLastPlaces.push(rankingPlace);
+    return this;
+  }
+
   AsPrimary(): SystemBuilder {
     this.system.primary = true;
     return this;
@@ -173,6 +165,9 @@ export class SystemBuilder {
         place.WithSystemId(this.system.id);
       }
 
+      for (const place of this.rankingLastPlaces) {
+        place.WithSystemId(this.system.id);
+      }
     } catch (error) {
       console.error(error);
       throw error;

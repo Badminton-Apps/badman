@@ -40,18 +40,12 @@ export class EnableNotificationsService {
             });
           }
 
-          if (
-            setting?.encounterNotAcceptedNotification != NotificationType.NONE
-          ) {
+          if (setting?.encounterNotAcceptedNotification != NotificationType.NONE) {
             setting.encounterNotAcceptedNotification = NotificationType.EMAIL;
           }
 
-          if (
-            setting?.encounterChangeConfirmationNotification !=
-            NotificationType.NONE
-          ) {
-            setting.encounterChangeConfirmationNotification =
-              NotificationType.EMAIL;
+          if (setting?.encounterChangeConfirmationNotification != NotificationType.NONE) {
+            setting.encounterChangeConfirmationNotification = NotificationType.EMAIL;
           }
           activated.push({
             firstName: team.captain.firstName,

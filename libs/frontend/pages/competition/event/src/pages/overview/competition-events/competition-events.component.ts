@@ -3,12 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   Injector,
-  Input,
   OnInit,
   PLATFORM_ID,
   Signal,
   TransferState,
   inject,
+  input,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -25,8 +25,8 @@ import {
   LoadingBlockComponent,
   OpenCloseDateDialogComponent,
 } from '@badman/frontend-components';
-import { JobsService } from '@badman/frontend-queue';
 import { EventCompetition } from '@badman/frontend-models';
+import { JobsService } from '@badman/frontend-queue';
 import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -42,13 +42,10 @@ import { RisersFallersDialogComponent } from '../../../dialogs';
     CommonModule,
     RouterModule,
     TranslateModule,
-
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
-
-    // own components
     HasClaimComponent,
     LoadingBlockComponent,
     BadmanBlockModule,
@@ -74,7 +71,13 @@ export class CompetitionEventsComponent implements OnInit {
   loading = signal(false);
 
   // Inputs
-  @Input() filter?: FormGroup<{
+  filter = input<
+    FormGroup<{
+      season: FormControl<number | null>;
+      official: FormControl<boolean | null>;
+    }>
+  >();
+  protected internalFilter!: FormGroup<{
     season: FormControl<number | null>;
     official: FormControl<boolean | null>;
   }>;
@@ -85,19 +88,26 @@ export class CompetitionEventsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.filter) {
-      this.filter = new FormGroup({
+    if (this.filter() != undefined) {
+      this.internalFilter = this.internalFilter as FormGroup<{
+        season: FormControl<number | null>;
+        official: FormControl<boolean | null>;
+      }>;
+    }
+
+    if (!this.internalFilter) {
+      this.internalFilter = new FormGroup({
         season: new FormControl(getCurrentSeason()),
         official: new FormControl(true),
       });
     }
 
     this.events = toSignal(
-      this.filter?.valueChanges?.pipe(
+      this.internalFilter?.valueChanges?.pipe(
         tap(() => {
           this.loading.set(true);
         }),
-        startWith(this.filter.value ?? {}),
+        startWith(this.internalFilter.value ?? {}),
         switchMap((filter) => {
           return this.apollo.watchQuery<{
             eventCompetitions: {
@@ -106,10 +116,7 @@ export class CompetitionEventsComponent implements OnInit {
             };
           }>({
             query: gql`
-              query GetEventsCompetition(
-                $where: JSONObject
-                $order: [SortOrderType!]
-              ) {
+              query GetEventsCompetition($where: JSONObject, $order: [SortOrderType!]) {
                 eventCompetitions(where: $where, order: $order) {
                   count
                   rows {
@@ -149,23 +156,21 @@ export class CompetitionEventsComponent implements OnInit {
           }).valueChanges;
         }),
         transferState(
-          `competitions-${this.filter?.value.official ?? true}`,
+          `competitions-${this.internalFilter?.value.official ?? true}`,
           this.stateTransfer,
-          this.platformId
+          this.platformId,
         ),
         map((result) => {
           if (!result?.data.eventCompetitions) {
             throw new Error('No competitions found');
           }
-          return result.data.eventCompetitions.rows.map(
-            (team) => new EventCompetition(team)
-          );
+          return result.data.eventCompetitions.rows.map((team) => new EventCompetition(team));
         }),
         tap(() => {
           this.loading.set(false);
-        })
+        }),
       ) ?? of([]),
-      { injector: this.injector }
+      { injector: this.injector },
     );
   }
 
@@ -191,9 +196,7 @@ export class CompetitionEventsComponent implements OnInit {
         this.apollo
           .mutate({
             mutation: gql`
-              mutation UpdateEventCompetition(
-                $data: EventCompetitionUpdateInput!
-              ) {
+              mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
                 updateEventCompetition(data: $data) {
                   id
                 }
@@ -213,7 +216,7 @@ export class CompetitionEventsComponent implements OnInit {
               'Close',
               {
                 duration: 2000,
-              }
+              },
             );
             this.changeDetectorRef.detectChanges();
           });
@@ -240,13 +243,11 @@ export class CompetitionEventsComponent implements OnInit {
       })
       .subscribe(() => {
         this.snackBar.open(
-          `Competition ${competition.name} is ${
-            offical ? 'official' : 'unofficial'
-          }`,
+          `Competition ${competition.name} is ${offical ? 'official' : 'unofficial'}`,
           'Close',
           {
             duration: 2000,
-          }
+          },
         );
 
         this.changeDetectorRef.detectChanges();
@@ -259,8 +260,6 @@ export class CompetitionEventsComponent implements OnInit {
       return;
     }
 
-    await lastValueFrom(
-      this.jobsService.syncEventById({ id: competition.visualCode })
-    );
+    await lastValueFrom(this.jobsService.syncEventById({ id: competition.visualCode }));
   }
 }

@@ -1,4 +1,3 @@
-
 export class Faq {
   id?: string;
   question?: string;
@@ -8,7 +7,5 @@ export class Faq {
     this.id = args.id;
     this.question = args.question;
     this.answer = args.answer;
-    
   }
 }
-

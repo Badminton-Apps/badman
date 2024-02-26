@@ -14,15 +14,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
@@ -33,7 +25,7 @@ export class CommentResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) {}
 
   @Query(() => Comment)
@@ -59,7 +51,7 @@ export class CommentResolver {
   @Mutation(() => Comment)
   async addComment(
     @Args('data') newCommentData: CommentNewInput,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<Comment> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -71,15 +63,10 @@ export class CommentResolver {
         throw new BadRequestException(`linkId is required`);
       }
 
-      const link = await this.getLink(
-        newCommentData.linkType,
-        newCommentData.linkId
-      );
+      const link = await this.getLink(newCommentData.linkType, newCommentData.linkId);
 
       if (!link) {
-        throw new NotFoundException(
-          `${newCommentData.linkType}: ${newCommentData.linkId}`
-        );
+        throw new NotFoundException(`${newCommentData.linkType}: ${newCommentData.linkId}`);
       }
 
       // const recipe = await this.recipesService.create(newCommentData);
@@ -105,18 +92,14 @@ export class CommentResolver {
           break;
         case 'encounterChange':
           if (!(link instanceof EncounterCompetition)) {
-            throw new BadRequestException(
-              `linkType is not home_comment_chamge`
-            );
+            throw new BadRequestException(`linkType is not home_comment_chamge`);
           }
           await this.encounterChangeComment(link, comment, user, transaction);
           break;
 
         case 'encounter':
           if (!(link instanceof EncounterCompetition)) {
-            throw new BadRequestException(
-              `linkType is not home_comment_chamge`
-            );
+            throw new BadRequestException(`linkType is not home_comment_chamge`);
           }
           await this.encounterComment(link, comment, user, transaction);
           break;
@@ -134,7 +117,7 @@ export class CommentResolver {
   @Mutation(() => Comment)
   async updateComment(
     @Args('data') updateCommentData: CommentUpdateInput,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<Comment> {
     const transaction = await this._sequelize.transaction();
     try {
@@ -147,9 +130,7 @@ export class CommentResolver {
       }
 
       if (dbComment.playerId !== user?.id) {
-        throw new UnauthorizedException(
-          `You do not have permission to edit this comment`
-        );
+        throw new UnauthorizedException(`You do not have permission to edit this comment`);
       }
 
       if (!updateCommentData?.linkType) {
@@ -160,21 +141,16 @@ export class CommentResolver {
         throw new BadRequestException(`linkId is required`);
       }
 
-      const link = await this.getLink(
-        updateCommentData.linkType,
-        updateCommentData.linkId
-      );
+      const link = await this.getLink(updateCommentData.linkType, updateCommentData.linkId);
       if (!link) {
-        throw new NotFoundException(
-          `${updateCommentData.linkType}: ${updateCommentData.linkId}`
-        );
+        throw new NotFoundException(`${updateCommentData.linkType}: ${updateCommentData.linkId}`);
       }
 
       await dbComment.update(
         { ...dbComment.toJSON(), ...updateCommentData },
         {
           transaction,
-        }
+        },
       );
 
       await transaction.commit();
@@ -206,7 +182,7 @@ export class CommentResolver {
     link: EncounterCompetition,
     comment: Comment,
     user: Player,
-    transaction: Transaction
+    transaction: Transaction,
   ) {
     const home = await link.getHome();
     const away = await link.getAway();
@@ -218,9 +194,7 @@ export class CommentResolver {
         'change-any:encounter',
       ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this comment`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this comment`);
     }
 
     if (home.clubId === comment.clubId) {
@@ -228,22 +202,17 @@ export class CommentResolver {
     } else if (away.clubId === comment.clubId) {
       await link.addAwayCommentsChange(comment, { transaction });
     } else {
-      throw new BadRequestException(
-        `clubId: ${comment.clubId} is not home or away`
-      );
+      throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
     }
 
     // send notification
-    this.notificationService.notifyEncounterChange(
-      link,
-      home.clubId === comment.clubId
-    );
+    this.notificationService.notifyEncounterChange(link, home.clubId === comment.clubId);
   }
   private async encounterComment(
     link: EncounterCompetition,
     comment: Comment,
     user: Player,
-    transaction: Transaction
+    transaction: Transaction,
   ) {
     const home = await link.getHome();
     const away = await link.getAway();
@@ -255,9 +224,7 @@ export class CommentResolver {
         'change-any:encounter',
       ]))
     ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this comment`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this comment`);
     }
 
     if (home.clubId === comment.clubId) {
@@ -265,9 +232,7 @@ export class CommentResolver {
     } else if (away.clubId === comment.clubId) {
       await link.addAwayComment(comment, { transaction });
     } else {
-      throw new BadRequestException(
-        `clubId: ${comment.clubId} is not home or away`
-      );
+      throw new BadRequestException(`clubId: ${comment.clubId} is not home or away`);
     }
   }
 }

@@ -1,18 +1,17 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Inject,
-  Input,
+  Injector,
   OnInit,
   PLATFORM_ID,
   TransferState,
+  computed,
+  inject,
+  input,
+  signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
@@ -48,11 +47,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-
-    // Core modules
     TranslateModule,
-
-    // Material Modules
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
@@ -64,28 +59,31 @@ import {
   styleUrls: ['./select-club.component.scss'],
 })
 export class SelectClubComponent implements OnInit {
+  private readonly apollo = inject(Apollo);
+  private readonly claimSerice = inject(ClaimService);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly authService = inject(AuthenticateService);
+  private readonly transferState = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly injector = inject(Injector);
+
   destroy$ = new Subject<void>();
 
-  @Input()
-  group!: FormGroup;
+  group = input<FormGroup>();
 
-  @Input()
-  control?: FormControl<string | null | undefined>;
+  control = input<FormControl<string | null>>();
+  protected internalControl!: FormControl<string | null>;
 
-  @Input()
-  controlName = 'club';
+  controlName = input('club');
 
-  @Input()
-  singleClubPermission!: string;
+  singleClubPermission = input<string>('');
 
-  @Input()
-  allClubPermission!: string;
+  allClubPermission = input<string>('');
 
-  @Input()
-  needsPermission = false;
+  needsPermission = input(false);
 
-  @Input()
-  updateUrl = false;
+  updateUrl = input(false);
 
   #clubs = new BehaviorSubject<Club[] | null>(null);
   get clubs() {
@@ -93,63 +91,56 @@ export class SelectClubComponent implements OnInit {
   }
   filteredClubs$?: Observable<Club[]>;
 
-  @Input()
-  useAutocomplete: true | false | 'auto' = 'auto';
+  useAutocompleteInput = input<boolean | 'auto'>('auto', {
+    alias: 'useAutocomplete',
+  });
+  useAutocomplete = signal<boolean | 'auto'>(this.useAutocompleteInput());
 
-  @Input()
-  autoCompleteTreshold = 5;
+  autoCompleteTreshold = input(5);
 
-  @Input()
-  autoSelect = true;
+  autoSelect = input(true);
 
-  @Input()
-  allowDeselect = false;
+  allowDeselect = input(false);
 
-  constructor(
-    private apollo: Apollo,
-    private claimSerice: ClaimService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private authService: AuthenticateService,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
+  hasSingleClub = computed(() =>
+    this.claimSerice.hasAllClaims([`*_${this.singleClubPermission()}`]),
+  );
+
+  hasAllClubs = computed(() => this.claimSerice.hasAllClaims([`${this.allClubPermission()}`]));
+
+  user = this.authService.userSignal;
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<string>;
+    if (this.control()) {
+      this.internalControl = this.control() as FormControl<string>;
     }
 
-    if (!this.control) {
-      this.control = new FormControl<string | null>(null);
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group()?.get(this.controlName()) as FormControl<string>;
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (!this.internalControl) {
+      this.internalControl = new FormControl<string | null>(null);
+    }
+
+    if (this.group()) {
+      this.group()?.addControl(this.controlName(), this.internalControl);
     }
 
     combineLatest([
       this._getClubs(),
-      this.claimSerice.hasAllClaims$([`*_${this.singleClubPermission}`]),
-      this.claimSerice.hasAllClaims$([`${this.allClubPermission}`]),
-      this.authService.user$.pipe(startWith(undefined)),
+      toObservable(this.hasSingleClub, { injector: this.injector }),
+      toObservable(this.hasAllClubs, { injector: this.injector }),
+      toObservable(this.user, { injector: this.injector }),
       this.activatedRoute.queryParamMap,
     ])
       .pipe(
         takeUntil(this.destroy$),
         switchMap(([allClubs, , all, user, params]) => {
-          if (this.needsPermission && !all) {
+          if (this.needsPermission() && !all) {
             return this.claimSerice.claims$.pipe(
-              map(
-                (r) =>
-                  r?.filter((x) => x?.indexOf(this.singleClubPermission) != -1),
-              ),
-              map(
-                (r) =>
-                  r?.map(
-                    (c) => c?.replace(`_${this.singleClubPermission}`, ''),
-                  ),
-              ),
+              map((r) => r?.filter((x) => x?.indexOf(this.singleClubPermission()) != -1)),
+              map((r) => r?.map((c) => c?.replace(`_${this.singleClubPermission()}`, ''))),
               switchMap((ids) => {
                 const filtered = allClubs.filter((c) => {
                   if (c.id == null) {
@@ -158,8 +149,8 @@ export class SelectClubComponent implements OnInit {
                   return ids?.indexOf(c.id) != -1;
                 });
 
-                if (filtered.length < this.autoCompleteTreshold) {
-                  this.useAutocomplete = false;
+                if (filtered.length < this.autoCompleteTreshold()) {
+                  this.useAutocomplete.set(false);
                 }
 
                 return of({
@@ -178,19 +169,18 @@ export class SelectClubComponent implements OnInit {
       .subscribe(({ rows, user, params }) => {
         this.#clubs.next(rows ?? null);
 
-        if (this.control?.value == null) {
+        if (this.internalControl?.value == null) {
           const paramClubId = params.get('club');
 
           if (paramClubId) {
-            const foundClub =
-              rows?.find((r) => r.id == paramClubId)?.id ?? null;
+            const foundClub = rows?.find((r) => r.id == paramClubId)?.id ?? null;
             this.selectClub(foundClub, false);
-          } else if (rows?.length == 1 && this.autoSelect) {
+          } else if (rows?.length == 1 && this.autoSelect()) {
             this.selectClub(rows[0].id, false);
           }
 
           // if no club is selected and the user has clubs, pick the first one
-          else if (user?.clubs && this.autoSelect) {
+          else if (user?.clubs && this.autoSelect()) {
             const clubIds = user?.clubs
               ?.filter(
                 (c) =>
@@ -201,8 +191,7 @@ export class SelectClubComponent implements OnInit {
               ?.map((r) => r.id);
 
             if (clubIds) {
-              const foundClub =
-                this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null;
+              const foundClub = this.clubs?.find((r) => clubIds.includes(r.id))?.id ?? null;
 
               if (foundClub) {
                 this.selectClub(foundClub, false);
@@ -212,19 +201,19 @@ export class SelectClubComponent implements OnInit {
 
           // disable if there is only one club
           if (rows.length == 1) {
-            this.control?.disable();
+            this.internalControl?.disable();
           }
         }
       });
 
-    this.filteredClubs$ = this.control?.valueChanges.pipe(
+    this.filteredClubs$ = this.internalControl?.valueChanges.pipe(
       takeUntil(this.destroy$),
       startWith(undefined),
       map((value) => this._filter(value)),
     );
 
     // on startup and control is filled in, when the clubs are loaded select the club
-    if (this.control?.value) {
+    if (this.internalControl?.value) {
       this.#clubs
         .pipe(
           filter((r) => r != null),
@@ -232,7 +221,7 @@ export class SelectClubComponent implements OnInit {
           takeUntil(this.destroy$),
         )
         .subscribe(() => {
-          this.selectClub(this.control?.value, false);
+          this.selectClub(this.internalControl?.value, false);
         });
     }
   }
@@ -249,22 +238,21 @@ export class SelectClubComponent implements OnInit {
     } else {
       id = event as string;
     }
-
     if (!id) {
       return;
     }
 
-    this.control?.setValue(id);
+    this.internalControl?.setValue(id);
 
-    if (this.updateUrl && id) {
+    if (this.updateUrl() && id) {
       this._updateUrl(id, removeOtherParams);
     }
   }
 
   private _updateUrl(clubId: string, removeOtherParams = false) {
-    if (this.updateUrl && clubId) {
+    if (this.updateUrl() && clubId) {
       const queryParams: { [key: string]: string | undefined } = {
-        [this.controlName]: clubId,
+        [this.controlName()]: clubId,
       };
 
       if (removeOtherParams) {
@@ -344,8 +332,7 @@ export class SelectClubComponent implements OnInit {
     return (this.clubs ?? []).filter(
       (option) =>
         option?.name?.toLowerCase().includes(filterValue) ||
-        (filterValue.length == 16 &&
-          option.id?.toLowerCase().includes(filterValue)),
+        (filterValue.length == 16 && option.id?.toLowerCase().includes(filterValue)),
     );
   }
 

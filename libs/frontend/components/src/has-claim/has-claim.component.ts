@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, computed, inject, input } from '@angular/core';
 import { ClaimService } from '@badman/frontend-auth';
-import { Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-has-claim',
@@ -11,41 +9,32 @@ import { map } from 'rxjs/operators';
   imports: [CommonModule],
   encapsulation: ViewEncapsulation.Emulated,
 })
-export class HasClaimComponent implements OnInit {
-  @Input()
-  any!: string | string[];
+export class HasClaimComponent {
+  private readonly auth = inject(ClaimService);
 
-  @Input()
-  all!: string | string[];
+  any = input<string | string[]>([]);
+  anyArray = computed<string[]>(
+    () => (this.any() instanceof Array ? this.any() : [this.any()]) as string[],
+  );
 
-  // @Input()
-  // some: string|string[]
+  all = input<string | string[]>([]);
+  allArray = computed<string[]>(
+    () => (this.all() instanceof Array ? this.all() : [this.all()]) as string[],
+  );
 
-  show$!: Observable<boolean>;
-
-  constructor(private auth: ClaimService) {}
-
-  ngOnInit(): void {
-    const permissions: Observable<boolean>[] = [];
-
-    if (this.any) {
-      permissions.push(
-        Array.isArray(this.any)
-          ? this.auth.hasAnyClaims$(this.any)
-          : this.auth.hasClaim$(this.any)
-      );
+  show = computed(() => {
+    if (this.any().length > 0) {
+      return Array.isArray(this.anyArray())
+        ? this.auth.hasAnyClaims(this.anyArray())
+        : this.auth.hasClaim(this.any() as string);
     }
 
-    if (this.all) {
-      permissions.push(
-        Array.isArray(this.all)
-          ? this.auth.hasAllClaims$(this.all)
-          : this.auth.hasClaim$(this.all)
-      );
+    if (this.all().length > 0) {
+      return Array.isArray(this.allArray())
+        ? this.auth.hasAllClaims(this.allArray())
+        : this.auth.hasClaim(this.all() as string);
     }
 
-    this.show$ = combineLatest(permissions).pipe(
-      map((claims) => claims.reduce((acc, claim) => acc || claim, false))
-    );
-  }
+    return false;
+  });
 }

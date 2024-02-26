@@ -1,20 +1,11 @@
-import {
-  EnrollmentValidationData,
-  RuleResult,
-  EnrollmentValidationError,
-} from '../../../models';
+import { EnrollmentValidationData, RuleResult, EnrollmentValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export class TeamBaseIndexRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
 
-    for (const {
-      team,
-      teamIndex,
-      baseIndex,
-      previousSeasonTeam,
-    } of enrollment.teams) {
+    for (const { team, teamIndex, baseIndex, previousSeasonTeam } of enrollment.teams) {
       if (!team?.id) {
         continue;
       }

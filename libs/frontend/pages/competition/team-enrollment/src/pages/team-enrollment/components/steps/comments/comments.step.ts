@@ -4,7 +4,6 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Input,
   OnInit,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -12,12 +11,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { EVENTS, COMMENTS } from '../../../../../forms';
+import { input } from '@angular/core';
+import { Comment } from '@badman/frontend-models';
 import { LevelType, levelTypeSort } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
-import { Comment } from '@badman/frontend-models';
+import { Subject } from 'rxjs';
+import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { COMMENTS, EVENTS } from '../../../../../forms';
 
 type CommentForm = {
   [key in LevelType]: FormGroup<{
@@ -29,15 +29,7 @@ type CommentForm = {
 @Component({
   selector: 'badman-comments-step',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-
-    // Material
-    MatFormFieldModule,
-    MatInputModule,
-  ],
+  imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule],
   templateUrl: './comments.step.html',
   styleUrls: ['./comments.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,17 +39,14 @@ export class CommentsStepComponent implements OnInit {
 
   levelTypes = Object.values(LevelType).sort(levelTypeSort);
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  control?: FormGroup<CommentForm>;
+  control = input<FormGroup<CommentForm>>();
+  protected internalControl!: FormGroup<CommentForm>;
 
-  @Input()
-  controlName = COMMENTS;
+  controlName = input(COMMENTS);
 
-  @Input()
-  eventsControlName = EVENTS;
+  eventsControlName = input(EVENTS);
 
   showComments: {
     [key in LevelType]: boolean;
@@ -69,18 +58,20 @@ export class CommentsStepComponent implements OnInit {
 
   constructor(
     @Inject(Apollo) private apollo: Apollo,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(
-        this.controlName
-      ) as FormGroup<CommentForm>;
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as FormGroup<CommentForm>;
     }
 
-    if (!this.control) {
-      this.control = new FormGroup<CommentForm>({
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group().get(this.controlName()) as FormGroup<CommentForm>;
+    }
+
+    if (!this.internalControl) {
+      this.internalControl = new FormGroup<CommentForm>({
         [LevelType.NATIONAL]: new FormGroup({
           comment: new FormControl(),
           id: new FormControl(),
@@ -96,15 +87,15 @@ export class CommentsStepComponent implements OnInit {
       });
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (this.group()) {
+      this.group().addControl(this.controlName(), this.internalControl);
     }
 
-    this.group
-      .get(this.eventsControlName)
+    this.group()
+      .get(this.eventsControlName())
       ?.valueChanges.pipe(
         takeUntil(this.destroy$),
-        startWith(this.group?.get(this.eventsControlName)?.value),
+        startWith(this.group().get(this.eventsControlName())?.value),
         switchMap((events: { name: LevelType; id: string }[]) => {
           const eventIds = events.map((event) => event.id);
 
@@ -112,16 +103,15 @@ export class CommentsStepComponent implements OnInit {
             map((result) =>
               events?.map((event) => ({
                 ...event,
-                comment: result?.find((comment) => comment.linkId === event.id)
-                  ?.message,
-              }))
-            )
+                comment: result?.find((comment) => comment.linkId === event.id)?.message,
+              })),
+            ),
           );
-        })
+        }),
       )
       .subscribe((events) => {
         for (const levelType of this.levelTypes) {
-          const control = this.control?.get(levelType);
+          const control = this.internalControl.get(levelType);
 
           if (control) {
             const event = events?.find((event) => event.name === levelType);
@@ -156,12 +146,10 @@ export class CommentsStepComponent implements OnInit {
           where: {
             linkType: 'competition',
             linkId: eventIds,
-            clubId: this.group?.get('club')?.value,
+            clubId: this.group().get('club')?.value,
           },
         },
       })
-      .pipe(
-        map((result) => (result?.data?.comments ?? []) as Partial<Comment>[])
-      );
+      .pipe(map((result) => (result?.data?.comments ?? []) as Partial<Comment>[]));
   }
 }

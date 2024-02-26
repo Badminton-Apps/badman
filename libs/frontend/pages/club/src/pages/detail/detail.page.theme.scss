@@ -9,7 +9,6 @@
 @use './club-assembly/club-assembly.component.theme.scss' as club-assembly;
 @use './club-encounters/club-encounters.component.theme.scss' as club-encounters;
 
-
 @mixin color($theme) {
   badman-club-detail {
     @include club-players.color($theme);
@@ -39,18 +38,5 @@
     .clubId {
       @include mat.typography-level($typography-config, 'caption');
     }
-  }
-}
-
-@mixin theme($theme) {
-  // Only apply theme on the correct element
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

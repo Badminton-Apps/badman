@@ -5,13 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { slugifyModel } from 'sequelize-slugify';
 import { Model } from 'sequelize-typescript';
-import {
-  Club,
-  EventCompetition,
-  EventTournament,
-  Player,
-  Team,
-} from './models';
+import { Club, EventCompetition, EventTournament, Player, Team } from './models';
 import { SequelizeConfigProvider } from './provider';
 import { loadTest } from './_testing/load-test';
 import { Sequelize } from 'sequelize-typescript';
@@ -47,7 +41,6 @@ export class DatabaseModule implements OnModuleInit {
       this.logger.log('Loading test data');
       await loadTest();
     }
-
 
     this.logger.debug('initialize addons');
     slugifyModel(Player as unknown as Model, {

@@ -1,20 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  OnInit,
-  Signal,
-  TemplateRef,
-  inject,
-} from '@angular/core';
+import { Component, Injector, OnInit, Signal, TemplateRef, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -68,12 +55,9 @@ const roleQuery = gql`
   styleUrls: ['./edit.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
     TranslateModule,
-
-    // Material Modules
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
@@ -85,8 +69,6 @@ const roleQuery = gql`
     MatDatepickerModule,
     MatSnackBarModule,
     MatSlideToggleModule,
-
-    // Own modules
     PageHeaderComponent,
     EventCompetitionLevelFieldsComponent,
     HasClaimComponent,
@@ -116,7 +98,7 @@ export class EditPageComponent implements OnInit {
     private router: Router,
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
-    private dialog: MatDialog
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -148,9 +130,9 @@ export class EditPageComponent implements OnInit {
           })
           .valueChanges.pipe(
             shareReplay(1),
-            map((result) => result.data?.roles?.map((r) => new Role(r)))
+            map((result) => result.data?.roles?.map((r) => new Role(r))),
           ),
-        { injector: this.injector }
+        { injector: this.injector },
       );
     });
   }
@@ -163,7 +145,7 @@ export class EditPageComponent implements OnInit {
           end: new FormControl(exception.end, Validators.required),
           courts: new FormControl(exception.courts),
         });
-      }) ?? []
+      }) ?? [],
     ) as FormArray<ExceptionType>;
     this.infoEvents = new FormArray(
       event.infoEvents?.map((infoEvent) => {
@@ -172,7 +154,7 @@ export class EditPageComponent implements OnInit {
           end: new FormControl(infoEvent.end, Validators.required),
           name: new FormControl(infoEvent.name),
         });
-      }) ?? []
+      }) ?? [],
     ) as FormArray<InfoEventType>;
 
     this.formGroup = new FormGroup({
@@ -184,14 +166,10 @@ export class EditPageComponent implements OnInit {
         Validators.max(3000),
       ]),
       contactEmail: new FormControl(event.contactEmail, Validators.required),
-      checkEncounterForFilledIn: new FormControl(
-        event.checkEncounterForFilledIn
-      ),
+      checkEncounterForFilledIn: new FormControl(event.checkEncounterForFilledIn),
       teamMatcher: new FormControl(event.teamMatcher),
 
-      usedRankingUnit: new FormControl(event.usedRankingUnit, [
-        Validators.required,
-      ]),
+      usedRankingUnit: new FormControl(event.usedRankingUnit, [Validators.required]),
       usedRankingAmount: new FormControl(event.usedRankingAmount, [
         Validators.required,
         Validators.min(1),
@@ -212,7 +190,7 @@ export class EditPageComponent implements OnInit {
             minBaseIndex: new FormControl(subEvent.minBaseIndex),
             maxBaseIndex: new FormControl(subEvent.maxBaseIndex),
           });
-        }) ?? []
+        }) ?? [],
       ),
     });
   }
@@ -241,10 +219,7 @@ export class EditPageComponent implements OnInit {
               },
             })
             .subscribe((r) => {
-              this.router.navigate([
-                '/competition',
-                r.data?.copyEventCompetition?.slug,
-              ]);
+              this.router.navigate(['/competition', r.data?.copyEventCompetition?.slug]);
             });
         }
       });
@@ -257,43 +232,35 @@ export class EditPageComponent implements OnInit {
     });
 
     await lastValueFrom(
-      this.apollo.mutate<{ updateEventCompetition: Partial<EventCompetition> }>(
-        {
-          mutation: gql`
-            mutation UpdateEventCompetition(
-              $data: EventCompetitionUpdateInput!
-            ) {
-              updateEventCompetition(data: $data) {
-                id
-              }
+      this.apollo.mutate<{ updateEventCompetition: Partial<EventCompetition> }>({
+        mutation: gql`
+          mutation UpdateEventCompetition($data: EventCompetitionUpdateInput!) {
+            updateEventCompetition(data: $data) {
+              id
             }
-          `,
-          variables: {
-            data: {
+          }
+        `,
+        variables: {
+          data: {
+            id: eventCompetition.id,
+            name: eventCompetition.name,
+            season: eventCompetition.season,
+            contactEmail: eventCompetition.contactEmail,
+            teamMatcher: eventCompetition.teamMatcher,
+            checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
+            exceptions: eventCompetition.exceptions?.filter((e) => e.start && e.end) ?? [],
+            infoEvents: eventCompetition.infoEvents?.filter((e) => e.start && e.end) ?? [],
+          },
+        },
+        refetchQueries: [
+          {
+            query: EVENT_QUERY,
+            variables: {
               id: eventCompetition.id,
-              name: eventCompetition.name,
-              season: eventCompetition.season,
-              contactEmail: eventCompetition.contactEmail,
-              teamMatcher: eventCompetition.teamMatcher,
-              checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
-              exceptions:
-                eventCompetition.exceptions?.filter((e) => e.start && e.end) ??
-                [],
-              infoEvents:
-                eventCompetition.infoEvents?.filter((e) => e.start && e.end) ??
-                [],
             },
           },
-          refetchQueries: [
-            {
-              query: EVENT_QUERY,
-              variables: {
-                id: eventCompetition.id,
-              },
-            },
-          ],
-        }
-      )
+        ],
+      }),
     );
 
     this.saved$.next(this.saved$.value + 1);
@@ -308,7 +275,7 @@ export class EditPageComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         courts: new FormControl(0),
-      }) as ExceptionType
+      }) as ExceptionType,
     );
   }
 
@@ -322,7 +289,7 @@ export class EditPageComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         name: new FormControl(),
-      }) as InfoEventType
+      }) as InfoEventType,
     );
   }
 

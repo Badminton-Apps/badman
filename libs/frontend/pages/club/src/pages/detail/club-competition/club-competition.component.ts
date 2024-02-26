@@ -1,22 +1,16 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
 import {
   Component,
   Injector,
-  Input,
   OnInit,
   PLATFORM_ID,
   Signal,
   TransferState,
   inject,
+  input,
   signal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -40,19 +34,14 @@ import {
   HasClaimComponent,
   SelectClubComponent,
 } from '@badman/frontend-components';
-import {
-  Club,
-  Comment,
-  EventCompetition,
-  Location,
-  Team,
-} from '@badman/frontend-models';
+import { Club, Comment, EventCompetition, Location, Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { of } from 'rxjs';
 import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.component';
+
 @Component({
   selector: 'badman-club-competition',
   standalone: true,
@@ -71,7 +60,6 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     MatButtonModule,
     MomentModule,
     TranslateModule,
-
     CdkTableModule,
     CdkTreeModule,
     EnrollmentDetailRowDirective,
@@ -85,15 +73,9 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
   providers: [provideAnimations()],
   animations: [
     trigger('detailExpand', [
-      state(
-        'collapsed',
-        style({ height: '0px', minHeight: '0', visibility: 'hidden' }),
-      ),
+      state('collapsed', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
       state('expanded', style({ height: '*', visibility: 'visible' })),
-      transition(
-        'expanded <=> collapsed',
-        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
 })
@@ -113,8 +95,8 @@ export class ClubCompetitionComponent implements OnInit {
   events = signal<EventCompetition[]>([]);
 
   // Inputs
-  @Input() filter?: FormGroup;
-  @Input({ required: true }) clubId!: Signal<string>;
+  filter = input.required<FormGroup>();
+  clubId = input.required<Signal<string>>();
 
   displayedColumns: string[] = ['name', 'subevent', 'validations'];
 
@@ -129,168 +111,167 @@ export class ClubCompetitionComponent implements OnInit {
 
   private _setTeams(): void {
     this.teams = toSignal(
-      this.filter?.get('season')?.valueChanges?.pipe(
-        startWith(this.filter.value.season ?? {}),
-        tap(() => {
-          this.loading.set(true);
-        }),
-        switchMap((filter) => {
-          return this.apollo.watchQuery<{
-            teams: Partial<Team>[];
-          }>({
-            query: gql`
-              query EventEntries(
-                $where: JSONObject
-                $order: [SortOrderType!]
-              ) {
-                teams(where: $where, order: $order) {
-                  id
-                  name
-                  preferredDay
-                  preferredTime
-                  captain {
+      this.filter()
+        ?.get('season')
+        ?.valueChanges?.pipe(
+          startWith(this.filter().value.season ?? {}),
+          tap(() => {
+            this.loading.set(true);
+          }),
+          switchMap((filter) => {
+            return this.apollo.watchQuery<{
+              teams: Partial<Team>[];
+            }>({
+              query: gql`
+                query EventEntries($where: JSONObject, $order: [SortOrderType!]) {
+                  teams(where: $where, order: $order) {
                     id
-                    fullName
-                  }
-                  entry {
-                    id
-                    subEventCompetition {
+                    name
+                    preferredDay
+                    preferredTime
+                    captain {
                       id
-                      name
-                      eventType
-                      eventCompetition {
+                      fullName
+                    }
+                    entry {
+                      id
+                      subEventCompetition {
                         id
                         name
-                      }
-                    }
-                    meta {
-                      competition {
-                        teamIndex
-                        players {
+                        eventType
+                        eventCompetition {
                           id
-                          player {
-                            id
-                            fullName
-                          }
-                          single
-                          double
-                          mix
+                          name
                         }
                       }
-                    }
-                    enrollmentValidation {
-                      id
-                      linkId
-                      teamIndex
-                      baseIndex
-                      isNewTeam
-                      possibleOldTeam
-                      maxLevel
-                      minBaseIndex
-                      maxBaseIndex
-                      valid
-                      errors {
-                        message
-                        params
+                      meta {
+                        competition {
+                          teamIndex
+                          players {
+                            id
+                            player {
+                              id
+                              fullName
+                            }
+                            single
+                            double
+                            mix
+                          }
+                        }
                       }
-                      warnings {
-                        message
-                        params
+                      enrollmentValidation {
+                        id
+                        linkId
+                        teamIndex
+                        baseIndex
+                        isNewTeam
+                        possibleOldTeam
+                        maxLevel
+                        minBaseIndex
+                        maxBaseIndex
+                        valid
+                        errors {
+                          message
+                          params
+                        }
+                        warnings {
+                          message
+                          params
+                        }
                       }
                     }
                   }
                 }
-              }
-            `,
-            variables: {
-              order: [
-                {
-                  field: 'type',
-                  direction: 'asc',
+              `,
+              variables: {
+                order: [
+                  {
+                    field: 'type',
+                    direction: 'asc',
+                  },
+                  {
+                    field: 'teamNumber',
+                    direction: 'asc',
+                  },
+                ],
+                where: {
+                  clubId: this.clubId()(),
+                  season: filter,
                 },
-                {
-                  field: 'teamNumber',
-                  direction: 'asc',
-                },
-              ],
-              where: {
-                clubId: this.clubId(),
-                season: filter,
               },
-            },
-          }).valueChanges;
-        }),
+            }).valueChanges;
+          }),
 
-        map((result) => result?.data?.teams?.map((t) => new Team(t))),
-        tap((teams) => {
-          // unique set of events
-          const events = teams?.map(
-            (team) => team.entry?.subEventCompetition?.eventCompetition,
-          );
-          const uniqueEvents = [...new Set(events)];
+          map((result) => result?.data?.teams?.map((t) => new Team(t))),
+          tap((teams) => {
+            // unique set of events
+            const events = teams?.map((team) => team.entry?.subEventCompetition?.eventCompetition);
+            const uniqueEvents = [...new Set(events)];
 
-          if (uniqueEvents?.length) {
-            this.events.set(uniqueEvents as EventCompetition[]);
-          }
+            if (uniqueEvents?.length) {
+              this.events.set(uniqueEvents as EventCompetition[]);
+            }
 
-          this.loading.set(false);
-        }),
-      ) ?? of(undefined),
+            this.loading.set(false);
+          }),
+        ) ?? of(undefined),
       { injector: this.injector },
     );
 
     this.locations = toSignal(
-      this.filter?.get('season')?.valueChanges?.pipe(
-        startWith(this.filter.value.season ?? {}),
-        switchMap((filter) => {
-          return this.apollo.watchQuery<{
-            club: Partial<Club>;
-          }>({
-            query: gql`
-              query Locations($clubId: ID!, $where: JSONObject) {
-                club(id: $clubId) {
-                  id
-                  locations {
+      this.filter()
+        ?.get('season')
+        ?.valueChanges?.pipe(
+          startWith(this.filter().value.season ?? {}),
+          switchMap((filter) => {
+            return this.apollo.watchQuery<{
+              club: Partial<Club>;
+            }>({
+              query: gql`
+                query Locations($clubId: ID!, $where: JSONObject) {
+                  club(id: $clubId) {
                     id
-                    name
-                    address
-                    postalcode
-                    street
-                    streetNumber
-                    city
-                    state
-                    phone
-                    fax
-                    availibilities(where: $where) {
+                    locations {
                       id
-                      days {
-                        day
-                        startTime
-                        endTime
-                        courts
-                      }
-                      exceptions {
-                        start
-                        end
-                        courts
+                      name
+                      address
+                      postalcode
+                      street
+                      streetNumber
+                      city
+                      state
+                      phone
+                      fax
+                      availibilities(where: $where) {
+                        id
+                        days {
+                          day
+                          startTime
+                          endTime
+                          courts
+                        }
+                        exceptions {
+                          start
+                          end
+                          courts
+                        }
                       }
                     }
                   }
                 }
-              }
-            `,
-            variables: {
-              clubId: this.clubId(),
-              where: {
-                season: filter,
+              `,
+              variables: {
+                clubId: this.clubId()(),
+                where: {
+                  season: filter,
+                },
               },
-            },
-          }).valueChanges;
-        }),
+            }).valueChanges;
+          }),
 
-        map((result) => new Club(result?.data?.club)),
-        map((club) => club?.locations),
-      ) ?? of(undefined),
+          map((result) => new Club(result?.data?.club)),
+          map((club) => club?.locations),
+        ) ?? of(undefined),
       { injector: this.injector },
     );
 
@@ -322,7 +303,7 @@ export class ClubCompetitionComponent implements OnInit {
                 }
               `,
               variables: {
-                clubId: this.clubId(),
+                clubId: this.clubId()(),
                 where: {
                   linkId: eventIds,
                 },

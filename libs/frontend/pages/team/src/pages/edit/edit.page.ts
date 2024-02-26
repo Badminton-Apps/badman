@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-  TransferState,
-} from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -14,10 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogModel,
-} from '@badman/frontend-components';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '@badman/frontend-components';
 import { Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { SubEventType, TeamMembershipType } from '@badman/utils';
@@ -26,11 +17,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom } from 'rxjs';
 import { pairwise, startWith } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import {
-  PLAYERS_CONTROL,
-  TeamFieldComponent,
-  TeamPlayersComponent,
-} from '../../components';
+import { PLAYERS_CONTROL, TeamFieldComponent, TeamPlayersComponent } from '../../components';
 
 @Component({
   templateUrl: './edit.page.html',
@@ -41,15 +28,11 @@ import {
     ReactiveFormsModule,
     RouterModule,
     TranslateModule,
-
-    // Material
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
     MatSnackBarModule,
     MatProgressBarModule,
-
-    // My Modules
     TeamFieldComponent,
     TeamPlayersComponent,
   ],
@@ -71,7 +54,7 @@ export class EditPageComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit(): void {
@@ -84,10 +67,7 @@ export class EditPageComponent implements OnInit {
       type: 'website',
       keywords: ['team', 'badminton'],
     });
-    this.breadcrumbsService.set(
-      'club/:id',
-      this.route.snapshot.data['club'].name
-    );
+    this.breadcrumbsService.set('club/:id', this.route.snapshot.data['club'].name);
     this.breadcrumbsService.set('club/:id/team/:id', teamName);
 
     if (!this.group) {
@@ -112,24 +92,17 @@ export class EditPageComponent implements OnInit {
   private _listenForPlayers() {
     this.group
       ?.get(PLAYERS_CONTROL)
-      ?.valueChanges.pipe(
-        startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []),
-        pairwise()
-      )
+      ?.valueChanges.pipe(startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []), pairwise())
       .subscribe(([prev, curr]: [TeamPlayer[], TeamPlayer[]]) => {
         if (!prev || !curr) {
           return;
         }
 
         // filter out the new players
-        const newPlayers = curr.filter(
-          (c) => !prev.some((p) => p?.id === c?.id)
-        );
+        const newPlayers = curr.filter((c) => !prev.some((p) => p?.id === c?.id));
 
         // filter out the removed players
-        const removedPlayers = prev.filter(
-          (p) => !curr.some((c) => c?.id === p?.id)
-        );
+        const removedPlayers = prev.filter((p) => !curr.some((c) => c?.id === p?.id));
 
         // if there are new players
         for (const player of newPlayers) {
@@ -197,7 +170,7 @@ export class EditPageComponent implements OnInit {
             teamId: this.team.id,
           },
           refetchQueries: ['TeamPlayers'],
-        })
+        }),
       );
     }
   }
@@ -207,10 +180,7 @@ export class EditPageComponent implements OnInit {
       await lastValueFrom(
         this.apollo.mutate({
           mutation: gql`
-            mutation RemovePlayerFromTeamMutation(
-              $playerId: ID!
-              $teamId: ID!
-            ) {
+            mutation RemovePlayerFromTeamMutation($playerId: ID!, $teamId: ID!) {
               removePlayerFromTeam(playerId: $playerId, teamId: $teamId) {
                 id
               }
@@ -221,15 +191,12 @@ export class EditPageComponent implements OnInit {
             teamId: this.team.id,
           },
           refetchQueries: ['TeamPlayers'],
-        })
+        }),
       );
     }
   }
 
-  playerMembershipTypeChanged(args: {
-    player: TeamPlayer;
-    type: TeamMembershipType;
-  }) {
+  playerMembershipTypeChanged(args: { player: TeamPlayer; type: TeamMembershipType }) {
     this.apollo
       .mutate({
         mutation: gql`
@@ -267,7 +234,7 @@ export class EditPageComponent implements OnInit {
   removeTeam() {
     const dialogData = new ConfirmDialogModel(
       'all.club.delete.team.title',
-      'all.club.delete.team.description'
+      'all.club.delete.team.description',
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

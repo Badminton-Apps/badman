@@ -1,11 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -21,27 +15,21 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
 @Component({
-  selector: 'badman-detail-draw-tournament', 
+  selector: 'badman-detail-draw-tournament',
   templateUrl: './detail-draw.page.html',
   styleUrls: ['./detail-draw.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Commmon module
     CommonModule,
     RouterModule,
     TranslateModule,
-
-    // Material Modules
     MatIconModule,
     MatTooltipModule,
-
-    // Own Modules
     StandingComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
-
-    PageHeaderComponent
+    PageHeaderComponent,
   ],
 })
 export class DetailDrawComponent implements OnInit {
@@ -52,7 +40,7 @@ export class DetailDrawComponent implements OnInit {
     private seoService: SeoService,
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   get isClient(): boolean {

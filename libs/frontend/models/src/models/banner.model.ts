@@ -5,7 +5,7 @@ export class Banner {
     public enabled?: boolean,
     public debug?: boolean,
     public adFormat?: string,
-    public fullWidthResponsive?: boolean
+    public fullWidthResponsive?: boolean,
   ) {
     this.adClient = adClient;
     this.adSlot = adSlot;

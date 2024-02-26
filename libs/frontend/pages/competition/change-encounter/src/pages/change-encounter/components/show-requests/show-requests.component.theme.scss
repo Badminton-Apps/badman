@@ -18,10 +18,7 @@
         border-color: $border-color;
 
         label {
-          background-color: mat.get-color-from-palette(
-            $background,
-            'background'
-          );
+          background-color: mat.get-color-from-palette($background, 'background');
           color: mat.get-color-from-palette($foreground, 'secondary-text');
         }
       }

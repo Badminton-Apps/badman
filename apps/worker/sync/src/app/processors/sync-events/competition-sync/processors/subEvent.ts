@@ -1,8 +1,4 @@
-import {
-  EventCompetition,
-  RankingSystem,
-  SubEventCompetition,
-} from '@badman/backend-database';
+import { EventCompetition, RankingSystem, SubEventCompetition } from '@badman/backend-database';
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { StepOptions, StepProcessor } from '../../../../processing';
@@ -28,14 +24,13 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions,
   ) {
     if (!options) {
       options = {};
     }
 
-    options.logger =
-      options.logger || new Logger(CompetitionSyncSubEventProcessor.name);
+    options.logger = options.logger || new Logger(CompetitionSyncSubEventProcessor.name);
     super(options);
   }
 
@@ -49,10 +44,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
     });
     const canChange = moment().isBefore(`${this.event.season}-09-01`);
 
-    const visualEvents = await this.visualService.getEvents(
-      this.visualTournament.Code,
-      !canChange
-    );
+    const visualEvents = await this.visualService.getEvents(this.visualTournament.Code, !canChange);
     const returnSubEvents: SubEventStepData[] = [];
 
     // Add sub events
@@ -60,9 +52,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
       if (!xmlEvent) {
         continue;
       }
-      const dbSubEvents = subEvents.filter(
-        (r) => r.visualCode === `${xmlEvent.Code}`
-      );
+      const dbSubEvents = subEvents.filter((r) => r.visualCode === `${xmlEvent.Code}`);
       let dbSubEvent: SubEventCompetition | null = null;
 
       if (dbSubEvents.length === 1) {
@@ -96,14 +86,14 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
               r.name?.toLowerCase()?.trim() ===
                 xmlEvent.Name.replace(/[ABCDE]+$/gm, '')
                   .trim()
-                  ?.toLowerCase() && r.eventType === type
+                  ?.toLowerCase() && r.eventType === type,
           ) ?? null;
       }
 
       if (!dbSubEvent) {
         if (this.existed) {
           this.logger.warn(
-            `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`
+            `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`,
           );
         }
 
@@ -149,9 +139,7 @@ export class CompetitionSyncSubEventProcessor extends StepProcessor {
     return returnSubEvents;
   }
 
-  private getEventType(
-    xmlEvent: XmlTournamentEvent
-  ): SubEventTypeEnum | undefined {
+  private getEventType(xmlEvent: XmlTournamentEvent): SubEventTypeEnum | undefined {
     switch (xmlEvent.GenderID) {
       case XmlGenderID.Male:
       case XmlGenderID.Boy:

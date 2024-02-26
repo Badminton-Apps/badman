@@ -1,11 +1,6 @@
 <mat-form-field>
-  <mat-label>{{ this.label ?? 'search.player' | translate }}</mat-label>
-  <input
-    type="text"
-    matInput
-    [formControl]="formControl"
-    [matAutocomplete]="auto"
-  />
+  <mat-label>{{ this.label() ?? 'search.player' | translate }}</mat-label>
+  <input type="text" matInput [formControl]="formControl" [matAutocomplete]="auto" />
   <mat-autocomplete
     #auto="matAutocomplete"
     [displayWith]="displayFn"
@@ -14,12 +9,13 @@
     class="badman-select-player-panel"
     [classList]="['badman-select-player-panel']"
   >
-    <ng-container *ngIf="this.filteredOptions$ | async as options">
-      <mat-option *ngFor="let option of options" [value]="option">
-        <span>{{ option.fullName }}</span
-        ><small class="member-id" *ngIf="option.memberId">({{ option.memberId }}) </small>
+    @for (option of this.filteredOptions$ | async; track option) {
+      <mat-option [value]="option">
+        <span>{{ option.fullName }}</span>
+        @if (option.memberId) {
+          <small class="member-id">({{ option.memberId }}) </small>
+        }
       </mat-option>
-    </ng-container>
+    }
   </mat-autocomplete>
 </mat-form-field>
-

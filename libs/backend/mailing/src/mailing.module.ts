@@ -26,4 +26,3 @@ import { ConfigType } from '@badman/utils';
   exports: [MailingService],
 })
 export class MailingModule {}
- 

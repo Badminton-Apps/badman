@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -31,13 +26,15 @@ import { debounceTime, map } from 'rxjs';
 export class EditCompetitionStatusComponent implements OnInit {
   playerForm!: FormGroup;
 
-  @Input()
-  player!: Player;
+  player = input.required<Player>();
 
-  constructor(private apollo: Apollo, private _snackBar: MatSnackBar) {}
+  constructor(
+    private apollo: Apollo,
+    private _snackBar: MatSnackBar,
+  ) {}
 
   ngOnInit(): void {
-    const compPlayer = new FormControl(this.player.competitionPlayer);
+    const compPlayer = new FormControl(this.player().competitionPlayer);
 
     this.playerForm = new FormGroup({
       compPlayer: compPlayer,
@@ -59,14 +56,14 @@ export class EditCompetitionStatusComponent implements OnInit {
             `,
             variables: {
               data: {
-                id: this.player.id,
+                id: this.player().id,
                 competitionPlayer: compPlayer.value,
               },
             },
           })
           .pipe(
             map((r) => new Player(r.data?.updatePlayer)),
-            debounceTime(600)
+            debounceTime(600),
           )
           .subscribe(() => {
             this._snackBar.open('Saved', undefined, {

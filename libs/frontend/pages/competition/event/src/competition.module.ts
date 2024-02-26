@@ -21,23 +21,17 @@ const MODULE_ROUTES: Routes = [
   {
     path: 'assembly',
     loadChildren: () =>
-      import('@badman/frontend-team-assembly').then(
-        (module) => module.AssemblyModule
-      ),
+      import('@badman/frontend-team-assembly').then((module) => module.AssemblyModule),
   },
   {
     path: 'enrollment',
     loadChildren: () =>
-      import('@badman/frontend-team-enrollment').then(
-        (m) => m.TeamEnrollmentModule
-      ),
+      import('@badman/frontend-team-enrollment').then((m) => m.TeamEnrollmentModule),
   },
   {
     path: 'change-encounter',
     loadChildren: () =>
-      import('@badman/frontend-change-encounter').then(
-        (m) => m.ChangeEncounterModule
-      ),
+      import('@badman/frontend-change-encounter').then((m) => m.ChangeEncounterModule),
   },
   {
     path: ':id',

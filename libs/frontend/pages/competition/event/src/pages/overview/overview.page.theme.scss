@@ -12,7 +12,6 @@
     $color-config: mat.get-color-config($theme);
     // Background color
     $background: map.get($color-config, 'background');
-
   }
 }
 
@@ -21,19 +20,5 @@
     @include competition-events.typography($theme);
 
     $typography-config: mat.get-typography-config($theme);
-
-  }
-}
-
-@mixin theme($theme) {
-  // Only apply theme on the correct element
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

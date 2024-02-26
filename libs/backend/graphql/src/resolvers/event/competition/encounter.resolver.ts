@@ -10,11 +10,7 @@ import {
   Player,
   Team,
 } from '@badman/backend-database';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -49,7 +45,7 @@ export class EncounterCompetitionResolver {
 
   @Query(() => EncounterCompetition)
   async encounterCompetition(
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID }) id: string,
   ): Promise<EncounterCompetition> {
     const encounterCompetition = await EncounterCompetition.findByPk(id);
 
@@ -61,17 +57,13 @@ export class EncounterCompetitionResolver {
 
   @Query(() => PagedEncounterCompetition)
   async encounterCompetitions(
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EncounterCompetition[] }> {
-    return EncounterCompetition.findAndCountAll(
-      ListArgs.toFindOptions(listArgs)
-    );
+    return EncounterCompetition.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => DrawCompetition)
-  async drawCompetition(
-    @Parent() encounter: EncounterCompetition
-  ): Promise<DrawCompetition> {
+  async drawCompetition(@Parent() encounter: EncounterCompetition): Promise<DrawCompetition> {
     return encounter.getDrawCompetition();
   }
 
@@ -93,15 +85,13 @@ export class EncounterCompetitionResolver {
   @ResolveField(() => [Assembly])
   async assemblies(
     @Parent() encounter: EncounterCompetition,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<Assembly[]> {
     return encounter.getAssemblies(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => EncounterChange)
-  async encounterChange(
-    @Parent() encounter: EncounterCompetition
-  ): Promise<EncounterChange> {
+  async encounterChange(@Parent() encounter: EncounterCompetition): Promise<EncounterChange> {
     return encounter.getEncounterChange();
   }
 
@@ -116,30 +106,22 @@ export class EncounterCompetitionResolver {
   }
 
   @ResolveField(() => [Comment], { nullable: true })
-  async homeComments(
-    @Parent() encounter: EncounterCompetition
-  ): Promise<Comment[]> {
+  async homeComments(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getHomeComments();
   }
 
   @ResolveField(() => [Comment], { nullable: true })
-  async awayComments(
-    @Parent() encounter: EncounterCompetition
-  ): Promise<Comment[]> {
+  async awayComments(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getAwayComments();
   }
 
   @ResolveField(() => [Comment], { nullable: true })
-  async homeCommentsChange(
-    @Parent() encounter: EncounterCompetition
-  ): Promise<Comment[]> {
+  async homeCommentsChange(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getHomeComments();
   }
 
   @ResolveField(() => [Comment], { nullable: true })
-  async awayCommentsChange(
-    @Parent() encounter: EncounterCompetition
-  ): Promise<Comment[]> {
+  async awayCommentsChange(@Parent() encounter: EncounterCompetition): Promise<Comment[]> {
     return encounter.getAwayComments();
   }
 
@@ -151,7 +133,7 @@ export class EncounterCompetitionResolver {
 
     @Args('updateBadman') updateBadman: boolean,
     @Args('updateVisual') updateVisual: boolean,
-    @Args('closeChangeRequests') closeChangeRequests: boolean
+    @Args('closeChangeRequests') closeChangeRequests: boolean,
   ) {
     const encounter = await EncounterCompetition.findByPk(id);
 
@@ -160,9 +142,7 @@ export class EncounterCompetitionResolver {
     }
 
     if (!(await user.hasAnyPermission(['change-any:encounter']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this encounter`
-      );
+      throw new UnauthorizedException(`You do not have permission to edit this encounter`);
     }
 
     if (updateBadman) {
@@ -178,7 +158,7 @@ export class EncounterCompetitionResolver {
         {
           removeOnComplete: true,
           removeOnFail: false,
-        }
+        },
       );
     }
 

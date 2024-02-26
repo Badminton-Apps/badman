@@ -10,7 +10,7 @@ describe('SearchService', () => {
       imports: [
         ConfigModule.forRoot({
           envFilePath: '.env.test',
-        })
+        }),
       ],
       providers: [SearchService],
     }).compile();

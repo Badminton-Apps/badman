@@ -46,13 +46,11 @@ export class AssemblyExportService {
 
       const base =
         teamPlayers?.filter(
-          (p) =>
-            p.TeamPlayerMembership.membershipType == TeamMembershipType.REGULAR
+          (p) => p.TeamPlayerMembership.membershipType == TeamMembershipType.REGULAR,
         ) ?? [];
       const replacements =
         teamPlayers?.filter(
-          (p) =>
-            p.TeamPlayerMembership.membershipType == TeamMembershipType.BACKUP
+          (p) => p.TeamPlayerMembership.membershipType == TeamMembershipType.BACKUP,
         ) ?? [];
 
       const rows = [];
@@ -99,7 +97,7 @@ export class AssemblyExportService {
         Gender: p.gender,
         'First Name': p.firstName,
         'Last Name': p.lastName,
-      }))
+      })),
     );
     utils.book_append_sheet(this.workbook, ws, 'Players');
   }
@@ -138,10 +136,7 @@ export class AssemblyExportService {
 
     // filter out duplicates
     const playerIds = players.map((p) => p.id);
-    const uniquePlayers = players.filter(
-      (p, i) => playerIds.indexOf(p.id) === i
-    );
-    
+    const uniquePlayers = players.filter((p, i) => playerIds.indexOf(p.id) === i);
 
     return uniquePlayers;
   }

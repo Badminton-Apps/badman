@@ -1,15 +1,9 @@
-<ng-container *ngIf="!authenticateService.user?.loggedIn">
+@if (!auth.loggedInSignal()) {
   <button mat-button (click)="login()">Log in</button>
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="menu"
-    aria-label="button for more option menu"
-  >
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="button for more option menu">
     <mat-icon>more_vert</mat-icon>
   </button>
-</ng-container>
-
-<ng-container *ngIf="authenticateService.user?.loggedIn">
+} @else {
   <button
     mat-button
     class="avatar-button"
@@ -18,34 +12,27 @@
   >
     <img
       class="avatar"
-      [src]="authenticateService.user?.picture"
-      [alt]="'profile picture' + authenticateService.user?.fullName"
+      [src]="auth.userSignal()?.picture"
+      [alt]="'profile picture' + auth.userSignal()?.fullName"
       loading="lazy"
     />
-
-    {{ authenticateService.user?.firstName }}
+    {{ auth.userSignal()?.firstName }}
   </button>
-</ng-container>
+}
 
 <mat-menu #menu="matMenu">
-  <ng-container *ngIf="authenticateService.user?.loggedIn">
-    <div
-      mat-menu-item
-      *ngIf="authenticateService.user?.fullName"
-      [routerLink]="['/', 'player', authenticateService.user?.slug]"
-    >
-      {{ authenticateService.user?.fullName }}
-    </div>
-
+  @if (auth.loggedInSignal()) {
+    @if (auth.userSignal()?.fullName) {
+      <div mat-menu-item [routerLink]="['/', 'player', auth.userSignal()?.slug]">
+        {{ auth.userSignal()?.fullName }}
+      </div>
+    }
     <button mat-menu-item (click)="logout()">Logout</button>
-    <a
-      mat-menu-item
-      [routerLink]="['/', 'player', authenticateService.user?.slug, 'settings']"
+    <a mat-menu-item [routerLink]="['/', 'player', auth.userSignal()?.slug, 'settings']"
       >Settings</a
     >
     <mat-divider></mat-divider>
-  </ng-container>
-
+  }
   <badman-language></badman-language>
   <badman-theme-switcher></badman-theme-switcher>
 </mat-menu>

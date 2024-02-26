@@ -4,12 +4,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Input,
   OnChanges,
   OnInit,
   SimpleChanges,
   ViewChild,
   inject,
+  input,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +23,7 @@ import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { LoadingBlockComponent } from '../../../loading-block';
-import { RecentGamesService } from './data-access/recent-games.service';
+import { RecentGamesService } from '../recent-games.service';
 
 @Component({
   standalone: true,
@@ -33,15 +33,11 @@ import { RecentGamesService } from './data-access/recent-games.service';
     TranslateModule,
     MomentModule,
     ReactiveFormsModule,
-
-    // Material modules
     MatButtonModule,
     MatChipsModule,
     MatTooltipModule,
     MatButtonToggleModule,
     MatIconModule,
-
-    // own modules
     LoadingBlockComponent,
   ],
   selector: 'badman-list-games',
@@ -52,14 +48,14 @@ import { RecentGamesService } from './data-access/recent-games.service';
 export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   recentGames = inject(RecentGamesService);
 
-  @Input() playerId?: string;
+  playerId = input.required<string>();
 
   @ViewChild('bottomObserver', { static: false }) bottomObserver!: ElementRef;
 
   ngOnInit() {
     this.recentGames.filter.setValue({
       choices: ['S', 'D', 'MX'],
-      playerId: this.playerId ?? '',
+      playerId: this.playerId() ?? '',
     });
   }
 
@@ -83,17 +79,12 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      !changes['playerId']?.currentValue ||
-      !changes['playerId']?.previousValue
-    ) {
+    if (!changes['playerId']?.currentValue || !changes['playerId']?.previousValue) {
       return;
     }
 
     // Reset the list when the playerId changes
-    if (
-      changes['playerId'].currentValue !== changes['playerId'].previousValue
-    ) {
+    if (changes['playerId'].currentValue !== changes['playerId'].previousValue) {
       this.recentGames.filter.patchValue({
         choices: ['S', 'D', 'MX'],
         playerId: changes['playerId'].currentValue,
@@ -120,7 +111,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
     return game.players
       ?.filter((p) => p.team == team)
       ?.map((p) => p.id)
-      ?.includes(this.playerId);
+      ?.includes(this.playerId());
   }
 
   getPoints(game: Game, team: number) {
@@ -160,9 +151,7 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
       tooltip,
       upgrade: result === GameBreakdownType.LOST_UPGRADE,
       downgrade: result === GameBreakdownType.LOST_DOWNGRADE,
-      show:
-        result !== GameBreakdownType.LOST_IGNORED &&
-        (rankingPoint?.points ?? -1) >= 0,
+      show: result !== GameBreakdownType.LOST_IGNORED && (rankingPoint?.points ?? -1) >= 0,
     };
   }
 

@@ -3,8 +3,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnInit,
+  input,
 } from '@angular/core';
 import {
   FormArray,
@@ -18,7 +18,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
-import { SubEventType, sortTeams } from '@badman/utils';
+import { IsUUID, SubEventType, sortTeams } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -35,6 +35,7 @@ import {
 } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { CLUB, SEASON, TEAMS } from '../../../../../forms';
+
 export type TeamFormValue = {
   team: Team;
   entry: {
@@ -56,13 +57,9 @@ export type TeamForm = FormGroup<{
   standalone: true,
   imports: [
     CommonModule,
-
-    // Material
     MatCheckboxModule,
     MatButtonModule,
     MatProgressBarModule,
-
-    // Other
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
@@ -74,28 +71,26 @@ export type TeamForm = FormGroup<{
 export class TeamsTransferStepComponent implements OnInit {
   private destroy$ = injectDestroy();
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  control?: FormGroup<{
+  control = input<
+    FormGroup<{
+      [key in SubEventType]: FormArray<TeamForm>;
+    }>
+  >();
+  protected internalControl!: FormGroup<{
     [key in SubEventType]: FormArray<TeamForm>;
   }>;
 
-  @Input()
-  controlName = TEAMS;
+  controlName = input(TEAMS);
 
-  @Input()
-  clubControlName = CLUB;
+  clubControlName = input(CLUB);
 
-  @Input()
-  clubId?: string;
+  clubId = input<string | undefined>();
 
-  @Input()
-  seasonControlName = SEASON;
+  seasonControlName = input(SEASON);
 
-  @Input()
-  season?: number;
+  season = input<number | undefined>();
 
   teamsForm?: FormControl[] = [];
   newTeamsForm?: FormControl[] = [];
@@ -113,14 +108,20 @@ export class TeamsTransferStepComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormGroup<{
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as FormGroup<{
         [key in SubEventType]: FormArray<TeamForm>;
       }>;
     }
 
-    if (!this.control) {
-      this.control = new FormGroup({
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group()?.get(this.controlName()) as FormGroup<{
+        [key in SubEventType]: FormArray<TeamForm>;
+      }>;
+    }
+
+    if (!this.internalControl) {
+      this.internalControl = new FormGroup({
         M: new FormArray<TeamForm>([]),
         F: new FormArray<TeamForm>([]),
         MX: new FormArray<TeamForm>([]),
@@ -128,16 +129,16 @@ export class TeamsTransferStepComponent implements OnInit {
       });
     }
 
-    if (this.group && !this.group?.get(this.controlName)) {
-      this.group.addControl(this.controlName, this.control);
+    if (this.group() && !this.group()?.get(this.controlName())) {
+      this.group()?.addControl(this.controlName(), this.internalControl);
     }
 
-    if (this.group === undefined) {
-      if (this.clubId == undefined) {
+    if (this.group() === undefined) {
+      if (this.clubId() == undefined) {
         throw new Error('No clubId provided');
       }
 
-      if (this.season == undefined) {
+      if (this.season() == undefined) {
         throw new Error('No season provided');
       }
     }
@@ -146,20 +147,21 @@ export class TeamsTransferStepComponent implements OnInit {
     let season$: Observable<number>;
 
     // fetch clubId
-    if (this.group) {
-      clubid$ = this.group?.valueChanges.pipe(
-        map((value) => value?.[this.clubControlName]),
-        startWith(this.group.value?.[this.clubControlName]),
+    if (this.group()) {
+      clubid$ = this.group()?.valueChanges.pipe(
+        map((value) => value?.[this.clubControlName()]),
+        startWith(this.group()?.value?.[this.clubControlName()]),
+        filter(IsUUID),
       );
 
-      season$ = this.group?.valueChanges.pipe(
-        map((value) => value?.[this.seasonControlName]),
-        startWith(this.group.value?.[this.seasonControlName]),
+      season$ = this.group()?.valueChanges.pipe(
+        map((value) => value?.[this.seasonControlName()]),
+        startWith(this.group()?.value?.[this.seasonControlName()]),
         filter((value) => value !== undefined),
       );
     } else {
-      clubid$ = of(this.clubId as string);
-      season$ = of(this.season as number);
+      clubid$ = of(this.clubId() as string);
+      season$ = of(this.season() as number);
     }
 
     this.teams$ = combineLatest([
@@ -172,11 +174,7 @@ export class TeamsTransferStepComponent implements OnInit {
           .query<{ teams: Team[] }>({
             fetchPolicy: 'no-cache',
             query: gql`
-              query Teams(
-                $where: JSONObject
-                $rankingWhere: JSONObject
-                $order: [SortOrderType!]
-              ) {
+              query Teams($where: JSONObject, $rankingWhere: JSONObject, $order: [SortOrderType!]) {
                 teams(where: $where) {
                   id
                   name
@@ -196,11 +194,7 @@ export class TeamsTransferStepComponent implements OnInit {
                     teamId
                     gender
                     membershipType
-                    rankingPlaces(
-                      where: $rankingWhere
-                      order: $order
-                      take: 1
-                    ) {
+                    rankingPlaces(where: $rankingWhere, order: $order, take: 1) {
                       id
                       single
                       double
@@ -231,11 +225,7 @@ export class TeamsTransferStepComponent implements OnInit {
                           player {
                             id
                             fullName
-                            rankingPlaces(
-                              where: $rankingWhere
-                              order: $order
-                              take: 1
-                            ) {
+                            rankingPlaces(where: $rankingWhere, order: $order, take: 1) {
                               id
                               single
                               double
@@ -274,27 +264,18 @@ export class TeamsTransferStepComponent implements OnInit {
             map((result) => result.data.teams?.map((team) => new Team(team))),
             map((teams) => teams?.sort(sortTeams)),
             map((teams) => {
-              const teamsLastSeason = teams?.filter(
-                (team) => team.season == season - 1,
-              );
-              const teamsThisSeason = teams?.filter(
-                (team) => team.season == season,
-              );
+              const teamsLastSeason = teams?.filter((team) => team.season == season - 1);
+              const teamsThisSeason = teams?.filter((team) => team.season == season);
 
               // we have 2 arrays, teams of last season
               // and teams that have been already created this season but don't have a link to last season
 
               const lastSeason = teamsLastSeason?.map((team) => {
-                const teamThisSeason = teamsThisSeason?.find(
-                  (t) => t.link == team.link,
-                );
+                const teamThisSeason = teamsThisSeason?.find((t) => t.link == team.link);
 
                 if (teamThisSeason != null) {
                   // remove the team from the teamsThisSeason array
-                  teamsThisSeason.splice(
-                    teamsThisSeason.indexOf(teamThisSeason),
-                    1,
-                  );
+                  teamsThisSeason.splice(teamsThisSeason.indexOf(teamThisSeason), 1);
 
                   // select the team
                   return {
@@ -372,13 +353,9 @@ export class TeamsTransferStepComponent implements OnInit {
 
   select(selected: boolean, team: Team & { selected: boolean }) {
     // if the team is already selected, we don't need to do anything
-    const typedControl = this.control?.get(
-      team.type ?? '',
-    ) as FormArray<TeamForm>;
+    const typedControl = this.internalControl?.get(team.type ?? '') as FormArray<TeamForm>;
 
-    const index = typedControl.value?.findIndex(
-      (t) => t.team?.link == team.link,
-    );
+    const index = typedControl.value?.findIndex((t) => t.team?.link == team.link);
 
     if (selected) {
       // if the team is already selected, we don't need to do anything
@@ -420,9 +397,7 @@ export class TeamsTransferStepComponent implements OnInit {
           typedControl.at(index)?.get('team')?.patchValue(team);
           typedControl.at(index)?.get('entry')?.patchValue(entry);
         } else {
-          const players = new FormArray<
-            FormControl<EntryCompetitionPlayer | null>
-          >([]);
+          const players = new FormArray<FormControl<EntryCompetitionPlayer | null>>([]);
 
           for (const player of entry.players) {
             players.push(new FormControl(player));
@@ -448,9 +423,7 @@ export class TeamsTransferStepComponent implements OnInit {
     }
 
     // sort the teams
-    typedControl?.controls?.sort((a, b) =>
-      sortTeams(a.value.team, b.value.team),
-    );
+    typedControl?.controls?.sort((a, b) => sortTeams(a.value.team, b.value.team));
 
     this.changeDetectorRef.markForCheck();
   }

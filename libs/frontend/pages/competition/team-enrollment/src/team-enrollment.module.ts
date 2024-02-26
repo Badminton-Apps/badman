@@ -11,10 +11,7 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard],
     data: {
       claims: {
-        any: [
-          '[:id]_edit:enrollment-competition',
-          'edit-any:enrollment-competition',
-        ],
+        any: ['[:id]_edit:enrollment-competition', 'edit-any:enrollment-competition'],
       },
     },
   },

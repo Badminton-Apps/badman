@@ -5,4 +5,3 @@ export const setup = async (page: Page) => {
     window.localStorage.setItem('translation.language', 'en');
   });
 };
- 

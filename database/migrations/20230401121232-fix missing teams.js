@@ -8,21 +8,21 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
         // get all teams
-        const teams = await queryInterface.sequelize.query(
-          `SELECT * FROM "Teams"`,
-          { type: queryInterface.sequelize.QueryTypes.SELECT, transaction: t }
-        );
+        const teams = await queryInterface.sequelize.query(`SELECT * FROM "Teams"`, {
+          type: queryInterface.sequelize.QueryTypes.SELECT,
+          transaction: t,
+        });
 
         // get all entries
         const entries = await queryInterface.sequelize.query(
           `SELECT * FROM "event"."Entries" where "teamId" is not null;`,
-          { type: queryInterface.sequelize.QueryTypes.SELECT, transaction: t }
+          { type: queryInterface.sequelize.QueryTypes.SELECT, transaction: t },
         );
 
         // get al linked events
         const events = await queryInterface.sequelize.query(
           `SELECT "event"."EventCompetitions"."startYear",  "event"."SubEventCompetitions".id as "subEventId" FROM "event"."EventCompetitions" INNER JOIN "event"."SubEventCompetitions" ON "SubEventCompetitions"."eventId" = "EventCompetitions".id`,
-          { type: queryInterface.sequelize.QueryTypes.SELECT, transaction: t }
+          { type: queryInterface.sequelize.QueryTypes.SELECT, transaction: t },
         );
 
         // find all entries where the team has multiple entries
@@ -30,9 +30,7 @@ module.exports = {
           return entries.filter((e) => e.teamId === entry.teamId).length > 1;
         });
 
-        console.log(
-          `Found ${entriesWithMultipleTeams.length} entries with multiple teams.`
-        );
+        console.log(`Found ${entriesWithMultipleTeams.length} entries with multiple teams.`);
 
         const changedTeams = [];
         const changedEntries = [];
@@ -41,19 +39,19 @@ module.exports = {
         for (const entry of entriesWithMultipleTeams) {
           const team = teams.find((team) => team.id === entry.teamId);
           const entryYear = events.find(
-            (event) => event.subEventId === entry.subEventId
+            (event) => event.subEventId === entry.subEventId,
           )?.startYear;
 
-          if (!team ) {
+          if (!team) {
             console.log(
-              `Could not find team for entry ${entry.id} with team ${entry.teamId} and subEvent ${entry.subEventId}.`
+              `Could not find team for entry ${entry.id} with team ${entry.teamId} and subEvent ${entry.subEventId}.`,
             );
             continue;
           }
 
           if (!entryYear) {
             console.log(
-              `Could not find year for entry ${entry.id} with team ${entry.teamId} and subEvent ${entry.subEventId}.`
+              `Could not find year for entry ${entry.id} with team ${entry.teamId} and subEvent ${entry.subEventId}.`,
             );
             continue;
           }
@@ -64,14 +62,11 @@ module.exports = {
           }
 
           // remove the year from the slug of the team
-          const slug =
-            team.slug.replace(/-\d{4}$/, '') + '-' + entryYear.toString();
+          const slug = team.slug.replace(/-\d{4}$/, '') + '-' + entryYear.toString();
 
           //  check if any team with the same slug exists
           const existingTeam = teams.find((team) => team.slug === slug);
-          const alreadyCreatedTeam = changedTeams.find(
-            (team) => team.slug === slug
-          );
+          const alreadyCreatedTeam = changedTeams.find((team) => team.slug === slug);
 
           // if a team with the same slug was already created, we don't need to create a new team
           if (alreadyCreatedTeam) {
@@ -106,13 +101,9 @@ module.exports = {
           console.log(`Created ${changedTeams.length} new teams.`);
 
           // create the new teams
-          await queryInterface.bulkInsert(
-            { tableName: 'Teams', schema: 'public' },
-            changedTeams,
-            {
-              transaction: t,
-            }
-          );
+          await queryInterface.bulkInsert({ tableName: 'Teams', schema: 'public' }, changedTeams, {
+            transaction: t,
+          });
         }
 
         if (changedEntries.length > 0) {
@@ -127,11 +118,10 @@ module.exports = {
                   id: entry.id,
                 },
                 transaction: t,
-              }
+              },
             );
           }
         }
-
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();

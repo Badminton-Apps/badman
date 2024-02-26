@@ -21,28 +21,12 @@ import {
   Team,
   TeamPlayerMembershipType,
 } from '@badman/backend-database';
-import {
-  getCurrentSeason,
-  getRankingProtected,
-  IsUUID,
-} from '@badman/utils';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { IsUUID, getCurrentSeason, getRankingProtected } from '@badman/utils';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import { ListArgs, queryFixer, WhereArgs } from '../../utils';
+import { ListArgs, WhereArgs, queryFixer } from '../../utils';
 @Resolver(() => Player)
 export class PlayersResolver {
   protected readonly logger = new Logger(PlayersResolver.name);
@@ -76,9 +60,7 @@ export class PlayersResolver {
   }
 
   @Query(() => PagedPlayer)
-  async players(
-    @Args() listArgs: ListArgs,
-  ): Promise<{ count: number; rows: Player[] }> {
+  async players(@Args() listArgs: ListArgs): Promise<{ count: number; rows: Player[] }> {
     return Player.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
@@ -111,18 +93,12 @@ export class PlayersResolver {
   }
 
   @ResolveField(() => [Claim])
-  async claims(
-    @Parent() player: Player,
-    @Args() listArgs: ListArgs,
-  ): Promise<Claim[]> {
+  async claims(@Parent() player: Player, @Args() listArgs: ListArgs): Promise<Claim[]> {
     return player.getClaims(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => [Notification])
-  async notifications(
-    @User() user: Player,
-    @Args() listArgs: ListArgs,
-  ): Promise<Notification[]> {
+  async notifications(@User() user: Player, @Args() listArgs: ListArgs): Promise<Notification[]> {
     return user.getNotifications(ListArgs.toFindOptions(listArgs));
   }
 
@@ -135,26 +111,31 @@ export class PlayersResolver {
   async rankingPlaces(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
-    @Args('systemId', { type: () => ID, nullable: true }) systemId?: string,
   ): Promise<RankingPlace[]> {
     const places = await player.getRankingPlaces({
       order: [['rankingDate', 'DESC']],
       ...ListArgs.toFindOptions(listArgs),
     });
 
-    const system = systemId
-      ? await RankingSystem.findByPk(systemId)
-      : await RankingSystem.findOne({
-          where: {
-            primary: true,
-          },
-        });
+    // distinct systemIds
+    const systemIds = [...new Set(places.map((place) => place.systemId))];
+    const systems = await RankingSystem.findAll({
+      where: {
+        id: systemIds,
+      },
+    });
 
-    if (!system) {
-      throw new NotFoundException(`${RankingSystem.name}: ${systemId}`);
-    }
+    return (
+      places?.map((place) => {
+        const system = systems.find((sys) => sys.id === place.systemId);
 
-    return places?.map((place) => getRankingProtected(place, system)) ?? [];
+        if (!system) {
+          throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
+        }
+
+        return getRankingProtected(place, system);
+      }) ?? []
+    );
   }
 
   @ResolveField(() => [RankingLastPlace], {
@@ -163,33 +144,35 @@ export class PlayersResolver {
   async rankingLastPlaces(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
-    @Args('systemId', { type: () => ID, nullable: true }) systemId?: string,
   ): Promise<RankingLastPlace[]> {
     const places = await player.getRankingLastPlaces({
       order: [['rankingDate', 'DESC']],
       ...ListArgs.toFindOptions(listArgs),
     });
 
-    const system = systemId
-      ? await RankingSystem.findByPk(systemId)
-      : await RankingSystem.findOne({
-          where: {
-            primary: true,
-          },
-        });
+    // distinct systemIds
+    const systemIds = [...new Set(places.map((place) => place.systemId))];
+    const systems = await RankingSystem.findAll({
+      where: {
+        id: systemIds,
+      },
+    });
 
-    if (!system) {
-      throw new NotFoundException(`${RankingSystem.name}: ${systemId}`);
-    }
+    return (
+      places?.map((place) => {
+        const system = systems.find((sys) => sys.id === place.systemId);
 
-    return places?.map((place) => getRankingProtected(place, system)) ?? [];
+        if (!system) {
+          throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
+        }
+
+        return getRankingProtected(place, system);
+      }) ?? []
+    );
   }
 
   @ResolveField(() => [Game])
-  async games(
-    @Parent() player: Player,
-    @Args() listArgs: ListArgs,
-  ): Promise<Game[]> {
+  async games(@Parent() player: Player, @Args() listArgs: ListArgs): Promise<Game[]> {
     return player.getGames(ListArgs.toFindOptions(listArgs));
   }
 
@@ -199,8 +182,7 @@ export class PlayersResolver {
     @Args() listArgs: ListArgs,
     @Args('season', {
       nullable: true,
-      description:
-        'Include the inactive teams (this overwrites the active filter if given)',
+      description: 'Include the inactive teams (this overwrites the active filter if given)',
     })
     season?: number,
   ): Promise<Team[]> {
@@ -223,9 +205,7 @@ export class PlayersResolver {
       description: 'Include the historical clubs',
     })
     historical?: boolean,
-  ): Promise<
-    (Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined
-  > {
+  ): Promise<(Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
 
     if (!historical) {
@@ -247,9 +227,7 @@ export class PlayersResolver {
   @Mutation(() => Player)
   async createPlayer(@User() user: Player, @Args('data') data: PlayerNewInput) {
     if (!(await user.hasAnyPermission(['add:player']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to create a player`,
-      );
+      throw new UnauthorizedException(`You do not have permission to create a player`);
     }
 
     // Do transaction
@@ -273,19 +251,9 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Player)
-  async updatePlayer(
-    @User() user: Player,
-    @Args('data') data: PlayerUpdateInput,
-  ) {
-    if (
-      !(await user.hasAnyPermission([
-        `${data.id}_edit:player`,
-        'edit-any:player',
-      ]))
-    ) {
-      throw new UnauthorizedException(
-        `You do not have permission to edit this player`,
-      );
+  async updatePlayer(@User() user: Player, @Args('data') data: PlayerUpdateInput) {
+    if (!(await user.hasAnyPermission([`${data.id}_edit:player`, 'edit-any:player']))) {
+      throw new UnauthorizedException(`You do not have permission to edit this player`);
     }
 
     // Do transaction
@@ -312,14 +280,9 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Boolean)
-  async removePlayer(
-    @User() user: Player,
-    @Args('id', { type: () => ID }) id: string,
-  ) {
+  async removePlayer(@User() user: Player, @Args('id', { type: () => ID }) id: string) {
     if (!(await user.hasAnyPermission(['delete:player']))) {
-      throw new UnauthorizedException(
-        `You do not have permission to delete this player`,
-      );
+      throw new UnauthorizedException(`You do not have permission to delete this player`);
     }
 
     // Do transaction
@@ -457,9 +420,7 @@ export class GamePlayersResolver extends PlayersResolver {
     });
 
     if (!game) {
-      throw new NotFoundException(
-        `${Game.name}: ${player.GamePlayerMembership.gameId}`,
-      );
+      throw new NotFoundException(`${Game.name}: ${player.GamePlayerMembership.gameId}`);
     }
 
     const places = await RankingPlace.findAll({
@@ -481,7 +442,7 @@ export class TeamPlayerResolver extends PlayersResolver {
   protected override readonly logger = new Logger(TeamPlayerResolver.name);
 
   @ResolveField(() => [RankingLastPlace])
-  async rankingLastPlaces(
+  override async rankingLastPlaces(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
   ): Promise<RankingLastPlace[]> {
@@ -494,32 +455,31 @@ export class TeamPlayerResolver extends PlayersResolver {
 
     const places = await RankingLastPlace.findAll(args);
 
-    // if one of the levels is not set, get the default from the system
-    for (const place of places) {
-      if (!place.single || !place.double || !place.mix) {
-        const system = await RankingSystem.findByPk(place.systemId, {
-          attributes: ['amountOfLevels'],
-        });
+    // distinct systemIds
+    const systemIds = [...new Set(places.map((place) => place.systemId))];
+    const systems = await RankingSystem.findAll({
+      where: {
+        id: systemIds,
+      },
+    });
+
+    return (
+      places?.map((place) => {
+        const system = systems.find((sys) => sys.id === place.systemId);
 
         if (!system) {
-          throw new NotFoundException(
-            `${RankingSystem.name}: ${place.systemId}`,
-          );
+          throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
         }
 
-        place.single = place.single ?? system.amountOfLevels;
-        place.double = place.double ?? system.amountOfLevels;
-        place.mix = place.mix ?? system.amountOfLevels;
-      }
-    }
-
-    return places;
+        return getRankingProtected(place, system);
+      }) ?? []
+    );
   }
 
   @ResolveField(() => [RankingPlace], {
     description: '(Default) sorting: DESC \n\r(Default) take: 1',
   })
-  async rankingPlaces(
+  override async rankingPlaces(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
   ): Promise<RankingPlace[]> {
@@ -536,25 +496,24 @@ export class TeamPlayerResolver extends PlayersResolver {
 
     const places = await RankingPlace.findAll(args);
 
-    // if one of the levels is not set, get the default from the system
-    for (const place of places) {
-      if (!place.single || !place.double || !place.mix) {
-        const system = await RankingSystem.findByPk(place.systemId, {
-          attributes: ['amountOfLevels'],
-        });
+    // distinct systemIds
+    const systemIds = [...new Set(places.map((place) => place.systemId))];
+    const systems = await RankingSystem.findAll({
+      where: {
+        id: systemIds,
+      },
+    });
+
+    return (
+      places?.map((place) => {
+        const system = systems.find((sys) => sys.id === place.systemId);
 
         if (!system) {
-          throw new NotFoundException(
-            `${RankingSystem.name}: ${place.systemId}`,
-          );
+          throw new NotFoundException(`${RankingSystem.name}: ${place.systemId}`);
         }
 
-        place.single = place.single ?? system.amountOfLevels;
-        place.double = place.double ?? system.amountOfLevels;
-        place.mix = place.mix ?? system.amountOfLevels;
-      }
-    }
-
-    return places;
+        return getRankingProtected(place, system);
+      }) ?? []
+    );
   }
 }

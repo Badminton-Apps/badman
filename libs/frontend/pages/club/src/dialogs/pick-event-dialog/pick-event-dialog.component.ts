@@ -2,11 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
@@ -31,8 +27,6 @@ export interface PickEventDialogData {
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
-
-    // Material
     MatDialogModule,
     MatProgressBarModule,
     MatSelectModule,
@@ -121,9 +115,7 @@ export class PickEventDialogComponent implements OnInit {
       .pipe(
         map(
           (result) =>
-            result.data.eventCompetitions.rows?.map(
-              (row) => new EventCompetition(row),
-            ) ?? [],
+            result.data.eventCompetitions.rows?.map((row) => new EventCompetition(row)) ?? [],
         ),
         tap((events) => this.#events.next(events)),
       );
@@ -153,9 +145,7 @@ export class PickEventDialogComponent implements OnInit {
       .pipe(
         map(
           (result) =>
-            result.data.subEventCompetitions?.map(
-              (row) => new SubEventCompetition(row),
-            ) ?? [],
+            result.data.subEventCompetitions?.map((row) => new SubEventCompetition(row)) ?? [],
         ),
         tap((subEvents) => this.#subEvents.next(subEvents)),
       );

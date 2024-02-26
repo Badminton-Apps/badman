@@ -12,7 +12,7 @@ export class ExcelService {
   constructor(
     private httpClient: HttpClient,
     @Inject(EXCEL_CONFIG)
-    private config: IExcelConfig
+    private config: IExcelConfig,
   ) {}
 
   getBaseplayersEnrollment(event: EventCompetition) {
@@ -29,7 +29,7 @@ export class ExcelService {
       })
       .pipe(
         take(1),
-        map((result) => saveAs(result, `${event.name}.xlsx`))
+        map((result) => saveAs(result, `${event.name}.xlsx`)),
       );
   }
 }

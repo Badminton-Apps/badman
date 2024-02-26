@@ -2,9 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
+  Injector,
   OnInit,
   TemplateRef,
   ViewChild,
+  inject,
+  signal,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,8 +32,10 @@ import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
+import { connect } from 'ngxtension/connect';
 import { lastValueFrom } from 'rxjs';
 import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
+import { AssemblyV2Component } from './components/assembly-v2/assembly-v2.component';
 
 @Component({
   selector: 'badman-assembly-create',
@@ -44,18 +49,28 @@ import { AssemblyComponent, SAVED_ASSEMBLY } from './components';
     SelectTeamComponent,
     SelectEncounterComponent,
     SelectSeasonComponent,
-
     TranslateModule,
-
     MatIconModule,
     MatButtonModule,
     AssemblyComponent,
+    AssemblyV2Component,
     MatDialogModule,
     MatMenuModule,
     MatRippleModule,
   ],
 })
 export class CreatePageComponent implements OnInit {
+  private injector = inject(Injector);
+  private readonly apollo = inject(Apollo);
+  private readonly seoService = inject(SeoService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly systemService = inject(RankingSystemService);
+  private readonly pdfService = inject(PdfService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
+  private readonly authenticateService = inject(AuthenticateService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
   formGroup?: FormGroup;
   selectedEventControl: FormControl = new FormControl();
   pdfLoading = false;
@@ -69,17 +84,10 @@ export class CreatePageComponent implements OnInit {
     template: TemplateRef<HTMLElement>;
   };
 
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private apollo: Apollo,
-    private systemService: RankingSystemService,
-    private pdfService: PdfService,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog,
-    public authenticateService: AuthenticateService,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {}
+  teamId = signal<string | undefined>(undefined);
+  encounterId = signal<string | undefined>(undefined);
+
+  loggedIn = signal(() => this.authenticateService.loggedInSignal());
 
   ngOnInit(): void {
     this.seoService.update({
@@ -91,22 +99,26 @@ export class CreatePageComponent implements OnInit {
     // Set for today
     const queryYear = parseInt(this.route.snapshot.queryParams['season'], 10);
     const year = isNaN(queryYear) ? getCurrentSeason() : queryYear;
+    const teamControl = new FormControl();
+    const encounterControl = new FormControl();
 
     this.formGroup = new FormGroup({
       season: new FormControl(year),
       event: this.selectedEventControl,
       club: new FormControl(),
+      team: teamControl,
+      encounter: encounterControl,
     });
+
+    connect(this.teamId, teamControl.valueChanges, this.injector);
+    connect(this.encounterId, encounterControl.valueChanges, this.injector);
   }
 
   encounterSelected(encounter: EncounterCompetition) {
     this.selectedEventControl?.setValue(encounter);
   }
 
-  templateUpdated(template: {
-    valid: boolean;
-    template: TemplateRef<HTMLElement>;
-  }) {
+  templateUpdated(template: { valid: boolean; template: TemplateRef<HTMLElement> }) {
     this.validationOverview = template;
   }
 
@@ -164,17 +176,15 @@ export class CreatePageComponent implements OnInit {
       }),
     );
 
-    const encounter = new EncounterCompetition(
-      result.data.encounterCompetition,
-    );
-    const fileName = `${moment(encounter?.date).format(
-      'YYYY-MM-DD HH:mm',
-    )} - ${encounter?.home?.name} vs ${encounter?.away?.name}.pdf`;
+    const encounter = new EncounterCompetition(result.data.encounterCompetition);
+    const fileName = `${moment(encounter?.date).format('YYYY-MM-DD HH:mm')} - ${encounter?.home?.name} vs ${
+      encounter?.away?.name
+    }.pdf`;
 
     // Generate pdf
     this.pdfService
       .getTeamAssembly({
-        systemId: this.systemService.systemId()!,
+        systemId: this.systemService.systemId() ?? null,
         captainId: this.formGroup?.get('captain')?.value,
         teamId: this.formGroup?.get('team')?.value,
         encounterId: encounterId,
@@ -184,22 +194,12 @@ export class CreatePageComponent implements OnInit {
         single3: this.formGroup?.get('single3')?.value?.id,
         single4: this.formGroup?.get('single4')?.value?.id,
 
-        double1: this.formGroup
-          ?.get('double1')
-          ?.value?.map((r: Player) => r.id),
-        double2: this.formGroup
-          ?.get('double2')
-          ?.value?.map((r: Player) => r.id),
-        double3: this.formGroup
-          ?.get('double3')
-          ?.value?.map((r: Player) => r.id),
-        double4: this.formGroup
-          ?.get('double4')
-          ?.value?.map((r: Player) => r.id),
+        double1: this.formGroup?.get('double1')?.value?.map((r: Player) => r.id),
+        double2: this.formGroup?.get('double2')?.value?.map((r: Player) => r.id),
+        double3: this.formGroup?.get('double3')?.value?.map((r: Player) => r.id),
+        double4: this.formGroup?.get('double4')?.value?.map((r: Player) => r.id),
 
-        subtitudes: this.formGroup
-          ?.get('subtitudes')
-          ?.value?.map((r: Player) => r.id),
+        subtitudes: this.formGroup?.get('subtitudes')?.value?.map((r: Player) => r.id),
       })
       .subscribe((pdf) => {
         const url = window.URL.createObjectURL(pdf);
@@ -266,22 +266,12 @@ export class CreatePageComponent implements OnInit {
           single3: this.formGroup?.get('single3')?.value?.id,
           single4: this.formGroup?.get('single4')?.value?.id,
 
-          double1: this.formGroup
-            ?.get('double1')
-            ?.value?.map((r: Player) => r.id),
-          double2: this.formGroup
-            ?.get('double2')
-            ?.value?.map((r: Player) => r.id),
-          double3: this.formGroup
-            ?.get('double3')
-            ?.value?.map((r: Player) => r.id),
-          double4: this.formGroup
-            ?.get('double4')
-            ?.value?.map((r: Player) => r.id),
+          double1: this.formGroup?.get('double1')?.value?.map((r: Player) => r.id),
+          double2: this.formGroup?.get('double2')?.value?.map((r: Player) => r.id),
+          double3: this.formGroup?.get('double3')?.value?.map((r: Player) => r.id),
+          double4: this.formGroup?.get('double4')?.value?.map((r: Player) => r.id),
 
-          subtitudes: this.formGroup
-            ?.get('subtitudes')
-            ?.value?.map((r: Player) => r.id),
+          subtitudes: this.formGroup?.get('subtitudes')?.value?.map((r: Player) => r.id),
         },
       },
       refetchQueries: () => [
@@ -291,7 +281,7 @@ export class CreatePageComponent implements OnInit {
             id: this.formGroup?.get('encounter')?.value,
             where: {
               captainId: this.formGroup?.get('captain')?.value,
-              playerId: this.authenticateService?.user?.id,
+              playerId: this.authenticateService?.userSignal()?.id,
             },
           },
         },

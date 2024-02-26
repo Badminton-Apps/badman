@@ -3,7 +3,7 @@ import moment from 'moment';
 import { RankingGroup as RankingGroup } from './group.model';
 
 export class RankingSystem {
-  id?: string;
+  id!: string;
   name?: string;
   amountOfLevels?: number;
   procentWinning?: number;
@@ -47,7 +47,11 @@ export class RankingSystem {
   rankingGroups?: RankingGroup[];
 
   constructor(args?: Partial<RankingSystem>) {
-    this.id = args?.id;
+    if (!args?.id) {
+      console.error(`${this.constructor.name} needs an id`);
+      return;
+    }
+    this.id = args.id;
     this.name = args?.name;
     this.amountOfLevels = args?.amountOfLevels;
     this.procentWinning = args?.procentWinning;
@@ -63,17 +67,13 @@ export class RankingSystem {
     this.gamesForInactivty = args?.gamesForInactivty;
     this.inactivityAmount = args?.inactivityAmount;
     this.inactivityUnit = args?.inactivityUnit;
-    this.calculationLastUpdate = moment(
-      args?.calculationLastUpdate
-    ).toDate();
+    this.calculationLastUpdate = moment(args?.calculationLastUpdate).toDate();
     this.calculationIntervalAmount = args?.calculationIntervalAmount;
     this.calculationIntervalUnit = args?.calculationIntervalUnit;
     this.calculationDayOfWeek = args?.calculationDayOfWeek;
     this.periodAmount = args?.periodAmount;
     this.periodUnit = args?.periodUnit;
-    this.updateLastUpdate = moment(
-      args?.updateLastUpdate
-    ).toDate();
+    this.updateLastUpdate = moment(args?.updateLastUpdate).toDate();
     this.updateIntervalAmount = args?.updateIntervalAmount;
     this.updateIntervalUnit = args?.updateIntervalUnit;
     this.updateDayOfWeek = args?.updateDayOfWeek;
@@ -110,4 +110,3 @@ export interface RankingPlacesResult {
   date: Date;
   points: RankingPlaceResult[];
 }
-

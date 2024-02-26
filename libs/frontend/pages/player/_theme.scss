@@ -1,14 +1,8 @@
+@use '@angular/material' as mat;
 @use './src/pages/detail/detail.page.theme.scss' as detail;
 @use './src/pages/edit/edit.page.theme.scss' as edit;
 @use './src/pages/settings/settings.component.theme' as settings;
 @use './src/pages/ranking-breakdown/ranking-breakdown.page.theme.scss' as ranking-breakdown;
-
-@mixin theme($theme) {
-  @include detail.theme($theme);
-  @include edit.theme($theme);
-  @include settings.theme($theme);
-  @include ranking-breakdown.theme($theme);
-}
 
 @mixin typography($theme) {
   @include detail.typography($theme);
@@ -17,9 +11,21 @@
   @include ranking-breakdown.typography($theme);
 }
 
-@mixin colors($theme) {
+@mixin color($theme) {
   @include detail.color($theme);
   @include edit.color($theme);
   @include settings.color($theme);
   @include ranking-breakdown.color($theme);
+}
+
+@mixin theme($theme) {
+  $color-config: mat.get-color-config($theme);
+  @if $color-config != null {
+    @include color($theme);
+  }
+
+  $typography-config: mat.get-typography-config($theme);
+  @if $typography-config != null {
+    @include typography($theme);
+  }
 }

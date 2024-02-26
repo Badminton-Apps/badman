@@ -11,7 +11,7 @@ export async function selectPlayer(
   },
   memberId: string,
   player: 't1p1' | 't1p2' | 't2p1' | 't2p2',
-  matchId: string
+  matchId: string,
 ) {
   const { page, timeout } = pupeteer;
   if (!page) {
@@ -32,10 +32,7 @@ export async function selectPlayer(
 
     // pass the single handle below
     for (const currentOption of options) {
-      const optionContent = await page.evaluate(
-        (el) => el.textContent,
-        currentOption
-      );
+      const optionContent = await page.evaluate((el) => el.textContent, currentOption);
 
       if (!optionContent) {
         continue;
@@ -49,10 +46,7 @@ export async function selectPlayer(
       console.error(`Could not find player ${memberId} in select`);
     }
 
-    const optionValue = await page.evaluate(
-      (el) => el.value,
-      selectedOption ?? options[3]
-    );
+    const optionValue = await page.evaluate((el) => el.value, selectedOption ?? options[3]);
     // await option.type(optionValue);
 
     await option.focus();

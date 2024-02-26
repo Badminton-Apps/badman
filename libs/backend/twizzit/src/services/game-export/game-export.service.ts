@@ -30,10 +30,7 @@ export class GameExportService {
       attributes: ['id', 'date', 'homeScore', 'awayScore'],
       where: {
         date: {
-          [Op.between]: [
-            moment([year, 8, 1]).toDate(),
-            moment([year + 1, 8, 1]).toDate(),
-          ],
+          [Op.between]: [moment([year, 8, 1]).toDate(), moment([year + 1, 8, 1]).toDate()],
         },
         [Op.or]: [
           {
@@ -54,9 +51,7 @@ export class GameExportService {
         {
           attributes: ['id'],
           model: DrawCompetition,
-          include: [
-            { attributes: ['id', 'eventType'], model: SubEventCompetition },
-          ],
+          include: [{ attributes: ['id', 'eventType'], model: SubEventCompetition }],
         },
       ],
       order: [['date', 'ASC']],
@@ -79,13 +74,8 @@ export class GameExportService {
         Type: 'Competitie',
         Seizoen: `${year}-${parseInt(`${year}`) + 1}`,
         Datum: moment.tz(game.date, 'Europe/Brussels').format('DD/MM/YYYY'),
-        'Start tijdstip': moment
-          .tz(game.date, 'Europe/Brussels')
-          .format('HH:mm'),
-        'Eind tijdstip': moment
-          .tz(game.date, 'Europe/Brussels')
-          .add(2, 'hours')
-          .format('HH:mm'),
+        'Start tijdstip': moment.tz(game.date, 'Europe/Brussels').format('HH:mm'),
+        'Eind tijdstip': moment.tz(game.date, 'Europe/Brussels').add(2, 'hours').format('HH:mm'),
         'Tijdstip afspraak': moment
           .tz(game.date, 'Europe/Brussels')
           .subtract(15, 'minute')
@@ -95,10 +85,7 @@ export class GameExportService {
         Resource: null,
         'Part (%)': null,
         Omschrijving: null,
-        Score:
-          game.homeScore && game.awayScore
-            ? `${game.homeScore} - ${game.awayScore}`
-            : null,
+        Score: game.homeScore && game.awayScore ? `${game.homeScore} - ${game.awayScore}` : null,
         'Score details': null,
       };
     });

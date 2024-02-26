@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   Injector,
-  Input,
   OnInit,
   PLATFORM_ID,
   Signal,
   TransferState,
   inject,
+  input,
   signal,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -45,19 +45,17 @@ export class ClubPlayersComponent implements OnInit {
   >([]);
 
   // Inputs
-  @Input({ required: true }) clubId!: Signal<string>;
-  @Input() filter?: FormGroup;
+  clubId = input.required<Signal<string>>();
+  filter = input<FormGroup>(
+    new FormGroup({
+      season: new FormControl(getCurrentSeason()),
+    }),
+  );
 
   ngOnInit(): void {
-    if (!this.filter) {
-      this.filter = new FormGroup({
-        season: new FormControl(getCurrentSeason()),
-      });
-    }
-
     combineLatest([
-      this.filter?.valueChanges.pipe(startWith(this.filter.value ?? {})),
-      toObservable(this.clubId, {
+      this.filter()?.valueChanges.pipe(startWith(this.filter().value ?? {})),
+      toObservable(this.clubId(), {
         injector: this.injector,
       }),
     ])
@@ -89,11 +87,7 @@ export class ClubPlayersComponent implements OnInit {
               },
             }).valueChanges,
         ),
-        transferState(
-          `clubPlayerTeamsKey-${this.clubId()}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`clubPlayerTeamsKey-${this.clubId()()}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.club) {
             throw new Error('No club');

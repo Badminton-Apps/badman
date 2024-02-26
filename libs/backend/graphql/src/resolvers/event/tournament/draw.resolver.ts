@@ -1,26 +1,12 @@
-import {
-  DrawTournament,
-  EventEntry,
-  Game,
-  SubEventTournament
-} from '@badman/backend-database';
+import { DrawTournament, EventEntry, Game, SubEventTournament } from '@badman/backend-database';
 import { NotFoundException } from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, ID, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../../utils';
 
 @Resolver(() => DrawTournament)
 export class DrawTournamentResolver {
   @Query(() => DrawTournament)
-  async drawTournament(
-    @Args('id', { type: () => ID }) id: string
-  ): Promise<DrawTournament> {
+  async drawTournament(@Args('id', { type: () => ID }) id: string): Promise<DrawTournament> {
     const draw = await DrawTournament.findByPk(id);
 
     if (!draw) {
@@ -35,9 +21,7 @@ export class DrawTournamentResolver {
   }
 
   @ResolveField(() => SubEventTournament)
-  async subEventTournament(
-    @Parent() draw: DrawTournament
-  ): Promise<SubEventTournament> {
+  async subEventTournament(@Parent() draw: DrawTournament): Promise<SubEventTournament> {
     return draw.getSubEventTournament();
   }
 

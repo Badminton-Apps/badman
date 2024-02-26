@@ -1,9 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  MatDialogModule,
-  MAT_DIALOG_DATA,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { Club, Location } from '@badman/frontend-models';
@@ -22,19 +18,14 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./location-dialog.component.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-
-    // Other modules
     MatSelectModule,
     MatDialogModule,
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-
-    // My Modules
     LocationDialogFieldsComponent,
   ],
 })
@@ -56,7 +47,7 @@ export class LocationDialogComponent implements OnInit {
       onUpdate: 'close' | 'stay';
       showAvailibilities: boolean;
     },
-    private appollo: Apollo
+    private appollo: Apollo,
   ) {}
 
   ngOnInit(): void {
@@ -100,7 +91,7 @@ export class LocationDialogComponent implements OnInit {
             return of(null);
           }
         }),
-        map((t) => t ?? new Location())
+        map((t) => t ?? new Location()),
       )
       .subscribe((x) => {
         this.location = x;
@@ -154,7 +145,7 @@ export class LocationDialogComponent implements OnInit {
             },
           },
         })
-        .pipe(map((x) => new Location(x.data?.createLocation)))
+        .pipe(map((x) => new Location(x.data?.createLocation))),
     );
 
     if (this.data.onCreate === 'close') {
@@ -209,7 +200,7 @@ export class LocationDialogComponent implements OnInit {
               },
             },
           })
-          .pipe(map((x) => new Location(x.data?.updateLocation)))
+          .pipe(map((x) => new Location(x.data?.updateLocation))),
       );
 
       if (this.data.onUpdate === 'close') {

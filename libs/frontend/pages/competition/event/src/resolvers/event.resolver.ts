@@ -56,7 +56,7 @@ export class EventResolver {
   constructor(
     private apollo: Apollo,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -70,18 +70,14 @@ export class EventResolver {
         },
       })
       .pipe(
-        transferState(
-          `eventKey-${eventId}`,
-          this.stateTransfer,
-          this.platformId
-        ),
+        transferState(`eventKey-${eventId}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.eventCompetition) {
             throw new Error('No event found!');
           }
           return new EventCompetition(result.data.eventCompetition);
         }),
-        first()
+        first(),
       );
   }
 }

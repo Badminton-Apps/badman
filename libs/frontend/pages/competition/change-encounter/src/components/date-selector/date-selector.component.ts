@@ -21,16 +21,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  MatFormField,
-  MatFormFieldControl,
-  MAT_FORM_FIELD,
-} from '@angular/material/form-field';
+import { MatFormField, MatFormFieldControl, MAT_FORM_FIELD } from '@angular/material/form-field';
 import moment, { Moment } from 'moment';
 import { Subject } from 'rxjs';
 import { CalendarComponent } from '../calendar';
 import { CommonModule } from '@angular/common';
 import { MomentModule } from 'ngx-moment';
+import { input } from '@angular/core';
 
 const selector = 'badman-date-selector';
 
@@ -39,9 +36,7 @@ const selector = 'badman-date-selector';
   templateUrl: './date-selector.component.html',
   styleUrls: ['./date-selector.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    { provide: MatFormFieldControl, useExisting: DateSelectorComponent },
-  ],
+  providers: [{ provide: MatFormFieldControl, useExisting: DateSelectorComponent }],
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, MomentModule],
 })
@@ -59,24 +54,17 @@ export class DateSelectorComponent
   private _required = false;
   private _disabled = false;
 
-  @Input()
-  home = false;
+  home = input(false);
 
-  @Input()
-  homeClubId?: string;
+  homeClubId = input<string | undefined>();
 
-  @Input()
-  awayClubId?: string;
+  awayClubId = input<string | undefined>();
 
-  @Input()
-  homeTeamId?: string;
+  homeTeamId = input<string | undefined>();
 
-  @Input()
-  awayTeamId?: string;
+  awayTeamId = input<string | undefined>();
 
-  // eslint-disable-next-line @angular-eslint/no-input-rename
-  @Input('aria-describedby')
-  userAriaDescribedBy?: string;
+  // userAriaDescribedBy = input<string | undefined>(undefined, { alias: 'aria-describedby' });
 
   dateControl: FormControl;
 
@@ -159,7 +147,7 @@ export class DateSelectorComponent
     private ref: ChangeDetectorRef,
     @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl,
-    private _dialog: MatDialog
+    private _dialog: MatDialog,
   ) {
     this.dateControl = new FormControl(null, [Validators.required]);
 
@@ -194,15 +182,14 @@ export class DateSelectorComponent
         width: '95vw',
         maxWidth: '95vw',
         data: {
-          homeClubId: this.homeClubId,
-          awayClubId: this.awayClubId,
-          awayTeamId: this.awayTeamId,
-          homeTeamId: this.homeTeamId,
+          homeClubId: this.homeClubId(),
+          awayClubId: this.awayClubId(),
+          awayTeamId: this.awayTeamId(),
+          homeTeamId: this.homeTeamId(),
           date,
           locationId: this.value?.locationId,
-          home: this.home,
+          home: this.home(),
         },
-        
       })
       .afterClosed()
       .subscribe((result) => {
@@ -222,9 +209,7 @@ export class DateSelectorComponent
   }
 
   onFocusOut(event: FocusEvent) {
-    if (
-      !this._elementRef.nativeElement.contains(event.relatedTarget as Element)
-    ) {
+    if (!this._elementRef.nativeElement.contains(event.relatedTarget as Element)) {
       this.touched = true;
       this.focused = false;
       this.onTouched();
@@ -233,9 +218,7 @@ export class DateSelectorComponent
   }
 
   setDescribedByIds(ids: string[]) {
-    const controlElement = this._elementRef.nativeElement.querySelector(
-      '.date-selector-container'
-    );
+    const controlElement = this._elementRef.nativeElement.querySelector('.date-selector-container');
     if (controlElement) {
       controlElement.setAttribute('aria-describedby', ids.join(' '));
     }
@@ -249,7 +232,7 @@ export class DateSelectorComponent
     date: {
       date: Moment;
       locationId: string;
-    } | null
+    } | null,
   ): void {
     this.value = date;
   }

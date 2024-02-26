@@ -32,14 +32,13 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions,
   ) {
     if (!options) {
       options = {};
     }
 
-    options.logger =
-      options.logger || new Logger(TournamentSyncSubEventProcessor.name);
+    options.logger = options.logger || new Logger(TournamentSyncSubEventProcessor.name);
     super(options);
   }
 
@@ -51,13 +50,8 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
     const subEvents = await this.event.getSubEventTournaments({
       transaction: this.transaction,
     });
-    const canChange = moment()
-      .subtract(2, 'months')
-      .isBefore(this.event.firstDay);
-    const visualEvents = await this.visualService.getEvents(
-      this.visualTournament.Code,
-      !canChange
-    );
+    const canChange = moment().subtract(2, 'months').isBefore(this.event.firstDay);
+    const visualEvents = await this.visualService.getEvents(this.visualTournament.Code, !canChange);
     const returnSubEvents: SubEventStepData[] = [];
 
     // Add sub events
@@ -65,9 +59,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       if (!xmlEvent) {
         continue;
       }
-      const dbSubEvents = subEvents.filter(
-        (r) => r.visualCode === `${xmlEvent.Code}`
-      );
+      const dbSubEvents = subEvents.filter((r) => r.visualCode === `${xmlEvent.Code}`);
       let dbSubEvent: SubEventTournament | null = null;
 
       if (dbSubEvents.length === 1) {
@@ -91,7 +83,7 @@ export class TournamentSyncSubEventProcessor extends StepProcessor {
       if (!dbSubEvent) {
         if (this.existed) {
           this.logger.warn(
-            `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`
+            `Event ${xmlEvent.Name} for ${this.event.name} (gender: ${xmlEvent.GenderID}) not found, might checking it?`,
           );
         }
         dbSubEvent = await new SubEventTournament({

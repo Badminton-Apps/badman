@@ -2,21 +2,23 @@ extends ../../layouts/layout.pug
 
 block title
   h1.text-center
-    | Event #{event.name} sync
+    | Event #{ event.name } sync
 
 block content
   p.text-center
     p
-      | Beste #{user}, 
+      | Beste #{ user }, 
       br
       br
-      |   Het event is 
+      |
+      | Het event is
       //- check if event is successfully synced
       if success
         strong succesvol
       else
         strong niet succesvol
-      |   gesynchroniseerd.
+      |
+      | gesynchroniseerd.
       br
     //- check if the url is available
     if url
@@ -24,12 +26,14 @@ block content
         a(href=`${url}`)
           | Ga naar ontmoeting
     p
-      | Met sportieve groeten, 
+      | Met sportieve groeten,
       br
-      |   Badman
+      |
+      | Badman
     p
       | Disclaimer:
       br
       small
-        |   Deze notificatie is nog in beta. Mocht je vragen of opmerkingen hebben, laat het ons weten via 
-        a(href='mailto:info@badmintonvlaanderen.be') badmintonvlaanderen
+        |
+        | Deze notificatie is nog in beta. Mocht je vragen of opmerkingen hebben, laat het ons weten via
+        a(href="mailto:info@badmintonvlaanderen.be") badmintonvlaanderen

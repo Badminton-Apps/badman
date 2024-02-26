@@ -11,7 +11,7 @@ module.exports = {
             schema: 'event',
           },
           'GamePlayerMemberships',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
@@ -29,7 +29,7 @@ module.exports = {
             schema: 'event',
           },
           'GamePlayers',
-          { transaction: t }
+          { transaction: t },
         );
       } catch (err) {
         console.error('We errored with', err);

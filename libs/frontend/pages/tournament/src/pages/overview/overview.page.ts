@@ -8,12 +8,7 @@ import {
   TransferState,
   ViewChild,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -46,12 +41,7 @@ import { BehaviorSubject, lastValueFrom, merge } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 
 const FETCH_TOURNAMENTS = gql`
-  query GetEventsTournament(
-    $where: JSONObject
-    $order: [SortOrderType!]
-    $skip: Int
-    $take: Int
-  ) {
+  query GetEventsTournament($where: JSONObject, $order: [SortOrderType!], $skip: Int, $take: Int) {
     eventTournaments(where: $where, order: $order, skip: $skip, take: $take) {
       count
       rows {
@@ -74,18 +64,12 @@ const FETCH_TOURNAMENTS = gql`
   styleUrls: ['./overview.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-
     TranslateModule,
     ReactiveFormsModule,
     MomentModule,
-
-    // Own Components
     HasClaimComponent,
-
-    // Material Modules
     MatCardModule,
     MatButtonModule,
     MatTableModule,
@@ -143,12 +127,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
     // If the user changes the sort order, reset back to the first page.
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
 
-    merge(
-      this.sort.sortChange,
-      this.paginator.page,
-      this.filter.valueChanges,
-      this.update$,
-    )
+    merge(this.sort.sortChange, this.paginator.page, this.filter.valueChanges, this.update$)
       .pipe(
         startWith({}),
         switchMap(() => {
@@ -245,9 +224,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
           }
           return {
             count: result.data.eventTournaments.count,
-            items: result.data.eventTournaments.rows.map(
-              (team) => new EventTournament(team),
-            ),
+            items: result.data.eventTournaments.rows.map((team) => new EventTournament(team)),
           };
         }),
       );
@@ -274,9 +251,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       .subscribe(() => {
         this.update$.next(true);
         this.matSnackBar.open(
-          `Tournament ${tournament.name} is ${
-            offical ? 'official' : 'unofficial'
-          }`,
+          `Tournament ${tournament.name} is ${offical ? 'official' : 'unofficial'}`,
           'Close',
           {
             duration: 2000,
@@ -298,9 +273,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    await lastValueFrom(
-      this.jobsService.syncEventById({ id: eventTournament.visualCode }),
-    );
+    await lastValueFrom(this.jobsService.syncEventById({ id: eventTournament.visualCode }));
   }
 
   async addEvent() {
@@ -330,9 +303,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
         this.apollo
           .mutate({
             mutation: gql`
-              mutation UpdateEventTournament(
-                $data: EventTournamentUpdateInput!
-              ) {
+              mutation UpdateEventTournament($data: EventTournamentUpdateInput!) {
                 updateEventTournament(data: $data) {
                   id
                 }
@@ -390,8 +361,7 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
               query: FETCH_TOURNAMENTS,
               variables: {
                 where: {
-                  official:
-                    this.filter.value?.official == true ? true : undefined,
+                  official: this.filter.value?.official == true ? true : undefined,
                   $or: [
                     {
                       name: this.filter.value?.name

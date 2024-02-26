@@ -104,13 +104,11 @@ export class PlannerService {
                       return {
                         id: a.id,
                         day: a.days?.filter((d) => d.day != null),
-                        exceptions: a.exceptions?.filter(
-                          (e) => e.courts != null
-                        ),
+                        exceptions: a.exceptions?.filter((e) => e.courts != null),
                       };
                     }),
                   ],
-                } 
+                };
               }),
               teams: [teaminfo],
             };

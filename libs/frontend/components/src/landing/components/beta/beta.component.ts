@@ -1,50 +1,40 @@
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
-  Input,
   OnInit,
   PLATFORM_ID,
+  computed,
+  inject,
+  input,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { LoggedinUser, AuthenticateService } from '@badman/frontend-auth';
-import { Observable } from 'rxjs';
-import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
+import { AuthenticateService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-beta',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    RouterModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, MatCardModule, RouterModule, MatButtonModule, MatIconModule],
   templateUrl: './beta.component.html',
   styleUrls: ['./beta.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BetaComponent implements OnInit {
-  @Input()
-  version?: string;
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly authenticateService = inject(AuthenticateService);
 
-  user$?: Observable<LoggedinUser>;
+  version = input<string | undefined>();
+
+  user = computed(() => this.authenticateService.userSignal());
+  loggedIn = computed(() => this.authenticateService.loggedInSignal());
 
   // store the state of the beta message in local storage
   hideBetaMessage = false;
 
-  constructor(
-    private authenticateService: AuthenticateService,
-    @Inject(PLATFORM_ID) private platformId: string
-  ) {}
-
   ngOnInit() {
-    this.user$ = this.authenticateService.user$;
-
     if (isPlatformBrowser(this.platformId)) {
       const hideBetaMessage = localStorage.getItem('hideBetaMessage');
       if (hideBetaMessage != undefined) {

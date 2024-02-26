@@ -87,19 +87,13 @@ export class AppController {
     const file = createReadStream(fileLoc);
     const extension = extname(fileLoc);
     const fileName = basename(fileLoc, extension);
-    res.header(
-      'Content-disposition',
-      'attachment; filename=' + fileName + extension,
-    );
+    res.header('Content-disposition', 'attachment; filename=' + fileName + extension);
 
     res.type(extension).send(file);
   }
 
   @Get('planner')
-  async getPlanner(
-    @Res() res: FastifyReply,
-    @Query() query: { season: string },
-  ) {
+  async getPlanner(@Res() res: FastifyReply, @Query() query: { season: string }) {
     this.logger.debug('Generating planner');
     const result = await this.planner.getPlannerData(query.season);
 

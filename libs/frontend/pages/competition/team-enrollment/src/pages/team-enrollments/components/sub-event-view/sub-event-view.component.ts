@@ -20,8 +20,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
   standalone: true,
   imports: [
     CommonModule,
-
-    // Material
     ReactiveFormsModule,
     MatFormFieldModule,
     MatOptionModule,
@@ -83,28 +81,23 @@ export class SubEventViewComponent implements OnInit {
           variables: {
             competitionEventId: eventId,
           },
-        })
+        }),
       ),
       map((result) => new EventCompetition(result.data.eventCompetition)),
       map((event) => {
         event.subEventCompetitions = event.subEventCompetitions ?? [];
 
         // Sort by level
-        event.subEventCompetitions =
-          event.subEventCompetitions.sort(sortSubEvents);
+        event.subEventCompetitions = event.subEventCompetitions.sort(sortSubEvents);
 
         // Filter entries
-        event.subEventCompetitions = event.subEventCompetitions.map(
-          (subEvent) => {
-            subEvent.eventEntries = subEvent.eventEntries?.filter(
-              (entry) => entry.meta !== null
-            );
-            return subEvent;
-          }
-        );
+        event.subEventCompetitions = event.subEventCompetitions.map((subEvent) => {
+          subEvent.eventEntries = subEvent.eventEntries?.filter((entry) => entry.meta !== null);
+          return subEvent;
+        });
 
         return event.subEventCompetitions;
-      })
+      }),
     );
 
     this.events$ = this.yearControl.valueChanges.pipe(
@@ -132,13 +125,9 @@ export class SubEventViewComponent implements OnInit {
               closeDate: { $gte: new Date().toISOString() },
             },
           },
-        })
+        }),
       ),
-      map((result) =>
-        result.data.eventCompetitions.rows.map(
-          (node) => new EventCompetition(node)
-        )
-      )
+      map((result) => result.data.eventCompetitions.rows.map((node) => new EventCompetition(node))),
     );
   }
 }

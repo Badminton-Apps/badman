@@ -34,10 +34,7 @@ export class SubEventCompetitionBuilder {
     return this;
   }
 
-  WithIndex(
-    minBaseIndex: number,
-    maxBaseIndex: number,
-  ): SubEventCompetitionBuilder {
+  WithIndex(minBaseIndex: number, maxBaseIndex: number): SubEventCompetitionBuilder {
     this.subEvent.minBaseIndex = minBaseIndex;
     this.subEvent.maxBaseIndex = maxBaseIndex;
     return this;
@@ -81,7 +78,6 @@ export class SubEventCompetitionBuilder {
     try {
       await this.subEvent.save();
 
-
       for (const draw of this.draws) {
         const d = await draw.Build();
         await this.subEvent.addDrawCompetition(d);
@@ -90,7 +86,6 @@ export class SubEventCompetitionBuilder {
       for (const entry of this.entries) {
         entry.WithSubEventId(this.subEvent.id);
       }
-
     } catch (error) {
       console.error(error);
       throw error;

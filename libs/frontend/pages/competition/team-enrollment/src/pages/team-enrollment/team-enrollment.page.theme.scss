@@ -7,7 +7,6 @@
 @use './components/steps/teams/teams.step.theme.scss' as teams;
 @use './components/steps/locations/locations.step.theme.scss' as locations;
 
-
 @mixin color($theme) {
   badman-team-enrollment {
     @include teams-transfer.color($theme);
@@ -31,17 +30,5 @@
     .description {
       @include mat.typography-level($typography-config, 'caption');
     }
-  }
-}
-
-@mixin theme($theme) {
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

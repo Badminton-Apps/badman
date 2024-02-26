@@ -13,12 +13,8 @@ export class SubEventTournament extends SubEvent {
     super(args);
 
     this.eventTournament =
-      args?.eventTournament != null
-        ? new EventTournament(args.eventTournament)
-        : undefined;
-    this.drawTournaments = args?.drawTournaments?.map(
-      (d) => new DrawTournament(d)
-    );
+      args?.eventTournament != null ? new EventTournament(args.eventTournament) : undefined;
+    this.drawTournaments = args?.drawTournaments?.map((d) => new DrawTournament(d));
     this.gameType =
       (args?.gameType ?? null) != null
         ? GameType[args.gameType as keyof typeof GameType]

@@ -1,34 +1,17 @@
-@use './src/games/recent-games/recent-games.component.theme.scss' as
-  recent-games;
-@use './src/games/upcoming-games/upcoming-games.component.theme.scss' as
-  upcoming-games;
+@use '@angular/material' as mat;
+
+@use './src/games/recent-games/recent-games.component.theme.scss' as recent-games;
+@use './src/games/upcoming-games/upcoming-games.component.theme.scss' as upcoming-games;
 @use './src/landing/components/beta/beta.component.theme.scss' as beta;
 @use './src/block/block.component.theme.scss' as block;
 @use './src/loading-block/loading-block.component.theme.scss' as loading-block;
 @use './src/page-header/page-header.component.theme.scss' as page-header;
 @use './src/player-search/player-search.component.theme.scss' as player-search;
-@use './src/selects/select-club/select-club.component.theme.scss' as
-  select-club;
-@use './src/selects/select-player/select-player.component.theme.scss' as
-  select-player;
+@use './src/selects/select-club/select-club.component.theme.scss' as select-club;
+@use './src/selects/select-player/select-player.component.theme.scss' as select-player;
 @use './src/roles/edit-role/edit-role.component.theme.scss' as edit-role;
 @use './src/shell/theme' as shell;
 @use './src/standing/standing.component.theme.scss' as standing;
-
-@mixin theme($theme) {
-  @include beta.theme($theme);
-  @include block.theme($theme);
-  @include edit-role.theme($theme);
-  @include loading-block.theme($theme);
-  @include page-header.theme($theme);
-  @include player-search.theme($theme);
-  @include select-club.theme($theme);
-  @include select-player.theme($theme);
-  @include recent-games.theme($theme);
-  @include shell.theme($theme);
-  @include standing.theme($theme);
-  @include upcoming-games.theme($theme);
-}
 
 @mixin typography($theme) {
   @include beta.typography($theme);
@@ -45,7 +28,7 @@
   @include upcoming-games.typography($theme);
 }
 
-@mixin colors($theme) {
+@mixin color($theme) {
   @include beta.color($theme);
   @include block.color($theme);
   @include edit-role.color($theme);
@@ -55,7 +38,19 @@
   @include select-club.color($theme);
   @include select-player.color($theme);
   @include recent-games.color($theme);
-  @include shell.color($theme); 
+  @include shell.color($theme);
   @include standing.color($theme);
   @include upcoming-games.color($theme);
+}
+
+@mixin theme($theme) {
+  $color-config: mat.get-color-config($theme);
+  @if $color-config != null {
+    @include color($theme);
+  }
+
+  $typography-config: mat.get-typography-config($theme);
+  @if $typography-config != null {
+    @include typography($theme);
+  }
 }

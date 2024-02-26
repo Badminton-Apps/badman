@@ -1,10 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { I18nTranslations } from '@badman/utils';
 import { PathImpl2 } from '@nestjs/config';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,13 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   templateUrl: './confirm.dialog.html',
   standalone: true,
-  imports: [
-    // Material
-    MatDialogModule,
-    MatButtonModule,
-
-    TranslateModule,
-  ],
+  imports: [MatDialogModule, MatButtonModule, TranslateModule],
   // styleUrls: ['./confirm-dialog.component.css']
 })
 export class ConfirmDialogComponent {
@@ -27,7 +17,7 @@ export class ConfirmDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel,
   ) {
     // Update view with given values
     this.title = data.title;
@@ -53,6 +43,6 @@ export class ConfirmDialogComponent {
 export class ConfirmDialogModel {
   constructor(
     public title: PathImpl2<I18nTranslations>,
-    public message: PathImpl2<I18nTranslations>
+    public message: PathImpl2<I18nTranslations>,
   ) {}
 }

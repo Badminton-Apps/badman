@@ -36,13 +36,10 @@ import { AssignRankingGroupsComponent } from '../../components';
   styleUrls: ['./detail.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
     TranslateModule,
     MomentModule,
-
-    // Material Modules
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
@@ -55,8 +52,6 @@ import { AssignRankingGroupsComponent } from '../../components';
     MatCardModule,
     MatTooltipModule,
     MatSnackBarModule,
-
-    // Own modules
     PageHeaderComponent,
     HasClaimComponent,
   ],
@@ -73,26 +68,25 @@ export class DetailPageComponent implements OnInit {
     private breadcrumbsService: BreadcrumbService,
     private apollo: Apollo,
     private jobsService: JobsService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       this.eventTournament = data['eventTournament'];
-      this.subEvents = this.eventTournament.subEventTournaments
-        ?.sort(sortSubEvents)
-        ?.reduce((acc, subEventTournament) => {
+      this.subEvents = this.eventTournament.subEventTournaments?.sort(sortSubEvents)?.reduce(
+        (acc, subEventTournament) => {
           const eventType = subEventTournament.eventType || 'Unknown';
-          const subEvents = acc.find(
-            (x) => x.eventType === eventType
-          )?.subEvents;
+          const subEvents = acc.find((x) => x.eventType === eventType)?.subEvents;
           if (subEvents) {
             subEvents.push(subEventTournament);
           } else {
             acc.push({ eventType, subEvents: [subEventTournament] });
           }
           return acc;
-        }, [] as { eventType: string; subEvents: SubEventTournament[] }[]);
+        },
+        [] as { eventType: string; subEvents: SubEventTournament[] }[],
+      );
 
       const eventTournamentName = `${this.eventTournament.name}`;
 
@@ -121,9 +115,7 @@ export class DetailPageComponent implements OnInit {
         this.apollo
           .mutate({
             mutation: gql`
-              mutation UpdateEventTournament(
-                $data: EventTournamentUpdateInput!
-              ) {
+              mutation UpdateEventTournament($data: EventTournamentUpdateInput!) {
                 updateEventTournament(data: $data) {
                   id
                 }
@@ -143,7 +135,7 @@ export class DetailPageComponent implements OnInit {
               'Close',
               {
                 duration: 2000,
-              }
+              },
             );
           });
       }
@@ -170,13 +162,11 @@ export class DetailPageComponent implements OnInit {
       })
       .subscribe(() => {
         this.matSnackBar.open(
-          `Tournament ${this.eventTournament.name} is ${
-            this.eventTournament.official ? 'official' : 'unofficial'
-          }`,
+          `Tournament ${this.eventTournament.name} is ${this.eventTournament.official ? 'official' : 'unofficial'}`,
           'Close',
           {
             duration: 2000,
-          }
+          },
         );
       });
   }
@@ -188,15 +178,13 @@ export class DetailPageComponent implements OnInit {
         'Close',
         {
           duration: 2000,
-        }
+        },
       );
 
       return;
     }
 
-    await lastValueFrom(
-      this.jobsService.syncEventById({ id: this.eventTournament.visualCode })
-    );
+    await lastValueFrom(this.jobsService.syncEventById({ id: this.eventTournament.visualCode }));
   }
 
   assignRankingGroups() {
@@ -217,7 +205,7 @@ export class DetailPageComponent implements OnInit {
   removeEvent() {
     const dialogData = new ConfirmDialogModel(
       'all.tournament.delete.title',
-      'all.tournament.delete.description'
+      'all.tournament.delete.description',
     );
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

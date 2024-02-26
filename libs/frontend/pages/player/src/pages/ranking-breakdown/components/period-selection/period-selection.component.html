@@ -1,23 +1,16 @@
 <label>{{ 'all.breakdown.period.title' | translate }}</label>
 <div class="items">
-  <div class="period">
-    {{ period.value.start | amDateFormat: 'DD MMM YYYY' }} -
-    {{ period.value.end | amDateFormat: 'DD MMM YYYY' }}
+  <div class="period()">
+    {{ period().value.start | amDateFormat: 'DD MMM YYYY' }} -
+    {{ period().value.end | amDateFormat: 'DD MMM YYYY' }}
   </div>
 
   <button mat-icon-button [matMenuTriggerFor]="appMenu">
     <mat-icon>calendar_today</mat-icon>
   </button>
   <mat-menu #appMenu="matMenu">
-    <div
-      (click)="$event.stopPropagation()"
-      (keydown)="$event.stopPropagation()"
-    >
-      <mat-calendar
-        #calendar
-        (selectedChange)="customPeriod($event)"
-        [dateClass]="dateClass"
-      >
+    <div (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <mat-calendar #calendar (selectedChange)="customPeriod($event)" [dateClass]="dateClass">
       </mat-calendar>
       <div class="period-selection-calender-hint">
         <div class="info">

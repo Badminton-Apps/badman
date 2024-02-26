@@ -10,7 +10,7 @@ export class RoleResolver {
   constructor(
     private apollo: Apollo,
     private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
@@ -41,7 +41,7 @@ export class RoleResolver {
           }
           return new Role(result.data.role);
         }),
-        first()
+        first(),
       );
   }
 }

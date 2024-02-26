@@ -1,12 +1,5 @@
 import { Field, ID } from '@nestjs/graphql';
-import {
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  PrimaryKey,
-  Table,
-} from 'sequelize-typescript';
+import { Column, DataType, ForeignKey, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { Location } from '../location.model';
 import { EventTournament } from './event-tournament.model';
 

@@ -1,15 +1,6 @@
 import { LevelType, UsedRankingTiming } from '@badman/utils';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
-import {
-  BuildOptions,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -51,22 +42,18 @@ import { SubEventCompetition } from './sub-event-competition.model';
 } as TableOptions)
 @ObjectType({ description: 'A EventCompetition' })
 export class EventCompetition extends Model {
-  constructor(values?: Partial<EventCompetition>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Field(() => Date, { nullable: true })
-  updatedAt?: Date;
+  override updatedAt?: Date;
 
   @Field(() => Date, { nullable: true })
-  createdAt?: Date;
+  override createdAt?: Date;
 
   @Unique('EventCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
@@ -163,6 +150,7 @@ export class EventCompetition extends Model {
   @Field(() => String)
   @Column(DataType.ENUM('months', 'weeks', 'days'))
   usedRankingUnit!: 'months' | 'weeks' | 'days';
+
   get usedRanking(): UsedRankingTiming {
     return {
       amount: this.usedRankingAmount,
@@ -205,34 +193,13 @@ export class EventCompetition extends Model {
 
   // Has many SubEventCompetition
   getSubEventCompetitions!: HasManyGetAssociationsMixin<SubEventCompetition>;
-  setSubEventCompetitions!: HasManySetAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  addSubEventCompetitions!: HasManyAddAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  addSubEventCompetition!: HasManyAddAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  removeSubEventCompetition!: HasManyRemoveAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  removeSubEventCompetitions!: HasManyRemoveAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
-  hasSubEventCompetition!: HasManyHasAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  hasSubEventCompetitions!: HasManyHasAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
+  setSubEventCompetitions!: HasManySetAssociationsMixin<SubEventCompetition, string>;
+  addSubEventCompetitions!: HasManyAddAssociationsMixin<SubEventCompetition, string>;
+  addSubEventCompetition!: HasManyAddAssociationMixin<SubEventCompetition, string>;
+  removeSubEventCompetition!: HasManyRemoveAssociationMixin<SubEventCompetition, string>;
+  removeSubEventCompetitions!: HasManyRemoveAssociationsMixin<SubEventCompetition, string>;
+  hasSubEventCompetition!: HasManyHasAssociationMixin<SubEventCompetition, string>;
+  hasSubEventCompetitions!: HasManyHasAssociationsMixin<SubEventCompetition, string>;
   countSubEventCompetitions!: HasManyCountAssociationsMixin;
 
   // Has many Comment

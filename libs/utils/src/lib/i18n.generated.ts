@@ -149,6 +149,7 @@ export type I18nTranslations = {
                 "choose-team": string;
                 "close-change-request": string;
                 "comment": string;
+                "comment-added": string;
                 "comments": string;
                 "dates": string;
                 "description": string;

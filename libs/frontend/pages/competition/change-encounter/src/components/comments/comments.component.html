@@ -2,37 +2,30 @@
   <h3>
     {{ 'all.competition.change-encounter.comments' | translate }}
   </h3>
-
   <div id="body">
-    <div
-      class="message"
-      [ngClass]="{
-        me: comment.player?.id === user()?.id
-      }"
-      *ngFor="let comment of comments?.()"
-    >
-      <div class="message-content">
-        <label>
-          {{ comment.player?.fullName }}
-        </label>
-        <span class="message-text">{{ comment.message }}</span>
-        <div class="time">
-          {{ comment.createdAt | amDateFormat : 'LLL' }}
+    @for (comment of comments(); track comment) {
+      <div
+        class="message"
+        [ngClass]="{
+          me: comment.player?.id === user()?.id
+        }"
+      >
+        <div class="message-content">
+          <label>
+            {{ comment.player?.fullName }}
+          </label>
+          <span class="message-text">{{ comment.message }}</span>
+          <div class="time">
+            {{ comment.createdAt | amDateFormat: 'LLL' }}
+          </div>
         </div>
       </div>
-    </div>
+    }
   </div>
-
   <div class="new-comment">
     <mat-form-field>
-      <mat-label>{{
-        'all.competition.change-encounter.comment' | translate
-      }}</mat-label>
-      <textarea
-        matInput
-        [formControl]="this.commentControl"
-        rows="5"
-      ></textarea>
+      <mat-label>{{ 'all.competition.change-encounter.comment' | translate }}</mat-label>
+      <textarea matInput [formControl]="this.commentControl" rows="5"></textarea>
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="addComment()">
       {{ 'all.button.add-comment' | translate }}

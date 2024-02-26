@@ -1,0 +1,173 @@
+name: Release Workflow v2
+
+on:
+  # manual trigger
+  workflow_dispatch:
+    inputs:
+      # main branch name
+      prod-release:
+        description: 'Do prod release'
+        required: true
+        default: false
+        type: boolean
+      # main branch name
+      e2e-tests:
+        description: 'Do e2e tests'
+        required: true
+        default: true
+        type: boolean
+
+# Needed for nx-set-shas when run on the main branch
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+run-name: ${{ inputs.prod-release && 'Prod' || 'Beta' }} release ${{ inputs.e2e-tests && 'with E2E tests' || '' }}
+
+jobs:
+  merge-dev-into-main:
+    name: Merge Dev into Main
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ inputs.prod-release }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set Git config
+        run: |
+          git config --local user.email "info@badman.app"
+          git config --local user.name "Badman Releaser"
+      - name: Merge develop back to main
+        run: |
+          git fetch --unshallow
+          git checkout main
+          git pull
+          git merge --no-ff develop -m "Merging develop into main"
+          git push
+
+  main:
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    needs: [merge-dev-into-main]
+    outputs:
+      NEW_VERSION: ${{ steps.create_release.outputs.new_version  }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.prod-release && 'main' || 'develop' }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node
+
+      - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+      - run: npm install
+
+      - uses: nrwl/nx-set-shas@v4
+      # This line is needed for nx affected to work when CI is running on a PR
+      - run: git branch --track main origin/main
+
+      # - run: npx nx-cloud record -- nx format:check
+      - run: npx nx affected -t lint test build
+      # if the e2e-tests input is true, run the e2e tests
+      - name: Run Playwright tests
+        run: npx nx run-many -t e2e
+        id: run-e2e-tests
+        if: ${{ inputs.e2e-tests }}
+      - name: e2e reports
+        # Always run if the e2e-tests input is true
+        if: ${{ inputs.e2e-tests && (steps.run-e2e-tests.outcome == 'success' || steps.run-e2e-tests.outcome == 'failure') }}
+        run: |
+          echo "Combine all the reports into a single report"
+          # check if the "blob-reports" root directory exists and if it does, remove it and recreate it
+          if [ -d "blob-reports" ]; then
+            rm -rf blob-reports
+          fi
+
+          # create the "blob-reports" root directory
+          mkdir blob-reports
+
+          # copy all the reports into the "blob-reports" root directory
+          cp apps/**/blob-report/*.zip ./blob-reports
+
+          # create nx report
+          npx playwright merge-reports --reporter=html,github ./blob-reports
+
+          ## for copy pasting in shell
+          # npx playwright show-report
+
+      - name: Set Git config
+        run: |
+          git config --local user.email "info@badman.app"
+          git config --local user.name "Badman Releaser"
+
+      # create release on master en develop
+      - name: Create release
+        id: create_release
+        run: node scripts/release.js --dry-run=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # deploy the new packages
+      - name: Deploy
+        run: npx nx affected -t deploy --no-agents
+        env:
+          API_HOOK: ${{ inputs.prod-release && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
+          WORKER_SYNC_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_SYNC_HOOK  || secrets.BETA_WORKER_SYNC_HOOK }}
+          WORKER_RANKING_HOOK: ${{ inputs.prod-release && secrets.PROD_WORKER_RANKING_HOOK  || secrets.BETA_WORKER_RANKING_HOOK }}
+
+      - name: stop agents
+        run: npx nx-cloud complete-ci-run
+        if: always()
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  merge-main-into-dev:
+    name: Merge Main into Dev
+    runs-on: ubuntu-latest
+    needs: [main]
+    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && inputs.prod-release
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set Git config
+        run: |
+          git config --local user.email "info@badman.app"
+          git config --local user.name "Badman Releaser"
+      - name: Merge main back to develop
+        run: |
+          git fetch --unshallow 
+          git checkout develop
+          git pull
+          git merge --no-ff origin/main -m "chore(release): v${{ needs.main.outputs.NEW_VERSION }}"
+          # git merge --no-ff main -m "Merging main into develop"
+          git push
+      # deploy on beta if main branch
+      - name: Deploy beta
+        run: npx nx affected -t deploy
+        env:
+          API_HOOK: ${{ secrets.BETA_API_HOOK }}
+          WORKER_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
+          RANKING_HOOK: ${{ secrets.BETA_WORKER_RANKING_HOOK }}

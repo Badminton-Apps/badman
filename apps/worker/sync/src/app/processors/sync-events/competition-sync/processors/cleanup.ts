@@ -15,7 +15,7 @@ export class CompetitionSyncCleanupProcessor extends StepProcessor {
     if (!options) {
       options = {};
     }
-    
+
     options.logger = options.logger || new Logger(CompetitionSyncCleanupProcessor.name);
     super(options);
   }

@@ -45,14 +45,14 @@ export class WorkerRankingModule implements OnApplicationBootstrap {
       id: service?.id,
     });
 
-     // Reset all jobs
-     const cronJob = await CronJob.findAll({
+    // Reset all jobs
+    const cronJob = await CronJob.findAll({
       where: {
         'meta.queueName': RankingQueue,
       },
     });
 
-     for (const job of cronJob) {
+    for (const job of cronJob) {
       this.logger.log(`Starting cron job ${job.meta.jobName}`);
       job.amount = 0;
       job.save();

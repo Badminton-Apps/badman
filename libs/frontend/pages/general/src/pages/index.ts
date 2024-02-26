@@ -2,4 +2,3 @@
 export * from './faq';
 export * from './changelog';
 // end:ng42.barrel
-

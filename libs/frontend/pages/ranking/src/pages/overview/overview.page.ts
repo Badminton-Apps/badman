@@ -9,12 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -28,10 +23,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import {
-  HasClaimComponent,
-  PageHeaderComponent,
-} from '@badman/frontend-components';
+import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -39,16 +31,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import {
-  catchError,
-  filter,
-  map,
-  of,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { catchError, filter, map, of, startWith, switchMap, takeUntil, tap } from 'rxjs';
 
 const FETCH_SYSTEMS = gql`
   query GetSystemsQuery($order: [SortOrderType!], $skip: Int, $take: Int) {
@@ -72,16 +55,12 @@ const FETCH_SYSTEMS = gql`
   styleUrls: ['./overview.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
     MomentModule,
-
-    // Material Modules
     MatButtonModule,
     MatTableModule,
     MatFormFieldModule,
@@ -93,8 +72,6 @@ const FETCH_SYSTEMS = gql`
     MatSlideToggleModule,
     MatDatepickerModule,
     MatSelectModule,
-
-    // Own Module
     PageHeaderComponent,
     HasClaimComponent,
   ],
@@ -200,7 +177,6 @@ export class OverviewPageComponent {
     this.systemService.state.watchSystem(system.id);
   }
 
-
   deleteSystem(system: RankingSystem) {
     if (!system.id) {
       console.warn('No system id');
@@ -210,7 +186,6 @@ export class OverviewPageComponent {
     this.systemService.state.deleteSystem(system.id);
   }
 
-  
   cloneSystem(system: RankingSystem) {
     if (!this.copySystemTemplateRef) {
       return;
@@ -244,9 +219,7 @@ export class OverviewPageComponent {
               copyFromStartDate: this.showDatePicker
                 ? this.copySystemFormGroup.value.start
                 : undefined,
-              copyToEndDate: this.showDatePicker
-                ? this.copySystemFormGroup.value.end
-                : undefined,
+              copyToEndDate: this.showDatePicker ? this.copySystemFormGroup.value.end : undefined,
             },
             refetchQueries: [
               {

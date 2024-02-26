@@ -3,18 +3,13 @@ import {
   Component,
   EventEmitter,
   Inject,
-  Input,
   OnInit,
   Output,
   PLATFORM_ID,
   TransferState,
+  input,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
@@ -48,12 +43,8 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-
-    // Core modules
     MomentModule,
     TranslateModule,
-
-    // Material Modules
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
@@ -67,23 +58,18 @@ import {
 export class SelectEncounterComponent implements OnInit {
   private destroy$ = injectDestroy();
 
-  @Input()
-  controlName = 'encounter';
+  controlName = input('encounter');
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  dependsOn = 'team';
+  dependsOn = input('team');
 
-  @Input()
-  updateOn = ['team'];
+  updateOn = input(['team']);
 
-  @Input()
-  updateUrl = false;
+  updateUrl = input(false);
 
-  @Input()
-  control = new FormControl();
+  control = input<FormControl<string | null>>();
+  protected internalControl!: FormControl<string | null>;
 
   @Output()
   encounterSelected = new EventEmitter<EncounterCompetition>();
@@ -93,40 +79,43 @@ export class SelectEncounterComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
+    private route: ActivatedRoute,
     private transferState: TransferState,
     @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<string>;
+    if (this.control()) {
+      this.internalControl = this.control() as FormControl<string | null>;
     }
 
-    if (!this.control) {
-      this.control = new FormControl<string | null>(null);
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group().get(this.controlName()) as FormControl<string | null>;
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (!this.internalControl) {
+      this.internalControl = new FormControl<string | null>(null) as FormControl<string | null>;
     }
 
-    const previous = this.group.get(this.dependsOn);
+    if (this.group()) {
+      this.group().addControl(this.controlName(), this.internalControl);
+    }
+
+    const previous = this.group().get(this.dependsOn());
 
     if (!previous) {
-      console.warn(`Dependency ${this.dependsOn} not found`, previous);
+      console.warn(`Dependency ${this.dependsOn()} not found`, previous);
     } else {
       // get all the controls that we need to update on when change
-      const updateOnControls = this.updateOn
-        ?.filter((controlName) => controlName !== this.dependsOn)
-        .map((controlName) => this.group?.get(controlName))
+      const updateOnControls = this.updateOn()
+        ?.filter((controlName) => controlName !== this.dependsOn())
+        .map((controlName) => this.group().get(controlName))
         .filter((control) => control != null) as FormControl[];
 
       this.encounters$ = combineLatest([
         previous.valueChanges.pipe(startWith(null)),
-        ...updateOnControls.map(
-          (control) =>
-            control?.valueChanges?.pipe(startWith(() => control?.value)),
+        ...updateOnControls.map((control) =>
+          control?.valueChanges?.pipe(startWith(() => control?.value)),
         ),
       ]).pipe(
         takeUntil(this.destroy$),
@@ -137,15 +126,17 @@ export class SelectEncounterComponent implements OnInit {
         switchMap(([prev, next]) => {
           if (prev != null && prev !== next) {
             // Reset the team on club change
-            this.control.setValue(null);
+            this.internalControl.setValue(null);
           }
 
           if (next !== null) {
             return (
-              this.group.get('season')?.valueChanges.pipe(
-                startWith(this.group.get('season')?.value),
-                switchMap((year) => this._loadEncounters(year, next)),
-              ) ?? of([])
+              this.group()
+                .get('season')
+                ?.valueChanges.pipe(
+                  startWith(this.group().get('season')?.value),
+                  switchMap((year) => this._loadEncounters(year, next)),
+                ) ?? of([])
             );
           }
 
@@ -156,17 +147,14 @@ export class SelectEncounterComponent implements OnInit {
 
       this.encounters$.subscribe((encounters) => {
         let foundEncounter: EncounterCompetition | null = null;
-        const encounterId =
-          this.activatedRoute.snapshot?.queryParamMap?.get('encounter');
+        const encounterId = this.route.snapshot?.queryParamMap?.get('encounter');
 
         if (encounterId && encounters.length > 0) {
           foundEncounter = encounters.find((r) => r.id == encounterId) ?? null;
         }
 
         if (!foundEncounter) {
-          const future = encounters.filter((r) =>
-            moment(r.date).isSameOrAfter(),
-          );
+          const future = encounters.filter((r) => moment(r.date).isSameOrAfter());
           if (future.length > 0) {
             foundEncounter = future[0];
           }
@@ -178,7 +166,7 @@ export class SelectEncounterComponent implements OnInit {
 
         if (foundEncounter && foundEncounter.id) {
           this.encounterSelected.emit(foundEncounter);
-          this.control.setValue(foundEncounter.id, { onlySelf: true });
+          this.internalControl.setValue(foundEncounter.id, { onlySelf: true });
           this._updateUrl(foundEncounter.id);
         }
       });
@@ -200,7 +188,7 @@ export class SelectEncounterComponent implements OnInit {
   }
 
   private _updateUrl(encounterId: string, removeOtherParams = false) {
-    if (this.updateUrl && encounterId) {
+    if (this.updateUrl() && encounterId) {
       const queryParams: { [key: string]: string | undefined } = {
         encounter: encounterId,
       };
@@ -210,7 +198,7 @@ export class SelectEncounterComponent implements OnInit {
       }
 
       this.router.navigate([], {
-        relativeTo: this.activatedRoute,
+        relativeTo: this.route,
         queryParams,
         queryParamsHandling: 'merge',
       });
@@ -257,16 +245,10 @@ export class SelectEncounterComponent implements OnInit {
         },
       })
       .pipe(
-        transferState(
-          `teamEncounterKey-${teamId}`,
-          this.transferState,
-          this.platformId,
-        ),
+        transferState(`teamEncounterKey-${teamId}`, this.transferState, this.platformId),
         map(
           (result) =>
-            result?.data.encounterCompetitions?.rows.map(
-              (r) => new EncounterCompetition(r),
-            ) ?? [],
+            result?.data.encounterCompetitions?.rows.map((r) => new EncounterCompetition(r)) ?? [],
         ),
         map((c) => {
           return c?.map((r) => {

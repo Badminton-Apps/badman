@@ -2,7 +2,6 @@
   display: block;
 }
 
-
 form {
   display: flex;
   flex-direction: column;
@@ -20,7 +19,7 @@ form {
   }
 
   &:first-child {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
   }
 }
 

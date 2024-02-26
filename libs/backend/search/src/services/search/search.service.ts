@@ -1,9 +1,4 @@
-import {
-  Club,
-  EventCompetition,
-  EventTournament,
-  Player,
-} from '@badman/backend-database';
+import { Club, EventCompetition, EventTournament, Player } from '@badman/backend-database';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Op, WhereOptions } from 'sequelize';
@@ -19,9 +14,7 @@ export class SearchService {
     }
   }
 
-  async search(
-    query: string,
-  ): Promise<(Player | Club | EventCompetition | EventTournament)[]> {
+  async search(query: string): Promise<(Player | Club | EventCompetition | EventTournament)[]> {
     const parts = this.getParts(query);
 
     if (parts.length === 0) {
@@ -50,10 +43,7 @@ export class SearchService {
     );
   }
 
-  async searchPlayers(
-    parts: string[],
-    queries: WhereOptions[] = [],
-  ): Promise<Player[]> {
+  async searchPlayers(parts: string[], queries: WhereOptions[] = []): Promise<Player[]> {
     for (const part of parts) {
       queries.push({
         [Op.or]: [
@@ -104,10 +94,7 @@ export class SearchService {
     });
   }
 
-  async searchClubs(
-    parts: string[],
-    queries: WhereOptions[] = [],
-  ): Promise<Club[]> {
+  async searchClubs(parts: string[], queries: WhereOptions[] = []): Promise<Club[]> {
     for (const part of parts) {
       queries.push({
         [Op.or]: [

@@ -1,12 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -31,6 +25,7 @@ import {
 } from './components';
 import { minAmountOfTeams } from './validators';
 import { MatIconModule } from '@angular/material/icon';
+import { RankingSystemService } from '@badman/frontend-graphql';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -40,15 +35,11 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     CommonModule,
     TranslateModule,
-
-    // Material
     ReactiveFormsModule,
     MatStepperModule,
     MatProgressBarModule,
     MatButtonModule,
     MatIconModule,
-
-    // Own Modules
     ClubStepComponent,
     EventsStepComponent,
     TeamsTransferStepComponent,
@@ -59,6 +50,8 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
+
+  systemService = inject(RankingSystemService);
 
   formGroup: FormGroup = new FormGroup({
     [SEASON]: new FormControl(getCurrentSeason(), [Validators.required]),
@@ -71,7 +64,7 @@ export class TeamEnrollmentComponent implements OnInit {
         MX: new FormArray<TeamForm>([]),
         NATIONAL: new FormArray<TeamForm>([]),
       },
-      [Validators.required, minAmountOfTeams(1)]
+      [Validators.required, minAmountOfTeams(1)],
     ),
     [LOCATIONS]: new FormArray<LocationForm>([], [Validators.required]),
   });
@@ -81,7 +74,7 @@ export class TeamEnrollmentComponent implements OnInit {
     private readonly breadcrumbService: BreadcrumbService,
     private readonly translate: TranslateService,
     private readonly snackBar: MatSnackBar,
-    private readonly apollo: Apollo
+    private readonly apollo: Apollo,
   ) {}
 
   ngOnInit(): void {
@@ -95,13 +88,10 @@ export class TeamEnrollmentComponent implements OnInit {
           keywords: ['team', 'enrollemnt'],
         });
 
-        this.breadcrumbService.set(
-          'competition',
-          enrollemnt['all.competition.title']
-        );
+        this.breadcrumbService.set('competition', enrollemnt['all.competition.title']);
         this.breadcrumbService.set(
           'competition/enrollment',
-          enrollemnt['all.competition.team-enrollment.title']
+          enrollemnt['all.competition.team-enrollment.title'],
         );
       });
   }
@@ -135,14 +125,14 @@ export class TeamEnrollmentComponent implements OnInit {
               single: number;
               double: number;
               mix: number;
-            }
+            },
           ) => ({
             id: player?.id,
             gender: player?.gender,
             single: player?.single,
             double: player?.double,
             mix: player?.mix,
-          })
+          }),
         ),
       };
 
@@ -182,7 +172,7 @@ export class TeamEnrollmentComponent implements OnInit {
           variables: {
             team: data,
           },
-        })
+        }),
       );
     }
 
@@ -219,7 +209,7 @@ export class TeamEnrollmentComponent implements OnInit {
               message: comments[type].comment,
             },
           },
-        })
+        }),
       );
     }
 
@@ -249,7 +239,7 @@ export class TeamEnrollmentComponent implements OnInit {
                 exceptions: availibility.exceptions,
               },
             },
-          })
+          }),
         );
       } else {
         observables.push(
@@ -270,7 +260,7 @@ export class TeamEnrollmentComponent implements OnInit {
                 exceptions: availibility.exceptions,
               },
             },
-          })
+          }),
         );
       }
     }
@@ -304,7 +294,7 @@ export class TeamEnrollmentComponent implements OnInit {
           season: this.formGroup.value.season,
           email: this.formGroup.value.email,
         },
-      })
+      }),
     );
 
     this.snackBar.open('Ingeschreven', 'Close', {

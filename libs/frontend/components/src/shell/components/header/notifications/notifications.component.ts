@@ -16,10 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
-import {
-  AuthenticateService,
-  NotificationService,
-} from '@badman/frontend-auth';
+import { AuthenticateService, NotificationService } from '@badman/frontend-auth';
 import { GraphQLModule } from '@badman/frontend-graphql';
 import { Notification } from '@badman/frontend-models';
 import { LanguageComponent } from '@badman/frontend-translation';
@@ -36,8 +33,6 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
     GraphQLModule,
     RouterModule,
     TranslateModule,
-
-    // Material components
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
@@ -45,8 +40,6 @@ import { ThemeSwitcherComponent } from '../theme-switcher';
     MatBadgeModule,
     OverlayModule,
     MatListModule,
-
-    // Own components
     LanguageComponent,
     ThemeSwitcherComponent,
   ],
@@ -107,9 +100,7 @@ export class NotificationComponent {
       this.notifications()
         ?.filter((n) => n.read == false)
         ?.map((notification) =>
-          this.notificationService.readNotification(notification, true).pipe(
-            delay(50)
-          ),
+          this.notificationService.readNotification(notification, true).pipe(delay(50)),
         ) ?? [];
 
     // process notifications one by one
@@ -118,6 +109,6 @@ export class NotificationComponent {
         bufferCount(1),
         concatMap((buffer) => forkJoin(buffer)),
       )
-      .subscribe(() => {});
+      .subscribe();
   }
 }

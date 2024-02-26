@@ -7,20 +7,8 @@ import {
   Location,
   Player,
 } from '@badman/backend-database';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
 
@@ -31,15 +19,13 @@ export class AvailabilitysResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Availability)
-  async availability(
-    @Args('id', { type: () => ID }) id: string
-  ): Promise<Availability | null> {
+  async availability(@Args('id', { type: () => ID }) id: string): Promise<Availability | null> {
     return Availability.findByPk(id);
   }
 
   @Query(() => [Availability])
   async availabilities(
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: Availability[] }> {
     return Availability.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
@@ -64,38 +50,23 @@ export class AvailabilitysResolver {
   @Mutation(() => Availability)
   async createAvailability(
     @Args('data') newAvailibilityData: AvailabilityNewInput,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<Availability> {
     const transaction = await this._sequelize.transaction();
     try {
-      const dbLocation = await Location.findByPk(
-        newAvailibilityData.locationId,
-        {
-          transaction,
-        }
-      );
+      const dbLocation = await Location.findByPk(newAvailibilityData.locationId, {
+        transaction,
+      });
 
       if (!dbLocation) {
-        throw new NotFoundException(
-          `${Location.name}: ${newAvailibilityData.locationId}`
-        );
+        throw new NotFoundException(`${Location.name}: ${newAvailibilityData.locationId}`);
       }
 
-      if (
-        !(await user.hasAnyPermission([
-          `${dbLocation.clubId}_edit:location`,
-          'edit-any:club',
-        ]))
-      ) {
-        throw new UnauthorizedException(
-          `You do not have permission to add a competition`
-        );
+      if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club']))) {
+        throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
-      const dbAvailability = await Availability.create(
-        { ...newAvailibilityData },
-        { transaction }
-      );
+      const dbAvailability = await Availability.create({ ...newAvailibilityData }, { transaction });
 
       await transaction.commit();
       return dbAvailability;
@@ -109,27 +80,22 @@ export class AvailabilitysResolver {
   @Mutation(() => Availability)
   async updateAvailability(
     @Args('data') updateAvailibilityData: AvailabilityUpdateInput,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<Availability> {
     const transaction = await this._sequelize.transaction();
     try {
-      const dbAvailability = await Availability.findByPk(
-        updateAvailibilityData.id,
-        {
-          include: [
-            {
-              required: true,
-              model: Location,
-            },
-          ],
-          transaction,
-        }
-      );
+      const dbAvailability = await Availability.findByPk(updateAvailibilityData.id, {
+        include: [
+          {
+            required: true,
+            model: Location,
+          },
+        ],
+        transaction,
+      });
 
       if (!dbAvailability) {
-        throw new NotFoundException(
-          `${Availability.name}: ${updateAvailibilityData.id}`
-        );
+        throw new NotFoundException(`${Availability.name}: ${updateAvailibilityData.id}`);
       }
 
       if (
@@ -138,14 +104,12 @@ export class AvailabilitysResolver {
           'edit-any:club',
         ]))
       ) {
-        throw new UnauthorizedException(
-          `You do not have permission to add a competition`
-        );
+        throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
       await dbAvailability.update(
         { ...dbAvailability.toJSON(), ...updateAvailibilityData },
-        { transaction }
+        { transaction },
       );
 
       // await dbLocation.update(location, { transaction });

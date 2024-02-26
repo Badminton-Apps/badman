@@ -9,10 +9,6 @@ import {
 
 @Module({
   imports: [DatabaseModule, RankingModule],
-  providers: [
-    EventTournamentResolver,
-    DrawTournamentResolver,
-    SubEventTournamentResolver,
-  ],
+  providers: [EventTournamentResolver, DrawTournamentResolver, SubEventTournamentResolver],
 })
 export class TournamentResolverModule {}

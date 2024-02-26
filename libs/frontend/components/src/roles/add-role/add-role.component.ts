@@ -3,7 +3,7 @@ import {
   Component,
   EventEmitter,
   inject,
-  Input,
+  input,
   Output,
   TemplateRef,
   ViewChild,
@@ -18,15 +18,7 @@ import { iif, of, switchMap } from 'rxjs';
 @Component({
   selector: 'badman-add-role',
   standalone: true,
-  imports: [
-    CommonModule,
-
-    // Material
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-  ],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatInputModule],
   templateUrl: './add-role.component.html',
   styleUrls: ['./add-role.component.scss'],
 })
@@ -34,11 +26,9 @@ export class AddRoleComponent {
   private apollo = inject(Apollo);
   private dialog = inject(MatDialog);
 
-  @Input({ required: true })
-  linkId!: string;
+  linkId = input.required<string>();
 
-  @Input({ required: true })
-  linkType!: string;
+  linkType = input.required<string>();
 
   @ViewChild('newRoleTemplate')
   newRoleTemplateRef?: TemplateRef<HTMLElement>;
@@ -69,15 +59,15 @@ export class AddRoleComponent {
               variables: {
                 data: {
                   name: result,
-                  linkType: this.linkType,
-                  linkId: this.linkId,
-                  claims: []
+                  linkType: this.linkType(),
+                  linkId: this.linkId(),
+                  claims: [],
                 },
               },
             }),
-            of(null)
-          )
-        )
+            of(null),
+          ),
+        ),
       )
       .subscribe(() => {
         this.whenRoleAdded.emit();

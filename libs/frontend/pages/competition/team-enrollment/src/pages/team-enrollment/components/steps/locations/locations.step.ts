@@ -3,30 +3,21 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnInit,
+  input,
 } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Availability, Location } from '@badman/frontend-models';
-import { getCurrentSeason } from '@badman/utils';
+import { IsUUID, getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Subject, combineLatest, of } from 'rxjs';
-import { map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CLUB, LOCATIONS, SEASON } from '../../../../../forms';
-import {
-  LocationAvailibilityForm,
-  LocationComponent,
-  LocationForm,
-} from './components';
+import { LocationAvailibilityForm, LocationComponent, LocationForm } from './components';
 
 @Component({
   selector: 'badman-locations-step',
@@ -35,13 +26,9 @@ import {
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
-
-    // Material
     MatDialogModule,
     MatButtonModule,
     MatProgressBarModule,
-
-    // Components
     LocationComponent,
   ],
   templateUrl: './locations.step.html',
@@ -51,50 +38,45 @@ import {
 export class LocationsStepComponent implements OnInit {
   destroy$ = new Subject<void>();
 
-  @Input()
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  control?: FormArray<LocationForm>;
+  control = input<FormArray<LocationForm>>();
+  protected internalControl!: FormArray<LocationForm>;
 
-  @Input()
-  controlName = LOCATIONS;
+  controlName = input(LOCATIONS);
 
-  @Input()
-  clubControlName = CLUB;
+  clubControlName = input(CLUB);
 
-  @Input()
+  seasonControlName = input(SEASON);
+
   clubId?: string;
-
-  @Input()
-  seasonControlName = SEASON;
-
-  @Input()
   season = getCurrentSeason();
 
   constructor(
     private apollo: Apollo,
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
-    if (this.group) {
-      this.control = this.group?.get(
-        this.controlName
-      ) as FormArray<LocationForm>;
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as FormArray<LocationForm>;
     }
 
-    if (!this.control) {
-      this.control = new FormArray<LocationForm>([]);
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group()?.get(this.controlName()) as FormArray<LocationForm>;
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (!this.internalControl) {
+      this.internalControl = new FormArray<LocationForm>([]);
     }
 
-    if (this.group === undefined) {
+    if (this.group()) {
+      this.group().addControl(this.controlName(), this.control());
+    }
+
+    if (this.group() === undefined) {
       if (this.clubId == undefined) {
         throw new Error('No clubId provided');
       }
@@ -104,18 +86,15 @@ export class LocationsStepComponent implements OnInit {
       }
     }
 
-    const clubId$ =
-      this.group.get(this.clubControlName)?.valueChanges ?? of(this.clubId);
-    const season$ =
-      this.group.get(this.seasonControlName)?.valueChanges ?? of(this.season);
+    const clubId$ = this.group().get(this.clubControlName())?.valueChanges ?? of(this.clubId);
+    const season$ = this.group().get(this.seasonControlName())?.valueChanges ?? of(this.season);
 
     combineLatest([
       clubId$.pipe(
-        startWith(this.group.get(this.clubControlName)?.value || this.clubId)
+        filter(IsUUID),
+        startWith(this.group().get(this.clubControlName())?.value || this.clubId),
       ),
-      season$.pipe(
-        startWith(this.group.get(this.seasonControlName)?.value || this.season)
-      ),
+      season$.pipe(startWith(this.group().get(this.seasonControlName())?.value || this.season)),
     ])
       .pipe(
         tap(([clubId, season]) => {
@@ -129,10 +108,7 @@ export class LocationsStepComponent implements OnInit {
         switchMap(([clubId, season]) =>
           this.apollo.query<{ locations: Location[] }>({
             query: gql`
-              query Locations(
-                $where: JSONObject
-                $availibilitiesWhere: JSONObject
-              ) {
+              query Locations($where: JSONObject, $availibilitiesWhere: JSONObject) {
                 locations(where: $where) {
                   id
                   name
@@ -173,26 +149,24 @@ export class LocationsStepComponent implements OnInit {
                 },
               },
             },
-          })
+          }),
         ),
         takeUntil(this.destroy$),
-        map((result) =>
-          result.data?.locations?.map((location) => new Location(location))
-        )
+        map((result) => result.data?.locations?.map((location) => new Location(location))),
       )
       ?.subscribe((locations) => {
         if (locations) {
-          this.control?.clear();
+          this.internalControl?.clear();
           locations.forEach((location) => {
             // filter out the locations that are not available for the current season
             // if no availibilities are set, use the one from previous season
             let availibilty = location.availibilities?.find(
-              (availibility) => availibility.season === this.season
+              (availibility) => availibility.season === this.season,
             );
 
             if (!availibilty) {
               const lastSeason = (location.availibilities?.find(
-                (availibility) => availibility.season === this.season - 1
+                (availibility) => availibility.season === this.season - 1,
               ) ?? {
                 days: [],
               }) as Availability;
@@ -214,8 +188,8 @@ export class LocationsStepComponent implements OnInit {
                     startTime: this.formBuilder.control(day.startTime),
                     endTime: this.formBuilder.control(day.endTime),
                     courts: this.formBuilder.control(day.courts),
-                  })
-                ) ?? []
+                  }),
+                ) ?? [],
               ),
               exceptions: this.formBuilder.array(
                 availibilty?.exceptions?.map((exception) =>
@@ -223,8 +197,8 @@ export class LocationsStepComponent implements OnInit {
                     start: this.formBuilder.control(exception.start),
                     end: this.formBuilder.control(exception.end),
                     courts: this.formBuilder.control(exception.courts),
-                  })
-                ) ?? []
+                  }),
+                ) ?? [],
               ),
             }) as LocationAvailibilityForm;
 
@@ -242,7 +216,7 @@ export class LocationsStepComponent implements OnInit {
               availibilities: this.formBuilder.array([availibyForm]),
             }) as LocationForm;
 
-            this.control?.push(group);
+            this.internalControl?.push(group);
           });
 
           this.changeDetectorRef.markForCheck();
@@ -262,7 +236,7 @@ export class LocationsStepComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe((location?: Location) => {
-        this.control?.push(
+        this.internalControl?.push(
           this.formBuilder.group({
             id: this.formBuilder.control(location?.id),
             name: this.formBuilder.control(location?.name),
@@ -274,21 +248,19 @@ export class LocationsStepComponent implements OnInit {
             state: this.formBuilder.control(location?.state),
             phone: this.formBuilder.control(location?.phone),
             fax: this.formBuilder.control(location?.fax),
-            availibilities: this.formBuilder.array(
-              [] as LocationAvailibilityForm[]
-            ),
-          }) as LocationForm
+            availibilities: this.formBuilder.array([] as LocationAvailibilityForm[]),
+          }) as LocationForm,
         );
       });
     });
   }
 
   removeLocation(index: number) {
-    this.control?.removeAt(index);
+    this.internalControl?.removeAt(index);
   }
 
   editLocation(index: number) {
-    const control = this.control?.at(index) as FormGroup;
+    const control = this.internalControl?.at(index) as FormGroup;
 
     import('@badman/frontend-club').then((m) => {
       const dialogRef = this.dialog.open(m.LocationDialogComponent, {

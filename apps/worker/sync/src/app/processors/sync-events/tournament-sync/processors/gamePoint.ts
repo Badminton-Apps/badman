@@ -13,13 +13,15 @@ import { Logger } from '@nestjs/common';
 export class TournamentSyncPointProcessor extends StepProcessor {
   public event?: EventTournament;
 
-  constructor(private pointService: PointsService, options?: StepOptions) {
+  constructor(
+    private pointService: PointsService,
+    options?: StepOptions,
+  ) {
     if (!options) {
       options = {};
     }
 
-    options.logger =
-      options.logger || new Logger(TournamentSyncPointProcessor.name);
+    options.logger = options.logger || new Logger(TournamentSyncPointProcessor.name);
     super(options);
   }
 
@@ -42,14 +44,7 @@ export class TournamentSyncPointProcessor extends StepProcessor {
           });
 
           const games = await Game.findAll({
-            attributes: [
-              'id',
-              'winner',
-              'set1Team1',
-              'set2Team2',
-              'playedAt',
-              'gameType',
-            ],
+            attributes: ['id', 'winner', 'set1Team1', 'set2Team2', 'playedAt', 'gameType'],
             where: {
               linkId: {
                 [Op.in]: draws.map((e) => e.id),
@@ -74,13 +69,9 @@ export class TournamentSyncPointProcessor extends StepProcessor {
           });
 
           for (const game of games) {
-            await this.pointService.createRankingPointforGame(
-              rankingSystem,
-              game,
-              {
-                transaction: this.transaction,
-              }
-            );
+            await this.pointService.createRankingPointforGame(rankingSystem, game, {
+              transaction: this.transaction,
+            });
           }
 
           totalGames += games.length;

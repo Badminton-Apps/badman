@@ -1,10 +1,6 @@
 import { LevelType, SubEventTypeEnum } from './enums';
 
-export const teamValues = (
-  teamName: string,
-  regex?: string,
-  levelType?: LevelType
-) => {
+export const teamValues = (teamName: string, regex?: string, levelType?: LevelType) => {
   if (regex) {
     // match regex, then get named groups (name, numbe, type, rest)
     const match = teamName.match(regex);
@@ -32,9 +28,7 @@ export const teamValues = (
 
   const clubName =
     // only strip last space if there was a number found
-    teamNumberstring.length > 0
-      ? teamName.substring(0, lastSpaceIndex).trim()
-      : teamName.trim();
+    teamNumberstring.length > 0 ? teamName.substring(0, lastSpaceIndex).trim() : teamName.trim();
   const type = finalPart.replace(teamNumberstring, '');
   const teamType = getType(type, levelType);
   let teamNumber = parseInt(teamNumberstring, 10) || undefined;

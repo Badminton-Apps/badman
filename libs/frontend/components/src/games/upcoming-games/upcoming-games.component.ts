@@ -1,22 +1,16 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  inject,
-} from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 
+import { input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { UpcommingGamesService } from './data-access/upcomming-games.service';
 import { TrackByProp } from 'ngxtension/trackby-id-prop';
 import { LoadingBlockComponent } from '../../loading-block';
+import { UpcommingGamesService } from './upcomming-games.service';
 
 @Component({
   selector: 'badman-upcoming-games',
@@ -29,7 +23,6 @@ import { LoadingBlockComponent } from '../../loading-block';
     TranslateModule,
     MatButtonModule,
     RouterModule,
-
     LoadingBlockComponent,
   ],
   templateUrl: './upcoming-games.component.html',
@@ -38,9 +31,8 @@ import { LoadingBlockComponent } from '../../loading-block';
 export class UpcomingGamesComponent implements OnInit, OnChanges {
   upcommingGames = inject(UpcommingGamesService);
 
-  @Input() clubId?: string;
-  @Input() teamId?: string;
-  @Input() teams!: Team | Team[];
+  clubId = input<string>();
+  teams = input<Team | Team[]>();
 
   ngOnInit() {
     this._setIds();
@@ -69,21 +61,16 @@ export class UpcomingGamesComponent implements OnInit, OnChanges {
   private _setIds() {
     const teamids: string[] = [];
 
-    if (this.teamId) {
-      teamids.push(this.teamId);
+    if (this.teams() instanceof Team && (this.teams() as Team).id) {
+      teamids.push((this.teams() as Team).id);
     }
 
-    if (this.teams instanceof Team && this.teams.id) {
-      teamids.push(this.teams.id);
-    }
-
-    if (this.teams instanceof Array) {
-      teamids.push(...this.teams.map((t) => t.id ?? ''));
+    if (this.teams() instanceof Array) {
+      teamids.push(...(this.teams() as Team[]).map((t) => t.id ?? ''));
     }
     this.upcommingGames.filter.setValue({
       teamIds: teamids,
-      clubId: this.clubId ?? '',
-      teamId: this.teamId ?? '',
+      clubId: this.clubId() ?? '',
     });
   }
 

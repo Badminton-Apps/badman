@@ -22,7 +22,6 @@ export function getRankingProtected<
   if (!system.maxDiffLevels) {
     throw new Error('No max diff levels provided');
   }
-  
 
   ranking.single = ranking.single || system.amountOfLevels;
   ranking.double = ranking.double || system.amountOfLevels;

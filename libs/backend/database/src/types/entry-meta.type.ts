@@ -1,18 +1,5 @@
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
-import {
-  EntryCompetition,
-  EntryCompetitionPlayer,
-  EntryTournament,
-  Player,
-} from '../models';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import { EntryCompetition, EntryCompetitionPlayer, EntryTournament, Player } from '../models';
 
 @ObjectType({ description: 'A Meta' })
 export class EntryMetaType {
@@ -66,5 +53,5 @@ export class EntryCompetitionPlayersType {
 @InputType()
 export class EntryCompetitionPlayersInputType extends PartialType(
   OmitType(EntryCompetitionPlayersType, ['player'] as const),
-  InputType
+  InputType,
 ) {}

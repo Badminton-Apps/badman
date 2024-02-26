@@ -1,15 +1,15 @@
 {
   "name": "frontend-models",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "library",
   "sourceRoot": "libs/frontend/models/src",
   "prefix": "badman",
+  "tags": [],
+  "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nx/angular:package",
+      "executor": "@nx/angular:ng-packagr-lite",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "tsConfig": "libs/frontend/models/tsconfig.lib.json",
         "project": "libs/frontend/models/ng-package.json"
       },
       "configurations": {
@@ -21,11 +21,6 @@
         }
       },
       "defaultConfiguration": "production"
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"]
     }
-  },
-  "tags": []
+  }
 }

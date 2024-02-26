@@ -10,21 +10,14 @@ import {
 } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogModel,
-} from '@badman/frontend-components';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '@badman/frontend-components';
 import { Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { SubEventType, TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, map, pairwise, startWith, take } from 'rxjs';
-import {
-  PLAYERS_CONTROL,
-  TeamFieldComponent,
-  TeamPlayersComponent,
-} from '../../components';
+import { PLAYERS_CONTROL, TeamFieldComponent, TeamPlayersComponent } from '../../components';
 
 const PLAYERS_QUERY = gql`
   query TeamPlayers($teamId: ID!) {
@@ -47,12 +40,8 @@ const PLAYERS_QUERY = gql`
   imports: [
     CommonModule,
     TranslateModule,
-
-    // My Modules
     TeamFieldComponent,
     TeamPlayersComponent,
-
-    // Material
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,
@@ -109,24 +98,17 @@ export class EditDialogComponent {
   private _listenForPlayers() {
     this.group
       ?.get(PLAYERS_CONTROL)
-      ?.valueChanges.pipe(
-        startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []),
-        pairwise(),
-      )
+      ?.valueChanges.pipe(startWith(this.group.get(PLAYERS_CONTROL)?.value ?? []), pairwise())
       .subscribe(([prev, curr]: [TeamPlayer[], TeamPlayer[]]) => {
         if (!prev || !curr) {
           return;
         }
 
         // filter out the new players
-        const newPlayers = curr.filter(
-          (c) => !prev.some((p) => p?.id === c?.id),
-        );
+        const newPlayers = curr.filter((c) => !prev.some((p) => p?.id === c?.id));
 
         // filter out the removed players
-        const removedPlayers = prev.filter(
-          (p) => !curr.some((c) => c?.id === p?.id),
-        );
+        const removedPlayers = prev.filter((p) => !curr.some((c) => c?.id === p?.id));
 
         // if there are new players
         for (const player of newPlayers) {
@@ -153,18 +135,10 @@ export class EditDialogComponent {
         },
       })
       .valueChanges.pipe(
-        transferState(
-          `teamPlayers-${this.data.team.id}`,
-          this.stateTransfer,
-          this.platformId,
-        ),
+        transferState(`teamPlayers-${this.data.team.id}`, this.stateTransfer, this.platformId),
+        map((result) => result?.data.team.players?.map((t) => new TeamPlayer(t))),
         map(
-          (result) => result?.data.team.players?.map((t) => new TeamPlayer(t)),
-        ),
-        map(
-          (players) =>
-            players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ??
-            undefined,
+          (players) => players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ?? undefined,
         ),
         take(1),
       );
@@ -243,10 +217,7 @@ export class EditDialogComponent {
       await lastValueFrom(
         this.apollo.mutate({
           mutation: gql`
-            mutation RemovePlayerFromTeamMutation(
-              $playerId: ID!
-              $teamId: ID!
-            ) {
+            mutation RemovePlayerFromTeamMutation($playerId: ID!, $teamId: ID!) {
               removePlayerFromTeam(playerId: $playerId, teamId: $teamId) {
                 id
               }
@@ -262,10 +233,7 @@ export class EditDialogComponent {
     }
   }
 
-  playerMembershipTypeChanged(args: {
-    player: TeamPlayer;
-    type: TeamMembershipType;
-  }) {
+  playerMembershipTypeChanged(args: { player: TeamPlayer; type: TeamMembershipType }) {
     this.apollo
       .mutate({
         mutation: gql`
