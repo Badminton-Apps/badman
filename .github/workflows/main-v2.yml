@@ -178,6 +178,6 @@ jobs:
           git fetch --unshallow
           git checkout develop
           git pull
-          git merge --no-ff origin/main -m "chore(release): v${{ needs.release.outputs.NEW_VERSION }}"
+          git merge --no-ff origin/main -m "chore(merge): v${{ needs.main.outputs.NEW_VERSION }} to develop"
           # git merge --no-ff main -m "Merging main into develop"
           git push
