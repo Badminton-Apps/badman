@@ -1,11 +1,5 @@
-import { DOCUMENT, isPlatformBrowser } from "@angular/common";
-import {
-  Inject,
-  InjectionToken,
-  ModuleWithProviders,
-  NgModule,
-  PLATFORM_ID,
-} from "@angular/core";
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Inject, InjectionToken, ModuleWithProviders, NgModule, PLATFORM_ID } from '@angular/core';
 
 function scriptconfig(tag: string): string {
   return `
@@ -17,13 +11,14 @@ function scriptconfig(tag: string): string {
 `;
 }
 
-export const GOOGLEANALYTICS_CONFIG_TOKEN =
-  new InjectionToken<GoogleAnalyticsConfiguration>("googleanalytics.config");
+export const GOOGLEANALYTICS_CONFIG_TOKEN = new InjectionToken<GoogleAnalyticsConfiguration>(
+  'googleanalytics.config',
+);
 
 export type GoogleAnalyticsConfiguration = Readonly<{
   enabled: boolean;
   tag: string;
-  scriptType?:  "text/javascript" | string;
+  scriptType?: 'text/javascript' | string;
 }>;
 
 @NgModule({})
@@ -34,15 +29,15 @@ export class GoogleAnalyticsModule {
     @Inject(DOCUMENT)
     d: Document,
     @Inject(GOOGLEANALYTICS_CONFIG_TOKEN)
-    { tag, enabled, scriptType }: GoogleAnalyticsConfiguration
+    { tag, enabled, scriptType }: GoogleAnalyticsConfiguration,
   ) {
     if (isPlatformBrowser(platformId) && enabled) {
-      const type = scriptType ?? "text/javascript";
+      const type = scriptType ?? 'text/javascript';
 
-      const ads = d.createElement("script");
+      const ads = d.createElement('script');
       ads.type = type;
       ads.src = `https://www.googletagmanager.com/gtag/js?id=${tag}`;
-      ads.crossOrigin = "anonymous";
+      ads.crossOrigin = 'anonymous';
       d.head.appendChild(ads);
 
       const script = d.createElement('script');
@@ -52,9 +47,7 @@ export class GoogleAnalyticsModule {
     }
   }
 
-  static forRoot(
-    config: GoogleAnalyticsConfiguration
-  ): ModuleWithProviders<GoogleAnalyticsModule> {
+  static forRoot(config: GoogleAnalyticsConfiguration): ModuleWithProviders<GoogleAnalyticsModule> {
     return {
       ngModule: GoogleAnalyticsModule,
       providers: [{ provide: GOOGLEANALYTICS_CONFIG_TOKEN, useValue: config }],

@@ -4,7 +4,7 @@
  * @return {?Object} Reallocated time units. NULL on failure.
  */
 export const timeUnits = (
-  ms: number
+  ms: number,
 ): {
   // weeks: number; // Uncomment for weeks
   days: number;

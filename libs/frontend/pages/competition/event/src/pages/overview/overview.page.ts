@@ -30,22 +30,16 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   styleUrls: ['./overview.page.scss'],
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     RouterModule,
-
     TranslateModule,
     ReactiveFormsModule,
     MomentModule,
-
-    // Material Modules
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
     MatSelectModule,
     MatDialogModule,
-
-    // Own components
     PageHeaderComponent,
     HasClaimComponent,
     CompetitionEventsComponent,
@@ -94,10 +88,7 @@ export class OverviewPageComponent implements OnInit {
         type: 'website',
         keywords: ['event', 'competition', 'badminton'],
       });
-      this.breadcrumbsService.set(
-        'competition',
-        translations['all.competition.title'],
-      );
+      this.breadcrumbsService.set('competition', translations['all.competition.title']);
     });
   }
 

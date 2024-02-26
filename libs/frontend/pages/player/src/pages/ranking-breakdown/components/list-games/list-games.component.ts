@@ -1,17 +1,12 @@
-import {
-  BreakpointObserver,
-  Breakpoints,
-  LayoutModule,
-} from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints, LayoutModule } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   OnInit,
-  Signal,
   computed,
+  input,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,17 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-  Game,
-  GamePlayer,
-  Player,
-  RankingSystem,
-} from '@badman/frontend-models';
-import {
-  GameBreakdownType,
-  GameStatus,
-  getGameResultType,
-} from '@badman/utils';
+import { Game, GamePlayer, Player, RankingSystem } from '@badman/frontend-models';
+import { GameBreakdownType, GameStatus, getGameResultType } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 import { MomentModule } from 'ngx-moment';
@@ -49,8 +35,6 @@ import { AddGameComponent } from '../../dialogs/add-game';
     TranslateModule,
     ReactiveFormsModule,
     MomentModule,
-
-    // Material
     MatIconModule,
     MatSlideToggleModule,
     MatTableModule,
@@ -62,24 +46,29 @@ import { AddGameComponent } from '../../dialogs/add-game';
 export class ListGamesComponent implements OnInit {
   private destroy$ = injectDestroy();
 
-  @Input() games!: Game[];
-  @Input() system!: Signal<RankingSystem>;
-  @Input() player!: Signal<Player>;
-  @Input() formGroup!: FormGroup;
+  games = input<Game[]>([]);
+  system = input.required<RankingSystem>();
+  player = input.required<Player>();
+  formGroup = input.required<FormGroup>();
 
   dataSource = new MatTableDataSource<GameBreakdown>([]);
   dataSourceRemoved = new MatTableDataSource<Game>([]);
 
   playerId = computed(() => this.player()?.id);
-  rankingPlace = computed(
-    () =>
-      this.player()?.rankingLastPlaces?.find(
-        (x) => x.systemId == this.system().id,
-      ),
+  rankingPlace = computed(() =>
+    this.player()?.rankingLastPlaces?.find((x) => x.systemId == this.system().id),
   );
 
   type!: 'single' | 'double' | 'mix';
-  prevGames?: Game[];
+
+  startPeriod = computed(() => this.formGroup()?.get('period')?.get('start')?.value as Moment);
+  prevGames = computed(() =>
+    this.games().filter((x) => moment(x.playedAt).isBefore(this.startPeriod())),
+  );
+  currGames = computed(() =>
+    this.games().filter((x) => moment(x.playedAt).isSameOrAfter(this.startPeriod())),
+  );
+
   wonGames: ListGame[] = [];
 
   lostGamesIgnored: ListGame[] = [];
@@ -141,25 +130,14 @@ export class ListGamesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const startPeriod = this.formGroup.get('period')?.get('start')
-      ?.value as Moment;
-
-    // Filter out games that are from previous period
-    this.prevGames = this.games.filter((x) =>
-      moment(x.playedAt).isBefore(startPeriod),
-    );
-    this.games = this.games.filter((x) =>
-      moment(x.playedAt).isSameOrAfter(startPeriod),
-    );
-
-    this.type = this.formGroup.get('gameType')?.value;
+    this.type = this.formGroup()?.get('gameType')?.value;
 
     this.calculateAvg();
     this.fillGames();
     this.fillLostGames();
 
-    this.formGroup.valueChanges
-      .pipe(
+    this.formGroup()
+      ?.valueChanges.pipe(
         map((value) => {
           return {
             includedIgnored: value.includedIgnored,
@@ -177,7 +155,7 @@ export class ListGamesComponent implements OnInit {
 
   calculateAvg() {
     const gameBreakdown: ListGame[] = [];
-    this.games.sort((a, b) => {
+    this.currGames().sort((a, b) => {
       if (!a.playedAt || !b.playedAt) {
         return 0;
       }
@@ -185,7 +163,7 @@ export class ListGamesComponent implements OnInit {
     });
     let validGames = 0;
 
-    for (const game of this.games) {
+    for (const game of this.currGames()) {
       if (game.status !== GameStatus.NORMAL) {
         continue;
       }
@@ -199,23 +177,13 @@ export class ListGamesComponent implements OnInit {
         continue;
       }
 
-      const rankingPoint = game.rankingPoints?.find(
-        (x) => x.playerId == this.playerId(),
-      );
+      const rankingPoint = game.rankingPoints?.find((x) => x.playerId == this.playerId());
 
-      const teamP1 = game.players?.find(
-        (x) => x.team == me.team && x.player == 1,
-      );
-      const teamP2 = game.players?.find(
-        (x) => x.team == me.team && x.player == 2,
-      );
+      const teamP1 = game.players?.find((x) => x.team == me.team && x.player == 1);
+      const teamP2 = game.players?.find((x) => x.team == me.team && x.player == 2);
 
-      const opponentP1 = game.players?.find(
-        (x) => x.team !== me.team && x.player == 1,
-      );
-      const opponentP2 = game.players?.find(
-        (x) => x.team !== me.team && x.player == 2,
-      );
+      const opponentP1 = game.players?.find((x) => x.team !== me.team && x.player == 1);
+      const opponentP2 = game.players?.find((x) => x.team !== me.team && x.player == 2);
 
       const type = getGameResultType(game.winner == me.team, game.gameType, {
         differenceInLevel: rankingPoint?.differenceInLevel ?? 0,
@@ -230,10 +198,7 @@ export class ListGamesComponent implements OnInit {
       };
 
       // Latest x Games to use
-      if (
-        this.system().latestXGamesToUse &&
-        validGames >= this.system().latestXGamesToUse!
-      ) {
+      if (this.system().latestXGamesToUse && validGames >= this.system().latestXGamesToUse!) {
         newGameBreakdown.type = GameBreakdownType.OUT_SCOPE;
       }
       gameBreakdown.push(newGameBreakdown);
@@ -249,16 +214,12 @@ export class ListGamesComponent implements OnInit {
         .filter((g) => g.type == GameBreakdownType.WON)
         .sort((a, b) => (b.points ?? 0) - (a.points ?? 0)) ?? [];
     this.lostGamesDowngrade =
-      gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_DOWNGRADE) ??
-      [];
+      gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_DOWNGRADE) ?? [];
     this.lostGamesUpgrade =
-      gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_UPGRADE) ??
-      [];
+      gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_UPGRADE) ?? [];
     this.lostGamesIgnored =
-      gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_IGNORED) ??
-      [];
-    this.outOfScopeGames =
-      gameBreakdown.filter((g) => g.type == GameBreakdownType.OUT_SCOPE) ?? [];
+      gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_IGNORED) ?? [];
+    this.outOfScopeGames = gameBreakdown.filter((g) => g.type == GameBreakdownType.OUT_SCOPE) ?? [];
   }
 
   fillLostGames() {
@@ -271,7 +232,7 @@ export class ListGamesComponent implements OnInit {
       points: number | undefined;
     }[] = [];
 
-    for (const game of this.prevGames ?? []) {
+    for (const game of this.prevGames()) {
       if (!game?.id) {
         throw new Error('Game not found');
       }
@@ -284,23 +245,13 @@ export class ListGamesComponent implements OnInit {
         continue;
       }
 
-      const rankingPoint = game.rankingPoints?.find(
-        (x) => x.playerId == this.playerId(),
-      );
+      const rankingPoint = game.rankingPoints?.find((x) => x.playerId == this.playerId());
 
-      const teamP1 = game.players?.find(
-        (x) => x.team == me.team && x.player == 1,
-      );
-      const teamP2 = game.players?.find(
-        (x) => x.team == me.team && x.player == 2,
-      );
+      const teamP1 = game.players?.find((x) => x.team == me.team && x.player == 1);
+      const teamP2 = game.players?.find((x) => x.team == me.team && x.player == 2);
 
-      const opponentP1 = game.players?.find(
-        (x) => x.team !== me.team && x.player == 1,
-      );
-      const opponentP2 = game.players?.find(
-        (x) => x.team !== me.team && x.player == 2,
-      );
+      const opponentP1 = game.players?.find((x) => x.team !== me.team && x.player == 1);
+      const opponentP2 = game.players?.find((x) => x.team !== me.team && x.player == 2);
 
       const type = getGameResultType(game.winner == me.team, game.gameType, {
         differenceInLevel: rankingPoint?.differenceInLevel ?? 0,
@@ -325,18 +276,17 @@ export class ListGamesComponent implements OnInit {
   }
 
   fillGames() {
-    
     this.gameBreakdown = [];
 
-    if (this.formGroup?.get('includeOutOfScope')?.value) {
+    if (this.formGroup()?.get('includeOutOfScope')?.value) {
       this.addLostGames(this.outOfScopeGames);
     }
 
-    if (this.formGroup?.get('includedUpgrade')?.value) {
+    if (this.formGroup()?.get('includedUpgrade')?.value) {
       this.addLostGames(this.lostGamesUpgrade);
     }
 
-    if (this.formGroup?.get('includedDowngrade')?.value) {
+    if (this.formGroup()?.get('includedDowngrade')?.value) {
       this.addLostGames(this.lostGamesDowngrade);
     }
 
@@ -350,8 +300,7 @@ export class ListGamesComponent implements OnInit {
       }
 
       totalPoints += points ?? 0;
-      const devideUpgrade =
-        this.lostGamesUpgrade.length + this.lostGamesDowngrade.length + i + 1; // 0 based
+      const devideUpgrade = this.lostGamesUpgrade.length + this.lostGamesDowngrade.length + i + 1; // 0 based
       const devideDowngrade = this.lostGamesDowngrade.length + i + 1; // 0 based;
 
       const devideUpgradeCorrected =
@@ -367,17 +316,11 @@ export class ListGamesComponent implements OnInit {
       const avgUpgrade = Math.round(totalPoints / devideUpgradeCorrected);
       const avgDowngrade = Math.round(totalPoints / devideDowngradeCorrected);
 
-      if (
-        avgUpgrade >
-        (this.gameBreakdown[this.indexUsedForUpgrade]?.avgUpgrade ?? -1)
-      ) {
+      if (avgUpgrade > (this.gameBreakdown[this.indexUsedForUpgrade]?.avgUpgrade ?? -1)) {
         this.indexUsedForUpgrade = startingIndex + i;
       }
 
-      if (
-        avgDowngrade >
-        (this.gameBreakdown[this.indexUsedForDowngrade]?.avgDowngrade ?? -1)
-      ) {
+      if (avgDowngrade > (this.gameBreakdown[this.indexUsedForDowngrade]?.avgDowngrade ?? -1)) {
         this.indexUsedForDowngrade = startingIndex + i;
       }
 
@@ -399,13 +342,12 @@ export class ListGamesComponent implements OnInit {
       });
     }
 
-    if (this.formGroup?.get('includedIgnored')?.value) {
+    if (this.formGroup()?.get('includedIgnored')?.value) {
       this.addLostGames(this.lostGamesIgnored);
     }
 
     // mark all games that would dissapear  next period
-    const nextPeriod = this.formGroup.get('period')?.get('next')
-      ?.value as Moment;
+    const nextPeriod = this.formGroup()?.get('period')?.get('next')?.value as Moment;
     this.gameBreakdown = this.gameBreakdown?.map((x) => ({
       ...x,
       dropsNextPeriod: moment(x.playedAt).isBefore(nextPeriod),
@@ -419,19 +361,14 @@ export class ListGamesComponent implements OnInit {
     if (this.rankingPlace()) {
       const level = this.rankingPlace()?.[this.type] ?? 12;
 
-      const nextLevel =
-        this.system().pointsToGoUp?.[(this.system().amountOfLevels ?? 12) - level];
+      const nextLevel = this.system().pointsToGoUp?.[(this.system().amountOfLevels ?? 12) - level];
 
       const prevLevel =
-        this.system().pointsToGoDown?.[
-          (this.system().amountOfLevels ?? 12) - (level + 1)
-        ];
+        this.system().pointsToGoDown?.[(this.system().amountOfLevels ?? 12) - (level + 1)];
 
-      const upgradePoints =
-        this.gameBreakdown[this.indexUsedForUpgrade]?.avgUpgrade ?? 0;
+      const upgradePoints = this.gameBreakdown[this.indexUsedForUpgrade]?.avgUpgrade ?? 0;
 
-      const downgradePoints =
-        this.gameBreakdown[this.indexUsedForDowngrade]?.avgDowngrade ?? 0;
+      const downgradePoints = this.gameBreakdown[this.indexUsedForDowngrade]?.avgDowngrade ?? 0;
 
       this.canUpgrade = upgradePoints >= (nextLevel ?? 0);
       this.canDowngrade = downgradePoints <= (prevLevel ?? 0);
@@ -462,23 +399,16 @@ export class ListGamesComponent implements OnInit {
     }
   }
 
-  getTooltip(
-    game: GameBreakdown,
-    isForUpgrade: boolean,
-    usedPoints: boolean,
-  ): string {
+  getTooltip(game: GameBreakdown, isForUpgrade: boolean, usedPoints: boolean): string {
     let devider = '';
 
     if (isForUpgrade) {
       devider = `${game.devideUpgradeCorrected}`;
       if ((game.devideUpgrade ?? 0) < (game.devideUpgradeCorrected ?? 0)) {
-        devider += `\n\r\n\r${this.translateService.instant(
-          'all.breakdown.corrected',
-          {
-            original: game.devideUpgrade,
-            corrected: game.devideUpgradeCorrected,
-          },
-        )}`;
+        devider += `\n\r\n\r${this.translateService.instant('all.breakdown.corrected', {
+          original: game.devideUpgrade,
+          corrected: game.devideUpgradeCorrected,
+        })}`;
       }
     } else {
       devider = `${game.devideDowngrade}`;
@@ -491,32 +421,23 @@ export class ListGamesComponent implements OnInit {
         const level = this.rankingPlace()?.[this.type] ?? 12;
 
         tooltip += `\n\r\n\r${this.translateService.instant(
-          this.canUpgrade
-            ? 'all.breakdown.can-upgrade'
-            : 'all.breakdown.can-not-upgrade',
+          this.canUpgrade ? 'all.breakdown.can-upgrade' : 'all.breakdown.can-not-upgrade',
           {
             level,
             newLevel: level - 1,
-            points:
-              this.system().pointsToGoUp?.[
-                (this.system().amountOfLevels ?? 12) - level
-              ],
+            points: this.system().pointsToGoUp?.[(this.system().amountOfLevels ?? 12) - level],
           },
         )}`;
       } else {
         const level = this.rankingPlace()?.[this.type] ?? 12;
 
         tooltip += `\n\r\n\r${this.translateService.instant(
-          this.canDowngrade
-            ? 'all.breakdown.can-downgrade'
-            : 'all.breakdown.can-not-downgrade',
+          this.canDowngrade ? 'all.breakdown.can-downgrade' : 'all.breakdown.can-not-downgrade',
           {
             level,
             newLevel: level + 1,
             points:
-              this.system().pointsToGoDown?.[
-                (this.system().amountOfLevels ?? 12) - (level + 1)
-              ],
+              this.system().pointsToGoDown?.[(this.system().amountOfLevels ?? 12) - (level + 1)],
           },
         )}`;
       }
@@ -526,9 +447,9 @@ export class ListGamesComponent implements OnInit {
   }
 
   deleteGame(game: GameBreakdown) {
-    const index = this.games.findIndex((x) => x.id == game.id);
+    const index = this.currGames().findIndex((x) => x.id == game.id);
     if (index != -1) {
-      this.games.splice(index, 1);
+      this.currGames().splice(index, 1);
     }
     this.calculateAvg();
     this.fillGames();
@@ -548,7 +469,7 @@ export class ListGamesComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((game: Game) => {
         if (game) {
-          this.games.push(game);
+          this.currGames().push(game);
           this.calculateAvg();
           this.fillGames();
         }

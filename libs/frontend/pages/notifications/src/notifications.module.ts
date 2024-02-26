@@ -4,12 +4,14 @@ import { RouterModule } from '@angular/router';
 import { OverviewPageComponent } from './pages';
 
 @NgModule({
-  imports: [CommonModule, RouterModule.forChild([
-    {
-      path: '',
-      component: OverviewPageComponent,
-    }
-  ])],
+  imports: [
+    CommonModule,
+    RouterModule.forChild([
+      {
+        path: '',
+        component: OverviewPageComponent,
+      },
+    ]),
+  ],
 })
 export class NotificationsModule {}
- 

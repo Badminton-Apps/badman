@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
@@ -36,7 +31,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatButtonModule,
     TranslateModule,
     MatSnackBarModule,
-
     HasClaimComponent,
   ],
 })
@@ -78,7 +72,7 @@ export class SettingsPageComponent implements OnInit {
     private route: ActivatedRoute,
     private breadcrumbsService: BreadcrumbService,
     private snackBar: MatSnackBar,
-    @Inject(PLATFORM_ID) private platformId: string
+    @Inject(PLATFORM_ID) private platformId: string,
   ) {}
 
   ngOnInit(): void {
@@ -98,54 +92,48 @@ export class SettingsPageComponent implements OnInit {
           if (setting === null || setting === undefined) {
             return;
           }
-          const encounterChangeConfirmationNotificationControl =
-            new FormControl(
-              this.getValues(setting.encounterChangeConfirmationNotification)
-            );
+          const encounterChangeConfirmationNotificationControl = new FormControl(
+            this.getValues(setting.encounterChangeConfirmationNotification),
+          );
 
           const encounterChangeFinishedNotificationControl = new FormControl(
-            this.getValues(setting.encounterChangeFinishedNotification)
+            this.getValues(setting.encounterChangeFinishedNotification),
           );
 
           const encounterChangeNewNotificationControl = new FormControl(
-            this.getValues(setting.encounterChangeNewNotification)
+            this.getValues(setting.encounterChangeNewNotification),
           );
 
           const encounterNotAcceptedNotificationControl = new FormControl(
-            this.getValues(setting.encounterNotAcceptedNotification)
+            this.getValues(setting.encounterNotAcceptedNotification),
           );
 
           const encounterNotEnteredNotificationControl = new FormControl(
-            this.getValues(setting.encounterNotEnteredNotification)
+            this.getValues(setting.encounterNotEnteredNotification),
           );
           const syncSuccessNotification = new FormControl(
-            this.getValues(setting.syncSuccessNotification)
+            this.getValues(setting.syncSuccessNotification),
           );
           const syncFailedNotification = new FormControl(
-            this.getValues(setting.syncFailedNotification)
+            this.getValues(setting.syncFailedNotification),
           );
 
           const clubEnrollmentNotification = new FormControl(
-            this.getValues(setting.clubEnrollmentNotification)
+            this.getValues(setting.clubEnrollmentNotification),
           );
           this.settingsForm = new FormGroup({
-            encounterChangeConfirmationNotification:
-              encounterChangeConfirmationNotificationControl,
-            encounterChangeFinishedNotification:
-              encounterChangeFinishedNotificationControl,
-            encounterChangeNewNotification:
-              encounterChangeNewNotificationControl,
-            encounterNotAcceptedNotification:
-              encounterNotAcceptedNotificationControl,
-            encounterNotEnteredNotification:
-              encounterNotEnteredNotificationControl,
+            encounterChangeConfirmationNotification: encounterChangeConfirmationNotificationControl,
+            encounterChangeFinishedNotification: encounterChangeFinishedNotificationControl,
+            encounterChangeNewNotification: encounterChangeNewNotificationControl,
+            encounterNotAcceptedNotification: encounterNotAcceptedNotificationControl,
+            encounterNotEnteredNotification: encounterNotEnteredNotificationControl,
             syncSuccessNotification: syncSuccessNotification,
             syncFailedNotification: syncFailedNotification,
             clubEnrollmentNotification: clubEnrollmentNotification,
             language: new FormControl(setting.language),
           });
-        })
-      )
+        }),
+      );
     });
   }
 
@@ -267,7 +255,7 @@ export class SettingsPageComponent implements OnInit {
       .pipe(
         map((result) => {
           return new Player(result.data.player)?.setting;
-        })
+        }),
       );
   }
 }

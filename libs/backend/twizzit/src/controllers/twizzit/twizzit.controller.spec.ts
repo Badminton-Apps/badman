@@ -8,7 +8,7 @@ describe('TwizzitController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TwizzitController],
-      providers: [GameExportService]
+      providers: [GameExportService],
     }).compile();
 
     controller = module.get<TwizzitController>(TwizzitController);

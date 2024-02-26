@@ -29,7 +29,9 @@ module.exports = {
         await queryInterface.removeColumn(
           { tableName: 'RankingSystems', schema: 'ranking' },
           'calculateUpdates',
-          { transaction: t },
+          {
+            transaction: t,
+          },
         );
       } catch (err) {
         console.error('We errored with', err);

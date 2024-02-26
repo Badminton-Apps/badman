@@ -1,9 +1,10 @@
+import { DrawType } from '@badman/utils';
 import { EventEntry } from '../entry.model';
 
 export class Draw {
   id?: string;
   name?: string;
-  type?: string;
+  type?: DrawType;
   size?: number;
   eventEntries: EventEntry[];
   risers?: number;

@@ -1,12 +1,5 @@
 import { ChangeEncounterAvailability } from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -42,7 +35,13 @@ export class EncounterChangeDate extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Field(() => Boolean, { nullable: true })
   @Column(DataType.BOOLEAN)
@@ -93,17 +92,12 @@ export class EncounterChangeDate extends Model {
 
 @InputType()
 export class EncounterChangeDateUpdateInput extends PartialType(
-  OmitType(EncounterChangeDate, [
-    'createdAt',
-    'updatedAt',
-    'encounterChange',
-    'location',
-  ] as const),
-  InputType
+  OmitType(EncounterChangeDate, ['createdAt', 'updatedAt', 'encounterChange', 'location'] as const),
+  InputType,
 ) {}
 
 @InputType()
 export class EncounterChangeDateNewInput extends PartialType(
   OmitType(EncounterChangeDateUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

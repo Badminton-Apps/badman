@@ -91,14 +91,10 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find(
-        (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e',
-      );
+      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
       expect(t1p1Points?.points).toBe(253);
 
-      const t2p1Points = points.find(
-        (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b',
-      );
+      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
       expect(t2p1Points?.points).toBe(0);
     });
 
@@ -143,14 +139,10 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find(
-        (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e',
-      );
+      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
       expect(t1p1Points?.points).toBe(0);
 
-      const t2p1Points = points.find(
-        (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b',
-      );
+      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
       expect(t2p1Points?.points).toBe(253);
     });
 
@@ -195,14 +187,10 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find(
-        (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e',
-      );
+      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
       expect(t1p1Points?.points).toBe(253);
 
-      const t2p1Points = points.find(
-        (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b',
-      );
+      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
       expect(t2p1Points?.points).toBe(0);
       expect(t2p1Points?.differenceInLevel).toBe(-2);
     });
@@ -248,15 +236,11 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find(
-        (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e',
-      );
+      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
       expect(t1p1Points?.points).toBe(0);
       expect(t1p1Points?.differenceInLevel).toBe(2);
 
-      const t2p1Points = points.find(
-        (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b',
-      );
+      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
       expect(t2p1Points?.points).toBe(570);
       expect(t2p1Points?.differenceInLevel).toBe(0);
     });
@@ -283,10 +267,7 @@ describe('BelgiumFlandersPointsService', () => {
         .WithPlayer(
           2,
           1,
-          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b').WithName(
-            'player1',
-            'team2',
-          ),
+          PlayerBuilder.Create('e7010758-286c-441a-b942-96d49446cb4b').WithName('player1', 'team2'),
         )
         .Build();
 
@@ -297,15 +278,11 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(2);
 
-      const t1p1Points = points.find(
-        (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e',
-      );
+      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
       expect(t1p1Points?.points).toBe(0);
       expect(t1p1Points?.differenceInLevel).toBe(6);
 
-      const t2p1Points = points.find(
-        (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b',
-      );
+      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
       expect(t2p1Points?.points).toBe(570);
       expect(t2p1Points?.differenceInLevel).toBe(0);
     });
@@ -377,22 +354,14 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(4);
 
-      const t1p1Points = points.find(
-        (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e',
-      );
+      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
       expect(t1p1Points?.points).toBe(554);
-      const t1p2Points = points.find(
-        (p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289',
-      );
+      const t1p2Points = points.find((p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289');
       expect(t1p2Points?.points).toBe(554);
 
-      const t2p1Points = points.find(
-        (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b',
-      );
+      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
       expect(t2p1Points?.points).toBe(0);
-      const t2p2Points = points.find(
-        (p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6',
-      );
+      const t2p2Points = points.find((p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6');
       expect(t2p2Points?.points).toBe(0);
     });
 
@@ -461,22 +430,14 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(4);
 
-      const t1p1Points = points.find(
-        (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e',
-      );
+      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
       expect(t1p1Points?.points).toBe(0);
-      const t1p2Points = points.find(
-        (p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289',
-      );
+      const t1p2Points = points.find((p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289');
       expect(t1p2Points?.points).toBe(0);
 
-      const t2p1Points = points.find(
-        (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b',
-      );
+      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
       expect(t2p1Points?.points).toBe(554);
-      const t2p2Points = points.find(
-        (p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6',
-      );
+      const t2p2Points = points.find((p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6');
       expect(t2p2Points?.points).toBe(554);
     });
 
@@ -545,25 +506,17 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(4);
 
-      const t1p1Points = points.find(
-        (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e',
-      );
+      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
       expect(t1p1Points?.points).toBe(253);
       expect(t1p1Points?.differenceInLevel).toBe(0);
-      const t1p2Points = points.find(
-        (p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289',
-      );
+      const t1p2Points = points.find((p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289');
       expect(t1p2Points?.points).toBe(253);
       expect(t1p2Points?.differenceInLevel).toBe(0);
 
-      const t2p1Points = points.find(
-        (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b',
-      );
+      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
       expect(t2p1Points?.points).toBe(0);
       expect(t2p1Points?.differenceInLevel).toBe(-2);
-      const t2p2Points = points.find(
-        (p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6',
-      );
+      const t2p2Points = points.find((p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6');
       expect(t2p2Points?.points).toBe(0);
       expect(t2p2Points?.differenceInLevel).toBe(-2);
     });
@@ -633,25 +586,17 @@ describe('BelgiumFlandersPointsService', () => {
       const points = await RankingPoint.findAll();
       expect(points.length).toBe(4);
 
-      const t1p1Points = points.find(
-        (p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e',
-      );
+      const t1p1Points = points.find((p) => p.playerId === '3cb27f2f-6f38-4dcd-b189-eeaf86df9e4e');
       expect(t1p1Points?.points).toBe(0);
       expect(t1p1Points?.differenceInLevel).toBe(2);
-      const t1p2Points = points.find(
-        (p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289',
-      );
+      const t1p2Points = points.find((p) => p.playerId === '0d5ba7bc-7bc7-42c6-b96f-8572674c3289');
       expect(t1p2Points?.points).toBe(0);
       expect(t1p2Points?.differenceInLevel).toBe(2);
 
-      const t2p1Points = points.find(
-        (p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b',
-      );
+      const t2p1Points = points.find((p) => p.playerId === 'e7010758-286c-441a-b942-96d49446cb4b');
       expect(t2p1Points?.points).toBe(570);
       expect(t2p1Points?.differenceInLevel).toBe(0);
-      const t2p2Points = points.find(
-        (p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6',
-      );
+      const t2p2Points = points.find((p) => p.playerId === '0d91912b-d31c-4d02-915e-ef00007c9ca6');
       expect(t2p2Points?.points).toBe(570);
       expect(t2p2Points?.differenceInLevel).toBe(0);
     });

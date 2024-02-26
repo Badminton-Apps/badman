@@ -7,28 +7,20 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
   imports: [
-    // Core modules
     CommonModule,
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
-
     TranslateModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
-
-    // Material Modules
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
@@ -41,7 +33,6 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
 })
 export class SetEncounterDateDialogComponent implements OnInit {
-  
   dateControl?: FormControl;
   updateBadman?: FormControl;
   updateVisual?: FormControl;
@@ -50,7 +41,7 @@ export class SetEncounterDateDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SetEncounterDateDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { date: Date; }
+    public data: { date: Date },
   ) {}
 
   ngOnInit(): void {

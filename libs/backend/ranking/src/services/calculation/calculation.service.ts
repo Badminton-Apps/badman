@@ -1,8 +1,4 @@
-import {
-  RankingGroup,
-  RankingPoint,
-  RankingSystem,
-} from '@badman/backend-database';
+import { RankingGroup, RankingPoint, RankingSystem } from '@badman/backend-database';
 import { getRankingPeriods } from '@badman/utils';
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { EventEmitter } from 'events';
@@ -63,15 +59,10 @@ export class CalculationService {
 
       // if no periods are defined, calulate from last update interval
       const toDateM = moment(toDate);
-      const fromDateM = moment(
-        fromDate || moment(system.calculationLastUpdate).add(1, 'day'),
-      );
+      const fromDateM = moment(fromDate || moment(system.calculationLastUpdate).add(1, 'day'));
       if ((periods ?? 0) > 0) {
         for (let i = 0; i < (periods ?? 0); i++) {
-          fromDateM.subtract(
-            system.calculationIntervalAmount,
-            system.calculationIntervalUnit,
-          );
+          fromDateM.subtract(system.calculationIntervalAmount, system.calculationIntervalUnit);
         }
       }
 
@@ -90,13 +81,9 @@ export class CalculationService {
       const maxUpdate = moment(updates[updates.length - 1].date);
 
       this.logger.log(
-        `Simulation for ${system.name} has ${
-          updates.length
-        } point updates planned, including ${
+        `Simulation for ${system.name} has ${updates.length} point updates planned, including ${
           updates.filter((u) => u.updatePossible).length
-        } ranking updates, between ${minUpdatePlace?.format(
-          'YYYY-MM-DD',
-        )} and ${maxUpdate?.format('YYYY-MM-DD')}
+        } ranking updates, between ${minUpdatePlace?.format('YYYY-MM-DD')} and ${maxUpdate?.format('YYYY-MM-DD')}
         `,
       );
 
@@ -104,9 +91,7 @@ export class CalculationService {
       // Setting recalculatePoints to true will delete all points and recalculate them
       if (recalculatePoints) {
         this.logger.verbose(
-          `Recalculate points for ${
-            system.name
-          }, between ${minUpdatePoints?.format(
+          `Recalculate points for ${system.name}, between ${minUpdatePoints?.format(
             'YYYY-MM-DD',
           )} and ${maxUpdate?.format('YYYY-MM-DD')}`,
         );
@@ -122,9 +107,7 @@ export class CalculationService {
 
         for (let period = 0; period < (system.periodAmount ?? 0); period++) {
           this.logger.debug(
-            `points for date: ${moment(minUpdatePoints).format(
-              'YYYY-MM-DD',
-            )}, ${period} / ${system.periodAmount}`,
+            `points for date: ${moment(minUpdatePoints).format('YYYY-MM-DD')}, ${period} / ${system.periodAmount}`,
           );
 
           await this.pointsService.createRankingPointsForPeriod({
@@ -141,9 +124,7 @@ export class CalculationService {
 
       for (const [index, { date, updatePossible }] of updates.entries()) {
         this.logger.debug(
-          `points and ranking for date: ${moment(date).format(
-            'YYYY-MM-DD',
-          )}, ${updatePossible}, ${index} / ${
+          `points and ranking for date: ${moment(date).format('YYYY-MM-DD')}, ${updatePossible}, ${index} / ${
             updates.length
           }, calculateRanking: ${calculateRanking}, calculatePlaces: ${calculatePlaces}, calculatePoints: ${calculatePoints}`,
         );
@@ -174,9 +155,7 @@ export class CalculationService {
         const duration = moment.duration(stopUpdate.diff(startUpdate));
 
         this.logger.log(
-          `Simulation for ${
-            system.name
-          } finished in ${duration.asSeconds()} seconds`,
+          `Simulation for ${system.name} finished in ${duration.asSeconds()} seconds`,
         );
       }
 

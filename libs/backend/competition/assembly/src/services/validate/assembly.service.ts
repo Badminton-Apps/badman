@@ -11,19 +11,11 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
-import {
-  getBestPlayers,
-  getBestPlayersFromTeam,
-  SubEventTypeEnum,
-} from '@badman/utils';
+import { getBestPlayers, getBestPlayersFromTeam, SubEventTypeEnum } from '@badman/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';
-import {
-  AssemblyValidationData,
-  AssemblyOutput,
-  AssemblyValidationError,
-} from '../../models';
+import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../models';
 import {
   PlayerCompStatusRule,
   PlayerGenderRule,
@@ -41,9 +33,10 @@ export class AssemblyValidationService {
   private readonly _logger = new Logger(AssemblyValidationService.name);
 
   async getValidationData(
-    systemId: string,
     teamId: string,
     encounterId: string,
+
+    systemId?: string,
 
     single1?: string,
     single2?: string,
@@ -90,14 +83,7 @@ export class AssemblyValidationService {
     });
 
     const subEvent = await draw?.getSubEventCompetition({
-      attributes: [
-        'id',
-        'eventId',
-        'eventType',
-        'minBaseIndex',
-        'maxBaseIndex',
-        'maxLevel',
-      ],
+      attributes: ['id', 'eventId', 'eventType', 'minBaseIndex', 'maxBaseIndex', 'maxLevel'],
     });
     const event = await subEvent?.getEventCompetition({
       attributes: ['id', 'usedRankingUnit', 'usedRankingAmount', 'season'],
@@ -138,9 +124,7 @@ export class AssemblyValidationService {
       attributes: ['id', 'teamId', 'subEventId', 'meta'],
       where: {
         teamId: clubTeams?.map((t) => t.id),
-        subEventId: sameYearSubEvents
-          ?.map((e) => e.subEventCompetitions?.map((s) => s.id))
-          .flat(1),
+        subEventId: sameYearSubEvents?.map((e) => e.subEventCompetitions?.map((s) => s.id)).flat(1),
       },
     });
 
@@ -148,10 +132,7 @@ export class AssemblyValidationService {
     // or where the subevent is the same as the entry where the team is playing
     const filteredMemberships = memberships?.filter((m) => {
       const t = clubTeams.find((t) => t.id === m.teamId);
-      return (
-        (t?.teamNumber ?? 0) <= (team.teamNumber ?? 0) ||
-        m.subEventId == subEvent?.id
-      );
+      return (t?.teamNumber ?? 0) <= (team.teamNumber ?? 0) || m.subEventId == subEvent?.id;
     });
 
     const system =
@@ -195,7 +176,6 @@ export class AssemblyValidationService {
     // get first and last of the month
     const startRanking = moment(usedRankingDate).startOf('month');
     const endRanking = moment(usedRankingDate).endOf('month');
-
     const players = idPlayers
       ? await Player.findAll({
           attributes: [
@@ -302,9 +282,8 @@ export class AssemblyValidationService {
       otherMeta,
 
       teamIndex: titularsTeam.index,
-      teamPlayers: (titularsTeam.players?.map((p) =>
-        players.find((pl) => pl.id === p.id),
-      ) ?? []) as Player[],
+      teamPlayers: (titularsTeam.players?.map((p) => players.find((pl) => pl.id === p.id)) ??
+        []) as Player[],
 
       encounter,
       draw,
@@ -363,14 +342,9 @@ export class AssemblyValidationService {
    * @param assembly Assembly configuaration
    * @returns Whether the assembly is valid or not
    */
-  async validate(
-    assembly: AssemblyValidationData,
-    validators: Rule[],
-  ): Promise<AssemblyOutput> {
+  async validate(assembly: AssemblyValidationData, validators: Rule[]): Promise<AssemblyOutput> {
     // get all errors and warnings from the validators in parallel
-    const results = await Promise.all(
-      validators.map((v) => v.validate(assembly)),
-    );
+    const results = await Promise.all(validators.map((v) => v.validate(assembly)));
 
     const errors = results
       ?.map((r) => r.errors)
@@ -395,9 +369,10 @@ export class AssemblyValidationService {
 
   async fetchAndValidate(
     data: {
-      systemId: string;
       teamId: string;
       encounterId: string;
+
+      systemId?: string;
 
       single1?: string;
       single2?: string;
@@ -414,9 +389,9 @@ export class AssemblyValidationService {
     validators: Rule[],
   ) {
     const dbData = await this.getValidationData(
-      data.systemId,
       data.teamId,
       data.encounterId,
+      data.systemId,
       data.single1,
       data.single2,
       data.single3,

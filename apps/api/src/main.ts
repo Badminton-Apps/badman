@@ -7,16 +7,13 @@ import { Logger, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { NestFactory } from '@nestjs/core';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-// import { IoAdapter } from '@nestjs/platform-socket.io';
-
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from './app';
 
 import fmp from '@fastify/multipart';
 import { RedisIoAdapter } from '@badman/backend-websockets';
+import compression from '@fastify/compress';
+import RedisMemoryServer from 'redis-memory-server';
 
 async function bootstrap() {
   Logger.debug('Starting application');
@@ -32,14 +29,28 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
   Logger.debug('Application created');
 
+  if (configService.get<string>('NODE_ENV') === 'test') {
+    const redisMemoryServer = new RedisMemoryServer({
+      instance: {
+        port: configService.get('REDIS_PORT') || 6379,
+      },
+    });
+
+    await redisMemoryServer.start();
+  }
+
   app.setGlobalPrefix('api');
   Logger.debug('Set global prefix');
 
-  app.register(fmp as never);
+  await app.register(fmp as never);
   Logger.debug('multipart registered');
 
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   Logger.debug('Logger registered');
+
+  await app.register(compression as never);
+
+  Logger.debug('Compression enabled');
 
   app.enableCors({
     origin: function (origin, callback) {
@@ -57,6 +68,7 @@ async function bootstrap() {
   Logger.debug('Versioning enabled');
 
   const redisHost = configService.get('REDIS_HOST');
+
   if (redisHost) {
     const redisPass = configService.get('REDIS_PASSWORD');
     const redisIoAdapter = new RedisIoAdapter(app);
@@ -79,9 +91,7 @@ async function bootstrap() {
   });
 
   Logger.debug(
-    `🚀 Application is running on: ${await app.getUrl()}. level: ${configService.get(
-      'NODE_ENV',
-    )}`,
+    `🚀 Application is running on: ${await app.getUrl()}. level: ${configService.get('NODE_ENV')}`,
   );
 }
 

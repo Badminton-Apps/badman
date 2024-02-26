@@ -1,17 +1,5 @@
-import {
-  getLetterForRegion,
-  SubEventTypeEnum,
-  UseForTeamName,
-} from '@badman/utils';
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { getLetterForRegion, SubEventTypeEnum, UseForTeamName } from '@badman/utils';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -84,18 +72,18 @@ import { TeamPlayerMembership } from './team-player-membership.model';
 //   InferCreationAttributes<Team>
 // >
 export class Team extends Model {
-  @Field(() => Date, { nullable: true })
-  updatedAt?: Date;
-
-  @Field(() => Date, { nullable: true })
-  createdAt?: Date;
-
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Field(() => String, { nullable: true })
   @Unique('unique_constraint')
@@ -118,15 +106,7 @@ export class Team extends Model {
 
   @Field(() => String, { nullable: true })
   @Column(
-    DataType.ENUM(
-      'sunday',
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-    ),
+    DataType.ENUM('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'),
   )
   preferredDay?: string;
 
@@ -183,7 +163,7 @@ export class Team extends Model {
 
   @Field(() => Int)
   @Unique('unique_constraint')
-  @Column(DataType.NUMBER)
+  @Column({ type: DataType.NUMBER, defaultValue: 1 })
   teamNumber!: number;
 
   @HasMany(() => EncounterCompetition, 'homeTeamId')
@@ -219,46 +199,28 @@ export class Team extends Model {
     }
   }
 
-  static async generateName(
-    instance: Team,
-    options?: CreateOptions,
-    club?: Club,
-  ) {
-    club =
-      club ?? (await instance.getClub({ transaction: options?.transaction }));
+  static async generateName(instance: Team, options?: CreateOptions, club?: Club) {
+    club = club ?? (await instance.getClub({ transaction: options?.transaction }));
 
     switch (club?.useForTeamName ?? UseForTeamName.NAME) {
       case UseForTeamName.FULL_NAME:
-        instance.name = `${club.fullName} ${
-          instance.teamNumber
-        }${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.fullName} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
         break;
       case UseForTeamName.ABBREVIATION:
-        instance.name = `${club.abbreviation} ${
-          instance.teamNumber
-        }${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.abbreviation} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
         break;
 
       default:
       case UseForTeamName.NAME:
-        instance.name = `${club.name} ${
-          instance.teamNumber
-        }${getLetterForRegion(instance.type, 'vl')}`;
+        instance.name = `${club.name} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
         break;
     }
   }
 
-  static async generateAbbreviation(
-    instance: Team,
-    options?: CreateOptions,
-    club?: Club,
-  ) {
-    club =
-      club ?? (await instance.getClub({ transaction: options?.transaction }));
+  static async generateAbbreviation(instance: Team, options?: CreateOptions, club?: Club) {
+    club = club ?? (await instance.getClub({ transaction: options?.transaction }));
 
-    instance.abbreviation = `${club.abbreviation} ${
-      instance.teamNumber
-    }${getLetterForRegion(instance.type, 'vl')}`;
+    instance.abbreviation = `${club.abbreviation} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
   }
   // #endregion
 
@@ -284,14 +246,8 @@ export class Team extends Model {
   setSubEvents!: BelongsToManySetAssociationsMixin<SubEventCompetition, string>;
   addSubEvents!: BelongsToManyAddAssociationsMixin<SubEventCompetition, string>;
   addSubEvent!: BelongsToManyAddAssociationMixin<SubEventCompetition, string>;
-  removeSubEvent!: BelongsToManyRemoveAssociationMixin<
-    SubEventCompetition,
-    string
-  >;
-  removeSubEvents!: BelongsToManyRemoveAssociationsMixin<
-    SubEventCompetition,
-    string
-  >;
+  removeSubEvent!: BelongsToManyRemoveAssociationMixin<SubEventCompetition, string>;
+  removeSubEvents!: BelongsToManyRemoveAssociationsMixin<SubEventCompetition, string>;
   hasSubEvent!: BelongsToManyHasAssociationMixin<SubEventCompetition, string>;
   hasSubEvents!: BelongsToManyHasAssociationsMixin<SubEventCompetition, string>;
   countSubEvent!: BelongsToManyCountAssociationsMixin;
@@ -301,14 +257,8 @@ export class Team extends Model {
   setHomeEncounters!: HasManySetAssociationsMixin<EncounterCompetition, string>;
   addHomeEncounters!: HasManyAddAssociationsMixin<EncounterCompetition, string>;
   addHomeEncounter!: HasManyAddAssociationMixin<EncounterCompetition, string>;
-  removeHomeEncounter!: HasManyRemoveAssociationMixin<
-    EncounterCompetition,
-    string
-  >;
-  removeHomeEncounters!: HasManyRemoveAssociationsMixin<
-    EncounterCompetition,
-    string
-  >;
+  removeHomeEncounter!: HasManyRemoveAssociationMixin<EncounterCompetition, string>;
+  removeHomeEncounters!: HasManyRemoveAssociationsMixin<EncounterCompetition, string>;
   hasHomeEncounter!: HasManyHasAssociationMixin<EncounterCompetition, string>;
   hasHomeEncounters!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
   countHomeEncounters!: HasManyCountAssociationsMixin;
@@ -318,14 +268,8 @@ export class Team extends Model {
   setAwayEncounters!: HasManySetAssociationsMixin<EncounterCompetition, string>;
   addAwayEncounters!: HasManyAddAssociationsMixin<EncounterCompetition, string>;
   addAwayEncounter!: HasManyAddAssociationMixin<EncounterCompetition, string>;
-  removeAwayEncounter!: HasManyRemoveAssociationMixin<
-    EncounterCompetition,
-    string
-  >;
-  removeAwayEncounters!: HasManyRemoveAssociationsMixin<
-    EncounterCompetition,
-    string
-  >;
+  removeAwayEncounter!: HasManyRemoveAssociationMixin<EncounterCompetition, string>;
+  removeAwayEncounters!: HasManyRemoveAssociationsMixin<EncounterCompetition, string>;
   hasAwayEncounter!: HasManyHasAssociationMixin<EncounterCompetition, string>;
   hasAwayEncounters!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
   countAwayEncounters!: HasManyCountAssociationsMixin;

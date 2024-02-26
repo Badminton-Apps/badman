@@ -19,13 +19,13 @@
   }
 }
 
-.levels{
+.levels {
   display: flex;
   flex-direction: row;
   gap: 1rem;
   flex-wrap: wrap;
 
-  badman-show-level{
+  badman-show-level {
     cursor: pointer;
   }
 }
@@ -41,6 +41,7 @@
 
 .upcoming-games {
   flex: 1 1 250px;
+  max-width: 400px;
 
   @media (max-width: 959.98px) {
     flex: 1;

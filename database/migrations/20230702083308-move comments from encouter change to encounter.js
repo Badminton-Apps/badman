@@ -10,7 +10,7 @@ module.exports = {
 
         const comments = await queryInterface.sequelize.query(
           `SELECT * FROM "Comments" WHERE "linkType" = 'home_comment' OR "linkType" = 'away_comment'`,
-          { type: sequelize.QueryTypes.SELECT, transaction: t }
+          { type: sequelize.QueryTypes.SELECT, transaction: t },
         );
 
         console.log(`Found ${comments?.length} comments`);
@@ -19,36 +19,28 @@ module.exports = {
           `SELECT * FROM "event"."EncounterChanges" where id in ('${comments
             ?.map((comment) => comment.linkId)
             .join("','")}')`,
-          { type: sequelize.QueryTypes.SELECT, transaction: t }
+          { type: sequelize.QueryTypes.SELECT, transaction: t },
         );
 
         console.log(`Found ${encounterChanges?.length} encounter changes`);
 
         // update the comments to use the encounterId instead of the encounterChangeId
-        for (const comment of comments?.filter(
-          (c) => c.linkType === 'home_comment'
-        )) {
-          const encounter = encounterChanges.find(
-            (encounter) => encounter.id === comment.linkId
-          );
+        for (const comment of comments?.filter((c) => c.linkType === 'home_comment')) {
+          const encounter = encounterChanges.find((encounter) => encounter.id === comment.linkId);
           if (encounter) {
             await queryInterface.sequelize.query(
               `UPDATE "Comments" SET "linkId" = '${encounter.id}', "linkType" = 'home_comment_change' WHERE id = '${comment.id}'`,
-              { transaction: t }
+              { transaction: t },
             );
           }
         }
         // update the comments to use the encounterId instead of the encounterChangeId
-        for (const comment of comments?.filter(
-          (c) => c.linkType === 'away_comment'
-        )) {
-          const encounter = encounterChanges.find(
-            (encounter) => encounter.id === comment.linkId
-          );
+        for (const comment of comments?.filter((c) => c.linkType === 'away_comment')) {
+          const encounter = encounterChanges.find((encounter) => encounter.id === comment.linkId);
           if (encounter) {
             await queryInterface.sequelize.query(
               `UPDATE "Comments" SET "linkId" = '${encounter.id}', "linkType" = 'away_comment_change' WHERE id = '${comment.id}'`,
-              { transaction: t }
+              { transaction: t },
             );
           }
         }
@@ -64,7 +56,7 @@ module.exports = {
       try {
         const comments = await queryInterface.sequelize.query(
           `SELECT * FROM "Comments" WHERE "linkType" = 'home_comment_change' OR "linkType" = 'away_comment_change'`,
-          { type: sequelize.QueryTypes.SELECT, transaction: t }
+          { type: sequelize.QueryTypes.SELECT, transaction: t },
         );
 
         console.log(`Found ${comments?.length} comments`);
@@ -73,7 +65,7 @@ module.exports = {
           `SELECT * FROM "event"."EncounterCompetitions" where id in ('${comments
             ?.map((comment) => comment.linkId)
             .join("','")}')`,
-          { type: sequelize.QueryTypes.SELECT, transaction: t }
+          { type: sequelize.QueryTypes.SELECT, transaction: t },
         );
 
         console.log(`Found ${encounters?.length} encounters`);
@@ -86,36 +78,32 @@ module.exports = {
           `SELECT * FROM "event"."EncounterChanges" where "encounterId" in ('${encounters
             ?.map((encounter) => encounter.id)
             .join("','")}')`,
-          { type: sequelize.QueryTypes.SELECT, transaction: t }
+          { type: sequelize.QueryTypes.SELECT, transaction: t },
         );
 
         console.log(`Found ${encounterChanges?.length} encounter changes`);
 
         // update the comments to use the encounterChangeId instead of the encounterId
-        for (const comment of comments?.filter(
-          (c) => c.linkType === 'home_comment_change'
-        )) {
+        for (const comment of comments?.filter((c) => c.linkType === 'home_comment_change')) {
           const encounterChange = encounterChanges.find(
-            (encounter) => encounter.encounterId === comment.linkId
+            (encounter) => encounter.encounterId === comment.linkId,
           );
           if (encounterChange) {
             await queryInterface.sequelize.query(
               `UPDATE "Comments" SET "linkId" = '${encounterChange.id}', "linkType" = 'home_comment' WHERE id = '${comment.id}'`,
-              { transaction: t }
+              { transaction: t },
             );
           }
         }
         // update the comments to use the encounterChangeId instead of the encounterId
-        for (const comment of comments?.filter(
-          (c) => c.linkType === 'away_comment_change'
-        )) {
+        for (const comment of comments?.filter((c) => c.linkType === 'away_comment_change')) {
           const encounterChange = encounterChanges.find(
-            (encounter) => encounter.encounterId === comment.linkId
+            (encounter) => encounter.encounterId === comment.linkId,
           );
           if (encounterChange) {
             await queryInterface.sequelize.query(
               `UPDATE "Comments" SET "linkId" = '${encounterChange.id}', "linkType" = 'away_comment' WHERE id = '${comment.id}'`,
-              { transaction: t }
+              { transaction: t },
             );
           }
         }

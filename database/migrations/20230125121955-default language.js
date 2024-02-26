@@ -12,18 +12,16 @@ module.exports = {
           allowNull: true,
           defaultValue: 'nl_BE',
         },
-        { transaction: t }
+        { transaction: t },
       );
     });
   },
 
   down: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
-      await queryInterface.removeColumn(
-        { tableName: 'Settings', schema: 'personal' },
-        'language',
-        { transaction: t }
-      );
+      await queryInterface.removeColumn({ tableName: 'Settings', schema: 'personal' }, 'language', {
+        transaction: t,
+      });
     });
   },
 };

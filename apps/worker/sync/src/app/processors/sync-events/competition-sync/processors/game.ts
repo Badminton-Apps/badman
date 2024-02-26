@@ -13,12 +13,7 @@ import {
   XmlScoreStatus,
   XmlTournament,
 } from '@badman/backend-visual';
-import {
-  GameStatus,
-  GameType,
-  getRankingProtected,
-  runParallel,
-} from '@badman/utils';
+import { GameStatus, GameType, getRankingProtected, runParallel } from '@badman/utils';
 import { Logger, NotFoundException } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -41,8 +36,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     if (!options) {
       options = {};
     }
-    options.logger =
-      options.logger || new Logger(CompetitionSyncGameProcessor.name);
+    options.logger = options.logger || new Logger(CompetitionSyncGameProcessor.name);
     super(options);
   }
 
@@ -61,9 +55,7 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
     const games = await Game.findAll({
       where: {
         linkId: {
-          [Op.in]: this.encounters
-            ?.map((encounter) => encounter?.encounter.id)
-            .flat(),
+          [Op.in]: this.encounters?.map((encounter) => encounter?.encounter.id).flat(),
         },
       },
       transaction: this.transaction,
@@ -100,15 +92,11 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
       !isLastWeek,
     );
 
-    const visualMatch = result.filter(
-      (m) => m != null || m != undefined,
-    ) as XmlMatch[];
+    const visualMatch = result.filter((m) => m != null || m != undefined) as XmlMatch[];
 
     for (const xmlMatch of visualMatch) {
       let game = games.find(
-        (r) =>
-          r.order === xmlMatch.MatchOrder &&
-          r.visualCode === `${xmlMatch.Code}`,
+        (r) => r.order === xmlMatch.MatchOrder && r.visualCode === `${xmlMatch.Code}`,
       );
 
       if (!xmlMatch.Sets) {
@@ -405,10 +393,8 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
 
       returnPlayer = [...(this.players?.values() ?? [])].find(
         (p) =>
-          (p.firstName === corrected.firstName &&
-            p.lastName === corrected.lastName) ||
-          (p.firstName === corrected.lastName &&
-            p.lastName === corrected.firstName),
+          (p.firstName === corrected.firstName && p.lastName === corrected.lastName) ||
+          (p.firstName === corrected.lastName && p.lastName === corrected.firstName),
       );
     }
     return returnPlayer;

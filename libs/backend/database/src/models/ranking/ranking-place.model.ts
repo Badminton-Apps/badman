@@ -1,12 +1,4 @@
-import {
-  Field,
-  ID,
-  InputType,
-  Int,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
@@ -57,7 +49,13 @@ export class RankingPlace extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Unique('unique_constraint')
   @Index({
@@ -192,7 +190,7 @@ export class RankingPlace extends Model {
   @AfterUpdate
   static async updateLatestRankingsUpdates(
     instances: RankingPlace[] | RankingPlace,
-    options: UpdateOptions
+    options: UpdateOptions,
   ) {
     if (!Array.isArray(instances)) {
       instances = [instances];
@@ -203,10 +201,7 @@ export class RankingPlace extends Model {
 
   @BeforeCreate
   @BeforeBulkCreate
-  static async addEmptyValues(
-    instances: RankingPlace[] | RankingPlace,
-    options: SaveOptions
-  ) {
+  static async addEmptyValues(instances: RankingPlace[] | RankingPlace, options: SaveOptions) {
     if (!Array.isArray(instances)) {
       instances = [instances];
     }
@@ -244,10 +239,7 @@ export class RankingPlace extends Model {
 
   @AfterUpdate
   @AfterBulkUpdate
-  static async updateGames(
-    instances: RankingPlace[] | RankingPlace,
-    options: UpdateOptions
-  ) {
+  static async updateGames(instances: RankingPlace[] | RankingPlace, options: UpdateOptions) {
     if (!Array.isArray(instances)) {
       instances = [instances];
     }
@@ -259,7 +251,7 @@ export class RankingPlace extends Model {
   @AfterBulkCreate
   static async updateLatestRankingsCreate(
     instances: RankingPlace[] | RankingPlace,
-    options: SaveOptions
+    options: SaveOptions,
   ) {
     if (!Array.isArray(instances)) {
       instances = [instances];
@@ -271,7 +263,7 @@ export class RankingPlace extends Model {
   @AfterDestroy
   static async updateLatestRankingsDestroy(
     instances: RankingPlace[] | RankingPlace,
-    options: DestroyOptions
+    options: DestroyOptions,
   ) {
     if (!Array.isArray(instances)) {
       instances = [instances];
@@ -300,11 +292,11 @@ export class RankingPlace extends Model {
   static async updateLatestRankings(
     instances: RankingPlace[],
     options: SaveOptions | UpdateOptions,
-    type: 'create' | 'update' | 'destroy'
+    type: 'create' | 'update' | 'destroy',
   ) {
     const rankingLastPlaces = instances.map((r) => r.asLastRankingPlace());
     const whereOr = rankingLastPlaces?.map((r) => {
-      if (!r){
+      if (!r) {
         throw new Error(`RankingLastPlace is undefined`);
       } else if (!r.playerId) {
         throw new Error(`RankingLastPlace.playerId is undefined`);
@@ -313,7 +305,6 @@ export class RankingPlace extends Model {
       } else if (!r.rankingDate) {
         throw new Error(`RankingLastPlace.rankingDate is undefined`);
       }
-     
 
       const filter: {
         playerId?: string;
@@ -342,9 +333,7 @@ export class RankingPlace extends Model {
         ? rankingLastPlaces
         : rankingLastPlaces.filter(
             (l) =>
-              current.findIndex(
-                (c) => c.playerId === l.playerId && c.systemId === l.systemId
-              ) > -1
+              current.findIndex((c) => c.playerId === l.playerId && c.systemId === l.systemId) > -1,
           );
 
     // Update the last ranking place
@@ -378,10 +367,7 @@ export class RankingPlace extends Model {
     });
   }
 
-  static async updateGameRanking(
-    instances: RankingPlace[],
-    options: UpdateOptions
-  ) {
+  static async updateGameRanking(instances: RankingPlace[], options: UpdateOptions) {
     try {
       for (const instance of instances) {
         // find next ranking place
@@ -438,7 +424,7 @@ export class RankingPlace extends Model {
           {
             updateOnDuplicate: ['single', 'double', 'mix'],
             transaction: options?.transaction,
-          }
+          },
         );
       }
     } catch (e) {
@@ -479,17 +465,12 @@ export class RankingPlace extends Model {
 
 @InputType()
 export class RankingPlaceUpdateInput extends PartialType(
-  OmitType(RankingPlace, [
-    'createdAt',
-    'updatedAt',
-    'player',
-    'rankingSystem',
-  ] as const),
-  InputType
+  OmitType(RankingPlace, ['createdAt', 'updatedAt', 'player', 'rankingSystem'] as const),
+  InputType,
 ) {}
 
 @InputType()
 export class RankingPlaceNewInput extends PartialType(
   OmitType(RankingPlaceUpdateInput, ['id'] as const),
-  InputType
+  InputType,
 ) {}

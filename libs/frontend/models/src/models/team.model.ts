@@ -4,23 +4,15 @@ import { EventEntry } from './entry.model';
 import { Location } from './location.model';
 import { Player, TeamPlayer } from './player.model';
 
-
 export class Team {
-  id?: string;
+  id!: string;
   slug?: string;
   name?: string;
   abbreviation?: string;
   type?: SubEventTypeEnum;
   teamNumber?: number;
   preferredTime?: string;
-  preferredDay?:
-    | 'sunday'
-    | 'monday'
-    | 'tuesday'
-    | 'wednesday'
-    | 'thursday'
-    | 'friday'
-    | 'saturday';
+  preferredDay?: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
   preferred2Time?: string;
   preferred2Day?:
     | 'sunday'
@@ -45,9 +37,13 @@ export class Team {
   clubId?: string;
   link?: string;
 
-
   constructor(args?: Partial<Team>) {
-    this.id = args?.id;
+    if (!args?.id) {
+      console.error(`${this.constructor.name} needs an id`);
+      return;
+    }
+    this.id = args.id;
+
     this.slug = args?.slug;
     this.name = args?.name;
     this.teamNumber = args?.teamNumber;
@@ -63,8 +59,7 @@ export class Team {
 
     this.locations = args?.locations?.map((l) => new Location(l));
     this.entry = args?.entry != null ? new EventEntry(args?.entry) : undefined;
-    this.captain =
-      args?.captain != null ? new Player(args?.captain) : undefined;
+    this.captain = args?.captain != null ? new Player(args?.captain) : undefined;
     this.club = args?.club != null ? new Club(args?.club) : undefined;
     this.captainId = args?.captain?.id ?? args?.captainId;
     this.email = args?.email;
@@ -87,9 +82,7 @@ export class Team {
                 (player.lastRanking.mix ?? 0);
               indexSplit = `${player.lastRanking.single}-${player.lastRanking.double}-${player.lastRanking.mix}`;
             } else {
-              index =
-                (player.lastRanking.single ?? 0) +
-                (player.lastRanking.double ?? 0);
+              index = (player.lastRanking.single ?? 0) + (player.lastRanking.double ?? 0);
               indexSplit = `${player.lastRanking.single}-${player.lastRanking.double}`;
             }
           }
@@ -121,10 +114,7 @@ export class Team {
         missingIndex = (4 - bestPlayers.length) * 24;
       }
 
-      this.baseIndex = bestPlayers.reduce(
-        (a, b) => (a ?? 0) + (b ?? 0),
-        missingIndex
-      );
+      this.baseIndex = bestPlayers.reduce((a, b) => (a ?? 0) + (b ?? 0), missingIndex);
     } else {
       const bestPlayers = [
         // 2 best male
@@ -146,10 +136,7 @@ export class Team {
         missingIndex = (4 - bestPlayers.length - 4) * 36;
       }
 
-      this.baseIndex = bestPlayers.reduce(
-        (a, b) => (a ?? 0) + (b ?? 0),
-        missingIndex
-      );
+      this.baseIndex = bestPlayers.reduce((a, b) => (a ?? 0) + (b ?? 0), missingIndex);
     }
   }
 }

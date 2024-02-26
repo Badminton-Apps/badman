@@ -9,11 +9,11 @@ export class PdfService {
   constructor(
     private httpClient: HttpClient,
     @Inject(PDF_CONFIG)
-    private config: IPdfConfig
+    private config: IPdfConfig,
   ) {}
 
   getTeamAssembly(input: {
-    systemId: string;
+    systemId: string | null;
     captainId: string;
     teamId: string;
     encounterId: string;

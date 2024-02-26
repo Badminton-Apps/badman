@@ -1,7 +1,7 @@
 <form class="header" (keydown.enter)="$event.preventDefault()">
   <input
     type="text"
-    [placeholder]="this.label | translate"
+    [placeholder]="this.label() | translate"
     [formControl]="formControl"
     [matAutocomplete]="auto"
   />
@@ -11,41 +11,37 @@
     [classList]="'search-select-panel'"
     class="search-select-panel"
   >
-    <ng-container *ngIf="this.filteredOptions$ | async as options">
-      <mat-option
-        [value]="this.formControl.value"
-        *ngIf="options.length === 0"
-        [disabled]="true"
-      >
-        {{ 'all.player.no-players' | translate }} found
-      </mat-option>
-
-      <mat-option *ngFor="let option of options" [value]="option">
-        {{ 'all.search.type.' + option.__typename | lowercase | translate }} -
-        <ng-container [ngSwitch]="option.__typename">
-          <ng-container *ngSwitchCase="'Player'">
-            {{ $any(option).fullName }}
-            <small class="extra" *ngIf="$any(option).memberId"
-              >({{ $any(option).memberId }})
-            </small>
-          </ng-container>
-
-          <ng-container *ngSwitchCase="'EventCompetition'">
-            {{ $any(option).name }}
-          </ng-container>
-
-          <ng-container *ngSwitchCase="'EventTournament'">
-            {{ $any(option).name }}
-          </ng-container>
-
-          <ng-container *ngSwitchCase="'Club'">
-            {{ $any(option).name }}
-            <small class="extra" *ngIf="$any(option).clubId"
-              >({{ $any(option).clubId }})
-            </small>
-          </ng-container>
-        </ng-container>
-      </mat-option>
-    </ng-container>
+    @if (this.filteredOptions$ | async; as options) {
+      @if (options.length === 0) {
+        <mat-option [value]="this.formControl.value" [disabled]="true">
+          {{ 'all.player.no-players' | translate }} found
+        </mat-option>
+      }
+      @for (option of options; track option) {
+        <mat-option [value]="option">
+          {{ 'all.search.type.' + option.__typename | lowercase | translate }} -
+          @switch (option.__typename) {
+            @case ('Player') {
+              {{ $any(option).fullName }}
+              @if ($any(option).memberId) {
+                <small class="extra">({{ $any(option).memberId }}) </small>
+              }
+            }
+            @case ('EventCompetition') {
+              {{ $any(option).name }}
+            }
+            @case ('EventTournament') {
+              {{ $any(option).name }}
+            }
+            @case ('Club') {
+              {{ $any(option).name }}
+              @if ($any(option).clubId) {
+                <small class="extra">({{ $any(option).clubId }}) </small>
+              }
+            }
+          }
+        </mat-option>
+      }
+    }
   </mat-autocomplete>
 </form>

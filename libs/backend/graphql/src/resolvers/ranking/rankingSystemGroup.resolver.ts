@@ -13,20 +13,8 @@ import {
   SubEventTournament,
 } from '@badman/backend-database';
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Op, Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
@@ -37,13 +25,11 @@ export class RankingGroupsResolver {
 
   constructor(
     private _sequelize: Sequelize,
-    private _pointService: PointsService
+    private _pointService: PointsService,
   ) {}
 
   @Query(() => RankingGroup)
-  async rankingGroup(
-    @Args('id', { type: () => ID }) id: string
-  ): Promise<RankingGroup> {
+  async rankingGroup(@Args('id', { type: () => ID }) id: string): Promise<RankingGroup> {
     const rankingSystemGroup = await RankingGroup.findByPk(id);
 
     if (!rankingSystemGroup) {
@@ -60,7 +46,7 @@ export class RankingGroupsResolver {
   @ResolveField(() => [SubEventCompetition])
   async subEventCompetitions(
     @Parent() group: RankingGroup,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<SubEventCompetition[]> {
     return group.getSubEventCompetitions(ListArgs.toFindOptions(listArgs));
   }
@@ -68,7 +54,7 @@ export class RankingGroupsResolver {
   @ResolveField(() => [SubEventTournament])
   async subEventTournaments(
     @Parent() group: RankingGroup,
-    @Args() listArgs: ListArgs
+    @Args() listArgs: ListArgs,
   ): Promise<SubEventTournament[]> {
     return group.getSubEventTournaments(ListArgs.toFindOptions(listArgs));
   }
@@ -80,11 +66,11 @@ export class RankingGroupsResolver {
     @Args('competitions', { type: () => [ID], nullable: true })
     competitions: string[],
     @Args('tournaments', { type: () => [ID], nullable: true })
-    tournaments: string[]
+    tournaments: string[],
   ) {
-    if (!await user.hasAnyPermission(['add:event'])) {
+    if (!(await user.hasAnyPermission(['add:event']))) {
       throw new UnauthorizedException(
-        `You do not have permission to add subevents to a ranking group`
+        `You do not have permission to add subevents to a ranking group`,
       );
     }
     // Do transaction
@@ -98,11 +84,7 @@ export class RankingGroupsResolver {
 
       if (competitions) {
         await dbGroup.addSubEventCompetitions(competitions, { transaction });
-        await this.addGamePointsForSubEvents(
-          dbGroup,
-          competitions,
-          transaction
-        );
+        await this.addGamePointsForSubEvents(dbGroup, competitions, transaction);
 
         // check if the subevent has any remaining subevents with ranking
         await this.checkOfficialComp(competitions, transaction);
@@ -132,11 +114,11 @@ export class RankingGroupsResolver {
     @Args('competitions', { type: () => [ID], nullable: true })
     competitions: string[],
     @Args('tournaments', { type: () => [ID], nullable: true })
-    tournaments: string[]
+    tournaments: string[],
   ) {
-    if (!await user.hasAnyPermission(['remove:event'])) {
+    if (!(await user.hasAnyPermission(['remove:event']))) {
       throw new UnauthorizedException(
-        `You do not have permission to remove subevents to a ranking group`
+        `You do not have permission to remove subevents to a ranking group`,
       );
     }
     // Do transaction
@@ -150,11 +132,7 @@ export class RankingGroupsResolver {
 
       if (competitions) {
         await dbGroup.removeSubEventCompetitions(competitions, { transaction });
-        await this.addGamePointsForSubEvents(
-          dbGroup,
-          competitions,
-          transaction
-        );
+        await this.addGamePointsForSubEvents(dbGroup, competitions, transaction);
 
         // check if the subevent has any remaining subevents with ranking
         await this.checkOfficialComp(competitions, transaction);
@@ -177,10 +155,7 @@ export class RankingGroupsResolver {
     }
   }
 
-  private async checkOfficialComp(
-    competitions: string[],
-    transaction: Transaction
-  ) {
+  private async checkOfficialComp(competitions: string[], transaction: Transaction) {
     const subEvents = await SubEventCompetition.findAll({
       where: {
         id: {
@@ -197,13 +172,9 @@ export class RankingGroupsResolver {
     });
 
     // if not set the parent's event to official false
-    const unqiueEvents = new Set([
-      ...subEvents.map((subEvent) => subEvent.eventId),
-    ]);
+    const unqiueEvents = new Set([...subEvents.map((subEvent) => subEvent.eventId)]);
     for (const eventId of unqiueEvents) {
-      const remaining = subEvents.filter(
-        (subEvent) => subEvent.eventId === eventId
-      );
+      const remaining = subEvents.filter((subEvent) => subEvent.eventId === eventId);
       if (remaining.length === 0) {
         const event = await EventCompetition.findByPk(eventId);
         if (!event) {
@@ -215,10 +186,7 @@ export class RankingGroupsResolver {
     }
   }
 
-  private async checkOfficialTournament(
-    tournaments: string[],
-    transaction: Transaction
-  ) {
+  private async checkOfficialTournament(tournaments: string[], transaction: Transaction) {
     const subEvents = await SubEventTournament.findAll({
       where: {
         id: {
@@ -235,13 +203,9 @@ export class RankingGroupsResolver {
     });
 
     // if not set the parent's event to official false
-    const unqiueEvents = new Set([
-      ...subEvents.map((subEvent) => subEvent.eventId),
-    ]);
+    const unqiueEvents = new Set([...subEvents.map((subEvent) => subEvent.eventId)]);
     for (const eventId of unqiueEvents) {
-      const remaining = subEvents.filter(
-        (subEvent) => subEvent.eventId === eventId
-      );
+      const remaining = subEvents.filter((subEvent) => subEvent.eventId === eventId);
       if (remaining.length === 0) {
         const event = await EventTournament.findByPk(eventId);
         if (!event) {
@@ -256,7 +220,7 @@ export class RankingGroupsResolver {
   async addGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction
+    transaction: Transaction,
   ) {
     const systems = await group.getRankingSystems({ transaction });
     const games = (
@@ -334,7 +298,7 @@ export class RankingGroupsResolver {
   async removeGamePointsForSubEvents(
     group: RankingGroup,
     subEvents: string[],
-    transaction: Transaction
+    transaction: Transaction,
   ) {
     const systems = await group.getRankingSystems({ transaction });
 
@@ -386,7 +350,7 @@ export class RankingGroupsResolver {
       });
 
       this.logger.debug(
-        `Removed points for ${games.length} games in system ${system.name}(${system.id})`
+        `Removed points for ${games.length} games in system ${system.name}(${system.id})`,
       );
     }
   }

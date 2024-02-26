@@ -8,20 +8,8 @@ import {
   NotificationUpdateInput,
   Player,
 } from '@badman/backend-database';
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
 
@@ -32,9 +20,7 @@ export class NotificationResolver {
   constructor(private _sequelize: Sequelize) {}
 
   @Query(() => Notification)
-  async notification(
-    @Args('id', { type: () => ID }) id: string
-  ): Promise<Notification | null> {
+  async notification(@Args('id', { type: () => ID }) id: string): Promise<Notification | null> {
     return await Notification.findByPk(id);
   }
 
@@ -44,23 +30,17 @@ export class NotificationResolver {
   }
 
   @ResolveField(() => EncounterCompetition)
-  async encounter(
-    @Parent() notification: Notification
-  ): Promise<EncounterCompetition> {
+  async encounter(@Parent() notification: Notification): Promise<EncounterCompetition> {
     return notification.getEncounter();
   }
 
   @ResolveField(() => EventCompetition)
-  async competition(
-    @Parent() notification: Notification
-  ): Promise<EventCompetition> {
+  async competition(@Parent() notification: Notification): Promise<EventCompetition> {
     return notification.getCompetition();
   }
 
   @ResolveField(() => EventTournament)
-  async tournament(
-    @Parent() notification: Notification
-  ): Promise<EventTournament> {
+  async tournament(@Parent() notification: Notification): Promise<EventTournament> {
     return notification.getTournament();
   }
 
@@ -72,18 +52,14 @@ export class NotificationResolver {
   @Mutation(() => Notification)
   async updateNotification(
     @Args('data') updateNotificationData: NotificationUpdateInput,
-    @User() user: Player
+    @User() user: Player,
   ): Promise<Notification> {
     const transaction = await this._sequelize.transaction();
     try {
-      const dbNotification = await Notification.findByPk(
-        updateNotificationData.id
-      );
+      const dbNotification = await Notification.findByPk(updateNotificationData.id);
 
       if (!dbNotification) {
-        throw new NotFoundException(
-          `${Notification.name}: ${updateNotificationData.id}`
-        );
+        throw new NotFoundException(`${Notification.name}: ${updateNotificationData.id}`);
       }
 
       if (dbNotification.sendToId !== user.id) {
@@ -92,7 +68,7 @@ export class NotificationResolver {
 
       await dbNotification.update(
         { ...dbNotification.toJSON(), ...updateNotificationData },
-        { transaction }
+        { transaction },
       );
 
       // await dbNotification.update(notification, { transaction });

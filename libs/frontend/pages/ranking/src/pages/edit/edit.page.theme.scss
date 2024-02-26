@@ -16,8 +16,6 @@
 }
 
 @mixin theme($theme) {
-  
-
   // Only apply theme on the correct element
   $color-config: mat.get-color-config($theme);
   @if $color-config != null {

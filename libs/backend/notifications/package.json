@@ -1,6 +1,18 @@
 {
   "name": "@badman/backend-notifications",
-  "version": "0.0.1",
+  "version": "6.130.0-beta.17",
+  "dependencies": {
+    "@swc/helpers": "~0.5.2",
+    "@badman/backend-mailing": "*",
+    "@nestjs/common": "^10.3.1",
+    "@nestjs/config": "^3.1.1",
+    "@badman/backend-database": "*",
+    "web-push": "^3.6.7",
+    "moment": "^2.30.1",
+    "@badman/utils": "*"
+  },
   "type": "commonjs",
-  "dependencies": {}
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "devDependencies": {}
 }

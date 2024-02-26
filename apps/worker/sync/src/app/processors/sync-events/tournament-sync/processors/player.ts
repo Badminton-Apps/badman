@@ -1,11 +1,7 @@
 import { EventTournament, Player } from '@badman/backend-database';
 import { Op } from 'sequelize';
 import { StepProcessor, StepOptions } from '../../../../processing';
-import {
-  VisualService,
-  XmlTournament,
-  XmlGenderID,
-} from '@badman/backend-visual';
+import { VisualService, XmlTournament, XmlGenderID } from '@badman/backend-visual';
 import { correctWrongPlayers } from '../../../../utils';
 import { Logger } from '@nestjs/common';
 
@@ -15,14 +11,13 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions,
   ) {
     if (!options) {
       options = {};
     }
 
-    options.logger =
-      options.logger || new Logger(TournamentSyncPlayerProcessor.name);
+    options.logger = options.logger || new Logger(TournamentSyncPlayerProcessor.name);
     super(options);
   }
 
@@ -41,8 +36,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
           firstName: xmlPlayer.Firstname,
           lastName: xmlPlayer.Lastname,
           gender:
-            xmlPlayer.GenderID === XmlGenderID.Boy ||
-            xmlPlayer.GenderID === XmlGenderID.Male
+            xmlPlayer.GenderID === XmlGenderID.Boy || xmlPlayer.GenderID === XmlGenderID.Male
               ? 'M'
               : 'F',
         }),
@@ -63,8 +57,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
 
     for (const xmlPlayer of visualPlayers) {
       let foundPlayer =
-        players.find((r) => r.memberId === `${xmlPlayer?.player?.memberId}`) ??
-        null;
+        players.find((r) => r.memberId === `${xmlPlayer?.player?.memberId}`) ?? null;
       let memberId = xmlPlayer?.xmlMemberId;
 
       if (!foundPlayer) {
@@ -103,7 +96,7 @@ export class TournamentSyncPlayerProcessor extends StepProcessor {
 
       if (!key) {
         this.logger.warn(
-          `Could not find key for player ${xmlPlayer?.player?.firstName} ${xmlPlayer?.player?.lastName}`
+          `Could not find key for player ${xmlPlayer?.player?.firstName} ${xmlPlayer?.player?.lastName}`,
         );
         continue;
       }

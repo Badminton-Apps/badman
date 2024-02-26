@@ -9,5 +9,5 @@ export const EVENTS = {
   GAME,
   JOB,
   CLUB,
-  SERVICE
+  SERVICE,
 };

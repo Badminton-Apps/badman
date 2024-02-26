@@ -27,15 +27,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
@@ -70,18 +62,16 @@ export class TeamsResolver {
 
   @ResolveField(() => [TeamPlayerMembershipType])
   async players(@Parent() team: Team, @Args() listArgs: ListArgs) {
-    const players = (await team.getPlayers(
-      ListArgs.toFindOptions(listArgs),
-    )) as (Player & { TeamPlayerMembership: TeamPlayerMembership })[];
+    const players = (await team.getPlayers(ListArgs.toFindOptions(listArgs))) as (Player & {
+      TeamPlayerMembership: TeamPlayerMembership;
+    })[];
 
-    return players?.map(
-      (player: Player & { TeamPlayerMembership: TeamPlayerMembership }) => {
-        return {
-          ...player.TeamPlayerMembership.toJSON(),
-          ...player.toJSON(),
-        };
-      },
-    );
+    return players?.map((player: Player & { TeamPlayerMembership: TeamPlayerMembership }) => {
+      return {
+        ...player.TeamPlayerMembership.toJSON(),
+        ...player.toJSON(),
+      };
+    });
   }
 
   @ResolveField(() => String)
@@ -123,10 +113,7 @@ export class TeamsResolver {
   }
 
   @ResolveField(() => [Location])
-  async locations(
-    @Parent() team: Team,
-    @Args() listArgs: ListArgs,
-  ): Promise<Location[]> {
+  async locations(@Parent() team: Team, @Args() listArgs: ListArgs): Promise<Location[]> {
     return team.getLocations(ListArgs.toFindOptions(listArgs));
   }
 
@@ -143,10 +130,7 @@ export class TeamsResolver {
   // Object
 
   @Mutation(() => Team)
-  async createTeam(
-    @Args('data') newTeamData: TeamNewInput,
-    @User() user: Player,
-  ): Promise<Team> {
+  async createTeam(@Args('data') newTeamData: TeamNewInput, @User() user: Player): Promise<Team> {
     const transaction = await this._sequelize.transaction();
     try {
       const dbClub = await Club.findByPk(newTeamData.clubId, {
@@ -157,15 +141,8 @@ export class TeamsResolver {
         throw new NotFoundException(`${Club.name}: ${newTeamData.clubId}`);
       }
 
-      if (
-        !(await user.hasAnyPermission([
-          `${dbClub.id}_edit:location`,
-          'edit-any:club',
-        ]))
-      ) {
-        throw new UnauthorizedException(
-          `You do not have permission to add a competition`,
-        );
+      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club']))) {
+        throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
       if (!newTeamData.teamNumber) {
@@ -220,8 +197,7 @@ export class TeamsResolver {
         teamDb.captainId = newTeamData.captainId;
         teamDb.preferredDay = newTeamData.preferredDay;
         teamDb.preferredTime = newTeamData.preferredTime;
-        (teamDb.link = newTeamData.link ?? uuidv4()),
-          await teamDb.save({ transaction });
+        (teamDb.link = newTeamData.link ?? uuidv4()), await teamDb.save({ transaction });
       }
       if (created) {
         await teamDb.setClub(dbClub, { transaction });
@@ -252,9 +228,7 @@ export class TeamsResolver {
               throw new NotFoundException(`${Player.name}: ${player.id}`);
             }
 
-            const membership = dbMemberships.find(
-              (m) => m.playerId === dbPlayer.id,
-            );
+            const membership = dbMemberships.find((m) => m.playerId === dbPlayer.id);
 
             if (membership) {
               if (membership.membershipType !== player.membershipType) {
@@ -280,9 +254,7 @@ export class TeamsResolver {
         // remove players that are not in the new list
         await Promise.all(
           dbMemberships.map(async (membership) => {
-            const player = newTeamData.players?.find(
-              (p) => p.id === membership.playerId,
-            );
+            const player = newTeamData.players?.find((p) => p.id === membership.playerId);
 
             if (!player) {
               await membership.destroy({ transaction });
@@ -327,8 +299,7 @@ export class TeamsResolver {
           }
 
           const players: EntryCompetitionPlayer[] = [];
-          const playerIds =
-            newTeamData.entry.meta.competition.players?.map((p) => p.id) || [];
+          const playerIds = newTeamData.entry.meta.competition.players?.map((p) => p.id) || [];
 
           const rankings = await RankingLastPlace.findAll({
             where: {
@@ -354,9 +325,7 @@ export class TeamsResolver {
             }
 
             if (!ranking) {
-              throw new NotFoundException(
-                `Ranking for player ${p.id} not found`,
-              );
+              throw new NotFoundException(`Ranking for player ${p.id} not found`);
             }
 
             players.push({
@@ -406,23 +375,13 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${updateTeamData.id}`);
       }
 
-      if (
-        !(await user.hasAnyPermission([
-          `${dbTeam.clubId}_edit:location`,
-          'edit-any:club',
-        ]))
-      ) {
-        throw new UnauthorizedException(
-          `You do not have permission to add a competition`,
-        );
+      if (!(await user.hasAnyPermission([`${dbTeam.clubId}_edit:location`, 'edit-any:club']))) {
+        throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
       const changedTeams = [];
 
-      if (
-        updateTeamData.teamNumber &&
-        updateTeamData.teamNumber !== dbTeam.teamNumber
-      ) {
+      if (updateTeamData.teamNumber && updateTeamData.teamNumber !== dbTeam.teamNumber) {
         updateTeamData.name = `${dbTeam.club?.name} ${
           updateTeamData.teamNumber
         }${getLetterForRegion(dbTeam.type, 'vl')}`;
@@ -436,10 +395,7 @@ export class TeamsResolver {
             where: {
               clubId: dbTeam.clubId,
               teamNumber: {
-                [Op.and]: [
-                  { [Op.gt]: dbTeam.teamNumber },
-                  { [Op.lte]: updateTeamData.teamNumber },
-                ],
+                [Op.and]: [{ [Op.gt]: dbTeam.teamNumber }, { [Op.lte]: updateTeamData.teamNumber }],
               },
               season: dbTeam.season,
               type: dbTeam.type,
@@ -462,10 +418,7 @@ export class TeamsResolver {
             where: {
               clubId: dbTeam.clubId,
               teamNumber: {
-                [Op.and]: [
-                  { [Op.lt]: dbTeam.teamNumber },
-                  { [Op.gte]: updateTeamData.teamNumber },
-                ],
+                [Op.and]: [{ [Op.lt]: dbTeam.teamNumber }, { [Op.gte]: updateTeamData.teamNumber }],
               },
               season: dbTeam.season,
               type: dbTeam.type,
@@ -485,10 +438,7 @@ export class TeamsResolver {
         }
       }
 
-      await dbTeam.update(
-        { ...dbTeam.toJSON(), ...updateTeamData },
-        { transaction },
-      );
+      await dbTeam.update({ ...dbTeam.toJSON(), ...updateTeamData }, { transaction });
 
       // revert to original name
       if (changedTeams.length > 0) {
@@ -521,15 +471,8 @@ export class TeamsResolver {
         throw new NotFoundException(`${Team.name}: ${id}`);
       }
 
-      if (
-        !(await user.hasAnyPermission([
-          `${dbTeam.clubId}_edit:location`,
-          'edit-any:club',
-        ]))
-      ) {
-        throw new UnauthorizedException(
-          `You do not have permission to add a competition`,
-        );
+      if (!(await user.hasAnyPermission([`${dbTeam.clubId}_edit:location`, 'edit-any:club']))) {
+        throw new UnauthorizedException(`You do not have permission to add a competition`);
       }
 
       await dbTeam.destroy({ transaction });
@@ -663,15 +606,11 @@ export class TeamsResolver {
         transaction,
       });
       if (!entry) {
-        throw new NotFoundException(
-          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`,
-        );
+        throw new NotFoundException(`${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`);
       }
 
       const meta = entry.meta;
-      const removedPlayer = meta?.competition?.players.filter(
-        (p) => p.id === playerId,
-      )[0];
+      const removedPlayer = meta?.competition?.players.filter((p) => p.id === playerId)[0];
       if (!removedPlayer) {
         throw new BadRequestException('Player not part of base?');
       }
@@ -680,9 +619,7 @@ export class TeamsResolver {
         throw new BadRequestException('No players in base?');
       }
 
-      meta.competition.players = meta?.competition?.players.filter(
-        (p) => p.id !== playerId,
-      );
+      meta.competition.players = meta?.competition?.players.filter((p) => p.id !== playerId);
 
       entry.meta = meta;
       entry.changed('meta', true);
@@ -731,9 +668,7 @@ export class TeamsResolver {
         transaction,
       });
       if (!entry) {
-        throw new NotFoundException(
-          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`,
-        );
+        throw new NotFoundException(`${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`);
       }
 
       // create meta if not exists
@@ -801,9 +736,7 @@ export class TeamsResolver {
         transaction,
       });
       if (!entry) {
-        throw new NotFoundException(
-          `${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`,
-        );
+        throw new NotFoundException(`${EventEntry.name}: Team: ${teamId}, SubEvent: ${subEventId}`);
       }
 
       const currentPlayer = entry.meta?.competition?.players.find(
@@ -824,8 +757,8 @@ export class TeamsResolver {
       }
 
       // update the player in the meta
-      entry.meta.competition.players = entry.meta.competition.players.map(
-        (p) => (p.id === playerCompetition.id ? updatedPlayer : p),
+      entry.meta.competition.players = entry.meta.competition.players.map((p) =>
+        p.id === playerCompetition.id ? updatedPlayer : p,
       );
 
       // create a new meta object to trigger the update

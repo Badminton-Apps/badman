@@ -7,20 +7,19 @@
   badman-standing {
     $color-config: mat.get-color-config($theme);
     $primary: map.get($color-config, 'primary');
-    
+
     $danger-palette: map.get($theme, danger);
     $success-palette: map.get($theme, success);
-
 
     a {
       color: mat.get-color-from-palette($primary, default);
     }
 
-    mat-icon{
-      &.riser{
+    mat-icon {
+      &.riser {
         color: mat.get-color-from-palette($success-palette, default);
       }
-      &.faller{
+      &.faller {
         color: mat.get-color-from-palette($danger-palette, default);
       }
     }
@@ -30,18 +29,5 @@
 @mixin typography($theme) {
   badman-standing {
     $typography-config: mat.get-typography-config($theme);
-  }
-}
-
-@mixin theme($theme) {
-  // Only apply theme on the correct element
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
-    @include color($theme);
-  }
-
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
-    @include typography($theme);
   }
 }

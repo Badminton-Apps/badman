@@ -33,8 +33,6 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     TranslateModule,
     RouterModule,
     MomentModule,
-
-    // Material
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
@@ -42,8 +40,6 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     MatTooltipModule,
     MatDialogModule,
     MatDividerModule,
-
-    // My Componments
     PageHeaderComponent,
     RankingTableComponent,
     HasClaimComponent,
@@ -58,18 +54,16 @@ export class DetailPageComponent {
   systemService = inject(RankingSystemService);
 
   // route
-  private routeData= toSignal(this.route.data);
+  private routeData = toSignal(this.route.data);
 
-  rankingSystem = computed(
-    () => this.routeData()?.['rankingSystem'] as RankingSystem,
-  );
+  rankingSystem = computed(() => this.routeData()?.['rankingSystem'] as RankingSystem);
   systemName = computed(() => this.rankingSystem()?.name);
 
   constructor() {
     effect(() => {
       this.seoService.update({
         title: `${this.systemName()}`,
-        description: `Player ${this.systemName()}`,
+        description: `Ranking system ${this.systemName()}`,
         type: 'website',
         keywords: ['ranking', 'badminton'],
       });

@@ -3,13 +3,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   Injector,
-  Input,
   OnInit,
   PLATFORM_ID,
   Signal,
   TransferState,
   computed,
   inject,
+  input,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatTableModule } from '@angular/material/table';
@@ -35,21 +35,15 @@ export class RankingTableComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly injector = inject(Injector);
 
-  @Input()
-  id: string | null = null;
+  id = input<string | null>(null);
 
-  displayedColumns = [
-    'level',
-    'pointsToGoUp',
-    'pointsToGoDown',
-    'pointsWhenWinningAgainst',
-  ];
+  displayedColumns = ['level', 'pointsToGoUp', 'pointsToGoDown', 'pointsWhenWinningAgainst'];
 
   system = this.rankingSystemService.system as Signal<RankingSystem>;
 
   ngOnInit() {
-    if (this.id !== null) {
-      this.system = toSignal(this._loadRanking(this.id), {
+    if (this.id() !== null) {
+      this.system = toSignal(this._loadRanking(this.id()), {
         injector: this.injector,
       }) as Signal<RankingSystem>;
     }
@@ -61,22 +55,15 @@ export class RankingTableComponent implements OnInit {
     }
 
     let level = this.system().amountOfLevels ?? 0;
-    return this.system().pointsWhenWinningAgainst?.map(
-      (winning: number, index: number) => {
-        return {
-          level: level--,
-          pointsToGoUp:
-            level !== 0
-              ? Math.round(this.system().pointsToGoUp?.[index] ?? 0)
-              : null,
-          pointsToGoDown:
-            index === 0
-              ? null
-              : Math.round(this.system().pointsToGoDown?.[index - 1] ?? 0),
-          pointsWhenWinningAgainst: Math.round(winning),
-        } as RankingScoreTable;
-      },
-    );
+    return this.system().pointsWhenWinningAgainst?.map((winning: number, index: number) => {
+      return {
+        level: level--,
+        pointsToGoUp: level !== 0 ? Math.round(this.system().pointsToGoUp?.[index] ?? 0) : null,
+        pointsToGoDown:
+          index === 0 ? null : Math.round(this.system().pointsToGoDown?.[index - 1] ?? 0),
+        pointsWhenWinningAgainst: Math.round(winning),
+      } as RankingScoreTable;
+    });
   }) as () => RankingScoreTable[];
 
   _loadRanking(systemId: string | null) {
@@ -104,11 +91,7 @@ export class RankingTableComponent implements OnInit {
           },
         })
         .pipe(
-          transferState(
-            'rankingKey-' + systemId,
-            this.transferState,
-            this.platformId,
-          ),
+          transferState('rankingKey-' + systemId, this.transferState, this.platformId),
           map((result) => {
             if (!result?.data.rankingSystem) {
               throw new Error('No player');

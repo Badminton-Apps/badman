@@ -9,18 +9,11 @@ const startHourOptions = [
   'Heure de début',
 ] as const;
 
-const endHourOptions = [
-  'Einduur ontmoeting',
-  'Einduur',
-  'Heure de fin',
-] as const;
+const endHourOptions = ['Einduur ontmoeting', 'Einduur', 'Heure de fin'] as const;
 
 const shuttleOptions = ['Gebruikte shuttle', 'Volant'] as const;
 
-const gameLeaderOptions = [
-  'Wedstrijdleider',
-  'Responsable Interclubs',
-] as const;
+const gameLeaderOptions = ['Wedstrijdleider', 'Responsable Interclubs'] as const;
 
 export async function detailInfo(
   pupeteer: {

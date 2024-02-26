@@ -24,9 +24,7 @@ const conventionalChangelog = require('conventional-changelog');
 
     // get next version
     const versionExec = await runExec(
-      `standard-version ${
-        !prod ? '--prerelease beta' : ''
-      } --dry-run | sed -e '1!d' -e 's/.*to //g'`,
+      `standard-version ${!prod ? '--prerelease beta' : ''} --dry-run | sed -e '1!d' -e 's/.*to //g'`,
     );
     const newVersion = versionExec.stdout.trim();
     core.info(`newVersion: ${newVersion}`);
@@ -48,13 +46,10 @@ const conventionalChangelog = require('conventional-changelog');
       filename: '../apps/badman/src/assets/config.json',
       type: 'json',
     });
-
-    if (affectedProjects.includes('api')) {
-      bumpFiles.push({
-        filename: '../apps/api/src/version.json',
-        type: 'json',
-      });
-    }
+    bumpFiles.push({
+      filename: '../apps/api/src/version.json',
+      type: 'json',
+    });
 
     if (affectedProjects.includes('worker-sync')) {
       bumpFiles.push({
@@ -72,16 +67,14 @@ const conventionalChangelog = require('conventional-changelog');
 
     if (affectedProjects.includes('worker-belgium-flanders-points')) {
       bumpFiles.push({
-        filename:
-          '../apps/worker/badminton/belgium/flanders/points/src/version.json',
+        filename: '../apps/worker/badminton/belgium/flanders/points/src/version.json',
         type: 'json',
       });
     }
 
     if (affectedProjects.includes('worker-belgium-flanders-places')) {
       bumpFiles.push({
-        filename:
-          '../apps/worker/badminton/belgium/flanders/places/src/version.json',
+        filename: '../apps/worker/badminton/belgium/flanders/places/src/version.json',
         type: 'json',
       });
     }

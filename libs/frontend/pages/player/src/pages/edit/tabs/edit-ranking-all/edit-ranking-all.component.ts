@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -30,16 +30,12 @@ import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-plac
 })
 export class EditRankingAllComponent implements OnInit {
   allPlaces$?: Observable<[RankingPlace | undefined, RankingPlace[]][]>;
-  query$?: QueryRef<
-    { player: Partial<Player> },
-    { playerId: string; system: string }
-  >;
+  query$?: QueryRef<{ player: Partial<Player> }, { playerId: string; system: string }>;
 
   currentOpen?: string;
   system!: RankingSystem;
 
-  @Input()
-  player!: Player;
+  player = input.required<Player>();
 
   constructor(
     private systemService: RankingSystemService,
@@ -75,18 +71,18 @@ export class EditRankingAllComponent implements OnInit {
         variables: {
           where: {
             id: this.systemService.systemId(),
-          }
+          },
         },
       })
       .pipe(map((result) => new RankingSystem(result.data.rankingSystems?.[0])))
       .subscribe((system) => {
         this.system = system;
 
-        if (!this.player) {
+        if (!this.player()) {
           throw new Error('Player is not set');
         }
 
-        if (!this.player.id) {
+        if (!this.player().id) {
           throw new Error('Player id is not set');
         }
 
@@ -121,7 +117,7 @@ export class EditRankingAllComponent implements OnInit {
             }
           `,
           variables: {
-            playerId: this.player.id,
+            playerId: this.player().id,
             system: this.system.id,
           },
         });
@@ -132,9 +128,7 @@ export class EditRankingAllComponent implements OnInit {
           map((player) => {
             const allPlaces: Map<Date, RankingPlace[]> = new Map();
             allPlaces[Symbol.iterator] = function* () {
-              yield* [...allPlaces.entries()].sort(
-                (a, b) => b[0]?.getTime() - a[0]?.getTime(),
-              );
+              yield* [...allPlaces.entries()].sort((a, b) => b[0]?.getTime() - a[0]?.getTime());
             };
 
             const sorted = player.rankingPlaces?.sort((a, b) => {
@@ -164,8 +158,7 @@ export class EditRankingAllComponent implements OnInit {
               }
             }
 
-            const returnBlock: [RankingPlace | undefined, RankingPlace[]][] =
-              [];
+            const returnBlock: [RankingPlace | undefined, RankingPlace[]][] = [];
 
             for (const [, places] of allPlaces) {
               if (!places) {
@@ -188,72 +181,63 @@ export class EditRankingAllComponent implements OnInit {
         data: {
           place: {
             ...place,
-            playerId: this.player.id,
+            playerId: this.player().id,
           },
           system: this.system,
         },
       })
       .afterClosed()
-      .subscribe(
-        (result: {
-          action?: 'update' | 'remove' | 'new';
-          place: RankingPlace;
-        }) => {
-          if (result?.action) {
-            let mutation;
+      .subscribe((result: { action?: 'update' | 'remove' | 'new'; place: RankingPlace }) => {
+        if (result?.action) {
+          let mutation;
 
-            switch (result.action) {
-              case 'update':
-                mutation = this.appollo.mutate({
-                  mutation: gql`
-                    mutation UpdateRankingPlace(
-                      $rankingPlace: RankingPlaceUpdateInput!
-                    ) {
-                      updateRankingPlace(data: $rankingPlace) {
-                        id
-                      }
+          switch (result.action) {
+            case 'update':
+              mutation = this.appollo.mutate({
+                mutation: gql`
+                  mutation UpdateRankingPlace($rankingPlace: RankingPlaceUpdateInput!) {
+                    updateRankingPlace(data: $rankingPlace) {
+                      id
                     }
-                  `,
-                  variables: {
-                    rankingPlace: result.place,
-                  },
-                });
-                break;
-              case 'new':
-                mutation = this.appollo.mutate({
-                  mutation: gql`
-                    mutation UpdateRankingPlace(
-                      $rankingPlace: RankingPlaceNewInput!
-                    ) {
-                      newRankingPlace(data: $rankingPlace) {
-                        id
-                      }
+                  }
+                `,
+                variables: {
+                  rankingPlace: result.place,
+                },
+              });
+              break;
+            case 'new':
+              mutation = this.appollo.mutate({
+                mutation: gql`
+                  mutation UpdateRankingPlace($rankingPlace: RankingPlaceNewInput!) {
+                    newRankingPlace(data: $rankingPlace) {
+                      id
                     }
-                  `,
-                  variables: {
-                    rankingPlace: result.place,
-                  },
-                });
-                break;
+                  }
+                `,
+                variables: {
+                  rankingPlace: result.place,
+                },
+              });
+              break;
 
-              case 'remove':
-                mutation = this.appollo.mutate({
-                  mutation: gql`
-                    mutation RemoveRankingPlace($id: ID!) {
-                      removeRankingPlace(id: $id)
-                    }
-                  `,
-                  variables: {
-                    id: result.place.id,
-                  },
-                });
+            case 'remove':
+              mutation = this.appollo.mutate({
+                mutation: gql`
+                  mutation RemoveRankingPlace($id: ID!) {
+                    removeRankingPlace(id: $id)
+                  }
+                `,
+                variables: {
+                  id: result.place.id,
+                },
+              });
 
-                break;
-            }
-
-            lastValueFrom(mutation).then(() => this.query$?.refetch());
+              break;
           }
-        },
-      );
+
+          lastValueFrom(mutation).then(() => this.query$?.refetch());
+        }
+      });
   }
 }

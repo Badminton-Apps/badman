@@ -13,7 +13,7 @@ export async function detailEntered(
   },
   args?: {
     logger?: Logger;
-  }
+  },
 ) {
   const { logger } = args || {};
   logger?.verbose('detailEntered');
@@ -37,12 +37,12 @@ export async function detailEntered(
       // logger.verbose(`Processing row`);
       const th = await row.$('th');
       if (th) {
-        const headerTxt = await th.evaluate((el) => el.textContent) || '';
+        const headerTxt = (await th.evaluate((el) => el.textContent)) || '';
         if (headerTxt.indexOf('Detailuitslag ingevoerd') !== -1) {
           hasEntered = true;
 
           const td = await row.$('td');
-          const tdTxt = await td?.evaluate((el) => el.textContent) || '';
+          const tdTxt = (await td?.evaluate((el) => el.textContent)) || '';
 
           const match = timeFinder.exec(tdTxt);
 

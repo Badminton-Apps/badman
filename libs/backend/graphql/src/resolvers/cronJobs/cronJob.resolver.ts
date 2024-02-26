@@ -1,8 +1,4 @@
-import {
-  CronJob,
-  CronJobMeta,
-  CronJobMetaType,
-} from '@badman/backend-database';
+import { CronJob, CronJobMeta, CronJobMetaType } from '@badman/backend-database';
 import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
 import * as cron from 'cron';

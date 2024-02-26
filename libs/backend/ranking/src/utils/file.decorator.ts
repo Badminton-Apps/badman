@@ -2,15 +2,13 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { MultipartFields } from '@fastify/multipart';
 
-export const File = createParamDecorator(
-  (_data: unknown, ctx: ExecutionContext) => {
-    const req = ctx.switchToHttp().getRequest() as FastifyRequest & {
-      incomingFile: Express.Multer.File;
-    };
-    const file = req?.['incomingFile'];
-    return file 
-  }
-);
+export const File = createParamDecorator((_data: unknown, ctx: ExecutionContext) => {
+  const req = ctx.switchToHttp().getRequest() as FastifyRequest & {
+    incomingFile: Express.Multer.File;
+  };
+  const file = req?.['incomingFile'];
+  return file;
+});
 
 export interface MultipartFile {
   toBuffer: () => Promise<Buffer>;

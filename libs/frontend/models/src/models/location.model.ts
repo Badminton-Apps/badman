@@ -35,16 +35,11 @@ export class Location {
     this.fax = args?.fax;
     this.street = args?.street;
     this.streetNumber = args?.streetNumber;
-    this.competitionEvents = args?.competitionEvents?.map(
-      (r) => new EventCompetition(r)
-    );
-    this.eventTournements = args?.eventTournements?.map(
-      (r) => new EventTournament(r)
-    );
+    this.competitionEvents = args?.competitionEvents?.map((r) => new EventCompetition(r));
+    this.eventTournements = args?.eventTournements?.map((r) => new EventTournament(r));
     this.coordinates = args?.coordinates;
 
-    this.availibilities =
-      args?.availibilities?.map((r) => new Availability(r)) ?? [];
+    this.availibilities = args?.availibilities?.map((r) => new Availability(r)) ?? [];
     this.courts = args?.courts;
   }
 }

@@ -1,10 +1,6 @@
 import { Player } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import {
-  AssemblyOutput,
-  AssemblyValidationData,
-  AssemblyValidationError,
-} from '../../../models';
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export type PlayerOrderRuleSingleParams = {
@@ -23,30 +19,18 @@ export type PlayerOrderRuleDoubleParams = {
   game2: string;
 };
 
-export type PlayerOrderRuleParams =
-  | PlayerOrderRuleSingleParams
-  | PlayerOrderRuleDoubleParams;
+export type PlayerOrderRuleParams = PlayerOrderRuleSingleParams | PlayerOrderRuleDoubleParams;
 
 /**
  * Checks the order of the players
- * 
+ *
  * Singles: players should be in order of ranking
  * Doubles: the team with the lowest ranking should be first, if the ranking is the same, the best player should be first
  */
 export class PlayerOrderRule extends Rule {
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
-    const {
-      single1,
-      single2,
-      single3,
-      single4,
-      double1,
-      double2,
-      double3,
-      double4,
-      type,
-      system,
-    } = assembly;
+    const { single1, single2, single3, single4, double1, double2, double3, double4, type, system } =
+      assembly;
 
     let errors = [] as AssemblyValidationError<PlayerOrderRuleParams>[];
 
@@ -54,22 +38,10 @@ export class PlayerOrderRule extends Rule {
       throw new Error('System is not defined');
     }
 
-    const s1 = this._checkSingle(
-      'single1',
-      'single2',
-      system.amountOfLevels,
-      single1,
-      single2,
-    );
+    const s1 = this._checkSingle('single1', 'single2', system.amountOfLevels, single1, single2);
     if (s1) errors.push(s1);
 
-    const s3 = this._checkSingle(
-      'single3',
-      'single4',
-      system.amountOfLevels,
-      single3,
-      single4,
-    );
+    const s3 = this._checkSingle('single3', 'single4', system.amountOfLevels, single3, single4);
     if (s3) errors.push(s3);
 
     const d3 = this._checkDouble(
@@ -168,12 +140,7 @@ export class PlayerOrderRule extends Rule {
     double2?: [Player | undefined, Player | undefined] | undefined,
   ): AssemblyValidationError<PlayerOrderRuleDoubleParams> | undefined {
     if (!double1 || !double2) return;
-    if (
-      !double1[0]?.id ||
-      !double1[1]?.id ||
-      !double2[0]?.id ||
-      !double2[1]?.id
-    ) {
+    if (!double1[0]?.id || !double1[1]?.id || !double2[0]?.id || !double2[1]?.id) {
       return;
     }
 

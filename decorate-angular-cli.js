@@ -30,7 +30,7 @@ try {
   output = require('@nx/workspace').output;
 } catch (e) {
   console.warn(
-    'Angular CLI could not be decorated to enable computation caching. Please ensure @nx/workspace is installed.'
+    'Angular CLI could not be decorated to enable computation caching. Please ensure @nx/workspace is installed.',
   );
   process.exit(0);
 }
@@ -58,9 +58,7 @@ function symlinkNgCLItoNxCLI() {
     }
   } catch (e) {
     output.error({
-      title:
-        'Unable to create a symlink from the Angular CLI to the Nx CLI:' +
-        e.message,
+      title: 'Unable to create a symlink from the Angular CLI to the Nx CLI:' + e.message,
     });
     throw e;
   }

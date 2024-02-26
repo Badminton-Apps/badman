@@ -16,9 +16,7 @@ export class RenderService {
   constructor(private readonly configService: ConfigService<ConfigType>) {
     this.headers = {
       accept: 'application/json',
-      authorization: `Bearer ${this.configService.get<string>(
-        'RENDER_API_KEY',
-      )}`,
+      authorization: `Bearer ${this.configService.get<string>('RENDER_API_KEY')}`,
     };
     this.renderApi = this.configService.get<string>('RENDER_API_URL')!;
   }
@@ -26,9 +24,7 @@ export class RenderService {
   async startService(service: Service) {
     // Don't start services in development
     if (this.configService.get<string>('NODE_ENV') === 'development') {
-      this._logger.verbose(
-        `Skipping startService for ${service.name} in development`,
-      );
+      this._logger.verbose(`Skipping startService for ${service.name} in development`);
       return;
     }
 
@@ -46,9 +42,7 @@ export class RenderService {
           method: 'POST',
           headers: this.headers,
         });
-        this._logger.log(
-          `Service ${service.name} (${service.renderId}) resumed`,
-        );
+        this._logger.log(`Service ${service.name} (${service.renderId}) resumed`);
       } catch (err: unknown) {
         this._logger.error(`Service ${service.name} failed to start`, err);
       }
@@ -64,9 +58,7 @@ export class RenderService {
   async suspendService(service: Service) {
     // Don't suspend services in development
     if (this.configService.get<string>('NODE_ENV') === 'development') {
-      this._logger.verbose(
-        `Skipping suspendService for ${service.name} in development`,
-      );
+      this._logger.verbose(`Skipping suspendService for ${service.name} in development`);
       return;
     }
     if (!service.renderId) {
@@ -83,9 +75,7 @@ export class RenderService {
           method: 'POST',
           headers: this.headers,
         });
-        this._logger.log(
-          `Service ${service.name} (${service.renderId}) suspended`,
-        );
+        this._logger.log(`Service ${service.name} (${service.renderId}) suspended`);
       } catch (err: unknown) {
         this._logger.error(`Service ${service.name} failed to suspend`, err);
       }
@@ -99,20 +89,13 @@ export class RenderService {
   }
 
   public async getService(service: Service, setStatus = true) {
-    const renderService = await fetch(
-      `${this.renderApi}/services/${service.renderId}`,
-      {
-        method: 'GET',
-        headers: this.headers,
-      },
-    );
+    const renderService = await fetch(`${this.renderApi}/services/${service.renderId}`, {
+      method: 'GET',
+      headers: this.headers,
+    });
 
     if (!renderService.ok) {
-      throw new Error(
-        `Error getting service ${
-          service.renderId
-        }: ${await renderService.text()}`,
-      );
+      throw new Error(`Error getting service ${service.renderId}: ${await renderService.text()}`);
     }
 
     const serviceData = (await renderService.json()) as {
@@ -121,8 +104,7 @@ export class RenderService {
 
     if (setStatus) {
       // update service status
-      service.status =
-        serviceData.suspended == 'suspended' ? 'stopped' : 'started';
+      service.status = serviceData.suspended == 'suspended' ? 'stopped' : 'started';
       await service.save();
     }
 

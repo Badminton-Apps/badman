@@ -12,7 +12,7 @@ export class TwizzitService {
   constructor(
     private httpClient: HttpClient,
     @Inject(TWIZZIT_CONFIG)
-    private config: ITwizzitConfig
+    private config: ITwizzitConfig,
   ) {}
 
   downloadTwizzit(club: Club, season: number) {
@@ -26,7 +26,7 @@ export class TwizzitService {
       })
       .pipe(
         take(1),
-        map((result) => saveAs(result, `twizzit-${club.slug}-${season}.xlsx`))
+        map((result) => saveAs(result, `twizzit-${club.slug}-${season}.xlsx`)),
       );
   }
 }

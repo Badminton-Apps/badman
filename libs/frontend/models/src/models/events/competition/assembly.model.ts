@@ -38,11 +38,9 @@ export class Assembly {
     this.teamId = args?.teamId;
     this.team = (args?.team ?? null) != null ? new Team(args.team) : undefined;
     this.captainId = args?.captainId;
-    this.captain =
-      (args?.captain ?? null) != null ? new Player(args.captain) : undefined;
+    this.captain = (args?.captain ?? null) != null ? new Player(args.captain) : undefined;
     this.playerId = args?.playerId;
-    this.player =
-      (args?.player ?? null) != null ? new Player(args.player) : undefined;
+    this.player = (args?.player ?? null) != null ? new Player(args.player) : undefined;
   }
 }
 

@@ -6,10 +6,7 @@ type CreationAttributes<T> = {
 };
 
 // 1. Created a strict typed model class
-export class TypedModel<T> extends Model<
-  ModelAttributes<T>,
-  CreationAttributes<T>
-> {
+export class TypedModel<T> extends Model<ModelAttributes<T>, CreationAttributes<T>> {
   // provides a less strict type Model
   static get Model(): ModelCtor {
     return this as any;

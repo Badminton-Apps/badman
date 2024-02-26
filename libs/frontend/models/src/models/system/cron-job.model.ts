@@ -6,7 +6,7 @@ export class CronJob {
   name?: string;
   cronTime?: string;
   meta?: QueueCronJob;
-  type?: 'sync' | 'ranking' ;
+  type?: 'sync' | 'ranking';
   lastRun?: Moment;
   nextRun?: Moment;
   running?: boolean;

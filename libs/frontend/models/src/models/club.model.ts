@@ -6,7 +6,7 @@ import { ClubMembershipType, UseForTeamName } from '@badman/utils';
 import { Comment } from './comment.model';
 
 export class Club {
-  id?: string;
+  id!: string;
   slug?: string;
   name?: string;
   fullName?: string;
@@ -25,7 +25,12 @@ export class Club {
   clubMembership?: ClubMembership;
 
   constructor({ ...args }: Partial<Club>) {
+    if (!args?.id) {
+      console.error(`${this.constructor.name} needs an id`);
+      return;
+    }
     this.id = args.id;
+
     this.slug = args.slug;
     this.name = args.name;
     this.fullName = args.fullName;
@@ -34,9 +39,7 @@ export class Club {
     this.clubId = args.clubId;
     this.country = args.country;
     this.state = args.state;
-    this.teams = args.teams?.map(
-      (t) => new Team({ ...t, club: this, clubId: this.id })
-    );
+    this.teams = args.teams?.map((t) => new Team({ ...t, club: this, clubId: this.id }));
     this.players = args.players?.map((p) => new Player(p));
     this.roles = args.roles?.map((p) => new Role(p));
     this.locations = args.locations?.map(
@@ -44,7 +47,7 @@ export class Club {
         new Location({
           ...p,
           club: this,
-        })
+        }),
     );
     this.comments = args.comments?.map((p) => new Comment(p));
     this.clubMembership = args?.clubMembership

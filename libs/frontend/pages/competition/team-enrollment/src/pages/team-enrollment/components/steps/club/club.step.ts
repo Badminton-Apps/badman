@@ -2,8 +2,11 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
+  Injector,
   OnInit,
+  effect,
+  inject,
+  input,
 } from '@angular/core';
 import {
   FormControl,
@@ -18,28 +21,15 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { SelectClubComponent } from '@badman/frontend-components';
+import { IsUUID } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subject, filter, pairwise, startWith, takeUntil } from 'rxjs';
-import {
-  CLUB,
-  COMMENTS,
-  EMAIL,
-  EVENTS,
-  LOCATIONS,
-  TEAMS,
-} from '../../../../../forms';
+import { Subject, distinctUntilChanged, filter, pairwise, startWith, takeUntil } from 'rxjs';
+import { CLUB, COMMENTS, EMAIL, EVENTS, LOCATIONS, TEAMS } from '../../../../../forms';
 
 export class DirectErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
-    control: FormControl | null,
-    form: FormGroupDirective | NgForm | null
-  ): boolean {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
-    return !!(
-      control &&
-      control.invalid &&
-      (control.dirty || control.touched || isSubmitted)
-    );
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
 
@@ -59,97 +49,97 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClubStepComponent implements OnInit {
+  private readonly authenticateService = inject(AuthenticateService);
+  private readonly injector = inject(Injector);
+
   destroy$ = new Subject<void>();
   matcher = new DirectErrorStateMatcher();
 
-  constructor(private authenticateService: AuthenticateService) {}
+  group = input<FormGroup>();
+  controlClub = input<FormControl<string>>();
+  protected internalControlClub!: FormControl<string>;
 
-  @Input()
-  group!: FormGroup;
+  controlEmail = input<FormControl<string>>();
+  protected internalControlEmail!: FormControl<string>;
 
-  @Input()
-  // this also contains the searched text
-  value?: FormControl<string | null | undefined> = new FormControl();
+  controlName = input(CLUB);
+  controlEmailName = input(EMAIL);
 
-  @Input()
-  // this contains the id of the selected club
-  valueId?: FormControl<string | null>;
-
-  @Input()
-  email!: FormControl<string | null>;
-
-  @Input()
-  controlName = CLUB;
-
-  @Input()
-  controlEmailName = EMAIL;
+  user = this.authenticateService.userSignal;
 
   ngOnInit() {
-    if (this.group) {
-      this.valueId = this.group?.get(this.controlName) as FormControl<string>;
-      this.email = this.group?.get(
-        this.controlEmailName
-      ) as FormControl<string>;
+    if (this.controlClub() != undefined) {
+      this.internalControlClub = this.controlClub() as FormControl<string>;
     }
 
-    if (!this.valueId) {
-      this.valueId = new FormControl();
+    if (this.controlEmail() != undefined) {
+      this.internalControlEmail = this.controlEmail() as FormControl<string>;
     }
 
-    const localStorageEmail = localStorage.getItem(this.controlEmailName);
-    if (!this.email) {
-      this.email = new FormControl(localStorageEmail, [Validators.email]);
+    if (!this.internalControlEmail && this.group()) {
+      this.internalControlEmail = this.group()?.get(this.controlEmailName()) as FormControl<string>;
+    }
 
-      this.email?.valueChanges
+    if (!this.internalControlClub && this.group()) {
+      this.internalControlClub = this.group()?.get(this.controlName()) as FormControl<string>;
+    }
+
+    if (!this.internalControlClub) {
+      this.internalControlClub = new FormControl();
+    }
+
+    const localStorageEmail = localStorage.getItem(this.controlEmailName());
+    if (!this.internalControlEmail) {
+      this.internalControlEmail = new FormControl(localStorageEmail, [
+        Validators.email,
+      ]) as FormControl<string>;
+
+      this.internalControlEmail?.valueChanges
         .pipe(
           takeUntil(this.destroy$),
-          filter((value) => value != null && this.email?.valid)
+          filter((value) => value != null && this.internalControlEmail?.valid),
         )
         .subscribe((value) => {
           if (value != null) {
-            localStorage.setItem(this.controlEmailName, value);
+            localStorage.setItem(this.controlEmailName(), value);
           }
         });
     }
 
-    if (this.value?.value) {
-      this.valueId?.setValue(this.value?.value);
+    if (this.group()) {
+      this.group()?.addControl(this.controlName(), this.internalControlClub);
+      this.group()?.addControl(this.controlEmailName(), this.internalControlEmail);
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.valueId);
-      this.group.addControl(this.controlEmailName, this.email);
-    }
+    effect(
+      () => {
+        const userEmail = this.user()?.email;
+        if (!!this.controlEmail()?.value && userEmail && !localStorageEmail) {
+          this.controlEmail()?.setValue(userEmail);
+        }
+      },
+      {
+        injector: this.injector,
+      },
+    );
 
-    this.authenticateService.user$.subscribe(() => {
-      if (this.authenticateService.user?.email && !localStorageEmail) {
-        this.email?.setValue(this.authenticateService.user?.email);
-      }
-    });
-
-    this.value?.valueChanges
+    this.internalControlClub?.valueChanges
       .pipe(
         takeUntil(this.destroy$),
-        filter(
-          (value) =>
-            value?.length === 36 &&
-            value[8] === '-' &&
-            value[13] === '-' &&
-            value[18] === '-' &&
-            value[23] === '-'
-        ),
-        startWith(this.group.value?.[this.controlName]),
-        pairwise()
+        filter(IsUUID),
+        distinctUntilChanged(),
+        startWith(this.group()?.value?.[this.controlName()]),
+        pairwise(),
       )
       .subscribe(([prev, next]) => {
         // clear all other values of groupw
-        if (this.group && prev !== next && next) {
-          this.group.get(TEAMS)?.reset();
-          this.group.get(EVENTS)?.reset();
-          this.group.get(LOCATIONS)?.reset();
-          this.group.get(COMMENTS)?.reset();
+        if (this.group() && prev !== next && next) {
+          this.group()?.get(TEAMS)?.reset();
+          this.group()?.get(EVENTS)?.reset();
+          this.group()?.get(LOCATIONS)?.reset();
+          this.group()?.get(COMMENTS)?.reset();
 
-          this.valueId?.setValue(next);
+          this.internalControlClub.setValue(next);
         }
       });
   }

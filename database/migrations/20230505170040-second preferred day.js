@@ -17,7 +17,7 @@ module.exports = {
           type: sequelize.DataTypes.TIME,
           allowNull: true,
         },
-        { transaction: t }
+        { transaction: t },
       );
       await queryInterface.addColumn(
         {
@@ -33,11 +33,11 @@ module.exports = {
             'thursday',
             'friday',
             'saturday',
-            'sunday'
+            'sunday',
           ),
           allowNull: true,
         },
-        { transaction: t }
+        { transaction: t },
       );
       try {
       } catch (err) {
@@ -56,7 +56,7 @@ module.exports = {
             schema: 'public',
           },
           'preferredTime2',
-          { transaction: t }
+          { transaction: t },
         );
         await queryInterface.removeColumn(
           {
@@ -64,13 +64,12 @@ module.exports = {
             schema: 'public',
           },
           'preferredDay2',
-          { transaction: t }
+          { transaction: t },
         );
 
-        await queryInterface.sequelize.query(
-          `DROP TYPE "enum_public_Teams_preferredDay2";`,
-          { transaction: t }
-        );
+        await queryInterface.sequelize.query(`DROP TYPE "enum_public_Teams_preferredDay2";`, {
+          transaction: t,
+        });
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();

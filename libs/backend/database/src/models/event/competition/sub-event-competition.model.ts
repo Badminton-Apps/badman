@@ -59,7 +59,13 @@ export class SubEventCompetition extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Unique('SubEventCompetitions_unique_constraint')
   @Field(() => String)
@@ -98,10 +104,7 @@ export class SubEventCompetition extends Model {
   eventEntries?: Relation<EventEntry[]>;
 
   @Field(() => [RankingGroup], { nullable: true })
-  @BelongsToMany(
-    () => RankingGroup,
-    () => RankingGroupSubEventCompetitionMembership
-  )
+  @BelongsToMany(() => RankingGroup, () => RankingGroupSubEventCompetitionMembership)
   rankingGroups?: Relation<RankingGroup[]>;
 
   @Field(() => [DrawCompetition], { nullable: true })
@@ -134,14 +137,8 @@ export class SubEventCompetition extends Model {
   setRankingGroups!: BelongsToManySetAssociationsMixin<RankingGroup, string>;
   addRankingGroups!: BelongsToManyAddAssociationsMixin<RankingGroup, string>;
   addRankingGroup!: BelongsToManyAddAssociationMixin<RankingGroup, string>;
-  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<
-    RankingGroup,
-    string
-  >;
-  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<
-    RankingGroup,
-    string
-  >;
+  removeRankingGroup!: BelongsToManyRemoveAssociationMixin<RankingGroup, string>;
+  removeRankingGroups!: BelongsToManyRemoveAssociationsMixin<RankingGroup, string>;
   hasRankingGroup!: BelongsToManyHasAssociationMixin<RankingGroup, string>;
   hasRankingGroups!: BelongsToManyHasAssociationsMixin<RankingGroup, string>;
   countRankingGroup!: BelongsToManyCountAssociationsMixin;
@@ -162,14 +159,8 @@ export class SubEventCompetition extends Model {
   setDrawCompetitions!: HasManySetAssociationsMixin<DrawCompetition, string>;
   addDrawCompetitions!: HasManyAddAssociationsMixin<DrawCompetition, string>;
   addDrawCompetition!: HasManyAddAssociationMixin<DrawCompetition, string>;
-  removeDrawCompetition!: HasManyRemoveAssociationMixin<
-    DrawCompetition,
-    string
-  >;
-  removeDrawCompetitions!: HasManyRemoveAssociationsMixin<
-    DrawCompetition,
-    string
-  >;
+  removeDrawCompetition!: HasManyRemoveAssociationMixin<DrawCompetition, string>;
+  removeDrawCompetitions!: HasManyRemoveAssociationsMixin<DrawCompetition, string>;
   hasDrawCompetition!: HasManyHasAssociationMixin<DrawCompetition, string>;
   hasDrawCompetitions!: HasManyHasAssociationsMixin<DrawCompetition, string>;
   countDrawCompetitions!: HasManyCountAssociationsMixin;

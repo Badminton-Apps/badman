@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -20,6 +20,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { getCurrentSeason } from '@badman/utils';
 
+import { input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Subject, takeUntil } from 'rxjs';
@@ -40,7 +41,7 @@ export type LocationAvailibilityForm = FormGroup<{
   id: FormControl<string | undefined>;
   season: FormControl<number>;
   days: FormArray<LocationavDayType>;
-exceptions: FormArray<LocationExceptionType>;
+  exceptions: FormArray<LocationExceptionType>;
 }>;
 
 export type LocationForm = FormGroup<{
@@ -55,7 +56,6 @@ export type LocationForm = FormGroup<{
   phone: FormControl<string | undefined>;
   fax: FormControl<string | undefined>;
   availibilities: FormArray<LocationAvailibilityForm>;
-  
 }>;
 
 @Component({
@@ -63,13 +63,10 @@ export type LocationForm = FormGroup<{
   standalone: true,
   imports: [
     CommonModule,
-
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
     MomentModule,
-
-    // Material
     MatButtonModule,
     MatIconModule,
     MatListModule,
@@ -87,14 +84,12 @@ export type LocationForm = FormGroup<{
 export class LocationComponent implements OnInit {
   destroy$ = new Subject<void>();
 
-  @Input()
-  group!: LocationForm;
+  group = input.required<LocationForm>();
 
-  @Input()
-  control?: LocationAvailibilityForm;
+  control = input<LocationAvailibilityForm>();
+  protected internalControl!: LocationAvailibilityForm;
 
-  @Input()
-  controlName = 'availibilities';
+  controlName = input('availibilities');
 
   @Output()
   whenLocationUpdate = new EventEmitter<void>();
@@ -131,25 +126,29 @@ export class LocationComponent implements OnInit {
       .subscribe((result) => {
         for (const query of Object.keys(result.breakpoints)) {
           if (result.breakpoints[query]) {
-            this.isSmallScreen =
-              query === Breakpoints.Small || query === Breakpoints.XSmall;
+            this.isSmallScreen = query === Breakpoints.Small || query === Breakpoints.XSmall;
             break;
           }
         }
       });
 
     let created = false;
-    if (this.group) {
-      const localControl = this.group.get(
-        this.controlName
-      ) as FormArray<LocationAvailibilityForm>;
-      // there should be one created by default
-      this.control = localControl.controls.at(0) as LocationAvailibilityForm;
+
+    if (this.control() != undefined) {
+      this.internalControl = this.control() as LocationAvailibilityForm;
     }
 
-    if (!this.control) {
+    if (!this.internalControl && this.group()) {
+      const localControl = this.group().get(
+        this.controlName(),
+      ) as FormArray<LocationAvailibilityForm>;
+      // there should be one created by default
+      this.internalControl = localControl.controls.at(0) as LocationAvailibilityForm;
+    }
+
+    if (!this.internalControl) {
       created = true;
-      this.control = new FormGroup({
+      this.internalControl = new FormGroup({
         id: new FormControl(),
         year: new FormControl(getCurrentSeason()),
         days: new FormArray([] as LocationavDayType[]),
@@ -157,21 +156,19 @@ export class LocationComponent implements OnInit {
       }) as unknown as LocationAvailibilityForm;
     }
 
-    if (this.group && created) {
-      (
-        this.group.get(this.controlName) as FormArray<LocationAvailibilityForm>
-      ).push(this.control);
+    if (this.group() && created) {
+      (this.group().get(this.controlName()) as FormArray<LocationAvailibilityForm>).push(
+        this.internalControl,
+      );
     }
 
-    this.exceptions = this.control.get(
-      'exceptions'
-    ) as FormArray<LocationExceptionType>;
+    this.exceptions = this.internalControl.get('exceptions') as FormArray<LocationExceptionType>;
 
     if (this.exceptions.length !== 0) {
       this.expanded.exceptions = true;
     }
 
-    this.days = this.control.get('days') as FormArray<LocationavDayType>;
+    this.days = this.internalControl.get('days') as FormArray<LocationavDayType>;
 
     this.showCourts = this.exceptions.value.map((v) => {
       return {
@@ -188,7 +185,7 @@ export class LocationComponent implements OnInit {
         startTime: new FormControl(),
         endTime: new FormControl(),
         courts: new FormControl(),
-      }) as LocationavDayType
+      }) as LocationavDayType,
     );
     this.expanded.days = true;
   }
@@ -203,7 +200,7 @@ export class LocationComponent implements OnInit {
         start: new FormControl(),
         end: new FormControl(),
         courts: new FormControl(0),
-      }) as LocationExceptionType
+      }) as LocationExceptionType,
     );
     this.showCourts.push({
       manualOpen: false,

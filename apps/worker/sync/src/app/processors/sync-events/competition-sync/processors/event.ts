@@ -16,13 +16,12 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
   constructor(
     protected readonly visualTournament: XmlTournament,
     protected readonly visualService: VisualService,
-    options?: StepOptions
+    options?: StepOptions,
   ) {
     if (!options) {
       options = {};
     }
-    options.logger =
-      options.logger || new Logger(CompetitionSyncEventProcessor.name);
+    options.logger = options.logger || new Logger(CompetitionSyncEventProcessor.name);
     super(options);
   }
 
@@ -50,13 +49,9 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
         dates.push(date.clone());
       }
 
-      const visualTournament = await this.visualService.getTournament(
-        this.visualTournament.Code
-      );
+      const visualTournament = await this.visualService.getTournament(this.visualTournament.Code);
 
-      this.logger.debug(
-        `EventCompetition ${visualTournament.Name} not found, creating`
-      );
+      this.logger.debug(`EventCompetition ${visualTournament.Name} not found, creating`);
       event = new EventCompetition({
         name: visualTournament.Name,
         visualCode: visualTournament.Code,
@@ -64,10 +59,7 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
       });
     } else {
       // Later we will change the search function to use the tournament code
-      if (
-        event.visualCode === null ||
-        event.visualCode !== this.visualTournament.Code
-      ) {
+      if (event.visualCode === null || event.visualCode !== this.visualTournament.Code) {
         event.visualCode = this.visualTournament.Code;
       }
     }
@@ -80,9 +72,7 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
       moment(event.closeDate).diff(moment(), 'days') < 0;
 
     if (enlistingOpen) {
-      this.logger.debug(
-        `EventCompetition ${event.name} is open, skipping processing`
-      );
+      this.logger.debug(`EventCompetition ${event.name} is open, skipping processing`);
     }
 
     return {

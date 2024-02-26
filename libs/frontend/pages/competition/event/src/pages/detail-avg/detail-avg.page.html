@@ -1,34 +1,38 @@
-<ng-container *ngIf="subEvents$ | async as subEvents; else loading">
+@if (subEvents$ | async; as subEvents) {
   <div>
     <!-- download -->
     <button mat-icon-button (click)="downloadData(subEvents)">
       <mat-icon>cloud_download</mat-icon>
     </button>
   </div>
-  <div *ngFor="let eventType of eventTypes">
-    <div *ngFor="let gender of genders" class="gender">
-      <div *ngFor="let chartType of chartTypes">
-        <ng-container
-          *ngIf="chartSeries(subEvents, gender, chartType, eventType) as data"
-        >
-          <apx-chart
-            *ngIf="data"
-            [series]="data"
-            [chart]="chartOptions.chart!"
-            [dataLabels]="chartOptions.dataLabels!"
-            [stroke]="chartOptions.stroke!"
-            [grid]="chartOptions.grid!"
-            [xaxis]="chartXAxis(subEvents, eventType)!"
-            [yaxis]="chartOptions.yaxis!"
-            [theme]="chartOptions.theme!"
-            [tooltip]="chartOptions.tooltip!"
-            [title]="chartTitle(gender, chartType, eventType )!"
-          ></apx-chart>
-        </ng-container>
-      </div>
+  @for (eventType of eventTypes; track eventType) {
+    <div>
+      @for (gender of genders; track gender) {
+        <div class="gender">
+          @for (chartType of chartTypes; track chartType) {
+            <div>
+              @if (chartSeries(subEvents, gender, chartType, eventType); as data) {
+                @if (data) {
+                  <apx-chart
+                    [series]="data"
+                    [chart]="chartOptions.chart!"
+                    [dataLabels]="chartOptions.dataLabels!"
+                    [stroke]="chartOptions.stroke!"
+                    [grid]="chartOptions.grid!"
+                    [xaxis]="chartXAxis(subEvents, eventType)!"
+                    [yaxis]="chartOptions.yaxis!"
+                    [theme]="chartOptions.theme!"
+                    [tooltip]="chartOptions.tooltip!"
+                    [title]="chartTitle(gender, chartType, eventType)!"
+                  ></apx-chart>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
-  </div>
-</ng-container>
-<ng-template #loading>
+  }
+} @else {
   <badman-loading-block />
-</ng-template>
+}

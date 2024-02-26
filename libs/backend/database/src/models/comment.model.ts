@@ -20,14 +20,7 @@ import {
 } from 'sequelize-typescript';
 import { EncounterCompetition } from './event';
 import { Club } from './club.model';
-import {
-  Field,
-  ID,
-  InputType,
-  ObjectType,
-  OmitType,
-  PartialType,
-} from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import { Relation } from '../wrapper';
 
 @Table({
@@ -44,13 +37,13 @@ export class Comment extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
 
   @Field(() => Date, { nullable: true })
-  updatedAt?: Date;
+  override updatedAt?: Date;
 
   @Field(() => Date, { nullable: true })
-  createdAt?: Date;
+  override createdAt?: Date;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.TEXT)
@@ -107,13 +100,7 @@ export class Comment extends Model {
 
 @InputType()
 export class CommentUpdateInput extends PartialType(
-  OmitType(Comment, [
-    'createdAt',
-    'updatedAt',
-    'club',
-    'competition',
-    'encounter',
-  ] as const),
+  OmitType(Comment, ['createdAt', 'updatedAt', 'club', 'competition', 'encounter'] as const),
   InputType,
 ) {}
 

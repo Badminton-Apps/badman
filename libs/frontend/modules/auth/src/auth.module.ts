@@ -4,7 +4,7 @@ import {
   AuthConfig,
   AuthConfigService,
   AuthHttpInterceptor,
-  AuthModule as auth0Module
+  AuthModule as auth0Module,
 } from '@auth0/auth0-angular';
 
 export type AuthConfiguration = Readonly<AuthConfig | undefined>;
@@ -18,7 +18,7 @@ export class AuthModule {
       ngModule: AuthModule,
       providers: [
         { provide: AuthConfigService, useValue: config },
-        
+
         // Cannot be used when doing SSR
         {
           provide: HTTP_INTERCEPTORS,

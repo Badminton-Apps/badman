@@ -22,7 +22,7 @@ export class SeoService {
     private titleService: Title,
     private metaService: Meta,
     @Inject(PLATFORM_ID) private platformId: string,
-    private platformLocation: PlatformLocation
+    private platformLocation: PlatformLocation,
   ) {}
 
   async update(data: ISeoMetaData) {
@@ -46,7 +46,7 @@ export class SeoService {
         // )}`;
 
         const url = `${this.config.imageEndpoint}/?title=${encodeURIComponent(
-          data.title
+          data.title,
         )}&description=${encodeURIComponent(data.description)}`;
 
         this.setImage(url);
@@ -63,7 +63,7 @@ export class SeoService {
     attr: 'name' | 'property' | 'itemprop',
     attrValue: string,
     content?: string | undefined,
-    selector?: string
+    selector?: string,
   ) {
     if (content) {
       this.metaService.updateTag({ [attr]: attrValue, content }, selector);
@@ -76,12 +76,7 @@ export class SeoService {
     this.setMetaTag('name', 'description', description);
     this.setMetaTag('name', 'twitter:description', description);
     this.setMetaTag('property', 'og:description', description);
-    this.setMetaTag(
-      'itemprop',
-      'description',
-      description,
-      `itemprop='description'`
-    );
+    this.setMetaTag('itemprop', 'description', description, `itemprop='description'`);
   }
 
   private setType(type?: 'article' | 'website'): void {
@@ -89,8 +84,7 @@ export class SeoService {
   }
 
   private setKeywords(keywords?: string | string[]) {
-    const wordsAsString =
-      keywords instanceof Array ? keywords?.join(',') : keywords;
+    const wordsAsString = keywords instanceof Array ? keywords?.join(',') : keywords;
     this.setMetaTag('name', 'keywords', wordsAsString);
   }
 

@@ -79,9 +79,7 @@ export class IncorrectEncountersService {
 
     const filtered = encounters.filter((encounter) => {
       const date = moment(encounter.date);
-      const dates = encounter.encounterChange?.dates?.map((d) =>
-        moment(d.date),
-      );
+      const dates = encounter.encounterChange?.dates?.map((d) => moment(d.date));
 
       if (!dates) {
         return false;
@@ -92,23 +90,11 @@ export class IncorrectEncountersService {
 
     this.logger.debug(`Sending ${filtered.length} changed encounters to visual`);
     const data: unknown[][] = [
-      [
-        'Id',
-        'Home Team',
-        'Away Team',
-        'Link',
-        'Current date',
-        'Moved',
-        '# Dates',
-        'Suggestion(s)',
-      ],
+      ['Id', 'Home Team', 'Away Team', 'Link', 'Current date', 'Moved', '# Dates', 'Suggestion(s)'],
     ]; // Array to hold Excel data
 
     for (const encounter of filtered) {
-      if (
-        !encounter?.drawCompetition?.subEventCompetition?.eventCompetition
-          ?.visualCode
-      ) {
+      if (!encounter?.drawCompetition?.subEventCompetition?.eventCompetition?.visualCode) {
         this.logger.error(`No visual code found for encounter ${encounter.id}`);
         continue;
       }
@@ -121,10 +107,9 @@ export class IncorrectEncountersService {
       try {
         if ((encounter.encounterChange?.dates?.length ?? 0) > 1) {
           this.logger.log(
-            `encounter ${encounter.home?.name} vs ${encounter.away
-              ?.name} on ${moment(encounter.date).format(
-              'DD-MM-YYYY HH:mm',
-            )} has multiple dates`,
+            `encounter ${encounter.home?.name} vs ${encounter.away?.name} on ${moment(
+              encounter.date,
+            ).format('DD-MM-YYYY HH:mm')} has multiple dates`,
           );
 
           data.push(this.addRowWithMultipleDates(encounter));
@@ -135,15 +120,14 @@ export class IncorrectEncountersService {
         const firstSuggestion = encounter.encounterChange?.dates?.[0]?.date;
 
         if (!firstSuggestion) {
-          this.logger.error(
-            `No first suggestion found for encounter ${encounter.id}`,
-          );
+          this.logger.error(`No first suggestion found for encounter ${encounter.id}`);
           continue;
         }
 
         this.logger.log(
-          `Sending encounter ${encounter.home?.name} vs ${encounter.away
-            ?.name} from ${moment(encounter.date).format(
+          `Sending encounter ${encounter.home?.name} vs ${encounter.away?.name} from ${moment(
+            encounter.date,
+          ).format(
             'DD-MM-YYYY HH:mm',
           )} to date ${moment(firstSuggestion).format('DD-MM-YYYY HH:mm')}`,
         );
@@ -192,9 +176,8 @@ export class IncorrectEncountersService {
       moment(encounter.date).format('DD-MM-YYYY HH:mm'),
       'NO',
       encounter.encounterChange?.dates?.length ?? 0,
-      ...(encounter.encounterChange?.dates?.map((d) =>
-        moment(d.date).format('DD-MM-YYYY HH:mm'),
-      ) ?? []),
+      ...(encounter.encounterChange?.dates?.map((d) => moment(d.date).format('DD-MM-YYYY HH:mm')) ??
+        []),
     ];
   }
 
@@ -218,9 +201,8 @@ export class IncorrectEncountersService {
       moment(encounter.date).format('DD-MM-YYYY HH:mm'),
       'YES',
       encounter.encounterChange?.dates?.length ?? 0,
-      ...(encounter.encounterChange?.dates?.map((d) =>
-        moment(d.date).format('DD-MM-YYYY HH:mm'),
-      ) ?? []),
+      ...(encounter.encounterChange?.dates?.map((d) => moment(d.date).format('DD-MM-YYYY HH:mm')) ??
+        []),
     ];
   }
 
@@ -240,18 +222,13 @@ export class IncorrectEncountersService {
 
     // Autosize columns
     const columnSizes = data[indexWithMostColumns].map((_, columnIndex) =>
-      data.reduce(
-        (acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2),
-        0,
-      ),
+      data.reduce((acc, row) => Math.max(acc, (`${row[columnIndex]}`.length ?? 0) + 2), 0),
     );
     ws['!cols'] = columnSizes.map((width) => ({ width }));
 
     // Enable filtering
     ws['!autofilter'] = {
-      ref: XLSX.utils.encode_range(
-        XLSX.utils.decode_range(ws['!ref'] as string),
-      ),
+      ref: XLSX.utils.encode_range(XLSX.utils.decode_range(ws['!ref'] as string)),
     };
 
     XLSX.utils.book_append_sheet(wb, ws, 'Encounter Data na sync');

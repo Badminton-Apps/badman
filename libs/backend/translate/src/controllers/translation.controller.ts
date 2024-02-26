@@ -12,10 +12,7 @@ export class TranslateController {
 
   @AllowAnonymous()
   @Get('i18n/:lang')
-  async translations(
-    @Param() param: { lang: languages },
-    @Res() res: FastifyReply
-  ) {
+  async translations(@Param() param: { lang: languages }, @Res() res: FastifyReply) {
     const translated = this.i18nService.getTranslations();
 
     res.send(translated[param.lang]);

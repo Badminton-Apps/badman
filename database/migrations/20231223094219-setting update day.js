@@ -27,8 +27,6 @@ module.exports = {
           },
           { transaction: t },
         );
-
-        
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();
@@ -42,12 +40,16 @@ module.exports = {
         await queryInterface.removeColumn(
           { tableName: 'RankingSystems', schema: 'ranking' },
           'calculationDayOfWeek',
-          { transaction: t },
+          {
+            transaction: t,
+          },
         );
         await queryInterface.removeColumn(
           { tableName: 'RankingSystems', schema: 'ranking' },
           'updateDayOfWeek',
-          { transaction: t },
+          {
+            transaction: t,
+          },
         );
       } catch (err) {
         console.error('We errored with', err);

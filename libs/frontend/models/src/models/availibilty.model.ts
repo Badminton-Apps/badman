@@ -12,8 +12,7 @@ export class Availability {
     this.id = args?.id;
     this.season = args?.season;
     this.days = args?.days?.map((d) => new AvailabilityDay(d)) || [];
-    this.exceptions =
-      args?.exceptions?.map((e) => new Exception(e)) || [];
+    this.exceptions = args?.exceptions?.map((e) => new Exception(e)) || [];
     this.location = args?.location;
     this.locationId = args?.locationId;
   }
@@ -44,15 +43,7 @@ export class InfoEvent {
 }
 
 export class AvailabilityDay {
-  
-  day?:
-    | 'monday'
-    | 'tuesday'
-    | 'wednesday'
-    | 'thursday'
-    | 'friday'
-    | 'saturday'
-    | 'sunday';
+  day?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
   startTime?: string;
   endTime?: string;
   courts?: number;

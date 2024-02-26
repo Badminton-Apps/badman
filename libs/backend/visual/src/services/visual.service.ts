@@ -55,9 +55,7 @@ export class VisualService {
 
   async getMatch(tourneyId: string, matchId: string | number, useCache = true) {
     const result = await this._getFromApi(
-      `${this._configService.get(
-        'VR_API',
-      )}/Tournament/${tourneyId}/TeamMatch/${matchId}`,
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/TeamMatch/${matchId}`,
       useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
@@ -78,9 +76,7 @@ export class VisualService {
     useCache = true,
   ): Promise<(XmlTeamMatch | XmlMatch)[]> {
     const result = await this._getFromApi(
-      `${this._configService.get(
-        'VR_API',
-      )}/Tournament/${tourneyId}/Draw/${drawId}/Match`,
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Draw/${drawId}/Match`,
       useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
@@ -102,9 +98,7 @@ export class VisualService {
     useCache = true,
   ): Promise<XmlTournamentDraw[]> {
     const result = await this._getFromApi(
-      `${this._configService.get(
-        'VR_API',
-      )}/Tournament/${tourneyId}/Event/${eventId}/Draw`,
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Event/${eventId}/Draw`,
       useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
@@ -117,19 +111,14 @@ export class VisualService {
     useCache = true,
   ): Promise<XmlTournamentDraw> {
     const result = await this._getFromApi(
-      `${this._configService.get(
-        'VR_API',
-      )}/Tournament/${tourneyId}/Draw/${drawId}`,
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Draw/${drawId}`,
       useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
     return parsed.TournamentDraw as XmlTournamentDraw;
   }
 
-  async getEvents(
-    tourneyId: string | number,
-    useCache = true,
-  ): Promise<XmlTournamentEvent[]> {
+  async getEvents(tourneyId: string | number, useCache = true): Promise<XmlTournamentEvent[]> {
     const result = await this._getFromApi(
       `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Event`,
       useCache,
@@ -157,9 +146,7 @@ export class VisualService {
       return [];
     }
 
-    const tournaments = Array.isArray(body.Tournament)
-      ? [...body.Tournament]
-      : [body.Tournament];
+    const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
 
     // TODO: Wait untill Visual fixes this
     // if (tournaments.length != 0) {
@@ -179,9 +166,7 @@ export class VisualService {
       return [];
     }
 
-    const tournaments = Array.isArray(body.Tournament)
-      ? [...body.Tournament]
-      : [body.Tournament];
+    const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
 
     // TODO: Wait untill Visual fixes this
     // if (tournaments.length != 0) {
@@ -192,9 +177,7 @@ export class VisualService {
   }
 
   async getChangeEvents(date: Moment, page = 0, pageSize = 100) {
-    const url = `${this._configService.get(
-      'VR_API',
-    )}/Tournament?list=1&refdate=${date.format(
+    const url = `${this._configService.get('VR_API')}/Tournament?list=1&refdate=${date.format(
       'YYYY-MM-DD',
     )}&pagesize=${pageSize}&pageno=${page}`;
 
@@ -205,9 +188,7 @@ export class VisualService {
       return [];
     }
 
-    const tournaments = Array.isArray(body.Tournament)
-      ? [...body.Tournament]
-      : [body.Tournament];
+    const tournaments = Array.isArray(body.Tournament) ? [...body.Tournament] : [body.Tournament];
 
     // TODO: Wait untill Visual fixes this
     // if (tournaments.length != 0) {
@@ -219,9 +200,7 @@ export class VisualService {
 
   async getDate(tourneyId: string, encounterId: string, useCache = true) {
     const result = await this._getFromApi(
-      `${this._configService.get(
-        'VR_API',
-      )}/Tournament/${tourneyId}/Match/${encounterId}/Date`,
+      `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Match/${encounterId}/Date`,
       useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
@@ -229,17 +208,13 @@ export class VisualService {
   }
 
   async changeDate(tourneyId: string, matchId: string, newDate: Date) {
-    const url = `${this._configService.get(
-      'VR_API',
-    )}/Tournament/${tourneyId}/Match/${matchId}/Date`;
+    const url = `${this._configService.get('VR_API')}/Tournament/${tourneyId}/Match/${matchId}/Date`;
 
     const body = `
     <TournamentMatch>
         <TournamentID>${tourneyId}</TournamentID>
         <MatchID>${matchId}</MatchID>
-        <MatchDate>${moment(newDate)
-          .tz('Europe/Brussels')
-          .format(VisualService.visualFormat)}</MatchDate>
+        <MatchDate>${moment(newDate).tz('Europe/Brussels').format(VisualService.visualFormat)}</MatchDate>
     </TournamentMatch>
   `;
 
@@ -272,10 +247,7 @@ export class VisualService {
   }
 
   async getRanking(useCache = true) {
-    const result = await this._getFromApi(
-      `${this._configService.get('VR_API')}/Ranking`,
-      useCache,
-    );
+    const result = await this._getFromApi(`${this._configService.get('VR_API')}/Ranking`, useCache);
     const parsed = this._parser.parse(result).Result as XmlResult;
     return this._asArray(parsed.Ranking);
   }
@@ -298,16 +270,9 @@ export class VisualService {
     return parsed.RankingPublication;
   }
 
-  async getPoints(
-    rankingId: string,
-    publicationId: string,
-    categoryId: string,
-    useCache = true,
-  ) {
+  async getPoints(rankingId: string, publicationId: string, categoryId: string, useCache = true) {
     const result = await this._getFromApi(
-      `${this._configService.get(
-        'VR_API',
-      )}/Ranking/${rankingId}/Publication/${publicationId}/Category/${categoryId}`,
+      `${this._configService.get('VR_API')}/Ranking/${rankingId}/Publication/${publicationId}/Category/${categoryId}`,
       useCache,
     );
     const parsed = this._parser.parse(result).Result as XmlResult;
@@ -323,14 +288,10 @@ export class VisualService {
     }
 
     if (useCache && this._cacheManager) {
-      const cached = await this._cacheManager.get(
-        `${VisualService.CACHE_KEY}:${url}`,
-      );
+      const cached = await this._cacheManager.get(`${VisualService.CACHE_KEY}:${url}`);
       if (cached) {
         const t1 = performance.now();
-        this.logger.verbose(
-          `Getting from (cache) ${url} took ${(t1 - t0).toFixed(2)}ms`,
-        );
+        this.logger.verbose(`Getting from (cache) ${url} took ${(t1 - t0).toFixed(2)}ms`);
         return cached;
       }
     }
@@ -350,11 +311,7 @@ export class VisualService {
     });
 
     // Store for 1 week
-    await this._cacheManager.set(
-      `${VisualService.CACHE_KEY}:${url}`,
-      result.data,
-      CACHE_TTL,
-    );
+    await this._cacheManager.set(`${VisualService.CACHE_KEY}:${url}`, result.data, CACHE_TTL);
 
     const t1 = performance.now();
     this.logger.verbose(`Getting from ${url} took ${(t1 - t0).toFixed(2)}ms`);

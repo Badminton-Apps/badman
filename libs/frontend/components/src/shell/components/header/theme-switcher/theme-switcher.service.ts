@@ -16,7 +16,7 @@ export class ThemeSwitcherService {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private _platformId: string,
-    private meta: Meta
+    private meta: Meta,
   ) {}
 
   get currentActive() {
@@ -27,8 +27,7 @@ export class ThemeSwitcherService {
     // Detect if prefers-color-scheme is supported
     if (window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
       // Set colorScheme to Dark if prefers-color-scheme is dark. Otherwise, set it to Light.
-      this.colorScheme = window.matchMedia('(prefers-color-scheme: dark)')
-        .matches
+      this.colorScheme = window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
         : 'light';
     } else {
@@ -41,7 +40,7 @@ export class ThemeSwitcherService {
     this.colorScheme = scheme;
     // Save prefers-color-scheme to localStorage
     localStorage.setItem('prefers-color', scheme);
-    
+
     this.meta.updateTag({
       name: 'theme-color',
       content: this.colorScheme === 'dark' ? '#212121' : '#fafafa',
@@ -54,9 +53,7 @@ export class ThemeSwitcherService {
       return;
     }
 
-    const localStorageColorScheme = localStorage.getItem('prefers-color') as
-      | 'dark'
-      | 'light';
+    const localStorageColorScheme = localStorage.getItem('prefers-color') as 'dark' | 'light';
     // Check if any prefers-color-scheme is stored in localStorage
     if (localStorageColorScheme) {
       // Save prefers-color-scheme from localStorage
@@ -76,9 +73,7 @@ export class ThemeSwitcherService {
   }
 
   update(scheme: 'dark' | 'light') {
-    this.document.body.classList.remove(
-      this.colorSchemePrefix + this.colorScheme
-    );
+    this.document.body.classList.remove(this.colorSchemePrefix + this.colorScheme);
 
     this._setColorScheme(scheme);
     // Remove the old color-scheme class

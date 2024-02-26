@@ -2,13 +2,14 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
-  Input,
   OnChanges,
   OnInit,
   Output,
   SimpleChanges,
   TemplateRef,
   ViewChild,
+  computed,
+  input,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -28,24 +29,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, ReplaySubject, lastValueFrom, merge, of } from 'rxjs';
-import {
-  debounceTime,
-  filter,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
+import { debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { PlayerFieldsComponent } from '../fields';
 
 @Component({
   standalone: true,
   imports: [
     CommonModule,
-
     TranslateModule,
-
     MatIconModule,
     MatButtonModule,
     MatOptionModule,
@@ -55,8 +46,6 @@ import { PlayerFieldsComponent } from '../fields';
     MatDialogModule,
     MatInputModule,
     MatProgressBarModule,
-
-    // My Modules
     PlayerFieldsComponent,
   ],
   selector: 'badman-player-search',
@@ -68,43 +57,44 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
   @Output() whenSelectPlayer = new EventEmitter<Player>();
 
-  @Input()
-  label = 'all.player.search.label'; 
+  label = input('all.player.search.label');
 
-  @Input()
-  allowCreation = false;
+  allowCreation = input(false);
 
-  @Input()
-  clearOnSelection = true;
+  clearOnSelection = input(true);
 
-  @Input()
-  where?: { [key: string]: unknown };
+  where = input<
+    | {
+        [key: string]: unknown;
+      }
+    | undefined
+  >();
 
-  @Input()
-  validationFunction: (player: Player) => {
-    valid: boolean;
-    message?: string;
-  } = () => ({ valid: true });
+  validationFunction = input<
+    (player: Player) => {
+      valid: boolean;
+      message?: string;
+    }
+  >(() => ({ valid: true }));
 
-  @Input()
-  player?: string | Player;
+  player = input<string | Player | undefined>();
 
-  @Input()
-  club?: string | Club;
+  club = input<string | Club | undefined>();
 
-  @Input()
-  searchOutsideClub = true;
+  searchOutsideClub = input(true);
 
-  @Input()
-  includePersonal = false;
+  includePersonal = input(false);
 
-  clubId?: string;
+  clubId = computed(() => {
+    if (this.club() instanceof Club) {
+      return (this.club() as Club).id;
+    }
+    return this.club();
+  }) as () => string | undefined;
 
-  @Input()
-  ignorePlayers?: Partial<Player>[];
+  ignorePlayers = input<Partial<Player>[] | undefined>();
 
-  @Input()
-  options: Player[] = [];
+  options = input<Player[]>([]);
 
   ignorePlayersIds?: string[] = [];
 
@@ -118,7 +108,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
   @ViewChild('newPlayer')
   newPlayerTemplateRef?: TemplateRef<HTMLElement>;
-  newPlayerFormGroup?: FormGroup;
+  newPlayerFormGroup!: FormGroup;
 
   constructor(
     private apollo: Apollo,
@@ -130,9 +120,9 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       this.setPlayer();
     }
     if (changes['ignorePlayers']) {
-      this.ignorePlayersIds = (
-        this.ignorePlayers?.map((r) => r.id) ?? []
-      ).filter((v, i, a) => a.indexOf(v) === i) as string[];
+      this.ignorePlayersIds = (this.ignorePlayers()?.map((r) => r.id) ?? []).filter(
+        (v, i, a) => a.indexOf(v) === i,
+      ) as string[];
     }
   }
 
@@ -149,17 +139,11 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       tap(() => (this.loading = true)),
       debounceTime(600),
       switchMap((r) => {
-        this.clubId =
-          this.club instanceof Club ? this.club?.id : this.club ?? undefined;
-        const obs = this.clubId
+        const obs = this.clubId()
           ? this.apollo
               .query<{ club: { players: Player[] } }>({
                 query: gql`
-                  query GetClubPlayers(
-                    $id: ID!
-                    $where: JSONObject
-                    $personal: Boolean!
-                  ) {
+                  query GetClubPlayers($id: ID!, $where: JSONObject, $personal: Boolean!) {
                     club(id: $id) {
                       id
                       players(where: $where) {
@@ -179,15 +163,13 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                 variables: {
                   where: this._playerSearchWhere({
                     query: r,
-                    where: this.where,
+                    where: this.where(),
                   }),
-                  id: this.clubId,
-                  personal: this.includePersonal ?? false,
+                  id: this.clubId(),
+                  personal: this.includePersonal() ?? false,
                 },
               })
-              .pipe(
-                map((x) => x.data?.club?.players?.map((r) => new Player(r))),
-              )
+              .pipe(map((x) => x.data?.club?.players?.map((r) => new Player(r))))
           : of([]);
 
         return obs.pipe(
@@ -202,7 +184,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       switchMap((response) => {
         if (response?.results?.length && response?.results?.length > 0) {
           return of(response.results);
-        } else if (this.searchOutsideClub) {
+        } else if (this.searchOutsideClub()) {
           return this.apollo
             .query<{ players: { rows: Player[] } }>({
               query: gql`
@@ -228,9 +210,9 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
               variables: {
                 where: this._playerSearchWhere({
                   query: response.query,
-                  where: this.where,
+                  where: this.where(),
                 }),
-                personal: this.includePersonal ?? false,
+                personal: this.includePersonal() ?? false,
               },
             })
             .pipe(map((x) => x.data?.players?.rows?.map((r) => new Player(r))));
@@ -238,13 +220,9 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
           return of([]);
         }
       }),
-      map(
-        (result: Player[]) =>
-          // Distinct by id
-          result?.filter(
-            (value, index, self) =>
-              self.findIndex((m) => m.id === value.id) === index,
-          ),
+      map((result: Player[]) =>
+        // Distinct by id
+        result?.filter((value, index, self) => self.findIndex((m) => m.id === value.id) === index),
       ),
       tap(() => {
         this.loading = false;
@@ -254,9 +232,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
     this.filteredOptions$ = merge(search$, this.clear$);
   }
 
-
   private setPlayer() {
-    of(this.player)
+    of(this.player())
       .pipe(
         takeUntil(this.destroy$),
         switchMap((p) => {
@@ -352,8 +329,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                   variables: {
                     data: {
                       memberId: this.newPlayerFormGroup?.value.memberId?.trim(),
-                      firstName:
-                        this.newPlayerFormGroup?.value.firstName?.trim(),
+                      firstName: this.newPlayerFormGroup?.value.firstName?.trim(),
                       lastName: this.newPlayerFormGroup?.value.lastName?.trim(),
                       gender: this.newPlayerFormGroup?.value.gender?.trim(),
                     },
@@ -361,7 +337,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                 })
                 .pipe(map((x) => new Player(x.data?.createPlayer))),
             );
-            if (!this.clearOnSelection) {
+            if (!this.clearOnSelection()) {
               this.formControl.setValue(this.newPlayerFormGroup?.value);
             }
             this._selectPlayer(dbPlayer);
@@ -385,16 +361,13 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
 
   private _selectPlayer(player: Player) {
     this.whenSelectPlayer.next(player);
-    if (this.clearOnSelection) {
+    if (this.clearOnSelection()) {
       this.formControl.reset();
       this.clear$.next([]);
     }
   }
 
-  private _playerSearchWhere(args?: {
-    query?: string;
-    where?: { [key: string]: unknown };
-  }) {
+  private _playerSearchWhere(args?: { query?: string; where?: { [key: string]: unknown } }) {
     const parts = args?.query
       ?.toLowerCase()
       .replace(/[;\\\\/:*?"<>|&',]/, ' ')

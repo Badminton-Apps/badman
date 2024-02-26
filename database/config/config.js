@@ -50,7 +50,7 @@ const config = {
     retry: {
       max: retries,
     },
-  }
+  },
 };
 
 console.log('config', config);

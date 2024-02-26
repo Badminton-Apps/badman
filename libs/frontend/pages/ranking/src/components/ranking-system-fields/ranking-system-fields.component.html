@@ -6,16 +6,9 @@
   <div class="row">
     <mat-form-field appearance="outline" class="flex">
       <mat-label>{{ 'all.input.name' | translate }}</mat-label>
-      <input
-        matInput
-        formControlName="name"
-        alt="name"
-        autocomplete="name"
-        required
-      />
+      <input matInput formControlName="name" alt="name" autocomplete="name" required />
     </mat-form-field>
   </div>
-
   <div class="row">
     <mat-form-field appearance="outline">
       <mat-label>Type</mat-label>
@@ -31,7 +24,6 @@
         <mat-option value="VISUAL">Visual</mat-option>
       </mat-select>
     </mat-form-field>
-
     <mat-form-field appearance="outline">
       <mat-label>Amount of levels</mat-label>
       <input
@@ -43,22 +35,20 @@
         required
       />
     </mat-form-field>
-
     <!-- <mat-form-field appearance="outline">
-      <mat-label>Starting Type</mat-label>
-      <mat-select
-        formControlName="startingType"
-        alt="startingType"
-        autocomplete="startingType"
-        required
-      >
-        <mat-option value="formula">Formula</mat-option>
-        <mat-option value="tableLFBB">Table LFBB</mat-option>
-        <mat-option value="tableBVL">Table BVL</mat-option>
-      </mat-select>
-    </mat-form-field> -->
+        <mat-label>Starting Type</mat-label>
+        <mat-select
+          formControlName="startingType"
+          alt="startingType"
+          autocomplete="startingType"
+          required
+          >
+          <mat-option value="formula">Formula</mat-option>
+          <mat-option value="tableLFBB">Table LFBB</mat-option>
+          <mat-option value="tableBVL">Table BVL</mat-option>
+        </mat-select>
+      </mat-form-field> -->
   </div>
-
   <div class="row">
     <mat-form-field appearance="outline">
       <mat-label>% Winning</mat-label>
@@ -96,7 +86,6 @@
       />
     </mat-form-field>
   </div>
-
   <div class="row">
     <mat-form-field appearance="outline">
       <mat-label>Games to use</mat-label>
@@ -118,7 +107,6 @@
         autocomplete="minNumberOfGamesUsedForUpgrade"
       />
     </mat-form-field>
-
     <mat-form-field appearance="outline">
       <mat-label>Diff levels</mat-label>
       <input
@@ -131,16 +119,11 @@
       />
     </mat-form-field>
   </div>
-
   <div class="row">
     <mat-slide-toggle formControlName="primary">Primary</mat-slide-toggle>
-    <mat-slide-toggle formControlName="calculateUpdates"
-      >Update ranking</mat-slide-toggle
-    >
+    <mat-slide-toggle formControlName="calculateUpdates">Calculate updates</mat-slide-toggle>
   </div>
-
   <h4>Update interval</h4>
-
   <div class="row">
     <mat-form-field appearance="outline">
       <mat-label>Point update</mat-label>
@@ -169,31 +152,16 @@
     <mat-form-field>
       <mat-label>Point update day</mat-label>
       <mat-select formControlName="calculationDayOfWeek">
-        <mat-option [value]="1">{{
-          'all.days.monday' | translate
-        }}</mat-option>
-        <mat-option [value]="2">{{
-          'all.days.tuesday' | translate
-        }}</mat-option>
-        <mat-option [value]="3">{{
-          'all.days.wednesday' | translate
-        }}</mat-option>
-        <mat-option [value]="4">{{
-          'all.days.thursday' | translate
-        }}</mat-option>
-        <mat-option [value]="5">{{
-          'all.days.friday' | translate
-        }}</mat-option>
-        <mat-option [value]="6">{{
-          'all.days.saturday' | translate
-        }}</mat-option>
-        <mat-option [value]="7">{{
-          'all.days.sunday' | translate
-        }}</mat-option>
+        <mat-option [value]="1">{{ 'all.days.monday' | translate }}</mat-option>
+        <mat-option [value]="2">{{ 'all.days.tuesday' | translate }}</mat-option>
+        <mat-option [value]="3">{{ 'all.days.wednesday' | translate }}</mat-option>
+        <mat-option [value]="4">{{ 'all.days.thursday' | translate }}</mat-option>
+        <mat-option [value]="5">{{ 'all.days.friday' | translate }}</mat-option>
+        <mat-option [value]="6">{{ 'all.days.saturday' | translate }}</mat-option>
+        <mat-option [value]="7">{{ 'all.days.sunday' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
-
   <div class="row">
     <mat-form-field appearance="outline">
       <mat-label>Ranking update</mat-label>
@@ -219,31 +187,16 @@
         <mat-option value="days">Days</mat-option>
       </mat-select>
     </mat-form-field>
-
     <mat-form-field>
       <mat-label>Calculation update day</mat-label>
       <mat-select formControlName="updateDayOfWeek">
-        <mat-option [value]="1">{{
-          'all.days.monday' | translate
-        }}</mat-option>
-        <mat-option [value]="2">{{
-          'all.days.tuesday' | translate
-        }}</mat-option>
-        <mat-option [value]="3">{{
-          'all.days.wednesday' | translate
-        }}</mat-option>
-        <mat-option [value]="4">{{
-          'all.days.thursday' | translate
-        }}</mat-option>
-        <mat-option [value]="5">{{
-          'all.days.friday' | translate
-        }}</mat-option>
-        <mat-option [value]="6">{{
-          'all.days.saturday' | translate
-        }}</mat-option>
-        <mat-option [value]="7">{{
-          'all.days.sunday' | translate
-        }}</mat-option>
+        <mat-option [value]="1">{{ 'all.days.monday' | translate }}</mat-option>
+        <mat-option [value]="2">{{ 'all.days.tuesday' | translate }}</mat-option>
+        <mat-option [value]="3">{{ 'all.days.wednesday' | translate }}</mat-option>
+        <mat-option [value]="4">{{ 'all.days.thursday' | translate }}</mat-option>
+        <mat-option [value]="5">{{ 'all.days.friday' | translate }}</mat-option>
+        <mat-option [value]="6">{{ 'all.days.saturday' | translate }}</mat-option>
+        <mat-option [value]="7">{{ 'all.days.sunday' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
@@ -261,12 +214,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Period games</mat-label>
-      <mat-select
-        formControlName="periodUnit"
-        alt="periodUnit"
-        autocomplete="periodUnit"
-        required
-      >
+      <mat-select formControlName="periodUnit" alt="periodUnit" autocomplete="periodUnit" required>
         <mat-option value="months">Months</mat-option>
         <mat-option value="weeks">Weeks</mat-option>
         <mat-option value="days">Days</mat-option>
@@ -344,7 +292,6 @@
       />
     </mat-form-field>
   </div>
-
   <div class="row">
     <mat-form-field appearance="outline">
       <mat-label>Max # levels up per change</mat-label>
@@ -367,7 +314,6 @@
       />
     </mat-form-field>
   </div>
-
   <h4>Inactivity</h4>
   <div class="row">
     <mat-form-field appearance="outline">
@@ -394,7 +340,6 @@
         <mat-option value="days">Days</mat-option>
       </mat-select>
     </mat-form-field>
-
     <mat-form-field appearance="outline">
       <mat-label>Games for inactivty</mat-label>
       <input
@@ -407,7 +352,6 @@
       />
     </mat-form-field>
   </div>
-
   <h4>Link to events</h4>
   <div class="row">
     <mat-form-field appearance="outline">
@@ -420,9 +364,9 @@
         required
         [compareWith]="this.groupCompare"
       >
-        <mat-option [value]="group" *ngFor="let group of this.groups">{{
-          group.name
-        }}</mat-option>
+        @for (group of this.groups(); track group) {
+          <mat-option [value]="group">{{ group.name }}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
   </div>

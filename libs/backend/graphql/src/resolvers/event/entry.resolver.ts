@@ -11,36 +11,22 @@ import {
   SubEventTournament,
   Team,
 } from '@badman/backend-database';
-import {
-  EnrollmentValidationService,
-  TeamEnrollmentOutput,
-} from '@badman/backend-enrollment';
+import { EnrollmentValidationService, TeamEnrollmentOutput } from '@badman/backend-enrollment';
 import { NotificationService } from '@badman/backend-notifications';
 import { TeamMembershipType } from '@badman/utils';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import {
-  Args,
-  ID,
-  Int,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
 
 @Resolver(() => EventEntry)
 export class EventEntryResolver {
   constructor(
     private notificationService: NotificationService,
-    private enrollmentService: EnrollmentValidationService
+    private enrollmentService: EnrollmentValidationService,
   ) {}
 
   @Query(() => EventEntry)
-  async eventEntry(
-    @Args('id', { type: () => ID }) id: string
-  ): Promise<EventEntry> {
+  async eventEntry(@Args('id', { type: () => ID }) id: string): Promise<EventEntry> {
     const eventEntry = await EventEntry.findByPk(id);
 
     if (!eventEntry) {
@@ -65,28 +51,20 @@ export class EventEntryResolver {
   }
 
   @ResolveField(() => SubEventCompetition)
-  async subEventCompetition(
-    @Parent() eventEntry: EventEntry
-  ): Promise<SubEventCompetition> {
+  async subEventCompetition(@Parent() eventEntry: EventEntry): Promise<SubEventCompetition> {
     return eventEntry.getSubEventCompetition();
   }
   @ResolveField(() => DrawCompetition, { nullable: true })
-  async drawCompetition(
-    @Parent() eventEntry: EventEntry
-  ): Promise<DrawCompetition> {
+  async drawCompetition(@Parent() eventEntry: EventEntry): Promise<DrawCompetition> {
     return eventEntry.getDrawCompetition();
   }
 
   @ResolveField(() => [DrawTournament])
-  async drawTournament(
-    @Parent() eventEntry: EventEntry
-  ): Promise<DrawTournament> {
+  async drawTournament(@Parent() eventEntry: EventEntry): Promise<DrawTournament> {
     return eventEntry.getDrawTournament();
   }
   @ResolveField(() => [DrawTournament])
-  async subEventTournament(
-    @Parent() eventEntry: EventEntry
-  ): Promise<SubEventTournament> {
+  async subEventTournament(@Parent() eventEntry: EventEntry): Promise<SubEventTournament> {
     return eventEntry.getSubEventTournament();
   }
 
@@ -99,7 +77,7 @@ export class EventEntryResolver {
     description: `Validate the enrollment\n\r**note**: the levels are the ones from may!`,
   })
   async enrollmentValidation(
-    @Parent() eventEntry: EventEntry
+    @Parent() eventEntry: EventEntry,
   ): Promise<TeamEnrollmentOutput | null> {
     const team = await eventEntry.getTeam();
     const teamsOfClub = await Team.findAll({
@@ -120,25 +98,17 @@ export class EventEntryResolver {
           teamNumber: t.teamNumber,
           basePlayers: t.entry?.meta?.competition?.players,
           players: t.players
-            ?.filter(
-              (p) =>
-                p.TeamPlayerMembership.membershipType ===
-                TeamMembershipType.REGULAR
-            )
+            ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.REGULAR)
             .map((p) => p.id),
           backupPlayers: t.players
-            ?.filter(
-              (p) =>
-                p.TeamPlayerMembership.membershipType ===
-                TeamMembershipType.BACKUP
-            )
+            ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.BACKUP)
             .map((p) => p.id),
           subEventId: t.entry?.subEventId,
         })),
 
         season: team.season,
       },
-      EnrollmentValidationService.defaultValidators()
+      EnrollmentValidationService.defaultValidators(),
     );
 
     return validation.teams?.find((t) => t.id === team.id) ?? null;
@@ -149,20 +119,13 @@ export class EventEntryResolver {
     @User() user: Player,
     @Args('clubId', { type: () => ID }) clubId: string,
     @Args('season', { type: () => Int }) season: number,
-    @Args('email', { type: () => String }) email: string
+    @Args('email', { type: () => String }) email: string,
   ) {
-    if (!await user.hasAnyPermission([clubId + '_edit:club', 'edit-any:club'])) {
-      throw new UnauthorizedException(
-        `You do not have permission to enroll a club`
-      );
+    if (!(await user.hasAnyPermission([clubId + '_edit:club', 'edit-any:club']))) {
+      throw new UnauthorizedException(`You do not have permission to enroll a club`);
     }
 
-    await this.notificationService.notifyEnrollment(
-      user.id,
-      clubId,
-      season,
-      email
-    );
+    await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
 
     return true;
   }
@@ -183,9 +146,7 @@ export class EventEntryResolver {
 @Resolver(() => EntryCompetitionPlayersType)
 export class EntryCompetitionPlayersResolver {
   @ResolveField(() => Player)
-  async player(
-    @Parent() eventEntryPlayer: EntryCompetitionPlayer
-  ): Promise<Player | null> {
+  async player(@Parent() eventEntryPlayer: EntryCompetitionPlayer): Promise<Player | null> {
     return Player.findByPk(eventEntryPlayer.id);
   }
 }

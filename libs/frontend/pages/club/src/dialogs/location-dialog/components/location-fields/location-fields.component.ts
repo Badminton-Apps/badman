@@ -6,12 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { Club, Location } from '@badman/frontend-models';
 import { CommonModule } from '@angular/common';
@@ -22,6 +17,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NgMapsPlacesModule } from '@ng-maps/places';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-location-fields',
@@ -30,28 +26,21 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    // Core modules
     CommonModule,
     ReactiveFormsModule,
     TranslateModule,
-
-    // Other modules
     MatInputModule,
     MatDividerModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatIconModule,
-
-    // My Modules
     NgMapsPlacesModule,
   ],
 })
 export class LocationDialogFieldsComponent implements OnInit {
-  @Input()
-  location: Location = {} as Location;
+  location = input<Location>({} as Location);
 
-  @Input()
-  club!: Club;
+  club = input<Club | undefined>();
 
   @Output() whenLocationUpdate = new EventEmitter<Location>();
 
@@ -66,23 +55,20 @@ export class LocationDialogFieldsComponent implements OnInit {
   adressForm!: FormControl;
 
   ngOnInit() {
-    const nameControl = new FormControl(
-      this.location.name,
-      Validators.required
-    );
+    const nameControl = new FormControl(this.location().name, Validators.required);
 
-    const addressControl = new FormControl(this.location.address);
-    const phoneControl = new FormControl(this.location.phone);
-    const faxControl = new FormControl(this.location.fax);
-    const cityControl = new FormControl(this.location.city);
-    const postalcodeControl = new FormControl(this.location.postalcode);
-    const stateControl = new FormControl(this.location.state);
-    const streetControl = new FormControl(this.location.street);
-    const streetNumberControl = new FormControl(this.location.streetNumber);
+    const addressControl = new FormControl(this.location().address);
+    const phoneControl = new FormControl(this.location().phone);
+    const faxControl = new FormControl(this.location().fax);
+    const cityControl = new FormControl(this.location().city);
+    const postalcodeControl = new FormControl(this.location().postalcode);
+    const stateControl = new FormControl(this.location().state);
+    const streetControl = new FormControl(this.location().street);
+    const streetNumberControl = new FormControl(this.location().streetNumber);
 
     const coordinatesGroup = new FormGroup({
-      latitude: new FormControl(this.location.coordinates?.latitude),
-      longitude: new FormControl(this.location.coordinates?.longitude),
+      latitude: new FormControl(this.location().coordinates?.latitude),
+      longitude: new FormControl(this.location().coordinates?.longitude),
     });
 
     this.locationForm = new FormGroup({
@@ -98,35 +84,31 @@ export class LocationDialogFieldsComponent implements OnInit {
       coordinates: coordinatesGroup,
     });
     this.locationForm.valueChanges.pipe(debounceTime(600)).subscribe((e) => {
-      if (!this.location?.id) {
+      if (!this.location()?.id) {
         if (this.locationForm.valid) {
-          this.whenLocationUpdate.next({ id: this.location?.id, ...e });
+          this.whenLocationUpdate.next({ id: this.location()?.id, ...e });
         }
       } else {
         // always update if valid id
-        this.whenLocationUpdate.next({ id: this.location?.id, ...e });
+        this.whenLocationUpdate.next({ id: this.location()?.id, ...e });
       }
     });
   }
 
   syncAutoComplete($event: google.maps.places.PlaceResult) {
     const city =
-      $event.address_components?.find((r) => r.types.includes('sublocality'))
-        ?.long_name ??
-      $event.address_components?.find((r) => r.types.includes('locality'))
-        ?.long_name;
+      $event.address_components?.find((r) => r.types.includes('sublocality'))?.long_name ??
+      $event.address_components?.find((r) => r.types.includes('locality'))?.long_name;
 
     const postalcode = $event.address_components?.find((r) =>
-      r.types.includes('postal_code')
+      r.types.includes('postal_code'),
     )?.long_name;
     const state = $event.address_components?.find((r) =>
-      r.types.includes('administrative_area_level_2')
+      r.types.includes('administrative_area_level_2'),
     )?.long_name;
-    const street = $event.address_components?.find((r) =>
-      r.types.includes('route')
-    )?.long_name;
+    const street = $event.address_components?.find((r) => r.types.includes('route'))?.long_name;
     const streetNumber = $event.address_components?.find((r) =>
-      r.types.includes('street_number')
+      r.types.includes('street_number'),
     )?.long_name;
 
     const coordinates = $event.geometry?.location;

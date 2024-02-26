@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,12 +10,7 @@ import statesList from './states.json';
 @Component({
   selector: 'badman-select-state',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatSelectModule,
-    TranslateModule,
-    ReactiveFormsModule,
-  ],
+  imports: [CommonModule, MatSelectModule, TranslateModule, ReactiveFormsModule],
   templateUrl: './select-state.component.html',
   styleUrls: ['./select-state.component.scss'],
 })
@@ -28,34 +23,35 @@ export class SelectCountrystateComponent implements OnInit {
     country: string;
   }[] = [];
 
-  @Input({ required: true })
-  group!: FormGroup;
+  group = input.required<FormGroup>();
 
-  @Input()
-  controlName = 'state';
+  controlName = input('state');
 
-  @Input()
-  dependsOn = 'country';
+  dependsOn = input('country');
 
-  @Input()
-  control: FormControl = new FormControl();
+  control = input<FormControl<string>>();
+  protected internalControl!: FormControl<string>;
 
   ngOnInit(): void {
-    if (this.group) {
-      this.control = this.group?.get(this.controlName) as FormControl<string>;
+    if (this.control()) {
+      this.internalControl = this.control() as FormControl<string>;
     }
 
-    if (!this.control) {
-      this.control = new FormControl<string | null>('be');
+    if (!this.internalControl && this.group()) {
+      this.internalControl = this.group().get(this.controlName()) as FormControl<string>;
     }
 
-    if (this.group) {
-      this.group.addControl(this.controlName, this.control);
+    if (!this.internalControl) {
+      this.internalControl = new FormControl<string>('BE-VOV') as FormControl<string>;
     }
 
-    const previous = this.group?.get(this.dependsOn);
+    if (this.group()) {
+      this.group().addControl(this.controlName(), this.internalControl);
+    }
+
+    const previous = this.group().get(this.dependsOn());
     if (!previous) {
-      console.warn(`Dependency ${this.dependsOn} not found`, previous);
+      console.warn(`Dependency ${this.dependsOn()} not found`, previous);
     } else {
       previous.valueChanges
         .pipe(startWith(previous.value), takeUntil(this.destroy$))

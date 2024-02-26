@@ -48,7 +48,13 @@ export class DrawTournament extends Model {
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  id!: string;
+  override id!: string;
+
+  @Field(() => Date, { nullable: true })
+  override updatedAt?: Date;
+
+  @Field(() => Date, { nullable: true })
+  override createdAt?: Date;
 
   @Unique('DrawTournaments_unique_constraint')
   @Field(() => String, { nullable: true })
@@ -134,10 +140,7 @@ export class DrawTournament extends Model {
 
   // Belongs to SubEvent
   getSubEventTournament!: BelongsToGetAssociationMixin<SubEventTournament>;
-  setSubEventTournament!: BelongsToSetAssociationMixin<
-    SubEventTournament,
-    string
-  >;
+  setSubEventTournament!: BelongsToSetAssociationMixin<SubEventTournament, string>;
 
   // Has many EventEntries
   getEventEntries!: HasManyGetAssociationsMixin<EventEntry>;

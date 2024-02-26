@@ -9,14 +9,7 @@ import { ThemeSwitcherService } from './theme-switcher.service';
 @Component({
   selector: 'badman-theme-switcher',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-
-    MatMenuModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, TranslateModule, MatMenuModule, MatButtonModule, MatIconModule],
   templateUrl: './theme-switcher.component.html',
   styleUrls: ['./theme-switcher.component.scss'],
 })
@@ -29,9 +22,7 @@ export class ThemeSwitcherComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.current =
-      this.colorSchemaService.currentActive ??
-      this.colorSchemaService.defaultScheme;
+    this.current = this.colorSchemaService.currentActive ?? this.colorSchemaService.defaultScheme;
   }
 
   setTheme(theme: 'light' | 'dark') {
