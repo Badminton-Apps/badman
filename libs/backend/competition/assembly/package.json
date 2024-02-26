@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-assembly",
-  "version": "6.130.0-beta.18",
+  "version": "6.130.0-beta.19",
   "dependencies": {
     "tslib": "^2.3.0",
     "@badman/backend-compile": "*",
