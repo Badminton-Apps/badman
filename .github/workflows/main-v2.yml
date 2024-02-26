@@ -159,13 +159,5 @@ jobs:
           git fetch --unshallow 
           git checkout develop
           git pull
-          git merge --no-ff origin/main -m "chore(release): v${{ needs.main.outputs.NEW_VERSION }}"
-          # git merge --no-ff main -m "Merging main into develop"
+          git merge --no-ff main -m "Merging main back develop"
           git push
-      # deploy on beta if main branch
-      - name: Deploy beta
-        run: npx nx affected -t deploy
-        env:
-          API_HOOK: ${{ secrets.BETA_API_HOOK }}
-          WORKER_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
-          RANKING_HOOK: ${{ secrets.BETA_WORKER_RANKING_HOOK }}
