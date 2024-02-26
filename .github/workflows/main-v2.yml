@@ -63,21 +63,6 @@ jobs:
         with:
           ref: ${{ inputs.prod-release && 'main' || 'develop' }}
           fetch-depth: 0
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: 'npm'
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node
-
-      - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
-      - run: npm install
-
       - name: set SHAs
         run: |
           # run code only on main branch
@@ -98,6 +83,26 @@ jobs:
 
           # Set NX_HEAD to the current commit
           echo "NX_HEAD=origin/${{inputs.prod-release && 'main' || 'develop'}}" >> $GITHUB_ENV
+
+          # Set NX_BRANCH to the current branch
+          echo "NX_BRANCH=${{inputs.prod-release && 'main' || 'develop'}}" >> $GITHUB_ENV
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node
+          
+
+      - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+      - run: npm install
+
+
 
       # - run: npx nx-cloud record -- nx format:check
       - run: npx nx affected -t lint test build
