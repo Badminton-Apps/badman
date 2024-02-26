@@ -31,11 +31,11 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
 import { ExcelModule } from '@badman/frontend-excel';
+import { JOBS_CONFIG_TOKEN } from '@badman/frontend-queue';
 import { Socket, SocketIoModule } from 'ngx-socket-io';
 
 /*  eslint-disable @nx/enforce-module-boundaries*/
 import { ShellComponent } from '@badman/frontend-components';
-import { JOBS_CONFIG_TOKEN } from '@badman/frontend-queue';
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
 /*  eslint-enable @nx/enforce-module-boundaries */
 
