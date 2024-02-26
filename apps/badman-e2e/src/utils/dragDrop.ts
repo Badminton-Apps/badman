@@ -15,7 +15,11 @@ export const dragDrop = async (page: Page, originElement: Locator, destinationEl
 
   await originElement.hover();
   await page.mouse.down();
-  const box = (await destinationElement.boundingBox())!;
+  const box = await destinationElement.boundingBox();
+  if (!box) {
+    throw new Error('Destination element is not visible');
+  }
+
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await destinationElement.hover();
   await page.mouse.up();

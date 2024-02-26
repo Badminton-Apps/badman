@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
-import { bTest } from '../fixture';
+import { test } from '../fixture';
 
-bTest('Landing page', async ({ homePage }) => {
+test('Landing page', async ({ homePage }) => {
   // if page is visible
   await expect(homePage.ranking).toBeVisible();
 
