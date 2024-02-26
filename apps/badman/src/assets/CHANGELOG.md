@@ -1,3 +1,16 @@
+## 6.130.0-beta.19 (2024-02-26)
+
+
+### 🩹 Fixes
+
+- should resolve the NEW_VERSION variable ([ad9984fea](https://github.com/Badminton-Apps/badman/commit/ad9984fea))
+- use old sha's code ([c1bbccff0](https://github.com/Badminton-Apps/badman/commit/c1bbccff0))
+- some more linting issues ([5d328ff65](https://github.com/Badminton-Apps/badman/commit/5d328ff65))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.130.0-beta.18 (2024-02-26)
 
 
