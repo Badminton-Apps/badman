@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-logging",
-  "version": "6.130.0-beta.18",
+  "version": "6.130.0-beta.19",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@logtail/node": "~0.4.19",
