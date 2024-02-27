@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-job",
-  "version": "6.130.0-beta.20",
+  "version": "v6.131.0",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
