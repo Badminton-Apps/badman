@@ -33,7 +33,7 @@ jobs:
     name: Merge Dev into Main
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ inputs.prod-release }}
+    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && inputs.prod-release
     permissions:
       contents: write
     steps:
@@ -49,7 +49,7 @@ jobs:
           git fetch --unshallow
           git checkout main
           git pull
-          git merge --no-ff develop -m "Merging develop into main"
+          git merge --no-ff origin/develop -m "Merging develop into main"
           git push
 
   main:
@@ -176,8 +176,8 @@ jobs:
       - name: Merge main back to develop
         run: |
           git fetch --unshallow
-          git checkout develop
+          git checkout origin/develop
           git pull
           git merge --no-ff origin/main -m "chore(merge): v${{ needs.main.outputs.NEW_VERSION }} to develop"
-          # git merge --no-ff main -m "Merging main into develop"
+          # git merge --no-ff origin/main -m "Merging main into develop"
           git push
