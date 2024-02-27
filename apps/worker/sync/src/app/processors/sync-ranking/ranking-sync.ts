@@ -417,22 +417,32 @@ export class RankingSyncer {
 
           this.logger.debug(`Creating/updating ${instances.length} ranking places`);
 
-          await RankingPlace.bulkCreate(instances, {
-            updateOnDuplicate: [
-              'updatePossible',
-              'single',
-              'singlePoints',
-              'singleRank',
-              'double',
-              'doublePoints',
-              'doubleRank',
-              'mix',
-              'mixPoints',
-              'mixRank',
-            ],
-            transaction: args.transaction,
-            returning: false,
-          });
+          // split the instances in chunks of 1000
+          const chunkSize = 1000;
+          for (let i = 0; i < instances.length; i += chunkSize) {
+            const chunk = instances.slice(i, i + chunkSize);
+
+            this.logger.verbose(
+              `Processing batch  ${i} -> ${chunk.length} of ${instances.length} ranking places`,
+            );
+
+            await RankingPlace.bulkCreate(chunk, {
+              updateOnDuplicate: [
+                'updatePossible',
+                'single',
+                'singlePoints',
+                'singleRank',
+                'double',
+                'doublePoints',
+                'doubleRank',
+                'mix',
+                'mixPoints',
+                'mixRank',
+              ],
+              transaction: args.transaction,
+              returning: false,
+            });
+          }
 
           this.logger.verbose(`Finished processing ${instances.length} ranking places`);
         }
