@@ -1,3 +1,15 @@
+## v6.131.0 (2024-02-27)
+
+
+### 🩹 Fixes
+
+- removing unused comment ([3e7751bc7](https://github.com/Badminton-Apps/badman/commit/3e7751bc7))
+- other empty change for testing CI ([842c0be02](https://github.com/Badminton-Apps/badman/commit/842c0be02))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.130.0-beta.20 (2024-02-27)
 
 
