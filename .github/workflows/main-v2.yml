@@ -97,16 +97,10 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node
-          
 
-      - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+            - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
       - run: npm install
-
-
-
-      # - run: npx nx-cloud record -- nx format:check
       - run: npx nx affected -t lint test build
-      # if the e2e-tests input is true, run the e2e tests
       - name: Run Playwright tests
         run: npx nx run-many -t e2e
         id: run-e2e-tests
@@ -132,7 +126,6 @@ jobs:
 
           ## for copy pasting in shell
           # npx playwright show-report
-
       - name: Set Git config
         run: |
           git config --local user.email "info@badman.app"
@@ -144,6 +137,8 @@ jobs:
         run: node scripts/release.js --dry-run=false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: nx report
+        run: npx nx report
 
       # deploy the new packages
       - name: Deploy
