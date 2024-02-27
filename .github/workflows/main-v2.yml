@@ -33,7 +33,7 @@ jobs:
     name: Merge Dev into Main
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ inputs.prod-release }}
+    if: always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && inputs.prod-release
     permissions:
       contents: write
     steps:
