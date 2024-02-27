@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-compile",
-  "version": "6.130.0-beta.21",
+  "version": "v6.131.0",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@nestjs/common": "^10.3.1",
@@ -9,8 +9,8 @@
     "rxjs": "~7.8.1",
     "puppeteer": "^22.0.0",
     "consolidate": "^1.0.3",
-    "@badman/backend-pupeteer": "6.130.0-beta.21",
-    "@badman/utils": "6.130.0-beta.21",
+    "@badman/backend-pupeteer": "v6.131.0",
+    "@badman/utils": "v6.131.0",
     "moment-timezone": "^0.5.44",
     "nestjs-i18n": "^10.4.0"
   },
