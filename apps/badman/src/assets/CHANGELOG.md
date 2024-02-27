@@ -1,3 +1,17 @@
+## 6.130.0-beta.20 (2024-02-27)
+
+
+### 🩹 Fixes
+
+- testing if release pipeline works now ([9485df878](https://github.com/Badminton-Apps/badman/commit/9485df878))
+- processing this in smaller chunks? ([b1f7a73e0](https://github.com/Badminton-Apps/badman/commit/b1f7a73e0))
+- was sending mails incorrectly ([aeb5e0140](https://github.com/Badminton-Apps/badman/commit/aeb5e0140))
+- mailing ([6ef909a54](https://github.com/Badminton-Apps/badman/commit/6ef909a54))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.130.0 (2024-02-26)
 
 
