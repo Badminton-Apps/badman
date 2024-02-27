@@ -56,10 +56,8 @@ export class Processor {
           break;
         }
       } catch (e) {
-        this.logger.error(`Step ${name}, failed`, {
-          args,
-          error: e,
-        });
+        this.logger.error(`Step ${name}, failed`);
+        this.logger.error(e?.message, e?.stack);
         throw e;
       }
 
