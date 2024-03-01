@@ -1,3 +1,14 @@
+## 6.131.1 (2024-03-01)
+
+
+### 🩹 Fixes
+
+- seo titles ([cb6f94ef6](https://github.com/Badminton-Apps/badman/commit/cb6f94ef6))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## v6.131.0 (2024-02-27)
 
 
