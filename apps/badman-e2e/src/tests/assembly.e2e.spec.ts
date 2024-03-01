@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
-import { bTest } from '../fixture';
+import { test } from '../fixture';
 import { TestNames } from '@badman/utils';
 
 const players = TestNames.BCBroodrooster.players;
 
-bTest.describe('AssemblyPage page', () => {
-  bTest('if page is visible', async ({ assemblyPage }) => {
+test.describe('AssemblyPage page', () => {
+  test('if page is visible', async ({ assemblyPage }) => {
     await expect(assemblyPage.header).toContainText('Team assembly');
 
     // Check if all the types are correct
@@ -20,8 +20,8 @@ bTest.describe('AssemblyPage page', () => {
     expect(players.F8).toBe('F 8-8-8 BC Broodrooster');
   });
 
-  bTest.describe('Assembly', () => {
-    bTest('Mixed assembly', async ({ assemblyPage }) => {
+  test.describe('Assembly', () => {
+    test('Mixed assembly', async ({ assemblyPage }) => {
       await assemblyPage.selectClub(TestNames.BCBroodrooster.name);
       await assemblyPage.selectTeam(TestNames.BCBroodrooster.teams.G1);
 
@@ -98,7 +98,7 @@ bTest.describe('AssemblyPage page', () => {
       await expect(assemblyPage.single4List).toContainText(players.F7);
     });
 
-    bTest('Males assembly', async ({ assemblyPage }) => {
+    test('Males assembly', async ({ assemblyPage }) => {
       expect(TestNames.BCBroodrooster.name).toBeDefined();
       expect(TestNames.BCBroodrooster.teams.M1).toBeDefined();
 
@@ -170,7 +170,7 @@ bTest.describe('AssemblyPage page', () => {
       );
     });
 
-    bTest('Females assembly', async ({ assemblyPage }) => {
+    test('Females assembly', async ({ assemblyPage }) => {
       expect(TestNames.BCBroodrooster.name).toBeDefined();
       expect(TestNames.BCBroodrooster.teams.F1).toBeDefined();
 

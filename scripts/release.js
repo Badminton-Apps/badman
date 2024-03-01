@@ -80,8 +80,7 @@ function updateVersion(filePath, newVersion) {
       dryRun: options.dryRun,
       verbose: options.verbose,
     });
-
-    core.exportVariable('NEW_VERSION', workspaceVersion);
+    core.setOutput("NEW_VERSION", workspaceVersion);
     core.info(`New version: ${workspaceVersion}`);
   } catch (error) {
     core.setFailed(error.message);

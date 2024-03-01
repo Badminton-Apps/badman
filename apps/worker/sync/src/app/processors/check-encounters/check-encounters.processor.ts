@@ -254,13 +254,11 @@ export class CheckEncounterProcessor {
         `Encounter passed ${hoursPassed} hours ago, entered: ${entered}, accepted: ${accepted}, has comments: ${hasComment} ( ${url} )`,
       );
 
-      this.notificationService.notifyEncounterNotAccepted(encounter);
-
       // not entered and passed 24 hours and no comment
       if (!entered && hoursPassed > 24 && !hasComment) {
         this.notificationService.notifyEncounterNotEntered(encounter);
       }
-      //
+
       else if (!accepted && hoursPassed > 48 && !hasComment) {
         // Check if it falls under the auto accept clubs
         if (
