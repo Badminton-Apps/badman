@@ -770,7 +770,7 @@ describe('getRankingPeriods', () => {
 
     test('Get for full year', () => {
       // Assert
-      const from = moment('2023-01-01');
+      const from = moment('2022-12-31');
       const to = moment('2024-01-01');
 
       // Act
