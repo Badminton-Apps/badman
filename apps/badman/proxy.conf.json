@@ -1,16 +1,19 @@
 {
   "/api": {
+    "logLevel": "silent",
     "target": "http://127.0.0.1:5000",
     "secure": false
   },
   "/graphql": {
+    "logLevel": "silent",
     "target": "http://127.0.0.1:5000",
     "secure": false
   },
-  "/socket.io": {
+  "/socket.io/*": {
     "target": "http://127.0.0.1:5000",
     "secure": false,
     "logLevel": "silent",
     "ws": true
   }
 }
+  
