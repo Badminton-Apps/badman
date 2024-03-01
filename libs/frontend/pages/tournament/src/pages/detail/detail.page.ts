@@ -92,7 +92,7 @@ export class DetailPageComponent implements OnInit {
 
       this.seoService.update({
         title: eventTournamentName,
-        description: `Club ${eventTournamentName}`,
+        description: `Tournament ${eventTournamentName}`,
         type: 'website',
         keywords: ['event', 'tournament', 'badminton'],
       });
