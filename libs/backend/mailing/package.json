@@ -1,13 +1,13 @@
 {
   "name": "@badman/backend-mailing",
-  "version": "6.130.0-beta.17",
+  "version": "v6.131.0",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "@badman/backend-database": "*",
+    "@badman/backend-database": "v6.131.0",
     "@nestjs/common": "^10.3.1",
     "@nestjs/config": "^3.1.1",
-    "@badman/backend-compile": "*",
-    "@badman/utils": "*",
+    "@badman/backend-compile": "v6.131.0",
+    "@badman/utils": "v6.131.0",
     "moment-timezone": "^0.5.44",
     "nodemailer": "^6.9.9",
     "rxjs": "~7.8.1"

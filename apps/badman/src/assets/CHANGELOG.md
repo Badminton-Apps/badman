@@ -1,3 +1,54 @@
+## v6.131.0 (2024-02-27)
+
+
+### 🩹 Fixes
+
+- removing unused comment ([3e7751bc7](https://github.com/Badminton-Apps/badman/commit/3e7751bc7))
+- other empty change for testing CI ([842c0be02](https://github.com/Badminton-Apps/badman/commit/842c0be02))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.130.0-beta.20 (2024-02-27)
+
+
+### 🩹 Fixes
+
+- testing if release pipeline works now ([9485df878](https://github.com/Badminton-Apps/badman/commit/9485df878))
+- processing this in smaller chunks? ([b1f7a73e0](https://github.com/Badminton-Apps/badman/commit/b1f7a73e0))
+- was sending mails incorrectly ([aeb5e0140](https://github.com/Badminton-Apps/badman/commit/aeb5e0140))
+- mailing ([6ef909a54](https://github.com/Badminton-Apps/badman/commit/6ef909a54))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.130.0 (2024-02-26)
+
+
+### 🩹 Fixes
+
+- should resolve the NEW_VERSION variable ([ad9984fea](https://github.com/Badminton-Apps/badman/commit/ad9984fea))
+- use old sha's code ([c1bbccff0](https://github.com/Badminton-Apps/badman/commit/c1bbccff0))
+- some more linting issues ([5d328ff65](https://github.com/Badminton-Apps/badman/commit/5d328ff65))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.130.0-beta.18 (2024-02-26)
+
+
+### 🩹 Fixes
+
+- cleanup ([b77902e22](https://github.com/Badminton-Apps/badman/commit/b77902e22))
+- sort games that singles are always last ([d5cda614e](https://github.com/Badminton-Apps/badman/commit/d5cda614e))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.130.0-beta.17 (2024-02-20)
 
 
