@@ -1,6 +1,9 @@
 /* eslint-disable */
 export default {
-  displayName: 'scripts',
+  displayName: {
+    name: 'scripts',
+    color: 'orange',
+  },
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,
