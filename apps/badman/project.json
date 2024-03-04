@@ -32,10 +32,6 @@
           "quill",
           "apexcharts"
         ],
-        "externalDependencies": [
-          "marked",
-          "quill"
-        ],
         "styles": [
           "apps/badman/src/styles.scss",
           "node_modules/quill/dist/quill.bubble.css",
