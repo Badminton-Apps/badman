@@ -195,11 +195,18 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         await game.save({ transaction: this.transaction });
       }
 
-      const memberships = await this._createGamePlayers(xmlMatch, game);
-      await GamePlayerMembership.bulkCreate(memberships, {
-        transaction: this.transaction,
-        updateOnDuplicate: ['single', 'double', 'mix'],
-      });
+      try {
+        const memberships = await this._createGamePlayers(xmlMatch, game);
+        await GamePlayerMembership.bulkCreate(memberships, {
+          transaction: this.transaction,
+          updateOnDuplicate: ['single', 'double', 'mix'],
+        });
+      } catch (e) {
+        this.logger.error(
+          `Error on bulk create game player membership: ${e.message}, for game: ${game.id} and ${xmlMatch.Code}`,
+        );
+        throw e;
+      }
     }
 
     // Remove draw that are not in the xml
@@ -382,6 +389,10 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
   }
 
   private _getPlayer(player?: XmlPlayer): Player | undefined {
+    if (!player) {
+      return undefined;
+    }
+
     let returnPlayer = this.players?.get(`${player?.MemberID}`);
 
     if ((returnPlayer ?? null) == null && (player ?? null) != null) {
