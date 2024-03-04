@@ -1,3 +1,16 @@
+## 6.131.2 (2024-03-04)
+
+
+### 🩹 Fixes
+
+- don't create memberships for undefined players ([eddee223d](https://github.com/Badminton-Apps/badman/commit/eddee223d))
+- marking these as external ([e96ebfef1](https://github.com/Badminton-Apps/badman/commit/e96ebfef1))
+- maybe add the packages as dependcies? ([02046e3bf](https://github.com/Badminton-Apps/badman/commit/02046e3bf))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.131.1 (2024-03-01)
 
 
