@@ -57,13 +57,7 @@ jobs:
       - name: set SHAs
         run: |
           # run code only on main branch
-          if [ ${{ github.ref == 'refs/heads/main' }} ]; then
-            #  get last major tag (not including beta)
-            TAG_VERSION=$(git describe --match 'v*' --exclude='*beta*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-          else
-            # get last tag
-            TAG_VERSION=$(git describe --match 'v*' --abbrev=0 --tags $(git rev-list --tags --max-count=1))
-          fi
+          TAG_VERSION=$(git describe --first-parent --match 'v*' --abbrev=0 --tags) 
 
           echo "Found tag: $TAG_VERSION"
           LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
