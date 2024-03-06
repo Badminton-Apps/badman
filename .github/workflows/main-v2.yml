@@ -73,7 +73,7 @@ jobs:
           echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
 
           # Set NX_HEAD to the current commit
-          echo "NX_HEAD=origin/${{github.ref_name }}" >> $GITHUB_ENV
+          echo "NX_HEAD=origin/${{github.ref == 'refs/heads/main'}}" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v3
         with:
