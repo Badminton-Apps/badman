@@ -63,7 +63,7 @@ export class NotificationService {
     'BNLv_q5Q5wfDi75nas8b_eZKIKz8QOkgXi-jrKyzzr18AfQCYIhUvswR_AOBZQqEVGi_EGdSBidCK_oYDpy1zXk';
 
   constructor() {
-    combineLatest([toObservable(this.authService.userSignal), this.update$])
+    combineLatest([toObservable(this.authService.user), this.update$])
       .pipe(
         debounceTime(1000),
         switchMap(([player]) => {
