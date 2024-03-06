@@ -65,7 +65,7 @@ export class ClubStepComponent implements OnInit {
   controlName = input(CLUB);
   controlEmailName = input(EMAIL);
 
-  user = this.authenticateService.userSignal;
+  user = this.authenticateService.user;
 
   ngOnInit() {
     if (this.controlClub() != undefined) {

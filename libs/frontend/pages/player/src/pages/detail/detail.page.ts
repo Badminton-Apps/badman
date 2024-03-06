@@ -96,12 +96,12 @@ export class DetailPageComponent {
 
   hasMenu = computed(
     () =>
-      this.auth.loggedInSignal() &&
+      this.auth.loggedIn() &&
       this.claim.hasAnyClaims(['edit-any:player', this.player().id + '_edit:player', 'change:job']),
   );
 
   canClaim = computed(
-    () => this.auth.loggedInSignal() && !this.auth.userSignal()?.id && !this.player().sub,
+    () => this.auth.loggedIn() && !this.auth.user()?.id && !this.player().sub,
   );
 
   hasMenu$?: Observable<boolean>;

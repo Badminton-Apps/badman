@@ -1045,7 +1045,7 @@ export class AssemblyComponent implements OnInit {
   };
 
   private _loadSaved(encounterId: string, captainId?: string) {
-    if (!this.authenticateService.loggedInSignal) {
+    if (!this.authenticateService.loggedIn) {
       return of([]);
     }
 
@@ -1056,7 +1056,7 @@ export class AssemblyComponent implements OnInit {
           id: encounterId,
           where: {
             captainId,
-            playerId: this.authenticateService?.userSignal()?.id,
+            playerId: this.authenticateService?.user()?.id,
           },
         },
       })

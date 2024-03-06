@@ -72,7 +72,7 @@ export class SelectTeamComponent implements OnInit {
   protected internalControl!: FormControl<string[] | string | null>;
 
   teams$?: Observable<{ type: string; teams: Team[] }[]>;
-  user$ = toObservable(this.authenticateService.userSignal);
+  user$ = toObservable(this.authenticateService.user);
 
   constructor(
     private apollo: Apollo,

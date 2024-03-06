@@ -28,8 +28,8 @@ export class BetaComponent implements OnInit {
 
   version = input<string | undefined>();
 
-  user = computed(() => this.authenticateService.userSignal());
-  loggedIn = computed(() => this.authenticateService.loggedInSignal());
+  user = computed(() => this.authenticateService.user());
+  loggedIn = computed(() => this.authenticateService.loggedIn());
 
   // store the state of the beta message in local storage
   hideBetaMessage = false;

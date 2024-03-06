@@ -19,7 +19,7 @@ export class ClaimService {
   private update$ = new BehaviorSubject(null);
 
   claims = computedAsync(() => this.claims$);
-  user$ = toObservable(this.authService.userSignal);
+  user$ = toObservable(this.authService.user);
 
   constructor() {
     combineLatest([this.user$, this.update$])

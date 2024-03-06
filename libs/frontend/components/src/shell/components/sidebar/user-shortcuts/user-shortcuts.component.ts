@@ -35,8 +35,8 @@ import { TranslateModule } from '@ngx-translate/core';
 export class UserShortcutsComponent {
   private readonly authenticateService = inject(AuthenticateService);
 
-  user = computed(() => this.authenticateService.userSignal());
-  loggedIn = computed(() => this.authenticateService.loggedInSignal());
+  user = computed(() => this.authenticateService.user());
+  loggedIn = computed(() => this.authenticateService.loggedIn());
   clubs = computed(() =>
     (this.user()?.clubs ?? [])
       .filter(
