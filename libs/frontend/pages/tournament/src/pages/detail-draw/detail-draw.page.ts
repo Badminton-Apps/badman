@@ -1,8 +1,16 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  PLATFORM_ID,
+  computed,
+  effect,
+  inject,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
   PageHeaderComponent,
   RecentGamesComponent,
@@ -32,28 +40,36 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     PageHeaderComponent,
   ],
 })
-export class DetailDrawComponent implements OnInit {
-  drawTournament!: DrawTournament;
-  eventTournament!: EventTournament;
-  players?: Player[];
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private breadcrumbsService: BreadcrumbService,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
+export class DetailDrawComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly seoService = inject(SeoService);
+  private readonly platformId = inject(PLATFORM_ID);
+
+  private routeData = toSignal(this.route.data);
+
+  drawTournament = computed(() => this.routeData()?.['drawTournament'] as DrawTournament);
+  eventTournament = computed(() => this.routeData()?.['eventTournament'] as EventTournament);
+
+  players = computed(
+    () =>
+      this.drawTournament()
+        ?.eventEntries?.map((e) => {
+          return e.players;
+        })
+        .flat()
+        .filter((p) => p) as Player[],
+  );
 
   get isClient(): boolean {
     return isPlatformBrowser(this.platformId);
   }
 
-  ngOnInit(): void {
-    this.route.data.subscribe((data) => {
-      this.drawTournament = data['drawTournament'];
-      this.eventTournament = data['eventTournament'];
-
-      const drawTournamentName = `${this.drawTournament.name}`;
-      const eventTournamentName = `${this.eventTournament.name}`;
+  constructor() {
+    effect(() => {
+      const drawTournamentName = `${this.drawTournament().name}`;
+      const eventTournamentName = `${this.eventTournament().name}`;
 
       this.seoService.update({
         title: drawTournamentName,
@@ -61,15 +77,8 @@ export class DetailDrawComponent implements OnInit {
         type: 'website',
         keywords: ['event', 'tournament', 'badminton'],
       });
-      this.breadcrumbsService.set('@eventTournament', eventTournamentName);
-      this.breadcrumbsService.set('@drawTournament', drawTournamentName);
-
-      this.players = this.drawTournament?.eventEntries
-        ?.map((e) => {
-          return e.players;
-        })
-        .flat()
-        .filter((p) => p) as Player[];
+      this.breadcrumbService.set('@eventTournament', eventTournamentName);
+      this.breadcrumbService.set('@drawTournament', drawTournamentName);
     });
   }
 }

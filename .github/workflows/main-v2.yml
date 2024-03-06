@@ -133,7 +133,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # deploy the new packages
-      - name: Deploy
+      - name: Deploy to ${{ github.ref == 'refs/heads/main' && 'Prod' || 'Beta' }}
         run: npx nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{ github.ref == 'refs/heads/main' && secrets.PROD_API_HOOK  || secrets.BETA_API_HOOK }}
@@ -170,3 +170,10 @@ jobs:
           target_branch: develop
           message: 'chore(merge): merge main into develop'
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      # deploy the new packages
+      - name: Deploy to Beta
+        run: npx nx affected -t deploy --no-agents
+        env:
+          API_HOOK: ${{  secrets.BETA_API_HOOK }}
+          WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
+          WORKER_RANKING_HOOK: ${{  secrets.BETA_WORKER_RANKING_HOOK }}
