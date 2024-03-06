@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-team-enrollment",
-  "version": "6.132.0",
+  "version": "6.133.0",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",

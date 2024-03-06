@@ -3,11 +3,11 @@
     <!-- <button mat-icon-button class="favorite" title="favorite">
     <mat-icon>star_outline</mat-icon>
   </button> -->
-    @if (this.eventTournament.visualCode) {
+    @if (this.eventTournament().visualCode) {
       <a
         mat-icon-button
         target="_blank"
-        [href]="'https://www.toernooi.nl/tournament/' + this.eventTournament.visualCode"
+        [href]="'https://www.toernooi.nl/tournament/' + this.eventTournament().visualCode"
         [matTooltip]="'all.button.open-in-new-tab' | translate"
       >
         <mat-icon>open_in_new</mat-icon>
@@ -25,7 +25,7 @@
           </button>
           <button mat-menu-item (click)="this.makeOfficial()">
             <mat-icon>verified_user</mat-icon>
-            <span>{{ this.eventTournament.official ? 'Unmake' : 'Make' }} official</span>
+            <span>{{ this.eventTournament().official ? 'Unmake' : 'Make' }} official</span>
           </button>
         </badman-has-claim>
         <badman-has-claim [any]="['change:job']">
@@ -55,29 +55,30 @@
       </mat-menu>
     </badman-has-claim>
   </div>
-  <div title>{{ eventTournament.name }}</div>
+  <div title>{{ this.eventTournament().name }}</div>
   <div subTitle>
     <mat-chip-listbox>
       <mat-chip
         >{{ 'all.tournament.enrollment.title' | translate }}:
         {{
-          (this.eventTournament.allowEnlisting ?? false
+          (this.eventTournament().allowEnlisting ?? false
             ? 'all.tournament.enrollment.open'
             : 'all.tournament.enrollment.closed'
           ) | translate
         }}</mat-chip
       >
-      @if (eventTournament.lastSync) {
+      @if (this.eventTournament().lastSync) {
         <mat-chip>
-          {{ 'all.event.last-sync' | translate }}: {{ eventTournament.lastSync | amCalendar }}
+          {{ 'all.event.last-sync' | translate }}:
+          {{ this.eventTournament().lastSync | amCalendar }}
         </mat-chip>
       }
     </mat-chip-listbox>
   </div>
 </badman-page-header>
-@if (subEvents) {
+@if (this.subEvents()) {
   <div class="subEvents">
-    @for (type of subEvents; track type) {
+    @for (type of this.subEvents(); track type) {
       <div class="type">
         <h3>{{ 'all.game.types.long.' + type.eventType | translate }}</h3>
         @for (sub of type.subEvents; track sub) {
