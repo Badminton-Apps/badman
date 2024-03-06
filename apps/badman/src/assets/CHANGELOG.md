@@ -1,3 +1,14 @@
+## 6.133.1 (2024-03-06)
+
+
+### 🩹 Fixes
+
+- saving shouldn't be enabled when not loggedin ([22de8e8e3](https://github.com/Badminton-Apps/badman/commit/22de8e8e3))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.133.0 (2024-03-06)
 
 
