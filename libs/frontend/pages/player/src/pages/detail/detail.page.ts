@@ -78,8 +78,8 @@ export class DetailPageComponent {
   private readonly injector = inject(Injector);
 
   // route
-  private queryParams = toSignal(this.route.queryParamMap);
-  private routeParams = toSignal(this.route.paramMap);
+  // private queryParams = toSignal(this.route.queryParamMap);
+  // private routeParams = toSignal(this.route.paramMap);
   private routeData = toSignal(this.route.data);
 
   player = computed(() => this.routeData()?.['player'] as Player);
