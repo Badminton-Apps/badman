@@ -3,11 +3,11 @@ import {
   ChangeDetectorRef,
   Component,
   Injector,
-  OnInit,
   TemplateRef,
   ViewChild,
+  computed,
   inject,
-  signal,
+  signal
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -59,8 +59,8 @@ import { AssemblyV2Component } from './components/assembly-v2/assembly-v2.compon
     MatRippleModule,
   ],
 })
-export class CreatePageComponent implements OnInit {
-  private injector = inject(Injector);
+export class CreatePageComponent {
+  private readonly injector = inject(Injector);
   private readonly apollo = inject(Apollo);
   private readonly seoService = inject(SeoService);
   private readonly route = inject(ActivatedRoute);
@@ -87,9 +87,9 @@ export class CreatePageComponent implements OnInit {
   teamId = signal<string | undefined>(undefined);
   encounterId = signal<string | undefined>(undefined);
 
-  loggedIn = signal(() => this.authenticateService.loggedInSignal());
+  loggedIn = computed(() => this.authenticateService.loggedIn());
 
-  ngOnInit(): void {
+  constructor() {
     this.seoService.update({
       title: `Create assembly`,
       description: `Create assembly`,
@@ -281,7 +281,7 @@ export class CreatePageComponent implements OnInit {
             id: this.formGroup?.get('encounter')?.value,
             where: {
               captainId: this.formGroup?.get('captain')?.value,
-              playerId: this.authenticateService?.userSignal()?.id,
+              playerId: this.authenticateService?.user()?.id,
             },
           },
         },

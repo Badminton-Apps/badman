@@ -64,7 +64,7 @@ export class CommentsComponent implements OnInit, OnChanges {
   private injector = inject(Injector);
 
   // signals
-  user = this.authenticateService.userSignal;
+  user = this.authenticateService.user;
   comments!: Signal<Comment[] | undefined>;
 
   //

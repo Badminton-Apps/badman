@@ -108,7 +108,7 @@ export class SelectClubComponent implements OnInit {
 
   hasAllClubs = computed(() => this.claimSerice.hasAllClaims([`${this.allClubPermission()}`]));
 
-  user = this.authService.userSignal;
+  user = this.authService.user;
 
   ngOnInit() {
     if (this.control()) {
