@@ -10,7 +10,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   PageHeaderComponent,
   RecentGamesComponent,
@@ -42,7 +42,6 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 })
 export class DetailDrawComponent {
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly seoService = inject(SeoService);
   private readonly platformId = inject(PLATFORM_ID);
