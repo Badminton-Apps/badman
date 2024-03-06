@@ -1,3 +1,17 @@
+## 6.131.3 (2024-03-06)
+
+
+### 🩹 Fixes
+
+- better label naming ([d8e197406](https://github.com/Badminton-Apps/badman/commit/d8e197406))
+- set better default values ([33e13b990](https://github.com/Badminton-Apps/badman/commit/33e13b990))
+- conversion leftovers ([ea69aae2d](https://github.com/Badminton-Apps/badman/commit/ea69aae2d))
+- more seo stuff ([2a724be8e](https://github.com/Badminton-Apps/badman/commit/2a724be8e))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.131.2 (2024-03-04)
 
 
