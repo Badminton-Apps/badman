@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,8 +20,8 @@ import {
   OpenCloseDateDialogComponent,
   PageHeaderComponent,
 } from '@badman/frontend-components';
-import { JobsService } from '@badman/frontend-queue';
 import { EventTournament, SubEventTournament } from '@badman/frontend-models';
+import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
 import { sortSubEvents } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -56,25 +57,24 @@ import { AssignRankingGroupsComponent } from '../../components';
     HasClaimComponent,
   ],
 })
-export class DetailPageComponent implements OnInit {
-  eventTournament!: EventTournament;
-  subEvents?: { eventType: string; subEvents: SubEventTournament[] }[];
+export class DetailPageComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly seoService = inject(SeoService);
+  private readonly router = inject(Router);
+  private readonly apollo = inject(Apollo);
+  private readonly jobsService = inject(JobsService);
+  private readonly dialog = inject(MatDialog);
+  private readonly matSnackBar = inject(MatSnackBar);
 
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private matSnackBar: MatSnackBar,
-    private dialog: MatDialog,
-    private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private jobsService: JobsService,
-    private router: Router,
-  ) {}
+  private routeData = toSignal(this.route.data);
 
-  ngOnInit(): void {
-    this.route.data.subscribe((data) => {
-      this.eventTournament = data['eventTournament'];
-      this.subEvents = this.eventTournament.subEventTournaments?.sort(sortSubEvents)?.reduce(
+  eventTournament = computed(() => this.routeData()?.['eventTournament'] as EventTournament);
+
+  subEvents = computed(() => {
+    return this.eventTournament()
+      .subEventTournaments?.sort(sortSubEvents)
+      ?.reduce(
         (acc, subEventTournament) => {
           const eventType = subEventTournament.eventType || 'Unknown';
           const subEvents = acc.find((x) => x.eventType === eventType)?.subEvents;
@@ -87,8 +87,11 @@ export class DetailPageComponent implements OnInit {
         },
         [] as { eventType: string; subEvents: SubEventTournament[] }[],
       );
+  });
 
-      const eventTournamentName = `${this.eventTournament.name}`;
+  constructor() {
+    effect(() => {
+      const eventTournamentName = `${this.eventTournament().name}`;
 
       this.seoService.update({
         title: eventTournamentName,
@@ -96,7 +99,7 @@ export class DetailPageComponent implements OnInit {
         type: 'website',
         keywords: ['event', 'tournament', 'badminton'],
       });
-      this.breadcrumbsService.set('@eventTournament', eventTournamentName);
+      this.breadcrumbService.set('@eventTournament', eventTournamentName);
     });
   }
 
@@ -109,8 +112,8 @@ export class DetailPageComponent implements OnInit {
 
     ref.afterClosed().subscribe((result) => {
       if (result) {
-        this.eventTournament.openDate = result.openDate;
-        this.eventTournament.closeDate = result.closeDate;
+        this.eventTournament().openDate = result.openDate;
+        this.eventTournament().closeDate = result.closeDate;
 
         this.apollo
           .mutate({
@@ -123,15 +126,15 @@ export class DetailPageComponent implements OnInit {
             `,
             variables: {
               data: {
-                id: this.eventTournament.id,
-                openDate: this.eventTournament.openDate,
-                closeDate: this.eventTournament.closeDate,
+                id: this.eventTournament().id,
+                openDate: this.eventTournament().openDate,
+                closeDate: this.eventTournament().closeDate,
               },
             },
           })
           .subscribe(() => {
             this.matSnackBar.open(
-              `Tournament ${this.eventTournament.name} open/close dates updated`,
+              `Tournament ${this.eventTournament().name} open/close dates updated`,
               'Close',
               {
                 duration: 2000,
@@ -143,7 +146,7 @@ export class DetailPageComponent implements OnInit {
   }
 
   makeOfficial() {
-    this.eventTournament.official = !this.eventTournament.official;
+    this.eventTournament().official = !this.eventTournament().official;
     this.apollo
       .mutate({
         mutation: gql`
@@ -155,14 +158,14 @@ export class DetailPageComponent implements OnInit {
         `,
         variables: {
           data: {
-            id: this.eventTournament.id,
-            official: this.eventTournament.official,
+            id: this.eventTournament().id,
+            official: this.eventTournament().official,
           },
         },
       })
       .subscribe(() => {
         this.matSnackBar.open(
-          `Tournament ${this.eventTournament.name} is ${this.eventTournament.official ? 'official' : 'unofficial'}`,
+          `Tournament ${this.eventTournament().name} is ${this.eventTournament().official ? 'official' : 'unofficial'}`,
           'Close',
           {
             duration: 2000,
@@ -172,9 +175,9 @@ export class DetailPageComponent implements OnInit {
   }
 
   async syncEvent() {
-    if (!this.eventTournament.visualCode) {
+    if (!this.eventTournament().visualCode) {
       this.matSnackBar.open(
-        `Tournament ${this.eventTournament.name} has no visual code, add it via the "add event" button in the overview page.`,
+        `Tournament ${this.eventTournament().name} has no visual code, add it via the "add event" button in the overview page.`,
         'Close',
         {
           duration: 2000,
@@ -184,7 +187,9 @@ export class DetailPageComponent implements OnInit {
       return;
     }
 
-    await lastValueFrom(this.jobsService.syncEventById({ id: this.eventTournament.visualCode }));
+    await lastValueFrom(
+      this.jobsService.syncEventById({ id: this.eventTournament().visualCode as string }),
+    );
   }
 
   assignRankingGroups() {
@@ -226,7 +231,7 @@ export class DetailPageComponent implements OnInit {
             }
           `,
           variables: {
-            id: this.eventTournament.id,
+            id: this.eventTournament().id,
           },
           refetchQueries: ['EventTournament'],
         })
