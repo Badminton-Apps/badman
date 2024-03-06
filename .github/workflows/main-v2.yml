@@ -38,12 +38,15 @@ jobs:
         run: |
           git config --local user.email "info@badman.app"
           git config --local user.name "Badman Releaser"
-      - name: Merge develop in to main
-        run: |
-          # Merge develop into main
-          git fetch --all -v
-          git merge --no-ff develop -m "chore(merge): Merge develop into main"
-          git push origin main
+
+      - name: Merge development -> main
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: develop
+          target_branch: main
+          message: "chore(merge): merge develop into main"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
   main:
     runs-on: ubuntu-latest
@@ -167,10 +170,12 @@ jobs:
         run: |
           git config --local user.email "info@badman.app"
           git config --local user.name "Badman Releaser"
-      - name: Merge main back to develop
-        run: |
-          git fetch --unshallow
-          git checkout develop
-          git pull
-          git merge --no-ff origin/main -m "chore(merge): v${{ needs.main.outputs.NEW_VERSION }} to develop"
-          git push origin develop
+
+      - name: Merge main -> develop
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: main
+          target_branch: develop
+          message: "chore(merge): merge main into develop"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
