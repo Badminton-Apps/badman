@@ -41,6 +41,7 @@ jobs:
       - name: Merge develop in to main
         run: |
           # Merge develop into main
+          git fetch --all -v
           git merge --no-ff origin/develop -m "Merging develop into main"
           git push origin main
 
