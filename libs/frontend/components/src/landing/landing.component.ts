@@ -55,8 +55,8 @@ export class LandingComponent implements OnInit {
   teams = signal<Team[]>([]);
   // computed
   hasTeams = computed(() => this.teams()?.length > 0);
-  user = computed(() => this.authenticateService.userSignal());
-  loggedIn = computed(() => this.authenticateService.loggedInSignal());
+  user = computed(() => this.authenticateService.user());
+  loggedIn = computed(() => this.authenticateService.loggedIn());
 
   ngOnInit() {
     effect(

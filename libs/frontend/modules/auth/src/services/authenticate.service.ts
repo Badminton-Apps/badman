@@ -46,13 +46,13 @@ export class AuthenticateService {
 
   // state
   initialState: AuthState = {
-    user: null,
+    user: { loggedIn: false } as LoggedinUser,
     loaded: false,
   };
 
   // selectors
-  userSignal = computed(() => this.state().user);
-  loggedInSignal = computed(() => this.state().user?.loggedIn ?? false);
+  user = computed(() => this.state().user);
+  loggedIn = computed(() => this.state().user?.loggedIn ?? false);
 
   // sources
   private loggedIn$ = merge(
@@ -89,6 +89,7 @@ export class AuthenticateService {
               );
             }),
             map((result) => {
+              console.log('result', result);
               const user = new LoggedinUser(result as Partial<LoggedinUser>);
               user.loggedIn = true;
               return user;

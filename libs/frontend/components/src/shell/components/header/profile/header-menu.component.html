@@ -1,4 +1,4 @@
-@if (!auth.loggedInSignal()) {
+@if (!auth.loggedIn()) {
   <button mat-button (click)="login()">Log in</button>
   <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="button for more option menu">
     <mat-icon>more_vert</mat-icon>
@@ -12,23 +12,23 @@
   >
     <img
       class="avatar"
-      [src]="auth.userSignal()?.picture"
-      [alt]="'profile picture' + auth.userSignal()?.fullName"
+      [src]="auth.user()?.picture"
+      [alt]="'profile picture' + auth.user()?.fullName"
       loading="lazy"
     />
-    {{ auth.userSignal()?.firstName }}
+    {{ auth.user()?.firstName }}
   </button>
 }
 
 <mat-menu #menu="matMenu">
-  @if (auth.loggedInSignal()) {
-    @if (auth.userSignal()?.fullName) {
-      <div mat-menu-item [routerLink]="['/', 'player', auth.userSignal()?.slug]">
-        {{ auth.userSignal()?.fullName }}
+  @if (auth.loggedIn()) {
+    @if (auth.user()?.fullName) {
+      <div mat-menu-item [routerLink]="['/', 'player', auth.user()?.slug]">
+        {{ auth.user()?.fullName }}
       </div>
     }
     <button mat-menu-item (click)="logout()">Logout</button>
-    <a mat-menu-item [routerLink]="['/', 'player', auth.userSignal()?.slug, 'settings']"
+    <a mat-menu-item [routerLink]="['/', 'player', auth.user()?.slug, 'settings']"
       >Settings</a
     >
     <mat-divider></mat-divider>
