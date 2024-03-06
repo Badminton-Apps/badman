@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-excel",
-  "version": "6.131.2",
+  "version": "6.131.3",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
