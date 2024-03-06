@@ -30,8 +30,6 @@ jobs:
       NEW_VERSION: ${{ steps.create_release.outputs.new_version  }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Merge development -> main
         uses: devmasx/merge-branch@master
         if: github.ref == 'refs/heads/main'
@@ -41,6 +39,10 @@ jobs:
           target_branch: main
           message: 'chore(merge): merge develop into main'
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: set SHAs
         run: |
