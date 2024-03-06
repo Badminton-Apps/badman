@@ -1,3 +1,18 @@
+## 6.133.0 (2024-03-06)
+
+
+### 🚀 Features
+
+- tournament detail updated ([72d141aa5](https://github.com/Badminton-Apps/badman/commit/72d141aa5))
+
+### 🩹 Fixes
+
+- cleanup draw-detail router code ([77a4932f5](https://github.com/Badminton-Apps/badman/commit/77a4932f5))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.132.0 (2024-03-06)
 
 
