@@ -1,3 +1,14 @@
+## 6.132.0 (2024-03-06)
+
+
+### 🚀 Features
+
+- tournament draw detai updated ([1387936fa](https://github.com/Badminton-Apps/badman/commit/1387936fa))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.131.3 (2024-03-06)
 
 
