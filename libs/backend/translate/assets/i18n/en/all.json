@@ -723,8 +723,8 @@
       "ranking-date": "Ranking update",
       "remove-current-ranking": "Remove all current rankings from ranking date",
       "title": "File upload",
-      "update-possible": "Ranking update",
-      "update-ranking": "Update Ranking"
+      "update-possible": "Ranking change has taken place",
+      "update-ranking": "Update rankings according to file"
     }
   },
   "search": {
