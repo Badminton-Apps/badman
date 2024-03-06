@@ -43,9 +43,9 @@ export function langulageInitializer(
       if (!savedLang && isPlatformBrowser(platform)) {
         effect(
           () => {
-            if (authenticateService.loggedInSignal()) {
-              if (authenticateService.userSignal()?.setting?.language) {
-                savedLang = authenticateService.userSignal()?.setting?.language;
+            if (authenticateService.loggedIn()) {
+              if (authenticateService.user()?.setting?.language) {
+                savedLang = authenticateService.user()?.setting?.language;
               }
             }
             setLang(savedLang);

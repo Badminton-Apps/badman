@@ -53,7 +53,7 @@ export class CanChangeEncounterGuard {
         ),
     );
 
-    if (this.authService.loggedInSignal()) {
+    if (this.authService.loggedIn()) {
       if (this.claimService.hasClaim('change-any:encounter')) {
         return true;
       }
