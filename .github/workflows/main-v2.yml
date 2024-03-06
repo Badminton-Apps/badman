@@ -42,7 +42,7 @@ jobs:
         run: |
           # Merge develop into main
           git fetch --all -v
-          git merge --no-ff origin/develop -m "chore(merge): Merge develop into main"
+          git merge --no-ff develop -m "chore(merge): Merge develop into main"
           git push origin main
 
   main:
