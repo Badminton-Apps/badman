@@ -34,18 +34,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set Git config
-        run: |
-          git config --local user.email "info@badman.app"
-          git config --local user.name "Badman Releaser"
-
       - name: Merge development -> main
         uses: devmasx/merge-branch@master
         with:
           type: now
           from_branch: develop
           target_branch: main
-          message: "chore(merge): merge develop into main"
+          message: 'chore(merge): merge develop into main'
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   main:
@@ -78,7 +73,7 @@ jobs:
           echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
 
           # Set NX_HEAD to the current commit
-          echo "NX_HEAD=origin/${{github.ref == 'refs/heads/main'}}" >> $GITHUB_ENV
+          echo "NX_HEAD=origin/${{github.ref_name}}" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v3
         with:
@@ -166,10 +161,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set Git config
-        run: |
-          git config --local user.email "info@badman.app"
-          git config --local user.name "Badman Releaser"
 
       - name: Merge main -> develop
         uses: devmasx/merge-branch@master
@@ -177,5 +168,5 @@ jobs:
           type: now
           from_branch: main
           target_branch: develop
-          message: "chore(merge): merge main into develop"
+          message: 'chore(merge): merge main into develop'
           github_token: ${{ secrets.GITHUB_TOKEN }}
