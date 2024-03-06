@@ -61,10 +61,10 @@ export class UploadRankingDialogComponent {
   uploadedFile?: File;
   uploadProgress$?: Subscription;
 
-  competitionStatus = false;
+  competitionStatus = true;
   updatePossible = false;
   removeAllRanking = false;
-  updateRanking = false;
+  updateRanking = true;
   createNewPlayers = true;
   rankingDate = new Date();
 
