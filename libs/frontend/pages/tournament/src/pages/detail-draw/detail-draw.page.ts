@@ -57,7 +57,7 @@ export class DetailDrawComponent implements OnInit {
 
       this.seoService.update({
         title: drawTournamentName,
-        description: `Club ${drawTournamentName}`,
+        description: `Draw ${drawTournamentName}`,
         type: 'website',
         keywords: ['event', 'tournament', 'badminton'],
       });
