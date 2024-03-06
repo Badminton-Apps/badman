@@ -41,7 +41,9 @@ jobs:
       - name: Merge develop in to main
         run: |
           # Merge develop into main
-          git fetch && git rebase origin/develop
+          git fetch --all -v
+          git merge --no-ff origin/develop -m "chore(merge): Merge develop into main"
+          git push origin main
 
   main:
     runs-on: ubuntu-latest
