@@ -1,3 +1,20 @@
+## 6.134.0 (2024-03-12)
+
+
+### 🚀 Features
+
+- adding quick acess buttons for next and prev update ([c814c1901](https://github.com/Badminton-Apps/badman/commit/c814c1901))
+- ranking breakdown mobile improvements ([4b60b5b38](https://github.com/Badminton-Apps/badman/commit/4b60b5b38))
+- inject device type ([7321e5184](https://github.com/Badminton-Apps/badman/commit/7321e5184))
+
+### 🩹 Fixes
+
+- move translation to correct location ([6597dfd49](https://github.com/Badminton-Apps/badman/commit/6597dfd49))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.133.1 (2024-03-06)
 
 

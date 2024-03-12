@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-role",
-  "version": "6.133.1",
+  "version": "6.134.0",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
