@@ -7,7 +7,6 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
@@ -25,7 +24,6 @@ import {
   TransferState,
   ViewChild,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -47,7 +45,7 @@ import {
   TeamPlayer,
 } from '@badman/frontend-models';
 import { EditDialogComponent } from '@badman/frontend-team';
-import { transferState } from '@badman/frontend-utils';
+import { DEVICE, transferState } from '@badman/frontend-utils';
 import { TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -143,14 +141,9 @@ export const SAVED_ASSEMBLY = gql`
 })
 export class AssemblyComponent implements OnInit {
   private destroy$ = injectDestroy();
-  breakpointObserver = inject(BreakpointObserver);
 
-  isHandset = toSignal(
-    this.breakpointObserver
-      .observe(['(max-width: 959.98px)'])
-      .pipe(map((result) => result.matches)),
-  );
-
+  isHandset = inject(DEVICE);
+  
   group = input.required<FormGroup>();
 
   type = signal<string | undefined>(undefined);
