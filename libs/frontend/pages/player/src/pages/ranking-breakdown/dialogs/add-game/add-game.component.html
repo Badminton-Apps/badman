@@ -1,17 +1,17 @@
 <h2 mat-dialog-title>
-  {{ 'all.breakdown.add-game.title' | translate }}
+  {{ 'all.ranking.breakdown.add-game.title' | translate }}
 </h2>
 <mat-dialog-content>
   <form [formGroup]="this.formGroup">
     <mat-slide-toggle formControlName="won">{{
-      'all.breakdown.add-game.won' | translate
+      'all.ranking.breakdown.add-game.won' | translate
     }}</mat-slide-toggle>
     <div class="game">
       <div class="team1">
         <div class="player1">
           <badman-select-player
             controlName="p1t1"
-            [label]="'all.breakdown.add-game.p1t1' | translate"
+            [label]="'all.ranking.breakdown.add-game.p1t1' | translate"
             [formGroup]="this.formGroup"
             [fragment]="fragment"
           ></badman-select-player>
@@ -31,7 +31,7 @@
           <div class="player2">
             <badman-select-player
               controlName="p2t1"
-              [label]="'all.breakdown.add-game.p2t1' | translate"
+              [label]="'all.ranking.breakdown.add-game.p2t1' | translate"
               [formGroup]="this.formGroup"
               [fragment]="fragment"
             ></badman-select-player>
@@ -53,7 +53,7 @@
         <div class="player1">
           <badman-select-player
             controlName="p1t2"
-            [label]="'all.breakdown.add-game.p1t2' | translate"
+            [label]="'all.ranking.breakdown.add-game.p1t2' | translate"
             [formGroup]="this.formGroup"
             [fragment]="fragment"
           ></badman-select-player>
@@ -73,7 +73,7 @@
           <div class="player2">
             <badman-select-player
               controlName="p2t2"
-              [label]="'all.breakdown.add-game.p2t2' | translate"
+              [label]="'all.ranking.breakdown.add-game.p2t2' | translate"
               [formGroup]="this.formGroup"
               [fragment]="fragment"
             ></badman-select-player>

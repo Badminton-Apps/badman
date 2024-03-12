@@ -37,7 +37,7 @@ export class ShowLevelComponent implements OnInit {
   tooltip = computed(() => {
     let tooltip = '';
     if (this.nextLevel()) {
-      tooltip = `${this.translate.instant('all.breakdown.upgrade')}: > ${this.nextLevel()}`;
+      tooltip = `${this.translate.instant('all.ranking.breakdown.upgrade')}: > ${this.nextLevel()}`;
     }
 
     if (this.prevLevel() && this.nextLevel()) {
@@ -45,7 +45,7 @@ export class ShowLevelComponent implements OnInit {
     }
 
     if (this.prevLevel()) {
-      tooltip += `${this.translate.instant('all.breakdown.downgrade')}: < ${this.prevLevel()}`;
+      tooltip += `${this.translate.instant('all.ranking.breakdown.downgrade')}: < ${this.prevLevel()}`;
     }
 
     return tooltip;

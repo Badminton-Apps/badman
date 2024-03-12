@@ -1,60 +1,4 @@
 {
-  "breakdown": {
-    "add-game": {
-      "p1t1": "Player 1 - Team 1",
-      "p1t2": "Player 1 - Team 2",
-      "p2t1": "Player 2 - Team 1",
-      "p2t2": "Player 2 - Team 2",
-      "title": "Add (fictive) game",
-      "won": "Team 1 won?"
-    },
-    "can-downgrade": "With this number of points (<{points}), the player will drop from {level} to {newLevel}",
-    "can-not-downgrade": "Less than {points} = dropping from {level} to {newLevel}",
-    "can-not-upgrade": "More than {points} = rising from {level} to {newLevel}",
-    "can-upgrade": "With this number of points (>{points}), the player will rise from {level} to {newLevel}",
-    "corrected": "Originally {original} games, average is being calculated with minimum {corrected} games.",
-    "date": "Date",
-    "disclaimer": "Currently, this is a proof of concept. This is because we don't have the full data set from an external system to show the following correctly. We are working on this.",
-    "downgrade": "Downgrade",
-    "drops-next-period": "Drops next period",
-    "evolution": "Evolution",
-    "hint": "Click on a level for simulation and breakdown",
-    "ignored": "Doesn't count",
-    "includeOutOfScope": "Out of scope",
-    "lostGames": {
-      "none": "No lost games",
-      "one": "1 lost game",
-      "other": "{count} lost games."
-    },
-    "no-tean": "No team",
-    "noGames": "No Games",
-    "notUsed": "Not used",
-    "opponent": "Opponent",
-    "outOfScope": {
-      "none": "No games",
-      "one": "One game",
-      "other": "{count} games"
-    },
-    "period": {
-      "next": "Next period",
-      "previous": "Previous period",
-      "title": "Period"
-    },
-    "points": "Points",
-    "pointsPerGame": "Points per game",
-    "removed-games": "Matches from the previous period that no longer count in the next rankings update",
-    "team": "Team",
-    "title": "Level breakdown",
-    "untill": "Until",
-    "update": {
-      "last": "Latest update",
-      "point": "Points update",
-      "ranking": "Ranking update"
-    },
-    "upgrade": "Upgrade",
-    "usedForDowngrade": "Used for up- and downgrade",
-    "usedForUpgrade": "Used for upgrade"
-  },
   "button": {
     "add": "Add",
     "add-comment": "Send comment",
@@ -682,6 +626,64 @@
   },
   "ranking": {
     "all-ranking": "All update",
+    "breakdown": {
+      "add-game": {
+        "p1t1": "Player 1 - Team 1",
+        "p1t2": "Player 1 - Team 2",
+        "p2t1": "Player 2 - Team 1",
+        "p2t2": "Player 2 - Team 2",
+        "title": "Add (fictive) game",
+        "won": "Team 1 won?"
+      },
+      "can-downgrade": "With this number of points (<{points}), the player will drop from {level} to {newLevel}",
+      "can-not-downgrade": "Less than {points} = dropping from {level} to {newLevel}",
+      "can-not-upgrade": "More than {points} = rising from {level} to {newLevel}",
+      "can-upgrade": "With this number of points (>{points}), the player will rise from {level} to {newLevel}",
+      "corrected": "Originally {original} games, average is being calculated with minimum {corrected} games.",
+      "date": "Date",
+      "disclaimer": "Currently, this is a proof of concept. This is because we don't have the full data set from an external system to show the following correctly. We are working on this.",
+      "downgrade": "Downgrade",
+      "drops-next-period": "Drops next period",
+      "evolution": "Evolution",
+      "hint": "Click on a level for simulation and breakdown",
+      "ignored": "Doesn't count",
+      "includeOutOfScope": "Out of scope",
+      "lostGames": {
+        "none": "No lost games",
+        "one": "1 lost game",
+        "other": "{count} lost games."
+      },
+      "no-tean": "No team",
+      "noGames": "No Games",
+      "notUsed": "Not used",
+      "opponent": "Opponent",
+      "outOfScope": {
+        "none": "No games",
+        "one": "One game",
+        "other": "{count} games"
+      },
+      "period": {
+        "last-point-update": "Past points update",
+        "last-ranking-update": "Past rankings update",
+        "next-point-update": "Next points update",
+        "next-ranking-update": "Next rankings update",
+        "title": "Period"
+      },
+      "points": "Points",
+      "pointsPerGame": "Points per game",
+      "removed-games": "Matches from the previous period that no longer count in the next rankings update",
+      "team": "Team",
+      "title": "Level breakdown",
+      "untill": "Until",
+      "update": {
+        "last": "Latest update",
+        "point": "Points update",
+        "ranking": "Ranking update"
+      },
+      "upgrade": "Upgrade",
+      "usedForDowngrade": "Used for up- and downgrade",
+      "usedForUpgrade": "Used for upgrade"
+    },
     "clone-points": "Copy points to this system",
     "double": "Double",
     "double-points": "Ranking points",

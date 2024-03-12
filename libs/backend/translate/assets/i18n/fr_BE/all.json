@@ -1,60 +1,4 @@
 {
-  "breakdown": {
-    "add-game": {
-      "p1t1": "Joueur 1 - Equipe 1",
-      "p1t2": "Joueur 1 - Equipe 2",
-      "p2t1": "Joueur 2 - Equipe 1",
-      "p2t2": "Joueur 2 - Equipe 2",
-      "title": "Ajouter une correspondance (fictive)",
-      "won": "L'équipe 1 a gagné ?"
-    },
-    "can-downgrade": "Avec ce nombre de points (<{points}), le joueur passera de {level} à {newLevel}",
-    "can-not-downgrade": "Inférieur à {points} = chute de {level} à {newLevel}",
-    "can-not-upgrade": "Plus de {points} = passer de {level} à {newLevel}",
-    "can-upgrade": "Avec ce nombre de points (>{points}), le joueur passera de {level} à {newLevel}",
-    "corrected": " {original} correspondances d'origine, la moyenne est calculée avec un minimum de {corrected} correspondances.",
-    "date": "Date",
-    "disclaimer": "Il s'agit actuellement d'une preuve de concept. En effet, nous ne pouvons pas demander toutes les données d'un système externe pour afficher correctement ce qui suit. Nous y travaillons.",
-    "downgrade": "Rétrograder",
-    "drops-next-period": "Ne compte pas dans la période suivante",
-    "evolution": "Évolution",
-    "hint": "Cliquez sur un classement pour une simulation et une analyse",
-    "ignored": "Non compté",
-    "includeOutOfScope": "Hors champ",
-    "lostGames": {
-      "none": "Aucun jeu perdu",
-      "one": "1 match perdu",
-      "other": "{count} matchs perdus"
-    },
-    "no-tean": "Pas d'équipe",
-    "noGames": "Pas de concours",
-    "notUsed": "Non utilisé",
-    "opponent": "Adversaire",
-    "outOfScope": {
-      "none": "Pas de concours",
-      "one": "1 match",
-      "other": "{count}  correspondances"
-    },
-    "period": {
-      "next": "Prochaine période",
-      "previous": "Période précédente",
-      "title": "Période"
-    },
-    "points": "Points",
-    "pointsPerGame": "Points par match",
-    "removed-games": "Matchs de la période précédente qui ne comptent plus dans la prochaine mise à jour du classement",
-    "team": "Équipe",
-    "title": "Répartition des niveaux",
-    "untill": "Tot",
-    "update": {
-      "last": "Dernière mise à jour",
-      "point": "Mise à jour des points",
-      "ranking": "Mise à jour du classement"
-    },
-    "upgrade": "Surclassement",
-    "usedForDowngrade": "Utilisé pour la rétrogradation et la mise à niveau",
-    "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
-  },
   "button": {
     "add": "Ajouter",
     "add-comment": "Envoyer un commentaire",
@@ -682,6 +626,64 @@
   },
   "ranking": {
     "all-ranking": "Alle updates",
+    "breakdown": {
+      "add-game": {
+        "p1t1": "Joueur 1 - Equipe 1",
+        "p1t2": "Joueur 1 - Equipe 2",
+        "p2t1": "Joueur 2 - Equipe 1",
+        "p2t2": "Joueur 2 - Equipe 2",
+        "title": "Ajouter une correspondance (fictive)",
+        "won": "L'équipe 1 a gagné ?"
+      },
+      "can-downgrade": "Avec ce nombre de points (<{points}), le joueur passera de {level} à {newLevel}",
+      "can-not-downgrade": "Inférieur à {points} = chute de {level} à {newLevel}",
+      "can-not-upgrade": "Plus de {points} = passer de {level} à {newLevel}",
+      "can-upgrade": "Avec ce nombre de points (>{points}), le joueur passera de {level} à {newLevel}",
+      "corrected": " {original} correspondances d'origine, la moyenne est calculée avec un minimum de {corrected} correspondances.",
+      "date": "Date",
+      "disclaimer": "Il s'agit actuellement d'une preuve de concept. En effet, nous ne pouvons pas demander toutes les données d'un système externe pour afficher correctement ce qui suit. Nous y travaillons.",
+      "downgrade": "Rétrograder",
+      "drops-next-period": "Ne compte pas dans la période suivante",
+      "evolution": "Évolution",
+      "hint": "Cliquez sur un classement pour une simulation et une analyse",
+      "ignored": "Non compté",
+      "includeOutOfScope": "Hors champ",
+      "lostGames": {
+        "none": "Aucun jeu perdu",
+        "one": "1 match perdu",
+        "other": "{count} matchs perdus"
+      },
+      "no-tean": "Pas d'équipe",
+      "noGames": "Pas de concours",
+      "notUsed": "Non utilisé",
+      "opponent": "Adversaire",
+      "outOfScope": {
+        "none": "Pas de concours",
+        "one": "1 match",
+        "other": "{count}  correspondances"
+      },
+      "period": {
+        "last-point-update": "Mise à jour des points précédents",
+        "last-ranking-update": "Mise à jour des classements antérieurs",
+        "next-point-update": "Prochaine mise à jour des points",
+        "next-ranking-update": "Prochaine mise à jour du classement",
+        "title": "Période"
+      },
+      "points": "Points",
+      "pointsPerGame": "Points par match",
+      "removed-games": "Matchs de la période précédente qui ne comptent plus dans la prochaine mise à jour du classement",
+      "team": "Équipe",
+      "title": "Répartition des niveaux",
+      "untill": "Tot",
+      "update": {
+        "last": "Dernière mise à jour",
+        "point": "Mise à jour des points",
+        "ranking": "Mise à jour du classement"
+      },
+      "upgrade": "Surclassement",
+      "usedForDowngrade": "Utilisé pour la rétrogradation et la mise à niveau",
+      "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
+    },
     "clone-points": "Copier les points vers ce système",
     "double": "Double",
     "double-points": "Double points",
