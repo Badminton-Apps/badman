@@ -12,6 +12,10 @@
   border-radius: 4px;
   position: relative;
   flex-direction: column;
+
+  @media screen and (max-width: 959px) {
+    width: 100%;
+  }
 }
 
 .items {
