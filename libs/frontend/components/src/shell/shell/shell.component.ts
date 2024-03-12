@@ -3,9 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -30,6 +28,7 @@ import {
   VERSION_INFO,
 } from '@badman/frontend-html-injects';
 import { Banner } from '@badman/frontend-models';
+import { DEVICE } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { computedAsync } from 'ngxtension/computed-async';
@@ -76,8 +75,8 @@ import {
   styleUrls: ['./shell.component.scss'],
 })
 export class ShellComponent {
-  breakpointObserver = inject(BreakpointObserver);
   systemService = inject(RankingSystemService);
+  isHandset = inject(DEVICE);
 
   loading = false;
   development = isDevMode();
@@ -88,11 +87,6 @@ export class ShellComponent {
 
   banner?: Banner;
 
-  isHandset = toSignal(
-    this.breakpointObserver
-      .observe(['(max-width: 959.98px)'])
-      .pipe(map((result) => result.matches)),
-  );
 
   canAnyEnroll = computed(() => this.auth.hasClaim('enlist-any:team'));
   canViewEnroll = computed(() => this.auth.hasClaim('*_enlist:team'));
