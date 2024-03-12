@@ -1,60 +1,4 @@
 {
-  "breakdown": {
-    "add-game": {
-      "p1t1": "Speler 1 - Team 1",
-      "p1t2": "Speler 1 - Team 2",
-      "p2t1": "Speler 2 - Team 1",
-      "p2t2": "Speler 2 - Team 2",
-      "title": "Voeg (fictieve) wedstrijd toe",
-      "won": "Team 1 Gewonnen?"
-    },
-    "can-downgrade": "Met dit aantal punten (<{points}) zal de speler dalen van {level} naar {newLevel}",
-    "can-not-downgrade": "Minder dan {points} = dalen van {level} naar {newLevel}",
-    "can-not-upgrade": "Meer dan {points} = stijgen van {level} naar {newLevel}",
-    "can-upgrade": "Met dit aantal punten (>{points}) zal de speler stijgen van {level} naar {newLevel}",
-    "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met minimum {corrected} wedstrijden.",
-    "date": "Datum",
-    "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
-    "downgrade": "Downgrade",
-    "drops-next-period": "Telt niet meer mee in volgende periode",
-    "evolution": "Evolutie",
-    "hint": "Klik op een klassement voor simulatie en analyse",
-    "ignored": "Niet meegeteld",
-    "includeOutOfScope": "Out of scope",
-    "lostGames": {
-      "none": "Geen verloren wedstrijden",
-      "one": "1 verloren wedstrijd",
-      "other": "{count} verloren wedstrijden"
-    },
-    "no-tean": "Geen team",
-    "noGames": "Geen wedstrijden",
-    "notUsed": "Niet gebruikt",
-    "opponent": "Tegenstander",
-    "outOfScope": {
-      "none": "Geen wedstrijden",
-      "one": "1 wedstrijd",
-      "other": "{count} wedstrijden"
-    },
-    "period": {
-      "next": "Volgende periode",
-      "previous": "Vorige periode",
-      "title": "Periode"
-    },
-    "points": "Punten",
-    "pointsPerGame": "Punten per wedstrijd",
-    "removed-games": "Wedstrijden van vorige periode die niet meer meetellen bij de volgende klassementen update",
-    "team": "Team",
-    "title": "Level breakdown",
-    "untill": "tot",
-    "update": {
-      "last": "Laatste update",
-      "point": "Punten update",
-      "ranking": "Ranking update"
-    },
-    "upgrade": "Upgrade",
-    "usedForDowngrade": "Gebruikt voor downgrade en upgrade",
-    "usedForUpgrade": "Gebruikt enkel voor upgrade"
-  },
   "button": {
     "add": "Voeg toe",
     "add-comment": "Verstuur opmerking",
@@ -682,6 +626,64 @@
   },
   "ranking": {
     "all-ranking": "Alle updates",
+    "breakdown": {
+      "add-game": {
+        "p1t1": "Speler 1 - Team 1",
+        "p1t2": "Speler 1 - Team 2",
+        "p2t1": "Speler 2 - Team 1",
+        "p2t2": "Speler 2 - Team 2",
+        "title": "Voeg (fictieve) wedstrijd toe",
+        "won": "Team 1 Gewonnen?"
+      },
+      "can-downgrade": "Met dit aantal punten (<{points}) zal de speler dalen van {level} naar {newLevel}",
+      "can-not-downgrade": "Minder dan {points} = dalen van {level} naar {newLevel}",
+      "can-not-upgrade": "Meer dan {points} = stijgen van {level} naar {newLevel}",
+      "can-upgrade": "Met dit aantal punten (>{points}) zal de speler stijgen van {level} naar {newLevel}",
+      "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met minimum {corrected} wedstrijden.",
+      "date": "Datum",
+      "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
+      "downgrade": "Downgrade",
+      "drops-next-period": "Telt niet meer mee in volgende periode",
+      "evolution": "Evolutie",
+      "hint": "Klik op een klassement voor simulatie en analyse",
+      "ignored": "Niet meegeteld",
+      "includeOutOfScope": "Out of scope",
+      "lostGames": {
+        "none": "Geen verloren wedstrijden",
+        "one": "1 verloren wedstrijd",
+        "other": "{count} verloren wedstrijden"
+      },
+      "no-tean": "Geen team",
+      "noGames": "Geen wedstrijden",
+      "notUsed": "Niet gebruikt",
+      "opponent": "Tegenstander",
+      "outOfScope": {
+        "none": "Geen wedstrijden",
+        "one": "1 wedstrijd",
+        "other": "{count} wedstrijden"
+      },
+      "period": {
+        "last-point-update": "Afgelopen punten update",
+        "last-ranking-update": "Afgelopen klassementen update",
+        "next-point-update": "Volgende punten update",
+        "next-ranking-update": "Volgende klassementen update",
+        "title": "Periode"
+      },
+      "points": "Punten",
+      "pointsPerGame": "Punten per wedstrijd",
+      "removed-games": "Wedstrijden van vorige periode die niet meer meetellen bij de volgende klassementen update",
+      "team": "Team",
+      "title": "Level breakdown",
+      "untill": "tot",
+      "update": {
+        "last": "Laatste update",
+        "point": "Punten update",
+        "ranking": "Ranking update"
+      },
+      "upgrade": "Upgrade",
+      "usedForDowngrade": "Gebruikt voor downgrade en upgrade",
+      "usedForUpgrade": "Gebruikt enkel voor upgrade"
+    },
     "clone-points": "Kopieer punten naar dit systeem",
     "double": "Dubbel",
     "double-points": "Ranking punten",
