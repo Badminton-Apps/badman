@@ -13,9 +13,11 @@
     $foreground: map.get($color-config, 'foreground');
 
     $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
-
-    border-color: $border-color;
-    background-color: mat.get-color-from-palette($background, 'background');
+    
+    .border {
+      border-color: $border-color;
+      background-color: mat.get-color-from-palette($background, 'background');
+    }
 
     label {
       background-color: mat.get-color-from-palette($background, 'background');
