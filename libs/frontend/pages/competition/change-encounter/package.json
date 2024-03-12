@@ -21,6 +21,7 @@
     "@angular/cdk": "~17.2.0",
     "@badman/frontend-html-injects": "*",
     "@badman/frontend-seo": "*",
+    "@badman/frontend-utils": "*",
     "ngxtension": "^2.0.0",
     "xng-breadcrumb": "^10.0.2"
   },
