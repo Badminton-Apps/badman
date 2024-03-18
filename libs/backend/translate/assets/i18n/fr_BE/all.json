@@ -185,6 +185,10 @@
       "open-enrollment": "Date d'ouverture",
       "open-requests": "Date d'ouverture"
     },
+    "overview": {
+      "official": "Officiellement",
+      "only-official": "Officiel seulement"
+    },
     "prov": "Provinciale",
     "subevent": {
       "max": "Classement maximal",
