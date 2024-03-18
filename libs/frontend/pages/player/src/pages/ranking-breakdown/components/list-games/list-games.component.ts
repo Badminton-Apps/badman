@@ -198,7 +198,7 @@ export class ListGamesComponent implements OnInit {
       };
 
       // Latest x Games to use
-      if (this.system().latestXGamesToUse && validGames >= this.system().latestXGamesToUse!) {
+      if (this.system().latestXGamesToUse && validGames >= (this.system().latestXGamesToUse ?? 0)) {
         newGameBreakdown.type = GameBreakdownType.OUT_SCOPE;
       }
       gameBreakdown.push(newGameBreakdown);
@@ -405,7 +405,7 @@ export class ListGamesComponent implements OnInit {
     if (isForUpgrade) {
       devider = `${game.devideUpgradeCorrected}`;
       if ((game.devideUpgrade ?? 0) < (game.devideUpgradeCorrected ?? 0)) {
-        devider += `\n\r\n\r${this.translateService.instant('all.breakdown.corrected', {
+        devider += `\n\r\n\r${this.translateService.instant('all.ranking.breakdown.corrected', {
           original: game.devideUpgrade,
           corrected: game.devideUpgradeCorrected,
         })}`;
@@ -421,7 +421,9 @@ export class ListGamesComponent implements OnInit {
         const level = this.rankingPlace()?.[this.type] ?? 12;
 
         tooltip += `\n\r\n\r${this.translateService.instant(
-          this.canUpgrade ? 'all.breakdown.can-upgrade' : 'all.breakdown.can-not-upgrade',
+          this.canUpgrade
+            ? 'all.ranking.breakdown.can-upgrade'
+            : 'all.ranking.breakdown.can-not-upgrade',
           {
             level,
             newLevel: level - 1,
@@ -432,7 +434,9 @@ export class ListGamesComponent implements OnInit {
         const level = this.rankingPlace()?.[this.type] ?? 12;
 
         tooltip += `\n\r\n\r${this.translateService.instant(
-          this.canDowngrade ? 'all.breakdown.can-downgrade' : 'all.breakdown.can-not-downgrade',
+          this.canDowngrade
+            ? 'all.ranking.breakdown.can-downgrade'
+            : 'all.ranking.breakdown.can-not-downgrade',
           {
             level,
             newLevel: level + 1,

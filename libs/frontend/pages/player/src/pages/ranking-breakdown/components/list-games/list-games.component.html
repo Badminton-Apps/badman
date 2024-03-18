@@ -1,14 +1,14 @@
 <form [formGroup]="formGroup()">
   <div>
     <mat-slide-toggle formControlName="includedIgnored">
-      {{ 'all.breakdown.notUsed' | translate }}:
+      {{ 'all.ranking.breakdown.notUsed' | translate }}:
       {{
         lostGamesIgnored.length
           | i18nPlural
             : {
-                '=0': 'all.breakdown.lostGames.none',
-                '=1': 'all.breakdown.lostGames.one',
-                other: 'all.breakdown.lostGames.other'
+                '=0': 'all.ranking.breakdown.lostGames.none',
+                '=1': 'all.ranking.breakdown.lostGames.one',
+                other: 'all.ranking.breakdown.lostGames.other'
               }
           | translate: { count: lostGamesIgnored.length }
       }}</mat-slide-toggle
@@ -16,14 +16,14 @@
   </div>
   <div>
     <mat-slide-toggle formControlName="includedUpgrade">
-      {{ 'all.breakdown.usedForUpgrade' | translate }}:
+      {{ 'all.ranking.breakdown.usedForUpgrade' | translate }}:
       {{
         lostGamesUpgrade.length
           | i18nPlural
             : {
-                '=0': 'all.breakdown.lostGames.none',
-                '=1': 'all.breakdown.lostGames.one',
-                other: 'all.breakdown.lostGames.other'
+                '=0': 'all.ranking.breakdown.lostGames.none',
+                '=1': 'all.ranking.breakdown.lostGames.one',
+                other: 'all.ranking.breakdown.lostGames.other'
               }
           | translate: { count: lostGamesUpgrade.length }
       }}
@@ -31,14 +31,14 @@
   </div>
   <div>
     <mat-slide-toggle formControlName="includedDowngrade">
-      {{ 'all.breakdown.usedForDowngrade' | translate }}:
+      {{ 'all.ranking.breakdown.usedForDowngrade' | translate }}:
       {{
         lostGamesDowngrade.length
           | i18nPlural
             : {
-                '=0': 'all.breakdown.lostGames.none',
-                '=1': 'all.breakdown.lostGames.one',
-                other: 'all.breakdown.lostGames.other'
+                '=0': 'all.ranking.breakdown.lostGames.none',
+                '=1': 'all.ranking.breakdown.lostGames.one',
+                other: 'all.ranking.breakdown.lostGames.other'
               }
           | translate: { count: lostGamesDowngrade.length }
       }}
@@ -47,14 +47,14 @@
   @if ((this.system().latestXGamesToUse ?? 0) > 0) {
     <div>
       <mat-slide-toggle formControlName="includeOutOfScope">
-        {{ 'all.breakdown.includeOutOfScope' | translate }}:
+        {{ 'all.ranking.breakdown.includeOutOfScope' | translate }}:
         {{
           outOfScopeGames.length
             | i18nPlural
               : {
-                  '=0': 'all.breakdown.outOfScope.none',
-                  '=1': 'all.breakdown.outOfScope.one',
-                  other: 'all.breakdown.outOfScope.other'
+                  '=0': 'all.ranking.breakdown.outOfScope.none',
+                  '=1': 'all.ranking.breakdown.outOfScope.one',
+                  other: 'all.ranking.breakdown.outOfScope.other'
                 }
             | translate: { count: outOfScopeGames.length }
         }}
@@ -63,7 +63,7 @@
   }
   <div>
     <button (click)="this.addGame()" mat-stroked-button>
-      {{ 'all.breakdown.add-game.title' | translate }}
+      {{ 'all.ranking.breakdown.add-game.title' | translate }}
     </button>
   </div>
 </form>
@@ -79,7 +79,7 @@
     <mat-cell *matCellDef="let game">
       <!-- show game number -->
       @if (game?.dropsNextPeriod) {
-        <div class="drops" [matTooltip]="'all.breakdown.drops-next-period' | translate">
+        <div class="drops" [matTooltip]="'all.ranking.breakdown.drops-next-period' | translate">
           <mat-icon>update_disabled</mat-icon>
         </div>
       }
@@ -87,16 +87,16 @@
   </ng-container>
   <!-- Item Column -->
   <ng-container matColumnDef="date">
-    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.date' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.date' | translate }}">
+    <mat-header-cell *matHeaderCellDef>{{ 'all.ranking.breakdown.date' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.ranking.breakdown.date' | translate }}">
       <span>{{ !!game.playedAt ? (game.playedAt | amDateFormat: this.dateFormat) : '' }}</span>
     </mat-cell>
     <mat-footer-cell *matFooterCellDef></mat-footer-cell>
   </ng-container>
   <!-- team Column -->
   <ng-container matColumnDef="team">
-    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.team' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.team' | translate }}">
+    <mat-header-cell *matHeaderCellDef>{{ 'all.ranking.breakdown.team' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.ranking.breakdown.team' | translate }}">
       @if (game.team?.[0]) {
         <div>
           {{ game.team?.[0].fullName }}
@@ -111,7 +111,7 @@
       }
       @if (!game.team?.[0] && !game.team?.[1]) {
         <div>
-          {{ 'all.breakdown.no-tean' | translate }}
+          {{ 'all.ranking.breakdown.no-tean' | translate }}
         </div>
       }
     </mat-cell>
@@ -119,8 +119,8 @@
   </ng-container>
   <!-- opponent Column -->
   <ng-container matColumnDef="opponent">
-    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.opponent' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.opponent' | translate }}">
+    <mat-header-cell *matHeaderCellDef>{{ 'all.ranking.breakdown.opponent' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.ranking.breakdown.opponent' | translate }}">
       @if (game.opponent?.[0]) {
         <div>
           {{ game.opponent?.[0].fullName }}
@@ -135,7 +135,7 @@
       }
       @if (!game.team?.[0] && !game.team?.[1]) {
         <div>
-          {{ 'all.breakdown.no-tean' | translate }}
+          {{ 'all.ranking.breakdown.no-tean' | translate }}
         </div>
       }
     </mat-cell>
@@ -143,7 +143,7 @@
   </ng-container>
   <!-- points Column -->
   <ng-container matColumnDef="points">
-    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.points' | translate }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ 'all.ranking.breakdown.points' | translate }}</mat-header-cell>
     <mat-cell *matCellDef="let game" attr.data-label="{{ 'points' | translate }}">
       @if (game.type === 'WON') {
         {{ game.points }}
@@ -154,10 +154,10 @@
   <!-- upgrade Column -->
   <ng-container matColumnDef="average-upgrade">
     <mat-header-cell *matHeaderCellDef>
-      {{ 'all.breakdown.upgrade' | translate }}
+      {{ 'all.ranking.breakdown.upgrade' | translate }}
     </mat-header-cell>
     <mat-cell
-      attr.data-label="{{ 'all.breakdown.upgrade' | translate }}"
+      attr.data-label="{{ 'all.ranking.breakdown.upgrade' | translate }}"
       *matCellDef="let game; let i = index"
       [ngClass]="{
         used: i === indexUsedForUpgrade,
@@ -191,10 +191,10 @@
   <!-- downgrade Column -->
   <ng-container matColumnDef="average-downgrade">
     <mat-header-cell *matHeaderCellDef>
-      {{ 'all.breakdown.downgrade' | translate }}
+      {{ 'all.ranking.breakdown.downgrade' | translate }}
     </mat-header-cell>
     <mat-cell
-      attr.data-label="{{ 'all.breakdown.downgrade' | translate }}"
+      attr.data-label="{{ 'all.ranking.breakdown.downgrade' | translate }}"
       *matCellDef="let game; let i = index"
       [ngClass]="{
         used: i === indexUsedForDowngrade,
@@ -256,7 +256,7 @@
     ></mat-footer-row> -->
 </mat-table>
 <div class="mat-subheading-2">
-  {{ 'all.breakdown.removed-games' | translate }}
+  {{ 'all.ranking.breakdown.removed-games' | translate }}
 </div>
 <mat-table [dataSource]="dataSourceRemoved">
   <!-- Game count -->
@@ -270,16 +270,16 @@
     <mat-cell *matCellDef=""></mat-cell>
   </ng-container>
   <ng-container matColumnDef="date">
-    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.date' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.date' | translate }}">
+    <mat-header-cell *matHeaderCellDef>{{ 'all.ranking.breakdown.date' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.ranking.breakdown.date' | translate }}">
       <span>{{ !!game.playedAt ? (game.playedAt | amDateFormat: this.dateFormat) : '' }}</span>
     </mat-cell>
     <mat-footer-cell *matFooterCellDef></mat-footer-cell>
   </ng-container>
   <!-- team Column -->
   <ng-container matColumnDef="team">
-    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.team' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.team' | translate }}">
+    <mat-header-cell *matHeaderCellDef>{{ 'all.ranking.breakdown.team' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.ranking.breakdown.team' | translate }}">
       @if (game.team?.[0]) {
         <div>
           {{ game.team?.[0].fullName }}
@@ -294,7 +294,7 @@
       }
       @if (!game.team?.[0] && !game.team?.[1]) {
         <div>
-          {{ 'all.breakdown.no-tean' | translate }}
+          {{ 'all.ranking.breakdown.no-tean' | translate }}
         </div>
       }
     </mat-cell>
@@ -302,8 +302,8 @@
   </ng-container>
   <!-- opponent Column -->
   <ng-container matColumnDef="opponent">
-    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.opponent' | translate }}</mat-header-cell>
-    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.breakdown.opponent' | translate }}">
+    <mat-header-cell *matHeaderCellDef>{{ 'all.ranking.breakdown.opponent' | translate }}</mat-header-cell>
+    <mat-cell *matCellDef="let game" attr.data-label="{{ 'all.ranking.breakdown.opponent' | translate }}">
       @if (game.opponent?.[0]) {
         <div>
           {{ game.opponent?.[0].fullName }}
@@ -318,7 +318,7 @@
       }
       @if (!game.team?.[0] && !game.team?.[1]) {
         <div>
-          {{ 'all.breakdown.no-tean' | translate }}
+          {{ 'all.ranking.breakdown.no-tean' | translate }}
         </div>
       }
     </mat-cell>
@@ -326,7 +326,7 @@
   </ng-container>
   <!-- points Column -->
   <ng-container matColumnDef="points">
-    <mat-header-cell *matHeaderCellDef>{{ 'all.breakdown.points' | translate }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ 'all.ranking.breakdown.points' | translate }}</mat-header-cell>
     <mat-cell *matCellDef="let game" attr.data-label="{{ 'points' | translate }}">
       @if (game.type === 'WON') {
         {{ game.points }}
@@ -337,7 +337,7 @@
   <!-- upgrade Column -->
   <ng-container matColumnDef="average-upgrade">
     <mat-header-cell *matHeaderCellDef>
-      {{ 'all.breakdown.upgrade' | translate }}
+      {{ 'all.ranking.breakdown.upgrade' | translate }}
     </mat-header-cell>
     <mat-cell *matCellDef="let game">
       @switch (game.type) {
@@ -360,7 +360,7 @@
   <!-- downgrade Column -->
   <ng-container matColumnDef="average-downgrade">
     <mat-header-cell *matHeaderCellDef>
-      {{ 'all.breakdown.downgrade' | translate }}
+      {{ 'all.ranking.breakdown.downgrade' | translate }}
     </mat-header-cell>
     <mat-cell *matCellDef="let game">
       @switch (game.type) {

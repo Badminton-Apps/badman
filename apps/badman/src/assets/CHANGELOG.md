@@ -1,3 +1,37 @@
+## 6.135.0 (2024-03-18)
+
+
+### 🚀 Features
+
+- Added signal loading to competition overview ([0661e1d13](https://github.com/Badminton-Apps/badman/commit/0661e1d13))
+
+### 🩹 Fixes
+
+- remove console.log ([604316d02](https://github.com/Badminton-Apps/badman/commit/604316d02))
+- club edit screen ([3be143b64](https://github.com/Badminton-Apps/badman/commit/3be143b64))
+- the package-lock file wasn't in sync? ([38a93baa7](https://github.com/Badminton-Apps/badman/commit/38a93baa7))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.134.0 (2024-03-12)
+
+
+### 🚀 Features
+
+- adding quick acess buttons for next and prev update ([c814c1901](https://github.com/Badminton-Apps/badman/commit/c814c1901))
+- ranking breakdown mobile improvements ([4b60b5b38](https://github.com/Badminton-Apps/badman/commit/4b60b5b38))
+- inject device type ([7321e5184](https://github.com/Badminton-Apps/badman/commit/7321e5184))
+
+### 🩹 Fixes
+
+- move translation to correct location ([6597dfd49](https://github.com/Badminton-Apps/badman/commit/6597dfd49))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.133.1 (2024-03-06)
 
 

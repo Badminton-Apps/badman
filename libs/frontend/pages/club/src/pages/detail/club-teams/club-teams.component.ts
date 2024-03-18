@@ -31,6 +31,7 @@ import { Apollo } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { ClubTeamsService } from './club-teams.service';
+import { DEVICE } from '@badman/frontend-utils';
 @Component({
   selector: 'badman-club-teams',
   standalone: true,
@@ -58,6 +59,7 @@ export class ClubTeamsComponent implements OnInit {
   platformId = inject(PLATFORM_ID);
   dialog = inject(MatDialog);
   clubTeamsService = inject(ClubTeamsService);
+  isHandset = inject(DEVICE);
   private destroy$ = injectDestroy();
 
   // Inputs

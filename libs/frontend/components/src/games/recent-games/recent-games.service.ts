@@ -56,9 +56,10 @@ export class RecentGamesService {
   //sources
   pagination$ = new Subject<number | null>();
   private error$ = new Subject<string | null>();
-  private filterChanged$ = this.filter.valueChanges.pipe(debounceTime(300), distinctUntilChanged());
+  private filterChanged$ = this.filter.valueChanges.pipe( distinctUntilChanged());
 
   private gamesLoaded$ = this.filterChanged$.pipe(
+    debounceTime(300),
     switchMap((filter) =>
       this.pagination$.pipe(
         startWith(1),

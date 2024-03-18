@@ -16,12 +16,17 @@
 }
 
 form {
+  flex-direction: row;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  align-items: center;
+  gap: 2rem;
 
-  @media screen and (min-width: 600px) {
-    flex-direction: row;
-    gap: 2rem;
+  @media screen and (max-width: 959px) {
+    flex-direction: column;
+    gap: 1rem;
+    mat-form-field,
+    badman-period-selection {
+      width: 100%;
+    }
   }
 }

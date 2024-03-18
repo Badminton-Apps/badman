@@ -7,6 +7,10 @@ form {
     display: flex;
     flex-direction: row;
 
+    @media screen and (max-width: 959px) {
+      flex-direction: column;
+    }
+
     .team1,
     .team2 {
       flex: 1;
@@ -14,7 +18,7 @@ form {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding-top: 22px;
+      gap: 1rem;
 
       .player1,
       .player2 {

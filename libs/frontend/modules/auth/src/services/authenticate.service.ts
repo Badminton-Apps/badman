@@ -89,7 +89,6 @@ export class AuthenticateService {
               );
             }),
             map((result) => {
-              console.log('result', result);
               const user = new LoggedinUser(result as Partial<LoggedinUser>);
               user.loggedIn = true;
               return user;

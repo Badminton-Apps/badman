@@ -58,13 +58,13 @@ export class ClubAssemblyService {
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter((filter) => !!filter.clubId && filter.clubId.length > 0),
-    debounceTime(300),
     distinctUntilChanged(),
   );
 
   // sources
   private error$ = new Subject<string>();
   private teamsLoaded$ = this.filterChanged$.pipe(
+    debounceTime(300),
     switchMap((filter) =>
       this.getTeams(filter).pipe(
         map((teams) => teams.sort(sortTeams)),

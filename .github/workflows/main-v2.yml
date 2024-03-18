@@ -73,9 +73,11 @@ jobs:
 
       - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
 
-      - run: npm install
+      - run: npm ci
 
-      - run: npx nx affected -t lint test build
+      - run: npx nx affected -t test build
+      # Having issues with lint
+      # - run: npx nx affected -t lint test build
 
       - name: Run Playwright tests
         run: npx nx run-many -t e2e

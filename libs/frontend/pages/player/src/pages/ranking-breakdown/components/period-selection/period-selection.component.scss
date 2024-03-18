@@ -1,11 +1,21 @@
 :host {
   display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.border {
+  display: flex;
   height: 45px;
   border-style: solid;
   border-width: 1px;
   border-radius: 4px;
   position: relative;
   flex-direction: column;
+
+  @media screen and (max-width: 959px) {
+    width: 100%;
+  }
 }
 
 .items {

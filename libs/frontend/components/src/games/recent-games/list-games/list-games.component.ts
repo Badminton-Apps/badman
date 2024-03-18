@@ -132,16 +132,16 @@ export class ListGamesComponent implements OnInit, AfterViewInit, OnChanges {
 
     switch (result) {
       case GameBreakdownType.WON:
-        tooltip = 'all.breakdown.usedForDowngrade';
+        tooltip = 'all.ranking.breakdown.usedForDowngrade';
         break;
       case GameBreakdownType.LOST_DOWNGRADE:
-        tooltip = 'all.breakdown.usedForDowngrade';
+        tooltip = 'all.ranking.breakdown.usedForDowngrade';
         break;
       case GameBreakdownType.LOST_UPGRADE:
-        tooltip = 'all.breakdown.usedForUpgrade';
+        tooltip = 'all.ranking.breakdown.usedForUpgrade';
         break;
       case GameBreakdownType.LOST_IGNORED:
-        tooltip = 'all.breakdown.notUsed';
+        tooltip = 'all.ranking.breakdown.notUsed';
         break;
     }
 

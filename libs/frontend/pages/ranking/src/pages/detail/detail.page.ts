@@ -89,7 +89,7 @@ export class DetailPageComponent {
       console.warn('No system id');
       return;
     }
-    this.systemService.state.watchSystem(this.rankingSystem().id!);
+    this.systemService.state.watchSystem(this.rankingSystem().id);
   }
 
   deleteSystem() {
@@ -97,6 +97,6 @@ export class DetailPageComponent {
       console.warn('No system id');
       return;
     }
-    this.systemService.state.deleteSystem(this.rankingSystem().id!);
+    this.systemService.state.deleteSystem(this.rankingSystem().id);
   }
 }
