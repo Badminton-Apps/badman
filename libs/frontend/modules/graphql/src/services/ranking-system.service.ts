@@ -74,7 +74,6 @@ export class RankingSystemService {
     switchMap((saved) => this._loadSystem(saved)),
   );
 
-  //sources
   sources$ = merge(
     this.servicesLoaded$.pipe(
       map((rankingSystem) => ({
