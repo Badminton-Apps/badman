@@ -59,7 +59,6 @@ export class EventOverviewService {
 
   sources$ = merge(
     this.eventsLoaded$.pipe(
-      tap((event) => console.log('events loaded', event)),
       map((events) => ({
         events,
         loading: false,
@@ -93,8 +92,6 @@ export class EventOverviewService {
     if (!filter.season) {
       return of([]);
     }
-
-    console.log('filter', filter);
 
     return this.apollo
       .query<{
