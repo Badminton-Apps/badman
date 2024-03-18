@@ -185,6 +185,10 @@
       "open-enrollment": "Datum opening",
       "open-requests": "Datum opening"
     },
+    "overview": {
+      "official": "Officieel",
+      "only-official": "Alleen officiele"
+    },
     "prov": "Provinciaal",
     "subevent": {
       "max": "Max klassement",
