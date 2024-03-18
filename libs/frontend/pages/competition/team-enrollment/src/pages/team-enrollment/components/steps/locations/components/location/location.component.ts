@@ -1,6 +1,5 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -21,9 +20,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { getCurrentSeason } from '@badman/utils';
 
 import { input } from '@angular/core';
+import { DEVICE } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export type LocationavDayType = FormGroup<{
   day: FormControl<string | undefined>;
@@ -84,6 +84,8 @@ export type LocationForm = FormGroup<{
 export class LocationComponent implements OnInit {
   destroy$ = new Subject<void>();
 
+  isHandset = inject(DEVICE);
+
   group = input.required<LocationForm>();
 
   control = input<LocationAvailibilityForm>();
@@ -111,27 +113,7 @@ export class LocationComponent implements OnInit {
 
   isSmallScreen = false;
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
-
   ngOnInit(): void {
-    this.breakpointObserver
-      .observe([
-        Breakpoints.XSmall,
-        Breakpoints.Small,
-        Breakpoints.Medium,
-        Breakpoints.Large,
-        Breakpoints.XLarge,
-      ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        for (const query of Object.keys(result.breakpoints)) {
-          if (result.breakpoints[query]) {
-            this.isSmallScreen = query === Breakpoints.Small || query === Breakpoints.XSmall;
-            break;
-          }
-        }
-      });
-
     let created = false;
 
     if (this.control() != undefined) {

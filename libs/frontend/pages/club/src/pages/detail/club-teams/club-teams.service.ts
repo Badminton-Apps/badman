@@ -53,12 +53,12 @@ export class ClubTeamsService {
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter((filter) => !!filter.clubId && filter.clubId.length > 0),
-    debounceTime(300),
     distinctUntilChanged(),
   );
 
   // sources
   private teamsLoaded$ = this.filterChanged$.pipe(
+    debounceTime(300),
     switchMap((filter) => this.getTeams(filter)),
     map((teams) => teams.sort(sortTeams)),
     map((teams) => ({ teams, loaded: true })),

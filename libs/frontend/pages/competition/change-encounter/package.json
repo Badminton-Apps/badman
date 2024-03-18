@@ -1,13 +1,12 @@
 {
   "name": "@badman/frontend-change-encounter",
-  "version": "6.133.1",
+  "version": "6.135.0",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
-    "@angular/router": "~17.2.1",
+    "@angular/router": "~17.3.0",
     "@angular-material-components/datetime-picker": "~16.0.1",
-    "@angular/forms": "~17.2.1",
-    "@angular/material": "~17.2.0",
+    "@angular/forms": "~17.3.0",
     "@badman/frontend-components": "*",
     "@badman/frontend-models": "*",
     "@badman/utils": "*",
@@ -18,10 +17,9 @@
     "seed-to-color": "^1.0.4",
     "@badman/frontend-auth": "*",
     "ngx-moment": "^6.0.2",
-    "@angular/cdk": "~17.2.0",
     "@badman/frontend-html-injects": "*",
     "@badman/frontend-seo": "*",
-    "ngxtension": "^2.0.0",
+    "@badman/frontend-utils": "*",
     "xng-breadcrumb": "^10.0.2"
   },
   "dependencies": {},

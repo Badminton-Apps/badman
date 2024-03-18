@@ -75,7 +75,12 @@
       <mat-icon color="primary">groups</mat-icon>
       {{ 'all.club.titles.teams' | translate }}
     </h3>
-    <badman-loading-block [items]="9" height="74px" width="250px" direction="row" />
+    <badman-loading-block
+      [items]="9"
+      height="74px"
+      [width]="isHandset() ? '100%' : '250px'"
+      [direction]="isHandset() ? 'column' : 'row'"
+    />
   </section>
   <section class="games">
     <section class="recent-games">

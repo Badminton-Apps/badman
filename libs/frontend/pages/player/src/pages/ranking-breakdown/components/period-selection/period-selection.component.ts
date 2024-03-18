@@ -3,6 +3,7 @@ import { Component, ViewChild, computed, input, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCalendarCellClassFunction, MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
@@ -32,6 +33,7 @@ import { MomentModule } from 'ngx-moment';
     MatFormFieldModule,
     MatDatepickerModule,
     MatMenuModule,
+    MatDividerModule,
   ],
 })
 export class PeriodSelectionComponent {
@@ -91,8 +93,30 @@ export class PeriodSelectionComponent {
     this.viewingDate.set(date);
   }
 
-  lastUpdate() {
+  lastPointUpdate() {
     this.customPeriod(moment(this.system().calculationLastUpdate));
+  }
+
+  lastRankingUpdate() {
+    this.customPeriod(moment(this.system().updateLastUpdate));
+  }
+
+  nextPointUpdate() {
+    this.customPeriod(
+      moment(this.system().calculationLastUpdate).add(
+        this.system().calculationIntervalAmount,
+        this.system().calculationIntervalUnit,
+      ),
+    );
+  }
+
+  nextRankingUpdate() {
+    this.customPeriod(
+      moment(this.system().updateLastUpdate).add(
+        this.system().updateIntervalAmount,
+        this.system().updateIntervalUnit,
+      ),
+    );
   }
 
   customPeriod(targetDate: Moment | null) {

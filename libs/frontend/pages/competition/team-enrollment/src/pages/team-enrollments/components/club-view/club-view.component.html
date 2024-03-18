@@ -61,7 +61,7 @@
                               <li>
                                 {{ 'all.days.' + day.day | translate }},
                                 {{ day.startTime }}
-                                {{ 'all.breakdown.untill' | translate }}
+                                {{ 'all.ranking.breakdown.untill' | translate }}
                                 {{ day.endTime }}:
                                 {{ day.courts }}
                                 {{ 'all.input.courts' | translate }}
@@ -78,7 +78,7 @@
                             @for (exception of availibilty.exceptions; track exception) {
                               <li>
                                 {{ exception.start | amDateFormat: 'LL' }}
-                                {{ 'all.breakdown.untill' | translate }}
+                                {{ 'all.ranking.breakdown.untill' | translate }}
                                 {{ exception.end | amDateFormat: 'LL' }}:
                                 {{ exception.courts }}
                                 {{ 'all.input.courts' | translate }}
