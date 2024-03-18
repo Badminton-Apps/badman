@@ -192,6 +192,10 @@ export type I18nTranslations = {
                 "open-enrollment": string;
                 "open-requests": string;
             };
+            "overview": {
+                "official": string;
+                "only-official": string;
+            };
             "prov": string;
             "subevent": {
                 "max": string;
