@@ -1,7 +1,5 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
@@ -14,10 +12,11 @@ import {
 } from '@badman/frontend-components';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { SeoService } from '@badman/frontend-seo';
+import { DEVICE } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { map, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ListEncountersComponent, ShowRequestsComponent } from './components';
 
@@ -43,7 +42,6 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
 export class ChangeEncounterComponent implements OnInit {
   private destroy$ = injectDestroy();
 
-  breakpointObserver = inject(BreakpointObserver);
   private seoService = inject(SeoService);
   private breadcrumbsService = inject(BreadcrumbService);
   private activatedRoute = inject(ActivatedRoute);
@@ -54,12 +52,7 @@ export class ChangeEncounterComponent implements OnInit {
   } = inject(VERSION_INFO);
 
   translateService = inject(TranslateService);
-
-  isHandset = toSignal(
-    this.breakpointObserver
-      .observe(['(max-width: 959.98px)'])
-      .pipe(map((result) => result.matches)),
-  );
+  isHandset = inject(DEVICE);
 
   canSelectSeason = computed(
     () => this.claimService.hasAnyClaims(['change-any:encounter']) || this.versionInfo.beta,

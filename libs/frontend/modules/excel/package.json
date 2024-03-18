@@ -1,12 +1,11 @@
 {
   "name": "@badman/frontend-excel",
-  "version": "6.133.1",
+  "version": "6.135.0",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
     "@badman/frontend-models": "*",
-    "file-saver": "^2.0.5",
-    "rxjs": "~7.8.1"
+    "file-saver": "^2.0.5"
   },
   "dependencies": {},
   "sideEffects": false

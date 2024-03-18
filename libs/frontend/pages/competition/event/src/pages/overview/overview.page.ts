@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import {
   AddEventComponent,
   HasClaimComponent,
@@ -15,14 +14,14 @@ import {
   SelectSeasonComponent,
 } from '@badman/frontend-components';
 import { JobsService } from '@badman/frontend-queue';
-import { getCurrentSeason } from '@badman/utils';
+import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { lastValueFrom } from 'rxjs';
-import { filter, map, take } from 'rxjs/operators';
-import { CompetitionEventsComponent } from './competition-events/competition-events.component';
-import { SeoService } from '@badman/frontend-seo';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { CompetitionEventsComponent } from './competition-events/competition-events.component';
+import { EventOverviewService } from './overview.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'badman-competition-overview',
@@ -39,6 +38,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     MatMenuModule,
     MatButtonModule,
     MatSelectModule,
+    MatSlideToggleModule,
     MatDialogModule,
     PageHeaderComponent,
     HasClaimComponent,
@@ -47,40 +47,18 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   ],
 })
 export class OverviewPageComponent implements OnInit {
-  route = inject(ActivatedRoute);
-  router = inject(Router);
+  private readonly translate = inject(TranslateService);
+  private readonly seoService = inject(SeoService);
+  private readonly breadcrumbsService = inject(BreadcrumbService);
+  private readonly jobsService = inject(JobsService);
+  private readonly dialog = inject(MatDialog);
 
-  formBuilder = inject(FormBuilder);
-  jobsService = inject(JobsService);
-  seoService = inject(SeoService);
-  translate = inject(TranslateService);
-  breadcrumbsService = inject(BreadcrumbService);
+  eventService = inject(EventOverviewService);
 
-  dialog = inject(MatDialog);
-  snackBar = inject(MatSnackBar);
-
-  // signals
-  currentTab = signal(0);
-
-  // other
-  filter!: FormGroup;
+  filter = this.eventService.filter;
+  
 
   ngOnInit(): void {
-    this.filter = this.formBuilder.group({
-      season: getCurrentSeason(),
-    });
-
-    // check if the query params contian tabindex
-    this.route.queryParams
-      .pipe(
-        take(1),
-        filter((params) => params['tab']),
-        map((params) => params['tab']),
-      )
-      .subscribe((tabindex) => {
-        this.currentTab.set(parseInt(tabindex, 10));
-      });
-
     this.translate.get(['all.competition.title']).subscribe((translations) => {
       this.seoService.update({
         title: translations['all.competition.title'],

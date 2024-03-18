@@ -6,62 +6,6 @@ import { Path } from "nestjs-i18n";
 /* prettier-ignore */
 export type I18nTranslations = {
     "all": {
-        "breakdown": {
-            "add-game": {
-                "p1t1": string;
-                "p1t2": string;
-                "p2t1": string;
-                "p2t2": string;
-                "title": string;
-                "won": string;
-            };
-            "can-downgrade": string;
-            "can-not-downgrade": string;
-            "can-not-upgrade": string;
-            "can-upgrade": string;
-            "corrected": string;
-            "date": string;
-            "disclaimer": string;
-            "downgrade": string;
-            "drops-next-period": string;
-            "evolution": string;
-            "hint": string;
-            "ignored": string;
-            "includeOutOfScope": string;
-            "lostGames": {
-                "none": string;
-                "one": string;
-                "other": string;
-            };
-            "no-tean": string;
-            "noGames": string;
-            "notUsed": string;
-            "opponent": string;
-            "outOfScope": {
-                "none": string;
-                "one": string;
-                "other": string;
-            };
-            "period": {
-                "next": string;
-                "previous": string;
-                "title": string;
-            };
-            "points": string;
-            "pointsPerGame": string;
-            "removed-games": string;
-            "team": string;
-            "title": string;
-            "untill": string;
-            "update": {
-                "last": string;
-                "point": string;
-                "ranking": string;
-            };
-            "upgrade": string;
-            "usedForDowngrade": string;
-            "usedForUpgrade": string;
-        };
         "button": {
             "add": string;
             "add-comment": string;
@@ -247,6 +191,10 @@ export type I18nTranslations = {
                 "hint": string;
                 "open-enrollment": string;
                 "open-requests": string;
+            };
+            "overview": {
+                "official": string;
+                "only-official": string;
             };
             "prov": string;
             "subevent": {
@@ -689,6 +637,64 @@ export type I18nTranslations = {
         };
         "ranking": {
             "all-ranking": string;
+            "breakdown": {
+                "add-game": {
+                    "p1t1": string;
+                    "p1t2": string;
+                    "p2t1": string;
+                    "p2t2": string;
+                    "title": string;
+                    "won": string;
+                };
+                "can-downgrade": string;
+                "can-not-downgrade": string;
+                "can-not-upgrade": string;
+                "can-upgrade": string;
+                "corrected": string;
+                "date": string;
+                "disclaimer": string;
+                "downgrade": string;
+                "drops-next-period": string;
+                "evolution": string;
+                "hint": string;
+                "ignored": string;
+                "includeOutOfScope": string;
+                "lostGames": {
+                    "none": string;
+                    "one": string;
+                    "other": string;
+                };
+                "no-tean": string;
+                "noGames": string;
+                "notUsed": string;
+                "opponent": string;
+                "outOfScope": {
+                    "none": string;
+                    "one": string;
+                    "other": string;
+                };
+                "period": {
+                    "last-point-update": string;
+                    "last-ranking-update": string;
+                    "next-point-update": string;
+                    "next-ranking-update": string;
+                    "title": string;
+                };
+                "points": string;
+                "pointsPerGame": string;
+                "removed-games": string;
+                "team": string;
+                "title": string;
+                "untill": string;
+                "update": {
+                    "last": string;
+                    "point": string;
+                    "ranking": string;
+                };
+                "upgrade": string;
+                "usedForDowngrade": string;
+                "usedForUpgrade": string;
+            };
             "clone-points": string;
             "double": string;
             "double-points": string;
