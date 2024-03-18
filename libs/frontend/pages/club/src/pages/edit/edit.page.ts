@@ -67,6 +67,19 @@ import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
 import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
 
+export type ClubFieldsForm = FormGroup<{
+  id: FormControl<string>;
+  name: FormControl<string>;
+  clubId: FormControl<string>;
+  fullName: FormControl<string>;
+  abbreviation: FormControl<string>;
+  useForTeamName: FormControl<UseForTeamName>;
+  country: FormControl<string>;
+  state: FormControl<string>;
+}>;
+
+
+
 @Component({
   selector: 'badman-club-edit',
   templateUrl: './edit.page.html',
@@ -119,16 +132,7 @@ export class EditPageComponent implements OnInit {
 
   season = new FormControl();
   newTeamForm?: FormGroup;
-  clubGroup?: FormGroup<{
-    id: FormControl<string>;
-    name: FormControl<string>;
-    clubId: FormControl<string>;
-    fullName: FormControl<string>;
-    abbreviation: FormControl<string>;
-    useForTeamName: FormControl<UseForTeamName>;
-    country: FormControl<string>;
-    state: FormControl<string>;
-  }>;
+  clubGroup!: ClubFieldsForm;
 
   seasons = [getCurrentSeason()];
 
@@ -181,16 +185,7 @@ export class EditPageComponent implements OnInit {
         useForTeamName: new FormControl(this.club.useForTeamName, [Validators.required]),
         country: new FormControl(this.club.country, [Validators.required]),
         state: new FormControl(this.club.state, [Validators.required]),
-      }) as FormGroup<{
-        id: FormControl<string>;
-        name: FormControl<string>;
-        clubId: FormControl<string>;
-        fullName: FormControl<string>;
-        abbreviation: FormControl<string>;
-        useForTeamName: FormControl<UseForTeamName>;
-        country: FormControl<string>;
-        state: FormControl<string>;
-      }>;
+      }) as ClubFieldsForm;
 
       this.clubGroup.valueChanges
         .pipe(
