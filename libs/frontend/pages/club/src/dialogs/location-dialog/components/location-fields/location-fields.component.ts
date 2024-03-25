@@ -16,7 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Club, Location } from '@badman/frontend-models';
 import { NgMapsPlacesModule } from '@ng-maps/places';
 import { TranslateModule } from '@ngx-translate/core';
-import { debounceTime } from 'rxjs/operators';
+import { throttleTime } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-location-fields',
@@ -82,7 +82,7 @@ export class LocationDialogFieldsComponent implements OnInit {
       streetNumber: streetNumberControl,
       coordinates: coordinatesGroup,
     });
-    this.locationForm.valueChanges.pipe(debounceTime(600)).subscribe((e) => {
+    this.locationForm.valueChanges.pipe(throttleTime(600)).subscribe((e) => {
       if (!this.location()?.id) {
         if (this.locationForm.valid) {
           this.whenLocationUpdate.next({ id: this.location()?.id, ...e });

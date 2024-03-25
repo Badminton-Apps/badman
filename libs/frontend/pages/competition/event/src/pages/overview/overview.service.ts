@@ -9,7 +9,7 @@ import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge, of } from 'rxjs';
 import {
   catchError,
-  debounceTime,
+  throttleTime,
   distinctUntilChanged,
   map,
   switchMap,
@@ -53,7 +53,7 @@ export class EventOverviewService {
 
   private eventsLoaded$ = this.filterChanged$.pipe(
     // debounce the filter changes (we don't want it on the loading, thats instant)
-    debounceTime(300),
+    throttleTime(300),
     switchMap((filter) => this._loadEvents(filter)),
   );
 
