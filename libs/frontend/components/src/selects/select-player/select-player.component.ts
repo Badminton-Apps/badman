@@ -17,7 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { DocumentNode, FragmentDefinitionNode } from 'graphql';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable, debounceTime, filter, lastValueFrom, map, switchMap, takeUntil } from 'rxjs';
+import { Observable, throttleTime, filter, lastValueFrom, map, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'badman-select-player',
@@ -112,7 +112,7 @@ export class SelectPlayerComponent implements OnInit {
         filter((x) => !!x),
         filter((x) => typeof x === 'string'),
         filter((x) => x?.length > 3),
-        debounceTime(600),
+        throttleTime(600),
         switchMap((query) => {
           return this.apollo.query<{ players: { rows: Player[] } }>({
             query: this.query,
