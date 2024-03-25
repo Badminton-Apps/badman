@@ -29,7 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, ReplaySubject, lastValueFrom, merge, of } from 'rxjs';
-import { debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { throttleTime, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { PlayerFieldsComponent } from '../fields';
 
 @Component({
@@ -137,7 +137,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       filter((x) => typeof x === 'string'),
       filter((x) => x?.length >= 2),
       tap(() => (this.loading = true)),
-      debounceTime(600),
+      throttleTime(600),
       switchMap((r) => {
         const obs = this.clubId()
           ? this.apollo
