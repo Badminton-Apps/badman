@@ -9,12 +9,12 @@ import { connect } from 'ngxtension/connect';
 import { EMPTY, Subject, merge } from 'rxjs';
 import {
   catchError,
-  debounceTime,
   distinctUntilChanged,
   map,
   mergeMap,
   startWith,
   switchMap,
+  throttleTime
 } from 'rxjs/operators';
 interface RecentGamesState {
   games: Game[];
@@ -59,7 +59,7 @@ export class RecentGamesService {
   private filterChanged$ = this.filter.valueChanges.pipe( distinctUntilChanged());
 
   private gamesLoaded$ = this.filterChanged$.pipe(
-    debounceTime(300),
+    throttleTime(300),
     switchMap((filter) =>
       this.pagination$.pipe(
         startWith(1),

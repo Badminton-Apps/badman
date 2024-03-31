@@ -7,7 +7,7 @@ import { HasClaimComponent } from '@badman/frontend-components';
 import { Player } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { debounceTime, map } from 'rxjs';
+import { throttleTime, map } from 'rxjs';
 
 @Component({
   selector: 'badman-edit-competition-status',
@@ -40,7 +40,7 @@ export class EditCompetitionStatusComponent implements OnInit {
       compPlayer: compPlayer,
     });
 
-    compPlayer.valueChanges.pipe(debounceTime(600)).subscribe(() => {
+    compPlayer.valueChanges.pipe(throttleTime(600)).subscribe(() => {
       if (compPlayer.valid) {
         this.apollo
           .mutate<{ updatePlayer: Player }>({
@@ -63,7 +63,7 @@ export class EditCompetitionStatusComponent implements OnInit {
           })
           .pipe(
             map((r) => new Player(r.data?.updatePlayer)),
-            debounceTime(600),
+            throttleTime(600),
           )
           .subscribe(() => {
             this._snackBar.open('Saved', undefined, {

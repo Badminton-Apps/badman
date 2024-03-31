@@ -47,7 +47,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { BehaviorSubject, Observable, combineLatest, lastValueFrom, of } from 'rxjs';
 import {
-  debounceTime,
+  throttleTime,
   distinctUntilChanged,
   filter,
   map,
@@ -219,7 +219,7 @@ export class TeamsStepComponent implements OnInit {
       .pipe(
         takeUntil(this.destroy$),
         startWith([this.internalControl?.value]),
-        debounceTime(200),
+        throttleTime(200),
         switchMap(([v]) => this.validateEnrollment(v as FormArrayOfTeamsValue)),
       )
       .subscribe((v) => {
