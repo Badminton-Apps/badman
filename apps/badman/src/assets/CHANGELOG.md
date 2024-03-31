@@ -1,3 +1,14 @@
+## 6.135.1 (2024-03-25)
+
+
+### 🩹 Fixes
+
+- using throttletime instead of debounce ([df53bc786](https://github.com/Badminton-Apps/badman/commit/df53bc786))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.135.0 (2024-03-18)
 
 
