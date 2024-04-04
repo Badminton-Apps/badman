@@ -1,12 +1,12 @@
 {
   "name": "@badman/backend-queue",
-  "version": "6.135.0",
+  "version": "6.135.1",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@nestjs/common": "^10.3.1",
     "@nestjs/config": "^3.1.1",
     "@nestjs/bull": "^10.0.1",
-    "@badman/utils": "6.135.0"
+    "@badman/utils": "6.135.1"
   },
   "type": "commonjs",
   "main": "./src/index.js",

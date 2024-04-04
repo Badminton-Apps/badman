@@ -11,7 +11,7 @@ import {
   EMPTY,
   Subject,
   catchError,
-  debounceTime,
+  throttleTime,
   delay,
   distinctUntilChanged,
   filter,
@@ -64,7 +64,7 @@ export class ClubAssemblyService {
   // sources
   private error$ = new Subject<string>();
   private teamsLoaded$ = this.filterChanged$.pipe(
-    debounceTime(300),
+    throttleTime(300),
     switchMap((filter) =>
       this.getTeams(filter).pipe(
         map((teams) => teams.sort(sortTeams)),

@@ -22,7 +22,7 @@ import { PageHeaderComponent } from '@badman/frontend-components';
 import { RankingGroup, RankingSystem } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { debounceTime } from 'rxjs';
+import { throttleTime } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -138,7 +138,7 @@ export class RankingSystemFieldsComponent implements OnInit {
 
     this.rakingGroupForm = new FormControl(this.system().rankingGroups);
 
-    this.rankingSystemForm.valueChanges.pipe(debounceTime(600)).subscribe((value) => {
+    this.rankingSystemForm.valueChanges.pipe(throttleTime(600)).subscribe((value) => {
       if (this.rankingSystemForm.valid) {
         this.whenUpdated.next(value);
       }

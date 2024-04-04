@@ -8,7 +8,7 @@ import { connect } from 'ngxtension/connect';
 import { EMPTY, Subject, merge } from 'rxjs';
 import {
   catchError,
-  debounceTime,
+  throttleTime,
   distinctUntilChanged,
   map,
   mergeMap,
@@ -57,7 +57,7 @@ export class UpcommingGamesService {
   //sources
   pagination$ = new Subject<number | null>();
   private error$ = new Subject<string | null>();
-  private filterChanged$ = this.filter.valueChanges.pipe(debounceTime(300), distinctUntilChanged());
+  private filterChanged$ = this.filter.valueChanges.pipe(throttleTime(300), distinctUntilChanged());
 
   private gamesLoaded$ = this.filterChanged$.pipe(
     switchMap((filter) =>
