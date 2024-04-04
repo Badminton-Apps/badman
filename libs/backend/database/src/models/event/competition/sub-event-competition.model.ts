@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -176,17 +176,17 @@ export class SubEventCompetitionAverageLevel {
   @Field(() => String, { nullable: true })
   gender!: 'M' | 'F';
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Float, { nullable: true })
   single?: number;
   @Field(() => Int, { nullable: true })
   singleCount?: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Float, { nullable: true })
   double?: number;
   @Field(() => Int, { nullable: true })
   doubleCount?: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Float, { nullable: true })
   mix?: number;
   @Field(() => Int, { nullable: true })
   mixCount?: number;

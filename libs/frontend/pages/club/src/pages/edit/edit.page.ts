@@ -53,7 +53,7 @@ import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { BehaviorSubject, Observable, combineLatest, lastValueFrom } from 'rxjs';
 import {
-  debounceTime,
+  throttleTime,
   distinctUntilChanged,
   filter,
   map,
@@ -190,7 +190,7 @@ export class EditPageComponent implements OnInit {
       this.clubGroup.valueChanges
         .pipe(
           takeUntil(this.destroy$),
-          debounceTime(500),
+          throttleTime(500),
           distinctUntilChanged(),
           skip(1),
           filter(() => this.clubGroup?.valid ?? false),
