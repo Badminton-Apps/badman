@@ -25,7 +25,7 @@ import { HasClaimComponent } from '@badman/frontend-components';
 import { Player } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { debounceTime, filter, switchMap } from 'rxjs/operators';
+import { throttleTime, filter, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-player-fields',
@@ -88,7 +88,7 @@ export class EditPlayerFieldsComponent implements OnInit {
 
     this.fg.valueChanges
       .pipe(
-        debounceTime(600),
+        throttleTime(600),
         filter(() => this.fg.valid),
         filter(
           (v) =>

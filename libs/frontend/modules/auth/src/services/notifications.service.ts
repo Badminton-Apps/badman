@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 
-import { debounceTime, map, switchMap, take, tap } from 'rxjs/operators';
+import { throttleTime, map, switchMap, take, tap } from 'rxjs/operators';
 
 import { SwPush } from '@angular/service-worker';
 import { Claim, Notification } from '@badman/frontend-models';
@@ -65,7 +65,7 @@ export class NotificationService {
   constructor() {
     combineLatest([toObservable(this.authService.user), this.update$])
       .pipe(
-        debounceTime(1000),
+        throttleTime(1000),
         switchMap(([player]) => {
           if (!player?.loggedIn) {
             return of(undefined);

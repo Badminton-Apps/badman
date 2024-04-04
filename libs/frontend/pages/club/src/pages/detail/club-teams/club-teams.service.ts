@@ -8,7 +8,7 @@ import {
   EMPTY,
   Subject,
   catchError,
-  debounceTime,
+  throttleTime,
   delay,
   distinctUntilChanged,
   filter,
@@ -58,7 +58,7 @@ export class ClubTeamsService {
 
   // sources
   private teamsLoaded$ = this.filterChanged$.pipe(
-    debounceTime(300),
+    throttleTime(300),
     switchMap((filter) => this.getTeams(filter)),
     map((teams) => teams.sort(sortTeams)),
     map((teams) => ({ teams, loaded: true })),
