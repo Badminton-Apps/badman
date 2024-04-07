@@ -2,6 +2,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { routes } from './app/app.routes';
+import { FrontendGraphQlModule } from '@badman/frontend-modules-graphql';
 // import { FrontendGraphQlModule } from '@badman/frontend-modules-graphql';
 
 // This module is imported on client, inside src/app/main.ts
@@ -10,9 +11,9 @@ import { routes } from './app/app.routes';
 
 @NgModule({
   imports: [
-    // FrontendGraphQlModule.forRoot({
-    //   api: '/graphql',
-    // }),
+    FrontendGraphQlModule.forRoot({
+      api: '/graphql',
+    }),
   ],
   providers: [
     provideHttpClient(withFetch()),
