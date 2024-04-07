@@ -1,99 +1,35 @@
-# Badman
+# Glenn's starter template
 
-## dev
+## Features included
 
-We greatly improved the development of the badman.
+A full stack application template. 
+- Nx monorepo for optimal code sharing and scalability.
+- The front end is built with **Angular** and **Angular Material**. 
+- The back end is built with **NestJs** and **TypeORM**. 
+- The front end and back end are both secured with **Auth0**.
 
-You now only need docker installed.
+This template uses **SSR** (Server Side Rendering).
 
-### 1. Environment values
+## Getting started
 
-- copy `.env.example` to `.env`
-- And fill in the values
+### pre-requisites
+Following things should be installed / available on your machine before you start:
+- postgres (can be different but requires configuration in the [orm.config.ts](./libs/backend/database/src/orm.config.ts) file )
+- node
+- npm
+- Auth0 account
 
-### 2. Install dependencies
+### Installation
+1. Click the "Use this template" button on the top right of the repository.
+2. Clone the repository to your local machine.
+3. Run `npm install` in the root of the project.
+4. copy / change the `.env.exmample` file to `.env` and fill in the required fields.
+5. Run `npm run start` to start the project.
 
-run: `npm install`
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
-### 3. Start database/redis cache (if needed)
 
-run: `npm run dev:up`
-
-### 4. Start client and server
-
-- run: `npm start` for the client
-- run: `npm start api` for the api
-
-#### 4.a First time running:
-
-- run the migration and seeding `npx --yes sequelize-cli db:migrate && npx --yes sequelize-cli db:seed:all`
-- open: http://localhost:3000/player/admin
-- login with your badman credentials
-- Claim the admin account
-
-### 4. Profit
-
-Badman should be availible @ http://localhost:3000
-
-### Debugging
-
-Add the following to your `launch.json`
-
-```json
-{
-  "name": "Server",
-  "type": "node",
-  "request": "attach",
-  "port": 9229,
-  "address": "localhost",
-  "localRoot": "${workspaceFolder}/code",
-  "remoteRoot": "/usr/src",
-  "restart": true
-}
-```
-
-for debugging the workers use following ports:
-
-- worker-sync: 9230
-- worker-ranking: 9231
-
-### Generate pwa assets
-
-https://github.com/elegantapp/pwa-asset-generator
-
-### splash
-
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --dark-mode  --opaque false --background "#303030"`
-
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --icon-only --favicon --dark-mode  --opaque false --background "rgba(0, 0, 0, 0)"`
-
-`npx pwa-asset-generator "./apps/badman/src/assets/logo.svg" "./apps/badman/src/assets/icons" -i "./apps/badman/src/index.html" -m "./apps/badman/src/manifest.json" --icon-only --dark-mode  --opaque false --background "rgba(0, 0, 0, 1)"`
-
-### speedtest
-
-https://github.com/rakyll/hey
-`hey -n 256 -c 8 -z 30s http://localhost:5001/api/v1/ > results.txt`
-
-### Upgrade to latest packages
-
-1. `NX_MIGRATE_USE_LOCAL=true nx migrate latest`
-2. `npm i`
-3. `NX_MIGRATE_USE_LOCAL=true nx migrate --run-migrations`
-
-## Database
-
-### Restoring Database
-
-- download `.sql.gz` file
-- go into psql
-- `\i path_to_sql_file`
-
-### Importing / Exporting data from dev to prod
-
-- `COPY (select * from "ranking"."RankingSystems" where "id" = '7c5cb68a-a0bf-4728-95fe-94191c5ee32a') TO '/home/backup/rankingSystems_v7.csv' DELIMITER ',' CSV;`
-- Import / Export data > select the file
-
-## docker build and run
-
-- `docker build -t badman . -f apps/api/Dockerfile`
-- `docker run badman --env-file .env -p 5001:5001`
+## Known issues
+- When running the build it will throw `ERROR RuntimeError: NG04002: Cannot match any routes. URL Segment: '@angular/compiler.mjs.map'` however the build will still work.
+- [WORKAROUND IMPLEMENTED] Changing a NestJS service, won't unregister the service from the DI container. see: https://github.com/cyco130/vavite/issues/99

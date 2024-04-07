@@ -1,9 +1,0 @@
-@use './club-fields/club-fields.component.theme.scss' as club-fields;
-
-@mixin typography($theme) {
-  @include club-fields.typography($theme);
-}
-
-@mixin color($theme) {
-  @include club-fields.color($theme);
-}

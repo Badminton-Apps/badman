@@ -62,3 +62,4 @@ files/
 .nx/cache
 playwright-report/
 blob-report/
+.nx/

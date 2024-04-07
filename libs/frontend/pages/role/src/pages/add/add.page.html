@@ -1,4 +1,0 @@
-@if (claims$ | async; as claims) {
-  <h1>Add role to {{ club.name }}</h1>
-  <badman-role-fields (save)="this.add($event, club)" [claims]="claims"></badman-role-fields>
-}

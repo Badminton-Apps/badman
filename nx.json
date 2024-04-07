@@ -7,30 +7,9 @@
       "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/src/test-setup.[jt]s",
-      "!{projectRoot}/test-setup.[jt]s"
+      "!{projectRoot}/tsconfig.spec.json"
     ],
     "sharedGlobals": []
-  },
-  "release": {
-    "version": {
-      "conventionalCommits": true
-    },
-    "changelog": {
-      "workspaceChangelog": {
-        "createRelease": "github",
-        "file": "apps/badman/src/assets/CHANGELOG.md"
-      }
-    }
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "options": {
-        "parallel": 5
-      }
-    }
   },
   "targetDefaults": {
     "@angular-devkit/build-angular:application": {
@@ -65,30 +44,26 @@
       }
     },
     {
-      "plugin": "@nx/jest/plugin",
-      "options": {
-        "targetName": "test"
-      }
-    },
-    {
       "plugin": "@nx/playwright/plugin",
       "options": {
         "targetName": "e2e"
       }
     },
     {
-      "plugin": "@nx/webpack/plugin",
+      "plugin": "@nx/vite/plugin",
       "options": {
         "buildTargetName": "build",
+        "previewTargetName": "preview",
+        "testTargetName": "test",
         "serveTargetName": "serve",
-        "previewTargetName": "preview"
+        "serveStaticTargetName": "serve-static"
       }
     }
   ],
   "generators": {
     "@nx/nest:library": {
       "linter": "eslint",
-      "unitTestRunner": "jest",
+      "unitTestRunner": "vitest",
       "buildable": true,
       "simpleName": true
     },
@@ -96,11 +71,11 @@
       "e2eTestRunner": "playwright",
       "style": "scss",
       "linter": "eslint",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "vitest"
     },
     "@nx/angular:library": {
       "linter": "eslint",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "vitest"
     },
     "@nx/angular:component": {
       "style": "scss",
@@ -111,7 +86,6 @@
   },
   "ci": "github",
   "defaultProject": "badman",
-  "nxCloudAccessToken": "NTM2YmYwOTAtM2NlZC00ZDFmLTkwMDAtNzljM2Y4MDFiMTBmfHJlYWQtd3JpdGU=",
   "cacheDirectory": "/tmp/nx-cache",
-  "defaultBase": "main"
+  "defaultBase": "master"
 }

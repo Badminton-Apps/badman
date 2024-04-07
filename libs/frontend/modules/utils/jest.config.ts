@@ -1,9 +1,8 @@
 /* eslint-disable */
 export default {
   displayName: 'frontend-utils',
-  preset: '../../../../jest.preset.js',
+  preset: '../../../../jest.preset.cjs',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  passWithNoTests: true,
   coverageDirectory: '../../../../coverage/libs/frontend/modules/utils',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

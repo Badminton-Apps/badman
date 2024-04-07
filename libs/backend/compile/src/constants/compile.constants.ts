@@ -1,1 +1,0 @@
-export const COMPILE_OPTIONS_TOKEN = Symbol('COMPILE_OPTIONS_TOKEN');

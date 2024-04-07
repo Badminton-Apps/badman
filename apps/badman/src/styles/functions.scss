@@ -1,0 +1,69 @@
+@use '@angular/material' as mat;
+
+/// Defines a dark color theme with success and danger colors.
+/// @param {Map} $primary The primary color map.
+/// @param {Map} $accent The accent color map.
+/// @param {Map} $warn The warn color map.
+/// @param {Map} $success The success color map.
+/// @param {Map} $danger The danger color map.
+
+@function dark-theme(
+  $primary,
+  $accent,
+  $warn: mat.define-palette($mat-orange),
+  $success: mat.define-palette(mat.$mat-green),
+  $danger: mat.define-palette(mat.$mat-red),
+  $typography: mat.define-typography-config(),
+  $density: -2
+) {
+  $dark-theme: mat.define-dark-theme(
+    (
+      color: (
+        primary: $primary,
+        accent: $accent,
+        warn: $warn,
+      ),
+      typography: $typography,
+      density: $density,
+    )
+  );
+
+  $danger-success: (
+    success: $success,
+    danger: $danger,
+  );
+  @return map-merge($dark-theme, $danger-success);
+}
+
+/// Defines a light color theme with success and danger colors.
+/// @param {Map} $primary The primary color map.
+/// @param {Map} $accent The accent color map.
+/// @param {Map} $warn The warn color map.
+/// @param {Map} $success The success color map.
+/// @param {Map} $danger The danger color map.
+@function light-theme(
+  $primary,
+  $accent,
+  $warn: mat.define-palette($mat-orange),
+  $success: mat.define-palette(mat.$mat-green),
+  $danger: mat.define-palette(mat.$mat-red),
+  $typography: mat.define-typography-config(),
+  $density: 0
+) {
+  $light-theme: mat.define-light-theme(
+    (
+      color: (
+        primary: $primary,
+        accent: $accent,
+        warn: $warn,
+      ),
+      typography: $typography,
+      density: $density,
+    )
+  );
+  $danger-success: (
+    success: $success,
+    danger: $danger,
+  );
+  @return map-merge($light-theme, $danger-success);
+}

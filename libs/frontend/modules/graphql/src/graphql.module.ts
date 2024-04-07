@@ -18,8 +18,12 @@ import { sha256 } from 'crypto-hash';
 import { lastValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-export const APOLLO_CACHE = new InjectionToken<InMemoryCache>('apollo-cache');
-export const GRAPHQL_CONFIG_TOKEN = new InjectionToken<GraphqlConfiguration>('graphql.config');
+export const APOLLO_CACHE = new InjectionToken<InMemoryCache>(
+  'apollo-cache',
+);
+export const GRAPHQL_CONFIG_TOKEN = new InjectionToken<GraphqlConfiguration>(
+  'graphql.config',
+);
 
 export type GraphqlConfiguration = Readonly<{
   api: string;
@@ -50,7 +54,9 @@ export function createApollo(
   const auth = setContext(async (_, { headers }) => {
     if (isBrowser) {
       const authService = injector.get(AuthService);
-      const isAuthenticated = await lastValueFrom(authService.isAuthenticated$.pipe(take(1)));
+      const isAuthenticated = await lastValueFrom(
+        authService.isAuthenticated$.pipe(take(1)),
+      );
       if (isAuthenticated) {
         const token = await lastValueFrom(authService.getAccessTokenSilently());
         if (token) {
@@ -109,26 +115,25 @@ export function createApollo(
   providers: [
     {
       provide: APOLLO_CACHE,
-      useValue: new InMemoryCache({
-        typePolicies: {
-          GamePlayerMembershipType: {
-            keyFields: ['id', 'team', 'player'],
-          },
-          TeamPlayerMembershipType: {
-            keyFields: ['id', 'teamId', 'membershipType'],
-          },
-        },
-      }),
+      useValue: new InMemoryCache(),
     },
     {
       provide: APOLLO_OPTIONS,
       useFactory: createApollo,
-      deps: [HttpLink, APOLLO_CACHE, Injector, PLATFORM_ID, GRAPHQL_CONFIG_TOKEN],
+      deps: [
+        HttpLink,
+        APOLLO_CACHE,
+        Injector,
+        PLATFORM_ID,
+        GRAPHQL_CONFIG_TOKEN,
+      ],
     },
   ],
 })
 export class GraphQLModule {
-  static forRoot(config: GraphqlConfiguration): ModuleWithProviders<GraphQLModule> {
+  static forRoot(
+    config: GraphqlConfiguration,
+  ): ModuleWithProviders<GraphQLModule> {
     return {
       ngModule: GraphQLModule,
       providers: [{ provide: GRAPHQL_CONFIG_TOKEN, useValue: config }],

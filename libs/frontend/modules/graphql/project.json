@@ -3,7 +3,6 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/frontend/modules/graphql/src",
   "prefix": "badman",
-  "tags": [],
   "projectType": "library",
   "targets": {
     "build": {

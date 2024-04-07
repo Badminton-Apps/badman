@@ -1,20 +1,20 @@
-import { Player } from '@badman/backend-database';
 import {
   CanActivate,
   ExecutionContext,
-  Injectable,
+  Injectable as Inject,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { FastifyRequest } from 'fastify';
+import { Request } from 'express';
 import { JwksClient } from 'jwks-rsa';
 import { getRequest } from '../utils';
 import { ALLOW_ANONYMOUS_META_KEY } from './anonymous.decorator';
+import { AppUser } from '@badman/models';
 
-@Injectable()
+@Inject() 
 export class PermGuard implements CanActivate {
   private readonly _logger = new Logger(PermGuard.name);
   private readonly jwksClient: JwksClient;
@@ -26,17 +26,16 @@ export class PermGuard implements CanActivate {
   ) {
     this.jwksClient = new JwksClient({
       cache: true,
-      jwksUri: `${this.configService.get('AUTH0_ISSUER_URL')}/.well-known/jwks.json`,
+      jwksUri: `https://${this.configService.get('VITE_AUTH0_ISSUER_URL')}/.well-known/jwks.json`,
     });
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>(ALLOW_ANONYMOUS_META_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const isPublic = this.reflector.getAllAndOverride<boolean>(
+      ALLOW_ANONYMOUS_META_KEY,
+      [context.getHandler(), context.getClass()],
+    );
     if (isPublic) {
-      // 💡 See this condition
       return true;
     }
 
@@ -61,7 +60,7 @@ export class PermGuard implements CanActivate {
     return true;
   }
 
-  private extractTokenFromHeader(request: FastifyRequest): string | undefined {
+  private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request?.headers?.['authorization']?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
@@ -69,7 +68,7 @@ export class PermGuard implements CanActivate {
   async validateUser(payload: { sub?: string }) {
     if (payload.sub) {
       try {
-        const user = await Player.findOne({
+        const user = await AppUser.findOne({
           where: { sub: payload.sub },
         });
         if (user) {
@@ -84,24 +83,21 @@ export class PermGuard implements CanActivate {
 
   async validateToken(token: string) {
     try {
-      const publicKey = await this.getPublicKey();
+      const decoded = this.jwtService.decode(token, { complete: true });
+      const signingKey = await this.jwksClient.getSigningKey(
+        decoded.header.kid,
+      );
       const payload = this.jwtService.verify(token, {
         algorithms: ['RS256'],
-        publicKey,
-        audience: this.configService.get('AUTH0_AUDIENCE'),
-        issuer: `${this.configService.get('AUTH0_ISSUER_URL')}/`,
+        publicKey: signingKey.getPublicKey(),
+        audience: this.configService.get('VITE_AUTH0_AUDIENCE'),
+        issuer: `https://${this.configService.get('VITE_AUTH0_ISSUER_URL')}/`,
       });
+
       return payload;
     } catch (error) {
       // Handle token validation error
       this._logger.error(`Error fetching token`, error);
     }
-  }
-
-  private async getPublicKey(): Promise<string | Buffer> {
-    const kid = 'MzAzRUEwRTA3RjNDOENGRjA2Qzk3RUFFMkMzMjczNEY2NTI4RjIyQw';
-    const signingKey = await this.jwksClient.getSigningKey(kid);
-
-    return signingKey.getPublicKey();
   }
 }

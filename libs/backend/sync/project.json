@@ -1,0 +1,19 @@
+{
+  "name": "backend-sync",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/backend/sync/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/backend/sync",
+        "tsConfig": "libs/backend/sync/tsconfig.lib.json",
+        "packageJson": "libs/backend/sync/package.json",
+        "main": "libs/backend/sync/src/index.ts",
+        "assets": ["libs/backend/sync/*.md"]
+      }
+    }
+  }
+}

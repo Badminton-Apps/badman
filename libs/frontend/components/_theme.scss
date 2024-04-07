@@ -1,49 +1,18 @@
 @use '@angular/material' as mat;
+@use './src/navigation/navigation.component.theme.scss' as navigation;
 
-@use './src/games/recent-games/recent-games.component.theme.scss' as recent-games;
-@use './src/games/upcoming-games/upcoming-games.component.theme.scss' as upcoming-games;
-@use './src/landing/components/beta/beta.component.theme.scss' as beta;
-@use './src/block/block.component.theme.scss' as block;
-@use './src/loading-block/loading-block.component.theme.scss' as loading-block;
-@use './src/page-header/page-header.component.theme.scss' as page-header;
-@use './src/player-search/player-search.component.theme.scss' as player-search;
-@use './src/selects/select-club/select-club.component.theme.scss' as select-club;
-@use './src/selects/select-player/select-player.component.theme.scss' as select-player;
-@use './src/roles/edit-role/edit-role.component.theme.scss' as edit-role;
-@use './src/shell/theme' as shell;
-@use './src/standing/standing.component.theme.scss' as standing;
 
 @mixin typography($theme) {
-  @include beta.typography($theme);
-  @include block.typography($theme);
-  @include edit-role.typography($theme);
-  @include loading-block.typography($theme);
-  @include page-header.typography($theme);
-  @include player-search.typography($theme);
-  @include select-club.typography($theme);
-  @include select-player.typography($theme);
-  @include recent-games.typography($theme);
-  @include shell.typography($theme);
-  @include standing.typography($theme);
-  @include upcoming-games.typography($theme);
+  @include navigation.typography($theme);
 }
 
 @mixin color($theme) {
-  @include beta.color($theme);
-  @include block.color($theme);
-  @include edit-role.color($theme);
-  @include loading-block.color($theme);
-  @include page-header.color($theme);
-  @include player-search.color($theme);
-  @include select-club.color($theme);
-  @include select-player.color($theme);
-  @include recent-games.color($theme);
-  @include shell.color($theme);
-  @include standing.color($theme);
-  @include upcoming-games.color($theme);
+  @include navigation.color($theme);
 }
 
+
 @mixin theme($theme) {
+  // Only apply theme on the correct element
   $color-config: mat.get-color-config($theme);
   @if $color-config != null {
     @include color($theme);

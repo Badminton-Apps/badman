@@ -1,0 +1,22 @@
+// info: https://material.angular.io/guide/theming-your-components
+
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+  badman-navigation {
+    $color-config: mat.get-color-config($theme);
+    $accent-palette: map.get($color-config, 'accent');
+  }
+}
+
+@mixin typography($theme) {
+  badman-navigation {
+    $typography-config: mat.get-typography-config($theme);
+
+    .version {
+      @include mat.typography-level($typography-config, 'caption');
+    }
+  }
+}
+

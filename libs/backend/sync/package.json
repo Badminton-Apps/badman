@@ -1,0 +1,15 @@
+{
+  "name": "@badman/backend-sync",
+  "version": "0.0.1",
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "@nestjs/common": "^10.3.3",
+    "@nestjs/config": "^3.2.0",
+    "@nestjs/schedule": "^4.0.1",
+    "vite": "5.1.4",
+    "@nx/vite": "^18.0.6"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts"
+}

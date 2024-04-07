@@ -1,5 +1,4 @@
-export * from './services';
-export * from './guards';
-export * from './models';
+export * from './user.inject'
+export * from './auth.inject'
 
-export * from './auth.module';
+export * from './guards'
