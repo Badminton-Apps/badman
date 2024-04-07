@@ -130,12 +130,12 @@ export function createApollo(
     },
   ],
 })
-export class GraphQLModule {
+export class FrontendGraphQlModule {
   static forRoot(
     config: GraphqlConfiguration,
-  ): ModuleWithProviders<GraphQLModule> {
+  ): ModuleWithProviders<FrontendGraphQlModule> {
     return {
-      ngModule: GraphQLModule,
+      ngModule: FrontendGraphQlModule,
       providers: [{ provide: GRAPHQL_CONFIG_TOKEN, useValue: config }],
     };
   }

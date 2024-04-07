@@ -62,4 +62,4 @@ import { RankingResolver } from './resolvers/ranking.resolver';
     RankingResolver,
   ],
 })
-export class GraphqlModule {}
+export class BackendGraphqlModule {}

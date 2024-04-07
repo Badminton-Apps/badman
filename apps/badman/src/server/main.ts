@@ -17,6 +17,7 @@ async function bootstrap() {
 
   if (import.meta.env.PROD) {
     const port = import.meta.env.VITE_PORT || 5200;
+    Logger.debug(`Listening on port ${port}`);
     app.listen(port);
   } else {
     await app.init();

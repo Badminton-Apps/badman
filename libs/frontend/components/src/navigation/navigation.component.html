@@ -17,9 +17,9 @@
       <div>
         <mat-nav-list>
           <a mat-list-item [routerLink]="['/public']">public</a>
-          @if (user()?.id) {
+          <!-- @if (user()?.id) {
             <a mat-list-item [routerLink]="['/private']">private</a>
-          }
+          } -->
         </mat-nav-list>
       </div>
       <div class="spacer"></div>
@@ -42,7 +42,7 @@
 
       <div class="center"></div>
 
-      <div class="right">
+      <!-- <div class="right">
         @if (user()) {
           <span class="username">{{ user()?.firstName }}</span>
           <button
@@ -65,7 +65,7 @@
             <mat-icon aria-label="Logout icon">login</mat-icon>
           </button>
         }
-      </div>
+      </div> -->
     </mat-toolbar>
 
     <div class="content">

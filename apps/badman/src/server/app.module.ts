@@ -5,7 +5,7 @@ import {
   AuthorizationModule,
 } from '@badman/backend-authorization';
 import { DatabaseModule } from '@badman/backend-database';
-import { GraphqlModule } from '@badman/backend-graphql';
+// import { BackendGraphqlModule } from '@badman/backend-graphql';
 import { HealthModule } from '@badman/backend-health';
 import { SyncModule } from '@badman/backend-sync';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
@@ -13,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AngularRendererModule } from '@nitedani/angular-renderer-nestjs';
 import { AppComponent } from '../app/app.component';
 import { SharedModule } from '../shared.module';
+import { BackendGraphqlModule } from '@badman/backend-graphql';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { SharedModule } from '../shared.module';
     ConfigModule,
     DatabaseModule,
     AuthorizationModule,
-    GraphqlModule,
+    BackendGraphqlModule,
     SyncModule,
     HealthModule,
   ],

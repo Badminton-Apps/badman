@@ -1,5 +1,5 @@
-import { AsyncPipe, isPlatformServer } from '@angular/common';
-import { Component, PLATFORM_ID, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Apollo, gql } from 'apollo-angular';
 import { EMPTY } from 'rxjs';
@@ -14,7 +14,6 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class UserComponent {
   private readonly apollo = inject(Apollo);
-  private readonly platformId = inject(PLATFORM_ID);
 
   someData$ = this.apollo
     .query<{
@@ -33,9 +32,6 @@ export class UserComponent {
           }
         }
       `,
-      variables: {
-        isServer: isPlatformServer(this.platformId),
-      },
     })
     .pipe(
       tap((result) => console.log(result.networkStatus)),

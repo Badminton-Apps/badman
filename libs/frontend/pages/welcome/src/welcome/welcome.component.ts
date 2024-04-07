@@ -20,4 +20,4 @@ export class WelcomePageComponent {
     this.title.setTitle('Welcome!');
   }
 }
-3
+3;

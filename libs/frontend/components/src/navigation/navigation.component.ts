@@ -44,8 +44,8 @@ import { AUTH, USER } from '@badman/frontend-modules-auth';
 })
 export class NavigationComponent {
   breakpointObserver = inject(BreakpointObserver);
-  user = inject(USER);
-  auth = inject(AUTH);
+  // user = inject(USER);
+  // auth = inject(AUTH);
 
   isHandset = toSignal(
     this.breakpointObserver
@@ -59,15 +59,15 @@ export class NavigationComponent {
 
   loading = false;
 
-  login() {
-    this.auth.loginWithRedirect();
-  }
+  // login() {
+  //   this.auth.loginWithRedirect();
+  // }
 
-  logout() {
-    this.auth.logout({
-      logoutParams: {
-        returnTo: document?.location.origin,
-      },
-    });
-  }
+  // logout() {
+  //   this.auth.logout({
+  //     logoutParams: {
+  //       returnTo: document?.location.origin,
+  //     },
+  //   });
+  // }
 }

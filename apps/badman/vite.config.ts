@@ -3,7 +3,7 @@ import { angular } from '@nitedani/vite-plugin-angular/plugin';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { vavite } from 'vavite';
 import { defineConfig, splitVendorChunkPlugin } from 'vite';
-import { cjsInterop } from 'vite-plugin-cjs-interop';
+// import { cjsInterop } from 'vite-plugin-cjs-interop';
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/apps/badman',
@@ -31,9 +31,9 @@ export default defineConfig({
     angular({
       swc: true,
     }),
-    cjsInterop({
-      dependencies: ['@apollo/client/core'],
-    }),
+    // cjsInterop({
+    //   dependencies: ['@apollo/client/core'],
+    // }),
     vavite({
       serverEntry: './src/server/main.ts',
       serveClientAssetsInDev: true,

@@ -6,8 +6,10 @@ import { NavigationComponent } from '@badman/frontend-components';
 @Component({
   standalone: true,
   imports: [CommonModule, RouterOutlet, NavigationComponent],
-  template: ` <badman-navigation>
-    <router-outlet #outlet="outlet"></router-outlet>
-  </badman-navigation>`,
+  template: `
+    <badman-navigation>
+      <router-outlet #outlet="outlet"></router-outlet>
+    </badman-navigation>
+  `,
 })
 export class AppComponent {}

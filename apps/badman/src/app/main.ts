@@ -6,14 +6,15 @@ import { AuthModule } from '@auth0/auth0-angular';
 import { renderPage } from '@nitedani/vite-plugin-angular/client';
 import { AppComponent } from '../app/app.component';
 import { SharedModule } from '../shared.module';
+import { FrontendGraphQlModule } from '@badman/frontend-modules-graphql';
 renderPage({
   page: AppComponent,
   imports: [
     SharedModule,
     HttpClientModule,
-    // GraphQLModule.forRoot({
-    //   api: '/graphql',
-    // }),
+    FrontendGraphQlModule.forRoot({
+      api: '/graphql',
+    }),
     AuthModule.forRoot({
       domain: import.meta.env.VITE_AUTH0_ISSUER_URL,
       clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,

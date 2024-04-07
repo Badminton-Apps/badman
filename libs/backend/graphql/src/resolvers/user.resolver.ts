@@ -14,7 +14,11 @@ export class UserResolver {
 
       return user;
     } else {
-      return null;
+      return {
+        id: '0',
+        firstName: 'John',
+        lastName: 'Doe',
+      } as AppUser;
     }
   }
 }
