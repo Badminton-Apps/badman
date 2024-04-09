@@ -9,7 +9,6 @@
     "@badman/frontend-role": "*",
     "@badman/frontend-team": "*",
     "@angular/forms": "~17.3.0",
-    "@angular/material": "~17.3.0",
     "@badman/frontend-components": "*",
     "@badman/utils": "*",
     "@ngx-translate/core": "^15.0.0",
@@ -17,7 +16,6 @@
     "@badman/frontend-models": "*",
     "@ng-maps/places": "^6.0.0",
     "apollo-angular": "^6.0.0",
-    "ngxtension": "^2.0.0",
     "@badman/frontend-graphql": "*",
     "moment": "^2.30.1",
     "@angular/animations": "~17.3.0",
@@ -26,8 +24,7 @@
     "@badman/frontend-seo": "*",
     "@badman/frontend-html-injects": "*",
     "@badman/frontend-twizzit": "*",
-    "xng-breadcrumb": "^10.0.2",
-    "@apollo/client": "^3.9.2"
+    "xng-breadcrumb": "^10.0.2"
   },
   "dependencies": {},
   "sideEffects": false
