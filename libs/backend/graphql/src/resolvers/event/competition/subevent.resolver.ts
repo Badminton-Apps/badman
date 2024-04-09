@@ -148,10 +148,10 @@ export class SubEventCompetitionResolver {
   }
 
   /**
-   * Get the average level of the female players
+   * Get the average level of the male players
    * @param primarySystem the primary ranking system
-   * @param uniquePlayersFeMale a set of unique female players
-   * @param countPerFemale a map of player id and count of amount of games in the event
+   * @param uniquePlayersMale a set of unique male players
+   * @param countPerMale a map of player id and count of amount of games in the event
    * @returns @memberof SubEventCompetitionResolver
    */
   private async getMaleAverages(
@@ -220,10 +220,10 @@ export class SubEventCompetitionResolver {
   }
 
   /**
-   * Get the average level of the male players
+   * Get the average level of the female players
    * @param primarySystem the primary ranking system
-   * @param uniquePlayersMale a set of unique male players
-   * @param countPerMale a map of player id and count of amount of games in the event
+   * @param uniquePlayersFeMale a set of unique female players
+   * @param countPerFemale a map of player id and count of amount of games in the event
    * @returns @memberof SubEventCompetitionResolver
    */
   private async getFemaleAverages(
