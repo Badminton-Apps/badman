@@ -221,7 +221,6 @@ export class TeamsStepComponent implements OnInit {
     this.clubs$ = this._getClubs();
     this.subEvents$ = this._getSubEvents();
     this.subEvents$.pipe(take(1)).subscribe((subs) => {
-      console.log('loading inital');
       this.setInitialSubEvents(subs);
       this.loadedSubEvents.set(true);
     });
