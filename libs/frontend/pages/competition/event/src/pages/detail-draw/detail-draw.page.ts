@@ -1,5 +1,13 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Injector,
+  computed,
+  effect,
+  inject
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -11,9 +19,11 @@ import {
 } from '@badman/frontend-components';
 import { DrawCompetition, EventCompetition, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { DrawLocationMapComponent } from './components';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-detail-draw-competition',
@@ -34,40 +44,47 @@ import { DrawLocationMapComponent } from './components';
     DrawLocationMapComponent,
   ],
 })
-export class DetailDrawCompetitionComponent implements OnInit {
-  drawCompetition!: DrawCompetition;
-  eventCompetition!: EventCompetition;
-  teams?: Team[];
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private breadcrumbsService: BreadcrumbService,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
+export class DetailDrawCompetitionComponent {
+  private readonly destroy$ = injectDestroy();
+  private readonly translateService = inject(TranslateService);
+ 
+  private readonly route = inject(ActivatedRoute);
+  // private readonly router = inject(Router);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly seoService = inject(SeoService);
+  private readonly injector = inject(Injector);
 
-  get isClient(): boolean {
-    return isPlatformBrowser(this.platformId);
-  }
+  private routeData = toSignal(this.route.data);
 
-  ngOnInit(): void {
-    this.route.data.subscribe((data) => {
-      this.drawCompetition = data['drawCompetition'];
-      const drawCompetitionName = `${this.drawCompetition.name}`;
+  drawCompetition = computed(() => this.routeData()?.['drawCompetition'] as DrawCompetition);
+  eventCompetition = computed(() => this.routeData()?.['eventCompetition'] as EventCompetition);
+  teams = computed(() => this.drawCompetition()?.eventEntries?.map((e) => e.team as Team));
 
-      this.eventCompetition = data['eventCompetition'];
+  constructor() {
+    const compTitle = 'all.competition.title';
 
-      this.seoService.update({
-        title: drawCompetitionName,
-        description: `Competition draw ${drawCompetitionName}`,
-        type: 'website',
-        keywords: ['event', 'competition', 'badminton'],
+    this.translateService
+      .get([compTitle])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((translations) => {
+        this.breadcrumbService.set('competition', translations[compTitle]);
       });
-      this.breadcrumbsService.set('@eventCompetition', this.eventCompetition.name || '');
-      this.breadcrumbsService.set('@drawCompetition', drawCompetitionName);
-
-      this.teams = this.drawCompetition?.eventEntries?.map((e) => {
-        return e.team as Team;
-      });
-    });
+    
+    effect(
+      () => {
+        const drawCompetitionName = `${this.drawCompetition().name}`;
+        this.seoService.update({
+          title: drawCompetitionName,
+          description: `Competition draw ${drawCompetitionName}`,
+          type: 'website',
+          keywords: ['event', 'competition', 'badminton'],
+        });
+        this.breadcrumbService.set('@eventCompetition', this.eventCompetition().name || '');
+        this.breadcrumbService.set('@drawCompetition', drawCompetitionName);
+      },
+      {
+        injector: this.injector,
+      },
+    );
   }
 }
