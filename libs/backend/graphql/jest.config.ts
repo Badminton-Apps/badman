@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-graphql',
+  // displayName: 'backend-graphql',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

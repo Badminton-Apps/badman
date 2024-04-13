@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-logging',
+  // displayName: 'backend-logging',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

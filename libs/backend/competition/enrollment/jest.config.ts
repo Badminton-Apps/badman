@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-enrollment',
+  // displayName: 'backend-enrollment',
   preset: '../../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

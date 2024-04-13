@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-cluster',
+  // displayName: 'backend-cluster',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

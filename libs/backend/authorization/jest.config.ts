@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-authorization',
+  // displayName: 'backend-authorization',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,
