@@ -1,9 +1,29 @@
 version: '3'
 name: badman-next
 services:
+  # # Databases
+  # postgres:
+  #   image: postgis/postgis:15-master
+  #   shm_size: 1gb
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #     POSTGRES_USER: ${DB_USER}
+  #     POSTGRES_DB: ${DB_DATABASE}
+  #     POSTGRES_MAX_CONNECTIONS: 500
+  #   ports:
+  #     - '5432:5432'
+  #   networks:
+  #     - api
+  #     - postgres
+  #   volumes:
+  #     - db-data:/var/lib/postgresql/data
+  #     - ./database/backup:/home/backup
+  #     - ./database/scripts:/home/scripts
+
   # Databases
-  postgres:
-    image: postgis/postgis:15-master
+  postgres-16:
+    image: postgis/postgis:16-master
     shm_size: 1gb
     restart: unless-stopped
     environment:
@@ -17,7 +37,7 @@ services:
       - api
       - postgres
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql-16/data
       - ./database/backup:/home/backup
       - ./database/scripts:/home/scripts
 
