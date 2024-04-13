@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { Player, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { LevelType, getCurrentSeason } from '@badman/utils';
+import { LevelType, getUpcommingSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { forkJoin, lastValueFrom } from 'rxjs';
@@ -54,7 +54,7 @@ export class TeamEnrollmentComponent implements OnInit {
   systemService = inject(RankingSystemService);
 
   formGroup: FormGroup = new FormGroup({
-    [SEASON]: new FormControl(getCurrentSeason(), [Validators.required]),
+    [SEASON]: new FormControl(getUpcommingSeason(), [Validators.required]),
     [CLUB]: new FormControl(undefined, [Validators.required]),
     [EVENTS]: new FormControl([], [Validators.required, Validators.min(1)]),
     [TEAMS]: new FormGroup(
