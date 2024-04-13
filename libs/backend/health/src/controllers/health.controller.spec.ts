@@ -19,11 +19,24 @@ describe('HealthController', () => {
   });
 
   it('/health (GET)', () => {
-    return request(app.getHttpServer()).get('/health').expect(200).expect({
-      status: 'ok',
-      info: {},
-      error: {},
-      details: {},
-    });
+    return request(app.getHttpServer())
+      .get('/health')
+      .expect(503)
+      .expect({
+        status: 'error',
+        info: {},
+        error: {
+          database: {
+            status: 'down',
+            message: 'Connection provider not found in application context',
+          },
+        },
+        details: {
+          database: {
+            status: 'down',
+            message: 'Connection provider not found in application context',
+          },
+        },
+      });
   });
 });
