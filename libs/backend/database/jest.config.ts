@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-database',
+  // displayName: 'backend-database',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

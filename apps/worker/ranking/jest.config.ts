@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'worker-ranking',
+  // displayName: 'worker-ranking',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

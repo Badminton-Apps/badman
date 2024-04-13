@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-generator',
+  // displayName: 'backend-generator',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

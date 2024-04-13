@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-micro',
+  // displayName: 'backend-micro',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,
