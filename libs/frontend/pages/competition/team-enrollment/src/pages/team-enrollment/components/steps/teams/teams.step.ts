@@ -4,7 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Inject,
+  Injector,
   OnInit,
   PLATFORM_ID,
   QueryList,
@@ -12,8 +12,12 @@ import {
   TransferState,
   ViewChild,
   ViewChildren,
+  computed,
+  inject,
   input,
+  signal,
 } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -47,14 +51,15 @@ import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { BehaviorSubject, Observable, combineLatest, lastValueFrom, of } from 'rxjs';
 import {
-  throttleTime,
   distinctUntilChanged,
   filter,
   map,
   shareReplay,
   startWith,
   switchMap,
+  take,
   takeUntil,
+  throttleTime,
 } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 import { CLUB, EVENTS, SEASON, TEAMS } from '../../../../../forms';
@@ -98,14 +103,22 @@ type FormArrayOfTeamsValue = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsStepComponent implements OnInit {
-  private destroy$ = injectDestroy();
+  private readonly destroy$ = injectDestroy();
+  private readonly injector = inject(Injector);
+  private readonly changedector = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly apollo = inject(Apollo);
+  private readonly stateTransfer = inject(TransferState);
+  private readonly platformId = inject(PLATFORM_ID);
+
+  loadedSubEvents = signal(false);
+  allLoaded = computed(() => this.loadedSubEvents());
 
   #validationResult = new BehaviorSubject<ValidationResult | null>(null);
   get validationResult() {
     return this.#validationResult.value;
   }
-
-  private update$ = new BehaviorSubject(null);
 
   // get striug array  of event types
   eventTypes = Object.values(SubEventTypeEnum);
@@ -149,15 +162,6 @@ export class TeamsStepComponent implements OnInit {
   getTypeArray(type: SubEventType) {
     return this.internalControl?.controls[type] as FormArray<TeamForm>;
   }
-
-  constructor(
-    private changedector: ChangeDetectorRef,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private apollo: Apollo,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit() {
     let existed = false;
@@ -215,12 +219,28 @@ export class TeamsStepComponent implements OnInit {
       });
 
     this.clubs$ = this._getClubs();
-    combineLatest([this.internalControl?.valueChanges, this.update$])
+    this.subEvents$ = this._getSubEvents();
+    this.subEvents$.pipe(take(1)).subscribe((subs) => {
+      console.log('loading inital');
+      this.setInitialSubEvents(subs);
+      this.loadedSubEvents.set(true);
+    });
+
+    this.season = this.group().get(SEASON)?.value as number;
+
+    combineLatest([
+      this.internalControl?.valueChanges,
+      toObservable(this.allLoaded, {
+        injector: this.injector,
+      }),
+    ])
       .pipe(
         takeUntil(this.destroy$),
-        startWith([this.internalControl?.value]),
+        filter(([, loaded]) => loaded),
         throttleTime(200),
-        switchMap(([v]) => this.validateEnrollment(v as FormArrayOfTeamsValue)),
+        switchMap(() =>
+          this.validateEnrollment(this.internalControl.getRawValue() as FormArrayOfTeamsValue),
+        ),
       )
       .subscribe((v) => {
         if (v?.data?.enrollmentValidation) {
@@ -228,14 +248,6 @@ export class TeamsStepComponent implements OnInit {
           this.changedector.markForCheck();
         }
       });
-
-    this.subEvents$ = this._getSubEvents();
-    this.subEvents$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
-      this.setInitialSubEvents(subs);
-      this.internalControl?.setErrors({ loading: false });
-      this.changedector.markForCheck();
-    });
-    this.season = this.group().get(SEASON)?.value as number;
   }
 
   async addTeam(type: SubEventType) {
@@ -433,6 +445,7 @@ export class TeamsStepComponent implements OnInit {
         if (!team) return;
         if (!team.team) return;
         if (!team.team.type) return;
+
         teams.push({
           id: team.team.id,
           name: team.team.name,
@@ -623,6 +636,7 @@ export class TeamsStepComponent implements OnInit {
         }
 
         const initial = this.getInitialSubEvent(team as TeamFormValue, subs, maxLevels);
+
         if (initial) {
           control?.at(i)?.get('entry')?.get<string>('subEventId')?.patchValue(initial);
         }
