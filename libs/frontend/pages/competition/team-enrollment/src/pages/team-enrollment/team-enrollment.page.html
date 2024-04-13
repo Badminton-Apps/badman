@@ -1,4 +1,6 @@
-<h1>{{ 'all.competition.team-enrollment.title' | translate }}</h1>
+<h1>
+  {{ 'all.competition.team-enrollment.title' | translate }} {{ this.formGroup.get('season')?.value }}
+</h1>
 @if (formGroup) {
   <mat-vertical-stepper [linear]="true">
     <mat-step>
