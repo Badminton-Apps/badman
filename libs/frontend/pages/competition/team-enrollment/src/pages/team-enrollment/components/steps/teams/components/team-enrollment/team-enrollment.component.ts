@@ -68,5 +68,9 @@ export class TeamEnrollmentComponent implements OnInit {
 
     this.subEvent = entry?.get('subEventId') as FormControl<string>;
     this.players = entry?.get('players') as FormArray<FormControl<EntryCompetitionPlayer>>;
+
+    if (this.team?.value.link) {
+      this.subEvent?.disable();
+    }
   }
 }
