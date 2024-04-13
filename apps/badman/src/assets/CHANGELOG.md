@@ -1,3 +1,26 @@
+## 6.136.0 (2024-04-13)
+
+
+### 🚀 Features
+
+- adding DB check ([a1564c189](https://github.com/Badminton-Apps/badman/commit/a1564c189))
+- adding option to get next compseason ([679c934fe](https://github.com/Badminton-Apps/badman/commit/679c934fe))
+- show season to enroll ([3549f9595](https://github.com/Badminton-Apps/badman/commit/3549f9595))
+- disable subevent selection and improvements ([f5ddb1743](https://github.com/Badminton-Apps/badman/commit/f5ddb1743))
+
+### 🩹 Fixes
+
+- should be floating ([916fdd88b](https://github.com/Badminton-Apps/badman/commit/916fdd88b))
+- load in the dates ([aec45ff02](https://github.com/Badminton-Apps/badman/commit/aec45ff02))
+- edit page competition was broken in upgrade ([bcd1d3977](https://github.com/Badminton-Apps/badman/commit/bcd1d3977))
+- there is no database, so this errors ([56936ac14](https://github.com/Badminton-Apps/badman/commit/56936ac14))
+- **deps:** update dependency express to v4.19.2 [security] ([a47d79d7a](https://github.com/Badminton-Apps/badman/commit/a47d79d7a))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.135.1 (2024-03-25)
 
 
