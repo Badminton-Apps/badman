@@ -240,10 +240,10 @@
     }
   },
   "volta": {
-    "node": "21.7.3"
+    "node": "20.12.2"
   },
   "engines": {
-    "node": "21.7.3"
+    "node": "20.12.2"
   },
   "browserslist": [
     "defaults"
