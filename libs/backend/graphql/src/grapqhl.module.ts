@@ -4,7 +4,7 @@ import {
 } from '@apollo/server/plugin/landingPage/default';
 import { AuthorizationModule } from '@badman/backend-authorization';
 import { ApolloDriver } from '@nestjs/apollo';
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { GqlModuleOptions, GraphQLModule } from '@nestjs/graphql';
 
 import OperationRegistry from '@apollo/server-plugin-operation-registry';

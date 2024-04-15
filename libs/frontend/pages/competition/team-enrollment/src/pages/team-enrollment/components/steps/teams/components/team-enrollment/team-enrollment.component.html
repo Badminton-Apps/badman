@@ -13,7 +13,7 @@
     <mat-form-field>
       <mat-label>Select</mat-label>
       <mat-select [formControl]="subEvent">
-        @for (subEvent of subEvents()[type()]; track subEvent) {
+        @for (subEvent of subEventsForTeam(); track subEvent) {
           <mat-option [value]="subEvent.id">
             {{ subEvent.name }}
           </mat-option>
