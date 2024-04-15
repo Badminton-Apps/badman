@@ -35,6 +35,7 @@ const includes = [
     model: Team,
     as: 'home',
     attributes: ['id', 'name'],
+    required: true,
     include: [
       {
         model: Club,
@@ -46,6 +47,7 @@ const includes = [
     model: Team,
     as: 'away',
     attributes: ['id', 'name'],
+    required: true,
     include: [
       {
         model: Club,
