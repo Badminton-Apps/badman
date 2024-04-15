@@ -120,11 +120,6 @@ export class EventCompetition extends Model {
   })
   subEventCompetitions?: Relation<SubEventCompetition[]>;
 
-  @Field(() => String, { nullable: true })
-  @Unique('EventCompetitions_unique_constraint')
-  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
-  type!: LevelType;
-
   @Unique('EventCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
@@ -164,6 +159,11 @@ export class EventCompetition extends Model {
     defaultValue: false,
   })
   official!: boolean;
+
+  @Field(() => String, { nullable: true })
+  @Unique('EventCompetitions_unique_constraint')
+  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
+  type!: LevelType;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)

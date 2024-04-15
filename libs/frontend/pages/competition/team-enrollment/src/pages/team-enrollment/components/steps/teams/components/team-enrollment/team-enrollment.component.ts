@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, input } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, computed, input } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -50,6 +50,24 @@ export class TeamEnrollmentComponent implements OnInit {
   type = input.required<SubEventTypeEnum>();
 
   validation = input<TeamValidationResult>();
+
+
+  subEventsForTeam = computed(() => {
+    if (!this.team) return [];
+
+    const availibleSubs = this.subEvents()[this.type()];
+    const validation = this.validation();
+
+    if (!availibleSubs) return [];
+
+
+    return availibleSubs.filter((sub) => {
+      return (sub.minBaseIndex ?? 0) <= (validation?.baseIndex ?? 0)
+    });
+
+    
+    return ;
+  });
 
   @Output()
   removeTeam = new EventEmitter<Team>();
