@@ -30,6 +30,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   Club,
   EntryCompetitionPlayer,
+  EventCompetition,
   RankingSystem,
   SubEventCompetition,
   Team,
@@ -528,6 +529,77 @@ export class TeamsStepComponent implements OnInit {
   }
 
   private _getSubEvents() {
+    const club = this.group().get(this.clubControlName())?.value as Club;
+    if (!club.state) {
+      throw new Error('Club state not found');
+    }
+
+    // this.apollo
+    //   .query<{
+    //     eventCompetitions: {
+    //       count: number;
+    //       rows: Partial<EventCompetition>[];
+    //     };
+    //   }>({
+    //     query: gql`
+    //       query EventCompetition($where: JSONObject) {
+    //         eventCompetitions(where: $where) {
+    //           count
+    //           rows {
+    //             id
+    //             state
+    //             subEventCompetitions {
+    //               id
+    //               name
+    //               eventType
+    //               level
+    //               maxLevel
+    //               minBaseIndex
+    //               maxBaseIndex
+    //             }
+    //           }
+    //         }
+    //       }
+    //     `,
+    //     variables: {
+    //       where: {
+    //         openDate: { $lte: new Date().toISOString() },
+    //         closeDate: { $gte: new Date().toISOString() },
+    //         $or: [{ type: 'LIGA' }, { type: 'PROV', state: club.state }, { type: 'NATIONAL' }],
+    //       },
+    //     },
+    //   })
+    //   .pipe(
+    //     map((result) => {
+    //       const subEvents =
+    //         result.data.eventCompetitions?.map(
+    //           (subEvent) => new SubEventCompetition(subEvent),
+    //         ) ?? [];
+
+    //       return {
+    //         M: subEvents.filter((subEvent) => subEvent.eventType === 'M').sort(sortSubEventOrder),
+    //         F: subEvents.filter((subEvent) => subEvent.eventType === 'F').sort(sortSubEventOrder),
+    //         MX: subEvents
+    //           .filter(
+    //             (subEvent) =>
+    //               subEvent?.eventType === 'MX' &&
+    //               subEvent?.eventCompetition?.type &&
+    //               subEvent?.eventCompetition?.type != LevelType.NATIONAL,
+    //           )
+    //           .sort(sortSubEventOrder),
+    //         NATIONAL: subEvents
+    //           .filter(
+    //             (subEvent) =>
+    //               subEvent?.eventType === 'MX' &&
+    //               subEvent?.eventCompetition?.type &&
+    //               subEvent?.eventCompetition?.type == LevelType.NATIONAL,
+    //           )
+    //           .sort(sortSubEventOrder),
+    //       };
+    //     }),
+    //     shareReplay(1),
+    //   );
+
     const eventsVal$ = this.group().get(this.eventsControlName())?.valueChanges;
 
     if (!eventsVal$) {
