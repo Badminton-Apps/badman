@@ -85,6 +85,13 @@ export class TeamComponent implements OnInit {
 
   season = input<number>(getCurrentSeason());
 
+  type = computed(() => {
+    if (this.team()?.value?.type === SubEventTypeEnum.NATIONAL) {
+      return SubEventTypeEnum.MX;
+    }
+    return this.team()?.value?.type;
+  });
+
   @Output()
   editTeam = new EventEmitter<Team>();
 
@@ -182,6 +189,7 @@ export class TeamComponent implements OnInit {
   }
 
   async addBasePlayerToTeam(player: Player) {
+    console.log('addBasePlayerToTeam', player, this.basePlayers());
     // Check if player is already in team
     if (this.basePlayers().value.find((p) => p.id === player.id)) {
       this.snackbar.open('Player is already in baseteam', 'Close', {

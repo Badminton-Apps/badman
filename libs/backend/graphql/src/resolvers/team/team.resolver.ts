@@ -27,7 +27,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
@@ -128,6 +128,41 @@ export class TeamsResolver {
   }
 
   // Object
+
+  @Mutation(() => Boolean)
+  async deleteTeams(
+    @Args('clubId', { type: () => ID }) clubId: string,
+    @Args('season', { type: () => Int }) season: number,
+    @User() user: Player,
+  ): Promise<boolean> {
+    const transaction = await this._sequelize.transaction();
+    try {
+      const dbClub = await Club.findByPk(clubId, { transaction });
+
+      if (!dbClub) {
+        throw new NotFoundException(`${Club.name}: ${clubId}`);
+      }
+
+      if (!(await user.hasAnyPermission([`${dbClub.id}_edit:location`, 'edit-any:club']))) {
+        throw new UnauthorizedException(`You do not have permission to add a competition`);
+      }
+
+      await Team.destroy({
+        where: {
+          clubId,
+          season,
+        },
+        transaction,
+      });
+
+      await transaction.commit();
+      return true;
+    } catch (e) {
+      this.logger.warn('rollback', e);
+      await transaction.rollback();
+      throw e;
+    }
+  }
 
   @Mutation(() => Team)
   async createTeam(@Args('data') newTeamData: TeamNewInput, @User() user: Player): Promise<Team> {
