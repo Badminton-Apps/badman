@@ -1,6 +1,10 @@
 <mat-form-field [formGroup]="group()">
-  <mat-label>Select country</mat-label>
+  <mat-label>{{ 'all.pickers.select-state' | translate }}</mat-label>
   <mat-select [formControlName]="controlName()">
+    @if (this.canBeEmpty()) {
+      <mat-option [value]="null">{{ 'all.pickers.none' | translate }}</mat-option>
+    }
+
     @for (state of states; track state) {
       <mat-option [value]="state.code">{{
         'all.countries.' + state.country + '.' + state.name | translate
