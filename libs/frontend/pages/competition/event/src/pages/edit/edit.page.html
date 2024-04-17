@@ -144,10 +144,10 @@
       </div>
     </ng-container>
     <h3>Sub events</h3>
-    @for (subEvent of eventCompetition.subEventCompetitions; track subEvent; let i = $index) {
+    @for (subEvent of eventCompetition().subEventCompetitions; track subEvent; let i = $index) {
       <div>
         <badman-event-competition-level-fields
-          [type]="eventCompetition.type"
+          [type]="eventCompetition().type"
           [subEvent]="subEvent"
           [formGroup]="$any(this.formGroup.get('subEvents'))?.at(i)"
         ></badman-event-competition-level-fields>
@@ -160,10 +160,10 @@
     </div>
   </ng-container>
 }
-<badman-has-claim [any]="[eventCompetition.id + '_edit:role', 'edit-any:club']">
+<badman-has-claim [any]="[eventCompetition().id + '_edit:role', 'edit-any:club']">
   <h2>
     Roles
-    <badman-add-role linkType="competition" [linkId]="this.eventCompetition.id!" />
+    <badman-add-role linkType="competition" [linkId]="this.eventCompetition().id!" />
   </h2>
   @if (this.roles) {
     <div class="roles">
