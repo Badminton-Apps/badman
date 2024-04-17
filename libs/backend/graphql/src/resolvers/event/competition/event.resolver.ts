@@ -236,10 +236,13 @@ export class EventCompetitionResolver {
         ?.replace(/(\d{4}-\d{4})/gi, '')
         .trim()} ${year}-${year + 1}`;
 
+      // set values to undefined to avoid copying them
       const newEventCompetitionDb = new EventCompetition({
         ...eventCompetitionDb.toJSON(),
         id: undefined,
         visualCode: undefined,
+        exceptions: undefined,
+        infoEvents: undefined,
         season: year,
         name: newName,
       });
