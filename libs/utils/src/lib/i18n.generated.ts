@@ -593,12 +593,15 @@ export type I18nTranslations = {
         };
         "pickers": {
             "end-time": string;
+            "none": string;
             "select-club": string;
+            "select-country": string;
             "select-encounter": string;
             "select-end-time": string;
             "select-event-competition": string;
             "select-season": string;
             "select-start-time": string;
+            "select-state": string;
             "select-subevent-competition": string;
             "select-team": string;
             "select-team-groups": {
