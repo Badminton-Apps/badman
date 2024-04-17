@@ -83,7 +83,7 @@
       }}</ng-template>
       <ng-template matStepContent>
         <badman-teams-step
-          [group]="this.formGroup"
+          [formGroup]="this.formGroup"
           [system]="this.systemService.system()!"
         ></badman-teams-step>
         <div class="actions">
@@ -98,7 +98,7 @@
           </button>
           <button
             mat-raised-button
-            (click)="saveAndContinue()"
+            (click)="saveAndContinue(true)"
             color="primary"
             [disabled]="this.formGroup.get('locations')?.valid === false"
           >

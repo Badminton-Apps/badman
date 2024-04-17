@@ -277,6 +277,10 @@ export class TeamsTransferStepComponent implements OnInit {
                   // remove the team from the teamsThisSeason array
                   teamsThisSeason.splice(teamsThisSeason.indexOf(teamThisSeason), 1);
 
+                  if (teamThisSeason.teamNumber != team.teamNumber) {
+                    teamThisSeason.name = `${teamThisSeason.name} ( was ${team.name} )`;
+                  }
+
                   // select the team
                   return {
                     ...team,
@@ -428,7 +432,7 @@ export class TeamsTransferStepComponent implements OnInit {
     this.changeDetectorRef.markForCheck();
   }
 
-  selectAll(type: 'lastSeason' | 'newThisSeason') {
+  async selectAll(type: 'lastSeason' | 'newThisSeason') {
     const form = type == 'lastSeason' ? this.teamsForm : this.newTeamsForm;
 
     for (let i = 0; i < (form?.length ?? 0); i++) {

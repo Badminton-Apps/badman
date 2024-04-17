@@ -12,12 +12,12 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { input } from '@angular/core';
-import { Comment } from '@badman/frontend-models';
+import { Comment, SubEventCompetition } from '@badman/frontend-models';
 import { LevelType, levelTypeSort } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { Subject } from 'rxjs';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { COMMENTS, EVENTS } from '../../../../../forms';
+import { COMMENTS, EVENTS, TEAMS } from '../../../../../forms';
 
 type CommentForm = {
   [key in LevelType]: FormGroup<{
@@ -47,6 +47,7 @@ export class CommentsStepComponent implements OnInit {
   controlName = input(COMMENTS);
 
   eventsControlName = input(EVENTS);
+  teamsControlName = input(TEAMS);
 
   showComments: {
     [key in LevelType]: boolean;
@@ -96,25 +97,38 @@ export class CommentsStepComponent implements OnInit {
       ?.valueChanges.pipe(
         takeUntil(this.destroy$),
         startWith(this.group().get(this.eventsControlName())?.value),
-        switchMap((events: { name: LevelType; id: string }[]) => {
-          const eventIds = events.map((event) => event.id);
+        switchMap(
+          (subEvents: {
+            M: SubEventCompetition[];
+            F: SubEventCompetition[];
+            MX: SubEventCompetition[];
+            NATIONAL: SubEventCompetition[];
+          }) => {
+            // distinct events
+            const events = Object.values(subEvents)
+              .flat()
+              .map((sub) => sub.eventCompetition ?? { id: '' })
+              .filter((event, index, self) => self.findIndex((e) => e.id === event.id) === index);
 
-          return this._loadComments(eventIds).pipe(
-            map((result) =>
-              events?.map((event) => ({
-                ...event,
-                comment: result?.find((comment) => comment.linkId === event.id)?.message,
-              })),
-            ),
-          );
-        }),
+            const eventIds = events.map((event) => event.id);
+
+            return this._loadComments(eventIds).pipe(
+              map((result) =>
+                events?.map((event) => ({
+                  ...event,
+                  comment: result?.find((comment) => comment.linkId === event.id)?.message,
+                })),
+              ),
+            );
+          },
+        ),
       )
       .subscribe((events) => {
         for (const levelType of this.levelTypes) {
           const control = this.internalControl.get(levelType);
 
           if (control) {
-            const event = events?.find((event) => event.name === levelType);
+            const event = events?.find((event) => event.type === levelType);
             if (event) {
               control.setValue({
                 comment: event.comment || '',
@@ -123,9 +137,9 @@ export class CommentsStepComponent implements OnInit {
               this.showComments[levelType] = true;
             }
           }
-
-          this.changeDetectorRef.markForCheck();
         }
+
+        this.changeDetectorRef.markForCheck();
       });
   }
 

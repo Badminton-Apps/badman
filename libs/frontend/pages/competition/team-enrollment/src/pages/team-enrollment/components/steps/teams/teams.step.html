@@ -4,39 +4,37 @@
     <p class="error">{{ 'all.competition.team-enrollment.example-error' | translate }}</p>
     <p class="warning">{{ 'all.competition.team-enrollment.example-warning' | translate }}</p>
   </div>
-  @if (subEvents$ | async; as subEvents) {
-    @for (type of eventTypes; track type) {
-      <div class="type">
-        <h3>{{ 'all.team.types.long.' + type | translate }}</h3>
-        <!-- add new team -->
-        <button mat-icon-button (click)="this.addTeam(type)">
-          <mat-icon>add</mat-icon>
-        </button>
-      </div>
-      <div class="teams-container">
-        @if (getTypeArray(type); as groups) {
-          @for (group of groups.controls; track group) {
-            @if (group.get('team')?.value?.id) {
-              <badman-team-enrollment
-                [attr.data-anchor]="group.get('team')?.value?.id"
-                class="team"
-                [type]="type"
-                [group]="this.group"
-                [season]="season"
-                [system]="system()"
-                [subEvents]="subEvents"
-                [validation]="teamValidationResult(group.get('team')?.value?.id)"
-                (changeTeamNumber)="this.changeTeamNumber($event)"
-                (removeTeam)="this.removeTeam($event)"
-              >
-              </badman-team-enrollment>
-            }
+  @for (type of eventTypes; track type) {
+    <div class="type">
+      <h3>{{ 'all.team.types.long.' + type | translate }}</h3>
+      <!-- add new team -->
+      <button mat-icon-button (click)="this.addTeam(type)">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <div class="teams-container">
+      @if (getTypeArray(type); as groups) {
+        @for (group of groups.controls; track group) {
+          @if (group.get('team')?.value?.id) {
+            <badman-team-enrollment
+              [attr.data-anchor]="group.get('team')?.value?.id"
+              class="team"
+              [type]="type"
+              [group]="this.group"
+              [season]="season"
+              [system]="system()"
+              [subEvents]="formGroup().get(this.eventsControlName())!.value"
+              [validation]="teamValidationResult(group.get('team')?.value?.id)"
+              (changeTeamNumber)="this.changeTeamNumber($event)"
+              (removeTeam)="this.removeTeam($event)"
+            >
+            </badman-team-enrollment>
           }
-        } @else {
-          <div class="no-teams">{{ 'all.competition.team-enrollment.no-teams' | translate }}</div>
         }
-      </div>
-    }
+      } @else {
+        <div class="no-teams">{{ 'all.competition.team-enrollment.no-teams' | translate }}</div>
+      }
+    </div>
 
     <!-- dialog for swtihcing numbers, takes in the type and shows a select based on the value in the teamNumbers -->
     <ng-template let-data #switch>
