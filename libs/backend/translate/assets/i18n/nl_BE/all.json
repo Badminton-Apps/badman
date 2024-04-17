@@ -586,12 +586,15 @@
   },
   "pickers": {
     "end-time": "Eindtijd",
+    "none": "Geen",
     "select-club": "Kies een club",
+    "select-country": "Kies land",
     "select-encounter": "Kies een ontmoeting",
     "select-end-time": "Eindtijd",
     "select-event-competition": "Selecteer competitie",
     "select-season": "Seizoen",
     "select-start-time": "Starttijd",
+    "select-state": "Kies provincie",
     "select-subevent-competition": "Selecteer afdeling",
     "select-team": "Kies een ploeg",
     "select-team-groups": {

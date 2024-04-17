@@ -586,12 +586,15 @@
   },
   "pickers": {
     "end-time": "End time",
+    "none": "None",
     "select-club": "Pick a club",
+    "select-country": "Choose country",
     "select-encounter": "Pick an encounter",
     "select-end-time": "End time",
     "select-event-competition": "Select League",
     "select-season": "Season",
     "select-start-time": "Start time",
+    "select-state": "Choose province",
     "select-subevent-competition": "Select series",
     "select-team": "Pick a team",
     "select-team-groups": {

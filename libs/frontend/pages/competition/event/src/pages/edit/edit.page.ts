@@ -17,10 +17,12 @@ import {
   EditRoleComponent,
   HasClaimComponent,
   PageHeaderComponent,
+  SelectCountryComponent,
+  SelectCountrystateComponent,
 } from '@badman/frontend-components';
 import { EventCompetition, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { SecurityType } from '@badman/utils';
+import { LevelType, SecurityType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { BehaviorSubject, map, shareReplay, lastValueFrom } from 'rxjs';
@@ -28,6 +30,8 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { EventCompetitionLevelFieldsComponent } from './components';
 import { EVENT_QUERY } from '../../resolvers';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 export type ExceptionType = FormGroup<{
   start: FormControl<Date | undefined>;
@@ -69,11 +73,16 @@ const roleQuery = gql`
     MatDatepickerModule,
     MatSnackBarModule,
     MatSlideToggleModule,
+    MatOptionModule,
+    MatSelectModule,
     PageHeaderComponent,
     EventCompetitionLevelFieldsComponent,
     HasClaimComponent,
     AddRoleComponent,
     EditRoleComponent,
+
+    SelectCountryComponent,
+    SelectCountrystateComponent,
   ],
 })
 export class EditPageComponent implements OnInit {
@@ -91,6 +100,9 @@ export class EditPageComponent implements OnInit {
   formGroup: FormGroup = new FormGroup({});
   exceptions!: FormArray<ExceptionType>;
   infoEvents!: FormArray<InfoEventType>;
+
+  // enum to array
+  types = Object.keys(LevelType);
 
   constructor(
     private seoService: SeoService,
