@@ -136,8 +136,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       filter((x) => !!x),
       filter((x) => typeof x === 'string'),
       filter((x) => x?.length >= 2),
-      tap(() => (this.loading = true)),
       throttleTime(600),
+      tap(() => (this.loading = true)),
       switchMap((r) => {
         const obs = this.clubId()
           ? this.apollo
