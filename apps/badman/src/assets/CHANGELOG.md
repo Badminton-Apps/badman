@@ -1,3 +1,23 @@
+## 6.137.0 (2024-04-17)
+
+
+### 🚀 Features
+
+- allowing seting of type + state and country ([cc81aaf32](https://github.com/Badminton-Apps/badman/commit/cc81aaf32))
+- teams enrollment ([3cb21fa6b](https://github.com/Badminton-Apps/badman/commit/3cb21fa6b))
+
+### 🩹 Fixes
+
+- reverting to node 20, because canvas/build/Release ([b2dbee38b](https://github.com/Badminton-Apps/badman/commit/b2dbee38b))
+- team info should be required ([de1e8b39b](https://github.com/Badminton-Apps/badman/commit/de1e8b39b))
+- don't copy exceptions ([907811e94](https://github.com/Badminton-Apps/badman/commit/907811e94))
+- throttle should come before setting loading for the animation ([b7e59452c](https://github.com/Badminton-Apps/badman/commit/b7e59452c))
+- convert to to state signals ([4330aa0cf](https://github.com/Badminton-Apps/badman/commit/4330aa0cf))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.136.0 (2024-04-13)
 
 
