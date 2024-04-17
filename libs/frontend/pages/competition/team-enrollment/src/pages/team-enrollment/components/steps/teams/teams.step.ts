@@ -114,7 +114,10 @@ export class TeamsStepComponent implements OnInit {
 
   loadedSubEvents = signal(false);
   loadedInitialEvents = signal(false);
-  allLoaded = computed(() => this.loadedSubEvents() && this.loadedInitialEvents());
+  allLoaded = computed(() => {
+    console.log('all loaded', this.loadedSubEvents(), this.loadedInitialEvents());
+    return this.loadedSubEvents() && this.loadedInitialEvents();
+  });
 
   #validationResult = new BehaviorSubject<ValidationResult | null>(null);
   get validationResult() {
@@ -144,7 +147,6 @@ export class TeamsStepComponent implements OnInit {
   @ViewChild('switch')
   SwitchDialog!: TemplateRef<HTMLElement>;
 
-
   teamNumbers: {
     [key in SubEventType]: number[];
   } = {
@@ -169,7 +171,9 @@ export class TeamsStepComponent implements OnInit {
     }
 
     if (!this.internalControl && this.formGroup()) {
-      this.internalControl = this.formGroup().get(this.controlName()) as FormGroup<FormArrayOfTeams>;
+      this.internalControl = this.formGroup().get(
+        this.controlName(),
+      ) as FormGroup<FormArrayOfTeams>;
 
       existed = true;
     }
@@ -188,6 +192,27 @@ export class TeamsStepComponent implements OnInit {
     }
 
     this.internalControl.setErrors({ loading: true });
+    // validate the enrollment when the control changes
+    combineLatest([
+      this.internalControl?.valueChanges,
+      toObservable(this.allLoaded, {
+        injector: this.injector,
+      }),
+    ])
+      .pipe(
+        takeUntil(this.destroy$),
+        filter(([, loaded]) => loaded),
+        throttleTime(200),
+        switchMap(() =>
+          this.validateEnrollment(this.internalControl.getRawValue() as FormArrayOfTeamsValue),
+        ),
+      )
+      .subscribe((v) => {
+        if (v?.data?.enrollmentValidation) {
+          this.#validationResult.next(v?.data?.enrollmentValidation);
+          this.changedector.markForCheck();
+        }
+      });
 
     this.clubs$ = this._getClubs();
     this._getSubEvents().subscribe((subs) => {
@@ -226,33 +251,13 @@ export class TeamsStepComponent implements OnInit {
           await this.setTeamnumbers();
 
           this.setInitialSubEvents();
+          console.log('initial events set');
+
           this.loadedInitialEvents.set(true);
         });
     });
 
     this.season = this.formGroup().get(SEASON)?.value as number;
-
-    // validate the enrollment when the control changes
-    combineLatest([
-      this.internalControl?.valueChanges,
-      toObservable(this.allLoaded, {
-        injector: this.injector,
-      }),
-    ])
-      .pipe(
-        takeUntil(this.destroy$),
-        throttleTime(200),
-        filter(([, loaded]) => loaded),
-        switchMap(() =>
-          this.validateEnrollment(this.internalControl.getRawValue() as FormArrayOfTeamsValue),
-        ),
-      )
-      .subscribe((v) => {
-        if (v?.data?.enrollmentValidation) {
-          this.#validationResult.next(v?.data?.enrollmentValidation);
-          this.changedector.markForCheck();
-        }
-      });
   }
 
   async addTeam(type: SubEventType) {
@@ -723,7 +728,7 @@ export class TeamsStepComponent implements OnInit {
         continue;
       }
       const teams = control.value;
-      const subs = this.formGroup().get(this.eventsControlName())?.value[type]
+      const subs = this.formGroup().get(this.eventsControlName())?.value[type];
       const maxLevels = this._maxLevels(subs);
 
       for (let i = 0; i < teams.length; i++) {
