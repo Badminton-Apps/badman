@@ -1,3 +1,14 @@
+## 6.137.1 (2024-04-17)
+
+
+### 🩹 Fixes
+
+- load validations on initial load ([552110a00](https://github.com/Badminton-Apps/badman/commit/552110a00))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.137.0 (2024-04-17)
 
 
