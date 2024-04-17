@@ -8,16 +8,36 @@
           <input matInput formControlName="name" [required]="true" />
         </mat-form-field>
       </div>
-      <div class="contact">
+      <div class="info">
         <mat-form-field>
           <mat-label>Season</mat-label>
           <input matInput formControlName="season" [required]="true" />
         </mat-form-field>
+
+        <!-- select type of comp -->
+        <mat-form-field>
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="type" [required]="true">
+            <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="contact">
         <mat-form-field>
           <mat-label>Contact</mat-label>
           <input matInput formControlName="contactEmail" [required]="true" />
         </mat-form-field>
       </div>
+
+      <div class="country">
+        <badman-select-country [group]="this.formGroup"></badman-select-country>
+        <badman-select-state
+          [group]="this.formGroup"
+          [canBeEmpty]="this.formGroup.get('type')?.value !== 'PROV'"
+        ></badman-select-state>
+      </div>
+
       <div class="check">
         <mat-slide-toggle formControlName="checkEncounterForFilledIn">{{
           'all.event.checkEncounterForFilledIn' | translate

@@ -30,19 +30,22 @@ export class SelectCountrystateComponent implements OnInit {
   dependsOn = input('country');
 
   control = input<FormControl<string>>();
-  protected internalControl!: FormControl<string>;
+  protected internalControl!: FormControl<string | null>;
+  canBeEmpty = input(false);
 
   ngOnInit(): void {
     if (this.control()) {
-      this.internalControl = this.control() as FormControl<string>;
+      this.internalControl = this.control() as FormControl<string | null>;
     }
 
     if (!this.internalControl && this.group()) {
-      this.internalControl = this.group().get(this.controlName()) as FormControl<string>;
+      this.internalControl = this.group().get(this.controlName()) as FormControl<string | null>;
     }
 
     if (!this.internalControl) {
-      this.internalControl = new FormControl<string>('BE-VOV') as FormControl<string>;
+      this.internalControl = new FormControl<string | null>(
+        this.canBeEmpty() ? null : 'BE-VOV',
+      ) as FormControl<string | null>;
     }
 
     if (this.group()) {

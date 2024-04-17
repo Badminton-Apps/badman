@@ -586,12 +586,15 @@
   },
   "pickers": {
     "end-time": "End time",
+    "none": "Non",
     "select-club": "Choisir un club",
+    "select-country": "Choisissez un pays",
     "select-encounter": "Choisir une réunion",
     "select-end-time": "Heure de fin",
     "select-event-competition": "Sélectionnez la ligue",
     "select-season": "La saison",
     "select-start-time": "Heure de début",
+    "select-state": "Choisir une province",
     "select-subevent-competition": "Sélectionnez la série",
     "select-team": "Choisir une équipe",
     "select-team-groups": {
