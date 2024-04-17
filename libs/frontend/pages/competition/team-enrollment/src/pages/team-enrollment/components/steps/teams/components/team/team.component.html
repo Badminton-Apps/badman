@@ -127,13 +127,13 @@
             <span class="ranking">
               {{ player.lastRanking?.single }} -
               {{ player.lastRanking?.double }}
-              @if (team().value.type === 'MX') {
+              @if (type() === 'MX') {
                 - {{ player.lastRanking?.mix }}
               }
               ({{
                 (player.lastRanking?.single ?? 12) +
                   (player.lastRanking?.double ?? 12) +
-                  (team().value.type === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
+                  (type() === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
               }})</span
             >
           </div>
@@ -189,10 +189,10 @@
           {{ b.player.fullName }}
           <span class="ranking">
             {{ b.single }} - {{ b.double }}
-            @if (team().value.type === 'MX') {
+            @if (type() === 'MX') {
               - {{ b.mix }}
             }
-            ({{ b.single + b.double + (team().value.type === 'MX' ? b.mix : 0) }})</span
+            ({{ b.single + b.double + (type() === 'MX' ? b.mix : 0) }})</span
           >
         </div>
         <div class="delete">
@@ -208,6 +208,9 @@
       [club]="this.team().value.clubId"
       [label]="'Voeg speler toe'"
       (whenSelectPlayer)="addBasePlayerToTeam($event)"
+      [where]="{
+        gender: type() === 'MX' ? undefined : type()
+      }"
     ></badman-player-search>
   </div>
 </div>

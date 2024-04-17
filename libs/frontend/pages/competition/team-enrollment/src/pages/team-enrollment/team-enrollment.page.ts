@@ -10,7 +10,7 @@ import { SeoService } from '@badman/frontend-seo';
 import { LevelType, getUpcommingSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { forkJoin, lastValueFrom } from 'rxjs';
+import { delay, forkJoin, lastValueFrom, of, switchMap } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { CLUB, COMMENTS, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
 import {
@@ -96,84 +96,107 @@ export class TeamEnrollmentComponent implements OnInit {
       });
   }
 
-  save() {
+  async save(includeTeams = false) {
     const observables = [];
 
-    // save the teams to the backend
-    for (const enrollment of [
-      ...this.formGroup.value.teams.M,
-      ...this.formGroup.value.teams.F,
-      ...this.formGroup.value.teams.MX,
-      ...this.formGroup.value.teams.NATIONAL,
-    ]) {
-      if (!enrollment?.team?.id) {
-        continue;
-      }
-
-      const players =
-        enrollment?.team?.players?.map((player: Partial<TeamPlayer>) => {
-          return {
-            id: player.id,
-            membershipType: player.membershipType,
-          };
-        }) ?? [];
-
-      const meta = {
-        players: enrollment?.entry?.players?.map(
-          (
-            player: Partial<Player> & {
-              single: number;
-              double: number;
-              mix: number;
-            },
-          ) => ({
-            id: player?.id,
-            gender: player?.gender,
-            single: player?.single,
-            double: player?.double,
-            mix: player?.mix,
-          }),
-        ),
-      };
-
-      const data = {
-        id: enrollment?.team?.id,
-        name: enrollment?.team?.name,
-        teamNumber: enrollment?.team?.teamNumber,
-        type: enrollment?.team?.type,
-        clubId: this.formGroup.value.club,
-        link: enrollment?.team?.link,
-        season: this.formGroup.value.season,
-        preferredDay: enrollment?.team?.preferredDay,
-        preferredTime: enrollment?.team?.preferredTime,
-        captainId: enrollment?.team?.captainId,
-        phone: enrollment?.team?.phone,
-        email: enrollment?.team?.email,
-        players,
-        entry: {
-          subEventId: enrollment?.entry?.subEventId,
-          meta: {
-            competition: {
-              players: meta.players,
-            },
-          },
-        },
-      };
-
-      observables.push(
+    if (includeTeams) {
+      await lastValueFrom(
+        // delete all teams from the backend
         this.apollo.mutate({
           mutation: gql`
-            mutation CreateTeam($team: TeamNewInput!) {
-              createTeam(data: $team) {
-                id
-              }
+            mutation DeleteTeams($clubId: ID!, $season: Int!) {
+              deleteTeams(clubId: $clubId, season: $season)
             }
           `,
           variables: {
-            team: data,
+            clubId: this.formGroup.value.club,
+            season: this.formGroup.value.season,
           },
         }),
       );
+
+      // save the teams to the backend
+      for (const enrollment of [
+        ...this.formGroup.getRawValue().teams.M,
+        ...this.formGroup.getRawValue().teams.F,
+        ...this.formGroup.getRawValue().teams.MX,
+        ...this.formGroup.getRawValue().teams.NATIONAL,
+      ]) {
+        if (!enrollment?.team?.id) {
+          continue;
+        }
+
+        const players =
+          enrollment?.team?.players?.map((player: Partial<TeamPlayer>) => {
+            return {
+              id: player.id,
+              membershipType: player.membershipType,
+            };
+          }) ?? [];
+
+        const meta = {
+          players: enrollment?.entry?.players?.map(
+            (
+              player: Partial<Player> & {
+                single: number;
+                double: number;
+                mix: number;
+              },
+            ) => ({
+              id: player?.id,
+              gender: player?.gender,
+              single: player?.single,
+              double: player?.double,
+              mix: player?.mix,
+            }),
+          ),
+        };
+
+        const data = {
+          // id: enrollment?.team?.id,
+          name: enrollment?.team?.name,
+          teamNumber: enrollment?.team?.teamNumber,
+          type: enrollment?.team?.type,
+          clubId: this.formGroup.value.club,
+          link: enrollment?.team?.link,
+          season: this.formGroup.value.season,
+          preferredDay: enrollment?.team?.preferredDay,
+          preferredTime: enrollment?.team?.preferredTime,
+          captainId: enrollment?.team?.captainId,
+          phone: enrollment?.team?.phone,
+          email: enrollment?.team?.email,
+          players,
+          entry: {
+            subEventId: enrollment?.entry?.subEventId,
+            meta: {
+              competition: {
+                players: meta.players,
+              },
+            },
+          },
+        };
+
+        observables.push(
+          of(data).pipe(
+            // we need to delay the request to help 
+            delay(Math.random() * 1000),
+            switchMap(() =>
+              this.apollo.mutate({
+                mutation: gql`
+                  mutation CreateTeam($team: TeamNewInput!) {
+                    createTeam(data: $team) {
+                      id
+                    }
+                  }
+                `,
+                variables: {
+                  team: data,
+                },
+              }),
+            ),
+          ),
+        );
+      }
     }
 
     const comments = this.formGroup.get(COMMENTS)?.value as {
@@ -268,9 +291,9 @@ export class TeamEnrollmentComponent implements OnInit {
     return forkJoin(observables);
   }
 
-  async saveAndContinue() {
+  async saveAndContinue(includeTeams = false) {
     this.formGroup.get(TEAMS)?.setErrors({ loading: true });
-    await lastValueFrom(this.save());
+    await lastValueFrom(await this.save(includeTeams));
     this.snackBar.open('Teams saved', 'Close', {
       duration: 2000,
     });
@@ -280,7 +303,7 @@ export class TeamEnrollmentComponent implements OnInit {
 
   async saveAndFinish() {
     this.formGroup.get(TEAMS)?.setErrors({ loading: true });
-    await lastValueFrom(this.save());
+    await lastValueFrom(await this.save(true));
 
     await lastValueFrom(
       this.apollo.mutate({

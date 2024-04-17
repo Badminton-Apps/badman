@@ -51,22 +51,29 @@ export class TeamEnrollmentComponent implements OnInit {
 
   validation = input<TeamValidationResult>();
 
-
   subEventsForTeam = computed(() => {
     if (!this.team) return [];
 
     const availibleSubs = this.subEvents()[this.type()];
+
+    if (this.subEvent.disabled) {
+      return availibleSubs;
+    }
+
     const validation = this.validation();
 
-    if (!availibleSubs) return [];
-
-
-    return availibleSubs.filter((sub) => {
-      return (sub.minBaseIndex ?? 0) <= (validation?.baseIndex ?? 0)
+    const filteredSubs = availibleSubs.filter((sub) => {
+      return (
+        (sub.minBaseIndex ?? 0) <= (validation?.baseIndex ?? 0) &&
+        (sub.maxBaseIndex ?? 0) >= (validation?.baseIndex ?? 0)
+      );
     });
 
-    
-    return ;
+    if (filteredSubs.length === 0) {
+      // console.error('No sub events found for team', this.team.value, availibleSubs);
+    }
+
+    return filteredSubs;
   });
 
   @Output()
@@ -87,7 +94,7 @@ export class TeamEnrollmentComponent implements OnInit {
     this.subEvent = entry?.get('subEventId') as FormControl<string>;
     this.players = entry?.get('players') as FormArray<FormControl<EntryCompetitionPlayer>>;
 
-    if (this.team?.value.link) {
+    if (this.team?.value.link && !!this.subEvent?.value) {
       this.subEvent?.disable();
     }
   }
