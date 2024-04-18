@@ -245,9 +245,20 @@ export class EditPageComponent {
 
   async save() {
     const eventCompetition = new EventCompetition({
-      ...this.eventCompetition,
+      ...this.eventCompetition(),
       ...this.formGroup.value,
     });
+
+    const data = {
+      id: eventCompetition.id,
+      name: eventCompetition.name,
+      season: eventCompetition.season,
+      contactEmail: eventCompetition.contactEmail,
+      teamMatcher: eventCompetition.teamMatcher,
+      checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
+      exceptions: eventCompetition.exceptions?.filter((e) => e.start && e.end) ?? [],
+      infoEvents: eventCompetition.infoEvents?.filter((e) => e.start && e.end) ?? [],
+    };
 
     await lastValueFrom(
       this.apollo.mutate<{ updateEventCompetition: Partial<EventCompetition> }>({
@@ -259,16 +270,7 @@ export class EditPageComponent {
           }
         `,
         variables: {
-          data: {
-            id: eventCompetition.id,
-            name: eventCompetition.name,
-            season: eventCompetition.season,
-            contactEmail: eventCompetition.contactEmail,
-            teamMatcher: eventCompetition.teamMatcher,
-            checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
-            exceptions: eventCompetition.exceptions?.filter((e) => e.start && e.end) ?? [],
-            infoEvents: eventCompetition.infoEvents?.filter((e) => e.start && e.end) ?? [],
-          },
+          data,
         },
         refetchQueries: [
           {
