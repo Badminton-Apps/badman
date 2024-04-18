@@ -1,3 +1,16 @@
+## 6.137.2 (2024-04-18)
+
+
+### 🩹 Fixes
+
+- event was a computed signal. ([f60e9a1a5](https://github.com/Badminton-Apps/badman/commit/f60e9a1a5))
+- saving country and state ([b58c2a0d3](https://github.com/Badminton-Apps/badman/commit/b58c2a0d3))
+- official flag is required before doing any point changes ([531335e45](https://github.com/Badminton-Apps/badman/commit/531335e45))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.137.1 (2024-04-17)
 
 
