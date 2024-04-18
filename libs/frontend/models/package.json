@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-models",
-  "version": "6.137.2",
+  "version": "6.137.3",
   "peerDependencies": {
     "@badman/utils": "*",
     "moment": "^2.30.1"

@@ -1,3 +1,14 @@
+## 6.137.3 (2024-04-18)
+
+
+### 🩹 Fixes
+
+- should load the data if I want to set it.... ([0f88decdb](https://github.com/Badminton-Apps/badman/commit/0f88decdb))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.137.2 (2024-04-18)
 
 
