@@ -255,10 +255,13 @@ export class EditPageComponent {
       season: eventCompetition.season,
       contactEmail: eventCompetition.contactEmail,
       teamMatcher: eventCompetition.teamMatcher,
+      type: eventCompetition.type,
+      state: eventCompetition.state,
+      country: eventCompetition.country,
       checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
       exceptions: eventCompetition.exceptions?.filter((e) => e.start && e.end) ?? [],
       infoEvents: eventCompetition.infoEvents?.filter((e) => e.start && e.end) ?? [],
-    };
+    } as Partial<EventCompetition>;
 
     await lastValueFrom(
       this.apollo.mutate<{ updateEventCompetition: Partial<EventCompetition> }>({
