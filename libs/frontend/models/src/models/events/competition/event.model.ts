@@ -10,6 +10,8 @@ export class EventCompetition extends Event {
   subEventCompetitions?: SubEventCompetition[];
   comments?: Comment[];
   type?: LevelType;
+  state?: string;
+  country?: string;
   teamMatcher?: string;
 
   exceptions?: Exception[];
@@ -27,6 +29,8 @@ export class EventCompetition extends Event {
     this.eventType = args.eventType ?? EventType.COMPETITION;
     this.type = args.type;
     this.teamMatcher = args.teamMatcher;
+    this.state = args.state;
+    this.country = args.country;
     this.checkEncounterForFilledIn = args.checkEncounterForFilledIn;
     this.exceptions = args?.exceptions?.map((e) => new Exception(e));
     this.infoEvents = args?.infoEvents?.map((e) => new InfoEvent(e));
