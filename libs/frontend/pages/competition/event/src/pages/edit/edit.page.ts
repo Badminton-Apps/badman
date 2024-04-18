@@ -33,6 +33,8 @@ import { BehaviorSubject, lastValueFrom, map, shareReplay, takeUntil } from 'rxj
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { EVENT_QUERY } from '../../resolvers';
 import { EventCompetitionLevelFieldsComponent } from './components';
+import { state } from '@angular/animations';
+import { count } from 'console';
 
 export type ExceptionType = FormGroup<{
   start: FormControl<Date | undefined>;
@@ -178,6 +180,8 @@ export class EditPageComponent {
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),
+      state: new FormControl(event.state),
+      country: new FormControl(event.country, Validators.required),
       season: new FormControl(event.season, [
         Validators.required,
         Validators.min(2000),

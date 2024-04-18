@@ -23,6 +23,8 @@ export const EVENT_QUERY = gql`
       contactEmail
       teamMatcher
       type
+      state
+      country
       checkEncounterForFilledIn
       exceptions {
         start
