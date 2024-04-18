@@ -177,6 +177,7 @@ export class EventCompetitionResolver {
                 transaction,
               );
             }
+            this.logger.debug(`Added ranking groups and points`);
           } else {
             this.logger.debug(`Removing ranking groups and points`);
             // we are making it unofficial
