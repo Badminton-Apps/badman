@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-html-injects",
-  "version": "6.137.1",
+  "version": "6.137.2",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
