@@ -1,5 +1,6 @@
 <h1>
-  {{ 'all.competition.team-enrollment.title' | translate }} {{ this.formGroup.get('season')?.value }}
+  {{ 'all.competition.team-enrollment.title' | translate }}
+  {{ this.formGroup.get('season')?.value }}
 </h1>
 @if (formGroup) {
   <mat-vertical-stepper [linear]="true">
@@ -7,19 +8,14 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-club' | translate
       }}</ng-template>
-      <badman-club-step [group]="this.formGroup"></badman-club-step>
-      <button
-        mat-raised-button
-        color="primary"
-        matStepperNext
-        [disabled]="
-          this.formGroup.get('club')?.valid === false ||
-          this.formGroup.get('email')?.valid === false
-        "
-      >
+      <badman-club-step></badman-club-step>
+      <button mat-raised-button color="primary" matStepperNext [disabled]="!clubStepCompleted()">
         {{ 'all.button.next' | translate }}
       </button>
     </mat-step>
+
+
+
     <mat-step>
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-location' | translate
