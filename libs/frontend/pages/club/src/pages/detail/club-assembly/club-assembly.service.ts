@@ -33,9 +33,9 @@ export interface ClubAssemblyState {
   providedIn: 'root',
 })
 export class ClubAssemblyService {
-  private apollo = inject(Apollo);
-  private systemService = inject(RankingSystemService);
-  private translateService = inject(TranslateService);
+  private readonly apollo = inject(Apollo);
+  private readonly systemService = inject(RankingSystemService);
+  private readonly translateService = inject(TranslateService);
 
   private initialState: ClubAssemblyState = {
     teams: [],

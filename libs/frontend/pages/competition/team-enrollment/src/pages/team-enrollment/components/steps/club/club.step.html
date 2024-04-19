@@ -1,24 +1,20 @@
-<badman-select-club
+<!-- <badman-select-club
   singleClubPermission="enlist:team"
   allClubPermission="enlist-any:team"
   [needsPermission]="true"
-  [control]="internalControlClub"
+  [clubId]="clubId()"
+  (onClubSelected)="setClub($event)"
+></badman-select-club> -->
+
+<badman-select-club
+  [(club)]="clubId"
+  singleClubPermission="enlist:team"
+  allClubPermission="enlist-any:team"
+  [needsPermission]="true"
 ></badman-select-club>
+
 <!-- the input for the verification mail -->
 <mat-form-field>
   <mat-label>{{ 'all.input.email' | translate }}</mat-label>
-  <input
-    type="email"
-    [required]="true"
-    matInput
-    [formControl]="internalControlEmail"
-    [errorStateMatcher]="matcher"
-  />
-  <!-- errors for internalControlEmail -->
-  @if (internalControlEmail.hasError('email') && !internalControlEmail.hasError('required')) {
-    <mat-error> {{ 'all.input.error.email' | translate }} </mat-error>
-  }
-  @if (internalControlEmail.hasError('required')) {
-    <mat-error> {{ 'all.input.error.required' | translate }} </mat-error>
-  }
+  <input type="email" [required]="true" matInput [(ngModel)]="email" />
 </mat-form-field>
