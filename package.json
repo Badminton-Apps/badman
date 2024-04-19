@@ -78,6 +78,7 @@
     "@ng-maps/core": "^6.0.1",
     "@ng-maps/google": "^6.0.0",
     "@ng-maps/places": "^6.0.0",
+    "@ng-matero/extensions": "^17.2.2",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "@nx/angular": "18.2.4",
