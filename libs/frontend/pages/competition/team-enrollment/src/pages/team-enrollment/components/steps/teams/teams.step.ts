@@ -163,7 +163,7 @@ export class TeamsStepComponent implements OnInit {
     return this.internalControl?.controls[type] as FormArray<TeamForm>;
   }
 
-  ngOnInit() {
+ngOnInit() {
     let existed = false;
     if (this.control() != undefined) {
       this.internalControl = this.control() as FormGroup<FormArrayOfTeams>;

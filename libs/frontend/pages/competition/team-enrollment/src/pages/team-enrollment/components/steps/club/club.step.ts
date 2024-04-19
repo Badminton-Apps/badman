@@ -1,30 +1,18 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Injector,
-  OnInit,
-  effect,
-  inject,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, model } from '@angular/core';
 import {
   FormControl,
-  FormGroup,
   FormGroupDirective,
   FormsModule,
   NgForm,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { AuthenticateService } from '@badman/frontend-auth';
-import { SelectClubComponent } from '@badman/frontend-components';
-import { IsUUID } from '@badman/utils';
+import { SelectClubSignalsComponent } from '@badman/frontend-components';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subject, distinctUntilChanged, filter, pairwise, startWith, takeUntil } from 'rxjs';
-import { CLUB, COMMENTS, EMAIL, EVENTS, LOCATIONS, TEAMS } from '../../../../../forms';
+import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 
 export class DirectErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -42,105 +30,52 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
     FormsModule,
     TranslateModule,
     MatInputModule,
-    SelectClubComponent,
+    SelectClubSignalsComponent,
   ],
   templateUrl: './club.step.html',
   styleUrls: ['./club.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ClubStepComponent implements OnInit {
+export class ClubStepComponent {
   private readonly authenticateService = inject(AuthenticateService);
-  private readonly injector = inject(Injector);
+  private readonly dataService = inject(TeamEnrollmentDataService);
 
-  destroy$ = new Subject<void>();
-  matcher = new DirectErrorStateMatcher();
+  clubId = model<string>('');
+  email = model(this.dataService.state.email());
 
-  group = input<FormGroup>();
-  controlClub = input<FormControl<string>>();
-  protected internalControlClub!: FormControl<string>;
+  constructor() {
+    effect(
+      () => {
+        const user = this.authenticateService.user();
+        if (!this.dataService.state().email && user?.email) {
+          this.email.set(this.dataService.state().email || user.email);
+        }
 
-  controlEmail = input<FormControl<string>>();
-  protected internalControlEmail!: FormControl<string>;
-
-  controlName = input(CLUB);
-  controlEmailName = input(EMAIL);
-
-  user = this.authenticateService.user;
-
-  ngOnInit() {
-    if (this.controlClub() != undefined) {
-      this.internalControlClub = this.controlClub() as FormControl<string>;
-    }
-
-    if (this.controlEmail() != undefined) {
-      this.internalControlEmail = this.controlEmail() as FormControl<string>;
-    }
-
-    if (!this.internalControlEmail && this.group()) {
-      this.internalControlEmail = this.group()?.get(this.controlEmailName()) as FormControl<string>;
-    }
-
-    if (!this.internalControlClub && this.group()) {
-      this.internalControlClub = this.group()?.get(this.controlName()) as FormControl<string>;
-    }
-
-    if (!this.internalControlClub) {
-      this.internalControlClub = new FormControl();
-    }
-
-    const localStorageEmail = localStorage.getItem(this.controlEmailName());
-    if (!this.internalControlEmail) {
-      this.internalControlEmail = new FormControl(localStorageEmail, [
-        Validators.email,
-      ]) as FormControl<string>;
-
-      this.internalControlEmail?.valueChanges
-        .pipe(
-          takeUntil(this.destroy$),
-          filter((value) => value != null && this.internalControlEmail?.valid),
-        )
-        .subscribe((value) => {
-          if (value != null) {
-            localStorage.setItem(this.controlEmailName(), value);
-          }
-        });
-    }
-
-    if (this.group()) {
-      this.group()?.addControl(this.controlName(), this.internalControlClub);
-      this.group()?.addControl(this.controlEmailName(), this.internalControlEmail);
-    }
+        if (user?.club) {
+          this.clubId.set(user.club.id);
+        }
+      },
+      { allowSignalWrites: true },
+    );
 
     effect(
       () => {
-        const userEmail = this.user()?.email;
-        if (!!this.controlEmail()?.value && userEmail && !localStorageEmail) {
-          this.controlEmail()?.setValue(userEmail);
+        const email = this.email();
+        if (email) {
+          this.dataService.state.setEmail(email);
         }
       },
-      {
-        injector: this.injector,
-      },
+      { allowSignalWrites: true },
     );
 
-    this.internalControlClub?.valueChanges
-      .pipe(
-        takeUntil(this.destroy$),
-        filter(IsUUID),
-        distinctUntilChanged(),
-        startWith(this.group()?.value?.[this.controlName()]),
-        pairwise(),
-      )
-      .subscribe(([prev, next]) => {
-        // clear all other values of groupw
-        if (this.group() && prev !== next && next) {
-          this.group()?.get(TEAMS)?.reset();
-          this.group()?.get(EVENTS)?.reset();
-          this.group()?.get(LOCATIONS)?.reset();
-          this.group()?.get(COMMENTS)?.reset();
-
-          this.internalControlClub.setValue(next);
+    effect(
+      () => {
+        const club = this.clubId();
+        if (club) {
+          this.dataService.state.setClub(club);
         }
-      });
+      },
+      { allowSignalWrites: true },
+    );
   }
 }

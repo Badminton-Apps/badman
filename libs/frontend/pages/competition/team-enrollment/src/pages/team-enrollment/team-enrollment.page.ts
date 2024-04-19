@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -26,6 +26,7 @@ import {
 import { minAmountOfTeams } from './validators';
 import { MatIconModule } from '@angular/material/icon';
 import { RankingSystemService } from '@badman/frontend-graphql';
+import { TeamEnrollmentDataService } from './service/team-enrollment.service';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -51,7 +52,17 @@ import { RankingSystemService } from '@badman/frontend-graphql';
 export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
-  systemService = inject(RankingSystemService);
+  readonly systemService = inject(RankingSystemService);
+  private readonly dataService = inject(TeamEnrollmentDataService);
+  private readonly seoService = inject(SeoService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly translate = inject(TranslateService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly apollo = inject(Apollo);
+
+  clubStepCompleted = computed(
+    () => this.dataService.state().club !== null && this.dataService.state().email !== null,
+  );
 
   formGroup: FormGroup = new FormGroup({
     [SEASON]: new FormControl(getUpcommingSeason(), [Validators.required]),
@@ -69,13 +80,9 @@ export class TeamEnrollmentComponent implements OnInit {
     [LOCATIONS]: new FormArray<LocationForm>([], [Validators.required]),
   });
 
-  constructor(
-    private readonly seoService: SeoService,
-    private readonly breadcrumbService: BreadcrumbService,
-    private readonly translate: TranslateService,
-    private readonly snackBar: MatSnackBar,
-    private readonly apollo: Apollo,
-  ) {}
+  constructor() {
+    this.dataService.state.setSeason(getUpcommingSeason());
+  }
 
   ngOnInit(): void {
     this.translate
@@ -178,7 +185,7 @@ export class TeamEnrollmentComponent implements OnInit {
 
         observables.push(
           of(data).pipe(
-            // we need to delay the request to help 
+            // we need to delay the request to help
             delay(Math.random() * 1000),
             switchMap(() =>
               this.apollo.mutate({
