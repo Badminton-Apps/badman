@@ -1,6 +1,7 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
+@use '@ng-matero/extensions' as mtx;
 
 @use './theme-functions' as theme;
 @use './badman.theme' as root-theme;
@@ -66,6 +67,7 @@ $light-theme: theme.badman-light-theme(
 
 // Temp fix
 @include datepicker.fix-datepicker($dark-theme);
+@include mtx.all-component-themes($dark-theme);
 
 .color-scheme-light {
   @include mat.all-component-colors($light-theme);
@@ -86,6 +88,8 @@ $light-theme: theme.badman-light-theme(
 
   // Temp fix
   @include datepicker.fix-datepicker($light-theme);
+  @include mtx.all-component-colors($light-theme);
+
 }
 
 /* You can add global styles to this file, and also import other style files */
