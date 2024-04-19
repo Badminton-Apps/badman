@@ -1,0 +1,25 @@
+<mat-form-field>
+  <mat-label>{{ 'all.pickers.select-club' | translate }}</mat-label>
+
+  <mtx-select
+    [items]="possibleClubs()"
+    [(ngModel)]="club"
+    bindLabel="name"
+    bindValue="id"
+    [closeOnSelect]="true"
+    [clearable]="false"
+  >
+    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+      <div>
+        {{ item.name }}
+        @if (item.clubId) {
+          <small class="club-id">({{ item.clubId }}) </small>
+        }
+      </div>
+    </ng-template>
+  </mtx-select>
+
+  <mat-error>
+    {{ 'all.input.this-required' | translate }}
+  </mat-error>
+</mat-form-field>
