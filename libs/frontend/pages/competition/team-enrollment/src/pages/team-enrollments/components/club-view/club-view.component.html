@@ -47,11 +47,11 @@
               <div>
                 <div class="location-title">{{ location.name }}</div>
                 <div class="location-item">
-                  @if (location.availibilities[0].days.length <= 0) {
+                  @if (location.availabilities[0].days.length <= 0) {
                     <div>Geen beschikbaarheden ingevuld, gelieve de club te contacteren</div>
                   } @else {
                     <div>
-                      @for (availibilty of location.availibilities; track availibilty) {
+                      @for (availibilty of location.availabilities; track availibilty) {
                         <div>
                           <span class="location-sub-title">{{
                             'competition.enrollment.play-day' | translate

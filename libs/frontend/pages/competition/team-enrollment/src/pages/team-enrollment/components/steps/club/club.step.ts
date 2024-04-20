@@ -1,7 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  model,
+  untracked,
+} from '@angular/core';
 import {
   FormControl,
+  FormGroup,
   FormGroupDirective,
   FormsModule,
   NgForm,
@@ -12,7 +22,9 @@ import { MatInputModule } from '@angular/material/input';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { SelectClubSignalsComponent } from '@badman/frontend-components';
 import { TranslateModule } from '@ngx-translate/core';
+import { CLUB, EMAIL } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 export class DirectErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -30,6 +42,7 @@ export class DirectErrorStateMatcher implements ErrorStateMatcher {
     FormsModule,
     TranslateModule,
     MatInputModule,
+    MatProgressBarModule,
     SelectClubSignalsComponent,
   ],
   templateUrl: './club.step.html',
@@ -41,39 +54,43 @@ export class ClubStepComponent {
   private readonly dataService = inject(TeamEnrollmentDataService);
 
   clubId = model<string>('');
-  email = model(this.dataService.state.email());
+
+  formGroup = input.required<FormGroup>();
+  clubControl = computed(() => this.formGroup().get(CLUB) as FormControl<string>);
+  emailControl = computed(() => this.formGroup().get(EMAIL) as FormControl<string>);
 
   constructor() {
+    // inital loading
     effect(
       () => {
         const user = this.authenticateService.user();
-        if (!this.dataService.state().email && user?.email) {
-          this.email.set(this.dataService.state().email || user.email);
-        }
 
-        if (user?.club) {
-          this.clubId.set(user.club.id);
-        }
+        untracked(() => {
+          if (user?.club) {
+            // user.club.id = '3fafc8f9-7d97-4af8-8b44-adf5f9c4c26e';
+            this.clubId.set(user.club.id);
+            this.clubControl().setValue(user.club.id);
+          }
+
+          if (user?.email) {
+            this.emailControl().setValue(user.email);
+          }
+        });
       },
       { allowSignalWrites: true },
     );
 
     effect(
       () => {
-        const email = this.email();
-        if (email) {
-          this.dataService.state.setEmail(email);
-        }
-      },
-      { allowSignalWrites: true },
-    );
+        const clubId = this.clubId();
 
-    effect(
-      () => {
-        const club = this.clubId();
-        if (club) {
-          this.dataService.state.setClub(club);
+        if (!clubId) {
+          return;
         }
+        untracked(() => {
+          this.clubControl().setValue(clubId);
+          this.dataService.state.setClub(clubId);
+        });
       },
       { allowSignalWrites: true },
     );
