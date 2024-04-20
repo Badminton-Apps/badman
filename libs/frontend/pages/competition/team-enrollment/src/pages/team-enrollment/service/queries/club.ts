@@ -12,6 +12,7 @@ export const loadClub = (apollo: Apollo, id?: string | null) => {
           club(id: $id) {
             id
             name
+            state
             slug
           }
         }

@@ -1,32 +1,31 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, computed, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { RankingSystemService } from '@badman/frontend-graphql';
 import { Player, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { LevelType, getUpcommingSeason } from '@badman/utils';
+import { LevelType, SubEventTypeEnum, getUpcommingSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { delay, forkJoin, lastValueFrom, of, switchMap } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { CLUB, COMMENTS, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
+import { CLUB, COMMENTS, EMAIL, LOCATIONS, SEASON, TEAMS } from '../../forms';
 import {
   ClubStepComponent,
   CommentsStepComponent,
-  EventsStepComponent,
+  LocationForm,
   LocationsStepComponent,
   TeamForm,
   TeamsStepComponent,
   TeamsTransferStepComponent,
-  LocationForm,
 } from './components';
-import { minAmountOfTeams } from './validators';
-import { MatIconModule } from '@angular/material/icon';
-import { RankingSystemService } from '@badman/frontend-graphql';
 import { TeamEnrollmentDataService } from './service/team-enrollment.service';
+import { minAmountOfTeams } from './validators';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -42,7 +41,6 @@ import { TeamEnrollmentDataService } from './service/team-enrollment.service';
     MatButtonModule,
     MatIconModule,
     ClubStepComponent,
-    EventsStepComponent,
     TeamsTransferStepComponent,
     TeamsStepComponent,
     LocationsStepComponent,
@@ -60,24 +58,56 @@ export class TeamEnrollmentComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
   private readonly apollo = inject(Apollo);
 
-  clubStepCompleted = computed(
-    () => this.dataService.state().club !== null && this.dataService.state().email !== null,
+  clubControl = new FormControl(undefined, [Validators.required]);
+  emailControl = new FormControl(undefined, [Validators.required]);
+
+  locationControl = new FormArray<LocationForm>([], [Validators.required]);
+
+  teamControl = new FormGroup(
+    {
+      [SubEventTypeEnum.M]: new FormArray<TeamForm>([]),
+      [SubEventTypeEnum.F]: new FormArray<TeamForm>([]),
+      [SubEventTypeEnum.MX]: new FormArray<TeamForm>([]),
+      [SubEventTypeEnum.NATIONAL]: new FormArray<TeamForm>([]),
+    },
+    [Validators.required, minAmountOfTeams(1)],
   );
 
+  commentsControl = new FormGroup({
+    [SubEventTypeEnum.M]: new FormGroup({
+      comment: new FormControl(''),
+      id: new FormControl(''),
+    }),
+    [SubEventTypeEnum.F]: new FormGroup({
+      comment: new FormControl(''),
+      id: new FormControl(''),
+    }),
+    [SubEventTypeEnum.MX]: new FormGroup({
+      comment: new FormControl(''),
+      id: new FormControl(''),
+    }),
+    [SubEventTypeEnum.NATIONAL]: new FormGroup({
+      comment: new FormControl(''),
+      id: new FormControl(''),
+    }),
+  });
+
   formGroup: FormGroup = new FormGroup({
+    // internal
     [SEASON]: new FormControl(getUpcommingSeason(), [Validators.required]),
-    [CLUB]: new FormControl(undefined, [Validators.required]),
-    [EVENTS]: new FormControl([], [Validators.required, Validators.min(1)]),
-    [TEAMS]: new FormGroup(
-      {
-        M: new FormArray<TeamForm>([]),
-        F: new FormArray<TeamForm>([]),
-        MX: new FormArray<TeamForm>([]),
-        NATIONAL: new FormArray<TeamForm>([]),
-      },
-      [Validators.required, minAmountOfTeams(1)],
-    ),
-    [LOCATIONS]: new FormArray<LocationForm>([], [Validators.required]),
+
+    // step 1
+    [CLUB]: this.clubControl,
+    [EMAIL]: this.emailControl,
+
+    // step 2
+    [LOCATIONS]: this.locationControl,
+
+    // step 3
+    [TEAMS]: this.teamControl,
+
+    // step 4
+    [COMMENTS]: this.commentsControl,
   });
 
   constructor() {
@@ -246,7 +276,7 @@ export class TeamEnrollmentComponent implements OnInit {
     const locations = this.formGroup.get(LOCATIONS) as FormArray<LocationForm>;
 
     for (const location of locations.value) {
-      const availibility = location.availibilities?.[0];
+      const availibility = location.availabilities?.[0];
 
       if (!availibility) {
         continue;

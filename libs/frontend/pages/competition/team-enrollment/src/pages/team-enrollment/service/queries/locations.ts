@@ -12,7 +12,7 @@ export const loadLocations = (apollo: Apollo, clubId?: string | null, season?: n
   return apollo
     .query<{ locations: Location[] }>({
       query: gql`
-        query Locations($where: JSONObject, $availibilitiesWhere: JSONObject) {
+        query Locations($where: JSONObject, $availabilitiesWhere: JSONObject) {
           locations(where: $where) {
             id
             name
@@ -24,7 +24,7 @@ export const loadLocations = (apollo: Apollo, clubId?: string | null, season?: n
             state
             phone
             fax
-            availibilities(where: $availibilitiesWhere) {
+            availabilities(where: $availabilitiesWhere) {
               id
               season
               days {
@@ -46,7 +46,7 @@ export const loadLocations = (apollo: Apollo, clubId?: string | null, season?: n
         where: {
           clubId: clubId,
         },
-        availibilitiesWhere: {
+        availabilitiesWhere: {
           season: {
             $or: [season, season - 1],
           },

@@ -45,17 +45,17 @@ export type LocationAvailibilityForm = FormGroup<{
 }>;
 
 export type LocationForm = FormGroup<{
-  id: FormControl<string | undefined>;
-  name: FormControl<string | undefined>;
-  address: FormControl<string | undefined>;
-  street: FormControl<string | undefined>;
-  streetNumber: FormControl<string | undefined>;
-  postalcode: FormControl<string | undefined>;
-  city: FormControl<string | undefined>;
-  state: FormControl<string | undefined>;
-  phone: FormControl<string | undefined>;
-  fax: FormControl<string | undefined>;
-  availibilities: FormArray<LocationAvailibilityForm>;
+  id: FormControl<string | undefined >;
+  name: FormControl<string | undefined >;
+  address: FormControl<string | undefined >;
+  street: FormControl<string | undefined >;
+  streetNumber: FormControl<string | undefined >;
+  postalcode: FormControl<string | undefined >;
+  city: FormControl<string | undefined >;
+  state: FormControl<string | undefined >;
+  phone: FormControl<string | undefined >;
+  fax: FormControl<string | undefined >;
+  availabilities: FormArray<LocationAvailibilityForm>;
 }>;
 
 @Component({
@@ -91,7 +91,7 @@ export class LocationComponent implements OnInit {
   control = input<LocationAvailibilityForm>();
   protected internalControl!: LocationAvailibilityForm;
 
-  controlName = input('availibilities');
+  controlName = input('availabilities');
 
   @Output()
   whenLocationUpdate = new EventEmitter<void>();
