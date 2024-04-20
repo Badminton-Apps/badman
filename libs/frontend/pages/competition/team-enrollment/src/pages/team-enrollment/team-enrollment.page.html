@@ -13,7 +13,8 @@
         mat-raised-button
         color="primary"
         matStepperNext
-        [disabled]="!(clubControl.valid && emailControl.valid)"
+        [disabled]="!allLoaded()"
+        [class.spinner]="!allLoaded()"
       >
         {{ 'all.button.next' | translate }}
       </button>
@@ -93,4 +94,7 @@
   </mat-vertical-stepper>
 }
 
-<ngx-json-viewer [json]="this.formGroup.value" [depth]="1"></ngx-json-viewer>
+<badman-has-claim [all]="['enlist-any:team']">
+  <h3>Debugging info</h3>
+  <ngx-json-viewer [json]="this.formGroup.value" [depth]="1"></ngx-json-viewer>
+</badman-has-claim>
