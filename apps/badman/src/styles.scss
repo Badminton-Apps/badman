@@ -89,7 +89,6 @@ $light-theme: theme.badman-light-theme(
   // Temp fix
   @include datepicker.fix-datepicker($light-theme);
   @include mtx.all-component-colors($light-theme);
-
 }
 
 /* You can add global styles to this file, and also import other style files */
@@ -97,6 +96,9 @@ $light-theme: theme.badman-light-theme(
 html,
 body {
   height: 100%;
+
+  // ngx json viewer keys
+  --ngx-json-key: #fdcf00;
 }
 body {
   margin: 0;

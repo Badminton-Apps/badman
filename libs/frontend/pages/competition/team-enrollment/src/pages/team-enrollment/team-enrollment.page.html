@@ -93,4 +93,4 @@
   </mat-vertical-stepper>
 }
 
-<pre>{{ this.formGroup.value | json }}</pre>
+<ngx-json-viewer [json]="this.formGroup.value" [depth]="1"></ngx-json-viewer>

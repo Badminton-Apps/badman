@@ -65,9 +65,9 @@ export class ClubStepComponent {
       () => {
         const user = this.authenticateService.user();
 
+        // use the state but don't update effect when it changes
         untracked(() => {
           if (user?.club) {
-            // user.club.id = '3fafc8f9-7d97-4af8-8b44-adf5f9c4c26e';
             this.clubId.set(user.club.id);
             this.clubControl().setValue(user.club.id);
           }
@@ -87,6 +87,8 @@ export class ClubStepComponent {
         if (!clubId) {
           return;
         }
+        
+        // use the state but don't update effect when it changes
         untracked(() => {
           this.clubControl().setValue(clubId);
           this.dataService.state.setClub(clubId);
