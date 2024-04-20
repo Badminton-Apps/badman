@@ -73,6 +73,7 @@ export class TeamsStepComponent {
         return;
       }
 
+      // use the state but don't update effect when it changes
       untracked(() => {
         console.log('TeamsStepComponent: loading teams', this.eventsPerType());
       });

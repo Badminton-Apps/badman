@@ -119,6 +119,7 @@ export class TeamsTransferStepComponent {
         return;
       }
 
+      // use the state but don't update effect when it changes
       untracked(() => {
         this.transferTeamsCtrl.patchValue(
           this.teamsLast()
