@@ -76,6 +76,7 @@ export class TeamEnrollmentDataService {
   state = signalSlice({
     initialState: this.initialState,
     selectors: (state) => ({
+      allLoaded: () => state().loadedClubs && state().loadedTeams && state().loadedLocations,
       eventsPerType: () => {
         const subEvents = state()
           .events.map((event) => event.subEventCompetitions ?? [])
