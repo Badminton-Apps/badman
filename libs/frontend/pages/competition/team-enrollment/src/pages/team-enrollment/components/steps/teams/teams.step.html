@@ -1,4 +1,4 @@
-<!-- @if (allLoaded()) {
+@if (loaded()) {
   <div class="description">
     {{ 'all.competition.team-enrollment.select-teams-description' | translate }}
     <p class="error">{{ 'all.competition.team-enrollment.example-error' | translate }}</p>
@@ -20,14 +20,15 @@
               class="team"
               [type]="type"
               [group]="this.group"
-              [season]="season"
-              [system]="system()"
-              [subEvents]="formGroup().get(this.eventsControlName())!.value"
+              [season]="this.season()"
+              [system]="this.system()"
+              [subEvents]="this.eventsPerType()"
+            />
+            <!-- 
               [validation]="teamValidationResult(group.get('team')?.value?.id)"
               (changeTeamNumber)="this.changeTeamNumber($event)"
               (removeTeam)="this.removeTeam($event)"
-            >
-            </badman-team-enrollment>
+             -->
           }
         }
       } @else {
@@ -65,4 +66,4 @@
   }
 } @else {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-} -->
+}

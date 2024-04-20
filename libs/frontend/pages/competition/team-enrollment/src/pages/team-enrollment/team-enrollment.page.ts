@@ -27,6 +27,7 @@ import {
 import { TeamEnrollmentDataService } from './service/team-enrollment.service';
 import { minAmountOfTeams } from './validators';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { HasClaimComponent } from '@badman/frontend-components';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -46,7 +47,9 @@ import { NgxJsonViewerModule } from 'ngx-json-viewer';
     TeamsStepComponent,
     LocationsStepComponent,
     CommentsStepComponent,
-    NgxJsonViewerModule
+    NgxJsonViewerModule,
+
+    HasClaimComponent,
   ],
 })
 export class TeamEnrollmentComponent implements OnInit {
@@ -111,6 +114,8 @@ export class TeamEnrollmentComponent implements OnInit {
     // step 4
     [COMMENTS]: this.commentsControl,
   });
+
+  allLoaded = this.dataService.state.allLoaded;
 
   constructor() {
     this.dataService.state.setSeason(getUpcommingSeason());
