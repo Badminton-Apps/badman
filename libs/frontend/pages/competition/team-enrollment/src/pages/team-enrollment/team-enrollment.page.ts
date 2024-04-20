@@ -26,6 +26,7 @@ import {
 } from './components';
 import { TeamEnrollmentDataService } from './service/team-enrollment.service';
 import { minAmountOfTeams } from './validators';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -45,6 +46,7 @@ import { minAmountOfTeams } from './validators';
     TeamsStepComponent,
     LocationsStepComponent,
     CommentsStepComponent,
+    NgxJsonViewerModule
   ],
 })
 export class TeamEnrollmentComponent implements OnInit {

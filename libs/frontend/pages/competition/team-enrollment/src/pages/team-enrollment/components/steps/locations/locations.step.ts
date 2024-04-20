@@ -59,7 +59,7 @@ export class LocationsStepComponent {
         return;
       }
 
-      // we don't want to trigger a change detection cycle here
+      // use the state but don't update effect when it changes
       untracked(() => {
         this.locations().clear();
         for (const location of club?.locations ?? []) {
