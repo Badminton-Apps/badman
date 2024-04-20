@@ -1,11 +1,3 @@
-<!-- <badman-select-club
-  singleClubPermission="enlist:team"
-  allClubPermission="enlist-any:team"
-  [needsPermission]="true"
-  [clubId]="clubId()"
-  (onClubSelected)="setClub($event)"
-></badman-select-club> -->
-
 <badman-select-club
   [(club)]="clubId"
   singleClubPermission="enlist:team"
@@ -13,8 +5,7 @@
   [needsPermission]="true"
 ></badman-select-club>
 
-<!-- the input for the verification mail -->
 <mat-form-field>
   <mat-label>{{ 'all.input.email' | translate }}</mat-label>
-  <input type="email" [required]="true" matInput [(ngModel)]="email" />
+  <input type="email" [required]="true" matInput [formControl]="this.emailControl()" />
 </mat-form-field>

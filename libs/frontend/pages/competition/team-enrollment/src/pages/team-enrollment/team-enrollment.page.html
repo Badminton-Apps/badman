@@ -2,51 +2,49 @@
   {{ 'all.competition.team-enrollment.title' | translate }}
   {{ this.formGroup.get('season')?.value }}
 </h1>
-@if (formGroup) {
+@if (this.formGroup.value !== null) {
   <mat-vertical-stepper [linear]="true">
     <mat-step>
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-club' | translate
       }}</ng-template>
-      <badman-club-step></badman-club-step>
-      <button mat-raised-button color="primary" matStepperNext [disabled]="!clubStepCompleted()">
+      <badman-club-step [formGroup]="this.formGroup"></badman-club-step>
+      <button
+        mat-raised-button
+        color="primary"
+        matStepperNext
+        [disabled]="!(clubControl.valid && emailControl.valid)"
+      >
         {{ 'all.button.next' | translate }}
       </button>
     </mat-step>
-
-
 
     <mat-step>
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-location' | translate
       }}</ng-template>
-      <ng-template matStepContent>
-        <badman-locations-step [group]="this.formGroup"></badman-locations-step>
-        <div class="actions">
-          <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-          <button
-            mat-stroked-button
-            matStepperNext
-            [disabled]="this.formGroup.get('locations')?.valid === false"
-          >
-            {{ 'all.button.next' | translate }}
-          </button>
-          <button
-            mat-raised-button
-            (click)="saveAndContinue()"
-            color="primary"
-            [disabled]="this.formGroup.get('locations')?.valid === false"
-          >
-            {{ 'all.button.save-and-continue' | translate }}
-          </button>
-        </div>
-      </ng-template>
+      <badman-locations-step [formGroup]="this.formGroup"></badman-locations-step>
+      <div class="actions">
+        <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
+        <button mat-stroked-button matStepperNext [disabled]="!locationControl.valid">
+          {{ 'all.button.next' | translate }}
+        </button>
+        <button
+          mat-raised-button
+          (click)="saveAndContinue()"
+          color="primary"
+          [disabled]="!locationControl.valid"
+        >
+          {{ 'all.button.save-and-continue' | translate }}
+        </button>
+      </div>
     </mat-step>
+
     <mat-step>
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.teams.transfer-teams' | translate
       }}</ng-template>
-      <badman-teams-transfer-step [group]="this.formGroup"></badman-teams-transfer-step>
+      <badman-teams-transfer-step [formGroup]="this.formGroup"></badman-teams-transfer-step>
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
         <button mat-raised-button color="primary" matStepperNext>
@@ -54,69 +52,45 @@
         </button>
       </div>
     </mat-step>
-    <!-- <mat-step>
-      <ng-template matStepLabel>{{
-        'all.competition.team-enrollment.select-events' | translate
-      }}</ng-template>
-      <ng-template matStepContent>
-        <badman-events-step [group]="this.formGroup"></badman-events-step>
-        <div class="actions">
-          <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-          <button
-            mat-raised-button
-            color="primary"
-            matStepperNext
-            [disabled]="this.formGroup.get('events')?.valid === false"
-          >
-            {{ 'all.button.next' | translate }}
-          </button>
-        </div>
-      </ng-template>
-    </mat-step> -->
+
     <mat-step>
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-teams' | translate
       }}</ng-template>
-      <ng-template matStepContent>
-        <badman-teams-step
-          [formGroup]="this.formGroup"
-          [system]="this.systemService.system()!"
-        ></badman-teams-step>
-        <div class="actions">
-          <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-          <button
-            mat-stroked-button
-            color="primary"
-            matStepperNext
-            [disabled]="this.formGroup.get('teams')?.valid === false"
-          >
-            {{ 'all.button.next' | translate }}
-          </button>
-          <button
-            mat-raised-button
-            (click)="saveAndContinue(true)"
-            color="primary"
-            [disabled]="this.formGroup.get('locations')?.valid === false"
-          >
-            {{ 'all.button.save-and-continue' | translate }}
-          </button>
-        </div>
-      </ng-template>
+      <badman-teams-step [formGroup]="this.formGroup"></badman-teams-step>
+      <div class="actions">
+        <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
+        <button
+          mat-stroked-button
+          color="primary"
+          matStepperNext
+          [disabled]="this.formGroup.get('teams')?.valid === false"
+        >
+          {{ 'all.button.next' | translate }}
+        </button>
+        <button
+          mat-raised-button
+          (click)="saveAndContinue(true)"
+          color="primary"
+          [disabled]="this.formGroup.get('locations')?.valid === false"
+        >
+          {{ 'all.button.save-and-continue' | translate }}
+        </button>
+      </div>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.comments.title' | translate
       }}</ng-template>
-      <ng-template matStepContent>
-        <badman-comments-step [group]="this.formGroup"></badman-comments-step>
-        <div class="actions">
-          <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-          <button mat-raised-button color="primary" (click)="saveAndFinish()">
-            {{ 'all.button.save' | translate }}
-          </button>
-        </div>
-      </ng-template>
+      <badman-comments-step [group]="this.formGroup"></badman-comments-step>
+      <div class="actions">
+        <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
+        <button mat-raised-button color="primary" (click)="saveAndFinish()">
+          {{ 'all.button.save' | translate }}
+        </button>
+      </div>
     </mat-step>
   </mat-vertical-stepper>
 }
-<!-- <pre>{{this.formGroup.value | json}}</pre> -->
+
+<pre>{{ this.formGroup.value | json }}</pre>

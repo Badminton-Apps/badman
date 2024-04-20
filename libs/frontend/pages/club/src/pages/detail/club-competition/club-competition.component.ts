@@ -242,7 +242,7 @@ export class ClubCompetitionComponent implements OnInit {
                       state
                       phone
                       fax
-                      availibilities(where: $where) {
+                      availabilities(where: $where) {
                         id
                         days {
                           day

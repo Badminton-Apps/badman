@@ -62,7 +62,7 @@ export type LocationForm = FormGroup<{
   state: FormControl<string | undefined>;
   phone: FormControl<string | undefined>;
   fax: FormControl<string | undefined>;
-  availibilities: FormArray<LocationAvailibilityForm>;
+  availabilities: FormArray<LocationAvailibilityForm>;
 }>;
 
 @Component({
@@ -126,7 +126,7 @@ export class ClubEditLocationComponent implements OnInit {
   }[] = [];
 
   ngOnInit(): void {
-    const availibilty = this.location().availibilities?.find(
+    const availibilty = this.location().availabilities?.find(
       (availibility) => availibility.season === this.season(),
     );
 
