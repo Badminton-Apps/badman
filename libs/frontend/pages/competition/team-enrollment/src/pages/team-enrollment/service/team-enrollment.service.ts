@@ -11,14 +11,17 @@ import {
   Location,
   SubEventCompetition,
   Team,
+  TeamValidationResult,
 } from '@badman/frontend-models';
 import { LevelType, SubEventTypeEnum, sortSubEventOrder } from '@badman/utils';
 import { signalSlice } from 'ngxtension/signal-slice';
+import { TeamFormValue } from '../team-enrollment.page';
 import { loadClub } from './queries/club';
+import { loadComments } from './queries/comments';
 import { loadEvents } from './queries/events';
 import { loadLocations } from './queries/locations';
 import { loadTeams } from './queries/teams';
-import { loadComments } from './queries/comments';
+import { validateEnrollment } from './queries/validate';
 
 interface TeamEnrollmentState {
   club: Club | null;
@@ -28,9 +31,8 @@ interface TeamEnrollmentState {
   locations: Location[];
   comments: Comment[];
   events: EventCompetition[];
-  // events: {
-  //   [key in SubEventTypeEnum]: SubEventCompetition[];
-  // };
+
+  validation: TeamValidationResult[];
 
   loadedClubs: boolean;
   loadedTeams: boolean;
@@ -57,12 +59,7 @@ export class TeamEnrollmentDataService {
     season: null,
     comments: [],
     events: [],
-    // events: {
-    //   [SubEventTypeEnum.M]: [],
-    //   [SubEventTypeEnum.F]: [],
-    //   [SubEventTypeEnum.MX]: [],
-    //   [SubEventTypeEnum.NATIONAL]: [],
-    // },
+    validation: [],
 
     // loading steps
     loadedClubs: false,
@@ -207,6 +204,20 @@ export class TeamEnrollmentDataService {
           switchMap(({ clubId, eventIds }) => loadComments(this.apollo, clubId, eventIds)),
           map((comments) => ({
             comments,
+          })),
+        ),
+
+      validateEnrollment: (
+        _state,
+        action$: Observable<{
+          teamForm?: { [key in SubEventTypeEnum]: TeamFormValue[] };
+          season?: number;
+        }>,
+      ) =>
+        action$.pipe(
+          switchMap(({ teamForm, season }) => validateEnrollment(this.apollo, teamForm, season)),
+          map((validation) => ({
+            validation,
           })),
         ),
     },

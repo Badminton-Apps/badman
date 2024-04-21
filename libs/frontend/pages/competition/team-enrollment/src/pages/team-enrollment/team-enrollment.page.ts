@@ -7,7 +7,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { RankingSystemService } from '@badman/frontend-graphql';
-import { Player, TeamPlayer } from '@badman/frontend-models';
+import { EntryCompetitionPlayer, Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { LevelType, SubEventTypeEnum, getUpcommingSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -20,7 +20,6 @@ import {
   CommentsStepComponent,
   LocationForm,
   LocationsStepComponent,
-  TeamForm,
   TeamsStepComponent,
   TeamsTransferStepComponent,
 } from './components';
@@ -28,6 +27,22 @@ import { TeamEnrollmentDataService } from './service/team-enrollment.service';
 import { minAmountOfTeams } from './validators';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { HasClaimComponent } from '@badman/frontend-components';
+
+export type TeamFormValue = {
+  team: Team;
+  entry: {
+    players: (EntryCompetitionPlayer | null)[];
+    subEventId: string | null;
+  };
+};
+
+export type TeamForm = FormGroup<{
+  team: FormControl<Team>;
+  entry: FormGroup<{
+    players: FormArray<FormControl<EntryCompetitionPlayer >>;
+    subEventId: FormControl<string | null>;
+  }>;
+}>;
 
 @Component({
   selector: 'badman-team-enrollment',

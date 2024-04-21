@@ -324,6 +324,9 @@
         "transfer-teams-description": "If you wish to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you will be able to transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nYou can change the teamnumbers in the next step"
       },
       "title": "Team enrollment",
+      "transfer": {
+        "enrolled-as": "enrolled as"
+      },
       "validations": "Validations",
       "warnings": {
         "subtitute-team-index": "s",

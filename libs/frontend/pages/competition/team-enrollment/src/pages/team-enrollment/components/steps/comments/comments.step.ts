@@ -1,23 +1,14 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  OnInit,
-} from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { input } from '@angular/core';
-import { Comment, SubEventCompetition } from '@badman/frontend-models';
-import { LevelType, levelTypeSort } from '@badman/utils';
-import { Apollo, gql } from 'apollo-angular';
-import { Subject } from 'rxjs';
-import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { COMMENTS, EVENTS, TEAMS } from '../../../../../forms';
+import { LevelType, SubEventTypeEnum } from '@badman/utils';
+import { COMMENTS, TEAMS } from '../../../../../forms';
+import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
+import { TeamForm } from '../../../team-enrollment.page';
 
 type CommentForm = {
   [key in LevelType]: FormGroup<{
@@ -34,136 +25,39 @@ type CommentForm = {
   styleUrls: ['./comments.step.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CommentsStepComponent implements OnInit {
-  destroy$ = new Subject<void>();
+export class CommentsStepComponent {
+  private readonly dataService = inject(TeamEnrollmentDataService);
+  eventTypes = Object.values(SubEventTypeEnum);
+  levelTypes = Object.values(LevelType);
 
-  levelTypes = Object.values(LevelType).sort(levelTypeSort);
+  events = this.dataService.state.events;
 
-  group = input.required<FormGroup>();
+  formGroup = input.required<FormGroup>();
+  comments = computed(() => this.formGroup().get(COMMENTS) as FormGroup<CommentForm>);
+  teams = computed(
+    () =>
+      this.formGroup().get(TEAMS) as FormGroup<{
+        [key in SubEventTypeEnum]: FormArray<TeamForm>;
+      }>,
+  );
 
-  control = input<FormGroup<CommentForm>>();
-  protected internalControl!: FormGroup<CommentForm>;
+  validTypes = computed(() => {
+    // get all comments where one team is selected
+    let subeventIds: string[] = [];
 
-  controlName = input(COMMENTS);
-
-  eventsControlName = input(EVENTS);
-  teamsControlName = input(TEAMS);
-
-  showComments: {
-    [key in LevelType]: boolean;
-  } = {
-    PROV: false,
-    LIGA: false,
-    NATIONAL: false,
-  };
-
-  constructor(
-    @Inject(Apollo) private apollo: Apollo,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {}
-
-  ngOnInit() {
-    if (this.control() != undefined) {
-      this.internalControl = this.control() as FormGroup<CommentForm>;
+    for (const type of this.eventTypes) {
+      const teams = this.teams().get(type) as FormArray<TeamForm>;
+      subeventIds = subeventIds.concat(teams?.value.map((team) => team.entry?.subEventId ?? ''));
     }
 
-    if (!this.internalControl && this.group()) {
-      this.internalControl = this.group().get(this.controlName()) as FormGroup<CommentForm>;
-    }
+    // find any event where any subevent  Id is selected
+    const events = this.events().filter((event) => {
+      const subevents =
+        event.subEventCompetitions?.filter((subevent) => subeventIds.includes(subevent.id ?? '')) ??
+        [];
+      return subevents.length > 0;
+    });
 
-    if (!this.internalControl) {
-      this.internalControl = new FormGroup<CommentForm>({
-        [LevelType.NATIONAL]: new FormGroup({
-          comment: new FormControl(),
-          id: new FormControl(),
-        }),
-        [LevelType.PROV]: new FormGroup({
-          comment: new FormControl(),
-          id: new FormControl(),
-        }),
-        [LevelType.LIGA]: new FormGroup({
-          comment: new FormControl(),
-          id: new FormControl(),
-        }),
-      });
-    }
-
-    if (this.group()) {
-      this.group().addControl(this.controlName(), this.internalControl);
-    }
-
-    this.group()
-      .get(this.eventsControlName())
-      ?.valueChanges.pipe(
-        takeUntil(this.destroy$),
-        startWith(this.group().get(this.eventsControlName())?.value),
-        switchMap(
-          (subEvents: {
-            M: SubEventCompetition[];
-            F: SubEventCompetition[];
-            MX: SubEventCompetition[];
-            NATIONAL: SubEventCompetition[];
-          }) => {
-            // distinct events
-            const events = Object.values(subEvents)
-              .flat()
-              .map((sub) => sub.eventCompetition ?? { id: '' })
-              .filter((event, index, self) => self.findIndex((e) => e.id === event.id) === index);
-
-            const eventIds = events.map((event) => event.id);
-
-            return this._loadComments(eventIds).pipe(
-              map((result) =>
-                events?.map((event) => ({
-                  ...event,
-                  comment: result?.find((comment) => comment.linkId === event.id)?.message,
-                })),
-              ),
-            );
-          },
-        ),
-      )
-      .subscribe((events) => {
-        for (const levelType of this.levelTypes) {
-          const control = this.internalControl.get(levelType);
-
-          if (control) {
-            const event = events?.find((event) => event.type === levelType);
-            if (event) {
-              control.setValue({
-                comment: event.comment || '',
-                id: event.id,
-              });
-              this.showComments[levelType] = true;
-            }
-          }
-        }
-
-        this.changeDetectorRef.markForCheck();
-      });
-  }
-
-  private _loadComments(eventIds: string[]) {
-    return this.apollo
-      .query<{ comments: Partial<Comment[]> }>({
-        query: gql`
-          query Comments($where: JSONObject) {
-            comments(where: $where) {
-              id
-              linkType
-              linkId
-              message
-            }
-          }
-        `,
-        variables: {
-          where: {
-            linkType: 'competition',
-            linkId: eventIds,
-            clubId: this.group().get('club')?.value,
-          },
-        },
-      })
-      .pipe(map((result) => (result?.data?.comments ?? []) as Partial<Comment>[]));
-  }
+    return events.map((event) => event.type);
+  });
 }

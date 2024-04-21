@@ -331,6 +331,9 @@ export type I18nTranslations = {
                     "transfer-teams-description": string;
                 };
                 "title": string;
+                "transfer": {
+                    "enrolled-as": string;
+                };
                 "validations": string;
                 "warnings": {
                     "subtitute-team-index": string;

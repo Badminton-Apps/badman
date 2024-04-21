@@ -324,6 +324,9 @@
         "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de teamnummers in volgende stap nog wijzigen."
       },
       "title": "Team inschrijvingen",
+      "transfer": {
+        "enrolled-as": "ingeschreven als"
+      },
       "validations": "Validaties",
       "warnings": {
         "subtitute-team-index": "s",
