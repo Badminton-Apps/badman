@@ -233,7 +233,9 @@
         "team-index": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag minimaal <strong>{baseIndex}</strong> zijn.",
         "team-to-strong": "Ploegindex titularissen is <strong>{teamIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen.",
         "title": "Fouten",
-        "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen."
+        "to-much": "Speler mag maximaal 2 (gemengd) dubbels en 1 enkel spelen.",
+        "too-few-base-players": "Te weinig basis spelers",
+        "too-many-base-players": "Te veel basis spelers"
       },
       "info": "Opmerkingen bij opstelling",
       "level-exemption": "Speler is vrijgesteld van de ranking restricties",

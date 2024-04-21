@@ -233,7 +233,9 @@
         "team-index": "Team index titulars equals <strong>{teamIndex}</strong> and is allowed to mimimally be <strong>{baseIndex}</strong>",
         "team-to-strong": "Team index titulars equals <strong>{teamIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
         "title": "Errors",
-        "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single."
+        "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single.",
+        "too-few-base-players": "Too few base players",
+        "too-many-base-players": "Too many base players"
       },
       "info": "Remarks concerning the team assembly",
       "level-exemption": "Player is exempt from ranking restrictions",

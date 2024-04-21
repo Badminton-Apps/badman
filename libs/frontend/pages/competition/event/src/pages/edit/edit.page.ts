@@ -33,8 +33,6 @@ import { BehaviorSubject, lastValueFrom, map, shareReplay, takeUntil } from 'rxj
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { EVENT_QUERY } from '../../resolvers';
 import { EventCompetitionLevelFieldsComponent } from './components';
-import { state } from '@angular/animations';
-import { count } from 'console';
 
 export type ExceptionType = FormGroup<{
   start: FormControl<Date | undefined>;
