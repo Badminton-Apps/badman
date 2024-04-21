@@ -211,6 +211,16 @@ export class TeamsStepComponent {
       const teams = this.teams().get(type) as FormArray<TeamForm>;
       if (!teams) continue;
 
+      // // sort team by team number highest to lowest
+      // teams.controls.sort((a, b) => {
+      //   const teamA = a.value.team as Team;
+      //   const teamB = b.value.team as Team;
+
+      //   // const teamNumberA = this.team teamA.teamNumber ?? 0;
+
+      //   return (teamA.teamNumber ?? 0) - (teamB.teamNumber ?? 0);
+      // });
+
       for (let i = 0; i < teams.length; i++) {
         const team = teams.at(i)?.get('team') as FormControl<Team>;
         if (!team) continue;
