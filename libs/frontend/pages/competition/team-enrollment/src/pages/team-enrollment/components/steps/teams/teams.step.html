@@ -12,20 +12,16 @@
       </button>
     </div>
     <div class="teams-container">
-      @if (getTypeArray(type); as groups) {
-        @for (group of groups.controls; track group) {
-          @if (group.get('team')?.value?.id) {
+      @if (getTypeArray(type); as teams) {
+        @for (team of teams.controls; track team) {
+          @if (team.get('team')?.value?.id) {
             <badman-team-enrollment
-              [attr.data-anchor]="group.get('team')?.value?.id"
+              [group]="team"
+              [attr.data-anchor]="team.get('team')?.value?.id"
               class="team"
-              [type]="type"
-              [group]="this.group"
-              [season]="this.season()"
-              [system]="this.system()"
-              [subEvents]="this.eventsPerType()"
+              (removeTeam)="this.removeTeam($event)"
             />
             <!-- 
-              [validation]="teamValidationResult(group.get('team')?.value?.id)"
               (changeTeamNumber)="this.changeTeamNumber($event)"
               (removeTeam)="this.removeTeam($event)"
              -->

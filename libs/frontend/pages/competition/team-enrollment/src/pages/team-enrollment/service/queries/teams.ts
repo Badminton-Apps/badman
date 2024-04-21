@@ -21,7 +21,7 @@ export const loadTeams = (
       teams: Team[];
     }>({
       query: gql`
-        query Teams($where: JSONObject, $rankingWhere: JSONObject, $order: [SortOrderType!]) {
+        query TeamsForSeason_${season}_${season + 1}($where: JSONObject, $rankingWhere: JSONObject, $order: [SortOrderType!]) {
           teams(where: $where) {
             id
             name

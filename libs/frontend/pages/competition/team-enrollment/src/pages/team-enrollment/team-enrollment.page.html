@@ -83,7 +83,7 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.comments.title' | translate
       }}</ng-template>
-      <badman-comments-step [group]="this.formGroup"></badman-comments-step>
+      <badman-comments-step [formGroup]="this.formGroup"></badman-comments-step>
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
         <button mat-raised-button color="primary" (click)="saveAndFinish()">
@@ -94,7 +94,6 @@
   </mat-vertical-stepper>
 }
 
-<badman-has-claim [all]="['enlist-any:team']">
-  <h3>Debugging info</h3>
-  <ngx-json-viewer [json]="this.formGroup.value" [depth]="1"></ngx-json-viewer>
-</badman-has-claim>
+<!-- <pre
+  >{{ this.formGroup.getRawValue() | json }}
+</pre> -->

@@ -10,7 +10,7 @@
   </div>
 
   <mat-selection-list [formControl]="transferTeamsCtrl">
-    @for (team of teamsLast(); track team) {
+    @for (team of teamsCurrentNamed(); track team) {
       <mat-list-option [value]="team.id" togglePosition="before">{{ team.name }}</mat-list-option>
     }
   </mat-selection-list>

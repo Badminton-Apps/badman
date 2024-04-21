@@ -1,5 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, computed, input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  Signal,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -10,16 +20,18 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { EnrollmentMessageComponent } from '@badman/frontend-components';
+import { RankingSystemService } from '@badman/frontend-graphql';
 import {
   EntryCompetitionPlayer,
   RankingSystem,
   SubEventCompetition,
   Team,
-  TeamValidationResult,
 } from '@badman/frontend-models';
-import { SubEventType, SubEventTypeEnum } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
+import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 import { TeamComponent } from '../team';
+import { LevelType, SubEventTypeEnum } from '@badman/utils';
+import { TeamForm } from '../../../../../team-enrollment.page';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -37,26 +49,31 @@ import { TeamComponent } from '../team';
   templateUrl: './team-enrollment.component.html',
   styleUrls: ['./team-enrollment.component.scss'],
 })
-export class TeamEnrollmentComponent implements OnInit {
-  group = input.required<FormGroup>();
+export class TeamEnrollmentComponent {
+  private readonly dataService = inject(TeamEnrollmentDataService);
+  private readonly systemService = inject(RankingSystemService);
 
-  season = input.required<number>();
-  system = input.required<RankingSystem>();
+  group = input.required<TeamForm>();
+  team = computed(() => this.group().get('team') as FormControl<Team>);
+  type = computed(() => this.team().value.type ?? SubEventTypeEnum.M);
+  entry = computed(() => this.group().get('entry') as FormGroup);
+  subEvent = computed(() => this.entry().get('subEventId') as FormControl<string>);
+  validation = computed(() =>
+    this.dataService.state.validation()?.find((v) => v.id === this.team().value.id),
+  );
+  players = computed(
+    () => this.entry().get('players') as FormArray<FormControl<EntryCompetitionPlayer>>,
+  );
+  subEventsForType = computed(() => this.dataService.state.eventsPerType()[this.type()]);
 
-  subEvents = input.required<{
-    [key in SubEventType]: SubEventCompetition[];
-  }>();
-
-  type = input.required<SubEventTypeEnum>();
-
-  validation = input<TeamValidationResult>();
+  system = this.systemService.system as Signal<RankingSystem>;
+  // using a sinal to trigger the effect if needed
+  automaticallyAssigned = signal(false);
 
   subEventsForTeam = computed(() => {
-    if (!this.team) return [];
+    const availibleSubs = this.subEventsForType();
 
-    const availibleSubs = this.subEvents()[this.type()];
-
-    if (this.subEvent.disabled) {
+    if (this.automaticallyAssigned()) {
       return availibleSubs;
     }
 
@@ -82,20 +99,103 @@ export class TeamEnrollmentComponent implements OnInit {
   @Output()
   changeTeamNumber = new EventEmitter<Team>();
 
-  team!: FormControl<Team>;
-  subEvent!: FormControl<string>;
-  players!: FormArray<FormControl<EntryCompetitionPlayer>>;
+  constructor() {
+    effect(
+      () => {
+        if (this.subEventsForType().length <= 0) {
+          return;
+        }
 
-  ngOnInit(): void {
-    this.team = this.group().get('team') as FormControl<Team>;
+        // if the this.subEvent().value is not set and the link is not empty, disable the subEvent control
+        if (this.team()?.value.link && !this.subEvent().value) {
+          this.setInitialSubEvent();
+          if (this.subEvent().value) {
+            this.automaticallyAssigned.set(true);
+            this.subEvent().disable();
+          }
+        }
+      },
+      {
+        allowSignalWrites: true,
+      },
+    );
+  }
 
-    const entry = this.group().get('entry');
+  setInitialSubEvent() {
+    if (!this.team) return;
+    if (!this.subEvent) return;
+    if (this.subEvent().value) return;
+    const entry = this.team().getRawValue().entry;
+    const level = entry?.subEventCompetition?.level ?? 0;
+    const maxLevels = this._maxLevels(this.subEventsForType());
+    const subs = this.subEventsForType();
 
-    this.subEvent = entry?.get('subEventId') as FormControl<string>;
-    this.players = entry?.get('players') as FormArray<FormControl<EntryCompetitionPlayer>>;
+    let type = entry?.subEventCompetition?.eventCompetition?.type ?? LevelType.PROV;
+    let subEventId: string | undefined;
 
-    if (this.team?.value.link && !!this.subEvent?.value) {
-      this.subEvent?.disable();
+    if (entry?.standing?.riser) {
+      let newLevel = level - 1;
+
+      if (newLevel < 1) {
+        // we promote to next level
+        if (type === LevelType.PROV) {
+          type = LevelType.LIGA;
+          newLevel = maxLevels.LIGA;
+        } else if (type === LevelType.LIGA) {
+          type = LevelType.NATIONAL;
+          newLevel = maxLevels.NATIONAL;
+        }
+      }
+
+      subEventId = subs?.find(
+        (sub) => sub.level === newLevel && type === sub.eventCompetition?.type,
+      )?.id;
+    } else if (entry?.standing?.faller) {
+      let newLevel = level + 1;
+
+      if (newLevel > maxLevels.NATIONAL) {
+        // we demote to lower level
+        if (type === LevelType.NATIONAL) {
+          type = LevelType.LIGA;
+          newLevel = 1;
+        } else if (type === LevelType.LIGA) {
+          type = LevelType.PROV;
+          newLevel = 1;
+        }
+      }
+
+      subEventId = subs?.find(
+        (sub) => sub.level === newLevel && sub.eventCompetition?.type === type,
+      )?.id;
+    } else {
+      subEventId = subs?.find(
+        (sub) =>
+          sub.level === entry?.subEventCompetition?.level && type === sub.eventCompetition?.type,
+      )?.id;
     }
+
+    if (!subEventId) return;
+
+    this.subEvent().patchValue(subEventId);
+  }
+
+  private _maxLevels(subs: SubEventCompetition[]) {
+    return {
+      PROV: Math.max(
+        ...(subs
+          ?.filter((s) => s.eventCompetition?.type === LevelType.PROV)
+          .map((s) => s.level ?? 0) ?? []),
+      ),
+      LIGA: Math.max(
+        ...(subs
+          ?.filter((s) => s.eventCompetition?.type === LevelType.LIGA)
+          .map((s) => s.level ?? 0) ?? []),
+      ),
+      NATIONAL: Math.max(
+        ...(subs
+          ?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL)
+          .map((s) => s.level ?? 0) ?? []),
+      ),
+    };
   }
 }

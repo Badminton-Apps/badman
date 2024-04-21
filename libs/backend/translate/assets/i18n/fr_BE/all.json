@@ -324,6 +324,9 @@
         "transfer-teams-description": ""
       },
       "title": "Inscriptions des équipes",
+      "transfer": {
+        "enrolled-as": "enregistré comme"
+      },
       "validations": "Validations",
       "warnings": {
         "subtitute-team-index": "",
