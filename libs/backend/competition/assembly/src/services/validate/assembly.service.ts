@@ -3,7 +3,7 @@ import {
   EntryCompetitionPlayer,
   EventCompetition,
   EventEntry,
-  Meta,
+  MetaEntry,
   Player,
   RankingLastPlace,
   RankingPlace,
@@ -166,7 +166,7 @@ export class AssemblyValidationService {
     // Other teams meta
     const otherMeta = (filteredMemberships
       ?.filter((m) => m.teamId !== teamId)
-      ?.map((m) => m.meta) ?? []) as Meta[];
+      ?.map((m) => m.meta) ?? []) as MetaEntry[];
 
     const year = event?.season;
     const usedRankingDate = moment();
