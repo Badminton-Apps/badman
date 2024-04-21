@@ -50,6 +50,8 @@ export class CommentsStepComponent {
       subeventIds = subeventIds.concat(teams?.value.map((team) => team.entry?.subEventId ?? ''));
     }
 
+    console.log(subeventIds);
+
     // find any event where any subevent  Id is selected
     const events = this.events().filter((event) => {
       const subevents =
