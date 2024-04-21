@@ -83,6 +83,10 @@ export class CommentResolver {
         },
       });
 
+      // update comment if already exists
+      comment.message = newCommentData.message;
+      comment.save({ transaction });
+
       switch (newCommentData.linkType) {
         case 'competition':
           if (!(link instanceof EventCompetition)) {
