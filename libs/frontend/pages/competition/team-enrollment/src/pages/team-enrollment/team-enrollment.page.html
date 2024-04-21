@@ -73,7 +73,7 @@
           mat-raised-button
           (click)="saveAndContinue(true)"
           color="primary"
-          [disabled]="this.formGroup.get('locations')?.valid === false"
+          [disabled]="this.formGroup.get('teams')?.valid === false"
         >
           {{ 'all.button.save-and-continue' | translate }}
         </button>
