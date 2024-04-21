@@ -21,11 +21,13 @@
     </div>
 
     <div class="information">
-      @if (validation()?.minBaseIndex) {
-        <div>Min/max {{ validation()?.minBaseIndex }} - {{ validation()?.maxBaseIndex }}</div>
-      }
-      <div>Team: {{ validation()?.teamIndex }}</div>
-      <div>Base: {{ validation()?.baseIndex }}</div>
+      <ul>
+        @if (validation()?.minBaseIndex) {
+          <li>Min/max {{ validation()?.minBaseIndex }} - {{ validation()?.maxBaseIndex }}</li>
+        }
+        <li>Team: {{ validation()?.teamIndex }}</li>
+        <li>Base: {{ validation()?.baseIndex }}</li>
+      </ul>
       <div class="validation-overview">
         @if ((validation()?.errors?.length ?? 0) > 0) {
           <ul class="error-list">
