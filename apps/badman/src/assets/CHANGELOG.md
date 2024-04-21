@@ -1,3 +1,22 @@
+## 6.139.0 (2024-04-21)
+
+
+### 🚀 Features
+
+- some styling improvements ([2bc14cfcf](https://github.com/Badminton-Apps/badman/commit/2bc14cfcf))
+
+### 🩹 Fixes
+
+- some fintuning ([0bc512fba](https://github.com/Badminton-Apps/badman/commit/0bc512fba))
+- forgot the changeteam dialog ([1436d832d](https://github.com/Badminton-Apps/badman/commit/1436d832d))
+- this is better with debounce ([82d694618](https://github.com/Badminton-Apps/badman/commit/82d694618))
+- check for max base player was reversed ([4e709348b](https://github.com/Badminton-Apps/badman/commit/4e709348b))
+- wrong translatino ([8583e2112](https://github.com/Badminton-Apps/badman/commit/8583e2112))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.138.0 (2024-04-21)
 
 
