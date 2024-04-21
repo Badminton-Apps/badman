@@ -241,6 +241,8 @@ export type I18nTranslations = {
                     "team-to-strong": string;
                     "title": string;
                     "to-much": string;
+                    "too-few-base-players": string;
+                    "too-many-base-players": string;
                 };
                 "info": string;
                 "level-exemption": string;
