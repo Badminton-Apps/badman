@@ -58,7 +58,7 @@ export class LocationResolver {
   }
 
   @ResolveField(() => [Availability])
-  async availibilities(
+  async availabilities(
     @Parent() location: Location,
     @Args() listArgs: ListArgs,
   ): Promise<Availability[]> {

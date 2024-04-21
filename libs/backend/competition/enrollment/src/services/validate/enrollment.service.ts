@@ -29,6 +29,7 @@ import {
   TeamSubeventIndexRule,
   TeamRiserFallerRule,
   TeamSubEventRule,
+  TeamMaxBasePlayersRule,
 } from './rules';
 import moment from 'moment';
 import { Op } from 'sequelize';
@@ -288,6 +289,7 @@ export class EnrollmentValidationService {
 
       new TeamSubEventRule(),
       new TeamBaseIndexRule(),
+      new TeamMaxBasePlayersRule(),
       new TeamRiserFallerRule(),
       new TeamSubeventIndexRule(),
       new TeamOrderRule(),

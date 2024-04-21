@@ -3,7 +3,7 @@ import {
   EncounterCompetition,
   EntryCompetitionPlayer,
   EventCompetition,
-  Meta,
+  MetaEntry,
   Player,
   PlayerRankingType,
   RankingSystem,
@@ -89,8 +89,8 @@ export class AssemblyOutput {
 
 export class AssemblyValidationData {
   type?: SubEventTypeEnum;
-  meta?: Meta;
-  otherMeta?: Meta[];
+  meta?: MetaEntry;
+  otherMeta?: MetaEntry[];
   team?: Team;
 
   teamIndex?: number;

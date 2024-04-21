@@ -233,7 +233,9 @@
         "team-index": "L'indice de décalage des titulaires est <strong>{teamIndex}</strong> et peut être au moins <strong>{baseIndex}</strong> .",
         "team-to-strong": "L'indice de décalage des titulaires est <strong>{teamIndex}</strong> et ne peut pas tomber en dessous de la limite de la fourchette <strong>{minIndex}</strong> ",
         "title": "Erreurs",
-        "to-much": "Le joueur peut jouer un maximum de 2 doubles (mixtes) et 1 simple."
+        "to-much": "Le joueur peut jouer un maximum de 2 doubles (mixtes) et 1 simple.",
+        "too-few-base-players": "Trop peu de joueurs de base",
+        "too-many-base-players": "Trop de joueurs de base"
       },
       "info": "Notes sur la composition",
       "level-exemption": "Le joueur est exempté des restrictions de classement",
@@ -324,6 +326,9 @@
         "transfer-teams-description": ""
       },
       "title": "Inscriptions des équipes",
+      "transfer": {
+        "enrolled-as": "enregistré comme"
+      },
       "validations": "Validations",
       "warnings": {
         "subtitute-team-index": "",

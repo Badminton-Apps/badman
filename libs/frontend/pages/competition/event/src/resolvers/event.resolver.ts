@@ -26,6 +26,9 @@ export const EVENT_QUERY = gql`
       state
       country
       checkEncounterForFilledIn
+      meta {
+        amountOfBasePlayers
+      }
       exceptions {
         start
         end

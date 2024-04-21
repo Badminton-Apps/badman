@@ -138,7 +138,7 @@ export class CompetitionMapComponent implements OnInit {
             locations: Partial<Location[]>;
           }>({
             query: gql`
-              query GetLocation($where: JSONObject, $availibilitiesWhere: JSONObject) {
+              query GetLocation($where: JSONObject, $availabilitiesWhere: JSONObject) {
                 locations(where: $where) {
                   id
                   name
@@ -154,7 +154,7 @@ export class CompetitionMapComponent implements OnInit {
                     latitude
                     longitude
                   }
-                  availibilities(where: $availibilitiesWhere) {
+                  availabilities(where: $availabilitiesWhere) {
                     id
                   }
                 }
@@ -164,7 +164,7 @@ export class CompetitionMapComponent implements OnInit {
               where: {
                 clubId: clubIds,
               },
-              availibilitiesWhere: {
+              availabilitiesWhere: {
                 season: 2023,
               },
             },
@@ -172,7 +172,7 @@ export class CompetitionMapComponent implements OnInit {
         ),
         map((res) => res.data.locations),
         map((locations) => locations.map((location) => new Location(location))),
-        map((locations) => locations.filter((location) => location.availibilities?.length > 0)),
+        map((locations) => locations.filter((location) => location.availabilities?.length > 0)),
       ),
       {
         injector: this.injector,

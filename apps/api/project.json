@@ -26,7 +26,11 @@
       }
     },
     "build": {
-      "dependsOn": ["badman:build"]
+      "configurations": {
+        "production": {
+          "dependsOn": ["badman:build"]
+        }
+      }
     }
   },
 

@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  input,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, untracked } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -15,42 +9,16 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { RankingSystemService } from '@badman/frontend-graphql';
 import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
-import { IsUUID, SubEventType, sortTeams } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
+import { SubEventTypeEnum, sortTeams } from '@badman/utils';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable, Subscription, combineLatest, of } from 'rxjs';
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  shareReplay,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs/operators';
-import { v4 as uuidv4 } from 'uuid';
-import { CLUB, SEASON, TEAMS } from '../../../../../forms';
-
-export type TeamFormValue = {
-  team: Team;
-  entry: {
-    players: EntryCompetitionPlayer[];
-    subEventId: string | null;
-  };
-};
-
-export type TeamForm = FormGroup<{
-  team: FormControl<Team>;
-  entry: FormGroup<{
-    players: FormArray<FormControl<EntryCompetitionPlayer | null>>;
-    subEventId: FormControl<string | null>;
-  }>;
-}>;
+import { pairwise, startWith, takeUntil } from 'rxjs';
+import { TEAMS } from '../../../../../forms';
+import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
+import { TeamForm } from '../../../team-enrollment.page';
 
 @Component({
   selector: 'badman-teams-transfer-step',
@@ -59,6 +27,7 @@ export type TeamForm = FormGroup<{
     CommonModule,
     MatCheckboxModule,
     MatButtonModule,
+    MatListModule,
     MatProgressBarModule,
     FormsModule,
     ReactiveFormsModule,
@@ -66,385 +35,167 @@ export type TeamForm = FormGroup<{
   ],
   templateUrl: './teams-transfer.step.html',
   styleUrls: ['./teams-transfer.step.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeamsTransferStepComponent implements OnInit {
-  private destroy$ = injectDestroy();
+export class TeamsTransferStepComponent {
+  private readonly destroy$ = injectDestroy();
+  private readonly dataService = inject(TeamEnrollmentDataService);
+  private readonly translate = inject(TranslateService);
 
-  group = input.required<FormGroup>();
+  club = this.dataService.state.club;
+  loaded = this.dataService.state.loadedTeams;
 
-  control = input<
-    FormGroup<{
-      [key in SubEventType]: FormArray<TeamForm>;
-    }>
-  >();
-  protected internalControl!: FormGroup<{
-    [key in SubEventType]: FormArray<TeamForm>;
-  }>;
+  teamsCurrent = this.dataService.state.teams;
+  teamsCurrentLinks = computed(() => this.teamsCurrent().map((team) => team.link));
 
-  controlName = input(TEAMS);
+  teamsLast = computed(() => this.club()?.teams?.sort(sortTeams) ?? []);
+  teamsLastIds = computed(() => this.teamsLast().map((team) => team.id));
+  teamLastLinks = computed(() => this.teamsLast().map((team) => team.link));
 
-  clubControlName = input(CLUB);
+  teamsCurrentNamed = computed(() =>
+    this.teamsLast().map((lastSeasonTeam) => {
+      // find team in last teams
+      const currentSeasonTeam = this.teamsCurrent().find((t) => t.link === lastSeasonTeam.link);
 
-  clubId = input<string | undefined>();
+      // if the name is different we add the type to the name
+      if (currentSeasonTeam && currentSeasonTeam.name !== lastSeasonTeam.name) {
+        return {
+          id: lastSeasonTeam.id,
+          name: `${lastSeasonTeam?.name} (${this.translate.instant('all.competition.team-enrollment.transfer.enrolled-as')} ${currentSeasonTeam.name})`,
+        };
+      }
 
-  seasonControlName = input(SEASON);
+      return {
+        id: lastSeasonTeam.id,
+        name: lastSeasonTeam.name,
+      };
+    }),
+  );
 
-  season = input<number | undefined>();
+  newTeams = computed(() =>
+    this.teamsCurrent().filter((team) => !this.teamLastLinks().includes(team.link)),
+  );
+  existingLinks = computed(() =>
+    this.teamLastLinks().filter((link) => this.teamsCurrentLinks().includes(link)),
+  );
 
-  teamsForm?: FormControl[] = [];
-  newTeamsForm?: FormControl[] = [];
+  transferTeamsCtrl = new FormControl<string[]>([], { nonNullable: true });
+  newTeamsCtrl = new FormControl<string[]>([]);
 
-  teams$?: Observable<{
-    lastSeason: Team[];
-    newThisSeason: Team[];
-  }>;
-  teamSubscriptions: Subscription[] = [];
+  formGroup = input.required<FormGroup>();
+  teams = computed(
+    () =>
+      this.formGroup().get(TEAMS) as FormGroup<{
+        [key in SubEventTypeEnum]: FormArray<TeamForm>;
+      }>,
+  );
 
-  constructor(
-    private apollo: Apollo,
-    private systemService: RankingSystemService,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {}
+  constructor() {
+    this.transferTeamsCtrl.valueChanges
+      .pipe(takeUntil(this.destroy$), startWith([] as string[]), pairwise())
+      .subscribe(([prev, next]) => {
+        // find removed teams
+        const removedTeams = prev.filter((team) => !next.includes(team));
+        for (const id of removedTeams) {
+          this._removeTeam(id);
+        }
 
-  ngOnInit() {
-    if (this.control() != undefined) {
-      this.internalControl = this.control() as FormGroup<{
-        [key in SubEventType]: FormArray<TeamForm>;
-      }>;
-    }
+        // find new teams
+        const newTeams = next.filter((team) => !prev.includes(team));
+        for (const id of newTeams) {
+          const team = this.teamsLast().find((t) => t.id === id) as Team;
 
-    if (!this.internalControl && this.group()) {
-      this.internalControl = this.group()?.get(this.controlName()) as FormGroup<{
-        [key in SubEventType]: FormArray<TeamForm>;
-      }>;
-    }
-
-    if (!this.internalControl) {
-      this.internalControl = new FormGroup({
-        M: new FormArray<TeamForm>([]),
-        F: new FormArray<TeamForm>([]),
-        MX: new FormArray<TeamForm>([]),
-        NATIONAL: new FormArray<TeamForm>([]),
+          this._addTeam(team);
+        }
       });
-    }
 
-    if (this.group() && !this.group()?.get(this.controlName())) {
-      this.group()?.addControl(this.controlName(), this.internalControl);
-    }
+    // set initial controls
+    effect(() => {
+      // get club
+      const club = this.club();
 
-    if (this.group() === undefined) {
-      if (this.clubId() == undefined) {
-        throw new Error('No clubId provided');
-      }
-
-      if (this.season() == undefined) {
-        throw new Error('No season provided');
-      }
-    }
-
-    let clubid$: Observable<string>;
-    let season$: Observable<number>;
-
-    // fetch clubId
-    if (this.group()) {
-      clubid$ = this.group()?.valueChanges.pipe(
-        map((value) => value?.[this.clubControlName()]),
-        startWith(this.group()?.value?.[this.clubControlName()]),
-        filter(IsUUID),
-      );
-
-      season$ = this.group()?.valueChanges.pipe(
-        map((value) => value?.[this.seasonControlName()]),
-        startWith(this.group()?.value?.[this.seasonControlName()]),
-        filter((value) => value !== undefined),
-      );
-    } else {
-      clubid$ = of(this.clubId() as string);
-      season$ = of(this.season() as number);
-    }
-
-    this.teams$ = combineLatest([
-      clubid$.pipe(distinctUntilChanged()),
-      season$.pipe(distinctUntilChanged()),
-    ])?.pipe(
-      takeUntil(this.destroy$),
-      switchMap(([clubId, season]) =>
-        this.apollo
-          .query<{ teams: Team[] }>({
-            fetchPolicy: 'no-cache',
-            query: gql`
-              query Teams($where: JSONObject, $rankingWhere: JSONObject, $order: [SortOrderType!]) {
-                teams(where: $where) {
-                  id
-                  name
-                  teamNumber
-                  type
-                  season
-                  link
-                  clubId
-                  preferredDay
-                  preferredTime
-                  captainId
-                  phone
-                  email
-                  players {
-                    id
-                    fullName
-                    teamId
-                    gender
-                    membershipType
-                    rankingPlaces(where: $rankingWhere, order: $order, take: 1) {
-                      id
-                      single
-                      double
-                      mix
-                    }
-                  }
-                  entry {
-                    id
-                    standing {
-                      id
-                      riser
-                      faller
-                    }
-                    subEventCompetition {
-                      id
-                      level
-                      eventCompetition {
-                        id
-                        name
-                        type
-                      }
-                    }
-                    meta {
-                      competition {
-                        players {
-                          id
-                          gender
-                          player {
-                            id
-                            fullName
-                            rankingPlaces(where: $rankingWhere, order: $order, take: 1) {
-                              id
-                              single
-                              double
-                              mix
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            `,
-            variables: {
-              where: {
-                clubId: clubId,
-                season: {
-                  $or: [season - 1, season],
-                },
-              },
-              rankingWhere: {
-                systemId: this.systemService.systemId(),
-                rankingDate: {
-                  $lte: new Date(season, 5, 10),
-                },
-              },
-              order: [
-                {
-                  field: 'rankingDate',
-                  direction: 'DESC',
-                },
-              ],
-            },
-          })
-          .pipe(
-            map((result) => result.data.teams?.map((team) => new Team(team))),
-            map((teams) => teams?.sort(sortTeams)),
-            map((teams) => {
-              const teamsLastSeason = teams?.filter((team) => team.season == season - 1);
-              const teamsThisSeason = teams?.filter((team) => team.season == season);
-
-              // we have 2 arrays, teams of last season
-              // and teams that have been already created this season but don't have a link to last season
-
-              const lastSeason = teamsLastSeason?.map((team) => {
-                const teamThisSeason = teamsThisSeason?.find((t) => t.link == team.link);
-
-                if (teamThisSeason != null) {
-                  // remove the team from the teamsThisSeason array
-                  teamsThisSeason.splice(teamsThisSeason.indexOf(teamThisSeason), 1);
-
-                  if (teamThisSeason.teamNumber != team.teamNumber) {
-                    teamThisSeason.name = `${teamThisSeason.name} ( was ${team.name} )`;
-                  }
-
-                  // select the team
-                  return {
-                    ...team,
-                    ...teamThisSeason,
-                    selected: true,
-                  } as Team & { selected: boolean };
-                }
-
-                return {
-                  ...team,
-                  id: uuidv4(),
-                  selected: false,
-                } as Team & { selected: boolean };
-              });
-
-              const linksLastSeason = lastSeason?.map((team) => team.link);
-              const newThisSeason = teamsThisSeason
-                ?.filter((team) => !linksLastSeason?.includes(team.link))
-                ?.map((team) => {
-                  return {
-                    ...team,
-                    selected: true,
-                  } as Team & { selected: boolean };
-                });
-
-              return {
-                lastSeason,
-                newThisSeason,
-              };
-            }),
-          ),
-      ),
-      shareReplay(1),
-      tap(({ lastSeason, newThisSeason }) => {
-        this.teamSubscriptions.forEach((sub) => sub.unsubscribe());
-
-        // clear the form
-        this.teamsForm = [];
-        this.newTeamsForm = [];
-        this.teamSubscriptions = [];
-
-        for (const team of lastSeason ?? []) {
-          const control = new FormControl(team.selected);
-          this.teamsForm?.push(control);
-          this.teamSubscriptions.push(
-            control.valueChanges
-              .pipe(startWith(team.selected), takeUntil(this.destroy$))
-              .subscribe((value) => {
-                if (value == null) {
-                  return;
-                }
-                this.select(value, team);
-              }),
-          );
-        }
-
-        for (const team of newThisSeason ?? []) {
-          const control = new FormControl(team.selected);
-          this.newTeamsForm?.push(control);
-          this.teamSubscriptions.push(
-            control.valueChanges
-              .pipe(startWith(team.selected), takeUntil(this.destroy$))
-              .subscribe((value) => {
-                if (value == null) {
-                  return;
-                }
-                this.select(value, team);
-              }),
-          );
-        }
-      }),
-    );
-  }
-
-  select(selected: boolean, team: Team & { selected: boolean }) {
-    // if the team is already selected, we don't need to do anything
-    const typedControl = this.internalControl?.get(team.type ?? '') as FormArray<TeamForm>;
-
-    const index = typedControl.value?.findIndex((t) => t.team?.link == team.link);
-
-    if (selected) {
-      // if the team is already selected, we don't need to do anything
-      if (index != -1) {
+      // wait for teams to be loaded, and also reload when anything changes
+      if (!this.loaded() || !club?.id) {
         return;
       }
 
-      let entry: {
-        players: EntryCompetitionPlayer[];
-        subEventId: string | null;
-      };
+      // use the state but don't update effect when it changes
+      untracked(() => {
+        this.transferTeamsCtrl.patchValue(
+          this.teamsLast()
+            .filter((team) => this.existingLinks().includes(team.link))
+            .map((team) => team.id),
+        );
 
-      // convert entries
-      if (team.entry) {
-        entry = {
-          players: (team.entry.meta?.competition?.players?.map((p) => {
-            return {
-              id: p.id,
-              gender: p.gender,
-              player: {
-                id: p.player.id,
-                fullName: p.player.fullName,
-              },
-              single: p.player.rankingPlaces?.[0].single ?? 0,
-              double: p.player.rankingPlaces?.[0].double ?? 0,
-              mix: p.player.rankingPlaces?.[0].mix ?? 0,
-            };
-          }) ?? []) as EntryCompetitionPlayer[],
-          subEventId: null,
-        };
-      } else {
-        entry = {
-          players: [] as EntryCompetitionPlayer[],
-          subEventId: null,
-        };
-      }
-      if (typedControl) {
-        if (index != null && index >= 0) {
-          typedControl.at(index)?.get('team')?.patchValue(team);
-          typedControl.at(index)?.get('entry')?.patchValue(entry);
-        } else {
-          const players = new FormArray<FormControl<EntryCompetitionPlayer | null>>([]);
-
-          for (const player of entry.players) {
-            players.push(new FormControl(player));
+        // add new teams
+        for (const team of this.newTeams()) {
+          if (team.id) {
+            this._addTeam(team);
           }
-
-          const newGroup = new FormGroup({
-            team: new FormControl(team as Team),
-            entry: new FormGroup({
-              players,
-              subEventId: new FormControl(entry.subEventId),
-            }),
-          }) as TeamForm;
-
-          typedControl.push(newGroup);
         }
-      } else {
-        throw new Error('No control found for type ' + team.type);
-      }
+      });
+    });
+  }
+
+  selectAll() {
+    this.transferTeamsCtrl.setValue(this.teamsLastIds());
+  }
+
+  deselectAll() {
+    this.transferTeamsCtrl.setValue([]);
+  }
+
+  private _addTeam(team: Team) {
+    const typedControl = this.teams().get(team.type ?? '') as FormArray<TeamForm>;
+    let entry: {
+      players: EntryCompetitionPlayer[];
+      subEventId: string | null;
+    };
+
+    // convert entries
+    if (team.entry) {
+      entry = {
+        players: (team.entry.meta?.competition?.players?.map((p) => {
+          return {
+            id: p.id,
+            gender: p.gender,
+            player: {
+              id: p.player.id,
+              fullName: p.player.fullName,
+            },
+            single: p.player.rankingPlaces?.[0].single ?? 0,
+            double: p.player.rankingPlaces?.[0].double ?? 0,
+            mix: p.player.rankingPlaces?.[0].mix ?? 0,
+          };
+        }) ?? []) as EntryCompetitionPlayer[],
+        subEventId: null,
+      };
     } else {
-      if (index != null && index >= 0) {
+      entry = {
+        players: [] as EntryCompetitionPlayer[],
+        subEventId: null,
+      };
+    }
+
+    const newGroup = new FormGroup({
+      team: new FormControl(team as Team),
+      entry: new FormGroup({
+        players: new FormArray(entry.players.map((p) => new FormControl(p))),
+        subEventId: new FormControl(entry.subEventId),
+      }),
+    }) as TeamForm;
+
+    typedControl.push(newGroup);
+  }
+
+  private _removeTeam(teamId: string) {
+    // We look in all sub event types for the team and remove it just to be sure when deleting
+    for (const enumType of Object.values(SubEventTypeEnum)) {
+      const typedControl = this.teams().get(enumType) as FormArray<TeamForm>;
+
+      const index = typedControl.controls.findIndex((control) => control.value.team?.id === teamId);
+      if (index >= 0) {
         typedControl.removeAt(index);
       }
-    }
-
-    // sort the teams
-    typedControl?.controls?.sort((a, b) => sortTeams(a.value.team, b.value.team));
-
-    this.changeDetectorRef.markForCheck();
-  }
-
-  async selectAll(type: 'lastSeason' | 'newThisSeason') {
-    const form = type == 'lastSeason' ? this.teamsForm : this.newTeamsForm;
-
-    for (let i = 0; i < (form?.length ?? 0); i++) {
-      form?.[i].setValue(true);
-    }
-  }
-
-  deselectAll(type: 'lastSeason' | 'newThisSeason') {
-    const form = type == 'lastSeason' ? this.teamsForm : this.newTeamsForm;
-
-    for (let i = 0; i < (form?.length ?? 0); i++) {
-      form?.[i].setValue(false);
     }
   }
 }

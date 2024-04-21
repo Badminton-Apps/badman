@@ -1,58 +1,60 @@
-@if (team) {
+@if (team()) {
   <badman-team
-    [season]="season()"
-    [team]="team"
+    [team]="team()"
     [system]="system()"
-    [basePlayers]="players"
+    [basePlayers]="players()"
     (removeTeam)="this.removeTeam.next($event)"
     (changeTeamNumber)="this.changeTeamNumber.next($event)"
   ></badman-team>
-}
-<div class="beside">
-  <div class="event">
-    <mat-form-field>
-      <mat-label>Select</mat-label>
-      <mat-select [formControl]="subEvent">
-        @for (subEvent of subEventsForTeam(); track subEvent) {
-          <mat-option [value]="subEvent.id">
-            {{ subEvent.name }}
-          </mat-option>
+  <div class="beside">
+    <div class="event">
+      <mat-form-field>
+        <mat-label>Select</mat-label>
+        <mat-select [formControl]="subEvent()">
+          @for (subEvent of subEventsForTeam(); track subEvent) {
+            <mat-option [value]="subEvent.id">
+              {{ subEvent.name }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="information">
+      <ul>
+        @if (validation()?.minBaseIndex) {
+          <li>Min/max {{ validation()?.minBaseIndex }} - {{ validation()?.maxBaseIndex }}</li>
         }
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <div class="information">
-    @if (validation()?.minBaseIndex) {
-      <div>Min/max {{ validation()?.minBaseIndex }} - {{ validation()?.maxBaseIndex }}</div>
-    }
-    <div>Team: {{ validation()?.teamIndex }}</div>
-    <div>Base: {{ validation()?.baseIndex }}</div>
-    <div class="validation-overview">
-      @if ((validation()?.errors?.length ?? 0) > 0) {
-        <ul class="error-list">
-          @for (error of validation()?.errors; track error) {
-            <li>
-              <badman-enrollment-message [validation]="error"></badman-enrollment-message>
-            </li>
-          }
-        </ul>
-      }
-      @if ((validation()?.warnings?.length ?? 0) > 0) {
-        <ul class="warning-list">
-          @for (warnings of validation()?.warnings; track warnings) {
-            <li>
-              <badman-enrollment-message [validation]="warnings"></badman-enrollment-message>
-            </li>
-          }
-        </ul>
-      }
-      @if (
-        (validation()?.errors?.length ?? 0) === 0 && (validation()?.warnings?.length ?? 0) === 0
-      ) {
-        <div class="no-errors">
-          {{ 'all.competition.team-assembly.errors.none' | translate }}
-        </div>
-      }
+        <li>Team: {{ validation()?.teamIndex }}</li>
+        <li>Base: {{ validation()?.baseIndex }}</li>
+      </ul>
+      <div class="validation-overview">
+        @if ((validation()?.errors?.length ?? 0) > 0) {
+          <ul class="error-list">
+            @for (error of validation()?.errors; track error) {
+              <li>
+                <badman-enrollment-message [validation]="error"></badman-enrollment-message>
+              </li>
+            }
+          </ul>
+        }
+        @if ((validation()?.warnings?.length ?? 0) > 0) {
+          <ul class="warning-list">
+            @for (warnings of validation()?.warnings; track warnings) {
+              <li>
+                <badman-enrollment-message [validation]="warnings"></badman-enrollment-message>
+              </li>
+            }
+          </ul>
+        }
+        @if (
+          (validation()?.errors?.length ?? 0) === 0 && (validation()?.warnings?.length ?? 0) === 0
+        ) {
+          <div class="no-errors">
+            {{ 'all.competition.team-assembly.errors.none' | translate }}
+          </div>
+        }
+      </div>
     </div>
   </div>
-</div>
+}
