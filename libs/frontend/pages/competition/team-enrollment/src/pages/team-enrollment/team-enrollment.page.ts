@@ -348,12 +348,12 @@ export class TeamEnrollmentComponent implements OnInit {
   }
 
   async saveAndContinue(includeTeams = false) {
-    this.formGroup.get(TEAMS)?.setErrors({ loading: true });
     await lastValueFrom(await this.save(includeTeams));
+
     this.snackBar.open('Teams saved', 'Close', {
       duration: 2000,
     });
-    this.formGroup.get(TEAMS)?.setErrors({ loading: false });
+
     this.vert_stepper.next();
   }
 
