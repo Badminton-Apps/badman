@@ -29,7 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { Observable, ReplaySubject, lastValueFrom, merge, of } from 'rxjs';
-import { throttleTime, filter, map, startWith, switchMap, takeUntil, tap, debounceTime } from 'rxjs/operators';
+import { debounceTime, filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { PlayerFieldsComponent } from '../fields';
 
 @Component({
