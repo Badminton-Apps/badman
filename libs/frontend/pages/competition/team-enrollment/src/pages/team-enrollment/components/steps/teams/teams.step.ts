@@ -5,6 +5,8 @@ import {
   ElementRef,
   QueryList,
   Signal,
+  TemplateRef,
+  ViewChild,
   ViewChildren,
   computed,
   effect,
@@ -14,7 +16,7 @@ import {
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -55,6 +57,7 @@ export class TeamsStepComponent {
   private readonly destroy$ = injectDestroy();
   private readonly dataService = inject(TeamEnrollmentDataService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
   private readonly changedetector = inject(ChangeDetectorRef);
 
   club = this.dataService.state.club;
@@ -69,11 +72,26 @@ export class TeamsStepComponent {
       }>,
   );
 
+  teamNumbers = computed(() => {
+    const teams = this.teams();
+    if (!teams) return;
+
+    const numbers = {} as { [key in SubEventTypeEnum]: number };
+    for (const type of this.eventTypes) {
+      numbers[type] = teams.get(type)?.value.length ?? 0;
+    }
+
+    return numbers;
+  });
+
   eventsPerType = this.dataService.state.eventsPerType;
   eventTypes = Object.values(SubEventTypeEnum);
 
   @ViewChildren(TeamEnrollmentComponent, { read: ElementRef })
   teamReferences: QueryList<ElementRef<HTMLElement>> | undefined;
+
+  @ViewChild('switch')
+  SwitchDialog!: TemplateRef<HTMLElement>;
 
   constructor() {
     effect(() => {
@@ -115,7 +133,7 @@ export class TeamsStepComponent {
     return this.teams()?.controls[type] as FormArray<TeamForm>;
   }
 
-  async addTeam(type: SubEventType) {
+  addTeam(type: SubEventType) {
     const teams = this.getTypeArray(type);
     const club = this.club();
 
@@ -163,7 +181,7 @@ export class TeamsStepComponent {
     });
   }
 
-  async removeTeam(team: Team) {
+  removeTeam(team: Team) {
     const type = team.type;
     if (!type) return;
 
@@ -204,22 +222,12 @@ export class TeamsStepComponent {
     return teamName;
   }
 
-  private async setTeamnumbers() {
+  private setTeamnumbers() {
     const club = this.club();
     if (!club) return;
     for (const type of this.eventTypes) {
       const teams = this.teams().get(type) as FormArray<TeamForm>;
       if (!teams) continue;
-
-      // // sort team by team number highest to lowest
-      // teams.controls.sort((a, b) => {
-      //   const teamA = a.value.team as Team;
-      //   const teamB = b.value.team as Team;
-
-      //   // const teamNumberA = this.team teamA.teamNumber ?? 0;
-
-      //   return (teamA.teamNumber ?? 0) - (teamB.teamNumber ?? 0);
-      // });
 
       for (let i = 0; i < teams.length; i++) {
         const team = teams.at(i)?.get('team') as FormControl<Team>;
@@ -229,5 +237,39 @@ export class TeamsStepComponent {
         team.value.name = this.getTeamName(team.value, club);
       }
     }
+  }
+
+  changeTeamNumber(team: Team) {
+    if (!team) return;
+    if (!team.type) return;
+    const club = this.club();
+    const type = team.type;
+    if (!club) return;
+
+    const ref = this.dialog.open(this.SwitchDialog, {
+      data: {
+        team,
+        numbers: Array.from({ length: this.teamNumbers()?.[type] ?? 0 }, (_, i) => i + 1),
+      },
+    });
+
+    ref.afterClosed().subscribe((result: { newNumber: number }) => {
+      if (!result) return;
+      if (!result.newNumber) return;
+      if (!team.teamNumber) return;
+
+      const newNumber = result.newNumber;
+      const teams = this.getTypeArray(type);
+      if (!teams) return;
+
+      const index = teams.controls.findIndex((control) => control.value.team?.id === team.id);
+      const form = teams.at(index);
+
+      teams.removeAt(index);
+      teams.insert(newNumber - 1, form);
+
+      this.setTeamnumbers();
+      this.changedetector.detectChanges();
+    });
   }
 }
