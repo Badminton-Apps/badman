@@ -17,7 +17,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { getCurrentSeason } from '@badman/utils';
+import { getCurrentSeason, getUpcommingSeason } from '@badman/utils';
 
 import { input } from '@angular/core';
 import { DEVICE } from '@badman/frontend-utils';
@@ -45,17 +45,17 @@ export type LocationAvailibilityForm = FormGroup<{
 }>;
 
 export type LocationForm = FormGroup<{
-  id: FormControl<string | undefined>;
-  name: FormControl<string | undefined>;
-  address: FormControl<string | undefined>;
-  street: FormControl<string | undefined>;
-  streetNumber: FormControl<string | undefined>;
-  postalcode: FormControl<string | undefined>;
-  city: FormControl<string | undefined>;
-  state: FormControl<string | undefined>;
-  phone: FormControl<string | undefined>;
-  fax: FormControl<string | undefined>;
-  availibilities: FormArray<LocationAvailibilityForm>;
+  id: FormControl<string | undefined >;
+  name: FormControl<string | undefined >;
+  address: FormControl<string | undefined >;
+  street: FormControl<string | undefined >;
+  streetNumber: FormControl<string | undefined >;
+  postalcode: FormControl<string | undefined >;
+  city: FormControl<string | undefined >;
+  state: FormControl<string | undefined >;
+  phone: FormControl<string | undefined >;
+  fax: FormControl<string | undefined >;
+  availabilities: FormArray<LocationAvailibilityForm>;
 }>;
 
 @Component({
@@ -91,7 +91,7 @@ export class LocationComponent implements OnInit {
   control = input<LocationAvailibilityForm>();
   protected internalControl!: LocationAvailibilityForm;
 
-  controlName = input('availibilities');
+  controlName = input('availabilities');
 
   @Output()
   whenLocationUpdate = new EventEmitter<void>();
@@ -132,7 +132,7 @@ export class LocationComponent implements OnInit {
       created = true;
       this.internalControl = new FormGroup({
         id: new FormControl(),
-        year: new FormControl(getCurrentSeason()),
+        season: new FormControl(getUpcommingSeason()),
         days: new FormArray([] as LocationavDayType[]),
         exceptions: new FormArray([] as LocationExceptionType[]),
       }) as unknown as LocationAvailibilityForm;

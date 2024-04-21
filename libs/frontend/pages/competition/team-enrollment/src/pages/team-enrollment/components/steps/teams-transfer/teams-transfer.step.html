@@ -1,33 +1,27 @@
-<div class="description">
-  {{ 'all.competition.team-enrollment.teams.transfer-teams-description' | translate }}
-</div>
-@if (teams$ | async; as teams) {
+@if (loaded()) {
+  <div class="description">
+    {{ 'all.competition.team-enrollment.teams.transfer-teams-description' | translate }}
+  </div>
   <div class="all">
-    <button mat-button (click)="selectAll('lastSeason')">{{ 'all.button.all' | translate }}</button>
-    <button mat-button (click)="deselectAll('lastSeason')">
+    <button mat-button (click)="selectAll()">{{ 'all.button.all' | translate }}</button>
+    <button mat-button (click)="deselectAll()">
       {{ 'all.button.none' | translate }}
     </button>
   </div>
-  @for (team of teams.lastSeason; track team; let i = $index) {
-    <div class="teams">
-      <mat-checkbox [formControl]="this.teamsForm![i]">{{ team.name }}</mat-checkbox>
-    </div>
-  }
-  @if (teams.newThisSeason.length > 0) {
-    <h3>{{ 'all.competition.team-enrollment.teams.new-teams' | translate }}</h3>
-    <div class="all">
-      <button mat-button (click)="selectAll('newThisSeason')">
-        {{ 'all.button.all' | translate }}
-      </button>
-      <button mat-button (click)="deselectAll('newThisSeason')">
-        {{ 'all.button.none' | translate }}
-      </button>
-    </div>
-    @for (team of teams.newThisSeason; track team; let i = $index) {
-      <div class="teams">
-        <mat-checkbox [formControl]="this.newTeamsForm![i]">{{ team.name }}</mat-checkbox>
-      </div>
+
+  <mat-selection-list [formControl]="transferTeamsCtrl">
+    @for (team of teamsCurrentNamed(); track team) {
+      <mat-list-option [value]="team.id" togglePosition="before">{{ team.name }}</mat-list-option>
     }
+  </mat-selection-list>
+
+  @if (newTeams().length > 0) {
+    <h3>{{ 'all.competition.team-enrollment.teams.new-teams' | translate }}</h3>
+    <mat-selection-list>
+      @for (team of newTeams(); track team) {
+        <mat-list>{{ team.name }}</mat-list>
+      }
+    </mat-selection-list>
   }
 } @else {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>

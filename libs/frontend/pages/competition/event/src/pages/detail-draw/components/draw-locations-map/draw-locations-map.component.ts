@@ -41,7 +41,7 @@ export class DrawLocationMapComponent implements OnInit {
                 state
                 phone
                 fax
-                availibilities(where: $where) {
+                availabilities(where: $where) {
                   id
                   season
                 }

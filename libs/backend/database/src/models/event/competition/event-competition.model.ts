@@ -25,6 +25,8 @@ import {
 } from 'sequelize-typescript';
 import {
   AvailabilityExceptionInputType,
+  EventCompetitionMetaType,
+  EventCompetitionPlayersInputType,
   ExceptionType,
   InfoEventInputType,
   InfoEventType,
@@ -88,6 +90,12 @@ export class EventCompetition extends Model {
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
   changeCloseRequestDate?: Date;
+
+  @Field(() => EventCompetitionMetaType, { nullable: true })
+  @Column({
+    type: DataType.JSON,
+  })
+  meta?: MetaEventCompetition;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
@@ -235,6 +243,7 @@ export class EventCompetitionUpdateInput extends PartialType(
     'roles',
     'exceptions',
     'infoEvents',
+    'meta'
   ] as const),
   InputType,
 ) {
@@ -243,6 +252,9 @@ export class EventCompetitionUpdateInput extends PartialType(
 
   @Field(() => [InfoEventInputType], { nullable: true })
   infoEvents?: InfoEvent[];
+
+  @Field(() => EventCompetitionPlayersInputType, { nullable: true })
+  meta?: EventCompetitionPlayersInputType;
 }
 
 @InputType()
@@ -261,4 +273,8 @@ export interface InfoEvent {
   start?: Date;
   end?: Date;
   name?: string;
+}
+
+export interface MetaEventCompetition {
+  amountOfBasePlayers?: number;
 }

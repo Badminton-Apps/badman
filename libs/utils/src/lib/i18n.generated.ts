@@ -241,6 +241,8 @@ export type I18nTranslations = {
                     "team-to-strong": string;
                     "title": string;
                     "to-much": string;
+                    "too-few-base-players": string;
+                    "too-many-base-players": string;
                 };
                 "info": string;
                 "level-exemption": string;
@@ -331,6 +333,9 @@ export type I18nTranslations = {
                     "transfer-teams-description": string;
                 };
                 "title": string;
+                "transfer": {
+                    "enrolled-as": string;
+                };
                 "validations": string;
                 "warnings": {
                     "subtitute-team-index": string;
