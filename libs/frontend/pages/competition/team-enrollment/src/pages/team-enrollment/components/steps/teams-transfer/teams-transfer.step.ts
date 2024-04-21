@@ -1,13 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  untracked,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, untracked } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -17,31 +9,16 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatListModule } from '@angular/material/list';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { EntryCompetitionPlayer, Team } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
-import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { SubEventTypeEnum, sortTeams } from '@badman/utils';
-import { TEAMS } from '../../../../../forms';
-import { MatListModule } from '@angular/material/list';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { pairwise, startWith, takeUntil } from 'rxjs';
-
-export type TeamFormValue = {
-  team: Team;
-  entry: {
-    players: EntryCompetitionPlayer[];
-    subEventId: string | null;
-  };
-};
-
-export type TeamForm = FormGroup<{
-  team: FormControl<Team>;
-  entry: FormGroup<{
-    players: FormArray<FormControl<EntryCompetitionPlayer | null>>;
-    subEventId: FormControl<string | null>;
-  }>;
-}>;
+import { TEAMS } from '../../../../../forms';
+import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
+import { TeamForm } from '../../../team-enrollment.page';
 
 @Component({
   selector: 'badman-teams-transfer-step',
@@ -58,11 +35,11 @@ export type TeamForm = FormGroup<{
   ],
   templateUrl: './teams-transfer.step.html',
   styleUrls: ['./teams-transfer.step.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamsTransferStepComponent {
   private readonly destroy$ = injectDestroy();
   private readonly dataService = inject(TeamEnrollmentDataService);
+  private readonly translate = inject(TranslateService);
 
   club = this.dataService.state.club;
   loaded = this.dataService.state.loadedTeams;
@@ -73,6 +50,26 @@ export class TeamsTransferStepComponent {
   teamsLast = computed(() => this.club()?.teams?.sort(sortTeams) ?? []);
   teamsLastIds = computed(() => this.teamsLast().map((team) => team.id));
   teamLastLinks = computed(() => this.teamsLast().map((team) => team.link));
+
+  teamsCurrentNamed = computed(() =>
+    this.teamsLast().map((lastSeasonTeam) => {
+      // find team in last teams
+      const currentSeasonTeam = this.teamsCurrent().find((t) => t.link === lastSeasonTeam.link);
+
+      // if the name is different we add the type to the name
+      if (currentSeasonTeam && currentSeasonTeam.name !== lastSeasonTeam.name) {
+        return {
+          id: lastSeasonTeam.id,
+          name: `${lastSeasonTeam?.name} (${this.translate.instant('all.competition.team-enrollment.transfer.enrolled-as')} ${currentSeasonTeam.name})`,
+        };
+      }
+
+      return {
+        id: lastSeasonTeam.id,
+        name: lastSeasonTeam.name,
+      };
+    }),
+  );
 
   newTeams = computed(() =>
     this.teamsCurrent().filter((team) => !this.teamLastLinks().includes(team.link)),
@@ -105,7 +102,9 @@ export class TeamsTransferStepComponent {
         // find new teams
         const newTeams = next.filter((team) => !prev.includes(team));
         for (const id of newTeams) {
-          this._addTeam(id);
+          const team = this.teamsLast().find((t) => t.id === id) as Team;
+
+          this._addTeam(team);
         }
       });
 
@@ -126,6 +125,14 @@ export class TeamsTransferStepComponent {
             .filter((team) => this.existingLinks().includes(team.link))
             .map((team) => team.id),
         );
+
+        // add new teams
+        for (const team of this.newTeams()) {
+          console.log('team', team);
+          if (team.id) {
+            this._addTeam(team);
+          }
+        }
       });
     });
   }
@@ -138,8 +145,7 @@ export class TeamsTransferStepComponent {
     this.transferTeamsCtrl.setValue([]);
   }
 
-  private _addTeam(teamId: string) {
-    const team = this.teamsLast().find((t) => t.id === teamId) as Team;
+  private _addTeam(team: Team) {
     const typedControl = this.teams().get(team.type ?? '') as FormArray<TeamForm>;
     let entry: {
       players: EntryCompetitionPlayer[];
