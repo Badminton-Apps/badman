@@ -39,7 +39,7 @@ export type TeamFormValue = {
 export type TeamForm = FormGroup<{
   team: FormControl<Team>;
   entry: FormGroup<{
-    players: FormArray<FormControl<EntryCompetitionPlayer >>;
+    players: FormArray<FormControl<EntryCompetitionPlayer>>;
     subEventId: FormControl<string | null>;
   }>;
 }>;
@@ -94,19 +94,16 @@ export class TeamEnrollmentComponent implements OnInit {
   );
 
   commentsControl = new FormGroup({
-    [SubEventTypeEnum.M]: new FormGroup({
+    [LevelType.PROV]: new FormGroup({
       comment: new FormControl(''),
       id: new FormControl(''),
     }),
-    [SubEventTypeEnum.F]: new FormGroup({
+    [LevelType.LIGA]: new FormGroup({
       comment: new FormControl(''),
       id: new FormControl(''),
     }),
-    [SubEventTypeEnum.MX]: new FormGroup({
-      comment: new FormControl(''),
-      id: new FormControl(''),
-    }),
-    [SubEventTypeEnum.NATIONAL]: new FormGroup({
+
+    [LevelType.NATIONAL]: new FormGroup({
       comment: new FormControl(''),
       id: new FormControl(''),
     }),

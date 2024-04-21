@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -9,6 +17,7 @@ import { LevelType, SubEventTypeEnum } from '@badman/utils';
 import { COMMENTS, TEAMS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { TeamForm } from '../../../team-enrollment.page';
+import { debounceTime } from 'rxjs';
 
 type CommentForm = {
   [key in LevelType]: FormGroup<{
@@ -41,25 +50,82 @@ export class CommentsStepComponent {
       }>,
   );
 
-  validTypes = computed(() => {
-    // get all comments where one team is selected
-    let subeventIds: string[] = [];
+  validTypes = signal<LevelType[]>([]);
 
-    for (const type of this.eventTypes) {
-      const teams = this.teams().get(type) as FormArray<TeamForm>;
-      subeventIds = subeventIds.concat(teams?.value.map((team) => team.entry?.subEventId ?? ''));
-    }
+  constructor() {
+    effect(
+      () => {
+        const comments = this.dataService.state.comments();
+        if (comments) {
+          for (const comment of comments) {
+            const event = this.events()?.find((event) => event.id === comment.linkId);
+            if (!event) {
+              continue;
+            }
 
-    console.log(subeventIds);
+            const type = event.type as LevelType;
+            const control = this.comments().get(type);
+            if (!control) {
+              continue;
+            }
 
-    // find any event where any subevent  Id is selected
-    const events = this.events().filter((event) => {
-      const subevents =
-        event.subEventCompetitions?.filter((subevent) => subeventIds.includes(subevent.id ?? '')) ??
-        [];
-      return subevents.length > 0;
-    });
+            control.patchValue({
+              ...control.getRawValue(),
+              comment: comment.message,
+            });
+          }
+        }
 
-    return events.map((event) => event.type);
-  });
+        for (const type of this.levelTypes) {
+          const control = this.comments().get(type);
+          const event = this.events()?.find((event) => event.type === type);
+
+          if (!event?.id) {
+            continue;
+          }
+
+          control?.patchValue({
+            ...control.getRawValue(),
+            id: event.id,
+          });
+        }
+
+        this.teams()
+          .valueChanges.pipe(debounceTime(300))
+          .subscribe(() => {
+            const teams = this.teams().getRawValue();
+            let subeventIds: string[] = [];
+
+            for (const type of this.eventTypes) {
+              const teamForms = teams[type];
+
+              if (!teamForms) {
+                continue;
+              }
+
+              subeventIds = subeventIds.concat(
+                teamForms.map((team) => team.entry?.subEventId ?? ''),
+              );
+            }
+
+            // find any event where any subevent  Id is selected
+            const events = this.events().filter((event) => {
+              const subevents =
+                event.subEventCompetitions?.filter((subevent) =>
+                  subeventIds.includes(subevent.id ?? ''),
+                ) ?? [];
+              return subevents.length > 0;
+            });
+
+            // distinct event.type
+            this.validTypes.set(
+              Array.from(new Set(events.map((event) => event.type as LevelType))),
+            );
+          });
+      },
+      {
+        allowSignalWrites: true,
+      },
+    );
+  }
 }
