@@ -1,3 +1,24 @@
+## 6.138.0 (2024-04-21)
+
+
+### 🚀 Features
+
+- signal select ([3339df0d3](https://github.com/Badminton-Apps/badman/commit/3339df0d3))
+- converted club step to use signals ([e52c068d5](https://github.com/Badminton-Apps/badman/commit/e52c068d5))
+- all converted except teams detail ([a4a845def](https://github.com/Badminton-Apps/badman/commit/a4a845def))
+- loading data when selecting club ([0b2f0bb45](https://github.com/Badminton-Apps/badman/commit/0b2f0bb45))
+- transfering and editing of teams complete ([c4b4700ca](https://github.com/Badminton-Apps/badman/commit/c4b4700ca))
+- enrollments finished ([3b518b202](https://github.com/Badminton-Apps/badman/commit/3b518b202))
+- setting amount of baseplaysers ([8cd9ac897](https://github.com/Badminton-Apps/badman/commit/8cd9ac897))
+
+### 🩹 Fixes
+
+- loading would get stuck ([ac78e2e34](https://github.com/Badminton-Apps/badman/commit/ac78e2e34))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.137.3 (2024-04-18)
 
 
