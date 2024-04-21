@@ -128,7 +128,6 @@ export class TeamsTransferStepComponent {
 
         // add new teams
         for (const team of this.newTeams()) {
-          console.log('team', team);
           if (team.id) {
             this._addTeam(team);
           }
