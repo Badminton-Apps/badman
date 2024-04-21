@@ -233,9 +233,7 @@
         "team-index": "Team index titulars equals <strong>{teamIndex}</strong> and is allowed to mimimally be <strong>{baseIndex}</strong>",
         "team-to-strong": "Team index titulars equals <strong>{teamIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
         "title": "Errors",
-        "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single.",
-        "too-few-base-players": "Too few base players",
-        "too-many-base-players": "Too many base players"
+        "to-much": "Player may play a maximum of 2 (mixed) doubles and 1 single."
       },
       "info": "Remarks concerning the team assembly",
       "level-exemption": "Player is exempt from ranking restrictions",
@@ -289,7 +287,9 @@
         "team-order-same-subevent": "Team <strong>{team.name}</strong> has a better index in the same range, but has a lower team number",
         "team-to-strong": "Team index baseplayers equals <strong>{baseIndex}</strong> cannot be lower then allowed in the division <strong>{minIndex}</strong>",
         "team-to-week": "Team index starting players is <strong>{baseIndex}</strong> and may not exceed the limit of the division <strong>{maxIndex}</strong> ",
-        "title": "Errors"
+        "title": "Errors",
+        "too-few-base-players": "Too few base players",
+        "too-many-base-players": "Too many base players"
       },
       "example-error": "These are error messages that prevent the team from being registered. Please resolve these.",
       "example-warning": "These are warnings that should be taken into account. The registration can still be completed.",
@@ -321,13 +321,13 @@
         "new-teams": "New teams for this season",
         "substitude": "",
         "team-index": "Team index titulars equals <strong>{current}</strong> and is allowed to mimimally be <strong>{team}</strong>",
-        "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team.",
-        "transfer-teams": "Transfer teams (optional)",
-        "transfer-teams-description": "If you wish to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you will be able to transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nYou can change the teamnumbers in the next step"
+        "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team."
       },
       "title": "Team enrollment",
       "transfer": {
-        "enrolled-as": "enrolled as"
+        "enrolled-as": "enrolled as",
+        "transfer-teams": "Transfer teams (optional)",
+        "transfer-teams-description": "If you would like to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you can transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nThe order in which you check your shifts will determine the order (check everything in the correct order)\n\nYou can still change the team numbers in the next step."
       },
       "validations": "Validations",
       "warnings": {

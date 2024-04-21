@@ -241,8 +241,6 @@ export type I18nTranslations = {
                     "team-to-strong": string;
                     "title": string;
                     "to-much": string;
-                    "too-few-base-players": string;
-                    "too-many-base-players": string;
                 };
                 "info": string;
                 "level-exemption": string;
@@ -297,6 +295,8 @@ export type I18nTranslations = {
                     "team-to-strong": string;
                     "team-to-week": string;
                     "title": string;
+                    "too-few-base-players": string;
+                    "too-many-base-players": string;
                 };
                 "example-error": string;
                 "example-warning": string;
@@ -329,12 +329,12 @@ export type I18nTranslations = {
                     "substitude": string;
                     "team-index": string;
                     "team-index-ignored": string;
-                    "transfer-teams": string;
-                    "transfer-teams-description": string;
                 };
                 "title": string;
                 "transfer": {
                     "enrolled-as": string;
+                    "transfer-teams": string;
+                    "transfer-teams-description": string;
                 };
                 "validations": string;
                 "warnings": {
