@@ -233,9 +233,7 @@
         "team-index": "L'indice de décalage des titulaires est <strong>{teamIndex}</strong> et peut être au moins <strong>{baseIndex}</strong> .",
         "team-to-strong": "L'indice de décalage des titulaires est <strong>{teamIndex}</strong> et ne peut pas tomber en dessous de la limite de la fourchette <strong>{minIndex}</strong> ",
         "title": "Erreurs",
-        "to-much": "Le joueur peut jouer un maximum de 2 doubles (mixtes) et 1 simple.",
-        "too-few-base-players": "Trop peu de joueurs de base",
-        "too-many-base-players": "Trop de joueurs de base"
+        "to-much": "Le joueur peut jouer un maximum de 2 doubles (mixtes) et 1 simple."
       },
       "info": "Notes sur la composition",
       "level-exemption": "Le joueur est exempté des restrictions de classement",
@@ -289,7 +287,9 @@
         "team-order-same-subevent": "L'équipe <strong>{team.name}</strong> a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
         "team-to-strong": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas tomber en dessous de la limite de la division <strong>{minIndex}</strong> ",
         "team-to-week": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas dépasser la limite de la division <strong>{maxIndex}</strong> ",
-        "title": ""
+        "title": "",
+        "too-few-base-players": "Trop peu de joueurs de base",
+        "too-many-base-players": "Trop de joueurs de base"
       },
       "example-error": "Ce sont des messages d'erreur qui empêchent l'inscription de l'équipe. Veuillez les résoudre.",
       "example-warning": "Ce sont des avertissements dont il faut tenir compte. L'enregistrement peut encore être complété.",
@@ -321,13 +321,13 @@
         "new-teams": "Nouvelles équipes pour cette saison",
         "substitude": "",
         "team-index": "",
-        "team-index-ignored": "",
-        "transfer-teams": "",
-        "transfer-teams-description": ""
+        "team-index-ignored": ""
       },
       "title": "Inscriptions des équipes",
       "transfer": {
-        "enrolled-as": "enregistré comme"
+        "enrolled-as": "enregistré comme",
+        "transfer-teams": "",
+        "transfer-teams-description": "Si vous souhaitez transférer votre ou vos équipes à l'événement de cette année, vous pouvez utiliser cette étape facultative pour simplifier le processus d'inscription. En sélectionnant cette option, vous pouvez transférer votre ou vos équipes et les placer automatiquement dans le bon événement en fonction de votre participation précédente.\n\nL'ordre dans lequel vous vérifiez vos quarts de travail déterminera l'ordre (vérifiez tout dans le bon ordre)\n\nVous pouvez toujours modifier les numéros d'équipe à l'étape suivante."
       },
       "validations": "Validations",
       "warnings": {
