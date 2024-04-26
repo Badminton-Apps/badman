@@ -77,7 +77,7 @@ export class CalendarComponent implements OnInit {
   public gridTemplateColumns = '';
 
   public encounters: Map<string, EncounterCompetition[]> = new Map();
-  public availibilities: Map<
+  public availabilities: Map<
     string,
     {
       locationId: string;
@@ -259,30 +259,30 @@ export class CalendarComponent implements OnInit {
   }
 
   private _loadAvailiblilyBetween(start: moment.Moment, end: moment.Moment) {
-    this.availibilities.clear();
+    this.availabilities.clear();
     this.exceptions.clear();
 
     for (const location of this.locations) {
-      const availibilities = location.availibilities?.filter((a) => {
+      const availabilities = location.availabilities?.filter((a) => {
         return a.season === this.season;
       });
 
-      if (!availibilities) {
+      if (!availabilities) {
         continue;
       }
 
-      for (const availibility of availibilities) {
+      for (const availibility of availabilities) {
         for (const aDay of availibility.days) {
           for (let day = start.clone(); day.isBefore(end); day.add(1, 'day')) {
             const wDay = moment(day);
             const format = wDay.format('YYYY-MM-DD');
 
             if (wDay.locale('en').format('dddd').toLocaleLowerCase() === aDay.day) {
-              if (!this.availibilities.has(format)) {
-                this.availibilities.set(format, []);
+              if (!this.availabilities.has(format)) {
+                this.availabilities.set(format, []);
               }
 
-              this.availibilities.get(format)?.push({
+              this.availabilities.get(format)?.push({
                 locationId: location.id ?? '',
                 time: aDay.startTime ?? '',
                 courts: aDay.courts ?? 0,
@@ -660,7 +660,7 @@ export class CalendarComponent implements OnInit {
                 locations {
                   id
                   name
-                  availibilities(where: { season: $season }) {
+                  availabilities(where: { season: $season }) {
                     id
                     season
                     days {
@@ -818,7 +818,7 @@ export class CalendarComponent implements OnInit {
 
     const encounters = this.encounters.get(format);
     const changeRequests = this.changeRequests.get(format);
-    const availibilities = this.availibilities.get(format);
+    const availabilities = this.availabilities.get(format);
     const exceptions = this.exceptions.get(format);
 
     // only load availibility stating from 1st of september untill last of may
@@ -838,8 +838,8 @@ export class CalendarComponent implements OnInit {
       }
     }
 
-    if (availibilities) {
-      for (const availibility of availibilities) {
+    if (availabilities) {
+      for (const availibility of availabilities) {
         dayInfo.locations.push({
           space: Math.floor(availibility.courts / 2),
           time: availibility.time,

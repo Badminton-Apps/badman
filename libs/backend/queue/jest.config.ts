@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-queue',
+  // displayName: 'backend-queue',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

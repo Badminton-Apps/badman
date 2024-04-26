@@ -1,9 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: {
-    name: 'api',
-    color: 'purple',
-  },
+  // displayName:api,
   preset: '../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

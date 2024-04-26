@@ -1,13 +1,13 @@
 {
   "name": "@badman/backend-assembly",
-  "version": "6.135.1",
+  "version": "6.139.0",
   "dependencies": {
     "tslib": "^2.3.0",
-    "@badman/backend-compile": "6.135.1",
-    "@badman/backend-database": "6.135.1",
+    "@badman/backend-compile": "6.139.0",
+    "@badman/backend-database": "6.139.0",
     "@nestjs/common": "^10.3.1",
     "@nestjs/config": "^3.1.1",
-    "@badman/utils": "6.135.1",
+    "@badman/utils": "6.139.0",
     "fastify": "^4.26.0",
     "moment-timezone": "^0.5.44",
     "nestjs-i18n": "^10.4.0",

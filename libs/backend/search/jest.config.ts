@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-search',
+  // displayName: 'backend-search',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

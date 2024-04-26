@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
-  Inject,
-  OnInit,
-  PLATFORM_ID,
   QueryList,
+  Signal,
   TemplateRef,
-  TransferState,
   ViewChild,
   ViewChildren,
+  computed,
+  effect,
+  inject,
   input,
+  untracked,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,59 +23,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  Club,
-  EntryCompetitionPlayer,
-  RankingSystem,
-  SubEventCompetition,
-  Team,
-  ValidationResult,
-} from '@badman/frontend-models';
-import { transferState } from '@badman/frontend-utils';
-import {
-  LevelType,
-  SubEventType,
-  SubEventTypeEnum,
-  TeamMembershipType,
-  UseForTeamName,
-  getLetterForRegion,
-  sortSubEventOrder,
-  sortTeams,
-} from '@badman/utils';
+import { SubEventType, SubEventTypeEnum, UseForTeamName, getLetterForRegion } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { BehaviorSubject, Observable, combineLatest, lastValueFrom, of } from 'rxjs';
-import {
-  throttleTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  shareReplay,
-  startWith,
-  switchMap,
-  takeUntil,
-} from 'rxjs/operators';
-import { v4 as uuidv4 } from 'uuid';
-import { CLUB, EVENTS, SEASON, TEAMS } from '../../../../../forms';
-import { TeamForm, TeamFormValue } from '../teams-transfer';
+import { debounceTime, map, pairwise, startWith, takeUntil } from 'rxjs/operators';
+import { TEAMS } from '../../../../../forms';
+import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
+import { TeamForm } from '../../../team-enrollment.page';
 import { TeamEnrollmentComponent } from './components';
-
-type FormArrayOfTeams = {
-  [key in SubEventType]: FormArray<TeamForm>;
-};
-
-type FormArrayOfTeamsValue = {
-  [key in SubEventType]: Partial<
-    {
-      team: Team;
-      entry: {
-        subEventId: string;
-        players: EntryCompetitionPlayer[];
-      };
-    }[]
-  >;
-};
+import { Club, EntryCompetitionPlayer, Team } from '@badman/frontend-models';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'badman-teams-step',
@@ -95,154 +52,95 @@ type FormArrayOfTeamsValue = {
   ],
   templateUrl: './teams.step.html',
   styleUrls: ['./teams.step.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeamsStepComponent implements OnInit {
-  private destroy$ = injectDestroy();
+export class TeamsStepComponent {
+  private readonly destroy$ = injectDestroy();
+  private readonly dataService = inject(TeamEnrollmentDataService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
+  private readonly changedetector = inject(ChangeDetectorRef);
 
-  #validationResult = new BehaviorSubject<ValidationResult | null>(null);
-  get validationResult() {
-    return this.#validationResult.value;
-  }
+  club = this.dataService.state.club;
+  loaded = this.dataService.state.loadedTeams;
+  season = this.dataService.state.season as Signal<number>;
 
-  private update$ = new BehaviorSubject(null);
+  formGroup = input.required<FormGroup>();
+  teams = computed(
+    () =>
+      this.formGroup().get(TEAMS) as FormGroup<{
+        [key in SubEventTypeEnum]: FormArray<TeamForm>;
+      }>,
+  );
 
-  // get striug array  of event types
+  teamNumbers = computed(() => {
+    const teams = this.teams();
+    if (!teams) return;
+
+    const numbers = {} as { [key in SubEventTypeEnum]: number };
+    for (const type of this.eventTypes) {
+      numbers[type] = teams.get(type)?.value.length ?? 0;
+    }
+
+    return numbers;
+  });
+
+  eventsPerType = this.dataService.state.eventsPerType;
   eventTypes = Object.values(SubEventTypeEnum);
-
-  group = input.required<FormGroup>();
-
-  control = input<FormGroup<FormArrayOfTeams>>();
-  protected internalControl!: FormGroup<FormArrayOfTeams>;
-
-  controlName = input(TEAMS);
-
-  seasonControlName = input(SEASON);
-
-  clubControlName = input(CLUB);
-
-  eventsControlName = input(EVENTS);
 
   @ViewChildren(TeamEnrollmentComponent, { read: ElementRef })
   teamReferences: QueryList<ElementRef<HTMLElement>> | undefined;
 
-  // get temmplate ref for dialog
   @ViewChild('switch')
   SwitchDialog!: TemplateRef<HTMLElement>;
 
-  subEvents$!: Observable<{
-    [key in SubEventType]: SubEventCompetition[];
-  }>;
+  constructor() {
+    effect(() => {
+      untracked(() => {
+        this.teams()
+          .valueChanges.pipe(takeUntil(this.destroy$), debounceTime(600))
+          .subscribe(() => {
+            this.dataService.state.validateEnrollment({
+              teamForm: this.teams().getRawValue(),
+              season: this.season(),
+            });
+          });
 
-  teamNumbers: {
-    [key in SubEventType]: number[];
-  } = {
-    F: [],
-    M: [],
-    MX: [],
-    NATIONAL: [],
-  };
-  clubs$!: Observable<Club>;
-  season!: number;
-  system = input.required<RankingSystem>();
+        this.teams()
+          .valueChanges.pipe(
+            takeUntil(this.destroy$),
+            debounceTime(600),
+            startWith(this.teams().value),
+            map(
+              (value) =>
+                (value.F?.length ?? 0) +
+                (value.M?.length ?? 0) +
+                (value.MX?.length ?? 0) +
+                (value.NATIONAL?.length ?? 0),
+            ),
+            pairwise(),
+          )
+          .subscribe(([prev, next]) => {
+            if (prev != next) {
+              // a team was added or removed
+              this.setTeamnumbers();
+            }
+          });
+      });
+    });
+  }
 
   getTypeArray(type: SubEventType) {
-    return this.internalControl?.controls[type] as FormArray<TeamForm>;
+    return this.teams()?.controls[type] as FormArray<TeamForm>;
   }
 
-  constructor(
-    private changedector: ChangeDetectorRef,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private apollo: Apollo,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
+  addTeam(type: SubEventType) {
+    const teams = this.getTypeArray(type);
+    const club = this.club();
 
-  ngOnInit() {
-    let existed = false;
-    if (this.control() != undefined) {
-      this.internalControl = this.control() as FormGroup<FormArrayOfTeams>;
-      existed = true;
-    }
+    if (!teams) return;
+    if (!club) return;
 
-    if (!this.internalControl && this.group()) {
-      this.internalControl = this.group().get(this.controlName()) as FormGroup<FormArrayOfTeams>;
-
-      existed = true;
-    }
-
-    if (!this.internalControl) {
-      this.internalControl = new FormGroup({
-        M: new FormArray<TeamForm>([]),
-        F: new FormArray<TeamForm>([]),
-        MX: new FormArray<TeamForm>([]),
-        NATIONAL: new FormArray<TeamForm>([]),
-      });
-    }
-
-    if (this.group() && !existed) {
-      this.group().addControl(this.controlName(), this.internalControl);
-    }
-
-    this.internalControl.setErrors({ loading: true });
-
-    // update the teamnumbers object when the lenght of the control changes
-    this.internalControl.valueChanges
-      .pipe(
-        takeUntil(this.destroy$),
-        distinctUntilChanged(
-          (a, b) =>
-            (a.F?.length ?? 0) +
-              (a.M?.length ?? 0) +
-              (a.MX?.length ?? 0) +
-              (a.NATIONAL?.length ?? 0) ===
-            (b.F?.length ?? 0) +
-              (b.M?.length ?? 0) +
-              (b.MX?.length ?? 0) +
-              (b.NATIONAL?.length ?? 0),
-        ),
-      )
-      .subscribe(() => {
-        // initial teamnumbers from 1 to maxlevel
-        for (const type of this.eventTypes) {
-          const maxLevel = Math.max(
-            ...(this.internalControl?.value?.[type]?.map((t) => t.team?.teamNumber ?? 0) ?? [0]),
-          );
-
-          this.teamNumbers[type] = Array.from({ length: maxLevel }, (_, i) => i + 1);
-        }
-      });
-
-    this.clubs$ = this._getClubs();
-    combineLatest([this.internalControl?.valueChanges, this.update$])
-      .pipe(
-        takeUntil(this.destroy$),
-        startWith([this.internalControl?.value]),
-        throttleTime(200),
-        switchMap(([v]) => this.validateEnrollment(v as FormArrayOfTeamsValue)),
-      )
-      .subscribe((v) => {
-        if (v?.data?.enrollmentValidation) {
-          this.#validationResult.next(v?.data?.enrollmentValidation);
-          this.changedector.markForCheck();
-        }
-      });
-
-    this.subEvents$ = this._getSubEvents();
-    this.subEvents$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
-      this.setInitialSubEvents(subs);
-      this.internalControl?.setErrors({ loading: false });
-      this.changedector.markForCheck();
-    });
-    this.season = this.group().get(SEASON)?.value as number;
-  }
-
-  async addTeam(type: SubEventType) {
-    const teams = this.internalControl?.get(type) as FormArray<TeamForm>;
-    const club = await lastValueFrom(this.clubs$);
-
-    const teamNumber = teams.length + 1;
+    const teamNumber = teams.value.length + 1;
 
     const team = new Team({
       id: uuidv4(),
@@ -266,8 +164,6 @@ export class TeamsStepComponent implements OnInit {
       duration: 2000,
     });
 
-    this.changedector.markForCheck();
-
     ref.onAction().subscribe(() => {
       setTimeout(() => {
         if (!this.teamReferences) return;
@@ -281,117 +177,30 @@ export class TeamsStepComponent implements OnInit {
             block: 'center',
           });
         }
-      }, 300);
+      }, 100);
     });
   }
 
-  async removeTeam(team: Team) {
-    if (!team) return;
-    if (!team.type) return;
-    const club = await lastValueFrom(this.clubs$);
+  removeTeam(team: Team) {
+    const type = team.type;
+    if (!type) return;
 
-    const teams = this.internalControl?.get(team.type) as FormArray<TeamForm>;
-    const index = teams.controls.findIndex((t) => t.value.team?.id === team.id);
+    const teams = this.getTypeArray(type);
+    if (!teams) return;
 
-    if (index < 0) return;
+    const index = teams.controls.findIndex((control) => control.value.team?.id === team.id);
+    const form = teams.at(index);
+
+    const ref = this.snackBar.open(`Team ${team.name} removed`, 'Undo', {
+      duration: 2000,
+    });
+
+    ref.onAction().subscribe(() => {
+      teams.insert(index, form);
+      this.changedetector.detectChanges();
+    });
 
     teams.removeAt(index);
-
-    // update lower team numbers
-    for (let i = index; i < teams.length; i++) {
-      const t = teams.at(i).value.team;
-      if (t) {
-        t.teamNumber = i + 1;
-        t.name = this.getTeamName(t, club);
-      }
-    }
-  }
-
-  async changeTeamNumber(team: Team) {
-    if (!team) return;
-    if (!team.type) return;
-    const club = await lastValueFrom(this.clubs$);
-    const type = team.type;
-
-    const ref = this.dialog.open(this.SwitchDialog, {
-      data: {
-        team,
-        numbers: this.teamNumbers?.[type],
-      },
-    });
-
-    ref.afterClosed().subscribe((result) => {
-      if (!result) return;
-      if (!result.newNumber) return;
-      if (!team.teamNumber) return;
-
-      const newNumber = result.newNumber;
-      this.changeNumber(team.teamNumber, newNumber, club, type);
-      // sort teams in control
-
-      const teams = this.internalControl?.get(type) as FormArray<TeamForm>;
-      teams.controls.sort((a: TeamForm, b: TeamForm) =>
-        sortTeams(a.value.team as Team, b.value.team as Team),
-      );
-
-      this.changedector.markForCheck();
-    });
-  }
-
-  teamValidationResult(id?: string) {
-    if (!id) {
-      return undefined;
-    }
-    return this.validationResult?.teams?.find((t) => t.id === id);
-  }
-
-  private changeNumber(oldNumber: number, newNumber: number, club: Club, type: SubEventTypeEnum) {
-    const teams = this.internalControl?.get(type) as FormArray<TeamForm>;
-    // iterate over all controls and update the team number / name
-    teams.controls.forEach((t) => {
-      const tControl = t.get('team');
-      const team = tControl?.value as Team;
-      if (!tControl?.value.teamNumber) return;
-
-      if (tControl?.value.teamNumber === oldNumber) {
-        team.teamNumber = newNumber;
-
-        tControl?.patchValue({
-          ...team,
-          teamNumber: newNumber,
-          name: this.getTeamName(team, club),
-        } as Team);
-      }
-
-      // if the number is lower than the old number, increase the number of all teams between the new and old number
-      else if (
-        newNumber < oldNumber &&
-        tControl?.value.teamNumber >= newNumber &&
-        tControl?.value.teamNumber < oldNumber
-      ) {
-        team.teamNumber = (team.teamNumber ?? 0) + 1;
-        tControl?.patchValue({
-          ...team,
-          teamNumber: team.teamNumber,
-          name: this.getTeamName(team, club),
-        } as Team);
-      }
-
-      // if the number is higher than the old number, decrease the number of all teams between the new and old number
-      else if (
-        newNumber > oldNumber &&
-        tControl?.value.teamNumber <= newNumber &&
-        tControl?.value.teamNumber > oldNumber
-      ) {
-        team.teamNumber = (team.teamNumber ?? 0) - 1;
-
-        tControl?.patchValue({
-          ...team,
-          teamNumber: team.teamNumber,
-          name: this.getTeamName(team, club),
-        } as Team);
-      }
-    });
   }
 
   private getTeamName(team: Team, club: Club) {
@@ -413,274 +222,54 @@ export class TeamsStepComponent implements OnInit {
     return teamName;
   }
 
-  private validateEnrollment(input?: FormArrayOfTeamsValue) {
-    if (!input) return of();
-    const teams: {
-      id?: string;
-      name?: string;
-      type: SubEventTypeEnum;
-      link?: string;
-      teamNumber?: number;
-      subEventId?: string;
-      players?: string[];
-      backupPlayers?: string[];
-      basePlayers?: string[];
-    }[] = [];
+  private setTeamnumbers() {
+    const club = this.club();
+    if (!club) return;
+    for (const type of this.eventTypes) {
+      const teams = this.teams().get(type) as FormArray<TeamForm>;
+      if (!teams) continue;
 
-    //  type of SubEventTypeEnum
-    for (const type in SubEventTypeEnum) {
-      input[type as SubEventTypeEnum].forEach((team) => {
-        if (!team) return;
-        if (!team.team) return;
-        if (!team.team.type) return;
-        teams.push({
-          id: team.team.id,
-          name: team.team.name,
-          type: team.team.type,
-          teamNumber: team.team.teamNumber,
-          subEventId: team.entry.subEventId,
-          link: team.team.link,
-          players: team.team?.players?.map((p) => p.id)?.filter((p) => p) as string[],
-          backupPlayers: team.team.players
-            ?.filter((p) => p.membershipType == TeamMembershipType.BACKUP)
-            ?.map((p) => p.id)
-            ?.filter((p) => p) as string[],
-          basePlayers: team.entry?.players?.map((p) => p.id)?.filter((p) => p) as string[],
-        });
-      });
+      for (let i = 0; i < teams.length; i++) {
+        const team = teams.at(i)?.get('team') as FormControl<Team>;
+        if (!team) continue;
+
+        team.value.teamNumber = i + 1;
+        team.value.name = this.getTeamName(team.value, club);
+      }
     }
+  }
 
-    return this.apollo.query<{ enrollmentValidation: ValidationResult }>({
-      fetchPolicy: 'no-cache',
-      query: gql`
-        query ValidateEnrollment($enrollment: EnrollmentInput!) {
-          enrollmentValidation(enrollment: $enrollment) {
-            teams {
-              id
-              linkId
-              teamIndex
-              baseIndex
-              isNewTeam
-              possibleOldTeam
-              maxLevel
-              minBaseIndex
-              maxBaseIndex
-              valid
-              errors {
-                message
-                params
-              }
-              warnings {
-                message
-                params
-              }
-            }
-          }
-        }
-      `,
-      variables: {
-        enrollment: {
-          season: this.group().get(this.seasonControlName())?.value,
-          teams,
-        },
+  changeTeamNumber(team: Team) {
+    if (!team) return;
+    if (!team.type) return;
+    const club = this.club();
+    const type = team.type;
+    if (!club) return;
+
+    const ref = this.dialog.open(this.SwitchDialog, {
+      data: {
+        team,
+        numbers: Array.from({ length: this.teamNumbers()?.[type] ?? 0 }, (_, i) => i + 1),
       },
     });
-  }
 
-  private _getClubs() {
-    const clubId = this.group().get(this.clubControlName())?.value;
-    return this.apollo
-      .query<{ club: Club }>({
-        query: gql`
-          query Club($id: ID!) {
-            club(id: $id) {
-              id
-              name
-            }
-          }
-        `,
-        variables: {
-          id: clubId,
-        },
-      })
-      .pipe(
-        transferState(`club-${clubId}`, this.stateTransfer, this.platformId),
-        map((r) => {
-          if (!r?.data.club) {
-            throw new Error('Club not found');
-          }
-          return new Club(r.data.club);
-        }),
-        shareReplay(1),
-      );
-  }
+    ref.afterClosed().subscribe((result: { newNumber: number }) => {
+      if (!result) return;
+      if (!result.newNumber) return;
+      if (!team.teamNumber) return;
 
-  private _getSubEvents() {
-    const eventsVal$ = this.group().get(this.eventsControlName())?.valueChanges;
+      const newNumber = result.newNumber;
+      const teams = this.getTypeArray(type);
+      if (!teams) return;
 
-    if (!eventsVal$) {
-      throw new Error('Events control not found');
-    }
+      const index = teams.controls.findIndex((control) => control.value.team?.id === team.id);
+      const form = teams.at(index);
 
-    return eventsVal$.pipe(
-      startWith(this.group().get(this.eventsControlName())?.value),
-      filter((events) => !!events && events.length > 0),
-      distinctUntilChanged(),
-      switchMap((events: { name: LevelType; id: string }[]) => {
-        return this.apollo.query<{
-          subEventCompetitions: Partial<SubEventCompetition>[];
-        }>({
-          query: gql`
-            query subEvents($where: JSONObject) {
-              subEventCompetitions(where: $where) {
-                id
-                name
-                eventType
-                level
-                maxLevel
-                minBaseIndex
-                maxBaseIndex
-                eventCompetition {
-                  id
-                  type
-                }
-              }
-            }
-          `,
-          variables: {
-            where: {
-              eventId: events?.map((e) => e.id),
-            },
-          },
-        });
-      }),
-      map((result) => {
-        const subEvents =
-          result.data.subEventCompetitions?.map((subEvent) => new SubEventCompetition(subEvent)) ??
-          [];
+      teams.removeAt(index);
+      teams.insert(newNumber - 1, form);
 
-        return {
-          M: subEvents.filter((subEvent) => subEvent.eventType === 'M').sort(sortSubEventOrder),
-          F: subEvents.filter((subEvent) => subEvent.eventType === 'F').sort(sortSubEventOrder),
-          MX: subEvents
-            .filter(
-              (subEvent) =>
-                subEvent?.eventType === 'MX' &&
-                subEvent?.eventCompetition?.type &&
-                subEvent?.eventCompetition?.type != LevelType.NATIONAL,
-            )
-            .sort(sortSubEventOrder),
-          NATIONAL: subEvents
-            .filter(
-              (subEvent) =>
-                subEvent?.eventType === 'MX' &&
-                subEvent?.eventCompetition?.type &&
-                subEvent?.eventCompetition?.type == LevelType.NATIONAL,
-            )
-            .sort(sortSubEventOrder),
-        };
-      }),
-      shareReplay(1),
-    );
-  }
-
-  private _maxLevels(subs: SubEventCompetition[]) {
-    return {
-      PROV: Math.max(
-        ...(subs
-          ?.filter((s) => s.eventCompetition?.type === LevelType.PROV)
-          .map((s) => s.level ?? 0) ?? []),
-      ),
-      LIGA: Math.max(
-        ...(subs
-          ?.filter((s) => s.eventCompetition?.type === LevelType.LIGA)
-          .map((s) => s.level ?? 0) ?? []),
-      ),
-      NATIONAL: Math.max(
-        ...(subs
-          ?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL)
-          .map((s) => s.level ?? 0) ?? []),
-      ),
-    };
-  }
-
-  private setInitialSubEvents(subEvents: {
-    [key in SubEventType]: SubEventCompetition[];
-  }) {
-    for (const type of this.eventTypes) {
-      const control = this.internalControl?.get(type) as FormArray<TeamForm>;
-      if (!control) {
-        continue;
-      }
-      const teams = control.value;
-      const subs = subEvents[type];
-
-      const maxLevels = this._maxLevels(subs);
-      for (let i = 0; i < teams.length; i++) {
-        const team = teams[i];
-        if (!team) {
-          continue;
-        }
-
-        const initial = this.getInitialSubEvent(team as TeamFormValue, subs, maxLevels);
-        if (initial) {
-          control?.at(i)?.get('entry')?.get<string>('subEventId')?.patchValue(initial);
-        }
-      }
-    }
-  }
-
-  private getInitialSubEvent(
-    team: TeamFormValue,
-    subs: SubEventCompetition[],
-    maxLevels: ReturnType<typeof this._maxLevels>,
-  ) {
-    let subEventId: string | undefined;
-    let type = team.team?.entry?.subEventCompetition?.eventCompetition?.type;
-
-    const level = team.team?.entry?.subEventCompetition?.level ?? 0;
-    if (team.team?.entry?.standing?.riser) {
-      let newLevel = level - 1;
-
-      if (newLevel < 1) {
-        // we promote to next level
-        if (type === LevelType.PROV) {
-          type = LevelType.LIGA;
-          newLevel = maxLevels.LIGA;
-        } else if (type === LevelType.LIGA) {
-          type = LevelType.NATIONAL;
-          newLevel = maxLevels.NATIONAL;
-        }
-      }
-
-      subEventId = subs?.find(
-        (sub) => sub.level === newLevel && type === sub.eventCompetition?.type,
-      )?.id;
-    } else if (team.team?.entry?.standing?.faller) {
-      let newLevel = level + 1;
-
-      if (newLevel > maxLevels.NATIONAL) {
-        // we demote to lower level
-        if (type === LevelType.NATIONAL) {
-          type = LevelType.LIGA;
-          newLevel = 1;
-        } else if (type === LevelType.LIGA) {
-          type = LevelType.PROV;
-          newLevel = 1;
-        }
-      }
-
-      subEventId = subs?.find(
-        (sub) => sub.level === newLevel && sub.eventCompetition?.type === type,
-      )?.id;
-    } else {
-      subEventId = subs?.find(
-        (sub) =>
-          sub.level === team.team?.entry?.subEventCompetition?.level &&
-          type === sub.eventCompetition?.type,
-      )?.id;
-    }
-
-    return subEventId;
+      this.setTeamnumbers();
+      this.changedetector.detectChanges();
+    });
   }
 }

@@ -1,33 +1,38 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, OnInit, Signal, TemplateRef, inject } from '@angular/core';
+import { Component, Signal, TemplateRef, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatOptionModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
   AddRoleComponent,
   EditRoleComponent,
   HasClaimComponent,
   PageHeaderComponent,
+  SelectCountryComponent,
+  SelectCountrystateComponent,
 } from '@badman/frontend-components';
 import { EventCompetition, Role } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { SecurityType } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { LevelType, SecurityType } from '@badman/utils';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { BehaviorSubject, map, shareReplay, lastValueFrom } from 'rxjs';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { BehaviorSubject, lastValueFrom, map, shareReplay, takeUntil } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { EventCompetitionLevelFieldsComponent } from './components';
 import { EVENT_QUERY } from '../../resolvers';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { EventCompetitionLevelFieldsComponent } from './components';
 
 export type ExceptionType = FormGroup<{
   start: FormControl<Date | undefined>;
@@ -69,21 +74,37 @@ const roleQuery = gql`
     MatDatepickerModule,
     MatSnackBarModule,
     MatSlideToggleModule,
+    MatOptionModule,
+    MatSelectModule,
     PageHeaderComponent,
     EventCompetitionLevelFieldsComponent,
     HasClaimComponent,
     AddRoleComponent,
     EditRoleComponent,
+
+    SelectCountryComponent,
+    SelectCountrystateComponent,
   ],
 })
-export class EditPageComponent implements OnInit {
-  private injector = inject(Injector);
-  private snackBar = inject(MatSnackBar);
+export class EditPageComponent {
+  private readonly destroy$ = injectDestroy();
+  // private readonly injector = inject(Injector);
+  private readonly translateService = inject(TranslateService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly seoService = inject(SeoService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly apollo = inject(Apollo);
+  private readonly dialog = inject(MatDialog);
+
+  private routeData = toSignal(this.route.data);
+
+  eventCompetition = computed(() => this.routeData()?.['eventCompetition'] as EventCompetition);
+
   public securityTypes: typeof SecurityType = SecurityType;
 
   roles?: Signal<Role[] | undefined>;
-
-  eventCompetition!: EventCompetition;
 
   update$ = new BehaviorSubject(0);
   saved$ = new BehaviorSubject(0);
@@ -92,49 +113,46 @@ export class EditPageComponent implements OnInit {
   exceptions!: FormArray<ExceptionType>;
   infoEvents!: FormArray<InfoEventType>;
 
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private dialog: MatDialog,
-  ) {}
+  // enum to array
+  types = Object.keys(LevelType);
 
-  ngOnInit(): void {
-    this.route.data.subscribe((data) => {
-      this.eventCompetition = data['eventCompetition'];
+  constructor() {
+    const compTitle = 'all.competition.title';
 
-      const eventCompetitionName = `${this.eventCompetition.name}`;
+    this.translateService
+      .get([compTitle])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((translations) => {
+        const eventCompetitionName = `${this.eventCompetition().name}`;
 
-      this.seoService.update({
-        title: eventCompetitionName,
-        description: `Competition ${eventCompetitionName}`,
-        type: 'website',
-        keywords: ['event', 'competition', 'badminton'],
+        this.breadcrumbService.set('competition', translations[compTitle]);
+        this.breadcrumbService.set('@eventCompetition', eventCompetitionName);
+        this.seoService.update({
+          title: eventCompetitionName,
+          description: `Competition ${eventCompetitionName}`,
+          type: 'website',
+          keywords: ['event', 'competition', 'badminton'],
+        });
       });
-      this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
 
-      this.setupFormGroup(this.eventCompetition);
+    this.setupFormGroup(this.eventCompetition());
 
-      this.roles = toSignal(
-        this.apollo
-          .watchQuery<{ roles: Partial<Role>[] }>({
-            query: roleQuery,
-            variables: {
-              where: {
-                linkId: this.eventCompetition.id,
-                linkType: 'competition',
-              },
+    this.roles = toSignal(
+      this.apollo
+        .watchQuery<{ roles: Partial<Role>[] }>({
+          query: roleQuery,
+          variables: {
+            where: {
+              linkId: this.eventCompetition().id,
+              linkType: 'competition',
             },
-          })
-          .valueChanges.pipe(
-            shareReplay(1),
-            map((result) => result.data?.roles?.map((r) => new Role(r))),
-          ),
-        { injector: this.injector },
-      );
-    });
+          },
+        })
+        .valueChanges.pipe(
+          shareReplay(1),
+          map((result) => result.data?.roles?.map((r) => new Role(r))),
+        ),
+    );
   }
 
   private setupFormGroup(event: EventCompetition) {
@@ -160,6 +178,8 @@ export class EditPageComponent implements OnInit {
     this.formGroup = new FormGroup({
       name: new FormControl(event.name, Validators.required),
       type: new FormControl(event.type, Validators.required),
+      state: new FormControl(event.state),
+      country: new FormControl(event.country, Validators.required),
       season: new FormControl(event.season, [
         Validators.required,
         Validators.min(2000),
@@ -214,7 +234,7 @@ export class EditPageComponent implements OnInit {
                 }
               `,
               variables: {
-                id: this.eventCompetition.id,
+                id: this.eventCompetition().id,
                 year: r,
               },
             })
@@ -227,9 +247,23 @@ export class EditPageComponent implements OnInit {
 
   async save() {
     const eventCompetition = new EventCompetition({
-      ...this.eventCompetition,
+      ...this.eventCompetition(),
       ...this.formGroup.value,
     });
+
+    const data = {
+      id: eventCompetition.id,
+      name: eventCompetition.name,
+      season: eventCompetition.season,
+      contactEmail: eventCompetition.contactEmail,
+      teamMatcher: eventCompetition.teamMatcher,
+      type: eventCompetition.type,
+      state: eventCompetition.state,
+      country: eventCompetition.country,
+      checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
+      exceptions: eventCompetition.exceptions?.filter((e) => e.start && e.end) ?? [],
+      infoEvents: eventCompetition.infoEvents?.filter((e) => e.start && e.end) ?? [],
+    } as Partial<EventCompetition>;
 
     await lastValueFrom(
       this.apollo.mutate<{ updateEventCompetition: Partial<EventCompetition> }>({
@@ -241,16 +275,7 @@ export class EditPageComponent implements OnInit {
           }
         `,
         variables: {
-          data: {
-            id: eventCompetition.id,
-            name: eventCompetition.name,
-            season: eventCompetition.season,
-            contactEmail: eventCompetition.contactEmail,
-            teamMatcher: eventCompetition.teamMatcher,
-            checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
-            exceptions: eventCompetition.exceptions?.filter((e) => e.start && e.end) ?? [],
-            infoEvents: eventCompetition.infoEvents?.filter((e) => e.start && e.end) ?? [],
-          },
+          data,
         },
         refetchQueries: [
           {

@@ -65,6 +65,7 @@ export class DetailPageComponent {
   private routeData = toSignal(this.route.data);
 
   team = computed(() => this.routeData()?.['team'] as Team);
+  club = computed(() => this.routeData()?.['club']);
 
   entry = signal<EventEntry | null>(null);
 
@@ -78,7 +79,7 @@ export class DetailPageComponent {
         type: 'website',
         keywords: ['team', 'badminton'],
       });
-      this.breadcrumbService.set('club/:id', this.route.snapshot.data['club'].name);
+      this.breadcrumbService.set('club/:id', this.club().name);
       this.breadcrumbService.set('club/:id/team/:id', teamName);
 
       this._loadEntry();

@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-visual',
+  // displayName: 'backend-visual',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,
