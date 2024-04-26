@@ -86,6 +86,14 @@ mat-divider {
   margin: 4px 0 8px;
 }
 
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+}
+
 .player {
   display: flex;
   flex-direction: row;
@@ -102,13 +110,6 @@ mat-divider {
 
   .name {
     flex: 1 1 auto;
-  }
-}
-
-.normal-players {
-  .name,
-  .delete {
-    padding-bottom: 22px;
   }
 }
 

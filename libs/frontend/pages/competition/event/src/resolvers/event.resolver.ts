@@ -22,7 +22,13 @@ export const EVENT_QUERY = gql`
       lastSync
       contactEmail
       teamMatcher
+      type
+      state
+      country
       checkEncounterForFilledIn
+      meta {
+        amountOfBasePlayers
+      }
       exceptions {
         start
         end

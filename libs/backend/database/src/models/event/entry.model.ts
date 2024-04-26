@@ -137,7 +137,7 @@ export class EventEntry extends Model {
   @Column({
     type: DataType.JSON,
   })
-  meta?: Meta;
+  meta?: MetaEntry;
 
   // Belongs to Team
   getTeam!: BelongsToGetAssociationMixin<Team>;
@@ -327,7 +327,7 @@ export class EventEntryNewInput extends PartialType(
   InputType,
 ) {}
 
-export interface Meta {
+export interface MetaEntry {
   tournament?: EntryTournament;
   competition?: EntryCompetition;
 }

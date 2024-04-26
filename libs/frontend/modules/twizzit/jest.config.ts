@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-twizzit',
+  // displayName: 'frontend-twizzit',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   passWithNoTests: true,

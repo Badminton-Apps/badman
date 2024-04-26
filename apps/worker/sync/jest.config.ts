@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'worker-sync',
+  // displayName: 'worker-sync',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

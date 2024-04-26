@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-auth',
+  // displayName: 'frontend-auth',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   passWithNoTests: true,

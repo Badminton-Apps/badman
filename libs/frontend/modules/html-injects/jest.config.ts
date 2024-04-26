@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'frontend-html-injects',
+  // displayName: 'frontend-html-injects',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   passWithNoTests: true,

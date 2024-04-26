@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-mailing',
+  // displayName: 'backend-mailing',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

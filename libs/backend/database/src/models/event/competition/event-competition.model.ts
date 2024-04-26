@@ -25,6 +25,8 @@ import {
 } from 'sequelize-typescript';
 import {
   AvailabilityExceptionInputType,
+  EventCompetitionMetaType,
+  EventCompetitionPlayersInputType,
   ExceptionType,
   InfoEventInputType,
   InfoEventType,
@@ -89,6 +91,12 @@ export class EventCompetition extends Model {
   @Column(DataType.DATE)
   changeCloseRequestDate?: Date;
 
+  @Field(() => EventCompetitionMetaType, { nullable: true })
+  @Column({
+    type: DataType.JSON,
+  })
+  meta?: MetaEventCompetition;
+
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   contactEmail?: string;
@@ -119,11 +127,6 @@ export class EventCompetition extends Model {
     onDelete: 'CASCADE',
   })
   subEventCompetitions?: Relation<SubEventCompetition[]>;
-
-  @Field(() => String, { nullable: true })
-  @Unique('EventCompetitions_unique_constraint')
-  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
-  type!: LevelType;
 
   @Unique('EventCompetitions_unique_constraint')
   @Field(() => String, { nullable: true })
@@ -164,6 +167,11 @@ export class EventCompetition extends Model {
     defaultValue: false,
   })
   official!: boolean;
+
+  @Field(() => String, { nullable: true })
+  @Unique('EventCompetitions_unique_constraint')
+  @Column(DataType.ENUM('PROV', 'LIGA', 'NATIONAL'))
+  type!: LevelType;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
@@ -235,6 +243,7 @@ export class EventCompetitionUpdateInput extends PartialType(
     'roles',
     'exceptions',
     'infoEvents',
+    'meta'
   ] as const),
   InputType,
 ) {
@@ -243,6 +252,9 @@ export class EventCompetitionUpdateInput extends PartialType(
 
   @Field(() => [InfoEventInputType], { nullable: true })
   infoEvents?: InfoEvent[];
+
+  @Field(() => EventCompetitionPlayersInputType, { nullable: true })
+  meta?: EventCompetitionPlayersInputType;
 }
 
 @InputType()
@@ -261,4 +273,8 @@ export interface InfoEvent {
   start?: Date;
   end?: Date;
   name?: string;
+}
+
+export interface MetaEventCompetition {
+  amountOfBasePlayers?: number;
 }

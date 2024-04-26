@@ -140,58 +140,61 @@ export class EventCompetitionResolver {
         throw new NotFoundException(`${EventCompetition.name}: ${updateEventCompetitionData.id}`);
       }
 
-      if (eventCompetitionDb.official !== updateEventCompetitionData.official) {
-        const subEvents = await eventCompetitionDb.getSubEventCompetitions({
-          transaction,
-        });
+      if (updateEventCompetitionData.official != undefined) {
+        if (eventCompetitionDb.official !== updateEventCompetitionData.official) {
+          const subEvents = await eventCompetitionDb.getSubEventCompetitions({
+            transaction,
+          });
 
-        // we are making it official
-        const ranking = await RankingSystem.findOne({
-          where: {
-            primary: true,
-          },
-          transaction,
-        });
+          // we are making it official
+          const ranking = await RankingSystem.findOne({
+            where: {
+              primary: true,
+            },
+            transaction,
+          });
 
-        if (!ranking) {
-          throw new NotFoundException(`${RankingSystem.name}: primary system not found`);
-        }
-
-        const groups = await ranking.getRankingGroups({
-          transaction,
-        });
-
-        if (updateEventCompetitionData.official == true) {
-          this.logger.debug(`Adding ranking groups and points`);
-          for (const subEvent of subEvents) {
-            await subEvent.setRankingGroups(groups, {
-              transaction,
-            });
+          if (!ranking) {
+            throw new NotFoundException(`${RankingSystem.name}: primary system not found`);
           }
 
-          for (const group of groups) {
-            await this.addGamePointsForSubEvents(
-              group,
-              subEvents?.map((s) => s.id),
-              transaction,
-            );
-          }
-        } else {
-          this.logger.debug(`Removing ranking groups and points`);
-          // we are making it unofficial
-          for (const subEvent of subEvents) {
-            await subEvent.removeRankingGroups(groups, {
-              transaction,
-            });
-          }
+          const groups = await ranking.getRankingGroups({
+            transaction,
+          });
 
-          // Remove ranking points
-          for (const group of groups) {
-            await this.removeGamePointsForSubEvents(
-              group,
-              subEvents?.map((s) => s.id),
-              transaction,
-            );
+          if (updateEventCompetitionData.official == true) {
+            this.logger.debug(`Adding ranking groups and points`);
+            for (const subEvent of subEvents) {
+              await subEvent.setRankingGroups(groups, {
+                transaction,
+              });
+            }
+
+            for (const group of groups) {
+              await this.addGamePointsForSubEvents(
+                group,
+                subEvents?.map((s) => s.id),
+                transaction,
+              );
+            }
+            this.logger.debug(`Added ranking groups and points`);
+          } else {
+            this.logger.debug(`Removing ranking groups and points`);
+            // we are making it unofficial
+            for (const subEvent of subEvents) {
+              await subEvent.removeRankingGroups(groups, {
+                transaction,
+              });
+            }
+
+            // Remove ranking points
+            for (const group of groups) {
+              await this.removeGamePointsForSubEvents(
+                group,
+                subEvents?.map((s) => s.id),
+                transaction,
+              );
+            }
           }
         }
       }
@@ -236,10 +239,13 @@ export class EventCompetitionResolver {
         ?.replace(/(\d{4}-\d{4})/gi, '')
         .trim()} ${year}-${year + 1}`;
 
+      // set values to undefined to avoid copying them
       const newEventCompetitionDb = new EventCompetition({
         ...eventCompetitionDb.toJSON(),
         id: undefined,
         visualCode: undefined,
+        exceptions: undefined,
+        infoEvents: undefined,
         season: year,
         name: newName,
       });

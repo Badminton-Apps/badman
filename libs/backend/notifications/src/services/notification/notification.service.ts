@@ -259,7 +259,7 @@ export class NotificationService {
     }
 
     const locations = await club.getLocations({
-      include: [{ model: Availability, where: { year: season } }],
+      include: [{ model: Availability, where: {  season } }],
     });
 
     // eventEntries->subEventIds

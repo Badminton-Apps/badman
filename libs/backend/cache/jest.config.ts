@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-cache',
+  // displayName: 'backend-cache',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

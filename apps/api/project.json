@@ -24,9 +24,15 @@
       "options": {
         "command": "node ./scripts/render.js --app=api"
       }
+    },
+    "build": {
+      "configurations": {
+        "production": {
+          "dependsOn": ["badman:build"]
+        }
+      }
     }
   },
 
-  "implicitDependencies": ["badman"],
   "tags": []
 }

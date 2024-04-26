@@ -45,7 +45,7 @@ export class LocationDialogComponent implements OnInit {
       compYears: number[];
       onCreate: 'close' | 'stay';
       onUpdate: 'close' | 'stay';
-      showAvailibilities: boolean;
+      showavailabilities: boolean;
     },
     private appollo: Apollo,
   ) {}

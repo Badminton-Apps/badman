@@ -8,21 +8,43 @@
           <input matInput formControlName="name" [required]="true" />
         </mat-form-field>
       </div>
-      <div class="contact">
+      <div class="info">
         <mat-form-field>
           <mat-label>Season</mat-label>
           <input matInput formControlName="season" [required]="true" />
         </mat-form-field>
+
+        <!-- select type of comp -->
+        <mat-form-field>
+          <mat-label>Type</mat-label>
+          <mat-select formControlName="type" [required]="true">
+            <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="contact">
         <mat-form-field>
           <mat-label>Contact</mat-label>
           <input matInput formControlName="contactEmail" [required]="true" />
         </mat-form-field>
       </div>
+
+      <div class="country">
+        <badman-select-country [group]="this.formGroup"></badman-select-country>
+        <badman-select-state
+          [group]="this.formGroup"
+          [canBeEmpty]="this.formGroup.get('type')?.value !== 'PROV'"
+        ></badman-select-state>
+      </div>
+
       <div class="check">
         <mat-slide-toggle formControlName="checkEncounterForFilledIn">{{
           'all.event.checkEncounterForFilledIn' | translate
         }}</mat-slide-toggle>
       </div>
+
+  
       <div class="matcher">
         <mat-form-field>
           <mat-label>Team matcher (for linking with visual reality)</mat-label>
@@ -124,10 +146,10 @@
       </div>
     </ng-container>
     <h3>Sub events</h3>
-    @for (subEvent of eventCompetition.subEventCompetitions; track subEvent; let i = $index) {
+    @for (subEvent of eventCompetition().subEventCompetitions; track subEvent; let i = $index) {
       <div>
         <badman-event-competition-level-fields
-          [type]="eventCompetition.type"
+          [type]="eventCompetition().type"
           [subEvent]="subEvent"
           [formGroup]="$any(this.formGroup.get('subEvents'))?.at(i)"
         ></badman-event-competition-level-fields>
@@ -140,10 +162,10 @@
     </div>
   </ng-container>
 }
-<badman-has-claim [any]="[eventCompetition.id + '_edit:role', 'edit-any:club']">
+<badman-has-claim [any]="[eventCompetition().id + '_edit:role', 'edit-any:club']">
   <h2>
     Roles
-    <badman-add-role linkType="competition" [linkId]="this.eventCompetition.id!" />
+    <badman-add-role linkType="competition" [linkId]="this.eventCompetition().id!" />
   </h2>
   @if (this.roles) {
     <div class="roles">

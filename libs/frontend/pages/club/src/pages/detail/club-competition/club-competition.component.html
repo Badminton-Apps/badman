@@ -205,7 +205,7 @@
             <span>{{ this.location.fax }}</span>
           }
           <div class="days">
-            @for (availibility of this.location?.availibilities ?? []; track availibility) {
+            @for (availibility of this.location?.availabilities ?? []; track availibility) {
               <div>
                 <h4>
                   {{ 'all.competition.team-enrollment.play-days' | translate }}

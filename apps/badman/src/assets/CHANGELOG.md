@@ -1,3 +1,121 @@
+## 6.139.0 (2024-04-21)
+
+
+### 🚀 Features
+
+- some styling improvements ([2bc14cfcf](https://github.com/Badminton-Apps/badman/commit/2bc14cfcf))
+
+### 🩹 Fixes
+
+- some fintuning ([0bc512fba](https://github.com/Badminton-Apps/badman/commit/0bc512fba))
+- forgot the changeteam dialog ([1436d832d](https://github.com/Badminton-Apps/badman/commit/1436d832d))
+- this is better with debounce ([82d694618](https://github.com/Badminton-Apps/badman/commit/82d694618))
+- check for max base player was reversed ([4e709348b](https://github.com/Badminton-Apps/badman/commit/4e709348b))
+- wrong translatino ([8583e2112](https://github.com/Badminton-Apps/badman/commit/8583e2112))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.138.0 (2024-04-21)
+
+
+### 🚀 Features
+
+- signal select ([3339df0d3](https://github.com/Badminton-Apps/badman/commit/3339df0d3))
+- converted club step to use signals ([e52c068d5](https://github.com/Badminton-Apps/badman/commit/e52c068d5))
+- all converted except teams detail ([a4a845def](https://github.com/Badminton-Apps/badman/commit/a4a845def))
+- loading data when selecting club ([0b2f0bb45](https://github.com/Badminton-Apps/badman/commit/0b2f0bb45))
+- transfering and editing of teams complete ([c4b4700ca](https://github.com/Badminton-Apps/badman/commit/c4b4700ca))
+- enrollments finished ([3b518b202](https://github.com/Badminton-Apps/badman/commit/3b518b202))
+- setting amount of baseplaysers ([8cd9ac897](https://github.com/Badminton-Apps/badman/commit/8cd9ac897))
+
+### 🩹 Fixes
+
+- loading would get stuck ([ac78e2e34](https://github.com/Badminton-Apps/badman/commit/ac78e2e34))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.137.3 (2024-04-18)
+
+
+### 🩹 Fixes
+
+- should load the data if I want to set it.... ([0f88decdb](https://github.com/Badminton-Apps/badman/commit/0f88decdb))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.137.2 (2024-04-18)
+
+
+### 🩹 Fixes
+
+- event was a computed signal. ([f60e9a1a5](https://github.com/Badminton-Apps/badman/commit/f60e9a1a5))
+- saving country and state ([b58c2a0d3](https://github.com/Badminton-Apps/badman/commit/b58c2a0d3))
+- official flag is required before doing any point changes ([531335e45](https://github.com/Badminton-Apps/badman/commit/531335e45))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.137.1 (2024-04-17)
+
+
+### 🩹 Fixes
+
+- load validations on initial load ([552110a00](https://github.com/Badminton-Apps/badman/commit/552110a00))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.137.0 (2024-04-17)
+
+
+### 🚀 Features
+
+- allowing seting of type + state and country ([cc81aaf32](https://github.com/Badminton-Apps/badman/commit/cc81aaf32))
+- teams enrollment ([3cb21fa6b](https://github.com/Badminton-Apps/badman/commit/3cb21fa6b))
+
+### 🩹 Fixes
+
+- reverting to node 20, because canvas/build/Release ([b2dbee38b](https://github.com/Badminton-Apps/badman/commit/b2dbee38b))
+- team info should be required ([de1e8b39b](https://github.com/Badminton-Apps/badman/commit/de1e8b39b))
+- don't copy exceptions ([907811e94](https://github.com/Badminton-Apps/badman/commit/907811e94))
+- throttle should come before setting loading for the animation ([b7e59452c](https://github.com/Badminton-Apps/badman/commit/b7e59452c))
+- convert to to state signals ([4330aa0cf](https://github.com/Badminton-Apps/badman/commit/4330aa0cf))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.136.0 (2024-04-13)
+
+
+### 🚀 Features
+
+- adding DB check ([a1564c189](https://github.com/Badminton-Apps/badman/commit/a1564c189))
+- adding option to get next compseason ([679c934fe](https://github.com/Badminton-Apps/badman/commit/679c934fe))
+- show season to enroll ([3549f9595](https://github.com/Badminton-Apps/badman/commit/3549f9595))
+- disable subevent selection and improvements ([f5ddb1743](https://github.com/Badminton-Apps/badman/commit/f5ddb1743))
+
+### 🩹 Fixes
+
+- should be floating ([916fdd88b](https://github.com/Badminton-Apps/badman/commit/916fdd88b))
+- load in the dates ([aec45ff02](https://github.com/Badminton-Apps/badman/commit/aec45ff02))
+- edit page competition was broken in upgrade ([bcd1d3977](https://github.com/Badminton-Apps/badman/commit/bcd1d3977))
+- there is no database, so this errors ([56936ac14](https://github.com/Badminton-Apps/badman/commit/56936ac14))
+- **deps:** update dependency express to v4.19.2 [security] ([a47d79d7a](https://github.com/Badminton-Apps/badman/commit/a47d79d7a))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.135.1 (2024-03-25)
 
 

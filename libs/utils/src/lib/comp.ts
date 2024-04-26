@@ -15,3 +15,13 @@ export const getCurrentSeason = (inputDate?: Date | moment.Moment) => {
 
   return date.month() >= 4 ? date.year() : date.year() - 1;
 };
+
+
+export const getUpcommingSeason = (inputDate?: Date | moment.Moment) => {
+  let date = moment(inputDate);
+  if (!date.isValid()) {
+    date = moment();
+  }
+
+  return date.month() >= 9 ? date.year() + 1 : date.year() ;
+};

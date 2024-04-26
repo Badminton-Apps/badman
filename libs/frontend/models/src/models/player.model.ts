@@ -65,7 +65,16 @@ export class Player {
     this.indexSplit = args?.indexSplit;
     this.competitionPlayer = args?.competitionPlayer;
     this.clubs = args?.clubs?.map((club) => new Club(club));
-    this.club = args?.club != null ? new Club(args?.club) : undefined;
+    this.club =
+      args?.club != null
+        ? new Club(args?.club)
+        : this.clubs?.filter(
+            (club) =>
+              club.clubMembership?.end === undefined ||
+              club.clubMembership?.end === null ||
+              club.clubMembership?.end > new Date(),
+          )?.[0];
+
     this.setting = args?.setting != null ? new Setting(args?.setting) : undefined;
     this.notifications = args?.notifications?.map((n) => new Notification(n)) ?? undefined;
     this.updatedAt = args?.updatedAt != null ? new Date(args.updatedAt) : undefined;

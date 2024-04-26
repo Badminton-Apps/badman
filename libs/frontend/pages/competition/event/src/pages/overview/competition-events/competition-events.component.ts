@@ -1,9 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -61,8 +57,9 @@ export class CompetitionEventsComponent {
   setOpenClose(competition: EventCompetition) {
     // open dialog
     const ref = this.dialog.open(OpenCloseDateDialogComponent, {
-      data: { event: competition },
+      data: { openDate: competition.openDate, closeDate: competition.closeDate },
       width: '400px',
+      disableClose: true,
     });
 
     ref.afterClosed().subscribe(async (result) => {

@@ -295,6 +295,8 @@ export type I18nTranslations = {
                     "team-to-strong": string;
                     "team-to-week": string;
                     "title": string;
+                    "too-few-base-players": string;
+                    "too-many-base-players": string;
                 };
                 "example-error": string;
                 "example-warning": string;
@@ -327,10 +329,13 @@ export type I18nTranslations = {
                     "substitude": string;
                     "team-index": string;
                     "team-index-ignored": string;
+                };
+                "title": string;
+                "transfer": {
+                    "enrolled-as": string;
                     "transfer-teams": string;
                     "transfer-teams-description": string;
                 };
-                "title": string;
                 "validations": string;
                 "warnings": {
                     "subtitute-team-index": string;
@@ -593,12 +598,15 @@ export type I18nTranslations = {
         };
         "pickers": {
             "end-time": string;
+            "none": string;
             "select-club": string;
+            "select-country": string;
             "select-encounter": string;
             "select-end-time": string;
             "select-event-competition": string;
             "select-season": string;
             "select-start-time": string;
+            "select-state": string;
             "select-subevent-competition": string;
             "select-team": string;
             "select-team-groups": {

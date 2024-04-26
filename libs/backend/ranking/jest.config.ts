@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-ranking',
+  // displayName: 'backend-ranking',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

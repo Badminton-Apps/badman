@@ -1,15 +1,15 @@
 <badman-page-header>
-  <div title>{{ drawCompetition.name }}</div>
+  <div title>{{ drawCompetition().name }}</div>
   <div actions>
-    @if (drawCompetition.visualCode && eventCompetition.visualCode) {
+    @if (drawCompetition().visualCode && eventCompetition().visualCode) {
       <a
         mat-icon-button
         target="_blank"
         [href]="
           'https://www.toernooi.nl/sport/league/draw?id=' +
-          this.eventCompetition.visualCode +
+          this.eventCompetition().visualCode +
           '&draw=' +
-          this.drawCompetition.visualCode
+          this.drawCompetition().visualCode
         "
         [matTooltip]="'all.button.open-in-new-tab' | translate"
       >
@@ -20,17 +20,17 @@
 </badman-page-header>
 <section class="standing">
   <h3>{{ 'all.event.standing.title' | translate }}</h3>
-  <badman-standing [type]="'team'" [entries]="drawCompetition.eventEntries!"></badman-standing>
+  <badman-standing [type]="'team'" [entries]="drawCompetition().eventEntries!"></badman-standing>
 </section>
-@if (teams) {
+@if (teams()) {
   <section class="games">
     <section class="recent-games">
       <h3>{{ 'all.game.recent.title' | translate }}</h3>
-      <badman-recent-games [teams]="teams"></badman-recent-games>
+      <badman-recent-games [teams]="teams()"></badman-recent-games>
     </section>
     <section class="upcoming-games">
       <h3>{{ 'all.game.upcoming.title' | translate }}</h3>
-      <badman-upcoming-games [teams]="teams"></badman-upcoming-games>
+      <badman-upcoming-games [teams]="teams()"></badman-upcoming-games>
     </section>
   </section>
 }

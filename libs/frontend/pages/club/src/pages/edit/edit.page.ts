@@ -305,7 +305,7 @@ export class EditPageComponent implements OnInit {
                     state
                     phone
                     fax
-                    availibilities(where: $where) {
+                    availabilities(where: $where) {
                       id
                       season
                       days {

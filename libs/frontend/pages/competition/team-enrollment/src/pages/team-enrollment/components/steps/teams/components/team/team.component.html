@@ -120,45 +120,47 @@
   <mat-divider></mat-divider>
   @if (expanded.regular) {
     <div>
-      @for (player of this.team().value.players; track player) {
-        <div class="player">
-          <div class="name">
-            {{ player.fullName }}
-            <span class="ranking">
-              {{ player.lastRanking?.single }} -
-              {{ player.lastRanking?.double }}
-              @if (team().value.type === 'MX') {
-                - {{ player.lastRanking?.mix }}
-              }
-              ({{
-                (player.lastRanking?.single ?? 12) +
-                  (player.lastRanking?.double ?? 12) +
-                  (team().value.type === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
-              }})</span
-            >
-          </div>
-          <div class="type">
-            <mat-form-field>
-              <mat-label>Type</mat-label>
-              <mat-select
-                [(value)]="player.membershipType"
-                (selectionChange)="changePlayerType(player, $event.value)"
-              >
-                @for (type of types; track type) {
-                  <mat-option [value]="type">
-                    {{ 'all.player.' + type | lowercase | translate }}
-                  </mat-option>
+      <div class="player-list">
+        @for (player of this.team().value.players; track player) {
+          <div class="player">
+            <div class="name">
+              {{ player.fullName }}
+              <span class="ranking">
+                {{ player.lastRanking?.single }} -
+                {{ player.lastRanking?.double }}
+                @if (type() === 'MX') {
+                  - {{ player.lastRanking?.mix }}
                 }
-              </mat-select>
-            </mat-form-field>
+                ({{
+                  (player.lastRanking?.single ?? 12) +
+                    (player.lastRanking?.double ?? 12) +
+                    (type() === 'MX' ? player.lastRanking?.mix ?? 12 : 0)
+                }})</span
+              >
+            </div>
+            <div class="type">
+              <mat-form-field>
+                <mat-label>Type</mat-label>
+                <mat-select
+                  [(value)]="player.membershipType"
+                  (selectionChange)="changePlayerType(player, $event.value)"
+                >
+                  @for (type of types; track type) {
+                    <mat-option [value]="type">
+                      {{ 'all.player.' + type | lowercase | translate }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="delete">
+              <button mat-icon-button (click)="removePlayerFromTeam(player)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </div>
-          <div class="delete">
-            <button mat-icon-button (click)="removePlayerFromTeam(player)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </div>
-      }
+        }
+      </div>
       <badman-player-search
         [allowCreation]="false"
         [searchOutsideClub]="true"
@@ -189,10 +191,10 @@
           {{ b.player.fullName }}
           <span class="ranking">
             {{ b.single }} - {{ b.double }}
-            @if (team().value.type === 'MX') {
+            @if (type() === 'MX') {
               - {{ b.mix }}
             }
-            ({{ b.single + b.double + (team().value.type === 'MX' ? b.mix : 0) }})</span
+            ({{ b.single + b.double + (type() === 'MX' ? b.mix : 0) }})</span
           >
         </div>
         <div class="delete">
@@ -208,6 +210,9 @@
       [club]="this.team().value.clubId"
       [label]="'Voeg speler toe'"
       (whenSelectPlayer)="addBasePlayerToTeam($event)"
+      [where]="{
+        gender: type() === 'MX' ? undefined : type()
+      }"
     ></badman-player-search>
   </div>
 </div>
