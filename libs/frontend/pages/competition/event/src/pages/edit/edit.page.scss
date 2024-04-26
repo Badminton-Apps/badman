@@ -62,11 +62,23 @@ h3 {
     flex: 1 1 auto;
   }
 
-  .contact {
+  .info {
     display: flex;
     flex-direction: row;
     gap: 1rem;
     flex: 1 1 auto;
+  }
+
+  .country {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex: 1 1 auto;
+
+    badman-select-country,
+    badman-select-state {
+      flex: 1 1 auto;
+    }
   }
 }
 

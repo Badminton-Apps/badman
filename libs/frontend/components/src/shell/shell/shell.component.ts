@@ -33,7 +33,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { computedAsync } from 'ngxtension/computed-async';
 import { filter, map } from 'rxjs/operators';
-import { BreadcrumbModule } from 'xng-breadcrumb';
+import { BreadcrumbComponent } from 'xng-breadcrumb';
 import { HasClaimComponent } from '../../has-claim';
 import {
   BannerComponent,
@@ -57,7 +57,7 @@ import {
     LogoComponent,
     ServiceStatusComponent,
     ServiceWorkerModule,
-    BreadcrumbModule,
+    BreadcrumbComponent,
     TranslateModule,
     MatSidenavModule,
     MatSlideToggleModule,
@@ -86,7 +86,6 @@ export class ShellComponent {
   };
 
   banner?: Banner;
-
 
   canAnyEnroll = computed(() => this.auth.hasClaim('enlist-any:team'));
   canViewEnroll = computed(() => this.auth.hasClaim('*_enlist:team'));

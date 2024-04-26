@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'worker-belgium-flanders-places',
+  // displayName: 'worker-belgium-flanders-places',
   preset: '../../../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

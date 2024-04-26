@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-notifications',
+  // displayName: 'backend-notifications',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

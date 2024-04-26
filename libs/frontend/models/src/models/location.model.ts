@@ -16,7 +16,7 @@ export class Location {
   streetNumber?: string;
   competitionEvents?: EventCompetition[];
   eventTournements?: EventTournament[];
-  availibilities: Availability[];
+  availabilities: Availability[];
   courts?: number;
   coordinates?: {
     latitude: number;
@@ -39,7 +39,7 @@ export class Location {
     this.eventTournements = args?.eventTournements?.map((r) => new EventTournament(r));
     this.coordinates = args?.coordinates;
 
-    this.availibilities = args?.availibilities?.map((r) => new Availability(r)) ?? [];
+    this.availabilities = args?.availabilities?.map((r) => new Availability(r)) ?? [];
     this.courts = args?.courts;
   }
 }

@@ -287,7 +287,9 @@
         "team-order-same-subevent": "Team <strong>{team.name}</strong> heeft een betere ploegindex in dezelfde afdeling, maar heeft een lager teamnummer",
         "team-to-strong": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet onder de grens van de afdeling <strong>{minIndex}</strong> komen",
         "team-to-week": "Ploegindex basisspelers is <strong>{baseIndex}</strong> en mag niet boven de grens van de afdeling <strong>{maxIndex}</strong> komen",
-        "title": "Fouten"
+        "title": "Fouten",
+        "too-few-base-players": "Te weinig basis spelers",
+        "too-many-base-players": "Te veel basis spelers"
       },
       "example-error": "Dit zijn foutmeldingen waardoor de ploeg niet kan ingeschreven worden. Gelieve deze op te lossen.",
       "example-warning": "Dit zijn waarschuwingen waar rekening mee gehouden dient te worden. De inschrijving kan nog wel afgewerkt worden.",
@@ -319,11 +321,14 @@
         "new-teams": "Nieuwe teams voor dit seizoen",
         "substitude": "Invallers",
         "team-index": "Ploegindex titularissen is <strong>{current}</strong> en mag minimaal <strong>{team}</strong> zijn",
-        "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg.",
-        "transfer-teams": "Zet teams over (optioneel)",
-        "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nJe kan de teamnummers in volgende stap nog wijzigen."
+        "team-index-ignored": "Ploegindex basisspelers mag onderschreden worden bij de 1e ploeg."
       },
       "title": "Team inschrijvingen",
+      "transfer": {
+        "enrolled-as": "ingeschreven als",
+        "transfer-teams": "Zet teams over (optioneel)",
+        "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nDe volgorde waarin je je ploegen aanvinkt zal de volgorde bepalen (\"alles\" vinkt het in de juiste volgorde aan)\n\nJe kan de teamnummers in volgende stap nog wijzigen."
+      },
       "validations": "Validaties",
       "warnings": {
         "subtitute-team-index": "s",
@@ -586,12 +591,15 @@
   },
   "pickers": {
     "end-time": "Eindtijd",
+    "none": "Geen",
     "select-club": "Kies een club",
+    "select-country": "Kies land",
     "select-encounter": "Kies een ontmoeting",
     "select-end-time": "Eindtijd",
     "select-event-competition": "Selecteer competitie",
     "select-season": "Seizoen",
     "select-start-time": "Starttijd",
+    "select-state": "Kies provincie",
     "select-subevent-competition": "Selecteer afdeling",
     "select-team": "Kies een ploeg",
     "select-team-groups": {

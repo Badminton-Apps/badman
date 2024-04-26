@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-twizzit',
+  // displayName: 'backend-twizzit',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

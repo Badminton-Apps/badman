@@ -2,30 +2,47 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
-import { Player, TeamPlayer } from '@badman/frontend-models';
+import { RankingSystemService } from '@badman/frontend-graphql';
+import { EntryCompetitionPlayer, Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { LevelType, getCurrentSeason } from '@badman/utils';
+import { LevelType, SubEventTypeEnum, getUpcommingSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { forkJoin, lastValueFrom } from 'rxjs';
+import { delay, forkJoin, lastValueFrom, of, switchMap } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { CLUB, COMMENTS, EVENTS, LOCATIONS, SEASON, TEAMS } from '../../forms';
+import { CLUB, COMMENTS, EMAIL, LOCATIONS, SEASON, TEAMS } from '../../forms';
 import {
   ClubStepComponent,
   CommentsStepComponent,
-  EventsStepComponent,
+  LocationForm,
   LocationsStepComponent,
-  TeamForm,
   TeamsStepComponent,
   TeamsTransferStepComponent,
-  LocationForm,
 } from './components';
+import { TeamEnrollmentDataService } from './service/team-enrollment.service';
 import { minAmountOfTeams } from './validators';
-import { MatIconModule } from '@angular/material/icon';
-import { RankingSystemService } from '@badman/frontend-graphql';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { HasClaimComponent } from '@badman/frontend-components';
+
+export type TeamFormValue = {
+  team: Team;
+  entry: {
+    players: (EntryCompetitionPlayer | null)[];
+    subEventId: string | null;
+  };
+};
+
+export type TeamForm = FormGroup<{
+  team: FormControl<Team>;
+  entry: FormGroup<{
+    players: FormArray<FormControl<EntryCompetitionPlayer>>;
+    subEventId: FormControl<string | null>;
+  }>;
+}>;
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -41,41 +58,80 @@ import { RankingSystemService } from '@badman/frontend-graphql';
     MatButtonModule,
     MatIconModule,
     ClubStepComponent,
-    EventsStepComponent,
     TeamsTransferStepComponent,
     TeamsStepComponent,
     LocationsStepComponent,
     CommentsStepComponent,
+    NgxJsonViewerModule,
+
+    HasClaimComponent,
   ],
 })
 export class TeamEnrollmentComponent implements OnInit {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
-  systemService = inject(RankingSystemService);
+  readonly systemService = inject(RankingSystemService);
+  private readonly dataService = inject(TeamEnrollmentDataService);
+  private readonly seoService = inject(SeoService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly translate = inject(TranslateService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly apollo = inject(Apollo);
 
-  formGroup: FormGroup = new FormGroup({
-    [SEASON]: new FormControl(getCurrentSeason(), [Validators.required]),
-    [CLUB]: new FormControl(undefined, [Validators.required]),
-    [EVENTS]: new FormControl([], [Validators.required, Validators.min(1)]),
-    [TEAMS]: new FormGroup(
-      {
-        M: new FormArray<TeamForm>([]),
-        F: new FormArray<TeamForm>([]),
-        MX: new FormArray<TeamForm>([]),
-        NATIONAL: new FormArray<TeamForm>([]),
-      },
-      [Validators.required, minAmountOfTeams(1)],
-    ),
-    [LOCATIONS]: new FormArray<LocationForm>([], [Validators.required]),
+  clubControl = new FormControl(undefined, [Validators.required]);
+  emailControl = new FormControl(undefined, [Validators.required]);
+
+  locationControl = new FormArray<LocationForm>([], [Validators.required]);
+
+  teamControl = new FormGroup(
+    {
+      [SubEventTypeEnum.M]: new FormArray<TeamForm>([]),
+      [SubEventTypeEnum.F]: new FormArray<TeamForm>([]),
+      [SubEventTypeEnum.MX]: new FormArray<TeamForm>([]),
+      [SubEventTypeEnum.NATIONAL]: new FormArray<TeamForm>([]),
+    },
+    [Validators.required, minAmountOfTeams(1)],
+  );
+
+  commentsControl = new FormGroup({
+    [LevelType.PROV]: new FormGroup({
+      comment: new FormControl(''),
+      id: new FormControl(''),
+    }),
+    [LevelType.LIGA]: new FormGroup({
+      comment: new FormControl(''),
+      id: new FormControl(''),
+    }),
+
+    [LevelType.NATIONAL]: new FormGroup({
+      comment: new FormControl(''),
+      id: new FormControl(''),
+    }),
   });
 
-  constructor(
-    private readonly seoService: SeoService,
-    private readonly breadcrumbService: BreadcrumbService,
-    private readonly translate: TranslateService,
-    private readonly snackBar: MatSnackBar,
-    private readonly apollo: Apollo,
-  ) {}
+  formGroup: FormGroup = new FormGroup({
+    // internal
+    [SEASON]: new FormControl(getUpcommingSeason(), [Validators.required]),
+
+    // step 1
+    [CLUB]: this.clubControl,
+    [EMAIL]: this.emailControl,
+
+    // step 2
+    [LOCATIONS]: this.locationControl,
+
+    // step 3
+    [TEAMS]: this.teamControl,
+
+    // step 4
+    [COMMENTS]: this.commentsControl,
+  });
+
+  allLoaded = this.dataService.state.allLoaded;
+
+  constructor() {
+    this.dataService.state.setSeason(getUpcommingSeason());
+  }
 
   ngOnInit(): void {
     this.translate
@@ -96,84 +152,107 @@ export class TeamEnrollmentComponent implements OnInit {
       });
   }
 
-  save() {
+  async save(includeTeams = false) {
     const observables = [];
 
-    // save the teams to the backend
-    for (const enrollment of [
-      ...this.formGroup.value.teams.M,
-      ...this.formGroup.value.teams.F,
-      ...this.formGroup.value.teams.MX,
-      ...this.formGroup.value.teams.NATIONAL,
-    ]) {
-      if (!enrollment?.team?.id) {
-        continue;
-      }
-
-      const players =
-        enrollment?.team?.players?.map((player: Partial<TeamPlayer>) => {
-          return {
-            id: player.id,
-            membershipType: player.membershipType,
-          };
-        }) ?? [];
-
-      const meta = {
-        players: enrollment?.entry?.players?.map(
-          (
-            player: Partial<Player> & {
-              single: number;
-              double: number;
-              mix: number;
-            },
-          ) => ({
-            id: player?.id,
-            gender: player?.gender,
-            single: player?.single,
-            double: player?.double,
-            mix: player?.mix,
-          }),
-        ),
-      };
-
-      const data = {
-        id: enrollment?.team?.id,
-        name: enrollment?.team?.name,
-        teamNumber: enrollment?.team?.teamNumber,
-        type: enrollment?.team?.type,
-        clubId: this.formGroup.value.club,
-        link: enrollment?.team?.link,
-        season: this.formGroup.value.season,
-        preferredDay: enrollment?.team?.preferredDay,
-        preferredTime: enrollment?.team?.preferredTime,
-        captainId: enrollment?.team?.captainId,
-        phone: enrollment?.team?.phone,
-        email: enrollment?.team?.email,
-        players,
-        entry: {
-          subEventId: enrollment?.entry?.subEventId,
-          meta: {
-            competition: {
-              players: meta.players,
-            },
-          },
-        },
-      };
-
-      observables.push(
+    if (includeTeams) {
+      await lastValueFrom(
+        // delete all teams from the backend
         this.apollo.mutate({
           mutation: gql`
-            mutation CreateTeam($team: TeamNewInput!) {
-              createTeam(data: $team) {
-                id
-              }
+            mutation DeleteTeams($clubId: ID!, $season: Int!) {
+              deleteTeams(clubId: $clubId, season: $season)
             }
           `,
           variables: {
-            team: data,
+            clubId: this.formGroup.value.club,
+            season: this.formGroup.value.season,
           },
         }),
       );
+
+      // save the teams to the backend
+      for (const enrollment of [
+        ...this.formGroup.getRawValue().teams.M,
+        ...this.formGroup.getRawValue().teams.F,
+        ...this.formGroup.getRawValue().teams.MX,
+        ...this.formGroup.getRawValue().teams.NATIONAL,
+      ]) {
+        if (!enrollment?.team?.id) {
+          continue;
+        }
+
+        const players =
+          enrollment?.team?.players?.map((player: Partial<TeamPlayer>) => {
+            return {
+              id: player.id,
+              membershipType: player.membershipType,
+            };
+          }) ?? [];
+
+        const meta = {
+          players: enrollment?.entry?.players?.map(
+            (
+              player: Partial<Player> & {
+                single: number;
+                double: number;
+                mix: number;
+              },
+            ) => ({
+              id: player?.id,
+              gender: player?.gender,
+              single: player?.single,
+              double: player?.double,
+              mix: player?.mix,
+            }),
+          ),
+        };
+
+        const data = {
+          // id: enrollment?.team?.id,
+          name: enrollment?.team?.name,
+          teamNumber: enrollment?.team?.teamNumber,
+          type: enrollment?.team?.type,
+          clubId: this.formGroup.value.club,
+          link: enrollment?.team?.link,
+          season: this.formGroup.value.season,
+          preferredDay: enrollment?.team?.preferredDay,
+          preferredTime: enrollment?.team?.preferredTime,
+          captainId: enrollment?.team?.captainId,
+          phone: enrollment?.team?.phone,
+          email: enrollment?.team?.email,
+          players,
+          entry: {
+            subEventId: enrollment?.entry?.subEventId,
+            meta: {
+              competition: {
+                players: meta.players,
+              },
+            },
+          },
+        };
+
+        observables.push(
+          of(data).pipe(
+            // we need to delay the request to help
+            delay(Math.random() * 1000),
+            switchMap(() =>
+              this.apollo.mutate({
+                mutation: gql`
+                  mutation CreateTeam($team: TeamNewInput!) {
+                    createTeam(data: $team) {
+                      id
+                    }
+                  }
+                `,
+                variables: {
+                  team: data,
+                },
+              }),
+            ),
+          ),
+        );
+      }
     }
 
     const comments = this.formGroup.get(COMMENTS)?.value as {
@@ -216,7 +295,7 @@ export class TeamEnrollmentComponent implements OnInit {
     const locations = this.formGroup.get(LOCATIONS) as FormArray<LocationForm>;
 
     for (const location of locations.value) {
-      const availibility = location.availibilities?.[0];
+      const availibility = location.availabilities?.[0];
 
       if (!availibility) {
         continue;
@@ -268,19 +347,19 @@ export class TeamEnrollmentComponent implements OnInit {
     return forkJoin(observables);
   }
 
-  async saveAndContinue() {
-    this.formGroup.get(TEAMS)?.setErrors({ loading: true });
-    await lastValueFrom(this.save());
+  async saveAndContinue(includeTeams = false) {
+    await lastValueFrom(await this.save(includeTeams));
+
     this.snackBar.open('Teams saved', 'Close', {
       duration: 2000,
     });
-    this.formGroup.get(TEAMS)?.setErrors({ loading: false });
+
     this.vert_stepper.next();
   }
 
   async saveAndFinish() {
     this.formGroup.get(TEAMS)?.setErrors({ loading: true });
-    await lastValueFrom(this.save());
+    await lastValueFrom(await this.save(true));
 
     await lastValueFrom(
       this.apollo.mutate({

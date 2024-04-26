@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'backend-websockets',
+  // displayName: 'backend-websockets',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
   passWithNoTests: true,

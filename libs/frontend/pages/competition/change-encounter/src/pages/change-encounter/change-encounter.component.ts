@@ -40,18 +40,18 @@ import { ListEncountersComponent, ShowRequestsComponent } from './components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeEncounterComponent implements OnInit {
-  private destroy$ = injectDestroy();
+  private readonly destroy$ = injectDestroy();
 
-  private seoService = inject(SeoService);
-  private breadcrumbsService = inject(BreadcrumbService);
-  private activatedRoute = inject(ActivatedRoute);
-  private claimService = inject(ClaimService);
-  private versionInfo: {
+  private readonly seoService = inject(SeoService);
+  private readonly breadcrumbsService = inject(BreadcrumbService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly claimService = inject(ClaimService);
+  private readonly versionInfo: {
     beta: boolean;
     version: string;
   } = inject(VERSION_INFO);
 
-  translateService = inject(TranslateService);
+  private readonly translateService = inject(TranslateService);
   isHandset = inject(DEVICE);
 
   canSelectSeason = computed(
