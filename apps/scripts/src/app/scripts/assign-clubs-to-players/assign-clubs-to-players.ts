@@ -198,7 +198,7 @@ export class AssignClubToPlayers {
       // if no club membership exists for the club, create one
       if (
         player.player.clubs?.find(
-          (c) => c.ClubPlayerMembership?.clubId === club.id && c.ClubPlayerMembership?.end == null,
+          (c) => c.ClubPlayerMembership?.clubId === club.id && c.ClubPlayerMembership?.active,
         ) == null
       ) {
         this.logger.verbose(

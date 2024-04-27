@@ -1,32 +1,27 @@
-import {
-  Column,
-  Index,
-  ForeignKey,
-  Model,
-  Table,
-  DataType,
-  Unique,
-  PrimaryKey,
-  IsUUID,
-  Default,
-  AllowNull,
-} from 'sequelize-typescript';
 import { ClubMembershipType } from '@badman/utils';
-import { BuildOptions } from 'sequelize';
+import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import {
+  AllowNull,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  Index,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+  Unique,
+} from 'sequelize-typescript';
+import { Relation } from '../wrapper';
 import { Club } from './club.model';
 import { Player } from './player.model';
-import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
-import { Relation } from '../wrapper';
 
 @Table({
   schema: 'public',
 })
 @ObjectType({ description: 'A ClubPlayerMembership' })
 export class ClubPlayerMembership extends Model {
-  constructor(values?: Partial<ClubPlayerMembership>, options?: BuildOptions) {
-    super(values, options);
-  }
-
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
@@ -56,9 +51,12 @@ export class ClubPlayerMembership extends Model {
   end?: Date;
 
   @Default(true)
-  @Field(() => Boolean, { nullable: true })
-  @Column(DataType.BOOLEAN)
-  active?: boolean;
+  @Field(() => Boolean)
+  @Column(DataType.VIRTUAL)
+  get active() {
+    // if the start is passed and end is null or in the future, it is active
+    return this.start && this.start < new Date() && (!this.end || this.end > new Date());
+  }
 
   @Default(ClubMembershipType.NORMAL)
   @Field(() => String, { nullable: true })
@@ -69,9 +67,9 @@ export class ClubPlayerMembership extends Model {
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
   @Unique('ClubPlayerMemberships_playerId_clubId_unique')
   @AllowNull(false)
-  @Field(() => Date, { nullable: true })
+  @Field(() => Date, { defaultValue: new Date() })
   @Column(DataType.DATE)
-  start?: Date;
+  start!: Date;
 }
 
 @InputType()

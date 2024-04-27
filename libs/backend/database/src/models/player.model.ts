@@ -47,7 +47,7 @@ import { Claim, PlayerClaimMembership, PlayerRoleMembership, Role } from './secu
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { Team } from './team.model';
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
-import { ClubPlayerMembershipType } from '../_interception';
+import { ClubWithMembershipType } from '../_interception';
 import { Notification, Setting } from './personal';
 import { TeamMembershipType } from '@badman/utils';
 import { Relation } from '../wrapper';
@@ -167,7 +167,7 @@ export class Player extends Model {
   @BelongsToMany(() => Team, () => TeamPlayerMembership)
   teams?: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 
-  @Field(() => [ClubPlayerMembershipType], { nullable: true })
+  @Field(() => [ClubWithMembershipType], { nullable: true })
   @BelongsToMany(() => Club, () => ClubPlayerMembership)
   clubs?: (Club & { ClubPlayerMembership: ClubPlayerMembership })[];
 
