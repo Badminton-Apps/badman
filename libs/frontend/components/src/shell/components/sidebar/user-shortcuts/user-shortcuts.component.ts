@@ -39,12 +39,7 @@ export class UserShortcutsComponent {
   loggedIn = computed(() => this.authenticateService.loggedIn());
   clubs = computed(() =>
     (this.user()?.clubs ?? [])
-      .filter(
-        (club) =>
-          club.clubMembership?.end === undefined ||
-          club.clubMembership?.end === null ||
-          club.clubMembership?.end > new Date(),
-      )
+      .filter((club) => club.clubMembership?.active)
       .sort((a, b) => {
         // sort by membership type, first normal then loan
         if (a.clubMembership?.membershipType === b.clubMembership?.membershipType) {

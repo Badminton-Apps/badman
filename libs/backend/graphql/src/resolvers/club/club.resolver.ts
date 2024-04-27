@@ -4,12 +4,13 @@ import {
   ClubNewInput,
   ClubPlayerMembership,
   ClubPlayerMembershipNewInput,
-  ClubPlayerMembershipType,
   ClubPlayerMembershipUpdateInput,
   ClubUpdateInput,
+  ClubWithMembershipType,
   Comment,
   Location,
   Player,
+  PlayerWithMembershipType,
   Role,
   Team,
 } from '@badman/backend-database';
@@ -87,14 +88,20 @@ export class ClubsResolver {
     return club.getRoles(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [Player])
-  async players(@Parent() club: Club, @Args() listArgs: ListArgs): Promise<Player[]> {
+  @ResolveField(() => [PlayerWithMembershipType])
+  async players(
+    @Parent() club: Club,
+    @Args() listArgs: ListArgs,
+    @Args('active', { type: () => Boolean, nullable: true, defaultValue: true }) active = true,
+  ): Promise<(Player & { ClubMembership: ClubPlayerMembership })[] | Player[] | undefined> {
     const options = ListArgs.toFindOptions(listArgs);
 
-    options.where = {
-      ...options.where,
-      '$ClubPlayerMembership.end$': null,
-    };
+    if (active) {
+      options.where = {
+        ...options.where,
+        [`$${ClubPlayerMembership.name}.active$`]: true,
+      };
+    }
 
     const players = await club.getPlayers(options);
     const distinctPlayers = players.filter(
@@ -319,7 +326,7 @@ export class ClubsResolver {
   }
 }
 
-@Resolver(() => ClubPlayerMembershipType)
+@Resolver(() => ClubWithMembershipType)
 export class ClubPlayerResolver extends ClubsResolver {
   @ResolveField(() => ClubPlayerMembership, { nullable: true })
   async clubMembership(

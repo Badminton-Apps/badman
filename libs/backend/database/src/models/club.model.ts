@@ -44,13 +44,14 @@ import {
   Unique,
 } from 'sequelize-typescript';
 import { Slugify } from '../types';
+import { Relation } from '../wrapper';
 import { ClubPlayerMembership } from './club-player-membership.model';
 import { Comment } from './comment.model';
 import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
-import { Relation } from '../wrapper';
+import { PlayerWithMembershipType } from '../_interception';
 
 @Table({
   timestamps: true,
@@ -114,9 +115,9 @@ export class Club extends Model {
   })
   roles?: Relation<Role[]>;
 
-  @Field(() => [Player], { nullable: true })
+  @Field(() => [PlayerWithMembershipType], { nullable: true })
   @BelongsToMany(() => Player, () => ClubPlayerMembership)
-  players?: Relation<Player[]>;
+  players?: (Player & { ClubPlayerMembership: ClubPlayerMembership })[];
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment)
