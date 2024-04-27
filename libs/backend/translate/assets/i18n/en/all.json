@@ -278,6 +278,8 @@
         "first-team-index": "A first team dropped may not field a team with team index lower than their base index during the season",
         "no-subevent": "Please choose a series",
         "none": "No errors found",
+        "player-club": "Player <strong>{player.fullName}</strong> is not part of {club.name} (current club: {activeClub.name})",
+        "player-club-none": "No club known for player <strong>{player.fullName}<strong>",
         "player-gender": "<strong>{player.fullName}</strong> is a <strong>{player.gender}</strong> but a <strong>{gender}</strong> was expected",
         "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> and may be at least <strong>{minLevel}</strong> .",
         "player-subevent": "<strong>{player.fullName}</strong> is part of the base team <strong>{team.name}</strong> that also plays in <strong>{subEvent.name}</strong> ",

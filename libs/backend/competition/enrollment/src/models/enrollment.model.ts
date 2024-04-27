@@ -1,4 +1,5 @@
 import {
+  Club,
   EntryCompetitionPlayer,
   PlayerUpdateInput,
   RankingSystem,
@@ -24,6 +25,9 @@ export class EnrollmentInput {
 
   @Field(() => ID, { nullable: true })
   systemId?: string;
+
+  @Field(() => ID, { nullable: true })
+  clubId?: string;
 
   @Field(() => Int, { nullable: true })
   season?: number;
@@ -117,6 +121,7 @@ export type RuleResult = {
 
 //  validation data
 export class EnrollmentValidationData {
+  club!: Club;
   teams!: EnrollmentValidationTeam[];
 }
 

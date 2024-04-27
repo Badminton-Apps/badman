@@ -102,6 +102,7 @@ export class TeamsStepComponent {
             this.dataService.state.validateEnrollment({
               teamForm: this.teams().getRawValue(),
               season: this.season(),
+              clubId: this.club()?.id ?? '',
             });
           });
 
@@ -232,6 +233,7 @@ export class TeamsStepComponent {
       for (let i = 0; i < teams.length; i++) {
         const team = teams.at(i)?.get('team') as FormControl<Team>;
         if (!team) continue;
+        if (!team.value) continue;
 
         team.value.teamNumber = i + 1;
         team.value.name = this.getTeamName(team.value, club);

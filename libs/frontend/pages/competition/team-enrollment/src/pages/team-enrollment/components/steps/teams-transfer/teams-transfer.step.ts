@@ -89,6 +89,8 @@ export class TeamsTransferStepComponent {
       }>,
   );
 
+  initialized = false;
+
   constructor() {
     this.transferTeamsCtrl.valueChanges
       .pipe(takeUntil(this.destroy$), startWith([] as string[]), pairwise())
@@ -108,7 +110,7 @@ export class TeamsTransferStepComponent {
         }
       });
 
-    // set initial controls
+    // set initial controls and update when club changes
     effect(() => {
       // get club
       const club = this.club();
@@ -120,17 +122,27 @@ export class TeamsTransferStepComponent {
 
       // use the state but don't update effect when it changes
       untracked(() => {
-        this.transferTeamsCtrl.patchValue(
-          this.teamsLast()
-            .filter((team) => this.existingLinks().includes(team.link))
-            .map((team) => team.id),
-        );
+        // reset teams on club change
+        for (const enumType of Object.values(SubEventTypeEnum)) {
+          const typedControl = this.teams().get(enumType) as FormArray<TeamForm>;
+          typedControl.clear();
+        }
+        // 
+        // this.transferTeamsCtrl.setValue([], { emitEvent: false });
 
-        // add new teams
-        for (const team of this.newTeams()) {
-          if (team.id) {
-            this._addTeam(team);
-          }
+        // Set our control to show all teams that we are transfering
+        const teamIds = this.teamsLast()
+          .filter((team) => this.existingLinks().includes(team.link))
+          .map((team) => team.id);
+
+        // Patch the checkbox list
+        this.transferTeamsCtrl.setValue(teamIds, {
+          emitEvent: false, // don't emit, because that copies the teams to the form
+        });
+
+        // Copy the existing teams to the form
+        for (const team of this.teamsCurrent()) {
+          this._addTeam(team);
         }
       });
     });

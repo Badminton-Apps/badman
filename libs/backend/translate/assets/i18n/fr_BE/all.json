@@ -278,6 +278,8 @@
         "first-team-index": "Une équipe première éliminée ne peut aligner une équipe dont l'indice est inférieur à son indice de base au cours de la saison.",
         "no-subevent": "Veuillez choisir une gamme",
         "none": "",
+        "player-club": "Le joueur <strong>{player.fullName}</strong> ne fait pas partie de {club.name} (club actuel : {activeClub.name})",
+        "player-club-none": "Aucun club connu pour le joueur <strong>{player.fullName}<strong>",
         "player-gender": "<strong>{player.fullName}</strong> est un <strong>{player.gender}</strong> mais un <strong>{gender}</strong> était attendu",
         "player-min-level": "<strong>{player.fullName}</strong> a un indice de <strong>{player.ranking}</strong> dans <strong>{rankingType}</strong> et peut être au moins <strong>{minLevel}</strong> .",
         "player-subevent": "<strong>{player.fullName}</strong> fait partie de l'équipe de base <strong>{team.name}</strong> qui joue également en <strong>{subEvent.name}</strong> ",

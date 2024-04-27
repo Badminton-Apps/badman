@@ -285,6 +285,8 @@ export type I18nTranslations = {
                     "first-team-index": string;
                     "no-subevent": string;
                     "none": string;
+                    "player-club": string;
+                    "player-club-none": string;
                     "player-gender": string;
                     "player-min-level": string;
                     "player-subevent": string;
