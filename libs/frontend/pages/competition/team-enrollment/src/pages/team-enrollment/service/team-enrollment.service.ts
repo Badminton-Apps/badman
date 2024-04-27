@@ -13,7 +13,7 @@ import {
   Team,
   TeamValidationResult,
 } from '@badman/frontend-models';
-import { LevelType, SubEventTypeEnum, sortSubEventOrder } from '@badman/utils';
+import { LevelType, SubEventTypeEnum, sortSubEventOrder, sortTeams } from '@badman/utils';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { TeamFormValue } from '../team-enrollment.page';
 import { loadClub } from './queries/club';
@@ -140,10 +140,12 @@ export class TeamEnrollmentDataService {
               throw new Error('Club not found');
             }
 
-            club.teams = teams?.filter((team) => team.season !== _state().season) ?? [];
+            club.teams =
+              teams?.filter((team) => team.season !== _state().season)?.sort(sortTeams) ?? [];
             return {
               club,
-              teams: teams?.filter((team) => team.season === _state().season) ?? [],
+              teams:
+                teams?.filter((team) => team.season === _state().season)?.sort(sortTeams) ?? [],
               loadedTeams: true,
             };
           }),
@@ -212,10 +214,13 @@ export class TeamEnrollmentDataService {
         action$: Observable<{
           teamForm?: { [key in SubEventTypeEnum]: TeamFormValue[] };
           season?: number;
+          clubId: string;
         }>,
       ) =>
         action$.pipe(
-          switchMap(({ teamForm, season }) => validateEnrollment(this.apollo, teamForm, season)),
+          switchMap(({ teamForm, season, clubId }) =>
+            validateEnrollment(this.apollo, teamForm, season, clubId),
+          ),
           map((validation) => ({
             validation,
           })),

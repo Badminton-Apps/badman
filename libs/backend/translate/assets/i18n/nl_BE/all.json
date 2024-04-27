@@ -278,6 +278,8 @@
         "first-team-index": "Een eerste ploeg die gedaald is, mag tijdens het seizoen geen team met ploegindex opstellen die lager is dan hun ploegindex van de basisspelers.",
         "no-subevent": "Gelieve een afdeling te kiezen",
         "none": "Geen fouten gevonden",
+        "player-club": "Speler <strong>{player.fullName}</strong> is niet deel van {club.name} (huidige club: {activeClub.name})",
+        "player-club-none": "Geen club gekend voor speler <strong>{player.fullName}<strong>",
         "player-gender": "<strong>{player.fullName}</strong> is een <strong>{player.gender}</strong> maar een <strong>{gender}</strong> was verwacht",
         "player-min-level": "<strong>{player.fullName}</strong> heeft een discipline-index van <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> en mag minimaal <strong>{minLevel}</strong> zijn.",
         "player-subevent": "<strong>{player.fullName}</strong> is deel van de basisploeg <strong>{team.name}</strong> dat ook in <strong>{subEvent.name}</strong> speelt",

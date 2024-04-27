@@ -287,15 +287,13 @@ export class TeamsResolver {
         );
 
         // remove players that are not in the new list
-        await Promise.all(
-          dbMemberships.map(async (membership) => {
-            const player = newTeamData.players?.find((p) => p.id === membership.playerId);
+        for (const membership of dbMemberships) {
+          const player = newTeamData.players?.find((p) => p.id === membership.playerId);
 
-            if (!player) {
-              await membership.destroy({ transaction });
-            }
-          }),
-        );
+          if (!player) {
+            await teamDb.removePlayer(membership.playerId, { transaction });
+          }
+        }
       }
 
       if (newTeamData.entry) {

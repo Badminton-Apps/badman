@@ -1,4 +1,5 @@
 import {
+  Club,
   EntryCompetitionPlayer,
   EventCompetition,
   EventEntry,
@@ -34,12 +35,14 @@ import {
 import moment from 'moment';
 import { Op } from 'sequelize';
 import { PartialType, PickType } from '@nestjs/graphql';
+import { PlayerClubRule } from './rules/player-club.rule';
 
 @Injectable()
 export class EnrollmentValidationService {
   private readonly _logger = new Logger(EnrollmentValidationService.name);
 
   async getValidationData({
+    clubId,
     systemId,
     teams,
     season,
@@ -49,6 +52,11 @@ export class EnrollmentValidationService {
       : await RankingSystem.findOne({ where: { primary: true } });
     if (!system) {
       throw new Error('No ranking system found');
+    }
+
+    const club = clubId ? await Club.findByPk(clubId) : null;
+    if (!club) {
+      throw new Error('No club found');
     }
 
     season = season ?? getCurrentSeason();
@@ -147,6 +155,7 @@ export class EnrollmentValidationService {
     });
 
     return {
+      club,
       teams: teams?.map((t) => {
         if (!t.type) {
           throw new Error('No type found');
@@ -286,6 +295,7 @@ export class EnrollmentValidationService {
       new PlayerGenderRule(),
       new PlayerMinLevelRule(),
       new PlayerSubEventRule(),
+      new PlayerClubRule(),
 
       new TeamSubEventRule(),
       new TeamBaseIndexRule(),
@@ -374,6 +384,7 @@ export class EnrollmentValidationService {
 }
 
 class EnrollmentInput {
+  clubId?: string;
   teams?: EnrollmentInputTeam[];
   systemId?: string;
   season?: number;
