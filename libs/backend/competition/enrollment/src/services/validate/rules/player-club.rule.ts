@@ -100,7 +100,7 @@ export class PlayerClubRule extends Rule {
         return;
       }
 
-      const activeClub = player.clubs?.find((c) => c.ClubPlayerMembership.end == null);
+      const activeClub = player.clubs?.find((c) => c.ClubPlayerMembership.active);
 
       if (!activeClub) {
         return {
@@ -109,7 +109,7 @@ export class PlayerClubRule extends Rule {
             player: {
               fullName: player.fullName,
               id: player.id,
-            }
+            },
           },
         } as EnrollmentValidationError;
       }
@@ -129,7 +129,7 @@ export class PlayerClubRule extends Rule {
             activeClub: {
               name: activeClub.name,
               id: activeClub.id,
-            }
+            },
           },
         } as EnrollmentValidationError;
       }

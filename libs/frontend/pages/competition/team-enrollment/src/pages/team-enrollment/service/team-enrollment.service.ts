@@ -9,6 +9,7 @@ import {
   Comment,
   EventCompetition,
   Location,
+  Player,
   SubEventCompetition,
   Team,
   TeamValidationResult,
@@ -22,12 +23,14 @@ import { loadEvents } from './queries/events';
 import { loadLocations } from './queries/locations';
 import { loadTeams } from './queries/teams';
 import { validateEnrollment } from './queries/validate';
+import { loadTransersAndLoans } from './queries/transfers';
 
 interface TeamEnrollmentState {
   club: Club | null;
   season: number | null;
 
   teams: Team[];
+  transfers: Player[];
   locations: Location[];
   comments: Comment[];
   events: EventCompetition[];
@@ -53,6 +56,7 @@ export class TeamEnrollmentDataService {
     // Options
     teams: [],
     locations: [],
+    transfers: [],
 
     // Selected
     club: null,
@@ -193,6 +197,14 @@ export class TeamEnrollmentDataService {
           }),
         ),
 
+      loadTransersAndLoans: (_state, action$: Observable<{ clubId: string; season: number }>) =>
+        action$.pipe(
+          switchMap(({ clubId, season }) => loadTransersAndLoans(this.apollo, clubId, season)),
+          map((transfers) => ({
+            transfers,
+          })),
+        ),
+
       loadEvents: (_state, action$: Observable<{ state: string }>) =>
         action$.pipe(
           switchMap(({ state }) => loadEvents(this.apollo, state)),
@@ -238,6 +250,7 @@ export class TeamEnrollmentDataService {
         }
 
         state.loadTeams({ clubId: club.id, season });
+        state.loadTransersAndLoans({ clubId: club.id, season });
         state.loadLocations({ clubId: club.id, season });
         state.loadEvents({ state: club.state });
       },
