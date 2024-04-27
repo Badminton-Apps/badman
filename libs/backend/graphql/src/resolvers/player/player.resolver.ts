@@ -9,6 +9,7 @@ import {
   Notification,
   PagedPlayer,
   Player,
+  PlayerWithMembershipType,
   PlayerNewInput,
   PlayerUpdateInput,
   PushSubscription,
@@ -20,6 +21,7 @@ import {
   SettingUpdateInput,
   Team,
   TeamPlayerMembershipType,
+  ClubWithMembershipType,
 } from '@badman/backend-database';
 import { IsUUID, getCurrentSeason, getRankingProtected } from '@badman/utils';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
@@ -27,6 +29,7 @@ import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nest
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs, WhereArgs, queryFixer } from '../../utils';
+
 @Resolver(() => Player)
 export class PlayersResolver {
   protected readonly logger = new Logger(PlayersResolver.name);
@@ -196,22 +199,24 @@ export class PlayersResolver {
     return player.getTeams(args);
   }
 
-  @ResolveField(() => [Club], { nullable: true })
+  @ResolveField(() => [ClubWithMembershipType], { nullable: true })
   async clubs(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
     @Args('includeHistorical', {
       nullable: true,
       description: 'Include the historical clubs',
+      defaultValue: false,
+      type: () => Boolean,
     })
-    historical?: boolean,
+    historical = false,
   ): Promise<(Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
 
     if (!historical) {
       args.where = {
         ...args.where,
-        '$ClubPlayerMembership.end$': null,
+        // [`$${ClubPlayerMembership.name}.active$`]: true,
       };
     }
     return player.getClubs({
@@ -515,5 +520,15 @@ export class TeamPlayerResolver extends PlayersResolver {
         return getRankingProtected(place, system);
       }) ?? []
     );
+  }
+}
+
+@Resolver(() => PlayerWithMembershipType)
+export class PlayerClubResolver extends PlayersResolver {
+  @ResolveField(() => ClubPlayerMembership, { nullable: true })
+  async clubMembership(
+    @Parent() player: Player & { ClubPlayerMembership: ClubPlayerMembership },
+  ): Promise<ClubPlayerMembership> {
+    return player.ClubPlayerMembership;
   }
 }
