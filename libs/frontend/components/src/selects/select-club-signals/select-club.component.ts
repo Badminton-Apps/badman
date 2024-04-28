@@ -16,17 +16,14 @@ import { SelectClubsService } from './select-club.service';
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
-    // MatInputModule,
-    // MatAutocompleteModule,
-    // MatSelectModule,
     MtxSelectModule,
   ],
   templateUrl: './select-club.component.html',
   styleUrls: ['./select-club.component.scss'],
 })
 export class SelectClubSignalsComponent {
+  private readonly dataService = new SelectClubsService();
   private readonly claimSerice = inject(ClaimService);
-  private readonly dataService = inject(SelectClubsService);
   private readonly authService = inject(AuthenticateService);
 
   // Permissions

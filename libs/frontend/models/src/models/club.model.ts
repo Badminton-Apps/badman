@@ -61,6 +61,7 @@ export class ClubMembership {
   start?: Date;
   end?: Date;
   active?: boolean;
+  confirmed?: boolean;
   clubId?: string;
   playerId?: string;
   membershipType?: ClubMembershipType;

@@ -6,6 +6,16 @@
   gap: 1rem;
 }
 
-mat-form-field {
+mat-form-field,
+badman-select-player,
+badman-transfer {
   width: 100%;
+}
+
+.transfers,
+.loans {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
 }

@@ -6,6 +6,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import {
   Club,
+  ClubPlayer,
   Comment,
   EventCompetition,
   Location,
@@ -30,8 +31,8 @@ interface TeamEnrollmentState {
   season: number | null;
 
   teams: Team[];
-  transfers: Player[];
-  loans: Player[];
+  transfers: ClubPlayer[];
+  loans: ClubPlayer[];
   locations: Location[];
   comments: Comment[];
   events: EventCompetition[];
@@ -40,6 +41,7 @@ interface TeamEnrollmentState {
 
   loadedClubs: boolean;
   loadedTeams: boolean;
+  loadedTransfers: boolean;
   loadedLocations: boolean;
 }
 
@@ -70,6 +72,7 @@ export class TeamEnrollmentDataService {
     // loading steps
     loadedClubs: false,
     loadedTeams: false,
+    loadedTransfers: false,
     loadedLocations: false,
   };
 
@@ -79,7 +82,7 @@ export class TeamEnrollmentDataService {
   state = signalSlice({
     initialState: this.initialState,
     selectors: (state) => ({
-      allLoaded: () => state().loadedClubs && state().loadedTeams && state().loadedLocations,
+      allLoaded: () => state().loadedClubs && state().loadedTeams && state().loadedLocations && state().loadedTransfers,
       eventsPerType: () => {
         const subEvents = state()
           .events.map((event) => event.subEventCompetitions ?? [])
@@ -130,6 +133,7 @@ export class TeamEnrollmentDataService {
             transfers: [],
             loadedClubs: true,
             loadedTeams: false,
+            loadedTransfers: false,
             loadedLocations: false,
           })),
         ),
@@ -144,6 +148,7 @@ export class TeamEnrollmentDataService {
             transfers: [],
             loadedClubs: false,
             loadedTeams: false,
+            loadedTransfers: false,
             loadedLocations: false,
           })),
         ),
@@ -220,6 +225,7 @@ export class TeamEnrollmentDataService {
           map((transfers) => ({
             transfers: transfers.filter((player) => player.clubMembership.membershipType === ClubMembershipType.NORMAL),
             loans: transfers.filter((player) => player.clubMembership.membershipType === ClubMembershipType.LOAN),
+            loadedTransfers: true,
           })),
         ),
 

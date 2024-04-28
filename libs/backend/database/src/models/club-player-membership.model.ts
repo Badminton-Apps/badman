@@ -50,6 +50,11 @@ export class ClubPlayerMembership extends Model {
   @Column(DataType.DATE)
   end?: Date;
 
+  @Default(false)
+  @Field(() => Boolean)
+  @Column(DataType.BOOLEAN)
+  confirmed?: boolean;
+
   @Default(true)
   @Field(() => Boolean)
   @Column(DataType.VIRTUAL)

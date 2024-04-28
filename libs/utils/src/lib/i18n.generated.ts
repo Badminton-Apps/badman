@@ -304,6 +304,7 @@ export type I18nTranslations = {
                 "example-warning": string;
                 "exceptions": string;
                 "info": string;
+                "loan-locked": string;
                 "locations": {
                     "availible-courts": string;
                     "courts-hint": string;
@@ -338,6 +339,7 @@ export type I18nTranslations = {
                     "transfer-teams": string;
                     "transfer-teams-description": string;
                 };
+                "transfer-locked": string;
                 "transfers-players": string;
                 "validations": string;
                 "warnings": {
@@ -607,6 +609,7 @@ export type I18nTranslations = {
             "select-encounter": string;
             "select-end-time": string;
             "select-event-competition": string;
+            "select-player": string;
             "select-season": string;
             "select-start-time": string;
             "select-state": string;

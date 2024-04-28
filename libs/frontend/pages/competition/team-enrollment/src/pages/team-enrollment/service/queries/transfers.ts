@@ -21,6 +21,7 @@ export const loadTransersAndLoans = (apollo: Apollo, clubId?: string | null, sea
               clubMembership {
                 id
                 membershipType
+                confirmed
               }
             }
           }

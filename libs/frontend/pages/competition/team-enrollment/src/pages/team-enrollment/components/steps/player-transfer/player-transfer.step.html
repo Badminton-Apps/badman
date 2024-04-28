@@ -1,7 +1,56 @@
-@if (transfers().length > 0) {
-  <mat-selection-list>
-    @for (player of transfers(); track player) {
-      <mat-list-option togglePosition="before">{{ player.fullName }}</mat-list-option>
-    }
-  </mat-selection-list>
+<h3>Transfers</h3>
+@for (player of transfersControl().value; track player) {
+  <div class="transfers">
+    <badman-select-player [disabled]="true" [player]="player" />
+    <!-- remove button -->
+    <div
+      [matTooltip]="
+        lockedTransfers().includes(player)
+          ? ('all.competition.team-enrollment.transfer-locked' | translate)
+          : undefined
+      "
+    >
+      <button
+        mat-icon-button
+        (click)="this.removeTransfer(player)"
+        [disabled]="lockedTransfers().includes(player)"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
 }
+
+<div class="transfers">
+  <badman-select-player [(player)]="this.newTransfer" />
+  <button mat-icon-button (click)="addTransfer()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+<h3>Loans</h3>
+@for (player of loansControl().value; track player) {
+  <div class="loans">
+    <badman-select-player [disabled]="true" [player]="player" />
+    <!-- remove button -->
+    <button
+      mat-icon-button
+      (click)="this.removeLoan(player)"
+      [disabled]="lockedLoans().includes(player)"
+      [matTooltip]="
+        lockedLoans().includes(player)
+          ? ('all.competition.team-enrollment.loan-locked' | translate)
+          : undefined
+      "
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+}
+
+<div class="loans">
+  <badman-select-player [(player)]="this.newLoan" />
+  <button mat-icon-button (click)="addLoan()">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

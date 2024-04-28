@@ -65,7 +65,8 @@ export class PlayersResolver {
 
   @Query(() => PagedPlayer)
   async players(@Args() listArgs: ListArgs): Promise<{ count: number; rows: Player[] }> {
-    return Player.findAndCountAll(ListArgs.toFindOptions(listArgs));
+    const options = ListArgs.toFindOptions(listArgs);
+    return Player.findAndCountAll(options);
   }
 
   @ResolveField(() => String)
@@ -522,7 +523,6 @@ export class TeamPlayerResolver extends PlayersResolver {
       }) ?? []
     );
   }
-
 
   @ResolveField(() => TeamPlayerMembership, { nullable: true })
   async teamMembership(
