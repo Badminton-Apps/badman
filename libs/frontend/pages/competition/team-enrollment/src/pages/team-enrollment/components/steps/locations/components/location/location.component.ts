@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { Component, OnInit, inject, output } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -45,16 +45,16 @@ export type LocationAvailibilityForm = FormGroup<{
 }>;
 
 export type LocationForm = FormGroup<{
-  id: FormControl<string | undefined >;
-  name: FormControl<string | undefined >;
-  address: FormControl<string | undefined >;
-  street: FormControl<string | undefined >;
-  streetNumber: FormControl<string | undefined >;
-  postalcode: FormControl<string | undefined >;
-  city: FormControl<string | undefined >;
-  state: FormControl<string | undefined >;
-  phone: FormControl<string | undefined >;
-  fax: FormControl<string | undefined >;
+  id: FormControl<string | undefined>;
+  name: FormControl<string | undefined>;
+  address: FormControl<string | undefined>;
+  street: FormControl<string | undefined>;
+  streetNumber: FormControl<string | undefined>;
+  postalcode: FormControl<string | undefined>;
+  city: FormControl<string | undefined>;
+  state: FormControl<string | undefined>;
+  phone: FormControl<string | undefined>;
+  fax: FormControl<string | undefined>;
   availabilities: FormArray<LocationAvailibilityForm>;
 }>;
 
@@ -93,8 +93,7 @@ export class LocationComponent implements OnInit {
 
   controlName = input('availabilities');
 
-  @Output()
-  whenLocationUpdate = new EventEmitter<void>();
+  whenLocationUpdate = output<void>();
 
   days!: FormArray<LocationavDayType>;
   exceptions!: FormArray<LocationExceptionType>;

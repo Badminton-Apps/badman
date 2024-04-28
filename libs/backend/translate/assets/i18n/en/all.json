@@ -331,6 +331,7 @@
         "transfer-teams": "Transfer teams (optional)",
         "transfer-teams-description": "If you would like to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you can transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nThe order in which you check your shifts will determine the order (check everything in the correct order)\n\nYou can still change the team numbers in the next step."
       },
+      "transfers-players": "Transfers and loans",
       "validations": "Validations",
       "warnings": {
         "subtitute-team-index": "s",

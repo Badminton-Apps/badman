@@ -1,5 +1,5 @@
 import { isPlatformBrowser, PlatformLocation } from '@angular/common';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ISeoConfig } from '../interfaces/seo-config.interface';
 import { SEO_CONFIG } from '../seo.module';
@@ -17,13 +17,11 @@ type ISeoMetaData = {
   providedIn: 'root',
 })
 export class SeoService {
-  constructor(
-    @Inject(SEO_CONFIG) private config: ISeoConfig,
-    private titleService: Title,
-    private metaService: Meta,
-    @Inject(PLATFORM_ID) private platformId: string,
-    private platformLocation: PlatformLocation,
-  ) {}
+  private config = inject<ISeoConfig>(SEO_CONFIG);
+  private titleService = inject(Title);
+  private metaService = inject(Meta);
+  private platformId = inject<string>(PLATFORM_ID);
+  private platformLocation = inject(PlatformLocation);
 
   async update(data: ISeoMetaData) {
     this.setType('website');

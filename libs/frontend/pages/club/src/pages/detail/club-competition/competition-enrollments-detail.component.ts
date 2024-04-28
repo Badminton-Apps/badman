@@ -5,6 +5,7 @@ import {
   Input,
   TemplateRef,
   ViewContainerRef,
+  inject,
 } from '@angular/core';
 import { SubEventCompetition } from '@badman/frontend-models';
 import { input } from '@angular/core';
@@ -14,6 +15,7 @@ import { input } from '@angular/core';
   standalone: true,
 })
 export class EnrollmentDetailRowDirective {
+  public vcRef = inject(ViewContainerRef);
   private row?: SubEventCompetition;
   private tRef?: TemplateRef<SubEventCompetition>;
   private opened = false;
@@ -36,8 +38,6 @@ export class EnrollmentDetailRowDirective {
       this.tRef = value;
     }
   }
-
-  constructor(public vcRef: ViewContainerRef) {}
 
   @HostListener('click')
   onClick(): void {

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { onCLS, onFCP, onFID, onLCP, onTTFB, Metric } from 'web-vitals';
 import { AnalyticsConfig, ANALYTICS_CONFIG_TOKEN } from '../vitals.module';
 
@@ -6,7 +6,7 @@ import { AnalyticsConfig, ANALYTICS_CONFIG_TOKEN } from '../vitals.module';
   providedIn: 'root',
 })
 export class WebVitalsService {
-  constructor(@Inject(ANALYTICS_CONFIG_TOKEN) private config: AnalyticsConfig) {}
+  private config = inject<AnalyticsConfig>(ANALYTICS_CONFIG_TOKEN);
 
   public init(): void {
     this.reportWebVitals((data) => this.sendWebVitals(data));

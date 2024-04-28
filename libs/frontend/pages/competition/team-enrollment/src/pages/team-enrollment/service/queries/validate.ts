@@ -45,7 +45,7 @@ export const validateEnrollment = (
         link: team.team.link,
         players: team.team?.players?.map((p) => p.id)?.filter((p) => p) as string[],
         backupPlayers: team.team.players
-          ?.filter((p) => p.membershipType == TeamMembershipType.BACKUP)
+          ?.filter((p) => p.teamMembership.membershipType == TeamMembershipType.BACKUP)
           ?.map((p) => p.id)
           ?.filter((p) => p) as string[],
         basePlayers: team.entry?.players?.map((p) => p?.id)?.filter((p) => p) as string[],

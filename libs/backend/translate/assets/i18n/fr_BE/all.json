@@ -331,6 +331,7 @@
         "transfer-teams": "",
         "transfer-teams-description": "Si vous souhaitez transférer votre ou vos équipes à l'événement de cette année, vous pouvez utiliser cette étape facultative pour simplifier le processus d'inscription. En sélectionnant cette option, vous pouvez transférer votre ou vos équipes et les placer automatiquement dans le bon événement en fonction de votre participation précédente.\n\nL'ordre dans lequel vous vérifiez vos quarts de travail déterminera l'ordre (vérifiez tout dans le bon ordre)\n\nVous pouvez toujours modifier les numéros d'équipe à l'étape suivante."
       },
+      "transfers-players": "Transferts et prêts",
       "validations": "Validations",
       "warnings": {
         "subtitute-team-index": "",

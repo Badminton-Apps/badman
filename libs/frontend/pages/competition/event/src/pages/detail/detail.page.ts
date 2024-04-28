@@ -78,6 +78,17 @@ import { CompetitionMapComponent } from './competition-map';
   ],
 })
 export class DetailPageComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private translate = inject(TranslateService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private breadcrumbsService = inject(BreadcrumbService);
+  private apollo = inject(Apollo);
+  private dialog = inject(MatDialog);
+  private matSnackBar = inject(MatSnackBar);
+  private jobsService = inject(JobsService);
+  private cpService = inject(CpService);
+  private excelService = inject(ExcelService);
   // injectors
   private authService = inject(ClaimService);
   private injector = inject(Injector);
@@ -104,20 +115,6 @@ export class DetailPageComponent implements OnInit {
 
   eventCompetition!: EventCompetition;
   subEvents?: { eventType: string; subEvents: SubEventCompetition[] }[];
-
-  constructor(
-    private seoService: SeoService,
-    private translate: TranslateService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private dialog: MatDialog,
-    private matSnackBar: MatSnackBar,
-    private jobsService: JobsService,
-    private cpService: CpService,
-    private excelService: ExcelService,
-  ) {}
 
   ngOnInit(): void {
     combineLatest([this.route.data, this.translate.get(['all.competition.title'])])

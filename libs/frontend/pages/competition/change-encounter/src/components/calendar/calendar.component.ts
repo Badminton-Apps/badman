@@ -4,8 +4,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Inject,
   OnInit,
+  inject,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -65,6 +65,20 @@ import { randomLightColor } from 'seed-to-color';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent implements OnInit {
+  public dialogRef = inject<MatDialogRef<CalendarComponent>>(MatDialogRef<CalendarComponent>);
+  private ref = inject(ChangeDetectorRef);
+  private snack = inject(MatSnackBar);
+  private translate = inject(TranslateService);
+  public data = inject<{
+    homeClubId: string;
+    awayClubId: string;
+    awayTeamId: string;
+    homeTeamId: string;
+    date?: Date;
+    locationId?: string;
+    home?: boolean;
+  }>(MAT_DIALOG_DATA);
+  private apollo = inject(Apollo);
   manualDateControl: FormControl;
   manualLocationControl: FormControl;
 
@@ -131,33 +145,17 @@ export class CalendarComponent implements OnInit {
     [key: string]: string[];
   };
 
-  constructor(
-    public dialogRef: MatDialogRef<CalendarComponent>,
-    private ref: ChangeDetectorRef,
-    private snack: MatSnackBar,
-    private translate: TranslateService,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      homeClubId: string;
-      awayClubId: string;
-      awayTeamId: string;
-      homeTeamId: string;
-      date?: Date;
-      locationId?: string;
-      home?: boolean;
-    },
-    private apollo: Apollo,
-  ) {
+  constructor() {
     // set date to closes 15 min
-    const manualDate = moment(data?.date);
+    const manualDate = moment(this.data?.date);
     if (manualDate.isValid()) {
       manualDate.set('minute', Math.ceil(manualDate.get('minute') / 15) * 15);
     }
 
     this.manualDateControl = new FormControl(manualDate.toDate());
-    this.manualLocationControl = new FormControl(data?.locationId);
+    this.manualLocationControl = new FormControl(this.data?.locationId);
 
-    this.firstDayOfMonth = moment(data.date);
+    this.firstDayOfMonth = moment(this.data.date);
     if (!this.firstDayOfMonth.isValid()) {
       this.firstDayOfMonth = moment();
     }

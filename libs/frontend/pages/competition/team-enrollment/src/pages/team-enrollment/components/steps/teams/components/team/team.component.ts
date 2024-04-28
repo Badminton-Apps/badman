@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   OnInit,
-  Output,
   Signal,
   computed,
   input,
+  inject,
+  output,
 } from '@angular/core';
 import {
   FormArray,
@@ -44,6 +44,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
+import { v4 as uuid } from 'uuid';
 
 @Component({
   selector: 'badman-team',
@@ -68,6 +69,10 @@ import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
   styleUrls: ['./team.component.scss'],
 })
 export class TeamComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private snackbar = inject(MatSnackBar);
+  private changeDetector = inject(ChangeDetectorRef);
+  private formBuilder = inject(FormBuilder);
   destroy$ = new Subject<void>();
 
   team = input.required<FormControl<Team>>();
@@ -92,14 +97,11 @@ export class TeamComponent implements OnInit {
     return this.team()?.value?.type;
   });
 
-  @Output()
-  editTeam = new EventEmitter<Team>();
+  editTeam = output<Team>();
 
-  @Output()
-  removeTeam = new EventEmitter<Team>();
+  removeTeam = output<Team>();
 
-  @Output()
-  changeTeamNumber = new EventEmitter<Team>();
+  changeTeamNumber = output<Team>();
 
   types = Object.keys(TeamMembershipType) as TeamMembershipType[];
 
@@ -116,13 +118,6 @@ export class TeamComponent implements OnInit {
 
   hasWarning = false;
   warningMessage = '';
-
-  constructor(
-    private apollo: Apollo,
-    private snackbar: MatSnackBar,
-    private changeDetector: ChangeDetectorRef,
-    private formBuilder: FormBuilder,
-  ) {}
 
   ngOnInit(): void {
     this.checkTeam();
@@ -178,7 +173,10 @@ export class TeamComponent implements OnInit {
       new TeamPlayer({
         ...player,
         rankingPlaces: ranking.data?.rankingPlaces ?? [],
-        membershipType: TeamMembershipType.REGULAR,
+        teamMembership: {
+          id: uuid(),
+          membershipType: TeamMembershipType.REGULAR,
+        },
       }),
     );
 
@@ -220,7 +218,7 @@ export class TeamComponent implements OnInit {
   }
 
   changePlayerType(player: TeamPlayer, type: TeamMembershipType) {
-    player.membershipType = type;
+    player.teamMembership.membershipType = type;
     this.checkTeam();
   }
 
@@ -229,11 +227,11 @@ export class TeamComponent implements OnInit {
     this.warningMessage = '';
 
     this.baseCount = this.team().value.players?.filter(
-      (p) => p.membershipType === TeamMembershipType.REGULAR,
+      (p) => p.teamMembership.membershipType === TeamMembershipType.REGULAR,
     ).length;
 
     this.backupCount = this.team().value.players?.filter(
-      (p) => p.membershipType === TeamMembershipType.BACKUP,
+      (p) => p.teamMembership.membershipType === TeamMembershipType.BACKUP,
     ).length;
 
     // check if all required fields are set (captainId, preferredDay, prefferdTime, email, phone)

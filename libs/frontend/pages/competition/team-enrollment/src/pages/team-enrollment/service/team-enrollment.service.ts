@@ -14,7 +14,7 @@ import {
   Team,
   TeamValidationResult,
 } from '@badman/frontend-models';
-import { LevelType, SubEventTypeEnum, sortSubEventOrder, sortTeams } from '@badman/utils';
+import { ClubMembershipType, LevelType, SubEventTypeEnum, sortSubEventOrder, sortTeams } from '@badman/utils';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { TeamFormValue } from '../team-enrollment.page';
 import { loadClub } from './queries/club';
@@ -31,6 +31,7 @@ interface TeamEnrollmentState {
 
   teams: Team[];
   transfers: Player[];
+  loans: Player[];
   locations: Location[];
   comments: Comment[];
   events: EventCompetition[];
@@ -57,6 +58,7 @@ export class TeamEnrollmentDataService {
     teams: [],
     locations: [],
     transfers: [],
+    loans: [],
 
     // Selected
     club: null,
@@ -216,7 +218,8 @@ export class TeamEnrollmentDataService {
         action$.pipe(
           switchMap(({ clubId, season }) => loadTransersAndLoans(this.apollo, clubId, season)),
           map((transfers) => ({
-            transfers,
+            transfers: transfers.filter((player) => player.clubMembership.membershipType === ClubMembershipType.NORMAL),
+            loans: transfers.filter((player) => player.clubMembership.membershipType === ClubMembershipType.LOAN),
           })),
         ),
 

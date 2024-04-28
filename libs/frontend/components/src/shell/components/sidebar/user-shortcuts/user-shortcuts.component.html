@@ -2,14 +2,14 @@
   <mat-nav-list>
     <a
       mat-list-item
-      (click)="whenNavigate.next()"
+      (click)="whenNavigate.emit()"
       [routerLink]="['/player', user()?.slug]"
       routerLinkActive="active"
     >
       {{ 'all.shell.sidebar.persnal.games' | translate }}
     </a>
     @if (clubs().length === 1) {
-      <a mat-list-item (click)="whenNavigate.next()" [routerLink]="['/club', clubs()[0].slug]">
+      <a mat-list-item (click)="whenNavigate.emit()" [routerLink]="['/club', clubs()[0].slug]">
         {{ 'all.shell.sidebar.persnal.club' | translate }}
       </a>
     }
@@ -31,7 +31,7 @@
             <mat-nav-list>
               <a
                 mat-list-item
-                (click)="whenNavigate.next()"
+                (click)="whenNavigate.emit()"
                 [routerLink]="['/club', club.slug]"
                 routerLinkActive="active"
               >

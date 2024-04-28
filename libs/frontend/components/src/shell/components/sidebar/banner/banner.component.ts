@@ -3,10 +3,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  Inject,
   OnInit,
   PLATFORM_ID,
   input,
+  inject,
 } from '@angular/core';
 import { Banner } from '@badman/frontend-models';
 
@@ -19,12 +19,9 @@ import { Banner } from '@badman/frontend-models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BannerComponent implements OnInit {
+  private elementRef = inject(ElementRef);
+  private platformId = inject<string>(PLATFORM_ID);
   banner = input.required<Banner>();
-
-  constructor(
-    private elementRef: ElementRef,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
