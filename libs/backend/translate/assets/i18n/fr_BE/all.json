@@ -297,6 +297,7 @@
       "example-warning": "Ce sont des avertissements dont il faut tenir compte. L'enregistrement peut encore être complété.",
       "exceptions": "Des exceptions",
       "info": "",
+      "loan-locked": "Le prêt a déjà été confirmé, il n'est plus possible de le supprimer",
       "locations": {
         "availible-courts": "Champs disponibles",
         "courts-hint": "Modifier le nombre de champs disponibles",
@@ -331,6 +332,7 @@
         "transfer-teams": "",
         "transfer-teams-description": "Si vous souhaitez transférer votre ou vos équipes à l'événement de cette année, vous pouvez utiliser cette étape facultative pour simplifier le processus d'inscription. En sélectionnant cette option, vous pouvez transférer votre ou vos équipes et les placer automatiquement dans le bon événement en fonction de votre participation précédente.\n\nL'ordre dans lequel vous vérifiez vos quarts de travail déterminera l'ordre (vérifiez tout dans le bon ordre)\n\nVous pouvez toujours modifier les numéros d'équipe à l'étape suivante."
       },
+      "transfer-locked": "Le transfert a déjà été confirmé, il n'est plus possible de le supprimer",
       "transfers-players": "Transferts et prêts",
       "validations": "Validations",
       "warnings": {
@@ -600,6 +602,7 @@
     "select-encounter": "Choisir une réunion",
     "select-end-time": "Heure de fin",
     "select-event-competition": "Sélectionnez la ligue",
+    "select-player": "Choisissez un joueur",
     "select-season": "La saison",
     "select-start-time": "Heure de début",
     "select-state": "Choisir une province",

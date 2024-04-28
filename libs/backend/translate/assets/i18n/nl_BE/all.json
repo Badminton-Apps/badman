@@ -297,6 +297,7 @@
       "example-warning": "Dit zijn waarschuwingen waar rekening mee gehouden dient te worden. De inschrijving kan nog wel afgewerkt worden.",
       "exceptions": "Uitzonderingen",
       "info": "",
+      "loan-locked": "Uitlening is al bevestigd, deze verwijderen is niet meer mogelijk",
       "locations": {
         "availible-courts": "Beschikbare velden",
         "courts-hint": "Wijzig het aantal beschikbare velden",
@@ -331,6 +332,7 @@
         "transfer-teams": "Zet teams over (optioneel)",
         "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nDe volgorde waarin je je ploegen aanvinkt zal de volgorde bepalen (\"alles\" vinkt het in de juiste volgorde aan)\n\nJe kan de teamnummers in volgende stap nog wijzigen."
       },
+      "transfer-locked": "Transfer is al bevestigd, deze verwijderen is niet meer mogelijk",
       "transfers-players": "Transfers en uitleningen",
       "validations": "Validaties",
       "warnings": {
@@ -600,6 +602,7 @@
     "select-encounter": "Kies een ontmoeting",
     "select-end-time": "Eindtijd",
     "select-event-competition": "Selecteer competitie",
+    "select-player": "Kies een speler",
     "select-season": "Seizoen",
     "select-start-time": "Starttijd",
     "select-state": "Kies provincie",

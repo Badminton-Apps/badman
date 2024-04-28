@@ -252,6 +252,7 @@ export class ClubsResolver {
         through: {
           start: addPlayerToClubData.start,
           end: addPlayerToClubData.end,
+          membershipType: addPlayerToClubData.membershipType,
         },
       });
 
