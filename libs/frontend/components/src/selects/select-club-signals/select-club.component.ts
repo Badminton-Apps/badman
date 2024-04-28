@@ -64,7 +64,6 @@ export class SelectClubSignalsComponent {
   // selections
   club = model<string | null>(null);
 
-
   // not sure if this is the right way to do this, otherwise it's just the same as unused private variable
   constructor() {
     effect(() => {
@@ -75,7 +74,11 @@ export class SelectClubSignalsComponent {
 
     effect(
       () => {
-        if (!this.club() && this.possibleClubs().length > 0) {
+        if (
+          !this.club() &&
+          this.dataService.filter.get('country')?.value != null &&
+          this.possibleClubs().length > 0
+        ) {
           this.club.set(this.possibleClubs()[0].id);
         }
       },
