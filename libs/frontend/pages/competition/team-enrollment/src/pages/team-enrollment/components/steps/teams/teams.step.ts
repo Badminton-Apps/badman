@@ -86,6 +86,9 @@ export class TeamsStepComponent {
       }>,
   );
 
+  transfers = computed(() => this.transfersLoans().get(ClubMembershipType.NORMAL) as FormControl<string[]>);
+  loans = computed(() => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>);
+
   teamNumbers = computed(() => {
     const teams = this.teams();
     if (!teams) return;

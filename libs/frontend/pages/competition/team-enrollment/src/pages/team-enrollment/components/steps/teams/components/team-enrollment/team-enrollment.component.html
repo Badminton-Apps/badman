@@ -5,6 +5,8 @@
     [basePlayers]="players()"
     (removeTeam)="this.removeTeam.emit($event)"
     (changeTeamNumber)="this.changeTeamNumber.emit($event)"
+    [transfers]="this.transfers()"
+    [loans]="this.loans()"
   ></badman-team>
   <div class="beside">
     <div class="event">
