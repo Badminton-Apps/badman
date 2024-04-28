@@ -60,7 +60,7 @@ export class ClubPlayerMembership extends Model {
   @Column(DataType.VIRTUAL)
   get active() {
     // if the start is passed and end is null or in the future, it is active
-    return this.start && this.start < new Date() && (!this.end || this.end > new Date());
+    return this.confirmed && this.start && this.start < new Date() && (!this.end || this.end > new Date());
   }
 
   @Default(ClubMembershipType.NORMAL)

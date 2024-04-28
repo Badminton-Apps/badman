@@ -10,10 +10,9 @@ import {
   Comment,
   EventCompetition,
   Location,
-  Player,
   SubEventCompetition,
   Team,
-  TeamValidationResult,
+  TeamValidationResult
 } from '@badman/frontend-models';
 import { ClubMembershipType, LevelType, SubEventTypeEnum, sortSubEventOrder, sortTeams } from '@badman/utils';
 import { signalSlice } from 'ngxtension/signal-slice';
@@ -23,8 +22,8 @@ import { loadComments } from './queries/comments';
 import { loadEvents } from './queries/events';
 import { loadLocations } from './queries/locations';
 import { loadTeams } from './queries/teams';
-import { validateEnrollment } from './queries/validate';
 import { loadTransersAndLoans } from './queries/transfers';
+import { validateEnrollment } from './queries/validate';
 
 interface TeamEnrollmentState {
   club: Club | null;
@@ -251,11 +250,13 @@ export class TeamEnrollmentDataService {
           teamForm?: { [key in SubEventTypeEnum]: TeamFormValue[] };
           season?: number;
           clubId: string;
+          transfers?: string[];
+          loans?: string[];
         }>,
       ) =>
         action$.pipe(
-          switchMap(({ teamForm, season, clubId }) =>
-            validateEnrollment(this.apollo, teamForm, season, clubId),
+          switchMap(({ teamForm, season, clubId, transfers, loans }) =>
+            validateEnrollment(this.apollo, teamForm, season, clubId, transfers, loans),
           ),
           map((validation) => ({
             validation,
