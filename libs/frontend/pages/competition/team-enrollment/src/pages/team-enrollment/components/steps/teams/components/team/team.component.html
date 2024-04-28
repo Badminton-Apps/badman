@@ -124,6 +124,23 @@
         @for (player of this.team().value.players; track player) {
           <div class="player">
             <div class="name">
+              @if (loans().indexOf(player.id) > -1) {
+                <span
+                  class="loan"
+                  [matTooltip]="'all.competition.team-enrollment.players.loan' | translate"
+                >
+                  <mat-icon>swap_horiz</mat-icon>
+                </span>
+              }
+              @if (transfers().indexOf(player.id) > -1) {
+                <span
+                  class="transfer"
+                  [matTooltip]="'all.competition.team-enrollment.players.transfer' | translate"
+                >
+                  <mat-icon>swap_horiz</mat-icon>
+                </span>
+              }
+
               {{ player.fullName }}
               <span class="ranking">
                 {{ player.lastRanking?.single }} -
@@ -188,6 +205,22 @@
     @for (b of basePlayers().value; track b) {
       <div class="player">
         <div class="name">
+          @if (loans().indexOf(b.id) > -1) {
+            <span
+              class="loan"
+              [matTooltip]="'all.competition.team-enrollment.players.loan' | translate"
+            >
+              <mat-icon>swap_horiz</mat-icon>
+            </span>
+          }
+          @if (transfers().indexOf(b.id) > -1) {
+            <span
+              class="transfer"
+              [matTooltip]="'all.competition.team-enrollment.players.transfer' | translate"
+            >
+              <mat-icon>swap_horiz</mat-icon>
+            </span>
+          }
           {{ b.player.fullName }}
           <span class="ranking">
             {{ b.single }} - {{ b.double }}

@@ -308,9 +308,11 @@
       "players": {
         "backup": "Reserve speler(s)",
         "base": "Basisspeler(s)",
+        "loan": "Uitgeleend",
         "regular": "Vaste speler(s)",
         "team": "",
-        "title": "Mogelijke titularissen"
+        "title": "Mogelijke titularissen",
+        "transfer": "Getransfereerd"
       },
       "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten we toe tussentijds op te slaan indien er nog onzekerheden zijn over je basisspelers.",
       "select-club": "Selecteer club",
