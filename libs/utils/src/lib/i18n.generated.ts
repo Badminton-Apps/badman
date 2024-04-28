@@ -315,9 +315,11 @@ export type I18nTranslations = {
                 "players": {
                     "backup": string;
                     "base": string;
+                    "loan": string;
                     "regular": string;
                     "team": string;
                     "title": string;
+                    "transfer": string;
                 };
                 "save-and-continue-tooltip": string;
                 "select-club": string;

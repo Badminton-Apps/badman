@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Signal, computed, effect, inject, input, signal, output } from '@angular/core';
+import { Component, Signal, computed, effect, inject, input, output, signal } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -45,11 +45,16 @@ export class TeamEnrollmentComponent {
   private readonly systemService = inject(RankingSystemService);
   private readonly auth = inject(ClaimService);
 
+
   group = input.required<TeamForm>();
+  transfers = input.required<string[]>();
+  loans = input.required<string[]>();
+  
   team = computed(() => this.group().get('team') as FormControl<Team>);
   type = computed(() => this.team().value.type ?? SubEventTypeEnum.M);
   entry = computed(() => this.group().get('entry') as FormGroup);
   subEvent = computed(() => this.entry().get('subEventId') as FormControl<string>);
+
   validation = computed(() =>
     this.dataService.state.validation()?.find((v) => v.id === this.team().value.id),
   );

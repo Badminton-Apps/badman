@@ -5,8 +5,8 @@ import {
   OnInit,
   Signal,
   computed,
-  input,
   inject,
+  input,
   output,
 } from '@angular/core';
 import {
@@ -34,17 +34,13 @@ import {
   Team,
   TeamPlayer,
 } from '@badman/frontend-models';
-import {
-  SubEventTypeEnum,
-  TeamMembershipType,
-  getCurrentSeason,
-  getIndexFromPlayers,
-} from '@badman/utils';
+import { SubEventTypeEnum, TeamMembershipType, getIndexFromPlayers } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
 import { v4 as uuid } from 'uuid';
+import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 
 @Component({
   selector: 'badman-team',
@@ -69,6 +65,10 @@ import { v4 as uuid } from 'uuid';
   styleUrls: ['./team.component.scss'],
 })
 export class TeamComponent implements OnInit {
+  private readonly dataService = inject(TeamEnrollmentDataService);
+
+  season = this.dataService.state.season as Signal<number>;
+
   private apollo = inject(Apollo);
   private snackbar = inject(MatSnackBar);
   private changeDetector = inject(ChangeDetectorRef);
@@ -76,6 +76,7 @@ export class TeamComponent implements OnInit {
   destroy$ = new Subject<void>();
 
   team = input.required<FormControl<Team>>();
+
   teamType = computed(() => {
     if (!this.team()?.value?.type) {
       throw new Error('No team type');
@@ -88,8 +89,6 @@ export class TeamComponent implements OnInit {
 
   system = input.required<RankingSystem>();
 
-  season = input<number>(getCurrentSeason());
-
   type = computed(() => {
     if (this.team()?.value?.type === SubEventTypeEnum.NATIONAL) {
       return SubEventTypeEnum.MX;
@@ -97,6 +96,10 @@ export class TeamComponent implements OnInit {
     return this.team()?.value?.type;
   });
 
+  loans = input.required<string[]>();
+  transfers = input.required<string[]>();
+
+ 
   editTeam = output<Team>();
 
   removeTeam = output<Team>();
@@ -187,7 +190,6 @@ export class TeamComponent implements OnInit {
   }
 
   async addBasePlayerToTeam(player: Player) {
-    console.log('addBasePlayerToTeam', player, this.basePlayers());
     // Check if player is already in team
     if (this.basePlayers().value.find((p) => p.id === player.id)) {
       this.snackbar.open('Player is already in baseteam', 'Close', {

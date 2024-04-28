@@ -308,9 +308,11 @@
       "players": {
         "backup": "Backup player(s)",
         "base": "Baseplayer(s)",
+        "loan": "Loaned out",
         "regular": "Regular player(s)",
         "team": "",
-        "title": "Possible titulars"
+        "title": "Possible titulars",
+        "transfer": "Transferred"
       },
       "save-and-continue-tooltip": "You can continue without saving your teams, but we allow you to save in between if there are still uncertainties about your baseplayers",
       "select-club": "Select club",
