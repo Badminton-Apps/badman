@@ -1,3 +1,25 @@
+## 6.140.0 (2024-04-28)
+
+
+### 🚀 Features
+
+- improved club player membership endpoints ([f37da1047](https://github.com/Badminton-Apps/badman/commit/f37da1047))
+- adding club filter ([97a61ff0a](https://github.com/Badminton-Apps/badman/commit/97a61ff0a))
+- updated packages ([93200e256](https://github.com/Badminton-Apps/badman/commit/93200e256))
+- adding option to select your transfers / loans ([dac16a753](https://github.com/Badminton-Apps/badman/commit/dac16a753))
+- update rule to check for transfer and lonas ([cfb04622b](https://github.com/Badminton-Apps/badman/commit/cfb04622b))
+- show transfers and loans in view ([86b53240e](https://github.com/Badminton-Apps/badman/commit/86b53240e))
+- **team-enrollment:** check if the club of the player matches the enrollment club ([65fc72923](https://github.com/Badminton-Apps/badman/commit/65fc72923))
+
+### 🩹 Fixes
+
+- adding permissions for overwriting the event level ([a93758139](https://github.com/Badminton-Apps/badman/commit/a93758139))
+- clearing data on page leave ([d1e92e8c6](https://github.com/Badminton-Apps/badman/commit/d1e92e8c6))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.139.0 (2024-04-21)
 
 
