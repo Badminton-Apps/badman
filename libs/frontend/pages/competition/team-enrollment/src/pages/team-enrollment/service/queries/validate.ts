@@ -8,8 +8,11 @@ import { TeamFormValue } from '../../team-enrollment.page';
 export const validateEnrollment = (
   apollo: Apollo,
   teamForm?: { [key in SubEventTypeEnum]: TeamFormValue[] },
+
   season?: number,
   clubId?: string,
+  transfers?: string[],
+  loans?: string[],
 ) => {
   if (!teamForm || !season) {
     console.error('No teamForm or season provided');
@@ -87,6 +90,8 @@ export const validateEnrollment = (
           clubId,
           season,
           teams,
+          transfers,
+          loans,
         },
       },
     })

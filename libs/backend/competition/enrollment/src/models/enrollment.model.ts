@@ -31,6 +31,12 @@ export class EnrollmentInput {
 
   @Field(() => Int, { nullable: true })
   season?: number;
+
+  @Field(() => [ID], { nullable: true })
+  loans?: string[]; 
+
+  @Field(() => [ID], { nullable: true })
+  transfers?: string[];
 }
 
 @InputType()
@@ -123,6 +129,9 @@ export type RuleResult = {
 export class EnrollmentValidationData {
   club!: Club;
   teams!: EnrollmentValidationTeam[];
+  transfers!: string[];
+  loans!: string[];
+  season!: number;
 }
 
 export class EnrollmentValidationTeam {
