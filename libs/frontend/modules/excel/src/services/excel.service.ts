@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { IExcelConfig } from '../interfaces';
 import { EXCEL_CONFIG } from '../excel.module';
 import { EventCompetition } from '@badman/frontend-models';
@@ -9,11 +9,8 @@ import { map, take } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class ExcelService {
-  constructor(
-    private httpClient: HttpClient,
-    @Inject(EXCEL_CONFIG)
-    private config: IExcelConfig,
-  ) {}
+  private httpClient = inject(HttpClient);
+  private config = inject<IExcelConfig>(EXCEL_CONFIG);
 
   getBaseplayersEnrollment(event: EventCompetition) {
     if (!event?.id) {

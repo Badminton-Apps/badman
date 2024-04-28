@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,6 +37,12 @@ import { v4 as uuidv4 } from 'uuid';
   ],
 })
 export class AddGameComponent implements OnInit {
+  private dialogRef = inject<MatDialogRef<AddGameComponent>>(MatDialogRef<AddGameComponent>);
+  public data = inject<{
+    playerId: string;
+    type: 'single' | 'double' | 'mix';
+    system: RankingSystem;
+  }>(MAT_DIALOG_DATA);
   formGroup!: FormGroup;
 
   p1t1!: FormControl;
@@ -53,15 +59,7 @@ export class AddGameComponent implements OnInit {
 
   fragment: DocumentNode;
 
-  constructor(
-    private dialogRef: MatDialogRef<AddGameComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      playerId: string;
-      type: 'single' | 'double' | 'mix';
-      system: RankingSystem;
-    },
-  ) {
+  constructor() {
     this.fragment = gql`
       fragment AddGameInfo on Player {
         rankingLastPlaces {

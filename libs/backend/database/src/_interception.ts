@@ -19,20 +19,20 @@ export class GamePlayerMembershipType extends IntersectionType(
 }
 
 @ObjectType()
-export class ClubWithMembershipType extends Club {
+export class ClubWithPlayerMembershipType extends Club {
   @Field(() => ClubPlayerMembership, { nullable: true })
   clubMembership?: ClubPlayerMembership;
 }
 
 
 @ObjectType()
-export class PlayerWithMembershipType extends Player {
+export class PlayerWithClubMembershipType extends Player {
   @Field(() => ClubPlayerMembership, { nullable: true })
   clubMembership?: ClubPlayerMembership;
 }
 
 @ObjectType()
-export class TeamPlayerMembershipType extends IntersectionType(
-  OmitType(TeamPlayerMembership, ['id'] as const),
-  Player,
-) {}
+export class PlayerWithTeamMembershipType extends Player {
+  @Field(() => TeamPlayerMembership, { nullable: true })
+  teamMembership?: TeamPlayerMembership;
+}

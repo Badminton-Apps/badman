@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Injector,
   OnInit,
-  Output,
   effect,
   inject,
   input,
+  output,
 } from '@angular/core';
 import {
   FormControl,
@@ -51,8 +50,7 @@ export class EditPlayerFieldsComponent implements OnInit {
 
   player = input.required<Player>();
 
-  @Output()
-  playerChanged = new EventEmitter<Partial<Player>>();
+  playerChanged = output<Partial<Player>>();
 
   fg!: FormGroup;
 

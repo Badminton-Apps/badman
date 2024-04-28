@@ -8,7 +8,7 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-club' | translate
       }}</ng-template>
-      <badman-club-step [formGroup]="this.formGroup"></badman-club-step>
+      <badman-club-step [formGroup]="this.formGroup" />
       <button
         mat-raised-button
         color="primary"
@@ -24,7 +24,7 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-location' | translate
       }}</ng-template>
-      <badman-locations-step [formGroup]="this.formGroup"></badman-locations-step>
+      <badman-locations-step [formGroup]="this.formGroup"/>
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
         <button mat-stroked-button matStepperNext [disabled]="!locationControl.valid">
@@ -43,9 +43,25 @@
 
     <mat-step>
       <ng-template matStepLabel>{{
+        'all.competition.team-enrollment.transfers-players' | translate
+      }}</ng-template>
+      <badman-player-transfer-step [formGroup]="this.formGroup" />
+      <div class="actions">
+        <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
+        <button mat-stroked-button matStepperNext>
+          {{ 'all.button.next' | translate }}
+        </button>
+        <button mat-raised-button (click)="saveAndContinue()" color="primary">
+          {{ 'all.button.save-and-continue' | translate }}
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step>
+      <ng-template matStepLabel>{{
         'all.competition.team-enrollment.transfer.transfer-teams' | translate
       }}</ng-template>
-      <badman-teams-transfer-step [formGroup]="this.formGroup"></badman-teams-transfer-step>
+      <badman-teams-transfer-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
         <button mat-raised-button color="primary" matStepperNext>
@@ -58,7 +74,7 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-teams' | translate
       }}</ng-template>
-      <badman-teams-step [formGroup]="this.formGroup"></badman-teams-step>
+      <badman-teams-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
         <button
@@ -83,7 +99,7 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.comments.title' | translate
       }}</ng-template>
-      <badman-comments-step [formGroup]="this.formGroup"></badman-comments-step>
+      <badman-comments-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
         <button mat-raised-button color="primary" (click)="saveAndFinish()">

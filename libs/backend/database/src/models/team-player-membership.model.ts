@@ -30,6 +30,7 @@ export class TeamPlayerMembership extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column(DataType.UUIDV4)
   override id!: string;
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -14,10 +14,11 @@ import { ThemeSwitcherService } from './theme-switcher.service';
   styleUrls: ['./theme-switcher.component.scss'],
 })
 export class ThemeSwitcherComponent implements OnInit {
+  public colorSchemaService = inject(ThemeSwitcherService);
   title = 'Angular material dark mode';
   current!: 'light' | 'dark';
 
-  constructor(public colorSchemaService: ThemeSwitcherService) {
+  constructor() {
     this.colorSchemaService.load();
   }
 

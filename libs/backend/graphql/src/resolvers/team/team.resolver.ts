@@ -6,12 +6,12 @@ import {
   EventEntry,
   Location,
   Player,
+  PlayerWithTeamMembershipType,
   RankingLastPlace,
   RankingSystem,
   Team,
   TeamNewInput,
   TeamPlayerMembership,
-  TeamPlayerMembershipType,
   TeamUpdateInput,
 } from '@badman/backend-database';
 import {
@@ -60,18 +60,9 @@ export class TeamsResolver {
     return Team.findAll(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [TeamPlayerMembershipType])
+  @ResolveField(() => [PlayerWithTeamMembershipType])
   async players(@Parent() team: Team, @Args() listArgs: ListArgs) {
-    const players = (await team.getPlayers(ListArgs.toFindOptions(listArgs))) as (Player & {
-      TeamPlayerMembership: TeamPlayerMembership;
-    })[];
-
-    return players?.map((player: Player & { TeamPlayerMembership: TeamPlayerMembership }) => {
-      return {
-        ...player.TeamPlayerMembership.toJSON(),
-        ...player.toJSON(),
-      };
-    });
+    return team.getPlayers(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => String)
@@ -862,7 +853,7 @@ export class TeamsResolver {
     return team;
   }
 
-  @Mutation(() => TeamPlayerMembershipType)
+  @Mutation(() => PlayerWithTeamMembershipType)
   async updateTeamPlayerMembership(
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('playerId', { type: () => ID }) playerId: string,

@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -41,8 +34,7 @@ export class EventCompetitionLevelFieldsComponent implements OnInit {
 
   formGroup = input.required<FormGroup>();
 
-  @Output()
-  whenDelete = new EventEmitter<SubEventCompetition>();
+  whenDelete = output<SubEventCompetition>();
 
   ngOnInit(): void {
     this.formGroup()

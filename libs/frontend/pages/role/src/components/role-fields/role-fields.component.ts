@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -41,7 +34,7 @@ export class RoleFieldsComponent implements OnInit {
     }[]
   >();
 
-  @Output() save = new EventEmitter<Role>();
+  save = output<Role>();
 
   roleForm!: FormGroup;
 
@@ -71,7 +64,7 @@ export class RoleFieldsComponent implements OnInit {
 
   update() {
     if (this.roleForm.valid) {
-      this.save.next({
+      this.save.emit({
         id: this.role().id,
         ...this.roleForm.value,
         claims: this.selectedClaims.map((c) => {
@@ -79,7 +72,7 @@ export class RoleFieldsComponent implements OnInit {
             id: c.id,
           };
         }),
-      });
+      } );
     }
   }
 }

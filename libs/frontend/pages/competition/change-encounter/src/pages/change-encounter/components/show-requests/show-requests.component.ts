@@ -9,6 +9,7 @@ import {
   computed,
   input,
   signal,
+  inject,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -95,6 +96,12 @@ const CHANGE_QUERY = gql`
   ],
 })
 export class ShowRequestsComponent implements OnInit {
+  private readonly apollo = inject(Apollo);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly translate = inject(TranslateService);
+  private readonly claimService = inject(ClaimService);
   group = input.required<FormGroup>();
 
   dependsOn = input('encounter');
@@ -118,15 +125,6 @@ export class ShowRequestsComponent implements OnInit {
 
   requests$!: Observable<EncounterChange>;
   @ViewChild('confirm', { static: true }) confirmDialog!: TemplateRef<unknown>;
-
-  constructor(
-    private readonly apollo: Apollo,
-    private readonly dialog: MatDialog,
-    private readonly snackBar: MatSnackBar,
-    private readonly changeDetector: ChangeDetectorRef,
-    private readonly translate: TranslateService,
-    private readonly claimService: ClaimService,
-  ) {}
 
   async ngOnInit() {
     this.previous = this.group().get(this.dependsOn()) ?? undefined;

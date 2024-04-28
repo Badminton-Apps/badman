@@ -6,11 +6,11 @@ import {
   ClubPlayerMembershipNewInput,
   ClubPlayerMembershipUpdateInput,
   ClubUpdateInput,
-  ClubWithMembershipType,
+  ClubWithPlayerMembershipType,
   Comment,
   Location,
   Player,
-  PlayerWithMembershipType,
+  PlayerWithClubMembershipType,
   Role,
   Team,
 } from '@badman/backend-database';
@@ -30,6 +30,7 @@ import {
 } from '@nestjs/graphql';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
+import { Op } from 'sequelize';
 
 @ObjectType()
 export class PagedClub {
@@ -88,7 +89,7 @@ export class ClubsResolver {
     return club.getRoles(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [PlayerWithMembershipType])
+  @ResolveField(() => [PlayerWithClubMembershipType])
   async players(
     @Parent() club: Club,
     @Args() listArgs: ListArgs,
@@ -97,13 +98,29 @@ export class ClubsResolver {
     const options = ListArgs.toFindOptions(listArgs);
 
     if (active) {
+      //active =  this.start && this.start < new Date() && (!this.end || this.end > new Date());
       options.where = {
         ...options.where,
-        [`$${ClubPlayerMembership.name}.active$`]: true,
+        [`$${ClubPlayerMembership.name}.start$`]: {
+          [Op.lte]: new Date(),
+        },
+        [`$${ClubPlayerMembership.name}.end$`]: {
+          [Op.or]: {
+            [Op.gte]: new Date(),
+            [Op.eq]: null,
+          },
+        },
       };
     }
 
-    const players = await club.getPlayers(options);
+    const players = (await club.getPlayers(options)) as (Player & {
+      ClubMembership: ClubPlayerMembership;
+    })[];
+
+    // if (active) {
+    //   players = players.filter((player) => player.ClubMembership.active);
+    // }
+
     const distinctPlayers = players.filter(
       (player, index, self) => index === self.findIndex((p) => p.id === player.id),
     );
@@ -326,7 +343,7 @@ export class ClubsResolver {
   }
 }
 
-@Resolver(() => ClubWithMembershipType)
+@Resolver(() => ClubWithPlayerMembershipType)
 export class ClubPlayerResolver extends ClubsResolver {
   @ResolveField(() => ClubPlayerMembership, { nullable: true })
   async clubMembership(

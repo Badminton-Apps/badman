@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { Club } from '@badman/frontend-models';
@@ -9,12 +9,9 @@ import { Apollo, gql } from 'apollo-angular';
   styleUrls: ['./add-club.component.scss'],
 })
 export class AddClubComponent {
+  private apollo = inject(Apollo);
+  private router = inject(Router);
   club!: Club;
-
-  constructor(
-    private apollo: Apollo,
-    private router: Router,
-  ) {}
 
   async add(club: Club) {
     this.club = club;

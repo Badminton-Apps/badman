@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import { Club, EventCompetition } from '@badman/frontend-models';
@@ -39,6 +39,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
   ],
 })
 export class ClubViewComponent implements OnInit {
+  private _apollo = inject(Apollo);
   overlayOpen = '';
 
   yearControl: FormControl = new FormControl(2022);
@@ -47,8 +48,6 @@ export class ClubViewComponent implements OnInit {
 
   clubs$!: Observable<(Club & { hasLocation: boolean })[]>;
   events$!: Observable<EventCompetition[]>;
-
-  constructor(private _apollo: Apollo) {}
 
   ngOnInit(): void {
     this.clubs$ = combineLatest([

@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -61,15 +61,12 @@ const NOTIFICAION_QUERY = gql`
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewPageComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private notifService = inject(NotificationService);
+  private apollo = inject(Apollo);
+  private platformId = inject<string>(PLATFORM_ID);
   notifications$?: Observable<Notification[] | undefined>;
   showRead = false;
-
-  constructor(
-    private seoService: SeoService,
-    private notifService: NotificationService,
-    private apollo: Apollo,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit(): void {
     this.seoService.update({

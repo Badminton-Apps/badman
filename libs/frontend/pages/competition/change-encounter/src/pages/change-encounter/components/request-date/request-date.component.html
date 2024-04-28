@@ -35,7 +35,7 @@
     </div>
     @if (!group().get('id')!.value) {
       <div class="delete">
-        <button mat-icon-button (click)="removeDate.next()" type="button">
+        <button mat-icon-button (click)="removeDate.emit()" type="button">
           <mat-icon>delete</mat-icon>
         </button>
       </div>

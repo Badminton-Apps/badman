@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   OnInit,
-  Output,
   TemplateRef,
   ViewChild,
   input,
+  inject,
+  output,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -50,10 +50,11 @@ import { PickEventDialogComponent } from '../../../../dialogs';
   ],
 })
 export class ClubEditTeamComponent implements OnInit {
-  @Output() whenPlayerAdded = new EventEmitter<Partial<Player>>();
-  @Output() whenPlayerRemoved = new EventEmitter<Partial<Player>>();
-  @Output() whenPlayerMetaUpdated = new EventEmitter<Partial<EntryCompetitionPlayer>>();
-  @Output() whenSubEventChanged = new EventEmitter<{
+  private readonly dialog = inject(MatDialog);
+  whenPlayerAdded = output<Partial<Player>>();
+  whenPlayerRemoved = output<Partial<Player>>();
+  whenPlayerMetaUpdated = output<Partial<EntryCompetitionPlayer>>();
+  whenSubEventChanged = output<{
     event: string;
     subEvent: string;
   }>();
@@ -72,8 +73,6 @@ export class ClubEditTeamComponent implements OnInit {
   @ViewChild('changeRanking')
   changeRankingTemplateRef?: TemplateRef<HTMLElement>;
   changeRankingFormGroup?: FormGroup;
-
-  constructor(private readonly dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.subEvent = this.team().entry?.subEventCompetition;

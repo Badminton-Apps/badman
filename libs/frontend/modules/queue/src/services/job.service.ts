@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { JOBS_CONFIG_TOKEN } from '../injection';
 import { JobsConfiguration } from '../interfaces';
@@ -8,10 +8,8 @@ import { CronJob } from '@badman/frontend-models';
   providedIn: 'root',
 })
 export class JobsService {
-  constructor(
-    @Inject(JOBS_CONFIG_TOKEN) private config: JobsConfiguration,
-    private http: HttpClient,
-  ) {}
+  private config = inject<JobsConfiguration>(JOBS_CONFIG_TOKEN);
+  private http = inject(HttpClient);
 
   syncEventById(args: { id: string | string[]; official?: boolean }) {
     return this.http.post(`${this.config.api}/queue-job`, {
