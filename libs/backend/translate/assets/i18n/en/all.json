@@ -297,6 +297,7 @@
       "example-warning": "These are warnings that should be taken into account. The registration can still be completed.",
       "exceptions": "Exceptions",
       "info": "Remarks concerning the team enrollment",
+      "loan-locked": "The loan has already been confirmed, it is no longer possible to delete it",
       "locations": {
         "availible-courts": "Available courts",
         "courts-hint": "Change the number of available fields",
@@ -331,6 +332,7 @@
         "transfer-teams": "Transfer teams (optional)",
         "transfer-teams-description": "If you would like to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you can transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nThe order in which you check your shifts will determine the order (check everything in the correct order)\n\nYou can still change the team numbers in the next step."
       },
+      "transfer-locked": "Transfer has already been confirmed, removing it is no longer possible",
       "transfers-players": "Transfers and loans",
       "validations": "Validations",
       "warnings": {
@@ -600,6 +602,7 @@
     "select-encounter": "Pick an encounter",
     "select-end-time": "End time",
     "select-event-competition": "Select League",
+    "select-player": "Choose a player",
     "select-season": "Season",
     "select-start-time": "Start time",
     "select-state": "Choose province",

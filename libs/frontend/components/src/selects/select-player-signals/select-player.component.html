@@ -1,0 +1,31 @@
+<mat-form-field>
+  <mat-label>{{ 'all.pickers.select-player' | translate }}</mat-label>
+
+  <mtx-select
+    [items]="possiblePlayers()"
+    [(ngModel)]="player"
+    bindLabel="fullName"
+    bindValue="id"
+    [closeOnSelect]="true"
+    [clearable]="true"
+    [clearOnBackspace]="true"
+    [typeahead]="query$"
+    [disabled]="disabled()"
+  >
+    <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+      <div>
+        {{ item.fullName }}
+        @if (item.memberId) {
+          <small class="select-player-id">({{ item.memberId }}) </small>
+        }
+        @if (item.club?.name) {
+          <small class="select-player-club">{{ item.club.name }}</small>
+        }
+      </div>
+    </ng-template>
+  </mtx-select>
+
+  <mat-error>
+    {{ 'all.input.this-required' | translate }}
+  </mat-error>
+</mat-form-field>

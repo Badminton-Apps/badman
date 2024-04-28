@@ -6,15 +6,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { HasClaimComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { EntryCompetitionPlayer, Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { LevelType, SubEventTypeEnum, getUpcommingSeason } from '@badman/utils';
+import { ClubMembershipType, LevelType, SubEventTypeEnum, getUpcommingSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
+import moment from 'moment';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { delay, forkJoin, lastValueFrom, of, switchMap } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { CLUB, COMMENTS, EMAIL, LOCATIONS, SEASON, TEAMS } from '../../forms';
+import { CLUB, COMMENTS, EMAIL, LOCATIONS, SEASON, TEAMS, TRANSFERS_LOANS } from '../../forms';
 import {
   ClubStepComponent,
   CommentsStepComponent,
@@ -23,11 +26,9 @@ import {
   TeamsStepComponent,
   TeamsTransferStepComponent,
 } from './components';
+import { PlayerTransferStepComponent } from './components/steps/player-transfer';
 import { TeamEnrollmentDataService } from './service/team-enrollment.service';
 import { minAmountOfTeams } from './validators';
-import { NgxJsonViewerModule } from 'ngx-json-viewer';
-import { HasClaimComponent } from '@badman/frontend-components';
-import { PlayerTransferStepComponent } from './components/steps/player-transfer';
 
 export type TeamFormValue = {
   team: Team;
@@ -111,25 +112,28 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     }),
   });
 
+  transfersLoansControls = new FormGroup({
+    [ClubMembershipType.NORMAL]: new FormControl<string[]>([]),
+    [ClubMembershipType.LOAN]: new FormControl<string[]>([]),
+  });
+
   formGroup: FormGroup = new FormGroup({
     // internal
     [SEASON]: new FormControl(getUpcommingSeason(), [Validators.required]),
 
-    // step 1
+    // Setps
     [CLUB]: this.clubControl,
     [EMAIL]: this.emailControl,
-
-    // step 2
+    [TRANSFERS_LOANS]: this.transfersLoansControls,
     [LOCATIONS]: this.locationControl,
 
-    // step 3
     [TEAMS]: this.teamControl,
 
-    // step 4
     [COMMENTS]: this.commentsControl,
   });
 
   allLoaded = this.dataService.state.allLoaded;
+  saving = false;
 
   constructor() {
     this.dataService.state.setSeason(getUpcommingSeason());
@@ -350,10 +354,100 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
       }
     }
 
+    // save the transfers and loans to the backend
+    const transfers = this.formGroup.get(TRANSFERS_LOANS)?.value as {
+      [key in ClubMembershipType]: string[];
+    };
+
+    const players = (transfers.LOAN ?? []).concat(transfers.NORMAL);
+    const existingLoans = this.dataService.state.loans() ?? [];
+    const existingTransfers = this.dataService.state.transfers() ?? [];
+    const startDate = moment().set('year', this.formGroup.value.season).set('month', 4).toDate();
+
+    for (const player of transfers.LOAN) {
+      if (!player) {
+        continue;
+      }
+
+      if (existingLoans.find((p) => p.id == player)) {
+        continue;
+      }
+
+      observables.push(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation AddPlayerToClub($data: ClubPlayerMembershipNewInput!) {
+              addPlayerToClub(data: $data)
+            }
+          `,
+          variables: {
+            data: {
+              clubId: club,
+              start: startDate,
+              end: null,
+              membershipType: ClubMembershipType.LOAN,
+              playerId: player,
+            },
+          },
+        }),
+      );
+    }
+
+    for (const player of transfers.NORMAL) {
+      if (!player) {
+        continue;
+      }
+
+      if (existingTransfers.find((p) => p.id == player)) {
+        continue;
+      }
+
+      observables.push(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation AddPlayerToClub($data: ClubPlayerMembershipNewInput!) {
+              addPlayerToClub(data: $data)
+            }
+          `,
+          variables: {
+            data: {
+              clubId: club,
+              start: startDate,
+              end: null,
+              membershipType: ClubMembershipType.NORMAL,
+              playerId: player,
+            },
+          },
+        }),
+      );
+    }
+
+    // find if any transfers or loans are removed
+    for (const player of [...existingLoans, ...existingTransfers]) {
+      if (players.includes(player.id)) {
+        continue;
+      }
+
+      observables.push(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation RemovePlayerFromClub($id: ID!) {
+              removePlayerFromClub(id: $id)
+            }
+          `,
+          variables: {
+            id: player.clubMembership.id,
+          },
+        }),
+      );
+    }
+
     return forkJoin(observables);
   }
 
   async saveAndContinue(includeTeams = false) {
+    this.saving = true;
+
     await lastValueFrom(await this.save(includeTeams));
 
     this.snackBar.open('Teams saved', 'Close', {
@@ -361,9 +455,12 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     });
 
     this.vert_stepper.next();
+    this.saving = false;
   }
 
   async saveAndFinish() {
+    this.saving = true;
+
     this.formGroup.get(TEAMS)?.setErrors({ loading: true });
     await lastValueFrom(await this.save(true));
 
@@ -387,5 +484,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     });
     this.formGroup.get(TEAMS)?.setErrors({ loading: false });
     this.vert_stepper.next();
+
+    this.saving = false;
   }
 }

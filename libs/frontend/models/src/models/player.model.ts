@@ -68,7 +68,19 @@ export class Player {
     this.club =
       args?.club != null
         ? new Club(args?.club)
-        : this.clubs?.filter((club) => club.clubMembership?.active)?.[0];
+        : this.clubs
+            ?.filter((club) => club.clubMembership?.active ?? true)
+            ?.filter((club) => club.clubMembership?.confirmed ?? true)
+            // sort by type NORMAL first
+            ?.sort((a, b) => {
+              if (a.clubMembership?.membershipType == ClubMembershipType.NORMAL) {
+                return -1;
+              }
+              if (b.clubMembership?.membershipType == ClubMembershipType.NORMAL) {
+                return 1;
+              }
+              return 0;
+            })[0];
 
     this.setting = args?.setting != null ? new Setting(args?.setting) : undefined;
     this.notifications = args?.notifications?.map((n) => new Notification(n)) ?? undefined;
@@ -166,6 +178,7 @@ export class ClubPlayer extends Player {
     id: string;
     membershipType: ClubMembershipType;
     active: boolean;
+    confirmed: boolean;
   };
 
   constructor(args: Partial<ClubPlayer>) {
