@@ -36,7 +36,7 @@ import { TeamForm } from '../../../team-enrollment.page';
   templateUrl: './teams-transfer.step.html',
   styleUrls: ['./teams-transfer.step.scss'],
 })
-export class TeamsTransferStepComponent {
+export class TeamsTransferStepComponent  {
   private readonly destroy$ = injectDestroy();
   private readonly dataService = inject(TeamEnrollmentDataService);
   private readonly translate = inject(TranslateService);
@@ -127,7 +127,7 @@ export class TeamsTransferStepComponent {
           const typedControl = this.teams().get(enumType) as FormArray<TeamForm>;
           typedControl.clear();
         }
-        // 
+        //
         // this.transferTeamsCtrl.setValue([], { emitEvent: false });
 
         // Set our control to show all teams that we are transfering
@@ -147,6 +147,7 @@ export class TeamsTransferStepComponent {
       });
     });
   }
+
 
   selectAll() {
     this.transferTeamsCtrl.setValue(this.teamsLastIds());

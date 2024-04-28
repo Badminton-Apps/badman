@@ -19,6 +19,7 @@ import {
 } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { ClaimService } from '@badman/frontend-auth';
 import { EnrollmentMessageComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import {
@@ -27,12 +28,11 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/frontend-models';
+import { LevelType, SubEventTypeEnum } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
-import { TeamComponent } from '../team';
-import { LevelType, SubEventTypeEnum } from '@badman/utils';
 import { TeamForm } from '../../../../../team-enrollment.page';
-import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
+import { TeamComponent } from '../team';
 
 @Component({
   selector: 'badman-team-enrollment',
