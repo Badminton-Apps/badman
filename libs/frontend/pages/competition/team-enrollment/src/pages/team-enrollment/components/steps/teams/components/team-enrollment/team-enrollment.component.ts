@@ -32,6 +32,7 @@ import { TeamEnrollmentDataService } from '../../../../../service/team-enrollmen
 import { TeamComponent } from '../team';
 import { LevelType, SubEventTypeEnum } from '@badman/utils';
 import { TeamForm } from '../../../../../team-enrollment.page';
+import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -52,6 +53,7 @@ import { TeamForm } from '../../../../../team-enrollment.page';
 export class TeamEnrollmentComponent {
   private readonly dataService = inject(TeamEnrollmentDataService);
   private readonly systemService = inject(RankingSystemService);
+  private readonly auth = inject(ClaimService);
 
   group = input.required<TeamForm>();
   team = computed(() => this.group().get('team') as FormControl<Team>);
@@ -65,6 +67,8 @@ export class TeamEnrollmentComponent {
     () => this.entry().get('players') as FormArray<FormControl<EntryCompetitionPlayer>>,
   );
   subEventsForType = computed(() => this.dataService.state.eventsPerType()[this.type()]);
+
+  canEnrollInAnyEvent = computed(() => this.auth.hasClaim('enlist-any-event:team'));
 
   system = this.systemService.system as Signal<RankingSystem>;
   // using a sinal to trigger the effect if needed
@@ -90,6 +94,21 @@ export class TeamEnrollmentComponent {
       // console.error('No sub events found for team', this.team.value, availibleSubs);
     }
 
+    if (this.canEnrollInAnyEvent()) {
+      const filteredIds = filteredSubs.map((sub) => sub.id);
+
+      return availibleSubs.map((sub) => {
+        if (filteredIds.includes(sub.id)) {
+          return sub;
+        }
+
+        return {
+          ...sub,
+          name: `${sub.name} (out of range)`,
+        };
+      });
+    }
+
     return filteredSubs;
   });
 
@@ -109,7 +128,7 @@ export class TeamEnrollmentComponent {
         // if the this.subEvent().value is not set and the link is not empty, disable the subEvent control
         if (this.team()?.value.link && !this.subEvent().value) {
           this.setInitialSubEvent();
-          if (this.subEvent().value) {
+          if (this.subEvent().value && !this.canEnrollInAnyEvent()) {
             this.automaticallyAssigned.set(true);
             this.subEvent().disable();
           }
