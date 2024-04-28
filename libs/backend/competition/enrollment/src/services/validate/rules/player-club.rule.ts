@@ -58,6 +58,8 @@ export class PlayerClubRule extends Rule {
         basePlayers?.map((p) => p.id ?? '') ?? [],
         enrollment.club,
         enrollment.season,
+        enrollment.loans ?? [],
+        enrollment.transfers ?? [],
       );
 
       if (basePlayerErrors.length > 0) {
@@ -70,12 +72,16 @@ export class PlayerClubRule extends Rule {
         teamPlayers?.map((p) => p.id ?? '') ?? [],
         enrollment.club,
         enrollment.season,
+        enrollment.loans ?? [],
+        enrollment.transfers ?? [],
       );
       const backupPlayerErrors = this.checkPlayersClub(
         players,
         backupPlayers?.map((p) => p.id ?? '') ?? [],
         enrollment.club,
         enrollment.season,
+        enrollment.loans ?? [],
+        enrollment.transfers ?? [],
       );
 
       if (teamPlayerErrors.length > 0) {
@@ -102,6 +108,8 @@ export class PlayerClubRule extends Rule {
     playersToCheck: string[],
     club: Club,
     season: number,
+    loans: string[],
+    transfers: string[],
   ) {
     // 1. find player in playerList
     // 2. check if the active club (= no end date) is the same as the club
@@ -147,7 +155,12 @@ export class PlayerClubRule extends Rule {
       }
 
       // if the player has the club in the next season (in any way)
-      if (activeClubsInNextSeason?.find((c) => c.ClubPlayerMembership.clubId === club.id)) {
+      if (activeClubsInNextSeason?.find((c) => c.ClubPlayerMembership.clubId === club.id) ) {
+        return;
+      }
+
+      // if the player is loaned or transferred to the club
+      if (loans.includes(player.id) || transfers.includes(player.id)) {
         return;
       }
 
