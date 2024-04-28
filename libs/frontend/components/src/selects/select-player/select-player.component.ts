@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input, OnInit, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, input, inject } from '@angular/core';
 import {
   AbstractControlOptions,
   FormControl,
@@ -37,6 +37,7 @@ import { Observable, throttleTime, filter, lastValueFrom, map, switchMap, takeUn
   ],
 })
 export class SelectPlayerComponent implements OnInit {
+  private apollo = inject(Apollo);
   private destroy$ = injectDestroy();
 
   label = input<string | undefined>();
@@ -81,8 +82,6 @@ export class SelectPlayerComponent implements OnInit {
       memberId
     }
   `;
-
-  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
     if (!this.formGroup()) {

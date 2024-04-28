@@ -8,7 +8,7 @@
       mat-icon-button
       class="change-button"
       aria-label="Change team() number"
-      (click)="this.changeTeamNumber.next(team().value)"
+      (click)="this.changeTeamNumber.emit(team().value)"
       [matTooltip]="'all.team.change-number.tooltip' | translate"
     >
       <mat-icon>swap_horiz</mat-icon>
@@ -18,7 +18,7 @@
       mat-icon-button
       class="remove-button"
       aria-label="Remove team()"
-      (click)="this.removeTeam.next(team().value)"
+      (click)="this.removeTeam.emit(team().value)"
     >
       <mat-icon>delete</mat-icon>
     </button>
@@ -142,7 +142,7 @@
               <mat-form-field>
                 <mat-label>Type</mat-label>
                 <mat-select
-                  [(value)]="player.membershipType"
+                  [(value)]="player.teamMembership.membershipType"
                   (selectionChange)="changePlayerType(player, $event.value)"
                 >
                   @for (type of types; track type) {

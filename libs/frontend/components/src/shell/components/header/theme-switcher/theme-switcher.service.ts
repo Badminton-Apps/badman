@@ -1,23 +1,20 @@
 import { DOCUMENT, isPlatformServer } from '@angular/common';
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeSwitcherService {
+  private document = inject<Document>(DOCUMENT);
+  private _platformId = inject<string>(PLATFORM_ID);
+  private meta = inject(Meta);
   public defaultScheme: 'dark' | 'light' = 'dark';
   public schemes = ['dark', 'light'] as const;
 
   private colorScheme?: 'dark' | 'light';
   // Define prefix for clearer and more readable class names in scss files
   private colorSchemePrefix = 'color-scheme-';
-
-  constructor(
-    @Inject(DOCUMENT) private document: Document,
-    @Inject(PLATFORM_ID) private _platformId: string,
-    private meta: Meta,
-  ) {}
 
   get currentActive() {
     return this.colorScheme;

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable, startWith, switchMap } from 'rxjs';
@@ -30,6 +30,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
   ],
 })
 export class SubEventViewComponent implements OnInit {
+  private _apollo = inject(Apollo);
   overlayOpen = '';
 
   yearControl: FormControl = new FormControl(2022);
@@ -37,8 +38,6 @@ export class SubEventViewComponent implements OnInit {
 
   subEvents$!: Observable<SubEventCompetition[]>;
   events$!: Observable<EventCompetition[]>;
-
-  constructor(private _apollo: Apollo) {}
 
   ngOnInit(): void {
     this.subEvents$ = this.eventControl.valueChanges.pipe(

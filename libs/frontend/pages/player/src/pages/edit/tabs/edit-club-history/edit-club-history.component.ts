@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Apollo, gql } from 'apollo-angular';
@@ -28,6 +28,9 @@ import { input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditClubHistoryComponent implements OnInit {
+  private appollo = inject(Apollo);
+  private dialog = inject(MatDialog);
+  private _snackBar = inject(MatSnackBar);
   update$ = new BehaviorSubject(null);
 
   player = input.required<Player>();
@@ -55,12 +58,6 @@ export class EditClubHistoryComponent implements OnInit {
       }
     }
   `;
-
-  constructor(
-    private appollo: Apollo,
-    private dialog: MatDialog,
-    private _snackBar: MatSnackBar,
-  ) {}
 
   ngOnInit(): void {
     this.clubs$ = this.update$.pipe(

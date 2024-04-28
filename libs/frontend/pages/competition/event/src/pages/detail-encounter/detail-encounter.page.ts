@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -54,18 +54,15 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   ],
 })
 export class DetailEncounterComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private route = inject(ActivatedRoute);
+  private breadcrumbsService = inject(BreadcrumbService);
+  private jobService = inject(JobsService);
+  private platformId = inject<string>(PLATFORM_ID);
   encounterCompetition!: EncounterCompetition;
   drawCompetition!: DrawCompetition;
   eventCompetition!: EventCompetition;
   encounterCompetitionName!: string;
-
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private breadcrumbsService: BreadcrumbService,
-    private jobService: JobsService,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   get isClient(): boolean {
     return isPlatformBrowser(this.platformId);

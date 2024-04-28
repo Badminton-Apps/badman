@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID, TransferState } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
@@ -8,12 +8,10 @@ import { first, map } from 'rxjs/operators';
 
 @Injectable()
 export class RankingSystemResolver {
-  constructor(
-    private apollo: Apollo,
-    private raningSystemService: RankingSystemService,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
+  private apollo = inject(Apollo);
+  private raningSystemService = inject(RankingSystemService);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
 
   resolve(route: ActivatedRouteSnapshot) {
     const inputId = route.params['id'] as string;

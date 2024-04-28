@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { EventCompetition } from '@badman/frontend-models';
 import saveAs from 'file-saver';
 import { map, take } from 'rxjs';
@@ -9,11 +9,8 @@ import { ICpConfig } from '../interfaces';
   providedIn: 'root',
 })
 export class CpService {
-  constructor(
-    private httpClient: HttpClient,
-    @Inject(CP_CONFIG)
-    private config: ICpConfig,
-  ) {}
+  private httpClient = inject(HttpClient);
+  private config = inject<ICpConfig>(CP_CONFIG);
 
   downloadCp(event: EventCompetition) {
     if (!event?.id) {

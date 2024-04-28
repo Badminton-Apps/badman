@@ -1,0 +1,7 @@
+@if (transfers().length > 0) {
+  <mat-selection-list>
+    @for (player of transfers(); track player) {
+      <mat-list-option togglePosition="before">{{ player.fullName }}</mat-list-option>
+    }
+  </mat-selection-list>
+}

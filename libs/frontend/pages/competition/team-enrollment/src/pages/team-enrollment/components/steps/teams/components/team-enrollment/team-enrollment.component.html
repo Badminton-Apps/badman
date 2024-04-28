@@ -3,8 +3,8 @@
     [team]="team()"
     [system]="system()"
     [basePlayers]="players()"
-    (removeTeam)="this.removeTeam.next($event)"
-    (changeTeamNumber)="this.changeTeamNumber.next($event)"
+    (removeTeam)="this.removeTeam.emit($event)"
+    (changeTeamNumber)="this.changeTeamNumber.emit($event)"
   ></badman-team>
   <div class="beside">
     <div class="event">

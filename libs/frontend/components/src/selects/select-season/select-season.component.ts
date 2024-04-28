@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Inject,
   Injector,
   OnInit,
   PLATFORM_ID,
@@ -39,6 +38,11 @@ import { map, takeUntil } from 'rxjs/operators';
   styleUrls: ['./select-season.component.scss'],
 })
 export class SelectSeasonComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
   private destroy$ = injectDestroy();
 
   injector = inject(Injector);
@@ -57,14 +61,6 @@ export class SelectSeasonComponent implements OnInit {
   protected internalControl!: FormControl<number>;
 
   seasons?: Signal<number[]>;
-
-  constructor(
-    private apollo: Apollo,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit() {
     if (this.control()) {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Claim, Club, Role } from '@badman/frontend-models';
@@ -19,19 +19,16 @@ import { RoleFieldsComponent } from '../../components';
   imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule, RoleFieldsComponent],
 })
 export class EditPageComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private seoService = inject(SeoService);
+  private route = inject(ActivatedRoute);
+  private breadcrumbsService = inject(BreadcrumbService);
+  private router = inject(Router);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
   role!: Role;
   club!: Club;
   claims$!: Observable<{ category: string; claims: Claim[] }[]>;
-
-  constructor(
-    private apollo: Apollo,
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private breadcrumbsService: BreadcrumbService,
-    private router: Router,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {

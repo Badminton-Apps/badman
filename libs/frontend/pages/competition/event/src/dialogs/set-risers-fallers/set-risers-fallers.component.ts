@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -38,6 +38,12 @@ import { BehaviorSubject, takeUntil, zip } from 'rxjs';
   standalone: true,
 })
 export class RisersFallersDialogComponent implements OnInit {
+  private cache = inject<InMemoryCache>(APOLLO_CACHE);
+  public dialogRef = inject<MatDialogRef<RisersFallersDialogComponent>>(
+    MatDialogRef<RisersFallersDialogComponent>,
+  );
+  public data = inject<{ event: EventCompetition }>(MAT_DIALOG_DATA);
+  private apollo = inject(Apollo);
   private destroy$ = injectDestroy();
   dataSource!: MatTableDataSource<DrawCompetition>;
   originalData!: DrawCompetition[];
@@ -48,14 +54,6 @@ export class RisersFallersDialogComponent implements OnInit {
 
   viewLoaded$ = new BehaviorSubject(0);
   loading = false;
-
-  constructor(
-    @Inject(APOLLO_CACHE) private cache: InMemoryCache,
-    public dialogRef: MatDialogRef<RisersFallersDialogComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: { event: EventCompetition },
-    private apollo: Apollo,
-  ) {}
 
   ngOnInit(): void {
     this.apollo

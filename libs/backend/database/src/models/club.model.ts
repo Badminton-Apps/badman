@@ -51,7 +51,7 @@ import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
-import { PlayerWithMembershipType } from '../_interception';
+import { PlayerWithClubMembershipType } from '../_interception';
 
 @Table({
   timestamps: true,
@@ -115,7 +115,7 @@ export class Club extends Model {
   })
   roles?: Relation<Role[]>;
 
-  @Field(() => [PlayerWithMembershipType], { nullable: true })
+  @Field(() => [PlayerWithClubMembershipType], { nullable: true })
   @BelongsToMany(() => Player, () => ClubPlayerMembership)
   players?: (Player & { ClubPlayerMembership: ClubPlayerMembership })[];
 

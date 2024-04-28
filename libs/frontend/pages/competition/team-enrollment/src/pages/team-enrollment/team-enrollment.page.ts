@@ -27,6 +27,7 @@ import { TeamEnrollmentDataService } from './service/team-enrollment.service';
 import { minAmountOfTeams } from './validators';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { HasClaimComponent } from '@badman/frontend-components';
+import { PlayerTransferStepComponent } from './components/steps/player-transfer';
 
 export type TeamFormValue = {
   team: Team;
@@ -60,6 +61,7 @@ export type TeamForm = FormGroup<{
     ClubStepComponent,
     TeamsTransferStepComponent,
     TeamsStepComponent,
+    PlayerTransferStepComponent,
     LocationsStepComponent,
     CommentsStepComponent,
     NgxJsonViewerModule,
@@ -190,7 +192,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
           enrollment?.team?.players?.map((player: Partial<TeamPlayer>) => {
             return {
               id: player.id,
-              membershipType: player.membershipType,
+              membershipType: player.teamMembership?.membershipType,
             };
           }) ?? [];
 

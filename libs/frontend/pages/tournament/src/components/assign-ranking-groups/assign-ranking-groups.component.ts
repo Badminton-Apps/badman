@@ -1,5 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -41,6 +41,13 @@ import { MatSelectModule } from '@angular/material/select';
   standalone: true,
 })
 export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
+  public data = inject<{ event: EventCompetition | EventTournament }>(MAT_DIALOG_DATA);
+  private dialogRef = inject<MatDialogRef<AssignRankingGroupsComponent>>(
+    MatDialogRef<AssignRankingGroupsComponent>,
+  );
+  private snackbar = inject(MatSnackBar);
+  private cache = inject<InMemoryCache>(APOLLO_CACHE);
+  private apollo = inject(Apollo);
   dataSource!: MatTableDataSource<SubEventCompetition | SubEventTournament>;
 
   groups$!: Observable<RankingGroup[]>;
@@ -53,15 +60,6 @@ export class AssignRankingGroupsComponent implements OnInit, AfterViewInit {
 
   viewLoaded$ = new BehaviorSubject(0);
   loading = false;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA)
-    public data: { event: EventCompetition | EventTournament },
-    private dialogRef: MatDialogRef<AssignRankingGroupsComponent>,
-    private snackbar: MatSnackBar,
-    @Inject(APOLLO_CACHE) private cache: InMemoryCache,
-    private apollo: Apollo,
-  ) {}
 
   ngOnInit(): void {
     const subEvents =

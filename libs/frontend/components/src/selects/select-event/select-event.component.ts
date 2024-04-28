@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -17,6 +17,7 @@ import { map, takeUntil, tap } from 'rxjs/operators';
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule],
 })
 export class SelectEventComponent implements OnInit {
+  private apollo = inject(Apollo);
   private destroy$ = injectDestroy();
 
   controlName = input('event');
@@ -32,8 +33,6 @@ export class SelectEventComponent implements OnInit {
   control = input(new FormControl<EventCompetition | null>(null, [Validators.required]));
 
   events$!: Observable<EventCompetition[]>;
-
-  constructor(private apollo: Apollo) {}
 
   ngOnInit() {
     if (this.formGroup()) {

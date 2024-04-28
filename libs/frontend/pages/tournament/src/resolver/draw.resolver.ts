@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID, TransferState } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { DrawTournament } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -7,11 +7,9 @@ import { first, map } from 'rxjs/operators';
 
 @Injectable()
 export class DrawResolver {
-  constructor(
-    private apollo: Apollo,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
+  private apollo = inject(Apollo);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
 
   resolve(route: ActivatedRouteSnapshot) {
     const drawId = route.params['id'];

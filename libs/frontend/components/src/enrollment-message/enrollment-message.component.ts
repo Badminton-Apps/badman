@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import {
   Club,
   EventCompetition,
@@ -20,11 +20,10 @@ import { map, switchMap } from 'rxjs/operators';
   styleUrls: ['./enrollment-message.component.scss'],
 })
 export class EnrollmentMessageComponent implements OnInit {
+  private translate = inject(TranslateService);
   validation = input<ValidationMessage | undefined>();
 
   translatedMessage$?: Observable<string>;
-
-  constructor(private translate: TranslateService) {}
 
   ngOnInit(): void {
     if (this.validation()?.message == undefined) return;

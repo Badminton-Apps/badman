@@ -38,9 +38,11 @@ export const loadTeams = (
             players {
               id
               fullName
-              teamId
               gender
-              membershipType
+              teamMembership {
+                id
+                membershipType
+              }
               rankingPlaces(where: $rankingWhere, order: $order, take: 1) {
                 id
                 single

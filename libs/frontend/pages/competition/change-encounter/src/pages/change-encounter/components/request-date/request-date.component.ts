@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit, output } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -39,8 +39,7 @@ export class RequestDateComponent implements OnInit {
 
   group = input.required<FormGroup>();
 
-  @Output()
-  removeDate = new EventEmitter<void>();
+  removeDate = output<void>();
 
   tootltipSelected?: string;
 

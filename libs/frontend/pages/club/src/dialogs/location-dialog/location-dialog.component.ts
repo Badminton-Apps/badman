@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, lastValueFrom, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
@@ -30,25 +30,23 @@ import { MatIconModule } from '@angular/material/icon';
   ],
 })
 export class LocationDialogComponent implements OnInit {
+  private dialogRef = inject<MatDialogRef<LocationDialogComponent>>(
+    MatDialogRef<LocationDialogComponent>,
+  );
+  public data = inject<{
+    location: Location;
+    club: Club;
+    compYears: number[];
+    onCreate: 'close' | 'stay';
+    onUpdate: 'close' | 'stay';
+    showavailabilities: boolean;
+  }>(MAT_DIALOG_DATA);
+  private appollo = inject(Apollo);
   selectedYear?: number;
 
   location?: Location;
 
   update$ = new BehaviorSubject(0);
-
-  constructor(
-    private dialogRef: MatDialogRef<LocationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      location: Location;
-      club: Club;
-      compYears: number[];
-      onCreate: 'close' | 'stay';
-      onUpdate: 'close' | 'stay';
-      showavailabilities: boolean;
-    },
-    private appollo: Apollo,
-  ) {}
 
   ngOnInit(): void {
     if (!this.data.location) {

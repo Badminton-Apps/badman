@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -52,6 +52,12 @@ import {
   styleUrls: ['./select-team.component.scss'],
 })
 export class SelectTeamComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private authenticateService = inject(AuthenticateService);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
   private destroy$ = injectDestroy();
 
   controlName = input('team');
@@ -73,15 +79,6 @@ export class SelectTeamComponent implements OnInit {
 
   teams$?: Observable<{ type: string; teams: Team[] }[]>;
   user$ = toObservable(this.authenticateService.user);
-
-  constructor(
-    private apollo: Apollo,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private authenticateService: AuthenticateService,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit() {
     if (this.control() != undefined) {

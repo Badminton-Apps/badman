@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -34,22 +34,19 @@ import { ReplacePlayerComponent } from '../../dialogs';
   ],
 })
 export class EditEncounterComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private route = inject(ActivatedRoute);
+  private breadcrumbsService = inject(BreadcrumbService);
+  private apollo = inject(Apollo);
+  private platformId = inject<string>(PLATFORM_ID);
+  private formBuilder = inject(FormBuilder);
+  private matdialog = inject(MatDialog);
   encounterCompetition!: EncounterCompetition;
   formGroup?: FormGroup;
 
   get games(): FormArray {
     return this.formGroup?.get('games') as FormArray;
   }
-
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    @Inject(PLATFORM_ID) private platformId: string,
-    private formBuilder: FormBuilder,
-    private matdialog: MatDialog,
-  ) {}
 
   get isClient(): boolean {
     return isPlatformBrowser(this.platformId);

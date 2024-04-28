@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, input, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -41,6 +41,10 @@ import {
   ],
 })
 export class ListEncountersComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private changeDetectorRef = inject(ChangeDetectorRef);
   private destroy$ = injectDestroy();
 
   controlName = input('encounter');
@@ -60,13 +64,6 @@ export class ListEncountersComponent implements OnInit {
 
   encountersSem1!: EncounterCompetition[];
   encountersSem2!: EncounterCompetition[];
-
-  constructor(
-    private apollo: Apollo,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {}
 
   ngOnInit() {
     if (this.control() != undefined) {

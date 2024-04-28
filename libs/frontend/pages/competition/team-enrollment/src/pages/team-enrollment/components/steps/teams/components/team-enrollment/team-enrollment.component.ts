@@ -1,15 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Output,
-  Signal,
-  computed,
-  effect,
-  inject,
-  input,
-  signal,
-} from '@angular/core';
+import { Component, Signal, computed, effect, inject, input, signal, output } from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -112,11 +102,9 @@ export class TeamEnrollmentComponent {
     return filteredSubs;
   });
 
-  @Output()
-  removeTeam = new EventEmitter<Team>();
+  removeTeam = output<Team>();
 
-  @Output()
-  changeTeamNumber = new EventEmitter<Team>();
+  changeTeamNumber = output<Team>();
 
   constructor() {
     effect(

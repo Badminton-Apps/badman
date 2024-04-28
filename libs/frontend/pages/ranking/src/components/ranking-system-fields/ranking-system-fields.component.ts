@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -53,12 +46,12 @@ export class RankingSystemFieldsComponent implements OnInit {
 
   groups = input<RankingGroup[] | null | undefined>();
 
-  @Output() whenUpdated = new EventEmitter<RankingSystem>();
-  @Output() whenGroupAdded = new EventEmitter<{
+  whenUpdated = output<RankingSystem>();
+  whenGroupAdded = output<{
     groupId: string;
     systemId: string;
   }>();
-  @Output() whenGroupRemoved = new EventEmitter<{
+  whenGroupRemoved = output<{
     groupId: string;
     systemId: string;
   }>();
@@ -140,7 +133,7 @@ export class RankingSystemFieldsComponent implements OnInit {
 
     this.rankingSystemForm.valueChanges.pipe(throttleTime(600)).subscribe((value) => {
       if (this.rankingSystemForm.valid) {
-        this.whenUpdated.next(value);
+        this.whenUpdated.emit(value);
       }
     });
   }

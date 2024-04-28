@@ -29,6 +29,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServiceResolverModule } from './resolvers/services/serice.module';
 import { CronJobResolverModule } from './resolvers/cronJobs/cronJob.module';
 import { ConfigType } from '@badman/utils';
+import { join } from 'node:path';
 
 @Module({
   imports: [
@@ -65,7 +66,7 @@ import { ConfigType } from '@badman/utils';
         return {
           playground: false,
           debug: true,
-          autoSchemaFile: true,
+          autoSchemaFile: join(process.cwd(), 'schema.gql'),
           context: ({ req }: { req: unknown }) => ({ req }),
           plugins,
         } as Omit<GqlModuleOptions, 'driver'>;

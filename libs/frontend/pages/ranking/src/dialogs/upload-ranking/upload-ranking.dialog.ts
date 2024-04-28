@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RankingSystem } from '@badman/frontend-models';
 
@@ -51,6 +45,13 @@ import moment from 'moment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadRankingDialogComponent {
+  private config = inject<IRankingConfig>(RANKING_CONFIG);
+  private http = inject(HttpClient);
+  public dialogRef = inject<MatDialogRef<UploadRankingDialogComponent>>(
+    MatDialogRef<UploadRankingDialogComponent>,
+  );
+  public data = inject<{ rankingSystem: RankingSystem }>(MAT_DIALOG_DATA);
+  private changeDetectorRef = inject(ChangeDetectorRef);
   snackbar = inject(MatSnackBar);
 
   previewData?: MembersRolePerGroupData[];
@@ -67,15 +68,6 @@ export class UploadRankingDialogComponent {
   updateRanking = true;
   createNewPlayers = true;
   rankingDate = new Date();
-
-  constructor(
-    @Inject(RANKING_CONFIG) private config: IRankingConfig,
-    private http: HttpClient,
-    public dialogRef: MatDialogRef<UploadRankingDialogComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: { rankingSystem: RankingSystem },
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {}
 
   onDragOver(event: DragEvent) {
     event.preventDefault();

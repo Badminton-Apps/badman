@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -32,6 +32,8 @@ type SearchType = { id: string; name: string; slug: string };
   styleUrls: ['./search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private router = inject(Router);
   label = input('all.search.placeholder');
 
   formControl!: FormControl;
@@ -45,11 +47,6 @@ export class SearchBoxComponent implements OnInit {
       __typename: string;
     })[]
   > = new ReplaySubject(0);
-
-  constructor(
-    private apollo: Apollo,
-    private router: Router,
-  ) {}
 
   ngOnInit() {
     this.formControl = new FormControl();

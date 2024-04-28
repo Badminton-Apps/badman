@@ -1,4 +1,4 @@
-import { Club, Player } from '@badman/frontend-models';
+import { Club, ClubPlayer } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -18,7 +18,10 @@ export const loadTransersAndLoans = (apollo: Apollo, clubId?: string | null, sea
             players(active: $active, where: $where) {
               id
               fullName
-              gender
+              clubMembership {
+                id
+                membershipType
+              }
             }
           }
         }
@@ -35,6 +38,6 @@ export const loadTransersAndLoans = (apollo: Apollo, clubId?: string | null, sea
       },
     })
     .pipe(
-      map((result) => (result?.data?.club?.players ?? [])?.map((player) => new Player(player))),
+      map((result) => (result?.data?.club?.players ?? [])?.map((player) => new ClubPlayer(player))),
     );
 };

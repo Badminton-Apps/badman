@@ -9,7 +9,7 @@ import {
   Notification,
   PagedPlayer,
   Player,
-  PlayerWithMembershipType,
+  PlayerWithClubMembershipType,
   PlayerNewInput,
   PlayerUpdateInput,
   PushSubscription,
@@ -20,8 +20,9 @@ import {
   Setting,
   SettingUpdateInput,
   Team,
-  TeamPlayerMembershipType,
-  ClubWithMembershipType,
+  ClubWithPlayerMembershipType,
+  PlayerWithTeamMembershipType,
+  TeamPlayerMembership,
 } from '@badman/backend-database';
 import { IsUUID, getCurrentSeason, getRankingProtected } from '@badman/utils';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
@@ -199,7 +200,7 @@ export class PlayersResolver {
     return player.getTeams(args);
   }
 
-  @ResolveField(() => [ClubWithMembershipType], { nullable: true })
+  @ResolveField(() => [ClubWithPlayerMembershipType], { nullable: true })
   async clubs(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
@@ -442,7 +443,7 @@ export class GamePlayersResolver extends PlayersResolver {
   }
 }
 
-@Resolver(() => TeamPlayerMembershipType)
+@Resolver(() => PlayerWithTeamMembershipType)
 export class TeamPlayerResolver extends PlayersResolver {
   protected override readonly logger = new Logger(TeamPlayerResolver.name);
 
@@ -521,9 +522,17 @@ export class TeamPlayerResolver extends PlayersResolver {
       }) ?? []
     );
   }
+
+
+  @ResolveField(() => TeamPlayerMembership, { nullable: true })
+  async teamMembership(
+    @Parent() player: Player & { TeamPlayerMembership: TeamPlayerMembership },
+  ): Promise<TeamPlayerMembership> {
+    return player.TeamPlayerMembership;
+  }
 }
 
-@Resolver(() => PlayerWithMembershipType)
+@Resolver(() => PlayerWithClubMembershipType)
 export class PlayerClubResolver extends PlayersResolver {
   @ResolveField(() => ClubPlayerMembership, { nullable: true })
   async clubMembership(
