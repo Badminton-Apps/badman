@@ -125,7 +125,22 @@ export class TeamEnrollmentDataService {
             teams: [],
             locations: [],
             comments: [],
+            transfers: [],
             loadedClubs: true,
+            loadedTeams: false,
+            loadedLocations: false,
+          })),
+        ),
+
+      clear: (_state, action$: Observable<void>) =>
+        action$.pipe(
+          map(() => ({
+            club: null,
+            teams: [],
+            locations: [],
+            comments: [],
+            transfers: [],
+            loadedClubs: false,
             loadedTeams: false,
             loadedLocations: false,
           })),

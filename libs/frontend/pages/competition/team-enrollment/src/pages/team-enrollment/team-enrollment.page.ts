@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -67,7 +67,7 @@ export type TeamForm = FormGroup<{
     HasClaimComponent,
   ],
 })
-export class TeamEnrollmentComponent implements OnInit {
+export class TeamEnrollmentComponent implements OnInit, OnDestroy {
   @ViewChild(MatStepper) vert_stepper!: MatStepper;
 
   readonly systemService = inject(RankingSystemService);
@@ -150,6 +150,10 @@ export class TeamEnrollmentComponent implements OnInit {
           enrollemnt['all.competition.team-enrollment.title'],
         );
       });
+  }
+
+  ngOnDestroy(): void {
+    this.dataService.state.clear();
   }
 
   async save(includeTeams = false) {
