@@ -46,6 +46,8 @@ export class EnrollmentValidationService {
     systemId,
     teams,
     season,
+    loans,
+    transfers,
   }: EnrollmentInput): Promise<EnrollmentValidationData> {
     const system = systemId
       ? await RankingSystem.findByPk(systemId)
@@ -156,6 +158,9 @@ export class EnrollmentValidationService {
 
     return {
       club,
+      season,
+      loans: loans ?? [],
+      transfers: transfers ?? [],
       teams: teams?.map((t) => {
         if (!t.type) {
           throw new Error('No type found');
@@ -388,6 +393,8 @@ class EnrollmentInput {
   teams?: EnrollmentInputTeam[];
   systemId?: string;
   season?: number;
+  loans?: string[];
+  transfers?: string[];
 }
 
 class EnrollmentInputTeam extends PartialType(

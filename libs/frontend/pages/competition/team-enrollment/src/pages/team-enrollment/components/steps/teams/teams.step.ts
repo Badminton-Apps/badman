@@ -23,16 +23,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { SubEventType, SubEventTypeEnum, UseForTeamName, getLetterForRegion } from '@badman/utils';
+import {
+  ClubMembershipType,
+  SubEventType,
+  SubEventTypeEnum,
+  UseForTeamName,
+  getLetterForRegion,
+} from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { debounceTime, map, pairwise, startWith, takeUntil } from 'rxjs/operators';
-import { TEAMS } from '../../../../../forms';
+import { TEAMS, TRANSFERS_LOANS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { TeamForm } from '../../../team-enrollment.page';
 import { TeamEnrollmentComponent } from './components';
 import { Club, EntryCompetitionPlayer, Team } from '@badman/frontend-models';
 import { v4 as uuidv4 } from 'uuid';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'badman-teams-step',
@@ -72,6 +79,13 @@ export class TeamsStepComponent {
       }>,
   );
 
+  transfersLoans = computed(
+    () =>
+      this.formGroup().get(TRANSFERS_LOANS) as FormGroup<{
+        [key in ClubMembershipType]: FormControl<string[]>;
+      }>,
+  );
+
   teamNumbers = computed(() => {
     const teams = this.teams();
     if (!teams) return;
@@ -96,13 +110,15 @@ export class TeamsStepComponent {
   constructor() {
     effect(() => {
       untracked(() => {
-        this.teams()
-          .valueChanges.pipe(takeUntil(this.destroy$), debounceTime(600))
+        combineLatest([this.teams().valueChanges, this.transfersLoans().valueChanges])
+          .pipe(takeUntil(this.destroy$), debounceTime(600))
           .subscribe(() => {
             this.dataService.state.validateEnrollment({
               teamForm: this.teams().getRawValue(),
               season: this.season(),
               clubId: this.club()?.id ?? '',
+              transfers: this.transfersLoans().get(ClubMembershipType.NORMAL)?.getRawValue() ?? [],
+              loans: this.transfersLoans().get(ClubMembershipType.LOAN)?.getRawValue() ?? [],
             });
           });
 
