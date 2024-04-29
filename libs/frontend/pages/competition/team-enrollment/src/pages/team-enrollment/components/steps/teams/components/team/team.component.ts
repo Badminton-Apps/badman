@@ -193,6 +193,7 @@ export class TeamComponent implements OnInit {
     if (this.basePlayers().value.find((p) => p.id === player.id)) {
       this.snackbar.open('Player is already in baseteam', 'Close', {
         duration: 3000,
+        panelClass: 'warn',
       });
       return;
     }

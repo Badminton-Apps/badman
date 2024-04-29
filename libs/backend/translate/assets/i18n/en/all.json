@@ -315,6 +315,8 @@
         "transfer": "Transferred"
       },
       "save-and-continue-tooltip": "You can continue without saving your teams, but we allow you to save in between if there are still uncertainties about your baseplayers",
+      "saved": "Registration saved",
+      "saved-failed": "There were problems saving, please check your data or try again later.",
       "select-club": "Select club",
       "select-events": "Select events",
       "select-location": "Select locations",

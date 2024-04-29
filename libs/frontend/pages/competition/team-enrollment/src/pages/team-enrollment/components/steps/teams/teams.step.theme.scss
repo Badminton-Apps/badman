@@ -12,15 +12,7 @@
     @include team-enrollment.color($theme);
 
     $color-config: mat.get-color-config($theme);
-    $danger-palette: map.get($theme, danger);
-    $warn-palette: map.get($theme, 'warn');
 
-    .error {
-      color: mat.get-color-from-palette($danger-palette, 300);
-    }
-    .warning {
-      color: mat.get-color-from-palette($warn-palette, 300);
-    }
   }
 }
 
