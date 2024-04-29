@@ -64,6 +64,10 @@ import { ServiceResolverModule } from './resolvers/services/serice.module';
         }
 
         return {
+          cors: {
+            origin: '*',
+            credentials: true,
+          },
           playground: false,
           debug: true,
           autoSchemaFile: join(process.cwd(), 'schema.gql'),
