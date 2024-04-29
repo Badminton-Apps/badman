@@ -26,6 +26,7 @@ const PROFILE_QUERY = gql`
         name
         slug
         clubMembership {
+          id
           active
           start
           end
