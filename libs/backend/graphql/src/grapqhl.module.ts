@@ -62,7 +62,11 @@ import { ConfigType } from '@badman/utils';
           );
         }
 
-        return {
+        return { 
+          cors: {
+            origin: '*',
+            credentials: true,
+          },
           playground: false,
           debug: true,
           autoSchemaFile: true,
