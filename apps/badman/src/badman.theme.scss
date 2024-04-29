@@ -12,6 +12,10 @@
   $background: map.get($color-config, 'background');
   $background-color: mat.get-color-from-palette($background, 'app-bar');
 
+  $danger-palette: map.get($theme, danger);
+  $warn-palette: map.get($theme, warn);
+  $success-palette: map.get($theme, success);
+
   ::-webkit-scrollbar-thumb {
     @if $isDark {
       background-color: lighten($background-color, 30%);
@@ -25,6 +29,27 @@
       background-color: lighten($background-color, 20%);
     } @else {
       background-color: darken($background-color, 20%);
+    }
+  }
+
+  .mat-mdc-snack-bar-container {
+    &.error {
+      --mdc-snackbar-container-color: #{mat.get-color-from-palette($danger-palette, 300)};
+      --mat-snack-bar-button-color: #fff;
+      --mdc-snackbar-supporting-text-color: #fff;
+      --mat-mdc-snack-bar-button-color: #fff;
+    }
+    &.warn {
+      --mdc-snackbar-container-color: #{mat.get-color-from-palette($warn-palette, 300)};
+      --mat-snack-bar-button-color: #fff;
+      --mdc-snackbar-supporting-text-color: #fff;
+      --mat-mdc-snack-bar-button-color: #fff;
+    }
+    &.success {
+      --mdc-snackbar-container-color: #{mat.get-color-from-palette($success-palette, 300)};
+      --mat-snack-bar-button-color: #fff;
+      --mdc-snackbar-supporting-text-color: #fff;
+      --mat-mdc-snack-bar-button-color: #fff;
     }
   }
 }

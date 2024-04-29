@@ -447,44 +447,67 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
 
   async saveAndContinue(includeTeams = false) {
     this.saving = true;
+    try {
+      await lastValueFrom(await this.save(includeTeams));
 
-    await lastValueFrom(await this.save(includeTeams));
+      this.snackBar.open(this.translate.instant('all.competition.team-enrollment.saved'), 'Close', {
+        duration: 2000,
+        panelClass: 'success',
+      });
 
-    this.snackBar.open('Teams saved', 'Close', {
-      duration: 2000,
-    });
-
-    this.vert_stepper.next();
-    this.saving = false;
+      this.vert_stepper.next();
+    } catch (error) {
+      this.snackBar.open(
+        this.translate.instant('all.competition.team-enrollment.saved-failed'),
+        'Close',
+        {
+          duration: 2000,
+          panelClass: 'error',
+        },
+      );
+    } finally {
+      this.saving = false;
+    }
   }
 
   async saveAndFinish() {
     this.saving = true;
+    try {
+      this.formGroup.get(TEAMS)?.setErrors({ loading: true });
+      await lastValueFrom(await this.save(true));
 
-    this.formGroup.get(TEAMS)?.setErrors({ loading: true });
-    await lastValueFrom(await this.save(true));
+      await lastValueFrom(
+        this.apollo.mutate({
+          mutation: gql`
+            mutation FinishEvent($clubId: ID!, $email: String!, $season: Int!) {
+              finishEventEntry(clubId: $clubId, email: $email, season: $season)
+            }
+          `,
+          variables: {
+            clubId: this.formGroup.value.club,
+            season: this.formGroup.value.season,
+            email: this.formGroup.value.email,
+          },
+        }),
+      );
 
-    await lastValueFrom(
-      this.apollo.mutate({
-        mutation: gql`
-          mutation FinishEvent($clubId: ID!, $email: String!, $season: Int!) {
-            finishEventEntry(clubId: $clubId, email: $email, season: $season)
-          }
-        `,
-        variables: {
-          clubId: this.formGroup.value.club,
-          season: this.formGroup.value.season,
-          email: this.formGroup.value.email,
+      this.snackBar.open(this.translate.instant('all.competition.team-enrollment.saved'), 'Close', {
+        duration: 2000,
+        panelClass: 'success',
+      });
+      this.formGroup.get(TEAMS)?.setErrors({ loading: false });
+      this.vert_stepper.next();
+    } catch (error) {
+      this.snackBar.open(
+        this.translate.instant('all.competition.team-enrollment.saved-failed'),
+        'Close',
+        {
+          duration: 2000,
+          panelClass: 'error',
         },
-      }),
-    );
-
-    this.snackBar.open('Ingeschreven', 'Close', {
-      duration: 2000,
-    });
-    this.formGroup.get(TEAMS)?.setErrors({ loading: false });
-    this.vert_stepper.next();
-
-    this.saving = false;
+      );
+    } finally {
+      this.saving = false;
+    }
   }
 }

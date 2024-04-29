@@ -152,13 +152,7 @@ mat-dialog-content {
   overflow: inherit;
 }
 
-.mat-mdc-snack-bar-container {
-  &.error {
-    --mdc-snackbar-container-color: #f44336;
-    --mat-mdc-snack-bar-button-color: #fff;
-    --mdc-snackbar-supporting-text-color: #fff;
-  }
-}
+
 
 // Spinner for button
 .spinner {

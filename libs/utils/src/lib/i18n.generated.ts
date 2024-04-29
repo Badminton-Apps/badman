@@ -322,6 +322,8 @@ export type I18nTranslations = {
                     "transfer": string;
                 };
                 "save-and-continue-tooltip": string;
+                "saved": string;
+                "saved-failed": string;
                 "select-club": string;
                 "select-events": string;
                 "select-location": string;
