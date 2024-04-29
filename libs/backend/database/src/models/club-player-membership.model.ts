@@ -2,6 +2,7 @@ import { ClubMembershipType } from '@badman/utils';
 import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   AllowNull,
+  BelongsTo,
   Column,
   DataType,
   Default,
@@ -16,6 +17,7 @@ import {
 import { Relation } from '../wrapper';
 import { Club } from './club.model';
 import { Player } from './player.model';
+import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize';
 
 @Table({
   schema: 'public',
@@ -43,7 +45,10 @@ export class ClubPlayerMembership extends Model {
   @Column(DataType.UUIDV4)
   clubId?: string;
 
+  @BelongsTo(() => Club, 'clubId')
   club?: Relation<Club>;
+
+  @BelongsTo(() => Player, 'playerId')
   player?: Relation<Player>;
 
   @Field(() => Date, { nullable: true })
@@ -60,7 +65,12 @@ export class ClubPlayerMembership extends Model {
   @Column(DataType.VIRTUAL)
   get active() {
     // if the start is passed and end is null or in the future, it is active
-    return this.confirmed && this.start && this.start < new Date() && (!this.end || this.end > new Date());
+    return (
+      this.confirmed &&
+      this.start &&
+      this.start < new Date() &&
+      (!this.end || this.end > new Date())
+    );
   }
 
   @Default(ClubMembershipType.NORMAL)
@@ -75,6 +85,14 @@ export class ClubPlayerMembership extends Model {
   @Field(() => Date, { defaultValue: new Date() })
   @Column(DataType.DATE)
   start!: Date;
+
+  // Belongs to Club
+  getClub!: BelongsToGetAssociationMixin<Club>;
+  setClub!: BelongsToSetAssociationMixin<Club, string>;
+
+  // Belongs to Player
+  getPlayer!: BelongsToGetAssociationMixin<Player>;
+  setPlayer!: BelongsToSetAssociationMixin<Player, string>;
 }
 
 @InputType()

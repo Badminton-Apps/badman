@@ -90,6 +90,7 @@ export class ShellComponent {
   development = isDevMode();
   expanded = {
     competition: true,
+    admin: true,
     general: false,
   };
 
