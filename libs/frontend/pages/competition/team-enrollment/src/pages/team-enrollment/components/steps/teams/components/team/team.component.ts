@@ -99,7 +99,6 @@ export class TeamComponent implements OnInit {
   loans = input.required<string[]>();
   transfers = input.required<string[]>();
 
- 
   editTeam = output<Team>();
 
   removeTeam = output<Team>();
@@ -220,7 +219,30 @@ export class TeamComponent implements OnInit {
   }
 
   changePlayerType(player: TeamPlayer, type: TeamMembershipType) {
-    player.teamMembership.membershipType = type;
+    const index = this.team().value.players?.findIndex((p) => p.id === player.id);
+
+    if (index == null) {
+      return;
+    }
+    const current = this.team().value;
+    const currentPlayer = current.players[index];
+
+    this.team().setValue({
+      ...current,
+      players: [
+        ...current.players.slice(0, index),
+        {
+          ...currentPlayer,
+          teamMembership: {
+            ...currentPlayer.teamMembership,
+            membershipType: type,
+          },
+        },
+        ...current.players.slice(index + 1),
+        // we need to re-create the object because `.value` loses the mapping
+      ].map((p) => new TeamPlayer(p)), 
+    } as Team);
+
     this.checkTeam();
   }
 
