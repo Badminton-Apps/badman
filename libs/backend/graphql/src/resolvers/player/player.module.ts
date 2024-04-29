@@ -4,11 +4,11 @@ import {
   GamePlayersResolver,
   PlayerClubResolver,
   PlayersResolver,
-  TeamPlayerResolver,
+  PlayerTeamResolver,
 } from './player.resolver';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [PlayersResolver, PlayerClubResolver, GamePlayersResolver, TeamPlayerResolver],
+  providers: [PlayersResolver, PlayerClubResolver, GamePlayersResolver, PlayerTeamResolver],
 })
 export class PlayerResolverModule {}

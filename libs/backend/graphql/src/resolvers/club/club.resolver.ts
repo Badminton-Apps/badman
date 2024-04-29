@@ -28,9 +28,9 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
-import { Op } from 'sequelize';
 
 @ObjectType()
 export class PagedClub {

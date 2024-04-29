@@ -40,6 +40,10 @@ export class PlayerResolver {
                   id
                   slug
                   name
+                  clubMembership {
+                    id
+                    membershipType
+                  }
                 }
                 rankingLastPlaces(where: { systemId: $systemId }) {
                   id

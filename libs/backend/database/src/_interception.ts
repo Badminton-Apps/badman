@@ -5,6 +5,7 @@ import {
   GamePlayerMembership,
   Player,
   RankingPlace,
+  Team,
   TeamPlayerMembership,
 } from './models';
 
@@ -18,21 +19,42 @@ export class GamePlayerMembershipType extends IntersectionType(
   rankingPlace?: RankingPlace;
 }
 
-@ObjectType()
+@ObjectType('ClubWithPlayers')
 export class ClubWithPlayerMembershipType extends Club {
   @Field(() => ClubPlayerMembership, { nullable: true })
   clubMembership?: ClubPlayerMembership;
 }
 
+// @ObjectType('ClubWithTeams')
+// export class ClubWithTeamMembershipType extends Club {
+//   @Field(() => ClubTeamMembership, { nullable: true })
+//   teamMembership?: ClubTeamMembership;
+// }
 
-@ObjectType()
+
+@ObjectType('PlayerClub')
 export class PlayerWithClubMembershipType extends Player {
   @Field(() => ClubPlayerMembership, { nullable: true })
   clubMembership?: ClubPlayerMembership;
 }
 
-@ObjectType()
+@ObjectType('PlayerTeam')
 export class PlayerWithTeamMembershipType extends Player {
   @Field(() => TeamPlayerMembership, { nullable: true })
   teamMembership?: TeamPlayerMembership;
 }
+
+
+// @ObjectType('PlayerWithGames')
+// export class PlayerWithGamesMembershipType extends Player {
+//   @Field(() => [GamePlayerMembershipType], { nullable: true })
+//   games?: GamePlayerMembershipType[];
+// }
+
+
+@ObjectType('TeamPlayers')
+export class TeamWithPlayerMembershipType extends Team {
+  @Field(() => TeamPlayerMembership, { nullable: true })
+  teamMembership?: TeamPlayerMembership;
+}
+

@@ -3,15 +3,17 @@ import {
   Claim,
   Club,
   ClubPlayerMembership,
+  ClubWithPlayerMembershipType,
   Game,
   GamePlayerMembership,
   GamePlayerMembershipType,
   Notification,
   PagedPlayer,
   Player,
-  PlayerWithClubMembershipType,
   PlayerNewInput,
   PlayerUpdateInput,
+  PlayerWithClubMembershipType,
+  PlayerWithTeamMembershipType,
   PushSubscription,
   PushSubscriptionInputType,
   RankingLastPlace,
@@ -20,9 +22,8 @@ import {
   Setting,
   SettingUpdateInput,
   Team,
-  ClubWithPlayerMembershipType,
-  PlayerWithTeamMembershipType,
   TeamPlayerMembership,
+  TeamWithPlayerMembershipType,
 } from '@badman/backend-database';
 import { IsUUID, getCurrentSeason, getRankingProtected } from '@badman/utils';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
@@ -181,7 +182,7 @@ export class PlayersResolver {
     return player.getGames(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [Team])
+  @ResolveField(() => [TeamWithPlayerMembershipType])
   async teams(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
@@ -190,7 +191,7 @@ export class PlayersResolver {
       description: 'Include the inactive teams (this overwrites the active filter if given)',
     })
     season?: number,
-  ): Promise<Team[]> {
+  ): Promise<(Team & { TeamMembership: TeamPlayerMembership })[] | Team[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
 
     args.where = {
@@ -445,8 +446,8 @@ export class GamePlayersResolver extends PlayersResolver {
 }
 
 @Resolver(() => PlayerWithTeamMembershipType)
-export class TeamPlayerResolver extends PlayersResolver {
-  protected override readonly logger = new Logger(TeamPlayerResolver.name);
+export class PlayerTeamResolver extends PlayersResolver {
+  protected override readonly logger = new Logger(PlayerTeamResolver.name);
 
   @ResolveField(() => [RankingLastPlace])
   override async rankingLastPlaces(

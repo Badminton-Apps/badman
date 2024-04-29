@@ -13,6 +13,7 @@ import {
   TeamNewInput,
   TeamPlayerMembership,
   TeamUpdateInput,
+  TeamWithPlayerMembershipType,
 } from '@badman/backend-database';
 import {
   IsUUID,
@@ -30,8 +31,8 @@ import {
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../utils';
 import { v4 as uuidv4 } from 'uuid';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => Team)
 export class TeamsResolver {
@@ -888,5 +889,15 @@ export class TeamsResolver {
     membership.membershipType = membershipType;
     await membership.save();
     return membership;
+  }
+}
+
+@Resolver(() => TeamWithPlayerMembershipType)
+export class TeamPlayerResolver extends TeamsResolver {
+  @ResolveField(() => TeamPlayerMembership, { nullable: true })
+  async clubMembership(
+    @Parent() team: Team & { TeamPlayerMembership: TeamPlayerMembership },
+  ): Promise<TeamPlayerMembership> {
+    return team.TeamPlayerMembership;
   }
 }
