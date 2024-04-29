@@ -65,7 +65,6 @@ import { ConfigType } from '@badman/utils';
         return { 
           cors: {
             origin: '*',
-            credentials: true,
           },
           playground: false,
           debug: true,
