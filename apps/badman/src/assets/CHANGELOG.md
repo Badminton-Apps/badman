@@ -1,3 +1,14 @@
+## 6.141.1 (2024-04-29)
+
+
+### 🩹 Fixes
+
+- membership is required when querying from parent to determine uniquenes ([a926d0eca](https://github.com/Badminton-Apps/badman/commit/a926d0eca))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.141.0 (2024-04-29)
 
 
