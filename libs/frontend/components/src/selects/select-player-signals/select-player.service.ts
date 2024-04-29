@@ -118,6 +118,7 @@ export class SelectPlayersService {
                     id
                     active
                     confirmed
+                    membershipType
                   }
                 }
               }

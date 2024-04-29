@@ -241,7 +241,7 @@ export class TeamComponent implements OnInit {
         },
         ...current.players.slice(index + 1),
         // we need to re-create the object because `.value` loses the mapping
-      ].map((p) => new TeamPlayer(p)), 
+      ].map((p) => new TeamPlayer(p)),
     } as Team);
 
     this.checkTeam();
