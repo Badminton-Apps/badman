@@ -56,44 +56,6 @@ import { ValidationMessage, ValidationResult } from '../../models/validation';
 import { AssemblyMessageComponent } from '../assembly-message/assembly-message.component';
 import { TeamAssemblyPlayerComponent } from '../team-assembly-player';
 
-const info = `
-  id
-  slug
-  fullName
-  gender
-  competitionPlayer
-  rankingLastPlaces(where: $lastRankginWhere) {
-    id
-    single
-    double
-    mix
-  }
-  rankingPlaces(where: $rankingWhere) {
-    id
-    rankingDate
-    single
-    double
-    mix
-  }
-`;
-
-const PLAYER_INFO = gql`
-  fragment PlayerInfo on Player {
-    ${info}
-  }   
-`;
-
-const TEAM_PLAYER_INFO = gql`
-  fragment TeamPlayerInfo on PlayerWithTeamMembershipType {
-    ${info}
-    teamMembership{
-      id
-      membershipType
-      teamId
-    }
-  }   
-`;
-
 export const SAVED_ASSEMBLY = gql`
   query SavedAssembly($id: ID!, $where: JSONObject) {
     encounterCompetition(id: $id) {
@@ -474,15 +436,30 @@ export class AssemblyComponent implements OnInit {
       this.apollo
         .query<{ player: Player }>({
           query: gql`
-            ${PLAYER_INFO}
-
             query getPlayerInfo(
               $playerId: ID!
               $rankingWhere: JSONObject
               $lastRankginWhere: JSONObject
             ) {
               player(id: $playerId) {
-                ...PlayerInfo
+                id
+                slug
+                fullName
+                gender
+                competitionPlayer
+                rankingLastPlaces(where: $lastRankginWhere) {
+                  id
+                  single
+                  double
+                  mix
+                }
+                rankingPlaces(where: $rankingWhere) {
+                  id
+                  rankingDate
+                  single
+                  double
+                  mix
+                }
               }
             }
           `,
@@ -688,8 +665,6 @@ export class AssemblyComponent implements OnInit {
         this.apollo
           .watchQuery<{ team: Partial<Team> }>({
             query: gql`
-              ${TEAM_PLAYER_INFO}
-
               query TeamInfo($id: ID!, $rankingWhere: JSONObject, $lastRankginWhere: JSONObject) {
                 team(id: $id) {
                   id
@@ -704,7 +679,29 @@ export class AssemblyComponent implements OnInit {
                   preferredDay
                   preferredTime
                   players {
-                    ...TeamPlayerInfo
+                    id
+                    slug
+                    fullName
+                    gender
+                    competitionPlayer
+                    rankingLastPlaces(where: $lastRankginWhere) {
+                      id
+                      single
+                      double
+                      mix
+                    }
+                    rankingPlaces(where: $rankingWhere) {
+                      id
+                      rankingDate
+                      single
+                      double
+                      mix
+                    }
+                    teamMembership {
+                      id
+                      membershipType
+                      teamId
+                    }
                   }
                   entry {
                     id

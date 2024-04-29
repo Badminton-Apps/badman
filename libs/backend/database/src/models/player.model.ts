@@ -1,4 +1,5 @@
-import { Slugify } from '../types';
+import { TeamMembershipType } from '@badman/utils';
+import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   BelongsToManyAddAssociationMixin,
   BelongsToManyAddAssociationsMixin,
@@ -38,19 +39,18 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
+import { ClubWithPlayerMembershipType, TeamWithPlayerMembershipType } from '../_interception';
+import { Slugify } from '../types';
+import { Relation } from '../wrapper';
 import { ClubPlayerMembership } from './club-player-membership.model';
 import { Club } from './club.model';
 import { Comment } from './comment.model';
 import { EventEntry, Game, GamePlayerMembership } from './event';
+import { Notification, Setting } from './personal';
 import { RankingLastPlace, RankingPlace, RankingPoint } from './ranking';
 import { Claim, PlayerClaimMembership, PlayerRoleMembership, Role } from './security';
 import { TeamPlayerMembership } from './team-player-membership.model';
 import { Team } from './team.model';
-import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
-import { ClubWithPlayerMembershipType } from '../_interception';
-import { Notification, Setting } from './personal';
-import { TeamMembershipType } from '@badman/utils';
-import { Relation } from '../wrapper';
 
 @Table({
   timestamps: true,
@@ -95,9 +95,9 @@ export class Player extends Model {
   @Column(DataType.STRING)
   sub?: string;
 
-  @Field(() => [Team], { nullable: true })
+  @Field(() => [TeamWithPlayerMembershipType], { nullable: true })
   @HasMany(() => Team, 'captainId')
-  myTeams?: Relation<Team[]>;
+  myTeams?: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 
   @HasMany(() => EventEntry, 'player1Id')
   entriesP1?: Relation<EventEntry[]>;
@@ -163,7 +163,7 @@ export class Player extends Model {
   @HasMany(() => Notification, 'sendToId')
   notifications?: Relation<Notification[]>;
 
-  @Field(() => [Team], { nullable: true })
+  @Field(() => [TeamWithPlayerMembershipType], { nullable: true })
   @BelongsToMany(() => Team, () => TeamPlayerMembership)
   teams?: (Team & { TeamPlayerMembership: TeamPlayerMembership })[];
 

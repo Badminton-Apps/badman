@@ -90,6 +90,10 @@ export class LandingComponent implements OnInit {
               teams {
                 id
                 clubId
+                teamMembership {
+                  id
+                  membershipType
+                }
               }
             }
           }
