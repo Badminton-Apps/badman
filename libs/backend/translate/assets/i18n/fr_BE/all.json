@@ -315,6 +315,8 @@
         "transfer": "Transféré"
       },
       "save-and-continue-tooltip": "Vous pouvez continuer sans sauvegarder vos équipes, mais ici nous vous permettons de sauvegarder en attendant s'il y a encore des incertitudes sur vos joueurs de base",
+      "saved": "Inscription enregistrée",
+      "saved-failed": "Des problèmes sont survenus lors de l'enregistrement, veuillez vérifier vos données ou réessayer plus tard.",
       "select-club": "",
       "select-events": "",
       "select-location": "",
