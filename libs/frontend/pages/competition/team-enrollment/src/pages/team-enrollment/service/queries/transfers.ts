@@ -1,4 +1,5 @@
 import { Club, ClubPlayer } from '@badman/frontend-models';
+import { startOfSeason } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,8 +10,14 @@ export const loadTransersAndLoans = (apollo: Apollo, clubId?: string | null, sea
     return of([]);
   }
 
+  if (!season) {
+    console.error('No season provided');
+    return of([]);
+  }
+
   return apollo
     .query<{ club: Partial<Club> }>({
+      fetchPolicy: 'network-only',
       query: gql`
         query GetLoansAndTransfersForSeason${season}($id: ID!, $active: Boolean, $where: JSONObject) {
           club(id: $id) {
@@ -32,7 +39,7 @@ export const loadTransersAndLoans = (apollo: Apollo, clubId?: string | null, sea
         active: false,
         where: {
           '$ClubPlayerMembership.start$': {
-            $gte: `${season}-03-01`,
+            $gte: startOfSeason(season),
           },
           '$ClubPlayerMembership.end$': null,
         },
