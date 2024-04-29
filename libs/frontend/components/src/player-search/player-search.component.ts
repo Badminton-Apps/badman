@@ -153,6 +153,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                         competitionPlayer
                         phone @include(if: $personal)
                         email @include(if: $personal)
+                        clubMembership {
+                          id
+                          membershipType
+                        }
                       }
                     }
                   }
@@ -199,6 +203,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                       clubs {
                         id
                         name
+                        clubMembership {
+                          id
+                          membershipType
+                        }
                       }
                     }
                   }
