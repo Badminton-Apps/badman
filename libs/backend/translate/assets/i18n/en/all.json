@@ -824,6 +824,9 @@
   },
   "shell": {
     "sidebar": {
+      "admin": {
+        "title": "Admin"
+      },
       "competition": {
         "assembly": "Assembly",
         "change-encounter": "Change encounter",
@@ -836,7 +839,7 @@
         "faq": "FAQ",
         "title": "General"
       },
-      "jobs": {
+      "job": {
         "title": "Jobs"
       },
       "persnal": {
@@ -848,6 +851,9 @@
       },
       "tournament": {
         "title": "Tournaments"
+      },
+      "transfer": {
+        "title": "Transfers / loans"
       }
     }
   },
@@ -958,5 +964,8 @@
     "type": "Type",
     "vs": "against",
     "vs-short": "vs"
+  },
+  "transfers": {
+    "title": "Transfers / loans"
   }
 }

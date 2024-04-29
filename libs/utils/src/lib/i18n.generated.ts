@@ -831,6 +831,9 @@ export type I18nTranslations = {
         };
         "shell": {
             "sidebar": {
+                "admin": {
+                    "title": string;
+                };
                 "competition": {
                     "assembly": string;
                     "change-encounter": string;
@@ -843,7 +846,7 @@ export type I18nTranslations = {
                     "faq": string;
                     "title": string;
                 };
-                "jobs": {
+                "job": {
                     "title": string;
                 };
                 "persnal": {
@@ -854,6 +857,9 @@ export type I18nTranslations = {
                     "title": string;
                 };
                 "tournament": {
+                    "title": string;
+                };
+                "transfer": {
                     "title": string;
                 };
             };
@@ -965,6 +971,9 @@ export type I18nTranslations = {
             "type": string;
             "vs": string;
             "vs-short": string;
+        };
+        "transfers": {
+            "title": string;
         };
     };
 };

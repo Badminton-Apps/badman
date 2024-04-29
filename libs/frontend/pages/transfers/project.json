@@ -1,0 +1,26 @@
+{
+  "name": "frontend-transfer",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/frontend/pages/transfer/src",
+  "prefix": "badman",
+  "tags": [],
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:ng-packagr-lite",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "libs/frontend/pages/transfer/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/frontend/pages/transfer/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/frontend/pages/transfer/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    }
+  }
+}
