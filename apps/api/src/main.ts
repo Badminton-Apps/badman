@@ -57,7 +57,6 @@ async function bootstrap() {
       return callback(null, true);
     },
     optionsSuccessStatus: 200,
-    credentials: true,
   });
   Logger.debug('Cors enabled');
 
