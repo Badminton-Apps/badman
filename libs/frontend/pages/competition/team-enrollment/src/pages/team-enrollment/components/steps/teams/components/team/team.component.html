@@ -159,7 +159,7 @@
               <mat-form-field>
                 <mat-label>Type</mat-label>
                 <mat-select
-                  [(value)]="player.teamMembership.membershipType"
+                  [value]="player.teamMembership.membershipType"
                   (selectionChange)="changePlayerType(player, $event.value)"
                 >
                   @for (type of types; track type) {
