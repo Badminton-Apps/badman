@@ -11,6 +11,7 @@ export const loadComments = (apollo: Apollo, clubId?: string | null, eventIds?: 
 
   return apollo
     .query<{ comments: Partial<Comment[]> }>({
+      fetchPolicy: 'network-only',
       query: gql`
         query Comments($where: JSONObject) {
           comments(where: $where) {
