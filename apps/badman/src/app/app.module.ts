@@ -102,6 +102,10 @@ const APP_ROUTES: Routes = [
     path: 'jobs',
     loadChildren: () => import('@badman/frontend-jobs').then((m) => m.JobModule),
   },
+  {
+    path: 'transfers',
+    loadChildren: () => import('@badman/frontend-transfers').then((m) => m.TransferModule),
+  },
 ];
 @NgModule({
   declarations: [AppComponent],

@@ -1,0 +1,39 @@
+<badman-page-header>
+  <div title>{{ 'all.transfers.title' | translate }}</div>
+</badman-page-header>
+
+<mtx-grid
+  [showToolbar]="true"
+  [toolbarTemplate]="toolbar"
+  [data]="transfers()"
+  [loading]="!loaded()"
+  [columns]="columns"
+  [multiSelectable]="true"
+  [hideRowSelectionCheckbox]="false"
+  [rowSelectable]="true"
+>
+</mtx-grid>
+
+<ng-template #toolbar>
+  <div class="actions">
+    <button mat-stroked-button color="primary">Accept All</button>
+    <button mat-stroked-button color="primary">Reject all</button>
+
+    <mat-form-field>
+      <mat-label>Player</mat-label>
+      <input matInput />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>New club</mat-label>
+      <mtx-select [items]="currentClubs()" bindLabel="name" bindValue="id" [multiple]="true">
+      </mtx-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Current Club</mat-label>
+      <mtx-select [items]="currentClubs()" bindLabel="name" bindValue="id" [multiple]="true">
+      </mtx-select>
+    </mat-form-field>
+  </div>
+</ng-template>

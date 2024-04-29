@@ -6,6 +6,7 @@
 @use './theme-functions' as theme;
 @use './badman.theme' as root-theme;
 
+
 @use '../../../libs/frontend/components/theme' as frontend-components;
 @use '../../../libs/frontend/pages/competition/team-assembly/theme' as frontend-assembly;
 @use '../../../libs/frontend/pages/club/theme' as frontend-club;

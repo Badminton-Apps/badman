@@ -824,6 +824,9 @@
   },
   "shell": {
     "sidebar": {
+      "admin": {
+        "title": "Admin"
+      },
       "competition": {
         "assembly": "Opstelling",
         "change-encounter": "Verplaats ontmoeting",
@@ -836,7 +839,7 @@
         "faq": "FAQ",
         "title": "Algemeen"
       },
-      "jobs": {
+      "job": {
         "title": "Jobs"
       },
       "persnal": {
@@ -848,6 +851,9 @@
       },
       "tournament": {
         "title": "Toernooien"
+      },
+      "transfer": {
+        "title": "Transfers / uitleningen"
       }
     }
   },
@@ -958,5 +964,8 @@
     "type": "Type",
     "vs": "tegen",
     "vs-short": "vs"
+  },
+  "transfers": {
+    "title": "Transfers / uitleningen"
   }
 }

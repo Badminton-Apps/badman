@@ -98,10 +98,38 @@
           <a mat-list-item (click)="isHandset() && drawer.close()" [routerLink]="['/ranking']">{{
             'all.shell.sidebar.ranking.title' | translate
           }}</a>
-          <badman-has-claim [any]="['change:job']">
-            <a mat-list-item (click)="isHandset() && drawer.close()" [routerLink]="['/jobs']">{{
-              'all.shell.sidebar.jobs.title' | translate
-            }}</a>
+
+          <badman-has-claim [any]="['change:job', 'change:transfer']">
+            <mat-list-item (click)="expanded.admin = !expanded.admin">
+              <div class="expandable-item">
+                <div>{{ 'all.shell.sidebar.admin.title' | translate }}</div>
+                @if (!expanded.admin) {
+                  <mat-icon>expand_more</mat-icon>
+                } @else {
+                  <mat-icon>expand_less</mat-icon>
+                }
+              </div>
+            </mat-list-item>
+            <div [hidden]="!expanded.admin">
+              <mat-nav-list>
+                <badman-has-claim [any]="['change:job']">
+                  <a
+                    mat-list-item
+                    (click)="isHandset() && drawer.close()"
+                    [routerLink]="['/jobs']"
+                    >{{ 'all.shell.sidebar.job.title' | translate }}</a
+                  >
+                </badman-has-claim>
+                <badman-has-claim [any]="['change:transfer']">
+                  <a
+                    mat-list-item
+                    (click)="isHandset() && drawer.close()"
+                    [routerLink]="['/transfers']"
+                    >{{ 'all.shell.sidebar.transfer.title' | translate }}</a
+                  >
+                </badman-has-claim>
+              </mat-nav-list>
+            </div>
           </badman-has-claim>
         </mat-nav-list>
       </div>
