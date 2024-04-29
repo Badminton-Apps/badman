@@ -1,3 +1,20 @@
+## 6.141.0 (2024-04-29)
+
+
+### 🚀 Features
+
+- adding a better snackbar for saving ([2986558a9](https://github.com/Badminton-Apps/badman/commit/2986558a9))
+
+### 🩹 Fixes
+
+- change player's membership to team wouldn't be saved ([378bdf30a](https://github.com/Badminton-Apps/badman/commit/378bdf30a))
+- disabeling save / next button when saving ([ec09fa531](https://github.com/Badminton-Apps/badman/commit/ec09fa531))
+- optimize caching keys ([1072db1e6](https://github.com/Badminton-Apps/badman/commit/1072db1e6))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.140.0 (2024-04-28)
 
 
