@@ -24,17 +24,21 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-location' | translate
       }}</ng-template>
-      <badman-locations-step [formGroup]="this.formGroup"/>
+      <badman-locations-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button mat-stroked-button matStepperNext [disabled]="!locationControl.valid">
+        <button
+          mat-stroked-button
+          matStepperNext
+          [disabled]="!locationControl.valid || this.saving"
+        >
           {{ 'all.button.next' | translate }}
         </button>
         <button
           mat-raised-button
           (click)="saveAndContinue()"
           color="primary"
-          [disabled]="!locationControl.valid"
+          [disabled]="!locationControl.valid || this.saving"
         >
           {{ 'all.button.save-and-continue' | translate }}
         </button>
@@ -48,10 +52,21 @@
       <badman-player-transfer-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button mat-stroked-button matStepperNext>
+        <button
+          mat-stroked-button
+          matStepperNext
+          [disabled]="this.saving"
+          [class.spinner]="this.saving"
+        >
           {{ 'all.button.next' | translate }}
         </button>
-        <button mat-raised-button (click)="saveAndContinue()" color="primary">
+        <button
+          mat-raised-button
+          (click)="saveAndContinue()"
+          color="primary"
+          [disabled]="this.saving"
+          [class.spinner]="this.saving"
+        >
           {{ 'all.button.save-and-continue' | translate }}
         </button>
       </div>
@@ -64,7 +79,13 @@
       <badman-teams-transfer-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button mat-raised-button color="primary" matStepperNext>
+        <button
+          mat-raised-button
+          color="primary"
+          matStepperNext
+          [disabled]="this.saving"
+          [class.spinner]="this.saving"
+        >
           {{ 'all.button.next' | translate }}
         </button>
       </div>
@@ -81,7 +102,8 @@
           mat-stroked-button
           color="primary"
           matStepperNext
-          [disabled]="this.formGroup.get('teams')?.valid === false"
+          [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
+          [class.spinner]="this.saving"
         >
           {{ 'all.button.next' | translate }}
         </button>
@@ -89,7 +111,8 @@
           mat-raised-button
           (click)="saveAndContinue(true)"
           color="primary"
-          [disabled]="this.formGroup.get('teams')?.valid === false"
+          [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
+          [class.spinner]="this.saving"
         >
           {{ 'all.button.save-and-continue' | translate }}
         </button>
@@ -102,7 +125,13 @@
       <badman-comments-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button mat-raised-button color="primary" (click)="saveAndFinish()">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="saveAndFinish()"
+          [disabled]="this.saving"
+          [class.spinner]="this.saving"
+        >
           {{ 'all.button.save' | translate }}
         </button>
       </div>
