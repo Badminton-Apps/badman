@@ -4,7 +4,7 @@ import { Apollo, gql } from 'apollo-angular';
 import { Socket } from 'ngx-socket-io';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { merge } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 export interface TransferState {
   transfers: ClubMembership[];
@@ -28,6 +28,7 @@ export class TransferService {
     .query<{
       clubPlayerMemberships: { rows: ClubMembership[] };
     }>({
+      fetchPolicy: 'network-only',
       query: gql`
         query LoansAndTransfers($where: JSONObject) {
           clubPlayerMemberships(where: $where) {
@@ -63,7 +64,12 @@ export class TransferService {
         },
       },
     })
-    .pipe(map((result) => result.data.clubPlayerMemberships.rows));
+    .pipe(
+      map(
+        (result) => result.data.clubPlayerMemberships.rows?.map((r) => new ClubMembership(r)) ?? [],
+      ),
+      tap((transfers) => console.log(transfers)),
+    );
 
   sources$ = merge(
     this.servicesLoaded$.pipe(

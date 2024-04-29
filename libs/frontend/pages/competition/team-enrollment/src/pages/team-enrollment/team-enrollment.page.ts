@@ -10,10 +10,16 @@ import { HasClaimComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { EntryCompetitionPlayer, Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { ClubMembershipType, LevelType, SubEventTypeEnum, getUpcommingSeason } from '@badman/utils';
+import {
+  ClubMembershipType,
+  LevelType,
+  SubEventTypeEnum,
+  getUpcommingSeason,
+  endOfSeason,
+  startOfSeason,
+} from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import moment from 'moment';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { delay, forkJoin, lastValueFrom, of, switchMap } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
@@ -362,7 +368,9 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
     const players = (transfers.LOAN ?? []).concat(transfers.NORMAL);
     const existingLoans = this.dataService.state.loans() ?? [];
     const existingTransfers = this.dataService.state.transfers() ?? [];
-    const startDate = moment().set('year', this.formGroup.value.season).set('month', 4).toDate();
+    const season = this.formGroup.get(SEASON)?.value;
+    const startDate = startOfSeason(season);
+    const endDate = endOfSeason(season);
 
     for (const player of transfers.LOAN) {
       if (!player) {
@@ -383,8 +391,8 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
           variables: {
             data: {
               clubId: club,
-              start: startDate,
-              end: null,
+              start: startDate.toDate(),
+              end: endDate.toDate(),
               membershipType: ClubMembershipType.LOAN,
               playerId: player,
             },

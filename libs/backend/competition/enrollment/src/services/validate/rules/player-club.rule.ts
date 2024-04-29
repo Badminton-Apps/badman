@@ -2,7 +2,7 @@ import { Club, Player } from '@badman/backend-database';
 import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
 import { Rule } from './_rule.base';
 import moment from 'moment';
-import { ClubMembershipType } from '@badman/utils';
+import { ClubMembershipType, startOfSeason } from '@badman/utils';
 
 /**
  * Checks if the players is the correct club for the team
@@ -138,7 +138,7 @@ export class PlayerClubRule extends Rule {
             (c) =>
               // must not have ended yet
               c.ClubPlayerMembership.end == null ||
-              c.ClubPlayerMembership.end > moment([season, 4, 1]).toDate(),
+              moment(c.ClubPlayerMembership.end).isAfter(startOfSeason(season)),
           ) ?? [];
 
       // else if the player has no active club
@@ -155,7 +155,7 @@ export class PlayerClubRule extends Rule {
       }
 
       // if the player has the club in the next season (in any way)
-      if (activeClubsInNextSeason?.find((c) => c.ClubPlayerMembership.clubId === club.id) ) {
+      if (activeClubsInNextSeason?.find((c) => c.ClubPlayerMembership.clubId === club.id)) {
         return;
       }
 

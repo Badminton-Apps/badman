@@ -20,6 +20,7 @@ export const loadTeams = (
     .query<{
       teams: Team[];
     }>({
+      fetchPolicy: 'network-only',
       query: gql`
         query TeamsForSeason_${season}_${season + 1}($where: JSONObject, $rankingWhere: JSONObject, $order: [SortOrderType!]) {
           teams(where: $where) {

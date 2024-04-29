@@ -41,11 +41,15 @@ export class OverviewPageComponent {
   transfers = this.service.state.transfers;
   loaded = this.service.state.loaded;
 
-  currentClubs = computed(
-    () =>
-      this.transfers()?.map((r) => r.player?.clubs?.find((r: Club) => r.clubMembership?.active)) ??
-      [],
-  ) as Signal<Club[]>;
+  currentClubs = computed(() => {
+    const test =
+      this.transfers()
+        ?.map((r) => r.player?.clubs?.find((r: Club) => r.clubMembership?.active))
+        ?.filter((c) => !!c) ?? [];
+    console.log(test);
+
+    return test;
+  }) as Signal<Club[]>;
 
   columns: MtxGridColumn[] = [
     { header: 'Name', field: 'player.fullName', sortable: true },
