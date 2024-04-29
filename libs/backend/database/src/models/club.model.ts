@@ -43,6 +43,7 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
+import { PlayerWithClubMembershipType } from '../_interception';
 import { Slugify } from '../types';
 import { Relation } from '../wrapper';
 import { ClubPlayerMembership } from './club-player-membership.model';
@@ -51,7 +52,6 @@ import { Location } from './event';
 import { Player } from './player.model';
 import { Claim, Role } from './security';
 import { Team } from './team.model';
-import { PlayerWithClubMembershipType } from '../_interception';
 
 @Table({
   timestamps: true,

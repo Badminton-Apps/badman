@@ -4,13 +4,16 @@ import {
 } from '@apollo/server/plugin/landingPage/default';
 import { AuthorizationModule } from '@badman/backend-authorization';
 import { ApolloDriver } from '@nestjs/apollo';
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { GqlModuleOptions, GraphQLModule } from '@nestjs/graphql';
 
 import OperationRegistry from '@apollo/server-plugin-operation-registry';
 import { ApolloServerPluginSchemaReporting } from '@apollo/server/plugin/schemaReporting';
 import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
 
+import { ConfigType } from '@badman/utils';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { join } from 'node:path';
 import {
   AvailabilityModule,
   ClubResolverModule,
@@ -25,11 +28,8 @@ import {
   SecurityResolverModule,
   TeamResolverModule,
 } from './resolvers';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ServiceResolverModule } from './resolvers/services/serice.module';
 import { CronJobResolverModule } from './resolvers/cronJobs/cronJob.module';
-import { ConfigType } from '@badman/utils';
-import { join } from 'node:path';
+import { ServiceResolverModule } from './resolvers/services/serice.module';
 
 @Module({
   imports: [
