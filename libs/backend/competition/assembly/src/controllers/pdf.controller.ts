@@ -155,6 +155,8 @@ export class AssemblyController {
       homeTeam: homeTeam.name,
       awayTeam: awayTeam.name,
       captain: captain?.fullName,
+      generationDate: moment().tz('Europe/Brussels').format('DD-MM-YYYY HH:mm'),
+      rankingDate: moment(data.system?.updateLastUpdate).tz('Europe/Brussels').format('DD-MM-YYYY'),
       gameLabels: this.getLabels(data),
       doubles: [
         {
