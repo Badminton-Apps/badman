@@ -30,5 +30,5 @@ export const startOfSeason = (season: number) => {
 };
 
 export const endOfSeason = (season: number) => {
-  return moment([season + 1, 5, 31]);
+  return moment([season + 1, 5, 1]).endOf('month');
 };

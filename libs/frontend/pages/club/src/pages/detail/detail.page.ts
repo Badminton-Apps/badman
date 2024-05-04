@@ -204,18 +204,18 @@ export class DetailPageComponent implements OnInit {
     });
   }
 
-  deletePlayer(player: Player) {
-    this.apollo.mutate({
-      mutation: gql`
-        mutation RemovePlayerFromClub($removePlayerFromClubId: ID!) {
-          removePlayerFromClub(id: $removePlayerFromClubId)
-        }
-      `,
-      variables: {
-        removePlayerFromClubId: player.id,
-      },
-    });
-  }
+  // deletePlayer(player: Player) {
+  //   this.apollo.mutate({
+  //     mutation: gql`
+  //       mutation RemovePlayerFromClub($removePlayerFromClubId: ID!) {
+  //         removePlayerFromClub(id: $removePlayerFromClubId)
+  //       }
+  //     `,
+  //     variables: {
+  //       removePlayerFromClubId: player.id,
+  //     },
+  //   });
+  // }
 
   async downloadTwizzit() {
     const season = this.filter.get('season')?.value;

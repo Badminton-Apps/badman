@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, ReplaySubject, merge } from 'rxjs';
-import { throttleTime, filter, map, startWith, switchMap } from 'rxjs/operators';
+import { throttleTime, filter, map, startWith, switchMap, debounceTime } from 'rxjs/operators';
 
 type SearchType = { id: string; name: string; slug: string };
 
@@ -55,7 +55,7 @@ export class SearchBoxComponent implements OnInit {
       filter((x) => !!x),
       filter((x) => typeof x === 'string'),
       filter((x) => x?.length > 1),
-      throttleTime(600),
+      debounceTime(600),
       switchMap((query) =>
         this.apollo.query<{
           search: SearchType[];

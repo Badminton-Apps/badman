@@ -381,6 +381,8 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
         continue;
       }
 
+      console.log(endDate)
+
       observables.push(
         this.apollo.mutate({
           mutation: gql`

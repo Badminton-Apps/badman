@@ -9,7 +9,13 @@
 .actions {
   display: flex;
   gap: 1rem;
-  align-items: center;
+  flex-direction: column;
+
+  .row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
 }
 
 badman-page-header {

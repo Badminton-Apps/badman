@@ -1,18 +1,18 @@
-import { Component, Signal, computed, inject } from '@angular/core';
+import { Component, Signal, computed, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { PageHeaderComponent } from '@badman/frontend-components';
-import { Club } from '@badman/frontend-models';
+import { Club, ClubMembership } from '@badman/frontend-models';
 import { ClubMembershipType } from '@badman/utils';
 import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { MtxSelect } from '@ng-matero/extensions/select';
 import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
-import { TransferService } from '../../services/transfer.service';
-import { MatInput } from '@angular/material/input';
+import { TransferService } from './transfer.service';
 
 @Component({
   selector: 'badman-ranking-overview',
@@ -40,15 +40,46 @@ export class OverviewPageComponent {
 
   transfers = this.service.state.transfers;
   loaded = this.service.state.loaded;
+  loading = computed(() => !this.loaded());
 
   currentClubs = computed(() => {
-    const test =
+    const uniqueClubIds = new Set<string>(); // Using Set to store unique club IDs
+    const clubs =
       this.transfers()
         ?.map((r) => r.player?.clubs?.find((r: Club) => r.clubMembership?.active))
-        ?.filter((c) => !!c) ?? [];
-    console.log(test);
+        ?.filter((c) => !!c?.id)
+        ?.filter((club) => {
+          if (!club?.id) {
+            throw `No club Id provided`;
+          }
+          if (!uniqueClubIds.has(club?.id)) {
+            uniqueClubIds.add(club.id);
+            return true;
+          }
+          return false;
+        }) ?? [];
 
-    return test;
+    return clubs;
+  }) as Signal<Club[]>;
+
+  newClubs = computed(() => {
+    const uniqueClubIds = new Set<string>(); // Using Set to store unique club IDs
+    const clubs =
+      this.transfers()
+        ?.map((r) => r.club)
+        ?.filter((c) => !!c?.id)
+        ?.filter((club) => {
+          if (!club?.id) {
+            throw `No club Id provided`;
+          }
+          if (!uniqueClubIds.has(club?.id)) {
+            uniqueClubIds.add(club.id);
+            return true;
+          }
+          return false;
+        }) ?? [];
+
+    return clubs;
   }) as Signal<Club[]>;
 
   columns: MtxGridColumn[] = [
@@ -57,7 +88,7 @@ export class OverviewPageComponent {
     {
       header: 'Current club',
       field: 'nothing',
-      formatter: (data) => data.player.clubs?.find((r: Club) => r.clubMembership?.active).name,
+      formatter: (data) => data.player.clubs?.find((r: Club) => r.clubMembership?.active)?.name,
       sortable: true,
     },
     {
@@ -100,16 +131,43 @@ export class OverviewPageComponent {
           text: 'accept',
           icon: 'check',
           tooltip: 'accept',
-          click: () => alert('accept'),
+          click: (row) => this.acceptTransfer(row),
         },
         {
           type: 'icon',
           text: 'reject',
           icon: 'close',
           tooltip: 'reject',
-          click: () => alert('reject'),
+          click: (row) => this.rejectTransfer(row),
         },
       ],
     },
   ];
+
+  selectedRows = model([]);
+
+  acceptAll() {
+    for (const transfer of this.selectedRows()) {
+      this.acceptTransfer(transfer);
+    }
+  }
+
+  rejectAll() {
+    for (const transfer of this.selectedRows()) {
+      this.rejectTransfer(transfer);
+    }
+  }
+
+  acceptTransfer(membership: ClubMembership) {
+    this.service.state.updateMembership({
+      id: membership.id,
+      confirmed: true,
+    });
+  }
+
+  rejectTransfer(membership: ClubMembership) {
+    this.service.state.deleteMembership({
+      id: membership.id,
+    });
+  }
 }

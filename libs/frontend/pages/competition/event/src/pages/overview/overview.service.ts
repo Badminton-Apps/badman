@@ -7,14 +7,7 @@ import { getCurrentSeason } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge, of } from 'rxjs';
-import {
-  catchError,
-  throttleTime,
-  distinctUntilChanged,
-  map,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, switchMap, throttleTime } from 'rxjs/operators';
 interface EventOverviewState {
   events: EventCompetition[];
   loading: boolean;
