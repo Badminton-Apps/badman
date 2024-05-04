@@ -1,5 +1,5 @@
 {
-  "name": "@badman/frontend-transfer",
+  "name": "@badman/frontend-transfers",
   "version": "6.141.1",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
