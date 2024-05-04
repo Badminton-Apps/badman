@@ -1,3 +1,22 @@
+## 6.142.0 (2024-05-04)
+
+
+### 🚀 Features
+
+- this usees a different cors maybe? ([2ba6c78ea](https://github.com/Badminton-Apps/badman/commit/2ba6c78ea))
+- showing generation and ranking date on assembly ([3a3bfda48](https://github.com/Badminton-Apps/badman/commit/3a3bfda48))
+- transfer overview ([e9859c1d9](https://github.com/Badminton-Apps/badman/commit/e9859c1d9))
+- upgraded ranking table ([14bf948b9](https://github.com/Badminton-Apps/badman/commit/14bf948b9))
+- accepting and rejecting transfers ([e19349323](https://github.com/Badminton-Apps/badman/commit/e19349323))
+
+### 🩹 Fixes
+
+- translations wouldn't load sometimes ([50b17b239](https://github.com/Badminton-Apps/badman/commit/50b17b239))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.141.1 (2024-04-29)
 
 
