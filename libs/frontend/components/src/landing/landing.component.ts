@@ -65,12 +65,14 @@ export class LandingComponent implements OnInit {
           this._loadTeamsForPlayer();
         }
 
-        const title = this.translate.instant('all.landing.title');
-        this.seoService.update({
-          title,
-          description: title,
-          type: 'website',
-          keywords: ['badman', 'badminton'],
+        this.translate.get(['all.landing.title']).subscribe((translations) => {
+          const title = translations['all.landing.title'];
+          this.seoService.update({
+            title,
+            description: title,
+            type: 'website',
+            keywords: ['badman', 'badminton'],
+          });
         });
       },
       {
