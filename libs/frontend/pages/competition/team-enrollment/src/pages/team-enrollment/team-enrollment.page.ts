@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild, effect, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 import { HasClaimComponent } from '@badman/frontend-components';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { EntryCompetitionPlayer, Player, Team, TeamPlayer } from '@badman/frontend-models';
@@ -14,8 +16,8 @@ import {
   ClubMembershipType,
   LevelType,
   SubEventTypeEnum,
-  getUpcommingSeason,
   endOfSeason,
+  getUpcommingSeason,
   startOfSeason,
 } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -35,8 +37,6 @@ import {
 import { PlayerTransferStepComponent } from './components/steps/player-transfer';
 import { TeamEnrollmentDataService } from './service/team-enrollment.service';
 import { minAmountOfTeams } from './validators';
-import { Router } from '@angular/router';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 export type TeamFormValue = {
   team: Team;
@@ -148,14 +148,14 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
   constructor() {
     this.dataService.state.setSeason(getUpcommingSeason());
 
-    effect(() => {
-      if (this.dataService.state.allLoaded()) {
-        this.vert_stepper.next();
-        this.vert_stepper.next();
-        this.vert_stepper.next();
-        this.vert_stepper.next();
-      }
-    });
+    // effect(() => {
+    //   if (this.dataService.state.allLoaded()) {
+    //     this.vert_stepper.next();
+    //     this.vert_stepper.next();
+    //     this.vert_stepper.next();
+    //     this.vert_stepper.next();
+    //   }
+    // });
   }
 
   ngOnInit(): void {
