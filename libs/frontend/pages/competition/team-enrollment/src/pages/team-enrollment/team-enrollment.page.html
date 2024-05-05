@@ -27,13 +27,24 @@
       <badman-locations-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button
-          mat-stroked-button
-          matStepperNext
-          [disabled]="!locationControl.valid || this.saving"
-        >
-          {{ 'all.button.next' | translate }}
-        </button>
+        @if (hadEntries()) {
+          <button
+            mat-raised-button
+            matStepperNext
+            color="primary"
+            [disabled]="!locationControl.valid || this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        } @else {
+          <button
+            mat-stroked-button
+            matStepperNext
+            [disabled]="!locationControl.valid || this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        }
         <div
           [matTooltip]="
             hadEntries()
@@ -61,14 +72,26 @@
       <badman-player-transfer-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button
-          mat-stroked-button
-          matStepperNext
-          [disabled]="this.saving"
-          [class.spinner]="this.saving"
-        >
-          {{ 'all.button.next' | translate }}
-        </button>
+        @if (hadEntries()) {
+          <button
+            mat-raised-button
+            matStepperNext
+            color="primary"
+            [disabled]="this.saving"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        } @else {
+          <button
+            mat-stroked-button
+            matStepperNext
+            [disabled]="this.saving"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        }
         <div
           [matTooltip]="
             hadEntries()
@@ -96,6 +119,7 @@
       <badman-teams-transfer-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
+
         <button
           mat-raised-button
           color="primary"
@@ -115,15 +139,28 @@
       <badman-teams-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button
-          mat-stroked-button
-          color="primary"
-          matStepperNext
-          [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
-          [class.spinner]="this.saving"
-        >
-          {{ 'all.button.next' | translate }}
-        </button>
+
+        @if (hadEntries()) {
+          <button
+            mat-raised-button
+            color="primary"
+            matStepperNext
+            [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        } @else {
+          <button
+            mat-stroked-button
+            color="primary"
+            matStepperNext
+            [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        }
         <div
           [matTooltip]="
             hadEntries()
