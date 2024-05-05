@@ -181,7 +181,6 @@
       "close-accept-requests": "Acceptation de la clôture",
       "close-enrollment": "Fermeture",
       "close-new-requets": "Clôture des nouvelles demandes",
-      "hint": "",
       "open-enrollment": "Date d'ouverture",
       "open-requests": "Date d'ouverture"
     },
@@ -202,7 +201,6 @@
       "title": "Départements"
     },
     "team-assembly": {
-      "avg-level": "",
       "captain": "Capitaine de l'équipe",
       "change-team": "En modifiant l'équipe, vous pouvez changer les joueurs par défaut et les joueurs de réserve.",
       "disclaimer": "Avertissement : Ce module de rédaction est une version bêta et peut exceptionnellement encore contenir des erreurs. Par conséquent, vérifiez toujours votre installation en tenant compte du règlement C320.",
@@ -260,24 +258,24 @@
       }
     },
     "team-enrollment": {
-      "close": "",
-      "closed": "",
+      "close": "Fermer",
+      "closed": "Fermé",
       "comments": {
-        "liga": "",
-        "nat": "",
-        "prov": "",
+        "liga": "Notes Compétition de la ligue (par équipe)",
+        "nat": "Notes Ligue nationale (par équipe)",
+        "prov": "Notes Ligue provinciale (par équipe)",
         "title": "Remarques"
       },
       "enrollments": "Entrées",
       "errors": {
-        "already": "",
+        "already": "Joueur déjà présent en tant que détenteur du titre.",
         "base-other-team": "<strong>{player.fullName}</strong> est également joueur de base dans une autre équipe",
         "comp-status-base": "Le joueur titulaire <strong>{player.fullName}</strong> n'est pas inscrit à la compétition",
-        "comp-status-team": "",
+        "comp-status-team": "<strong>{player.fullName}</strong> n'est pas inscrit au concours",
         "faller": "L'équipe devrait être reléguée, mais n'est pas engagée dans une série inférieure cette année.",
         "first-team-index": "Une équipe première éliminée ne peut aligner une équipe dont l'indice est inférieur à son indice de base au cours de la saison.",
         "no-subevent": "Veuillez choisir une gamme",
-        "none": "",
+        "none": "Aucune erreur n'a été trouvée",
         "player-club": "Le joueur <strong>{player.fullName}</strong> ne fait pas partie de {club.name} (club actuel : {activeClub.name})",
         "player-club-none": "Aucun club connu pour le joueur <strong>{player.fullName}<strong>",
         "player-gender": "<strong>{player.fullName}</strong> est un <strong>{player.gender}</strong> mais un <strong>{gender}</strong> était attendu",
@@ -289,51 +287,54 @@
         "team-order-same-subevent": "L'équipe <strong>{team.name}</strong> a un meilleur indice dans la même série, mais a un numéro d'équipe inférieur",
         "team-to-strong": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas tomber en dessous de la limite de la division <strong>{minIndex}</strong> ",
         "team-to-week": "Les joueurs de départ de l'indice d'équipe sont <strong>{baseIndex}</strong> et ne peuvent pas dépasser la limite de la division <strong>{maxIndex}</strong> ",
-        "title": "",
+        "title": "Erreurs",
         "too-few-base-players": "Trop peu de joueurs de base",
         "too-many-base-players": "Trop de joueurs de base"
       },
       "example-error": "Ce sont des messages d'erreur qui empêchent l'inscription de l'équipe. Veuillez les résoudre.",
       "example-warning": "Ce sont des avertissements dont il faut tenir compte. L'enregistrement peut encore être complété.",
       "exceptions": "Des exceptions",
-      "info": "",
+      "info": "Notes sur l'inscription des équipes",
       "loan-locked": "Le prêt a déjà été confirmé, il n'est plus possible de le supprimer",
       "locations": {
         "availible-courts": "Champs disponibles",
         "courts-hint": "Modifier le nombre de champs disponibles",
         "title": "Emplacements"
       },
-      "open": "",
+      "open": "Ouvrir",
       "play-days": "Jours de match",
       "players": {
-        "backup": "",
-        "base": "",
+        "backup": "Joueur(s) de réserve",
+        "base": "Joueur(s) de base",
+        "level-exception": {
+          "reason": "Saisir un motif",
+          "request": "Demande de dérogation à la classification"
+        },
         "loan": "Prêté",
-        "regular": "",
-        "team": "",
-        "title": "",
+        "regular": "Joueur(s) permanent(s)",
+        "title": "Détenteurs possibles",
         "transfer": "Transféré"
       },
       "save-and-continue-tooltip": "Vous pouvez continuer sans sauvegarder vos équipes, mais ici nous vous permettons de sauvegarder en attendant s'il y a encore des incertitudes sur vos joueurs de base",
       "saved": "Inscription enregistrée",
       "saved-failed": "Des problèmes sont survenus lors de l'enregistrement, veuillez vérifier vos données ou réessayer plus tard.",
-      "select-club": "",
-      "select-events": "",
-      "select-location": "",
-      "select-teams": "",
-      "select-teams-description": "",
+      "select-club": "Sélectionner un club",
+      "select-events": "Sélectionner les pièces",
+      "select-location": "Sélectionner les lieux",
+      "select-teams": "Sélectionner les équipes",
+      "select-teams-description": "Ci-dessous, vous pouvez personnaliser vos équipes en fonction de vos préférences.\n\nVous pouvez éventuellement définir vos joueurs permanents et de réserve pour chaque équipe. Vous vous assurez ainsi que tous les joueurs sont éligibles pour jouer dans leurs équipes respectives et que l'équipe peut fonctionner sans problème, sans changement de dernière minute ni confusion.",
       "teams": {
-        "captain": "",
-        "change-team": "",
+        "captain": "Capitaine de l'équipe",
+        "change-team": "En modifiant l'équipe, vous pouvez changer les joueurs par défaut et les joueurs de réserve.",
         "new-teams": "Nouvelles équipes pour cette saison",
-        "substitude": "",
-        "team-index": "",
-        "team-index-ignored": ""
+        "substitude": "Envahisseurs",
+        "team-index": "L'indice de décalage des titulaires est <strong>{current}</strong> et peut être au moins <strong>{team}</strong> ",
+        "team-index-ignored": "L'indice d'équipe des joueurs de base peut être inférieur à celui de la première équipe."
       },
       "title": "Inscriptions des équipes",
       "transfer": {
         "enrolled-as": "enregistré comme",
-        "transfer-teams": "",
+        "transfer-teams": "Transfert d'équipes (facultatif)",
         "transfer-teams-description": "Si vous souhaitez transférer votre ou vos équipes à l'événement de cette année, vous pouvez utiliser cette étape facultative pour simplifier le processus d'inscription. En sélectionnant cette option, vous pouvez transférer votre ou vos équipes et les placer automatiquement dans le bon événement en fonction de votre participation précédente.\n\nL'ordre dans lequel vous vérifiez vos quarts de travail déterminera l'ordre (vérifiez tout dans le bon ordre)\n\nVous pouvez toujours modifier les numéros d'équipe à l'étape suivante."
       },
       "transfer-locked": "Le transfert a déjà été confirmé, il n'est plus possible de le supprimer",
@@ -341,7 +342,8 @@
       "validations": "Validations",
       "warnings": {
         "already-saved": "Les nouvelles modifications ne peuvent pas être enregistrées entre-temps. Veuillez soumettre à nouveau le formulaire à la dernière étape pour enregistrer vos modifications.",
-        "subtitute-team-index": "",
+        "player-min-level": "Demande d'exception pour le joueur <strong>{player.fullName}</strong> dans <strong>{rankingType}</strong> n'a pas encore été acceptée",
+        "subtitute-team-index": "s",
         "title": "Mises en garde"
       }
     },
@@ -902,7 +904,7 @@
         "female": "D",
         "male": "H",
         "mix": "G",
-        "national": ""
+        "national": "National"
       },
       "title": "Série"
     },
@@ -918,7 +920,7 @@
     "light": "Lumière"
   },
   "tournament": {
-    "away": "",
+    "away": "Dehors",
     "delete": {
       "description": "Êtes-vous sûr de vouloir supprimer ce tournoi ?",
       "title": "Supprimer le tournoi"
@@ -935,7 +937,6 @@
     },
     "home": "Accueil",
     "last-updated": "Modifié le",
-    "liga": "",
     "load-more": "Charger plus",
     "menu": {
       "add-event": "Ajouter un évènement"
@@ -955,7 +956,6 @@
       "official": "Officiellement",
       "only-official": "Officiel seulement"
     },
-    "prov": "",
     "subevent": {
       "max": "Classement maximal",
       "max-base": "Indice de décalage de la base maximale",

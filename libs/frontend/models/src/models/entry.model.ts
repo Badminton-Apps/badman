@@ -1,3 +1,4 @@
+import { SubEventTypeEnum } from '@badman/utils';
 import { DrawCompetition, SubEventCompetition, DrawTournament, SubEventTournament } from './events';
 import { Player } from './player.model';
 import { Standing } from './standing.model';
@@ -19,10 +20,6 @@ export class EventEntry {
   subEventId?: string;
   drawId?: string;
   teamId?: string;
-
-
-
-
 
   team?: Team;
   players?: Player[];
@@ -84,4 +81,6 @@ export interface EntryCompetitionPlayer {
   gender: 'M' | 'F';
   player: Partial<Player>;
   levelException: boolean;
+  levelExceptionRequested?: boolean;
+  levelExceptionReason?: string;
 }

@@ -36,7 +36,7 @@ import { TeamForm } from '../../../team-enrollment.page';
   templateUrl: './teams-transfer.step.html',
   styleUrls: ['./teams-transfer.step.scss'],
 })
-export class TeamsTransferStepComponent  {
+export class TeamsTransferStepComponent {
   private readonly destroy$ = injectDestroy();
   private readonly dataService = inject(TeamEnrollmentDataService);
   private readonly translate = inject(TranslateService);
@@ -148,7 +148,6 @@ export class TeamsTransferStepComponent  {
     });
   }
 
-
   selectAll() {
     this.transferTeamsCtrl.setValue(this.teamsLastIds());
   }
@@ -178,6 +177,9 @@ export class TeamsTransferStepComponent  {
             single: p.player.rankingPlaces?.[0].single ?? 0,
             double: p.player.rankingPlaces?.[0].double ?? 0,
             mix: p.player.rankingPlaces?.[0].mix ?? 0,
+            levelException: p.levelException,
+            levelExceptionReason: p.levelExceptionReason,
+            levelExceptionRequested: p.levelExceptionRequested,
           };
         }) ?? []) as EntryCompetitionPlayer[],
         subEventId: null,

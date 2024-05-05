@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, effect, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -147,6 +147,15 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.dataService.state.setSeason(getUpcommingSeason());
+
+    effect(() => {
+      if (this.dataService.state.allLoaded()) {
+        this.vert_stepper.next();
+        this.vert_stepper.next();
+        this.vert_stepper.next();
+        this.vert_stepper.next();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -217,6 +226,8 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
                 single: number;
                 double: number;
                 mix: number;
+                levelExceptionRequested: boolean;
+                levelExceptionReason: string;
               },
             ) => ({
               id: player?.id,
@@ -224,6 +235,8 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
               single: player?.single,
               double: player?.double,
               mix: player?.mix,
+              levelExceptionRequested: player?.levelExceptionRequested,
+              levelExceptionReason: player?.levelExceptionReason,
             }),
           ),
         };

@@ -22,36 +22,66 @@ export class PlayerMinLevelRule extends Rule {
             (player.single ?? system.amountOfLevels) < subEvent.maxLevel &&
             !player.levelException
           ) {
-            errors.push({
-              message: 'all.competition.team-enrollment.errors.player-min-level',
-              params: {
-                player: {
-                  id: player?.id,
-                  fullName: player.player?.fullName,
-                  ranking: player.single,
+            if (player?.levelExceptionRequested) {
+              warnings.push({
+                message: 'all.competition.team-enrollment.warnings.player-min-level',
+                params: {
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.single,
+                  },
+                  minLevel: subEvent.maxLevel,
+                  rankingType: 'single',
                 },
-                minLevel: subEvent.maxLevel,
-                rankingType: 'single',
-              },
-            });
+              });
+            } else {
+              errors.push({
+                message: 'all.competition.team-enrollment.errors.player-min-level',
+                params: {
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.single,
+                  },
+                  minLevel: subEvent.maxLevel,
+                  rankingType: 'single',
+                },
+              });
+            }
           }
 
           if (
             (player.double ?? system.amountOfLevels) < subEvent.maxLevel &&
             !player.levelException
           ) {
-            errors.push({
-              message: 'all.competition.team-enrollment.errors.player-min-level',
-              params: {
-                player: {
-                  id: player?.id,
-                  fullName: player.player?.fullName,
-                  ranking: player.double,
+            if (player?.levelExceptionRequested) {
+              warnings.push({
+                message: 'all.competition.team-enrollment.warnings.player-min-level',
+                params: {
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.double,
+                  },
+                  minLevel: subEvent.maxLevel,
+                  rankingType: 'double',
                 },
-                minLevel: subEvent.maxLevel,
-                rankingType: 'double',
-              },
-            });
+              });
+            } else {
+              errors.push({
+                message: 'all.competition.team-enrollment.errors.player-min-level',
+                params: {
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.double,
+                  },
+                  minLevel: subEvent.maxLevel,
+                  rankingType: 'double',
+                },
+              });
+            }
           }
 
           if (
@@ -59,18 +89,33 @@ export class PlayerMinLevelRule extends Rule {
             (player.mix ?? system.amountOfLevels) < subEvent.maxLevel &&
             !player.levelException
           ) {
-            errors.push({
-              message: 'all.competition.team-enrollment.errors.player-min-level',
-              params: {
-                player: {
-                  id: player?.id,
-                  fullName: player.player?.fullName,
-                  ranking: player.mix,
+            if (player?.levelExceptionRequested) {
+              warnings.push({
+                message: 'all.competition.team-enrollment.warnings.player-min-level',
+                params: {
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.mix,
+                  },
+                  minLevel: subEvent.maxLevel,
+                  rankingType: 'mix',
                 },
-                minLevel: subEvent.maxLevel,
-                rankingType: 'mix',
-              },
-            });
+              });
+            } else {
+              errors.push({
+                message: 'all.competition.team-enrollment.errors.player-min-level',
+                params: {
+                  player: {
+                    id: player?.id,
+                    fullName: player.player?.fullName,
+                    ranking: player.mix,
+                  },
+                  minLevel: subEvent.maxLevel,
+                  rankingType: 'mix',
+                },
+              });
+            }
           }
         }
 
@@ -80,7 +125,9 @@ export class PlayerMinLevelRule extends Rule {
             !player.levelException
           ) {
             warnings.push({
-              message: 'all.competition.team-enrollment.errors.player-min-level',
+              message: player.levelExceptionRequested
+                ? 'all.competition.team-enrollment.warnings.player-min-level'
+                : 'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -98,7 +145,9 @@ export class PlayerMinLevelRule extends Rule {
             !player.levelException
           ) {
             warnings.push({
-              message: 'all.competition.team-enrollment.errors.player-min-level',
+              message: player.levelExceptionRequested
+                ? 'all.competition.team-enrollment.warnings.player-min-level'
+                : 'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
@@ -117,7 +166,9 @@ export class PlayerMinLevelRule extends Rule {
             !player.levelException
           ) {
             warnings.push({
-              message: 'all.competition.team-enrollment.errors.player-min-level',
+              message: player.levelExceptionRequested
+                ? 'all.competition.team-enrollment.warnings.player-min-level'
+                : 'all.competition.team-enrollment.errors.player-min-level',
               params: {
                 player: {
                   id: player?.id,
