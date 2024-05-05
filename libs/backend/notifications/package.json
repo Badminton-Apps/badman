@@ -1,15 +1,15 @@
 {
   "name": "@badman/backend-notifications",
-  "version": "6.142.0",
+  "version": "6.143.0",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "@badman/backend-mailing": "6.142.0",
+    "@badman/backend-mailing": "6.143.0",
     "@nestjs/common": "^10.3.1",
     "@nestjs/config": "^3.1.1",
-    "@badman/backend-database": "6.142.0",
+    "@badman/backend-database": "6.143.0",
     "web-push": "^3.6.7",
     "moment": "^2.30.1",
-    "@badman/utils": "6.142.0"
+    "@badman/utils": "6.143.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",
