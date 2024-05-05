@@ -295,6 +295,8 @@
       "example-warning": "Ce sont des avertissements dont il faut tenir compte. L'enregistrement peut encore être complété.",
       "exceptions": "Des exceptions",
       "info": "Notes sur l'inscription des équipes",
+      "level-exemption": "Le joueur est exempté des restrictions de classement",
+      "level-exemption-requested": "Demande de joueur en cours",
       "loan-locked": "Le prêt a déjà été confirmé, il n'est plus possible de le supprimer",
       "locations": {
         "availible-courts": "Champs disponibles",
