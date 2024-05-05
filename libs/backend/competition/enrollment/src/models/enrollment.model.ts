@@ -55,6 +55,9 @@ export class EnrollmentInputTeam extends PartialType(
 
   @Field(() => ID, { nullable: true })
   subEventId?: string;
+
+  @Field(() => [ID], { nullable: true })
+  exceptions?: string[];
 }
 
 @ObjectType()

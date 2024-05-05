@@ -30,6 +30,15 @@
         <li>Team: {{ validation()?.teamIndex }}</li>
         <li>Base: {{ validation()?.baseIndex }}</li>
       </ul>
+
+      @for (exception of levelExceptions(); track exception) {
+        <div class="exception">
+          <button mat-raised-button (click)="requestLevelException(exception.id)">
+            Request for {{ exception.fullName }}
+          </button>
+        </div>
+      }
+
       <div class="validation-overview">
         @if ((validation()?.errors?.length ?? 0) > 0) {
           <ul class="error-list">
@@ -59,4 +68,28 @@
       </div>
     </div>
   </div>
+
+  <ng-template #requestException let-data>
+    <h2 matDialogTitle>
+      {{ 'all.competition.team-enrollment.players.level-exception.request' | translate }}
+    </h2>
+    <mat-dialog-content>
+      <div class="reason">
+        <mat-form-field>
+          <mat-label>{{
+            'all.competition.team-enrollment.players.level-exception.reason' | translate
+          }}</mat-label>
+          <textarea matInput #reason></textarea>
+        </mat-form-field>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-raised-button [matDialogClose]="reason" color="primary">
+        {{ 'all.button.submit' | translate }}
+      </button>
+      <button mat-button matDialogClose>
+        {{ 'all.button.cancel' | translate }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
 }

@@ -29,6 +29,7 @@ export const validateEnrollment = (
     players?: string[];
     backupPlayers?: string[];
     basePlayers?: string[];
+    exceptions?: string[];
   }[] = [];
 
   //  type of SubEventTypeEnum
@@ -52,6 +53,9 @@ export const validateEnrollment = (
           ?.map((p) => p.id)
           ?.filter((p) => p) as string[],
         basePlayers: team.entry?.players?.map((p) => p?.id)?.filter((p) => p) as string[],
+        exceptions: team.entry?.players
+          ?.filter((p) => !p?.levelException && p?.levelExceptionRequested)
+          ?.map((p) => p?.id) as string[],
       });
     });
   }

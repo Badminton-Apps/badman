@@ -281,6 +281,15 @@ export class EventEntryCompetitionPlayerMetaInput {
 
   @Field(() => String, { nullable: true })
   gender?: 'M' | 'F';
+
+  @Field(() => Boolean, { nullable: true })
+  levelException?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  levelExceptionRequested?: boolean;
+
+  @Field(() => String, { nullable: true })
+  levelExceptionReason?: string;
 }
 @InputType()
 export class EventEntryCompetitionMetaInput {
@@ -352,5 +361,7 @@ export interface EntryCompetitionPlayer {
   mix?: number;
   gender?: 'M' | 'F';
   levelException?: boolean;
+  levelExceptionRequested?: boolean;
+  levelExceptionReason?: string;
   player?: Relation<Player>;
 }

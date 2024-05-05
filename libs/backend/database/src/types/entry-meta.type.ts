@@ -47,6 +47,12 @@ export class EntryCompetitionPlayersType {
 
   @Field(() => Boolean, { nullable: true })
   levelException?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  levelExceptionRequested?: boolean;
+
+  @Field(() => String, { nullable: true })
+  levelExceptionReason?: string;
 }
 
 // input type for EntryCmopetitionPlayer

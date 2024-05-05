@@ -359,6 +359,9 @@ export class TeamsResolver {
               single: ranking.single,
               double: ranking.double,
               mix: ranking.mix,
+              levelException: p.levelException,
+              levelExceptionReason: p.levelExceptionReason,
+              levelExceptionRequested: p.levelExceptionRequested,
             });
           }
 

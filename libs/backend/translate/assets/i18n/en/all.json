@@ -181,7 +181,6 @@
       "close-accept-requests": "Closure acceptance",
       "close-enrollment": "Closure",
       "close-new-requets": "Closing new applications",
-      "hint": "",
       "open-enrollment": "Date of opening",
       "open-requests": "Date of opening"
     },
@@ -202,7 +201,6 @@
       "title": "Departments"
     },
     "team-assembly": {
-      "avg-level": "",
       "captain": "Team captain",
       "change-team": "By editing the team you can change the default players shown, and who are the backups.",
       "disclaimer": "Disclaimer: This formationtool is currently in beta and can exceptionally contain errors. Always critically check your formation against the C320 rules.",
@@ -308,9 +306,12 @@
       "players": {
         "backup": "Backup player(s)",
         "base": "Baseplayer(s)",
+        "level-exception": {
+          "reason": "Enter a reason",
+          "request": "Requesting exception for classification"
+        },
         "loan": "Loaned out",
         "regular": "Regular player(s)",
-        "team": "",
         "title": "Possible titulars",
         "transfer": "Transferred"
       },
@@ -326,7 +327,7 @@
         "captain": "Team captain",
         "change-team": "By editing the team you can change the default players shown, and who are the backups.",
         "new-teams": "New teams for this season",
-        "substitude": "",
+        "substitude": "Backups",
         "team-index": "Team index titulars equals <strong>{current}</strong> and is allowed to mimimally be <strong>{team}</strong>",
         "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team."
       },
@@ -341,6 +342,7 @@
       "validations": "Validations",
       "warnings": {
         "already-saved": "New changes cannot be saved in between, please resubmit the form in the last step to save your changes",
+        "player-min-level": "Request for exception of player <strong>{player.fullName}</strong> in <strong>{rankingType}</strong> has not yet been accepted",
         "subtitute-team-index": "s",
         "title": "Warnings"
       }
@@ -935,7 +937,6 @@
     },
     "home": "Home",
     "last-updated": "Changed on",
-    "liga": "",
     "load-more": "load more",
     "menu": {
       "add-event": "Add event"
@@ -955,7 +956,6 @@
       "official": "Officially",
       "only-official": "Official only"
     },
-    "prov": "",
     "subevent": {
       "max": "Max level",
       "max-base": "Max basis team index",

@@ -58,7 +58,13 @@ export class Team {
     this.preferred2Day = args?.preferred2Day;
 
     this.locations = args?.locations?.map((l) => new Location(l));
-    this.entry = args?.entry != null ? new EventEntry(args?.entry) : undefined;
+    this.entry =
+      args?.entry != null
+        ? new EventEntry({
+            ...args.entry,
+            team: this,
+          })
+        : undefined;
     this.captain = args?.captain != null ? new Player(args?.captain) : undefined;
     this.club = args?.club != null ? new Club(args?.club) : undefined;
     this.captainId = args?.captain?.id ?? args?.captainId;
