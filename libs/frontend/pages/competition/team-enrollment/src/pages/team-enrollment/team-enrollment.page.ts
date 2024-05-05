@@ -35,6 +35,8 @@ import {
 import { PlayerTransferStepComponent } from './components/steps/player-transfer';
 import { TeamEnrollmentDataService } from './service/team-enrollment.service';
 import { minAmountOfTeams } from './validators';
+import { Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export type TeamFormValue = {
   team: Team;
@@ -58,22 +60,22 @@ export type TeamForm = FormGroup<{
   styleUrls: ['./team-enrollment.page.scss'],
   standalone: true,
   imports: [
+    ClubStepComponent,
+    CommentsStepComponent,
     CommonModule,
-    TranslateModule,
-    ReactiveFormsModule,
-    MatStepperModule,
-    MatProgressBarModule,
+    HasClaimComponent,
+    LocationsStepComponent,
     MatButtonModule,
     MatIconModule,
-    ClubStepComponent,
-    TeamsTransferStepComponent,
-    TeamsStepComponent,
-    PlayerTransferStepComponent,
-    LocationsStepComponent,
-    CommentsStepComponent,
+    MatProgressBarModule,
+    MatStepperModule,
+    MatTooltipModule,
     NgxJsonViewerModule,
-
-    HasClaimComponent,
+    PlayerTransferStepComponent,
+    ReactiveFormsModule,
+    TeamsStepComponent,
+    TeamsTransferStepComponent,
+    TranslateModule,
   ],
 })
 export class TeamEnrollmentComponent implements OnInit, OnDestroy {
@@ -86,6 +88,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
   private readonly translate = inject(TranslateService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly apollo = inject(Apollo);
+  private readonly router = inject(Router);
 
   clubControl = new FormControl(undefined, [Validators.required]);
   emailControl = new FormControl(undefined, [Validators.required]);
@@ -139,6 +142,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
   });
 
   allLoaded = this.dataService.state.allLoaded;
+  hadEntries = this.dataService.state.hadEntries;
   saving = false;
 
   constructor() {
@@ -381,7 +385,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
         continue;
       }
 
-      console.log(endDate)
+      console.log(endDate);
 
       observables.push(
         this.apollo.mutate({
@@ -505,8 +509,8 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
         duration: 2000,
         panelClass: 'success',
       });
-      this.formGroup.get(TEAMS)?.setErrors({ loading: false });
-      this.vert_stepper.next();
+
+      this.router.navigate(['/club', this.formGroup.value.club]);
     } catch (error) {
       this.snackBar.open(
         this.translate.instant('all.competition.team-enrollment.saved-failed'),
