@@ -53,6 +53,7 @@ export const loadTeams = (
             }
             entry {
               id
+              sendOn
               standing {
                 id
                 riser

@@ -340,6 +340,7 @@
       "transfers-players": "Transfers en uitleningen",
       "validations": "Validaties",
       "warnings": {
+        "already-saved": "Nieuwe wijzigingen kan je niet tussendoor meer opslaan, gelieve het formulier opnieuw te versturen in de laatste stap om je wijzigingen op te slaan",
         "subtitute-team-index": "s",
         "title": "Waarschuwingen"
       }

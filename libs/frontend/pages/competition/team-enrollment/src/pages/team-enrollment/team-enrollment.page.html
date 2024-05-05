@@ -34,14 +34,23 @@
         >
           {{ 'all.button.next' | translate }}
         </button>
-        <button
-          mat-raised-button
-          (click)="saveAndContinue()"
-          color="primary"
-          [disabled]="!locationControl.valid || this.saving"
+        <div
+          [matTooltip]="
+            hadEntries()
+              ? ('all.competition.team-enrollment.warnings.already-saved' | translate)
+              : ''
+          "
         >
-          {{ 'all.button.save-and-continue' | translate }}
-        </button>
+          <button
+            mat-raised-button
+            (click)="saveAndContinue()"
+            color="primary"
+            [disabled]="!locationControl.valid || this.saving || hadEntries()"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.save-and-continue' | translate }}
+          </button>
+        </div>
       </div>
     </mat-step>
 
@@ -60,15 +69,23 @@
         >
           {{ 'all.button.next' | translate }}
         </button>
-        <button
-          mat-raised-button
-          (click)="saveAndContinue()"
-          color="primary"
-          [disabled]="this.saving"
-          [class.spinner]="this.saving"
+        <div
+          [matTooltip]="
+            hadEntries()
+              ? ('all.competition.team-enrollment.warnings.already-saved' | translate)
+              : ''
+          "
         >
-          {{ 'all.button.save-and-continue' | translate }}
-        </button>
+          <button
+            mat-raised-button
+            (click)="saveAndContinue()"
+            color="primary"
+            [disabled]="this.saving || hadEntries()"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.save-and-continue' | translate }}
+          </button>
+        </div>
       </div>
     </mat-step>
 
@@ -107,15 +124,23 @@
         >
           {{ 'all.button.next' | translate }}
         </button>
-        <button
-          mat-raised-button
-          (click)="saveAndContinue(true)"
-          color="primary"
-          [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
-          [class.spinner]="this.saving"
+        <div
+          [matTooltip]="
+            hadEntries()
+              ? ('all.competition.team-enrollment.warnings.already-saved' | translate)
+              : ''
+          "
         >
-          {{ 'all.button.save-and-continue' | translate }}
-        </button>
+          <button
+            mat-raised-button
+            (click)="saveAndContinue(true)"
+            color="primary"
+            [disabled]="this.formGroup.get('teams')?.valid === false || this.saving || hadEntries()"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.save-and-continue' | translate }}
+          </button>
+        </div>
       </div>
     </mat-step>
     <mat-step>

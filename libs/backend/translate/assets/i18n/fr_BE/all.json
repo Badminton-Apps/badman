@@ -340,6 +340,7 @@
       "transfers-players": "Transferts et prêts",
       "validations": "Validations",
       "warnings": {
+        "already-saved": "Les nouvelles modifications ne peuvent pas être enregistrées entre-temps. Veuillez soumettre à nouveau le formulaire à la dernière étape pour enregistrer vos modifications.",
         "subtitute-team-index": "",
         "title": "Mises en garde"
       }

@@ -87,6 +87,10 @@ export class EventEntry extends Model {
   @Column(DataType.UUIDV4)
   player2Id!: string;
 
+  @Field(() => Date, { nullable: true })
+  @Column({ type: DataType.DATE })
+  sendOn?: Date;
+
   @BelongsTo(() => SubEventTournament, {
     foreignKey: 'subEventId',
     constraints: false,

@@ -12,9 +12,15 @@ import {
   Location,
   SubEventCompetition,
   Team,
-  TeamValidationResult
+  TeamValidationResult,
 } from '@badman/frontend-models';
-import { ClubMembershipType, LevelType, SubEventTypeEnum, sortSubEventOrder, sortTeams } from '@badman/utils';
+import {
+  ClubMembershipType,
+  LevelType,
+  SubEventTypeEnum,
+  sortSubEventOrder,
+  sortTeams,
+} from '@badman/utils';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { TeamFormValue } from '../team-enrollment.page';
 import { loadClub } from './queries/club';
@@ -81,7 +87,11 @@ export class TeamEnrollmentDataService {
   state = signalSlice({
     initialState: this.initialState,
     selectors: (state) => ({
-      allLoaded: () => state().loadedClubs && state().loadedTeams && state().loadedLocations && state().loadedTransfers,
+      allLoaded: () =>
+        state().loadedClubs &&
+        state().loadedTeams &&
+        state().loadedLocations &&
+        state().loadedTransfers,
       eventsPerType: () => {
         const subEvents = state()
           .events.map((event) => event.subEventCompetitions ?? [])
@@ -111,6 +121,9 @@ export class TeamEnrollmentDataService {
             )
             .sort(sortSubEventOrder),
         };
+      },
+      hadEntries: () => {
+        return state().teams.some((team) => team.entry?.sendOn != null);
       },
     }),
     actionSources: {
@@ -222,8 +235,12 @@ export class TeamEnrollmentDataService {
         action$.pipe(
           switchMap(({ clubId, season }) => loadTransersAndLoans(this.apollo, clubId, season)),
           map((transfers) => ({
-            transfers: transfers.filter((player) => player.clubMembership.membershipType === ClubMembershipType.NORMAL),
-            loans: transfers.filter((player) => player.clubMembership.membershipType === ClubMembershipType.LOAN),
+            transfers: transfers.filter(
+              (player) => player.clubMembership.membershipType === ClubMembershipType.NORMAL,
+            ),
+            loans: transfers.filter(
+              (player) => player.clubMembership.membershipType === ClubMembershipType.LOAN,
+            ),
             loadedTransfers: true,
           })),
         ),
