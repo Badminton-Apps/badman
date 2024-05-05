@@ -324,6 +324,7 @@ export type I18nTranslations = {
                     "title": string;
                     "transfer": string;
                 };
+                "request-level-exception": string;
                 "save-and-continue-tooltip": string;
                 "saved": string;
                 "saved-failed": string;
