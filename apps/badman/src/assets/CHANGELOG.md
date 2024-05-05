@@ -1,3 +1,22 @@
+## 6.143.0 (2024-05-05)
+
+
+### 🚀 Features
+
+- logging when enrollment and assembly generation ([6f92af0d8](https://github.com/Badminton-Apps/badman/commit/6f92af0d8))
+- don't allow saving once submitted ([9cf5f6980](https://github.com/Badminton-Apps/badman/commit/9cf5f6980))
+- raise button when updating enrolled teams ([2e353861a](https://github.com/Badminton-Apps/badman/commit/2e353861a))
+- requesting exception and update the validations accordingly ([183293821](https://github.com/Badminton-Apps/badman/commit/183293821))
+- show excemptions in base player list ([24a8bba69](https://github.com/Badminton-Apps/badman/commit/24a8bba69))
+
+### 🩹 Fixes
+
+- started adding typescript support for querying models ([6fcf5f097](https://github.com/Badminton-Apps/badman/commit/6fcf5f097))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.142.0 (2024-05-04)
 
 
