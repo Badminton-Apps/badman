@@ -188,7 +188,6 @@ export type I18nTranslations = {
                 "close-accept-requests": string;
                 "close-enrollment": string;
                 "close-new-requets": string;
-                "hint": string;
                 "open-enrollment": string;
                 "open-requests": string;
             };
@@ -209,7 +208,6 @@ export type I18nTranslations = {
                 "title": string;
             };
             "team-assembly": {
-                "avg-level": string;
                 "captain": string;
                 "change-team": string;
                 "disclaimer": string;
@@ -315,9 +313,12 @@ export type I18nTranslations = {
                 "players": {
                     "backup": string;
                     "base": string;
+                    "level-exception": {
+                        "reason": string;
+                        "request": string;
+                    };
                     "loan": string;
                     "regular": string;
-                    "team": string;
                     "title": string;
                     "transfer": string;
                 };
@@ -348,6 +349,7 @@ export type I18nTranslations = {
                 "validations": string;
                 "warnings": {
                     "already-saved": string;
+                    "player-min-level": string;
                     "subtitute-team-index": string;
                     "title": string;
                 };
@@ -942,7 +944,6 @@ export type I18nTranslations = {
             };
             "home": string;
             "last-updated": string;
-            "liga": string;
             "load-more": string;
             "menu": {
                 "add-event": string;
@@ -962,7 +963,6 @@ export type I18nTranslations = {
                 "official": string;
                 "only-official": string;
             };
-            "prov": string;
             "subevent": {
                 "max": string;
                 "max-base": string;

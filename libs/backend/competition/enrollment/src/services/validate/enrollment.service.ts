@@ -179,6 +179,16 @@ export class EnrollmentValidationService {
             .includes(p.id),
         );
 
+        // find if there are any exceptions requested
+        for (const exception of t.exceptions ?? []) {
+          const playerIndex = basePlayers.findIndex((p) => p.id === exception);
+          if (playerIndex === -1) {
+            throw new Error(`Player with id ${exception} not found`);
+          }
+
+          basePlayers[playerIndex].levelExceptionRequested = true;
+        }
+
         const teamPlayers = playersForTeam.filter((p) =>
           t.players?.map((p) => (instanceOfEntryCompetitionPlayer(p) ? p.id : p)).includes(p.id),
         );
@@ -404,6 +414,7 @@ class EnrollmentInputTeam extends PartialType(
   players?: (string | EntryCompetitionPlayer)[];
   backupPlayers?: (string | EntryCompetitionPlayer)[];
   subEventId?: string | SubEventCompetition;
+  exceptions?: string[];
 }
 
 const instanceOfEntryCompetitionPlayer = (

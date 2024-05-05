@@ -73,6 +73,8 @@ export const loadTeams = (
                   players {
                     id
                     gender
+                    levelExceptionRequested
+                    
                     player {
                       id
                       fullName

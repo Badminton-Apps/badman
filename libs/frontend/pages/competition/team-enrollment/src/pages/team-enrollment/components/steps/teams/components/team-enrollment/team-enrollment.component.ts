@@ -1,5 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, Signal, computed, effect, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  Signal,
+  TemplateRef,
+  ViewChild,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -23,6 +34,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 import { TeamForm } from '../../../../../team-enrollment.page';
 import { TeamComponent } from '../team';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -31,6 +45,9 @@ import { TeamComponent } from '../team';
     CommonModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
     ReactiveFormsModule,
     FormsModule,
     TeamComponent,
@@ -44,12 +61,12 @@ export class TeamEnrollmentComponent {
   private readonly dataService = inject(TeamEnrollmentDataService);
   private readonly systemService = inject(RankingSystemService);
   private readonly auth = inject(ClaimService);
-
+  private readonly dialog = inject(MatDialog);
 
   group = input.required<TeamForm>();
   transfers = input.required<string[]>();
   loans = input.required<string[]>();
-  
+
   team = computed(() => this.group().get('team') as FormControl<Team>);
   type = computed(() => this.team().value.type ?? SubEventTypeEnum.M);
   entry = computed(() => this.group().get('entry') as FormGroup);
@@ -62,6 +79,31 @@ export class TeamEnrollmentComponent {
     () => this.entry().get('players') as FormArray<FormControl<EntryCompetitionPlayer>>,
   );
   subEventsForType = computed(() => this.dataService.state.eventsPerType()[this.type()]);
+
+  levelExceptions = computed(() => {
+    const errors = this.validation()?.errors ?? [];
+    const warnings = this.validation()?.warnings ?? [];
+
+    const players = [
+      ...errors.filter(
+        (e) => e.message === 'all.competition.team-enrollment.errors.player-min-level',
+      ),
+      ...warnings.filter(
+        (e) => e.message === 'all.competition.team-enrollment.errors.player-min-level',
+      ),
+    ]
+      ?.map((e: unknown) => e as { params: { player: { id: string; fullName: string } } })
+      .map((e) => e.params.player);
+
+    const uniquePlayers = Array.from(new Set(players.map((player) => player.id))).map((id) =>
+      players.find((player) => player.id === id),
+    ) as { id: string; fullName: string }[];
+
+    return uniquePlayers;
+  });
+
+  @ViewChild('requestException')
+  requestExceptionTemplateRef?: TemplateRef<HTMLElement>;
 
   canEnrollInAnyEvent = computed(() => this.auth.hasClaim('enlist-any-event:team'));
 
@@ -209,5 +251,34 @@ export class TeamEnrollmentComponent {
           .map((s) => s.level ?? 0) ?? []),
       ),
     };
+  }
+
+  requestLevelException(playerId: string) {
+    if (!this.requestExceptionTemplateRef) {
+      return;
+    }
+
+    const index = this.players().value.findIndex((p) => p.id === playerId);
+    const player = this.players().at(index);
+    // pop up a dialog to ask for the reason
+    this.dialog
+      .open(this.requestExceptionTemplateRef, {
+        data: {
+          player: player.value,
+        },
+      })
+      .afterClosed()
+      .subscribe((reason: HTMLTextAreaElement) => {
+        if (!reason) {
+          return;
+        }
+
+        // update the controls value
+        player.patchValue({
+          ...player.value,
+          levelExceptionRequested: true,
+          levelExceptionReason: reason.value,
+        });
+      });
   }
 }

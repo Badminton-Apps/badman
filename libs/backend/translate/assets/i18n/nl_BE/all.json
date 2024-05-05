@@ -181,7 +181,6 @@
       "close-accept-requests": "Sluiting acceptatie",
       "close-enrollment": "Sluiting",
       "close-new-requets": "Sluiting nieuwe aanvragen",
-      "hint": "",
       "open-enrollment": "Datum opening",
       "open-requests": "Datum opening"
     },
@@ -202,7 +201,6 @@
       "title": "Afdelingen"
     },
     "team-assembly": {
-      "avg-level": "",
       "captain": "Ploegkapitein",
       "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
       "disclaimer": "Disclaimer: Deze opstellingsmodule is een betaversie en kan uitzonderlijk nog fouten bevatten. Controleer daarom altijd kritisch je opstelling rekening houdende met reglement C320.",
@@ -296,7 +294,7 @@
       "example-error": "Dit zijn foutmeldingen waardoor de ploeg niet kan ingeschreven worden. Gelieve deze op te lossen.",
       "example-warning": "Dit zijn waarschuwingen waar rekening mee gehouden dient te worden. De inschrijving kan nog wel afgewerkt worden.",
       "exceptions": "Uitzonderingen",
-      "info": "",
+      "info": "Opmerkingen over de teaminschrijving",
       "loan-locked": "Uitlening is al bevestigd, deze verwijderen is niet meer mogelijk",
       "locations": {
         "availible-courts": "Beschikbare velden",
@@ -308,9 +306,12 @@
       "players": {
         "backup": "Reserve speler(s)",
         "base": "Basisspeler(s)",
+        "level-exception": {
+          "reason": "Geef een reden op",
+          "request": "Uitzondering aanvragen voor klassement"
+        },
         "loan": "Uitgeleend",
         "regular": "Vaste speler(s)",
-        "team": "",
         "title": "Mogelijke titularissen",
         "transfer": "Getransfereerd"
       },
@@ -341,6 +342,7 @@
       "validations": "Validaties",
       "warnings": {
         "already-saved": "Nieuwe wijzigingen kan je niet tussendoor meer opslaan, gelieve het formulier opnieuw te versturen in de laatste stap om je wijzigingen op te slaan",
+        "player-min-level": "Aanvraag voor uitzondering van speler <strong>{player.fullName}</strong> in <strong>{rankingType}</strong> is nog niet geaccepteerd",
         "subtitute-team-index": "s",
         "title": "Waarschuwingen"
       }
@@ -437,12 +439,12 @@
   "game": {
     "bye": "Bye",
     "order": {
-      "double": "",
-      "female": "",
-      "male": "",
-      "mix": "",
-      "mixed": "",
-      "single": ""
+      "double": "D",
+      "female": "D",
+      "male": "H",
+      "mix": "MX",
+      "mixed": "GD",
+      "single": "E"
     },
     "points": "punten",
     "recent": {
@@ -902,7 +904,7 @@
         "female": "D",
         "male": "H",
         "mix": "G",
-        "national": ""
+        "national": "NATIONAAL"
       },
       "title": "Afdeling"
     },
@@ -918,7 +920,7 @@
     "light": "Licht"
   },
   "tournament": {
-    "away": "",
+    "away": "UIt",
     "delete": {
       "description": "Weet je zeker dat je dit toernooi wilt verwijderen?",
       "title": "Verwijder toernooi"
@@ -935,7 +937,6 @@
     },
     "home": "Thuis",
     "last-updated": "Gewijzigd op",
-    "liga": "",
     "load-more": "Meer laden",
     "menu": {
       "add-event": "Add event"
@@ -955,7 +956,6 @@
       "official": "Officieel",
       "only-official": "Alleen officiele"
     },
-    "prov": "",
     "subevent": {
       "max": "Max klassement",
       "max-base": "Max basis ploegindex",
