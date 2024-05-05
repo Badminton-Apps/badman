@@ -295,6 +295,8 @@
       "example-warning": "Dit zijn waarschuwingen waar rekening mee gehouden dient te worden. De inschrijving kan nog wel afgewerkt worden.",
       "exceptions": "Uitzonderingen",
       "info": "Opmerkingen over de teaminschrijving",
+      "level-exemption": "Speler is vrijgesteld van de ranking restricties",
+      "level-exemption-requested": "Aanvraag voor speler is bezig",
       "loan-locked": "Uitlening is al bevestigd, deze verwijderen is niet meer mogelijk",
       "locations": {
         "availible-courts": "Beschikbare velden",
