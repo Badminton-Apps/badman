@@ -347,6 +347,7 @@ export type I18nTranslations = {
                 "transfers-players": string;
                 "validations": string;
                 "warnings": {
+                    "already-saved": string;
                     "subtitute-team-index": string;
                     "title": string;
                 };

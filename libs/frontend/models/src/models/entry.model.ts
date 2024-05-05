@@ -13,19 +13,21 @@ export class EventEntry {
   subEventTournament?: SubEventTournament;
   drawTournament?: DrawTournament;
 
+  entryType?: string;
+  sendOn?: Date;
+
   subEventId?: string;
   drawId?: string;
-
-  standing?: Standing;
-
-  entryType?: string;
-
   teamId?: string;
+
+
+
+
 
   team?: Team;
   players?: Player[];
   meta?: Meta;
-
+  standing?: Standing;
   enrollmentValidation?: TeamValidationResult;
 
   constructor({ ...args }: Partial<EventEntry>) {
@@ -56,6 +58,7 @@ export class EventEntry {
 
     this.meta = args?.meta;
     this.entryType = args?.entryType;
+    this.sendOn = args?.sendOn != null ? new Date(args.sendOn) : undefined;
   }
 }
 
