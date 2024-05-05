@@ -302,6 +302,8 @@ export type I18nTranslations = {
                 "example-warning": string;
                 "exceptions": string;
                 "info": string;
+                "level-exemption": string;
+                "level-exemption-requested": string;
                 "loan-locked": string;
                 "locations": {
                     "availible-courts": string;

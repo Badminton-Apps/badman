@@ -295,6 +295,8 @@
       "example-warning": "These are warnings that should be taken into account. The registration can still be completed.",
       "exceptions": "Exceptions",
       "info": "Remarks concerning the team enrollment",
+      "level-exemption": "Player is exempt from ranking restrictions",
+      "level-exemption-requested": "Application for player is in process",
       "loan-locked": "The loan has already been confirmed, it is no longer possible to delete it",
       "locations": {
         "availible-courts": "Available courts",

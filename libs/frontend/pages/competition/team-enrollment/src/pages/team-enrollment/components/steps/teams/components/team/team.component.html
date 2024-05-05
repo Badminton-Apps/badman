@@ -205,6 +205,19 @@
     @for (b of basePlayers().value; track b) {
       <div class="player">
         <div class="name">
+          @if (b.levelExceptionRequested || b.levelException) {
+            <span
+              class="level-exception"
+              [matTooltip]="
+                (b.levelExceptionRequested
+                  ? 'all.competition.team-enrollment.level-exemption-requested'
+                  : 'all.competition.team-enrollment.level-exemption'
+                ) | translate
+              "
+              ><mat-icon>lock</mat-icon></span
+            >
+          }
+
           @if (loans().indexOf(b.id) > -1) {
             <span
               class="loan"
@@ -249,5 +262,3 @@
     ></badman-player-search>
   </div>
 </div>
-
-
