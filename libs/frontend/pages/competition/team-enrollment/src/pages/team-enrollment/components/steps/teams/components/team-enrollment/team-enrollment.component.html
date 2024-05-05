@@ -33,8 +33,11 @@
 
       @for (exception of levelExceptions(); track exception) {
         <div class="exception">
-          <button mat-raised-button (click)="requestLevelException(exception.id)">
-            Request for {{ exception.fullName }}
+          <button mat-raised-button color="primary" (click)="requestLevelException(exception.id)">
+            {{
+              'all.competition.team-enrollment.request-level-exception'
+                | translate: { player: exception }
+            }}
           </button>
         </div>
       }
