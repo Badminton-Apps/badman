@@ -1,3 +1,14 @@
+## 6.143.1 (2024-05-05)
+
+
+### 🩹 Fixes
+
+- translate request button ([0f673af79](https://github.com/Badminton-Apps/badman/commit/0f673af79))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.143.0 (2024-05-05)
 
 
