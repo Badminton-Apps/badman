@@ -1,3 +1,23 @@
+## 6.144.0 (2024-05-07)
+
+
+### 🚀 Features
+
+- removing of competition ([6efe6da61](https://github.com/Badminton-Apps/badman/commit/6efe6da61))
+- new loan/transfer views ([93b9f87a5](https://github.com/Badminton-Apps/badman/commit/93b9f87a5))
+- edit reason ([0e6581156](https://github.com/Badminton-Apps/badman/commit/0e6581156))
+
+### 🩹 Fixes
+
+- sorting for standing should be th official formula (with some extra clauses) ([474304b85](https://github.com/Badminton-Apps/badman/commit/474304b85))
+- add transfer after already saved ([a95319b19](https://github.com/Badminton-Apps/badman/commit/a95319b19))
+- setting empty string ([115f3ded9](https://github.com/Badminton-Apps/badman/commit/115f3ded9))
+- make sure empty strings aren't passed ([7339eb023](https://github.com/Badminton-Apps/badman/commit/7339eb023))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.143.1 (2024-05-05)
 
 
