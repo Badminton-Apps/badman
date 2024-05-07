@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   TemplateRef,
   computed,
   effect,
@@ -15,16 +14,16 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { SelectPlayerSignalsComponent } from '@badman/frontend-components';
 import { ClubMembershipType } from '@badman/utils';
+import { TranslateModule } from '@ngx-translate/core';
+import { take } from 'rxjs/operators';
 import { TRANSFERS_LOANS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-player-transfer-step',
@@ -54,7 +53,7 @@ export class PlayerTransferStepComponent {
   loans = this.dataService.state.loans;
   formGroup = input.required<FormGroup>();
 
-  newPlayerTmpl = viewChild<TemplateRef<HTMLElement>>('addPlayer');
+  newPlayerTmpl = viewChild.required<TemplateRef<HTMLElement>>('addPlayer');
 
   lockedTransfers = computed(
     () =>
@@ -121,14 +120,8 @@ export class PlayerTransferStepComponent {
   }
 
   addNewPlayer(type: 'transfer' | 'loan') {
-    const tmpl = this.newPlayerTmpl();
-
-    if (!tmpl) {
-      return;
-    }
-
     this.dialog
-      .open(tmpl, {
+      .open(this.newPlayerTmpl(), {
         minWidth: '500px',
       })
       .afterClosed()

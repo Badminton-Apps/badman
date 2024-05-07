@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -79,7 +79,7 @@ export type TeamForm = FormGroup<{
   ],
 })
 export class TeamEnrollmentComponent implements OnInit, OnDestroy {
-  @ViewChild(MatStepper) vert_stepper!: MatStepper;
+  vert_stepper = viewChild.required(MatStepper);
 
   readonly systemService = inject(RankingSystemService);
   private readonly dataService = inject(TeamEnrollmentDataService);
@@ -482,7 +482,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
         panelClass: 'success',
       });
 
-      this.vert_stepper.next();
+      this.vert_stepper().next();
     } catch (error) {
       this.snackBar.open(
         this.translate.instant('all.competition.team-enrollment.saved-failed'),

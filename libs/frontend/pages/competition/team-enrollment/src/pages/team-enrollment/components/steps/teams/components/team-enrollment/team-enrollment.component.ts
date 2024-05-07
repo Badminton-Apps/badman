@@ -3,13 +3,13 @@ import {
   Component,
   Signal,
   TemplateRef,
-  ViewChild,
   computed,
   effect,
   inject,
   input,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import {
   FormArray,
@@ -102,8 +102,7 @@ export class TeamEnrollmentComponent {
     return uniquePlayers;
   });
 
-  @ViewChild('requestException')
-  requestExceptionTemplateRef?: TemplateRef<HTMLElement>;
+  requestExceptionTemplateRef = viewChild.required<TemplateRef<HTMLElement>>('requestException');
 
   canEnrollInAnyEvent = computed(() => this.auth.hasClaim('enlist-any-event:team'));
 
@@ -254,7 +253,7 @@ export class TeamEnrollmentComponent {
   }
 
   requestLevelException(playerId: string) {
-    if (!this.requestExceptionTemplateRef) {
+    if (!this.requestExceptionTemplateRef()) {
       return;
     }
 
@@ -262,7 +261,7 @@ export class TeamEnrollmentComponent {
     const player = this.players().at(index);
     // pop up a dialog to ask for the reason
     this.dialog
-      .open(this.requestExceptionTemplateRef, {
+      .open(this.requestExceptionTemplateRef(), {
         data: {
           player: player.value,
         },
