@@ -136,6 +136,10 @@
         "title": "Problems were found with your assembly"
       }
     },
+    "delete": {
+      "description": "Are you sure you want to delete this competition?",
+      "title": "Remove competition"
+    },
     "draw": {
       "encounters": "Encounters",
       "title": "Draw"
