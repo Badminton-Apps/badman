@@ -1,30 +1,8 @@
-export const sortStanding = (
-  a: {
-    points?: number;
-    won?: number;
-    lost?: number;
-    gamesWon?: number;
-    gamesLost?: number;
-    setsWon?: number;
-    setsLost?: number;
-    totalPointsWon?: number;
-    totalPointsLost?: number;
-  },
-  b: {
-    points?: number;
-    won?: number;
-    lost?: number;
-    gamesWon?: number;
-    gamesLost?: number;
-    setsWon?: number;
-    setsLost?: number;
-    totalPointsWon?: number;
-    totalPointsLost?: number;
-  },
-) => {
+export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandingType>) => {
   const nonOptionalA = {
     points: a?.points || 0,
     won: a?.won || 0,
+    tied: a?.tied || 0,
     lost: a?.lost || 0,
     gamesWon: a?.gamesWon || 0,
     gamesLost: a?.gamesLost || 0,
@@ -37,6 +15,7 @@ export const sortStanding = (
   const nonOptionalB = {
     points: b?.points || 0,
     won: b?.won || 0,
+    tied: b?.tied || 0,
     lost: b?.lost || 0,
     gamesWon: b?.gamesWon || 0,
     gamesLost: b?.gamesLost || 0,
@@ -52,15 +31,15 @@ export const sortStanding = (
     return 1;
   }
 
-  if (nonOptionalA.won > nonOptionalB.won) {
-    return -1;
-  } else if (nonOptionalA.won < nonOptionalB.won) {
-    return 1;
-  }
-
   if (nonOptionalA.won - nonOptionalA.lost > nonOptionalB.won - nonOptionalB.lost) {
     return -1;
   } else if (nonOptionalA.won - nonOptionalA.lost < nonOptionalB.won - nonOptionalB.lost) {
+    return 1;
+  }
+
+  if (nonOptionalA.tied > nonOptionalB.tied) {
+    return -1;
+  } else if (nonOptionalA.tied < nonOptionalB.tied) {
     return 1;
   }
 
@@ -98,4 +77,17 @@ export const sortStanding = (
   }
 
   return 0;
+};
+
+type SortStandingType = {
+  points: number;
+  won: number;
+  tied: number;
+  lost: number;
+  gamesWon: number;
+  gamesLost: number;
+  setsWon: number;
+  setsLost: number;
+  totalPointsWon: number;
+  totalPointsLost: number;
 };
