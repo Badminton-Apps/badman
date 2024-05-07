@@ -54,9 +54,17 @@
         }
         @if ((validation()?.warnings?.length ?? 0) > 0) {
           <ul class="warning-list">
-            @for (warnings of validation()?.warnings; track warnings) {
+            @for (warning of validation()?.warnings; track warning) {
               <li>
-                <badman-enrollment-message [validation]="warnings"></badman-enrollment-message>
+                <badman-enrollment-message [validation]="warning"></badman-enrollment-message>
+
+                @if (
+                  warning.message === 'all.competition.team-enrollment.warnings.player-min-level'
+                ) {
+                  <button mat-icon-button (click)="editWarning(warning)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                }
               </li>
             }
           </ul>
@@ -82,7 +90,7 @@
           <mat-label>{{
             'all.competition.team-enrollment.players.level-exception.reason' | translate
           }}</mat-label>
-          <textarea matInput #reason></textarea>
+          <textarea matInput #reason [value]="data.player.levelExceptionReason"></textarea>
         </mat-form-field>
       </div>
     </mat-dialog-content>
