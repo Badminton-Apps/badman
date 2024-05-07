@@ -301,7 +301,11 @@
       "info": "Notes sur l'inscription des équipes",
       "level-exemption": "Le joueur est exempté des restrictions de classement",
       "level-exemption-requested": "Demande de joueur en cours",
-      "loan-locked": "Le prêt a déjà été confirmé, il n'est plus possible de le supprimer",
+      "loan": {
+        "add-loan": "Nouveau prêt",
+        "loan-locked": "Le prêt a déjà été confirmé, il n'est plus possible de le supprimer",
+        "loan-player": "Joueur emprunté"
+      },
       "locations": {
         "availible-courts": "Champs disponibles",
         "courts-hint": "Modifier le nombre de champs disponibles",
@@ -340,12 +344,14 @@
       },
       "title": "Inscriptions des équipes",
       "transfer": {
+        "add-transfer": "Nouveau transfert",
         "enrolled-as": "enregistré comme",
+        "transfer-locked": "Le transfert a déjà été confirmé, il n'est plus possible de le supprimer",
+        "transfer-player": "Joueur transféré",
         "transfer-teams": "Transfert d'équipes (facultatif)",
-        "transfer-teams-description": "Si vous souhaitez transférer votre ou vos équipes à l'événement de cette année, vous pouvez utiliser cette étape facultative pour simplifier le processus d'inscription. En sélectionnant cette option, vous pouvez transférer votre ou vos équipes et les placer automatiquement dans le bon événement en fonction de votre participation précédente.\n\nL'ordre dans lequel vous vérifiez vos quarts de travail déterminera l'ordre (vérifiez tout dans le bon ordre)\n\nVous pouvez toujours modifier les numéros d'équipe à l'étape suivante."
+        "transfer-teams-description": "Si vous souhaitez transférer votre ou vos équipes à l'événement de cette année, vous pouvez utiliser cette étape facultative pour simplifier le processus d'inscription. En sélectionnant cette option, vous pouvez transférer votre ou vos équipes et les placer automatiquement dans le bon événement en fonction de votre participation précédente.\n\nL'ordre dans lequel vous vérifiez vos quarts de travail déterminera l'ordre (vérifiez tout dans le bon ordre)\n\nVous pouvez toujours modifier les numéros d'équipe à l'étape suivante.",
+        "transfers-players": "Transferts et prêts"
       },
-      "transfer-locked": "Le transfert a déjà été confirmé, il n'est plus possible de le supprimer",
-      "transfers-players": "Transferts et prêts",
       "validations": "Validations",
       "warnings": {
         "already-saved": "Les nouvelles modifications ne peuvent pas être enregistrées entre-temps. Veuillez soumettre à nouveau le formulaire à la dernière étape pour enregistrer vos modifications.",

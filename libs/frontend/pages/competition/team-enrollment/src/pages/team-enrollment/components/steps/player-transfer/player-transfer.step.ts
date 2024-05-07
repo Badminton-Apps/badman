@@ -3,12 +3,15 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  TemplateRef,
   computed,
   effect,
   inject,
   input,
   signal,
   untracked,
+  viewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +23,8 @@ import { TRANSFERS_LOANS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-player-transfer-step',
@@ -30,6 +35,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,
+    MatDialogModule,
     TranslateModule,
     SelectPlayerSignalsComponent,
   ],
@@ -40,12 +46,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class PlayerTransferStepComponent {
   private readonly dataService = inject(TeamEnrollmentDataService);
   private readonly change = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
 
   club = this.dataService.state.club;
   loaded = this.dataService.state.loadedTeams;
   transfers = this.dataService.state.transfers;
   loans = this.dataService.state.loans;
   formGroup = input.required<FormGroup>();
+
+  newPlayerTmpl = viewChild<TemplateRef<HTMLElement>>('addPlayer');
 
   lockedTransfers = computed(
     () =>
@@ -74,8 +83,7 @@ export class PlayerTransferStepComponent {
     () => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>,
   );
 
-  newTransfer = signal<string | null>(null);
-  newLoan = signal<string | null>(null);
+  newPlayerId = signal<string | null>(null);
 
   constructor() {
     // set initial controls and update when club changes
@@ -112,30 +120,43 @@ export class PlayerTransferStepComponent {
     this.loansControl().setValue(loans);
   }
 
-  addTransfer() {
-    const player = this.newTransfer();
+  addNewPlayer(type: 'transfer' | 'loan') {
+    const tmpl = this.newPlayerTmpl();
 
-    if (!player) {
+    if (!tmpl) {
       return;
     }
 
-    // add the transfer to the list
-    this.transfersControl().setValue([...this.transfersControl().value, player]);
+    this.dialog
+      .open(tmpl, {
+        minWidth: '500px',
+      })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (!result) {
+          return;
+        }
 
-    // reset the new transfer
-    this.newTransfer.set(null);
-  }
+        const player = this.newPlayerId();
 
-  addLoan() {
-    const player = this.newLoan();
+        if (!player) {
+          return;
+        }
 
-    if (!player) {
-      return;
-    }
+        if (type === 'transfer') {
+          // add the transfer to the list
+          this.transfersControl().setValue([...this.transfersControl().value, player]);
+        } else if (type === 'loan') {
+          // add the loan to the list
+          this.loansControl().setValue([...this.loansControl().value, player]);
+        }
 
-    // add the loan to the list
-    this.loansControl().setValue([...this.loansControl().value, player]);
+        // reset the new transfer
+        this.newPlayerId.set(null);
 
-    this.newLoan.set(null);
+        // update the view
+        this.change.detectChanges();
+      });
   }
 }
