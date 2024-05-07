@@ -1,5 +1,5 @@
 export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandingType>) => {
-  const nonOptionalA = {
+  const teamA = {
     points: a?.points || 0,
     won: a?.won || 0,
     tied: a?.tied || 0,
@@ -12,7 +12,7 @@ export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandi
     totalPointsLost: a?.totalPointsLost || 0,
   };
 
-  const nonOptionalB = {
+  const teamB = {
     points: b?.points || 0,
     won: b?.won || 0,
     tied: b?.tied || 0,
@@ -25,53 +25,41 @@ export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandi
     totalPointsLost: b?.totalPointsLost || 0,
   };
 
-  if (nonOptionalA.points > nonOptionalB.points) {
+  if (teamA.points > teamB.points) {
     return -1;
-  } else if (nonOptionalA.points < nonOptionalB.points) {
+  } else if (teamA.points < teamB.points) {
     return 1;
   }
 
-  if (nonOptionalA.won - nonOptionalA.lost > nonOptionalB.won - nonOptionalB.lost) {
+  if (teamA.won - teamA.lost > teamB.won - teamB.lost) {
     return -1;
-  } else if (nonOptionalA.won - nonOptionalA.lost < nonOptionalB.won - nonOptionalB.lost) {
+  } else if (teamA.won - teamA.lost < teamB.won - teamB.lost) {
     return 1;
   }
 
-  if (nonOptionalA.tied > nonOptionalB.tied) {
+  if (teamA.tied > teamB.tied) {
     return -1;
-  } else if (nonOptionalA.tied < nonOptionalB.tied) {
+  } else if (teamA.tied < teamB.tied) {
     return 1;
   }
 
-  if (
-    nonOptionalA.gamesWon - nonOptionalA.gamesLost >
-    nonOptionalB.gamesWon - nonOptionalB.gamesLost
-  ) {
+  if (teamA.gamesWon - teamA.gamesLost > teamB.gamesWon - teamB.gamesLost) {
+    return -1;
+  } else if (teamA.gamesWon - teamA.gamesLost < teamB.gamesWon - teamB.gamesLost) {
+    return 1;
+  }
+
+  if (teamA.setsWon - teamA.setsLost > teamB.setsWon - teamB.setsLost) {
+    return -1;
+  } else if (teamA.setsWon - teamA.setsLost < teamB.setsWon - teamB.setsLost) {
+    return 1;
+  }
+
+  if (teamA.totalPointsWon - teamA.totalPointsLost > teamB.totalPointsWon - teamB.totalPointsLost) {
     return -1;
   } else if (
-    nonOptionalA.gamesWon - nonOptionalA.gamesLost <
-    nonOptionalB.gamesWon - nonOptionalB.gamesLost
-  ) {
-    return 1;
-  }
-
-  if (nonOptionalA.setsWon - nonOptionalA.setsLost > nonOptionalB.setsWon - nonOptionalB.setsLost) {
-    return -1;
-  } else if (
-    nonOptionalA.setsWon - nonOptionalA.setsLost <
-    nonOptionalB.setsWon - nonOptionalB.setsLost
-  ) {
-    return 1;
-  }
-
-  if (
-    nonOptionalA.totalPointsWon - nonOptionalA.totalPointsLost >
-    nonOptionalB.totalPointsWon - nonOptionalB.totalPointsLost
-  ) {
-    return -1;
-  } else if (
-    nonOptionalA.totalPointsWon - nonOptionalA.totalPointsLost <
-    nonOptionalB.totalPointsWon - nonOptionalB.totalPointsLost
+    teamA.totalPointsWon - teamA.totalPointsLost <
+    teamB.totalPointsWon - teamB.totalPointsLost
   ) {
     return 1;
   }
