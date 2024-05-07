@@ -143,6 +143,10 @@ export type I18nTranslations = {
                     "title": string;
                 };
             };
+            "delete": {
+                "description": string;
+                "title": string;
+            };
             "draw": {
                 "encounters": string;
                 "title": string;
