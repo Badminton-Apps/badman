@@ -18,7 +18,10 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ClaimService } from '@badman/frontend-auth';
 import { EnrollmentMessageComponent } from '@badman/frontend-components';
@@ -28,15 +31,14 @@ import {
   RankingSystem,
   SubEventCompetition,
   Team,
+  ValidationMessage,
 } from '@badman/frontend-models';
 import { LevelType, SubEventTypeEnum } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 import { TeamForm } from '../../../../../team-enrollment.page';
 import { TeamComponent } from '../team';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -47,6 +49,7 @@ import { MatInputModule } from '@angular/material/input';
     MatSelectModule,
     MatDialogModule,
     MatButtonModule,
+    MatIconModule,
     MatInputModule,
     ReactiveFormsModule,
     FormsModule,
@@ -82,17 +85,10 @@ export class TeamEnrollmentComponent {
 
   levelExceptions = computed(() => {
     const errors = this.validation()?.errors ?? [];
-    const warnings = this.validation()?.warnings ?? [];
 
-    const players = [
-      ...errors.filter(
-        (e) => e.message === 'all.competition.team-enrollment.errors.player-min-level',
-      ),
-      ...warnings.filter(
-        (e) => e.message === 'all.competition.team-enrollment.errors.player-min-level',
-      ),
-    ]
-      ?.map((e: unknown) => e as { params: { player: { id: string; fullName: string } } })
+    const players = errors
+      .filter((e) => e.message === 'all.competition.team-enrollment.errors.player-min-level')
+      .map((e: unknown) => e as { params: { player: { id: string; fullName: string } } })
       .map((e) => e.params.player);
 
     const uniquePlayers = Array.from(new Set(players.map((player) => player.id))).map((id) =>
@@ -253,12 +249,11 @@ export class TeamEnrollmentComponent {
   }
 
   requestLevelException(playerId: string) {
-    if (!this.requestExceptionTemplateRef()) {
-      return;
-    }
-
     const index = this.players().value.findIndex((p) => p.id === playerId);
     const player = this.players().at(index);
+
+    console.log(player.value)
+
     // pop up a dialog to ask for the reason
     this.dialog
       .open(this.requestExceptionTemplateRef(), {
@@ -279,5 +274,11 @@ export class TeamEnrollmentComponent {
           levelExceptionReason: reason.value,
         });
       });
+  }
+
+  editWarning(warning: ValidationMessage) {
+    const warn = warning as ValidationMessage<{ player: { id: string } }>;
+
+    this.requestLevelException(warn.params.player.id);
   }
 }

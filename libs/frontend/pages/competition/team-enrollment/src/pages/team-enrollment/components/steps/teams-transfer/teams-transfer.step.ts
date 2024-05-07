@@ -95,23 +95,18 @@ export class TeamsTransferStepComponent {
     this.transferTeamsCtrl.valueChanges
       .pipe(takeUntil(this.destroy$), startWith([] as string[]), pairwise())
       .subscribe(([prev, next]) => {
-        if (!this.initialized){
+        if (!this.initialized) {
           return;
         }
 
-        console.log('prev', prev);
-        console.log('next', next);
-
         // find removed teams
         const removedTeams = prev.filter((team) => !next.includes(team));
-        console.log('removedTeams', removedTeams);
         for (const id of removedTeams) {
           this._removeTeam(id);
         }
 
         // find new teams
         const newTeams = next.filter((team) => !prev.includes(team));
-        console.log('newTeams', newTeams);
         for (const id of newTeams) {
           const team = this.teamsLast().find((t) => t.id === id) as Team;
 
@@ -170,7 +165,7 @@ export class TeamsTransferStepComponent {
 
   private _addTeam(team: Team) {
     const typedControl = this.teams().get(team.type ?? '') as FormArray<TeamForm>;
-    
+
     let entry: {
       players: EntryCompetitionPlayer[];
       subEventId: string | null;

@@ -21,7 +21,7 @@ export type TeamValidationResult = {
   possibleOldTeam: boolean;
 };
 
-export type ValidationMessage = {
-  params: { [key: string]: unknown };
+export type ValidationMessage<T = { [key: string]: unknown }> = {
+  params: T;
   message: string;
 };
