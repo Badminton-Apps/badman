@@ -301,7 +301,11 @@
       "info": "Opmerkingen over de teaminschrijving",
       "level-exemption": "Speler is vrijgesteld van de ranking restricties",
       "level-exemption-requested": "Aanvraag voor speler is bezig",
-      "loan-locked": "Uitlening is al bevestigd, deze verwijderen is niet meer mogelijk",
+      "loan": {
+        "add-loan": "Nieuwe uitlening",
+        "loan-locked": "Uitlening is al bevestigd, deze verwijderen is niet meer mogelijk",
+        "loan-player": "Geleende speler"
+      },
       "locations": {
         "availible-courts": "Beschikbare velden",
         "courts-hint": "Wijzig het aantal beschikbare velden",
@@ -340,12 +344,14 @@
       },
       "title": "Team inschrijvingen",
       "transfer": {
+        "add-transfer": "Nieuwe transfer",
         "enrolled-as": "ingeschreven als",
+        "transfer-locked": "Transfer is al bevestigd, deze verwijderen is niet meer mogelijk",
+        "transfer-player": "Getransfereerde speler",
         "transfer-teams": "Zet teams over (optioneel)",
-        "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nDe volgorde waarin je je ploegen aanvinkt zal de volgorde bepalen (\"alles\" vinkt het in de juiste volgorde aan)\n\nJe kan de teamnummers in volgende stap nog wijzigen."
+        "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nDe volgorde waarin je je ploegen aanvinkt zal de volgorde bepalen (\"alles\" vinkt het in de juiste volgorde aan)\n\nJe kan de teamnummers in volgende stap nog wijzigen.",
+        "transfers-players": "Transfers en uitleningen"
       },
-      "transfer-locked": "Transfer is al bevestigd, deze verwijderen is niet meer mogelijk",
-      "transfers-players": "Transfers en uitleningen",
       "validations": "Validaties",
       "warnings": {
         "already-saved": "Nieuwe wijzigingen kan je niet tussendoor meer opslaan, gelieve het formulier opnieuw te versturen in de laatste stap om je wijzigingen op te slaan",

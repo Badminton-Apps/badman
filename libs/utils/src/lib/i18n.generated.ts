@@ -308,7 +308,11 @@ export type I18nTranslations = {
                 "info": string;
                 "level-exemption": string;
                 "level-exemption-requested": string;
-                "loan-locked": string;
+                "loan": {
+                    "add-loan": string;
+                    "loan-locked": string;
+                    "loan-player": string;
+                };
                 "locations": {
                     "availible-courts": string;
                     "courts-hint": string;
@@ -347,12 +351,14 @@ export type I18nTranslations = {
                 };
                 "title": string;
                 "transfer": {
+                    "add-transfer": string;
                     "enrolled-as": string;
+                    "transfer-locked": string;
+                    "transfer-player": string;
                     "transfer-teams": string;
                     "transfer-teams-description": string;
+                    "transfers-players": string;
                 };
-                "transfer-locked": string;
-                "transfers-players": string;
                 "validations": string;
                 "warnings": {
                     "already-saved": string;
