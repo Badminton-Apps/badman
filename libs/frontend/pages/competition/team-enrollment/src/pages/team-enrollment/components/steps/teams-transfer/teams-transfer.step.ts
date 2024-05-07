@@ -95,14 +95,23 @@ export class TeamsTransferStepComponent {
     this.transferTeamsCtrl.valueChanges
       .pipe(takeUntil(this.destroy$), startWith([] as string[]), pairwise())
       .subscribe(([prev, next]) => {
+        if (!this.initialized){
+          return;
+        }
+
+        console.log('prev', prev);
+        console.log('next', next);
+
         // find removed teams
         const removedTeams = prev.filter((team) => !next.includes(team));
+        console.log('removedTeams', removedTeams);
         for (const id of removedTeams) {
           this._removeTeam(id);
         }
 
         // find new teams
         const newTeams = next.filter((team) => !prev.includes(team));
+        console.log('newTeams', newTeams);
         for (const id of newTeams) {
           const team = this.teamsLast().find((t) => t.id === id) as Team;
 
@@ -114,6 +123,9 @@ export class TeamsTransferStepComponent {
     effect(() => {
       // get club
       const club = this.club();
+
+      // set initizalized flag
+      this.initialized = false;
 
       // wait for teams to be loaded, and also reload when anything changes
       if (!this.loaded() || !club?.id) {
@@ -136,15 +148,15 @@ export class TeamsTransferStepComponent {
           .map((team) => team.id);
 
         // Patch the checkbox list
-        this.transferTeamsCtrl.setValue(teamIds, {
-          emitEvent: false, // don't emit, because that copies the teams to the form
-        });
+        this.transferTeamsCtrl.setValue(teamIds);
 
         // Copy the existing teams to the form
         for (const team of this.teamsCurrent()) {
           this._addTeam(team);
         }
       });
+
+      this.initialized = true;
     });
   }
 
@@ -158,6 +170,7 @@ export class TeamsTransferStepComponent {
 
   private _addTeam(team: Team) {
     const typedControl = this.teams().get(team.type ?? '') as FormArray<TeamForm>;
+    
     let entry: {
       players: EntryCompetitionPlayer[];
       subEventId: string | null;
