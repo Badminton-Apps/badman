@@ -1,5 +1,4 @@
-import { SubEventTypeEnum } from '@badman/utils';
-import { DrawCompetition, SubEventCompetition, DrawTournament, SubEventTournament } from './events';
+import { DrawCompetition, DrawTournament, SubEventCompetition, SubEventTournament } from './events';
 import { Player } from './player.model';
 import { Standing } from './standing.model';
 import { Team } from './team.model';
