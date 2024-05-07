@@ -74,7 +74,7 @@ export const loadTeams = (
                     id
                     gender
                     levelExceptionRequested
-                    
+                    levelExceptionReason                    
                     player {
                       id
                       fullName
