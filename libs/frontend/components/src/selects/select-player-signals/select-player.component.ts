@@ -29,6 +29,7 @@ export class SelectPlayerSignalsComponent {
   form = this.dataService.filter;
 
   disabled = input(false);
+  label = input('all.pickers.select-player');
 
   possiblePlayers = computed(() => {
     return this.dataService.players();
