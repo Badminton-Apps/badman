@@ -136,6 +136,10 @@
         "title": "Des problèmes ont été trouvés avec votre configuration"
       }
     },
+    "delete": {
+      "description": "Êtes-vous sûr de vouloir supprimer ce concours ?",
+      "title": "Supprimer la concurrence"
+    },
     "draw": {
       "encounters": "Réunions",
       "title": "Piscine"

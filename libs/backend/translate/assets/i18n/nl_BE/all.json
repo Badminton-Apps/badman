@@ -136,6 +136,10 @@
         "title": "Er zijn problemen gevonden met je opstelling"
       }
     },
+    "delete": {
+      "description": "Weet je zeker dat je deze competitie wilt verwijderen?",
+      "title": "Verwijder competitie"
+    },
     "draw": {
       "encounters": "Ontmoetingen",
       "title": "Poule"

@@ -24,6 +24,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
 import {
+  ConfirmDialogComponent,
+  ConfirmDialogModel,
   HasClaimComponent,
   OpenCloseChangeEncounterDateDialogComponent,
   OpenCloseDateDialogComponent,
@@ -350,6 +352,44 @@ export class DetailPageComponent implements OnInit {
         tab: index === 0 ? undefined : index,
       },
       queryParamsHandling: 'merge',
+    });
+  }
+
+  removeEvent() {
+    const dialogData = new ConfirmDialogModel(
+      'all.competition.delete.title',
+      'all.competition.delete.description',
+    );
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: dialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((dialogResult) => {
+      if (!dialogResult) {
+        return;
+      }
+
+      this.apollo
+        .mutate({
+          mutation: gql`
+            mutation RemoveCompetition($id: ID!) {
+              removeEventCompetition(id: $id)
+            }
+          `,
+          variables: {
+            id: this.eventCompetition.id,
+          },
+          refetchQueries: ['EventCompetition'],
+        })
+        .subscribe(() => {
+          this.matSnackBar.open('Deleted', undefined, {
+            duration: 1000,
+            panelClass: 'success',
+          });
+          this.router.navigate(['/competition']);
+        });
     });
   }
 }
