@@ -3,16 +3,15 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  QueryList,
   Signal,
   TemplateRef,
-  ViewChild,
-  ViewChildren,
   computed,
   effect,
   inject,
   input,
   untracked,
+  viewChild,
+  viewChildren,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -86,8 +85,12 @@ export class TeamsStepComponent {
       }>,
   );
 
-  transfers = computed(() => this.transfersLoans().get(ClubMembershipType.NORMAL) as FormControl<string[]>);
-  loans = computed(() => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>);
+  transfers = computed(
+    () => this.transfersLoans().get(ClubMembershipType.NORMAL) as FormControl<string[]>,
+  );
+  loans = computed(
+    () => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>,
+  );
 
   teamNumbers = computed(() => {
     const teams = this.teams();
@@ -104,11 +107,11 @@ export class TeamsStepComponent {
   eventsPerType = this.dataService.state.eventsPerType;
   eventTypes = Object.values(SubEventTypeEnum);
 
-  @ViewChildren(TeamEnrollmentComponent, { read: ElementRef })
-  teamReferences: QueryList<ElementRef<HTMLElement>> | undefined;
+  teamReferences = viewChildren(TeamEnrollmentComponent, {
+    read: ElementRef,
+  });
 
-  @ViewChild('switch')
-  SwitchDialog!: TemplateRef<HTMLElement>;
+  SwitchDialog = viewChild.required<TemplateRef<HTMLElement>>('switch');
 
   constructor() {
     effect(() => {
@@ -186,8 +189,8 @@ export class TeamsStepComponent {
 
     ref.onAction().subscribe(() => {
       setTimeout(() => {
-        if (!this.teamReferences) return;
-        const teamToScrollTo = this.teamReferences
+        if (!this.teamReferences()) return;
+        const teamToScrollTo = this.teamReferences()
           .map((reference) => reference.nativeElement)
           .find((element) => element.getAttribute('data-anchor') === team.id);
 
@@ -267,7 +270,7 @@ export class TeamsStepComponent {
     const type = team.type;
     if (!club) return;
 
-    const ref = this.dialog.open(this.SwitchDialog, {
+    const ref = this.dialog.open(this.SwitchDialog(), {
       data: {
         team,
         numbers: Array.from({ length: this.teamNumbers()?.[type] ?? 0 }, (_, i) => i + 1),
