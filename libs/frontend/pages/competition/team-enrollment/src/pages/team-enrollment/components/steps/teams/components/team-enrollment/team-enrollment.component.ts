@@ -252,13 +252,14 @@ export class TeamEnrollmentComponent {
     const index = this.players().value.findIndex((p) => p.id === playerId);
     const player = this.players().at(index);
 
-    console.log(player.value)
-
     // pop up a dialog to ask for the reason
     this.dialog
       .open(this.requestExceptionTemplateRef(), {
         data: {
-          player: player.value,
+          player: {
+            ...player.value,
+            levelExceptionReason: player.value.levelExceptionReason ?? '',
+          },
         },
       })
       .afterClosed()
