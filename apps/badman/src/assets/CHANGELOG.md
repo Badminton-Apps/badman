@@ -1,3 +1,19 @@
+## 6.145.0 (2024-05-08)
+
+
+### 🚀 Features
+
+- only show players not in club or already transfered/loaned ([be96fc447](https://github.com/Badminton-Apps/badman/commit/be96fc447))
+
+### 🩹 Fixes
+
+- should resolve cors hopefully ([1fd3b2962](https://github.com/Badminton-Apps/badman/commit/1fd3b2962))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme @cskiwi
+
 ## 6.144.0 (2024-05-07)
 
 
