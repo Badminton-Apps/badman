@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-ranking",
-  "version": "6.143.1",
+  "version": "6.144.0",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
