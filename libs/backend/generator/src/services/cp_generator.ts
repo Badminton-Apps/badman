@@ -418,23 +418,23 @@ export class CpGeneratorService {
           const index = entry.meta?.competition?.teamIndex;
           const internalClubId = clubs.get(club.id)?.cpId;
           const captain = await team.getCaptain();
-          const teamLocations = await team.getLocations();
+          const teamLocation = await team.getPrefferedLocation();
 
           const captainName = captain?.fullName;
           const dayofweek = this._getDayOfWeek(team.preferredDay);
           const plantime = team.preferredTime ? `#${team.preferredTime}#` : 'NULL';
           const teamName = `${team.name} (${index})`;
 
-          const prefLoc1 = locations.get(teamLocations[0]?.id)?.cpId ?? 'NULL';
-          const prefLoc2 = locations.get(teamLocations[1]?.id)?.cpId ?? 'NULL';
+          const prefLoc1 = locations.get(teamLocation?.id)?.cpId ?? 'NULL';
+          // const prefLoc2 = locations.get(teamLocations[1]?.id)?.cpId ?? 'NULL';
 
-          const queryTeam = `INSERT INTO Team(name, club, country, entrydate, contact, phone, email, dayofweek, plantime, preferredlocation1, preferredlocation2) VALUES ("${this._sqlEscaped(
+          const queryTeam = `INSERT INTO Team(name, club, country, entrydate, contact, phone, email, dayofweek, plantime, preferredlocation1) VALUES ("${this._sqlEscaped(
             teamName,
           )}", ${internalClubId}, 19, #${moment(entry.createdAt).format(
             'MM/DD/YYYY HH:MM:ss',
           )}#, "${captainName}", "${this._sqlEscaped(team.phone)}", "${this._sqlEscaped(
             team.email,
-          )}", ${dayofweek}, ${plantime}, ${prefLoc1}, ${prefLoc2}
+          )}", ${dayofweek}, ${plantime}, ${prefLoc1}
       )`;
 
           try {

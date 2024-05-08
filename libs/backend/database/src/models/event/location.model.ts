@@ -40,7 +40,6 @@ import {
 import { Club } from '../club.model';
 import { Team } from '../team.model';
 import { Availability } from './availability.model';
-import { TeamLocationCompetition } from './competition/team-location-membership.model';
 import { Court } from './court.model';
 import { EventTournament } from './tournament';
 import { LocationEventTournamentMembership } from './tournament/location-event-membership.model';
@@ -109,8 +108,9 @@ export class Location extends Model {
   @Column(DataType.GEOMETRY('POINT', 4326))
   coordinates?: Point;
 
-  @BelongsToMany(() => Team, () => TeamLocationCompetition)
+  @HasMany(() => Team, 'prefferedLocationId')
   teams?: Relation<Team[]>;
+
 
   @BelongsToMany(() => EventTournament, () => LocationEventTournamentMembership)
   eventTournaments?: Relation<EventTournament[]>;
