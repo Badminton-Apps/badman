@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, input } from '@angular/core';
+import { Component, OnInit, input, inject, output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -16,6 +16,7 @@ import { PlayerSearchComponent } from '@badman/frontend-components';
 import { Player, TeamPlayer } from '@badman/frontend-models';
 import { TeamMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
+import { v4 as uuid } from 'uuid';
 
 export const PLAYERS_CONTROL = 'players';
 
@@ -37,14 +38,14 @@ export const PLAYERS_CONTROL = 'players';
   ],
 })
 export class TeamPlayersComponent implements OnInit {
+  private fb = inject(FormBuilder);
   protected internalControl!: FormArray<FormControl<TeamPlayer>>;
 
   group = input<FormGroup>();
   control = input<FormArray<FormControl<TeamPlayer>>>();
   controlName = input(PLAYERS_CONTROL);
 
-  @Output()
-  typeChanged = new EventEmitter<{
+  typeChanged = output<{
     player: TeamPlayer;
     type: TeamMembershipType;
   }>();
@@ -52,8 +53,6 @@ export class TeamPlayersComponent implements OnInit {
   types = Object.keys(TeamMembershipType) as TeamMembershipType[];
 
   wherePlayer: { [key: string]: unknown } = {};
-
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     if (this.control() != undefined) {
@@ -88,7 +87,10 @@ export class TeamPlayersComponent implements OnInit {
 
   async playerAdded(player: Player) {
     const newPlayer = new TeamPlayer(player);
-    newPlayer.membershipType = TeamMembershipType.REGULAR;
+    newPlayer.teamMembership = {
+      id: uuid(),
+      membershipType: TeamMembershipType.REGULAR,
+    };
 
     if (!newPlayer) {
       return;

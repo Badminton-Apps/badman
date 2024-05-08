@@ -1,7 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   Component,
-  Inject,
   Injector,
   OnInit,
   PLATFORM_ID,
@@ -84,6 +83,15 @@ import { ClubTeamsComponent } from './club-teams/club-teams.component';
   ],
 })
 export class DetailPageComponent implements OnInit {
+  private formBuilder = inject(FormBuilder);
+  private seoService = inject(SeoService);
+  private breadcrumbsService = inject(BreadcrumbService);
+  private apollo = inject(Apollo);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private dialog = inject(MatDialog);
+  private twizzitService = inject(TwizzitService);
+  private platformId = inject<string>(PLATFORM_ID);
   // Injectors
   private authService = inject(ClaimService);
   private injector = inject(Injector);
@@ -107,17 +115,7 @@ export class DetailPageComponent implements OnInit {
 
   update$ = new Subject<void>();
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private seoService: SeoService,
-    private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private route: ActivatedRoute,
-    private router: Router,
-    private dialog: MatDialog,
-    private twizzitService: TwizzitService,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {
+  constructor() {
     const clubName = `${this.club().name}`;
     this.seoService.update({
       title: clubName,
@@ -206,18 +204,18 @@ export class DetailPageComponent implements OnInit {
     });
   }
 
-  deletePlayer(player: Player) {
-    this.apollo.mutate({
-      mutation: gql`
-        mutation RemovePlayerFromClub($removePlayerFromClubId: ID!) {
-          removePlayerFromClub(id: $removePlayerFromClubId)
-        }
-      `,
-      variables: {
-        removePlayerFromClubId: player.id,
-      },
-    });
-  }
+  // deletePlayer(player: Player) {
+  //   this.apollo.mutate({
+  //     mutation: gql`
+  //       mutation RemovePlayerFromClub($removePlayerFromClubId: ID!) {
+  //         removePlayerFromClub(id: $removePlayerFromClubId)
+  //       }
+  //     `,
+  //     variables: {
+  //       removePlayerFromClubId: player.id,
+  //     },
+  //   });
+  // }
 
   async downloadTwizzit() {
     const season = this.filter.get('season')?.value;

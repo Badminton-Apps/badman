@@ -30,6 +30,7 @@ export interface ClubTeamsState {
 })
 export class ClubTeamsService {
   private apollo = inject(Apollo);
+  private error$ = new Subject<string>();
 
   filter = new FormGroup({
     clubId: new FormControl<string>(''),
@@ -50,13 +51,13 @@ export class ClubTeamsService {
   loaded = computed(() => this.state().loaded);
   error = computed(() => this.state().error);
 
+  // sources
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
     filter((filter) => !!filter.clubId && filter.clubId.length > 0),
     distinctUntilChanged(),
   );
 
-  // sources
   private teamsLoaded$ = this.filterChanged$.pipe(
     throttleTime(300),
     switchMap((filter) => this.getTeams(filter)),
@@ -69,7 +70,6 @@ export class ClubTeamsService {
     }),
   );
 
-  private error$ = new Subject<string>();
 
   sources$ = merge(
     this.teamsLoaded$,

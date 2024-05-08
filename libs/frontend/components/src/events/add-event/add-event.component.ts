@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -26,12 +26,11 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddEventComponent {
+  public dialogRef = inject<MatDialogRef<AddEventComponent>>(MatDialogRef<AddEventComponent>);
   formGroup = new FormGroup({
     url: new FormControl('', [Validators.required]),
     official: new FormControl(true),
   });
-
-  constructor(public dialogRef: MatDialogRef<AddEventComponent>) {}
 
   submit() {
     const url = this.formGroup.value.url as string;

@@ -1,6 +1,6 @@
 import { CompileService } from '@badman/backend-compile';
-import { Player, RankingLastPlace, Team } from '@badman/backend-database';
-import { I18nTranslations, gameLabel } from '@badman/utils';
+import { Logging, Player, RankingLastPlace, Team } from '@badman/backend-database';
+import { I18nTranslations, LoggingAction, gameLabel } from '@badman/utils';
 import { Controller, Logger, Post, Req, Res, StreamableFile } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { readFile } from 'fs/promises';
@@ -9,6 +9,7 @@ import { I18nService } from 'nestjs-i18n';
 import { lastValueFrom, take } from 'rxjs';
 import { AssemblyValidationData, AssemblyValidationError } from '../models';
 import { AssemblyValidationService } from '../services';
+import { User } from '@badman/backend-authorization';
 
 type gameType =
   | 'single1'
@@ -51,7 +52,11 @@ export class AssemblyController {
   ) {}
 
   @Post('team')
-  async teamAssembly(@Req() req: FastifyRequest, @Res({ passthrough: true }) res: FastifyReply) {
+  async teamAssembly(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) res: FastifyReply,
+    @User() user: Player,
+  ) {
     // compile the template that returns a buffer of the pdf
     const pdf$ = await this.getTeamAssemblyPdf(req.body as inputBody);
 
@@ -64,6 +69,13 @@ export class AssemblyController {
 
     // set the content type to pdf
     res.header('Content-Type', 'application/pdf');
+
+    // write to log
+    await Logging.create({
+      action: LoggingAction.AssemblyDownloaded,
+      playerId: user?.id,
+      meta: req.body
+    });
 
     // return the pdf as a streamable file
     return new StreamableFile(pdf);
@@ -155,6 +167,8 @@ export class AssemblyController {
       homeTeam: homeTeam.name,
       awayTeam: awayTeam.name,
       captain: captain?.fullName,
+      generationDate: moment().tz('Europe/Brussels').format('DD-MM-YYYY HH:mm'),
+      rankingDate: moment(data.system?.updateLastUpdate).tz('Europe/Brussels').format('DD-MM-YYYY'),
       gameLabels: this.getLabels(data),
       doubles: [
         {

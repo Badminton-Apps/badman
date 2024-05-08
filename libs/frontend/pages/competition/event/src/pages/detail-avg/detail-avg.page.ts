@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -31,6 +31,10 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailAvgPageComponent implements OnInit {
+  private readonly translate = inject(TranslateService);
+  private readonly breadcrumbsService = inject(BreadcrumbService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly apollo = inject(Apollo);
   eventCompetition!: EventCompetition;
 
   genders: ('M' | 'F')[] = ['M', 'F'];
@@ -113,13 +117,6 @@ export class DetailAvgPageComponent implements OnInit {
   };
 
   subEvents$?: Observable<SubEventCompetition[] | undefined>;
-
-  constructor(
-    private readonly translate: TranslateService,
-    private readonly breadcrumbsService: BreadcrumbService,
-    private readonly route: ActivatedRoute,
-    private readonly apollo: Apollo,
-  ) {}
 
   ngOnInit(): void {
     combineLatest([

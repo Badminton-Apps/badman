@@ -3,7 +3,7 @@ import {
   NgxMatTimepickerModule,
 } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -31,14 +31,12 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
 })
 export class OpenCloseDateDialogComponent implements OnInit {
+  public dialogRef = inject<MatDialogRef<OpenCloseDateDialogComponent>>(
+    MatDialogRef<OpenCloseDateDialogComponent>,
+  );
+  public data = inject<{ openDate: Date; closeDate: Date }>(MAT_DIALOG_DATA);
   openControl?: FormControl;
   closeControl?: FormControl;
-
-  constructor(
-    public dialogRef: MatDialogRef<OpenCloseDateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: { openDate: Date; closeDate: Date },
-  ) {}
 
   ngOnInit(): void {
     this.openControl = new FormControl(this.data.openDate);

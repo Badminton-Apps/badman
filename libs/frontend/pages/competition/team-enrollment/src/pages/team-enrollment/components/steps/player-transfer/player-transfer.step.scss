@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  padding: 1rem 0;
+  max-width: 650px;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+mat-form-field,
+badman-select-player,
+badman-transfer {
+  width: 100%;
+}
+
+.transfers,
+.loans {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+}
+  

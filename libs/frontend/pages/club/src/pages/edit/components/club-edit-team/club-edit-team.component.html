@@ -45,7 +45,7 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="this.whenPlayerRemoved.next(player)">
+              <button mat-menu-item (click)="this.whenPlayerRemoved.emit(player)">
                 <mat-icon>delete</mat-icon>
                 <span>{{ 'all.button.delete' | translate }}</span>
               </button>
@@ -69,7 +69,7 @@
     </mat-list>
     @if (this.subEvent) {
       <badman-player-search
-        (whenSelectPlayer)="this.whenPlayerAdded.next($event)"
+        (whenSelectPlayer)="this.whenPlayerAdded.emit($event)"
         [ignorePlayers]="this.players"
         [allowCreation]="true"
         [where]="this.where"

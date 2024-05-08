@@ -2,16 +2,15 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Injector,
   OnInit,
-  Output,
   PLATFORM_ID,
   Signal,
   TransferState,
   effect,
   inject,
   input,
+  output,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -67,8 +66,8 @@ export class ClubTeamsComponent implements OnInit {
   filter = input<FormGroup | undefined>();
 
   // Outputs
-  @Output() whenTeamEdit = new EventEmitter<void>();
-  @Output() whenTeamAdd = new EventEmitter<void>();
+  whenTeamEdit = output<void>();
+  whenTeamAdd = output<void>();
 
   // Other
   get isClient(): boolean {

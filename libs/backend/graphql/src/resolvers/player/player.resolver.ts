@@ -3,6 +3,7 @@ import {
   Claim,
   Club,
   ClubPlayerMembership,
+  ClubWithPlayerMembershipType,
   Game,
   GamePlayerMembership,
   GamePlayerMembershipType,
@@ -11,6 +12,8 @@ import {
   Player,
   PlayerNewInput,
   PlayerUpdateInput,
+  PlayerWithClubMembershipType,
+  PlayerWithTeamMembershipType,
   PushSubscription,
   PushSubscriptionInputType,
   RankingLastPlace,
@@ -19,7 +22,8 @@ import {
   Setting,
   SettingUpdateInput,
   Team,
-  TeamPlayerMembershipType,
+  TeamPlayerMembership,
+  TeamWithPlayerMembershipType,
 } from '@badman/backend-database';
 import { IsUUID, getCurrentSeason, getRankingProtected } from '@badman/utils';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
@@ -27,6 +31,7 @@ import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nest
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs, WhereArgs, queryFixer } from '../../utils';
+
 @Resolver(() => Player)
 export class PlayersResolver {
   protected readonly logger = new Logger(PlayersResolver.name);
@@ -61,7 +66,8 @@ export class PlayersResolver {
 
   @Query(() => PagedPlayer)
   async players(@Args() listArgs: ListArgs): Promise<{ count: number; rows: Player[] }> {
-    return Player.findAndCountAll(ListArgs.toFindOptions(listArgs));
+    const options = ListArgs.toFindOptions(listArgs);
+    return Player.findAndCountAll(options);
   }
 
   @ResolveField(() => String)
@@ -176,7 +182,7 @@ export class PlayersResolver {
     return player.getGames(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [Team])
+  @ResolveField(() => [TeamWithPlayerMembershipType])
   async teams(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
@@ -185,7 +191,7 @@ export class PlayersResolver {
       description: 'Include the inactive teams (this overwrites the active filter if given)',
     })
     season?: number,
-  ): Promise<Team[]> {
+  ): Promise<(Team & { TeamMembership: TeamPlayerMembership })[] | Team[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
 
     args.where = {
@@ -196,22 +202,24 @@ export class PlayersResolver {
     return player.getTeams(args);
   }
 
-  @ResolveField(() => [Club], { nullable: true })
+  @ResolveField(() => [ClubWithPlayerMembershipType], { nullable: true })
   async clubs(
     @Parent() player: Player,
     @Args() listArgs: ListArgs,
     @Args('includeHistorical', {
       nullable: true,
       description: 'Include the historical clubs',
+      defaultValue: false,
+      type: () => Boolean,
     })
-    historical?: boolean,
+    historical = false,
   ): Promise<(Club & { ClubMembership: ClubPlayerMembership })[] | Club[] | undefined> {
     const args = ListArgs.toFindOptions(listArgs);
 
     if (!historical) {
       args.where = {
         ...args.where,
-        '$ClubPlayerMembership.end$': null,
+        // [`$${ClubPlayerMembership.name}.active$`]: true,
       };
     }
     return player.getClubs({
@@ -437,9 +445,9 @@ export class GamePlayersResolver extends PlayersResolver {
   }
 }
 
-@Resolver(() => TeamPlayerMembershipType)
-export class TeamPlayerResolver extends PlayersResolver {
-  protected override readonly logger = new Logger(TeamPlayerResolver.name);
+@Resolver(() => PlayerWithTeamMembershipType)
+export class PlayerTeamResolver extends PlayersResolver {
+  protected override readonly logger = new Logger(PlayerTeamResolver.name);
 
   @ResolveField(() => [RankingLastPlace])
   override async rankingLastPlaces(
@@ -515,5 +523,22 @@ export class TeamPlayerResolver extends PlayersResolver {
         return getRankingProtected(place, system);
       }) ?? []
     );
+  }
+
+  @ResolveField(() => TeamPlayerMembership, { nullable: true })
+  async teamMembership(
+    @Parent() player: Player & { TeamPlayerMembership: TeamPlayerMembership },
+  ): Promise<TeamPlayerMembership> {
+    return player.TeamPlayerMembership;
+  }
+}
+
+@Resolver(() => PlayerWithClubMembershipType)
+export class PlayerClubResolver extends PlayersResolver {
+  @ResolveField(() => ClubPlayerMembership, { nullable: true })
+  async clubMembership(
+    @Parent() player: Player & { ClubPlayerMembership: ClubPlayerMembership },
+  ): Promise<ClubPlayerMembership> {
+    return player.ClubPlayerMembership;
   }
 }

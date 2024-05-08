@@ -1,5 +1,5 @@
 import { CronJob, RankingSystem } from '@badman/backend-database';
-import { RankingQueue, SyncQueue, UpdateRankingJob } from '@badman/backend-queue';
+import { RankingQueue, Ranking, SyncQueue, UpdateRankingJob } from '@badman/backend-queue';
 import { ConfigType, getRankingPeriods } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
@@ -133,7 +133,7 @@ export class CronService implements OnModuleInit {
         type: 'ranking',
         meta: {
           queueName: RankingQueue,
-          jobName: 'UpdateRanking',
+          jobName: Ranking.UpdateRanking,
           arguments: {
             systemId: system.id,
             // the points are calculated when running sync

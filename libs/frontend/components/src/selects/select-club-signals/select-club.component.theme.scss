@@ -17,24 +17,14 @@
     $caption-color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
   }
 
-  // badman-select-club {
-  // }
-
-  .badman-select-club-panel {
-    small.club-id {
-      color: $caption-color;
-    }
+  small.select-club-id {
+    color: $caption-color;
   }
 }
 
 @mixin typography($theme) {
   $typography-config: mat.get-typography-config($theme);
-  // badman-select-club {
-  // }
-
-  .badman-select-club-panel {
-    small.club-id {
-      @include mat.typography-level($typography-config, 'caption');
-    }
+  small.select-club-id {
+    @include mat.typography-level($typography-config, 'caption');
   }
 }

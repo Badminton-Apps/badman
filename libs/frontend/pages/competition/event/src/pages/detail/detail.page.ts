@@ -24,6 +24,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
 import {
+  ConfirmDialogComponent,
+  ConfirmDialogModel,
   HasClaimComponent,
   OpenCloseChangeEncounterDateDialogComponent,
   OpenCloseDateDialogComponent,
@@ -78,6 +80,17 @@ import { CompetitionMapComponent } from './competition-map';
   ],
 })
 export class DetailPageComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private translate = inject(TranslateService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private breadcrumbsService = inject(BreadcrumbService);
+  private apollo = inject(Apollo);
+  private dialog = inject(MatDialog);
+  private matSnackBar = inject(MatSnackBar);
+  private jobsService = inject(JobsService);
+  private cpService = inject(CpService);
+  private excelService = inject(ExcelService);
   // injectors
   private authService = inject(ClaimService);
   private injector = inject(Injector);
@@ -104,20 +117,6 @@ export class DetailPageComponent implements OnInit {
 
   eventCompetition!: EventCompetition;
   subEvents?: { eventType: string; subEvents: SubEventCompetition[] }[];
-
-  constructor(
-    private seoService: SeoService,
-    private translate: TranslateService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private breadcrumbsService: BreadcrumbService,
-    private apollo: Apollo,
-    private dialog: MatDialog,
-    private matSnackBar: MatSnackBar,
-    private jobsService: JobsService,
-    private cpService: CpService,
-    private excelService: ExcelService,
-  ) {}
 
   ngOnInit(): void {
     combineLatest([this.route.data, this.translate.get(['all.competition.title'])])
@@ -353,6 +352,44 @@ export class DetailPageComponent implements OnInit {
         tab: index === 0 ? undefined : index,
       },
       queryParamsHandling: 'merge',
+    });
+  }
+
+  removeEvent() {
+    const dialogData = new ConfirmDialogModel(
+      'all.competition.delete.title',
+      'all.competition.delete.description',
+    );
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '400px',
+      data: dialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((dialogResult) => {
+      if (!dialogResult) {
+        return;
+      }
+
+      this.apollo
+        .mutate({
+          mutation: gql`
+            mutation RemoveCompetition($id: ID!) {
+              removeEventCompetition(id: $id)
+            }
+          `,
+          variables: {
+            id: this.eventCompetition.id,
+          },
+          refetchQueries: ['EventCompetition'],
+        })
+        .subscribe(() => {
+          this.matSnackBar.open('Deleted', undefined, {
+            duration: 1000,
+            panelClass: 'success',
+          });
+          this.router.navigate(['/competition']);
+        });
     });
   }
 }

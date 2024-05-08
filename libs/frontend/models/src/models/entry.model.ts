@@ -1,4 +1,4 @@
-import { DrawCompetition, SubEventCompetition, DrawTournament, SubEventTournament } from './events';
+import { DrawCompetition, DrawTournament, SubEventCompetition, SubEventTournament } from './events';
 import { Player } from './player.model';
 import { Standing } from './standing.model';
 import { Team } from './team.model';
@@ -13,19 +13,17 @@ export class EventEntry {
   subEventTournament?: SubEventTournament;
   drawTournament?: DrawTournament;
 
+  entryType?: string;
+  sendOn?: Date;
+
   subEventId?: string;
   drawId?: string;
-
-  standing?: Standing;
-
-  entryType?: string;
-
   teamId?: string;
 
   team?: Team;
   players?: Player[];
   meta?: Meta;
-
+  standing?: Standing;
   enrollmentValidation?: TeamValidationResult;
 
   constructor({ ...args }: Partial<EventEntry>) {
@@ -56,6 +54,7 @@ export class EventEntry {
 
     this.meta = args?.meta;
     this.entryType = args?.entryType;
+    this.sendOn = args?.sendOn != null ? new Date(args.sendOn) : undefined;
   }
 }
 
@@ -81,4 +80,6 @@ export interface EntryCompetitionPlayer {
   gender: 'M' | 'F';
   player: Partial<Player>;
   levelException: boolean;
+  levelExceptionRequested?: boolean;
+  levelExceptionReason?: string;
 }

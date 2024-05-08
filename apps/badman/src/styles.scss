@@ -6,6 +6,7 @@
 @use './theme-functions' as theme;
 @use './badman.theme' as root-theme;
 
+
 @use '../../../libs/frontend/components/theme' as frontend-components;
 @use '../../../libs/frontend/pages/competition/team-assembly/theme' as frontend-assembly;
 @use '../../../libs/frontend/pages/club/theme' as frontend-club;
@@ -152,13 +153,7 @@ mat-dialog-content {
   overflow: inherit;
 }
 
-.mat-mdc-snack-bar-container {
-  &.error {
-    --mdc-snackbar-container-color: #f44336;
-    --mat-mdc-snack-bar-button-color: #fff;
-    --mdc-snackbar-supporting-text-color: #fff;
-  }
-}
+
 
 // Spinner for button
 .spinner {

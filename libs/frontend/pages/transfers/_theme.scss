@@ -1,0 +1,13 @@
+@use './src/pages/overview/overview.page.theme.scss' as overview;
+
+@mixin theme($theme) {
+  @include overview.theme($theme);
+}
+
+@mixin typography($theme) {
+  @include overview.typography($theme);
+}
+
+@mixin color($theme) {
+  @include overview.color($theme);
+}

@@ -1,0 +1,91 @@
+<h3>Transfers</h3>
+
+@for (player of transfersControl().value; track player) {
+  <div class="transfers">
+    <badman-select-player
+      label="all.competition.team-enrollment.transfer.transfer-player"
+      [disabled]="true"
+      [player]="player"
+    />
+    <!-- remove button -->
+    <div
+      [matTooltip]="
+        lockedTransfers().includes(player)
+          ? ('all.competition.team-enrollment.transfer.transfer-locked' | translate)
+          : undefined
+      "
+    >
+      <button
+        mat-icon-button
+        (click)="this.removeTransfer(player)"
+        [disabled]="lockedTransfers().includes(player)"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+} @empty {
+  <ng-container *ngTemplateOutlet="noPlayers"></ng-container>
+}
+
+<div>
+  <button mat-stroked-button (click)="addNewPlayer('transfer')">
+    {{ 'all.competition.team-enrollment.transfer.add-transfer' | translate }}
+  </button>
+</div>
+
+<h3>Loans</h3>
+@for (player of loansControl().value; track player) {
+  <div class="loans">
+    <badman-select-player
+      label="all.competition.team-enrollment.loan.loan-player"
+      [disabled]="true"
+      [player]="player"
+    />
+    <!-- remove button -->
+    <button
+      mat-icon-button
+      (click)="this.removeLoan(player)"
+      [disabled]="lockedLoans().includes(player)"
+      [matTooltip]="
+        lockedLoans().includes(player)
+          ? ('all.competition.team-enrollment.loan.loan-locked' | translate)
+          : undefined
+      "
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+} @empty {
+  <ng-container *ngTemplateOutlet="noPlayers"></ng-container>
+}
+
+<div>
+  <button mat-stroked-button (click)="addNewPlayer('loan')">
+    {{ 'all.competition.team-enrollment.loan.add-loan' | translate }}
+  </button>
+</div>
+
+<ng-template #noPlayers>
+  <small>{{ 'all.player.no-players' | translate }}</small>
+</ng-template>
+
+<ng-template #addPlayer>
+  <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
+  <mat-dialog-content>
+    <div class="new-player">
+      <badman-select-player
+        [(player)]="this.newPlayerId"
+        [filter]="this.newPlayerFilter.bind(this)"
+      />
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button [matDialogClose]="true" color="primary">
+      {{ 'all.button.save' | translate }}
+    </button>
+    <button mat-button matDialogClose>
+      {{ 'all.button.cancel' | translate }}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

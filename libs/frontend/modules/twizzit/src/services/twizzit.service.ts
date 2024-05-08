@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { Club } from '@badman/frontend-models';
 import saveAs from 'file-saver';
 import { map, take } from 'rxjs';
@@ -9,11 +9,8 @@ import { TWIZZIT_CONFIG } from '../twizzit.module';
   providedIn: 'root',
 })
 export class TwizzitService {
-  constructor(
-    private httpClient: HttpClient,
-    @Inject(TWIZZIT_CONFIG)
-    private config: ITwizzitConfig,
-  ) {}
+  private httpClient = inject(HttpClient);
+  private config = inject<ITwizzitConfig>(TWIZZIT_CONFIG);
 
   downloadTwizzit(club: Club, season: number) {
     return this.httpClient

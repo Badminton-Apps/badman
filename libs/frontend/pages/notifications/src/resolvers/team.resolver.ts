@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -7,7 +7,7 @@ import { first, map } from 'rxjs/operators';
 
 @Injectable()
 export class TeamResolver {
-  constructor(private apollo: Apollo) {}
+  private apollo = inject(Apollo);
 
   resolve(route: ActivatedRouteSnapshot) {
     const teamId = route.params['id'];

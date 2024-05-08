@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID, TransferState } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -38,24 +38,21 @@ import { PLAYERS_CONTROL, TeamFieldComponent, TeamPlayersComponent } from '../..
   ],
 })
 export class EditPageComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private route = inject(ActivatedRoute);
+  private breadcrumbsService = inject(BreadcrumbService);
+  private snackBar = inject(MatSnackBar);
+  private apollo = inject(Apollo);
+  private fb = inject(FormBuilder);
+  private dialog = inject(MatDialog);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
   team!: Team;
   group?: FormGroup;
 
   teamNumbers?: {
     [key in SubEventType]: number[];
   };
-
-  constructor(
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private breadcrumbsService: BreadcrumbService,
-    private snackBar: MatSnackBar,
-    private apollo: Apollo,
-    private fb: FormBuilder,
-    private dialog: MatDialog,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit(): void {
     this.team = this.route.snapshot.data['team'];

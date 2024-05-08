@@ -6,11 +6,9 @@ import {
   Component,
   ElementRef,
   HostBinding,
-  Inject,
   Input,
   OnDestroy,
-  Optional,
-  Self,
+  inject,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -49,6 +47,12 @@ export class DateSelectorComponent
     }>,
     OnDestroy
 {
+  private _focusMonitor = inject(FocusMonitor);
+  private _elementRef = inject<ElementRef<HTMLElement>>(ElementRef<HTMLElement>);
+  private ref = inject(ChangeDetectorRef);
+  public _formField = inject<MatFormField>(MAT_FORM_FIELD, { optional: true });
+  public ngControl = inject(NgControl, { optional: true, self: true });
+  private _dialog = inject(MatDialog);
   static nextId = 0;
   private _placeholder?: string;
   private _required = false;
@@ -141,14 +145,7 @@ export class DateSelectorComponent
     return this.dateControl.invalid && this.touched;
   }
 
-  constructor(
-    private _focusMonitor: FocusMonitor,
-    private _elementRef: ElementRef<HTMLElement>,
-    private ref: ChangeDetectorRef,
-    @Optional() @Inject(MAT_FORM_FIELD) public _formField: MatFormField,
-    @Optional() @Self() public ngControl: NgControl,
-    private _dialog: MatDialog,
-  ) {
+  constructor() {
     this.dateControl = new FormControl(null, [Validators.required]);
 
     if (this.ngControl != null) {

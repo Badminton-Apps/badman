@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EncounterCompetition, GamePlayer } from '@badman/frontend-models';
@@ -23,16 +23,12 @@ import { MatButtonModule } from '@angular/material/button';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReplacePlayerComponent implements OnInit {
+  public data = inject<{
+    player: GamePlayer;
+    game: number;
+    encounter: EncounterCompetition;
+  }>(MAT_DIALOG_DATA);
   players?: GamePlayer[] = [];
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      player: GamePlayer;
-      game: number;
-      encounter: EncounterCompetition;
-    },
-  ) {}
 
   ngOnInit(): void {
     // get all players from the encounter's games

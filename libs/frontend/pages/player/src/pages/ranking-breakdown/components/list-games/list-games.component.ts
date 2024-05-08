@@ -7,6 +7,7 @@ import {
   OnInit,
   computed,
   input,
+  inject,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -44,9 +45,11 @@ import { AddGameComponent } from '../../dialogs/add-game';
   ],
 })
 export class ListGamesComponent implements OnInit {
+  private translateService = inject(TranslateService);
   private destroy$ = injectDestroy();
 
   games = input<Game[]>([]);
+  private dialog = inject(MatDialog);
   system = input.required<RankingSystem>();
   player = input.required<Player>();
   formGroup = input.required<FormGroup>();
@@ -104,12 +107,10 @@ export class ListGamesComponent implements OnInit {
     [Breakpoints.XLarge, 'lll'],
   ]);
 
-  constructor(
-    private translateService: TranslateService,
-    breakpointObserver: BreakpointObserver,
-    changeDetectorRef: ChangeDetectorRef,
-    private dialog: MatDialog,
-  ) {
+  constructor() {
+    const changeDetectorRef = inject(ChangeDetectorRef);
+    const breakpointObserver = inject(BreakpointObserver);
+
     breakpointObserver
       .observe([
         Breakpoints.XSmall,

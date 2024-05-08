@@ -3,7 +3,7 @@ import {
   NgxMatTimepickerModule,
 } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -33,16 +33,14 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
 })
 export class SetEncounterDateDialogComponent implements OnInit {
+  public dialogRef = inject<MatDialogRef<SetEncounterDateDialogComponent>>(
+    MatDialogRef<SetEncounterDateDialogComponent>,
+  );
+  public data = inject<{ date: Date }>(MAT_DIALOG_DATA);
   dateControl?: FormControl;
   updateBadman?: FormControl;
   updateVisual?: FormControl;
   closeChangeRequest?: FormControl;
-
-  constructor(
-    public dialogRef: MatDialogRef<SetEncounterDateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: { date: Date },
-  ) {}
 
   ngOnInit(): void {
     this.dateControl = new FormControl(this.data.date);

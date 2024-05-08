@@ -11,6 +11,7 @@ export const loadLocations = (apollo: Apollo, clubId?: string | null, season?: n
 
   return apollo
     .query<{ locations: Location[] }>({
+      fetchPolicy: 'network-only',
       query: gql`
         query Locations($where: JSONObject, $availabilitiesWhere: JSONObject) {
           locations(where: $where) {

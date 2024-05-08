@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import {
+  Club,
   EventCompetition,
   Player,
   SubEventCompetition,
@@ -19,11 +20,10 @@ import { map, switchMap } from 'rxjs/operators';
   styleUrls: ['./enrollment-message.component.scss'],
 })
 export class EnrollmentMessageComponent implements OnInit {
+  private translate = inject(TranslateService);
   validation = input<ValidationMessage | undefined>();
 
   translatedMessage$?: Observable<string>;
-
-  constructor(private translate: TranslateService) {}
 
   ngOnInit(): void {
     if (this.validation()?.message == undefined) return;
@@ -40,11 +40,12 @@ export class EnrollmentMessageComponent implements OnInit {
       this._getIndex(),
       this._getRequiredGender(),
       this._getPlayers(),
+      this._getClub(),
       this._getTeam(),
       this._getRanking(),
       this._getEvent(),
     ]).pipe(
-      map(([index, gender, players, team, minLevel, event]) => {
+      map(([index, gender, players, club, team, minLevel, event]) => {
         const params: {
           [key: string]: unknown;
         } = {};
@@ -57,6 +58,7 @@ export class EnrollmentMessageComponent implements OnInit {
           ...params,
           ...players,
           ...index,
+          ...club,
           ...team,
           ...minLevel,
           ...event,
@@ -72,6 +74,13 @@ export class EnrollmentMessageComponent implements OnInit {
     const maxIndex = this.validation()?.params?.['maxIndex'] as string;
 
     return of({ teamIndex, minIndex, maxIndex, baseIndex });
+  }
+
+  private _getClub() {
+    const club = this.validation()?.params?.['club'] as Partial<Club>;
+    const activeClub = this.validation()?.params?.['activeClub'] as Partial<Club>;
+
+    return of({ club, activeClub });
   }
 
   private _getTeam() {
