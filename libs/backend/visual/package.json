@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-visual",
-  "version": "6.145.0",
+  "version": "6.146.0",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "axios": "^1.6.7",
@@ -13,8 +13,8 @@
     "moment-timezone": "^0.5.44",
     "cache-manager": "5.4.0",
     "@nestjs/cache-manager": "^2.2.0",
-    "@badman/backend-cache": "6.145.0",
-    "@badman/utils": "6.145.0"
+    "@badman/backend-cache": "6.146.0",
+    "@badman/utils": "6.146.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

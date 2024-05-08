@@ -1,3 +1,20 @@
+## 6.146.0 (2024-05-08)
+
+
+### 🚀 Features
+
+- preffered location ([90ff6b445](https://github.com/Badminton-Apps/badman/commit/90ff6b445))
+
+### 🩹 Fixes
+
+- updated translations ([e115f3c2e](https://github.com/Badminton-Apps/badman/commit/e115f3c2e))
+- showing sub field ([e228cc0d5](https://github.com/Badminton-Apps/badman/commit/e228cc0d5))
+- empty exceptions ([e7838868c](https://github.com/Badminton-Apps/badman/commit/e7838868c))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.145.0 (2024-05-08)
 
 
