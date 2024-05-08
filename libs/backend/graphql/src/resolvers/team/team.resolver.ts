@@ -104,9 +104,9 @@ export class TeamsResolver {
     return team.getEntry();
   }
 
-  @ResolveField(() => [Location])
-  async locations(@Parent() team: Team, @Args() listArgs: ListArgs): Promise<Location[]> {
-    return team.getLocations(ListArgs.toFindOptions(listArgs));
+  @ResolveField(() => Location)
+  async locations(@Parent() team: Team): Promise<Location> {
+    return team.getPrefferedLocation()
   }
 
   @ResolveField(() => Player)
@@ -826,7 +826,7 @@ export class TeamsResolver {
       throw new NotFoundException(`${Location.name}: ${locationId}`);
     }
 
-    await team.removeLocation(location);
+    await team.setPrefferedLocation(undefined);
 
     return team;
   }
@@ -852,7 +852,7 @@ export class TeamsResolver {
       throw new NotFoundException(`${Location.name}: ${locationId}`);
     }
 
-    await team.addLocation(location);
+    await team.setPrefferedLocation(location);
 
     return team;
   }

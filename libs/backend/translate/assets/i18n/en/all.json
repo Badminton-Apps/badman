@@ -537,6 +537,7 @@
     "hour": "Playtime",
     "lastname": "Last name",
     "latitude": "Latitude",
+    "location": "Location",
     "longitude": "Longitude",
     "memberId": "Member id",
     "name": "Name",
