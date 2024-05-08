@@ -74,7 +74,10 @@
   <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
   <mat-dialog-content>
     <div class="new-player">
-      <badman-select-player [(player)]="this.newPlayerId" />
+      <badman-select-player
+        [(player)]="this.newPlayerId"
+        [filter]="this.newPlayerFilter.bind(this)"
+      />
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
