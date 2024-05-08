@@ -12,6 +12,16 @@
     >
       <mat-icon>edit</mat-icon>
     </button>
+
+    <!-- remove location -->
+    <button
+      mat-icon-button
+      class="remove-button"
+      aria-label="remove location"
+      (click)="this.whenLocationRemove.emit()"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
   </div>
 </div>
 @if (this.internalControl) {

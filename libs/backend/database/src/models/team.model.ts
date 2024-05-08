@@ -55,7 +55,6 @@ import {
   Location,
   SubEventCompetition,
 } from './event';
-import { TeamLocationCompetition } from './event/competition/team-location-membership.model';
 import { Player, PlayerTeamInput } from './player.model';
 import { Role } from './security';
 import { TeamPlayerMembership } from './team-player-membership.model';
@@ -110,9 +109,6 @@ export class Team extends Model {
   )
   preferredDay?: string;
 
-  @BelongsToMany(() => Location, () => TeamLocationCompetition)
-  locations?: Relation<Location[]>;
-
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
   abbreviation?: string;
@@ -152,6 +148,22 @@ export class Team extends Model {
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
   captainId?: string;
+
+  @Field(() => Location, { nullable: true })
+  @BelongsTo(() => Location, 'prefferedLocationId')
+  prefferedLocation?: Relation<Location>;
+
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  prefferedLocationId?: string;
+
+  @Field(() => Location, { nullable: true })
+  @BelongsTo(() => Location, 'prefferedLocation2Id')
+  prefferedLocation2?: Relation<Location>;
+
+  @Field(() => ID, { nullable: true })
+  @Column(DataType.UUIDV4)
+  prefferedLocation2Id?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
@@ -274,17 +286,6 @@ export class Team extends Model {
   hasAwayEncounters!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
   countAwayEncounters!: HasManyCountAssociationsMixin;
 
-  // Belongs to many Location
-  getLocations!: BelongsToManyGetAssociationsMixin<Location>;
-  setLocations!: BelongsToManySetAssociationsMixin<Location, string>;
-  addLocations!: BelongsToManyAddAssociationsMixin<Location, string>;
-  addLocation!: BelongsToManyAddAssociationMixin<Location, string>;
-  removeLocation!: BelongsToManyRemoveAssociationMixin<Location, string>;
-  removeLocations!: BelongsToManyRemoveAssociationsMixin<Location, string>;
-  hasLocation!: BelongsToManyHasAssociationMixin<Location, string>;
-  hasLocations!: BelongsToManyHasAssociationsMixin<Location, string>;
-  countLocation!: BelongsToManyCountAssociationsMixin;
-
   // Belongs to Captain
   getCaptain!: BelongsToGetAssociationMixin<Player>;
   setCaptain!: BelongsToSetAssociationMixin<Player, string>;
@@ -292,6 +293,13 @@ export class Team extends Model {
   // Has one Entry
   getEntry!: HasOneGetAssociationMixin<EventEntry>;
   setEntry!: HasOneSetAssociationMixin<EventEntry, string>;
+
+  // Has one PrefferedLocation
+  getPrefferedLocation!: BelongsToGetAssociationMixin<Location>;
+  setPrefferedLocation!: BelongsToSetAssociationMixin<Location, string>;
+  // Has one PrefferedLocation
+  getPrefferedLocation2!: BelongsToGetAssociationMixin<Location>;
+  setPrefferedLocation2!: BelongsToSetAssociationMixin<Location, string>;
 
   // Has many Roles
   getRoles!: HasManyGetAssociationsMixin<Role>;
@@ -315,6 +323,8 @@ export class TeamUpdateInput extends PartialType(
     'captain',
     'roles',
     'entry',
+    'prefferedLocation',
+    'prefferedLocation2',
   ] as const),
   InputType,
 ) {

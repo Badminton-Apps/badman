@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-logging",
-  "version": "6.145.0",
+  "version": "6.146.0",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@logtail/node": "~0.4.19",
@@ -9,7 +9,7 @@
     "@nestjs/config": "^3.1.1",
     "nest-winston": "^1.9.4",
     "winston": "^3.11.0",
-    "@badman/utils": "6.145.0"
+    "@badman/utils": "6.146.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

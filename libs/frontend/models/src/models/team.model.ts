@@ -13,6 +13,8 @@ export class Team {
   teamNumber?: number;
   preferredTime?: string;
   preferredDay?: 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+  prefferedLocationId?: string;
+
   preferred2Time?: string;
   preferred2Day?:
     | 'sunday'
@@ -22,6 +24,7 @@ export class Team {
     | 'thursday'
     | 'friday'
     | 'saturday';
+  prefferedLocation2Id?: string;
 
   players!: TeamPlayer[];
   locations?: Location[];
@@ -53,9 +56,11 @@ export class Team {
 
     this.preferredTime = args?.preferredTime;
     this.preferredDay = args?.preferredDay;
+    this.prefferedLocationId = args?.prefferedLocationId;
 
     this.preferred2Time = args?.preferred2Time;
     this.preferred2Day = args?.preferred2Day;
+    this.prefferedLocation2Id = args?.prefferedLocation2Id;
 
     this.locations = args?.locations?.map((l) => new Location(l));
     this.entry =
