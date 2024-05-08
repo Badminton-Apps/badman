@@ -19,7 +19,6 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -85,7 +84,6 @@ export class ClubCompetitionComponent implements OnInit {
   injector = inject(Injector);
   stateTransfer = inject(TransferState);
   platformId = inject(PLATFORM_ID);
-  dialog = inject(MatDialog);
 
   // signals
   locations?: Signal<Location[] | undefined>;

@@ -6,13 +6,14 @@ import {
   EventEntry,
   Location,
   Player,
+  PlayerWithTeamMembershipType,
   RankingLastPlace,
   RankingSystem,
   Team,
   TeamNewInput,
   TeamPlayerMembership,
-  TeamPlayerMembershipType,
   TeamUpdateInput,
+  TeamWithPlayerMembershipType,
 } from '@badman/backend-database';
 import {
   IsUUID,
@@ -30,8 +31,8 @@ import {
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import { ListArgs } from '../../utils';
 import { v4 as uuidv4 } from 'uuid';
+import { ListArgs } from '../../utils';
 
 @Resolver(() => Team)
 export class TeamsResolver {
@@ -60,18 +61,9 @@ export class TeamsResolver {
     return Team.findAll(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [TeamPlayerMembershipType])
+  @ResolveField(() => [PlayerWithTeamMembershipType])
   async players(@Parent() team: Team, @Args() listArgs: ListArgs) {
-    const players = (await team.getPlayers(ListArgs.toFindOptions(listArgs))) as (Player & {
-      TeamPlayerMembership: TeamPlayerMembership;
-    })[];
-
-    return players?.map((player: Player & { TeamPlayerMembership: TeamPlayerMembership }) => {
-      return {
-        ...player.TeamPlayerMembership.toJSON(),
-        ...player.toJSON(),
-      };
-    });
+    return team.getPlayers(ListArgs.toFindOptions(listArgs));
   }
 
   @ResolveField(() => String)
@@ -287,15 +279,13 @@ export class TeamsResolver {
         );
 
         // remove players that are not in the new list
-        await Promise.all(
-          dbMemberships.map(async (membership) => {
-            const player = newTeamData.players?.find((p) => p.id === membership.playerId);
+        for (const membership of dbMemberships) {
+          const player = newTeamData.players?.find((p) => p.id === membership.playerId);
 
-            if (!player) {
-              await membership.destroy({ transaction });
-            }
-          }),
-        );
+          if (!player) {
+            await teamDb.removePlayer(membership.playerId, { transaction });
+          }
+        }
       }
 
       if (newTeamData.entry) {
@@ -369,6 +359,9 @@ export class TeamsResolver {
               single: ranking.single,
               double: ranking.double,
               mix: ranking.mix,
+              levelException: p.levelException,
+              levelExceptionReason: p.levelExceptionReason,
+              levelExceptionRequested: p.levelExceptionRequested,
             });
           }
 
@@ -864,7 +857,7 @@ export class TeamsResolver {
     return team;
   }
 
-  @Mutation(() => TeamPlayerMembershipType)
+  @Mutation(() => PlayerWithTeamMembershipType)
   async updateTeamPlayerMembership(
     @Args('teamId', { type: () => ID }) teamId: string,
     @Args('playerId', { type: () => ID }) playerId: string,
@@ -899,5 +892,15 @@ export class TeamsResolver {
     membership.membershipType = membershipType;
     await membership.save();
     return membership;
+  }
+}
+
+@Resolver(() => TeamWithPlayerMembershipType)
+export class TeamPlayerResolver extends TeamsResolver {
+  @ResolveField(() => TeamPlayerMembership, { nullable: true })
+  async clubMembership(
+    @Parent() team: Team & { TeamPlayerMembership: TeamPlayerMembership },
+  ): Promise<TeamPlayerMembership> {
+    return team.TeamPlayerMembership;
   }
 }

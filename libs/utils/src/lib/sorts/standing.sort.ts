@@ -1,30 +1,8 @@
-export const sortStanding = (
-  a: {
-    points?: number;
-    won?: number;
-    lost?: number;
-    gamesWon?: number;
-    gamesLost?: number;
-    setsWon?: number;
-    setsLost?: number;
-    totalPointsWon?: number;
-    totalPointsLost?: number;
-  },
-  b: {
-    points?: number;
-    won?: number;
-    lost?: number;
-    gamesWon?: number;
-    gamesLost?: number;
-    setsWon?: number;
-    setsLost?: number;
-    totalPointsWon?: number;
-    totalPointsLost?: number;
-  },
-) => {
-  const nonOptionalA = {
+export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandingType>) => {
+  const teamA = {
     points: a?.points || 0,
     won: a?.won || 0,
+    tied: a?.tied || 0,
     lost: a?.lost || 0,
     gamesWon: a?.gamesWon || 0,
     gamesLost: a?.gamesLost || 0,
@@ -34,9 +12,10 @@ export const sortStanding = (
     totalPointsLost: a?.totalPointsLost || 0,
   };
 
-  const nonOptionalB = {
+  const teamB = {
     points: b?.points || 0,
     won: b?.won || 0,
+    tied: b?.tied || 0,
     lost: b?.lost || 0,
     gamesWon: b?.gamesWon || 0,
     gamesLost: b?.gamesLost || 0,
@@ -46,56 +25,57 @@ export const sortStanding = (
     totalPointsLost: b?.totalPointsLost || 0,
   };
 
-  if (nonOptionalA.points > nonOptionalB.points) {
+  if (teamA.points > teamB.points) {
     return -1;
-  } else if (nonOptionalA.points < nonOptionalB.points) {
+  } else if (teamA.points < teamB.points) {
     return 1;
   }
 
-  if (nonOptionalA.won > nonOptionalB.won) {
+  if (teamA.won - teamA.lost > teamB.won - teamB.lost) {
     return -1;
-  } else if (nonOptionalA.won < nonOptionalB.won) {
+  } else if (teamA.won - teamA.lost < teamB.won - teamB.lost) {
     return 1;
   }
 
-  if (nonOptionalA.won - nonOptionalA.lost > nonOptionalB.won - nonOptionalB.lost) {
+  if (teamA.tied > teamB.tied) {
     return -1;
-  } else if (nonOptionalA.won - nonOptionalA.lost < nonOptionalB.won - nonOptionalB.lost) {
+  } else if (teamA.tied < teamB.tied) {
     return 1;
   }
 
-  if (
-    nonOptionalA.gamesWon - nonOptionalA.gamesLost >
-    nonOptionalB.gamesWon - nonOptionalB.gamesLost
-  ) {
+  if (teamA.gamesWon - teamA.gamesLost > teamB.gamesWon - teamB.gamesLost) {
+    return -1;
+  } else if (teamA.gamesWon - teamA.gamesLost < teamB.gamesWon - teamB.gamesLost) {
+    return 1;
+  }
+
+  if (teamA.setsWon - teamA.setsLost > teamB.setsWon - teamB.setsLost) {
+    return -1;
+  } else if (teamA.setsWon - teamA.setsLost < teamB.setsWon - teamB.setsLost) {
+    return 1;
+  }
+
+  if (teamA.totalPointsWon - teamA.totalPointsLost > teamB.totalPointsWon - teamB.totalPointsLost) {
     return -1;
   } else if (
-    nonOptionalA.gamesWon - nonOptionalA.gamesLost <
-    nonOptionalB.gamesWon - nonOptionalB.gamesLost
-  ) {
-    return 1;
-  }
-
-  if (nonOptionalA.setsWon - nonOptionalA.setsLost > nonOptionalB.setsWon - nonOptionalB.setsLost) {
-    return -1;
-  } else if (
-    nonOptionalA.setsWon - nonOptionalA.setsLost <
-    nonOptionalB.setsWon - nonOptionalB.setsLost
-  ) {
-    return 1;
-  }
-
-  if (
-    nonOptionalA.totalPointsWon - nonOptionalA.totalPointsLost >
-    nonOptionalB.totalPointsWon - nonOptionalB.totalPointsLost
-  ) {
-    return -1;
-  } else if (
-    nonOptionalA.totalPointsWon - nonOptionalA.totalPointsLost <
-    nonOptionalB.totalPointsWon - nonOptionalB.totalPointsLost
+    teamA.totalPointsWon - teamA.totalPointsLost <
+    teamB.totalPointsWon - teamB.totalPointsLost
   ) {
     return 1;
   }
 
   return 0;
+};
+
+type SortStandingType = {
+  points: number;
+  won: number;
+  tied: number;
+  lost: number;
+  gamesWon: number;
+  gamesLost: number;
+  setsWon: number;
+  setsLost: number;
+  totalPointsWon: number;
+  totalPointsLost: number;
 };

@@ -1,16 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { IPdfConfig } from '../interfaces';
 import { PDF_CONFIG } from '../pdf.module';
 @Injectable({
   providedIn: 'root',
 })
 export class PdfService {
-  constructor(
-    private httpClient: HttpClient,
-    @Inject(PDF_CONFIG)
-    private config: IPdfConfig,
-  ) {}
+  private httpClient = inject(HttpClient);
+  private config = inject<IPdfConfig>(PDF_CONFIG);
 
   getTeamAssembly(input: {
     systemId: string | null;

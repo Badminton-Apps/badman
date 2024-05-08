@@ -1,4 +1,5 @@
 import {
+  Club,
   EntryCompetitionPlayer,
   PlayerUpdateInput,
   RankingSystem,
@@ -25,8 +26,17 @@ export class EnrollmentInput {
   @Field(() => ID, { nullable: true })
   systemId?: string;
 
+  @Field(() => ID, { nullable: true })
+  clubId?: string;
+
   @Field(() => Int, { nullable: true })
   season?: number;
+
+  @Field(() => [ID], { nullable: true })
+  loans?: string[]; 
+
+  @Field(() => [ID], { nullable: true })
+  transfers?: string[];
 }
 
 @InputType()
@@ -45,6 +55,9 @@ export class EnrollmentInputTeam extends PartialType(
 
   @Field(() => ID, { nullable: true })
   subEventId?: string;
+
+  @Field(() => [ID], { nullable: true })
+  exceptions?: string[];
 }
 
 @ObjectType()
@@ -117,7 +130,11 @@ export type RuleResult = {
 
 //  validation data
 export class EnrollmentValidationData {
+  club!: Club;
   teams!: EnrollmentValidationTeam[];
+  transfers!: string[];
+  loans!: string[];
+  season!: number;
 }
 
 export class EnrollmentValidationTeam {

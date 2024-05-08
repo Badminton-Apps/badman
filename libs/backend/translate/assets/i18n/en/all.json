@@ -136,6 +136,10 @@
         "title": "Problems were found with your assembly"
       }
     },
+    "delete": {
+      "description": "Are you sure you want to delete this competition?",
+      "title": "Remove competition"
+    },
     "draw": {
       "encounters": "Encounters",
       "title": "Draw"
@@ -181,7 +185,6 @@
       "close-accept-requests": "Closure acceptance",
       "close-enrollment": "Closure",
       "close-new-requets": "Closing new applications",
-      "hint": "",
       "open-enrollment": "Date of opening",
       "open-requests": "Date of opening"
     },
@@ -202,7 +205,6 @@
       "title": "Departments"
     },
     "team-assembly": {
-      "avg-level": "",
       "captain": "Team captain",
       "change-team": "By editing the team you can change the default players shown, and who are the backups.",
       "disclaimer": "Disclaimer: This formationtool is currently in beta and can exceptionally contain errors. Always critically check your formation against the C320 rules.",
@@ -278,6 +280,8 @@
         "first-team-index": "A first team dropped may not field a team with team index lower than their base index during the season",
         "no-subevent": "Please choose a series",
         "none": "No errors found",
+        "player-club": "Player <strong>{player.fullName}</strong> is not part of {club.name} (current club: {activeClub.name})",
+        "player-club-none": "No club known for player <strong>{player.fullName}<strong>",
         "player-gender": "<strong>{player.fullName}</strong> is a <strong>{player.gender}</strong> but a <strong>{gender}</strong> was expected",
         "player-min-level": "<strong>{player.fullName}</strong> has an index of <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> and may be at least <strong>{minLevel}</strong> .",
         "player-subevent": "<strong>{player.fullName}</strong> is part of the base team <strong>{team.name}</strong> that also plays in <strong>{subEvent.name}</strong> ",
@@ -295,6 +299,13 @@
       "example-warning": "These are warnings that should be taken into account. The registration can still be completed.",
       "exceptions": "Exceptions",
       "info": "Remarks concerning the team enrollment",
+      "level-exemption": "Player is exempt from ranking restrictions",
+      "level-exemption-requested": "Application for player is in process",
+      "loan": {
+        "add-loan": "New loan",
+        "loan-locked": "The loan has already been confirmed, it is no longer possible to delete it",
+        "loan-player": "Loaned player"
+      },
       "locations": {
         "availible-courts": "Available courts",
         "courts-hint": "Change the number of available fields",
@@ -305,11 +316,19 @@
       "players": {
         "backup": "Backup player(s)",
         "base": "Baseplayer(s)",
+        "level-exception": {
+          "reason": "Enter a reason",
+          "request": "Requesting exception for classification"
+        },
+        "loan": "Loaned out",
         "regular": "Regular player(s)",
-        "team": "",
-        "title": "Possible titulars"
+        "title": "Possible titulars",
+        "transfer": "Transferred"
       },
+      "request-level-exception": "Apply for exemption for {player.fullName}",
       "save-and-continue-tooltip": "You can continue without saving your teams, but we allow you to save in between if there are still uncertainties about your baseplayers",
+      "saved": "Registration saved",
+      "saved-failed": "There were problems saving, please check your data or try again later.",
       "select-club": "Select club",
       "select-events": "Select events",
       "select-location": "Select locations",
@@ -319,18 +338,24 @@
         "captain": "Team captain",
         "change-team": "By editing the team you can change the default players shown, and who are the backups.",
         "new-teams": "New teams for this season",
-        "substitude": "",
+        "substitude": "Backups",
         "team-index": "Team index titulars equals <strong>{current}</strong> and is allowed to mimimally be <strong>{team}</strong>",
         "team-index-ignored": "Teamindex baseplayers can be ignored for 1st team."
       },
       "title": "Team enrollment",
       "transfer": {
+        "add-transfer": "New transfer",
         "enrolled-as": "enrolled as",
+        "transfer-locked": "Transfer has already been confirmed, removing it is no longer possible",
+        "transfer-player": "Transferred player",
         "transfer-teams": "Transfer teams (optional)",
-        "transfer-teams-description": "If you would like to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you can transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nThe order in which you check your shifts will determine the order (check everything in the correct order)\n\nYou can still change the team numbers in the next step."
+        "transfer-teams-description": "If you would like to transfer your team(s) to this year's event, you can use this optional step to simplify the registration process. By selecting this option, you can transfer your team(s) and automatically place them in the correct event based on your previous participation.\n\nThe order in which you check your shifts will determine the order (check everything in the correct order)\n\nYou can still change the team numbers in the next step.",
+        "transfers-players": "Transfers and loans"
       },
       "validations": "Validations",
       "warnings": {
+        "already-saved": "New changes cannot be saved in between, please resubmit the form in the last step to save your changes",
+        "player-min-level": "Request for exception of player <strong>{player.fullName}</strong> in <strong>{rankingType}</strong> has not yet been accepted",
         "subtitute-team-index": "s",
         "title": "Warnings"
       }
@@ -597,6 +622,7 @@
     "select-encounter": "Pick an encounter",
     "select-end-time": "End time",
     "select-event-competition": "Select League",
+    "select-player": "Choose a player",
     "select-season": "Season",
     "select-start-time": "Start time",
     "select-state": "Choose province",
@@ -814,6 +840,9 @@
   },
   "shell": {
     "sidebar": {
+      "admin": {
+        "title": "Admin"
+      },
       "competition": {
         "assembly": "Assembly",
         "change-encounter": "Change encounter",
@@ -826,7 +855,7 @@
         "faq": "FAQ",
         "title": "General"
       },
-      "jobs": {
+      "job": {
         "title": "Jobs"
       },
       "persnal": {
@@ -838,6 +867,9 @@
       },
       "tournament": {
         "title": "Tournaments"
+      },
+      "transfer": {
+        "title": "Transfers / loans"
       }
     }
   },
@@ -918,7 +950,6 @@
     },
     "home": "Home",
     "last-updated": "Changed on",
-    "liga": "",
     "load-more": "load more",
     "menu": {
       "add-event": "Add event"
@@ -938,7 +969,6 @@
       "official": "Officially",
       "only-official": "Official only"
     },
-    "prov": "",
     "subevent": {
       "max": "Max level",
       "max-base": "Max basis team index",
@@ -948,5 +978,8 @@
     "type": "Type",
     "vs": "against",
     "vs-short": "vs"
+  },
+  "transfers": {
+    "title": "Transfers / loans"
   }
 }

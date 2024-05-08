@@ -61,9 +61,13 @@ export class ClubMembership {
   start?: Date;
   end?: Date;
   active?: boolean;
+  confirmed?: boolean;
   clubId?: string;
   playerId?: string;
   membershipType?: ClubMembershipType;
+
+  player?: Player;
+  club?: Club;
 
   constructor({ ...args }: Partial<ClubMembership>) {
     this.id = args.id;
@@ -73,5 +77,8 @@ export class ClubMembership {
     this.clubId = args.clubId;
     this.playerId = args.playerId;
     this.membershipType = args?.membershipType as ClubMembershipType;
+
+    this.player = args.player ? new Player(args.player) : undefined;
+    this.club = args.club ? new Club(args.club) : undefined;
   }
 }

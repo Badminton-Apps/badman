@@ -185,7 +185,7 @@ export class SelectClubComponent implements OnInit {
               ?.filter(
                 (c) =>
                   moment(c.clubMembership?.start).isBefore(moment()) &&
-                  c.clubMembership?.end == null &&
+                  c.clubMembership?.active &&
                   c.clubMembership?.membershipType == ClubMembershipType.NORMAL,
               )
               ?.map((r) => r.id);

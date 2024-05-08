@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  EventEmitter,
   OnChanges,
   OnInit,
-  Output,
   SimpleChanges,
   TemplateRef,
   ViewChild,
   computed,
   input,
+  inject,
+  output,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -53,9 +53,11 @@ import { PlayerFieldsComponent } from '../fields';
   styleUrls: ['./player-search.component.scss'],
 })
 export class PlayerSearchComponent implements OnChanges, OnInit {
+  private apollo = inject(Apollo);
+  private dialog = inject(MatDialog);
   private destroy$ = injectDestroy();
 
-  @Output() whenSelectPlayer = new EventEmitter<Player>();
+  whenSelectPlayer = output<Player>();
 
   label = input('all.player.search.label');
 
@@ -110,11 +112,6 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   newPlayerTemplateRef?: TemplateRef<HTMLElement>;
   newPlayerFormGroup!: FormGroup;
 
-  constructor(
-    private apollo: Apollo,
-    private dialog: MatDialog,
-  ) {}
-
   ngOnChanges(changes: SimpleChanges) {
     if (!(changes['player']?.isFirstChange() ?? true)) {
       this.setPlayer();
@@ -156,6 +153,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                         competitionPlayer
                         phone @include(if: $personal)
                         email @include(if: $personal)
+                        clubMembership {
+                          id
+                          membershipType
+                        }
                       }
                     }
                   }
@@ -202,6 +203,10 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                       clubs {
                         id
                         name
+                        clubMembership {
+                          id
+                          membershipType
+                        }
                       }
                     }
                   }
@@ -360,7 +365,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
   }
 
   private _selectPlayer(player: Player) {
-    this.whenSelectPlayer.next(player);
+    this.whenSelectPlayer.emit(player);
     if (this.clearOnSelection()) {
       this.formControl.reset();
       this.clear$.next([]);

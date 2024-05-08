@@ -21,6 +21,8 @@
               class="team"
               (removeTeam)="this.removeTeam($event)"
               (changeTeamNumber)="this.changeTeamNumber($event)"
+              [transfers]="this.transfers().getRawValue()"
+              [loans]="this.loans().getRawValue()"
             />
           }
         }

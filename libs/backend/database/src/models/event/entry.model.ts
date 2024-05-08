@@ -87,6 +87,10 @@ export class EventEntry extends Model {
   @Column(DataType.UUIDV4)
   player2Id!: string;
 
+  @Field(() => Date, { nullable: true })
+  @Column({ type: DataType.DATE })
+  sendOn?: Date;
+
   @BelongsTo(() => SubEventTournament, {
     foreignKey: 'subEventId',
     constraints: false,
@@ -277,6 +281,15 @@ export class EventEntryCompetitionPlayerMetaInput {
 
   @Field(() => String, { nullable: true })
   gender?: 'M' | 'F';
+
+  @Field(() => Boolean, { nullable: true })
+  levelException?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  levelExceptionRequested?: boolean;
+
+  @Field(() => String, { nullable: true })
+  levelExceptionReason?: string;
 }
 @InputType()
 export class EventEntryCompetitionMetaInput {
@@ -348,5 +361,7 @@ export interface EntryCompetitionPlayer {
   mix?: number;
   gender?: 'M' | 'F';
   levelException?: boolean;
+  levelExceptionRequested?: boolean;
+  levelExceptionReason?: string;
   player?: Relation<Player>;
 }

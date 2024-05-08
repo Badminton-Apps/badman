@@ -1,3 +1,122 @@
+## 6.144.0 (2024-05-07)
+
+
+### 🚀 Features
+
+- removing of competition ([6efe6da61](https://github.com/Badminton-Apps/badman/commit/6efe6da61))
+- new loan/transfer views ([93b9f87a5](https://github.com/Badminton-Apps/badman/commit/93b9f87a5))
+- edit reason ([0e6581156](https://github.com/Badminton-Apps/badman/commit/0e6581156))
+
+### 🩹 Fixes
+
+- sorting for standing should be th official formula (with some extra clauses) ([474304b85](https://github.com/Badminton-Apps/badman/commit/474304b85))
+- add transfer after already saved ([a95319b19](https://github.com/Badminton-Apps/badman/commit/a95319b19))
+- setting empty string ([115f3ded9](https://github.com/Badminton-Apps/badman/commit/115f3ded9))
+- make sure empty strings aren't passed ([7339eb023](https://github.com/Badminton-Apps/badman/commit/7339eb023))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.143.1 (2024-05-05)
+
+
+### 🩹 Fixes
+
+- translate request button ([0f673af79](https://github.com/Badminton-Apps/badman/commit/0f673af79))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.143.0 (2024-05-05)
+
+
+### 🚀 Features
+
+- logging when enrollment and assembly generation ([6f92af0d8](https://github.com/Badminton-Apps/badman/commit/6f92af0d8))
+- don't allow saving once submitted ([9cf5f6980](https://github.com/Badminton-Apps/badman/commit/9cf5f6980))
+- raise button when updating enrolled teams ([2e353861a](https://github.com/Badminton-Apps/badman/commit/2e353861a))
+- requesting exception and update the validations accordingly ([183293821](https://github.com/Badminton-Apps/badman/commit/183293821))
+- show excemptions in base player list ([24a8bba69](https://github.com/Badminton-Apps/badman/commit/24a8bba69))
+
+### 🩹 Fixes
+
+- started adding typescript support for querying models ([6fcf5f097](https://github.com/Badminton-Apps/badman/commit/6fcf5f097))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.142.0 (2024-05-04)
+
+
+### 🚀 Features
+
+- this usees a different cors maybe? ([2ba6c78ea](https://github.com/Badminton-Apps/badman/commit/2ba6c78ea))
+- showing generation and ranking date on assembly ([3a3bfda48](https://github.com/Badminton-Apps/badman/commit/3a3bfda48))
+- transfer overview ([e9859c1d9](https://github.com/Badminton-Apps/badman/commit/e9859c1d9))
+- upgraded ranking table ([14bf948b9](https://github.com/Badminton-Apps/badman/commit/14bf948b9))
+- accepting and rejecting transfers ([e19349323](https://github.com/Badminton-Apps/badman/commit/e19349323))
+
+### 🩹 Fixes
+
+- translations wouldn't load sometimes ([50b17b239](https://github.com/Badminton-Apps/badman/commit/50b17b239))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.141.1 (2024-04-29)
+
+
+### 🩹 Fixes
+
+- membership is required when querying from parent to determine uniquenes ([a926d0eca](https://github.com/Badminton-Apps/badman/commit/a926d0eca))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.141.0 (2024-04-29)
+
+
+### 🚀 Features
+
+- adding a better snackbar for saving ([2986558a9](https://github.com/Badminton-Apps/badman/commit/2986558a9))
+
+### 🩹 Fixes
+
+- change player's membership to team wouldn't be saved ([378bdf30a](https://github.com/Badminton-Apps/badman/commit/378bdf30a))
+- disabeling save / next button when saving ([ec09fa531](https://github.com/Badminton-Apps/badman/commit/ec09fa531))
+- optimize caching keys ([1072db1e6](https://github.com/Badminton-Apps/badman/commit/1072db1e6))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.140.0 (2024-04-28)
+
+
+### 🚀 Features
+
+- improved club player membership endpoints ([f37da1047](https://github.com/Badminton-Apps/badman/commit/f37da1047))
+- adding club filter ([97a61ff0a](https://github.com/Badminton-Apps/badman/commit/97a61ff0a))
+- updated packages ([93200e256](https://github.com/Badminton-Apps/badman/commit/93200e256))
+- adding option to select your transfers / loans ([dac16a753](https://github.com/Badminton-Apps/badman/commit/dac16a753))
+- update rule to check for transfer and lonas ([cfb04622b](https://github.com/Badminton-Apps/badman/commit/cfb04622b))
+- show transfers and loans in view ([86b53240e](https://github.com/Badminton-Apps/badman/commit/86b53240e))
+- **team-enrollment:** check if the club of the player matches the enrollment club ([65fc72923](https://github.com/Badminton-Apps/badman/commit/65fc72923))
+
+### 🩹 Fixes
+
+- adding permissions for overwriting the event level ([a93758139](https://github.com/Badminton-Apps/badman/commit/a93758139))
+- clearing data on page leave ([d1e92e8c6](https://github.com/Badminton-Apps/badman/commit/d1e92e8c6))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.139.0 (2024-04-21)
 
 

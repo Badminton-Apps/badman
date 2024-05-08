@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { ThemeSwitcherService } from '@badman/frontend-components';
 import { RankingSystem } from '@badman/frontend-models';
 import moment from 'moment';
@@ -21,12 +21,10 @@ import {
   imports: [CommonModule, NgApexchartsModule],
 })
 export class ChartComponent implements OnInit {
+  private themeSwitcher = inject(ThemeSwitcherService);
   // options!: EChartsOption;
   @ViewChild('chart') chart?: ApexChartComponent;
   public chartOptions!: Partial<ApexOptions>;
-
-  constructor(private themeSwitcher: ThemeSwitcherService) {}
-
   rankingPlaces = input<
     {
       level: number;

@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   Component,
-  Inject,
   OnInit,
   PLATFORM_ID,
   TransferState,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -87,7 +87,14 @@ const FETCH_TOURNAMENTS = gql`
   ],
 })
 export class OverviewPageComponent implements OnInit, AfterViewInit {
+  private seoService = inject(SeoService);
+  private jobsService = inject(JobsService);
+  private apollo = inject(Apollo);
+  private dialog = inject(MatDialog);
+  private matSnackBar = inject(MatSnackBar);
   displayedColumns: string[] = ['name', 'firstDay', 'official', 'menu'];
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
   data: EventTournament[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -98,16 +105,9 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
   isLoadingResults = true;
   isRateLimitReached = false;
 
-  constructor(
-    private seoService: SeoService,
-    private jobsService: JobsService,
-    private apollo: Apollo,
-    private dialog: MatDialog,
-    private matSnackBar: MatSnackBar,
-    formBuilder: FormBuilder,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {
+  constructor() {
+    const formBuilder = inject(FormBuilder);
+
     this.filter = formBuilder.group({
       name: new FormControl(''),
       official: new FormControl(false),

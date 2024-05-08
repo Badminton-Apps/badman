@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -34,6 +34,9 @@ import { map, mergeMap } from 'rxjs/operators';
   ],
 })
 export class EditRankingComponent implements OnInit {
+  private cache = inject<InMemoryCache>(APOLLO_CACHE);
+  private appollo = inject(Apollo);
+  private _snackBar = inject(MatSnackBar);
   update$ = new BehaviorSubject(null);
   rankingForm!: FormGroup;
 
@@ -43,12 +46,6 @@ export class EditRankingComponent implements OnInit {
 
   system?: RankingSystem;
   rankingPlace?: RankingPlace;
-
-  constructor(
-    @Inject(APOLLO_CACHE) private cache: InMemoryCache,
-    private appollo: Apollo,
-    private _snackBar: MatSnackBar,
-  ) {}
 
   ngOnInit() {
     const getRanings$ = combineLatest([

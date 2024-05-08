@@ -43,7 +43,7 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { TeamPlayerMembershipType } from '../_interception';
+import { PlayerWithTeamMembershipType } from '../_interception';
 import { Slugify } from '../types';
 import { Relation } from '../wrapper';
 import { Club } from './club.model';
@@ -135,7 +135,7 @@ export class Team extends Model {
   @Column(DataType.STRING)
   slug?: string;
 
-  @Field(() => [TeamPlayerMembershipType], { nullable: true })
+  @Field(() => [PlayerWithTeamMembershipType], { nullable: true })
   @BelongsToMany(() => Player, () => TeamPlayerMembership)
   players?: (Player & { TeamPlayerMembership: TeamPlayerMembership })[];
 

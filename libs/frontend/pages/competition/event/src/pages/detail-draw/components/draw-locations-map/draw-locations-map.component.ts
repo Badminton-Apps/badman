@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DrawCompetition, DrawTournament, Location } from '@badman/frontend-models';
 import { NgMapsGoogleModule } from '@ng-maps/google';
@@ -15,11 +15,10 @@ import { Apollo, gql } from 'apollo-angular';
   imports: [CommonModule, RouterModule, TranslateModule, NgMapsGoogleModule],
 })
 export class DrawLocationMapComponent implements OnInit {
+  private apollo = inject(Apollo);
   locations: Location[] = [];
 
   drawTournament = input.required<DrawTournament>();
-
-  constructor(private apollo: Apollo) {}
 
   ngOnInit() {
     // Fetch locations data

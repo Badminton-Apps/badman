@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Output,
-  computed,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -39,12 +32,7 @@ export class UserShortcutsComponent {
   loggedIn = computed(() => this.authenticateService.loggedIn());
   clubs = computed(() =>
     (this.user()?.clubs ?? [])
-      .filter(
-        (club) =>
-          club.clubMembership?.end === undefined ||
-          club.clubMembership?.end === null ||
-          club.clubMembership?.end > new Date(),
-      )
+      .filter((club) => club.clubMembership?.active)
       .sort((a, b) => {
         // sort by membership type, first normal then loan
         if (a.clubMembership?.membershipType === b.clubMembership?.membershipType) {
@@ -67,5 +55,5 @@ export class UserShortcutsComponent {
     club: true,
   };
 
-  @Output() whenNavigate = new EventEmitter<void>();
+  whenNavigate = output<void>();
 }

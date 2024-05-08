@@ -20,6 +20,7 @@ export const loadTeams = (
     .query<{
       teams: Team[];
     }>({
+      fetchPolicy: 'network-only',
       query: gql`
         query TeamsForSeason_${season}_${season + 1}($where: JSONObject, $rankingWhere: JSONObject, $order: [SortOrderType!]) {
           teams(where: $where) {
@@ -38,9 +39,11 @@ export const loadTeams = (
             players {
               id
               fullName
-              teamId
               gender
-              membershipType
+              teamMembership {
+                id
+                membershipType
+              }
               rankingPlaces(where: $rankingWhere, order: $order, take: 1) {
                 id
                 single
@@ -50,6 +53,7 @@ export const loadTeams = (
             }
             entry {
               id
+              sendOn
               standing {
                 id
                 riser
@@ -69,6 +73,8 @@ export const loadTeams = (
                   players {
                     id
                     gender
+                    levelExceptionRequested
+                    levelExceptionReason                    
                     player {
                       id
                       fullName

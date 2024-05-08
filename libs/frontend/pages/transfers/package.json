@@ -1,0 +1,21 @@
+{
+  "name": "@badman/frontend-transfers",
+  "version": "6.144.0",
+  "peerDependencies": {
+    "@angular/common": "^17.1.0",
+    "@angular/core": "^17.1.0",
+    "@angular/router": "~17.3.0",
+    "@badman/frontend-auth": "*",
+    "@angular/forms": "~17.3.0",
+    "@badman/frontend-components": "*",
+    "@badman/frontend-models": "*",
+    "@ngx-translate/core": "^15.0.0",
+    "ngx-moment": "^6.0.2",
+    "@badman/frontend-queue": "*",
+    "apollo-angular": "^6.0.0",
+    "ngx-socket-io": "^4.6.1",
+    "rxjs": "~7.8.1"
+  },
+  "dependencies": {},
+  "sideEffects": false
+}

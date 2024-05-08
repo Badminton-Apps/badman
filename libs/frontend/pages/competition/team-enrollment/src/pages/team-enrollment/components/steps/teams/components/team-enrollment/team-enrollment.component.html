@@ -3,8 +3,10 @@
     [team]="team()"
     [system]="system()"
     [basePlayers]="players()"
-    (removeTeam)="this.removeTeam.next($event)"
-    (changeTeamNumber)="this.changeTeamNumber.next($event)"
+    (removeTeam)="this.removeTeam.emit($event)"
+    (changeTeamNumber)="this.changeTeamNumber.emit($event)"
+    [transfers]="this.transfers()"
+    [loans]="this.loans()"
   ></badman-team>
   <div class="beside">
     <div class="event">
@@ -28,6 +30,18 @@
         <li>Team: {{ validation()?.teamIndex }}</li>
         <li>Base: {{ validation()?.baseIndex }}</li>
       </ul>
+
+      @for (exception of levelExceptions(); track exception) {
+        <div class="exception">
+          <button mat-raised-button color="primary" (click)="requestLevelException(exception.id)">
+            {{
+              'all.competition.team-enrollment.request-level-exception'
+                | translate: { player: exception }
+            }}
+          </button>
+        </div>
+      }
+
       <div class="validation-overview">
         @if ((validation()?.errors?.length ?? 0) > 0) {
           <ul class="error-list">
@@ -40,9 +54,17 @@
         }
         @if ((validation()?.warnings?.length ?? 0) > 0) {
           <ul class="warning-list">
-            @for (warnings of validation()?.warnings; track warnings) {
+            @for (warning of validation()?.warnings; track warning) {
               <li>
-                <badman-enrollment-message [validation]="warnings"></badman-enrollment-message>
+                <badman-enrollment-message [validation]="warning"></badman-enrollment-message>
+
+                @if (
+                  warning.message === 'all.competition.team-enrollment.warnings.player-min-level'
+                ) {
+                  <button mat-icon-button (click)="editWarning(warning)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                }
               </li>
             }
           </ul>
@@ -57,4 +79,28 @@
       </div>
     </div>
   </div>
+
+  <ng-template #requestException let-data>
+    <h2 matDialogTitle>
+      {{ 'all.competition.team-enrollment.players.level-exception.request' | translate }}
+    </h2>
+    <mat-dialog-content>
+      <div class="reason">
+        <mat-form-field>
+          <mat-label>{{
+            'all.competition.team-enrollment.players.level-exception.reason' | translate
+          }}</mat-label>
+          <textarea matInput #reason [value]="data.player.levelExceptionReason"></textarea>
+        </mat-form-field>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-raised-button [matDialogClose]="reason" color="primary">
+        {{ 'all.button.save' | translate }}
+      </button>
+      <button mat-button matDialogClose>
+        {{ 'all.button.cancel' | translate }}
+      </button>
+    </mat-dialog-actions>
+  </ng-template>
 }

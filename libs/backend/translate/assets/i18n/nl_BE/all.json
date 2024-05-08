@@ -136,6 +136,10 @@
         "title": "Er zijn problemen gevonden met je opstelling"
       }
     },
+    "delete": {
+      "description": "Weet je zeker dat je deze competitie wilt verwijderen?",
+      "title": "Verwijder competitie"
+    },
     "draw": {
       "encounters": "Ontmoetingen",
       "title": "Poule"
@@ -181,7 +185,6 @@
       "close-accept-requests": "Sluiting acceptatie",
       "close-enrollment": "Sluiting",
       "close-new-requets": "Sluiting nieuwe aanvragen",
-      "hint": "",
       "open-enrollment": "Datum opening",
       "open-requests": "Datum opening"
     },
@@ -202,7 +205,6 @@
       "title": "Afdelingen"
     },
     "team-assembly": {
-      "avg-level": "",
       "captain": "Ploegkapitein",
       "change-team": "Door het team te bewerken kun je de standaard getoonde spelers en de reservespelers veranderen.",
       "disclaimer": "Disclaimer: Deze opstellingsmodule is een betaversie en kan uitzonderlijk nog fouten bevatten. Controleer daarom altijd kritisch je opstelling rekening houdende met reglement C320.",
@@ -278,6 +280,8 @@
         "first-team-index": "Een eerste ploeg die gedaald is, mag tijdens het seizoen geen team met ploegindex opstellen die lager is dan hun ploegindex van de basisspelers.",
         "no-subevent": "Gelieve een afdeling te kiezen",
         "none": "Geen fouten gevonden",
+        "player-club": "Speler <strong>{player.fullName}</strong> is niet deel van {club.name} (huidige club: {activeClub.name})",
+        "player-club-none": "Geen club gekend voor speler <strong>{player.fullName}<strong>",
         "player-gender": "<strong>{player.fullName}</strong> is een <strong>{player.gender}</strong> maar een <strong>{gender}</strong> was verwacht",
         "player-min-level": "<strong>{player.fullName}</strong> heeft een discipline-index van <strong>{player.ranking}</strong> in <strong>{rankingType}</strong> en mag minimaal <strong>{minLevel}</strong> zijn.",
         "player-subevent": "<strong>{player.fullName}</strong> is deel van de basisploeg <strong>{team.name}</strong> dat ook in <strong>{subEvent.name}</strong> speelt",
@@ -294,7 +298,14 @@
       "example-error": "Dit zijn foutmeldingen waardoor de ploeg niet kan ingeschreven worden. Gelieve deze op te lossen.",
       "example-warning": "Dit zijn waarschuwingen waar rekening mee gehouden dient te worden. De inschrijving kan nog wel afgewerkt worden.",
       "exceptions": "Uitzonderingen",
-      "info": "",
+      "info": "Opmerkingen over de teaminschrijving",
+      "level-exemption": "Speler is vrijgesteld van de ranking restricties",
+      "level-exemption-requested": "Aanvraag voor speler is bezig",
+      "loan": {
+        "add-loan": "Nieuwe uitlening",
+        "loan-locked": "Uitlening is al bevestigd, deze verwijderen is niet meer mogelijk",
+        "loan-player": "Geleende speler"
+      },
       "locations": {
         "availible-courts": "Beschikbare velden",
         "courts-hint": "Wijzig het aantal beschikbare velden",
@@ -305,11 +316,19 @@
       "players": {
         "backup": "Reserve speler(s)",
         "base": "Basisspeler(s)",
+        "level-exception": {
+          "reason": "Geef een reden op",
+          "request": "Uitzondering aanvragen voor klassement"
+        },
+        "loan": "Uitgeleend",
         "regular": "Vaste speler(s)",
-        "team": "",
-        "title": "Mogelijke titularissen"
+        "title": "Mogelijke titularissen",
+        "transfer": "Getransfereerd"
       },
+      "request-level-exception": "Vraag vrijstelling aan voor {player.fullName}",
       "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten we toe tussentijds op te slaan indien er nog onzekerheden zijn over je basisspelers.",
+      "saved": "Inschrijving opgeslagen",
+      "saved-failed": "Er waren problemen met opslaan, controleer je data of probeer later opnieuw.",
       "select-club": "Selecteer club",
       "select-events": "Selecteer onderdelen",
       "select-location": "Selecteer locaties",
@@ -325,12 +344,18 @@
       },
       "title": "Team inschrijvingen",
       "transfer": {
+        "add-transfer": "Nieuwe transfer",
         "enrolled-as": "ingeschreven als",
+        "transfer-locked": "Transfer is al bevestigd, deze verwijderen is niet meer mogelijk",
+        "transfer-player": "Getransfereerde speler",
         "transfer-teams": "Zet teams over (optioneel)",
-        "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nDe volgorde waarin je je ploegen aanvinkt zal de volgorde bepalen (\"alles\" vinkt het in de juiste volgorde aan)\n\nJe kan de teamnummers in volgende stap nog wijzigen."
+        "transfer-teams-description": "Als je je team(s) wilt overzetten naar het evenement van dit jaar, kun je deze optionele stap gebruiken om het registratieproces te vereenvoudigen. Door deze optie te selecteren, kun je je team(s) overzetten en automatisch in het juiste evenement plaatsen op basis van je eerdere deelname.\n\nDe volgorde waarin je je ploegen aanvinkt zal de volgorde bepalen (\"alles\" vinkt het in de juiste volgorde aan)\n\nJe kan de teamnummers in volgende stap nog wijzigen.",
+        "transfers-players": "Transfers en uitleningen"
       },
       "validations": "Validaties",
       "warnings": {
+        "already-saved": "Nieuwe wijzigingen kan je niet tussendoor meer opslaan, gelieve het formulier opnieuw te versturen in de laatste stap om je wijzigingen op te slaan",
+        "player-min-level": "Aanvraag voor uitzondering van speler <strong>{player.fullName}</strong> in <strong>{rankingType}</strong> is nog niet geaccepteerd",
         "subtitute-team-index": "s",
         "title": "Waarschuwingen"
       }
@@ -427,12 +452,12 @@
   "game": {
     "bye": "Bye",
     "order": {
-      "double": "",
-      "female": "",
-      "male": "",
-      "mix": "",
-      "mixed": "",
-      "single": ""
+      "double": "D",
+      "female": "D",
+      "male": "H",
+      "mix": "MX",
+      "mixed": "GD",
+      "single": "E"
     },
     "points": "punten",
     "recent": {
@@ -597,6 +622,7 @@
     "select-encounter": "Kies een ontmoeting",
     "select-end-time": "Eindtijd",
     "select-event-competition": "Selecteer competitie",
+    "select-player": "Kies een speler",
     "select-season": "Seizoen",
     "select-start-time": "Starttijd",
     "select-state": "Kies provincie",
@@ -814,6 +840,9 @@
   },
   "shell": {
     "sidebar": {
+      "admin": {
+        "title": "Admin"
+      },
       "competition": {
         "assembly": "Opstelling",
         "change-encounter": "Verplaats ontmoeting",
@@ -826,7 +855,7 @@
         "faq": "FAQ",
         "title": "Algemeen"
       },
-      "jobs": {
+      "job": {
         "title": "Jobs"
       },
       "persnal": {
@@ -838,6 +867,9 @@
       },
       "tournament": {
         "title": "Toernooien"
+      },
+      "transfer": {
+        "title": "Transfers / uitleningen"
       }
     }
   },
@@ -885,7 +917,7 @@
         "female": "D",
         "male": "H",
         "mix": "G",
-        "national": ""
+        "national": "NATIONAAL"
       },
       "title": "Afdeling"
     },
@@ -901,7 +933,7 @@
     "light": "Licht"
   },
   "tournament": {
-    "away": "",
+    "away": "UIt",
     "delete": {
       "description": "Weet je zeker dat je dit toernooi wilt verwijderen?",
       "title": "Verwijder toernooi"
@@ -918,7 +950,6 @@
     },
     "home": "Thuis",
     "last-updated": "Gewijzigd op",
-    "liga": "",
     "load-more": "Meer laden",
     "menu": {
       "add-event": "Add event"
@@ -938,7 +969,6 @@
       "official": "Officieel",
       "only-official": "Alleen officiele"
     },
-    "prov": "",
     "subevent": {
       "max": "Max klassement",
       "max-base": "Max basis ploegindex",
@@ -948,5 +978,8 @@
     "type": "Type",
     "vs": "tegen",
     "vs-short": "vs"
+  },
+  "transfers": {
+    "title": "Transfers / uitleningen"
   }
 }

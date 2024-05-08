@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -36,6 +36,11 @@ export interface PickEventDialogData {
   styleUrls: ['./pick-event-dialog.component.scss'],
 })
 export class PickEventDialogComponent implements OnInit {
+  private readonly appollo = inject(Apollo);
+  private readonly _dialogRef = inject<MatDialogRef<PickEventDialogComponent>>(
+    MatDialogRef<PickEventDialogComponent>,
+  );
+  public readonly data = inject<PickEventDialogData>(MAT_DIALOG_DATA);
   private destroy$ = injectDestroy();
 
   selectForm = new FormGroup({
@@ -52,12 +57,6 @@ export class PickEventDialogComponent implements OnInit {
   get subEvents() {
     return this.#subEvents.value;
   }
-
-  constructor(
-    private readonly appollo: Apollo,
-    private readonly _dialogRef: MatDialogRef<PickEventDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public readonly data: PickEventDialogData,
-  ) {}
 
   ngOnInit(): void {
     this._loadEvents().pipe(takeUntil(this.destroy$)).subscribe();

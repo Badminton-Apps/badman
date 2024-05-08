@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, PLATFORM_ID, TransferState } from '@angular/core';
+import { Component, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -13,7 +13,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '@badman/frontend-components';
 import { Player, Team, TeamPlayer } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { SubEventType, TeamMembershipType } from '@badman/utils';
+import { SubEventType, TeamMembershipType, sortPlayers } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { lastValueFrom, map, pairwise, startWith, take } from 'rxjs';
@@ -26,8 +26,10 @@ const PLAYERS_QUERY = gql`
       players {
         id
         fullName
-        membershipType
-        teamId
+        teamMembership {
+          id
+          membershipType
+        }
       }
     }
   }
@@ -49,25 +51,23 @@ const PLAYERS_QUERY = gql`
   ],
 })
 export class EditDialogComponent {
+  private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
+  private apollo = inject(Apollo);
+  private fb = inject(FormBuilder);
+  public dialogRef = inject<MatDialogRef<EditDialogComponent>>(MatDialogRef<EditDialogComponent>);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
+  public data = inject<{
+    team: Team;
+    teamNumbers: {
+      [key in SubEventType]: number[];
+    };
+  }>(MAT_DIALOG_DATA);
   group?: FormGroup;
   saveing = false;
 
-  constructor(
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog,
-    private apollo: Apollo,
-    private fb: FormBuilder,
-    public dialogRef: MatDialogRef<EditDialogComponent>,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      team: Team;
-      teamNumbers: {
-        [key in SubEventType]: number[];
-      };
-    },
-  ) {
+  constructor() {
     const group = this.fb.group({
       id: this.fb.control(this.data.team.id),
       clubId: this.fb.control(this.data.team.clubId),
@@ -137,9 +137,7 @@ export class EditDialogComponent {
       .valueChanges.pipe(
         transferState(`teamPlayers-${this.data.team.id}`, this.stateTransfer, this.platformId),
         map((result) => result?.data.team.players?.map((t) => new TeamPlayer(t))),
-        map(
-          (players) => players?.sort((a, b) => a.fullName.localeCompare(b.fullName)) ?? undefined,
-        ),
+        map((players) => players?.sort(sortPlayers) ?? undefined),
         take(1),
       );
   }

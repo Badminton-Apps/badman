@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,14 +24,11 @@ import { throttleTime, map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCompetitionStatusComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private _snackBar = inject(MatSnackBar);
   playerForm!: FormGroup;
 
   player = input.required<Player>();
-
-  constructor(
-    private apollo: Apollo,
-    private _snackBar: MatSnackBar,
-  ) {}
 
   ngOnInit(): void {
     const compPlayer = new FormControl(this.player().competitionPlayer);

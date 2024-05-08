@@ -6,7 +6,7 @@ import { RankingSystem } from './ranking-system.model';
 import { Claim } from './security';
 import { Setting } from './personal';
 import { Notification } from './personal';
-import { TeamMembershipType } from '@badman/utils';
+import { ClubMembershipType, TeamMembershipType } from '@badman/utils';
 import { Team } from './team.model';
 
 export class Player {
@@ -68,12 +68,19 @@ export class Player {
     this.club =
       args?.club != null
         ? new Club(args?.club)
-        : this.clubs?.filter(
-            (club) =>
-              club.clubMembership?.end === undefined ||
-              club.clubMembership?.end === null ||
-              club.clubMembership?.end > new Date(),
-          )?.[0];
+        : this.clubs
+            ?.filter((club) => club.clubMembership?.active ?? true)
+            ?.filter((club) => club.clubMembership?.confirmed ?? true)
+            // sort by type NORMAL first
+            ?.sort((a, b) => {
+              if (a.clubMembership?.membershipType == ClubMembershipType.NORMAL) {
+                return -1;
+              }
+              if (b.clubMembership?.membershipType == ClubMembershipType.NORMAL) {
+                return 1;
+              }
+              return 0;
+            })[0];
 
     this.setting = args?.setting != null ? new Setting(args?.setting) : undefined;
     this.notifications = args?.notifications?.map((n) => new Notification(n)) ?? undefined;
@@ -149,12 +156,39 @@ export class GamePlayer extends Player {
 }
 
 export class TeamPlayer extends Player {
-  membershipType?: TeamMembershipType;
+  teamMembership!: {
+    id: string;
+    membershipType: TeamMembershipType;
+  };
 
   constructor(args: Partial<TeamPlayer>) {
     super(args);
 
-    // the membership type comes in type string, but we need to convert it to the enum
-    this.membershipType = args?.membershipType as TeamMembershipType;
+    if (!args?.teamMembership) {
+      console.error(`${this.constructor.name} needs a teamMembership`);
+      return;
+    }
+
+    this.teamMembership = args?.teamMembership;
+  }
+}
+
+export class ClubPlayer extends Player {
+  clubMembership!: {
+    id: string;
+    membershipType: ClubMembershipType;
+    active: boolean;
+    confirmed: boolean;
+  };
+
+  constructor(args: Partial<ClubPlayer>) {
+    super(args);
+
+    if (!args?.clubMembership) {
+      console.error(`${this.constructor.name} needs a clubMembership`);
+      return;
+    }
+
+    this.clubMembership = args?.clubMembership;
   }
 }

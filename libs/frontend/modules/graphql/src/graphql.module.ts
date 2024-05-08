@@ -17,6 +17,7 @@ import { HttpLink } from 'apollo-angular/http';
 import { sha256 } from 'crypto-hash';
 import { lastValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
 
 export const APOLLO_CACHE = new InjectionToken<InMemoryCache>('apollo-cache');
 export const GRAPHQL_CONFIG_TOKEN = new InjectionToken<GraphqlConfiguration>('graphql.config');
@@ -73,7 +74,8 @@ export function createApollo(
 
   if (isDevMode() || isServer) {
     console.log(`Setting up Apollo with API: ${config.api}`);
-    // console.log(`Platform: ${platformId}, hasKey: ${hasKey}`);
+    loadDevMessages();
+    loadErrorMessages();
   }
 
   const link = ApolloLink.from([
@@ -114,8 +116,17 @@ export function createApollo(
           GamePlayerMembershipType: {
             keyFields: ['id', 'team', 'player'],
           },
-          TeamPlayerMembershipType: {
-            keyFields: ['id', 'teamId', 'membershipType'],
+          ClubWithPlayerMembershipType: {
+            keyFields: [['clubMembership', ['id']], 'id'],
+          },
+          PlayerWithClubMembershipType: {
+            keyFields: [['clubMembership', ['id']], 'id'],
+          },
+          PlayerWithTeamMembershipType: {
+            keyFields: [['teamMembership', ['id']], 'id'],
+          },
+          EntryCompetitionPlayersType: {
+            keyFields: false,
           },
         },
       }),

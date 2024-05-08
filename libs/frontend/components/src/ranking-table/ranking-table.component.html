@@ -1,40 +1,9 @@
-@if (dataSource().length > 0) {
-  <table mat-table [dataSource]="dataSource()">
-    <!-- Level Column -->
-    <ng-container matColumnDef="level">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'all.faq.points.table.level' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.level }}</td>
-    </ng-container>
-
-    <!-- pointsToGoUp Column -->
-    <ng-container matColumnDef="pointsToGoUp">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'all.faq.points.table.points-needed-up' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.pointsToGoUp }}</td>
-    </ng-container>
-
-    <!-- pointsToGoDown Column -->
-    <ng-container matColumnDef="pointsToGoDown">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'all.faq.points.table.points-needed-down' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element">{{ element.pointsToGoDown }}</td>
-    </ng-container>
-
-    <!-- pointsWhenWinningAgainst Column -->
-    <ng-container matColumnDef="pointsWhenWinningAgainst">
-      <th mat-header-cell *matHeaderCellDef>
-        {{ 'all.faq.points.table.points-won' | translate }}
-      </th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.pointsWhenWinningAgainst }}
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
-}
+<mtx-grid
+  [data]="dataSource()"
+  [loading]="!loaded()"
+  [columns]="columns"
+  [showPaginator]="false"
+  [pageSize]="99"
+  sortActive="level"
+  sortDirection="asc"
+/>

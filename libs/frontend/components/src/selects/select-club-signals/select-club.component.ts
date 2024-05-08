@@ -16,17 +16,14 @@ import { SelectClubsService } from './select-club.service';
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
-    // MatInputModule,
-    // MatAutocompleteModule,
-    // MatSelectModule,
     MtxSelectModule,
   ],
   templateUrl: './select-club.component.html',
   styleUrls: ['./select-club.component.scss'],
 })
 export class SelectClubSignalsComponent {
+  private readonly dataService = new SelectClubsService();
   private readonly claimSerice = inject(ClaimService);
-  private readonly dataService = inject(SelectClubsService);
   private readonly authService = inject(AuthenticateService);
 
   // Permissions
@@ -64,7 +61,6 @@ export class SelectClubSignalsComponent {
   // selections
   club = model<string | null>(null);
 
-
   // not sure if this is the right way to do this, otherwise it's just the same as unused private variable
   constructor() {
     effect(() => {
@@ -75,7 +71,11 @@ export class SelectClubSignalsComponent {
 
     effect(
       () => {
-        if (!this.club() && this.possibleClubs().length > 0) {
+        if (
+          !this.club() &&
+          this.dataService.filter.get('country')?.value != null &&
+          this.possibleClubs().length > 0
+        ) {
           this.club.set(this.possibleClubs()[0].id);
         }
       },

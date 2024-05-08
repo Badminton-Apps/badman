@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,7 +34,7 @@ export class LocationDialogFieldsComponent implements OnInit {
 
   club = input<Club | undefined>();
 
-  @Output() whenLocationUpdate = new EventEmitter<Location>();
+  whenLocationUpdate = output<Location>();
 
   placesConfig: google.maps.places.AutocompleteOptions = {
     componentRestrictions: {
@@ -85,11 +78,11 @@ export class LocationDialogFieldsComponent implements OnInit {
     this.locationForm.valueChanges.pipe(throttleTime(600)).subscribe((e) => {
       if (!this.location()?.id) {
         if (this.locationForm.valid) {
-          this.whenLocationUpdate.next({ id: this.location()?.id, ...e });
+          this.whenLocationUpdate.emit({ id: this.location()?.id, ...e });
         }
       } else {
         // always update if valid id
-        this.whenLocationUpdate.next({ id: this.location()?.id, ...e });
+        this.whenLocationUpdate.emit({ id: this.location()?.id, ...e });
       }
     });
   }

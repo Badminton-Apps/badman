@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { I18nTranslations } from '@badman/utils';
@@ -12,16 +12,17 @@ import { TranslateModule } from '@ngx-translate/core';
   // styleUrls: ['./confirm-dialog.component.css']
 })
 export class ConfirmDialogComponent {
+  public dialogRef = inject<MatDialogRef<ConfirmDialogComponent>>(
+    MatDialogRef<ConfirmDialogComponent>,
+  );
+  public data = inject<ConfirmDialogModel>(MAT_DIALOG_DATA);
   title: string;
   message: string;
 
-  constructor(
-    public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel,
-  ) {
+  constructor() {
     // Update view with given values
-    this.title = data.title;
-    this.message = data.message;
+    this.title = this.data.title;
+    this.message = this.data.message;
   }
 
   onConfirm(): void {

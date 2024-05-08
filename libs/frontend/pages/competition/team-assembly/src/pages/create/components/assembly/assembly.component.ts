@@ -12,17 +12,15 @@ import {
   ChangeDetectorRef,
   Component,
   computed,
-  EventEmitter,
   inject,
-  Inject,
   input,
   OnInit,
-  Output,
   PLATFORM_ID,
   signal,
   TemplateRef,
   TransferState,
   ViewChild,
+  output,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -57,41 +55,6 @@ import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil, tap } fro
 import { ValidationMessage, ValidationResult } from '../../models/validation';
 import { AssemblyMessageComponent } from '../assembly-message/assembly-message.component';
 import { TeamAssemblyPlayerComponent } from '../team-assembly-player';
-
-const info = `
-  id
-  slug
-  fullName
-  gender
-  competitionPlayer
-  rankingLastPlaces(where: $lastRankginWhere) {
-    id
-    single
-    double
-    mix
-  }
-  rankingPlaces(where: $rankingWhere) {
-    id
-    rankingDate
-    single
-    double
-    mix
-  }
-`;
-
-const PLAYER_INFO = gql`
-  fragment PlayerInfo on Player {
-    ${info}
-  }   
-`;
-
-const TEAM_PLAYER_INFO = gql`
-  fragment TeamPlayerInfo on TeamPlayerMembershipType {
-    ${info}
-    membershipType
-    teamId
-  }   
-`;
 
 export const SAVED_ASSEMBLY = gql`
   query SavedAssembly($id: ID!, $where: JSONObject) {
@@ -140,10 +103,18 @@ export const SAVED_ASSEMBLY = gql`
   styleUrls: ['./assembly.component.scss'],
 })
 export class AssemblyComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private systemService = inject(RankingSystemService);
+  private authenticateService = inject(AuthenticateService);
+  private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
+  private stateTransfer = inject(TransferState);
+  private changeDetectorRef = inject(ChangeDetectorRef);
+  private platformId = inject<string>(PLATFORM_ID);
   private destroy$ = injectDestroy();
 
   isHandset = inject(DEVICE);
-  
+
   group = input.required<FormGroup>();
 
   type = signal<string | undefined>(undefined);
@@ -155,7 +126,7 @@ export class AssemblyComponent implements OnInit {
   @ViewChild('validationOverview')
   validationTemplateRef?: TemplateRef<HTMLElement>;
 
-  @Output() validationOverview = new EventEmitter<{
+  validationOverview = output<{
     valid: boolean;
     template: TemplateRef<HTMLElement>;
   }>();
@@ -173,24 +144,24 @@ export class AssemblyComponent implements OnInit {
     'double4List',
   ];
 
-  single1: Player[] = [];
-  single2: Player[] = [];
-  single3: Player[] = [];
-  single4: Player[] = [];
+  single1: TeamPlayer[] = [];
+  single2: TeamPlayer[] = [];
+  single3: TeamPlayer[] = [];
+  single4: TeamPlayer[] = [];
 
-  double1: Player[] = [];
-  double2: Player[] = [];
-  double3: Player[] = [];
-  double4: Player[] = [];
+  double1: TeamPlayer[] = [];
+  double2: TeamPlayer[] = [];
+  double3: TeamPlayer[] = [];
+  double4: TeamPlayer[] = [];
 
-  substitutes: Player[] = [];
+  substitutes: TeamPlayer[] = [];
   showBackup = false;
 
   players?: { [key in TeamMembershipType]: TeamPlayer[] };
 
   titulars: {
     index: number;
-    players: (Player & {
+    players: (TeamPlayer & {
       single: number;
       double: number;
       mix: number;
@@ -202,7 +173,7 @@ export class AssemblyComponent implements OnInit {
   };
   base: {
     index: number;
-    players: (Player & {
+    players: (TeamPlayer & {
       single: number;
       double: number;
       mix: number;
@@ -260,17 +231,6 @@ export class AssemblyComponent implements OnInit {
       false
     );
   }
-
-  constructor(
-    private apollo: Apollo,
-    private systemService: RankingSystemService,
-    private authenticateService: AuthenticateService,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog,
-    private stateTransfer: TransferState,
-    private changeDetectorRef: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit() {
     this.group().addControl('single1', new FormControl());
@@ -365,15 +325,15 @@ export class AssemblyComponent implements OnInit {
     this._getTeam(encounterId, teamId).subscribe(async (team) => {
       this.players = team.players.reduce(
         (acc, player) => {
-          if (!player.membershipType) {
-            player.membershipType = TeamMembershipType.REGULAR;
+          if (!player.teamMembership.membershipType) {
+            player.teamMembership.membershipType = TeamMembershipType.REGULAR;
           }
 
-          if (!acc[player.membershipType]) {
-            acc[player.membershipType] = [] as TeamPlayer[];
+          if (!acc[player.teamMembership.membershipType]) {
+            acc[player.teamMembership.membershipType] = [] as TeamPlayer[];
           }
 
-          acc[player.membershipType].push(player);
+          acc[player.teamMembership.membershipType].push(player);
 
           return acc;
         },
@@ -476,15 +436,30 @@ export class AssemblyComponent implements OnInit {
       this.apollo
         .query<{ player: Player }>({
           query: gql`
-            ${PLAYER_INFO}
-
             query getPlayerInfo(
               $playerId: ID!
               $rankingWhere: JSONObject
               $lastRankginWhere: JSONObject
             ) {
               player(id: $playerId) {
-                ...PlayerInfo
+                id
+                slug
+                fullName
+                gender
+                competitionPlayer
+                rankingLastPlaces(where: $lastRankginWhere) {
+                  id
+                  single
+                  double
+                  mix
+                }
+                rankingPlaces(where: $rankingWhere) {
+                  id
+                  rankingDate
+                  single
+                  double
+                  mix
+                }
               }
             }
           `,
@@ -504,7 +479,7 @@ export class AssemblyComponent implements OnInit {
         .pipe(map((x) => new Player(x.data?.player))),
     );
 
-    this.players?.REGULAR?.push(playerRankings);
+    this.players?.REGULAR?.push(playerRankings as TeamPlayer);
     this._sortLists();
     this.changeDetectorRef.detectChanges();
   }
@@ -516,7 +491,7 @@ export class AssemblyComponent implements OnInit {
         return {
           ...p,
           sum: p.single + p.double + ((this.type() ?? 'MX') === 'MX' ? p.mix : 0),
-        } as Player & {
+        } as TeamPlayer & {
           single: number;
           double: number;
           mix: number;
@@ -530,7 +505,7 @@ export class AssemblyComponent implements OnInit {
         return {
           ...p,
           sum: p.single + p.double + ((this.type() ?? 'MX') === 'MX' ? p.mix : 0),
-        } as Player & {
+        } as TeamPlayer & {
           single: number;
           double: number;
           mix: number;
@@ -542,7 +517,7 @@ export class AssemblyComponent implements OnInit {
     this.errors = info.errors;
     this.warnings = info.warnings;
     if (this.validationTemplateRef) {
-      this.validationOverview.next({
+      this.validationOverview.emit({
         valid: info.valid,
         template: this.validationTemplateRef,
       });
@@ -615,7 +590,7 @@ export class AssemblyComponent implements OnInit {
     return true;
   };
 
-  drop(event: CdkDragDrop<Player[]>) {
+  drop(event: CdkDragDrop<TeamPlayer[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -690,8 +665,6 @@ export class AssemblyComponent implements OnInit {
         this.apollo
           .watchQuery<{ team: Partial<Team> }>({
             query: gql`
-              ${TEAM_PLAYER_INFO}
-
               query TeamInfo($id: ID!, $rankingWhere: JSONObject, $lastRankginWhere: JSONObject) {
                 team(id: $id) {
                   id
@@ -706,7 +679,29 @@ export class AssemblyComponent implements OnInit {
                   preferredDay
                   preferredTime
                   players {
-                    ...TeamPlayerInfo
+                    id
+                    slug
+                    fullName
+                    gender
+                    competitionPlayer
+                    rankingLastPlaces(where: $lastRankginWhere) {
+                      id
+                      single
+                      double
+                      mix
+                    }
+                    rankingPlaces(where: $rankingWhere) {
+                      id
+                      rankingDate
+                      single
+                      double
+                      mix
+                    }
+                    teamMembership {
+                      id
+                      membershipType
+                      teamId
+                    }
                   }
                   entry {
                     id
@@ -1069,6 +1064,6 @@ export class AssemblyComponent implements OnInit {
   private _getPlayers(ids: string[]) {
     return ids
       ?.map((id) => this.players?.REGULAR.concat(this.players.REGULAR)?.find((x) => x?.id === id))
-      ?.filter((x) => x != null) as Player[];
+      ?.filter((x) => x != null) as TeamPlayer[];
   }
 }

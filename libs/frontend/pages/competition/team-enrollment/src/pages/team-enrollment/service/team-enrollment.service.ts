@@ -6,6 +6,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import {
   Club,
+  ClubPlayer,
   Comment,
   EventCompetition,
   Location,
@@ -13,7 +14,13 @@ import {
   Team,
   TeamValidationResult,
 } from '@badman/frontend-models';
-import { LevelType, SubEventTypeEnum, sortSubEventOrder } from '@badman/utils';
+import {
+  ClubMembershipType,
+  LevelType,
+  SubEventTypeEnum,
+  sortSubEventOrder,
+  sortTeams,
+} from '@badman/utils';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { TeamFormValue } from '../team-enrollment.page';
 import { loadClub } from './queries/club';
@@ -21,6 +28,7 @@ import { loadComments } from './queries/comments';
 import { loadEvents } from './queries/events';
 import { loadLocations } from './queries/locations';
 import { loadTeams } from './queries/teams';
+import { loadTransersAndLoans } from './queries/transfers';
 import { validateEnrollment } from './queries/validate';
 
 interface TeamEnrollmentState {
@@ -28,6 +36,8 @@ interface TeamEnrollmentState {
   season: number | null;
 
   teams: Team[];
+  transfers: ClubPlayer[];
+  loans: ClubPlayer[];
   locations: Location[];
   comments: Comment[];
   events: EventCompetition[];
@@ -36,6 +46,7 @@ interface TeamEnrollmentState {
 
   loadedClubs: boolean;
   loadedTeams: boolean;
+  loadedTransfers: boolean;
   loadedLocations: boolean;
 }
 
@@ -53,6 +64,8 @@ export class TeamEnrollmentDataService {
     // Options
     teams: [],
     locations: [],
+    transfers: [],
+    loans: [],
 
     // Selected
     club: null,
@@ -64,6 +77,7 @@ export class TeamEnrollmentDataService {
     // loading steps
     loadedClubs: false,
     loadedTeams: false,
+    loadedTransfers: false,
     loadedLocations: false,
   };
 
@@ -73,7 +87,11 @@ export class TeamEnrollmentDataService {
   state = signalSlice({
     initialState: this.initialState,
     selectors: (state) => ({
-      allLoaded: () => state().loadedClubs && state().loadedTeams && state().loadedLocations,
+      allLoaded: () =>
+        state().loadedClubs &&
+        state().loadedTeams &&
+        state().loadedLocations &&
+        state().loadedTransfers,
       eventsPerType: () => {
         const subEvents = state()
           .events.map((event) => event.subEventCompetitions ?? [])
@@ -104,6 +122,9 @@ export class TeamEnrollmentDataService {
             .sort(sortSubEventOrder),
         };
       },
+      hadEntries: () => {
+        return state().teams.some((team) => team.entry?.sendOn != null);
+      },
     }),
     actionSources: {
       setSeason: (_state, action$: Observable<number>) =>
@@ -121,8 +142,25 @@ export class TeamEnrollmentDataService {
             teams: [],
             locations: [],
             comments: [],
+            transfers: [],
             loadedClubs: true,
             loadedTeams: false,
+            loadedTransfers: false,
+            loadedLocations: false,
+          })),
+        ),
+
+      clear: (_state, action$: Observable<void>) =>
+        action$.pipe(
+          map(() => ({
+            club: null,
+            teams: [],
+            locations: [],
+            comments: [],
+            transfers: [],
+            loadedClubs: false,
+            loadedTeams: false,
+            loadedTransfers: false,
             loadedLocations: false,
           })),
         ),
@@ -140,10 +178,12 @@ export class TeamEnrollmentDataService {
               throw new Error('Club not found');
             }
 
-            club.teams = teams?.filter((team) => team.season !== _state().season) ?? [];
+            club.teams =
+              teams?.filter((team) => team.season !== _state().season)?.sort(sortTeams) ?? [];
             return {
               club,
-              teams: teams?.filter((team) => team.season === _state().season) ?? [],
+              teams:
+                teams?.filter((team) => team.season === _state().season)?.sort(sortTeams) ?? [],
               loadedTeams: true,
             };
           }),
@@ -191,6 +231,20 @@ export class TeamEnrollmentDataService {
           }),
         ),
 
+      loadTransersAndLoans: (_state, action$: Observable<{ clubId: string; season: number }>) =>
+        action$.pipe(
+          switchMap(({ clubId, season }) => loadTransersAndLoans(this.apollo, clubId, season)),
+          map((transfers) => ({
+            transfers: transfers.filter(
+              (player) => player.clubMembership.membershipType === ClubMembershipType.NORMAL,
+            ),
+            loans: transfers.filter(
+              (player) => player.clubMembership.membershipType === ClubMembershipType.LOAN,
+            ),
+            loadedTransfers: true,
+          })),
+        ),
+
       loadEvents: (_state, action$: Observable<{ state: string }>) =>
         action$.pipe(
           switchMap(({ state }) => loadEvents(this.apollo, state)),
@@ -212,10 +266,15 @@ export class TeamEnrollmentDataService {
         action$: Observable<{
           teamForm?: { [key in SubEventTypeEnum]: TeamFormValue[] };
           season?: number;
+          clubId: string;
+          transfers?: string[];
+          loans?: string[];
         }>,
       ) =>
         action$.pipe(
-          switchMap(({ teamForm, season }) => validateEnrollment(this.apollo, teamForm, season)),
+          switchMap(({ teamForm, season, clubId, transfers, loans }) =>
+            validateEnrollment(this.apollo, teamForm, season, clubId, transfers, loans),
+          ),
           map((validation) => ({
             validation,
           })),
@@ -233,6 +292,7 @@ export class TeamEnrollmentDataService {
         }
 
         state.loadTeams({ clubId: club.id, season });
+        state.loadTransersAndLoans({ clubId: club.id, season });
         state.loadLocations({ clubId: club.id, season });
         state.loadEvents({ state: club.state });
       },

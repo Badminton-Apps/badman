@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -41,16 +41,15 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
 })
 export class EditClubHistoryDialogComponent implements OnInit {
+  private dialogRef = inject<MatDialogRef<EditClubHistoryDialogComponent>>(
+    MatDialogRef<EditClubHistoryDialogComponent>,
+  );
+  public data = inject<{ club: Club }>(MAT_DIALOG_DATA);
   clubFormGroup: FormGroup = new FormGroup({});
   membershipFormGroup: FormGroup = new FormGroup({});
 
   currentClub?: boolean;
   types = Object.keys(ClubMembershipType) as ClubMembershipType[];
-
-  constructor(
-    private dialogRef: MatDialogRef<EditClubHistoryDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { club: Club },
-  ) {}
 
   ngOnInit(): void {
     const clubControl = new FormControl(this.data.club?.id, [Validators.required]);

@@ -5,6 +5,7 @@ import {
   Component,
   OnInit,
   input,
+  inject,
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClaimService } from '@badman/frontend-auth';
@@ -23,18 +24,15 @@ import { groupBy, map, mergeMap, take, tap, toArray } from 'rxjs/operators';
   imports: [CommonModule, ClaimComponent],
 })
 export class EditPermissionsComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private claimService = inject(ClaimService);
+  private _snackBar = inject(MatSnackBar);
+  private changeDetector = inject(ChangeDetectorRef);
   claims$!: Observable<{ category: string; claims: Claim[] }[]>;
 
   selectedClaims: string[] = [];
 
   player = input.required<Player>();
-
-  constructor(
-    private apollo: Apollo,
-    private claimService: ClaimService,
-    private _snackBar: MatSnackBar,
-    private changeDetector: ChangeDetectorRef,
-  ) {}
 
   ngOnInit(): void {
     if (!this.player()?.id) {

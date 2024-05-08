@@ -16,12 +16,19 @@ export const getCurrentSeason = (inputDate?: Date | moment.Moment) => {
   return date.month() >= 4 ? date.year() : date.year() - 1;
 };
 
-
 export const getUpcommingSeason = (inputDate?: Date | moment.Moment) => {
   let date = moment(inputDate);
   if (!date.isValid()) {
     date = moment();
   }
 
-  return date.month() >= 9 ? date.year() + 1 : date.year() ;
+  return date.month() >= 9 ? date.year() + 1 : date.year();
+};
+
+export const startOfSeason = (season: number) => {
+  return moment([season, 6, 1]);
+};
+
+export const endOfSeason = (season: number) => {
+  return moment([season + 1, 5, 1]).endOf('month');
 };

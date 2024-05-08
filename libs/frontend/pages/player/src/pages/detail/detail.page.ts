@@ -100,9 +100,7 @@ export class DetailPageComponent {
       this.claim.hasAnyClaims(['edit-any:player', this.player().id + '_edit:player', 'change:job']),
   );
 
-  canClaim = computed(
-    () => this.auth.loggedIn() && !this.auth.user()?.id && !this.player().sub,
-  );
+  canClaim = computed(() => this.auth.loggedIn() && !this.auth.user()?.id && !this.player().sub);
 
   hasMenu$?: Observable<boolean>;
   canClaim$?: Observable<boolean>;
@@ -143,6 +141,10 @@ export class DetailPageComponent {
                 id
                 clubId
                 slug
+                teamMembership {
+                  id
+                  membershipType
+                }
               }
             }
           }

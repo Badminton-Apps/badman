@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable, Injector, PLATFORM_ID, TransferState, computed, inject } from '@angular/core';
+import { Injector, PLATFORM_ID, TransferState, computed, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Club } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
@@ -19,9 +19,6 @@ interface SelectClubsState {
   error: string | null;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
 export class SelectClubsService {
   private apollo = inject(Apollo);
   injector = inject(Injector);

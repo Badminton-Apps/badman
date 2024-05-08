@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   OnInit,
-  Output,
   Signal,
   computed,
+  inject,
   input,
+  output,
 } from '@angular/core';
 import {
   FormArray,
@@ -34,16 +34,13 @@ import {
   Team,
   TeamPlayer,
 } from '@badman/frontend-models';
-import {
-  SubEventTypeEnum,
-  TeamMembershipType,
-  getCurrentSeason,
-  getIndexFromPlayers,
-} from '@badman/utils';
+import { SubEventTypeEnum, TeamMembershipType, getIndexFromPlayers } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
+import { v4 as uuid } from 'uuid';
+import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 
 @Component({
   selector: 'badman-team',
@@ -68,9 +65,18 @@ import { Subject, lastValueFrom, startWith, takeUntil } from 'rxjs';
   styleUrls: ['./team.component.scss'],
 })
 export class TeamComponent implements OnInit {
+  private readonly dataService = inject(TeamEnrollmentDataService);
+
+  season = this.dataService.state.season as Signal<number>;
+
+  private apollo = inject(Apollo);
+  private snackbar = inject(MatSnackBar);
+  private changeDetector = inject(ChangeDetectorRef);
+  private formBuilder = inject(FormBuilder);
   destroy$ = new Subject<void>();
 
   team = input.required<FormControl<Team>>();
+
   teamType = computed(() => {
     if (!this.team()?.value?.type) {
       throw new Error('No team type');
@@ -83,8 +89,6 @@ export class TeamComponent implements OnInit {
 
   system = input.required<RankingSystem>();
 
-  season = input<number>(getCurrentSeason());
-
   type = computed(() => {
     if (this.team()?.value?.type === SubEventTypeEnum.NATIONAL) {
       return SubEventTypeEnum.MX;
@@ -92,14 +96,14 @@ export class TeamComponent implements OnInit {
     return this.team()?.value?.type;
   });
 
-  @Output()
-  editTeam = new EventEmitter<Team>();
+  loans = input.required<string[]>();
+  transfers = input.required<string[]>();
 
-  @Output()
-  removeTeam = new EventEmitter<Team>();
+  editTeam = output<Team>();
 
-  @Output()
-  changeTeamNumber = new EventEmitter<Team>();
+  removeTeam = output<Team>();
+
+  changeTeamNumber = output<Team>();
 
   types = Object.keys(TeamMembershipType) as TeamMembershipType[];
 
@@ -116,13 +120,6 @@ export class TeamComponent implements OnInit {
 
   hasWarning = false;
   warningMessage = '';
-
-  constructor(
-    private apollo: Apollo,
-    private snackbar: MatSnackBar,
-    private changeDetector: ChangeDetectorRef,
-    private formBuilder: FormBuilder,
-  ) {}
 
   ngOnInit(): void {
     this.checkTeam();
@@ -178,7 +175,10 @@ export class TeamComponent implements OnInit {
       new TeamPlayer({
         ...player,
         rankingPlaces: ranking.data?.rankingPlaces ?? [],
-        membershipType: TeamMembershipType.REGULAR,
+        teamMembership: {
+          id: uuid(),
+          membershipType: TeamMembershipType.REGULAR,
+        },
       }),
     );
 
@@ -189,11 +189,11 @@ export class TeamComponent implements OnInit {
   }
 
   async addBasePlayerToTeam(player: Player) {
-    console.log('addBasePlayerToTeam', player, this.basePlayers());
     // Check if player is already in team
     if (this.basePlayers().value.find((p) => p.id === player.id)) {
       this.snackbar.open('Player is already in baseteam', 'Close', {
         duration: 3000,
+        panelClass: 'warn',
       });
       return;
     }
@@ -220,7 +220,30 @@ export class TeamComponent implements OnInit {
   }
 
   changePlayerType(player: TeamPlayer, type: TeamMembershipType) {
-    player.membershipType = type;
+    const index = this.team().value.players?.findIndex((p) => p.id === player.id);
+
+    if (index == null) {
+      return;
+    }
+    const current = this.team().value;
+    const currentPlayer = current.players[index];
+
+    this.team().setValue({
+      ...current,
+      players: [
+        ...current.players.slice(0, index),
+        {
+          ...currentPlayer,
+          teamMembership: {
+            ...currentPlayer.teamMembership,
+            membershipType: type,
+          },
+        },
+        ...current.players.slice(index + 1),
+        // we need to re-create the object because `.value` loses the mapping
+      ].map((p) => new TeamPlayer(p)),
+    } as Team);
+
     this.checkTeam();
   }
 
@@ -229,11 +252,11 @@ export class TeamComponent implements OnInit {
     this.warningMessage = '';
 
     this.baseCount = this.team().value.players?.filter(
-      (p) => p.membershipType === TeamMembershipType.REGULAR,
+      (p) => p.teamMembership.membershipType === TeamMembershipType.REGULAR,
     ).length;
 
     this.backupCount = this.team().value.players?.filter(
-      (p) => p.membershipType === TeamMembershipType.BACKUP,
+      (p) => p.teamMembership.membershipType === TeamMembershipType.BACKUP,
     ).length;
 
     // check if all required fields are set (captainId, preferredDay, prefferdTime, email, phone)

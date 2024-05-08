@@ -4,12 +4,13 @@ import {
   ClubNewInput,
   ClubPlayerMembership,
   ClubPlayerMembershipNewInput,
-  ClubPlayerMembershipType,
   ClubPlayerMembershipUpdateInput,
   ClubUpdateInput,
+  ClubWithPlayerMembershipType,
   Comment,
   Location,
   Player,
+  PlayerWithClubMembershipType,
   Role,
   Team,
 } from '@badman/backend-database';
@@ -27,6 +28,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs } from '../../utils';
 
@@ -87,16 +89,38 @@ export class ClubsResolver {
     return club.getRoles(ListArgs.toFindOptions(listArgs));
   }
 
-  @ResolveField(() => [Player])
-  async players(@Parent() club: Club, @Args() listArgs: ListArgs): Promise<Player[]> {
+  @ResolveField(() => [PlayerWithClubMembershipType])
+  async players(
+    @Parent() club: Club,
+    @Args() listArgs: ListArgs,
+    @Args('active', { type: () => Boolean, nullable: true, defaultValue: true }) active = true,
+  ): Promise<(Player & { ClubMembership: ClubPlayerMembership })[] | Player[] | undefined> {
     const options = ListArgs.toFindOptions(listArgs);
 
-    options.where = {
-      ...options.where,
-      '$ClubPlayerMembership.end$': null,
-    };
+    if (active) {
+      //active =  this.start && this.start < new Date() && (!this.end || this.end > new Date());
+      options.where = {
+        ...options.where,
+        [`$${ClubPlayerMembership.name}.start$`]: {
+          [Op.lte]: new Date(),
+        },
+        [`$${ClubPlayerMembership.name}.end$`]: {
+          [Op.or]: {
+            [Op.gte]: new Date(),
+            [Op.eq]: null,
+          },
+        },
+      };
+    }
 
-    const players = await club.getPlayers(options);
+    const players = (await club.getPlayers(options)) as (Player & {
+      ClubMembership: ClubPlayerMembership;
+    })[];
+
+    // if (active) {
+    //   players = players.filter((player) => player.ClubMembership.active);
+    // }
+
     const distinctPlayers = players.filter(
       (player, index, self) => index === self.findIndex((p) => p.id === player.id),
     );
@@ -228,6 +252,7 @@ export class ClubsResolver {
         through: {
           start: addPlayerToClubData.start,
           end: addPlayerToClubData.end,
+          membershipType: addPlayerToClubData.membershipType,
         },
       });
 
@@ -319,7 +344,7 @@ export class ClubsResolver {
   }
 }
 
-@Resolver(() => ClubPlayerMembershipType)
+@Resolver(() => ClubWithPlayerMembershipType)
 export class ClubPlayerResolver extends ClubsResolver {
   @ResolveField(() => ClubPlayerMembership, { nullable: true })
   async clubMembership(

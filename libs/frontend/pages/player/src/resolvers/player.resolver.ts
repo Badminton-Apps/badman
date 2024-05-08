@@ -9,14 +9,11 @@ import { filter, first, map, switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class PlayerResolver {
+  private apollo = inject(Apollo);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
   private systemService = inject(RankingSystemService);
   private injector = inject(Injector);
-
-  constructor(
-    private apollo: Apollo,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   resolve(route: ActivatedRouteSnapshot) {
     const playerId = route.params['id'];
@@ -43,6 +40,10 @@ export class PlayerResolver {
                   id
                   slug
                   name
+                  clubMembership {
+                    id
+                    membershipType
+                  }
                 }
                 rankingLastPlaces(where: { systemId: $systemId }) {
                   id

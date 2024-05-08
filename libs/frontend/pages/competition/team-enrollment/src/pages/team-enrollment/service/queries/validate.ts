@@ -8,7 +8,11 @@ import { TeamFormValue } from '../../team-enrollment.page';
 export const validateEnrollment = (
   apollo: Apollo,
   teamForm?: { [key in SubEventTypeEnum]: TeamFormValue[] },
+
   season?: number,
+  clubId?: string,
+  transfers?: string[],
+  loans?: string[],
 ) => {
   if (!teamForm || !season) {
     console.error('No teamForm or season provided');
@@ -25,6 +29,7 @@ export const validateEnrollment = (
     players?: string[];
     backupPlayers?: string[];
     basePlayers?: string[];
+    exceptions?: string[];
   }[] = [];
 
   //  type of SubEventTypeEnum
@@ -44,10 +49,13 @@ export const validateEnrollment = (
         link: team.team.link,
         players: team.team?.players?.map((p) => p.id)?.filter((p) => p) as string[],
         backupPlayers: team.team.players
-          ?.filter((p) => p.membershipType == TeamMembershipType.BACKUP)
+          ?.filter((p) => p.teamMembership.membershipType == TeamMembershipType.BACKUP)
           ?.map((p) => p.id)
           ?.filter((p) => p) as string[],
         basePlayers: team.entry?.players?.map((p) => p?.id)?.filter((p) => p) as string[],
+        exceptions: team.entry?.players
+          ?.filter((p) => !p?.levelException && p?.levelExceptionRequested)
+          ?.map((p) => p?.id) as string[],
       });
     });
   }
@@ -83,8 +91,11 @@ export const validateEnrollment = (
       `,
       variables: {
         enrollment: {
+          clubId,
           season,
           teams,
+          transfers,
+          loans,
         },
       },
     })

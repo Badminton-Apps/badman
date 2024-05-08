@@ -5,6 +5,7 @@ import {
   EntryCompetitionPlayer,
   EntryCompetitionPlayersType,
   EventEntry,
+  Logging,
   Player,
   Standing,
   SubEventCompetition,
@@ -13,7 +14,7 @@ import {
 } from '@badman/backend-database';
 import { EnrollmentValidationService, TeamEnrollmentOutput } from '@badman/backend-enrollment';
 import { NotificationService } from '@badman/backend-notifications';
-import { TeamMembershipType } from '@badman/utils';
+import { LoggingAction, TeamMembershipType } from '@badman/utils';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Int, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { ListArgs } from '../../utils';
@@ -126,6 +127,33 @@ export class EventEntryResolver {
     }
 
     await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
+
+    const teamsOfClub = await Team.findAll({
+      where: {
+        clubId: clubId,
+        season: season,
+      },
+      include: [{ model: EventEntry }],
+    });
+
+    for (const team of teamsOfClub) {
+      if (!team.entry) {
+        continue;
+      }
+
+      team.entry.sendOn = new Date();
+      await team.entry.save();
+    }
+
+    await Logging.create({
+      action: LoggingAction.EnrollmentSubmitted,
+      playerId: user.id,
+      meta: {
+        clubId,
+        season,
+        email,
+      },
+    });
 
     return true;
   }

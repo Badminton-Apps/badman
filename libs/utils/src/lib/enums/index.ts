@@ -15,4 +15,5 @@ export * from './subEventType.enum';
 export * from './teamMembershipType.enum';
 export * from './usedRankingTiming.enum';
 export * from './useForTeams.enum';
+export * from './loggingAction.enum';
 // end:ng42.barrel

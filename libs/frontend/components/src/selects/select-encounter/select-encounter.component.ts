@@ -1,13 +1,12 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  EventEmitter,
-  Inject,
   OnInit,
-  Output,
   PLATFORM_ID,
   TransferState,
   input,
+  inject,
+  output,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -56,6 +55,11 @@ import {
   styleUrls: ['./select-encounter.component.scss'],
 })
 export class SelectEncounterComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private transferState = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
   private destroy$ = injectDestroy();
 
   controlName = input('encounter');
@@ -71,18 +75,9 @@ export class SelectEncounterComponent implements OnInit {
   control = input<FormControl<string | null>>();
   protected internalControl!: FormControl<string | null>;
 
-  @Output()
-  encounterSelected = new EventEmitter<EncounterCompetition>();
+  encounterSelected = output<EncounterCompetition>();
 
   encounters$?: Observable<EncounterCompetition[]>;
-
-  constructor(
-    private apollo: Apollo,
-    private router: Router,
-    private route: ActivatedRoute,
-    private transferState: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit() {
     if (this.control()) {

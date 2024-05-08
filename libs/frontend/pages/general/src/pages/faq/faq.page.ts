@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,17 +39,17 @@ import { lastValueFrom } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FaqPageComponent implements OnInit {
-  questions!: Question[]; // this should be populated with the questions fetched from Apollo Graphql
+  questions!: Question[];
+  private seoService = inject(SeoService);
+  private route = inject(ActivatedRoute);
+  private apollo = inject(Apollo);
+  private changeDetectorRef = inject(ChangeDetectorRef);
   questionBeingEdited?: string;
   editForm!: FormGroup;
 
-  constructor(
-    formBuilder: FormBuilder,
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private apollo: Apollo,
-    private changeDetectorRef: ChangeDetectorRef,
-  ) {
+  constructor() {
+    const formBuilder = inject(FormBuilder);
+
     this.editForm = formBuilder.group({
       question: '',
       answer: '',
