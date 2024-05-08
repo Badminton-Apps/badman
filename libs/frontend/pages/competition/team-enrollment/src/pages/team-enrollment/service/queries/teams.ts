@@ -33,6 +33,7 @@ export const loadTeams = (
             clubId
             preferredDay
             preferredTime
+            prefferedLocationId
             captainId
             phone
             email

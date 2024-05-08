@@ -17,7 +17,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { getCurrentSeason, getUpcommingSeason } from '@badman/utils';
+import { getUpcommingSeason } from '@badman/utils';
 
 import { input } from '@angular/core';
 import { DEVICE } from '@badman/frontend-utils';
@@ -94,6 +94,7 @@ export class LocationComponent implements OnInit {
   controlName = input('availabilities');
 
   whenLocationUpdate = output<void>();
+  whenLocationRemove = output<void>();
 
   days!: FormArray<LocationavDayType>;
   exceptions!: FormArray<LocationExceptionType>;

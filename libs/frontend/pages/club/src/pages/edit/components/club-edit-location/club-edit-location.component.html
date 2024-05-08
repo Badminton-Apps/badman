@@ -9,7 +9,7 @@
         <button mat-menu-item (click)="this.whenEdit.emit(location())">
           {{ 'all.button.edit' | translate }}
         </button>
-        <badman-has-claim [any]="[club().id + '_remove:location()', 'edit-any:club()']">
+        <badman-has-claim [any]="[club().id + '_remove:location', 'edit-any:club']">
           <mat-divider></mat-divider>
           <button mat-menu-item (click)="this.whenDelete.emit(location())">
             {{ 'all.button.delete' | translate }}

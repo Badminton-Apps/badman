@@ -130,6 +130,7 @@ export class CompetitionEnrollmentsComponent implements OnInit {
                           link
                           preferredDay
                           preferredTime
+                          prefferedLocationId
                           captain {
                             id
                             fullName

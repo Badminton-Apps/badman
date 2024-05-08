@@ -34,7 +34,7 @@
     >
       {{ 'all.team.title.base-fields' | translate }}
       @if (hasWarning) {
-        <mat-icon>warning</mat-icon>
+        <mat-icon color="warn">warning</mat-icon>
       }
     </div>
     @if (!expanded.team) {
@@ -49,28 +49,40 @@
     <div>
       <div class="team-info">
         <div class="prefferd">
-          <mat-form-field class="day">
-            <mat-label>{{ 'all.input.day' | translate }}</mat-label>
-            <mat-select [required]="true" [(value)]="team().value.preferredDay">
-              <mat-option value="monday">{{ 'all.days.monday' | translate }}</mat-option>
-              <mat-option value="tuesday">{{ 'all.days.tuesday' | translate }}</mat-option>
-              <mat-option value="wednesday">{{ 'all.days.wednesday' | translate }}</mat-option>
-              <mat-option value="thursday">{{ 'all.days.thursday' | translate }}</mat-option>
-              <mat-option value="friday">{{ 'all.days.friday' | translate }}</mat-option>
-              <mat-option value="saturday">{{ 'all.days.saturday' | translate }}</mat-option>
-              <mat-option value="sunday">{{ 'all.days.sunday' | translate }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="time">
-            <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
-            <input
-              [required]="true"
-              matInput
-              type="time"
-              step="900"
-              [(ngModel)]="team().value.preferredTime"
-            />
-          </mat-form-field>
+          <div class="row">
+            <mat-form-field class="day">
+              <mat-label>{{ 'all.input.day' | translate }}</mat-label>
+              <mat-select [required]="true" [(value)]="team().value.preferredDay">
+                <mat-option value="monday">{{ 'all.days.monday' | translate }}</mat-option>
+                <mat-option value="tuesday">{{ 'all.days.tuesday' | translate }}</mat-option>
+                <mat-option value="wednesday">{{ 'all.days.wednesday' | translate }}</mat-option>
+                <mat-option value="thursday">{{ 'all.days.thursday' | translate }}</mat-option>
+                <mat-option value="friday">{{ 'all.days.friday' | translate }}</mat-option>
+                <mat-option value="saturday">{{ 'all.days.saturday' | translate }}</mat-option>
+                <mat-option value="sunday">{{ 'all.days.sunday' | translate }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="time">
+              <mat-label>{{ 'all.input.hour' | translate }}</mat-label>
+              <input
+                [required]="true"
+                matInput
+                type="time"
+                step="900"
+                [(ngModel)]="team().value.preferredTime"
+              />
+            </mat-form-field>
+          </div>
+          <div class="row">
+            <mat-form-field class="day">
+              <mat-label>{{ 'all.input.location' | translate }}</mat-label>
+              <mat-select [required]="true" [(value)]="team().value.prefferedLocationId">
+                @for (location of locations(); track $index) {
+                  <mat-option [value]="location?.id">{{ location?.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
         </div>
         <div class="captain">
           <p>{{ 'all.team.title.captain' | translate }}</p>
