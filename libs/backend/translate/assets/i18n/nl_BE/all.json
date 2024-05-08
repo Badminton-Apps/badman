@@ -325,7 +325,7 @@
         "title": "Mogelijke titularissen",
         "transfer": "Getransfereerd"
       },
-      "request-level-exception": "Vraag vrijstelling aan voor {player.fullName}",
+      "request-level-exception": "Vraag uitzondering aan voor {player.fullName}",
       "save-and-continue-tooltip": "Je kan doorgaan zonder je teams op te slaan, maar hier laten we toe tussentijds op te slaan indien er nog onzekerheden zijn over je basisspelers.",
       "saved": "Inschrijving opgeslagen",
       "saved-failed": "Er waren problemen met opslaan, controleer je data of probeer later opnieuw.",

@@ -325,7 +325,7 @@
         "title": "Possible titulars",
         "transfer": "Transferred"
       },
-      "request-level-exception": "Apply for exemption for {player.fullName}",
+      "request-level-exception": "Request exception for {player.fullName}",
       "save-and-continue-tooltip": "You can continue without saving your teams, but we allow you to save in between if there are still uncertainties about your baseplayers",
       "saved": "Registration saved",
       "saved-failed": "There were problems saving, please check your data or try again later.",

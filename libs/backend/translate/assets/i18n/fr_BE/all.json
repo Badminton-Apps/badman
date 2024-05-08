@@ -325,7 +325,7 @@
         "title": "Détenteurs possibles",
         "transfer": "Transféré"
       },
-      "request-level-exception": "Demande d'exemption pour {player.fullName}",
+      "request-level-exception": "Demande d'exception pour {player.fullName}",
       "save-and-continue-tooltip": "Vous pouvez continuer sans sauvegarder vos équipes, mais ici nous vous permettons de sauvegarder en attendant s'il y a encore des incertitudes sur vos joueurs de base",
       "saved": "Inscription enregistrée",
       "saved-failed": "Des problèmes sont survenus lors de l'enregistrement, veuillez vérifier vos données ou réessayer plus tard.",
