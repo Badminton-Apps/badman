@@ -76,6 +76,12 @@ export class TeamComponent implements OnInit {
   destroy$ = new Subject<void>();
 
   team = input.required<FormControl<Team>>();
+  locations = input.required<
+    {
+      id: string;
+      name: string;
+    }[]
+  >();
 
   teamType = computed(() => {
     if (!this.team()?.value?.type) {
@@ -259,6 +265,14 @@ export class TeamComponent implements OnInit {
       (p) => p.teamMembership.membershipType === TeamMembershipType.BACKUP,
     ).length;
 
+    if (this.locations().length === 1) {
+      const current = this.team().value;
+      this.team().patchValue({
+        ...current,
+        prefferedLocationId: this.locations()[0].id,
+      } as Team);
+    }
+
     // check if all required fields are set (captainId, preferredDay, prefferdTime, email, phone)
     const warnings = [];
     if (this.team().value.captainId == null) {
@@ -271,6 +285,10 @@ export class TeamComponent implements OnInit {
 
     if (this.team().value.preferredTime == null) {
       warnings.push('No preferred time selected');
+    }
+
+    if (this.team().value.prefferedLocationId == null) {
+      warnings.push('No preferred location selected');
     }
 
     if (this.team().value.email == null) {

@@ -537,6 +537,7 @@
     "hour": "Speeluur",
     "lastname": "Achternaam",
     "latitude": "Breedtegraad",
+    "location": "Locatie",
     "longitude": "Lengtegraad",
     "memberId": "Lidnummer",
     "name": "Naam",
