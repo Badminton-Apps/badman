@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, effect, input, model } from '@angular/core';
+import { Component, computed, effect, input, model, untracked } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { Player } from '@badman/frontend-models';
 import { MtxSelectModule } from '@ng-matero/extensions/select';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
@@ -32,8 +33,20 @@ export class SelectPlayerSignalsComponent {
   label = input('all.pickers.select-player');
 
   possiblePlayers = computed(() => {
-    return this.dataService.players();
+    let players = this.dataService.players();
+
+    untracked(() => {
+      const customFilter = this.filter();
+
+      if (customFilter) {
+        players = customFilter(players);
+      }
+    });
+
+    return players;
   });
+
+  filter = input<(results: Player[]) => Player[]>((value) => value);
 
   // selections
   player = model<string | null>(null);

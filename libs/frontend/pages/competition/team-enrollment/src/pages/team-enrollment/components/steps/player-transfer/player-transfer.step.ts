@@ -19,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SelectPlayerSignalsComponent } from '@badman/frontend-components';
+import { Player } from '@badman/frontend-models';
 import { ClubMembershipType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { take } from 'rxjs/operators';
@@ -151,5 +152,31 @@ export class PlayerTransferStepComponent {
         // update the view
         this.change.detectChanges();
       });
+  }
+
+  newPlayerFilter(results: Player[]) {
+    // filter out players that are already in the list
+    const transfers = this.transfersControl().value;
+    results = results.filter((player) => !transfers.includes(player.id));
+
+    const loans = this.loansControl().value;
+    results = results.filter((player) => !loans.includes(player.id));
+
+    // filter out where active club contains is the current club
+    results = results.filter((player) => {
+      const activeClubs = player.clubs?.filter(
+        (club) => (club.clubMembership?.active ?? false) == true,
+      );
+      // console.log('results', activeClubs, this.club());
+      if (activeClubs?.length === 1) {
+        // don't show the player if they are already in the club
+        if (activeClubs[0].id === this.club()?.id) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    return results;
   }
 }
