@@ -6,6 +6,5 @@ export * from './encounter-competition.model';
 export * from './event-competition.model';
 export * from './group-subevent-membership.model';
 export * from './sub-event-competition.model';
-export * from './team-location-membership.model';
 export * from './assembly.model';
 // end:ng42.barrel

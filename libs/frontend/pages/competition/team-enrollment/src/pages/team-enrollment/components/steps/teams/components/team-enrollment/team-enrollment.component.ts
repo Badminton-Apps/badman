@@ -21,6 +21,7 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ClaimService } from '@badman/frontend-auth';
@@ -38,7 +39,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 import { TeamForm } from '../../../../../team-enrollment.page';
 import { TeamComponent } from '../team';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -69,6 +69,12 @@ export class TeamEnrollmentComponent {
   group = input.required<TeamForm>();
   transfers = input.required<string[]>();
   loans = input.required<string[]>();
+  locations = input.required<
+    {
+      id: string;
+      name: string;
+    }[]
+  >();
 
   team = computed(() => this.group().get('team') as FormControl<Team>);
   type = computed(() => this.team().value.type ?? SubEventTypeEnum.M);

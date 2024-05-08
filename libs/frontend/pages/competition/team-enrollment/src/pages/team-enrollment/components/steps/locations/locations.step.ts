@@ -151,6 +151,7 @@ export class LocationsStepComponent {
 
   removeLocation(index: number) {
     this.locations().removeAt(index);
+    
   }
 
   editLocation(index: number) {

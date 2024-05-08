@@ -238,7 +238,9 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
               levelExceptionRequested: player?.levelExceptionRequested,
               levelExceptionReason:
                 // avoid sending empty strings
-                player?.levelExceptionReason?.length > 0 ? player?.levelExceptionReason : undefined,
+                (player?.levelExceptionReason?.length ?? 0) > 0
+                  ? player?.levelExceptionReason
+                  : undefined,
             }),
           ),
         };

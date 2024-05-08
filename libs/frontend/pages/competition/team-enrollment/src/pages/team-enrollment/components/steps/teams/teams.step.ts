@@ -22,6 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Club, EntryCompetitionPlayer, Team } from '@badman/frontend-models';
 import {
   ClubMembershipType,
   SubEventType,
@@ -31,14 +32,13 @@ import {
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
+import { combineLatest } from 'rxjs';
 import { debounceTime, map, pairwise, startWith, takeUntil } from 'rxjs/operators';
-import { TEAMS, TRANSFERS_LOANS } from '../../../../../forms';
+import { v4 as uuidv4 } from 'uuid';
+import { LOCATIONS, TEAMS, TRANSFERS_LOANS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { TeamForm } from '../../../team-enrollment.page';
 import { TeamEnrollmentComponent } from './components';
-import { Club, EntryCompetitionPlayer, Team } from '@badman/frontend-models';
-import { v4 as uuidv4 } from 'uuid';
-import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'badman-teams-step',
@@ -77,6 +77,8 @@ export class TeamsStepComponent {
         [key in SubEventTypeEnum]: FormArray<TeamForm>;
       }>,
   );
+
+  locations = computed(() => this.formGroup().get(LOCATIONS)?.getRawValue());
 
   transfersLoans = computed(
     () =>
