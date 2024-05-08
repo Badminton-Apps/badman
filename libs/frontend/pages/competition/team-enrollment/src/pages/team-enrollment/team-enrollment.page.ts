@@ -238,7 +238,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
               levelExceptionRequested: player?.levelExceptionRequested,
               levelExceptionReason:
                 // avoid sending empty strings
-                player?.levelExceptionReason.length > 0 ? player?.levelExceptionReason : undefined,
+                player?.levelExceptionReason?.length > 0 ? player?.levelExceptionReason : undefined,
             }),
           ),
         };
@@ -253,6 +253,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
           season: this.formGroup.value.season,
           preferredDay: enrollment?.team?.preferredDay,
           preferredTime: enrollment?.team?.preferredTime,
+          prefferedLocationId: enrollment?.team?.prefferedLocationId,
           captainId: enrollment?.team?.captainId,
           phone: enrollment?.team?.phone,
           email: enrollment?.team?.email,
@@ -494,6 +495,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
           panelClass: 'error',
         },
       );
+      console.log(error);
     } finally {
       this.saving = false;
     }
@@ -535,6 +537,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
           panelClass: 'error',
         },
       );
+      console.log(error);
     } finally {
       this.saving = false;
     }
