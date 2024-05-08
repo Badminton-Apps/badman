@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Inject,
   OnInit,
   PLATFORM_ID,
   TemplateRef,
   TransferState,
   ViewChild,
+  inject,
 } from '@angular/core';
 import {
   FormControl,
@@ -78,8 +78,6 @@ export type ClubFieldsForm = FormGroup<{
   state: FormControl<string>;
 }>;
 
-
-
 @Component({
   selector: 'badman-club-edit',
   templateUrl: './edit.page.html',
@@ -113,6 +111,15 @@ export type ClubFieldsForm = FormGroup<{
   ],
 })
 export class EditPageComponent implements OnInit {
+  private seoService = inject(SeoService);
+  private breadcrumbsService = inject(BreadcrumbService);
+  private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
+  private apollo = inject(Apollo);
+  private cache = inject<InMemoryCache>(APOLLO_CACHE);
+  private route = inject(ActivatedRoute);
+  private stateTransfer = inject(TransferState);
+  private platformId = inject<string>(PLATFORM_ID);
   public securityTypes: typeof SecurityType = SecurityType;
 
   club!: Club;
@@ -150,18 +157,6 @@ export class EditPageComponent implements OnInit {
   // template ref for adding new team
   @ViewChild('newTeamTemplate', { static: true })
   teamTemplate?: TemplateRef<HTMLElement>;
-
-  constructor(
-    private seoService: SeoService,
-    private breadcrumbsService: BreadcrumbService,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog,
-    private apollo: Apollo,
-    @Inject(APOLLO_CACHE) private cache: InMemoryCache,
-    private route: ActivatedRoute,
-    private stateTransfer: TransferState,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {

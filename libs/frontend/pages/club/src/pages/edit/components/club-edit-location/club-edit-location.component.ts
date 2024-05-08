@@ -1,12 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, inject, output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -92,8 +85,11 @@ export type LocationForm = FormGroup<{
   ],
 })
 export class ClubEditLocationComponent implements OnInit {
-  @Output() whenEdit = new EventEmitter<Location>();
-  @Output() whenDelete = new EventEmitter<Location>();
+  private formBuilder = inject(FormBuilder);
+  private apollo = inject(Apollo);
+  private snackBar = inject(MatSnackBar);
+  whenEdit = output<Location>();
+  whenDelete = output<Location>();
 
   club = input.required<Club>();
 
@@ -106,13 +102,6 @@ export class ClubEditLocationComponent implements OnInit {
 
   days!: FormArray<LocationavDayType>;
   exceptions!: FormArray<LocationExceptionType>;
-
-  constructor(
-    private formBuilder: FormBuilder,
-    private apollo: Apollo,
-    private snackBar: MatSnackBar,
-  ) {}
-
   expanded = {
     start: undefined,
     end: undefined,

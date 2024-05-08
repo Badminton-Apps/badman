@@ -2,11 +2,11 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
   OnInit,
   PLATFORM_ID,
   TransferState,
   input,
+  inject,
 } from '@angular/core';
 import { Player, RankingPlace, RankingSystem } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -25,6 +25,9 @@ import { ChartComponent } from './components';
   imports: [CommonModule, TranslateModule, ChartComponent],
 })
 export class RankingEvolutionComponent implements OnInit {
+  private platformId = inject<string>(PLATFORM_ID);
+  private stateTransfer = inject(TransferState);
+  private apollo = inject(Apollo);
   player = input.required<Player>();
 
   system = input.required<RankingSystem>();
@@ -38,12 +41,6 @@ export class RankingEvolutionComponent implements OnInit {
   get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
   }
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: string,
-    private stateTransfer: TransferState,
-    private apollo: Apollo,
-  ) {}
 
   ngOnInit(): void {
     this.rankingPlaces$ = this._loadRankingPlaces().pipe(

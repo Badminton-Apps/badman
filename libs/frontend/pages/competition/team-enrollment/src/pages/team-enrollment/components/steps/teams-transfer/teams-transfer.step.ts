@@ -89,10 +89,16 @@ export class TeamsTransferStepComponent {
       }>,
   );
 
+  initialized = false;
+
   constructor() {
     this.transferTeamsCtrl.valueChanges
       .pipe(takeUntil(this.destroy$), startWith([] as string[]), pairwise())
       .subscribe(([prev, next]) => {
+        if (!this.initialized) {
+          return;
+        }
+
         // find removed teams
         const removedTeams = prev.filter((team) => !next.includes(team));
         for (const id of removedTeams) {
@@ -108,10 +114,13 @@ export class TeamsTransferStepComponent {
         }
       });
 
-    // set initial controls
+    // set initial controls and update when club changes
     effect(() => {
       // get club
       const club = this.club();
+
+      // set initizalized flag
+      this.initialized = false;
 
       // wait for teams to be loaded, and also reload when anything changes
       if (!this.loaded() || !club?.id) {
@@ -120,19 +129,29 @@ export class TeamsTransferStepComponent {
 
       // use the state but don't update effect when it changes
       untracked(() => {
-        this.transferTeamsCtrl.patchValue(
-          this.teamsLast()
-            .filter((team) => this.existingLinks().includes(team.link))
-            .map((team) => team.id),
-        );
+        // reset teams on club change
+        for (const enumType of Object.values(SubEventTypeEnum)) {
+          const typedControl = this.teams().get(enumType) as FormArray<TeamForm>;
+          typedControl.clear();
+        }
+        //
+        // this.transferTeamsCtrl.setValue([], { emitEvent: false });
 
-        // add new teams
-        for (const team of this.newTeams()) {
-          if (team.id) {
-            this._addTeam(team);
-          }
+        // Set our control to show all teams that we are transfering
+        const teamIds = this.teamsLast()
+          .filter((team) => this.existingLinks().includes(team.link))
+          .map((team) => team.id);
+
+        // Patch the checkbox list
+        this.transferTeamsCtrl.setValue(teamIds);
+
+        // Copy the existing teams to the form
+        for (const team of this.teamsCurrent()) {
+          this._addTeam(team);
         }
       });
+
+      this.initialized = true;
     });
   }
 
@@ -146,6 +165,7 @@ export class TeamsTransferStepComponent {
 
   private _addTeam(team: Team) {
     const typedControl = this.teams().get(team.type ?? '') as FormArray<TeamForm>;
+
     let entry: {
       players: EntryCompetitionPlayer[];
       subEventId: string | null;
@@ -165,6 +185,9 @@ export class TeamsTransferStepComponent {
             single: p.player.rankingPlaces?.[0].single ?? 0,
             double: p.player.rankingPlaces?.[0].double ?? 0,
             mix: p.player.rankingPlaces?.[0].mix ?? 0,
+            levelException: p.levelException,
+            levelExceptionReason: p.levelExceptionReason,
+            levelExceptionRequested: p.levelExceptionRequested,
           };
         }) ?? []) as EntryCompetitionPlayer[],
         subEventId: null,

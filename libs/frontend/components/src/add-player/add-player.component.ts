@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,10 +13,8 @@ import { PlayerSearchComponent } from '../player-search';
   imports: [CommonModule, TranslateModule, MatDialogModule, MatButtonModule, PlayerSearchComponent],
 })
 export class AddPlayerComponent {
-  constructor(
-    public dialogRef: MatDialogRef<AddPlayerComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Partial<Player>,
-  ) {}
+  public dialogRef = inject<MatDialogRef<AddPlayerComponent>>(MatDialogRef<AddPlayerComponent>);
+  public data = inject<Partial<Player>>(MAT_DIALOG_DATA);
 
   selectPlayer(player: Player) {
     this.dialogRef.close(player);

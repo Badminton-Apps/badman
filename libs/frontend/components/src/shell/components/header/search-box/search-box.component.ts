@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, ReplaySubject, merge } from 'rxjs';
-import { throttleTime, filter, map, startWith, switchMap } from 'rxjs/operators';
+import { throttleTime, filter, map, startWith, switchMap, debounceTime } from 'rxjs/operators';
 
 type SearchType = { id: string; name: string; slug: string };
 
@@ -32,6 +32,8 @@ type SearchType = { id: string; name: string; slug: string };
   styleUrls: ['./search-box.component.scss'],
 })
 export class SearchBoxComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private router = inject(Router);
   label = input('all.search.placeholder');
 
   formControl!: FormControl;
@@ -46,11 +48,6 @@ export class SearchBoxComponent implements OnInit {
     })[]
   > = new ReplaySubject(0);
 
-  constructor(
-    private apollo: Apollo,
-    private router: Router,
-  ) {}
-
   ngOnInit() {
     this.formControl = new FormControl();
     const search$ = this.formControl.valueChanges.pipe(
@@ -58,7 +55,7 @@ export class SearchBoxComponent implements OnInit {
       filter((x) => !!x),
       filter((x) => typeof x === 'string'),
       filter((x) => x?.length > 1),
-      throttleTime(600),
+      debounceTime(600),
       switchMap((query) =>
         this.apollo.query<{
           search: SearchType[];

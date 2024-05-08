@@ -1,7 +1,8 @@
-mixin signatures(logo)
-  //- Top row
-  .flex.justify-between
-    .flex
+mixin signatures(logo, generationDate, rankingDate)
+  .flex.justify-between.flex-row
+    //- flex with 2 rows
+    .flex.flex-col
+      .text-xs.text-gray-500 Gegenereerd op: #{generationDate}, klassementen datum: #{rankingDate}
       //- base64 with logo badminton vlaanderen
       img(src=logo, width="300px", alt="logo badminton vlaanderen")
 

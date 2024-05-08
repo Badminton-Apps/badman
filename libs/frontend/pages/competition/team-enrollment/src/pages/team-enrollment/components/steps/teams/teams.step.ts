@@ -3,16 +3,15 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  QueryList,
   Signal,
   TemplateRef,
-  ViewChild,
-  ViewChildren,
   computed,
   effect,
   inject,
   input,
   untracked,
+  viewChild,
+  viewChildren,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,16 +22,23 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { SubEventType, SubEventTypeEnum, UseForTeamName, getLetterForRegion } from '@badman/utils';
+import {
+  ClubMembershipType,
+  SubEventType,
+  SubEventTypeEnum,
+  UseForTeamName,
+  getLetterForRegion,
+} from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { debounceTime, map, pairwise, startWith, takeUntil } from 'rxjs/operators';
-import { TEAMS } from '../../../../../forms';
+import { TEAMS, TRANSFERS_LOANS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { TeamForm } from '../../../team-enrollment.page';
 import { TeamEnrollmentComponent } from './components';
 import { Club, EntryCompetitionPlayer, Team } from '@badman/frontend-models';
 import { v4 as uuidv4 } from 'uuid';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'badman-teams-step',
@@ -72,6 +78,20 @@ export class TeamsStepComponent {
       }>,
   );
 
+  transfersLoans = computed(
+    () =>
+      this.formGroup().get(TRANSFERS_LOANS) as FormGroup<{
+        [key in ClubMembershipType]: FormControl<string[]>;
+      }>,
+  );
+
+  transfers = computed(
+    () => this.transfersLoans().get(ClubMembershipType.NORMAL) as FormControl<string[]>,
+  );
+  loans = computed(
+    () => this.transfersLoans().get(ClubMembershipType.LOAN) as FormControl<string[]>,
+  );
+
   teamNumbers = computed(() => {
     const teams = this.teams();
     if (!teams) return;
@@ -87,21 +107,24 @@ export class TeamsStepComponent {
   eventsPerType = this.dataService.state.eventsPerType;
   eventTypes = Object.values(SubEventTypeEnum);
 
-  @ViewChildren(TeamEnrollmentComponent, { read: ElementRef })
-  teamReferences: QueryList<ElementRef<HTMLElement>> | undefined;
+  teamReferences = viewChildren(TeamEnrollmentComponent, {
+    read: ElementRef,
+  });
 
-  @ViewChild('switch')
-  SwitchDialog!: TemplateRef<HTMLElement>;
+  SwitchDialog = viewChild.required<TemplateRef<HTMLElement>>('switch');
 
   constructor() {
     effect(() => {
       untracked(() => {
-        this.teams()
-          .valueChanges.pipe(takeUntil(this.destroy$), debounceTime(600))
+        combineLatest([this.teams().valueChanges, this.transfersLoans().valueChanges])
+          .pipe(takeUntil(this.destroy$), debounceTime(600))
           .subscribe(() => {
             this.dataService.state.validateEnrollment({
               teamForm: this.teams().getRawValue(),
               season: this.season(),
+              clubId: this.club()?.id ?? '',
+              transfers: this.transfersLoans().get(ClubMembershipType.NORMAL)?.getRawValue() ?? [],
+              loans: this.transfersLoans().get(ClubMembershipType.LOAN)?.getRawValue() ?? [],
             });
           });
 
@@ -166,8 +189,8 @@ export class TeamsStepComponent {
 
     ref.onAction().subscribe(() => {
       setTimeout(() => {
-        if (!this.teamReferences) return;
-        const teamToScrollTo = this.teamReferences
+        if (!this.teamReferences()) return;
+        const teamToScrollTo = this.teamReferences()
           .map((reference) => reference.nativeElement)
           .find((element) => element.getAttribute('data-anchor') === team.id);
 
@@ -232,6 +255,7 @@ export class TeamsStepComponent {
       for (let i = 0; i < teams.length; i++) {
         const team = teams.at(i)?.get('team') as FormControl<Team>;
         if (!team) continue;
+        if (!team.value) continue;
 
         team.value.teamNumber = i + 1;
         team.value.name = this.getTeamName(team.value, club);
@@ -246,7 +270,7 @@ export class TeamsStepComponent {
     const type = team.type;
     if (!club) return;
 
-    const ref = this.dialog.open(this.SwitchDialog, {
+    const ref = this.dialog.open(this.SwitchDialog(), {
       data: {
         team,
         numbers: Array.from({ length: this.teamNumbers()?.[type] ?? 0 }, (_, i) => i + 1),

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -29,6 +29,9 @@ import { EditRankingPlaceDialogComponent } from '../../dialogs/edit-ranking-plac
   ],
 })
 export class EditRankingAllComponent implements OnInit {
+  private systemService = inject(RankingSystemService);
+  private appollo = inject(Apollo);
+  private dialog = inject(MatDialog);
   allPlaces$?: Observable<[RankingPlace | undefined, RankingPlace[]][]>;
   query$?: QueryRef<{ player: Partial<Player> }, { playerId: string; system: string }>;
 
@@ -36,12 +39,6 @@ export class EditRankingAllComponent implements OnInit {
   system!: RankingSystem;
 
   player = input.required<Player>();
-
-  constructor(
-    private systemService: RankingSystemService,
-    private appollo: Apollo,
-    private dialog: MatDialog,
-  ) {}
 
   ngOnInit() {
     this.appollo

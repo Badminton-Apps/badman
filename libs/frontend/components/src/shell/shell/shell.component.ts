@@ -1,4 +1,4 @@
-import { Component, computed, inject, Inject, isDevMode, PLATFORM_ID } from '@angular/core';
+import { Component, computed, inject, isDevMode, PLATFORM_ID } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -75,13 +75,22 @@ import {
   styleUrls: ['./shell.component.scss'],
 })
 export class ShellComponent {
+  public config = inject<GoogleAdsConfiguration>(GOOGLEADS_CONFIG_TOKEN);
+  private platformId = inject<string>(PLATFORM_ID);
+  public versionInfo = inject<{
+    beta: boolean;
+    version: string;
+  }>(VERSION_INFO);
+  private apollo = inject(Apollo);
+  private router = inject(Router);
   systemService = inject(RankingSystemService);
   isHandset = inject(DEVICE);
-
+  private auth = inject(ClaimService);
   loading = false;
   development = isDevMode();
   expanded = {
     competition: true,
+    admin: true,
     general: false,
   };
 
@@ -161,26 +170,15 @@ export class ShellComponent {
     () => this.canAnyChange() || (this.canViewChange() && this.openChangeEncounter()),
   );
 
-  constructor(
-    @Inject(GOOGLEADS_CONFIG_TOKEN) public config: GoogleAdsConfiguration,
-    @Inject(PLATFORM_ID)
-    private platformId: string,
-    @Inject(VERSION_INFO)
-    public versionInfo: {
-      beta: boolean;
-      version: string;
-    },
-    private apollo: Apollo,
-    private router: Router,
-    updates: SwUpdate,
-    snackBar: MatSnackBar,
-    private auth: ClaimService,
-  ) {
+  constructor() {
+    const snackBar = inject(MatSnackBar);
+    const updates = inject(SwUpdate);
+
     this.banner = new Banner(
-      config.publisherId,
-      config.slots.sidebar,
-      config.enabled,
-      config.debug,
+      this.config.publisherId,
+      this.config.slots.sidebar,
+      this.config.enabled,
+      this.config.debug,
     );
 
     if (isPlatformBrowser(this.platformId)) {

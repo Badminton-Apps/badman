@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -24,21 +24,19 @@ import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
   ],
 })
 export class AddDialogComponent {
+  public dialogRef = inject<MatDialogRef<AddDialogComponent>>(MatDialogRef<AddDialogComponent>);
+  private snackBar = inject(MatSnackBar);
+  private apollo = inject(Apollo);
+  private fb = inject(FormBuilder);
+  public data = inject<{
+    team: Partial<Team>;
+    teamNumbers: {
+      [key in SubEventType]: number[];
+    };
+  }>(MAT_DIALOG_DATA);
   group?: FormGroup;
 
-  constructor(
-    public dialogRef: MatDialogRef<AddDialogComponent>,
-    private snackBar: MatSnackBar,
-    private apollo: Apollo,
-    private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      team: Partial<Team>;
-      teamNumbers: {
-        [key in SubEventType]: number[];
-      };
-    },
-  ) {
+  constructor() {
     if (!this.group) {
       this.group = this.fb.group({
         teamNumber: this.fb.control(this.data.team?.teamNumber),
@@ -62,7 +60,7 @@ export class AddDialogComponent {
     const players = data.players.map((player: Partial<TeamPlayer>) => {
       return {
         id: player.id,
-        membershipType: player.membershipType,
+        membershipType: player.teamMembership?.membershipType,
       };
     });
 

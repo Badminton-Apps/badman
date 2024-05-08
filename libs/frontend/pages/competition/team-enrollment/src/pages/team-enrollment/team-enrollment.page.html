@@ -8,7 +8,7 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-club' | translate
       }}</ng-template>
-      <badman-club-step [formGroup]="this.formGroup"></badman-club-step>
+      <badman-club-step [formGroup]="this.formGroup" />
       <button
         mat-raised-button
         color="primary"
@@ -24,20 +24,91 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-location' | translate
       }}</ng-template>
-      <badman-locations-step [formGroup]="this.formGroup"></badman-locations-step>
+      <badman-locations-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button mat-stroked-button matStepperNext [disabled]="!locationControl.valid">
-          {{ 'all.button.next' | translate }}
-        </button>
-        <button
-          mat-raised-button
-          (click)="saveAndContinue()"
-          color="primary"
-          [disabled]="!locationControl.valid"
+        @if (hadEntries()) {
+          <button
+            mat-raised-button
+            matStepperNext
+            color="primary"
+            [disabled]="!locationControl.valid || this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        } @else {
+          <button
+            mat-stroked-button
+            matStepperNext
+            [disabled]="!locationControl.valid || this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        }
+        <div
+          [matTooltip]="
+            hadEntries()
+              ? ('all.competition.team-enrollment.warnings.already-saved' | translate)
+              : ''
+          "
         >
-          {{ 'all.button.save-and-continue' | translate }}
-        </button>
+          <button
+            mat-raised-button
+            (click)="saveAndContinue()"
+            color="primary"
+            [disabled]="!locationControl.valid || this.saving || hadEntries()"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.save-and-continue' | translate }}
+          </button>
+        </div>
+      </div>
+    </mat-step>
+
+    <mat-step>
+      <ng-template matStepLabel>{{
+        'all.competition.team-enrollment.transfer.transfers-players' | translate
+      }}</ng-template>
+      <badman-player-transfer-step [formGroup]="this.formGroup" />
+      <div class="actions">
+        <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
+        @if (hadEntries()) {
+          <button
+            mat-raised-button
+            matStepperNext
+            color="primary"
+            [disabled]="this.saving"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        } @else {
+          <button
+            mat-stroked-button
+            matStepperNext
+            [disabled]="this.saving"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        }
+        <div
+          [matTooltip]="
+            hadEntries()
+              ? ('all.competition.team-enrollment.warnings.already-saved' | translate)
+              : ''
+          "
+        >
+          <button
+            mat-raised-button
+            (click)="saveAndContinue()"
+            color="primary"
+            [disabled]="this.saving || hadEntries()"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.save-and-continue' | translate }}
+          </button>
+        </div>
       </div>
     </mat-step>
 
@@ -45,10 +116,17 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.transfer.transfer-teams' | translate
       }}</ng-template>
-      <badman-teams-transfer-step [formGroup]="this.formGroup"></badman-teams-transfer-step>
+      <badman-teams-transfer-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button mat-raised-button color="primary" matStepperNext>
+
+        <button
+          mat-raised-button
+          color="primary"
+          matStepperNext
+          [disabled]="this.saving"
+          [class.spinner]="this.saving"
+        >
           {{ 'all.button.next' | translate }}
         </button>
       </div>
@@ -58,36 +136,65 @@
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.select-teams' | translate
       }}</ng-template>
-      <badman-teams-step [formGroup]="this.formGroup"></badman-teams-step>
+      <badman-teams-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button
-          mat-stroked-button
-          color="primary"
-          matStepperNext
-          [disabled]="this.formGroup.get('teams')?.valid === false"
+
+        @if (hadEntries()) {
+          <button
+            mat-raised-button
+            color="primary"
+            matStepperNext
+            [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        } @else {
+          <button
+            mat-stroked-button
+            color="primary"
+            matStepperNext
+            [disabled]="this.formGroup.get('teams')?.valid === false || this.saving"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.next' | translate }}
+          </button>
+        }
+        <div
+          [matTooltip]="
+            hadEntries()
+              ? ('all.competition.team-enrollment.warnings.already-saved' | translate)
+              : ''
+          "
         >
-          {{ 'all.button.next' | translate }}
-        </button>
-        <button
-          mat-raised-button
-          (click)="saveAndContinue(true)"
-          color="primary"
-          [disabled]="this.formGroup.get('teams')?.valid === false"
-        >
-          {{ 'all.button.save-and-continue' | translate }}
-        </button>
+          <button
+            mat-raised-button
+            (click)="saveAndContinue(true)"
+            color="primary"
+            [disabled]="this.formGroup.get('teams')?.valid === false || this.saving || hadEntries()"
+            [class.spinner]="this.saving"
+          >
+            {{ 'all.button.save-and-continue' | translate }}
+          </button>
+        </div>
       </div>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>{{
         'all.competition.team-enrollment.comments.title' | translate
       }}</ng-template>
-      <badman-comments-step [formGroup]="this.formGroup"></badman-comments-step>
+      <badman-comments-step [formGroup]="this.formGroup" />
       <div class="actions">
         <button mat-stroked-button matStepperPrevious>{{ 'all.button.prev' | translate }}</button>
-        <button mat-raised-button color="primary" (click)="saveAndFinish()">
-          {{ 'all.button.save' | translate }}
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="saveAndFinish()"
+          [disabled]="this.saving"
+          [class.spinner]="this.saving"
+        >
+          {{ 'all.button.submit' | translate }}
         </button>
       </div>
     </mat-step>

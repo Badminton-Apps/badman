@@ -1,13 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  inject,
-  input,
-  Output,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
+import { Component, inject, input, TemplateRef, ViewChild, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,8 +25,7 @@ export class AddRoleComponent {
   @ViewChild('newRoleTemplate')
   newRoleTemplateRef?: TemplateRef<HTMLElement>;
 
-  @Output()
-  whenRoleAdded = new EventEmitter();
+  whenRoleAdded = output();
 
   async addRole() {
     if (!this.newRoleTemplateRef) {

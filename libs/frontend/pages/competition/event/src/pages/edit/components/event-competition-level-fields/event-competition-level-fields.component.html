@@ -1,7 +1,7 @@
 <form [formGroup]="this.formGroup()">
   <h3>
     {{ this.formGroup().value.name }}
-    <button mat-icon-button (click)="whenDelete.next(this.subEvent())">
+    <button mat-icon-button (click)="whenDelete.emit(this.subEvent())">
       <mat-icon>delete</mat-icon>
     </button>
   </h3>

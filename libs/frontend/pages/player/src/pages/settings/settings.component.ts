@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -35,6 +35,13 @@ import { BreadcrumbService } from 'xng-breadcrumb';
   ],
 })
 export class SettingsPageComponent implements OnInit {
+  private apollo = inject(Apollo);
+  private translate = inject(TranslateService);
+  private seoService = inject(SeoService);
+  private route = inject(ActivatedRoute);
+  private breadcrumbsService = inject(BreadcrumbService);
+  private snackBar = inject(MatSnackBar);
+  private platformId = inject<string>(PLATFORM_ID);
   settingsForm!: FormGroup;
 
   saving = false;
@@ -64,16 +71,6 @@ export class SettingsPageComponent implements OnInit {
   ];
 
   settings$?: Observable<Setting | undefined>;
-
-  constructor(
-    private apollo: Apollo,
-    private translate: TranslateService,
-    private seoService: SeoService,
-    private route: ActivatedRoute,
-    private breadcrumbsService: BreadcrumbService,
-    private snackBar: MatSnackBar,
-    @Inject(PLATFORM_ID) private platformId: string,
-  ) {}
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -37,14 +37,12 @@ import moment, { Moment } from 'moment';
   ],
 })
 export class EditRankingPlaceDialogComponent implements OnInit {
+  private dialogRef = inject<MatDialogRef<EditRankingPlaceDialogComponent>>(
+    MatDialogRef<EditRankingPlaceDialogComponent>,
+  );
+  public data = inject<{ place: RankingPlace; system: RankingSystem }>(MAT_DIALOG_DATA);
   rankingPlaceForm: FormGroup = new FormGroup({});
   dateClass!: MatCalendarCellClassFunction<Moment>;
-
-  constructor(
-    private dialogRef: MatDialogRef<EditRankingPlaceDialogComponent>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: { place: RankingPlace; system: RankingSystem },
-  ) {}
 
   ngOnInit(): void {
     const singleControl = new FormControl(this.data.place?.single, Validators.required);

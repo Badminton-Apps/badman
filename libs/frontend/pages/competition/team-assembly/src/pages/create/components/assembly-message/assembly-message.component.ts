@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -14,11 +14,10 @@ import { input } from '@angular/core';
   styleUrls: ['./assembly-message.component.scss'],
 })
 export class AssemblyMessageComponent implements OnInit {
+  private translate = inject(TranslateService);
   validation = input<ValidationMessage | undefined>();
 
   translatedMessage$?: Observable<string>;
-
-  constructor(private translate: TranslateService) {}
 
   ngOnInit(): void {
     if (this.validation()?.message == undefined) return;
