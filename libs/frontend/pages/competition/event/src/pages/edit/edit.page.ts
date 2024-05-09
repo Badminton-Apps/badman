@@ -199,7 +199,7 @@ export class EditPageComponent {
       exceptions: this.exceptions,
       infoEvents: this.infoEvents,
 
-      subEvents: new FormArray(
+      subEventCompetitions: new FormArray(
         event.subEventCompetitions?.map((subEvent) => {
           return new FormGroup({
             id: new FormControl(subEvent.id),
@@ -263,6 +263,16 @@ export class EditPageComponent {
       checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
       exceptions: eventCompetition.exceptions?.filter((e) => e.start && e.end) ?? [],
       infoEvents: eventCompetition.infoEvents?.filter((e) => e.start && e.end) ?? [],
+      subEventCompetitions:
+        eventCompetition.subEventCompetitions?.map((subEvent) => ({
+          id: subEvent.id,
+          name: subEvent.name,
+          level: subEvent.level,
+          eventType: subEvent.eventType,
+          maxLevel: subEvent.maxLevel,
+          minBaseIndex: subEvent.minBaseIndex,
+          maxBaseIndex: subEvent.maxBaseIndex,
+        })) ?? [],
     } as Partial<EventCompetition>;
 
     await lastValueFrom(

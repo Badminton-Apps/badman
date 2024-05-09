@@ -134,7 +134,10 @@ export class EventCompetitionResolver {
     // Do transaction
     const transaction = await this._sequelize.transaction();
     try {
-      const eventCompetitionDb = await EventCompetition.findByPk(updateEventCompetitionData.id);
+      const eventCompetitionDb = await EventCompetition.findByPk(updateEventCompetitionData.id, {
+        include: [{ model: SubEventCompetition }],
+        transaction,
+      });
 
       if (!eventCompetitionDb) {
         throw new NotFoundException(`${EventCompetition.name}: ${updateEventCompetitionData.id}`);
@@ -201,6 +204,18 @@ export class EventCompetitionResolver {
 
       // Update db
       const result = await eventCompetitionDb.update(updateEventCompetitionData, { transaction });
+
+      // update subevents
+      if (updateEventCompetitionData.subEventCompetitions) {
+        for (const subEvent of updateEventCompetitionData.subEventCompetitions) {
+          await SubEventCompetition.update(subEvent, {
+            where: {
+              id: subEvent.id,
+            },
+            transaction,
+          });
+        }
+      }
 
       // Commit transaction
       await transaction.commit();
