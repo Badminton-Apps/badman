@@ -29,7 +29,16 @@ import { LevelType, SecurityType } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { BehaviorSubject, lastValueFrom, map, shareReplay, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  lastValueFrom,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { EVENT_QUERY } from '../../resolvers';
 import { EventCompetitionLevelFieldsComponent } from './components';
@@ -109,6 +118,8 @@ export class EditPageComponent {
   update$ = new BehaviorSubject(0);
   saved$ = new BehaviorSubject(0);
 
+  roleChanged$ = new Subject<void>();
+
   formGroup: FormGroup = new FormGroup({});
   exceptions!: FormArray<ExceptionType>;
   infoEvents!: FormArray<InfoEventType>;
@@ -138,20 +149,23 @@ export class EditPageComponent {
     this.setupFormGroup(this.eventCompetition());
 
     this.roles = toSignal(
-      this.apollo
-        .watchQuery<{ roles: Partial<Role>[] }>({
-          query: roleQuery,
-          variables: {
-            where: {
-              linkId: this.eventCompetition().id,
-              linkType: 'competition',
-            },
-          },
-        })
-        .valueChanges.pipe(
-          shareReplay(1),
-          map((result) => result.data?.roles?.map((r) => new Role(r))),
+      this.roleChanged$.pipe(
+        startWith(undefined),
+        switchMap(
+          () =>
+            this.apollo.watchQuery<{ roles: Partial<Role>[] }>({
+              query: roleQuery,
+              variables: {
+                where: {
+                  linkId: this.eventCompetition().id,
+                  linkType: 'competition',
+                },
+              },
+            }).valueChanges,
         ),
+        shareReplay(1),
+        map((result) => result.data?.roles?.map((r) => new Role(r))),
+      ),
     );
   }
 
@@ -199,7 +213,7 @@ export class EditPageComponent {
       exceptions: this.exceptions,
       infoEvents: this.infoEvents,
 
-      subEvents: new FormArray(
+      subEventCompetitions: new FormArray(
         event.subEventCompetitions?.map((subEvent) => {
           return new FormGroup({
             id: new FormControl(subEvent.id),
@@ -263,6 +277,16 @@ export class EditPageComponent {
       checkEncounterForFilledIn: eventCompetition.checkEncounterForFilledIn,
       exceptions: eventCompetition.exceptions?.filter((e) => e.start && e.end) ?? [],
       infoEvents: eventCompetition.infoEvents?.filter((e) => e.start && e.end) ?? [],
+      subEventCompetitions:
+        eventCompetition.subEventCompetitions?.map((subEvent) => ({
+          id: subEvent.id,
+          name: subEvent.name,
+          level: subEvent.level,
+          eventType: subEvent.eventType,
+          maxLevel: subEvent.maxLevel,
+          minBaseIndex: subEvent.minBaseIndex,
+          maxBaseIndex: subEvent.maxBaseIndex,
+        })) ?? [],
     } as Partial<EventCompetition>;
 
     await lastValueFrom(
