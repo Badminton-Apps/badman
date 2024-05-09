@@ -1,4 +1,13 @@
-import { Field, Float, ID, Int, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  Float,
+  ID,
+  InputType,
+  Int,
+  ObjectType,
+  OmitType,
+  PartialType,
+} from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -191,3 +200,22 @@ export class SubEventCompetitionAverageLevel {
   @Field(() => Int, { nullable: true })
   mixCount?: number;
 }
+
+@InputType()
+export class SubEventCompetitionUpdateInput extends PartialType(
+  OmitType(SubEventCompetition, [
+    'createdAt',
+    'updatedAt',
+    'eventCompetition',
+    'eventEntries',
+    'rankingGroups',
+    'drawCompetitions',
+  ] as const),
+  InputType,
+) {}
+
+@InputType()
+export class SubEventCompetitionNewInput extends PartialType(
+  OmitType(SubEventCompetitionUpdateInput, ['id'] as const),
+  InputType,
+) {}
