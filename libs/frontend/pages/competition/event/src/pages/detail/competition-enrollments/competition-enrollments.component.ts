@@ -139,8 +139,10 @@ export class CompetitionEnrollmentsComponent implements OnInit {
                           players {
                             id
                             fullName
-                            membershipType
-                            teamId
+                            teamMembership {
+                              id
+                              membershipType
+                            }
                           }
                           club {
                             id
