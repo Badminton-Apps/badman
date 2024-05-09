@@ -1,6 +1,6 @@
 {
   "name": "@badman/utils",
-  "version": "6.146.0",
+  "version": "6.147.0",
   "dependencies": {
     "joi": "^17.12.1",
     "moment": "^2.30.1",
