@@ -105,8 +105,9 @@ export class EventEntryResolver {
             ?.filter((p) => p.TeamPlayerMembership.membershipType === TeamMembershipType.BACKUP)
             .map((p) => p.id),
           subEventId: t.entry?.subEventId,
+          clubId: t.clubId,
         })),
-
+        clubId: team.clubId,
         season: team.season,
       },
       EnrollmentValidationService.defaultValidators(),

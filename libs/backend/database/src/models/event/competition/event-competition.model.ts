@@ -36,7 +36,7 @@ import { Relation } from '../../../wrapper';
 import { Role } from '../../security';
 import { AvailabilityException } from '../availability.model';
 import { Comment } from './../../comment.model';
-import { SubEventCompetition } from './sub-event-competition.model';
+import { SubEventCompetition, SubEventCompetitionUpdateInput } from './sub-event-competition.model';
 
 @Table({
   timestamps: true,
@@ -243,7 +243,7 @@ export class EventCompetitionUpdateInput extends PartialType(
     'roles',
     'exceptions',
     'infoEvents',
-    'meta'
+    'meta',
   ] as const),
   InputType,
 ) {
@@ -255,6 +255,9 @@ export class EventCompetitionUpdateInput extends PartialType(
 
   @Field(() => EventCompetitionPlayersInputType, { nullable: true })
   meta?: EventCompetitionPlayersInputType;
+
+  @Field(() => [SubEventCompetitionUpdateInput], { nullable: true })
+  subEventCompetitions?: SubEventCompetition[];
 }
 
 @InputType()

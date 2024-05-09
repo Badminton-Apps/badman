@@ -544,6 +544,7 @@ export type I18nTranslations = {
             "hour": string;
             "lastname": string;
             "latitude": string;
+            "location": string;
             "longitude": string;
             "memberId": string;
             "name": string;

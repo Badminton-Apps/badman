@@ -44,7 +44,6 @@
         }}</mat-slide-toggle>
       </div>
 
-  
       <div class="matcher">
         <mat-form-field>
           <mat-label>Team matcher (for linking with visual reality)</mat-label>
@@ -151,7 +150,7 @@
         <badman-event-competition-level-fields
           [type]="eventCompetition().type"
           [subEvent]="subEvent"
-          [formGroup]="$any(this.formGroup.get('subEvents'))?.at(i)"
+          [formGroup]="$any(this.formGroup.get('subEventCompetitions'))?.at(i)"
         ></badman-event-competition-level-fields>
       </div>
     }
@@ -165,7 +164,11 @@
 <badman-has-claim [any]="[eventCompetition().id + '_edit:role', 'edit-any:club']">
   <h2>
     Roles
-    <badman-add-role linkType="competition" [linkId]="this.eventCompetition().id!" />
+    <badman-add-role
+      linkType="competition"
+      [linkId]="this.eventCompetition().id!"
+      (whenRoleAdded)="this.roleChanged$.next()"
+    />
   </h2>
   @if (this.roles) {
     <div class="roles">

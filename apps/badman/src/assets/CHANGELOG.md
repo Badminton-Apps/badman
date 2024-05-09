@@ -1,3 +1,19 @@
+## 6.147.0 (2024-05-09)
+
+
+### 🚀 Features
+
+- saving of sub event data ([f9ee62697](https://github.com/Badminton-Apps/badman/commit/f9ee62697))
+
+### 🩹 Fixes
+
+- loading enrollments ([8c872d145](https://github.com/Badminton-Apps/badman/commit/8c872d145))
+- adding/changing of roles ([cc40eb664](https://github.com/Badminton-Apps/badman/commit/cc40eb664))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.146.0 (2024-05-08)
 
 
