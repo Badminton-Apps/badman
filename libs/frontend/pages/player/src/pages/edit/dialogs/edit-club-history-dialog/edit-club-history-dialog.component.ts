@@ -57,6 +57,7 @@ export class EditClubHistoryDialogComponent implements OnInit {
       Validators.required,
     ]);
     const endControl = new FormControl(this.data.club?.clubMembership?.end);
+    const confirmedControl = new FormControl(this.data.club?.clubMembership?.confirmed);
     const membershipTypeControl = new FormControl(this.data.club?.clubMembership?.membershipType, [
       Validators.required,
     ]);
@@ -67,6 +68,7 @@ export class EditClubHistoryDialogComponent implements OnInit {
     this.membershipFormGroup.addControl('start', startControl);
     this.membershipFormGroup.addControl('end', endControl);
     this.membershipFormGroup.addControl('membershipType', membershipTypeControl);
+    this.membershipFormGroup.addControl('confirmed', confirmedControl);
   }
 
   toggleCurrentClub() {

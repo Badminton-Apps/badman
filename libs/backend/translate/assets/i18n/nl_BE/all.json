@@ -31,6 +31,7 @@
     "yes": "Ja"
   },
   "club": {
+    "confirmed": "Bevestigt",
     "current": "Huidige club",
     "delete": {
       "player": {
