@@ -65,6 +65,7 @@ export class Player {
     this.indexSplit = args?.indexSplit;
     this.competitionPlayer = args?.competitionPlayer;
     this.clubs = args?.clubs?.map((club) => new Club(club));
+
     this.club =
       args?.club != null
         ? new Club(args?.club)

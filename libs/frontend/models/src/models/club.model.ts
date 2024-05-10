@@ -74,6 +74,7 @@ export class ClubMembership {
     this.start = args.start != null ? new Date(args.start) : undefined;
     this.end = args.end != null ? new Date(args.end) : undefined;
     this.active = args.active;
+    this.confirmed = args.confirmed;
     this.clubId = args.clubId;
     this.playerId = args.playerId;
     this.membershipType = args?.membershipType as ClubMembershipType;

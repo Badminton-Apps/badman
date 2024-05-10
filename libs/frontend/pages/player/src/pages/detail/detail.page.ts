@@ -84,7 +84,7 @@ export class DetailPageComponent {
 
   player = computed(() => this.routeData()?.['player'] as Player);
   playerId = computed(() => this.player()?.id as string);
-  club = computed(() => this.player().clubs?.[0]);
+  club = computed(() => this.player().club);
 
   initials = computed(() => {
     const lastNames = `${this.player().lastName}`.split(' ');

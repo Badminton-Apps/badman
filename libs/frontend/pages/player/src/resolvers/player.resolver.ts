@@ -43,6 +43,8 @@ export class PlayerResolver {
                   clubMembership {
                     id
                     membershipType
+                    active
+                    confirmed
                   }
                 }
                 rankingLastPlaces(where: { systemId: $systemId }) {

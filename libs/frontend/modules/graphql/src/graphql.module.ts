@@ -119,6 +119,9 @@ export function createApollo(
           ClubWithPlayerMembershipType: {
             keyFields: [['clubMembership', ['id']], 'id'],
           },
+          ClubWithPlayers: {
+            keyFields: [['clubMembership', ['id']], 'id'],
+          },
           PlayerWithClubMembershipType: {
             keyFields: [['clubMembership', ['id']], 'id'],
           },
