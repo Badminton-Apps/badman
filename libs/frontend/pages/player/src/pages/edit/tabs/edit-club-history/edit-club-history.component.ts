@@ -51,6 +51,7 @@ export class EditClubHistoryComponent implements OnInit {
             end
             active
             playerId
+            confirmed
             membershipType
             clubId
           }
