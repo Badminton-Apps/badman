@@ -208,15 +208,13 @@ export class TeamEnrollmentComponent {
     } else if (entry?.standing?.faller) {
       let newLevel = level + 1;
 
-      if (newLevel > maxLevels.NATIONAL) {
+      if (newLevel > maxLevels.NATIONAL && type === LevelType.NATIONAL) {
         // we demote to lower level
-        if (type === LevelType.NATIONAL) {
-          type = LevelType.LIGA;
-          newLevel = 1;
-        } else if (type === LevelType.LIGA) {
-          type = LevelType.PROV;
-          newLevel = 1;
-        }
+        type = LevelType.LIGA;
+        newLevel = 1;
+      } else if (newLevel > maxLevels.LIGA && type === LevelType.LIGA) {
+        type = LevelType.PROV;
+        newLevel = 1;
       }
 
       subEventId = subs?.find(
