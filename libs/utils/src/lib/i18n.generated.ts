@@ -38,6 +38,7 @@ export type I18nTranslations = {
             "yes": string;
         };
         "club": {
+            "confirmed": string;
             "current": string;
             "delete": {
                 "player": {

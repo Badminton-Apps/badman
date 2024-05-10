@@ -31,6 +31,7 @@
     "yes": "Oui"
   },
   "club": {
+    "confirmed": "Confirmé",
     "current": "Club actuel",
     "delete": {
       "player": {

@@ -22,7 +22,7 @@ services:
   #     - ./database/scripts:/home/scripts
 
   # Databases
-  postgres-16:
+  postgres:
     image: postgis/postgis:16-master
     shm_size: 1gb
     restart: unless-stopped
@@ -55,33 +55,33 @@ services:
       - api
     restart: unless-stopped
 
-  # # Tools
-  # pgadmin:
-  #   container_name: pgadmin
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-  #     GUNICORN_ACCESS_LOGFILE: '/dev/null'
-  #     PGADMIN_CONFIG_SERVER_MODE: 'False'
-  #     POSTGRES_USER: ${DB_USER}
-  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
-  #     PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: 'False'
-  #   volumes:
-  #     - db-admin:/var/lib/pgadmin
-  #     - ./database/backup:/home/backup
-  #     - ./database/scripts:/home/scripts
-  #   ports:
-  #     - '${PGADMIN_PORT:-5050}:80'
-  #   links:
-  #     - postgres:postgres
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - postgres
-  #   restart: unless-stopped
-  #   logging:
-  #     driver: 'none'
+  # Tools
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      GUNICORN_ACCESS_LOGFILE: '/dev/null'
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: 'False'
+    volumes:
+      - db-admin:/var/lib/pgadmin
+      - ./database/backup:/home/backup
+      - ./database/scripts:/home/scripts
+    ports:
+      - '${PGADMIN_PORT:-5050}:80'
+    links:
+      - postgres:postgres
+    depends_on:
+      - postgres
+    networks:
+      - postgres
+    restart: unless-stopped
+    logging:
+      driver: 'none'
 
 networks:
   api:
@@ -89,4 +89,4 @@ networks:
 
 volumes:
   db-data:
-  # db-admin:
+  db-admin:
