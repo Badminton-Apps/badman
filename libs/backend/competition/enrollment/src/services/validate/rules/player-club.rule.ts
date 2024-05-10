@@ -122,7 +122,7 @@ export class PlayerClubRule extends Rule {
         return;
       }
 
-      const activeClubsInNextSeason =
+      const activeClubsInNextSeason = 
         player?.clubs
           // sort by ClubPlayerMembership.membershipType NORMAL first
           ?.sort((a, b) => {
