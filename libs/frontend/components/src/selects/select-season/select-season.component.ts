@@ -14,14 +14,11 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Club, Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { startWith } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-select-season',
@@ -43,7 +40,6 @@ export class SelectSeasonComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private stateTransfer = inject(TransferState);
   private platformId = inject<string>(PLATFORM_ID);
-  private destroy$ = injectDestroy();
 
   injector = inject(Injector);
 
@@ -52,8 +48,6 @@ export class SelectSeasonComponent implements OnInit {
   group = input.required<FormGroup>();
 
   dependsOn = input('club');
-
-  type = input<'event' | 'club'>('club');
 
   updateUrl = input(false);
 
@@ -79,34 +73,7 @@ export class SelectSeasonComponent implements OnInit {
       this.group().addControl(this.controlName(), this.internalControl);
     }
 
-    const previous = this.group().get(this.dependsOn());
-
-    if (previous && this.type() === 'club') {
-      previous.valueChanges
-        .pipe(startWith(previous.value), takeUntil(this.destroy$))
-        .subscribe((value) => {
-          const clubId = `${value?.id ?? value}`;
-          // if the clubId is a uuid continue
-          if (!clubId?.match(/^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$/)) {
-            return;
-          }
-
-          this._setYearsForClub({
-            id: clubId,
-          } as Club);
-
-          // update url on change
-          if (this.updateUrl()) {
-            this.internalControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-              this._updateUrl(value, false);
-            });
-          }
-        });
-    }
-
-    if (!previous && this.type() === 'event') {
-      this._setYearsForEventCompetition();
-    }
+    this._setYearsForEventCompetition();
   }
 
   private _setYearsForEventCompetition() {
@@ -137,45 +104,45 @@ export class SelectSeasonComponent implements OnInit {
     );
   }
 
-  private _setYearsForClub(club: Club) {
-    this.seasons = toSignal(
-      this.apollo
-        .query<{
-          teams: Partial<Team[]>;
-        }>({
-          query: gql`
-            query CompetitionYears($where: JSONObject) {
-              teams(where: $where) {
-                id
-                season
-              }
-            }
-          `,
-          variables: {
-            where: {
-              clubId: club.id,
-            },
-          },
-        })
-        .pipe(
-          transferState(`club-${club.id}-seasons`, this.stateTransfer, this.platformId),
-          map((result) => {
-            if (!result?.data.teams) {
-              throw new Error('No teams');
-            }
-            return result.data.teams.map((row) => row?.season as number);
-          }),
-          // map distinct years
-          map((years) => [...new Set(years)]),
-          // sort years
-          map((years) => years.sort((a, b) => b - a)),
-        ),
-      {
-        initialValue: [getCurrentSeason()],
-        injector: this.injector,
-      },
-    );
-  }
+  // private _setYearsForClub(club: Club) {
+  //   this.seasons = toSignal(
+  //     this.apollo
+  //       .query<{
+  //         teams: Partial<Team[]>;
+  //       }>({
+  //         query: gql`
+  //           query CompetitionYears($where: JSONObject) {
+  //             teams(where: $where) {
+  //               id
+  //               season
+  //             }
+  //           }
+  //         `,
+  //         variables: {
+  //           where: {
+  //             clubId: club.id,
+  //           },
+  //         },
+  //       })
+  //       .pipe(
+  //         transferState(`club-${club.id}-seasons`, this.stateTransfer, this.platformId),
+  //         map((result) => {
+  //           if (!result?.data.teams) {
+  //             throw new Error('No teams');
+  //           }
+  //           return result.data.teams.map((row) => row?.season as number);
+  //         }),
+  //         // map distinct years
+  //         map((years) => [...new Set(years)]),
+  //         // sort years
+  //         map((years) => years.sort((a, b) => b - a)),
+  //       ),
+  //     {
+  //       initialValue: [getCurrentSeason()],
+  //       injector: this.injector,
+  //     },
+  //   );
+  // }
 
   private _updateUrl(value: number, removeOtherParams = false) {
     if (this.updateUrl() && value) {
