@@ -7,14 +7,14 @@
     <div>
       <mat-form-field>
         <mat-label>{{ 'all.competition.open-close.open-enrollment' | translate }}</mat-label>
-        <input
-          matInput
-          [ngxMatDatetimePicker]="openPicker"
-          placeholder="Choose a date"
-          [formControl]="openControl"
-        />
-        <mat-datepicker-toggle matSuffix [for]="$any(openPicker)"></mat-datepicker-toggle>
-        <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
+        <mtx-datetimepicker
+          #datetimePicker
+          type="datetime"
+          [timeInterval]="15"
+          [timeInput]="true"
+        ></mtx-datetimepicker>
+        <input [mtxDatetimepicker]="datetimePicker" [formControl]="openControl" matInput required />
+        <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
       </mat-form-field>
     </div>
   }
@@ -22,14 +22,19 @@
     <div>
       <mat-form-field>
         <mat-label>{{ 'all.competition.open-close.close-enrollment' | translate }}</mat-label>
+        <mtx-datetimepicker
+          #datetimePicker
+          type="datetime"
+          [timeInterval]="15"
+          [timeInput]="true"
+        ></mtx-datetimepicker>
         <input
-          matInput
-          [ngxMatDatetimePicker]="closePicker"
-          placeholder="Choose a date"
+          [mtxDatetimepicker]="datetimePicker"
           [formControl]="closeControl"
+          matInput
+          required
         />
-        <mat-datepicker-toggle matSuffix [for]="$any(closePicker)"></mat-datepicker-toggle>
-        <ngx-mat-datetime-picker #closePicker> </ngx-mat-datetime-picker>
+        <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
       </mat-form-field>
     </div>
   }

@@ -7,14 +7,14 @@
     <div>
       <mat-form-field>
         <mat-label>{{ 'all.competition.change-encounter.choose-date' | translate }}</mat-label>
-        <input
-          matInput
-          [ngxMatDatetimePicker]="openPicker"
-          [placeholder]="'all.competition.change-encounter.choose-date' | translate"
-          [formControl]="dateControl"
-        />
-        <ngx-mat-datepicker-toggle matSuffix [for]="$any(openPicker)"></ngx-mat-datepicker-toggle>
-        <ngx-mat-datetime-picker #openPicker> </ngx-mat-datetime-picker>
+        <mtx-datetimepicker
+          #datetimePicker
+          type="datetime"
+          [timeInterval]="15"
+          [timeInput]="true"
+        ></mtx-datetimepicker>
+        <input [mtxDatetimepicker]="datetimePicker" [formControl]="dateControl" matInput required />
+        <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
       </mat-form-field>
     </div>
   }
