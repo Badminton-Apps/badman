@@ -30,6 +30,7 @@ jobs:
       NEW_VERSION: ${{ steps.create_release.outputs.new_version  }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Merge development -> main
         uses: devmasx/merge-branch@master
         if: github.ref == 'refs/heads/main'
@@ -40,13 +41,13 @@ jobs:
           message: 'chore(merge): merge develop into main'
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Fetch latest upstream
-        if: github.ref == 'refs/heads/main'
-        run: git fetch --prune --unshallow
-
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          
+      - name: Pull main
+        if: github.ref == 'refs/heads/main'
+        run: git pull origin main
 
       - name: set SHAs
         run: |
