@@ -1,7 +1,3 @@
-import {
-  NgxMatMomentAdapter,
-  NgxMatMomentModule,
-} from '@angular-material-components/moment-adapter';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,24 +7,18 @@ import { MatMenuModule } from '@angular/material/menu';
 import { AvaliableLanguages, languages } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { setLanguage } from '../../factory';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
 @Component({
   selector: 'badman-language',
   templateUrl: './language.component.html',
   styleUrls: ['./language.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    NgxMatMomentModule,
-    TranslateModule,
-    MatMenuModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, TranslateModule, MatMenuModule, MatButtonModule, MatIconModule],
 })
 export class LanguageComponent implements OnInit {
   public translate = inject(TranslateService);
-  private _adapter = inject<DateAdapter<NgxMatMomentAdapter>>(DateAdapter<NgxMatMomentAdapter>);
+  private _adapter = inject<DateAdapter<MomentDateAdapter>>(DateAdapter<MomentDateAdapter>);
   current!: string;
   langs!: AvaliableLanguages[];
 

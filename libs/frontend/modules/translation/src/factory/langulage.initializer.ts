@@ -1,6 +1,6 @@
-import { NgxMatMomentAdapter } from '@angular-material-components/moment-adapter';
 import { isPlatformBrowser, LOCATION_INITIALIZED } from '@angular/common';
 import { effect, Injector, PLATFORM_ID } from '@angular/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter } from '@angular/material/core';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { AvaliableLanguages, languages } from '@badman/utils';
@@ -11,7 +11,7 @@ import { lastValueFrom } from 'rxjs';
 export function langulageInitializer(
   translate: TranslateService,
   injector: Injector,
-  adapter: DateAdapter<NgxMatMomentAdapter>,
+  adapter: DateAdapter<MomentDateAdapter>,
   authenticateService: AuthenticateService,
 ) {
   return async () => {
@@ -67,7 +67,7 @@ export function langulageInitializer(
 export async function setLanguage(
   translateFormat: string,
   momentFormat: string,
-  dateAdapater: DateAdapter<NgxMatMomentAdapter>,
+  dateAdapater: DateAdapter<MomentDateAdapter>,
   translateService: TranslateService,
 ) {
   // Set values
