@@ -74,7 +74,7 @@ export class AssemblyController {
     await Logging.create({
       action: LoggingAction.AssemblyDownloaded,
       playerId: user?.id,
-      meta: req.body
+      meta: req.body,
     });
 
     // return the pdf as a streamable file
@@ -289,7 +289,7 @@ export class AssemblyController {
         base: boolean;
         team: boolean;
         exception: boolean;
-        rankingLastPlace: RankingLastPlace;
+        rankingLastPlace: RankingLastPlace | null;
         sum: number;
         highest: number;
       }) {
@@ -298,13 +298,20 @@ export class AssemblyController {
     }
 
     const prepped = {
-      ...player.toJSON(),
+      ...player.toJSON() ,
       base: false,
       team: false,
       exception: false,
       rankingLastPlace: null,
       sum: 0,
       highest: 0,
+    } as Partial<Player> & {
+      base: boolean;
+      team: boolean;
+      exception: boolean;
+      rankingLastPlace: RankingLastPlace | null;
+      sum: number;
+      highest: number;
     };
 
     if (
@@ -348,9 +355,8 @@ export class AssemblyController {
       data.type === 'MX' ? player.rankingLastPlaces?.[0]?.mix ?? 12 : 12,
     );
 
-    prepped.exception = data.meta?.competition?.players?.find(
-      (p) => p.id === player.id,
-    )?.levelException;
+    prepped.exception =
+      data.meta?.competition?.players?.find((p) => p.id === player.id)?.levelException ?? false;
 
     // if a ranking is not availible use 2 higher then the best ranking but cannot be higher then 12
     // if the best ranking is higher then 12 use 12
@@ -367,7 +373,7 @@ export class AssemblyController {
       single,
       double,
       mix,
-    };
+    } as RankingLastPlace;
 
     return prepped;
   }

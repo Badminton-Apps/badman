@@ -8,7 +8,9 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "scripts:build"
+        "buildTarget": "scripts:build",
+        "port": 9240,
+        "inspect": "inspect"
       },
       "configurations": {
         "development": {

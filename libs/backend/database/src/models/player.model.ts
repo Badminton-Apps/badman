@@ -10,8 +10,8 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
-  BuildOptions,
   CreateOptions,
+  CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -23,6 +23,8 @@ import {
   HasManySetAssociationsMixin,
   HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
+  InferAttributes,
+  InferCreationAttributes,
 } from 'sequelize';
 import {
   BeforeCreate,
@@ -57,17 +59,13 @@ import { Team } from './team.model';
   schema: 'public',
 })
 @ObjectType('Player', { description: 'A player is also a logged in user' })
-export class Player extends Model {
-  constructor(values?: Partial<Player>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+export class Player extends Model<InferAttributes<Player>, InferCreationAttributes<Player>> {
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
@@ -106,7 +104,7 @@ export class Player extends Model {
   entriesP2?: Relation<EventEntry[]>;
 
   @Field(() => [EventEntry], { nullable: true })
-  get entries() {
+  get entries(): CreationOptional<EventEntry[]> {
     return this.entriesP1?.concat(this.entriesP2 ?? []) ?? [];
   }
 
@@ -124,7 +122,7 @@ export class Player extends Model {
 
   @Field(() => String, { nullable: true })
   @Column(DataType.VIRTUAL)
-  get fullName(): string {
+  get fullName(): CreationOptional<string> {
     return `${this.firstName} ${this.lastName}`;
   }
 

@@ -517,7 +517,7 @@ export class CpGeneratorService {
     for (const [clubId, players] of playersPerClub) {
       const dbPlayers = await Player.findAll({
         where: {
-          id: players?.map((p) => p.id) ?? [],
+          id: (players?.map((p) => p.id) ?? []) as string[],
         },
       });
 
