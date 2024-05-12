@@ -68,7 +68,7 @@ export class AssemblyResolver {
 
     const p = await Player.findAll({
       where: {
-        id: assembly.basePlayersData?.map((player) => player.id),
+        id: (assembly.basePlayersData?.map((player) => player.id) ?? []) as string[],
       },
     });
 

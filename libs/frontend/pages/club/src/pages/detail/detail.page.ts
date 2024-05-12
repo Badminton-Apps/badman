@@ -34,7 +34,7 @@ import {
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
 import { VERSION_INFO } from '@badman/frontend-html-injects';
-import { Club, EventCompetition, Player } from '@badman/frontend-models';
+import { Club, EventCompetition } from '@badman/frontend-models';
 import { TwizzitService } from '@badman/frontend-twizzit';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';

@@ -50,7 +50,7 @@ export class RankingPlaceResolver {
       if (!place.single || !place.double || !place.mix) {
         // if one of the levels is not set, get the default from the system
         const system = await RankingSystem.findByPk(place.systemId, {
-          attributes: ['amountOfLevels'],
+          attributes: ['amountOfLevels', 'maxDiffLevels'],
         });
 
         if (!system) {

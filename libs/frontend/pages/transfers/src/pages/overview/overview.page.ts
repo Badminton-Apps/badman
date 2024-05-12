@@ -121,7 +121,6 @@ export class OverviewPageComponent {
     {
       header: 'Operation',
       field: 'operation',
-      width: '180px',
       pinned: 'right',
       right: '0px',
       type: 'button',
