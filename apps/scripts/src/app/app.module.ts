@@ -2,10 +2,10 @@ import { DatabaseModule } from '@badman/backend-database';
 import { configSchema, load } from '@badman/utils';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { OpenVisualService } from './scripts/visual/open-visual.service';
+import { AssignClubToPlayers } from './scripts/assign-clubs-to-players-group-role/service';
 
 @Module({
-  providers: [OpenVisualService],
+  providers: [AssignClubToPlayers],
   imports: [
     ConfigModule.forRoot({
       cache: true,
@@ -18,13 +18,12 @@ import { OpenVisualService } from './scripts/visual/open-visual.service';
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
 
-  constructor(private fixer: OpenVisualService) {}
+  constructor(private fixer: AssignClubToPlayers) {}
 
   async onModuleInit() {
     this.logger.log('Running script');
 
-    // await this.fixer.process(2023, '98a5d635-fd7e-459d-ae09-93a9db49ffdf');
-    await this.fixer.start();
+    await this.fixer.process();
 
     this.logger.log('Script finished');
   }

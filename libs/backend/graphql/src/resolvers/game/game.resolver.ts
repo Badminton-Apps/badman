@@ -53,7 +53,7 @@ export class GamesResolver {
   }
 
   @ResolveField(() => [GamePlayerMembershipType])
-  async players(@Parent() game: Game): Promise<(Player & GamePlayerMembership)[][]> {
+  async players(@Parent() game: Game): Promise<(Player & GamePlayerMembership)[]> {
     const players = (await game.getPlayers()) as (Player & {
       GamePlayerMembership: GamePlayerMembership;
     })[];
@@ -92,13 +92,13 @@ export class GamesResolver {
           single: place.single,
           double: place.double,
           mix: place.mix,
-        };
+        } as Player & GamePlayerMembership;
       }
 
       return {
         ...gamePlayer.GamePlayerMembership.toJSON(),
         ...gamePlayer.toJSON(),
-      };
+      } as Player & GamePlayerMembership;
     });
   }
 }

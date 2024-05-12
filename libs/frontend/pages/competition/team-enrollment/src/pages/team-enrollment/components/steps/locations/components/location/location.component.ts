@@ -21,6 +21,7 @@ import { getUpcommingSeason } from '@badman/utils';
 
 import { input } from '@angular/core';
 import { DEVICE } from '@badman/frontend-utils';
+import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Subject } from 'rxjs';
@@ -77,6 +78,7 @@ export type LocationForm = FormGroup<{
     MatDividerModule,
     MatTooltipModule,
     MatDatepickerModule,
+    MtxDatetimepickerModule,
   ],
   templateUrl: './location.component.html',
   styleUrls: ['./location.component.scss'],

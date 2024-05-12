@@ -1,4 +1,3 @@
-import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -18,8 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent } from '@badman/frontend-components';
 import {
@@ -36,6 +35,8 @@ import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
+import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
+
 
 @Component({
   selector: 'badman-calendar',
@@ -46,7 +47,6 @@ import { randomLightColor } from 'seed-to-color';
     ReactiveFormsModule,
     FormsModule,
     TranslateModule,
-    NgxMatDatetimePickerModule,
     MatIconModule,
     MatInputModule,
     MatButtonModule,
@@ -59,6 +59,7 @@ import { randomLightColor } from 'seed-to-color';
     MatSelectModule,
     MatSnackBarModule,
     HasClaimComponent,
+    MtxDatetimepickerModule,
   ],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
