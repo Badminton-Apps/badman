@@ -40,6 +40,10 @@ jobs:
           message: 'chore(merge): merge develop into main'
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Fetch latest upstream
+        if: github.ref == 'refs/heads/main'
+        run: git fetch --prune --unshallow
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
