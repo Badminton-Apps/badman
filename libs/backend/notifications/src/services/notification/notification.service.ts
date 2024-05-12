@@ -287,7 +287,7 @@ export class NotificationService {
 
     const ids = club?.teams
       ?.map((team) => team?.entry?.meta?.competition?.players.map((player) => player.id))
-      .flat();
+      .flat() as string[];
 
     // fetch all baseaplayers
     const players = await Player.findAll({
