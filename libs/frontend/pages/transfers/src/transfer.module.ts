@@ -23,9 +23,3 @@ const MODULE_ROUTES: Routes = [
   providers: [],
 })
 export class TransferModule {}
-
-// @NgModule({
-//   declarations: [],
-//   providers: [TransfersService],
-// })
-// export class PublicTransferModule {}
