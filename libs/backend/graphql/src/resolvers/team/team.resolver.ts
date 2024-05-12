@@ -106,7 +106,7 @@ export class TeamsResolver {
 
   @ResolveField(() => Location)
   async locations(@Parent() team: Team): Promise<Location> {
-    return team.getPrefferedLocation()
+    return team.getPrefferedLocation();
   }
 
   @ResolveField(() => Player)
@@ -324,7 +324,8 @@ export class TeamsResolver {
           }
 
           const players: EntryCompetitionPlayer[] = [];
-          const playerIds = newTeamData.entry.meta.competition.players?.map((p) => p.id) || [];
+          const playerIds = (newTeamData.entry.meta.competition.players?.map((p) => p.id) ||
+            []) as string[];
 
           const rankings = await RankingLastPlace.findAll({
             where: {

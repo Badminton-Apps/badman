@@ -59,7 +59,7 @@ export class AssemblyValidationService {
       ...(double2?.flat(1) ?? []),
       ...(double3?.flat(1) ?? []),
       ...(double4?.flat(1) ?? []),
-    ]?.filter((p) => p !== undefined && p !== null);
+    ]?.filter((p) => p !== undefined && p !== null) as string[];
 
     const idSubs = subtitudes?.filter((p) => p !== undefined && p !== null);
 

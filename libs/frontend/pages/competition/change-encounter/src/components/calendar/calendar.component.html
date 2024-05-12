@@ -40,18 +40,19 @@
         }
         <mat-form-field>
           <mat-label>{{ 'all.competition.change-encounter.choose-date' | translate }}</mat-label>
+          <mtx-datetimepicker
+            #datetimePicker
+            type="datetime"
+            [timeInterval]="15"
+            [timeInput]="true"
+          ></mtx-datetimepicker>
           <input
-            matInput
-            [ngxMatDatetimePicker]="openPicker"
-            placeholder="Choose a date"
-            [min]="this.minDate"
-            [max]="this.maxDate"
-            [step]="900"
-            [matDatepickerFilter]="filterDate"
+            [mtxDatetimepicker]="datetimePicker"
             [formControl]="manualDateControl"
+            matInput
+            required
           />
-          <mat-datepicker-toggle matSuffix [for]="$any(openPicker)"></mat-datepicker-toggle>
-          <ngx-mat-datetime-picker [stepMinute]="15" #openPicker> </ngx-mat-datetime-picker>
+          <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
         </mat-form-field>
         <button
           mat-icon-button
