@@ -1,3 +1,26 @@
+## 6.148.0 (2024-05-12)
+
+
+### 🚀 Features
+
+- confirmed club transfer ([9cffc7d81](https://github.com/Badminton-Apps/badman/commit/9cffc7d81))
+- **scripts:** correcting players club ([2cefce802](https://github.com/Badminton-Apps/badman/commit/2cefce802))
+
+### 🩹 Fixes
+
+- lowering level ([049636814](https://github.com/Badminton-Apps/badman/commit/049636814))
+- player should be on right team ([6b3334513](https://github.com/Badminton-Apps/badman/commit/6b3334513))
+- just filter on event seasons ([5feae7d39](https://github.com/Badminton-Apps/badman/commit/5feae7d39))
+- this should also fetch max diff levels ([4b336ec63](https://github.com/Badminton-Apps/badman/commit/4b336ec63))
+- update packages ([72bb6cfa0](https://github.com/Badminton-Apps/badman/commit/72bb6cfa0))
+- remove deprecated date picker ([fef7208db](https://github.com/Badminton-Apps/badman/commit/fef7208db))
+- this shouldn't be locked on width ([f14d1cbb9](https://github.com/Badminton-Apps/badman/commit/f14d1cbb9))
+- removal unused code ([2c63922f3](https://github.com/Badminton-Apps/badman/commit/2c63922f3))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.147.0 (2024-05-09)
 
 
