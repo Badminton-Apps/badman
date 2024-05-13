@@ -49,7 +49,8 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
       options = {
         ...options,
         dialect: dialect ?? 'sqlite',
-        storage: this.configService.get('DB_STORAGE') ?? 'database.sqlite',
+        storage:
+          this.configService.get('DB_STORAGE') ?? env == 'test' ? ':in_memory:' : 'database.sqlite',
       };
     }
     // log the options when in development
