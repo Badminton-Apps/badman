@@ -757,6 +757,8 @@
     "update-happend": "Update plaatsgevonden",
     "updates": "Updates",
     "upload": {
+      "club-end-date": "Eind datum club lidmaatschappen",
+      "club-start-date": "Start datum club lidmaatschappen",
       "comp-status": "Zet alle 'Competitie' spelers volgens huidig document",
       "create-new-players": "Maak nieuwe spelers aan",
       "description": "<p>Upload the <strong>exportMembersRoleGroup</strong> of <strong>BBF+Rating</strong> excel file <br /><small>Note: this might take a wile<small></p>",
@@ -765,6 +767,7 @@
       "ranking-date": "Klassement update",
       "remove-current-ranking": "Verwijder alle huidige klassementen van ranking datum",
       "title": "File upload",
+      "update-clubs": "Update clubs volgens file",
       "update-possible": "Klassementen wijziging heeft plaatsgevonden",
       "update-ranking": "Update klassementen volgens file"
     }

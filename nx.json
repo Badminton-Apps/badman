@@ -28,7 +28,7 @@
   "tasksRunnerOptions": {
     "default": {
       "options": {
-        "parallel": 5
+        "parallel": 20
       }
     }
   },
