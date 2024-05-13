@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
     }),
   );
 }
-const envFilePath = process.env.NODE_ENV === 'test' ? '.env.testing' : undefined;
+const envFilePath = process.env.NODE_ENV === 'test' ? '.env.test' : undefined;
 
 @Module({
   imports: [
