@@ -98,18 +98,36 @@ export class ClubsResolver {
     const options = ListArgs.toFindOptions(listArgs);
 
     if (active) {
-      //active =  this.start && this.start < new Date() && (!this.end || this.end > new Date());
+      /*
+      see: ClubPlayerMembership.active
+      // but this prevents fetching it from the database to speed up the query
+     active =  (
+      this.confirmed &&
+      this.start &&
+      this.start < new Date() &&
+      (!this.end || this.end > new Date())
+    );
+    */
+
       options.where = {
         ...options.where,
+
         [`$${ClubPlayerMembership.name}.start$`]: {
-          [Op.lte]: new Date(),
+          [Op.lt]: new Date(),
         },
-        [`$${ClubPlayerMembership.name}.end$`]: {
-          [Op.or]: {
-            [Op.gte]: new Date(),
-            [Op.eq]: null,
+        [Op.or]: [
+          {
+            [`$${ClubPlayerMembership.name}.end$`]: {
+              [Op.gt]: new Date(),
+            },
           },
-        },
+          {
+            [`$${ClubPlayerMembership.name}.end$`]: {
+              [Op.is]: null,
+            },
+          },
+        ],
+        [`$${ClubPlayerMembership.name}.confirmed$`]: true,
       };
     }
 

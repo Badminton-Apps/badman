@@ -36,8 +36,15 @@ export class UploadRankingController {
     const updateCompStatus = (file.fields['updateCompStatus'] as MultipartValue)?.value === 'true';
     const updateRanking = (file.fields['updateRanking'] as MultipartValue)?.value === 'true';
     const rankingDate = moment((file.fields['rankingDate'] as MultipartValue)?.value as string);
+    const clubMembershipStartDate = moment(
+      (file.fields['clubMembershipStartDate'] as MultipartValue)?.value as string,
+    );
+    const clubMembershipEndDate = moment(
+      (file.fields['clubMembershipEndDate'] as MultipartValue)?.value as string,
+    );
     const removeAllRanking = (file.fields['removeAllRanking'] as MultipartValue)?.value === 'true';
     const updatePossible = (file.fields['updatePossible'] as MultipartValue)?.value === 'true';
+    const updateClubs = (file.fields['updateClubs'] as MultipartValue)?.value === 'true';
     const rankingSystemId = (file.fields['rankingSystemId'] as MultipartValue)?.value as string;
 
     const createNewPlayers = (file.fields['createNewPlayers'] as MultipartValue)?.value === 'true';
@@ -52,9 +59,12 @@ export class UploadRankingController {
       .processFileUpload(mappedData, {
         updateCompStatus,
         updateRanking,
-        rankingDate: rankingDate.toDate(),
-        removeAllRanking,
         updatePossible,
+        updateClubs,
+        rankingDate: rankingDate.toDate(),
+        clubMembershipStartDate: clubMembershipStartDate.toDate(),
+        clubMembershipEndDate: clubMembershipEndDate.toDate(),
+        removeAllRanking,
         rankingSystemId,
         createNewPlayers,
       })
@@ -126,9 +136,7 @@ export class UploadRankingController {
 
   private readExportMemebrs(workbook: XLSX.WorkBook) {
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json<exportMembers>(firstSheet);
-
-    return data?.map((row) => {
+    const data = XLSX.utils.sheet_to_json<exportMembers>(firstSheet)?.map((row) => {
       // combine lastname 2, middlename and lastname to a single last name
       const names = [
         row['lastname']?.trim(),
@@ -140,6 +148,7 @@ export class UploadRankingController {
         memberId: row['memberid'],
         firstName: row['firstname'],
         lastName: names?.join(' '),
+        clubName: row['groupname'],
         gender: row['gender'],
         single: row['PlayerLevelSingle'],
         doubles: row['PlayerLevelDouble'],
@@ -147,6 +156,36 @@ export class UploadRankingController {
         role: row['TypeName'],
       } as MembersRolePerGroupData;
     });
+
+    // make sure each memberId only occurs once, if multipe times,
+    // the first pick: role == Competitiespeler
+    // the first pick: role == Recreant
+    // the first pick: role == Jeugd
+
+    const players = new Map<string, MembersRolePerGroupData>();
+    data.forEach((row) => {
+      const player = players.get(row.memberId);
+
+      if (!player) {
+        players.set(row.memberId, row);
+      } else {
+        if (player.role == 'Competitiespeler') {
+          return;
+        }
+
+        if (player.role == 'Recreant' && row.role != 'Competitiespeler') {
+          return;
+        }
+
+        if (player.role == 'Jeugd' && row.role != 'Competitiespeler' && row.role != 'Recreant') {
+          return;
+        }
+
+        players.set(row.memberId, row);
+      }
+    });
+
+    return [...players.values()];
   }
 }
 
@@ -167,8 +206,9 @@ interface exportMembers {
   middlename: string;
   lastname2: string;
   gender: 'V' | 'M';
+  groupname: string;
   PlayerLevelSingle: number;
   PlayerLevelDouble: number;
   PlayerLevelMixed: number;
-  TypeName: string;
+  TypeName: 'Recreant' | 'Jeugd' | 'Competitiespeler';
 }
