@@ -10,7 +10,7 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
-  BuildOptions,
+  CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -20,6 +20,8 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
+  InferAttributes,
+  InferCreationAttributes,
   Op,
   SaveOptions,
 } from 'sequelize';
@@ -58,17 +60,13 @@ import { Team } from './team.model';
   schema: 'public',
 })
 @ObjectType({ description: 'A Club' })
-export class Club extends Model {
-  constructor(values?: Partial<Club>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<Club>> {
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  declare id: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   declare updatedAt?: Date;
