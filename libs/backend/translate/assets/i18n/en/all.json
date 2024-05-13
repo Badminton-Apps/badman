@@ -757,6 +757,8 @@
     "update-happend": "Update happened",
     "updates": "Updates",
     "upload": {
+      "club-end-date": "End date club memberships",
+      "club-start-date": "Start date club memberships",
       "comp-status": "Set all 'Competition' players according to current document",
       "create-new-players": "Create new players",
       "description": "<p>Upload the <strong>exportMembersRoleGroup</strong> of <strong>BBF+Rating</strong> excel file <br /><small>Note: this might take a wile<small></p>",
@@ -765,6 +767,7 @@
       "ranking-date": "Ranking update",
       "remove-current-ranking": "Remove all current rankings from ranking date",
       "title": "File upload",
+      "update-clubs": "Update clubs according to file",
       "update-possible": "Ranking change has taken place",
       "update-ranking": "Update rankings according to file"
     }

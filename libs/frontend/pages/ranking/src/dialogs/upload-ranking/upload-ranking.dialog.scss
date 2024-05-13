@@ -29,3 +29,14 @@ table {
   margin-top: 1rem;
   gap: 1rem;
 }
+
+.set-clubs {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  
+  mat-form-field {
+    width: 100%;
+  }
+}
