@@ -73,13 +73,11 @@ export class ClubPlayerMembership extends Model<
   @Field(() => Boolean)
   @Column(DataType.VIRTUAL(DataType.BOOLEAN)) //[Sequelize.literal('start < now() AND (end IS NULL OR end > now())')]
   get active() {
-    // if the start is passed and end is null or in the future, it is active
-    return (
-      this.confirmed &&
-      this.start &&
-      this.start < new Date() &&
-      (!this.end || this.end > new Date())
-    );
+    return this.isActiveFrom(new Date());
+  }
+
+  isActiveFrom(date: Date) {
+    return this.confirmed && this.start <= date && (!this.end || this.end > date);
   }
 
   @Default(ClubMembershipType.NORMAL)
