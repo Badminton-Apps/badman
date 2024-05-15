@@ -185,8 +185,12 @@
     "open-close": {
       "close-accept-requests": "Sluiting acceptatie",
       "close-enrollment": "Sluiting",
+      "close-enrollment-required": "Sluitingsdatum is verplicht",
+      "close-enrollment-year": "De sluitingsdatum lijkt op een verkeerd jaar gezet te zijn",
       "close-new-requets": "Sluiting nieuwe aanvragen",
       "open-enrollment": "Datum opening",
+      "open-enrollment-required": "Openingsdatum is verplicht",
+      "open-enrollment-year": "De openingsdatum lijkt op een verkeerd jaar gezet te zijn",
       "open-requests": "Datum opening"
     },
     "overview": {
