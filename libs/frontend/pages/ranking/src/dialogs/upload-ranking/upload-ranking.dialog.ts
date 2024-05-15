@@ -64,10 +64,13 @@ export class UploadRankingDialogComponent {
 
   competitionStatus = true;
   updatePossible = false;
-  removeAllRanking = false;
+  updateClubs = false;
   updateRanking = true;
+  removeAllRanking = false;
   createNewPlayers = true;
   rankingDate = new Date();
+  clubMembershipStartDate = new Date();
+  clubMembershipEndDate = new Date();
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
@@ -92,7 +95,32 @@ export class UploadRankingDialogComponent {
     this.dragging = false;
     this.uploading = true;
     this.uploadedFile = event.dataTransfer?.files?.[0];
+    this.processFile();
+  }
 
+  // on click open file picker and to the file drop logic
+  onCLick(event: MouseEvent) {
+    event.preventDefault();
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.xlsx';
+    input.style.display = 'none';
+    input.onchange = (e) => {
+      const target = e.target as HTMLInputElement;
+      if (target.files?.length) {
+        this.uploadedFile = target.files[0];
+        this.processFile();
+      }
+    };
+    document.body.appendChild(input);
+    input.click();
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  private async processFile() {
     if (!this.uploadedFile) {
       return;
     }
@@ -103,6 +131,8 @@ export class UploadRankingDialogComponent {
       const date = moment(datePart, 'DDMMYYYY');
       if (date.isValid()) {
         this.rankingDate = date.toDate();
+        this.clubMembershipStartDate = new Date(this.rankingDate.getFullYear(), 5, 1);
+        this.clubMembershipEndDate = new Date(this.rankingDate.getFullYear(), 3, 30);
       }
     }
 
@@ -124,10 +154,6 @@ export class UploadRankingDialogComponent {
       });
   }
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
   async processData() {
     if (!this.uploadedFile || !this.data.rankingSystem?.id) {
       return;
@@ -139,10 +165,13 @@ export class UploadRankingDialogComponent {
     formData.append('rankingSystemId', this.data.rankingSystem.id);
     formData.append('updateCompStatus', this.competitionStatus.toString());
     formData.append('updatePossible', this.updatePossible.toString());
+    formData.append('updateRanking', this.updateRanking.toString());
+    formData.append('updateClubs', this.updateClubs.toString());
     formData.append('removeAllRanking', this.removeAllRanking.toString());
     formData.append('createNewPlayers', this.createNewPlayers.toString());
     formData.append('rankingDate', this.rankingDate.toISOString());
-    formData.append('updateRanking', this.updateRanking.toString());
+    formData.append('clubMembershipStartDate', this.clubMembershipStartDate.toISOString());
+    formData.append('clubMembershipEndDate', this.clubMembershipEndDate.toISOString());
 
     try {
       const result = await lastValueFrom(

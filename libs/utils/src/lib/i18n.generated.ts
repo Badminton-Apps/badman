@@ -764,6 +764,8 @@ export type I18nTranslations = {
             "update-happend": string;
             "updates": string;
             "upload": {
+                "club-end-date": string;
+                "club-start-date": string;
                 "comp-status": string;
                 "create-new-players": string;
                 "description": string;
@@ -772,6 +774,7 @@ export type I18nTranslations = {
                 "ranking-date": string;
                 "remove-current-ranking": string;
                 "title": string;
+                "update-clubs": string;
                 "update-possible": string;
                 "update-ranking": string;
             };
