@@ -27,6 +27,8 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
       logging,
     };
 
+    // throw new Error(`Dialect ${dialect} not supported, env: ${this.configService.get('DB_STORAGE')}`);
+
     if (dialect === 'postgres') {
       require('pg');
       // await import('pg');
@@ -49,11 +51,12 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
       options = {
         ...options,
         dialect: dialect ?? 'sqlite',
-        storage: this.configService.get('DB_STORAGE') ?? 'database.sqlite',
+        storage:
+          this.configService.get('DB_STORAGE') ?? env == 'test' ? ':memory:' : 'database.sqlite',
       };
     }
-    // log the options when in development
 
+    // log the options when in development
     if (env !== 'production') {
       this.logger.debug({
         logging: logging,

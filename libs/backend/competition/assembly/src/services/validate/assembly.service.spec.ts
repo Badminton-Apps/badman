@@ -62,10 +62,10 @@ describe('AssemblyValidationService', () => {
     module = await Test.createTestingModule({
       providers: [AssemblyValidationService],
       imports: [
-        DatabaseModule,
         ConfigModule.forRoot({
           envFilePath: '.env.test',
         }),
+        DatabaseModule,
       ],
     }).compile();
 

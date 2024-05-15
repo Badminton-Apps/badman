@@ -757,6 +757,8 @@
     "update-happend": "Update plaatsgevonden",
     "updates": "Updates",
     "upload": {
+      "club-end-date": "Date de fin d'adhésion à un club",
+      "club-start-date": "Date de début de l'adhésion à un club",
       "comp-status": "Définissez tous les joueurs de la \"Ligue\" selon le document actuel",
       "create-new-players": "Créer de nouveaux joueurs",
       "description": "<p>Chargez le <strong>exportMembersRoleGroup</strong> du fichier Excel <strong>BBF+Rating</strong>  <br /><small>Remarque : cela peut prendre du temps<small></p>",
@@ -765,6 +767,7 @@
       "ranking-date": "Mise à jour du classement",
       "remove-current-ranking": "Supprimer tous les classements actuels à partir de la date de classement",
       "title": "Téléchargement de fichiers",
+      "update-clubs": "Mise à jour des clubs en fonction du dossier",
       "update-possible": "Un changement de classification a eu lieu",
       "update-ranking": "Mise à jour des classements en fonction du dossier"
     }

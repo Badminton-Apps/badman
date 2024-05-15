@@ -10,7 +10,7 @@ import {
   BelongsToManyRemoveAssociationMixin,
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
-  BuildOptions,
+  CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -20,6 +20,8 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
+  InferAttributes,
+  InferCreationAttributes,
   Op,
   SaveOptions,
 } from 'sequelize';
@@ -58,52 +60,48 @@ import { Team } from './team.model';
   schema: 'public',
 })
 @ObjectType({ description: 'A Club' })
-export class Club extends Model {
-  constructor(values?: Partial<Club>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<Club>> {
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
-  override updatedAt?: Date;
+  declare updatedAt?: Date;
 
   @Field(() => Date, { nullable: true })
-  override createdAt?: Date;
+  declare createdAt?: Date;
 
   @Unique('club_number_unique')
   @Index
   @AllowNull(false)
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  name?: string;
+  declare name?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  fullName?: string;
+  declare fullName?: string;
 
   @Default(UseForTeamName.NAME)
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('name', 'fullName', 'abbreviation'))
-  useForTeamName?: UseForTeamName;
+  declare useForTeamName?: UseForTeamName;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  abbreviation?: string;
+  declare abbreviation?: string;
 
   @Unique('club_number_unique')
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
-  clubId?: number;
+  declare clubId?: number;
 
   @Field(() => [Team], { nullable: true })
   @HasMany(() => Team, 'clubId')
-  teams?: Relation<Team[]>;
+  declare teams?: Relation<Team[]>;
 
   @Field(() => [Role], { nullable: true })
   @HasMany(() => Role, {
@@ -113,33 +111,33 @@ export class Club extends Model {
       linkType: 'club',
     },
   })
-  roles?: Relation<Role[]>;
+  declare roles?: Relation<Role[]>;
 
   @Field(() => [PlayerWithClubMembershipType], { nullable: true })
   @BelongsToMany(() => Player, () => ClubPlayerMembership)
-  players?: (Player & { ClubPlayerMembership: ClubPlayerMembership })[];
+  declare players?: (Player & { ClubPlayerMembership: ClubPlayerMembership })[];
 
   @Field(() => [Comment], { nullable: true })
   @HasMany(() => Comment)
-  comments?: Relation<Comment[]>;
+  declare comments?: Relation<Comment[]>;
 
   @Field(() => [Location], { nullable: true })
   @HasMany(() => Location)
-  locations?: Relation<Location[]>;
+  declare locations?: Relation<Location[]>;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  slug?: string;
+  declare slug?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  state?: string;
+  declare state?: string;
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
-  country?: string;
+  declare country?: string;
 
-  regenerateSlug!: Slugify<Club>;
+  declare regenerateSlug: Slugify<Club>;
 
   // #endregion
 
@@ -210,59 +208,59 @@ export class Club extends Model {
   }
 
   // Belongs to many Player
-  getPlayers!: BelongsToManyGetAssociationsMixin<Player>;
-  setPlayer!: BelongsToManySetAssociationsMixin<Player, string>;
-  addPlayers!: BelongsToManyAddAssociationsMixin<Player, string>;
-  addPlayer!: BelongsToManyAddAssociationMixin<Player, string>;
-  removePlayer!: BelongsToManyRemoveAssociationMixin<Player, string>;
-  removePlayers!: BelongsToManyRemoveAssociationsMixin<Player, string>;
-  hasPlayer!: BelongsToManyHasAssociationMixin<Player, string>;
-  hasPlayers!: BelongsToManyHasAssociationsMixin<Player, string>;
-  countPlayer!: BelongsToManyCountAssociationsMixin;
+  declare getPlayers: BelongsToManyGetAssociationsMixin<Player>;
+  declare setPlayer: BelongsToManySetAssociationsMixin<Player, string>;
+  declare addPlayers: BelongsToManyAddAssociationsMixin<Player, string>;
+  declare addPlayer: BelongsToManyAddAssociationMixin<Player, string>;
+  declare removePlayer: BelongsToManyRemoveAssociationMixin<Player, string>;
+  declare removePlayers: BelongsToManyRemoveAssociationsMixin<Player, string>;
+  declare hasPlayer: BelongsToManyHasAssociationMixin<Player, string>;
+  declare hasPlayers: BelongsToManyHasAssociationsMixin<Player, string>;
+  declare countPlayer: BelongsToManyCountAssociationsMixin;
 
   // Has many Location
-  getLocations!: HasManyGetAssociationsMixin<Location>;
-  setLocations!: HasManySetAssociationsMixin<Location, string>;
-  addLocations!: HasManyAddAssociationsMixin<Location, string>;
-  addLocation!: HasManyAddAssociationMixin<Location, string>;
-  removeLocation!: HasManyRemoveAssociationMixin<Location, string>;
-  removeLocations!: HasManyRemoveAssociationsMixin<Location, string>;
-  hasLocation!: HasManyHasAssociationMixin<Location, string>;
-  hasLocations!: HasManyHasAssociationsMixin<Location, string>;
-  countLocations!: HasManyCountAssociationsMixin;
+  declare getLocations: HasManyGetAssociationsMixin<Location>;
+  declare setLocations: HasManySetAssociationsMixin<Location, string>;
+  declare addLocations: HasManyAddAssociationsMixin<Location, string>;
+  declare addLocation: HasManyAddAssociationMixin<Location, string>;
+  declare removeLocation: HasManyRemoveAssociationMixin<Location, string>;
+  declare removeLocations: HasManyRemoveAssociationsMixin<Location, string>;
+  declare hasLocation: HasManyHasAssociationMixin<Location, string>;
+  declare hasLocations: HasManyHasAssociationsMixin<Location, string>;
+  declare countLocations: HasManyCountAssociationsMixin;
 
   // Has many Role
-  getRoles!: HasManyGetAssociationsMixin<Role>;
-  setRoles!: HasManySetAssociationsMixin<Role, string>;
-  addRoles!: HasManyAddAssociationsMixin<Role, string>;
-  addRole!: HasManyAddAssociationMixin<Role, string>;
-  removeRole!: HasManyRemoveAssociationMixin<Role, string>;
-  removeRoles!: HasManyRemoveAssociationsMixin<Role, string>;
-  hasRole!: HasManyHasAssociationMixin<Role, string>;
-  hasRoles!: HasManyHasAssociationsMixin<Role, string>;
-  countRoles!: HasManyCountAssociationsMixin;
+  declare getRoles: HasManyGetAssociationsMixin<Role>;
+  declare setRoles: HasManySetAssociationsMixin<Role, string>;
+  declare addRoles: HasManyAddAssociationsMixin<Role, string>;
+  declare addRole: HasManyAddAssociationMixin<Role, string>;
+  declare removeRole: HasManyRemoveAssociationMixin<Role, string>;
+  declare removeRoles: HasManyRemoveAssociationsMixin<Role, string>;
+  declare hasRole: HasManyHasAssociationMixin<Role, string>;
+  declare hasRoles: HasManyHasAssociationsMixin<Role, string>;
+  declare countRoles: HasManyCountAssociationsMixin;
 
   // Has many Team
-  getTeams!: HasManyGetAssociationsMixin<Team>;
-  setTeams!: HasManySetAssociationsMixin<Team, string>;
-  addTeams!: HasManyAddAssociationsMixin<Team, string>;
-  addTeam!: HasManyAddAssociationMixin<Team, string>;
-  removeTeam!: HasManyRemoveAssociationMixin<Team, string>;
-  removeTeams!: HasManyRemoveAssociationsMixin<Team, string>;
-  hasTeam!: HasManyHasAssociationMixin<Team, string>;
-  hasTeams!: HasManyHasAssociationsMixin<Team, string>;
-  countTeams!: HasManyCountAssociationsMixin;
+  declare getTeams: HasManyGetAssociationsMixin<Team>;
+  declare setTeams: HasManySetAssociationsMixin<Team, string>;
+  declare addTeams: HasManyAddAssociationsMixin<Team, string>;
+  declare addTeam: HasManyAddAssociationMixin<Team, string>;
+  declare removeTeam: HasManyRemoveAssociationMixin<Team, string>;
+  declare removeTeams: HasManyRemoveAssociationsMixin<Team, string>;
+  declare hasTeam: HasManyHasAssociationMixin<Team, string>;
+  declare hasTeams: HasManyHasAssociationsMixin<Team, string>;
+  declare countTeams: HasManyCountAssociationsMixin;
 
   // Has many Comment
-  getComments!: HasManyGetAssociationsMixin<Comment>;
-  setComments!: HasManySetAssociationsMixin<Comment, string>;
-  addComments!: HasManyAddAssociationsMixin<Comment, string>;
-  addComment!: HasManyAddAssociationMixin<Comment, string>;
-  removeComment!: HasManyRemoveAssociationMixin<Comment, string>;
-  removeComments!: HasManyRemoveAssociationsMixin<Comment, string>;
-  hasComment!: HasManyHasAssociationMixin<Comment, string>;
-  hasComments!: HasManyHasAssociationsMixin<Comment, string>;
-  countComments!: HasManyCountAssociationsMixin;
+  declare getComments: HasManyGetAssociationsMixin<Comment>;
+  declare setComments: HasManySetAssociationsMixin<Comment, string>;
+  declare addComments: HasManyAddAssociationsMixin<Comment, string>;
+  declare addComment: HasManyAddAssociationMixin<Comment, string>;
+  declare removeComment: HasManyRemoveAssociationMixin<Comment, string>;
+  declare removeComments: HasManyRemoveAssociationsMixin<Comment, string>;
+  declare hasComment: HasManyHasAssociationMixin<Comment, string>;
+  declare hasComments: HasManyHasAssociationsMixin<Comment, string>;
+  declare countComments: HasManyCountAssociationsMixin;
 }
 
 @InputType()

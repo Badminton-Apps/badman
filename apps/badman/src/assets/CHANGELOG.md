@@ -1,3 +1,18 @@
+## 6.149.0 (2024-05-13)
+
+
+### 🚀 Features
+
+- when uploading ranking file, allow to set the clubs ([7128bd28e](https://github.com/Badminton-Apps/badman/commit/7128bd28e))
+
+### 🩹 Fixes
+
+- make sure testing is running in memory if not provided ([e5cb4765d](https://github.com/Badminton-Apps/badman/commit/e5cb4765d))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.148.0 (2024-05-12)
 
 

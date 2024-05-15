@@ -12,40 +12,51 @@ export class AssignClubToPlayers {
   }
 
   async process() {
-    // read the excel file in ../shared/exportMembersRolePerGroup-06052024.xlsx
+    const xlData = this.readExcelFile();
+    const memberIds = this.extractMemberIds(xlData);
+    const clubs = await this.getAllClubs();
+    const players = await this.getPlayersWithClubs(memberIds);
+
+    const changes = this.findClubChanges(xlData, clubs, players);
+
+    this.writeChangesToExcel(changes);
+  }
+
+  private readExcelFile() {
     const workbook = xlsx.readFile(
       './apps/scripts/src/app/shared-files/exportMembersRolePerGroup-06052024.xlsx',
     );
     const sheet_name_list = workbook.SheetNames;
-    const xlData = xlsx.utils
-      .sheet_to_json<{
-        groupname: string;
-        memberid: string;
-        TypeName: 'Recreant' | 'Jeugd' | 'Competitiespeler';
-      }>(workbook.Sheets[sheet_name_list[0]])
-      .filter((row) => row.TypeName == 'Competitiespeler');
-    // get all clubs
-    const memberIds = xlData.map((row) => row.memberid);
+    return xlsx.utils.sheet_to_json<ExcelInput>(workbook.Sheets[sheet_name_list[0]]);
+  }
 
-    const clubs = await Club.findAll();
-    const players = await Player.findAll({
-      where: { memberId: memberIds },
-      include: [Club],
+  private extractMemberIds(xlData: ExcelInput[]) {
+    return xlData.map((row) => row.memberid);
+  }
+
+  private async getAllClubs() {
+    return Club.findAll({
+      attributes: ['id', 'name', 'fullName'],
     });
+  }
 
-    const changes = [] as {
-      memberId: string;
-      name: string;
-      currentClub: string;
-      newClub: string;
-      exportClub: string;
-      flemish: boolean;
-      clubId: string;
-      newClubId: string;
-    }[];
+  private async getPlayersWithClubs(memberIds: string[]) {
+    return Player.findAll({
+      where: { memberId: memberIds },
+      include: [
+        {
+          model: Club,
+          attributes: ['id', 'name', 'fullName'],
+          required: false,
+          through: { attributes: ['id', 'active', 'end', 'start', 'confirmed'] },
+        },
+      ],
+    });
+  }
 
-    // for each row get the club that matches the club name or fullname ignoring case
-    // and write the club id next to the club name in the excel file
+  private findClubChanges(xlData: ExcelInput[], clubs: Club[], players: Player[]) {
+    const changes = [] as ExcelOutput[];
+
     xlData.forEach((row) => {
       const club = clubs.find(
         (c) =>
@@ -62,6 +73,7 @@ export class AssignClubToPlayers {
           changes.push({
             memberId: row.memberid,
             name: player.fullName,
+            type: row.TypeName,
             currentClub: activeClub?.name ?? '',
             newClub: club.name ?? '',
             exportClub: row.groupname,
@@ -73,10 +85,31 @@ export class AssignClubToPlayers {
       }
     });
 
-    // write changes to excel
+    return changes;
+  }
+
+  private writeChangesToExcel(changes: ExcelOutput[]) {
     const ws = xlsx.utils.json_to_sheet(changes);
     const wb = xlsx.utils.book_new();
     xlsx.utils.book_append_sheet(wb, ws, 'changes');
     xlsx.writeFile(wb, './apps/scripts/src/app/shared-files/club-changes.xlsx');
   }
 }
+
+type ExcelInput = {
+  groupname: string;
+  memberid: string;
+  TypeName: 'Recreant' | 'Jeugd' | 'Competitiespeler';
+};
+
+type ExcelOutput = {
+  memberId: string;
+  name: string;
+  currentClub: string;
+  newClub: string;
+  exportClub: string;
+  flemish: boolean;
+  type: string;
+  clubId: string;
+  newClubId: string;
+};

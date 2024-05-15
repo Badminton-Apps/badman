@@ -11354,6 +11354,44 @@
 								<name>upload</name>
 								<children>
 									<concept_node>
+										<name>club-end-date</name>
+										<description/>
+										<comment/>
+										<translations>
+											<translation>
+												<language>en-US</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>fr-BE</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>nl-BE</language>
+												<approved>false</approved>
+											</translation>
+										</translations>
+									</concept_node>
+									<concept_node>
+										<name>club-start-date</name>
+										<description/>
+										<comment/>
+										<translations>
+											<translation>
+												<language>en-US</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>fr-BE</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>nl-BE</language>
+												<approved>false</approved>
+											</translation>
+										</translations>
+									</concept_node>
+									<concept_node>
 										<name>comp-status</name>
 										<description/>
 										<comment/>
@@ -11502,6 +11540,25 @@
 											<translation>
 												<language>nl-BE</language>
 												<approved>true</approved>
+											</translation>
+										</translations>
+									</concept_node>
+									<concept_node>
+										<name>update-clubs</name>
+										<description/>
+										<comment/>
+										<translations>
+											<translation>
+												<language>en-US</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>fr-BE</language>
+												<approved>false</approved>
+											</translation>
+											<translation>
+												<language>nl-BE</language>
+												<approved>false</approved>
 											</translation>
 										</translations>
 									</concept_node>

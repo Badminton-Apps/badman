@@ -1,6 +1,13 @@
 import { ClubMembershipType } from '@badman/utils';
 import { Field, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
+  BelongsToGetAssociationMixin,
+  BelongsToSetAssociationMixin,
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from 'sequelize';
+import {
   AllowNull,
   BelongsTo,
   Column,
@@ -17,52 +24,54 @@ import {
 import { Relation } from '../wrapper';
 import { Club } from './club.model';
 import { Player } from './player.model';
-import { BelongsToGetAssociationMixin, BelongsToSetAssociationMixin } from 'sequelize';
 
 @Table({
   schema: 'public',
 })
 @ObjectType({ description: 'A ClubPlayerMembership' })
-export class ClubPlayerMembership extends Model {
+export class ClubPlayerMembership extends Model<
+  InferAttributes<ClubPlayerMembership>,
+  InferCreationAttributes<ClubPlayerMembership>
+> {
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @ForeignKey(() => Player)
   @AllowNull(false)
   @Index('player_club_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  playerId?: string;
+  declare playerId?: string;
 
   @ForeignKey(() => Club)
   @AllowNull(false)
   @Index('player_club_index')
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  clubId?: string;
+  declare clubId?: string;
 
   @BelongsTo(() => Club, 'clubId')
-  club?: Relation<Club>;
+  declare club?: Relation<Club>;
 
   @BelongsTo(() => Player, 'playerId')
-  player?: Relation<Player>;
+  declare player?: Relation<Player>;
 
   @Field(() => Date, { nullable: true })
   @Column(DataType.DATE)
-  end?: Date;
+  declare end?: Date | null;
 
   @Default(false)
   @Field(() => Boolean)
   @Column(DataType.BOOLEAN)
-  confirmed?: boolean;
+  declare confirmed?: boolean;
 
   @Default(true)
   @Field(() => Boolean)
-  @Column(DataType.VIRTUAL)
+  @Column(DataType.VIRTUAL(DataType.BOOLEAN)) //[Sequelize.literal('start < now() AND (end IS NULL OR end > now())')]
   get active() {
     // if the start is passed and end is null or in the future, it is active
     return (
@@ -76,7 +85,7 @@ export class ClubPlayerMembership extends Model {
   @Default(ClubMembershipType.NORMAL)
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM(...Object.keys(ClubMembershipType)))
-  membershipType?: Relation<ClubMembershipType>;
+  declare membershipType?: Relation<ClubMembershipType>;
 
   // Below is a hacky way to make the Unique across FK's + start
   // issue: (https://github.com/sequelize/sequelize/issues/12988)
@@ -84,15 +93,15 @@ export class ClubPlayerMembership extends Model {
   @AllowNull(false)
   @Field(() => Date, { defaultValue: new Date() })
   @Column(DataType.DATE)
-  start!: Date;
+  declare start: Date;
 
   // Belongs to Club
-  getClub!: BelongsToGetAssociationMixin<Club>;
-  setClub!: BelongsToSetAssociationMixin<Club, string>;
+  declare getClub: BelongsToGetAssociationMixin<Club>;
+  declare setClub: BelongsToSetAssociationMixin<Club, string>;
 
   // Belongs to Player
-  getPlayer!: BelongsToGetAssociationMixin<Player>;
-  setPlayer!: BelongsToSetAssociationMixin<Player, string>;
+  declare getPlayer: BelongsToGetAssociationMixin<Player>;
+  declare setPlayer: BelongsToSetAssociationMixin<Player, string>;
 }
 
 @InputType()
