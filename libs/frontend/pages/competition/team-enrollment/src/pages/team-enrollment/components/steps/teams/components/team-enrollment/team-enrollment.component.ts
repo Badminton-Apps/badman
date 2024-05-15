@@ -182,10 +182,12 @@ export class TeamEnrollmentComponent {
     if (!this.team) return;
     if (!this.subEvent) return;
     if (this.subEvent().value) return;
+
     const entry = this.team().getRawValue().entry;
     const level = entry?.subEventCompetition?.level ?? 0;
     const subs = this.subEventsForType();
     const type = entry?.subEventCompetition?.eventCompetition?.type ?? LevelType.PROV;
+
     const { newType, newLevel } = getNewTypeAndLevel(
       this.maxLevels(),
       type,
@@ -194,7 +196,9 @@ export class TeamEnrollmentComponent {
       entry?.standing?.faller ?? false,
     );
 
-    const subEventId = subs?.find((sub) => sub.level === newLevel && type === newType)?.id;
+    const subEventId = subs?.find(
+      (sub) => sub.level === newLevel && sub.eventCompetition?.type === newType,
+    )?.id;
 
     if (!subEventId) return;
 
