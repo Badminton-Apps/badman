@@ -18,8 +18,8 @@ describe('HealthController', () => {
     expect(app).toBeDefined();
   });
 
-  it.skip('/health (GET)', () => {
-    return request(app.getHttpServer())
+  it('/health (GET)', (done) => {
+    request(app.getHttpServer())
       .get('/health')
       .expect(503)
       .expect({
@@ -37,6 +37,10 @@ describe('HealthController', () => {
             message: 'Connection provider not found in application context',
           },
         },
+      })
+      .end(function (err) {
+        if (err) return done(err);
+        return done();
       });
   });
 });
