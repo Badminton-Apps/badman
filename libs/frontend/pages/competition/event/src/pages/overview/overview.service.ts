@@ -105,6 +105,7 @@ export class EventOverviewService {
                 openDate
                 closeDate
                 visualCode
+                season
                 subEventCompetitions {
                   id
                   drawCompetitions {

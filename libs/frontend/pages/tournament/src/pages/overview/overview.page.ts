@@ -291,7 +291,10 @@ export class OverviewPageComponent implements OnInit, AfterViewInit {
   setOpenClose(tournament: EventTournament) {
     // open dialog
     const ref = this.dialog.open(OpenCloseDateDialogComponent, {
-      data: { event: tournament },
+      data: {
+        openDate: tournament.openDate,
+        closeDate: tournament.closeDate,
+      },
       width: '400px',
     });
 

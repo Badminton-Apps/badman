@@ -185,8 +185,12 @@
     "open-close": {
       "close-accept-requests": "Closure acceptance",
       "close-enrollment": "Closure",
+      "close-enrollment-required": "Closing date is mandatory",
+      "close-enrollment-year": "The closing date seems to have been set to the wrong year",
       "close-new-requets": "Closing new applications",
       "open-enrollment": "Date of opening",
+      "open-enrollment-required": "Opening date is mandatory",
+      "open-enrollment-year": "The opening date seems to be set to the wrong year",
       "open-requests": "Date of opening"
     },
     "overview": {
