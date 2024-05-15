@@ -39,6 +39,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TeamEnrollmentDataService } from '../../../../../service/team-enrollment.service';
 import { TeamForm } from '../../../../../team-enrollment.page';
 import { TeamComponent } from '../team';
+import { getNewTypeAndLevel } from '../utils/get-next-level';
 
 @Component({
   selector: 'badman-team-enrollment',
@@ -88,6 +89,7 @@ export class TeamEnrollmentComponent {
     () => this.entry().get('players') as FormArray<FormControl<EntryCompetitionPlayer>>,
   );
   subEventsForType = computed(() => this.dataService.state.eventsPerType()[this.type()]);
+  maxLevels = computed(() => this._maxLevels(this.subEventsForType()));
 
   levelExceptions = computed(() => {
     const errors = this.validation()?.errors ?? [];
@@ -182,50 +184,17 @@ export class TeamEnrollmentComponent {
     if (this.subEvent().value) return;
     const entry = this.team().getRawValue().entry;
     const level = entry?.subEventCompetition?.level ?? 0;
-    const maxLevels = this._maxLevels(this.subEventsForType());
     const subs = this.subEventsForType();
+    const type = entry?.subEventCompetition?.eventCompetition?.type ?? LevelType.PROV;
+    const { newType, newLevel } = getNewTypeAndLevel(
+      this.maxLevels(),
+      type,
+      level,
+      entry?.standing?.riser ?? false,
+      entry?.standing?.faller ?? false,
+    );
 
-    let type = entry?.subEventCompetition?.eventCompetition?.type ?? LevelType.PROV;
-    let subEventId: string | undefined;
-
-    if (entry?.standing?.riser) {
-      let newLevel = level - 1;
-
-      if (newLevel < 1) {
-        // we promote to next level
-        if (type === LevelType.PROV) {
-          type = LevelType.LIGA;
-          newLevel = maxLevels.LIGA;
-        } else if (type === LevelType.LIGA) {
-          type = LevelType.NATIONAL;
-          newLevel = maxLevels.NATIONAL;
-        }
-      }
-
-      subEventId = subs?.find(
-        (sub) => sub.level === newLevel && type === sub.eventCompetition?.type,
-      )?.id;
-    } else if (entry?.standing?.faller) {
-      let newLevel = level + 1;
-
-      if (newLevel > maxLevels.NATIONAL && type === LevelType.NATIONAL) {
-        // we demote to lower level
-        type = LevelType.LIGA;
-        newLevel = 1;
-      } else if (newLevel > maxLevels.LIGA && type === LevelType.LIGA) {
-        type = LevelType.PROV;
-        newLevel = 1;
-      }
-
-      subEventId = subs?.find(
-        (sub) => sub.level === newLevel && sub.eventCompetition?.type === type,
-      )?.id;
-    } else {
-      subEventId = subs?.find(
-        (sub) =>
-          sub.level === entry?.subEventCompetition?.level && type === sub.eventCompetition?.type,
-      )?.id;
-    }
+    const subEventId = subs?.find((sub) => sub.level === newLevel && type === newType)?.id;
 
     if (!subEventId) return;
 
@@ -235,19 +204,22 @@ export class TeamEnrollmentComponent {
   private _maxLevels(subs: SubEventCompetition[]) {
     return {
       PROV: Math.max(
+        0,
         ...(subs
           ?.filter((s) => s.eventCompetition?.type === LevelType.PROV)
-          .map((s) => s.level ?? 0) ?? []),
+          ?.map((s) => s.level ?? 0) ?? []),
       ),
       LIGA: Math.max(
+        0,
         ...(subs
           ?.filter((s) => s.eventCompetition?.type === LevelType.LIGA)
-          .map((s) => s.level ?? 0) ?? []),
+          ?.map((s) => s.level ?? 0) ?? []),
       ),
       NATIONAL: Math.max(
+        0,
         ...(subs
           ?.filter((s) => s.eventCompetition?.type === LevelType.NATIONAL)
-          .map((s) => s.level ?? 0) ?? []),
+          ?.map((s) => s.level ?? 0) ?? []),
       ),
     };
   }
