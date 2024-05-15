@@ -15,6 +15,20 @@
         ></mtx-datetimepicker>
         <input [mtxDatetimepicker]="datetimePicker" [formControl]="openControl" matInput required />
         <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
+
+        @if (openControl.touched && openControl.invalid) {
+          @if (openControl.hasError('required')) {
+            <mat-error>
+              {{ 'all.competition.open-close.open-enrollment-required' | translate }}
+            </mat-error>
+          }
+        }
+
+        @if (openYearWarning) {
+          <mat-hint>
+            {{ 'all.competition.open-close.open-enrollment-year' | translate }}
+          </mat-hint>
+        }
       </mat-form-field>
     </div>
   }
@@ -34,7 +48,21 @@
           matInput
           required
         />
+
         <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
+        @if (closeControl.touched && closeControl.invalid) {
+          @if (closeControl.hasError('required')) {
+            <mat-error>
+              {{ 'all.competition.open-close.close-enrollment-required' | translate }}
+            </mat-error>
+          }
+        }
+
+        @if (closeYearWarning) {
+          <mat-hint>
+            {{ 'all.competition.open-close.close-enrollment-year' | translate }}
+          </mat-hint>
+        }
       </mat-form-field>
     </div>
   }

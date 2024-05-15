@@ -192,8 +192,12 @@ export type I18nTranslations = {
             "open-close": {
                 "close-accept-requests": string;
                 "close-enrollment": string;
+                "close-enrollment-required": string;
+                "close-enrollment-year": string;
                 "close-new-requets": string;
                 "open-enrollment": string;
+                "open-enrollment-required": string;
+                "open-enrollment-year": string;
                 "open-requests": string;
             };
             "overview": {

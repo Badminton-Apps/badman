@@ -106,7 +106,10 @@ export class DetailPageComponent {
   setOpenClose() {
     // open dialog
     const ref = this.dialog.open(OpenCloseDateDialogComponent, {
-      data: { event: this.eventTournament },
+      data: {
+        openDate: this.eventTournament().openDate,
+        closeDate: this.eventTournament().closeDate,
+      },
       width: '400px',
     });
 

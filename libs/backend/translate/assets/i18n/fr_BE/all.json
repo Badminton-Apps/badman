@@ -185,8 +185,12 @@
     "open-close": {
       "close-accept-requests": "Acceptation de la clôture",
       "close-enrollment": "Fermeture",
+      "close-enrollment-required": "La date de clôture est obligatoire",
+      "close-enrollment-year": "La date de clôture semble avoir été fixée à la mauvaise année",
       "close-new-requets": "Clôture des nouvelles demandes",
       "open-enrollment": "Date d'ouverture",
+      "open-enrollment-required": "La date d'ouverture est obligatoire",
+      "open-enrollment-year": "La date d'ouverture semble être fixée à la mauvaise année.",
       "open-requests": "Date d'ouverture"
     },
     "overview": {
