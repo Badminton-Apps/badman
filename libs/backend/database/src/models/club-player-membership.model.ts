@@ -76,8 +76,11 @@ export class ClubPlayerMembership extends Model<
     return this.isActiveFrom(new Date());
   }
 
-  isActiveFrom(date: Date) {
-    return this.confirmed && this.start <= date && (!this.end || this.end > date);
+  isActiveFrom(date: Date, shouldBeConfirmed = true) {
+    if (shouldBeConfirmed && !this.confirmed) {
+      return false;
+    }
+    return this.start <= date && (!this.end || this.end > date);
   }
 
   @Default(ClubMembershipType.NORMAL)
