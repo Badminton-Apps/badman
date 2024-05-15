@@ -1,5 +1,5 @@
-import { SubEventTypeEnum } from '@badman/utils';
-import { EnrollmentValidationData, RuleResult, EnrollmentValidationError } from '../../../models';
+import { sortTeams } from '@badman/utils';
+import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
 import { Rule } from './_rule.base';
 
 /**
@@ -8,51 +8,69 @@ import { Rule } from './_rule.base';
 export class PlayerBaseRule extends Rule {
   async validate(enrollment: EnrollmentValidationData) {
     const results = [] as RuleResult[];
-    const playerCountMap = new Map<string, Map<SubEventTypeEnum, number>>();
+    const sortedTeamsByTeamNumberAndType = enrollment.teams.sort((a, b) =>
+      sortTeams(a.team, b.team),
+    );
 
-    // Count the occurrences of each player in basePlayers arrays per type of team
-    for (const { basePlayers, team } of enrollment.teams) {
-      for (const player of basePlayers ?? []) {
-        if (!player.id || !team?.type) {
-          continue;
-        }
-
-        const countMap = playerCountMap.get(player.id) || new Map<SubEventTypeEnum, number>();
-        const count = countMap.get(team.type) || 0;
-        countMap.set(team.type, count + 1);
-        playerCountMap.set(player.id, countMap);
-      }
-    }
-
-    // Check if a player doesn't exist in 2 base teams of the same type
-    for (const { team, basePlayers } of enrollment.teams) {
+    for (const {
+      basePlayers,
+      backupPlayers,
+      teamPlayers,
+      team,
+      subEvent,
+    } of sortedTeamsByTeamNumberAndType) {
       if (!team?.id) {
         continue;
       }
 
+      const otherTeams = sortedTeamsByTeamNumberAndType.filter(
+        (t) =>
+          t.team?.id != team.id &&
+          t.team?.type === team.type &&
+          // same or higher level
+          (t.subEvent?.level ?? 0) <= (subEvent?.level ?? 0) &&
+          // same type
+          t.subEvent?.eventType === subEvent?.eventType,
+      );
+
       const errors = [] as EnrollmentValidationError[];
+      const warnings = [] as EnrollmentValidationError[];
 
       for (const player of basePlayers ?? []) {
         if (!player.id || !team?.type) {
           continue;
         }
 
-        const countMap = playerCountMap.get(player.id);
-        if (countMap && (countMap.get(team.type) ?? 0) > 1) {
-          // find all teams that have this player in basePlayers of the same type
-          const otherTeams = enrollment.teams.filter(
-            (t) =>
-              t.team?.id != team.id &&
-              t.team?.type === team.type &&
-              t.basePlayers?.includes(player),
-          );
-
-          // generate the error message for each team
-          for (const otherTeam of otherTeams) {
+        for (const otherTeam of otherTeams) {
+          if (otherTeam.basePlayers?.find((p) => p.id === player.id)) {
             errors.push({
               message: 'all.competition.team-enrollment.errors.base-other-team',
               params: {
-                player: player.player,
+                player: {
+                  id: player.player?.id,
+                  fullName: player.player?.fullName,
+                },
+                teamId: otherTeam.team?.id,
+              },
+            });
+          }
+        }
+      }
+
+      for (const player of [...(teamPlayers ?? []), ...(backupPlayers ?? [])]) {
+        if (!player.id || !team?.type) {
+          continue;
+        }
+
+        for (const otherTeam of otherTeams) {
+          if (otherTeam.basePlayers?.find((p) => p.id === player.id)) {
+            warnings.push({
+              message: 'all.competition.team-enrollment.errors.base-other-team',
+              params: {
+                player: {
+                  id: player.player?.id,
+                  fullName: player.player?.fullName,
+                },
                 teamId: otherTeam.team?.id,
               },
             });
@@ -63,6 +81,7 @@ export class PlayerBaseRule extends Rule {
       results.push({
         teamId: team.id,
         errors,
+        warnings,
         valid: errors.length === 0,
       });
     }
