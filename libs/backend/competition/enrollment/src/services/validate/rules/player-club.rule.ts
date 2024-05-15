@@ -1,8 +1,7 @@
 import { Club, Player } from '@badman/backend-database';
+import { startOfSeason } from '@badman/utils';
 import { EnrollmentValidationData, EnrollmentValidationError, RuleResult } from '../../../models';
 import { Rule } from './_rule.base';
-import moment from 'moment';
-import { ClubMembershipType, startOfSeason } from '@badman/utils';
 
 /**
  * Checks if the players is the correct club for the team
@@ -111,6 +110,8 @@ export class PlayerClubRule extends Rule {
     loans: string[],
     transfers: string[],
   ) {
+    const startDate = startOfSeason(season).toDate();
+
     // 1. find player in playerList
     // 2. check if the active club (= no end date) is the same as the club
     // 3. return a list of players that are not from the club
@@ -122,24 +123,8 @@ export class PlayerClubRule extends Rule {
         return;
       }
 
-      const activeClubsInNextSeason = 
-        player?.clubs
-          // sort by ClubPlayerMembership.membershipType NORMAL first
-          ?.sort((a, b) => {
-            if (a.ClubPlayerMembership.membershipType == ClubMembershipType.NORMAL) {
-              return -1;
-            }
-            if (b.ClubPlayerMembership.membershipType == ClubMembershipType.NORMAL) {
-              return 1;
-            }
-            return 0;
-          })
-          ?.filter(
-            (c) =>
-              // must not have ended yet
-              c.ClubPlayerMembership.end == null ||
-              moment(c.ClubPlayerMembership.end).isAfter(startOfSeason(season)),
-          ) ?? [];
+      const activeClubsInNextSeason =
+        player?.clubs?.filter((c) => c.ClubPlayerMembership.isActiveFrom(startDate, false)) ?? [];
 
       // else if the player has no active club
       if (activeClubsInNextSeason.length == 0) {
