@@ -1,3 +1,15 @@
+## 6.149.2 (2024-05-15)
+
+
+### 🩹 Fixes
+
+- stupid bug in selecting event ([cd7aa24cb](https://github.com/Badminton-Apps/badman/commit/cd7aa24cb))
+- allowing non-confirmed filter ([011074117](https://github.com/Badminton-Apps/badman/commit/011074117))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.149.1 (2024-05-15)
 
 
