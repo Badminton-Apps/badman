@@ -32,7 +32,7 @@ export class UpdateRankingService {
 
       const distinctPlayers = await this.fetchDistinctPlayers(
         data,
-        options.rankingDate,
+        options.clubMembershipStartDate,
         options.updateClubs,
         transaction,
       );
@@ -40,7 +40,12 @@ export class UpdateRankingService {
 
       if (newPlayers.length > 0 && options.createNewPlayers) {
         await this.createPlayers(newPlayers, transaction);
-        const newPlayersFromDb = await this.getNewPlayersFromDb(newPlayers, transaction);
+        const newPlayersFromDb = await this.getNewPlayersFromDb(
+          newPlayers,
+          options.updateClubs,
+          options.clubMembershipEndDate,
+          transaction,
+        );
         distinctPlayers.push(...newPlayersFromDb);
       }
 
@@ -111,7 +116,7 @@ export class UpdateRankingService {
 
   private async fetchDistinctPlayers(
     data: MembersRolePerGroupData[],
-    rankingDate: Date,
+    clubMembershipEndDate: Date,
     updateClubs: boolean,
     transaction?: Transaction,
   ): Promise<Player[]> {
@@ -130,7 +135,7 @@ export class UpdateRankingService {
               through: {
                 attributes: ['id', 'active', 'end', 'start', 'confirmed'],
                 where: {
-                  [Op.or]: [{ end: null }, { start: { [Op.lte]: rankingDate } }],
+                  [Op.or]: [{ end: null }, { start: { [Op.lte]: clubMembershipEndDate } }],
                 },
               },
             },
@@ -144,7 +149,7 @@ export class UpdateRankingService {
         .filter((d) => !distinctIds.find((p) => p === d));
 
       const players = await Player.findAll({
-        attributes: ['id', 'memberId', 'competitionPlayer', 'gender'],
+        attributes: ['id', 'memberId', 'competitionPlayer', 'gender', 'firstName', 'lastName'],
         where: {
           memberId: distinctChunkIds,
         },
@@ -191,6 +196,8 @@ export class UpdateRankingService {
 
   private async getNewPlayersFromDb(
     newPlayers: MembersRolePerGroupData[],
+    updateClubs: boolean,
+    clubMembershipEndDate: Date,
     transaction?: Transaction,
   ): Promise<Player[]> {
     return Player.findAll({
@@ -198,6 +205,22 @@ export class UpdateRankingService {
       where: {
         memberId: newPlayers.map((p) => p.memberId),
       },
+      include: updateClubs
+        ? [
+            {
+              model: Club,
+              attributes: ['id', 'name', 'fullName'],
+              required: false,
+              through: {
+                attributes: ['id', 'active', 'end', 'start', 'confirmed'],
+                where: {
+                  [Op.or]: [{ end: null }, { start: { [Op.lte]: clubMembershipEndDate } }],
+                },
+              },
+            },
+          ]
+        : [],
+
       transaction,
     });
   }
@@ -357,6 +380,7 @@ export class UpdateRankingService {
       transaction,
     });
     const changes = [] as {
+      memberId: string;
       playerId: string;
       clubMembershipId: string;
       name: string;
@@ -382,10 +406,13 @@ export class UpdateRankingService {
         hasMembership.push(player.id);
 
         if (club) {
-          const activeClub = player.clubs?.find((c) => c.ClubPlayerMembership?.active);
+          const activeClub = player.clubs?.find(
+            (c) => c.ClubPlayerMembership?.isActiveFrom(clubMembershipStartDate) ?? false,
+          );
 
           if (activeClub?.id !== club.id) {
             changes.push({
+              memberId: row.memberId,
               playerId: player.id,
               clubMembershipId: activeClub?.ClubPlayerMembership.id ?? '',
               name: player.fullName,
@@ -404,6 +431,7 @@ export class UpdateRankingService {
       changes,
       clubMembershipEndDate,
       clubMembershipStartDate,
+
       transaction,
     );
 
@@ -461,6 +489,7 @@ export class UpdateRankingService {
 
   private async updatePlayerClubs(
     changes: {
+      memberId: string;
       clubMembershipId: string;
       playerId: string;
       name: string;
