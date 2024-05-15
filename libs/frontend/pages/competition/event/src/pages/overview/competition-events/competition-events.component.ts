@@ -40,7 +40,6 @@ import { EventOverviewService } from '../overview.service';
 })
 export class CompetitionEventsComponent {
   private readonly dialog = inject(MatDialog);
-  private readonly snackBar = inject(MatSnackBar);
   private readonly eventService = inject(EventOverviewService);
   private readonly jobsService = inject(JobsService);
 
@@ -57,7 +56,11 @@ export class CompetitionEventsComponent {
   setOpenClose(competition: EventCompetition) {
     // open dialog
     const ref = this.dialog.open(OpenCloseDateDialogComponent, {
-      data: { openDate: competition.openDate, closeDate: competition.closeDate },
+      data: {
+        openDate: competition.openDate,
+        closeDate: competition.closeDate,
+        season: competition.season,
+      },
       width: '400px',
       disableClose: true,
     });
