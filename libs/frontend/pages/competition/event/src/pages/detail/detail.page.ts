@@ -212,6 +212,7 @@ export class DetailPageComponent implements OnInit {
       data: {
         openDate: this.eventCompetition.openDate,
         closeDate: this.eventCompetition.closeDate,
+        season: this.eventCompetition.season,
         title: 'all.competition.menu.open_close_enrollments',
       },
       width: '400px',

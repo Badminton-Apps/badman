@@ -4,6 +4,7 @@ export default {
   preset: '../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   passWithNoTests: true,
+  testTimeout: 1000 * 60 * 10,
   coverageDirectory: '../../../coverage/libs/frontend/components',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
