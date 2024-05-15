@@ -1,3 +1,16 @@
+## 6.149.1 (2024-05-15)
+
+
+### 🩹 Fixes
+
+- rewrote the riser/faller code and with lot's of testing ([85d997bfe](https://github.com/Badminton-Apps/badman/commit/85d997bfe))
+- setting hints for open/close dates if they are in a different year then the competition ([af0f34d50](https://github.com/Badminton-Apps/badman/commit/af0f34d50))
+- should check dates from start date ([899657a36](https://github.com/Badminton-Apps/badman/commit/899657a36))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.149.0 (2024-05-13)
 
 
