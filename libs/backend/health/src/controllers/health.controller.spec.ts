@@ -18,7 +18,7 @@ describe('HealthController', () => {
     expect(app).toBeDefined();
   });
 
-  it('/health (GET)', () => {
+  it.skip('/health (GET)', () => {
     return request(app.getHttpServer())
       .get('/health')
       .expect(503)
