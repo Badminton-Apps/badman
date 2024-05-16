@@ -278,7 +278,7 @@
       "enrollments": "Entrées",
       "errors": {
         "already": "Joueur déjà présent en tant que détenteur du titre.",
-        "base-other-team": "<strong>{player.fullName}</strong> est également joueur de base dans une autre équipe",
+        "base-other-team": "<strong>{player.fullName}</strong> ne peut être inscrit comme joueur de base qu'une seule fois par ligue",
         "comp-status-base": "Le joueur titulaire <strong>{player.fullName}</strong> n'est pas inscrit à la compétition",
         "comp-status-team": "<strong>{player.fullName}</strong> n'est pas inscrit au concours",
         "faller": "L'équipe devrait être reléguée, mais n'est pas engagée dans une série inférieure cette année.",
@@ -360,6 +360,7 @@
       "validations": "Validations",
       "warnings": {
         "already-saved": "Les nouvelles modifications ne peuvent pas être enregistrées entre-temps. Veuillez soumettre à nouveau le formulaire à la dernière étape pour enregistrer vos modifications.",
+        "base-other-team": "<strong>{player.fullName}</strong> est un joueur de base dans une autre équipe",
         "player-min-level": "Demande d'exception pour le joueur <strong>{player.fullName}</strong> dans <strong>{rankingType}</strong> n'a pas encore été acceptée",
         "subtitute-team-index": "s",
         "title": "Mises en garde"
