@@ -54,12 +54,14 @@
                       <span>{{ event.official ? 'Unmake' : 'Make' }} official</span>
                     </button>
                   </badman-has-claim>
-                  <badman-has-claim [any]="['change:job']">
-                    <button mat-menu-item (click)="syncEvent(event)">
-                      <mat-icon>sync</mat-icon>
-                      <span>Sync</span>
-                    </button>
-                  </badman-has-claim>
+                  @if (event.visualCode) {
+                    <badman-has-claim [any]="['change:job']">
+                      <button mat-menu-item (click)="syncEvent(event)">
+                        <mat-icon>sync</mat-icon>
+                        <span>Sync</span>
+                      </button>
+                    </badman-has-claim>
+                  }
                 </mat-menu>
               </badman-has-claim>
             </badman-block-actions>
