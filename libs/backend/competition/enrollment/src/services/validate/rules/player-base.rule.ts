@@ -27,7 +27,7 @@ export class PlayerBaseRule extends Rule {
         (t) =>
           t.team?.id != team.id &&
           t.team?.type === team.type &&
-          // same or higher level
+          // same or lower level
           (t.subEvent?.level ?? 0) <= (subEvent?.level ?? 0) &&
           // same type
           t.subEvent?.eventType === subEvent?.eventType,
@@ -50,7 +50,7 @@ export class PlayerBaseRule extends Rule {
                   id: player.player?.id,
                   fullName: player.player?.fullName,
                 },
-                teamId: otherTeam.team?.id,
+                teamId: team?.id,
               },
             });
           }
@@ -65,13 +65,13 @@ export class PlayerBaseRule extends Rule {
         for (const otherTeam of otherTeams) {
           if (otherTeam.basePlayers?.find((p) => p.id === player.id)) {
             warnings.push({
-              message: 'all.competition.team-enrollment.errors.base-other-team',
+              message: 'all.competition.team-enrollment.warnings.base-other-team',
               params: {
                 player: {
                   id: player.player?.id,
                   fullName: player.player?.fullName,
                 },
-                teamId: otherTeam.team?.id,
+                teamId: team?.id,
               },
             });
           }
