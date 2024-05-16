@@ -278,7 +278,7 @@
       "enrollments": "Entries",
       "errors": {
         "already": "Player already present as titular.",
-        "base-other-team": "<strong>{player.fullName}</strong> is also baseplayer on another team",
+        "base-other-team": "<strong>{player.fullName}</strong> can only be specified as a base player once per league",
         "comp-status-base": "Base player <strong>{player.fullName}</strong> is not marked as a competition player",
         "comp-status-team": "<strong>{player.fullName}</strong> is not marked as a competition player",
         "faller": "The team should be degrade, but is not enrolled in a lower series",
@@ -360,6 +360,7 @@
       "validations": "Validations",
       "warnings": {
         "already-saved": "New changes cannot be saved in between, please resubmit the form in the last step to save your changes",
+        "base-other-team": "<strong>{player.fullName}</strong> is baseplayer on another team",
         "player-min-level": "Request for exception of player <strong>{player.fullName}</strong> in <strong>{rankingType}</strong> has not yet been accepted",
         "subtitute-team-index": "s",
         "title": "Warnings"

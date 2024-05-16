@@ -278,7 +278,7 @@
       "enrollments": "Inschrijvingen",
       "errors": {
         "already": "Speler al als titularis aanwezig.",
-        "base-other-team": "<strong>{player.fullName}</strong> is ook basisspeler in een ander team",
+        "base-other-team": "<strong>{player.fullName}</strong> kan slechts éénmaal als basisspeler opgegeven worden per competitie",
         "comp-status-base": "Basisspeler <strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "faller": "Het team moet degraderen, maar staat niet in een lagere afdeling ingeschreven",
@@ -360,6 +360,7 @@
       "validations": "Validaties",
       "warnings": {
         "already-saved": "Nieuwe wijzigingen kan je niet tussendoor meer opslaan, gelieve het formulier opnieuw te versturen in de laatste stap om je wijzigingen op te slaan",
+        "base-other-team": "<strong>{player.fullName}</strong> is basisspeler in een ander team",
         "player-min-level": "Aanvraag voor uitzondering van speler <strong>{player.fullName}</strong> in <strong>{rankingType}</strong> is nog niet geaccepteerd",
         "subtitute-team-index": "s",
         "title": "Waarschuwingen"

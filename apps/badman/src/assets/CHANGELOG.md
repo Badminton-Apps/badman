@@ -1,3 +1,14 @@
+## 6.149.3 (2024-05-15)
+
+
+### 🩹 Fixes
+
+- checking the team/backup players for base player conflicts ([e55c2784b](https://github.com/Badminton-Apps/badman/commit/e55c2784b))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.149.2 (2024-05-15)
 
 
