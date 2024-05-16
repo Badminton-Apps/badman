@@ -5577,6 +5577,25 @@
 												</translations>
 											</concept_node>
 											<concept_node>
+												<name>base-other-team</name>
+												<description/>
+												<comment/>
+												<translations>
+													<translation>
+														<language>en-US</language>
+														<approved>true</approved>
+													</translation>
+													<translation>
+														<language>fr-BE</language>
+														<approved>true</approved>
+													</translation>
+													<translation>
+														<language>nl-BE</language>
+														<approved>true</approved>
+													</translation>
+												</translations>
+											</concept_node>
+											<concept_node>
 												<name>player-min-level</name>
 												<description/>
 												<comment/>
