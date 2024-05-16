@@ -564,6 +564,7 @@ export type I18nTranslations = {
             "street": string;
             "streetnumber": string;
             "sub": string;
+            "teamName": string;
             "this-required": string;
             "type": string;
             "year": string;
