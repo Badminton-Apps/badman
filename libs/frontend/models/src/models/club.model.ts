@@ -11,6 +11,7 @@ export class Club {
   name?: string;
   fullName?: string;
   abbreviation?: string;
+  teamName?: string;
   useForTeamName?: UseForTeamName;
   clubId?: string;
   country?: string;
@@ -35,6 +36,7 @@ export class Club {
     this.name = args.name;
     this.fullName = args.fullName;
     this.abbreviation = args.abbreviation;
+    this.teamName = args.teamName;
     this.useForTeamName = args.useForTeamName;
     this.clubId = args.clubId;
     this.country = args.country;

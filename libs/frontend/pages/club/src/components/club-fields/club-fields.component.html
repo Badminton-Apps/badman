@@ -12,6 +12,11 @@
     </mat-form-field>
 
     <mat-form-field>
+      <mat-label>{{ 'all.input.teamName' | translate }}</mat-label>
+      <input matInput formControlName="teamName" alt="teamName" />
+    </mat-form-field>
+
+    <mat-form-field>
       <mat-label>{{ 'all.input.abbreviation' | translate }}</mat-label>
       <input matInput formControlName="abbreviation" alt="abbreviation" required />
     </mat-form-field>
@@ -31,7 +36,7 @@
     </mat-form-field>
   </div>
 
-  <div class="usedForTeam">
+  <!-- <div class="usedForTeam">
     <div>
       <h2>{{ 'all.team.usedForTeam.title' | translate }}</h2>
       <p class="description">
@@ -43,6 +48,7 @@
         <mat-label>{{ 'all.team.usedForTeam.select' | translate }}</mat-label>
         <mat-select formControlName="useForTeamName" required>
           <mat-option value="name">{{ 'all.input.name' | translate }}</mat-option>
+          <mat-option value="teamName">{{ 'all.input.teamName' | translate }}</mat-option>
           <mat-option value="fullName">{{ 'all.input.fullName' | translate }}</mat-option>
           <mat-option value="abbreviation">{{ 'all.input.abbreviation' | translate }}</mat-option>
         </mat-select>
@@ -54,5 +60,5 @@
         }}</span>
       </div>
     </div>
-  </div>
+  </div> -->
 </form>

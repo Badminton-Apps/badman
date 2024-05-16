@@ -557,6 +557,7 @@
     "street": "Street",
     "streetnumber": "House number",
     "sub": "Subscription",
+    "teamName": "Prefix team",
     "this-required": "This field is required",
     "type": "Type",
     "year": "Year"

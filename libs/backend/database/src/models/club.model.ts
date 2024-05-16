@@ -83,11 +83,15 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
 
   @Field(() => String, { nullable: true })
   @Column(DataType.STRING)
+  declare teamName?: string;
+
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
   declare fullName?: string;
 
-  @Default(UseForTeamName.NAME)
+  @Default(UseForTeamName.TEAM_NAME)
   @Field(() => String, { nullable: true })
-  @Column(DataType.ENUM('name', 'fullName', 'abbreviation'))
+  @Column(DataType.ENUM('name', 'fullName', 'abbreviation', 'teamName'))
   declare useForTeamName?: UseForTeamName;
 
   @Field(() => String, { nullable: true })
@@ -122,7 +126,7 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
   declare comments?: Relation<Comment[]>;
 
   @Field(() => [Location], { nullable: true })
-  @HasMany(() => Location)
+  @HasMany(() => Location, 'clubId')
   declare locations?: Relation<Location[]>;
 
   @Field(() => String, { nullable: true })

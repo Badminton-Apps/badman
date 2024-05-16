@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { Club } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -24,6 +24,7 @@ export class ClubResolver {
               slug
               fullName
               abbreviation
+              teamName
               useForTeamName
               clubId
               country

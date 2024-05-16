@@ -557,6 +557,7 @@
     "street": "Rue",
     "streetnumber": "Numéro de la maison",
     "sub": "Inscription",
+    "teamName": "Préfixe équipe",
     "this-required": "Ce champ est obligatoire",
     "type": "Type",
     "year": "Année"
