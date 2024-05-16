@@ -24,12 +24,14 @@
               <mat-icon>edit</mat-icon>
               <span>{{ 'all.button.edit' | translate }}</span>
             </button>
-            <badman-has-claim [any]="['change:job']">
-              <button mat-menu-item (click)="syncEvent()">
-                <mat-icon>sync</mat-icon>
-                <span>{{ 'all.competition.menu.sync' | translate }}</span>
-              </button>
-            </badman-has-claim>
+            @if (this.eventCompetition.visualCode) {
+              <badman-has-claim [any]="['change:job']">
+                <button mat-menu-item (click)="syncEvent()">
+                  <mat-icon>sync</mat-icon>
+                  <span>{{ 'all.competition.menu.sync' | translate }}</span>
+                </button>
+              </badman-has-claim>
+            }
             <button mat-menu-item [matMenuTriggerFor]="actions">
               <mat-icon> more_horiz </mat-icon>
               <span>{{ 'all.competition.menu.actions' | translate }}</span>
@@ -65,7 +67,7 @@
               <badman-has-claim [any]="['delete:competition']">
                 <button mat-menu-item (click)="this.removeEvent()">
                   <mat-icon>delete</mat-icon>
-                  <span>{{'all.button.delete' | translate}}</span>
+                  <span>{{ 'all.button.delete' | translate }}</span>
                 </button>
               </badman-has-claim>
             </mat-menu>
