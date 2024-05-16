@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-pupeteer",
-  "version": "6.149.4",
+  "version": "6.150.0",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "puppeteer": "^22.0.0",
