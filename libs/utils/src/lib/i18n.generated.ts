@@ -367,6 +367,7 @@ export type I18nTranslations = {
                 "validations": string;
                 "warnings": {
                     "already-saved": string;
+                    "base-other-team": string;
                     "player-min-level": string;
                     "subtitute-team-index": string;
                     "title": string;
