@@ -1,3 +1,18 @@
+## 6.150.0 (2024-05-16)
+
+
+### 🚀 Features
+
+- teamname field ([536107578](https://github.com/Badminton-Apps/badman/commit/536107578))
+
+### 🩹 Fixes
+
+- only show sync button when it's possible to sync ([6c2d30d51](https://github.com/Badminton-Apps/badman/commit/6c2d30d51))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.149.4 (2024-05-16)
 
 
