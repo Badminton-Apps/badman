@@ -25,13 +25,6 @@
       }
     }
   },
-  "tasksRunnerOptions": {
-    "default": {
-      "options": {
-        "parallel": 20
-      }
-    }
-  },
   "targetDefaults": {
     "@angular-devkit/build-angular:application": {
       "cache": true,
