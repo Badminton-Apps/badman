@@ -1,3 +1,14 @@
+## 6.149.4 (2024-05-16)
+
+
+### 🩹 Fixes
+
+- show warning on the lower team ([b678a4206](https://github.com/Badminton-Apps/badman/commit/b678a4206))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.149.3 (2024-05-15)
 
 
