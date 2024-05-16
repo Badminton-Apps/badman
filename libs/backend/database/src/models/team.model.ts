@@ -221,10 +221,13 @@ export class Team extends Model {
       case UseForTeamName.ABBREVIATION:
         instance.name = `${club.abbreviation} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
         break;
-
-      default:
       case UseForTeamName.NAME:
         instance.name = `${club.name} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
+        break;
+        
+      default:
+      case UseForTeamName.TEAM_NAME:
+        instance.name = `${club.teamName} ${instance.teamNumber}${getLetterForRegion(instance.type, 'vl')}`;
         break;
     }
   }
