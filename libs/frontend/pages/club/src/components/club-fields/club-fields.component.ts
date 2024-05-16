@@ -86,6 +86,9 @@ export class ClubFieldsComponent implements OnInit {
       case UseForTeamName.ABBREVIATION:
         this.exampleTeamName = `${this.group().value.abbreviation ?? ''} 1G`;
         break;
+      case UseForTeamName.TEAM_NAME:
+        this.exampleTeamName = `${this.group().value.teamName ?? ''} 1G`;
+        break;
 
       default:
       case UseForTeamName.NAME:

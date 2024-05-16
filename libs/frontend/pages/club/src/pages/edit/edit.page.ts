@@ -73,6 +73,7 @@ export type ClubFieldsForm = FormGroup<{
   clubId: FormControl<string>;
   fullName: FormControl<string>;
   abbreviation: FormControl<string>;
+  teamName: FormControl<string>;
   useForTeamName: FormControl<UseForTeamName>;
   country: FormControl<string>;
   state: FormControl<string>;
@@ -177,6 +178,7 @@ export class EditPageComponent implements OnInit {
         clubId: new FormControl(this.club.clubId, [Validators.required]),
         fullName: new FormControl(this.club.fullName, [Validators.required]),
         abbreviation: new FormControl(this.club.abbreviation, [Validators.required]),
+        teamName: new FormControl(this.club.teamName, [Validators.required]),
         useForTeamName: new FormControl(this.club.useForTeamName, [Validators.required]),
         country: new FormControl(this.club.country, [Validators.required]),
         state: new FormControl(this.club.state, [Validators.required]),
