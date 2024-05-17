@@ -156,6 +156,11 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
               [Op.iLike]: clubName,
             },
           },
+          {
+            teamName: {
+              [Op.iLike]: clubName,
+            },
+          },
         ],
       },
       transaction: this.transaction,
