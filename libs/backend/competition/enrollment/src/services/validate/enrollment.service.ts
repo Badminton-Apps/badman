@@ -36,6 +36,7 @@ import moment from 'moment';
 import { Op } from 'sequelize';
 import { PartialType, PickType } from '@nestjs/graphql';
 import { PlayerClubRule } from './rules/player-club.rule';
+import { TeamBaseGenderRule } from './rules/team-base-gender.rule';
 
 @Injectable()
 export class EnrollmentValidationService {
@@ -314,6 +315,7 @@ export class EnrollmentValidationService {
 
       new TeamSubEventRule(),
       new TeamBaseIndexRule(),
+      new TeamBaseGenderRule(),
       new TeamMaxBasePlayersRule(),
       new TeamRiserFallerRule(),
       new TeamSubeventIndexRule(),
