@@ -1,3 +1,14 @@
+## 6.150.3 (2024-05-17)
+
+
+### 🩹 Fixes
+
+- update event listener for location removal in team enrollment form ([465094e25](https://github.com/Badminton-Apps/badman/commit/465094e25))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.150.2 (2024-05-17)
 
 
