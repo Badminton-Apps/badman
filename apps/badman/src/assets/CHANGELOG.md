@@ -1,3 +1,16 @@
+## 6.150.1 (2024-05-17)
+
+
+### 🩹 Fixes
+
+- Update player-base rule to consider level with modifier base on type in team validation ([e00cec48b](https://github.com/Badminton-Apps/badman/commit/e00cec48b))
+- Add functionality to remove location in team enrollment step ([d404cbbb6](https://github.com/Badminton-Apps/badman/commit/d404cbbb6))
+- Sorting logic more in line with rules ([3de562449](https://github.com/Badminton-Apps/badman/commit/3de562449))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.150.0 (2024-05-16)
 
 
