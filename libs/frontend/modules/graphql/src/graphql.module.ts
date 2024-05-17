@@ -128,6 +128,9 @@ export function createApollo(
           PlayerWithTeamMembershipType: {
             keyFields: [['teamMembership', ['id']], 'id'],
           },
+          PlayerTeam: {
+            keyFields: [['teamMembership', ['id']], 'id'],
+          },
           EntryCompetitionPlayersType: {
             keyFields: false,
           },
