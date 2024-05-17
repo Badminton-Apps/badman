@@ -278,6 +278,7 @@
       "enrollments": "Inschrijvingen",
       "errors": {
         "already": "Speler al als titularis aanwezig.",
+        "base-gender-mix": "De basisploeg bevat <strong>{maleCount}</strong> mannen en <strong>{femaleCount}</strong> vrouwen, terwijl die telkens  <strong>2</strong> moet zijn",
         "base-other-team": "<strong>{player.fullName}</strong> kan slechts éénmaal als basisspeler opgegeven worden per competitie",
         "comp-status-base": "Basisspeler <strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
         "comp-status-team": "<strong>{player.fullName}</strong> staat niet ingeschreven voor de competitie",
