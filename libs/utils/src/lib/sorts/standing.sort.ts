@@ -49,12 +49,6 @@ export const sortStanding = (a: Partial<SortStandingType>, b: Partial<SortStandi
     return 1;
   }
 
-  if (teamA.setsWon - teamA.setsLost > teamB.setsWon - teamB.setsLost) {
-    return -1;
-  } else if (teamA.setsWon - teamA.setsLost < teamB.setsWon - teamB.setsLost) {
-    return 1;
-  }
-
   if (teamA.totalPointsWon - teamA.totalPointsLost > teamB.totalPointsWon - teamB.totalPointsLost) {
     return -1;
   } else if (
