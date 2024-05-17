@@ -1,3 +1,14 @@
+## 6.151.0 (2024-05-17)
+
+
+### 🚀 Features
+
+- Add team base gender validation rule for mix teams to enrollment service ([6ffc7bdb3](https://github.com/Badminton-Apps/badman/commit/6ffc7bdb3))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.150.3 (2024-05-17)
 
 
