@@ -1,3 +1,14 @@
+## 6.151.1 (2024-05-17)
+
+
+### 🩹 Fixes
+
+- resolving memberships ([2a1e30578](https://github.com/Badminton-Apps/badman/commit/2a1e30578))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.151.0 (2024-05-17)
 
 
