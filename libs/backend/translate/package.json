@@ -1,10 +1,10 @@
 {
   "name": "@badman/backend-translate",
-  "version": "6.150.1",
+  "version": "6.150.2",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "@badman/backend-authorization": "6.150.1",
-    "@badman/utils": "6.150.1",
+    "@badman/backend-authorization": "6.150.2",
+    "@badman/utils": "6.150.2",
     "@nestjs/common": "^10.3.1",
     "fastify": "^4.26.0",
     "nestjs-i18n": "^10.4.0"
