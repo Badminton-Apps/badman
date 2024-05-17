@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-health",
-  "version": "6.151.0",
+  "version": "6.151.1",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@nestjs/common": "^10.3.1",
