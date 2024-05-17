@@ -11,6 +11,7 @@
         <div class="row" [formGroupName]="i">
           <badman-location
             (whenLocationUpdate)="this.editLocation(i)"
+            (whenLocationDelete)="this.removeLocation(i)"
             [group]="location"
           ></badman-location>
         </div>
