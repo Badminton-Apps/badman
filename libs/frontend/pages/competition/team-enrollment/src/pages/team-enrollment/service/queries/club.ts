@@ -14,6 +14,8 @@ export const loadClub = (apollo: Apollo, id?: string | null) => {
             name
             state
             slug
+            teamName
+            useForTeamName
           }
         }
       `,
