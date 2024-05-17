@@ -1,3 +1,15 @@
+## 6.150.2 (2024-05-17)
+
+
+### 🩹 Fixes
+
+- caching on player team membership ([c7d946a9d](https://github.com/Badminton-Apps/badman/commit/c7d946a9d))
+- include teamName matching for clubs ([2fe2252bc](https://github.com/Badminton-Apps/badman/commit/2fe2252bc))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.150.1 (2024-05-17)
 
 
