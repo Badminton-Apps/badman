@@ -23,18 +23,21 @@ export class PlayerBaseRule extends Rule {
         continue;
       }
 
-      const otherTeams = sortedTeamsByTeamNumberAndType.filter(
-        (t) =>
+      const otherTeams = sortedTeamsByTeamNumberAndType.filter((t) => {
+        return (
           t.team?.id != team.id &&
           t.team?.type === team.type &&
-          // same or lower level
-          (t.subEvent?.level ?? 0) <= (subEvent?.level ?? 0) &&
-          // same type
-          t.subEvent?.eventType === subEvent?.eventType,
-      );
+          (t.subEvent?.levelWithModifier ?? 0) <= (subEvent?.levelWithModifier ?? 0) &&
+          t.subEvent?.eventType === subEvent?.eventType
+        );
+      });
 
       const errors = [] as EnrollmentValidationError[];
       const warnings = [] as EnrollmentValidationError[];
+
+      if (otherTeams.length === 0) {
+        continue;
+      }
 
       for (const player of basePlayers ?? []) {
         if (!player.id || !team?.type) {
