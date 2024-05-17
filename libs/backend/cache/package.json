@@ -1,13 +1,13 @@
 {
   "name": "@badman/backend-cache",
-  "version": "6.150.2",
+  "version": "6.150.3",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@nestjs/common": "^10.3.1",
     "@nestjs/cache-manager": "^2.2.0",
     "@nestjs/config": "^3.1.1",
     "cache-manager-redis-store": "^3.0.1",
-    "@badman/utils": "6.150.2"
+    "@badman/utils": "6.150.3"
   },
   "type": "commonjs",
   "main": "./src/index.js",
