@@ -278,6 +278,7 @@
       "enrollments": "Entrées",
       "errors": {
         "already": "Joueur déjà présent en tant que détenteur du titre.",
+        "base-gender-mix": "L'escouade de base comprend <strong>{maleCount}</strong> hommes et <strong>{femaleCount}</strong> femmes, alors que cela devrait être <strong>2</strong> dans chaque cas",
         "base-other-team": "<strong>{player.fullName}</strong> ne peut être inscrit comme joueur de base qu'une seule fois par ligue",
         "comp-status-base": "Le joueur titulaire <strong>{player.fullName}</strong> n'est pas inscrit à la compétition",
         "comp-status-team": "<strong>{player.fullName}</strong> n'est pas inscrit au concours",

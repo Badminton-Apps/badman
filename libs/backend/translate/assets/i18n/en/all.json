@@ -278,6 +278,7 @@
       "enrollments": "Entries",
       "errors": {
         "already": "Player already present as titular.",
+        "base-gender-mix": "The baseteam includes <strong>{maleCount}</strong> men and <strong>{femaleCount}</strong> women, while that should be <strong>2</strong> each time",
         "base-other-team": "<strong>{player.fullName}</strong> can only be specified as a base player once per league",
         "comp-status-base": "Base player <strong>{player.fullName}</strong> is not marked as a competition player",
         "comp-status-team": "<strong>{player.fullName}</strong> is not marked as a competition player",

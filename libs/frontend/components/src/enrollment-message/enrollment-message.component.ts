@@ -44,8 +44,9 @@ export class EnrollmentMessageComponent implements OnInit {
       this._getTeam(),
       this._getRanking(),
       this._getEvent(),
+      this._getCounts(),
     ]).pipe(
-      map(([index, gender, players, club, team, minLevel, event]) => {
+      map(([index, gender, players, club, team, minLevel, event, counts]) => {
         const params: {
           [key: string]: unknown;
         } = {};
@@ -62,6 +63,7 @@ export class EnrollmentMessageComponent implements OnInit {
           ...team,
           ...minLevel,
           ...event,
+          ...counts,
         };
       }),
     );
@@ -87,6 +89,13 @@ export class EnrollmentMessageComponent implements OnInit {
     const team = this.validation()?.params?.['team'] as Partial<Team>;
 
     return of({ team });
+  }
+
+  private _getCounts() {
+    const maleCount = this.validation()?.params?.['maleCount'] as number;
+    const femaleCount = this.validation()?.params?.['femaleCount'] as number;
+
+    return of({ maleCount, femaleCount });
   }
 
   private _getRanking() {
