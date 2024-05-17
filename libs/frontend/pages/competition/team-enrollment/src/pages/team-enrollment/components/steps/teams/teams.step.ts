@@ -230,7 +230,7 @@ export class TeamsStepComponent {
 
   private getTeamName(team: Team, club: Club) {
     let teamName = '';
-    switch (club?.useForTeamName ?? UseForTeamName.NAME) {
+    switch (club?.useForTeamName ?? UseForTeamName.TEAM_NAME) {
       case UseForTeamName.FULL_NAME:
         teamName = `${club.fullName} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
         break;
@@ -238,9 +238,12 @@ export class TeamsStepComponent {
         teamName = `${club.abbreviation} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
         break;
 
-      default:
       case UseForTeamName.NAME:
         teamName = `${club.name} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
+        break;
+      default:
+      case UseForTeamName.TEAM_NAME:
+        teamName = `${club.teamName} ${team.teamNumber}${getLetterForRegion(team.type as SubEventTypeEnum, 'vl')}`;
         break;
     }
 
