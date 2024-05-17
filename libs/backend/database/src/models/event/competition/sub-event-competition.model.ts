@@ -45,7 +45,7 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { SubEventTypeEnum } from '@badman/utils';
+import { LevelType, SubEventTypeEnum } from '@badman/utils';
 import { RankingGroup } from '../../ranking';
 import { EventEntry } from '../entry.model';
 import { DrawCompetition } from './draw-competition.model';
@@ -89,6 +89,37 @@ export class SubEventCompetition extends Model {
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
   level?: number;
+
+  @Field(() => Int, { nullable: true })
+  /**
+   * Gets the level of the sub-event competition with a modifier.
+   * The modifier is determined based on the type of the event competition.
+   * If the event competition type is PROV, the modifier is 10 000.
+   * If the event competition type is LIGA, the modifier is 100.
+   * If the event competition type is NATIONAL, the modifier is 1.
+   * The level is multiplied by the modifier to get the final level with modifier.
+   * 
+   * Developer note: This is now allowing 100 levels for each type of competition. if we need more levels we can add more zeros to the modifier.
+   * 
+   * @throws {Error} If the EventCompetition is not set.
+   * @returns {number} The level of the sub-event competition with a modifier.
+   */
+  get levelWithModifier() {
+    if (!this.eventCompetition) {
+      throw new Error('EventCompetition is not set');
+    }
+
+    let modifier = 0;
+    if (this.eventCompetition?.type === LevelType.PROV) {
+      modifier = 10_000;
+    } else if (this.eventCompetition?.type === LevelType.LIGA) {
+      modifier = 100;
+    } else if (this.eventCompetition?.type === LevelType.NATIONAL) {
+      modifier = 1;
+    }
+
+    return (this.level ?? 0) * modifier;
+  }
 
   @Field(() => Int, { nullable: true })
   @Column(DataType.NUMBER)
