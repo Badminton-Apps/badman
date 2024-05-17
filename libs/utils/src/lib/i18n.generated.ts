@@ -285,6 +285,7 @@ export type I18nTranslations = {
                 "enrollments": string;
                 "errors": {
                     "already": string;
+                    "base-gender-mix": string;
                     "base-other-team": string;
                     "comp-status-base": string;
                     "comp-status-team": string;
