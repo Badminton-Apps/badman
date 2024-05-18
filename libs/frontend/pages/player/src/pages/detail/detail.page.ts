@@ -33,7 +33,7 @@ import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { Observable, lastValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShowLevelComponent } from './components/show-level.component';
@@ -94,16 +94,19 @@ export class DetailPageComponent {
   teams = signal<Team[]>([]);
   hasTeams = computed(() => this.teams()?.length > 0);
 
-  hasMenu = computed(
-    () =>
-      this.auth.loggedIn() &&
-      this.claim.hasAnyClaims(['edit-any:player', this.player().id + '_edit:player', 'change:job']),
-  );
+  hasMenu = computed(() => (
+    this.auth.loggedIn() &&
+    (this.claim.hasAnyClaims([
+      'edit-any:player',
+      this.player().id + '_edit:player',
+      'change:job',
+    ]) ||
+      this.canClaim())
+  ));
 
-  canClaim = computed(() => this.auth.loggedIn() && !this.auth.user()?.id && !this.player().sub);
-
-  hasMenu$?: Observable<boolean>;
-  canClaim$?: Observable<boolean>;
+  canClaim = computed(() => {
+    return this.auth.loggedIn() && !this.auth.user()?.id && !this.player().sub;
+  });
 
   constructor() {
     effect(
