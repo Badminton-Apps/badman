@@ -61,7 +61,7 @@ export class LandingComponent implements OnInit {
   ngOnInit() {
     effect(
       () => {
-        if (this.loggedIn()) {
+        if (this.loggedIn() && this.user()?.id) {
           this._loadTeamsForPlayer();
         }
 
