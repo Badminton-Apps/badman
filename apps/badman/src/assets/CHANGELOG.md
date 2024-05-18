@@ -1,3 +1,14 @@
+## 6.151.2 (2024-05-18)
+
+
+### 🩹 Fixes
+
+- allowing to claim account again ([9b3d72bbb](https://github.com/Badminton-Apps/badman/commit/9b3d72bbb))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.151.1 (2024-05-17)
 
 
