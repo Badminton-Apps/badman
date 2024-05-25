@@ -72,7 +72,7 @@ export class ClubStepComponent {
             this.clubControl().setValue(user.club.id);
           }
 
-          if (user?.email) {
+          if (user?.email && !this.emailControl().value) {
             this.emailControl().setValue(user.email);
           }
         });
@@ -96,5 +96,13 @@ export class ClubStepComponent {
       },
       { allowSignalWrites: true },
     );
+
+    effect(() => {
+      const club = this.dataService.club();
+
+      if (club && club.contactCompetition) {
+        this.emailControl().setValue(club.contactCompetition);
+      }
+    })
   }
 }
