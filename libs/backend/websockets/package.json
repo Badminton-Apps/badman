@@ -1,15 +1,7 @@
 {
   "name": "@badman/backend-websockets",
   "version": "6.151.2",
-  "dependencies": {
-    "@swc/helpers": "~0.5.2",
-    "@nestjs/platform-socket.io": "^10.3.1",
-    "socket.io": "^4.7.4",
-    "@socket.io/redis-adapter": "^8.2.1",
-    "redis": "^4.6.12",
-    "@nestjs/websockets": "^10.3.1",
-    "@nestjs/common": "^10.3.1"
-  },
+  "dependencies": {},
   "type": "commonjs",
   "main": "./src/index.js",
   "typings": "./src/index.d.ts",

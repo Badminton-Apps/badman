@@ -1,11 +1,9 @@
 import { workspaceRoot } from '@nx/devkit';
 import dotenv from 'dotenv';
 import { PlaywrightTestConfig } from '@playwright/test';
+import path from 'node:path';
 
-dotenv.config({
-  path: [`.env.test`],
-  override: true,
-});
+dotenv.config({ path: path.resolve(workspaceRoot, '.env.test') });
 
 /**
  * See https://playwright.dev/docs/test-configuration.https://github.com/Badminton-Apps/badman/actions/runs/7568349931/job/20609664637#logs
@@ -22,7 +20,7 @@ export const sharedConfig = (env: { [key: string]: string }) => {
     retries: 2,
     workers: process.env.CI ? 1 : undefined,
     webServer: {
-      command: 'node dist/apps/api/main.js',
+      command: 'bun dist/apps/api/main.js',
       url: `${baseURL}/api/health`,
       reuseExistingServer: !process.env.CI,
       cwd: workspaceRoot,

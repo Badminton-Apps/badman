@@ -106,6 +106,5 @@
   "ci": "github",
   "defaultProject": "badman",
   "nxCloudAccessToken": "NTM2YmYwOTAtM2NlZC00ZDFmLTkwMDAtNzljM2Y4MDFiMTBmfHJlYWQtd3JpdGU=",
-  "cacheDirectory": "/tmp/nx-cache",
   "defaultBase": "main"
 }

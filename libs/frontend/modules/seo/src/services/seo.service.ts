@@ -1,5 +1,5 @@
 import { isPlatformBrowser, PlatformLocation } from '@angular/common';
-import { Inject, Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ISeoConfig } from '../interfaces/seo-config.interface';
 import { SEO_CONFIG } from '../seo.module';
@@ -42,12 +42,10 @@ export class SeoService {
         // const url = `https://via.placeholder.com/1200x627?text=${encodeURIComponent(
         //   data.title
         // )}`;
-
-        const url = `${this.config.imageEndpoint}/?title=${encodeURIComponent(
-          data.title,
-        )}&description=${encodeURIComponent(data.description)}`;
-
-        this.setImage(url);
+        // const url = `${this.config.imageEndpoint}/?title=${encodeURIComponent(
+        //   data.title,
+        // )}&description=${encodeURIComponent(data.description)}`;
+        // this.setImage(url);
       }
     }
 
