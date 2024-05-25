@@ -43,7 +43,7 @@ export type TeamFormValue = {
   entry: {
     players: (EntryCompetitionPlayer | null)[];
     subEventId: string | null;
-  };
+  }; 
 };
 
 export type TeamForm = FormGroup<{
