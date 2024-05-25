@@ -81,7 +81,7 @@
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "@nx/angular": "19.0.2",
-    "@nx/nest": "19.0.2",
+    "@nx/nest": "19.1.0",
     "@socket.io/redis-adapter": "^8.3.0",
     "apexcharts": "^3.49.1",
     "apollo-angular": "^7.0.1",
@@ -164,16 +164,16 @@
     "@angular/language-service": "~17.3.8",
     "@nestjs/schematics": "^10.1.1",
     "@nestjs/testing": "^10.3.8",
-    "@nx/devkit": "19.0.2",
-    "@nx/eslint": "19.0.2",
-    "@nx/eslint-plugin": "19.0.2",
-    "@nx/jest": "19.0.2",
-    "@nx/js": "19.0.2",
-    "@nx/node": "19.0.2",
-    "@nx/playwright": "19.0.2",
-    "@nx/web": "19.0.2",
-    "@nx/webpack": "19.0.2",
-    "@nx/workspace": "19.0.2",
+    "@nx/devkit": "19.1.0",
+    "@nx/eslint": "19.1.0",
+    "@nx/eslint-plugin": "19.1.0",
+    "@nx/jest": "19.1.0",
+    "@nx/js": "19.1.0",
+    "@nx/node": "19.1.0",
+    "@nx/playwright": "19.1.0",
+    "@nx/web": "19.1.0",
+    "@nx/webpack": "19.1.0",
+    "@nx/workspace": "19.1.0",
     "@playwright/test": "^1.44.0",
     "@prettier/plugin-pug": "^3.0.0",
     "@schematics/angular": "17.3.7",
@@ -210,7 +210,7 @@
     "jest-preset-angular": "14.0.4",
     "jsonc-eslint-parser": "^2.4.0",
     "ng-packagr": "~17.3.0",
-    "nx": "19.0.2",
+    "nx": "19.1.0",
     "prettier": "^3.2.5",
     "redis-memory-server": "^0.10.0",
     "supertest": "^7.0.0",
@@ -236,5 +236,8 @@
   ],
   "stackblitz": {
     "startCommand": "npm run start:stackblitz"
+  },
+  "redisMemoryServer": {
+    "debug": "1"
   }
 }
