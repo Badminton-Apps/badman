@@ -63,28 +63,18 @@ jobs:
           # Set NX_HEAD to the current commit
           echo "NX_HEAD=origin/${{github.ref_name}}" >> $GITHUB_ENV
 
-      - uses: actions/setup-node@v3
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: 21
-          cache: 'npm'
+          bun-version: latest
 
-      - uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node
+      - run: bunx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
 
-      - run: npx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+      - run: bun install --no-cache
 
-      - run: npm install
-
-      - run: npx nx affected -t test build
-      # Having issues with lint
-      # - run: npx nx affected -t lint test build
+      - run: bun nx affected -t lint test build
 
       - name: Run Playwright tests
-        run: npx nx run-many -t e2e
+        run: bun nx affected --parallel 1 -t e2e-ci
         id: run-e2e-tests
         if: ${{ inputs.e2e-tests }}
 
@@ -105,10 +95,10 @@ jobs:
           cp apps/**/blob-report/*.zip ./blob-reports
 
           # create nx report
-          npx playwright merge-reports --reporter=html,github ./blob-reports
+          bunx playwright merge-reports --reporter=html,github ./blob-reports
 
           ## for copy pasting in shell
-          # npx playwright show-report
+          # bunx playwright show-report
 
       - name: Set Git config
         run: |
@@ -123,7 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: stop agents
-        run: npx nx-cloud complete-ci-run
+        run: bunx nx-cloud complete-ci-run
         if: always()
 
       - uses: actions/upload-artifact@v3
@@ -146,14 +136,14 @@ jobs:
       # deploy the new packages
       - name: Deploy to Prod
         if: github.ref == 'refs/heads/main'
-        run: npx nx affected -t deploy --no-agents
+        run: bun nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{ secrets.PROD_API_HOOK  }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK  }}
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK  }}
 
       - name: Deploy to Beta
-        run: npx nx affected -t deploy --no-agents
+        run: bun nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{  secrets.BETA_API_HOOK }}
           WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}

@@ -89,6 +89,10 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
   @Column(DataType.STRING)
   declare fullName?: string;
 
+  @Field(() => String, { nullable: true })
+  @Column(DataType.STRING)
+  declare contactCompetition?: string;
+
   @Default(UseForTeamName.TEAM_NAME)
   @Field(() => String, { nullable: true })
   @Column(DataType.ENUM('name', 'fullName', 'abbreviation', 'teamName'))

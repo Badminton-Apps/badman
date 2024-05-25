@@ -1,6 +1,4 @@
-import { Controller, Get, Logger, Query, Res } from '@nestjs/common';
-import { createCanvas } from 'canvas';
-import { FastifyReply } from 'fastify';
+import { Controller, Logger } from '@nestjs/common';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
@@ -21,49 +19,49 @@ export class ImageController {
     }
   }
 
-  @Get('/')
-  async getImage(@Res() res: FastifyReply, @Query() query: { title: string; description: string }) {
-    const title = this.formatTitle(query.title);
-    const description = query.description;
+  // @Get('/')
+  // async getImage(@Res() res: FastifyReply, @Query() query: { title: string; description: string }) {
+  //   const title = this.formatTitle(query.title);
+  //   const description = query.description;
 
-    const width = 1200;
-    const height = 627;
+  //   const width = 1200;
+  //   const height = 627;
 
-    const titleY = title.length === 2 ? 250 : 300;
-    const titleLineHeight = 100;
-    const authorY = title.length === 2 ? 525 : 500;
+  //   const titleY = title.length === 2 ? 250 : 300;
+  //   const titleLineHeight = 100;
+  //   const authorY = title.length === 2 ? 525 : 500;
 
-    const canvas = createCanvas(width, height);
-    const context = canvas.getContext('2d');
+  //   const canvas = createCanvas(width, height);
+  //   const context = canvas.getContext('2d');
 
-    context.fillStyle = '#764abc';
-    context.fillRect(0, 0, width, height);
+  //   context.fillStyle = '#764abc';
+  //   context.fillRect(0, 0, width, height);
 
-    context.font = "bold 70pt 'PT Sans'";
-    context.textAlign = 'center';
-    context.fillStyle = '#fff';
+  //   context.font = "bold 70pt 'PT Sans'";
+  //   context.textAlign = 'center';
+  //   context.fillStyle = '#fff';
 
-    context.fillText(title[0], 600, titleY);
-    if (title[1]) {
-      context.fillText(title[1], 600, titleY + titleLineHeight);
-    }
+  //   context.fillText(title[0], 600, titleY);
+  //   if (title[1]) {
+  //     context.fillText(title[1], 600, titleY + titleLineHeight);
+  //   }
 
-    if (description) {
-      context.font = "40pt 'PT Sans'";
-      context.fillText(`${description}`, 600, authorY);
-    }
+  //   if (description) {
+  //     context.font = "40pt 'PT Sans'";
+  //     context.fillText(`${description}`, 600, authorY);
+  //   }
 
-    const image = canvas.toBuffer('image/png');
+  //   const image = canvas.toBuffer('image/png');
 
-    // elapsed time
+  //   // elapsed time
 
-    res.headers({
-      'Content-Type': 'image/png',
-      'Content-Length': image.length,
-    });
+  //   res.headers({
+  //     'Content-Type': 'image/png',
+  //     'Content-Length': image.length,
+  //   });
 
-    res.type('image/png').send(image);
-  }
+  //   res.type('image/png').send(image);
+  // }
 
   private getMaxNextLine(input: string, maxChars = 17) {
     // Split the string into an array of words.

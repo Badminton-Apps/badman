@@ -10,11 +10,14 @@
     "@badman/frontend-components": "*",
     "@badman/frontend-models": "*",
     "@ngx-translate/core": "^15.0.0",
-    "ngx-moment": "^6.0.2",
-    "@badman/frontend-queue": "*",
-    "apollo-angular": "^6.0.0",
+    "apollo-angular": "^7.0.1",
     "ngx-socket-io": "^4.6.1",
-    "rxjs": "~7.8.1"
+    "rxjs": "~7.8.1",
+    "@angular/material": "~17.3.8",
+    "@badman/utils": "6.151.2",
+    "@ng-matero/extensions": "^17.3.0",
+    "moment": "^2.30.1",
+    "ngxtension": "^3.2.0"
   },
   "dependencies": {},
   "sideEffects": false

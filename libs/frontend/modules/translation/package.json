@@ -4,7 +4,6 @@
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
-    "@angular-material-components/moment-adapter": "~16.0.1",
     "@badman/utils": "*",
     "@ngx-translate/core": "^15.0.0",
     "@badman/frontend-auth": "*",
@@ -12,7 +11,9 @@
     "rxjs": "~7.8.1",
     "@ngx-translate/http-loader": "^8.0.0",
     "ngx-moment": "^6.0.2",
-    "@angular/material-moment-adapter": "~17.3.0"
+    "@angular/material-moment-adapter": "~17.3.0",
+    "@angular/material": "~17.3.8",
+    "@ng-matero/extensions-moment-adapter": "^17.1.2"
   },
   "dependencies": {},
   "sideEffects": false

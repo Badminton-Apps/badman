@@ -7,7 +7,7 @@ export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: '../badman-e2e/src' }),
   ...sharedConfig({
     PORT: `5500`,
-    REDIS_PORT: `6380`,
+    REDIS_PORT: `6379`,
   }),
   // outputDir: 'badman-e2e-mobile-results',
   reporter: [

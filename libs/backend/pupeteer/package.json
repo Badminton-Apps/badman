@@ -2,9 +2,9 @@
   "name": "@badman/backend-pupeteer",
   "version": "6.151.2",
   "dependencies": {
-    "@swc/helpers": "~0.5.2",
-    "puppeteer": "^22.0.0",
-    "@nestjs/common": "^10.3.1"
+    "puppeteer": "^22.8.0",
+    "@nestjs/common": "^10.3.8",
+    "@swc/helpers": "^0.5.11"
   },
   "type": "commonjs",
   "main": "./src/index.js",

@@ -3,7 +3,8 @@
   "version": "6.151.2",
   "peerDependencies": {
     "@angular/core": "^17.1.0",
-    "@badman/frontend-models": "*"
+    "@badman/frontend-models": "*",
+    "@angular/common": "~17.3.8"
   },
   "dependencies": {},
   "sideEffects": false
