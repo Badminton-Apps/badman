@@ -224,11 +224,7 @@ export class DetailPageComponent implements OnInit {
 
   addPlayer() {
     this.dialog
-      .open(AddPlayerComponent, {
-        data: {
-          clubId: this.club().id,
-        },
-      })
+      .open(AddPlayerComponent)
       .afterClosed()
       .pipe(
         takeUntil(this.destroy$),
