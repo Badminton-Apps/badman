@@ -13,7 +13,7 @@ import { AppModule } from './app';
 import fmp from '@fastify/multipart';
 import { RedisIoAdapter } from '@badman/backend-websockets';
 import compression from '@fastify/compress';
-// import RedisMemoryServer from 'redis-memory-server';
+import RedisMemoryServer from 'redis-memory-server';
 
 async function bootstrap() {
   Logger.debug('Starting application');
@@ -29,21 +29,23 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
   Logger.debug('Application created');
 
-  // if (configService.get<string>('NODE_ENV') === 'test') {
-  //   Logger.verbose(`Starting redis memory server for test environment on port ${configService.get('REDIS_PORT') || 6379}`);
-  //   const redisMemoryServer = new RedisMemoryServer({
-  //     instance: {
-  //       port: configService.get('REDIS_PORT') || 6379,
-  //     },
-  //   });
+  if (configService.get<string>('NODE_ENV') === 'test') {
+    Logger.verbose(
+      `Starting redis memory server for test environment on port ${configService.get('REDIS_PORT') || 6379}`,
+    );
+    const redisMemoryServer = new RedisMemoryServer({
+      instance: {
+        port: configService.get('REDIS_PORT') || 6379,
+      },
+    });
 
-  //   try {
-  //     await redisMemoryServer.start();
-  //   } catch (error) {
-  //     Logger.error('Error starting redis memory server', error);
-  //     process.exit(1);
-  //   }
-  // }
+    try {
+      await redisMemoryServer.start();
+    } catch (error) {
+      Logger.error('Error starting redis memory server', error);
+      process.exit(1);
+    }
+  }
 
   app.setGlobalPrefix('api');
   Logger.debug('Set global prefix');
