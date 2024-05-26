@@ -307,7 +307,7 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
       this.newPlayerFormGroup = PlayerFieldsComponent.newPlayerForm({
         firstName,
         lastName,
-        memberId: memberId?.toString(),
+        memberId: event.option.value.trim(),
       });
 
       const dialogRef = this.dialog.open(this.newPlayerTemplateRef);

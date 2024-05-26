@@ -236,8 +236,5 @@
   ],
   "stackblitz": {
     "startCommand": "npm run start:stackblitz"
-  },
-  "redisMemoryServer": {
-    "debug": "1"
   }
 }
