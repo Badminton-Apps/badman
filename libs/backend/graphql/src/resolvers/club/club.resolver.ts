@@ -264,6 +264,8 @@ export class ClubsResolver {
         throw new NotFoundException(`${Player.name}: ${addPlayerToClubData.playerId}`);
       }
 
+      const confirmed = await user.hasAnyPermission(['change:transfer']);
+
       // Add player to club
       await club.addPlayer(player, {
         transaction,
@@ -271,6 +273,7 @@ export class ClubsResolver {
           start: addPlayerToClubData.start,
           end: addPlayerToClubData.end,
           membershipType: addPlayerToClubData.membershipType,
+          confirmed,
         },
       });
 
