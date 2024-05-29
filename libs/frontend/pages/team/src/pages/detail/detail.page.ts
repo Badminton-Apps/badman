@@ -65,13 +65,13 @@ export class DetailPageComponent {
   private routeData = toSignal(this.route.data);
 
   team = computed(() => this.routeData()?.['team'] as Team);
-  club = computed(() => this.routeData()?.['club']);
 
   entry = signal<EventEntry | null>(null);
 
   constructor() {
     effect(() => {
       const teamName = `${this.team().name}`;
+      const clubName = `${this.team().club?.name}`;
 
       this.seoService.update({
         title: teamName,
@@ -79,7 +79,7 @@ export class DetailPageComponent {
         type: 'website',
         keywords: ['team', 'badminton'],
       });
-      this.breadcrumbService.set('club/:id', this.club().name);
+      this.breadcrumbService.set('club/:id', clubName);
       this.breadcrumbService.set('club/:id/team/:id', teamName);
 
       this._loadEntry();
