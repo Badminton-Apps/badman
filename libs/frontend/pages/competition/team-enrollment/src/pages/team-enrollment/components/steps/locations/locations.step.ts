@@ -44,7 +44,7 @@ export class LocationsStepComponent {
   loaded = this.dataService.state.loadedLocations;
 
   formGroup = input.required<FormGroup>();
-  locations = computed(() => this.formGroup().get(LOCATIONS) as FormArray<LocationForm>);
+  locationForm = computed(() => this.formGroup().get(LOCATIONS) as FormArray<LocationForm>);
 
   club = this.dataService.state.club;
 
@@ -61,7 +61,7 @@ export class LocationsStepComponent {
 
       // use the state but don't update effect when it changes
       untracked(() => {
-        this.locations().clear();
+        this.locationForm().clear();
         for (const location of club?.locations ?? []) {
           const group = this.formBuilder.group({
             id: this.formBuilder.control(location.id),
@@ -107,7 +107,7 @@ export class LocationsStepComponent {
             (group.get('availabilities') as FormArray).push(availibyForm);
           }
 
-          this.locations().push(group as LocationForm);
+          this.locationForm().push(group as LocationForm);
         }
       });
     });
@@ -130,7 +130,7 @@ export class LocationsStepComponent {
           return;
         }
 
-        this.locations().push(
+        this.locationForm().push(
           this.formBuilder.group({
             id: this.formBuilder.control(location?.id),
             name: this.formBuilder.control(location?.name),
@@ -150,12 +150,12 @@ export class LocationsStepComponent {
   }
 
   removeLocation(index: number) {
-    this.locations().removeAt(index);
+    this.locationForm().removeAt(index);
     
   }
 
   editLocation(index: number) {
-    const control = this.locations().at(index) as FormGroup;
+    const control = this.locationForm().at(index) as FormGroup;
 
     import('@badman/frontend-club').then((m) => {
       const dialogRef = this.dialog.open(m.LocationDialogComponent, {
