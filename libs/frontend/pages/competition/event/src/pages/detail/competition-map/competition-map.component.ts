@@ -2,14 +2,13 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   Injector,
-  Input,
   OnInit,
   Signal,
   ViewChild,
   computed,
   effect,
   inject,
-  signal,
+  signal
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -18,9 +17,9 @@ import { EventCompetition, EventEntry, Location } from '@badman/frontend-models'
 import { Apollo, gql } from 'apollo-angular';
 import { map, switchMap } from 'rxjs';
 
+import { input } from '@angular/core';
 import { GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
-import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-competition-map',
