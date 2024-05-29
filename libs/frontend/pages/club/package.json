@@ -22,7 +22,6 @@
     "ngx-moment": "^6.0.2",
     "@badman/frontend-utils": "*",
     "@badman/frontend-seo": "*",
-    "@badman/frontend-html-injects": "*",
     "@badman/frontend-twizzit": "*",
     "xng-breadcrumb": "^11.0.0",
     "@angular/material": "~17.3.8",
