@@ -1,3 +1,22 @@
+## 6.152.0 (2024-05-29)
+
+
+### 🚀 Features
+
+- using competition contact ([36ce1b064](https://github.com/Badminton-Apps/badman/commit/36ce1b064))
+- auto confirm if the person adding has the right permissions ([8ed7f37ae](https://github.com/Badminton-Apps/badman/commit/8ed7f37ae))
+
+### 🩹 Fixes
+
+- copy full member id when adding new player to club ([6f1a9e8ba](https://github.com/Badminton-Apps/badman/commit/6f1a9e8ba))
+- switching clubs should behave now ([a16b7b8da](https://github.com/Badminton-Apps/badman/commit/a16b7b8da))
+- chaning locations wouldn't work ([7e03832d8](https://github.com/Badminton-Apps/badman/commit/7e03832d8))
+- comments not loading correctly when switching club ([7b7f71292](https://github.com/Badminton-Apps/badman/commit/7b7f71292))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.151.2 (2024-05-18)
 
 
