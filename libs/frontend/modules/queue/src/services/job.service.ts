@@ -1,8 +1,8 @@
-import { Inject, Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { CronJob } from '@badman/frontend-models';
 import { JOBS_CONFIG_TOKEN } from '../injection';
 import { JobsConfiguration } from '../interfaces';
-import { CronJob } from '@badman/frontend-models';
 
 @Injectable({
   providedIn: 'root',

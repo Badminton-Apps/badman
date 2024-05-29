@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { EventCompetition } from '@badman/frontend-models';
 import saveAs from 'file-saver';
 import { map, take } from 'rxjs';

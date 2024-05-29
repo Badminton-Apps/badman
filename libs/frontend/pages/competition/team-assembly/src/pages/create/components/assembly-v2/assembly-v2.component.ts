@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Injector, Input, Signal, effect, inject } from '@angular/core';
-import { Player } from '@badman/frontend-models';
-import { AssemblyService } from './assembly.service';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, Injector, Signal, effect, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Player } from '@badman/frontend-models';
+import { TranslateModule } from '@ngx-translate/core';
 import { NgxResize, ResizeResult } from 'ngxtension/resize';
 import { AssemblyMessageComponent } from '../assembly-message/assembly-message.component';
-import { input } from '@angular/core';
+import { AssemblyService } from './assembly.service';
 
 @Component({
   selector: 'badman-assembly-v2',
