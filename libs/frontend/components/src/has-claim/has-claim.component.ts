@@ -25,14 +25,14 @@ export class HasClaimComponent {
   show = computed(() => {
     if (this.any().length > 0) {
       return Array.isArray(this.anyArray())
-        ? this.auth.hasAnyClaims(this.anyArray())
-        : this.auth.hasClaim(this.any() as string);
+        ? this.auth.hasAnyClaimsSignal(this.anyArray())
+        : this.auth.hasClaimSignal(this.any() as string);
     }
 
     if (this.all().length > 0) {
       return Array.isArray(this.allArray())
         ? this.auth.hasAllClaims(this.allArray())
-        : this.auth.hasClaim(this.all() as string);
+        : this.auth.hasClaimSignal(this.all() as string);
     }
 
     return false;

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, computed, inject } from '@angular/core';
 
 import { distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operators';
 
@@ -47,6 +47,18 @@ export class ClaimService {
       (acc: boolean, claim) => acc || this.includes(this.claims(), claim),
       false,
     );
+  }
+
+  hasClaimSignal(claim: string) {
+    return computed(() => this.includes(this.claims(), claim));
+  }
+
+  hasAllClaimsSignal(claims: string[]) {
+    return computed(() => this.hasAllClaims(claims));
+  }
+
+  hasAnyClaimsSignal(claims: string[]) {
+    return computed(() => this.hasAnyClaims(claims));
   }
 
   reloadProfile(): void {

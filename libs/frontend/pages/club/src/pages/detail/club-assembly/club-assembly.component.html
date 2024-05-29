@@ -8,6 +8,10 @@
   </section>
 }
 @if (clubAssemblyService.loaded()) {
+  <form class="filter">
+    <badman-select-season [group]="this.filter()"></badman-select-season>
+  </form>
+  
   <section class="teams">
     <div class="title">
       <h3>

@@ -5,15 +5,15 @@ import {
   Injector,
   OnInit,
   PLATFORM_ID,
-  Signal,
   TransferState,
   effect,
   inject,
   input,
   output,
 } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -21,27 +21,34 @@ import {
   HasClaimComponent,
   LoadingBlockComponent,
   RecentGamesComponent,
+  SelectSeasonComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
 import { Team } from '@badman/frontend-models';
+import { DEVICE } from '@badman/frontend-utils';
 import { SubEventTypeEnum } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs/operators';
 import { ClubTeamsService } from './club-teams.service';
-import { DEVICE } from '@badman/frontend-utils';
 @Component({
   selector: 'badman-club-teams',
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
     LoadingBlockComponent,
     RouterModule,
     TranslateModule,
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
+    MatButtonToggleModule,
+   
+   
+    SelectSeasonComponent,
     HasClaimComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
@@ -62,8 +69,8 @@ export class ClubTeamsComponent implements OnInit {
   private destroy$ = injectDestroy();
 
   // Inputs
-  clubId = input.required<Signal<string>>();
-  filter = input<FormGroup | undefined>();
+  clubId = input.required<string>();
+  filter = input.required<FormGroup>();
 
   // Outputs
   whenTeamEdit = output<void>();
@@ -77,7 +84,7 @@ export class ClubTeamsComponent implements OnInit {
   constructor() {
     effect(() => {
       this.clubTeamsService.filter.patchValue({
-        clubId: this.clubId()(),
+        clubId: this.clubId(),
       });
     });
   }
@@ -88,7 +95,6 @@ export class ClubTeamsComponent implements OnInit {
       .subscribe((newValue) => {
         this.clubTeamsService.filter.patchValue({
           season: newValue.season,
-          choices: newValue.choices,
         });
       });
   }
