@@ -1,3 +1,14 @@
+## 6.152.1 (2024-05-29)
+
+
+### 🩹 Fixes
+
+- fetch club via team ([ff86d6eda](https://github.com/Badminton-Apps/badman/commit/ff86d6eda))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.152.0 (2024-05-29)
 
 
