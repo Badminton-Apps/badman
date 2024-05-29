@@ -68,8 +68,7 @@ jobs:
           bun-version: latest
 
       # - run: bunx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
-      - run: bunx nx-cloud start-ci-run
-
+      
       - run: bun install --no-cache
 
       - run: bun nx affected -t lint test build
