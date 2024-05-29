@@ -14,10 +14,10 @@ import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { LevelType, SubEventTypeEnum } from '@badman/utils';
+import { debounceTime } from 'rxjs';
 import { COMMENTS, TEAMS } from '../../../../../forms';
 import { TeamEnrollmentDataService } from '../../../service/team-enrollment.service';
 import { TeamForm } from '../../../team-enrollment.page';
-import { debounceTime } from 'rxjs';
 
 type CommentForm = {
   [key in LevelType]: FormGroup<{
@@ -40,9 +40,13 @@ export class CommentsStepComponent {
   levelTypes = Object.values(LevelType);
 
   events = this.dataService.state.events;
+  comments = this.dataService.state.comments;
+  club = this.dataService.state.club;
+
+  loaded = this.dataService.state.loadedComments;
 
   formGroup = input.required<FormGroup>();
-  comments = computed(() => this.formGroup().get(COMMENTS) as FormGroup<CommentForm>);
+  commentForm = computed(() => this.formGroup().get(COMMENTS) as FormGroup<CommentForm>);
   teams = computed(
     () =>
       this.formGroup().get(TEAMS) as FormGroup<{
@@ -53,18 +57,28 @@ export class CommentsStepComponent {
   validTypes = signal<LevelType[]>([]);
 
   constructor() {
+    // set initial controls
     effect(
       () => {
-        const comments = this.dataService.state.comments();
-        if (comments) {
-          for (const comment of comments) {
+        // get club
+        const club = this.club();
+
+        // wait for locations to be loaded, and also reload when anything changes
+        if (!this.loaded() || !club?.id) {
+          return;
+        }
+
+        this.commentForm().reset();
+
+        if (this.comments()) {
+          for (const comment of this.comments()) {
             const event = this.events()?.find((event) => event.id === comment.linkId);
             if (!event) {
               continue;
             }
 
             const type = event.type as LevelType;
-            const control = this.comments().get(type);
+            const control = this.commentForm().get(type);
             if (!control) {
               continue;
             }
@@ -77,7 +91,7 @@ export class CommentsStepComponent {
         }
 
         for (const type of this.levelTypes) {
-          const control = this.comments().get(type);
+          const control = this.commentForm().get(type);
           const event = this.events()?.find((event) => event.type === type);
 
           if (!event?.id) {
