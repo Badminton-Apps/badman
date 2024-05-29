@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-notifications",
-  "version": "6.152.0",
+  "version": "6.152.1",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
