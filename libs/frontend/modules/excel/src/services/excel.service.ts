@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, inject } from '@angular/core';
-import { IExcelConfig } from '../interfaces';
-import { EXCEL_CONFIG } from '../excel.module';
+import { Injectable, inject } from '@angular/core';
 import { EventCompetition } from '@badman/frontend-models';
 import saveAs from 'file-saver';
 import { map, take } from 'rxjs/operators';
+import { EXCEL_CONFIG } from '../excel.module';
+import { IExcelConfig } from '../interfaces';
 @Injectable({
   providedIn: 'root',
 })

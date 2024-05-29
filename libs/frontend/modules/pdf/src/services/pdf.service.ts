@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { IPdfConfig } from '../interfaces';
 import { PDF_CONFIG } from '../pdf.module';
 @Injectable({

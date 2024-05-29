@@ -1,4 +1,4 @@
-import { Inject, Injectable, Injector, PLATFORM_ID, TransferState, inject } from '@angular/core';
+import { Injectable, Injector, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
