@@ -4,7 +4,13 @@
   "dependencies": {
     "@badman/backend-database": "6.151.2",
     "@badman/backend-compile": "6.151.2",
-    "@badman/utils": "6.151.2"
+    "@badman/utils": "6.151.2",
+    "@nestjs/common": "^10.3.8",
+    "@nestjs/config": "^3.2.2",
+    "moment-timezone": "^0.5.45",
+    "nodemailer": "^6.9.13",
+    "rxjs": "~7.8.1",
+    "@swc/helpers": "^0.5.11"
   },
   "type": "commonjs",
   "main": "./src/index.js",
