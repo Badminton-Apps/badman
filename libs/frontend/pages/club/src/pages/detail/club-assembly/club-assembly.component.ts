@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, Signal, computed, effect, inject } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import {
   HasClaimComponent,
   RecentGamesComponent,
+  SelectSeasonComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
 import { Club } from '@badman/frontend-models';
@@ -18,7 +19,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { startWith, takeUntil } from 'rxjs';
 import { CanPlay, ClubAssemblyService } from './club-assembly.service';
-import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-club-assembly',
@@ -33,7 +33,9 @@ import { input } from '@angular/core';
     MatTableModule,
     MatTooltipModule,
     MatProgressBarModule,
+
     HasClaimComponent,
+    SelectSeasonComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
   ],
@@ -50,15 +52,15 @@ export class ClubAssemblyComponent implements OnInit {
   ]);
 
   // Inputs
-  club = input.required<Signal<Club>>();
-  filter = input<FormGroup | undefined>();
+  club = input.required<Club>();
+  filter = input.required<FormGroup>();
 
   canPlay = CanPlay;
 
   constructor() {
     effect(() => {
       this.clubAssemblyService.filter.patchValue({
-        clubId: this.club()().id,
+        clubId: this.club().id,
       });
     });
   }
