@@ -4,7 +4,6 @@ import {
   Injector,
   OnInit,
   PLATFORM_ID,
-  Signal,
   TransferState,
   inject,
   input,
@@ -13,19 +12,25 @@ import {
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { LoadingBlockComponent } from '@badman/frontend-components';
+import { LoadingBlockComponent, SelectSeasonComponent } from '@badman/frontend-components';
 import { Club, Player } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { combineLatest } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-club-players',
   standalone: true,
-  imports: [CommonModule, LoadingBlockComponent, RouterModule, TranslateModule],
+  imports: [
+    CommonModule,
+    LoadingBlockComponent,
+    RouterModule,
+    TranslateModule,
+    SelectSeasonComponent,
+  ],
   templateUrl: './club-players.component.html',
   styleUrls: ['./club-players.component.scss'],
 })
@@ -45,7 +50,7 @@ export class ClubPlayersComponent implements OnInit {
   >([]);
 
   // Inputs
-  clubId = input.required<Signal<string>>();
+  clubId = input.required<string>();
   filter = input<FormGroup>(
     new FormGroup({
       season: new FormControl(getCurrentSeason()),
@@ -55,11 +60,12 @@ export class ClubPlayersComponent implements OnInit {
   ngOnInit(): void {
     combineLatest([
       this.filter()?.valueChanges.pipe(startWith(this.filter().value ?? {})),
-      toObservable(this.clubId(), {
+      toObservable(this.clubId, {
         injector: this.injector,
       }),
     ])
       .pipe(
+        filter(([, clubId]) => !!clubId),
         switchMap(
           ([filter, clubId]) =>
             this.apollo.watchQuery<{ club: Partial<Club> }>({
@@ -87,7 +93,7 @@ export class ClubPlayersComponent implements OnInit {
               },
             }).valueChanges,
         ),
-        transferState(`clubPlayerTeamsKey-${this.clubId()()}`, this.stateTransfer, this.platformId),
+        transferState(`clubPlayerTeamsKey-${this.clubId()}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.club) {
             throw new Error('No club');

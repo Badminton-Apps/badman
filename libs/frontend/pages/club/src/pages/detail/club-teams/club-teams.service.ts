@@ -4,19 +4,17 @@ import { Team } from '@badman/frontend-models';
 import { getCurrentSeason, sortTeams } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
+import { EMPTY, Subject, asyncScheduler, merge } from 'rxjs';
 import {
-  EMPTY,
-  Subject,
   catchError,
-  throttleTime,
-  delay,
   distinctUntilChanged,
   filter,
   map,
-  merge,
+  shareReplay,
   startWith,
   switchMap,
-} from 'rxjs';
+  throttleTime,
+} from 'rxjs/operators';
 
 export interface ClubTeamsState {
   teams: Team[];
@@ -35,7 +33,7 @@ export class ClubTeamsService {
   filter = new FormGroup({
     clubId: new FormControl<string>(''),
     season: new FormControl(getCurrentSeason()),
-    choices: new FormControl<string[]>([]),
+    choices: new FormControl<string[]>(['M', 'F', 'MX', 'NATIONAL']),
   });
 
   // state
@@ -59,23 +57,26 @@ export class ClubTeamsService {
   );
 
   private teamsLoaded$ = this.filterChanged$.pipe(
-    throttleTime(300),
-    switchMap((filter) => this.getTeams(filter)),
-    map((teams) => teams.sort(sortTeams)),
-    map((teams) => ({ teams, loaded: true })),
-    delay(100), // some delay to show the loading indicator
+    throttleTime(300, asyncScheduler, { leading: true, trailing: true }),
+    switchMap((filter) =>
+      this.getTeams(filter).pipe(
+        map((teams) => teams.sort(sortTeams)),
+        map((teams) => ({ teams, loaded: true })),
+        startWith({
+          teams: [] as Team[],
+          loaded: false,
+          error: null,
+        }),
+      ),
+    ),
+    shareReplay(1),
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
     }),
   );
 
-
-  sources$ = merge(
-    this.teamsLoaded$,
-    this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loaded: false }))),
-  );
+  sources$ = merge(this.teamsLoaded$, this.error$.pipe(map((error) => ({ error }))));
 
   state = signalSlice({
     initialState: this.initialState,

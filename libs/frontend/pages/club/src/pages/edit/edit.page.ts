@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnInit,
   PLATFORM_ID,
   TemplateRef,
   TransferState,
   ViewChild,
+  effect,
   inject,
 } from '@angular/core';
 import {
@@ -51,9 +51,9 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
+import { injectParams } from 'ngxtension/inject-params';
 import { BehaviorSubject, Observable, combineLatest, lastValueFrom } from 'rxjs';
 import {
-  throttleTime,
   distinctUntilChanged,
   filter,
   map,
@@ -61,10 +61,12 @@ import {
   switchMap,
   takeUntil,
   tap,
+  throttleTime,
 } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ClubFieldsComponent } from '../../components';
 import { LocationDialogComponent } from '../../dialogs';
+import { ClubDetailService } from '../../services/club.service';
 import { ClubEditLocationComponent, ClubEditTeamComponent } from './components';
 
 export type ClubFieldsForm = FormGroup<{
@@ -111,7 +113,8 @@ export type ClubFieldsForm = FormGroup<{
     MatDividerModule,
   ],
 })
-export class EditPageComponent implements OnInit {
+export class EditPageComponent {
+  private readonly clubDetailService = inject(ClubDetailService);
   private seoService = inject(SeoService);
   private breadcrumbsService = inject(BreadcrumbService);
   private snackBar = inject(MatSnackBar);
@@ -123,7 +126,8 @@ export class EditPageComponent implements OnInit {
   private platformId = inject<string>(PLATFORM_ID);
   public securityTypes: typeof SecurityType = SecurityType;
 
-  club!: Club;
+  private readonly clubId = injectParams('id');
+  club = this.clubDetailService.club;
 
   private destroy$ = injectDestroy();
 
@@ -155,99 +159,116 @@ export class EditPageComponent implements OnInit {
     NATIONAL: [],
   };
 
+  constructor() {
+    effect(() => {
+      const clubId = this.clubId();
+
+      if (!clubId) {
+        return;
+      }
+
+      this.clubDetailService.filter.patchValue({
+        clubId,
+      });
+    });
+
+    effect(() => {
+      if (this.club()) {
+        this.loadClub();
+      }
+    });
+  }
+
   // template ref for adding new team
   @ViewChild('newTeamTemplate', { static: true })
   teamTemplate?: TemplateRef<HTMLElement>;
 
-  ngOnInit(): void {
-    this.route.data.subscribe((data) => {
-      this.club = data['club'];
-      const clubName = `${this.club.name}`;
+  loadClub(): void {
+    const clubName = `${this.club()?.name}`;
 
-      this.seoService.update({
-        title: clubName,
-        description: `Edit club ${clubName}`,
-        type: 'website',
-        keywords: ['club', 'badminton'],
-      });
-      this.breadcrumbsService.set('@club', clubName);
+    this.seoService.update({
+      title: clubName,
+      description: `Edit club ${clubName}`,
+      type: 'website',
+      keywords: ['club', 'badminton'],
+    });
+    this.breadcrumbsService.set('@club', clubName);
 
-      this.clubGroup = new FormGroup({
-        id: new FormControl(this.club.id, [Validators.required]),
-        name: new FormControl(this.club.name, [Validators.required]),
-        clubId: new FormControl(this.club.clubId, [Validators.required]),
-        fullName: new FormControl(this.club.fullName, [Validators.required]),
-        abbreviation: new FormControl(this.club.abbreviation, [Validators.required]),
-        teamName: new FormControl(this.club.teamName, [Validators.required]),
-        useForTeamName: new FormControl(this.club.useForTeamName, [Validators.required]),
-        country: new FormControl(this.club.country, [Validators.required]),
-        state: new FormControl(this.club.state, [Validators.required]),
-      }) as ClubFieldsForm;
+    this.clubGroup = new FormGroup({
+      id: new FormControl(this.club()?.id, [Validators.required]),
+      name: new FormControl(this.club()?.name, [Validators.required]),
+      clubId: new FormControl(this.club()?.clubId, [Validators.required]),
+      fullName: new FormControl(this.club()?.fullName, [Validators.required]),
+      abbreviation: new FormControl(this.club()?.abbreviation, [Validators.required]),
+      teamName: new FormControl(this.club()?.teamName, [Validators.required]),
+      useForTeamName: new FormControl(this.club()?.useForTeamName, [Validators.required]),
+      country: new FormControl(this.club()?.country, [Validators.required]),
+      state: new FormControl(this.club()?.state, [Validators.required]),
+    }) as ClubFieldsForm;
 
-      this.clubGroup.valueChanges
-        .pipe(
-          takeUntil(this.destroy$),
-          throttleTime(500),
-          distinctUntilChanged(),
-          skip(1),
-          filter(() => this.clubGroup?.valid ?? false),
-        )
-        .subscribe((value) => {
-          this.save(value as Club);
-        });
-
-      this.roles$ = combineLatest([this.updateClub$, this.updateRoles$]).pipe(
+    this.clubGroup.valueChanges
+      .pipe(
         takeUntil(this.destroy$),
-        switchMap(([, useCache]) => this._loadRoles(useCache)),
-      );
-
-      this._getYears().then((years) => {
-        if (years.length > 0) {
-          this.seasons = years;
-          this.season.setValue(getCurrentSeason());
-        }
+        throttleTime(500),
+        distinctUntilChanged(),
+        skip(1),
+        filter(() => this.clubGroup?.valid ?? false),
+      )
+      .subscribe((value) => {
+        this.save(value as Club);
       });
 
-      this.teamsForSeason$ = combineLatest([this.season.valueChanges, this.updateTeams$]).pipe(
-        takeUntil(this.destroy$),
-        switchMap((season) => {
-          return this.apollo.query<{ club: Club }>({
-            fetchPolicy: 'no-cache',
-            query: gql`
-              query GetBasePlayersQuery($id: ID!, $where: JSONObject!) {
-                club(id: $id) {
+    this.roles$ = combineLatest([this.updateClub$, this.updateRoles$]).pipe(
+      takeUntil(this.destroy$),
+      switchMap(([, useCache]) => this._loadRoles(useCache)),
+    );
+
+    this._getYears().then((years) => {
+      if (years.length > 0) {
+        this.seasons = years;
+        this.season.setValue(getCurrentSeason());
+      }
+    });
+
+    this.teamsForSeason$ = combineLatest([this.season.valueChanges, this.updateTeams$]).pipe(
+      takeUntil(this.destroy$),
+      switchMap((season) => {
+        return this.apollo.query<{ club: Club }>({
+          fetchPolicy: 'no-cache',
+          query: gql`
+            query GetBasePlayersQuery($id: ID!, $where: JSONObject!) {
+              club(id: $id) {
+                id
+                teams(where: $where) {
                   id
-                  teams(where: $where) {
+                  name
+                  clubId
+                  type
+                  teamNumber
+                  season
+                  entry {
                     id
-                    name
-                    clubId
-                    type
-                    teamNumber
-                    season
-                    entry {
+                    subEventCompetition {
                       id
-                      subEventCompetition {
+                      name
+                      eventCompetition {
                         id
                         name
-                        eventCompetition {
-                          id
-                          name
-                        }
                       }
-                      meta {
-                        competition {
-                          teamIndex
-                          players {
+                    }
+                    meta {
+                      competition {
+                        teamIndex
+                        players {
+                          id
+                          single
+                          double
+                          mix
+                          levelException
+                          player {
                             id
-                            single
-                            double
-                            mix
-                            levelException
-                            player {
-                              id
-                              slug
-                              fullName
-                            }
+                            slug
+                            fullName
                           }
                         }
                       }
@@ -255,85 +276,82 @@ export class EditPageComponent implements OnInit {
                   }
                 }
               }
-            `,
-            variables: {
-              id: this.club.id,
-              where: {
-                season: season,
-              },
+            }
+          `,
+          variables: {
+            id: this.club()?.id,
+            where: {
+              season: season,
             },
-          });
-        }),
-        map((x) => {
-          return (x.data.club.teams ?? []).map((t) => new Team(t));
-        }),
-        tap((teams) => {
-          // initial teamnumbers from 1 to maxlevel
-          for (const type of this.eventTypes) {
-            const maxLevelM = Math.max(
-              ...(teams?.filter((t) => t.type === type).map((t) => t.teamNumber ?? 0) ?? []),
-            );
-            this.teamNumbers[type] = Array.from({ length: maxLevelM }, (_, i) => i + 1);
-          }
-        }),
-        map((teams) => teams.sort(sortTeams)),
-      );
+          },
+        });
+      }),
+      map((x) => {
+        return (x.data.club.teams ?? []).map((t) => new Team(t));
+      }),
+      tap((teams) => {
+        // initial teamnumbers from 1 to maxlevel
+        for (const type of this.eventTypes) {
+          const maxLevelM = Math.max(
+            ...(teams?.filter((t) => t.type === type).map((t) => t.teamNumber ?? 0) ?? []),
+          );
+          this.teamNumbers[type] = Array.from({ length: maxLevelM }, (_, i) => i + 1);
+        }
+      }),
+      map((teams) => teams.sort(sortTeams)),
+    );
 
-      this.locationForSeason$ = combineLatest([
-        this.season.valueChanges,
-        this.updateLocation$,
-      ]).pipe(
-        takeUntil(this.destroy$),
-        switchMap((season) => {
-          return this.apollo.query<{ club: Club }>({
-            fetchPolicy: 'no-cache',
-            query: gql`
-              query GetAvailibiltiesForSeason($id: ID!, $where: JSONObject!) {
-                club(id: $id) {
+    this.locationForSeason$ = combineLatest([this.season.valueChanges, this.updateLocation$]).pipe(
+      takeUntil(this.destroy$),
+      switchMap((season) => {
+        return this.apollo.query<{ club: Club }>({
+          fetchPolicy: 'no-cache',
+          query: gql`
+            query GetAvailibiltiesForSeason($id: ID!, $where: JSONObject!) {
+              club(id: $id) {
+                id
+                locations {
                   id
-                  locations {
+                  name
+                  address
+                  postalcode
+                  street
+                  streetNumber
+                  city
+                  state
+                  phone
+                  fax
+                  availabilities(where: $where) {
                     id
-                    name
-                    address
-                    postalcode
-                    street
-                    streetNumber
-                    city
-                    state
-                    phone
-                    fax
-                    availabilities(where: $where) {
-                      id
-                      season
-                      days {
-                        day
-                        startTime
-                        endTime
-                        courts
-                      }
-                      exceptions {
-                        start
-                        end
-                        courts
-                      }
+                    season
+                    days {
+                      day
+                      startTime
+                      endTime
+                      courts
+                    }
+                    exceptions {
+                      start
+                      end
+                      courts
                     }
                   }
                 }
               }
-            `,
-            variables: {
-              id: this.club.id,
-              where: {
-                season: season,
-              },
+            }
+          `,
+          variables: {
+            id: this.club()?.id,
+            where: {
+              season: season,
             },
-          });
-        }),
-        map((x) => {
-          return (x.data.club.locations ?? []).map((t) => new Location(t));
-        }),
-      );
-    });
+          },
+        });
+      }),
+      map((x) => {
+        return (x.data.club.locations ?? []).map((t) => new Location(t));
+      }),
+    );
   }
 
   private _loadRoles(useCache = true) {
@@ -356,13 +374,13 @@ export class EditPageComponent implements OnInit {
         `,
         variables: {
           where: {
-            linkId: this.club.id,
+            linkId: this.club()?.id,
             linkType: 'club',
           },
         },
       })
       .pipe(
-        transferState(`clubRolesKey-${this.club.id}`, this.stateTransfer, this.platformId),
+        transferState(`clubRolesKey-${this.club()?.id}`, this.stateTransfer, this.platformId),
         map((result) => {
           if (!result?.data.roles) {
             throw new Error('No roles');
@@ -389,7 +407,7 @@ export class EditPageComponent implements OnInit {
           `,
           variables: {
             where: {
-              clubId: this.club.id,
+              clubId: this.club()?.id,
             },
           },
         })
@@ -468,7 +486,7 @@ export class EditPageComponent implements OnInit {
         .open(m.AddDialogComponent, {
           data: {
             team: {
-              clubId: this.club.id,
+              clubId: this.club()?.id,
               season: this.season.value,
             },
             teamNumbers: this.teamNumbers,
