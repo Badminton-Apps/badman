@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { Team } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
@@ -46,6 +46,10 @@ export class TeamResolver {
                   id
                   membershipType
                 }
+              }
+              club {
+                id
+                name
               }
             }
           }
