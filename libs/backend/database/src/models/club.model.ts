@@ -94,7 +94,7 @@ export class Club extends Model<InferAttributes<Club>, InferCreationAttributes<C
   declare contactCompetition?: string;
 
   @Default(UseForTeamName.TEAM_NAME)
-  @Field(() => String, { nullable: true })
+  @Field(() => String, { defaultValue: UseForTeamName.TEAM_NAME })
   @Column(DataType.ENUM('name', 'fullName', 'abbreviation', 'teamName'))
   declare useForTeamName?: UseForTeamName;
 

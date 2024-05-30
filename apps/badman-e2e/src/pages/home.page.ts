@@ -16,6 +16,7 @@ export default class HomePage {
 
   async goto() {
     await setup(this.page);
+    
     // eslint-disable-next-line playwright/no-networkidle
     await this.page.goto('/', { waitUntil: 'networkidle' });
 

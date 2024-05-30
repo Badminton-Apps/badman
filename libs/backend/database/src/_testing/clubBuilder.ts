@@ -21,6 +21,12 @@ export class ClubBuilder {
 
     return this;
   }
+  
+  WithTeamName(name: string): ClubBuilder {
+    this.club.teamName = name;
+
+    return this;
+  }
 
   WithId(id: string): ClubBuilder {
     this.club.id = id;
