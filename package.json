@@ -237,5 +237,18 @@
   ],
   "stackblitz": {
     "startCommand": "npm run start:stackblitz"
-  }
+  },
+  "trustedDependencies": [
+    "@apollo/protobufjs",
+    "@nestjs/core",
+    "@swc/core",
+    "canvas",
+    "core-js",
+    "esbuild",
+    "msgpackr-extract",
+    "nx",
+    "puppeteer",
+    "redis-memory-server",
+    "sqlite3"
+  ]
 }
