@@ -16,4 +16,10 @@ export class HealthController {
   check() {
     return this.health.check([() => this.sequelize.pingCheck('database')]);
   }
+
+  @Get('ping')
+  @HealthCheck()
+  ping() {
+    return 'pong'
+  }
 }
