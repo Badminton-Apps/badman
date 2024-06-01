@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, viewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, effect, inject, viewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,7 +43,7 @@ export type TeamFormValue = {
   entry: {
     players: (EntryCompetitionPlayer | null)[];
     subEventId: string | null;
-  }; 
+  };
 };
 
 export type TeamForm = FormGroup<{
@@ -148,14 +148,13 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
   constructor() {
     this.dataService.state.setSeason(getUpcommingSeason());
 
-    // effect(() => {
-    //   if (this.dataService.state.allLoaded()) {
-    //     this.vert_stepper.next();
-    //     this.vert_stepper.next();
-    //     this.vert_stepper.next();
-    //     this.vert_stepper.next();
-    //   }
-    // });
+    effect(() => {
+      if (!this.allLoaded()) {
+        this.formGroup.disable();
+      }
+
+      this.formGroup.enable()
+    });
   }
 
   ngOnInit(): void {

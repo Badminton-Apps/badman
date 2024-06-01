@@ -93,7 +93,8 @@ export class TeamEnrollmentDataService {
         state().loadedClubs &&
         state().loadedTeams &&
         state().loadedLocations &&
-        state().loadedTransfers,
+        state().loadedTransfers &&
+        state().loadedComments,
       eventsPerType: () => {
         const subEvents = state()
           .events.map((event) => event.subEventCompetitions ?? [])
