@@ -1,3 +1,19 @@
+## 6.152.2 (2024-06-01)
+
+
+### 🩹 Fixes
+
+- e2e weren't working (still requiring npm instead of npm though) ([d5e0e1d40](https://github.com/Badminton-Apps/badman/commit/d5e0e1d40))
+- disabling enrollment untill all is loaded ([6632473f9](https://github.com/Badminton-Apps/badman/commit/6632473f9))
+- make sure info is loaded ([ebdcaa92e](https://github.com/Badminton-Apps/badman/commit/ebdcaa92e))
+- if only one value is availible use that one ([d7e014df2](https://github.com/Badminton-Apps/badman/commit/d7e014df2))
+- had to pass the clubId to the cp generator ([80131fb67](https://github.com/Badminton-Apps/badman/commit/80131fb67))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.152.1 (2024-05-29)
 
 
