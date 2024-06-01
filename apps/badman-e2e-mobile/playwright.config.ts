@@ -2,10 +2,9 @@ import { nxE2EPreset } from '@nx/playwright/preset';
 import { PlaywrightTestConfig, defineConfig, devices } from '@playwright/test';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { sharedConfig } from '../badman-e2e/shared.config';
-import path from 'path';
 
 export default defineConfig({
-  ...nxE2EPreset(__filename, { testDir: path.join(__dirname, '../badman-e2e/src') }),
+  ...nxE2EPreset(__filename, { testDir:  '../badman-e2e/src' }),
   ...sharedConfig({
     PORT: `5501`,
     REDIS_PORT: `6381`,

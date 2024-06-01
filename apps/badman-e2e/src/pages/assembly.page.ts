@@ -36,6 +36,7 @@ export default class AssemblyPage {
 
   constructor(page: Page) {
     this.page = page;
+    this.page.on('dialog', (dialog) => dialog.dismiss());
 
     this.clubInput = page.locator('badman-select-club input');
     this.teamSelect = page.locator('badman-select-team');
@@ -103,7 +104,7 @@ export default class AssemblyPage {
       hasText: team,
     });
 
-    await teamItem.isVisible()
+    await teamItem.isVisible();
 
     await teamItem.click();
   }
