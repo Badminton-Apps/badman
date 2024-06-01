@@ -1,7 +1,7 @@
 //The homepage file contains the locators and goto method call for our test page. Its basically our page object model class
 
 import type { Locator, Page } from '@playwright/test';
-import { setup } from '../utils/setup';
+import { acceptCookies, setup } from '../utils';
 
 export default class HomePage {
   page: Page;
@@ -25,5 +25,8 @@ export default class HomePage {
     // Wait for the page to be loaded
     // eslint-disable-next-line playwright/no-networkidle
     await this.page.waitForLoadState('networkidle');
+
+    // accept cookies
+    await acceptCookies(this.page);
   }
 }
