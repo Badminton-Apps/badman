@@ -51,37 +51,7 @@ export class CpGeneratorService {
     private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
-  // public async generateLocationsInCpFile(eventId: string) {
-  //   const event = await EventCompetition.findByPk(eventId);
-  //   if (!event) {
-  //     this.logger.error('Event not found');
-  //     throw new Error('Event not found');
-  //   }
-  //   this.logger.debug(`Event found: ${event.name}`);
-  //   const ADODB = await this._getAdob();
-  //   if (!ADODB) {
-  //     this.logger.error('ADODB not found');
-  //     return;
-  //   }
-
-  //   const { connection, existed } = await this._getConnection(ADODB, event);
-
-  //   if (!existed) {
-  //     this.logger.error('CP file does not exist');
-  //     return;
-  //   }
-
-  //   const clubs = await this._getClubs(connection);
-  //   const teams = await this._getTeams(connection);
-
-  //   const teamNames = teams?.map((t) => teamValues(t.name));
-
-  //   this.logger.debug('Adding locations');
-  //   // const locations = await this._addLocations(clubs, connection);
-
-  //   this.logger.debug('Done');
-  // }
-
+  
   public async generateCpFile(eventId: string) {
     this.logger.log('Started generating CP file');
     const event = await EventCompetition.findByPk(eventId);
@@ -651,6 +621,7 @@ export class CpGeneratorService {
 
       const validation = await this._validation.fetchAndValidate(
         {
+          clubId: dbClub.id,
           teams: teamsOfClub.map((t) => ({
             id: t.dbTeam.id,
             name: t.dbTeam.name,

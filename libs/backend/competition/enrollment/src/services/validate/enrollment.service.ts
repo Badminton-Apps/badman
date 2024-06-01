@@ -59,7 +59,7 @@ export class EnrollmentValidationService {
 
     const club = clubId ? await Club.findByPk(clubId) : null;
     if (!club) {
-      throw new Error('No club found');
+      throw new Error(`Club with id ${clubId} not found`);
     }
 
     season = season ?? getCurrentSeason();
