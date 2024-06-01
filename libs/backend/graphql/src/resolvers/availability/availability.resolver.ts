@@ -63,7 +63,7 @@ export class AvailabilitysResolver {
       }
 
       if (!(await user.hasAnyPermission([`${dbLocation.clubId}_edit:location`, 'edit-any:club']))) {
-        throw new UnauthorizedException(`You do not have permission to add a competition`);
+        throw new UnauthorizedException(`You do not have permission to change the availiblies`);
       }
 
       const dbAvailability = await Availability.create({ ...newAvailibilityData }, { transaction });
@@ -104,9 +104,20 @@ export class AvailabilitysResolver {
           'edit-any:club',
         ]))
       ) {
-        throw new UnauthorizedException(`You do not have permission to add a competition`);
+        throw new UnauthorizedException(`You do not have permission to change the availiblies`);
       }
 
+      // make sure end dates are filled in
+      for (const exception of updateAvailibilityData.exceptions ?? []) {
+        if (!exception.end && exception.start) {
+          exception.end = exception.start;
+        }
+
+        if (exception.end && !exception.start) {
+          exception.start = exception.end;
+        }
+      }
+      
       await dbAvailability.update(
         { ...dbAvailability.toJSON(), ...updateAvailibilityData },
         { transaction },
