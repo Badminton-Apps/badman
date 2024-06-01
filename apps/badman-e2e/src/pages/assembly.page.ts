@@ -1,8 +1,7 @@
 //The homepage file contains the locators and goto method call for our test page. Its basically our page object model class
 
 import type { Locator, Page } from '@playwright/test';
-import { dragDrop } from '../utils/dragDrop';
-import { setup } from '../utils/setup';
+import { acceptCookies, dragDrop, setup } from '../utils';
 
 export default class AssemblyPage {
   page: Page;
@@ -72,6 +71,9 @@ export default class AssemblyPage {
     await this.page.goto('/competition/assembly', { waitUntil: 'networkidle' });
     // eslint-disable-next-line playwright/no-networkidle
     await this.page.waitForLoadState('networkidle');
+
+    // accept cookies
+    await acceptCookies(this.page);
   }
 
   /**
