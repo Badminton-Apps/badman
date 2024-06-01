@@ -58,6 +58,7 @@ import {
   filter,
   map,
   skip,
+  startWith,
   switchMap,
   takeUntil,
   tap,
@@ -230,7 +231,13 @@ export class EditPageComponent {
       }
     });
 
-    this.teamsForSeason$ = combineLatest([this.season.valueChanges, this.updateTeams$]).pipe(
+    const season$ = this.season.valueChanges.pipe(
+      takeUntil(this.destroy$),
+      startWith(this.season.value),
+      distinctUntilChanged(),
+    );
+
+    this.teamsForSeason$ = combineLatest([season$, this.updateTeams$]).pipe(
       takeUntil(this.destroy$),
       switchMap((season) => {
         return this.apollo.query<{ club: Club }>({
@@ -301,7 +308,7 @@ export class EditPageComponent {
       map((teams) => teams.sort(sortTeams)),
     );
 
-    this.locationForSeason$ = combineLatest([this.season.valueChanges, this.updateLocation$]).pipe(
+    this.locationForSeason$ = combineLatest([season$, this.updateLocation$]).pipe(
       takeUntil(this.destroy$),
       switchMap((season) => {
         return this.apollo.query<{ club: Club }>({
