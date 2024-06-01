@@ -11,12 +11,14 @@ export default class HomePage {
   constructor(page: Page) {
     this.page = page;
 
+    this.page.on('dialog', (dialog) => dialog.dismiss());
+
     this.ranking = page.locator('section.ranking');
   }
 
   async goto() {
     await setup(this.page);
-    
+
     // eslint-disable-next-line playwright/no-networkidle
     await this.page.goto('/', { waitUntil: 'networkidle' });
 
