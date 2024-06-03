@@ -107,8 +107,7 @@ export class TeamEnrollmentComponent {
   });
 
   requestExceptionTemplateRef = viewChild.required<TemplateRef<HTMLElement>>('requestException');
-
-  canEnrollInAnyEvent = computed(() => this.auth.hasClaim('enlist-any-event:team'));
+  canEnrollInAnyEvent = this.auth.hasClaimSignal('enlist-any-event:team');
 
   system = this.systemService.system as Signal<RankingSystem>;
   // using a sinal to trigger the effect if needed

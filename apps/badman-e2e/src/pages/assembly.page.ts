@@ -1,8 +1,7 @@
 //The homepage file contains the locators and goto method call for our test page. Its basically our page object model class
 
 import type { Locator, Page } from '@playwright/test';
-import { dragDrop } from '../utils/dragDrop';
-import { setup } from '../utils/setup';
+import { acceptCookies, dragDrop, setup } from '../utils';
 
 export default class AssemblyPage {
   page: Page;
@@ -36,6 +35,7 @@ export default class AssemblyPage {
 
   constructor(page: Page) {
     this.page = page;
+    this.page.on('dialog', (dialog) => dialog.dismiss());
 
     this.clubInput = page.locator('badman-select-club input');
     this.teamSelect = page.locator('badman-select-team');
@@ -71,6 +71,9 @@ export default class AssemblyPage {
     await this.page.goto('/competition/assembly', { waitUntil: 'networkidle' });
     // eslint-disable-next-line playwright/no-networkidle
     await this.page.waitForLoadState('networkidle');
+
+    // accept cookies
+    await acceptCookies(this.page);
   }
 
   /**
@@ -98,14 +101,12 @@ export default class AssemblyPage {
     // click on the mat-label in this.teamInput
     await this.teamSelect.locator('mat-label').click();
 
-    // await this.overlay.locator('mat-option').isVisible();
-
     // find team in overlay
     const teamItem = this.overlay.locator('mat-option').filter({
       hasText: team,
     });
 
-    await teamItem.isVisible()
+    await teamItem.isVisible();
 
     await teamItem.click();
   }

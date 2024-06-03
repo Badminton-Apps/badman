@@ -16,6 +16,7 @@ import {
   NavigationEnd,
   NavigationError,
   NavigationStart,
+  ResolveEnd,
   Router,
   RouterModule,
 } from '@angular/router';
@@ -96,11 +97,11 @@ export class ShellComponent {
 
   banner?: Banner;
 
-  canAnyEnroll = computed(() => this.auth.hasClaim('enlist-any:team'));
-  canViewEnroll = computed(() => this.auth.hasClaim('*_enlist:team'));
+  canAnyEnroll = this.auth.hasClaimSignal('enlist-any:team');
+  canViewEnroll = this.auth.hasClaimSignal('*_enlist:team');
 
-  canAnyChange = computed(() => this.auth.hasClaim('change-any:encounter'));
-  canViewChange = computed(() => this.auth.hasClaim('*change:encounter'));
+  canAnyChange = this.auth.hasClaimSignal('change-any:encounter');
+  canViewChange = this.auth.hasClaimSignal('*change:encounter');
 
   openEnrollments = computedAsync(() =>
     this.apollo
@@ -208,6 +209,7 @@ export class ShellComponent {
           }
 
           case event instanceof NavigationEnd:
+          case event instanceof ResolveEnd:
           case event instanceof NavigationCancel:
           case event instanceof NavigationError: {
             this.loading = false;

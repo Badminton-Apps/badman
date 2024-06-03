@@ -1,16 +1,15 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, inject } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Apollo, gql } from 'apollo-angular';
-import { Club, Player } from '@badman/frontend-models';
-import { BehaviorSubject, map, Observable, switchMap } from 'rxjs';
-import { EditClubHistoryDialogComponent } from '../../dialogs';
 import { CommonModule } from '@angular/common';
-import { MatListModule } from '@angular/material/list';
-import { TranslateModule } from '@ngx-translate/core';
-import { MomentModule } from 'ngx-moment';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { input } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Club, Player } from '@badman/frontend-models';
+import { TranslateModule } from '@ngx-translate/core';
+import { Apollo, gql } from 'apollo-angular';
+import { MomentModule } from 'ngx-moment';
+import { BehaviorSubject, Observable, map, switchMap } from 'rxjs';
+import { EditClubHistoryDialogComponent } from '../../dialogs';
 
 @Component({
   selector: 'badman-edit-club-history',

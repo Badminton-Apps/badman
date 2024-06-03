@@ -1,4 +1,4 @@
-<ng-container [formGroup]="this.comments()">
+<ng-container [formGroup]="this.commentForm()">
   @for (type of levelTypes; track type) {
     @if (validTypes().includes(type)) {
       <mat-form-field class="comment" [formGroupName]="type">

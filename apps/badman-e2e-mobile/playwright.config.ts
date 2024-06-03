@@ -4,11 +4,12 @@ import { PlaywrightTestConfig, defineConfig, devices } from '@playwright/test';
 import { sharedConfig } from '../badman-e2e/shared.config';
 
 export default defineConfig({
-  ...nxE2EPreset(__filename, { testDir: '../badman-e2e/src' }),
+  ...nxE2EPreset(__filename, { testDir:  '../badman-e2e/src' }),
   ...sharedConfig({
-    PORT: `5500`,
-    REDIS_PORT: `6380`,
+    PORT: `5501`,
+    REDIS_PORT: `6381`,
   }),
+  
   // outputDir: 'badman-e2e-mobile-results',
   reporter: [
     [

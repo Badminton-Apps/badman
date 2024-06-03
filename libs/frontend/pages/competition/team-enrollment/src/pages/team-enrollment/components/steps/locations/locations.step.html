@@ -7,7 +7,7 @@
       
     </div>
     <ng-container formArrayName="locations">
-      @for (location of this.locations().controls; track location; let i = $index) {
+      @for (location of this.locationForm().controls; track location; let i = $index) {
         <div class="row" [formGroupName]="i">
           <badman-location
             (whenLocationUpdate)="this.editLocation(i)"

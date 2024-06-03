@@ -1,9 +1,9 @@
 {
   "name": "@badman/backend-cluster",
-  "version": "6.151.2",
+  "version": "6.152.2",
   "dependencies": {
-    "@swc/helpers": "~0.5.2",
-    "@nestjs/common": "^10.3.1"
+    "@nestjs/common": "^10.3.8",
+    "@swc/helpers": "^0.5.11"
   },
   "type": "commonjs",
   "main": "./src/index.js",

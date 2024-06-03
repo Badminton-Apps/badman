@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '@badman/frontend-auth';
 import { DetailPageComponent, EditPageComponent } from './pages';
-import { ClubResolver } from './resolvers';
 
 const MODULE_ROUTES: Routes = [
   {
@@ -14,9 +13,6 @@ const MODULE_ROUTES: Routes = [
   },
   {
     path: ':id',
-    resolve: {
-      club: ClubResolver,
-    },
     data: {
       breadcrumb: {
         alias: 'club',
@@ -60,6 +56,6 @@ const MODULE_ROUTES: Routes = [
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(MODULE_ROUTES)],
   declarations: [],
-  providers: [ClubResolver],
+  providers: [],
 })
 export class ClubModule {}

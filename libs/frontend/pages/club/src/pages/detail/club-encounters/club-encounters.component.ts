@@ -4,7 +4,6 @@ import {
   Injector,
   OnInit,
   PLATFORM_ID,
-  Signal,
   TransferState,
   inject,
   signal,
@@ -54,7 +53,7 @@ export class ClubEncountersComponent implements OnInit {
   loading = signal(true);
 
   // Inputs
-  clubId = input.required<Signal<string>>();
+  clubId = input.required<string>();
 
   filter = input<FormGroup>(
     new FormGroup({
@@ -173,9 +172,9 @@ export class ClubEncountersComponent implements OnInit {
 
   private _setupFilter() {
     if (
-      (this.filter().get('club')?.value?.id ?? this.filter().get('club')?.value) !== this.clubId()()
+      (this.filter().get('club')?.value?.id ?? this.filter().get('club')?.value) !== this.clubId()
     ) {
-      this.filter().get('club')?.setValue({ id: this.clubId()() });
+      this.filter().get('club')?.setValue({ id: this.clubId() });
     }
 
     if (!this.filter().get('teams')?.value) {

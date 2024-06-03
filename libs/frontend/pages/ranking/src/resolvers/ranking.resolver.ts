@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { RankingSystem } from '@badman/frontend-models';
@@ -16,9 +16,10 @@ export class RankingSystemResolver {
   resolve(route: ActivatedRouteSnapshot) {
     const inputId = route.params['id'] as string;
     let systemId: string;
+    const loaded = this.raningSystemService.systemId();
 
-    if (inputId == 'primary') {
-      systemId = this.raningSystemService.systemId()!;
+    if (inputId == 'primary' && loaded) {
+      systemId = loaded;
     } else {
       systemId = inputId;
     }

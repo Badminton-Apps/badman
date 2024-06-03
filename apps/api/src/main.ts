@@ -30,13 +30,21 @@ async function bootstrap() {
   Logger.debug('Application created');
 
   if (configService.get<string>('NODE_ENV') === 'test') {
+    Logger.verbose(
+      `Starting redis memory server for test environment on port ${configService.get('REDIS_PORT') || 6379}`,
+    );
     const redisMemoryServer = new RedisMemoryServer({
       instance: {
         port: configService.get('REDIS_PORT') || 6379,
       },
     });
 
-    await redisMemoryServer.start();
+    try {
+      await redisMemoryServer.start();
+    } catch (error) {
+      Logger.error('Error starting redis memory server', error);
+      process.exit(1);
+    }
   }
 
   app.setGlobalPrefix('api');

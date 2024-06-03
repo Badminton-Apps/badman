@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, TransferState, inject } from '@angular/core';
 import { Faq } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { Apollo, gql } from 'apollo-angular';

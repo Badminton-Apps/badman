@@ -1,6 +1,6 @@
-import { Inject, Injectable, inject } from '@angular/core';
-import { onCLS, onFCP, onFID, onLCP, onTTFB, Metric } from 'web-vitals';
-import { AnalyticsConfig, ANALYTICS_CONFIG_TOKEN } from '../vitals.module';
+import { Injectable, inject } from '@angular/core';
+import { Metric, onCLS, onFCP, onFID, onLCP, onTTFB } from 'web-vitals';
+import { ANALYTICS_CONFIG_TOKEN, AnalyticsConfig } from '../vitals.module';
 
 @Injectable({
   providedIn: 'root',
