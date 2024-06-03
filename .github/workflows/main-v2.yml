@@ -8,7 +8,7 @@ on:
       e2e-tests:
         description: 'Do e2e tests'
         required: true
-        default: true
+        default: false
         type: boolean
 
 # Needed for nx-set-shas when run on the main branch
