@@ -34,6 +34,8 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
 }
 const envFilePath = process.env.NODE_ENV === 'test' ? '.env.test' : undefined;
 
+console.log('envFilePath', envFilePath, process.env.NODE_ENV);
+
 @Module({
   imports: [
     ...productionModules,

@@ -22,8 +22,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BadmanBlockModule, HasClaimComponent } from '@badman/frontend-components';
 import { Club, Location } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { forkJoin } from 'rxjs';
+import { Apollo, MutationResult, gql } from 'apollo-angular';
+import { Observable, forkJoin } from 'rxjs';
 
 export type LocationavDayType = FormGroup<{
   day: FormControl<string | undefined>;
@@ -203,8 +203,8 @@ export class ClubEditLocationComponent implements OnInit {
   }
 
   save() {
-    const observables = [];
-    const availibility = this.control()?.value;
+    const observables: Observable<MutationResult<unknown>>[] = [];
+    const availibility = this.internalControl?.getRawValue();
 
     if (!availibility?.id) {
       observables.push(

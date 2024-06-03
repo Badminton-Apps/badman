@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { ChangedEncountersService } from './changed-encounters.service';
 
 describe('ChangedEncountersService', () => {

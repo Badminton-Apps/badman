@@ -3,6 +3,19 @@
   padding-bottom: 5rem;
 }
 
+.filter {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+
+  @media (max-width: 959.98px) {
+    flex-direction: column;
+  }
+}
+
+
 .detail-row {
   display: flex;
   flex-direction: column;

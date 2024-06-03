@@ -1,5 +1,6 @@
 import { User } from '@badman/backend-authorization';
 import {
+  Club,
   DrawCompetition,
   DrawTournament,
   EntryCompetitionPlayer,
@@ -127,6 +128,17 @@ export class EventEntryResolver {
       throw new UnauthorizedException(`You do not have permission to enroll a club`);
     }
 
+    const club = await Club.findByPk(clubId);
+    if (!club) {
+      throw new NotFoundException(clubId);
+    }
+
+    // update the contact email of the club if it is different
+    if (club.contactCompetition !== email) {
+      club.contactCompetition = email;
+      await club.save();
+    }
+
     await this.notificationService.notifyEnrollment(user.id, clubId, season, email);
 
     const teamsOfClub = await Team.findAll({
@@ -145,6 +157,8 @@ export class EventEntryResolver {
       team.entry.sendOn = new Date();
       await team.entry.save();
     }
+
+   
 
     await Logging.create({
       action: LoggingAction.EnrollmentSubmitted,

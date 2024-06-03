@@ -1,3 +1,49 @@
+## 6.152.2 (2024-06-01)
+
+
+### 🩹 Fixes
+
+- e2e weren't working ([d5e0e1d40](https://github.com/Badminton-Apps/badman/commit/d5e0e1d40))
+- disabling enrollment untill all is loaded ([6632473f9](https://github.com/Badminton-Apps/badman/commit/6632473f9))
+- make sure info is loaded ([ebdcaa92e](https://github.com/Badminton-Apps/badman/commit/ebdcaa92e))
+- if only one value is availible use that one ([d7e014df2](https://github.com/Badminton-Apps/badman/commit/d7e014df2))
+- had to pass the clubId to the cp generator ([80131fb67](https://github.com/Badminton-Apps/badman/commit/80131fb67))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
+## 6.152.1 (2024-05-29)
+
+
+### 🩹 Fixes
+
+- fetch club via team ([ff86d6eda](https://github.com/Badminton-Apps/badman/commit/ff86d6eda))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.152.0 (2024-05-29)
+
+
+### 🚀 Features
+
+- using competition contact ([36ce1b064](https://github.com/Badminton-Apps/badman/commit/36ce1b064))
+- auto confirm if the person adding has the right permissions ([8ed7f37ae](https://github.com/Badminton-Apps/badman/commit/8ed7f37ae))
+
+### 🩹 Fixes
+
+- copy full member id when adding new player to club ([6f1a9e8ba](https://github.com/Badminton-Apps/badman/commit/6f1a9e8ba))
+- switching clubs should behave now ([a16b7b8da](https://github.com/Badminton-Apps/badman/commit/a16b7b8da))
+- chaning locations wouldn't work ([7e03832d8](https://github.com/Badminton-Apps/badman/commit/7e03832d8))
+- comments not loading correctly when switching club ([7b7f71292](https://github.com/Badminton-Apps/badman/commit/7b7f71292))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.151.2 (2024-05-18)
 
 

@@ -8,7 +8,6 @@ import {
   inject,
 } from '@angular/core';
 import { SubEventCompetition } from '@badman/frontend-models';
-import { input } from '@angular/core';
 
 @Directive({
   selector: '[badmanEnrollmentDetailRow]',

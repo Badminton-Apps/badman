@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, input, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   MatAutocompleteModule,
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, ReplaySubject, merge } from 'rxjs';
-import { throttleTime, filter, map, startWith, switchMap, debounceTime } from 'rxjs/operators';
+import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
 
 type SearchType = { id: string; name: string; slug: string };
 

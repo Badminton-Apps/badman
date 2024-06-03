@@ -83,17 +83,21 @@ export class CronService implements OnModuleInit {
       cronTime: job.cronTime,
       onTick: async () => {
         this.logger.verbose(`Queueing ${job.name}`);
-        const queue = this._getQueue(job.meta!.queueName);
+        if (!job.meta) {
+          throw new Error(`Meta not found for job ${job.name}`);
+        }
+
+        const queue = this._getQueue(job.meta.queueName);
 
         // if the job is already running, don't queue it again
         const runningJobs = await queue.getJobs(['active', 'waiting']);
-        const running = runningJobs.find((j) => j.name === job.meta!.jobName);
+        const running = runningJobs.find((j) => j.name === job.meta?.jobName);
         if (running) {
           this.logger.verbose(`Job ${job.name} already running`);
           return;
         }
 
-        queue.add(job.meta!.jobName, job.meta?.arguments, {
+        queue.add(job.meta.jobName, job.meta?.arguments, {
           removeOnFail: 5,
           removeOnComplete: 5,
         });
@@ -174,8 +178,12 @@ export class CronService implements OnModuleInit {
       onTick: async () => {
         this.logger.verbose(`Queueing ${job.name}`);
 
+        if (!job.meta) {
+          throw new Error(`Meta not found for job ${job.name}`);
+        }
+
         const system = await RankingSystem.findByPk(
-          (job.meta!.arguments as unknown as { systemId: string }).systemId,
+          (job.meta.arguments as unknown as { systemId: string }).systemId,
         );
 
         if (!system) {
@@ -195,17 +203,17 @@ export class CronService implements OnModuleInit {
           return;
         }
 
-        const queue = this._getQueue(job.meta!.queueName);
+        const queue = this._getQueue(job.meta.queueName);
 
         // if the job is already running, don't queue it again
         const runningJobs = await queue.getJobs(['active', 'waiting']);
-        const running = runningJobs.find((j) => j.name === job.meta!.jobName);
+        const running = runningJobs.find((j) => j.name === job.meta?.jobName);
         if (running) {
           this.logger.verbose(`Job ${job.name} already running`);
           return;
         }
 
-        queue.add(job.meta!.jobName, job.meta?.arguments, {
+        queue.add(job.meta.jobName, job.meta?.arguments, {
           removeOnFail: 5,
           removeOnComplete: 5,
         });

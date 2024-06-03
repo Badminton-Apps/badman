@@ -48,6 +48,7 @@ interface TeamEnrollmentState {
   loadedTeams: boolean;
   loadedTransfers: boolean;
   loadedLocations: boolean;
+  loadedComments: boolean;
 }
 
 const CLUBS_KEY = 'clubs.id';
@@ -79,6 +80,7 @@ export class TeamEnrollmentDataService {
     loadedTeams: false,
     loadedTransfers: false,
     loadedLocations: false,
+    loadedComments: false,
   };
 
   // selectors
@@ -91,7 +93,8 @@ export class TeamEnrollmentDataService {
         state().loadedClubs &&
         state().loadedTeams &&
         state().loadedLocations &&
-        state().loadedTransfers,
+        state().loadedTransfers &&
+        state().loadedComments,
       eventsPerType: () => {
         const subEvents = state()
           .events.map((event) => event.subEventCompetitions ?? [])
@@ -147,6 +150,7 @@ export class TeamEnrollmentDataService {
             loadedTeams: false,
             loadedTransfers: false,
             loadedLocations: false,
+            loadedComments: false,
           })),
         ),
 
@@ -162,6 +166,7 @@ export class TeamEnrollmentDataService {
             loadedTeams: false,
             loadedTransfers: false,
             loadedLocations: false,
+            loadedComments: false,
           })),
         ),
 
@@ -258,6 +263,7 @@ export class TeamEnrollmentDataService {
           switchMap(({ clubId, eventIds }) => loadComments(this.apollo, clubId, eventIds)),
           map((comments) => ({
             comments,
+            loadedComments: true,
           })),
         ),
 
