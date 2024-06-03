@@ -32,6 +32,7 @@ import {
   EnrollmentMessageComponent,
   HasClaimComponent,
   SelectClubComponent,
+  SelectSeasonComponent,
 } from '@badman/frontend-components';
 import { Club, Comment, EventCompetition, Location, Team } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
@@ -63,6 +64,7 @@ import { EnrollmentDetailRowDirective } from './competition-enrollments-detail.c
     CdkTreeModule,
     EnrollmentDetailRowDirective,
     SelectClubComponent,
+    SelectSeasonComponent,
     EnrollmentMessageComponent,
     BadmanBlockModule,
     HasClaimComponent,
@@ -94,7 +96,7 @@ export class ClubCompetitionComponent implements OnInit {
 
   // Inputs
   filter = input.required<FormGroup>();
-  clubId = input.required<Signal<string>>();
+  clubId = input.required<string>();
 
   displayedColumns: string[] = ['name', 'subevent', 'validations'];
 
@@ -193,7 +195,7 @@ export class ClubCompetitionComponent implements OnInit {
                   },
                 ],
                 where: {
-                  clubId: this.clubId()(),
+                  clubId: this.clubId(),
                   season: filter,
                 },
               },
@@ -259,7 +261,7 @@ export class ClubCompetitionComponent implements OnInit {
                 }
               `,
               variables: {
-                clubId: this.clubId()(),
+                clubId: this.clubId(),
                 where: {
                   season: filter,
                 },
@@ -301,7 +303,7 @@ export class ClubCompetitionComponent implements OnInit {
                 }
               `,
               variables: {
-                clubId: this.clubId()(),
+                clubId: this.clubId(),
                 where: {
                   linkId: eventIds,
                 },

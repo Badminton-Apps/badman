@@ -316,6 +316,7 @@ function addClub(
 
   const club = ClubBuilder.Create(clubId)
     .WithName(name)
+    .WithTeamName(name)
     .WithTeam(
       teamMx
         .WithPlayer(player777F, TeamMembershipType.REGULAR)

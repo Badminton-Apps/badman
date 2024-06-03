@@ -41,11 +41,11 @@ export class Player {
   setting?: Setting;
 
   constructor(args?: Partial<Player>) {
-    if (!args?.id) {
+    if (args?.id) {
+      this.id = args.id;
+    } else {
       console.error(`${this.constructor.name} needs an id`);
-      return;
     }
-    this.id = args.id;
     this.memberId = args?.memberId;
     this.gender = args?.gender;
     this.email = args?.email;

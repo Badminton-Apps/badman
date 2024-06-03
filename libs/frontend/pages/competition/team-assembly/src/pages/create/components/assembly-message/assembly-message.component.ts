@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { combineLatest, Observable, of } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ValidationMessage, ValidationPlayer } from '../../models/validation';
-import { input } from '@angular/core';
 
 @Component({
   selector: 'badman-assembly-message',
