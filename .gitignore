@@ -62,5 +62,8 @@ apollo.config.js
 .obsidian/workspace.json
 files/
 .nx/cache
+.nx/workspace-data
+.angular
+
 playwright-report/
 blob-report/
