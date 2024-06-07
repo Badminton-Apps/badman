@@ -82,7 +82,7 @@
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "@nx/angular": "~19.0.2",
-    "@nx/nest": "19.1.1",
+    "@nx/nest": "19.2.0-rc.0",
     "@socket.io/redis-adapter": "^8.3.0",
     "apexcharts": "^3.49.1",
     "apollo-angular": "^7.0.1",
@@ -165,23 +165,23 @@
     "@angular/language-service": "~17.3.8",
     "@nestjs/schematics": "^10.1.1",
     "@nestjs/testing": "^10.3.8",
-    "@nx/devkit": "19.1.1",
-    "@nx/eslint": "19.1.1",
-    "@nx/eslint-plugin": "19.1.1",
-    "@nx/jest": "19.1.1",
-    "@nx/js": "19.1.1",
-    "@nx/node": "19.1.1",
-    "@nx/playwright": "19.1.1",
-    "@nx/web": "19.1.1",
-    "@nx/webpack": "19.1.1",
-    "@nx/workspace": "19.1.1",
+    "@nx/devkit": "19.2.0-rc.0",
+    "@nx/eslint": "19.2.0-rc.0",
+    "@nx/eslint-plugin": "19.2.0-rc.0",
+    "@nx/jest": "19.2.0-rc.0",
+    "@nx/js": "19.2.0-rc.0",
+    "@nx/node": "19.2.0-rc.0",
+    "@nx/playwright": "19.2.0-rc.0",
+    "@nx/web": "19.2.0-rc.0",
+    "@nx/webpack": "19.2.0-rc.0",
+    "@nx/workspace": "19.2.0-rc.0",
     "@playwright/test": "^1.44.0",
     "@prettier/plugin-pug": "^3.0.0",
     "@schematics/angular": "17.3.7",
     "@swc-node/register": "1.9.1",
     "@swc/cli": "0.3.12",
-    "@swc/core": "^1.5.5",
-    "@swc/helpers": "^0.5.11",
+    "@swc/core": "1.5.7",
+    "@swc/helpers": "0.5.11",
     "@types/archiver": "^6.0.2",
     "@types/compression": "^1.7.5",
     "@types/consolidate": "^0.14.4",
@@ -211,7 +211,7 @@
     "jest-preset-angular": "14.1.0",
     "jsonc-eslint-parser": "^2.4.0",
     "ng-packagr": "~17.3.0",
-    "nx": "19.1.1",
+    "nx": "19.2.0-rc.0",
     "prettier": "^3.2.5",
     "redis-memory-server": "^0.10.0",
     "supertest": "^7.0.0",
@@ -227,7 +227,7 @@
     "node-adodb": "github:nuintun/node-adodb"
   },
   "volta": {
-    "node": "20.12.2"
+    "node": "20.14.0"
   },
   "engines": {
     "node": "20.12.2"
@@ -237,18 +237,5 @@
   ],
   "stackblitz": {
     "startCommand": "npm run start:stackblitz"
-  },
-  "trustedDependencies": [
-    "@apollo/protobufjs",
-    "@nestjs/core",
-    "@swc/core",
-    "canvas",
-    "core-js",
-    "esbuild",
-    "msgpackr-extract",
-    "nx",
-    "puppeteer",
-    "redis-memory-server",
-    "sqlite3"
-  ]
+  }
 }
