@@ -5,10 +5,10 @@ import { Injectable, Logger } from '@nestjs/common';
 export class PlannerService {
   private readonly logger = new Logger(PlannerService.name);
 
-  async getPlannerData(year: string) {
+  async getPlannerData(season: string) {
     const events = await EventCompetition.findAll({
       where: {
-        season: year,
+        season,
       },
     });
 
@@ -85,7 +85,7 @@ export class PlannerService {
           if (!clubs[team.clubId]) {
             const club = await team.getClub();
             const locations = await club.getLocations({
-              include: [{ model: Availability, where: { year } }],
+              include: [{ model: Availability, where: { season} }],
             });
             clubs[team.clubId] = {
               name: club.name,

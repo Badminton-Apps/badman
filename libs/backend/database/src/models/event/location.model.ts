@@ -1,4 +1,5 @@
 import { Field, Float, ID, InputType, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
+import type { Point } from 'geojson';
 import {
   BelongsToGetAssociationMixin,
   BelongsToManyAddAssociationMixin,
@@ -11,7 +12,7 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions,
+  CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -21,6 +22,8 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
+  InferAttributes,
+  InferCreationAttributes,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -37,31 +40,26 @@ import {
   Table,
   TableOptions,
 } from 'sequelize-typescript';
+import { Relation } from '../../wrapper';
 import { Club } from '../club.model';
 import { Team } from '../team.model';
 import { Availability } from './availability.model';
 import { Court } from './court.model';
 import { EventTournament } from './tournament';
 import { LocationEventTournamentMembership } from './tournament/location-event-membership.model';
-import type { Point } from 'geojson';
-import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
   schema: 'event',
 } as TableOptions)
 @ObjectType({ description: 'A Location' })
-export class Location extends Model {
-  constructor(values?: Partial<Location>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+export class Location extends Model<InferAttributes<Location>, InferCreationAttributes<Location>> {
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
@@ -110,7 +108,6 @@ export class Location extends Model {
 
   @HasMany(() => Team, 'prefferedLocationId')
   teams?: Relation<Team[]>;
-
 
   @BelongsToMany(() => EventTournament, () => LocationEventTournamentMembership)
   eventTournaments?: Relation<EventTournament[]>;
