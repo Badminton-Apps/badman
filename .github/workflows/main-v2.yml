@@ -71,10 +71,10 @@ jobs:
       
       # - run: bun install --no-cache
 
-      - run: bun nx affected -t lint test build
+      - run: bunx nx affected -t lint test build
 
       - name: Run Playwright tests
-        run: bun nx affected --parallel 1 -t e2e-ci
+        run: bunx nx affected --parallel 1 -t e2e-ci
         id: run-e2e-tests
         if: ${{ inputs.e2e-tests }}
 
@@ -136,14 +136,14 @@ jobs:
       # deploy the new packages
       - name: Deploy to Prod
         if: github.ref == 'refs/heads/main'
-        run: bun nx affected -t deploy --no-agents
+        run: bunx nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{ secrets.PROD_API_HOOK  }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK  }}
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK  }}
 
       - name: Deploy to Beta
-        run: bun nx affected -t deploy --no-agents
+        run: bunx nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{  secrets.BETA_API_HOOK }}
           WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
