@@ -18,7 +18,14 @@ export class RenderService {
       accept: 'application/json',
       authorization: `Bearer ${this.configService.get<string>('RENDER_API_KEY')}`,
     };
-    this.renderApi = this.configService.get<string>('RENDER_API_URL')!;
+
+    const api = this.configService.get<string>('RENDER_API_URL');
+
+    if (!api) {
+      throw new Error('RENDER_API_URL is not defined');
+    }
+
+    this.renderApi = api;
   }
 
   async startService(service: Service) {
