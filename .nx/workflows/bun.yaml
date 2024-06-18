@@ -1,0 +1,31 @@
+launch-templates:
+  linux-medium-js-bun:
+    resource-class: 'docker_linux_amd64/medium'
+    image: 'ubuntu22.04-node20.11-v7'
+    init-steps:
+      - name: Add bun bin to PATH
+        script: echo "PATH=$HOME/.bun/bin:$PATH" >> $NX_CLOUD_ENV
+      - name: Checkout
+        uses: 'nrwl/nx-cloud-workflows/v3.6/workflow-steps/checkout/main.yaml'
+      - name: Restore Node Modules Cache
+        uses: 'nrwl/nx-cloud-workflows/v3.6/workflow-steps/cache/main.yaml'
+        env:
+          KEY: 'bun.lockb'
+          PATHS: 'node_modules'
+          BASE_BRANCH: 'main'
+      - name: Restore Browser Binary Cache
+        uses: 'nrwl/nx-cloud-workflows/v3.6/workflow-steps/cache/main.yaml'
+        env:
+          KEY: 'bun.lockb|"browsers"'
+          PATHS: |
+            '../.cache/Cypress'
+            '../.cache/ms-playwright'
+          BASE_BRANCH: 'main'
+      - name: Install Bun
+        script: |
+          sudo apt install unzip
+          curl -fsSL https://bun.sh/install | bash
+      - name: Install Node Modules (with Bun)
+        script: bun install --frozen-lockfile --ignore-scripts
+      - name: Install Browsers (if needed)
+        uses: 'nrwl/nx-cloud-workflows/v3.6/workflow-steps/install-browsers/main.yaml'
