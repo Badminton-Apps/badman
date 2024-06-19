@@ -5,11 +5,11 @@
 
 @mixin color($theme) {
   badman-show-requests {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $primary: map.get($color-config, 'primary');
     $foreground: map.get($color-config, 'foreground');
     $background: map.get($color-config, 'background');
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($foreground, 'disabled-text');
     $isDark: map.get($color-config, 'is-dark');
     $warn-palette: map.get($theme, 'warn');
 
@@ -18,14 +18,14 @@
         border-color: $border-color;
 
         label {
-          background-color: mat.get-color-from-palette($background, 'background');
-          color: mat.get-color-from-palette($foreground, 'secondary-text');
+          background-color: mat.get-theme-color($background, 'background');
+          color: mat.get-theme-color($foreground, 'secondary-text');
         }
       }
     }
 
     .warning {
-      color: mat.get-color-from-palette($warn-palette, 300);
+      color: mat.get-theme-color($warn-palette, 300);
     }
   }
 }

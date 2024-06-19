@@ -15,16 +15,16 @@
     @include competition-map.color($theme);
     @include competition-encounters.color($theme);
 
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     // Background color
     $background: map.get($color-config, 'background');
     $foreground: map.get($color-config, 'foreground');
 
     .in-between {
-      border-bottom-color: mat.get-color-from-palette($background, 'border');
+      border-bottom-color: mat.get-theme-color($background, 'border');
       .buttons button {
-        border-color: mat.get-color-from-palette($background, 'border');
-        background-color: mat.get-color-from-palette($background, 'background');
+        border-color: mat.get-theme-color($background, 'border');
+        background-color: mat.get-theme-color($background, 'background');
       }
     }
 
@@ -33,7 +33,7 @@
         &,
         &:visited,
         &:hover {
-          color: mat.get-color-from-palette($foreground, 'base');
+          color: mat.get-theme-color($foreground, 'base');
         }
       }
     }

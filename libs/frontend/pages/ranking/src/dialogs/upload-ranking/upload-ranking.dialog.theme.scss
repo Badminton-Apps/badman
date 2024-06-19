@@ -4,23 +4,23 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  $color-config: mat.get-color-config($theme);
+  $color-config: mat.m2-get-color-config($theme);
   $foreground: map.get($color-config, 'foreground');
   $background: map.get($color-config, 'background');
   $isDark: map.get($color-config, 'is-dark');
 
   badman-upload-ranking {
     .drop-area {
-      border-color: mat.get-color-from-palette($foreground, 'base');
+      border-color: mat.get-theme-color($foreground, 'base');
       p {
-        color: mat.get-color-from-palette($foreground, 'base');
+        color: mat.get-theme-color($foreground, 'base');
       }
 
       &.dragging {
         @if ($isDark) {
-          background-color: darken(mat.get-color-from-palette($background, 'background'), 40%);
+          background-color: darken(mat.get-theme-color($background, 'background'), 40%);
         } @else {
-          background-color: lighten(mat.get-color-from-palette($background, 'background'), 60%);
+          background-color: lighten(mat.get-theme-color($background, 'background'), 60%);
         }
       }
     }

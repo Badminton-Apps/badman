@@ -5,13 +5,13 @@
 
 @mixin color($theme) {
   badman-detail-encounter {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
     $isDark: map.get($color-config, 'is-dark');
 
     a.player {
       text-decoration: none;
-      color: mat.get-color-from-palette($foreground, 'base');
+      color: mat.get-theme-color($foreground, 'base');
     }
   }
 }

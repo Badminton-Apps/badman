@@ -13,7 +13,7 @@
   @include list-games.color($theme);
 
   badman-ranking-breakdown {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
   }
 }
 
@@ -31,7 +31,7 @@
   @include period-selection.theme($theme);
   @include add-game.theme($theme);
 
-  $color-config: mat.get-color-config($theme);
+  $color-config: mat.m2-get-color-config($theme);
   @if $color-config != null {
     @include color($theme);
   }

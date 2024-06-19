@@ -5,23 +5,23 @@
 
 @mixin color($theme) {
   badman-calendar {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
     $isDark: map.get($color-config, 'is-dark');
 
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($foreground, 'disabled-text');
 
     .header,
     .calender,
     .calendar-day {
-      color: mat.get-color-from-palette($foreground, 'base');
+      color: mat.get-theme-color($foreground, 'base');
     }
 
     .calendar-day-content {
-      color: mat.get-color-from-palette($foreground, 'base');
+      color: mat.get-theme-color($foreground, 'base');
 
       .location .id {
-        border-color: mat.get-color-from-palette($foreground, 'base');
+        border-color: mat.get-theme-color($foreground, 'base');
       }
     }
   }

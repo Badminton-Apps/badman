@@ -5,18 +5,18 @@
 
 @mixin color($theme) {
   badman-add-game {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $background: map.get($color-config, 'background');
     $foreground: map.get($color-config, 'foreground');
     $primary-palette: map.get($color-config, 'primary');
 
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($foreground, 'disabled-text');
 
     .vs {
       border-color: $border-color;
 
       &::before {
-        background-color: mat.get-color-from-palette($background, 'dialog');
+        background-color: mat.get-theme-color($background, 'dialog');
       }
     }
   }
