@@ -2,7 +2,9 @@ import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@n
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions,
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -18,9 +20,9 @@ import {
 } from 'sequelize-typescript';
 import {
   AvailabilityExceptionInputType,
-  ExceptionType,
   AvailiblyDayInputType,
   AvailiblyDayType,
+  ExceptionType,
 } from '../../types';
 import { Relation } from '../../wrapper';
 import { Location } from './location.model';
@@ -31,17 +33,16 @@ import { Location } from './location.model';
   tableName: 'Availabilities',
 } as TableOptions)
 @ObjectType({ description: 'A Availability' })
-export class Availability extends Model {
-  constructor(values?: Partial<Availability>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+export class Availability extends Model<
+  InferAttributes<Availability>,
+  InferCreationAttributes<Availability>
+> {
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
