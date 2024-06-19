@@ -41,7 +41,11 @@
     {
       "groupName": "logtail monorepo",
       "matchPackagePrefixes": ["@logtail"]
-    }
-  ],
-  "ignoreDeps": ["@badman/*"]
+    },
+    {
+      "groupName": "Own packages",
+      "matchPackagePrefixes": ["@badman"],
+      "enabled": false
+   }
+  ]
 }
