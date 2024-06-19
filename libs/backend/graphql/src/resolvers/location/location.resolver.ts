@@ -1,3 +1,4 @@
+import { User } from '@badman/backend-authorization';
 import {
   Availability,
   Club,
@@ -19,10 +20,9 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Point } from 'geojson';
 import { Sequelize } from 'sequelize-typescript';
-import { User } from '@badman/backend-authorization';
 import { ListArgs } from '../../utils';
-import { Geometry } from 'geojson';
 
 @ObjectType()
 export class Coordinates {
@@ -99,7 +99,7 @@ export class LocationResolver {
                   newLocationData.coordinates.longitude,
                   newLocationData.coordinates.latitude,
                 ],
-              } as Geometry)
+              } as Point)
             : undefined,
         },
         { transaction },
@@ -142,7 +142,7 @@ export class LocationResolver {
                   updateLocationData.coordinates.longitude,
                   updateLocationData.coordinates.latitude,
                 ],
-              } as Geometry)
+              } as Point)
             : undefined,
         },
         { transaction },
