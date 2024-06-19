@@ -5,16 +5,16 @@
 
 @mixin color($theme) {
   badman-edit-role {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
     $accent: map.get($color-config, 'accent');
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($foreground, 'disabled-text');
     $isDark: map.get($color-config, 'is-dark');
 
     border-color: $border-color;
 
     // mat-divider.mat-divider {
-    //   border-top-color: mat.get-color-from-palette($accent, default);
+    //   border-top-color: mat.get-theme-color($accent, default);
     // }
   }
 }

@@ -4,16 +4,16 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  $color-config: mat.get-color-config($theme);
+  $color-config: mat.m2-get-color-config($theme);
   $background: map.get($color-config, 'background');
   $foreground: map.get($color-config, 'foreground');
   $isDark: map.get($color-config, 'is-dark');
 
   // Background color
   $background: map.get($color-config, 'background');
-  $background-color: mat.get-color-from-palette($background, 'dialog');
+  $background-color: mat.get-theme-color($background, 'dialog');
 
-  $color: mat.get-color-from-palette($foreground, 'base');
+  $color: mat.get-theme-color($foreground, 'base');
 
   .notification-overlay {
     background-color: $background-color;

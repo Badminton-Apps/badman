@@ -13,7 +13,7 @@
     @include teams.color($theme);
     @include locations.color($theme);
 
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     // Background color
     $background: map.get($color-config, 'background');
   }

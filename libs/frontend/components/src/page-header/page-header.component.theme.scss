@@ -5,15 +5,15 @@
 
 @mixin color($theme) {
   badman-page-header {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     // Background color
     $background: map.get($color-config, 'background');
 
     .in-between {
-      border-bottom-color: mat.get-color-from-palette($background, 'border');
+      border-bottom-color: mat.get-theme-color($background, 'border');
       .buttons button {
-        border-color: mat.get-color-from-palette($background, 'border');
-        background-color: mat.get-color-from-palette($background, 'background');
+        border-color: mat.get-theme-color($background, 'border');
+        background-color: mat.get-theme-color($background, 'background');
       }
     }
 
@@ -21,7 +21,7 @@
       &,
       &:visited,
       &:hover {
-        color: mat.get-color-from-palette(map.get($color-config, 'primary'), 500);
+        color: mat.get-theme-color(map.get($color-config, 'primary'), 500);
       }
     }
   }

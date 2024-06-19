@@ -4,7 +4,7 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  $color-config: mat.get-color-config($theme);
+  $color-config: mat.m2-get-color-config($theme);
   $foreground: map.get($color-config, 'foreground');
 
   badman-competition-map {

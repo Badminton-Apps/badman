@@ -5,11 +5,11 @@
 
 @mixin color($theme) {
   badman-show-level {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $foreground: map.get($color-config, 'foreground');
     $background: map.get($color-config, 'background');
     $isDark: map.get($color-config, 'is-dark');
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($foreground, 'disabled-text');
 
     $success: map.get($theme, success);
     $danger: map.get($theme, danger);
@@ -23,26 +23,26 @@
     .points,
     .separator {
       @if ($isDark) {
-        color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
+        color: darken(mat.get-theme-color($foreground, 'base'), 40%);
       } @else {
-        color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
+        color: lighten(mat.get-theme-color($foreground, 'base'), 60%);
       }
     }
 
     .points {
       &.upgrade {
         @if ($isDark) {
-          color: mat.get-color-from-palette($success, 200);
+          color: mat.get-theme-color($success, 200);
         } @else {
-          color: mat.get-color-from-palette($success, 500);
+          color: mat.get-theme-color($success, 500);
         }
       }
 
       &.downgrade {
         @if ($isDark) {
-          color: mat.get-color-from-palette($danger, 200);
+          color: mat.get-theme-color($danger, 200);
         } @else {
-          color: mat.get-color-from-palette($danger, 500);
+          color: mat.get-theme-color($danger, 500);
         }
       }
     }

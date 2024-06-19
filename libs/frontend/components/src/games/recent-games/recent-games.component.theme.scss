@@ -8,28 +8,28 @@
 @mixin color($theme) {
   badman-recent-games {
     @include list-games.color($theme);
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $warn-palette: map.get($theme, danger);
     $success-palette: map.get($theme, success);
     $danger-palette: map.get($color-config, 'warn');
     $background: map.get($color-config, 'background');
     $isDark: map.get($color-config, 'is-dark');
-    $background-color: mat.get-color-from-palette($background, 'app-bar');
+    $background-color: mat.get-theme-color($background, 'app-bar');
 
     .header {
       .score {
         .home,
         .away {
           &.won {
-            color: mat.get-color-from-palette($success-palette, 300);
+            color: mat.get-theme-color($success-palette, 300);
           }
 
           &.lost {
-            color: mat.get-color-from-palette($warn-palette, 300);
+            color: mat.get-theme-color($warn-palette, 300);
           }
 
           &.draw {
-            color: mat.get-color-from-palette($danger-palette, 300);
+            color: mat.get-theme-color($danger-palette, 300);
           }
         }
       }

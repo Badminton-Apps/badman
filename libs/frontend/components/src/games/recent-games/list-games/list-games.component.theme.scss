@@ -5,14 +5,14 @@
 
 @mixin color($theme) {
   badman-list-games {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $primary: map.get($color-config, 'primary');
     $success: map.get($theme, success);
     $danger: map.get($theme, danger);
 
     $foreground: map.get($color-config, 'foreground');
     $background: map.get($color-config, 'background');
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($foreground, 'disabled-text');
     $isDark: map.get($color-config, 'is-dark');
 
     .game {
@@ -22,9 +22,9 @@
         .team.isTeamOfPlayer {
           .game__points {
             @if ($isDark) {
-              color: mat.get-color-from-palette($success, 200);
+              color: mat.get-theme-color($success, 200);
             } @else {
-              color: mat.get-color-from-palette($success, 500);
+              color: mat.get-theme-color($success, 500);
             }
           }
         }
@@ -34,9 +34,9 @@
         .team.isTeamOfPlayer {
           .game__points {
             @if ($isDark) {
-              color: mat.get-color-from-palette($danger, 200);
+              color: mat.get-theme-color($danger, 200);
             } @else {
-              color: mat.get-color-from-palette($danger, 500);
+              color: mat.get-theme-color($danger, 500);
             }
           }
         }
@@ -45,20 +45,20 @@
 
     .game__extra,
     .game__date {
-      background-color: mat.get-color-from-palette($background, 'background');
+      background-color: mat.get-theme-color($background, 'background');
     }
 
     .game__points {
       @if ($isDark) {
-        color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
+        color: darken(mat.get-theme-color($foreground, 'base'), 40%);
       } @else {
-        color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
+        color: lighten(mat.get-theme-color($foreground, 'base'), 60%);
       }
     }
 
     a {
       text-decoration: none;
-      color: mat.get-color-from-palette($foreground, 'base');
+      color: mat.get-theme-color($foreground, 'base');
     }
   }
 }

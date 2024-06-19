@@ -5,11 +5,11 @@
 
 @mixin color($theme) {
   badman-faq {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     // Background color
     $background: map.get($color-config, 'background');
     $foreground: map.get($color-config, 'foreground');
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($foreground, 'disabled-text');
 
     .editor {
       border: 1px solid $border-color;

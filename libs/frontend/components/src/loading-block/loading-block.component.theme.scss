@@ -5,13 +5,13 @@
 
 @mixin color($theme) {
   badman-loading-block {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $background: map.get($color-config, 'background');
     $isDark: map.get($color-config, 'is-dark');
-    $background-color: mat.get-color-from-palette($background, 'app-bar');
+    $background-color: mat.get-theme-color($background, 'app-bar');
 
     .padding {
-      background-color: mat.get-color-from-palette($background, 'background');
+      background-color: mat.get-theme-color($background, 'background');
     }
 
     .animation-block {
