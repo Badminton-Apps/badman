@@ -1,3 +1,20 @@
+## 6.153.0 (2024-06-19)
+
+
+### 🚀 Features
+
+- updated export planner ([98b8ed3b9](https://github.com/Badminton-Apps/badman/commit/98b8ed3b9))
+
+### 🩹 Fixes
+
+- some more e2e improvements ([9bbc5f4f9](https://github.com/Badminton-Apps/badman/commit/9bbc5f4f9))
+- claim componen ([14cd4be82](https://github.com/Badminton-Apps/badman/commit/14cd4be82))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.152.2 (2024-06-01)
 
 
