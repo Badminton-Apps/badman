@@ -2,7 +2,7 @@
 @use '@angular/material' as mat;
 
 @mixin fix-datepicker($theme) {
-  $color-config: mat.get-color-config($theme);
+  $color-config: mat.m2-get-color-config($theme);
   $background: map.get($color-config, 'background');
   $foreground: map.get($color-config, 'foreground');
   $primary: map.get($color-config, 'primary');
@@ -12,17 +12,17 @@
       0 2px 4px -1px #0003,
       0 4px 5px #00000024,
       0 1px 10px #0000001f;
-    background-color: mat.get-color-from-palette($background, 'background');
+    background-color: mat.m2-get-color-from-palette($background, 'background');
 
     &,
     button {
-      color: mat.get-color-from-palette($foreground, 'base');
+      color: mat.m2-get-color-from-palette($foreground, 'base');
     }
   }
 
   .mat-calendar-body-selected {
-    background-color: mat.get-color-from-palette($primary, 500);
-    color: mat.get-color-from-palette($foreground, 'base');
+    background-color: mat.m2-get-color-from-palette($primary, 500);
+    color: mat.m2-get-color-from-palette($foreground, 'base');
   }
 
   .mat-calendar-body-cell-content {

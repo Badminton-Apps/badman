@@ -5,7 +5,7 @@
 
 @mixin color($theme) {
   badman-shell {
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
     $accent-palette: map.get($color-config, 'accent');
 
     .xng-breadcrumb-root {
@@ -13,7 +13,7 @@
     }
 
     .xng-breadcrumb-trail {
-      color: mat.get-color-from-palette($accent-palette, 300);
+      color: mat.get-theme-color($accent-palette, 300);
     }
   }
 }

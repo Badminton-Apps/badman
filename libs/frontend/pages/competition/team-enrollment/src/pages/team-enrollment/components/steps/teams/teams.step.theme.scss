@@ -11,7 +11,7 @@
     @include team.color($theme);
     @include team-enrollment.color($theme);
 
-    $color-config: mat.get-color-config($theme);
+    $color-config: mat.m2-get-color-config($theme);
 
   }
 }
