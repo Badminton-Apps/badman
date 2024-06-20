@@ -1,3 +1,14 @@
+## 6.154.0 (2024-06-20)
+
+
+### 🚀 Features
+
+- edditing team locations ([94386a246](https://github.com/Badminton-Apps/badman/commit/94386a246))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.153.0 (2024-06-19)
 
 

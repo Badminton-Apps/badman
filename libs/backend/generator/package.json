@@ -1,11 +1,11 @@
 {
   "name": "@badman/backend-generator",
-  "version": "6.153.0",
+  "version": "6.154.0",
   "dependencies": {
-    "@badman/backend-enrollment": "6.153.0",
-    "@badman/backend-translate": "6.153.0",
-    "@badman/backend-database": "6.153.0",
-    "@badman/utils": "6.153.0",
+    "@badman/backend-enrollment": "6.154.0",
+    "@badman/backend-translate": "6.154.0",
+    "@badman/backend-database": "6.154.0",
+    "@badman/utils": "6.154.0",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
     "moment": "^2.30.1",
