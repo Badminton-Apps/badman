@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-cluster",
-  "version": "6.153.0",
+  "version": "6.154.0",
   "dependencies": {
     "@nestjs/common": "^10.3.8",
     "@swc/helpers": "^0.5.11"
