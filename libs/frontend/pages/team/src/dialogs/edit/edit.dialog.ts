@@ -11,7 +11,7 @@ import {
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '@badman/frontend-components';
-import { Player, Team, TeamPlayer } from '@badman/frontend-models';
+import { Player, Team, TeamPlayer, Location } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
 import { SubEventType, TeamMembershipType, sortPlayers } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -63,6 +63,7 @@ export class EditDialogComponent {
     teamNumbers: {
       [key in SubEventType]: number[];
     };
+    locations: Location[];
   }>(MAT_DIALOG_DATA);
   group?: FormGroup;
   saveing = false;
@@ -79,6 +80,7 @@ export class EditDialogComponent {
       season: this.fb.control(this.data.team.season),
       preferredDay: this.fb.control(this.data.team.preferredDay),
       preferredTime: this.fb.control(this.data.team.preferredTime),
+      prefferedLocationId: this.fb.control(this.data.team.prefferedLocationId),
       [PLAYERS_CONTROL]: this.fb.array(this.data.team.players ?? []),
     });
 
@@ -165,11 +167,13 @@ export class EditDialogComponent {
             email: data.email,
             preferredDay: data.preferredDay,
             preferredTime: data.preferredTime,
+            prefferedLocationId: data.prefferedLocationId,
           },
         },
         refetchQueries: () => [
           'Team',
           'Teams',
+          'ClubTeams',
           {
             query: PLAYERS_QUERY,
             variables: {
@@ -184,6 +188,8 @@ export class EditDialogComponent {
           panelClass: 'success',
         });
         this.saveing = false;
+
+        // 
 
         this.dialogRef.close();
       });
