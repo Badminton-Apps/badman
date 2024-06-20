@@ -60,6 +60,7 @@ import {
   skip,
   startWith,
   switchMap,
+  take,
   takeUntil,
   tap,
   throttleTime,
@@ -489,20 +490,27 @@ export class EditPageComponent {
 
   async addTeam() {
     import('@badman/frontend-team').then((m) => {
-      this.dialog
-        .open(m.AddDialogComponent, {
-          data: {
-            team: {
-              clubId: this.club()?.id,
-              season: this.season.value,
-            },
-            teamNumbers: this.teamNumbers,
-          },
+      this.locationForSeason$
+        .pipe(
+          take(1),
+          switchMap((locations) =>
+            this.dialog
+              .open(m.AddDialogComponent, {
+                data: {
+                  team: {
+                    clubId: this.club()?.id,
+                    season: this.season.value,
+                  },
+                  teamNumbers: this.teamNumbers,
+                  locations,
+                },
 
-          width: '100%',
-          maxWidth: '600px',
-        })
-        .afterClosed()
+                width: '100%',
+                maxWidth: '600px',
+              })
+              .afterClosed(),
+          ),
+        )
         .subscribe(() => {
           this.updateTeams$.next(null);
         });
