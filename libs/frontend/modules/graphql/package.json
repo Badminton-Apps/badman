@@ -2,9 +2,9 @@
   "name": "@badman/frontend-graphql",
   "version": "6.154.0",
   "peerDependencies": {
-    "@angular/common": "^17.1.0",
-    "@angular/core": "^17.1.0",
-    "@angular/router": "^17.1.0",
+    "@angular/common": "18.0.3",
+    "@angular/core": "18.0.3",
+    "@angular/router": "18.0.3",
     "@auth0/auth0-angular": "~2.2.3",
     "apollo-angular": "^7.0.1",
     "crypto-hash": "^3.0.0",

@@ -2,8 +2,8 @@
   "name": "@badman/frontend-auth",
   "version": "6.154.0",
   "peerDependencies": {
-    "@angular/common": "^17.1.0",
-    "@angular/core": "^17.1.0",
+    "@angular/common": "18.0.3",
+    "@angular/core": "18.0.3",
     "@auth0/auth0-angular": "~2.2.3",
     "@angular/router": "~17.3.0",
     "@ngx-translate/core": "^15.0.0",
