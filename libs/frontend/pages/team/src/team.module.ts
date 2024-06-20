@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { TeamResolver } from './resolvers';
-import { DetailPageComponent, EditPageComponent } from './pages';
+import { DetailPageComponent } from './pages';
 
 const MODULE_ROUTES: Routes = [
   {
@@ -14,10 +14,6 @@ const MODULE_ROUTES: Routes = [
       {
         path: '',
         component: DetailPageComponent,
-      },
-      {
-        path: 'edit',
-        component: EditPageComponent,
       },
     ],
   },

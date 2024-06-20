@@ -100,6 +100,8 @@ export class ClubTeamsComponent implements OnInit {
   }
 
   editTeam(team: Team) {
+    console.log(this.clubTeamsService.locations())
+
     import('@badman/frontend-team').then((m) => {
       this.dialog
         .open(m.EditDialogComponent, {
@@ -111,6 +113,8 @@ export class ClubTeamsComponent implements OnInit {
                 ?.filter((t) => t.type == team.type)
                 ?.map((t) => t.teamNumber),
             },
+            locations: this.clubTeamsService.locations(),
+
           },
 
           width: '100%',
@@ -150,6 +154,7 @@ export class ClubTeamsComponent implements OnInit {
                 ?.filter((t) => t.type == SubEventTypeEnum.NATIONAL)
                 ?.map((t) => t.teamNumber),
             },
+            locations: this.clubTeamsService.locations(),
           },
           disableClose: true,
           width: '100%',

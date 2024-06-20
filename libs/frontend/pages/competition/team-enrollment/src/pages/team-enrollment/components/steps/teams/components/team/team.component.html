@@ -74,7 +74,7 @@
             </mat-form-field>
           </div>
           <div class="row">
-            <mat-form-field class="day">
+            <mat-form-field class="location">
               <mat-label>{{ 'all.input.location' | translate }}</mat-label>
               <mat-select [required]="true" [(value)]="team().value.prefferedLocationId">
                 @for (location of locations(); track $index) {

@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-utils",
-  "version": "6.153.0",
+  "version": "6.154.0",
   "peerDependencies": {
     "@angular/common": "^17.1.0",
     "@angular/core": "^17.1.0",
