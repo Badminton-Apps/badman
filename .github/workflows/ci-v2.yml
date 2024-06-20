@@ -33,7 +33,7 @@ jobs:
           # Set NX_BASE to the last tag
           echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
 
-          - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
 
