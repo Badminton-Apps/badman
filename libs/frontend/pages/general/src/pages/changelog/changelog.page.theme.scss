@@ -5,14 +5,14 @@
 
 @mixin color($theme) {
   badman-changelog {
-    $color-config: mat.m2-get-color-config($theme);
+    
     // Background color
-    $background: map.get($color-config, 'background');
+    
   }
 }
 
 @mixin typography($theme) {
-  badman-changelog {
-    $typography-config: mat.get-typography-config($theme);
-  }
+  // badman-changelog {
+  //   // 
+  // }
 }

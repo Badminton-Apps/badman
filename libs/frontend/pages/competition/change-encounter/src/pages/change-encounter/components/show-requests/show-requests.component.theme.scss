@@ -5,12 +5,12 @@
 
 @mixin color($theme) {
   badman-show-requests {
-    $color-config: mat.m2-get-color-config($theme);
-    $primary: map.get($color-config, 'primary');
-    $foreground: map.get($color-config, 'foreground');
-    $background: map.get($color-config, 'background');
-    $border-color: mat.get-theme-color($foreground, 'disabled-text');
-    $isDark: map.get($color-config, 'is-dark');
+    
+    
+    
+    
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
+    $isDark: map.get($theme, 'is-dark');
     $warn-palette: map.get($theme, 'warn');
 
     .comments {
@@ -18,25 +18,25 @@
         border-color: $border-color;
 
         label {
-          background-color: mat.get-theme-color($background, 'background');
-          color: mat.get-theme-color($foreground, 'secondary-text');
+          background-color: mat.get-theme-color($theme, 'background', 'background');
+          color: mat.get-theme-color($theme, foreground, 'secondary-text');
         }
       }
     }
 
     .warning {
-      color: mat.get-theme-color($warn-palette, 300);
+      color: mat.m2-get-color-from-palette($warn-palette, 300);
     }
   }
 }
 
 @mixin typography($theme) {
   badman-show-requests {
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .caption,
     label {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

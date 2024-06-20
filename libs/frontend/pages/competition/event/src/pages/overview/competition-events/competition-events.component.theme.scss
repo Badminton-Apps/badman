@@ -5,20 +5,20 @@
 
 @mixin color($theme) {
   badman-competition-events {
-    $color-config: mat.m2-get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
-    $isDark: map.get($color-config, 'is-dark');
+    
+    
+    $isDark: map.get($theme, 'is-dark');
 
-    $border-color: mat.get-theme-color($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
 
     .badman-block-title a {
-      color: mat.get-theme-color($foreground, 'base');
+      color: mat.get-theme-color($theme, foreground, 'base');
     }
   }
 }
 
 @mixin typography($theme) {
-  badman-competition-events {
-    $typography-config: mat.get-typography-config($theme);
-  }
+  // badman-competition-events {
+    
+  // }
 }

@@ -4,23 +4,23 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  $color-config: mat.m2-get-color-config($theme);
-  $primary: map.get($color-config, 'primary');
+  
+  
 
   badman-list-encounters {
     .selected {
-      border-left-color: mat.get-theme-color($primary, default);
+      border-left-color: mat.get-theme-color($theme, primary, default);
     }
   }
 }
 
 @mixin typography($theme) {
-  $typography-config: mat.get-typography-config($theme);
+  
   // badman-list-encounters {
 
   // }
 
   .list-encounter .extra {
-    @include mat.typography-level($typography-config, 'caption');
+    font: mat.get-theme-typography($theme, caption, font);
   }
 }

@@ -5,15 +5,12 @@
 
 @mixin color($theme) {
   badman-list-games {
-    $color-config: mat.m2-get-color-config($theme);
-    $primary: map.get($color-config, 'primary');
-    $success: map.get($theme, success);
-    $danger: map.get($theme, danger);
+    
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
+    $isDark: map.get($theme, 'is-dark');
 
-    $foreground: map.get($color-config, 'foreground');
-    $background: map.get($color-config, 'background');
-    $border-color: mat.get-theme-color($foreground, 'disabled-text');
-    $isDark: map.get($color-config, 'is-dark');
+    $success-palette: map.get($theme, success);
+    $danger-palette: map.get($theme, danger);
 
     .game {
       border-color: $border-color;
@@ -22,9 +19,9 @@
         .team.isTeamOfPlayer {
           .game__points {
             @if ($isDark) {
-              color: mat.get-theme-color($success, 200);
+              color: mat.m2-get-color-from-palette($success-palette, 200);
             } @else {
-              color: mat.get-theme-color($success, 500);
+              color: mat.m2-get-color-from-palette($success-palette, 500);
             }
           }
         }
@@ -34,9 +31,9 @@
         .team.isTeamOfPlayer {
           .game__points {
             @if ($isDark) {
-              color: mat.get-theme-color($danger, 200);
+              color: mat.m2-get-color-from-palette($danger-palette, 200);
             } @else {
-              color: mat.get-theme-color($danger, 500);
+              color: mat.m2-get-color-from-palette($danger-palette, 500);
             }
           }
         }
@@ -45,32 +42,30 @@
 
     .game__extra,
     .game__date {
-      background-color: mat.get-theme-color($background, 'background');
+      background-color: mat.get-theme-color($theme, 'background', 'background');
     }
 
     .game__points {
       @if ($isDark) {
-        color: darken(mat.get-theme-color($foreground, 'base'), 40%);
+        color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
       } @else {
-        color: lighten(mat.get-theme-color($foreground, 'base'), 60%);
+        color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
       }
     }
 
     a {
       text-decoration: none;
-      color: mat.get-theme-color($foreground, 'base');
+      color: mat.get-theme-color($theme, foreground, 'base');
     }
   }
 }
 
 @mixin typography($theme) {
   badman-list-games {
-    $typography-config: mat.get-typography-config($theme);
-
     .game__points,
     .game__extra,
     .game__date {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
 
     .game__points mat-icon {

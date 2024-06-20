@@ -9,7 +9,7 @@
   badman-locations-step {
     @include location.color($theme);
 
-    $color-config: mat.m2-get-color-config($theme);
+    
   }
 }
 
@@ -17,10 +17,10 @@
   badman-locations-step {
     @include location.typography($theme);
 
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .description {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

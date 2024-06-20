@@ -5,17 +5,14 @@
 
 @mixin color($theme) {
   badman-user-shortcuts {
-    $color-config: mat.m2-get-color-config($theme);
-    $accent-palette: map.get($color-config, 'accent');
-    $foreground: map.get($color-config, 'foreground');
-    $isDark: map.get($color-config, 'is-dark');
+    $isDark: map.get($theme, 'is-dark');
 
     $caption-color: null;
 
     @if ($isDark) {
-      $caption-color: darken(mat.get-theme-color($foreground, 'base'), 40%);
+      $caption-color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
     } @else {
-      $caption-color: lighten(mat.get-theme-color($foreground, 'base'), 60%);
+      $caption-color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
     }
 
     .loan {
@@ -26,10 +23,8 @@
 
 @mixin typography($theme) {
   badman-user-shortcuts {
-    $typography-config: mat.get-typography-config($theme);
-
     .loan {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }
