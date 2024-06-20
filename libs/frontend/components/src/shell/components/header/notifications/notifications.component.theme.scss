@@ -4,16 +4,16 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  $color-config: mat.m2-get-color-config($theme);
-  $background: map.get($color-config, 'background');
-  $foreground: map.get($color-config, 'foreground');
-  $isDark: map.get($color-config, 'is-dark');
+  
+  
+  
+  $isDark: map.get($theme, 'is-dark');
 
   // Background color
-  $background: map.get($color-config, 'background');
-  $background-color: mat.get-theme-color($background, 'dialog');
+  
+  $background-color: mat.get-theme-color($theme, 'background', 'dialog');
 
-  $color: mat.get-theme-color($foreground, 'base');
+  $color: mat.get-theme-color($theme, foreground, 'base');
 
   .notification-overlay {
     background-color: $background-color;
@@ -33,10 +33,10 @@
 }
 
 @mixin typography($theme) {
-  $typography-config: mat.get-typography-config($theme);
+  
 
   .notification-overlay {
-    @include mat.typography-level($typography-config, 'caption');
+    font: mat.get-theme-typography($theme, caption, font);
   }
 
   // badman-notifications {

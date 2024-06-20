@@ -11,9 +11,9 @@
     @include list-encounters.color($theme);
     @include show-requests.color($theme);
 
-    $color-config: mat.m2-get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
-    $border-color: mat.get-theme-color($foreground, 'disabled-text');
+    
+    
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
 
     badman-show-requests {
       border-left-color: $border-color;
@@ -25,7 +25,7 @@
   @include list-encounters.typography($theme);
   @include show-requests.typography($theme);
 
-  badman-change-encounter {
-    $typography-config: mat.get-typography-config($theme);
-  }
+  // badman-change-encounter {
+    
+  // }
 }

@@ -5,24 +5,24 @@
 
 @mixin color($theme) {
   badman-assembly-player {
-    $color-config: mat.m2-get-color-config($theme);
+    
     // Background color
-    $background: map.get($color-config, 'background');
-    $foreground: map.get($color-config, 'foreground');
-    $isDark: map.get($color-config, 'is-dark');
+    
+    
+    $isDark: map.get($theme, 'is-dark');
 
     .ranking {
       @if ($isDark) {
-        color: darken(mat.get-theme-color($foreground, 'base'), 40%);
+        color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
       } @else {
-        color: lighten(mat.get-theme-color($foreground, 'base'), 60%);
+        color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
       }
     }
 
     cursor: pointer;
     &.cdk-drag-preview {
-      background-color: mat.get-theme-color($background, 'background');
-      color: mat.get-theme-color($foreground, 'base');
+      background-color: mat.get-theme-color($theme, 'background', 'background');
+      color: mat.get-theme-color($theme, foreground, 'base');
       cursor: grabbing;
     }
   }
@@ -30,10 +30,10 @@
 
 @mixin typography($theme) {
   badman-assembly-player {
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .ranking {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

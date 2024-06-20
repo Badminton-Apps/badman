@@ -5,8 +5,8 @@
 
 @mixin color($theme) {
   change-me {
-    $color-config: mat.m2-get-color-config($theme);
-    $primary-palette: map.get($color-config, 'primary');
+    
+    
   }
 }
 

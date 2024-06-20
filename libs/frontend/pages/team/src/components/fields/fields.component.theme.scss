@@ -5,12 +5,12 @@
 
 @mixin color($theme) {
   badman-team-fields {
-    $color-config: mat.m2-get-color-config($theme);
+    
   }
 }
 
 @mixin typography($theme) {
   badman-team-fields {
-    $typography-config: mat.get-typography-config($theme);
+    
   }
 }

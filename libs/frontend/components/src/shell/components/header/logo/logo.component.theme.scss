@@ -5,17 +5,17 @@
 
 @mixin color($theme) {
   badman-logo {
-    $color-config: mat.m2-get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
+    
+    
 
     svg {
-      fill: mat.get-theme-color($foreground, 'base');
+      fill: mat.get-theme-color($theme, foreground, 'base');
     }
   }
 }
 
 @mixin typography($theme) {
-  badman-logo {
-    $typography-config: mat.get-typography-config($theme);
-  }
+  // badman-logo {
+    
+  // }
 }

@@ -5,19 +5,19 @@
 
 @mixin color($theme) {
   badman-detail-encounter {
-    $color-config: mat.m2-get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
-    $isDark: map.get($color-config, 'is-dark');
+    
+    
+    $isDark: map.get($theme, 'is-dark');
 
     a.player {
       text-decoration: none;
-      color: mat.get-theme-color($foreground, 'base');
+      color: mat.get-theme-color($theme, foreground, 'base');
     }
   }
 }
 
 @mixin typography($theme) {
-  badman-detail-encounter {
-    $typography-config: mat.get-typography-config($theme);
-  }
+  // badman-detail-encounter {
+    
+  // }
 }

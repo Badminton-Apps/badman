@@ -5,13 +5,13 @@
 
 @mixin color($theme) {
   badman-loading-block {
-    $color-config: mat.m2-get-color-config($theme);
-    $background: map.get($color-config, 'background');
-    $isDark: map.get($color-config, 'is-dark');
-    $background-color: mat.get-theme-color($background, 'app-bar');
+    
+    
+    $isDark: map.get($theme, 'is-dark');
+    $background-color: mat.get-theme-color($theme, 'background', 'app-bar');
 
     .padding {
-      background-color: mat.get-theme-color($background, 'background');
+      background-color: mat.get-theme-color($theme, 'background', 'background');
     }
 
     .animation-block {
@@ -39,7 +39,7 @@
 }
 
 @mixin typography($theme) {
-  badman-loading-block {
-    $typography-config: mat.get-typography-config($theme);
-  }
+  // badman-loading-block {
+    
+  // }
 }

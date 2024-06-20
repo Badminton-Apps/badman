@@ -13,10 +13,10 @@
   @include team-assembly-player.color($theme);
 
   badman-assembly-create {
-    $color-config: mat.m2-get-color-config($theme);
+    
 
-    $foreground: map.get($color-config, 'foreground');
-    $border-color: mat.get-theme-color($foreground, 'disabled-text');
+    
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
 
     .download {
       button {
@@ -36,15 +36,13 @@
   @include team-assembly-player.typography($theme);
 
   badman-assembly-create {
-    $typography-config: mat.get-typography-config($theme);
-
     h1 {
-      @include mat.typography-level($typography-config, 'headline-4');
+      font: mat.get-theme-typography($theme, 'headline-4', font);
     }
 
     .download {
       .last-saved {
-        @include mat.typography-level($typography_config, 'caption');
+        font: mat.get-theme-typography($theme, 'caption', font);
       }
     }
   }

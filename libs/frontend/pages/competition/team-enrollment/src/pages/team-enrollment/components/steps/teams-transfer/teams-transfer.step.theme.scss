@@ -5,18 +5,18 @@
 
 @mixin color($theme) {
   badman-teams-transfer-step {
-    $color-config: mat.m2-get-color-config($theme);
+    
     // Background color
-    $background: map.get($color-config, 'background');
+    
   }
 }
 
 @mixin typography($theme) {
   badman-teams-transfer-step {
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .description {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

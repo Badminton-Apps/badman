@@ -5,32 +5,32 @@
 
 @mixin color($theme) {
   badman-club-assembly {
-    $color-config: mat.m2-get-color-config($theme);
-    $primary-palette: map.get($theme, primary);
+    
+    $isDark: map.get($theme, 'is-dark');
+
     $danger-palette: map.get($theme, danger);
-    $warn-palette: map.get($theme, 'warn');
     $success-palette: map.get($theme, success);
-    $isDark: map.get($color-config, 'is-dark');
-    $foreground: map.get($color-config, 'foreground');
+    $warn-palette: map.get($theme, warn);
+    $primary-palette: map.get($theme, primary);
 
     .can-play {
       .no {
-        color: mat.get-theme-color($danger-palette, 300);
+        color: mat.m2-get-color-from-palette($danger-palette, 300);
       }
       .maybe {
-        color: mat.get-theme-color($warn-palette, 300);
+        color: mat.m2-get-color-from-palette($warn-palette, 300);
       }
       .yes {
-        color: mat.get-theme-color($success-palette, 300);
+        color: mat.m2-get-color-from-palette($success-palette, 300);
       }
       .base {
-        color: mat.get-theme-color($primary-palette, 300);
+        color: mat.m2-get-color-from-palette($primary-palette, 300);
       }
       .na {
         @if ($isDark) {
-          color: darken(mat.get-theme-color($foreground, 'base'), 40%);
+          color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
         } @else {
-          color: lighten(mat.get-theme-color($foreground, 'base'), 60%);
+          color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
         }
       }
     }
@@ -39,10 +39,10 @@
 
 @mixin typography($theme) {
   badman-club-assembly {
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .caption {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

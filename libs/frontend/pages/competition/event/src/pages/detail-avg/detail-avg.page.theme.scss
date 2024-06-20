@@ -5,15 +5,15 @@
 
 @mixin color($theme) {
   badman-competition-detail {
-    $color-config: mat.m2-get-color-config($theme);
+    
     // Background color
-    $background: map.get($color-config, 'background');
-    $foreground: map.get($color-config, 'foreground');
+    
+    
   }
 }
 
 @mixin typography($theme) {
-  badman-competition-detail {
-    $typography-config: mat.get-typography-config($theme);
-  }
+  // badman-competition-detail {
+    
+  // }
 }
