@@ -46,11 +46,11 @@ jobs:
       - name: Run Playwright tests
         run: bunx nx affected --parallel 1 -t e2e-ci
         id: run-e2e-tests
-        if: ${{ vars.PR_E2E_TESTS }}
+        if: ${{ vars.PR_E2E_TESTS == 'true'}}
 
       - name: e2e reports
         # Always run if the e2e-tests input is true
-        if: ${{ vars.PR_E2E_TESTS && (steps.run-e2e-tests.outcome == 'success' || steps.run-e2e-tests.outcome == 'failure') }}
+        if: ${{ vars.PR_E2E_TESTS == 'true' && (steps.run-e2e-tests.outcome == 'success' || steps.run-e2e-tests.outcome == 'failure') }}
         run: |
           echo "Combine all the reports into a single report"
           # check if the "blob-reports" root directory exists and if it does, remove it and recreate it
