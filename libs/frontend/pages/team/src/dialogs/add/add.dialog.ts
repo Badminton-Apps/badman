@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Team, TeamPlayer } from '@badman/frontend-models';
+import { Team, TeamPlayer, Location } from '@badman/frontend-models';
 import { SubEventType, getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
@@ -33,8 +33,11 @@ export class AddDialogComponent {
     teamNumbers: {
       [key in SubEventType]: number[];
     };
+    locations: Location[];
   }>(MAT_DIALOG_DATA);
   group?: FormGroup;
+
+
 
   constructor() {
     if (!this.group) {
@@ -55,9 +58,9 @@ export class AddDialogComponent {
   }
 
   async submit() {
-    const data = this.group?.value;
+    const data = this.group?.getRawValue() as Partial<Team>;
 
-    const players = data.players.map((player: Partial<TeamPlayer>) => {
+    const players = data.players?.map((player: Partial<TeamPlayer>) => {
       return {
         id: player.id,
         membershipType: player.teamMembership?.membershipType,
@@ -83,6 +86,9 @@ export class AddDialogComponent {
             season: data.season,
             phone: data.phone,
             email: data.email,
+            preferredDay: data.preferredDay,
+            preferredTime: data.preferredTime,
+            prefferedLocationId: data.prefferedLocationId,
             players,
           },
         },
