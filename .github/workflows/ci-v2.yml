@@ -1,0 +1,83 @@
+name: CI v2
+
+on:
+  pull_request:
+  merge_group:
+
+# Needed for nx-set-shas when run on the main branch
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: set SHAs
+        run: |
+          # run code only on main branch
+          TAG_VERSION=$(git describe --first-parent --match 'v*' --abbrev=0 --tags) 
+
+          echo "Found tag: $TAG_VERSION"
+          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+          echo "Found hash: $LAST_TAG_HASH"
+
+          # Set NX_BASE to the last tag
+          echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      # - run: bunx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+      
+      - run: bun install --no-cache
+
+      - run: bunx nx affected -t lint test build
+
+      - name: Run Playwright tests
+        run: bunx nx affected --parallel 1 -t e2e-ci
+        id: run-e2e-tests
+        if: ${{ vars.PR_E2E_TESTS == 'true'}}
+
+      - name: e2e reports
+        # Always run if the e2e-tests input is true
+        if: ${{ vars.PR_E2E_TESTS == 'true' && (steps.run-e2e-tests.outcome == 'success' || steps.run-e2e-tests.outcome == 'failure') }}
+        run: |
+          echo "Combine all the reports into a single report"
+          # check if the "blob-reports" root directory exists and if it does, remove it and recreate it
+          if [ -d "blob-reports" ]; then
+            rm -rf blob-reports
+          fi
+
+          # create the "blob-reports" root directory
+          mkdir blob-reports
+
+          # copy all the reports into the "blob-reports" root directory
+          cp apps/**/blob-report/*.zip ./blob-reports
+
+          # create nx report
+          bunx playwright merge-reports --reporter=html,github ./blob-reports
+
+          ## for copy pasting in shell
+          # bunx playwright show-report
+
+
+      - name: stop agents
+        run: bunx nx-cloud complete-ci-run
+        if: always()
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
