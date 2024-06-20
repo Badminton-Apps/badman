@@ -5,25 +5,22 @@
 
 @mixin color($theme) {
   badman-shell {
-    $color-config: mat.m2-get-color-config($theme);
-    $accent-palette: map.get($color-config, 'accent');
-
     .xng-breadcrumb-root {
       color: inherit;
     }
 
     .xng-breadcrumb-trail {
-      color: mat.get-theme-color($accent-palette, 300);
+      color: mat.get-theme-color($theme, accent, 300);
     }
   }
 }
 
 @mixin typography($theme) {
   badman-shell {
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .version {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

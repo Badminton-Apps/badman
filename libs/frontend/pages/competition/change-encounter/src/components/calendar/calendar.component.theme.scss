@@ -5,23 +5,23 @@
 
 @mixin color($theme) {
   badman-calendar {
-    $color-config: mat.m2-get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
-    $isDark: map.get($color-config, 'is-dark');
+    
+    
+    $isDark: map.get($theme, 'is-dark');
 
-    $border-color: mat.get-theme-color($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
 
     .header,
     .calender,
     .calendar-day {
-      color: mat.get-theme-color($foreground, 'base');
+      color: mat.get-theme-color($theme, foreground, 'base');
     }
 
     .calendar-day-content {
-      color: mat.get-theme-color($foreground, 'base');
+      color: mat.get-theme-color($theme, foreground, 'base');
 
       .location .id {
-        border-color: mat.get-theme-color($foreground, 'base');
+        border-color: mat.get-theme-color($theme, foreground, 'base');
       }
     }
   }
@@ -29,11 +29,11 @@
 
 @mixin typography($theme) {
   badman-calendar {
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .day-event,
     .calendar-day-header {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

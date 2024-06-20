@@ -5,15 +5,15 @@
 
 @mixin color($theme) {
   badman-page-header {
-    $color-config: mat.m2-get-color-config($theme);
+    
     // Background color
-    $background: map.get($color-config, 'background');
+    
 
     .in-between {
-      border-bottom-color: mat.get-theme-color($background, 'border');
+      border-bottom-color: mat.get-theme-color($theme, 'background', 'border');
       .buttons button {
-        border-color: mat.get-theme-color($background, 'border');
-        background-color: mat.get-theme-color($background, 'background');
+        border-color: mat.get-theme-color($theme, 'background', 'border');
+        background-color: mat.get-theme-color($theme, 'background', 'background');
       }
     }
 
@@ -21,18 +21,18 @@
       &,
       &:visited,
       &:hover {
-        color: mat.get-theme-color(map.get($color-config, 'primary'), 500);
+        color: mat.get-theme-color($theme, 'primary', 500);
       }
     }
   }
 }
 
 @mixin typography($theme) {
-  $typography-config: mat.get-typography-config($theme);
+  
   badman-page-header {
     .header {
       .title {
-        @include mat.typography-level($typography-config, 'headline-4');
+        font: mat.get-theme-typography($theme, 'headline-4', font);
       }
     }
   }

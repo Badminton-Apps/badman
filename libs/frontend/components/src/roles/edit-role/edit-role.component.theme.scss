@@ -5,27 +5,22 @@
 
 @mixin color($theme) {
   badman-edit-role {
-    $color-config: mat.m2-get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
-    $accent: map.get($color-config, 'accent');
-    $border-color: mat.get-theme-color($foreground, 'disabled-text');
-    $isDark: map.get($color-config, 'is-dark');
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
+    $isDark: map.get($theme, 'is-dark');
 
     border-color: $border-color;
 
-    // mat-divider.mat-divider {
-    //   border-top-color: mat.get-theme-color($accent, default);
-    // }
+    mat-divider.mat-divider {
+      border-top-color: mat.get-theme-color($theme, accent, default);
+    }
   }
 }
 
 @mixin typography($theme) {
   badman-edit-role {
-    $typography-config: mat.get-typography-config($theme);
-
     .general {
       .name {
-        @include mat.typography-level($typography-config, 'headline-5');
+        font: mat.get-theme-typography($theme, 'headline-5', font);
 
         .locked .mat-icon {
           font-size: 1rem;

@@ -7,19 +7,18 @@
 @use './badman.theme' as root-theme;
 
 
-// @use '../../../libs/frontend/components/theme' as frontend-components;
-// @use '../../../libs/frontend/pages/competition/team-assembly/theme' as frontend-assembly;
-// @use '../../../libs/frontend/pages/club/theme' as frontend-club;
-// @use '../../../libs/frontend/pages/competition/event/theme' as frontend-competition;
-// @use '../../../libs/frontend/pages/competition/change-encounter/theme' as frontend-change-encounter;
-// @use '../../../libs/frontend/pages/tournament/theme' as frontend-tournament;
-// @use '../../../libs/frontend/pages/competition/team-enrollment/theme' as frontend-team-enrollement;
-// @use '../../../libs/frontend/pages/player/theme' as frontend-player;
-// @use '../../../libs/frontend/pages/ranking/theme' as frontend-ranking;
-// @use '../../../libs/frontend/pages/role/theme' as frontend-role;
-// @use '../../../libs/frontend/pages/team/theme' as frontend-team;
-// @use '../../../libs/frontend/pages/general/theme' as frontend-general;
-// @use './date-picker.theme.scss' as datepicker;
+@use '../../../libs/frontend/components/theme' as frontend-components;
+@use '../../../libs/frontend/pages/competition/team-assembly/theme' as frontend-assembly;
+@use '../../../libs/frontend/pages/club/theme' as frontend-club;
+@use '../../../libs/frontend/pages/competition/event/theme' as frontend-competition;
+@use '../../../libs/frontend/pages/competition/change-encounter/theme' as frontend-change-encounter;
+@use '../../../libs/frontend/pages/tournament/theme' as frontend-tournament;
+@use '../../../libs/frontend/pages/competition/team-enrollment/theme' as frontend-team-enrollement;
+@use '../../../libs/frontend/pages/player/theme' as frontend-player;
+@use '../../../libs/frontend/pages/ranking/theme' as frontend-ranking;
+@use '../../../libs/frontend/pages/role/theme' as frontend-role;
+@use '../../../libs/frontend/pages/team/theme' as frontend-team;
+@use '../../../libs/frontend/pages/general/theme' as frontend-general;
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -53,42 +52,38 @@ $light-theme: theme.badman-light-theme(
 @include mat.all-component-themes($dark-theme);
 @include root-theme.theme($dark-theme);
 // Own components
-// @include frontend-assembly.theme($dark-theme);
-// @include frontend-club.theme($dark-theme);
-// @include frontend-competition.theme($dark-theme);
-// @include frontend-change-encounter.theme($dark-theme);
-// @include frontend-tournament.theme($dark-theme);
-// @include frontend-team-enrollement.theme($dark-theme);
-// @include frontend-components.theme($dark-theme);
-// @include frontend-player.theme($dark-theme);
-// @include frontend-ranking.theme($dark-theme);
-// @include frontend-role.theme($dark-theme);
-// @include frontend-team.theme($dark-theme);
-// @include frontend-general.theme($dark-theme);
+@include frontend-assembly.theme($dark-theme);
+@include frontend-club.theme($dark-theme);
+@include frontend-competition.theme($dark-theme);
+@include frontend-change-encounter.theme($dark-theme);
+@include frontend-tournament.theme($dark-theme);
+@include frontend-team-enrollement.theme($dark-theme);
+@include frontend-components.theme($dark-theme);
+@include frontend-player.theme($dark-theme);
+@include frontend-ranking.theme($dark-theme);
+@include frontend-role.theme($dark-theme);
+@include frontend-team.theme($dark-theme);
+@include frontend-general.theme($dark-theme);
 
-// Temp fix
-// @include datepicker.fix-datepicker($dark-theme);
 @include mtx.all-component-themes($dark-theme);
 
 .color-scheme-light {
   @include mat.all-component-colors($light-theme);
   @include root-theme.color($light-theme);
   // Own components
-  // @include frontend-assembly.color($light-theme);
-  // @include frontend-club.color($light-theme);
-  // @include frontend-competition.color($light-theme);
-  // @include frontend-change-encounter.color($light-theme);
-  // @include frontend-tournament.color($light-theme);
-  // @include frontend-team-enrollement.color($light-theme);
-  // @include frontend-player.color($light-theme);
-  // @include frontend-ranking.color($light-theme);
-  // @include frontend-role.color($light-theme);
-  // @include frontend-team.color($light-theme);
-  // @include frontend-components.color($light-theme);
-  // @include frontend-general.color($light-theme);
+  @include frontend-assembly.color($light-theme);
+  @include frontend-club.color($light-theme);
+  @include frontend-competition.color($light-theme);
+  @include frontend-change-encounter.color($light-theme);
+  @include frontend-tournament.color($light-theme);
+  @include frontend-team-enrollement.color($light-theme);
+  @include frontend-player.color($light-theme);
+  @include frontend-ranking.color($light-theme);
+  @include frontend-role.color($light-theme);
+  @include frontend-team.color($light-theme);
+  @include frontend-components.color($light-theme);
+  @include frontend-general.color($light-theme);
 
-  // Temp fix
-  // @include datepicker.fix-datepicker($light-theme);
   @include mtx.all-component-colors($light-theme);
 }
 

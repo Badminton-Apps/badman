@@ -13,9 +13,9 @@
     @include teams.color($theme);
     @include locations.color($theme);
 
-    $color-config: mat.m2-get-color-config($theme);
+    
     // Background color
-    $background: map.get($color-config, 'background');
+    
   }
 }
 
@@ -25,10 +25,10 @@
     @include teams.typography($theme);
     @include locations.typography($theme);
 
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .description {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

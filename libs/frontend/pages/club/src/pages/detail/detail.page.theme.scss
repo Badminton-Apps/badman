@@ -17,11 +17,11 @@
     @include club-assembly.color($theme);
     @include club-encounters.color($theme);
 
-    $color-config: mat.m2-get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
-    $isDark: map.get($color-config, 'is-dark');
+    
+    
+    $isDark: map.get($theme, 'is-dark');
 
-    $border-color: mat.get-theme-color($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
   }
 }
 
@@ -33,10 +33,10 @@
     @include club-assembly.typography($theme);
     @include club-encounters.typography($theme);
 
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .clubId {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

@@ -5,25 +5,25 @@
 
 @mixin color($theme) {
   badman-upcoming-games {
-    $color-config: mat.m2-get-color-config($theme);
-    $primary: map.get($color-config, 'primary');
+    
+    
 
     a {
-      color: mat.get-theme-color($primary, default);
+      color: mat.get-theme-color($theme, primary, default);
     }
   }
 }
 
 @mixin typography($theme) {
   badman-upcoming-games {
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .location {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
 
     .no-more-encounters {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

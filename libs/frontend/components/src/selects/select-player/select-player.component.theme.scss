@@ -4,16 +4,16 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  $color-config: mat.m2-get-color-config($theme);
+  
 
-  $foreground: map.get($color-config, 'foreground');
-  $isDark: map.get($color-config, 'is-dark');
+  
+  $isDark: map.get($theme, 'is-dark');
   $caption-color: null;
 
   @if ($isDark) {
-    $caption-color: darken(mat.get-theme-color($foreground, 'base'), 40%);
+    $caption-color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
   } @else {
-    $caption-color: lighten(mat.get-theme-color($foreground, 'base'), 60%);
+    $caption-color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
   }
   // badman-select-player {
   // }
@@ -25,13 +25,13 @@
 }
 
 @mixin typography($theme) {
-  $typography-config: mat.get-typography-config($theme);
+  
   // badman-select-player {
   // }
 
   .badman-select-player-panel {
     small.member-id {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }
