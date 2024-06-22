@@ -1,16 +1,16 @@
 <div
   [ngStyle]="{
-    'flex-direction': direction()
+    'flex-direction': direction(),
   }"
 >
-  @for (i of [].constructor(this.items()); track i; let last = $last) {
+  @for (i of [].constructor(this.items()); track $index; let last = $last) {
     <div>
       <div
         class="animation-block"
         [ngStyle]="{
           'border-radius': borderRadius(),
           height: height(),
-          width: width()
+          width: width(),
         }"
       ></div>
       @if (subHeight()) {
@@ -20,7 +20,7 @@
             'border-radius': borderRadius(),
             height: subHeight(),
             width: width(),
-            'margin-top': subGap()
+            'margin-top': subGap(),
           }"
         ></div>
       }
