@@ -21,17 +21,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: set SHAs
-        run: |
-          # run code only on main branch
-          TAG_VERSION=$(git describe --first-parent --match 'v*' --abbrev=0 --tags) 
+      # - name: set SHAs
+      #   run: |
+      #     # run code only on main branch
+      #     TAG_VERSION=$(git describe --first-parent --match 'v*' --abbrev=0 --tags) 
 
-          echo "Found tag: $TAG_VERSION"
-          LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
-          echo "Found hash: $LAST_TAG_HASH"
+      #     echo "Found tag: $TAG_VERSION"
+      #     LAST_TAG_HASH=$(git rev-list -n 1 $TAG_VERSION)
+      #     echo "Found hash: $LAST_TAG_HASH"
 
-          # Set NX_BASE to the last tag
-          echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
+      #     # Set NX_BASE to the last tag
+      #     echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
 
       - uses: oven-sh/setup-bun@v1
         with:
