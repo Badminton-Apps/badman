@@ -44,7 +44,7 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
         ssl: this.configService.get<boolean>('DB_SSL'),
 
         dialectOptions: {
-          ssl: this.configService.get<boolean>('DB_SSL'),
+          ssl: this.configService.get<boolean>('DB_SSL') === true,
         },
       };
     } else if (!dialect || dialect === 'sqlite') {

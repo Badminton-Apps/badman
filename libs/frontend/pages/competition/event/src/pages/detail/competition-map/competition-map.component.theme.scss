@@ -4,8 +4,8 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  $color-config: mat.get-color-config($theme);
-  $foreground: map.get($color-config, 'foreground');
+  
+  
 
   badman-competition-map {
     .info-window {
@@ -15,7 +15,7 @@
 }
 
 @mixin typography($theme) {
-  badman-competition-enrollments {
-    $typography-config: mat.get-typography-config($theme);
-  }
+  // badman-competition-enrollments {
+    
+  // }
 }

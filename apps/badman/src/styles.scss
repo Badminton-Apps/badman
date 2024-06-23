@@ -19,34 +19,33 @@
 @use '../../../libs/frontend/pages/role/theme' as frontend-role;
 @use '../../../libs/frontend/pages/team/theme' as frontend-team;
 @use '../../../libs/frontend/pages/general/theme' as frontend-general;
-@use './date-picker.theme.scss' as datepicker;
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
-$theme-warn: mat.define-palette(mat.$orange-palette);
-$theme-success: mat.define-palette(mat.$green-palette);
-$theme-danger: mat.define-palette(mat.$red-palette);
+$theme-warn: mat.m2-define-palette(mat.$m2-orange-palette);
+$theme-success: mat.m2-define-palette(mat.$m2-green-palette);
+$theme-danger: mat.m2-define-palette(mat.$m2-red-palette);
 
 $dark-theme: theme.badman-dark-theme(
-  mat.define-palette(mat.$blue-palette),
-  mat.define-palette(mat.$blue-grey-palette),
+  mat.m2-define-palette(mat.$m2-blue-palette),
+  mat.m2-define-palette(mat.$m2-blue-grey-palette),
   $theme-warn,
   $theme-success,
   $theme-danger,
-  mat.define-typography-config(),
+  mat.m2-define-typography-config(),
   -2
 );
 
 $light-theme: theme.badman-light-theme(
-  mat.define-palette(mat.$indigo-palette),
-  mat.define-palette(mat.$pink-palette),
+  mat.m2-define-palette(mat.$m2-indigo-palette),
+  mat.m2-define-palette(mat.$m2-pink-palette),
   $theme-warn,
   $theme-success,
   $theme-danger,
-  mat.define-typography-config(),
+  mat.m2-define-typography-config(),
   -2
 );
 
@@ -66,8 +65,6 @@ $light-theme: theme.badman-light-theme(
 @include frontend-team.theme($dark-theme);
 @include frontend-general.theme($dark-theme);
 
-// Temp fix
-@include datepicker.fix-datepicker($dark-theme);
 @include mtx.all-component-themes($dark-theme);
 
 .color-scheme-light {
@@ -87,8 +84,6 @@ $light-theme: theme.badman-light-theme(
   @include frontend-components.color($light-theme);
   @include frontend-general.color($light-theme);
 
-  // Temp fix
-  @include datepicker.fix-datepicker($light-theme);
   @include mtx.all-component-colors($light-theme);
 }
 

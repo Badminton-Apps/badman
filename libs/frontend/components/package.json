@@ -2,8 +2,8 @@
   "name": "@badman/frontend-components",
   "version": "6.154.0",
   "peerDependencies": {
-    "@angular/common": "^17.1.0",
-    "@angular/core": "^17.1.0",
+    "@angular/common": "18.0.3",
+    "@angular/core": "18.0.3",
     "@ngx-translate/core": "^15.0.0",
     "@nestjs/config": "^3.1.1",
     "rxjs": "~7.8.1",

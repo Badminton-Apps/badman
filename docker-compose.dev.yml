@@ -48,40 +48,40 @@ services:
   #   restart: unless-stopped
 
   redis:
-    image: 'redis:alpine'
+    image: 'redis:7.2.4-alpine'
     ports:
       - '6379:6379'
     networks:
       - api
     restart: unless-stopped
 
-  # Tools
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      GUNICORN_ACCESS_LOGFILE: '/dev/null'
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: 'False'
-    volumes:
-      - db-admin:/var/lib/pgadmin
-      - ./database/backup:/home/backup
-      - ./database/scripts:/home/scripts
-    ports:
-      - '${PGADMIN_PORT:-5050}:80'
-    links:
-      - postgres:postgres
-    depends_on:
-      - postgres
-    networks:
-      - postgres
-    restart: unless-stopped
-    logging:
-      driver: 'none'
+  # # Tools
+  # pgadmin:
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+  #     GUNICORN_ACCESS_LOGFILE: '/dev/null'
+  #     PGADMIN_CONFIG_SERVER_MODE: 'False'
+  #     POSTGRES_USER: ${DB_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #     PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: 'False'
+  #   volumes:
+  #     - db-admin:/var/lib/pgadmin
+  #     - ./database/backup:/home/backup
+  #     - ./database/scripts:/home/scripts
+  #   ports:
+  #     - '${PGADMIN_PORT:-5050}:80'
+  #   links:
+  #     - postgres:postgres
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - postgres
+  #   restart: unless-stopped
+  #   logging:
+  #     driver: 'none'
 
 networks:
   api:
