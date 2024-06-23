@@ -5,17 +5,17 @@
 
 @mixin color($theme) {
   badman-detail-draw-tournament {
-    $color-config: mat.get-color-config($theme);
+    
     // Background color
-    $background: map.get($color-config, 'background');
-    $foreground: map.get($color-config, 'foreground');
+    
+    
 
     .actions {
       a {
         &,
         &:visited,
         &:hover {
-          color: mat.get-color-from-palette($foreground, 'base');
+          color: mat.get-theme-color($theme, foreground, 'base');
         }
       }
     }
@@ -23,11 +23,11 @@
 }
 
 @mixin typography($theme) {
-  $typography-config: mat.get-typography-config($theme);
+  
   badman-detail-draw-tournament {
     .header {
       .name {
-        @include mat.typography-level($typography-config, 'headline-4');
+        font: mat.get-theme-typography($theme, 'headline-4', font);
       }
     }
   }

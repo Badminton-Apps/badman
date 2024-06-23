@@ -5,14 +5,11 @@
 
 @mixin color($theme) {
   badman-show-level {
-    $color-config: mat.get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
-    $background: map.get($color-config, 'background');
-    $isDark: map.get($color-config, 'is-dark');
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $isDark: map.get($theme, 'is-dark');
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
 
-    $success: map.get($theme, success);
-    $danger: map.get($theme, danger);
+    $success-palette: map.get($theme, success);
+    $danger-palette: map.get($theme, danger);
 
     border-color: $border-color;
 
@@ -23,26 +20,26 @@
     .points,
     .separator {
       @if ($isDark) {
-        color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
+        color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
       } @else {
-        color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
+        color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
       }
     }
 
     .points {
       &.upgrade {
         @if ($isDark) {
-          color: mat.get-color-from-palette($success, 200);
+          color: mat.m2-get-color-from-palette($success-palette, 200);
         } @else {
-          color: mat.get-color-from-palette($success, 500);
+          color: mat.m2-get-color-from-palette($success-palette, 500);
         }
       }
 
       &.downgrade {
         @if ($isDark) {
-          color: mat.get-color-from-palette($danger, 200);
+          color: mat.m2-get-color-from-palette($danger-palette, 200);
         } @else {
-          color: mat.get-color-from-palette($danger, 500);
+          color: mat.m2-get-color-from-palette($danger-palette, 500);
         }
       }
     }
@@ -51,11 +48,9 @@
 
 @mixin typography($theme) {
   badman-show-level {
-    $typography-config: mat.get-typography-config($theme);
-
     .points,
     .separator {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

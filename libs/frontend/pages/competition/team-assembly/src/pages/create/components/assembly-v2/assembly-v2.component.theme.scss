@@ -4,18 +4,13 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  $color-config: mat.get-color-config($theme);
+  $isDark: map.get($theme, 'is-dark');
   $danger-palette: map.get($theme, danger);
-  $warn-palette: map.get($theme, 'warn');
+  $warn-palette: map.get($theme, warn);
   $success-palette: map.get($theme, success);
-  $background: map.get($color-config, 'background');
-  $foreground: map.get($color-config, 'foreground');
-  $isDark: map.get($color-config, 'is-dark');
 
   badman-assembly-v2 {
-    $primary-palette: map.get($color-config, 'primary');
-
-    $border-color: mat.get-color-from-palette($foreground, 'disabled-text');
+    $border-color: mat.get-theme-color($theme, foreground, 'disabled-text');
 
     .information {
       .team,
@@ -25,9 +20,9 @@
 
         .ranking {
           @if ($isDark) {
-            color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
+            color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
           } @else {
-            color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
+            color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
           }
         }
       }
@@ -38,20 +33,20 @@
     }
 
     label {
-      background-color: mat.get-color-from-palette($background, 'background');
-      color: mat.get-color-from-palette($foreground, 'secondary-text');
+      background-color: mat.get-theme-color($theme, 'background', 'background');
+      color: mat.get-theme-color($theme, foreground, 'secondary-text');
     }
 
     // Global colors for the validation (because I'm lazy to find out why the dialog is not working)
     .validation-overview {
       .error-list {
-        color: mat.get-color-from-palette($danger-palette, 300);
+        color: mat.m2-get-color-from-palette($danger-palette, 300);
       }
       .warning-list {
-        color: mat.get-color-from-palette($warn-palette, 300);
+        color: mat.m2-get-color-from-palette($warn-palette, 300);
       }
       .no-errors {
-        color: mat.get-color-from-palette($success-palette, 300);
+        color: mat.m2-get-color-from-palette($success-palette, 300);
       }
     }
   }
@@ -59,24 +54,24 @@
 
 @mixin typography($theme) {
   badman-assembly-v2 {
-    $typography-config: mat.get-typography-config($theme);
+    
 
     label {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
 
     .information {
       .index {
-        @include mat.typography-level($typography-config, 'caption');
+        font: mat.get-theme-typography($theme, caption, font);
       }
 
       .ranking {
-        @include mat.typography-level($typography-config, 'caption');
+        font: mat.get-theme-typography($theme, caption, font);
       }
     }
 
     .team-info .add-player .permanent {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

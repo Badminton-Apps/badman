@@ -9,9 +9,9 @@
   badman-competition-overview {
     @include competition-events.color($theme);
 
-    $color-config: mat.get-color-config($theme);
+    
     // Background color
-    $background: map.get($color-config, 'background');
+    
   }
 }
 
@@ -19,6 +19,6 @@
   badman-competition-overview {
     @include competition-events.typography($theme);
 
-    $typography-config: mat.get-typography-config($theme);
+    
   }
 }

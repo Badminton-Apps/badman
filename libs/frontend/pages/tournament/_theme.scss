@@ -17,13 +17,14 @@
 }
 
 @mixin theme($theme) {
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
+  $has-color: mat.theme-has($theme, color);
+  $has-typography: mat.theme-has($theme, typography);
+
+  @if $has-color {
     @include color($theme);
   }
 
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
+  @if $has-typography {
     @include typography($theme);
   }
 }
