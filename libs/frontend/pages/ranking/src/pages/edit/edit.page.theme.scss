@@ -5,25 +5,26 @@
 
 @mixin color($theme) {
   badman-ranking-edit {
-    $color-config: mat.get-color-config($theme);
+    
   }
 }
 
 @mixin typography($theme) {
   badman-ranking-edit {
-    $typography-config: mat.get-typography-config($theme);
+    
   }
 }
 
 @mixin theme($theme) {
   // Only apply theme on the correct element
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
+  $has-color: mat.theme-has($theme, color);
+  $has-typography: mat.theme-has($theme, typography);
+
+  @if $has-color {
     @include color($theme);
   }
 
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
+  @if $has-typography {
     @include typography($theme);
   }
 }

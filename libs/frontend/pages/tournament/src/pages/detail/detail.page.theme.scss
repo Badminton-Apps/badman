@@ -5,16 +5,16 @@
 
 @mixin color($theme) {
   badman-tournament-detail {
-    $color-config: mat.get-color-config($theme);
+    
     // Background color
-    $background: map.get($color-config, 'background');
-    $foreground: map.get($color-config, 'foreground');
+    
+    
 
     .in-between {
-      border-bottom-color: mat.get-color-from-palette($background, 'border');
+      border-bottom-color: mat.get-theme-color($theme, 'background', 'border');
       .buttons button {
-        border-color: mat.get-color-from-palette($background, 'border');
-        background-color: mat.get-color-from-palette($background, 'background');
+        border-color: mat.get-theme-color($theme, 'background', 'border');
+        background-color: mat.get-theme-color($theme, 'background', 'background');
       }
     }
 
@@ -23,7 +23,7 @@
         &,
         &:visited,
         &:hover {
-          color: mat.get-color-from-palette($foreground, 'base');
+          color: mat.get-theme-color($theme, foreground, 'base');
         }
       }
     }
@@ -31,11 +31,11 @@
 }
 
 @mixin typography($theme) {
-  $typography-config: mat.get-typography-config($theme);
+  
   badman-tournament-detail {
     .header {
       .name {
-        @include mat.typography-level($typography-config, 'headline-4');
+        font: mat.get-theme-typography($theme, 'headline-4', font);
       }
     }
   }
