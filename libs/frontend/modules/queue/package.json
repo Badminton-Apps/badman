@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-queue",
-  "version": "6.154.0",
+  "version": "6.155.0",
   "peerDependencies": {
     "@angular/core": "18.0.3",
     "@badman/frontend-models": "*",
