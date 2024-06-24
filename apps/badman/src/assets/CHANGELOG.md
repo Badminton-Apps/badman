@@ -1,3 +1,18 @@
+## 6.155.0 (2024-06-24)
+
+
+### 🚀 Features
+
+- moving to latest angular version ([c3765801d](https://github.com/Badminton-Apps/badman/commit/c3765801d))
+
+### 🩹 Fixes
+
+- linting issues ([5b3451d8b](https://github.com/Badminton-Apps/badman/commit/5b3451d8b))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.154.0 (2024-06-20)
 
 
