@@ -63,7 +63,7 @@ jobs:
           # Set NX_HEAD to the current commit
           echo "NX_HEAD=origin/${{github.ref_name}}" >> $GITHUB_ENV
 
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
