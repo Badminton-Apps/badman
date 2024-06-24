@@ -11,18 +11,18 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "{workspaceRoot}/dist/{projectRoot}",
-        "index": "apps/badman/src/index.html",
-        "browser": "apps/badman/src/main.ts",
+        "index": "{projectRoot}/src/index.html",
+        "browser": "{projectRoot}/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "apps/badman/tsconfig.app.json",
+        "tsConfig": "{projectRoot}/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
-          "apps/badman/src/favicon.ico",
-          "apps/badman/src/assets",
-          "apps/badman/src/manifest.json",
-          "apps/badman/src/robots.txt",
-          "apps/badman/src/sitemap.xml",
-          "apps/badman/src/ads.txt"
+          "{projectRoot}/src/favicon.ico",
+          "{projectRoot}/src/assets",
+          "{projectRoot}/src/manifest.json",
+          "{projectRoot}/src/robots.txt",
+          "{projectRoot}/src/sitemap.xml",
+          "{projectRoot}/src/ads.txt"
         ],
         "allowedCommonJsDependencies": [
           "moment",
@@ -33,7 +33,7 @@
           "apexcharts"
         ],
         "styles": [
-          "apps/badman/src/styles.scss",
+          "{projectRoot}/src/styles.scss",
           "node_modules/quill/dist/quill.bubble.css",
           "node_modules/@fontsource/roboto/100.css",
           "node_modules/@fontsource/roboto/300.css",
@@ -42,7 +42,7 @@
           "node_modules/material-icons/iconfont/material-icons.css"
         ],
         "scripts": ["node_modules/apexcharts/dist/apexcharts.js"],
-        "serviceWorker": "apps/badman/ngsw-config.json"
+        "serviceWorker": "{projectRoot}/ngsw-config.json"
       },
       "configurations": {
         "production": {
@@ -59,17 +59,17 @@
             }
           ],
           "assets": [
-            "apps/badman/src/favicon.ico",
-            "apps/badman/src/assets",
-            "apps/badman/src/manifest.json",
-            "apps/badman/src/robots.txt",
-            "apps/badman/src/sitemap.xml",
-            "apps/badman/src/ads.txt"
+            "{projectRoot}/src/favicon.ico",
+            "{projectRoot}/src/assets",
+            "{projectRoot}/src/manifest.json",
+            "{projectRoot}/src/robots.txt",
+            "{projectRoot}/src/sitemap.xml",
+            "{projectRoot}/src/ads.txt"
           ],
           "fileReplacements": [
             {
-              "replace": "apps/badman/src/environments/environment.ts",
-              "with": "apps/badman/src/environments/environment.prod.ts"
+              "replace": "{projectRoot}/src/environments/environment.ts",
+              "with": "{projectRoot}/src/environments/environment.prod.ts"
             }
           ],
           "optimization": true,
@@ -92,22 +92,22 @@
             }
           ],
           "assets": [
-            "apps/badman/src/favicon.ico",
-            "apps/badman/src/assets",
-            "apps/badman/src/manifest.json",
-            "apps/badman/src/robots.txt",
-            "apps/badman/src/sitemap.xml",
-            "apps/badman/src/ads.txt",
+            "{projectRoot}/src/favicon.ico",
+            "{projectRoot}/src/assets",
+            "{projectRoot}/src/manifest.json",
+            "{projectRoot}/src/robots.txt",
+            "{projectRoot}/src/sitemap.xml",
+            "{projectRoot}/src/ads.txt",
             {
-              "input": "apps/badman/src/deployment/beta",
+              "input": "{projectRoot}/src/deployment/beta",
               "output": "/",
               "glob": "*"
             }
           ],
           "fileReplacements": [
             {
-              "replace": "apps/badman/src/environments/environment.ts",
-              "with": "apps/badman/src/environments/environment.beta.ts"
+              "replace": "{projectRoot}/src/environments/environment.ts",
+              "with": "{projectRoot}/src/environments/environment.beta.ts"
             }
           ],
           "outputHashing": "all"
@@ -125,8 +125,8 @@
           "namedChunks": true,
           "fileReplacements": [
             {
-              "replace": "apps/badman/src/environments/environment.ts",
-              "with": "apps/badman/src/environments/environment.dev-beta.ts"
+              "replace": "{projectRoot}/src/environments/environment.ts",
+              "with": "{projectRoot}/src/environments/environment.dev-beta.ts"
             }
           ]
         }
@@ -143,7 +143,7 @@
           "buildTarget": "badman:build:production"
         },
         "development": {
-          "proxyConfig": "apps/badman/proxy.conf.json",
+          "proxyConfig": "{projectRoot}/proxy.conf.json",
           "buildTarget": "badman:build:development"
         },
         "beta": {

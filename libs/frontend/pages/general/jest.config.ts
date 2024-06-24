@@ -3,8 +3,8 @@ export default {
   // displayName: 'frontend-general',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  // passWithNoTests: true,
-  // testTimeout: 1000 * 60 * 10,
+  passWithNoTests: true,
+  testTimeout: 1000 * 60 * 10,
   coverageDirectory: '../../../../coverage/libs/frontend/pages/general',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
