@@ -67,14 +67,14 @@ jobs:
         with:
           bun-version: latest
 
-      # - run: bunx nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
+      # - run: bun nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
       
       - run: bun install --no-cache
 
-      - run: bunx nx affected -t lint test build
+      - run: bun nx affected -t lint test build
 
       - name: Run Playwright tests
-        run: bunx nx affected --parallel 1 -t e2e-ci
+        run: bun nx affected --parallel 1 -t e2e-ci
         id: run-e2e-tests
         if: ${{ inputs.e2e-tests }}
 
@@ -95,10 +95,10 @@ jobs:
           cp apps/**/blob-report/*.zip ./blob-reports
 
           # create nx report
-          bunx playwright merge-reports --reporter=html,github ./blob-reports
+          bun playwright merge-reports --reporter=html,github ./blob-reports
 
           ## for copy pasting in shell
-          # bunx playwright show-report
+          # bun playwright show-report
 
       - name: Set Git config
         run: |
@@ -113,7 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: stop agents
-        run: bunx nx-cloud complete-ci-run
+        run: bun nx-cloud complete-ci-run
         if: always()
 
       - uses: actions/upload-artifact@v3
@@ -136,14 +136,14 @@ jobs:
       # deploy the new packages
       - name: Deploy to Prod
         if: github.ref == 'refs/heads/main'
-        run: bunx nx affected -t deploy --no-agents
+        run: bun nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{ secrets.PROD_API_HOOK  }}
           WORKER_SYNC_HOOK: ${{ secrets.PROD_WORKER_SYNC_HOOK  }}
           WORKER_RANKING_HOOK: ${{ secrets.PROD_WORKER_RANKING_HOOK  }}
 
       - name: Deploy to Beta
-        run: bunx nx affected -t deploy --no-agents
+        run: bun nx affected -t deploy --no-agents
         env:
           API_HOOK: ${{  secrets.BETA_API_HOOK }}
           WORKER_SYNC_HOOK: ${{  secrets.BETA_WORKER_SYNC_HOOK }}
