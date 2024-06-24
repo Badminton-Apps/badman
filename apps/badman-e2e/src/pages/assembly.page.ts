@@ -67,9 +67,7 @@ export default class AssemblyPage {
 
   async goto() {
     await setup(this.page);
-    // eslint-disable-next-line playwright/no-networkidle
     await this.page.goto('/competition/assembly', { waitUntil: 'networkidle' });
-    // eslint-disable-next-line playwright/no-networkidle
     await this.page.waitForLoadState('networkidle');
 
     // accept cookies
