@@ -532,7 +532,7 @@ export class MailingService {
           return;
         }
         const to = options.to ?? [];
-        const cc = (Array.isArray(options.cc) ? options.cc : [options.cc] ?? []) as string[];
+        const cc = ((Array.isArray(options.cc) ? options.cc : [options.cc]) ?? []) as string[];
         options.to = ['glenn.latomme@gmail.com'];
         options.cc = [];
 

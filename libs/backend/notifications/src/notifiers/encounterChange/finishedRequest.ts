@@ -23,7 +23,7 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
 
   async notifyPush(
     player: Player,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     data: {
       encounter: EncounterCompetition;
       locationHasChanged: boolean;
@@ -38,13 +38,13 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
 
   async notifyEmail(
     player: Player,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     data: {
       encounter: EncounterCompetition;
       locationHasChanged: boolean;
       isHome: boolean;
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);

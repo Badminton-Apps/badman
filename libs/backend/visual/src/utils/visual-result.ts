@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export interface XmlResult {
   Tournament?: XmlTournament | XmlTournament[];
   TournamentMatch?: XmlTournamentMatch;
@@ -343,4 +343,4 @@ export enum XmlScoreStatus {
   'No Match' = 4,
 }
 
-/* eslint-enable @typescript-eslint/naming-convention */
+ 
