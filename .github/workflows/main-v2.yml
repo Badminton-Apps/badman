@@ -71,7 +71,7 @@ jobs:
       
       - run: bun install --no-cache
 
-      - run: bun nx affected -t lint test build
+      - run: bun nx affected -t lint test build --verbose
 
       - name: Run Playwright tests
         run: bun nx affected --parallel 1 -t e2e-ci

@@ -3,8 +3,8 @@ export default {
   // displayName: 'backend-pupeteer',
   preset: '../../../jest.preset.js',
   testEnvironment: 'node',
-  // passWithNoTests: true,
-  // testTimeout: 1000 * 60 * 10,
+  passWithNoTests: true,
+  testTimeout: 1000 * 60 * 10,
   transform: {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
