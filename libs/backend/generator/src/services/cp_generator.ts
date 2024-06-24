@@ -95,7 +95,7 @@ export class CpGeneratorService {
     return destination;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   private async _prepCPfile(event: EventCompetition, connection: AdobdbOpen, existed = false) {
     // delete existing data
     const queries = [
