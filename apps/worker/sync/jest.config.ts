@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'worker-sync',
   preset: '../../../jest.preset.js',

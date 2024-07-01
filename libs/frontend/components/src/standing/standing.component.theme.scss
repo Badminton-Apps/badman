@@ -5,29 +5,28 @@
 
 @mixin color($theme) {
   badman-standing {
-    $color-config: mat.get-color-config($theme);
-    $primary: map.get($color-config, 'primary');
+    
 
     $danger-palette: map.get($theme, danger);
     $success-palette: map.get($theme, success);
 
     a {
-      color: mat.get-color-from-palette($primary, default);
+      color: mat.get-theme-color($theme, primary, default);
     }
 
     mat-icon {
       &.riser {
-        color: mat.get-color-from-palette($success-palette, default);
+        color: mat.m2-get-color-from-palette($success-palette, default);
       }
       &.faller {
-        color: mat.get-color-from-palette($danger-palette, default);
+        color: mat.m2-get-color-from-palette($danger-palette, default);
       }
     }
   }
 }
 
 @mixin typography($theme) {
-  badman-standing {
-    $typography-config: mat.get-typography-config($theme);
-  }
+  // badman-standing {
+  //  
+  // }
 }

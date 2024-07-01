@@ -10,13 +10,13 @@
 @function badman-dark-theme(
   $primary,
   $accent,
-  $warn: mat.define-palette($mat-orange),
-  $success: mat.define-palette(mat.$mat-green),
-  $danger: mat.define-palette(mat.$mat-red),
-  $typography: mat.define-typography-config(),
+  $warn: mat.m2-define-palette($mat-orange),
+  $success: mat.m2-define-palette(mat.$mat-green),
+  $danger: mat.m2-define-palette(mat.$mat-red),
+  $typography: mat.m2-define-typography-config(),
   $density: -2
 ) {
-  $dark-theme: mat.define-dark-theme(
+  $dark-theme: mat.m2-define-dark-theme(
     (
       color: (
         primary: $primary,
@@ -44,13 +44,13 @@
 @function badman-light-theme(
   $primary,
   $accent,
-  $warn: mat.define-palette($mat-orange),
-  $success: mat.define-palette(mat.$mat-green),
-  $danger: mat.define-palette(mat.$mat-red),
-  $typography: mat.define-typography-config(),
+  $warn: mat.m2-define-palette($mat-orange),
+  $success: mat.m2-define-palette(mat.$mat-green),
+  $danger: mat.m2-define-palette(mat.$mat-red),
+  $typography: mat.m2-define-typography-config(),
   $density: 0
 ) {
-  $light-theme: mat.define-light-theme(
+  $light-theme: mat.m2-define-light-theme(
     (
       color: (
         primary: $primary,

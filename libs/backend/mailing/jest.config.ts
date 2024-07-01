@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'backend-mailing',
   preset: '../../../jest.preset.js',

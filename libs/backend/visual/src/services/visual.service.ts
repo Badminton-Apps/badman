@@ -305,7 +305,7 @@ export class VisualService {
       },
       timeout: 1000000,
       headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+         
         'Content-Type': 'application/xml',
       },
     });

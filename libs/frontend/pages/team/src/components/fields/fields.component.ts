@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent, PlayerSearchComponent } from '@badman/frontend-components';
-import { Player } from '@badman/frontend-models';
+import { Player, Location } from '@badman/frontend-models';
 import { SubEventType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { startWith } from 'rxjs/operators';
@@ -41,6 +41,8 @@ export class TeamFieldComponent implements OnInit {
       }
     | undefined
   >();
+
+  locations = input<Location[]>();
 
   options?: number[];
 

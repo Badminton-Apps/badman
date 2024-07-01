@@ -5,12 +5,12 @@
 
 @mixin color($theme) {
   // Get the color config from the theme.
-  $color-config: mat.get-color-config($theme);
-  $isDark: map.get($color-config, 'is-dark');
+
+  $isDark: map.get($theme, 'is-dark');
 
   // Background color
-  $background: map.get($color-config, 'background');
-  $background-color: mat.get-color-from-palette($background, 'app-bar');
+
+  $background-color: mat.get-theme-color($theme, 'background', 'app-bar');
 
   $danger-palette: map.get($theme, danger);
   $warn-palette: map.get($theme, warn);
@@ -34,19 +34,19 @@
 
   .mat-mdc-snack-bar-container {
     &.error {
-      --mdc-snackbar-container-color: #{mat.get-color-from-palette($danger-palette, 300)};
+      --mdc-snackbar-container-color: #{mat.m2-get-color-from-palette($danger-palette, 300)};
       --mat-snack-bar-button-color: #fff;
       --mdc-snackbar-supporting-text-color: #fff;
       --mat-mdc-snack-bar-button-color: #fff;
     }
     &.warn {
-      --mdc-snackbar-container-color: #{mat.get-color-from-palette($warn-palette, 300)};
+      --mdc-snackbar-container-color: #{mat.m2-get-color-from-palette($warn-palette, 300)};
       --mat-snack-bar-button-color: #fff;
       --mdc-snackbar-supporting-text-color: #fff;
       --mat-mdc-snack-bar-button-color: #fff;
     }
     &.success {
-      --mdc-snackbar-container-color: #{mat.get-color-from-palette($success-palette, 300)};
+      --mdc-snackbar-container-color: #{mat.m2-get-color-from-palette($success-palette, 300)};
       --mat-snack-bar-button-color: #fff;
       --mdc-snackbar-supporting-text-color: #fff;
       --mat-mdc-snack-bar-button-color: #fff;
@@ -55,18 +55,18 @@
 }
 
 @mixin typography($theme) {
-  $typography-config: mat.get-typography-config($theme);
+  $typography-config: mat.m2-get-typography-config($theme);
 }
 
 @mixin theme($theme) {
-  // Only apply theme on the correct element
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
+  $has-color: mat.theme-has($theme, color);
+  $has-typography: mat.theme-has($theme, typography);
+
+  @if $has-color {
     @include color($theme);
   }
 
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
+  @if $has-typography {
     @include typography($theme);
   }
 }
