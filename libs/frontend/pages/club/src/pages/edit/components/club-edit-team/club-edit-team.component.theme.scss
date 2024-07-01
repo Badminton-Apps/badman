@@ -5,17 +5,17 @@
 
 @mixin color($theme) {
   badman-club-edit-team {
-    $color-config: mat.get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
-    $primary-palette: map.get($color-config, 'primary');
+    
+    
+    
 
-    $isDark: map.get($color-config, 'is-dark');
+    $isDark: map.get($theme, 'is-dark');
     $color: null;
 
     @if ($isDark) {
-      $color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
+      $color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
     } @else {
-      $color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
+      $color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
     }
 
     .player .sub-text {
@@ -26,10 +26,10 @@
 
 @mixin typography($theme) {
   badman-club-edit-team {
-    $typography-config: mat.get-typography-config($theme);
+    
 
     .player .sub-text {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
   }
 }

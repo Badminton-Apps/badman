@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-excel',
   preset: '../../../../jest.preset.js',

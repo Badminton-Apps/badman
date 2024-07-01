@@ -18,7 +18,7 @@ import { transferState } from '@badman/frontend-utils';
 import { getCurrentSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-select-season',
@@ -73,6 +73,12 @@ export class SelectSeasonComponent implements OnInit {
       this.group().addControl(this.controlName(), this.internalControl);
     }
 
+    this.internalControl.valueChanges
+      .pipe(startWith(this.internalControl.value))
+      .subscribe((value) => {
+        this._updateUrl(value);
+      });
+
     this._setYearsForEventCompetition();
   }
 
@@ -103,46 +109,6 @@ export class SelectSeasonComponent implements OnInit {
       },
     );
   }
-
-  // private _setYearsForClub(club: Club) {
-  //   this.seasons = toSignal(
-  //     this.apollo
-  //       .query<{
-  //         teams: Partial<Team[]>;
-  //       }>({
-  //         query: gql`
-  //           query CompetitionYears($where: JSONObject) {
-  //             teams(where: $where) {
-  //               id
-  //               season
-  //             }
-  //           }
-  //         `,
-  //         variables: {
-  //           where: {
-  //             clubId: club.id,
-  //           },
-  //         },
-  //       })
-  //       .pipe(
-  //         transferState(`club-${club.id}-seasons`, this.stateTransfer, this.platformId),
-  //         map((result) => {
-  //           if (!result?.data.teams) {
-  //             throw new Error('No teams');
-  //           }
-  //           return result.data.teams.map((row) => row?.season as number);
-  //         }),
-  //         // map distinct years
-  //         map((years) => [...new Set(years)]),
-  //         // sort years
-  //         map((years) => years.sort((a, b) => b - a)),
-  //       ),
-  //     {
-  //       initialValue: [getCurrentSeason()],
-  //       injector: this.injector,
-  //     },
-  //   );
-  // }
 
   private _updateUrl(value: number, removeOtherParams = false) {
     if (this.updateUrl() && value) {

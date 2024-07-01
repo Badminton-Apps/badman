@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-vitals',
   preset: '../../../../jest.preset.js',

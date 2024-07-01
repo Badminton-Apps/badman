@@ -9,15 +9,15 @@
   @include show-level.color($theme);
 
   badman-player-detail {
-    $color-config: mat.get-color-config($theme);
-    $foreground: map.get($color-config, 'foreground');
-    $isDark: map.get($color-config, 'is-dark');
+    
+    
+    $isDark: map.get($theme, 'is-dark');
 
     .click-for-breakdown {
       @if ($isDark) {
-        color: darken(mat.get-color-from-palette($foreground, 'base'), 40%);
+        color: darken(mat.get-theme-color($theme, foreground, 'base'), 40%);
       } @else {
-        color: lighten(mat.get-color-from-palette($foreground, 'base'), 60%);
+        color: lighten(mat.get-theme-color($theme, foreground, 'base'), 60%);
       }
     }
   }
@@ -27,13 +27,13 @@
   @include show-level.typography($theme);
 
   badman-player-detail {
-    $typography-config: mat.get-typography-config($theme);
+    
     .sub-text {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
 
     .click-for-breakdown {
-      @include mat.typography-level($typography-config, 'caption');
+      font: mat.get-theme-typography($theme, caption, font);
     }
 
     .mdc-evolution-chip__action--presentational {
@@ -44,13 +44,14 @@
 
 @mixin theme($theme) {
   // Only apply theme on the correct element
-  $color-config: mat.get-color-config($theme);
-  @if $color-config != null {
+  $has-color: mat.theme-has($theme, color);
+  $has-typography: mat.theme-has($theme, typography);
+
+  @if $has-color {
     @include color($theme);
   }
 
-  $typography-config: mat.get-typography-config($theme);
-  @if $typography-config != null {
+  @if $has-typography {
     @include typography($theme);
   }
 }

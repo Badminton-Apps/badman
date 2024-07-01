@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-twizzit',
   preset: '../../../../jest.preset.js',

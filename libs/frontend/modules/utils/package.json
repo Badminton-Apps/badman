@@ -1,11 +1,11 @@
 {
   "name": "@badman/frontend-utils",
-  "version": "6.153.0",
+  "version": "6.155.0",
   "peerDependencies": {
-    "@angular/common": "^17.1.0",
-    "@angular/core": "^17.1.0",
+    "@angular/common": "18.0.3",
+    "@angular/core": "18.0.3",
     "rxjs": "~7.8.1",
-    "@angular/cdk": "~17.3.8"
+    "@angular/cdk": "18.0.3"
   },
   "dependencies": {},
   "sideEffects": false

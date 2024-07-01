@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'backend-websockets',
   preset: '../../../jest.preset.js',
