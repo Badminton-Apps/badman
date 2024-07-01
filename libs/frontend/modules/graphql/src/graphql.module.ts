@@ -1,5 +1,5 @@
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {
   InjectionToken,
   Injector,
@@ -106,8 +106,8 @@ export function createApollo(
 }
 
 @NgModule({
-  exports: [ApolloModule, HttpClientModule],
-  imports: [HttpClientModule, ApolloModule],
+  exports: [ApolloModule],
+  imports: [ApolloModule],
   providers: [
     {
       provide: APOLLO_CACHE,
@@ -142,6 +142,7 @@ export function createApollo(
       useFactory: createApollo,
       deps: [HttpLink, APOLLO_CACHE, Injector, PLATFORM_ID, GRAPHQL_CONFIG_TOKEN],
     },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
 })
 export class GraphQLModule {

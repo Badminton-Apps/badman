@@ -11,7 +11,7 @@ import {
   VERSION_INFO,
 } from '@badman/frontend-html-injects';
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -109,8 +109,8 @@ const APP_ROUTES: Routes = [
 ];
 @NgModule({
   declarations: [AppComponent],
+  bootstrap: [AppComponent],
   imports: [
-    HttpClientModule,
     BrowserAnimationsModule,
     BrowserModule,
     GraphQLModule.forRoot({
@@ -195,12 +195,10 @@ const APP_ROUTES: Routes = [
   ],
   providers: [
     { provide: APP_ID, useValue: 'badman' },
-
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
     },
-
     {
       provide: VERSION_INFO,
       useValue: {
@@ -227,10 +225,8 @@ const APP_ROUTES: Routes = [
         libraries: ['places'],
       },
     },
-
-    // provideClientHydration(),
+    provideHttpClient(withInterceptorsFromDi()),
   ],
-  bootstrap: [AppComponent],
 })
 export class AppModule {
   socket = inject(Socket);

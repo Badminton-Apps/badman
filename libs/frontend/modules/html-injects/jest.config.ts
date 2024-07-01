@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-html-injects',
   preset: '../../../../jest.preset.js',

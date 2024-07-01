@@ -100,7 +100,7 @@ const conventionalChangelog = require('conventional-changelog');
   }
 
   function extractChangelogEntry(args = {}) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let content = '';
       const changelogStream = conventionalChangelog(
         {

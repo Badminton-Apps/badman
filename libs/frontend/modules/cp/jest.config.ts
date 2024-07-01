@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-cp',
   preset: '../../../../jest.preset.js',

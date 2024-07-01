@@ -2,12 +2,30 @@
   display: block;
 }
 
-.captain-info,
-.prefferd {
+.prefferd,
+.captain-info {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 1rem;
-  align-items: center;
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .day,
+  .location {
+    flex: 2;
+  }
+  .email,
+  .phone {
+    flex: 1;
+  }
+
+  .time {
+    flex: 1;
+  }
 }
 
 .basic {

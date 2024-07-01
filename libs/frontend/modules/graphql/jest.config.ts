@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-graphql',
   preset: '../../../../jest.preset.js',

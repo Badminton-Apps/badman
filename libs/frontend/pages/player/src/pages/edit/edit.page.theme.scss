@@ -10,11 +10,9 @@
   @include edit-ranking-all.color($theme);
   @include edit-permissions.color($theme);
 
-  badman-player-edit {
-    $color-config: mat.get-color-config($theme);
-    // Background color
-    $background: map.get($color-config, 'background');
-  }
+  // badman-player-edit {
+  //   // Background color
+  // }
 }
 
 @mixin typography($theme) {
@@ -22,10 +20,8 @@
   @include edit-permissions.typography($theme);
 
   badman-player-edit {
-    $typography-config: mat.get-typography-config($theme);
-
     .tab-content-header {
-      @include mat.typography-level($typography-config, 'headline-6');
+      font: mat.get-theme-typography($theme, 'headline-6', font);
     }
   }
 }

@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'backend-generator',
   preset: '../../../jest.preset.js',

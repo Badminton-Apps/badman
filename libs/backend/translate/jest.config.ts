@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'backend-translate',
   preset: '../../../jest.preset.js',

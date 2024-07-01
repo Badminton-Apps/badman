@@ -60,6 +60,7 @@ export class OverviewPageComponent {
   openDialog(cron: CronJob) {
     let template: TemplateRef<HTMLElement>;
 
+
     switch (cron.type) {
       case 'sync':
         template = this.syncTemplate;

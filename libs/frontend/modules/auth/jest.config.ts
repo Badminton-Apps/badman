@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-auth',
   preset: '../../../../jest.preset.js',
