@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-pdf',
   preset: '../../../../jest.preset.js',

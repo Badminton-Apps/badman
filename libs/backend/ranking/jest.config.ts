@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'backend-ranking',
   preset: '../../../jest.preset.js',

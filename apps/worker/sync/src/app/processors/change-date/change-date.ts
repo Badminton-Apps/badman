@@ -94,7 +94,7 @@ export class SyncDateProcessor {
   }
 }
 
-/* eslint-disable @typescript-eslint/naming-convention */
+ 
 interface Result {
   TournamentMatch?: TournamentMatch;
   Error?: XmlError;
@@ -111,4 +111,4 @@ interface XmlError {
   Code: number;
   Message: string;
 }
-/* eslint-enable @typescript-eslint/naming-convention */
+ 
