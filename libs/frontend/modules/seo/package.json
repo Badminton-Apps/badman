@@ -2,9 +2,9 @@
   "name": "@badman/frontend-seo",
   "version": "6.155.0",
   "peerDependencies": {
-    "@angular/common": "18.0.3",
-    "@angular/core": "18.0.3",
-    "@angular/platform-browser": "18.0.3"
+    "@angular/common": "18.0.5",
+    "@angular/core": "18.0.5",
+    "@angular/platform-browser": "18.0.5"
   },
   "dependencies": {},
   "sideEffects": false
