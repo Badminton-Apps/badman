@@ -1,12 +1,12 @@
 {
   "name": "@badman/frontend-transfers",
-  "version": "6.154.0",
+  "version": "6.155.0",
   "peerDependencies": {
     "@angular/common": "18.0.3",
     "@angular/core": "18.0.3",
-    "@angular/router": "~17.3.0",
+    "@angular/router": "18.0.3",
     "@badman/frontend-auth": "*",
-    "@angular/forms": "~17.3.0",
+    "@angular/forms": "18.0.3",
     "@badman/frontend-components": "*",
     "@badman/frontend-models": "*",
     "@badman/utils": "*",
@@ -14,8 +14,8 @@
     "apollo-angular": "^7.0.1",
     "ngx-socket-io": "^4.6.1",
     "rxjs": "~7.8.1",
-    "@angular/material": "~17.3.8",
-    "@ng-matero/extensions": "^17.3.0",
+    "@angular/material": "18.0.3",
+    "@ng-matero/extensions": "^18.0.1",
     "moment": "^2.30.1",
     "ngxtension": "^3.2.0"
   },

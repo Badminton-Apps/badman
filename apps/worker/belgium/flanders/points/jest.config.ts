@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'worker-belgium-flanders-points',
   preset: '../../../../../jest.preset.js',

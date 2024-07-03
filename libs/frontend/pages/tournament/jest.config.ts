@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-tournament',
   preset: '../../../../jest.preset.js',

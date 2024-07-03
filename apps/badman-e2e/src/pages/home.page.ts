@@ -19,11 +19,9 @@ export default class HomePage {
   async goto() {
     await setup(this.page);
 
-    // eslint-disable-next-line playwright/no-networkidle
     await this.page.goto('/', { waitUntil: 'networkidle' });
 
     // Wait for the page to be loaded
-    // eslint-disable-next-line playwright/no-networkidle
     await this.page.waitForLoadState('networkidle');
 
     // accept cookies

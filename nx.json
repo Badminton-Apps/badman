@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "main",
+  "defaultProject": "badman",
+  "ci": "github",
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -30,6 +33,28 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "@nx/eslint:lint": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.js"
+      ]
+    },
+    "@nx/jest:jest": {
+      "cache": true,
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
     },
     "@nx/js:tsc": {
       "cache": true,
@@ -80,16 +105,10 @@
     }
   ],
   "generators": {
-    "@nx/nest:library": {
-      "linter": "eslint",
-      "unitTestRunner": "jest",
-      "buildable": true,
-      "simpleName": true
-    },
     "@nx/angular:application": {
       "e2eTestRunner": "playwright",
-      "style": "scss",
       "linter": "eslint",
+      "style": "scss",
       "unitTestRunner": "jest"
     },
     "@nx/angular:library": {
@@ -97,14 +116,8 @@
       "unitTestRunner": "jest"
     },
     "@nx/angular:component": {
-      "style": "scss",
-      "skipTests": true,
-      "export": true,
-      "standalone": true
+      "style": "css"
     }
   },
-  "ci": "github",
-  "defaultProject": "badman",
-  "nxCloudAccessToken": "NTM2YmYwOTAtM2NlZC00ZDFmLTkwMDAtNzljM2Y4MDFiMTBmfHJlYWQtd3JpdGU=",
-  "defaultBase": "main"
+  "nxCloudAccessToken": "NTM2YmYwOTAtM2NlZC00ZDFmLTkwMDAtNzljM2Y4MDFiMTBmfHJlYWQtd3JpdGU="
 }

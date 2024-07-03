@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-translation",
-  "version": "6.154.0",
+  "version": "6.155.0",
   "peerDependencies": {
     "@angular/common": "18.0.3",
     "@angular/core": "18.0.3",
@@ -11,9 +11,9 @@
     "rxjs": "~7.8.1",
     "@ngx-translate/http-loader": "^8.0.0",
     "ngx-moment": "^6.0.2",
-    "@angular/material-moment-adapter": "~17.3.0",
-    "@angular/material": "~17.3.8",
-    "@ng-matero/extensions-moment-adapter": "^17.1.2"
+    "@angular/material-moment-adapter": "18.0.3",
+    "@angular/material": "18.0.3",
+    "@ng-matero/extensions-moment-adapter": "^18.0.0"
   },
   "dependencies": {},
   "sideEffects": false

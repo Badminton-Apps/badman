@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-queue',
   preset: '../../../../jest.preset.js',

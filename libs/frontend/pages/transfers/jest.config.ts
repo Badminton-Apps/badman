@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-transfers',
   preset: '../../../../jest.preset.js',
