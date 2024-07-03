@@ -104,29 +104,31 @@ export class AssemblyController {
     );
 
     let homeTeam: Team;
-    let awayTeam: Team;
+    let awayTeam: Team | null;
     let isHomeTeam: boolean;
-
-    if (!data?.encounter) {
-      throw new Error('Encounter not found');
-    }
 
     if (!data?.team) {
       return;
     }
 
-    if (data.encounter.homeTeamId == input.teamId) {
-      homeTeam = data.team;
-      awayTeam = await data.encounter.getAway({
-        attributes: ['id', 'name'],
-      });
-      isHomeTeam = true;
+    if (data.encounter) {
+      if (data.encounter.homeTeamId == input.teamId) {
+        homeTeam = data.team;
+        awayTeam = await data.encounter.getAway({
+          attributes: ['id', 'name'],
+        });
+        isHomeTeam = true;
+      } else {
+        homeTeam = await data.encounter.getHome({
+          attributes: ['id', 'name'],
+        });
+        awayTeam = data.team;
+        isHomeTeam = false;
+      }
     } else {
-      homeTeam = await data.encounter.getHome({
-        attributes: ['id', 'name'],
-      });
-      awayTeam = data.team;
-      isHomeTeam = false;
+      homeTeam = data.team;
+      awayTeam = null;
+      isHomeTeam = true;
     }
 
     const captain = await Player.findByPk(input.captainId);
@@ -134,9 +136,9 @@ export class AssemblyController {
       encoding: 'base64',
     });
 
-    const date = moment(data.encounter.date).tz('Europe/Brussels').format('DD-MM-YYYY HH:mm');
+    const date = moment(data.encounter?.date).tz('Europe/Brussels').format('DD-MM-YYYY HH:mm');
 
-    this.logger.debug(`Generating assembly for ${homeTeam.name} vs ${awayTeam.name} on ${date}`);
+    this.logger.debug(`Generating assembly for ${homeTeam.name} vs ${awayTeam?.name || 'empty'} on ${date}`);
 
     const indexed: string[] = [];
     const based: string[] = [];
@@ -165,7 +167,7 @@ export class AssemblyController {
       baseIndex: data.meta?.competition?.teamIndex,
       teamIndex: data.teamIndex,
       homeTeam: homeTeam.name,
-      awayTeam: awayTeam.name,
+      awayTeam: awayTeam?.name ?? 'Onbekend',
       captain: captain?.fullName,
       generationDate: moment().tz('Europe/Brussels').format('DD-MM-YYYY HH:mm'),
       rankingDate: moment(data.system?.updateLastUpdate).tz('Europe/Brussels').format('DD-MM-YYYY'),
@@ -298,7 +300,7 @@ export class AssemblyController {
     }
 
     const prepped = {
-      ...player.toJSON() ,
+      ...player.toJSON(),
       base: false,
       team: false,
       exception: false,
