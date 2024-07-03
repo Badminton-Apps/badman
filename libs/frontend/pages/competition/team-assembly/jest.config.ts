@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-team-assembly',
   preset: '../../../../../jest.preset.js',

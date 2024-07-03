@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'backend-health',
   preset: '../../../jest.preset.js',

@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'backend-authorization',
   preset: '../../jest.preset.js',

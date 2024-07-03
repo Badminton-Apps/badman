@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-notifications',
   preset: '../../../../jest.preset.js',

@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'frontend-change-encounter',
   preset: '../../../../../jest.preset.js',

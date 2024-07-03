@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: 'worker-ranking',
   preset: '../../../jest.preset.js',
