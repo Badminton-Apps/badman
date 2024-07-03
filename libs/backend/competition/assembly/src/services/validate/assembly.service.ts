@@ -1,4 +1,5 @@
 import {
+  DrawCompetition,
   EncounterCompetition,
   EntryCompetitionPlayer,
   EventCompetition,
@@ -63,12 +64,6 @@ export class AssemblyValidationService {
 
     const idSubs = subtitudes?.filter((p) => p !== undefined && p !== null);
 
-    const encounter = await EncounterCompetition.findByPk(encounterId);
-
-    if (!encounter) {
-      throw new Error('Encounter not found');
-    }
-
     const team = await Team.findByPk(teamId, {
       attributes: ['id', 'name', 'type', 'teamNumber', 'clubId'],
     });
@@ -77,14 +72,25 @@ export class AssemblyValidationService {
       throw new Error('Team not found');
     }
 
-    // Get the event info
-    const draw = await encounter?.getDrawCompetition({
-      attributes: ['id', 'name', 'subeventId'],
-    });
+    const encounter = await EncounterCompetition.findByPk(encounterId) || undefined;
+    
+    let draw: DrawCompetition | null = null;
+    let subEvent: SubEventCompetition | null = null;
+    
+    if (encounter) {
 
-    const subEvent = await draw?.getSubEventCompetition({
-      attributes: ['id', 'eventId', 'eventType', 'minBaseIndex', 'maxBaseIndex', 'maxLevel'],
-    });
+      draw = await encounter?.getDrawCompetition({
+        attributes: ['id', 'name', 'subeventId'],
+      });
+      subEvent = await draw?.getSubEventCompetition({
+        attributes: ['id', 'eventId', 'eventType', 'minBaseIndex', 'maxBaseIndex', 'maxLevel'],
+      });
+    } else {
+      const entry = await team.getEntry();
+      draw = await entry?.getDrawCompetition();
+      subEvent = await entry?.getSubEventCompetition();
+    }
+
     const event = await subEvent?.getEventCompetition({
       attributes: ['id', 'usedRankingUnit', 'usedRankingAmount', 'season'],
     });

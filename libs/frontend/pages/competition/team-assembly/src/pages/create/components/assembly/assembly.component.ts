@@ -51,7 +51,15 @@ import moment, { Moment } from 'moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { NgxResize, ResizeResult } from 'ngxtension/resize';
 import { combineLatest, lastValueFrom, of, Subject } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { ValidationMessage, ValidationResult } from '../../models/validation';
 import { AssemblyMessageComponent } from '../assembly-message/assembly-message.component';
 import { TeamAssemblyPlayerComponent } from '../team-assembly-player';
@@ -254,16 +262,18 @@ export class AssemblyComponent implements OnInit {
       throw new Error('team is not set');
     }
 
-    combineLatest([teamCntrl.valueChanges, encounterCntrl.valueChanges])
+    combineLatest([teamCntrl.valueChanges, encounterCntrl.valueChanges.pipe(startWith(undefined))])
       .pipe(
         takeUntil(this.destroy$),
         map(([team, encounter]) => {
-          return [team != null && encounter != null, encounter] as const;
+          return [team != null, encounter] as const;
         }),
         distinctUntilChanged(([a], [b]) => a === b),
       )
       .subscribe(async ([gotRequired, encounter]) => {
         this.gotRequired = gotRequired;
+
+        console.log('gotRequired', gotRequired);
 
         if (gotRequired) {
           await this.loadData(encounter);
@@ -292,7 +302,7 @@ export class AssemblyComponent implements OnInit {
       });
   }
 
-  async loadData(encounterId: string) {
+  async loadData(encounterId?: string) {
     this.loaded = false;
 
     // Clear everything
@@ -322,7 +332,9 @@ export class AssemblyComponent implements OnInit {
     this.club = this.group().get('club')?.value;
     const teamId = this.group().get('team')?.value;
 
-    this._getTeam(encounterId, teamId).subscribe(async (team) => {
+    this._getTeam(teamId, encounterId).subscribe(async (team) => {
+      this.type.set(team.type);
+
       this.players = team.players.reduce(
         (acc, player) => {
           if (!player.teamMembership.membershipType) {
@@ -658,7 +670,7 @@ export class AssemblyComponent implements OnInit {
     this.notSmallScreen = event.width > 200;
   }
 
-  private _getTeam(encounterId: string, teamId: string) {
+  private _getTeam(teamId: string, encounterId?: string) {
     return this._getRankingWhere(encounterId).pipe(
       distinctUntilChanged(),
       switchMap((where) =>
@@ -736,7 +748,24 @@ export class AssemblyComponent implements OnInit {
     );
   }
 
-  private _getRankingWhere(encounterId: string) {
+  private _getRankingWhere(encounterId?: string) {
+    if (!encounterId) {
+      const usedRankingDate = moment();
+      this.startRanking = usedRankingDate.clone().set('date', 0);
+      this.endRanking = usedRankingDate.clone().clone().endOf('month');
+      return of({
+        rankingWhere: {
+          rankingDate: {
+            $between: [this.startRanking, this.endRanking],
+          },
+          systemId: this.systemService.systemId(),
+        },
+        lastRankginWhere: {
+          systemId: this.systemService.systemId(),
+        },
+      });
+    }
+
     // Combine _getEvent and _getEncounter
     return this._getEvent(encounterId).pipe(
       map((event) => {
@@ -748,13 +777,13 @@ export class AssemblyComponent implements OnInit {
         usedRankingDate.set('year', event.season);
         usedRankingDate.set(event.usedRankingUnit, event.usedRankingAmount);
 
-        const startRanking = usedRankingDate.clone().set('date', 0);
-        const endRanking = usedRankingDate.clone().clone().endOf('month');
+        this.startRanking = usedRankingDate.clone().set('date', 0);
+        this.endRanking = usedRankingDate.clone().clone().endOf('month');
 
         return {
           rankingWhere: {
             rankingDate: {
-              $between: [startRanking, endRanking],
+              $between: [this.startRanking, this.endRanking],
             },
             systemId: this.systemService.systemId(),
           },
@@ -778,7 +807,6 @@ export class AssemblyComponent implements OnInit {
                 id
                 subEventCompetition {
                   id
-                  eventType
                   eventCompetition {
                     id
                     season
@@ -805,12 +833,6 @@ export class AssemblyComponent implements OnInit {
           if (!result?.eventCompetition) {
             throw new Error('No event');
           }
-
-          if (!result.eventType) {
-            throw new Error('No event type');
-          }
-
-          this.type.set(result.eventType);
 
           return new EventCompetition(result?.eventCompetition);
         }),
@@ -1032,8 +1054,8 @@ export class AssemblyComponent implements OnInit {
     };
   };
 
-  private _loadSaved(encounterId: string, captainId?: string) {
-    if (!this.authenticateService.loggedIn) {
+  private _loadSaved(encounterId?: string, captainId?: string) {
+    if (!this.authenticateService.loggedIn || !encounterId) {
       return of([]);
     }
 
