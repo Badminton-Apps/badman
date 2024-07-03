@@ -68,6 +68,8 @@ export class SelectEncounterComponent implements OnInit {
 
   dependsOn = input('team');
 
+  required = input(false);
+
   updateOn = input(['team']);
 
   updateUrl = input(false);

@@ -1,6 +1,6 @@
 <badman-page-header>
-  <div title>{{ this.rankingSystem().name }}</div>
-  <div subTitle>
+  <ng-content title>{{ this.rankingSystem().name }}</ng-content>
+  <ng-content subTitle>
     <mat-chip-listbox>
       <mat-chip
         [matTooltip]="this.rankingSystem().calculationLastUpdate?.toLocaleDateString() ?? ''"
@@ -8,9 +8,9 @@
         {{ this.rankingSystem().calculationLastUpdate | amTimeAgo }}</mat-chip
       >
     </mat-chip-listbox>
-  </div>
+  </ng-content>
 
-  <div actions>
+  <ng-content actions>
     <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
     </button>
@@ -48,7 +48,7 @@
         </button>
       </badman-has-claim>
     </mat-menu>
-  </div>
+  </ng-content>
 </badman-page-header>
 
 <badman-ranking-table [id]="this.rankingSystem().id!"></badman-ranking-table>

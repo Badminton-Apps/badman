@@ -37,6 +37,12 @@
     flex-direction: column;
     justify-content: center;
 
+    .title{
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+
     .sub-title {
       display: flex;
       flex-direction: row;

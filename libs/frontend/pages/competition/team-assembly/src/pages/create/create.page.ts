@@ -7,7 +7,7 @@ import {
   ViewChild,
   computed,
   inject,
-  signal
+  signal,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -151,35 +151,38 @@ export class CreatePageComponent {
 
     // Get info
     const encounterId = this.formGroup?.get('encounter')?.value;
-    const result = await lastValueFrom(
-      this.apollo.query<{
-        encounterCompetition: Partial<EncounterCompetition>;
-      }>({
-        query: gql`
-          query GetEncounterQuery($id: ID!) {
-            encounterCompetition(id: $id) {
-              id
-              home {
+    let fileName = `${moment().format('YYYY-MM-DD HH:mm')}.pdf`;
+    if (encounterId) {
+      const result = await lastValueFrom(
+        this.apollo.query<{
+          encounterCompetition: Partial<EncounterCompetition>;
+        }>({
+          query: gql`
+            query GetEncounterQuery($id: ID!) {
+              encounterCompetition(id: $id) {
                 id
-                name
-              }
-              away {
-                id
-                name
+                home {
+                  id
+                  name
+                }
+                away {
+                  id
+                  name
+                }
               }
             }
-          }
-        `,
-        variables: {
-          id: encounterId,
-        },
-      }),
-    );
+          `,
+          variables: {
+            id: encounterId,
+          },
+        }),
+      );
 
-    const encounter = new EncounterCompetition(result.data.encounterCompetition);
-    const fileName = `${moment(encounter?.date).format('YYYY-MM-DD HH:mm')} - ${encounter?.home?.name} vs ${
-      encounter?.away?.name
-    }.pdf`;
+      const encounter = new EncounterCompetition(result.data.encounterCompetition);
+      fileName = `${moment(encounter?.date).format('YYYY-MM-DD HH:mm')} - ${encounter?.home?.name} vs ${
+        encounter?.away?.name
+      }.pdf`;
+    }
 
     // Generate pdf
     this.pdfService
