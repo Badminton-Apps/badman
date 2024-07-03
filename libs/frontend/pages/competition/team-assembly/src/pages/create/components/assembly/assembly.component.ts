@@ -268,7 +268,6 @@ export class AssemblyComponent implements OnInit {
         map(([team, encounter]) => {
           return [team != null, encounter] as const;
         }),
-        distinctUntilChanged(([a], [b]) => a === b),
       )
       .subscribe(async ([gotRequired, encounter]) => {
         this.gotRequired = gotRequired;
