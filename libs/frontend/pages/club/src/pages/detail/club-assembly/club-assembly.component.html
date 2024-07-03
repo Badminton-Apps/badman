@@ -8,10 +8,6 @@
   </section>
 }
 @if (clubAssemblyService.loaded()) {
-  <form class="filter">
-    <badman-select-season [group]="this.filter()"></badman-select-season>
-  </form>
-  
   <section class="teams">
     <div class="title">
       <h3>
@@ -39,7 +35,7 @@
                 <mat-icon
                   [ngClass]="{
                     yes: !element?.[team.name ?? ''].base,
-                    base: element?.[team.name ?? ''].base
+                    base: element?.[team.name ?? ''].base,
                   }"
                   [matTooltip]="element?.[team.name ?? ''].reason"
                   >check</mat-icon
