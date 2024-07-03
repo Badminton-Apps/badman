@@ -3,7 +3,7 @@
     <mat-label>{{ 'all.pickers.select-encounter' | translate }}</mat-label>
     <mat-select
       [formControlName]="this.controlName()"
-      required
+      [required]="this.required()"
       (selectionChange)="this.selectEncounter($event)"
     >
       @for (encounter of this.encounters$ | async; track encounter) {
