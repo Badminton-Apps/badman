@@ -1,3 +1,22 @@
+## 6.156.0 (2024-07-03)
+
+
+### 🚀 Features
+
+- allowing creation of assembly without setting the encounter ([abbb84e0c](https://github.com/Badminton-Apps/badman/commit/abbb84e0c))
+
+### 🩹 Fixes
+
+- load in new info when data changes ([88fed688d](https://github.com/Badminton-Apps/badman/commit/88fed688d))
+- map for competition ([ac5395640](https://github.com/Badminton-Apps/badman/commit/ac5395640))
+- showing team assembly ([b34216f69](https://github.com/Badminton-Apps/badman/commit/b34216f69))
+- lowering DOM elements by using ng-content slot ([5d0f9f811](https://github.com/Badminton-Apps/badman/commit/5d0f9f811))
+- updating package.json version files ([cf72fe004](https://github.com/Badminton-Apps/badman/commit/cf72fe004))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.155.0 (2024-06-24)
 
 
