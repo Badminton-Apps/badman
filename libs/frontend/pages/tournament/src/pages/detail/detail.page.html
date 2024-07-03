@@ -1,5 +1,5 @@
 <badman-page-header>
-  <div actions>
+  <ng-content actions>
     <!-- <button mat-icon-button class="favorite" title="favorite">
     <mat-icon>star_outline</mat-icon>
   </button> -->
@@ -54,9 +54,9 @@
         </badman-has-claim>
       </mat-menu>
     </badman-has-claim>
-  </div>
-  <div title>{{ this.eventTournament().name }}</div>
-  <div subTitle>
+  </ng-content>
+  <ng-content title>{{ this.eventTournament().name }}</ng-content>
+  <ng-content subTitle>
     <mat-chip-listbox>
       <mat-chip
         >{{ 'all.tournament.enrollment.title' | translate }}:
@@ -74,7 +74,7 @@
         </mat-chip>
       }
     </mat-chip-listbox>
-  </div>
+  </ng-content>
 </badman-page-header>
 @if (this.subEvents()) {
   <div class="subEvents">
