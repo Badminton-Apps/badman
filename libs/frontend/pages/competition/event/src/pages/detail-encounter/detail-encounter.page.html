@@ -1,6 +1,6 @@
 <badman-page-header>
-  <div title>{{ this.encounterCompetitionName }}</div>
-  <div actions>
+  <ng-content title>{{ this.encounterCompetitionName }}</ng-content>
+  <ng-content actions>
     <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
     </button>
@@ -39,8 +39,8 @@
         </button>
       </mat-menu>
     </badman-has-claim>
-  </div>
-  <div subTitle>
+  </ng-content>
+  <ng-content subTitle>
     <mat-chip-listbox>
       @if (encounterCompetition.location?.name) {
         <mat-chip> {{ encounterCompetition.location?.name }}</mat-chip>
@@ -61,7 +61,7 @@
         </mat-chip>
       }
     </mat-chip-listbox>
-  </div>
+  </ng-content>
 </badman-page-header>
 @for (game of encounterCompetition.games; track game; let index = $index) {
   <div class="game">

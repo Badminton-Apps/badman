@@ -1,5 +1,5 @@
 <badman-page-header>
-  <div actions>
+  <ng-content actions>
     @if (this.eventTournament().visualCode && this.drawTournament().visualCode) {
       <a
         mat-icon-button
@@ -15,10 +15,10 @@
         <mat-icon>open_in_new</mat-icon>
       </a>
     }
-  </div>
+  </ng-content>
 
-  <div title>{{ this.drawTournament().name }}</div>
-  <div subTitle></div>
+  <ng-content title>{{ this.drawTournament().name }}</ng-content>
+  <ng-content subTitle></ng-content>
 </badman-page-header>
 
 @switch (this.drawTournament().type) {
