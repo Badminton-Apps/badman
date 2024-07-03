@@ -164,7 +164,7 @@ export class CompetitionMapComponent implements OnInit {
                 clubId: clubIds,
               },
               availabilitiesWhere: {
-                season: 2023,
+                season: this.eventCompetition?.()?.season,
               },
             },
           }),
