@@ -1,7 +1,7 @@
 <badman-page-header>
-  <div avatar>{{ this.initials() }}</div>
-  <div title>{{ this.player().fullName }}</div>
-  <div subTitle>
+  <ng-content avatar>{{ this.initials() }}</ng-content>
+  <ng-content title>{{ this.player().fullName }}</ng-content>
+  <ng-content subTitle>
     <div class="sub-text">
       <ng-container
         ><a [routerLink]="['/', 'club', this.club()?.slug]">{{
@@ -33,8 +33,8 @@
       </div>
     }
     <div class="click-for-breakdown">{{ 'all.ranking.breakdown.hint' | translate }}</div>
-  </div>
-  <div actions>
+  </ng-content>
+  <ng-content actions>
     <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
     </button>
@@ -62,7 +62,7 @@
         </badman-has-claim>
       </mat-menu>
     }
-  </div>
+  </ng-content>
 </badman-page-header>
 <section class="games">
   <section class="recent-games">

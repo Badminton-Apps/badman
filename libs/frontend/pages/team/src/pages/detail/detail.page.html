@@ -1,7 +1,7 @@
 <badman-page-header>
-  <div title>{{ team().name }}</div>
+  <ng-content title>{{ team().name }}</ng-content>
   @if (this.entry()) {
-    <div subTitle>
+    <ng-content subTitle>
       @if (this.entry()?.drawCompetition?.id) {
         #{{ this.entry()?.standing?.position }}/{{ this.entry()?.standing?.size }} in
         <a
@@ -20,9 +20,9 @@
           >{{ this.entry()?.subEventCompetition?.eventCompetition?.name }}</a
         >
       }
-    </div>
+    </ng-content>
   }
-  <div actions>
+  <ng-content actions>
     <!-- <button mat-icon-button class="favorite" title="favorite">
       <mat-icon>star_outline</mat-icon>
     </button> -->
@@ -37,7 +37,7 @@
         </button>
       </mat-menu>
     </badman-has-claim> -->
-  </div>
+  </ng-content>
 </badman-page-header>
 <section class="games">
   <section class="recent-games">
