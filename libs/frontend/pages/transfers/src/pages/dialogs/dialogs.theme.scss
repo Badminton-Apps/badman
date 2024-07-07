@@ -1,0 +1,29 @@
+@use './upload-transfer-loan/upload-transfer-loan.dialog.theme.scss' as upload-transfer-loan;
+@use './src/dialogs/dialogs.theme.scss' as dialogs;
+
+
+
+@mixin typography($theme) {
+  @include upload-transfer-loan.typography($theme);
+
+  @include dialogs.typography($theme);
+}
+
+@mixin color($theme) {
+  @include upload-transfer-loan.color($theme);
+
+  @include dialogs.color($theme);
+}
+
+@mixin theme($theme) {
+  $has-color: mat.theme-has($theme, color);
+  $has-typography: mat.theme-has($theme, typography);
+
+  @if $has-color {
+    @include color($theme);
+  }
+
+  @if $has-typography {
+    @include typography($theme);
+  }
+}

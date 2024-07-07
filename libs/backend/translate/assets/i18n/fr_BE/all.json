@@ -991,7 +991,27 @@
     "vs": "à",
     "vs-short": "vs"
   },
-  "transfers": {
-    "title": "Transferts / prêts"
+  "transfers-loan": {
+    "buttons": {
+      "accept-selected": "Accepter la sélection",
+      "reject-selected": "Rejeter sélectionné",
+      "upload": "Télécharger"
+    },
+    "filter": {
+      "current-club": "Club actuel",
+      "new-club": "Nouveau club",
+      "player": "Joueur"
+    },
+    "title": "Transferts / prêts",
+    "upload": {
+      "description": "<p>Télécharger les transferts <strong></strong> ou <strong>Prêts</strong> fichier excel <br /><small>PS : cela peut prendre un certain temps<small></p>",
+      "error": "Veuillez sélectionner un type",
+      "file-type": "Dossier de transfert ou de prêt",
+      "hint": "Faites glisser votre fichier ici",
+      "loan-file": "Dossier de prêt",
+      "title": "Télécharger le fichier de transfert / de prêt",
+      "transfer-file": "Transférer le fichier",
+      "unkown": "Inconnu"
+    }
   }
 }

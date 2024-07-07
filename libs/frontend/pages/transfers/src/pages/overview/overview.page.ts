@@ -13,6 +13,8 @@ import { MtxSelect } from '@ng-matero/extensions/select';
 import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
 import { TransferService } from './transfer.service';
+import { MatDialog } from '@angular/material/dialog';
+import { UploadTransferLoanDialogComponent } from '../dialogs';
 
 @Component({
   selector: 'badman-ranking-overview',
@@ -37,6 +39,7 @@ import { TransferService } from './transfer.service';
 export class OverviewPageComponent {
   // injects
   service = inject(TransferService);
+  dialog = inject(MatDialog);
 
   transfers = this.service.state.transfers;
   loaded = this.service.state.loaded;
@@ -168,5 +171,16 @@ export class OverviewPageComponent {
     this.service.state.deleteMembership({
       id: membership.id,
     });
+  }
+
+  openUploadDialog() {
+    this.dialog
+      .open(UploadTransferLoanDialogComponent, {
+        disableClose: true,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.service.state.reload();
+      });
   }
 }

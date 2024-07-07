@@ -991,7 +991,27 @@
     "vs": "tegen",
     "vs-short": "vs"
   },
-  "transfers": {
-    "title": "Transfers / uitleningen"
+  "transfers-loan": {
+    "buttons": {
+      "accept-selected": "Accepteer geselecteerde",
+      "reject-selected": "Weiger geselecteerde",
+      "upload": "Upload"
+    },
+    "filter": {
+      "current-club": "Huidige club",
+      "new-club": "Nieuwe club",
+      "player": "Speler"
+    },
+    "title": "Transfers / uitleningen",
+    "upload": {
+      "description": "<p>Upload de <strong>transfers</strong> of <strong>Uitleningen</strong> excel file <br /><small>PS: dit kan even duren<small></p>",
+      "error": "Gelieve een type te selecteren",
+      "file-type": "Transfer of uitlening file",
+      "hint": "Sleep je file hier",
+      "loan-file": "Uitlening file",
+      "title": "Upload transfer / uitlening file",
+      "transfer-file": "Transfer file",
+      "unkown": "Onbekend"
+    }
   }
 }

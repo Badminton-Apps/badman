@@ -1,0 +1,15 @@
+{
+  "name": "@badman/backend-utils",
+  "version": "6.156.0",
+  "dependencies": {
+    "@nestjs/common": "^10.3.8",
+    "fastify": "^4.27.0",
+    "@fastify/multipart": "^8.2.0",
+    "multer": "1.4.5-lts.1",
+    "@swc/helpers": "^0.5.11"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "devDependencies": {}
+}

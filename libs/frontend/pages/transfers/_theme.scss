@@ -1,8 +1,7 @@
+@use '@angular/material' as mat;
+
 @use './src/pages/overview/overview.page.theme.scss' as overview;
 
-@mixin theme($theme) {
-  @include overview.theme($theme);
-}
 
 @mixin typography($theme) {
   @include overview.typography($theme);
@@ -10,4 +9,17 @@
 
 @mixin color($theme) {
   @include overview.color($theme);
+}
+
+@mixin theme($theme) {
+  $has-color: mat.theme-has($theme, color);
+  $has-typography: mat.theme-has($theme, typography);
+
+  @if $has-color {
+    @include color($theme);
+  }
+
+  @if $has-typography {
+    @include typography($theme);
+  }
 }
