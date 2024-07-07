@@ -23,7 +23,7 @@
     "moment-timezone": "^0.5.44",
     "@nestjs/bull": "^10.0.1",
     "bull": "^4.12.2",
-    "cache-manager": "5.6.1",
+    "cache-manager": "5.7.1",
     "@nestjs/cache-manager": "^2.2.0",
     "geojson": "^0.5.0",
     "moment": "^2.30.1",

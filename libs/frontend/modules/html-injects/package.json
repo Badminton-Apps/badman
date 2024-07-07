@@ -2,8 +2,8 @@
   "name": "@badman/frontend-html-injects",
   "version": "6.156.0",
   "peerDependencies": {
-    "@angular/common": "18.0.5",
-    "@angular/core": "18.0.5",
+    "@angular/common": "18.0.6",
+    "@angular/core": "18.0.6",
     "@ng-maps/google": "^6.0.0",
     "@googlemaps/js-api-loader": "^1.16.2"
   },
