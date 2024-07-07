@@ -37,6 +37,7 @@ import { Socket, SocketIoModule } from 'ngx-socket-io';
 /*  eslint-disable @nx/enforce-module-boundaries*/
 import { ShellComponent } from '@badman/frontend-components';
 import { RANKING_CONFIG } from '@badman/frontend-ranking';
+import { TRANSFERLOAN_CONFIG } from '@badman/frontend-transfers';
 /*  eslint-enable @nx/enforce-module-boundaries */
 
 const APP_ROUTES: Routes = [
@@ -210,6 +211,12 @@ const APP_ROUTES: Routes = [
       provide: RANKING_CONFIG,
       useValue: {
         api: `${environment.api}/${environment.apiVersion}/ranking`,
+      },
+    },
+    {
+      provide: TRANSFERLOAN_CONFIG,
+      useValue: {
+        api: `${environment.api}/${environment.apiVersion}/competition/transfer-loan`,
       },
     },
     {

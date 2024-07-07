@@ -1,7 +1,6 @@
 <badman-page-header>
-  <div title>{{ 'all.transfers.title' | translate }}</div>
+  <div title>{{ 'all.transfers-loan.title' | translate }}</div>
 </badman-page-header>
-
 <mtx-grid
   [showToolbar]="true"
   [toolbarTemplate]="toolbar"
@@ -19,18 +18,18 @@
   <div class="actions">
     <div class="row">
       <mat-form-field>
-        <mat-label>Player</mat-label>
+        <mat-label>{{ 'all.transfers-loan.filter.player' | translate }}</mat-label>
         <input matInput />
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>New club</mat-label>
+        <mat-label>{{ 'all.transfers-loan.filter.new-club' | translate }}</mat-label>
         <mtx-select [items]="newClubs()" bindLabel="name" bindValue="id" [multiple]="true">
         </mtx-select>
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Current Club</mat-label>
+        <mat-label>{{ 'all.transfers-loan.filter.current-club' | translate }}</mat-label>
         <mtx-select [items]="currentClubs()" bindLabel="name" bindValue="id" [multiple]="true">
         </mtx-select>
       </mat-form-field>
@@ -44,7 +43,7 @@
         [disabled]="loading()"
         [class.spinner]="loading()"
       >
-        Accept selected
+        {{ 'all.transfers-loan.buttons.accept-selected' | translate }}
       </button>
       <button
         mat-stroked-button
@@ -53,7 +52,11 @@
         [disabled]="loading()"
         [class.spinner]="loading()"
       >
-        Reject selected
+        {{ 'all.transfers-loan.buttons.reject-selected' | translate }}
+      </button>
+
+      <button mat-stroked-button color="primary" (click)="openUploadDialog()">
+        {{ 'all.transfers-loan.buttons.upload' | translate }}
       </button>
     </div>
   </div>

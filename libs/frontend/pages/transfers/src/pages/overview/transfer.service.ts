@@ -61,6 +61,12 @@ export class TransferService {
             this._loadTransfersAndLoans().pipe(map((transfers) => ({ transfers, loading: false }))),
           ),
         ),
+      reload: (_state, action$: Observable<void>) =>
+        action$.pipe(
+          switchMap(() =>
+            this._loadTransfersAndLoans().pipe(map((transfers) => ({ transfers, loading: false }))),
+          ),
+        ),
     },
   });
 
