@@ -14,6 +14,7 @@ import { OrchestratorModule } from '@badman/backend-orchestrator';
 import { QueueModule } from '@badman/backend-queue';
 import { SearchModule } from '@badman/backend-search';
 import { TranslateModule } from '@badman/backend-translate';
+import { TransferLoanModule } from '@badman/backend-transfer-loan';
 import { TwizzitModule } from '@badman/backend-twizzit';
 import { SocketModule } from '@badman/backend-websockets';
 import { ConfigType, configSchema, load } from '@badman/utils';
@@ -67,6 +68,7 @@ console.log('envFilePath', envFilePath, process.env.NODE_ENV);
     TranslateModule,
     OrchestratorModule,
     SocketModule,
+    TransferLoanModule
   ],
   controllers: [AppController, ImageController],
   providers: [Logger],

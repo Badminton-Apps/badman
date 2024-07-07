@@ -2,11 +2,9 @@ import { MultipartValue } from '@fastify/multipart';
 import { Controller, Logger, Post, Res, UseGuards } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import moment from 'moment';
-import 'multer';
 import * as XLSX from 'xlsx';
 import { MembersRolePerGroupData, UpdateRankingService } from '../services';
-import { File, MultipartFile } from '../utils/file.decorator';
-import { UploadGuard } from '../utils/upload.guard';
+import { UploadGuard, MultipartFile, File } from '@badman/backend-utils';
 
 @Controller('ranking/upload')
 export class UploadRankingController {

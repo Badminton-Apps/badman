@@ -1,0 +1,13 @@
+{
+  "name": "@badman/backend-transfer-loan",
+  "version": "6.156.0",
+  "dependencies": {
+    "@nestjs/common": "^10.3.8",
+    "fastify": "^4.27.0",
+    "tslib": "^2.6.2",
+    "multer": "1.4.5-lts.1"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts"
+}

@@ -8,6 +8,7 @@ import {
   TransferState,
   inject,
   input,
+  model,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -45,11 +46,13 @@ export class SelectSeasonComponent implements OnInit {
 
   controlName = input('season');
 
-  group = input.required<FormGroup>();
+  group = input<FormGroup>();
 
   dependsOn = input('club');
 
   updateUrl = input(false);
+
+  value = model<number>();
 
   control = input<FormControl<number>>();
   protected internalControl!: FormControl<number>;
@@ -62,20 +65,21 @@ export class SelectSeasonComponent implements OnInit {
     }
 
     if (!this.internalControl && this.group()) {
-      this.internalControl = this.group().get(this.controlName()) as FormControl<number>;
+      this.internalControl = this.group()?.get(this.controlName()) as FormControl<number>;
     }
 
     if (!this.internalControl) {
-      this.internalControl = new FormControl<number>(getCurrentSeason()) as FormControl<number>;
+      this.internalControl = new FormControl<number>(this.value() ?? getCurrentSeason()) as FormControl<number>;
     }
 
     if (this.group()) {
-      this.group().addControl(this.controlName(), this.internalControl);
+      this.group()?.addControl(this.controlName(), this.internalControl);
     }
 
     this.internalControl.valueChanges
       .pipe(startWith(this.internalControl.value))
       .subscribe((value) => {
+        this.value.set(value);
         this._updateUrl(value);
       });
 
