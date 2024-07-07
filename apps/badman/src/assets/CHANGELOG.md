@@ -1,3 +1,14 @@
+## 6.157.0 (2024-07-07)
+
+
+### 🚀 Features
+
+- processing transfers and loans ([5e99a9b89](https://github.com/Badminton-Apps/badman/commit/5e99a9b89))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.156.0 (2024-07-03)
 
 
