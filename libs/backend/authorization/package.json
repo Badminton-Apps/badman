@@ -2,7 +2,7 @@
   "name": "@badman/backend-authorization",
   "version": "6.156.0",
   "dependencies": {
-    "@badman/backend-database": "6.156.0",
+    "@badman/backend-database": "*",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.3.8",
