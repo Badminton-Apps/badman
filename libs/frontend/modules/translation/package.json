@@ -2,11 +2,11 @@
   "name": "@badman/frontend-translation",
   "version": "6.156.0",
   "peerDependencies": {
-    "@angular/core": "18.0.5",
+    "@angular/core": "18.0.6",
     "@badman/utils": "*",
     "@ngx-translate/core": "^15.0.0",
     "@badman/frontend-auth": "*",
-    "@angular/common": "18.0.5",
+    "@angular/common": "18.0.6",
     "@angular/material": "18.0.6",
     "@angular/material-moment-adapter": "18.0.6",
     "moment": "^2.30.1",
