@@ -1,0 +1,67 @@
+<h1 mat-dialog-title>{{ 'all.transfers-loan.upload.title' | translate }}</h1>
+<div mat-dialog-content>
+  <p [innerHTML]="'all.transfers-loan.upload.description' | translate"></p>
+  @if (!this.uploadedFile) {
+    <div
+      class="drop-area"
+      [ngClass]="{ dragging: dragging }"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onFileDrop($event)"
+      (click)="onCLick($event)"
+    >
+      <p>{{ 'all.transfers-loan.upload.hint' | translate }}</p>
+    </div>
+  }
+  @if (this.uploadedFile) {
+    <div class="file">
+      <mat-chip [removable]="true" (removed)="this.onFileRemove()"
+        >{{ this.uploadedFile.name }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+    </div>
+  }
+
+  <!-- show loading bar if load -->
+  @if (this.uploading) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+
+  @if (uploadedFile) {
+    <h3>Options</h3>
+    <div class="options">
+      <badman-select-season [(value)]="this.season"></badman-select-season>
+
+      <mat-form-field>
+        <mat-label>{{ 'all.transfers-loan.upload.file-type' | translate }}</mat-label>
+        <mat-select [(value)]="this.transferOrLoan">
+          <mat-option [value]="null">{{
+            'all.transfers-loan.upload.unkown' | translate
+          }}</mat-option>
+          <mat-option [value]="'transfer'">{{
+            'all.transfers-loan.upload.transfer-file' | translate
+          }}</mat-option>
+          <mat-option [value]="'loan'">{{
+            'all.transfers-loan.upload.loan-file' | translate
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- show error if the value is null -->
+      <mat-error *ngIf="this.transferOrLoan === null"
+        >{{ 'all.transfers-loan.upload.error' | translate }}
+      </mat-error>
+    </div>
+  }
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button
+    mat-raised-button
+    [class.spinner]="this.processing"
+    [disabled]="!this.uploadedFile || this.uploading || this.processing"
+    color="primary"
+    (click)="processData()"
+  >
+    Process
+  </button>
+</div>

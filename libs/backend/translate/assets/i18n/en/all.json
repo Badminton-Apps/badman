@@ -991,7 +991,27 @@
     "vs": "against",
     "vs-short": "vs"
   },
-  "transfers": {
-    "title": "Transfers / loans"
+  "transfers-loan": {
+    "buttons": {
+      "accept-selected": "Accept selected",
+      "reject-selected": "Refuse selected",
+      "upload": "Upload"
+    },
+    "filter": {
+      "current-club": "Current club",
+      "new-club": "New club",
+      "player": "Player"
+    },
+    "title": "Transfers / loans",
+    "upload": {
+      "description": "<p>Upload the <strong>transfers</strong> or <strong>Loans</strong> excel file <br /><small>Note: this might take a wile<small></p>",
+      "error": "Please select a type",
+      "file-type": "Transfer or loan file",
+      "hint": "Drag your file here",
+      "loan-file": "Loan file",
+      "title": "Upload transfer / loan file",
+      "transfer-file": "Transfer file",
+      "unkown": "Unknown"
+    }
   }
 }

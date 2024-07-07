@@ -19,19 +19,24 @@
   }
 }
 
-.levels {
+.info {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
 
-  badman-show-level {
-    cursor: pointer;
+  .levels {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    badman-show-level {
+      cursor: pointer;
+    }
   }
-}
 
-.sub-text a {
-  text-decoration: none;
+  .sub-text a {
+    text-decoration: none;
+  }
 }
 
 .recent-games {

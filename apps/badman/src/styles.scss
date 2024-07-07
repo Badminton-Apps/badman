@@ -16,6 +16,7 @@
 @use '../../../libs/frontend/pages/competition/team-enrollment/theme' as frontend-team-enrollement;
 @use '../../../libs/frontend/pages/player/theme' as frontend-player;
 @use '../../../libs/frontend/pages/ranking/theme' as frontend-ranking;
+@use '../../../libs/frontend/pages/transfers/theme' as frontend-transfers;
 @use '../../../libs/frontend/pages/role/theme' as frontend-role;
 @use '../../../libs/frontend/pages/team/theme' as frontend-team;
 @use '../../../libs/frontend/pages/general/theme' as frontend-general;
@@ -61,6 +62,7 @@ $light-theme: theme.badman-light-theme(
 @include frontend-components.theme($dark-theme);
 @include frontend-player.theme($dark-theme);
 @include frontend-ranking.theme($dark-theme);
+@include frontend-transfers.theme($dark-theme);
 @include frontend-role.theme($dark-theme);
 @include frontend-team.theme($dark-theme);
 @include frontend-general.theme($dark-theme);
@@ -79,6 +81,7 @@ $light-theme: theme.badman-light-theme(
   @include frontend-team-enrollement.color($light-theme);
   @include frontend-player.color($light-theme);
   @include frontend-ranking.color($light-theme);
+  @include frontend-transfers.color($light-theme);
   @include frontend-role.color($light-theme);
   @include frontend-team.color($light-theme);
   @include frontend-components.color($light-theme);
