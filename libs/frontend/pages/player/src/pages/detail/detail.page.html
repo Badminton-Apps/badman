@@ -2,37 +2,39 @@
   <ng-content avatar>{{ this.initials() }}</ng-content>
   <ng-content title>{{ this.player().fullName }}</ng-content>
   <ng-content subTitle>
-    <div class="sub-text">
-      <ng-container
-        ><a [routerLink]="['/', 'club', this.club()?.slug]">{{
-          this.club()?.name
-        }}</a></ng-container
-      >
-      @if (this.club()?.name && this.player().memberId) {
-        -
-      }
-      {{ this.player().memberId }}
-    </div>
-    @if (this.player().id) {
-      <div class="levels">
-        <badman-show-level
-          [routerLink]="['ranking', 'single']"
-          [playerId]="this.playerId()"
-          type="single"
-        />
-        <badman-show-level
-          [routerLink]="['ranking', 'double']"
-          [playerId]="this.playerId()"
-          type="double"
-        />
-        <badman-show-level
-          [routerLink]="['ranking', 'mix']"
-          [playerId]="this.playerId()"
-          type="mix"
-        />
+    <div class="info">
+      <div class="sub-text">
+        <ng-container
+          ><a [routerLink]="['/', 'club', this.club()?.slug]">{{
+            this.club()?.name
+          }}</a></ng-container
+        >
+        @if (this.club()?.name && this.player().memberId) {
+          -
+        }
+        {{ this.player().memberId }}
       </div>
-    }
-    <div class="click-for-breakdown">{{ 'all.ranking.breakdown.hint' | translate }}</div>
+      @if (this.player().id) {
+        <div class="levels">
+          <badman-show-level
+            [routerLink]="['ranking', 'single']"
+            [playerId]="this.playerId()"
+            type="single"
+          />
+          <badman-show-level
+            [routerLink]="['ranking', 'double']"
+            [playerId]="this.playerId()"
+            type="double"
+          />
+          <badman-show-level
+            [routerLink]="['ranking', 'mix']"
+            [playerId]="this.playerId()"
+            type="mix"
+          />
+        </div>
+      }
+      <div class="click-for-breakdown">{{ 'all.ranking.breakdown.hint' | translate }}</div>
+    </div>
   </ng-content>
   <ng-content actions>
     <button mat-icon-button class="favorite" title="favorite">
