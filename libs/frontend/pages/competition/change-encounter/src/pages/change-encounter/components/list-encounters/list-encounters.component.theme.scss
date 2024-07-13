@@ -4,18 +4,19 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  
-  
-
   badman-list-encounters {
+    $danger-palette: map.get($theme, danger);
     .selected {
       border-left-color: mat.get-theme-color($theme, primary, default);
+    }
+
+    .error {
+      color: mat.m2-get-color-from-palette($danger-palette, 300) !important;
     }
   }
 }
 
 @mixin typography($theme) {
-  
   // badman-list-encounters {
 
   // }

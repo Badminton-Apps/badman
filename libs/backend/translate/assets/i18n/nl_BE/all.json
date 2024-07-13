@@ -97,6 +97,9 @@
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "errors": {
         "invalid": "Gelieve alle beschikbaarheid aan te vullen voor het versturen.",
+        "not-accepted": "Het voorstel is nog niet geaccepteerd",
+        "same-club": "De ontmoeting tegen eigen club moeten als eerste gespeeld worden",
+        "same-semester": "De thuis en uit ontmoeting ligt in de zelfde speelhelft, dit mag niet",
         "select-one-date": "Gelieve minstens 1 dag te selecteren.",
         "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
       },

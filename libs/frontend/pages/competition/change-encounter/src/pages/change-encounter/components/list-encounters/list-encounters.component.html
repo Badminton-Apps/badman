@@ -56,9 +56,15 @@
           (click)="selectEncounter(option)"
           [ngClass]="{ selected: this.internalControl.value?.id === option?.id }"
         >
-          <mat-icon matListItemIcon>{{
-            option?.encounterChange?.accepted ?? true ? 'done' : 'info'
-          }}</mat-icon>
+          @if (getInfo(option); as info) {
+            <mat-icon
+              matListItemIcon
+              [matTooltip]="info.tooltip | translate"
+              [ngClass]="info.class"
+              >{{ info.icon }}</mat-icon
+            >
+          }
+
           <h3 matListItemTitle>
             {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
             @if (option.originalDate) {
@@ -79,9 +85,14 @@
           (click)="selectEncounter(option)"
           [ngClass]="{ selected: this.internalControl.value?.id === option?.id }"
         >
-          <mat-icon matListItemIcon>{{
-            option?.encounterChange?.accepted ?? true ? 'done' : 'info'
-          }}</mat-icon>
+          @if (getInfo(option); as info) {
+            <mat-icon
+              matListItemIcon
+              [matTooltip]="info.tooltip | translate"
+              [ngClass]="info.class"
+              >{{ info.icon }}</mat-icon
+            >
+          }
           <h3 matListItemTitle>
             {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}
             @if (option.originalDate) {
