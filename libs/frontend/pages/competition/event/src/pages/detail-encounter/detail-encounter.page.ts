@@ -28,6 +28,7 @@ import { GameType, gameLabel } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { lastValueFrom } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { MomentModule } from 'ngx-moment';
 
 @Component({
   selector: 'badman-detail-encounter',
@@ -51,6 +52,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     GameScoreComponentComponent,
     PageHeaderComponent,
     HasClaimComponent,
+    MomentModule
   ],
 })
 export class DetailEncounterComponent implements OnInit {
