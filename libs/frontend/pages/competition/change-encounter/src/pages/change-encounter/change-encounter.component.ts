@@ -73,9 +73,9 @@ export class ChangeEncounterComponent implements OnInit {
     });
 
     const changeEncounterKey = 'all.competition.change-encounter.title';
-
+    const competition = 'all.competition.title';
     this.translateService
-      .get([changeEncounterKey])
+      .get([changeEncounterKey, competition])
       .pipe(takeUntil(this.destroy$))
       .subscribe((result) => {
         this.seoService.update({
@@ -84,7 +84,9 @@ export class ChangeEncounterComponent implements OnInit {
           type: 'website',
           keywords: ['club', 'badminton'],
         });
-        this.breadcrumbsService.set('competition/change-encounter', changeEncounterKey);
+
+        this.breadcrumbsService.set('competition/change-encounter', result[changeEncounterKey]);
+        this.breadcrumbsService.set('competition', result[competition]);
       });
   }
 }
