@@ -42,6 +42,9 @@
   </ng-content>
   <ng-content subTitle>
     <mat-chip-listbox>
+      @if (encounterCompetition.date) {
+        <mat-chip> {{ encounterCompetition.date | amDateFormat: 'llll' }}</mat-chip>
+      }
       @if (encounterCompetition.location?.name) {
         <mat-chip> {{ encounterCompetition.location?.name }}</mat-chip>
       }
