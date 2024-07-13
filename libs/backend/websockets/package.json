@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-websockets",
-  "version": "6.157.0",
+  "version": "6.157.1",
   "dependencies": {
     "@nestjs/platform-socket.io": "^10.3.8",
     "socket.io": "^4.7.5",
