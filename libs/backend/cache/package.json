@@ -1,9 +1,9 @@
 {
   "name": "@badman/backend-cache",
-  "version": "6.157.0",
+  "version": "6.157.1",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
-    "@badman/utils": "6.157.0",
+    "@badman/utils": "6.157.1",
     "@nestjs/common": "^10.3.10",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/config": "^3.2.3",
