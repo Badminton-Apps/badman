@@ -329,11 +329,6 @@ export class CalendarComponent implements OnInit {
         }
       }
     }
-
-    // log each day in the exceptions
-    for (const [key] of this.exceptions) {
-      console.log(key);
-    }
   }
 
   dateFilter(d: Date | null) {
