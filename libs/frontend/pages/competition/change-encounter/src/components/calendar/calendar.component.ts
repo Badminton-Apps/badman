@@ -37,7 +37,6 @@ import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 
-
 @Component({
   selector: 'badman-calendar',
   standalone: true,
@@ -330,6 +329,25 @@ export class CalendarComponent implements OnInit {
         }
       }
     }
+
+    // log each day in the exceptions
+    for (const [key] of this.exceptions) {
+      console.log(key);
+    }
+  }
+
+  dateFilter(d: Date | null) {
+    // if date is in the exceptions, return false
+    if (!d) {
+      return false;
+    }
+
+    if (!this.exceptions) {
+      return true;
+    }
+
+    const format = moment(d).format('YYYY-MM-DD');
+    return !this.exceptions.has(format);
   }
 
   private _loadDayEvents() {

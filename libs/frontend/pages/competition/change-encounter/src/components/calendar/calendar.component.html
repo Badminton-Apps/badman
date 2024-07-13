@@ -49,6 +49,7 @@
           <input
             [mtxDatetimepicker]="datetimePicker"
             [formControl]="manualDateControl"
+            [mtxDatetimepickerFilter]="this.dateFilter.bind(this)"
             matInput
             required
           />
