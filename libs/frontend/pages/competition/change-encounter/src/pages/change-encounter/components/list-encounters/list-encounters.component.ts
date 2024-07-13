@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit, input, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EncounterCompetition } from '@badman/frontend-models';
@@ -36,6 +37,7 @@ import {
     MatListModule,
     MatDividerModule,
     MatSelectModule,
+    MatTooltipModule,
     MomentModule,
     LoadingBlockComponent,
   ],
@@ -65,6 +67,9 @@ export class ListEncountersComponent implements OnInit {
   encountersSem1!: EncounterCompetition[];
   encountersSem2!: EncounterCompetition[];
 
+  sameSemEncounters: EncounterCompetition[] = [];
+  sameClubEncounter: EncounterCompetition[] = [];
+
   ngOnInit() {
     if (this.control() != undefined) {
       this.internalControl = this.control() as FormControl<EncounterCompetition>;
@@ -83,9 +88,9 @@ export class ListEncountersComponent implements OnInit {
     if (this.group()) {
       this.group().addControl(this.controlName(), this.internalControl);
     }
-    const previous = this.group().get(this.dependsOn());
-    if (!previous) {
-      console.warn(`Dependency ${this.dependsOn()} not found`, previous);
+    const depends = this.group().get(this.dependsOn());
+    if (!depends) {
+      console.warn(`Dependency ${this.dependsOn()} not found`, depends);
     } else {
       // get all the controls that we need to update on when change
       const updateOnControls = this.updateOn()
@@ -94,7 +99,7 @@ export class ListEncountersComponent implements OnInit {
         .filter((control) => control != null) as FormControl[];
 
       combineLatest([
-        previous.valueChanges.pipe(startWith(null)),
+        depends.valueChanges.pipe(startWith(null)),
         ...updateOnControls.map((control) =>
           control?.valueChanges?.pipe(startWith(() => control?.value)),
         ),
@@ -102,7 +107,7 @@ export class ListEncountersComponent implements OnInit {
         .pipe(
           takeUntil(this.destroy$),
           distinctUntilChanged(),
-          map(() => previous?.value),
+          map(() => depends?.value),
           pairwise(),
           switchMap(([prev, next]) => {
             if (prev != null && prev !== next) {
@@ -130,6 +135,23 @@ export class ListEncountersComponent implements OnInit {
 
           this.encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear);
 
+          const teamId = depends.value;
+          if (teamId) {
+            this.sameSemEncounters.push(
+              ...this.findEncountersInSameSemester(this.encountersSem1, teamId),
+            );
+            this.sameSemEncounters.push(
+              ...this.findEncountersInSameSemester(this.encountersSem2, teamId),
+            );
+
+            this.sameClubEncounter.push(
+              ...this.findEncountersForSameClubThatarenotfirst2(this.encountersSem1, teamId),
+            );
+            this.sameClubEncounter.push(
+              ...this.findEncountersForSameClubThatarenotfirst2(this.encountersSem2, teamId),
+            );
+          }
+
           const params = this.activatedRoute.snapshot.queryParams;
 
           if (params && params[this.controlName()]) {
@@ -149,6 +171,104 @@ export class ListEncountersComponent implements OnInit {
           this.changeDetectorRef.detectChanges();
         });
     }
+  }
+
+  getInfo(encounter: EncounterCompetition) {
+    // if not accepted, show info icon
+    if ((encounter.encounterChange?.accepted ?? true) == false) {
+      return {
+        icon: 'info',
+        tooltip: 'all.competition.change-encounter.errors.not-accepted',
+      };
+    }
+
+    if (this.sameSemEncounters.some((r) => r.id === encounter.id)) {
+      return {
+        icon: 'error',
+        class: 'error',
+        tooltip: 'all.competition.change-encounter.errors.same-semester',
+      };
+    }
+
+    if (this.sameClubEncounter.some((r) => r.id === encounter.id)) {
+      return {
+        icon: 'error',
+        class: 'error',
+        tooltip: 'all.competition.change-encounter.errors.same-club',
+      };
+    }
+
+    return {
+      icon: 'check',
+      tooltip: '',
+    };
+  }
+
+  findEncountersInSameSemester(encounters: EncounterCompetition[], currentTeamId: string) {
+    const teamEncounterMap: Record<string, EncounterCompetition[]> = {};
+
+    for (const encounter of encounters) {
+      const homeTeamId = encounter.home?.id;
+      const awayTeamId = encounter.away?.id;
+
+      if (!homeTeamId || !awayTeamId || !encounter.id) {
+        continue;
+      }
+
+      if (!teamEncounterMap[homeTeamId]) {
+        teamEncounterMap[homeTeamId] = [];
+      }
+
+      if (!teamEncounterMap[awayTeamId]) {
+        teamEncounterMap[awayTeamId] = [];
+      }
+
+      teamEncounterMap[homeTeamId].push(encounter);
+      teamEncounterMap[awayTeamId].push(encounter);
+    }
+
+    const errors = [];
+
+    for (const teamId in teamEncounterMap) {
+      if (teamId == currentTeamId) {
+        continue;
+      }
+      const encounters = teamEncounterMap[teamId];
+
+      if (encounters.length > 1) {
+        errors.push(encounters);
+      }
+    }
+
+    return errors.flat();
+  }
+
+  findEncountersForSameClubThatarenotfirst2(
+    encounters: EncounterCompetition[],
+    currentTeamId: string,
+  ) {
+    const firstEnc = encounters[0];
+    // pick the first encounter to get the current club id
+    const currentClubId =
+      firstEnc.home?.id == currentTeamId ? firstEnc.home?.clubId : firstEnc.away?.clubId;
+
+    if (!currentClubId) {
+      return [];
+    }
+
+    const errors = [];
+    let differentClubOppend = false;
+    for (const enc of encounters) {
+      const otherClub = enc.home?.id == currentTeamId ? enc.away?.clubId : enc.home?.clubId;
+
+      if (otherClub != currentClubId) {
+        differentClubOppend = true;
+      } else if (differentClubOppend) {
+        errors.push(enc);
+      }
+    }
+
+    return errors;
   }
 
   selectEncounter(event: EncounterCompetition) {
