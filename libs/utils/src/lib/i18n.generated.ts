@@ -104,6 +104,9 @@ export type I18nTranslations = {
                 "disclaimer-submit": string;
                 "errors": {
                     "invalid": string;
+                    "not-accepted": string;
+                    "same-club": string;
+                    "same-semester": string;
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };
