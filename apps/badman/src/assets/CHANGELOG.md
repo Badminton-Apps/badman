@@ -1,3 +1,19 @@
+## 6.158.0 (2024-07-13)
+
+
+### 🚀 Features
+
+- disable exception dates in manual selection ([c2b526107](https://github.com/Badminton-Apps/badman/commit/c2b526107))
+- extra validations ([f637e0f15](https://github.com/Badminton-Apps/badman/commit/f637e0f15))
+
+### 🩹 Fixes
+
+- setting the correct translations ([20f8209ba](https://github.com/Badminton-Apps/badman/commit/20f8209ba))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.157.1 (2024-07-13)
 
 
