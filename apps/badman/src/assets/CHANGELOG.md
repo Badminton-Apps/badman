@@ -1,3 +1,14 @@
+## 6.157.1 (2024-07-13)
+
+
+### 🩹 Fixes
+
+- don't set the date to current time when empty ([119f1d9fd](https://github.com/Badminton-Apps/badman/commit/119f1d9fd))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.157.0 (2024-07-07)
 
 
