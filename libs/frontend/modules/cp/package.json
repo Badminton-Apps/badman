@@ -2,8 +2,8 @@
   "name": "@badman/frontend-cp",
   "version": "6.158.0",
   "peerDependencies": {
-    "@angular/common": "18.0.6",
-    "@angular/core": "18.0.6",
+    "@angular/common": "18.1.0",
+    "@angular/core": "18.1.0",
     "@badman/frontend-models": "*",
     "file-saver": "^2.0.5",
     "rxjs": "~7.8.1"
