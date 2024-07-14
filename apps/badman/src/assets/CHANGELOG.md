@@ -1,3 +1,14 @@
+## 6.159.0 (2024-07-14)
+
+
+### 🚀 Features
+
+- validating change enounters in backend pt1 ([b9c9a7b56](https://github.com/Badminton-Apps/badman/commit/b9c9a7b56))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.158.0 (2024-07-13)
 
 
