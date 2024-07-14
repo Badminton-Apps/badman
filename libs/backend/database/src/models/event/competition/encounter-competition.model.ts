@@ -2,7 +2,7 @@ import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions,
+  CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -14,6 +14,8 @@ import {
   HasManySetAssociationsMixin,
   HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
+  InferAttributes,
+  InferCreationAttributes,
 } from 'sequelize';
 import {
   BelongsTo,
@@ -34,27 +36,26 @@ import { Notification } from '../../personal';
 import { Player } from '../../player.model';
 import { Team } from '../../team.model';
 import { Game } from '../game.model';
+import { Location } from '../location.model';
 import { Assembly } from './assembly.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EncounterChange } from './encounter-change';
-import { Location } from '../location.model';
 
 @Table({
   timestamps: true,
   schema: 'event',
 })
 @ObjectType({ description: 'A EncounterCompetition' })
-export class EncounterCompetition extends Model {
-  constructor(values?: Partial<EncounterCompetition>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+export class EncounterCompetition extends Model<
+  InferAttributes<EncounterCompetition>,
+  InferCreationAttributes<EncounterCompetition>
+> {
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
@@ -98,7 +99,7 @@ export class EncounterCompetition extends Model {
   @Field(() => Int)
   @Default(0)
   @Column(DataType.NUMBER)
-  homeScore!: number;
+  homeScore!: CreationOptional<number>;
 
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })
@@ -112,7 +113,7 @@ export class EncounterCompetition extends Model {
   @Field(() => Int)
   @Default(0)
   @Column(DataType.NUMBER)
-  awayScore!: number;
+  awayScore!: CreationOptional<number>;
 
   @ForeignKey(() => Team)
   @Field(() => ID, { nullable: true })

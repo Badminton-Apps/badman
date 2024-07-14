@@ -28,7 +28,7 @@ import { RankingSystemService } from '@badman/frontend-graphql';
 import { EncounterCompetition, Player } from '@badman/frontend-models';
 import { PdfService } from '@badman/frontend-pdf';
 import { SeoService } from '@badman/frontend-seo';
-import { getCurrentSeason } from '@badman/utils';
+import { getSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -98,7 +98,7 @@ export class CreatePageComponent {
     });
     // Set for today
     const queryYear = parseInt(this.route.snapshot.queryParams['season'], 10);
-    const year = isNaN(queryYear) ? getCurrentSeason() : queryYear;
+    const year = isNaN(queryYear) ? getSeason() : queryYear;
     const teamControl = new FormControl();
     const encounterControl = new FormControl();
 

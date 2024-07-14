@@ -17,7 +17,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { getUpcommingSeason } from '@badman/utils';
+import { getNextSeason } from '@badman/utils';
 
 import { input } from '@angular/core';
 import { DEVICE } from '@badman/frontend-utils';
@@ -134,7 +134,7 @@ export class LocationComponent implements OnInit {
       created = true;
       this.internalControl = new FormGroup({
         id: new FormControl(),
-        season: new FormControl(getUpcommingSeason()),
+        season: new FormControl(getNextSeason()),
         days: new FormArray([] as LocationavDayType[]),
         exceptions: new FormArray([] as LocationExceptionType[]),
       }) as unknown as LocationAvailibilityForm;

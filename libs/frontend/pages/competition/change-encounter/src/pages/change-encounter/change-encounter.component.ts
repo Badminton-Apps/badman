@@ -13,7 +13,7 @@ import {
 import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { SeoService } from '@badman/frontend-seo';
 import { DEVICE } from '@badman/frontend-utils';
-import { getCurrentSeason } from '@badman/utils';
+import { getSeason } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { takeUntil } from 'rxjs/operators';
@@ -63,7 +63,7 @@ export class ChangeEncounterComponent implements OnInit {
   ngOnInit(): void {
     const params = this.activatedRoute.snapshot.queryParamMap;
     const parsed = parseInt(params?.get('season') || '');
-    const season = isNaN(parsed) ? getCurrentSeason() : parsed;
+    const season = isNaN(parsed) ? getSeason() : parsed;
 
     this.formGroup = new FormGroup({
       season: new FormControl(season),

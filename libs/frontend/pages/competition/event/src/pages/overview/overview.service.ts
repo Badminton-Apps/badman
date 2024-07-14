@@ -3,7 +3,7 @@ import { Injectable, Injector, PLATFORM_ID, TransferState, computed, inject } fr
 import { FormControl, FormGroup } from '@angular/forms';
 import { EventCompetition } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { getCurrentSeason } from '@badman/utils';
+import { getSeason } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge, of } from 'rxjs';
@@ -24,7 +24,7 @@ export class EventOverviewService {
   platformId = inject(PLATFORM_ID);
 
   filter = new FormGroup({
-    season: new FormControl<number>(getCurrentSeason()),
+    season: new FormControl<number>(getSeason()),
     official: new FormControl<boolean>(true),
   });
 

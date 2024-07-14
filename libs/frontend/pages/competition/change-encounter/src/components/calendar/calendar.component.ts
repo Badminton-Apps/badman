@@ -28,7 +28,7 @@ import {
   Location,
   Team,
 } from '@badman/frontend-models';
-import { getCurrentSeason, sortTeams } from '@badman/utils';
+import { getSeason, sortTeams } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -88,6 +88,9 @@ export class CalendarComponent implements OnInit {
   public weekDayNames!: string[];
   public minDate!: Date;
   public maxDate!: Date;
+  public canGoBack = true;
+  public canGoForward = true;
+
   public gridTemplateColumns = '';
 
   public encounters: Map<string, EncounterCompetition[]> = new Map();
@@ -160,7 +163,7 @@ export class CalendarComponent implements OnInit {
       this.firstDayOfMonth = moment();
     }
     this.firstDayOfMonth.startOf('month');
-    this.season = getCurrentSeason(this.firstDayOfMonth);
+    this.season = getSeason(this.firstDayOfMonth);
     this.monthNames = moment.months();
     const weekdays = moment.weekdays();
     this.weekDayNames = [
@@ -762,16 +765,28 @@ export class CalendarComponent implements OnInit {
   public increaseMonth() {
     this.firstDayOfMonth.add(1, 'month');
 
+    if (this.firstDayOfMonth.isSameOrAfter(this.maxDate, 'month')) {
+      this.canGoForward = false;
+    }
+    this.canGoBack = true;
+
     this._loadMonth();
   }
 
   public decreaseMonth() {
     this.firstDayOfMonth.subtract(1, 'month');
+
+    if (this.firstDayOfMonth.isSameOrBefore(this.minDate, 'month')) {
+      this.canGoBack = false;
+    }
+    this.canGoForward = true;
+
     this._loadMonth();
   }
 
   public setCurrentMonth() {
     this.firstDayOfMonth.set('month', moment().get('month'));
+
     this._loadMonth();
   }
 

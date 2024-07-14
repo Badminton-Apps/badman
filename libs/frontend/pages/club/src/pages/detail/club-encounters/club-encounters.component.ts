@@ -17,7 +17,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RouterModule } from '@angular/router';
 import { LoadingBlockComponent, SelectTeamComponent } from '@badman/frontend-components';
 import { EncounterCompetition } from '@badman/frontend-models';
-import { getCurrentSeason, sortEncounters } from '@badman/utils';
+import { getSeason, sortEncounters } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
@@ -58,7 +58,7 @@ export class ClubEncountersComponent implements OnInit {
   filter = input<FormGroup>(
     new FormGroup({
       club: new FormControl(),
-      season: new FormControl(getCurrentSeason()),
+      season: new FormControl(getSeason()),
       teams: new FormControl(),
       onlyHomeGames: new FormControl(true),
       changedDate: new FormControl(false),
@@ -182,7 +182,7 @@ export class ClubEncountersComponent implements OnInit {
     }
 
     if (!this.filter().get('season')?.value) {
-      this.filter().addControl('season', new FormControl(getCurrentSeason()));
+      this.filter().addControl('season', new FormControl(getSeason()));
     }
 
     if (!this.filter().get('changedDate')?.value) {

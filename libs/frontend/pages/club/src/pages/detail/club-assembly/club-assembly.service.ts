@@ -2,7 +2,7 @@ import { Injectable, computed, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { RankingSystemService } from '@badman/frontend-graphql';
 import { Club, Player, Team } from '@badman/frontend-models';
-import { SubEventTypeEnum, getCurrentSeason, sortTeams } from '@badman/utils';
+import { SubEventTypeEnum, getSeason, sortTeams } from '@badman/utils';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -46,7 +46,7 @@ export class ClubAssemblyService {
 
   filter = new FormGroup({
     clubId: new FormControl<string>(''),
-    season: new FormControl(getCurrentSeason()),
+    season: new FormControl(getSeason()),
     choices: new FormControl<string[]>([]),
   });
 
@@ -188,7 +188,7 @@ export class ClubAssemblyService {
     }
 
     const usedRankingDate = moment();
-    usedRankingDate.set('year', filter.season ?? event?.season ?? getCurrentSeason());
+    usedRankingDate.set('year', filter.season ?? event?.season ?? getSeason());
     usedRankingDate.set(event?.usedRankingUnit, event?.usedRankingAmount);
 
     // get first and last of the month

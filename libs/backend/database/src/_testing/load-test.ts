@@ -3,7 +3,7 @@ import {
   RankingSystems,
   SubEventTypeEnum,
   TeamMembershipType,
-  getCurrentSeason,
+  getSeason,
 } from '@badman/utils';
 import { ClubBuilder } from './clubBuilder';
 import { EventCompetitionBuilder } from './eventCompetitionBuilder';
@@ -22,7 +22,7 @@ export async function loadTest() {
   const logger = new Logger(`Testing data`);
   logger.log('Loading test data');
 
-  const season = getCurrentSeason();
+  const season = getSeason();
   logger.debug(`Current season: ${season}`);
 
   const system = addRankingSystem();
