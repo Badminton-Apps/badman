@@ -14,6 +14,7 @@ import {
   BelongsToSetAssociationMixin,
   BuildOptions,
   CreateOptions,
+  CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -23,6 +24,8 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
+  InferAttributes,
+  InferCreationAttributes,
   UpdateOptions,
 } from 'sequelize';
 import {
@@ -59,17 +62,13 @@ import { Relation } from '../../wrapper';
   schema: 'event',
 } as TableOptions)
 @ObjectType({ description: 'A Game' })
-export class Game extends Model {
-  constructor(values?: Partial<Game>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+export class Game extends Model<InferAttributes<Game>, InferCreationAttributes<Game>> {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;

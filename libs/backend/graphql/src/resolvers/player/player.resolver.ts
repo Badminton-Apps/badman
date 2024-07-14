@@ -25,7 +25,7 @@ import {
   TeamPlayerMembership,
   TeamWithPlayerMembershipType,
 } from '@badman/backend-database';
-import { IsUUID, getCurrentSeason, getRankingProtected } from '@badman/utils';
+import { IsUUID, getSeason, getRankingProtected } from '@badman/utils';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { Op } from 'sequelize';
@@ -195,7 +195,7 @@ export class PlayersResolver {
     const args = ListArgs.toFindOptions(listArgs);
 
     args.where = {
-      season: season ?? getCurrentSeason(),
+      season: season ?? getSeason(),
       ...args.where,
     };
 

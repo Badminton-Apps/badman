@@ -86,10 +86,10 @@ export class AssemblyService {
 
   // validate
   private _validate(state: AssemblyState) {
-    return this.apollo.query<{ assemblyValidation: ValidationResult }>({
+    return this.apollo.query<{ validateAssembly: ValidationResult }>({
       query: gql`
         query AssemblyValidation($assembly: AssemblyInput!) {
-          assemblyValidation(assembly: $assembly) {
+          validateAssembly(assembly: $assembly) {
             baseTeamIndex
             baseTeamPlayers {
               id
@@ -335,21 +335,21 @@ export class AssemblyService {
           map((data) => {
             return {
               titulars: {
-                index: data.data?.assemblyValidation.titularsIndex ?? 0,
-                players: data.data?.assemblyValidation.titularsPlayers?.map((p) => ({
+                index: data.data?.validateAssembly.titularsIndex ?? 0,
+                players: data.data?.validateAssembly.titularsPlayers?.map((p) => ({
                   ...p,
                   sum: p.single + p.double + ((state()?.team?.type ?? 'MX') === 'MX' ? p.mix : 0),
                 })),
               },
               base: {
-                index: data.data?.assemblyValidation.baseTeamIndex ?? 0,
-                players: data.data?.assemblyValidation.baseTeamPlayers?.map((p) => ({
+                index: data.data?.validateAssembly.baseTeamIndex ?? 0,
+                players: data.data?.validateAssembly.baseTeamPlayers?.map((p) => ({
                   ...p,
                   sum: p.single + p.double + ((state()?.team?.type ?? 'MX') === 'MX' ? p.mix : 0),
                 })),
               },
-              errors: data.data?.assemblyValidation.errors ?? [],
-              warnings: data.data?.assemblyValidation.warnings ?? [],
+              errors: data.data?.validateAssembly.errors ?? [],
+              warnings: data.data?.validateAssembly.warnings ?? [],
               loaded: true,
             } as AssemblyState;
           }),

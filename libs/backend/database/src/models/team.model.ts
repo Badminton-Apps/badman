@@ -13,6 +13,7 @@ import {
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
   CreateOptions,
+  CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -24,6 +25,8 @@ import {
   HasManySetAssociationsMixin,
   HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
+  InferAttributes,
+  InferCreationAttributes,
 } from 'sequelize';
 import {
   BeforeBulkCreate,
@@ -70,13 +73,13 @@ import { TeamPlayerMembership } from './team-player-membership.model';
 //   InferAttributes<Team>,
 //   InferCreationAttributes<Team>
 // >
-export class Team extends Model {
-  @Field(() => ID)
+export class Team extends Model<InferAttributes<Team>, InferCreationAttributes<Team>> {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
+  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
@@ -101,7 +104,7 @@ export class Team extends Model {
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @Column(DataType.UUIDV4)
-  link!: string;
+  link!: CreationOptional<string>;
 
   @Field(() => String, { nullable: true })
   @Column(
@@ -176,7 +179,7 @@ export class Team extends Model {
   @Field(() => Int)
   @Unique('unique_constraint')
   @Column({ type: DataType.NUMBER, defaultValue: 1 })
-  teamNumber!: number;
+  teamNumber!: CreationOptional<number>;
 
   @HasMany(() => EncounterCompetition, 'homeTeamId')
   homeEncounters?: Relation<EncounterCompetition>;

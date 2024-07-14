@@ -34,6 +34,11 @@ import { Mutation } from '@nestjs/graphql';
 import { Queue } from 'bull';
 import { Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
+import {
+  ChangeEncounterInput,
+  ChangeEncounterOutput,
+  ChangeEncounterValidationService,
+} from '@badman/backend-change-encounter';
 
 @ObjectType()
 export class PagedEncounterChange {
@@ -47,10 +52,12 @@ export class PagedEncounterChange {
 @Resolver(() => EncounterChange)
 export class EncounterChangeCompetitionResolver {
   private readonly logger = new Logger(EncounterChangeCompetitionResolver.name);
+
   constructor(
     private _sequelize: Sequelize,
     @InjectQueue(SyncQueue) private syncQueue: Queue,
     private notificationService: NotificationService,
+    private changeEncounterService: ChangeEncounterValidationService,
   ) {}
 
   @Query(() => EncounterChange)
@@ -68,6 +75,18 @@ export class EncounterChangeCompetitionResolver {
     @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EncounterChange[] }> {
     return EncounterChange.findAndCountAll(ListArgs.toFindOptions(listArgs));
+  }
+
+  @Query(() => ChangeEncounterOutput, {
+    description: `Validate the ChangeEncounter`,
+  })
+  async validateChangeEncounter(
+    @Args('ChangeEncounter') data: ChangeEncounterInput,
+  ): Promise<ChangeEncounterOutput> {
+    return this.changeEncounterService.fetchAndValidate(
+      data,
+      ChangeEncounterValidationService.defaultValidators(),
+    );
   }
 
   @ResolveField(() => [EncounterChangeDate])
