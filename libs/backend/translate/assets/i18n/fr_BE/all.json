@@ -100,7 +100,7 @@
         "invalid": "Veuillez compléter toutes les disponibilités avant d'envoyer",
         "not-accepted": "La proposition n'a pas encore été acceptée",
         "same-club": "La rencontre contre son propre club devrait être jouée en premier",
-        "same-semester": "La rencontre à domicile et à l'extérieur se déroule dans la même moitié de terrain, ce qui peut ne pas être le cas.",
+        "same-semester": "La rencontre à domicile et à l'extérieur se déroule dans la même moitié du match.",
         "same-semester-date": "Cette date garantit que le match à domicile et le match à l'extérieur se déroulent au cours du même semestre ; n'oubliez pas de reprogrammer l'autre match également.",
         "select-one-date": "Veuillez sélectionner au moins 1 jour",
         "select-one-date-or-comment": "Veuillez commenter (au moins 15 caractères) ou choisir une date."

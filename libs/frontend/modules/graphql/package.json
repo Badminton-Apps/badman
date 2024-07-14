@@ -2,8 +2,8 @@
   "name": "@badman/frontend-graphql",
   "version": "6.158.0",
   "peerDependencies": {
-    "@angular/common": "18.0.6",
-    "@angular/core": "18.0.6",
+    "@angular/common": "18.1.0",
+    "@angular/core": "18.1.0",
     "@auth0/auth0-angular": "~2.2.3",
     "apollo-angular": "^7.0.1",
     "crypto-hash": "^3.0.0",
@@ -11,7 +11,7 @@
     "@badman/frontend-models": "*",
     "@apollo/client": "^3.10.3",
     "ngxtension": "^3.5.5",
-    "@angular/router": "18.0.6"
+    "@angular/router": "18.1.0"
   },
   "dependencies": {},
   "sideEffects": false
