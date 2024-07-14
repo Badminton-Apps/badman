@@ -5,11 +5,13 @@ import moment from 'moment';
 import {
   BelongsToGetAssociationMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions,
+  CreationOptional,
   HasOneGetAssociationMixin,
   HasOneSetAssociationMixin,
+  InferAttributes,
+  InferCreationAttributes,
   Op,
-  SaveOptions,
+  SaveOptions
 } from 'sequelize';
 import {
   BeforeCreate,
@@ -27,13 +29,13 @@ import {
   TableOptions,
 } from 'sequelize-typescript';
 import { EntryMetaType } from '../../types';
+import { Relation } from '../../wrapper';
 import { Player } from '../player.model';
 import { RankingPlace, RankingSystem } from '../ranking';
 import { Team } from '../team.model';
 import { DrawCompetition, EventCompetition, SubEventCompetition } from './competition';
 import { Standing } from './standing.model';
 import { DrawTournament, SubEventTournament } from './tournament';
-import { Relation } from '../../wrapper';
 
 @Table({
   timestamps: true,
@@ -41,17 +43,16 @@ import { Relation } from '../../wrapper';
   tableName: 'Entries',
 } as TableOptions)
 @ObjectType({ description: 'A EventEntry' })
-export class EventEntry extends Model {
-  constructor(values?: Partial<EventEntry>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+export class EventEntry extends Model<
+  InferAttributes<EventEntry>,
+  InferCreationAttributes<EventEntry>
+> {
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
@@ -77,7 +78,7 @@ export class EventEntry extends Model {
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  player1Id!: string;
+  player1Id?: string;
 
   @BelongsTo(() => Player, 'player2Id')
   player2?: Relation<Player>;
@@ -85,7 +86,7 @@ export class EventEntry extends Model {
   @ForeignKey(() => Player)
   @Field(() => ID, { nullable: true })
   @Column(DataType.UUIDV4)
-  player2Id!: string;
+  player2Id?: string;
 
   @Field(() => Date, { nullable: true })
   @Column({ type: DataType.DATE })

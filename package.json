@@ -214,7 +214,7 @@
     "jsonc-eslint-parser": "^2.4.0",
     "ng-packagr": "18.1.0",
     "nx": "19.4.3",
-    "prettier": "^3.3.3",
+    "prettier": "3.3.2",
     "redis-memory-server": "^0.11.0",
     "supertest": "^7.0.0",
     "swc-loader": "^0.2.6",

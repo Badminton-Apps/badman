@@ -2,10 +2,10 @@
   <div class="top-row">
     <div class="buttons">
       <button mat-stroked-button (click)="setCurrentMonth()">Today</button>
-      <button mat-icon-button (click)="decreaseMonth()">
+      <button mat-icon-button (click)="decreaseMonth()" [disabled]="!this.canGoBack">
         <mat-icon>chevron_left</mat-icon>
       </button>
-      <button mat-icon-button (click)="increaseMonth()">
+      <button mat-icon-button (click)="increaseMonth()" [disabled]="!this.canGoForward">
         <mat-icon>chevron_right</mat-icon>
       </button>
       <div>
