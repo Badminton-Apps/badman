@@ -1,12 +1,12 @@
 {
   "name": "@badman/backend-enrollment",
-  "version": "6.158.0",
+  "version": "6.159.0",
   "dependencies": {
     "tslib": "^2.3.0",
     "@nestjs/common": "^10.3.1",
     "fastify": "^4.26.0",
-    "@badman/backend-database": "6.158.0",
-    "@badman/utils": "6.158.0",
+    "@badman/backend-database": "6.159.0",
+    "@badman/utils": "6.159.0",
     "@nestjs/graphql": "^12.2.0",
     "@nestjs/config": "^3.2.3",
     "graphql-type-json": "^0.3.2",
