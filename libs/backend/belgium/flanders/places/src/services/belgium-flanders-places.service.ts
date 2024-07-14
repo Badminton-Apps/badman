@@ -328,7 +328,7 @@ export class BelgiumFlandersPlacesService {
   }
 
   private _findPointsAverage(rankingPoints: RankingPoint[], limitMinGames?: number) {
-    const avgPoints = rankingPoints.map((x) => x.points).filter((x) => x === 0);
+    const avgPoints = rankingPoints.map((x) => x.points).filter((x) => x === 0) as number[];
     const wonPoints = rankingPoints
       .filter((x) => (x.points ?? 0) > 0)
       .sort((a, b) => (b.points ?? 0) - (a.points ?? 0));
@@ -336,7 +336,7 @@ export class BelgiumFlandersPlacesService {
 
     wonPoints.forEach((element) => {
       // add new point
-      avgPoints.push(element.points);
+      avgPoints.push(element.points ?? 0);
       const sum = avgPoints.reduce((a, b) => (a ?? 0) + (b ?? 0), 0) ?? 0;
       const gamesToUse = limitMinGames
         ? avgPoints.length < limitMinGames

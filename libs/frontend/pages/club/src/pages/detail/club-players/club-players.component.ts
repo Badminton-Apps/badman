@@ -15,7 +15,7 @@ import { RouterModule } from '@angular/router';
 import { LoadingBlockComponent, SelectSeasonComponent } from '@badman/frontend-components';
 import { Club, Player } from '@badman/frontend-models';
 import { transferState } from '@badman/frontend-utils';
-import { getCurrentSeason } from '@badman/utils';
+import { getSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { combineLatest } from 'rxjs';
@@ -53,7 +53,7 @@ export class ClubPlayersComponent implements OnInit {
   clubId = input.required<string>();
   filter = input<FormGroup>(
     new FormGroup({
-      season: new FormControl(getCurrentSeason()),
+      season: new FormControl(getSeason()),
     }),
   );
 

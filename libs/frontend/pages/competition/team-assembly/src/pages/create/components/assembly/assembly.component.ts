@@ -840,10 +840,10 @@ export class AssemblyComponent implements OnInit {
 
   private _checkAssembly() {
     return this.apollo
-      .query<{ assemblyValidation: ValidationResult }>({
+      .query<{ validateAssembly: ValidationResult }>({
         query: gql`
-          query AssemblyValidation($assembly: AssemblyInput!) {
-            assemblyValidation(assembly: $assembly) {
+          query ValidateAssembly($assembly: AssemblyInput!) {
+            validateAssembly(assembly: $assembly) {
               baseTeamIndex
               baseTeamPlayers {
                 id
@@ -906,11 +906,11 @@ export class AssemblyComponent implements OnInit {
       })
       .pipe(
         map((result) => {
-          if (!result.data.assemblyValidation) {
+          if (!result.data.validateAssembly) {
             throw new Error('No assemblyValidation');
           }
 
-          return result.data.assemblyValidation;
+          return result.data.validateAssembly;
         }),
       );
   }

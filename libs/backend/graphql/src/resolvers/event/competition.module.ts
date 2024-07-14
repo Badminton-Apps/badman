@@ -15,6 +15,7 @@ import {
   EventCompetitionResolver,
   SubEventCompetitionResolver,
 } from './competition';
+import { ChangeEncounterModule } from '@badman/backend-change-encounter';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import {
     NotificationsModule,
     QueueModule,
     AssemblyModule,
+    ChangeEncounterModule,
     EnrollmentModule,
     RankingModule,
     CacheModule,

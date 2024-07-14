@@ -1,13 +1,13 @@
 import moment from 'moment';
 
-export const getCurrentSeasonPeriod = (season?: number) => {
+export const getSeasonPeriod = (season?: number) => {
   if (!season) {
-    season = getCurrentSeason();
+    season = getSeason();
   }
   return [`${season}-09-01`, `${season + 1}-05-01`] as const;
 };
 
-export const getCurrentSeason = (inputDate?: Date | moment.Moment) => {
+export const getSeason = (inputDate?: Date | moment.Moment) => {
   let date = moment(inputDate);
   if (!date.isValid()) {
     date = moment();
@@ -16,7 +16,7 @@ export const getCurrentSeason = (inputDate?: Date | moment.Moment) => {
   return date.month() >= 4 ? date.year() : date.year() - 1;
 };
 
-export const getUpcommingSeason = (inputDate?: Date | moment.Moment) => {
+export const getNextSeason = (inputDate?: Date | moment.Moment) => {
   let date = moment(inputDate);
   if (!date.isValid()) {
     date = moment();

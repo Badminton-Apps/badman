@@ -23,6 +23,7 @@
       "@badman/backend-compile": ["libs/backend/compile/src/index.ts"],
       "@badman/backend-database": ["libs/backend/database/src/index.ts"],
       "@badman/backend-enrollment": ["libs/backend/competition/enrollment/src/index.ts"],
+      "@badman/backend-change-encounter": ["libs/backend/competition/change-encounter/src/index.ts"],
       "@badman/backend-generator": ["libs/backend/generator/src/index.ts"],
       "@badman/backend-graphql": ["libs/backend/graphql/src/index.ts"],
       "@badman/backend-health": ["libs/backend/health/src/index.ts"],

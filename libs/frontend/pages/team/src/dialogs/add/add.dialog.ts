@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Team, TeamPlayer, Location } from '@badman/frontend-models';
-import { SubEventType, getCurrentSeason } from '@badman/utils';
+import { SubEventType, getSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { TeamFieldComponent, TeamPlayersComponent } from '../../components';
@@ -48,7 +48,7 @@ export class AddDialogComponent {
         phone: this.fb.control(this.data.team?.phone),
         email: this.fb.control(this.data.team?.email),
         clubId: this.fb.control(this.data.team?.clubId),
-        season: this.fb.control(this.data.team?.season ?? getCurrentSeason()),
+        season: this.fb.control(this.data.team?.season ?? getSeason()),
         players: this.fb.array([]),
 
         preferredDay: this.fb.control(this.data.team?.preferredDay),

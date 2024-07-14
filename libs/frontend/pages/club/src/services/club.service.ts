@@ -1,7 +1,7 @@
 import { Injectable, computed, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Club, Player } from '@badman/frontend-models';
-import { getCurrentSeason } from '@badman/utils';
+import { getSeason } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge, of } from 'rxjs';
@@ -36,7 +36,7 @@ export class ClubDetailService {
 
   filter = new FormGroup({
     clubId: new FormControl<string>(''),
-    season: new FormControl(getCurrentSeason()),
+    season: new FormControl(getSeason()),
   });
 
   club = computed(() => this.state().club);

@@ -39,16 +39,17 @@ import {
   EncounterChangeDate,
   EncounterCompetition,
 } from '@badman/frontend-models';
-import { ChangeEncounterAvailability, getCurrentSeasonPeriod } from '@badman/utils';
+import { ChangeEncounterAvailability, getSeasonPeriod } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { Observable, lastValueFrom, of } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
 import { RequestDateComponent } from '../request-date/request-date.component';
+import { injectDestroy } from 'ngxtension/inject-destroy';
 
 const CHANGE_QUERY = gql`
   query EncounterChange($id: ID!) {
@@ -96,6 +97,7 @@ const CHANGE_QUERY = gql`
   ],
 })
 export class ShowRequestsComponent implements OnInit {
+  private readonly destroy$ = injectDestroy();
   private readonly apollo = inject(Apollo);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
@@ -125,6 +127,24 @@ export class ShowRequestsComponent implements OnInit {
 
   requests$!: Observable<EncounterChange>;
   @ViewChild('confirm', { static: true }) confirmDialog!: TemplateRef<unknown>;
+
+  validation = signal<{
+    valid: boolean;
+    errors: {
+      params: { [key: string]: unknown };
+      message: string;
+    }[];
+    warnings: {
+      params: { [key: string]: unknown };
+      message: string;
+    }[];
+  }>({
+    valid: true,
+    errors: [],
+    warnings: [],
+  });
+
+  warnings = computed(() => this.validation()?.warnings ?? []);
 
   async ngOnInit() {
     this.previous = this.group().get(this.dependsOn()) ?? undefined;
@@ -189,12 +209,74 @@ export class ShowRequestsComponent implements OnInit {
             accepted: new FormControl(encounterChange?.accepted),
           });
 
+          this.formGroupRequest.valueChanges
+            .pipe(
+              takeUntil(this.destroy$),
+              switchMap(() => this.validate()),
+            )
+            .subscribe((result) => {
+              console.log(`Setting`, result);
+              this.validation.set(result);
+            });
+
           encounterChange?.dates?.map((r) => this._addDateControl(r));
         }),
       );
     } else {
       console.warn(`Dependency ${this.dependsOn()} not found`, this.previous);
     }
+  }
+  getWarnings(date: Date) {
+    console.log(date);
+
+    return computed(() =>
+      this.warnings().filter(
+        (r) =>
+          moment(`${r.params['date']}`).isSame(date, 'day') &&
+          r.params['encounterId'] == this.encounter.id,
+      ),
+    );
+  }
+
+  validate() {
+    return this.apollo
+      .query<{
+        validateChangeEncounter: {
+          valid: boolean;
+          errors: {
+            params: { [key: string]: unknown };
+            message: string;
+          }[];
+          warnings: {
+            params: { [key: string]: unknown };
+            message: string;
+          }[];
+        };
+      }>({
+        query: gql`
+          query ValidateChangeEncounter($data: ChangeEncounterInput!) {
+            validateChangeEncounter(ChangeEncounter: $data) {
+              valid
+              errors {
+                message
+                params
+              }
+              warnings {
+                message
+                params
+              }
+            }
+          }
+        `,
+        variables: {
+          data: {
+            teamId: this.group().get('team')?.value,
+            workingencounterId: this.encounter.id,
+            suggestedDates: this.dateControls.getRawValue().map((r) => r['calendar'].date),
+          },
+        },
+      })
+      ?.pipe(map((r) => r.data?.validateChangeEncounter));
   }
 
   addDate() {
@@ -211,7 +293,7 @@ export class ShowRequestsComponent implements OnInit {
     }
 
     let newDate = moment(lastDate).add(1, 'week');
-    const period = getCurrentSeasonPeriod()?.map((d) => moment(d));
+    const period = getSeasonPeriod()?.map((d) => moment(d));
     if (newDate.isAfter(period[1])) {
       newDate = period[1].subtract(1, 'day');
     }

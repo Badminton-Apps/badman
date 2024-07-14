@@ -67,8 +67,21 @@ export class ListEncountersComponent implements OnInit {
   encountersSem1!: EncounterCompetition[];
   encountersSem2!: EncounterCompetition[];
 
-  sameSemEncounters: EncounterCompetition[] = [];
-  sameClubEncounter: EncounterCompetition[] = [];
+  validation: {
+    valid: boolean;
+    errors: {
+      params: { [key: string]: unknown };
+      message: string;
+    }[];
+    warnings: {
+      params: { [key: string]: unknown };
+      message: string;
+    }[];
+  } = {
+    valid: true,
+    errors: [],
+    warnings: [],
+  };
 
   ngOnInit() {
     if (this.control() != undefined) {
@@ -119,11 +132,23 @@ export class ListEncountersComponent implements OnInit {
             if (next && next.length === 36) {
               return this._loadTeams(next);
             } else {
-              return of([]);
+              return of({
+                encounters: [],
+                validateChangeEncounter: {
+                  valid: false,
+                  errors: [
+                    {
+                      message: 'all.competition.change-encounter.errors.no-team-selected',
+                      params: {},
+                    },
+                  ],
+                  warnings: [],
+                },
+              });
             }
           }),
         )
-        .subscribe((encounters) => {
+        .subscribe(({ encounters, validateChangeEncounter }) => {
           // the encoutners should be devided in 2 years,
           // semester 1 = lowest year
           // semester 2 = highest year
@@ -135,21 +160,8 @@ export class ListEncountersComponent implements OnInit {
 
           this.encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear);
 
-          const teamId = depends.value;
-          if (teamId) {
-            this.sameSemEncounters.push(
-              ...this.findEncountersInSameSemester(this.encountersSem1, teamId),
-            );
-            this.sameSemEncounters.push(
-              ...this.findEncountersInSameSemester(this.encountersSem2, teamId),
-            );
-
-            this.sameClubEncounter.push(
-              ...this.findEncountersForSameClubThatarenotfirst2(this.encountersSem1, teamId),
-            );
-            this.sameClubEncounter.push(
-              ...this.findEncountersForSameClubThatarenotfirst2(this.encountersSem2, teamId),
-            );
+          if (validateChangeEncounter) {
+            this.validation = validateChangeEncounter;
           }
 
           const params = this.activatedRoute.snapshot.queryParams;
@@ -182,19 +194,25 @@ export class ListEncountersComponent implements OnInit {
       };
     }
 
-    if (this.sameSemEncounters.some((r) => r.id === encounter.id)) {
+    const errors = this.validation.errors.filter((e) => e.params['encounterId'] == encounter.id);
+
+    if (errors.length > 0) {
       return {
         icon: 'error',
         class: 'error',
-        tooltip: 'all.competition.change-encounter.errors.same-semester',
+        tooltip: errors[0].message,
       };
     }
 
-    if (this.sameClubEncounter.some((r) => r.id === encounter.id)) {
+    const warnings = this.validation.warnings.filter(
+      (e) => e.params['encounterId'] == encounter.id,
+    );
+
+    if (warnings.length > 0) {
       return {
-        icon: 'error',
-        class: 'error',
-        tooltip: 'all.competition.change-encounter.errors.same-club',
+        icon: 'warning',
+        class: 'warning',
+        tooltip: warnings[0].message,
       };
     }
 
@@ -202,73 +220,6 @@ export class ListEncountersComponent implements OnInit {
       icon: 'check',
       tooltip: '',
     };
-  }
-
-  findEncountersInSameSemester(encounters: EncounterCompetition[], currentTeamId: string) {
-    const teamEncounterMap: Record<string, EncounterCompetition[]> = {};
-
-    for (const encounter of encounters) {
-      const homeTeamId = encounter.home?.id;
-      const awayTeamId = encounter.away?.id;
-
-      if (!homeTeamId || !awayTeamId || !encounter.id) {
-        continue;
-      }
-
-      if (!teamEncounterMap[homeTeamId]) {
-        teamEncounterMap[homeTeamId] = [];
-      }
-
-      if (!teamEncounterMap[awayTeamId]) {
-        teamEncounterMap[awayTeamId] = [];
-      }
-
-      teamEncounterMap[homeTeamId].push(encounter);
-      teamEncounterMap[awayTeamId].push(encounter);
-    }
-
-    const errors = [];
-
-    for (const teamId in teamEncounterMap) {
-      if (teamId == currentTeamId) {
-        continue;
-      }
-      const encounters = teamEncounterMap[teamId];
-
-      if (encounters.length > 1) {
-        errors.push(encounters);
-      }
-    }
-
-    return errors.flat();
-  }
-
-  findEncountersForSameClubThatarenotfirst2(
-    encounters: EncounterCompetition[],
-    currentTeamId: string,
-  ) {
-    const firstEnc = encounters[0];
-    // pick the first encounter to get the current club id
-    const currentClubId =
-      firstEnc.home?.id == currentTeamId ? firstEnc.home?.clubId : firstEnc.away?.clubId;
-
-    if (!currentClubId) {
-      return [];
-    }
-
-    const errors = [];
-    let differentClubOppend = false;
-    for (const enc of encounters) {
-      const otherClub = enc.home?.id == currentTeamId ? enc.away?.clubId : enc.home?.clubId;
-
-      if (otherClub != currentClubId) {
-        differentClubOppend = true;
-      } else if (differentClubOppend) {
-        errors.push(enc);
-      }
-    }
-
-    return errors;
   }
 
   selectEncounter(event: EncounterCompetition) {
@@ -312,9 +263,24 @@ export class ListEncountersComponent implements OnInit {
     return this.apollo
       .query<{
         encounterCompetitions: { rows: EncounterCompetition[] };
+        validateChangeEncounter: {
+          valid: boolean;
+          errors: {
+            params: { [key: string]: unknown };
+            message: string;
+          }[];
+          warnings: {
+            params: { [key: string]: unknown };
+            message: string;
+          }[];
+        };
       }>({
         query: gql`
-          query ListEncounterQuery($where: JSONObject, $order: [SortOrderType!]) {
+          query ListEncounterQuery(
+            $where: JSONObject
+            $order: [SortOrderType!]
+            $changeEncounter: ChangeEncounterInput!
+          ) {
             encounterCompetitions(where: $where, order: $order) {
               rows {
                 id
@@ -355,6 +321,18 @@ export class ListEncountersComponent implements OnInit {
                 }
               }
             }
+
+            validateChangeEncounter(ChangeEncounter: $changeEncounter) {
+              valid
+              errors {
+                message
+                params
+              }
+              warnings {
+                message
+                params
+              }
+            }
           }
         `,
         variables: {
@@ -363,6 +341,9 @@ export class ListEncountersComponent implements OnInit {
               homeTeamId: teamId,
               awayTeamId: teamId,
             },
+          },
+          changeEncounter: {
+            teamId,
           },
           // For easy viewing in network tab
           order: [
@@ -374,24 +355,29 @@ export class ListEncountersComponent implements OnInit {
         },
       })
       .pipe(
-        map((result) =>
-          result.data.encounterCompetitions?.rows.map((r) => new EncounterCompetition(r)),
-        ),
-        map((e) =>
-          e.sort((a, b) => {
+        map((result) => ({
+          encounters: result.data.encounterCompetitions?.rows.map(
+            (r) => new EncounterCompetition(r),
+          ),
+          validateChangeEncounter: result.data.validateChangeEncounter,
+        })),
+        map((e) => ({
+          ...e,
+          encounters: e.encounters.sort((a, b) => {
             if (!a.date || !b.date) {
               throw new Error('No date');
             }
 
             return a.date.getTime() - b.date.getTime();
           }),
-        ),
-        map((e) => {
-          return e?.map((r) => {
+        })),
+        map((e) => ({
+          ...e,
+          encounters: e.encounters?.map((r) => {
             r.showingForHomeTeam = r.home?.id === teamId;
             return r;
-          });
-        }),
+          }),
+        })),
       );
   }
 }

@@ -61,7 +61,27 @@ export class GameExportService {
     return encounters;
   }
 
-  async gamesExport(year: number, clubId: string) {
+  async gamesExport(
+    year: number,
+    clubId: string,
+  ): Promise<
+    {
+      'Game id': string;
+      Type: string;
+      Seizoen: string;
+      Datum: string;
+      'Start tijdstip': string;
+      'Eind tijdstip': string;
+      'Tijdstip afspraak': string;
+      Thuisteam: string | undefined;
+      Uitteam: string | undefined;
+      Resource: null;
+      'Part (%)': null;
+      Omschrijving: null;
+      Score: string | null;
+      'Score details': null;
+    }[]
+  > {
     const games = await this.getGames(year, clubId);
 
     // Write to csv file
