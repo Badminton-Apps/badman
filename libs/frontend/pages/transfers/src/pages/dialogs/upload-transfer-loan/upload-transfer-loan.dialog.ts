@@ -18,7 +18,7 @@ import { lastValueFrom, Subscription } from 'rxjs';
 import { TRANSFERLOAN_CONFIG } from '../../../injection';
 import { ITransferLoanConfig } from '../../../interfaces/transfer-loan-config.interface';
 import { SelectSeasonComponent } from '@badman/frontend-components';
-import { getCurrentSeason } from '@badman/utils';
+import { getSeason } from '@badman/utils';
 
 @Component({
   selector: 'badman-upload-transfer-loan',
@@ -59,7 +59,7 @@ export class UploadTransferLoanDialogComponent {
   uploadProgress$?: Subscription;
 
   transferOrLoan: 'transfer' | 'loan' | null = null;
-  season: number = getCurrentSeason();
+  season: number = getSeason();
 
   onDragOver(event: DragEvent) {
     event.preventDefault();

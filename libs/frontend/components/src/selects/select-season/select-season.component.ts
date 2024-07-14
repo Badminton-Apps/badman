@@ -16,7 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { transferState } from '@badman/frontend-utils';
-import { getCurrentSeason } from '@badman/utils';
+import { getSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, startWith } from 'rxjs/operators';
@@ -69,7 +69,7 @@ export class SelectSeasonComponent implements OnInit {
     }
 
     if (!this.internalControl) {
-      this.internalControl = new FormControl<number>(this.value() ?? getCurrentSeason()) as FormControl<number>;
+      this.internalControl = new FormControl<number>(this.value() ?? getSeason()) as FormControl<number>;
     }
 
     if (this.group()) {
@@ -108,7 +108,7 @@ export class SelectSeasonComponent implements OnInit {
           }),
         ),
       {
-        initialValue: [getCurrentSeason()],
+        initialValue: [getSeason()],
         injector: this.injector,
       },
     );

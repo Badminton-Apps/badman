@@ -42,6 +42,7 @@
                     [group]="date"
                     [encounter]="this.encounter"
                     [home]="this.home"
+                    [warnings]="this.getWarnings(date?.value?.calendar?.date)()"
                     (removeDate)="this.removeDate(dateControls, i)"
                   ></badman-request-date>
                 }
@@ -55,11 +56,11 @@
                           | i18nPlural
                             : {
                                 '=1': 'all.competition.change-encounter.show-not-availible.singular',
-                                other: 'all.competition.change-encounter.show-not-availible.plural'
+                                other: 'all.competition.change-encounter.show-not-availible.plural',
                               }
                           | translate
                             : {
-                                count: dateControlsNotAvailible.controls.length
+                                count: dateControlsNotAvailible.controls.length,
                               }
                       }}
                     </mat-panel-title>

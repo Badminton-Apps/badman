@@ -32,6 +32,7 @@ module.exports = {
       ],
       optimization: process.env['NODE_ENV'] === 'production',
       outputHashing: 'none',
+      sourceMap: true // Added source map to output (will not work without this)
     }),
   ],
 };

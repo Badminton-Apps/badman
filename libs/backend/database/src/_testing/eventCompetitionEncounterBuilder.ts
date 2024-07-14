@@ -11,7 +11,6 @@ export class EncounterCompetitionBuilder {
   private games: GameBuilder[] = [];
   private homeTeam?: TeamBuilder;
   private awayTeam?: TeamBuilder;
-  private draw?: DrawCompetitionBuilder;
 
   constructor(id?: string) {
     this.encounter = new EncounterCompetition({ id });

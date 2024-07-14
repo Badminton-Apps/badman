@@ -17,7 +17,7 @@ import {
   LevelType,
   SubEventTypeEnum,
   endOfSeason,
-  getUpcommingSeason,
+  getNextSeason,
   startOfSeason,
 } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -128,7 +128,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup = new FormGroup({
     // internal
-    [SEASON]: new FormControl(getUpcommingSeason(), [Validators.required]),
+    [SEASON]: new FormControl(getNextSeason(), [Validators.required]),
 
     // Setps
     [CLUB]: this.clubControl,
@@ -146,7 +146,7 @@ export class TeamEnrollmentComponent implements OnInit, OnDestroy {
   saving = false;
 
   constructor() {
-    this.dataService.state.setSeason(getUpcommingSeason());
+    this.dataService.state.setSeason(getNextSeason());
 
     effect(() => {
       if (!this.allLoaded()) {

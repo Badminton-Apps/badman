@@ -96,10 +96,12 @@
       "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "errors": {
+        "date-out-of-period": "De datum ligt buiten de toegelaten periode (september tot mei)",
         "invalid": "Gelieve alle beschikbaarheid aan te vullen voor het versturen.",
         "not-accepted": "Het voorstel is nog niet geaccepteerd",
         "same-club": "De ontmoeting tegen eigen club moeten als eerste gespeeld worden",
-        "same-semester": "De thuis en uit ontmoeting ligt in de zelfde speelhelft, dit mag niet",
+        "same-semester": "De thuis en uit ontmoeting ligt in de zelfde speelhelft",
+        "same-semester-date": "Deze datum zorgt er voor dat de thuis en uit wedstrijd in het zelfde semester vallen, vergeet niet de andere wedstrijd ook te verleggen",
         "select-one-date": "Gelieve minstens 1 dag te selecteren.",
         "select-one-date-or-comment": "Gelieve opmerking te geven (minstens 15 karakters) of een datum te kiezen."
       },

@@ -40,6 +40,13 @@
         </button>
       </div>
     }
+    @if ((this.warnings()?.length ?? 0) > 0) {
+      <div class="warnings">
+        <mat-icon color="warn" matTooltipClass="tooltip-multi-line" [matTooltip]="tootltip()"
+          >warning</mat-icon
+        >
+      </div>
+    }
     @if (
       encounter().locationId &&
       this.group().get('calendar')?.value?.locationId &&

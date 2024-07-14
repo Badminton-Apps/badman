@@ -45,7 +45,7 @@ import {
   SubEventType,
   SubEventTypeEnum,
   UseForTeamName,
-  getCurrentSeason,
+  getSeason,
   sortTeams,
 } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
@@ -148,7 +148,7 @@ export class EditPageComponent {
   newTeamForm?: FormGroup;
   clubGroup!: ClubFieldsForm;
 
-  seasons = [getCurrentSeason()];
+  seasons = [getSeason()];
 
   eventTypes = Object.values(SubEventTypeEnum);
   selectNumbers: number[] = [];
@@ -228,7 +228,7 @@ export class EditPageComponent {
     this._getYears().then((years) => {
       if (years.length > 0) {
         this.seasons = years;
-        this.season.setValue(getCurrentSeason());
+        this.season.setValue(getSeason());
       }
     });
 

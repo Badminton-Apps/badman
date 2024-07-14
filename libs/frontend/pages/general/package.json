@@ -2,11 +2,11 @@
   "name": "@badman/frontend-general",
   "version": "6.158.0",
   "peerDependencies": {
-    "@angular/common": "18.0.6",
-    "@angular/core": "18.0.6",
-    "@angular/router": "18.0.6",
+    "@angular/common": "18.1.0",
+    "@angular/core": "18.1.0",
+    "@angular/router": "18.1.0",
     "ngx-markdown": "^18.0.0",
-    "@angular/forms": "18.0.6",
+    "@angular/forms": "18.1.0",
     "@badman/frontend-components": "*",
     "@badman/frontend-seo": "*",
     "apollo-angular": "^7.0.1",
@@ -14,7 +14,7 @@
     "rxjs": "~7.8.1",
     "@badman/frontend-models": "*",
     "@badman/frontend-utils": "*",
-    "@angular/material": "18.0.6"
+    "@angular/material": "18.1.0"
   },
   "dependencies": {},
   "sideEffects": false
