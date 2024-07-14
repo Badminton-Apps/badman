@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-pdf",
-  "version": "6.158.0",
+  "version": "6.159.0",
   "peerDependencies": {
     "@angular/common": "18.1.0",
     "@angular/core": "18.1.0"
