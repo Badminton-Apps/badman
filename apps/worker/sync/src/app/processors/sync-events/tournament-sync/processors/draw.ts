@@ -114,7 +114,7 @@ export class TournamentSyncDrawProcessor extends StepProcessor {
         await Game.findAll({
           attributes: ['id'],
           where: {
-            drawId: removed.id,
+            linkId: removed.id,
           },
           transaction: this.transaction,
         })
