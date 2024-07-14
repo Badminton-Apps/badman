@@ -103,10 +103,12 @@ export type I18nTranslations = {
                 "description": string;
                 "disclaimer-submit": string;
                 "errors": {
+                    "date-out-of-period": string;
                     "invalid": string;
                     "not-accepted": string;
                     "same-club": string;
                     "same-semester": string;
+                    "same-semester-date": string;
                     "select-one-date": string;
                     "select-one-date-or-comment": string;
                 };

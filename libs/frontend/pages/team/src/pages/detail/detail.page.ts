@@ -24,7 +24,7 @@ import {
 import { EventEntry, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
-import { getCurrentSeason } from '@badman/utils';
+import { getSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -87,7 +87,7 @@ export class DetailPageComponent {
   }
 
   private _loadEntry() {
-    const year = getCurrentSeason();
+    const year = getSeason();
     this.apollo
       .query<{ team: Partial<Team> }>({
         query: gql`

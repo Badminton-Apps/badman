@@ -205,7 +205,7 @@ export class TeamsResolver {
       if (!teamDb) {
         teamDb = await Team.create(
           {
-            ...teamData,
+            ...(teamData as Team),
           },
           { transaction },
         );
@@ -301,7 +301,7 @@ export class TeamsResolver {
               entryType: 'competition',
             },
             defaults: {
-              ...newTeamData.entry,
+              ...(newTeamData.entry as EventEntry),
             },
             transaction,
             hooks: false,
@@ -467,7 +467,7 @@ export class TeamsResolver {
         }
       }
 
-      await dbTeam.update({ ...dbTeam.toJSON(), ...updateTeamData }, { transaction });
+      await dbTeam.update({ ...dbTeam.toJSON(), ...updateTeamData } as Team, { transaction });
 
       // revert to original name
       if (changedTeams.length > 0) {

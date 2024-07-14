@@ -111,6 +111,7 @@ export class NotificationService {
         },
       ],
     });
+    
 
     // just make sure the teams are loaded
     encounter.home = homeTeam;

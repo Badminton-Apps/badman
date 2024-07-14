@@ -130,7 +130,7 @@ export class AssemblyValidationService {
       attributes: ['id', 'teamId', 'subEventId', 'meta'],
       where: {
         teamId: clubTeams?.map((t) => t.id),
-        subEventId: sameYearSubEvents?.map((e) => e.subEventCompetitions?.map((s) => s.id)).flat(1),
+        subEventId: sameYearSubEvents?.map((e) => e.subEventCompetitions?.map((s) => s.id)).flat(1) as string[],
       },
     });
 
