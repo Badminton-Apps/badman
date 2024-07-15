@@ -206,7 +206,6 @@ export class ShellComponent {
       this.router.events.subscribe((event: Event) => {
         switch (true) {
           case event instanceof NavigationStart: {
-            console.log('start', event);
             this.loading = true;
             break;
           }
@@ -217,12 +216,10 @@ export class ShellComponent {
           case event instanceof ChildActivationEnd:
           case event instanceof NavigationCancel:
           case event instanceof NavigationError: {
-            console.log('stop');
             this.loading = false;
             break;
           }
           default: {
-            console.log('other', event);
             break;
           }
         }
