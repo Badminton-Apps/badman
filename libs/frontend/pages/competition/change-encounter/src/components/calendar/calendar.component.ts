@@ -28,7 +28,7 @@ import {
   Location,
   Team,
 } from '@badman/frontend-models';
-import { getSeason, sortTeams } from '@badman/utils';
+import { getSeason, getSeasonPeriod, sortTeams } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
@@ -36,6 +36,7 @@ import { lastValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
+import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 
 @Component({
   selector: 'badman-calendar',
@@ -59,6 +60,7 @@ import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
     MatSnackBarModule,
     HasClaimComponent,
     MtxDatetimepickerModule,
+    MtxMomentDatetimeModule
   ],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
@@ -176,10 +178,10 @@ export class CalendarComponent implements OnInit {
       weekdays[0],
     ];
 
-    this.minDate = moment([this.season, 8, 1]).toDate();
-    this.maxDate = moment([this.season + 1, 4, 1])
-      .endOf('month')
-      .toDate();
+    const [start, stop] = getSeasonPeriod(this.season);
+
+    this.minDate = moment(start).toDate();
+    this.maxDate = moment(stop).toDate();
   }
 
   ngOnInit(): void {
