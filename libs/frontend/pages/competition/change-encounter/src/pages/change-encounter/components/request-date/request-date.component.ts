@@ -54,12 +54,6 @@ export class RequestDateComponent implements OnInit {
 
   tootltipSelected?: string;
 
-  constructor() {
-    effect(() => {
-      console.log(`Updated `, this.warnings());
-    });
-  }
-
   ngOnInit() {
     combineLatest([
       this.group()
