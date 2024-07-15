@@ -227,8 +227,6 @@ export class ShowRequestsComponent implements OnInit {
     }
   }
   getWarnings(date: Date) {
-    console.log(date);
-
     return computed(() =>
       this.warnings().filter(
         (r) =>
