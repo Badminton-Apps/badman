@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EncounterCompetition } from '@badman/frontend-models';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
@@ -43,11 +43,13 @@ import {
   ],
 })
 export class ListEncountersComponent implements OnInit {
-  private apollo = inject(Apollo);
-  private router = inject(Router);
-  private activatedRoute = inject(ActivatedRoute);
-  private changeDetectorRef = inject(ChangeDetectorRef);
-  private destroy$ = injectDestroy();
+  private readonly apollo = inject(Apollo);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
+  private readonly translate = inject(TranslateService);
+  private readonly destroy$ = injectDestroy();
 
   controlName = input('encounter');
 
@@ -186,22 +188,14 @@ export class ListEncountersComponent implements OnInit {
   }
 
   getInfo(encounter: EncounterCompetition) {
+    let icon = 'check';
+    let infoClass = '';
+    let tooltip = [];
+
     // if not accepted, show info icon
     if ((encounter.encounterChange?.accepted ?? true) == false) {
-      return {
-        icon: 'info',
-        tooltip: 'all.competition.change-encounter.errors.not-accepted',
-      };
-    }
-
-    const errors = this.validation.errors.filter((e) => e.params['encounterId'] == encounter.id);
-
-    if (errors.length > 0) {
-      return {
-        icon: 'error',
-        class: 'error',
-        tooltip: errors[0].message,
-      };
+      icon = 'info';
+      tooltip.push('all.competition.change-encounter.errors.not-accepted');
     }
 
     const warnings = this.validation.warnings.filter(
@@ -209,16 +203,27 @@ export class ListEncountersComponent implements OnInit {
     );
 
     if (warnings.length > 0) {
-      return {
-        icon: 'warning',
-        class: 'warning',
-        tooltip: warnings[0].message,
-      };
+      icon = 'warning';
+      infoClass = 'warning';
+      tooltip = tooltip.concat(warnings.map((e) => e.message));
     }
 
+    const errors = this.validation.errors.filter((e) => e.params['encounterId'] == encounter.id);
+
+    if (errors.length > 0) {
+      icon = 'error';
+      infoClass = 'error';
+
+      tooltip = tooltip.concat(errors.map((e) => e.message));
+    }
+
+    // translate all tooltips and join them with a \n\r
+    const tooltips = tooltip.map((t) => this.translate.instant(t)).join('\n\r\n\r');
+
     return {
-      icon: 'check',
-      tooltip: '',
+      icon,
+      tooltip: tooltips,
+      infoClass,
     };
   }
 
