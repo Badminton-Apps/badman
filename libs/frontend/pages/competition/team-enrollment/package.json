@@ -17,6 +17,7 @@
     "@ngx-translate/core": "^15.0.0",
     "rxjs": "~7.8.1",
     "@ng-matero/extensions": "^18.0.1",
+    "@ng-matero/extensions-moment-adapter": "^18.0.0",
     "ngx-moment": "^6.0.2",
     "uuid": "^10.0.0",
     "ngxtension": "^3.2.0",
