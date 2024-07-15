@@ -26,6 +26,9 @@ import { PushService } from '../push';
 import { ConfigService } from '@nestjs/config';
 import { ClubEnrollmentNotifier } from '../../notifiers/clubenrollment';
 import { sortTeams } from '@badman/utils';
+import { ChangeEncounterValidationService } from '@badman/backend-change-encounter';
+import { I18nService } from 'nestjs-i18n';
+import { I18nTranslations } from '@badman/utils';
 
 @Injectable()
 export class NotificationService {
@@ -35,6 +38,8 @@ export class NotificationService {
     private mailing: MailingService,
     private push: PushService,
     private configService: ConfigService<ConfigType>,
+    private changeEncounterValidation: ChangeEncounterValidationService,
+    private readonly i18nService: I18nService<I18nTranslations>,
   ) {}
 
   async notifyEncounterChange(encounter: EncounterCompetition, homeTeamRequests: boolean) {
@@ -111,26 +116,28 @@ export class NotificationService {
         },
       ],
     });
-    
 
     // just make sure the teams are loaded
     encounter.home = homeTeam;
     encounter.away = awayTeam;
 
     if (homeTeam.captain && homeTeam.email) {
+      const validation = await this._getValidationMessage(homeTeam.id);
       notifierFinished.notify(
         homeTeam.captain,
         encounter.id,
-        { encounter, locationHasChanged, isHome: true },
+        { encounter, locationHasChanged, isHome: true, validation },
         { email: homeTeam.email },
       );
     }
 
     if (awayTeam.captain && awayTeam.email) {
+      const validation = await this._getValidationMessage(awayTeam.id);
+
       notifierFinished.notify(
         awayTeam.captain,
         encounter.id,
-        { encounter, locationHasChanged, isHome: false },
+        { encounter, locationHasChanged, isHome: false, validation },
         { email: awayTeam.email },
       );
     }
@@ -260,7 +267,7 @@ export class NotificationService {
     }
 
     const locations = await club.getLocations({
-      include: [{ model: Availability, where: {  season } }],
+      include: [{ model: Availability, where: { season } }],
     });
 
     // eventEntries->subEventIds
@@ -373,5 +380,74 @@ export class NotificationService {
         { email: user?.email, slug: user?.slug },
       );
     }
+  }
+
+  private async _getValidationMessage(teamId: string) {
+    const validation = await this.changeEncounterValidation.fetchAndValidate(
+      { teamId },
+      ChangeEncounterValidationService.defaultValidators(),
+    );
+
+    if (validation.valid) {
+      return [];
+    }
+
+    const errors = [] as {
+      encounter: EncounterCompetition;
+      errors: string[];
+    }[];
+
+    // get all encounterIds from the validation from the params
+    const encounterIds = validation.errors?.map(
+      (e) => (e.params as { encounterId: string })['encounterId'],
+    );
+
+    // get all encounters
+    const encounters = await EncounterCompetition.findAll({
+      attributes: ['id', 'date'],
+      where: {
+        id: encounterIds,
+      },
+      include: [
+        {
+          association: 'home',
+          attributes: ['id', 'name'],
+        },
+        {
+          association: 'away',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+
+    // map all errors to the encounter
+    for (const error of validation.errors ?? []) {
+      const encounter = encounters.find(
+        (e) => e.id === (error.params as { encounterId: string }).encounterId,
+      );
+
+      if (!encounter) {
+        continue;
+      }
+
+      const message: string = this.i18nService.translate(error.message, {
+        args: error.params as never,
+        lang: 'nl_BE',
+      });
+
+      // check if the encounter is already in the errors
+      const errorEncounter = errors.find((e) => e.encounter.id === encounter.id);
+
+      if (errorEncounter) {
+        errorEncounter.errors.push(message);
+      } else {
+        errors.push({
+          encounter,
+          errors: [message],
+        });
+      }
+    }
+
+    return errors;
   }
 }

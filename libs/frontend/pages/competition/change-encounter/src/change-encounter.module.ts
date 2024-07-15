@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CanChangeEncounterGuard } from './guards/change-encounter.guard';
 import { ChangeEncounterComponent } from './pages';
+import { AuthGuard } from '@badman/frontend-auth';
 
 @NgModule({
   declarations: [],
@@ -13,7 +14,7 @@ import { ChangeEncounterComponent } from './pages';
         path: '',
         pathMatch: 'full',
         component: ChangeEncounterComponent,
-        canActivate: [CanChangeEncounterGuard],
+        canActivate: [AuthGuard, CanChangeEncounterGuard],
         data: {
           claims: {
             any: ['*_change:encounter', 'change-any:encounter'],

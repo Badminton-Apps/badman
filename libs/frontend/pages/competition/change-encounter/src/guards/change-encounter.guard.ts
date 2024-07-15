@@ -1,8 +1,5 @@
-import { Injectable, inject } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
-import { TranslateService } from '@ngx-translate/core';
+import { Injectable, inject, isDevMode } from '@angular/core';
+import { UrlTree } from '@angular/router';
 import { Apollo, gql } from 'apollo-angular';
 import { Observable, lastValueFrom } from 'rxjs';
 
@@ -12,17 +9,9 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class CanChangeEncounterGuard {
-  private claimService = inject(ClaimService);
   private apollo = inject(Apollo);
-  private authService = inject(AuthenticateService);
-  private snackBar = inject(MatSnackBar);
-  private translate = inject(TranslateService);
-  private router = inject(Router);
 
-  async canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot,
-  ): Promise<Observable<boolean> | Promise<boolean | UrlTree> | boolean> {
+  async canActivate(): Promise<Observable<boolean> | Promise<boolean | UrlTree> | boolean> {
     const openChangeEncounter = await lastValueFrom(
       this.apollo
         .query<{
@@ -53,23 +42,8 @@ export class CanChangeEncounterGuard {
         ),
     );
 
-    if (this.authService.loggedIn()) {
-      if (this.claimService.hasClaim('change-any:encounter')) {
-        return true;
-      }
-
-      if (this.claimService.hasClaim('*change:encounter') && openChangeEncounter) {
-        return true;
-      }
-
-      // we dont' have the permissions
-      this.snackBar.open(this.translate.instant('all.permission.no-perm'));
-      this.router.navigate(['/']);
-    } else {
-      // we are not logged in
-      this.authService.login(false, {
-        appState: { target: state.url },
-      });
+    if (openChangeEncounter || isDevMode()) {
+      return true;
     }
 
     return false;
