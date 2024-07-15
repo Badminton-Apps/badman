@@ -1,3 +1,15 @@
+## 6.160.1 (2024-07-15)
+
+
+### 🩹 Fixes
+
+- sort before checking if in the right order ([935d3d366](https://github.com/Badminton-Apps/badman/commit/935d3d366))
+- should be allowd to skip 1 ([90f219d92](https://github.com/Badminton-Apps/badman/commit/90f219d92))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.160.0 (2024-07-15)
 
 
