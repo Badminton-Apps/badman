@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule } from '@ngx-translate/core';
 @Component({
@@ -21,6 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
     MatInputModule,
     MatSlideToggleModule,
     MtxDatetimepickerModule,
+    MtxMomentDatetimeModule
   ],
   templateUrl: './set-encounter-date.component.html',
   styleUrls: ['./set-encounter-date.component.scss'],

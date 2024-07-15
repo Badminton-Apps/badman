@@ -11,6 +11,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
+  ActivationEnd,
+  ChildActivationEnd,
   Event,
   NavigationCancel,
   NavigationEnd,
@@ -199,23 +201,28 @@ export class ShellComponent {
             .subscribe(() => {
               document.location.reload();
             });
-        });
+      });
 
       this.router.events.subscribe((event: Event) => {
         switch (true) {
           case event instanceof NavigationStart: {
+            console.log('start', event);
             this.loading = true;
             break;
           }
 
           case event instanceof NavigationEnd:
           case event instanceof ResolveEnd:
+          case event instanceof ActivationEnd:
+          case event instanceof ChildActivationEnd:
           case event instanceof NavigationCancel:
           case event instanceof NavigationError: {
+            console.log('stop');
             this.loading = false;
             break;
           }
           default: {
+            console.log('other', event);
             break;
           }
         }
