@@ -96,7 +96,7 @@
       "description": "Disclaimer: dit is een eerste versie van de verplaatsingsmodule voor ontmoetingen. Verbeteringen worden periodiek aangebracht.",
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "errors": {
-        "date-out-of-period": "De datum ligt buiten de toegelaten periode (september tot mei)",
+        "date-out-of-period": "De datum ligt buiten de toegelaten periode (September tot April)",
         "invalid": "Gelieve alle beschikbaarheid aan te vullen voor het versturen.",
         "not-accepted": "Het voorstel is nog niet geaccepteerd",
         "same-club": "De ontmoeting tegen eigen club moeten als eerste gespeeld worden",
