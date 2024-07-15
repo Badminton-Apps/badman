@@ -1,3 +1,14 @@
+## 6.160.2 (2024-07-15)
+
+
+### 🩹 Fixes
+
+- period was wrong ([99c0d7d00](https://github.com/Badminton-Apps/badman/commit/99c0d7d00))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.160.1 (2024-07-15)
 
 

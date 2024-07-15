@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-transfers",
-  "version": "6.160.1",
+  "version": "6.160.2",
   "peerDependencies": {
     "@angular/common": "18.1.0",
     "@angular/core": "18.1.0",
