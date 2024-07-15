@@ -30,14 +30,17 @@ block content
         br 
         | Dank u voor uw begrip.
 
-    each val in validation
+    if validation.length > 0
       p
-        | #{val.encounter.home.name} vs #{val.encounter.away.name} op #{moment(val.encounter.date).tz('Europe/Brussels').format('LL')}
-      if val.errors.length > 0
-        ul(style='color: red;')
-          each error in val.errors
-            li
-              | #{error}
+        | We hebben volgende fouten gevonden, gelieve deze te corrigeren:
+      each val in validation
+        p
+          | #{val.encounter.home.name} vs #{val.encounter.away.name} op #{moment(val.encounter.date).tz('Europe/Brussels').format('LL')}
+        if val.errors.length > 0
+          ul(style='color: red;')
+            each error in val.errors
+              li
+                | #{error}
 
     br
     | Met vriendelijke groet,
