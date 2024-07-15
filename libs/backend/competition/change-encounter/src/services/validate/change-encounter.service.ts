@@ -114,6 +114,6 @@ export class ChangeEncounterValidationService {
   }
 
   static defaultValidators(): Rule[] {
-    return [new SemesterRule(), new DatePeriodRule(), new TeamClubRule()];
+    return [new TeamClubRule()]; // new SemesterRule(), new DatePeriodRule(), 
   }
 }

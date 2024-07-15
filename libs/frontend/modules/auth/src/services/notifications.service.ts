@@ -13,7 +13,7 @@ const QUERY = gql`
   query GetNotifications($order: [SortOrderType!]) {
     me {
       id
-      notifications(order: $order) {
+      notifications(order: $order, take: 50) {
         id
         read
         type

@@ -9,41 +9,8 @@ import { NotificationService } from '@badman/frontend-auth';
 import { Notification } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-
-const NOTIFICAION_QUERY = gql`
-  query GetNotifications($where: JSONObject) {
-    notifications(where: $where) {
-      id
-      read
-      type
-      meta
-      competition {
-        id
-        name
-      }
-      tournament {
-        id
-        name
-      }
-      encounter {
-        id
-        date
-        home {
-          id
-          name
-        }
-        away {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
 
 @Component({
   templateUrl: './overview.page.html',
@@ -63,7 +30,6 @@ const NOTIFICAION_QUERY = gql`
 export class OverviewPageComponent implements OnInit {
   private seoService = inject(SeoService);
   private notifService = inject(NotificationService);
-  private apollo = inject(Apollo);
   private platformId = inject<string>(PLATFORM_ID);
   notifications$?: Observable<Notification[] | undefined>;
   showRead = false;
@@ -77,31 +43,7 @@ export class OverviewPageComponent implements OnInit {
     });
 
     if (isPlatformBrowser(this.platformId) && this.notifService.notifications$ != undefined) {
-      this.notifications$ = this.notifService.notifications$.pipe(
-        switchMap((notifications) => {
-          return this.apollo
-            .query<{ notifications: Notification[] }>({
-              query: NOTIFICAION_QUERY,
-              variables: {
-                where: {
-                  id: notifications?.map((n) => n.id),
-                  read: this.showRead,
-                },
-              },
-            })
-            .pipe(
-              map((result) => {
-                if (
-                  result.data.notifications == undefined ||
-                  result.data.notifications.length == 0
-                ) {
-                  return undefined;
-                }
-                return result.data.notifications?.map((n) => new Notification(n));
-              }),
-            );
-        }),
-      );
+      this.notifications$ = this.notifService.notifications$;
     }
   }
 
