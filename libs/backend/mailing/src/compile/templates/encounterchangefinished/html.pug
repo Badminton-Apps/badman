@@ -24,11 +24,20 @@ block content
           | Klik hier om uw verzoek te her-openen
 
     if isChangedLocation
-    p
-      | Er is een andere locatie gekozen, maar vanwege beperkingen in externe systemen moeten deze locaties handmatig worden bijgewerkt. Houd er rekening mee dat dit enkele dagen kan duren.
-      br 
-      br 
-      | Dank u voor uw begrip.
+      p
+        | Er is een andere locatie gekozen, maar vanwege beperkingen in externe systemen moeten deze locaties handmatig worden bijgewerkt. Houd er rekening mee dat dit enkele dagen kan duren.
+        br 
+        br 
+        | Dank u voor uw begrip.
+
+    each val in validation
+      p
+        | #{val.encounter.home.name} vs #{val.encounter.away.name} op #{moment(val.encounter.date).tz('Europe/Brussels').format('LL')}
+      if val.errors.length > 0
+        ul(style='color: red;')
+          each error in val.errors
+            li
+              | #{error}
 
     br
     | Met vriendelijke groet,
