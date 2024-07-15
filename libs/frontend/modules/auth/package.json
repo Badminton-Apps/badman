@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-auth",
-  "version": "6.160.0",
+  "version": "6.160.1",
   "peerDependencies": {
     "@angular/common": "18.1.0",
     "@angular/core": "18.1.0",
