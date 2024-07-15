@@ -1,8 +1,8 @@
 {
   "name": "@badman/backend-twizzit",
-  "version": "6.160.0",
+  "version": "6.160.1",
   "dependencies": {
-    "@badman/backend-database": "6.160.0",
+    "@badman/backend-database": "6.160.1",
     "@nestjs/common": "^10.3.8",
     "fastify": "^4.27.0",
     "moment-timezone": "^0.5.45",
