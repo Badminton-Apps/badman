@@ -7,6 +7,10 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
   encounter: EncounterCompetition;
   locationHasChanged: boolean;
   isHome: boolean;
+  validation: {
+    encounter: EncounterCompetition;
+    errors: string[];
+  }[];
 }> {
   protected linkType = 'encounterCompetition';
   protected type: keyof NotificationOptionsTypes = 'encounterChangeFinishedNotification';
@@ -23,11 +27,15 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
 
   async notifyPush(
     player: Player,
-     
+
     data: {
       encounter: EncounterCompetition;
       locationHasChanged: boolean;
       isHome: boolean;
+      validation: {
+        encounter: EncounterCompetition;
+        errors: string[];
+      }[];
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     args?: { email: string },
@@ -38,13 +46,17 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
 
   async notifyEmail(
     player: Player,
-     
+
     data: {
       encounter: EncounterCompetition;
       locationHasChanged: boolean;
       isHome: boolean;
+      validation: {
+        encounter: EncounterCompetition;
+        errors: string[];
+      }[];
     },
-     
+
     args?: { email: string },
   ): Promise<void> {
     this.logger.debug(`Sending Email to ${player.fullName}`);
@@ -69,6 +81,7 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
       data.encounter,
       data.isHome,
       data.locationHasChanged,
+      data.validation,
     );
   }
   notifySms(
@@ -78,6 +91,10 @@ export class CompetitionEncounterChangeFinishRequestNotifier extends Notifier<{
       encounter: EncounterCompetition;
       locationHasChanged: boolean;
       isHome: boolean;
+      validation: {
+        encounter: EncounterCompetition;
+        errors: string[];
+      }[];
     },
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     args?: { email: string },
