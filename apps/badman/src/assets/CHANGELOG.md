@@ -1,3 +1,19 @@
+## 6.160.0 (2024-07-15)
+
+
+### 🚀 Features
+
+- mailing includes errors on teams ([4dd9563b9](https://github.com/Badminton-Apps/badman/commit/4dd9563b9))
+
+### 🩹 Fixes
+
+- adding title for validation ([c232e7318](https://github.com/Badminton-Apps/badman/commit/c232e7318))
+- @nx/jest was missing ([dc54e15f3](https://github.com/Badminton-Apps/badman/commit/dc54e15f3))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.159.0 (2024-07-14)
 
 
