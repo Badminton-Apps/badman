@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-micro",
-  "version": "6.160.1",
+  "version": "6.160.2",
   "dependencies": {
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
