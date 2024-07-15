@@ -96,7 +96,7 @@
       "description": "Clause de non-responsabilité : Il s'agit d'une version initiale du module de déplacement des réunions. Des améliorations seront apportées périodiquement.",
       "disclaimer-submit": "Lorsque les deux équipes sont disponibles, la date peut être choisie à l'aide de la case à cocher, puis en cliquant sur envoyer.",
       "errors": {
-        "date-out-of-period": "La date est en dehors de la période autorisée (septembre à mai)",
+        "date-out-of-period": "La date est en dehors de la période autorisée (septembre à avril)",
         "invalid": "Veuillez compléter toutes les disponibilités avant d'envoyer",
         "not-accepted": "La proposition n'a pas encore été acceptée",
         "same-club": "La rencontre contre son propre club devrait être jouée en premier",

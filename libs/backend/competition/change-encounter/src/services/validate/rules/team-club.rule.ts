@@ -92,9 +92,13 @@ export class TeamClubRule extends Rule {
 
   findIfSameClubIsFirst(encounters: EncounterCompetition[], currentTeamId: string) {
     const firstEnc = encounters[0];
+    if (!firstEnc) {
+      return [];
+    }
+
     // pick the first encounter to get the current club id
     const currentClubId =
-      firstEnc.home?.id == currentTeamId ? firstEnc.home?.clubId : firstEnc.away?.clubId;
+      firstEnc?.home?.id == currentTeamId ? firstEnc.home?.clubId : firstEnc.away?.clubId;
 
     if (!currentClubId) {
       return [];
