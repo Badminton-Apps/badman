@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-tournament",
-  "version": "6.160.0",
+  "version": "6.160.1",
   "peerDependencies": {
     "@badman/frontend-models": "*",
     "@badman/frontend-graphql": "*",
