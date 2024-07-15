@@ -25,8 +25,8 @@ export class TeamClubRule extends Rule {
     const { encountersSem1, encountersSem2, team, suggestedDates, workingencounterId, lowestYear } =
       changeEncounter;
 
-    const errors1 = this.findEncountersInSameSemester(encountersSem1, team.id);
-    const errors2 = this.findEncountersInSameSemester(encountersSem2, team.id);
+    const errors1 = this.findIfSameClubIsFirst(encountersSem1, team.id);
+    const errors2 = this.findIfSameClubIsFirst(encountersSem2, team.id);
 
     [errors1, errors2].forEach((err) => {
       for (const error of err) {
@@ -70,10 +70,7 @@ export class TeamClubRule extends Rule {
 
         encounter.date = suggestedDate;
         const encountersSemester = suggestedSemester1 ? encountersSemester1 : encountersSemester2;
-        const warns = this.findEncountersInSameSemester(
-          [...encountersSemester, encounter],
-          team.id,
-        );
+        const warns = this.findIfSameClubIsFirst([...encountersSemester, encounter], team.id);
 
         warns.forEach((warn) => {
           warnings.push({
@@ -92,7 +89,8 @@ export class TeamClubRule extends Rule {
       errors,
     };
   }
-  findEncountersInSameSemester(encounters: EncounterCompetition[], currentTeamId: string) {
+
+  findIfSameClubIsFirst(encounters: EncounterCompetition[], currentTeamId: string) {
     const firstEnc = encounters[0];
     // pick the first encounter to get the current club id
     const currentClubId =
@@ -104,12 +102,16 @@ export class TeamClubRule extends Rule {
 
     const errors = [];
     let differentClubOppend = false;
-    for (const enc of encounters) {
+    for (const enc of encounters.sort(
+      (a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0),
+    )) {
       const otherClub = enc.home?.id == currentTeamId ? enc.away?.clubId : enc.home?.clubId;
 
       if (otherClub != currentClubId) {
         differentClubOppend = true;
       } else if (differentClubOppend) {
+        this.logger.debug(`Found error for encounter ${enc.id}`);
+
         errors.push(enc);
       }
     }
