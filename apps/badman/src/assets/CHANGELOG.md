@@ -1,3 +1,14 @@
+## 6.160.3 (2024-07-16)
+
+
+### 🩹 Fixes
+
+- new dates weren't loading properly ([195fd5d10](https://github.com/Badminton-Apps/badman/commit/195fd5d10))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.160.2 (2024-07-15)
 
 
