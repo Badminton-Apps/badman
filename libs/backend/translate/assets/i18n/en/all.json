@@ -96,7 +96,7 @@
       "description": "Disclaimer: this is a first version of the encounter relocation tool. Improvements are periodically being applied.",
       "disclaimer-submit": "Once both teams are available, the selected day can be chosen in the checkbox by then clicking on send",
       "errors": {
-        "date-out-of-period": "The date is outside the permitted period (September to May)",
+        "date-out-of-period": "The date is outside the allowed period (September to April)",
         "invalid": "Please complete all availability before sending",
         "not-accepted": "The proposal has not yet been accepted",
         "same-club": "The encounter against own club should be played first",
