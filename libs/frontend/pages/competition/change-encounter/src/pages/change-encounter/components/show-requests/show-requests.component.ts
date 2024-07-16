@@ -19,6 +19,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { APOLLO_CACHE } from '@badman/frontend-graphql';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -50,6 +51,7 @@ import { DateSelectorComponent } from '../../../../components';
 import { CommentsComponent } from '../../../../components/comments';
 import { RequestDateComponent } from '../request-date/request-date.component';
 import { injectDestroy } from 'ngxtension/inject-destroy';
+import { InMemoryCache } from '@apollo/client/cache';
 
 const CHANGE_QUERY = gql`
   query EncounterChange($id: ID!) {
@@ -98,6 +100,7 @@ const CHANGE_QUERY = gql`
 })
 export class ShowRequestsComponent implements OnInit {
   private readonly destroy$ = injectDestroy();
+  private cache = inject<InMemoryCache>(APOLLO_CACHE);
   private readonly apollo = inject(Apollo);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
@@ -180,7 +183,7 @@ export class ShowRequestsComponent implements OnInit {
           }
 
           return this.apollo
-            .watchQuery<{
+            .query<{
               encounterChange: EncounterChange;
             }>({
               query: CHANGE_QUERY,
@@ -188,7 +191,7 @@ export class ShowRequestsComponent implements OnInit {
                 id: encounter?.encounterChange?.id,
               },
             })
-            .valueChanges.pipe(
+            .pipe(
               map(
                 (x) =>
                   new EncounterChange({
@@ -215,7 +218,6 @@ export class ShowRequestsComponent implements OnInit {
               switchMap(() => this.validate()),
             )
             .subscribe((result) => {
-              console.log(`Setting`, result);
               this.validation.set(result);
             });
 
@@ -378,7 +380,7 @@ export class ShowRequestsComponent implements OnInit {
 
     const success = async () => {
       try {
-        await lastValueFrom(
+        const result = await lastValueFrom(
           this.apollo.mutate<{
             addChangeEncounter: EncounterChange;
           }>({
@@ -397,24 +399,36 @@ export class ShowRequestsComponent implements OnInit {
                 dates: change.dates,
               },
             },
-            refetchQueries: (result) => [
-              {
-                query: CHANGE_QUERY,
-                variables: {
-                  id: result.data?.addChangeEncounter?.id,
-                },
-              },
-            ],
           }),
         );
 
-        const teamControl = this.group().get('team');
-        if (!teamControl) {
-          throw new Error('Team control not found');
+        if (this.encounter.encounterChange?.id) {
+          const normalizedAvailibility = this.cache.identify({
+            id: this.encounter.encounterChange?.id,
+            __typename: 'EncounterChange',
+          });
+          this.cache.evict({ id: normalizedAvailibility });
+          this.cache.gc();
         }
 
-        teamControl.setValue(teamControl.value);
-        this.group().get(this.dependsOn())?.setValue(null);
+        this.previous?.setValue({
+          ...this.previous.value,
+          encounterChange: {
+            accepted: change.accepted,
+            encounterId: change.encounter?.id,
+            home: this.home,
+            dates: change.dates,
+            id: result.data?.addChangeEncounter?.id,
+          },
+        });
+
+        // const teamControl = this.group().get('team');
+        // if (!teamControl) {
+        //   throw new Error('Team control not found');
+        // }
+
+        // teamControl.setValue(teamControl.value);
+        // this.group().get(this.dependsOn())?.setValue(null);
         this.snackBar.open(
           await this.translate.instant('all.competition.change-encounter.requested'),
           'OK',
@@ -475,16 +489,15 @@ export class ShowRequestsComponent implements OnInit {
             accepted: true,
           },
         },
-        refetchQueries: () => [
-          {
-            query: CHANGE_QUERY,
-            variables: {
-              id: this.encounter.encounterChange?.id,
-            },
-          },
-        ],
       }),
     );
+
+    this.previous?.setValue({
+      ...this.previous.value,
+      encounterChange: {
+        id: null,
+      },
+    });
 
     this.formGroupRequest.get('accepted')?.setValue(true);
     this.changeDetector.detectChanges();
