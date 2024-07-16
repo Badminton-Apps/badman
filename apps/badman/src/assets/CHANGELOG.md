@@ -1,3 +1,64 @@
+## 6.160.3 (2024-07-16)
+
+
+### 🩹 Fixes
+
+- new dates weren't loading properly ([195fd5d10](https://github.com/Badminton-Apps/badman/commit/195fd5d10))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.160.2 (2024-07-15)
+
+
+### 🩹 Fixes
+
+- period was wrong ([99c0d7d00](https://github.com/Badminton-Apps/badman/commit/99c0d7d00))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.160.1 (2024-07-15)
+
+
+### 🩹 Fixes
+
+- sort before checking if in the right order ([935d3d366](https://github.com/Badminton-Apps/badman/commit/935d3d366))
+- should be allowd to skip 1 ([90f219d92](https://github.com/Badminton-Apps/badman/commit/90f219d92))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.160.0 (2024-07-15)
+
+
+### 🚀 Features
+
+- mailing includes errors on teams ([4dd9563b9](https://github.com/Badminton-Apps/badman/commit/4dd9563b9))
+
+### 🩹 Fixes
+
+- adding title for validation ([c232e7318](https://github.com/Badminton-Apps/badman/commit/c232e7318))
+- @nx/jest was missing ([dc54e15f3](https://github.com/Badminton-Apps/badman/commit/dc54e15f3))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.159.0 (2024-07-14)
+
+
+### 🚀 Features
+
+- validating change enounters in backend pt1 ([b9c9a7b56](https://github.com/Badminton-Apps/badman/commit/b9c9a7b56))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.158.0 (2024-07-13)
 
 

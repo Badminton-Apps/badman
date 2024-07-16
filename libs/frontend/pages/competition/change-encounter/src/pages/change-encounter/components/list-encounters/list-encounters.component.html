@@ -59,8 +59,9 @@
           @if (getInfo(option); as info) {
             <mat-icon
               matListItemIcon
-              [matTooltip]="info.tooltip | translate"
-              [ngClass]="info.class"
+              [matTooltip]="info.tooltip"
+              matTooltipClass="tooltip-multi-line"
+              [ngClass]="info.infoClass"
               >{{ info.icon }}</mat-icon
             >
           }
@@ -88,8 +89,9 @@
           @if (getInfo(option); as info) {
             <mat-icon
               matListItemIcon
-              [matTooltip]="info.tooltip | translate"
-              [ngClass]="info.class"
+              [matTooltip]="info.tooltip"
+              matTooltipClass="tooltip-multi-line"
+              [ngClass]="info.infoClass"
               >{{ info.icon }}</mat-icon
             >
           }

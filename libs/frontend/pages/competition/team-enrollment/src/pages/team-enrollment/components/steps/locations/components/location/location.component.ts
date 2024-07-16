@@ -25,6 +25,7 @@ import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
 import { Subject } from 'rxjs';
+import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 
 export type LocationavDayType = FormGroup<{
   day: FormControl<string | undefined>;
@@ -79,6 +80,7 @@ export type LocationForm = FormGroup<{
     MatTooltipModule,
     MatDatepickerModule,
     MtxDatetimepickerModule,
+    MtxMomentDatetimeModule
   ],
   templateUrl: './location.component.html',
   styleUrls: ['./location.component.scss'],

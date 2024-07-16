@@ -171,6 +171,10 @@ export class MailingService {
     encounter: EncounterCompetition,
     isHome: boolean,
     isChangedLocation: boolean,
+    validation: {
+      encounter: EncounterCompetition;
+      errors: string[];
+    }[],
   ) {
     if (!encounter.home || !encounter.away) {
       throw new Error('Team not found');
@@ -206,6 +210,10 @@ export class MailingService {
         isHome,
         isChangedLocation,
         season: eventCompetition.season,
+        validation: validation?.map((v) => ({
+          encounter: v.encounter.toJSON(),
+          errors: v.errors,
+        })),
         encounter: {
           ...encounter.toJSON(),
           home: encounter.home.toJSON(),
@@ -222,6 +230,10 @@ export class MailingService {
       encounter: EncounterCompetition;
       newDate: string;
       settingsSlug: string;
+      validation: {
+        encounter: EncounterCompetition;
+        errors: string[];
+      }[];
     }>;
 
     await this._sendMail(options);
