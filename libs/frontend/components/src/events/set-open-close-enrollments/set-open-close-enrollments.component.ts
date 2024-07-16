@@ -7,6 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule } from '@ngx-translate/core';
 import moment from 'moment';
@@ -27,6 +28,7 @@ import { startWith, takeUntil } from 'rxjs/operators';
     MatInputModule,
     MatDatepickerModule,
     MtxDatetimepickerModule,
+    MtxMomentDatetimeModule
   ],
   templateUrl: './set-open-close-enrollments.component.html',
   styleUrls: ['./set-open-close-enrollments.component.scss'],
