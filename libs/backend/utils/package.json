@@ -1,6 +1,6 @@
 {
   "name": "@badman/backend-utils",
-  "version": "6.160.3",
+  "version": "6.160.4",
   "dependencies": {
     "@nestjs/common": "^10.3.8",
     "fastify": "^4.27.0",

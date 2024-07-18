@@ -1,3 +1,16 @@
+## 6.160.4 (2024-07-18)
+
+
+### 🩹 Fixes
+
+- this should be boolean now ([75b65cbf3](https://github.com/Badminton-Apps/badman/commit/75b65cbf3))
+- more checks for end of loading animation ([bf03c1090](https://github.com/Badminton-Apps/badman/commit/bf03c1090))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.160.3 (2024-07-16)
 
 
