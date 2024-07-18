@@ -1,9 +1,9 @@
 {
   "name": "@badman/backend-visual",
-  "version": "6.160.3",
+  "version": "6.160.4",
   "dependencies": {
-    "@badman/backend-cache": "6.160.3",
-    "@badman/utils": "6.160.3",
+    "@badman/backend-cache": "6.160.4",
+    "@badman/utils": "6.160.4",
     "axios": "^1.6.8",
     "axios-retry": "^4.1.0",
     "fast-xml-parser": "^4.3.6",
