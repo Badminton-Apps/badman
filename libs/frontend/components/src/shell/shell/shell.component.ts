@@ -14,13 +14,16 @@ import {
   ActivationEnd,
   ChildActivationEnd,
   Event,
+  GuardsCheckEnd,
   NavigationCancel,
   NavigationEnd,
   NavigationError,
   NavigationStart,
   ResolveEnd,
+  ResolveStart,
   Router,
   RouterModule,
+  Scroll,
 } from '@angular/router';
 import { ServiceWorkerModule, SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { ClaimService } from '@badman/frontend-auth';
@@ -201,11 +204,17 @@ export class ShellComponent {
             .subscribe(() => {
               document.location.reload();
             });
-      });
+        });
 
       this.router.events.subscribe((event: Event) => {
+        let scrollEvent: Scroll | null = null;
+        if (event instanceof Scroll) {
+          scrollEvent = event;
+        }
+
         switch (true) {
-          case event instanceof NavigationStart: {
+          case event instanceof NavigationStart:
+          case event instanceof ResolveStart: {
             this.loading = true;
             break;
           }
@@ -215,10 +224,19 @@ export class ShellComponent {
           case event instanceof ActivationEnd:
           case event instanceof ChildActivationEnd:
           case event instanceof NavigationCancel:
-          case event instanceof NavigationError: {
+          case event instanceof NavigationError:
+          case event instanceof GuardsCheckEnd:
+          case scrollEvent?.routerEvent instanceof NavigationEnd:
+          case scrollEvent?.routerEvent instanceof ResolveEnd:
+          case scrollEvent?.routerEvent instanceof ActivationEnd:
+          case scrollEvent?.routerEvent instanceof ChildActivationEnd:
+          case scrollEvent?.routerEvent instanceof NavigationCancel:
+          case scrollEvent?.routerEvent instanceof NavigationError:
+          case scrollEvent?.routerEvent instanceof GuardsCheckEnd: {
             this.loading = false;
             break;
           }
+
           default: {
             break;
           }
