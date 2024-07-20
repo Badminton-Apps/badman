@@ -4,6 +4,19 @@
   "projectType": "application",
   "sourceRoot": "apps/badman/src",
   "prefix": "badman",
+  "test": {
+    "executor": "@nx/jest:jest",
+    "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+    "options": {
+      "jestConfig": "{projectRoot}/jest.config.ts"
+    }
+  },
+  "lint": {
+    "executor": "@nx/eslint:lint",
+    "options": {
+      "eslintConfig": "{projectRoot}/eslint.config.js"
+    }
+  },
   "tags": ["type:app", "scope:client"],
   "targets": {
     "build": {
@@ -161,18 +174,5 @@
         "buildTarget": "badman:build"
       }
     }
-  },
-   "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "{projectRoot}/jest.config.ts"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "eslintConfig": "{projectRoot}/eslint.config.js"
-      }
-    }
+  }
 }

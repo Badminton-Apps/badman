@@ -3,6 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/worker/ranking/src",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "serve": {
       "executor": "@nx/js:node",
@@ -41,6 +42,5 @@
         "eslintConfig": "{projectRoot}/eslint.config.js"
       }
     }
-  },
-  "tags": []
+  }
 }
