@@ -1,3 +1,14 @@
+## 6.161.1 (2024-07-21)
+
+
+### 🩹 Fixes
+
+- fix location bug ([3d90a80b8](https://github.com/Badminton-Apps/badman/commit/3d90a80b8))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.161.0 (2024-07-21)
 
 
