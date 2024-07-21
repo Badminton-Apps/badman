@@ -1,3 +1,24 @@
+## 6.161.0 (2024-07-21)
+
+
+### 🚀 Features
+
+- allow admin to select any date ([f356b98f2](https://github.com/Badminton-Apps/badman/commit/f356b98f2))
+- allow admin to always manual select a date ([0e9b2f9b2](https://github.com/Badminton-Apps/badman/commit/0e9b2f9b2))
+- possile to configure if competition is allowd on info event with additional tooltip when setti ([fa77df801](https://github.com/Badminton-Apps/badman/commit/fa77df801))
+- open manual date in same month then the calender view ([d30ba1921](https://github.com/Badminton-Apps/badman/commit/d30ba1921))
+- show warnings/exceptions for days where it's not allowed to play ([71eb89d89](https://github.com/Badminton-Apps/badman/commit/71eb89d89))
+
+### 🩹 Fixes
+
+- don't allow space on day events ([2dd412bb9](https://github.com/Badminton-Apps/badman/commit/2dd412bb9))
+- also disable in date picker ([02c86f9af](https://github.com/Badminton-Apps/badman/commit/02c86f9af))
+- temp workaround for availibility ([b0148d1c8](https://github.com/Badminton-Apps/badman/commit/b0148d1c8))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.160.4 (2024-07-18)
 
 
