@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-role",
-  "version": "6.160.4",
+  "version": "6.161.0",
   "peerDependencies": {
     "@badman/frontend-components": "*",
     "@badman/frontend-models": "*",
