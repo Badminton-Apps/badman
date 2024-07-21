@@ -15,8 +15,6 @@ export type LocationRuleParams = {
 
 /**
  * Checks if there are enough locations available for the encounters
- * 
- * TODO: locationId's are wrong, check why
  */
 export class LocationRule extends Rule {
   private readonly logger = new Logger(LocationRule.name);
@@ -104,6 +102,7 @@ export class LocationRule extends Rule {
         const filteredSlots = filteredDays?.find(
           (r) => moment(enc.date).format('HH:mm') == r.startTime,
         );
+
 
         if (filteredSlots != null && !slot) {
           slot = filteredSlots;
