@@ -858,14 +858,7 @@ export class CalendarComponent implements OnInit {
       return dayInfo;
     }
 
-    if (this.dayEvents.has(format)) {
-      for (const name of this.dayEvents.get(format) ?? []) {
-        dayInfo.dayEvents.push({
-          name,
-          color: `#${randomLightColor(name)}`,
-        });
-      }
-    }
+    
 
     if (availabilities) {
       for (const availibility of availabilities) {
@@ -907,6 +900,19 @@ export class CalendarComponent implements OnInit {
 
           dayInfo.locations[infoIndex].space = Math.max(0, dayInfo.locations[infoIndex].space - 1);
         }
+      }
+    }
+    
+    if (this.dayEvents.has(format)) {
+      for (const name of this.dayEvents.get(format) ?? []) {
+        dayInfo.dayEvents.push({
+          name,
+          color: `#${randomLightColor(name)}`,
+        });
+        // set availibility to 0
+        dayInfo.locations.map((l) => {
+          l.space = 0;
+        });        
       }
     }
 
