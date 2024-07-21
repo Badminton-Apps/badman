@@ -34,11 +34,13 @@ export class InfoEvent {
   start?: Date;
   end?: Date;
   name?: string;
+  allowCompetition?: boolean;
 
   constructor(args?: Partial<InfoEvent>) {
     this.start = args?.start ? new Date(args.start) : undefined;
     this.end = args?.end ? new Date(args.end) : undefined;
     this.name = args?.name;
+    this.allowCompetition = args?.allowCompetition;
   }
 }
 

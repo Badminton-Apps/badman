@@ -118,7 +118,7 @@ export class CalendarComponent implements OnInit {
       courts: number;
     }[]
   > = new Map();
-  public dayEvents: Map<string, string[]> = new Map();
+  public dayEvents: Map<string, { name: string; allowCompetition: boolean }[]> = new Map();
 
   public changeRequests: Map<
     string,
@@ -148,7 +148,7 @@ export class CalendarComponent implements OnInit {
         requested: EncounterCompetition[];
       }[];
       other: EncounterCompetition[];
-      dayEvents: { color: string; name: string }[];
+      dayEvents: { color: string; name: string; tooltip: string }[];
     };
   }[];
 
@@ -343,7 +343,7 @@ export class CalendarComponent implements OnInit {
   }
 
   dateFilter(d: Date | null) {
-    if (this.isAdmin()){
+    if (this.isAdmin()) {
       return true;
     }
 
@@ -357,7 +357,8 @@ export class CalendarComponent implements OnInit {
       return false;
     }
 
-    if (this.dayEvents.has(format)) {
+    const dayEvent = this.dayEvents.get(format);
+    if (dayEvent && dayEvent.some((e) => e.allowCompetition == false)) {
       return false;
     }
 
@@ -381,7 +382,10 @@ export class CalendarComponent implements OnInit {
             this.dayEvents.set(format, []);
           }
 
-          this.dayEvents.get(format)?.push(event.name ?? '');
+          this.dayEvents.get(format)?.push({
+            name: event.name ?? '',
+            allowCompetition: event.allowCompetition ?? false,
+          });
         }
       }
     }
@@ -631,6 +635,7 @@ export class CalendarComponent implements OnInit {
                         name
                         end
                         start
+                        allowCompetition
                       }
                     }
                   }
@@ -848,7 +853,7 @@ export class CalendarComponent implements OnInit {
         removed: EncounterCompetition[];
         requested: EncounterCompetition[];
       }[];
-      dayEvents: { color: string; name: string }[];
+      dayEvents: { color: string; name: string; tooltip: string }[];
       other: EncounterCompetition[];
     } = {
       dayEvents: [],
@@ -916,15 +921,22 @@ export class CalendarComponent implements OnInit {
     }
 
     if (this.dayEvents.has(format)) {
-      for (const name of this.dayEvents.get(format) ?? []) {
+      for (const event of this.dayEvents.get(format) ?? []) {
         dayInfo.dayEvents.push({
-          name,
-          color: `#${randomLightColor(name)}`,
+          name: event.name,
+          color: `#${randomLightColor(event.name)}`,
+          tooltip: event.allowCompetition
+            ? ''
+            : 'all.competition.change-encounter.calendar.no-competition',
         });
-        // set availibility to 0
-        dayInfo.locations.map((l) => {
-          l.space = 0;
-        });
+
+        if (!event.allowCompetition) {
+          console.log('event not allowed');
+          // set availibility to 0
+          dayInfo.locations.map((l) => {
+            l.space = 0;
+          });
+        }
       }
     }
 
