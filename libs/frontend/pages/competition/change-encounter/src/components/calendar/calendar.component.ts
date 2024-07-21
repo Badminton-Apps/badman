@@ -342,12 +342,16 @@ export class CalendarComponent implements OnInit {
       return false;
     }
 
-    if (!this.exceptions) {
-      return true;
+    const format = moment(d).format('YYYY-MM-DD');
+    if (this.exceptions.has(format)) {
+      return false;
     }
 
-    const format = moment(d).format('YYYY-MM-DD');
-    return !this.exceptions.has(format);
+    if (this.dayEvents.has(format)) {
+      return false;
+    }
+
+    return true;
   }
 
   private _loadDayEvents() {
@@ -902,7 +906,7 @@ export class CalendarComponent implements OnInit {
         }
       }
     }
-    
+
     if (this.dayEvents.has(format)) {
       for (const name of this.dayEvents.get(format) ?? []) {
         dayInfo.dayEvents.push({
