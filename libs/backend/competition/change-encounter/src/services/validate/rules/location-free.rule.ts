@@ -100,7 +100,12 @@ export class LocationRule extends Rule {
 
         // any day can have multipple slots, check in which slot the encounter is by checking start and endtime of the day against the encounter da
         const filteredSlots = filteredDays?.find(
-          (r) => moment(enc.date).tz('Europe/Brussels').format('HH:mm') == r.startTime,
+          (r) => {
+            const encStart = moment(enc.date).tz('Europe/Brussels').format('HH:mm');
+            this.logger.verbose(`Checking if ${encStart} is same ${r.startTime}`);
+
+            return encStart == r.startTime;
+          },
         );
 
         if (filteredSlots != null && !slot) {
