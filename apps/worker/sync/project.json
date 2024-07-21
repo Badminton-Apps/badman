@@ -29,6 +29,19 @@
         "command": "node ./scripts/render.js --app=worker_sync"
       }
     },
+    "build": {
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {
+          "cwd": "{projectRoot}",
+          "args": ["--node-env=development"]
+        },
+        "production": {
+          "cwd": "{projectRoot}",
+          "args": ["--node-env=production"]
+        }
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
