@@ -72,11 +72,13 @@
     }
   },
   "competition": {
+    "allow-competition": "Competitie toegestaan",
     "avg-level": "Gemiddeld niveau",
     "away": "Uit",
     "change-encounter": {
       "add-date": "Voeg datum toe",
       "calendar": {
+        "no-competition": "Er is geen competitie toegestaan op deze dag",
         "no-space": "Geen plaats meer.",
         "option": "{amount} in optie",
         "other-games": "Andere ontmoetingen die dag",

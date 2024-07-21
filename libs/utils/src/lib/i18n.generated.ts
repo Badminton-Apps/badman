@@ -79,11 +79,13 @@ export type I18nTranslations = {
             };
         };
         "competition": {
+            "allow-competition": string;
             "avg-level": string;
             "away": string;
             "change-encounter": {
                 "add-date": string;
                 "calendar": {
+                    "no-competition": string;
                     "no-space": string;
                     "option": string;
                     "other-games": string;

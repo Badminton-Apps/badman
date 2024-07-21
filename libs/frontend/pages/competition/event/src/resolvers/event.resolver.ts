@@ -38,6 +38,7 @@ export const EVENT_QUERY = gql`
         start
         end
         name
+        allowCompetition
       }
       subEventCompetitions {
         id

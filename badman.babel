@@ -1094,6 +1094,25 @@
 						<name>competition</name>
 						<children>
 							<concept_node>
+								<name>allow-competition</name>
+								<description/>
+								<comment/>
+								<translations>
+									<translation>
+										<language>en-US</language>
+										<approved>false</approved>
+									</translation>
+									<translation>
+										<language>fr-BE</language>
+										<approved>false</approved>
+									</translation>
+									<translation>
+										<language>nl-BE</language>
+										<approved>false</approved>
+									</translation>
+								</translations>
+							</concept_node>
+							<concept_node>
 								<name>avg-level</name>
 								<description/>
 								<comment/>
@@ -1156,6 +1175,25 @@
 									<folder_node>
 										<name>calendar</name>
 										<children>
+											<concept_node>
+												<name>no-competition</name>
+												<description/>
+												<comment/>
+												<translations>
+													<translation>
+														<language>en-US</language>
+														<approved>false</approved>
+													</translation>
+													<translation>
+														<language>fr-BE</language>
+														<approved>false</approved>
+													</translation>
+													<translation>
+														<language>nl-BE</language>
+														<approved>false</approved>
+													</translation>
+												</translations>
+											</concept_node>
 											<concept_node>
 												<name>no-space</name>
 												<description/>
