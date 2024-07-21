@@ -23,6 +23,19 @@
         }
       }
     },
+    "build": {
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {
+          "cwd": "{projectRoot}",
+          "args": ["--node-env=development"]
+        },
+        "production": {
+          "cwd": "{projectRoot}",
+          "args": ["--node-env=production"]
+        }
+      }
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
