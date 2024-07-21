@@ -106,7 +106,10 @@ export type I18nTranslations = {
                 "disclaimer-submit": string;
                 "errors": {
                     "date-out-of-period": string;
+                    "exception-day": string;
                     "invalid": string;
+                    "location-no-timeslot": string;
+                    "location-not-free": string;
                     "not-accepted": string;
                     "same-club": string;
                     "same-semester": string;
