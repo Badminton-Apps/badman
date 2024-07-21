@@ -276,6 +276,8 @@ export interface InfoEvent {
   start?: Date;
   end?: Date;
   name?: string;
+
+  allowCompetition?: boolean;
 }
 
 export interface MetaEventCompetition {

@@ -27,8 +27,15 @@
       }
     },
     "build": {
+      "defaultConfiguration": "development",
       "configurations": {
+        "development": {
+          "cwd": "apps/api",
+          "args": ["--node-env=development"]
+        },
         "production": {
+          "cwd": "apps/api",
+          "args": ["--node-env=production"],
           "dependsOn": ["badman:build"]
         }
       }

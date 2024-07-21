@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
+  computed,
   inject,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -37,6 +38,7 @@ import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
+import { ClaimService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-calendar',
@@ -60,7 +62,7 @@ import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
     MatSnackBarModule,
     HasClaimComponent,
     MtxDatetimepickerModule,
-    MtxMomentDatetimeModule
+    MtxMomentDatetimeModule,
   ],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
@@ -68,9 +70,13 @@ import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 })
 export class CalendarComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<CalendarComponent>>(MatDialogRef<CalendarComponent>);
-  private ref = inject(ChangeDetectorRef);
-  private snack = inject(MatSnackBar);
-  private translate = inject(TranslateService);
+  private readonly ref = inject(ChangeDetectorRef);
+  private readonly snack = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
+  private readonly claimService = inject(ClaimService);
+
+  isAdmin = computed(() => this.claimService.hasAnyClaims(['change-any:encounter']));
+
   public data = inject<{
     homeClubId: string;
     awayClubId: string;
@@ -112,7 +118,7 @@ export class CalendarComponent implements OnInit {
       courts: number;
     }[]
   > = new Map();
-  public dayEvents: Map<string, string[]> = new Map();
+  public dayEvents: Map<string, { name: string; allowCompetition: boolean }[]> = new Map();
 
   public changeRequests: Map<
     string,
@@ -142,7 +148,7 @@ export class CalendarComponent implements OnInit {
         requested: EncounterCompetition[];
       }[];
       other: EncounterCompetition[];
-      dayEvents: { color: string; name: string }[];
+      dayEvents: { color: string; name: string; tooltip: string }[];
     };
   }[];
 
@@ -337,17 +343,26 @@ export class CalendarComponent implements OnInit {
   }
 
   dateFilter(d: Date | null) {
+    if (this.isAdmin()) {
+      return true;
+    }
+
     // if date is in the exceptions, return false
     if (!d) {
       return false;
     }
 
-    if (!this.exceptions) {
-      return true;
+    const format = moment(d).format('YYYY-MM-DD');
+    if (this.exceptions.has(format)) {
+      return false;
     }
 
-    const format = moment(d).format('YYYY-MM-DD');
-    return !this.exceptions.has(format);
+    const dayEvent = this.dayEvents.get(format);
+    if (dayEvent && dayEvent.some((e) => e.allowCompetition == false)) {
+      return false;
+    }
+
+    return true;
   }
 
   private _loadDayEvents() {
@@ -367,7 +382,10 @@ export class CalendarComponent implements OnInit {
             this.dayEvents.set(format, []);
           }
 
-          this.dayEvents.get(format)?.push(event.name ?? '');
+          this.dayEvents.get(format)?.push({
+            name: event.name ?? '',
+            allowCompetition: event.allowCompetition ?? false,
+          });
         }
       }
     }
@@ -453,7 +471,7 @@ export class CalendarComponent implements OnInit {
         }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetHomeEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
+            query GetHomeTeamEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
                 count
                 rows {
@@ -514,7 +532,7 @@ export class CalendarComponent implements OnInit {
         }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetHomeEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
+            query GetAwayTeamEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
                 count
                 rows {
@@ -617,6 +635,7 @@ export class CalendarComponent implements OnInit {
                         name
                         end
                         start
+                        allowCompetition
                       }
                     }
                   }
@@ -771,6 +790,7 @@ export class CalendarComponent implements OnInit {
       this.canGoForward = false;
     }
     this.canGoBack = true;
+    this.manualDateControl.setValue(this.firstDayOfMonth.toDate());
 
     this._loadMonth();
   }
@@ -782,6 +802,7 @@ export class CalendarComponent implements OnInit {
       this.canGoBack = false;
     }
     this.canGoForward = true;
+    this.manualDateControl.setValue(this.firstDayOfMonth.toDate());
 
     this._loadMonth();
   }
@@ -834,7 +855,7 @@ export class CalendarComponent implements OnInit {
         removed: EncounterCompetition[];
         requested: EncounterCompetition[];
       }[];
-      dayEvents: { color: string; name: string }[];
+      dayEvents: { color: string; name: string; tooltip: string }[];
       other: EncounterCompetition[];
     } = {
       dayEvents: [],
@@ -856,15 +877,6 @@ export class CalendarComponent implements OnInit {
       (day.month() > 4 && day.year() == this.season + 1)
     ) {
       return dayInfo;
-    }
-
-    if (this.dayEvents.has(format)) {
-      for (const name of this.dayEvents.get(format) ?? []) {
-        dayInfo.dayEvents.push({
-          name,
-          color: `#${randomLightColor(name)}`,
-        });
-      }
     }
 
     if (availabilities) {
@@ -892,7 +904,13 @@ export class CalendarComponent implements OnInit {
 
     if (encounters) {
       for (const encounter of encounters) {
-        const infoIndex = dayInfo.locations.findIndex((l) => l.locationId === encounter.locationId);
+        let infoIndex = -1;
+        if (dayInfo.locations.length  == 1 ) {
+          infoIndex = 0;
+        } else {
+          // temp fix. locationId is still wrong, but it's not common for 2 locations on the same day
+          infoIndex = dayInfo.locations.findIndex((l) => l.locationId === encounter.locationId);
+        }
 
         if (infoIndex >= 0) {
           // if there is an request
@@ -906,6 +924,26 @@ export class CalendarComponent implements OnInit {
           }
 
           dayInfo.locations[infoIndex].space = Math.max(0, dayInfo.locations[infoIndex].space - 1);
+        } else {}
+      }
+    }
+
+    if (this.dayEvents.has(format)) {
+      for (const event of this.dayEvents.get(format) ?? []) {
+        dayInfo.dayEvents.push({
+          name: event.name,
+          color: `#${randomLightColor(event.name)}`,
+          tooltip: event.allowCompetition
+            ? ''
+            : 'all.competition.change-encounter.calendar.no-competition',
+        });
+
+        if (!event.allowCompetition) {
+          console.log('event not allowed');
+          // set availibility to 0
+          dayInfo.locations.map((l) => {
+            l.space = 0;
+          });
         }
       }
     }

@@ -75,7 +75,6 @@ export class SemesterRule extends Rule {
           team.id,
         );
 
-
         warns.forEach((warn) => {
           warnings.push({
             message: 'all.competition.change-encounter.errors.same-semester',
