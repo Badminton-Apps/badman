@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
+  computed,
   inject,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -37,6 +38,7 @@ import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
 import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
+import { ClaimService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-calendar',
@@ -60,7 +62,7 @@ import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
     MatSnackBarModule,
     HasClaimComponent,
     MtxDatetimepickerModule,
-    MtxMomentDatetimeModule
+    MtxMomentDatetimeModule,
   ],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss'],
@@ -68,9 +70,13 @@ import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
 })
 export class CalendarComponent implements OnInit {
   public dialogRef = inject<MatDialogRef<CalendarComponent>>(MatDialogRef<CalendarComponent>);
-  private ref = inject(ChangeDetectorRef);
-  private snack = inject(MatSnackBar);
-  private translate = inject(TranslateService);
+  private readonly ref = inject(ChangeDetectorRef);
+  private readonly snack = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
+  private readonly claimService = inject(ClaimService);
+
+  isAdmin = computed(() => this.claimService.hasAnyClaims(['change-any:encounter']));
+
   public data = inject<{
     homeClubId: string;
     awayClubId: string;
@@ -337,6 +343,10 @@ export class CalendarComponent implements OnInit {
   }
 
   dateFilter(d: Date | null) {
+    if (this.isAdmin()){
+      return true;
+    }
+
     // if date is in the exceptions, return false
     if (!d) {
       return false;
@@ -862,8 +872,6 @@ export class CalendarComponent implements OnInit {
       return dayInfo;
     }
 
-    
-
     if (availabilities) {
       for (const availibility of availabilities) {
         dayInfo.locations.push({
@@ -916,7 +924,7 @@ export class CalendarComponent implements OnInit {
         // set availibility to 0
         dayInfo.locations.map((l) => {
           l.space = 0;
-        });        
+        });
       }
     }
 
