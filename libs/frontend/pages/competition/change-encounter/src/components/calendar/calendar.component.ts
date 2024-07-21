@@ -939,8 +939,6 @@ export class CalendarComponent implements OnInit {
         });
 
         if (!event.allowCompetition) {
-          console.log('event not allowed');
-          // set availibility to 0
           dayInfo.locations.map((l) => {
             l.space = 0;
           });
