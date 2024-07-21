@@ -162,7 +162,7 @@ export class ChangeEncounterValidationService {
       new DatePeriodRule(),
       new TeamClubRule(),
       new ExceptionRule(),
-      new LocationRule(),
+      // new LocationRule(), BUG: LocationIds are wrong
     ];
   }
 }
