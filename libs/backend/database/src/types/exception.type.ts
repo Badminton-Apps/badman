@@ -24,6 +24,9 @@ export class InfoEventType {
   end?: Date;
   @Field(() => String, { nullable: true })
   name?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  allowCompetition?: boolean;
 }
 
 @InputType()

@@ -129,6 +129,11 @@
               </mat-form-field>
             </div>
           </div>
+          <div class="allowCompetition">
+            <div>
+                <mat-checkbox formControlName="allowCompetition">{{ 'all.competition.allow-competition' | translate }}</mat-checkbox>
+            </div>
+          </div>
           <div class="delete">
             <button mat-icon-button (click)="removeInfoEvent(i)">
               <mat-icon>delete</mat-icon>

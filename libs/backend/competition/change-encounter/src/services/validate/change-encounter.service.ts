@@ -1,13 +1,19 @@
+import { EncounterCompetition, Team, Location } from '@badman/backend-database';
 import { Injectable, Logger } from '@nestjs/common';
-import { TeamClubRule, SemesterRule, DatePeriodRule } from './rules';
-import { EncounterCompetition, Team } from '@badman/backend-database';
 import { Op } from 'sequelize';
 import {
   ChangeEncounterOutput,
   ChangeEncounterValidationData,
   ChangeEncounterValidationError,
 } from '../../models';
-import { Rule } from './rules/_rule.base';
+import {
+  DatePeriodRule,
+  ExceptionRule,
+  Rule,
+  SemesterRule,
+  TeamClubRule,
+  LocationRule,
+} from './rules';
 
 @Injectable()
 export class ChangeEncounterValidationService {
@@ -28,7 +34,7 @@ export class ChangeEncounterValidationService {
 
     // get encounters for the team
     const encounters = await EncounterCompetition.findAll({
-      attributes: ['id', 'date'],
+      attributes: ['id', 'date', 'drawId', 'locationId'],
       where: {
         [Op.or]: [
           {
@@ -56,10 +62,47 @@ export class ChangeEncounterValidationService {
     const encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === lowestYear);
     const encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear);
 
+    if (encountersSem1.length === 0 || encountersSem2.length === 0) {
+      throw new Error('Not enough encounters');
+    }
+
+    const draw = await encountersSem1[0].getDrawCompetition({
+      attributes: ['id', 'name', 'subeventId'],
+      include: [
+        {
+          association: 'subEventCompetition',
+          attributes: ['id', 'name', 'eventId'],
+          include: [
+            {
+              association: 'eventCompetition',
+              attributes: ['id', 'name', 'infoEvents'],
+            },
+          ],
+        },
+      ],
+    });
+
+    const locations = await Location.findAll({
+      attributes: ['id', 'name'],
+      where: {
+        id: encounters.map((r) => r.locationId)?.filter((r) => !!r) as string[],
+      },
+      include: [
+        {
+          association: 'availabilities',
+          where: {
+            season: team.season,
+          },
+        },
+      ],
+    });
+
     return {
       team,
       encountersSem1,
       encountersSem2,
+      draw,
+      locations,
 
       lowestYear,
 
@@ -114,6 +157,12 @@ export class ChangeEncounterValidationService {
   }
 
   static defaultValidators(): Rule[] {
-    return [new SemesterRule(), new DatePeriodRule(), new TeamClubRule()];
+    return [
+      new SemesterRule(),
+      new DatePeriodRule(),
+      new TeamClubRule(),
+      new ExceptionRule(),
+      // new LocationRule(), BUG: LocationIds are wrong
+    ];
   }
 }

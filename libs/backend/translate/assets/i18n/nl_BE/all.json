@@ -72,11 +72,13 @@
     }
   },
   "competition": {
+    "allow-competition": "Competitie toegestaan",
     "avg-level": "Gemiddeld niveau",
     "away": "Uit",
     "change-encounter": {
       "add-date": "Voeg datum toe",
       "calendar": {
+        "no-competition": "Er is geen competitie toegestaan op deze dag",
         "no-space": "Geen plaats meer.",
         "option": "{amount} in optie",
         "other-games": "Andere ontmoetingen die dag",
@@ -97,7 +99,10 @@
       "disclaimer-submit": "Eenmaal beide teams beschikbaar zijn, kan de datum gekozen worden via de checkbox en door dan op verzenden te klikken",
       "errors": {
         "date-out-of-period": "De datum ligt buiten de toegelaten periode (September tot April)",
+        "exception-day": "Er mag geen competitie gespeeld worden op deze dag",
         "invalid": "Gelieve alle beschikbaarheid aan te vullen voor het versturen.",
+        "location-no-timeslot": "Geen tijdslot gevonden voor locatie",
+        "location-not-free": "Er zijn geen voldoende velden vrij",
         "not-accepted": "Het voorstel is nog niet geaccepteerd",
         "same-club": "De ontmoeting tegen eigen club moeten als eerste gespeeld worden",
         "same-semester": "De thuis en uit ontmoeting ligt in dezelfde speelhelft",

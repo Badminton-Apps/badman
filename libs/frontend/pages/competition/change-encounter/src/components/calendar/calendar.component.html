@@ -24,7 +24,7 @@
       </mat-chip-listbox>
     </div>
     <div class="spacer"></div>
-    @if (this.data.home) {
+    @if (this.data.home || this.isAdmin()) {
       <div class="manual-selection">
         @if (this.locations) {
           <mat-form-field>
@@ -105,8 +105,15 @@
             <div class="calendar-day-content">
               <div class="day-events">
                 @for (info of dayInfo.dayEvents; track info) {
-                  <div class="day-event" [ngStyle]="{ 'background-color': info.color }">
+                  <div
+                    class="day-event"
+                    [ngStyle]="{ 'background-color': info.color }"
+                    [matTooltip]="info.tooltip | translate"
+                  >
                     {{ info.name }}
+                    @if (info.tooltip) {
+                      *
+                    }
                   </div>
                 }
               </div>
@@ -137,7 +144,7 @@
                         <div class="event-team">
                           <div
                             [ngStyle]="{
-                              'border-color': this.teamColors.get(enc.homeTeamId ?? '')
+                              'border-color': this.teamColors.get(enc.homeTeamId ?? ''),
                             }"
                             class="event-color"
                           ></div>
@@ -161,7 +168,7 @@
                         <div class="event-team">
                           <div
                             [ngStyle]="{
-                              'border-color': this.teamColors.get(enc.homeTeamId ?? '')
+                              'border-color': this.teamColors.get(enc.homeTeamId ?? ''),
                             }"
                             class="event-color"
                           ></div>
@@ -185,7 +192,7 @@
                         <div class="event-team">
                           <div
                             [ngStyle]="{
-                              'border-color': this.teamColors.get(enc.homeTeamId ?? '')
+                              'border-color': this.teamColors.get(enc.homeTeamId ?? ''),
                             }"
                             class="event-color"
                           ></div>

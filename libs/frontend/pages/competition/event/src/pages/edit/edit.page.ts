@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
@@ -53,6 +54,7 @@ export type InfoEventType = FormGroup<{
   start: FormControl<Date | undefined>;
   end: FormControl<Date | undefined>;
   name: FormControl<string | undefined>;
+  allowCompetition: FormControl<boolean | undefined>;
 }>;
 
 const roleQuery = gql`
@@ -79,6 +81,7 @@ const roleQuery = gql`
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
+    MatCheckboxModule,
     ReactiveFormsModule,
     MatDatepickerModule,
     MatSnackBarModule,
@@ -185,6 +188,7 @@ export class EditPageComponent {
           start: new FormControl(infoEvent.start, Validators.required),
           end: new FormControl(infoEvent.end, Validators.required),
           name: new FormControl(infoEvent.name),
+          allowCompetition: new FormControl(infoEvent.allowCompetition),
         });
       }) ?? [],
     ) as FormArray<InfoEventType>;
@@ -338,6 +342,7 @@ export class EditPageComponent {
         start: new FormControl(),
         end: new FormControl(),
         name: new FormControl(),
+        allowCompetition: new FormControl(),
       }) as InfoEventType,
     );
   }

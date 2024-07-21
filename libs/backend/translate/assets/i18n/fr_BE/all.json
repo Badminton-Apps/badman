@@ -72,11 +72,13 @@
     }
   },
   "competition": {
+    "allow-competition": "Concours autorisé",
     "avg-level": "Niveau moyen",
     "away": "De",
     "change-encounter": {
       "add-date": "Ajouter une date",
       "calendar": {
+        "no-competition": "Aucune compétition n'est autorisée ce jour-là",
         "no-space": "Plus de pièces.",
         "option": "{amount} facultatif",
         "other-games": "Autres rencontres ce jour-là",
@@ -97,7 +99,10 @@
       "disclaimer-submit": "Lorsque les deux équipes sont disponibles, la date peut être choisie à l'aide de la case à cocher, puis en cliquant sur envoyer.",
       "errors": {
         "date-out-of-period": "La date est en dehors de la période autorisée (septembre à avril)",
+        "exception-day": "Aucune compétition ne peut être jouée ce jour-là",
         "invalid": "Veuillez compléter toutes les disponibilités avant d'envoyer",
+        "location-no-timeslot": "Aucun créneau horaire n'a été trouvé pour le lieu",
+        "location-not-free": "Aucun champ suffisant n'est libre",
         "not-accepted": "La proposition n'a pas encore été acceptée",
         "same-club": "La rencontre contre son propre club devrait être jouée en premier",
         "same-semester": "La rencontre à domicile et à l'extérieur se déroule dans la même moitié du match.",
