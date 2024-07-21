@@ -78,9 +78,6 @@ export class DatePeriodRule extends Rule {
 
     const date = moment(inputDate);
     const isBetween = date.isBetween(period[0], period[1], 'day', '[]');
-    this.logger.verbose(
-      `Checking if suggested date ${date.format('YYYY-MM-DD')} is in period ${period[0]} - ${period[1]}: ${isBetween}`,
-    );
 
     if (!isBetween) {
       return {
