@@ -1,1 +1,1 @@
-export type Relation<T> = T; // WrapperType === Relation
+export type Relation<T> = T; 
