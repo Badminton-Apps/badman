@@ -14,7 +14,9 @@ export type LocationRuleParams = {
 };
 
 /**
- * Checks if encounters against the same team are in a different semester
+ * Checks if there are enough locations available for the encounters
+ * 
+ * TODO: locationId's are wrong, check why
  */
 export class LocationRule extends Rule {
   private readonly logger = new Logger(LocationRule.name);
@@ -99,15 +101,9 @@ export class LocationRule extends Rule {
         );
 
         // any day can have multipple slots, check in which slot the encounter is by checking start and endtime of the day against the encounter da
-        const filteredSlots = filteredDays?.find((r) => {
-          const startTime = moment(r.startTime, 'HH:mm');
-          const endTime = moment(r.endTime, 'HH:mm');
-
-          return (
-            this.minutesOfDay(startTime) <= this.minutesOfDay(moment(enc.date)) &&
-            this.minutesOfDay(endTime) >= this.minutesOfDay(moment(enc.date))
-          );
-        });
+        const filteredSlots = filteredDays?.find(
+          (r) => moment(enc.date).format('HH:mm') == r.startTime,
+        );
 
         if (filteredSlots != null && !slot) {
           slot = filteredSlots;
@@ -132,14 +128,9 @@ export class LocationRule extends Rule {
             date: enc.date,
           },
         });
-      
       }
     }
 
     return errors.flat();
-  }
-
-  private minutesOfDay(m: moment.Moment) {
-    return m.minutes() + m.hours() * 60;
   }
 }
