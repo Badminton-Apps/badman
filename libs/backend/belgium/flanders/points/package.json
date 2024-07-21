@@ -1,10 +1,10 @@
 {
   "name": "@badman/belgium-flanders-points",
-  "version": "6.160.4",
+  "version": "6.161.0",
   "dependencies": {
     "tslib": "^2.3.0",
-    "@badman/backend-database": "6.160.4",
-    "@badman/utils": "6.160.4",
+    "@badman/backend-database": "6.161.0",
+    "@badman/utils": "6.161.0",
     "@nestjs/common": "^10.3.10",
     "sequelize": "^6.37.3"
   },

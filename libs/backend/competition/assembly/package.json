@@ -1,11 +1,11 @@
 {
   "name": "@badman/backend-assembly",
-  "version": "6.160.4",
+  "version": "6.161.0",
   "dependencies": {
-    "@badman/backend-compile": "6.160.4",
-    "@badman/backend-database": "6.160.4",
-    "@badman/utils": "6.160.4",
-    "@badman/backend-authorization": "6.160.4",
+    "@badman/backend-compile": "6.161.0",
+    "@badman/backend-database": "6.161.0",
+    "@badman/utils": "6.161.0",
+    "@badman/backend-authorization": "6.161.0",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
     "fastify": "^4.27.0",
