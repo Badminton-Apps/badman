@@ -24,7 +24,7 @@
       </mat-chip-listbox>
     </div>
     <div class="spacer"></div>
-    @if (this.data.home) {
+    @if (this.data.home || this.isAdmin()) {
       <div class="manual-selection">
         @if (this.locations) {
           <mat-form-field>
