@@ -924,7 +924,7 @@ export class CalendarComponent implements OnInit {
           }
 
           dayInfo.locations[infoIndex].space = Math.max(0, dayInfo.locations[infoIndex].space - 1);
-        } else {}
+        }
       }
     }
 
