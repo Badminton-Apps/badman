@@ -72,11 +72,13 @@
     }
   },
   "competition": {
+    "allow-competition": "Concours autorisé",
     "avg-level": "Niveau moyen",
     "away": "De",
     "change-encounter": {
       "add-date": "Ajouter une date",
       "calendar": {
+        "no-competition": "Aucune compétition n'est autorisée ce jour-là",
         "no-space": "Plus de pièces.",
         "option": "{amount} facultatif",
         "other-games": "Autres rencontres ce jour-là",

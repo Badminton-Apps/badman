@@ -72,11 +72,13 @@
     }
   },
   "competition": {
+    "allow-competition": "Competition allowed",
     "avg-level": "Average level",
     "away": "Away",
     "change-encounter": {
       "add-date": "Add date",
       "calendar": {
+        "no-competition": "No competition is allowed on this day",
         "no-space": "No more room.",
         "option": "{amount} optional",
         "other-games": "Other encounters that day",
