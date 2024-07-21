@@ -471,7 +471,7 @@ export class CalendarComponent implements OnInit {
         }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetHomeEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
+            query GetHomeTeamEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
                 count
                 rows {
@@ -532,7 +532,7 @@ export class CalendarComponent implements OnInit {
         }>({
           fetchPolicy: 'cache-first',
           query: gql`
-            query GetHomeEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
+            query GetAwayTeamEncountersForTeams($where: JSONObject, $order: [SortOrderType!]) {
               encounterCompetitions(where: $where, order: $order) {
                 count
                 rows {
@@ -904,7 +904,13 @@ export class CalendarComponent implements OnInit {
 
     if (encounters) {
       for (const encounter of encounters) {
-        const infoIndex = dayInfo.locations.findIndex((l) => l.locationId === encounter.locationId);
+        let infoIndex = -1;
+        if (dayInfo.locations.length  == 1 ) {
+          infoIndex = 0;
+        } else {
+          // temp fix. locationId is still wrong, but it's not common for 2 locations on the same day
+          infoIndex = dayInfo.locations.findIndex((l) => l.locationId === encounter.locationId);
+        }
 
         if (infoIndex >= 0) {
           // if there is an request
@@ -918,7 +924,7 @@ export class CalendarComponent implements OnInit {
           }
 
           dayInfo.locations[infoIndex].space = Math.max(0, dayInfo.locations[infoIndex].space - 1);
-        }
+        } else {}
       }
     }
 
