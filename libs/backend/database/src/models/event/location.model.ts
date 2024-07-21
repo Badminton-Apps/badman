@@ -112,6 +112,7 @@ export class Location extends Model<InferAttributes<Location>, InferCreationAttr
   @BelongsToMany(() => EventTournament, () => LocationEventTournamentMembership)
   eventTournaments?: Relation<EventTournament[]>;
 
+
   @HasMany(() => Court, 'locationId')
   courts?: Court;
 

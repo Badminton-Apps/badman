@@ -1,4 +1,4 @@
-import { EncounterCompetition, Team } from '@badman/backend-database';
+import { DrawCompetition, EncounterCompetition, Location, Team } from '@badman/backend-database';
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
 import { ChangeEncounterValidationError } from './error.model';
 
@@ -31,6 +31,8 @@ export class ChangeEncounterValidationData {
 
   encountersSem1!: EncounterCompetition[];
   encountersSem2!: EncounterCompetition[];
+  draw!: DrawCompetition;
+  locations!: Location[];
   lowestYear!: number;
   workingencounterId?: string;
   suggestedDates?: Date[];

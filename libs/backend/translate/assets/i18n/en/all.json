@@ -99,7 +99,10 @@
       "disclaimer-submit": "Once both teams are available, the selected day can be chosen in the checkbox by then clicking on send",
       "errors": {
         "date-out-of-period": "The date is outside the allowed period (September to April)",
+        "exception-day": "No competition may be played on this day",
         "invalid": "Please complete all availability before sending",
+        "location-no-timeslot": "No time slot found for location",
+        "location-not-free": "There are not enough courts free",
         "not-accepted": "The proposal has not yet been accepted",
         "same-club": "The encounter against own club should be played first",
         "same-semester": "The home and away meet is in the same half of play",
