@@ -38,26 +38,24 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
     });
 
     // get the encounters grouped by encounter.home?.clubId
-    const clubEncounterMap = this.encounters
-      ?.filter((e) => e.encounter.locationId == null)
-      ?.reduce(
-        (acc, encounter) => {
-          const team = teams.find((team) => team.id === encounter.encounter.homeTeamId);
-          const clubId = team?.clubId;
-          if (!clubId) {
-            return acc;
-          }
-
-          if (!acc[clubId]) {
-            acc[clubId] = [];
-          }
-
-          acc[clubId].push(encounter);
-
+    const clubEncounterMap = this.encounters?.reduce(
+      (acc, encounter) => {
+        const team = teams.find((team) => team.id === encounter.encounter.homeTeamId);
+        const clubId = team?.clubId;
+        if (!clubId) {
           return acc;
-        },
-        {} as Record<string, EncounterStepData[]>,
-      );
+        }
+
+        if (!acc[clubId]) {
+          acc[clubId] = [];
+        }
+
+        acc[clubId].push(encounter);
+
+        return acc;
+      },
+      {} as Record<string, EncounterStepData[]>,
+    );
 
     // get all the clubs
     const clubs = await Club.findAll({
@@ -88,7 +86,8 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
   private async _processEncountersForClub(encounters: EncounterStepData[], club: Club) {
     // for each encounter, check if the location is not set
     for (const encounter of encounters) {
-      if (encounter.encounter.locationId) {
+      // we can skip if the encounter was moved already from location
+      if (encounter.encounter.originalLocationId) {
         continue;
       }
 

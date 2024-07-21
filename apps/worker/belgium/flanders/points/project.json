@@ -27,6 +27,19 @@
         "jestConfig": "{projectRoot}/jest.config.ts"
       }
     },
+    "build": {
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {
+          "cwd": "{projectRoot}",
+          "args": ["--node-env=development"]
+        },
+        "production": {
+          "cwd": "{projectRoot}",
+          "args": ["--node-env=production"]
+        }
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
