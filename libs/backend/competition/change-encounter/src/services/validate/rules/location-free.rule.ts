@@ -1,6 +1,6 @@
 import { EncounterCompetition, Location } from '@badman/backend-database';
 import { Logger } from '@nestjs/common';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import {
   ChangeEncounterOutput,
   ChangeEncounterValidationData,
@@ -100,9 +100,8 @@ export class LocationRule extends Rule {
 
         // any day can have multipple slots, check in which slot the encounter is by checking start and endtime of the day against the encounter da
         const filteredSlots = filteredDays?.find(
-          (r) => moment(enc.date).format('HH:mm') == r.startTime,
+          (r) => moment(enc.date).tz('Europe/Brussels').format('HH:mm') == r.startTime,
         );
-
 
         if (filteredSlots != null && !slot) {
           slot = filteredSlots;
