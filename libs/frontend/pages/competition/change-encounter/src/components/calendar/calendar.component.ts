@@ -790,6 +790,7 @@ export class CalendarComponent implements OnInit {
       this.canGoForward = false;
     }
     this.canGoBack = true;
+    this.manualDateControl.setValue(this.firstDayOfMonth.toDate());
 
     this._loadMonth();
   }
@@ -801,6 +802,7 @@ export class CalendarComponent implements OnInit {
       this.canGoBack = false;
     }
     this.canGoForward = true;
+    this.manualDateControl.setValue(this.firstDayOfMonth.toDate());
 
     this._loadMonth();
   }
