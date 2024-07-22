@@ -1,5 +1,5 @@
 import { Player } from '@badman/backend-database';
-import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export type TeamClubBaseRuleParams = {
@@ -9,6 +9,7 @@ export type TeamClubBaseRuleParams = {
  * Checks if the player is not in another base team that is higher than the current team or part of the same subevent
  */
 export class TeamClubBaseRule extends Rule {
+  static override description = 'all.rules.team-assembly.team-club-base';
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       otherMeta,

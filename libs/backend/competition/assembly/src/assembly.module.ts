@@ -1,11 +1,11 @@
 import { CompileModule } from '@badman/backend-compile';
 import { DatabaseModule } from '@badman/backend-database';
+import { ConfigType } from '@badman/utils';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { AssemblyController } from './controllers';
 import { AssemblyExportService, AssemblyValidationService } from './services';
-import { ConfigType } from '@badman/utils';
 
 @Module({
   imports: [

@@ -6,6 +6,7 @@ module.exports = {
   up: async (queryInterface, sequelize) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
+        //
       } catch (err) {
         console.error('We errored with', err?.message ?? err);
         t.rollback();
@@ -16,6 +17,7 @@ module.exports = {
   down: async (queryInterface) => {
     return queryInterface.sequelize.transaction(async (t) => {
       try {
+        //
       } catch (err) {
         console.error('We errored with', err);
         t.rollback();
