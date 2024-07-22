@@ -272,8 +272,6 @@ export class AssemblyComponent implements OnInit {
       .subscribe(async ([gotRequired, encounter]) => {
         this.gotRequired = gotRequired;
 
-        console.log('gotRequired', gotRequired);
-
         if (gotRequired) {
           await this.loadData(encounter);
           this.updatedAssembly$

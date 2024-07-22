@@ -20,6 +20,8 @@ export type PlayerGenderRuleParams =
  * Checks if the player is the correct gender
  */
 export class PlayerGenderRule extends Rule {
+  static override description = 'all.rules.team-assembly.player-gender';
+
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { single1, single2, single3, single4, double1, double2, double3, double4, type } =
       assembly;
