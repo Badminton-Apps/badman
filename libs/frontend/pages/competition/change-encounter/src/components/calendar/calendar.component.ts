@@ -490,10 +490,12 @@ export class CalendarComponent implements OnInit {
                   home {
                     id
                     name
+                    clubId
                   }
                   away {
                     id
                     name
+                    clubId
                   }
                 }
               }
@@ -551,10 +553,12 @@ export class CalendarComponent implements OnInit {
                   home {
                     id
                     name
+                    clubId
                   }
                   away {
                     id
                     name
+                    clubId
                   }
                 }
               }
@@ -902,10 +906,18 @@ export class CalendarComponent implements OnInit {
       }
     }
 
+    if (moment(date).isSame('2025-04-13', 'day')) {
+      console.log(dayInfo.locations?.[0]?.space);
+    }
+
     if (encounters) {
       for (const encounter of encounters) {
         let infoIndex = -1;
-        if (dayInfo.locations.length  == 1 ) {
+        if (encounter.home?.clubId !== this.data.homeClubId) {
+          continue;
+        }
+
+        if (dayInfo.locations.length == 1) {
           infoIndex = 0;
         } else {
           // temp fix. locationId is still wrong, but it's not common for 2 locations on the same day
