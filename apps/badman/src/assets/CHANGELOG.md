@@ -1,3 +1,14 @@
+## 6.161.3 (2024-07-25)
+
+
+### 🩹 Fixes
+
+- calender ([4b0ce78ba](https://github.com/Badminton-Apps/badman/commit/4b0ce78ba))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.161.2 (2024-07-21)
 
 
