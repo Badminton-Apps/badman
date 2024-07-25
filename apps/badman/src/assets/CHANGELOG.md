@@ -1,3 +1,16 @@
+## 6.161.2 (2024-07-21)
+
+
+### 🩹 Fixes
+
+- it was a timezone issue appareantly ([5efe4fce7](https://github.com/Badminton-Apps/badman/commit/5efe4fce7))
+- this is entered in euro brussels timezone ([d0c7bec33](https://github.com/Badminton-Apps/badman/commit/d0c7bec33))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn @cskiwi
+
 ## 6.161.1 (2024-07-21)
 
 
