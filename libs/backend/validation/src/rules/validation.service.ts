@@ -24,7 +24,7 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
   async registerRule(
     rule: ruleType<T, V>,
     description: string,
-    args: { meta?: unknown; activated?: boolean },
+    args?: { meta?: unknown; activated?: boolean },
   ): Promise<void> {
     // find or create rule
     await Rule.findOrCreate({
@@ -36,8 +36,8 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
         group: this.group,
         name: rule.name,
         description: description,
-        activated: args.activated ?? false,
-        meta: args.meta ?? {},
+        activated: args?.activated ?? false,
+        meta: args?.meta ?? {},
       },
     });
 
