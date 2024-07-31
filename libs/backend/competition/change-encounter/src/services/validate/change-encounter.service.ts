@@ -17,7 +17,7 @@ export class ChangeEncounterValidationService extends ValidationService<
 
   private readonly _logger = new Logger(ChangeEncounterValidationService.name);
 
-  override async onModuleInit() {
+  override async onApplicationBootstrap() {
     this._logger.log('Initializing rules');
     await this.clearRules();
 

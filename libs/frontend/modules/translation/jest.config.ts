@@ -3,7 +3,6 @@ export default {
   // displayName: 'frontend-translation',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  testTimeout: 1000 * 60 * 10,
   coverageDirectory: '../../../../coverage/libs/frontend/modules/translation',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
