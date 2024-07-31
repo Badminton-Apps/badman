@@ -36,7 +36,7 @@ export class AssemblyValidationService extends ValidationService<
   override group = 'team-assembly';
 
   private readonly _logger = new Logger(AssemblyValidationService.name);
-  override async onModuleInit() {
+  override async onApplicationBootstrap() {
     this._logger.log('Initializing rules');
 
     await this.clearRules();
