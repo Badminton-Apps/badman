@@ -138,6 +138,7 @@ export class ChangeEncounterValidationService extends ValidationService<
       valid: data.valid,
       errors: data.errors,
       warnings: data.warnings,
+      validators: data.validators,
     } as ChangeEncounterOutput;
   }
 }

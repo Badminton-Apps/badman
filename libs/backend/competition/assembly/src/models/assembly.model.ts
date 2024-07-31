@@ -70,6 +70,9 @@ export class AssemblyOutput {
   @Field(() => Boolean, { nullable: true })
   valid!: boolean;
 
+  @Field(() => [String], { nullable: 'itemsAndList' })
+  validators?: string[];
+
   @Field(() => Int, { nullable: true })
   baseTeamIndex?: number;
 
