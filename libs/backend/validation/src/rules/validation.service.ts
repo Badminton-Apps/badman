@@ -17,11 +17,15 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
   private rules: Map<string, ruleType<T, V>> = new Map();
 
   abstract onModuleInit(): Promise<void>;
-  abstract group: string; 
+  abstract group: string;
 
   abstract fetchData(args?: unknown): Promise<T>;
 
-  async registerRule(rule: ruleType<T, V>, description: string, meta?: unknown): Promise<void> {
+  async registerRule(
+    rule: ruleType<T, V>,
+    description: string,
+    args: { meta?: unknown; activated?: boolean },
+  ): Promise<void> {
     // find or create rule
     await Rule.findOrCreate({
       where: {
@@ -32,12 +36,21 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
         group: this.group,
         name: rule.name,
         description: description,
-        activated: false, 
-        meta: meta ?? {},
+        activated: args.activated ?? false,
+        meta: args.meta ?? {},
       },
     });
 
     this.rules.set(`${this.group}_${rule.name}`, rule);
+  }
+
+  async clearRules(): Promise<void> {
+    await Rule.destroy({
+      where: {
+        group: this.group,
+      },
+    });
+    this.rules.clear();
   }
 
   async validate(
