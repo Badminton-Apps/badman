@@ -13,7 +13,6 @@ import {
   map,
   startWith,
   switchMap,
-  throttleTime,
 } from 'rxjs/operators';
 
 export interface ClubDetailState {
@@ -52,7 +51,7 @@ export class ClubDetailService {
   // sources
   private error$ = new Subject<string>();
   private clubLoaded = this.filterChanged$.pipe(
-    throttleTime(300),
+    // throttleTime(300),
     switchMap((filter) =>
       this.getClub(filter.clubId).pipe(
         map((club) => ({ club, loaded: true, error: null })),
