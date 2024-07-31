@@ -70,7 +70,7 @@ export class SequelizeConfigProvider implements SequelizeOptionsFactory {
       });
     }
 
-    // options.logging = true;
+    // options.logging = false;
 
     options.models = models;
 

@@ -19,11 +19,11 @@ export class AssemblyResolver {
   @Query(() => AssemblyOutput, {
     description: `Validate the assembly\n\r**note**: the levels are the ones from may!`,
   })
-  async validateAssembly(@Args('assembly') assembly: AssemblyInput): Promise<AssemblyOutput> {
-    return this.assemblyService.fetchAndValidate(
-      assembly,
-      AssemblyValidationService.defaultValidators(),
-    );
+  async validateAssembly(
+    @User() user: Player,
+    @Args('assembly') assembly: AssemblyInput,
+  ): Promise<AssemblyOutput> {
+    return this.assemblyService.validate(assembly, { playerId: user.id });
   }
 
   @ResolveField(() => [PlayerRankingType])
