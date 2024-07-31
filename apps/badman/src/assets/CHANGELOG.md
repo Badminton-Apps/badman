@@ -1,3 +1,16 @@
+## 6.161.4 (2024-07-31)
+
+
+### 🩹 Fixes
+
+- **calendar:** exceptions should run on each availibility ([c3b187eee](https://github.com/Badminton-Apps/badman/commit/c3b187eee))
+- **club:** show the active club ([63f543550](https://github.com/Badminton-Apps/badman/commit/63f543550))
+- **clubs:** switching clubs could cause this to return the wrong club ([cdb94f4e2](https://github.com/Badminton-Apps/badman/commit/cdb94f4e2))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.161.3 (2024-07-25)
 
 
