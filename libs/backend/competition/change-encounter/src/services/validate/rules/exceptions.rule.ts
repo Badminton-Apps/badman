@@ -21,7 +21,7 @@ export class ExceptionRule extends Rule {
   private readonly logger = new Logger(ExceptionRule.name);
 
   async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
-    this.logger.verbose('Validating exception rule');
+    this.logger.verbose('Validating rule');
     const errors = [] as ChangeEncounterValidationError<ExceptionRuleParams>[];
     const warnings = [] as ChangeEncounterValidationError<ExceptionRuleParams>[];
     const valid = true;
