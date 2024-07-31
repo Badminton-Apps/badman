@@ -156,6 +156,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                         clubMembership {
                           id
                           membershipType
+                          active
+                          confirmed
                         }
                       }
                     }
@@ -206,6 +208,8 @@ export class PlayerSearchComponent implements OnChanges, OnInit {
                         clubMembership {
                           id
                           membershipType
+                          active
+                          confirmed
                         }
                       }
                     }
