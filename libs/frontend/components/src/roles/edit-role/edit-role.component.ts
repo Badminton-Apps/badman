@@ -72,7 +72,6 @@ export class EditRoleComponent implements OnInit {
   private dialog = inject(MatDialog);
 
   roleId = input.required<string>();
-
   type = input.required<SecurityType[] | SecurityType>();
 
   role?: Signal<Role | undefined>;
