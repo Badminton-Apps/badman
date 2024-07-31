@@ -1,6 +1,8 @@
 import { Rule } from '@badman/backend-database';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ValidationRule } from './_rule.base';
+import { literal, Op } from 'sequelize';
+import { run } from 'node:test';
 
 type ruleType<T, V> = new () => ValidationRule<
   T,
@@ -14,6 +16,7 @@ type ruleType<T, V> = new () => ValidationRule<
 
 @Injectable()
 export abstract class ValidationService<T, V> implements OnModuleInit {
+  private readonly logger = new Logger(ValidationService.name);
   private rules: Map<string, ruleType<T, V>> = new Map();
 
   abstract onModuleInit(): Promise<void>;
@@ -24,38 +27,52 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
   async registerRule(
     rule: ruleType<T, V>,
     description: string,
-    args?: { meta?: unknown; activated?: boolean },
+    args?: { meta?: object; activated?: boolean },
   ): Promise<void> {
     // find or create rule
     await Rule.findOrCreate({
       where: {
         group: this.group,
-        name: rule.name,
+        name: rule.name, 
       },
       defaults: {
         group: this.group,
         name: rule.name,
         description: description,
         activated: args?.activated ?? false,
-        meta: args?.meta ?? {},
+        meta: {
+          activatedForUsers: [],
+          activatedForTeams: [],
+          activatedForClubs: [],
+
+          deactivatedForUsers: [],
+          deactivatedForTeams: [],
+          deactivatedForClubs: [],
+          ...(args?.meta ?? {}),
+        },
       },
+      
     });
 
     this.rules.set(`${this.group}_${rule.name}`, rule);
   }
 
   async clearRules(): Promise<void> {
-    await Rule.destroy({
-      where: {
-        group: this.group,
-      },
-    });
+    // await Rule.destroy({
+    //   where: {
+    //     group: this.group,
+    //   },
+    // });
     this.rules.clear();
   }
 
   async validate(
     args: unknown,
-    playerId?: string,
+    runFor?: {
+      playerId?: string;
+      teamId?: string;
+      clubId?: string;
+    },
   ): Promise<
     Partial<{
       valid: boolean;
@@ -66,10 +83,46 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
   > {
     const configuredRules = await Rule.findAll({
       where: {
-        group: this.group,
-        activated: true,
+        [Op.or]: [
+          {
+            group: this.group,
+            activated: true,
+          },
+          runFor?.playerId
+            ? {
+                group: this.group,
+                activated: false,
+                [Op.and]: [
+                  literal(`"Rule"."meta"->'activatedForUsers' @> '"${runFor?.playerId}"'`),
+                  literal(`NOT ("Rule"."meta"->'deactivatedForUsers' @> '"${runFor?.playerId}"')`),
+                ],
+              }
+            : {},
+          runFor?.teamId
+            ? {
+                group: this.group,
+                activated: false,
+                [Op.and]: [
+                  literal(`"Rule"."meta"->'activatedForTeams' @> '"${runFor?.teamId}"'`),
+                  literal(`NOT ("Rule"."meta"->'deactivatedForTeams' @> '"${runFor?.teamId}"')`),
+                ],
+              }
+            : {},
+          runFor?.clubId
+            ? {
+                group: this.group,
+                activated: false,
+                [Op.and]: [
+                  literal(`"Rule"."meta"->'activatedForClubs' @> '"${runFor?.clubId}"'`),
+                  literal(`NOT ("Rule"."meta"->'deactivatedForClubs' @> '"${runFor?.clubId}"')`),
+                ],
+              }
+            : {},
+        ],
       },
     });
+
+    this.logger.verbose(`Found ${configuredRules.length} rules for group ${this.group}`);
 
     // fetch all rules for the group
     const validators = configuredRules.map((r) => {

@@ -81,9 +81,11 @@ export class AssemblyController {
     return new StreamableFile(pdf);
   }
 
-  private async getTeamAssemblyPdf(input: inputBody, user: Player){
+  private async getTeamAssemblyPdf(input: inputBody, user: Player) {
     const data = await this.assemblyService.fetchData(input);
-    const validation = await this.assemblyService.validate(input, user.id);
+    const validation = await this.assemblyService.validate(input, {
+      playerId: user.id,
+    });
 
     let homeTeam: Team;
     let awayTeam: Team | null;
