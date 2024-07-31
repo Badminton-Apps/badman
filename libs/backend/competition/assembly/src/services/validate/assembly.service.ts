@@ -407,6 +407,7 @@ export class AssemblyValidationService extends ValidationService<
       valid: data.valid,
       errors: data.errors,
       warnings: data.warnings,
+      validators: data.validators,
       systemId: data.system?.id,
       titularsIndex: data.teamIndex,
       titularsPlayerData: data.teamPlayers,

@@ -70,6 +70,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
       valid: boolean;
       errors?: V[];
       warnings?: V[];
+      validators?: string[];
     }> &
       Partial<T>
   > {
@@ -141,6 +142,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
       valid: errors.length === 0,
       errors: errors,
       warnings: warnings,
+      validators: validators?.map((v) => v.constructor.name),
       // valid: true,
       // errors: [],
       // warnings: [],
