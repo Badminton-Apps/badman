@@ -21,7 +21,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: set SHAs
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Ovverride Base to be last release
         run: |
           # run code only on main branch
           TAG_VERSION=$(git describe --first-parent --match 'v*' --abbrev=0 --tags) 
@@ -33,8 +36,6 @@ jobs:
           # Set NX_BASE to the last tag
           echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
 
-          # Set NX_HEAD to the current commit
-          echo "NX_HEAD=origin/${{github.ref_name}}" >> $GITHUB_ENV
 
 
       - uses: oven-sh/setup-bun@v2
