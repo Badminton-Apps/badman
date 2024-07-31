@@ -20,7 +20,7 @@ export class LocationRule extends Rule {
   private readonly logger = new Logger(LocationRule.name);
 
   async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
-    this.logger.verbose('Validating exception rule');
+    this.logger.verbose(`Validating rule`);
     const errors = [] as ChangeEncounterValidationError<LocationRuleParams>[];
     const warnings = [] as ChangeEncounterValidationError<LocationRuleParams>[];
     const valid = true;

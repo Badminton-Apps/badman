@@ -20,13 +20,13 @@ import { Op } from 'sequelize';
 import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../models';
 import {
   PlayerCompStatusRule,
-  TeamBaseIndexRule,
-  TeamSubeventIndexRule,
-  TeamClubBaseRule,
-  PlayerOrderRule,
-  PlayerMinLevelRule,
-  PlayerMaxGamesRule,
   PlayerGenderRule,
+  PlayerMaxGamesRule,
+  PlayerMinLevelRule,
+  PlayerOrderRule,
+  TeamBaseIndexRule,
+  TeamClubBaseRule,
+  TeamSubeventIndexRule,
 } from './rules';
 
 export class AssemblyValidationService extends ValidationService<
@@ -389,9 +389,20 @@ export class AssemblyValidationService extends ValidationService<
 
       subtitudes?: string[];
     },
-    playerId?: string,
+    runFor?: {
+      playerId?: string;
+      teamId?: string;
+      clubId?: string;
+    },
   ) {
-    const data = await super.validate(args, playerId);
+    const team = await Team.findByPk(args.teamId, {
+      attributes: ['clubId'],
+    });
+    const data = await super.validate(args, {
+      ...runFor,
+      teamId: args.teamId,
+      clubId: team?.clubId,
+    });
 
     return {
       valid: data.valid,
