@@ -1,7 +1,7 @@
 import { Rule } from '@badman/backend-database';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ValidationRule } from './_rule.base';
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { literal, Op } from 'sequelize';
+import { ValidationRule } from './_rule.base';
 
 type ruleType<T, V> = new () => ValidationRule<
   T,
@@ -14,11 +14,11 @@ type ruleType<T, V> = new () => ValidationRule<
 >;
 
 @Injectable()
-export abstract class ValidationService<T, V> implements OnModuleInit {
+export abstract class ValidationService<T, V> implements OnApplicationBootstrap {
   private readonly logger = new Logger(ValidationService.name);
   private rules: Map<string, ruleType<T, V>> = new Map();
 
-  abstract onModuleInit(): Promise<void>;
+  abstract onApplicationBootstrap(): Promise<void>;
   abstract group: string;
 
   abstract fetchData(args?: unknown): Promise<T>;
@@ -76,44 +76,37 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
   > {
     const configuredRules = await Rule.findAll({
       where: {
-        [Op.or]: [
-          {
-            group: this.group,
-            activated: true,
-          },
-          runFor?.playerId
-            ? {
-                group: this.group,
-                activated: false,
-                [Op.and]: [
-                  literal(`"Rule"."meta"->'activatedForUsers' @> '"${runFor?.playerId}"'`),
-                  literal(`NOT ("Rule"."meta"->'deactivatedForUsers' @> '"${runFor?.playerId}"')`),
-                ],
-              }
-            : {},
-          runFor?.teamId
-            ? {
-                group: this.group,
-                activated: false,
-                [Op.and]: [
-                  literal(`"Rule"."meta"->'activatedForTeams' @> '"${runFor?.teamId}"'`),
-                  literal(`NOT ("Rule"."meta"->'deactivatedForTeams' @> '"${runFor?.teamId}"')`),
-                ],
-              }
-            : {},
-          runFor?.clubId
-            ? {
-                group: this.group,
-                activated: false,
-                [Op.and]: [
-                  literal(`"Rule"."meta"->'activatedForClubs' @> '"${runFor?.clubId}"'`),
-                  literal(`NOT ("Rule"."meta"->'deactivatedForClubs' @> '"${runFor?.clubId}"')`),
-                ],
-              }
-            : {},
-        ],
+        group: this.group,
       },
     });
+
+    const activatedRules = configuredRules.filter((r) => r.activated);
+
+    configuredRules
+      .filter((r) => !r.activated)
+      .filter((r) => {
+        const meta = r.meta as {
+          activatedForUsers: string[];
+          activatedForTeams: string[];
+          activatedForClubs: string[];
+
+          deactivatedForUsers: string[];
+          deactivatedForTeams: string[];
+          deactivatedForClubs: string[];
+        };
+
+        return (
+          ((runFor?.playerId && meta.activatedForUsers.includes(runFor.playerId)) ||
+            (runFor?.teamId && meta.activatedForTeams.includes(runFor.teamId)) ||
+            (runFor?.clubId && meta.activatedForClubs.includes(runFor.clubId))) &&
+          !(
+            (runFor?.playerId && meta.deactivatedForUsers.includes(runFor.playerId)) ||
+            (runFor?.teamId && meta.deactivatedForTeams.includes(runFor.teamId)) ||
+            (runFor?.clubId && meta.deactivatedForClubs.includes(runFor.clubId))
+          )
+        );
+      })
+      .map((r) => activatedRules.push(r));
 
     this.logger.verbose(`Found ${configuredRules.length} rules for group ${this.group}`);
 

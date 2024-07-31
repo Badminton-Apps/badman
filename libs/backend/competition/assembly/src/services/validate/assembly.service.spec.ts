@@ -69,11 +69,13 @@ describe('AssemblyValidationService', () => {
       ],
     }).compile();
 
-    service = module.get<AssemblyValidationService>(AssemblyValidationService);
 
     // Setup db
     const sequelize = module.get<Sequelize>(Sequelize);
     await sequelize.sync({ force: true });
+
+    service = module.get<AssemblyValidationService>(AssemblyValidationService);
+    await service.onApplicationBootstrap();
 
     const group = SystemGroupBuilder.Create();
     system = await SystemBuilder.Create(RankingSystems.BVL, 12, 75, 50)
@@ -97,7 +99,7 @@ describe('AssemblyValidationService', () => {
       .WithSubEvent(subEventBuilder.WithDraw(drawBuilder.WithEnouncter(encounterBuilder)))
       .Build();
 
-    draw = await drawBuilder.Build();
+    draw = await drawBuilder.Build(); 
     subEvent = await subEventBuilder.Build();
     encounter = await encounterBuilder.Build();
   }, 50000);
