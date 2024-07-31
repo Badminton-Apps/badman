@@ -350,6 +350,8 @@ export class AssemblyValidationService extends ValidationService<
   override async onModuleInit() {
     this._logger.log('Initializing rules');
 
+    await this.clearRules();
+
     await this.registerRule(PlayerCompStatusRule, PlayerCompStatusRule.description);
     await this.registerRule(TeamBaseIndexRule, TeamBaseIndexRule.description);
     await this.registerRule(TeamSubeventIndexRule, TeamSubeventIndexRule.description);
