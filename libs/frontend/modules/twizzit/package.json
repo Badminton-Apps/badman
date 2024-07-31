@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-twizzit",
-  "version": "6.161.2",
+  "version": "6.161.4",
   "peerDependencies": {
     "@badman/frontend-models": "*",
     "@angular/common": "18.1.0",

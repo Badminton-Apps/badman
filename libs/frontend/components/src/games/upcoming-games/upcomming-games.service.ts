@@ -164,7 +164,7 @@ export class UpcommingGamesService {
         variables: {
           where: {
             date: {
-              $gte: moment().format('YYYY-MM-DD'),
+              $gte: moment().format('YYYY-MM-DD HH:mm:ss'),
             },
             $or: [
               {
