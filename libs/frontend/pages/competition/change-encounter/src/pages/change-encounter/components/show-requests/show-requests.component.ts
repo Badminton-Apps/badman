@@ -228,7 +228,8 @@ export class ShowRequestsComponent implements OnInit {
       console.warn(`Dependency ${this.dependsOn()} not found`, this.previous);
     }
   }
-  getWarnings(date: Date) {
+  getWarnings(date: Date | string) {
+    console.log(`getting warnings for: ${date}`);
     return computed(() =>
       this.warnings().filter(
         (r) =>

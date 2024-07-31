@@ -2,7 +2,6 @@ import { Rule } from '@badman/backend-database';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ValidationRule } from './_rule.base';
 import { literal, Op } from 'sequelize';
-import { run } from 'node:test';
 
 type ruleType<T, V> = new () => ValidationRule<
   T,
@@ -11,7 +10,7 @@ type ruleType<T, V> = new () => ValidationRule<
     errors?: V[];
     warnings?: V[];
   }> &
-    T
+    Partial<T>
 >;
 
 @Injectable()
@@ -33,13 +32,13 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
     await Rule.findOrCreate({
       where: {
         group: this.group,
-        name: rule.name, 
+        name: rule.name,
       },
       defaults: {
         group: this.group,
         name: rule.name,
         description: description,
-        activated: args?.activated ?? false,
+        activated: args?.activated ?? true,
         meta: {
           activatedForUsers: [],
           activatedForTeams: [],
@@ -51,18 +50,12 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
           ...(args?.meta ?? {}),
         },
       },
-      
     });
 
     this.rules.set(`${this.group}_${rule.name}`, rule);
   }
 
   async clearRules(): Promise<void> {
-    // await Rule.destroy({
-    //   where: {
-    //     group: this.group,
-    //   },
-    // });
     this.rules.clear();
   }
 
@@ -79,7 +72,7 @@ export abstract class ValidationService<T, V> implements OnModuleInit {
       errors?: V[];
       warnings?: V[];
     }> &
-      T
+      Partial<T>
   > {
     const configuredRules = await Rule.findAll({
       where: {
