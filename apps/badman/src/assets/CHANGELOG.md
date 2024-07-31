@@ -1,3 +1,16 @@
+## 6.162.1 (2024-07-31)
+
+
+### 🩹 Fixes
+
+- this should have been from de backend ([dfb844a7b](https://github.com/Badminton-Apps/badman/commit/dfb844a7b))
+- returing validators ([2d77c95fa](https://github.com/Badminton-Apps/badman/commit/2d77c95fa))
+- some finetuning ([2d395b55a](https://github.com/Badminton-Apps/badman/commit/2d395b55a))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.162.0 (2024-07-31)
 
 
