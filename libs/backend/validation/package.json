@@ -4,8 +4,7 @@
   "dependencies": {
     "@nestjs/common": "^10.3.8",
     "@swc/helpers": "^0.5.11",
-    "@badman/backend-database": "6.161.4",
-    "sequelize": "^6.37.3"
+    "@badman/backend-database": "6.161.4"
   },
   "type": "commonjs",
   "main": "./src/index.js",
