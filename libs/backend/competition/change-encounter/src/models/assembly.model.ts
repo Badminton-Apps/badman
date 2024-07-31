@@ -1,4 +1,4 @@
-import { Club, DrawCompetition, EncounterCompetition, Location, Team } from '@badman/backend-database';
+import { DrawCompetition, EncounterCompetition, Location, Team } from '@badman/backend-database';
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
 import { ChangeEncounterValidationError } from './error.model';
 
@@ -24,6 +24,9 @@ export class ChangeEncounterOutput {
 
   @Field(() => Boolean, { nullable: true })
   valid?: boolean;
+
+  @Field(() => [String], { nullable: 'itemsAndList' })
+  validators?: string[];
 }
 
 export class ChangeEncounterValidationData {
