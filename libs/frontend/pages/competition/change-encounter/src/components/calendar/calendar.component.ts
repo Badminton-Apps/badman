@@ -898,16 +898,14 @@ export class CalendarComponent implements OnInit {
 
       for (const exception of exceptions ?? []) {
         // find availibility for location
-        const availibility = dayInfo.locations.find((l) => l.locationId === exception.locationId);
+        const availibilities = dayInfo.locations.filter(
+          (l) => l.locationId === exception.locationId,
+        );
 
-        if (availibility) {
+        for (const availibility of availibilities) {
           availibility.space = Math.floor(exception.courts / 2);
         }
       }
-    }
-
-    if (moment(date).isSame('2025-04-13', 'day')) {
-      console.log(dayInfo.locations?.[0]?.space);
     }
 
     if (encounters) {
