@@ -1,4 +1,4 @@
-import { EncounterCompetition } from '@badman/backend-database';
+import { EncounterCompetition, InfoEvent } from '@badman/backend-database';
 import {
   ChangeEncounterOutput,
   ChangeEncounterValidationData,
@@ -6,7 +6,6 @@ import {
 } from '../../../models';
 import { Rule } from './_rule.base';
 import { Logger } from '@nestjs/common';
-import { InfoEvent } from '@badman/frontend-models';
 import moment from 'moment';
 
 export type ExceptionRuleParams = {

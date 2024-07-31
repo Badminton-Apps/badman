@@ -3,7 +3,6 @@
   "version": "6.162.0",
   "dependencies": {
     "@badman/backend-database": "6.162.0",
-    "@badman/frontend-models": "6.162.0",
     "@badman/utils": "6.162.0",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
