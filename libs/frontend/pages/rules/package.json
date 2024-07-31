@@ -9,14 +9,13 @@
     "@angular/common": "18.1.0",
     "@angular/core": "18.1.0",
     "@angular/router": "18.1.0",
-    "@angular/forms": "18.1.0",
     "@angular/material": "18.1.0",
     "@ngx-translate/core": "^15.0.0",
-    "ngx-moment": "^6.0.2",
     "apollo-angular": "^7.0.1",
     "ngx-socket-io": "^4.6.1",
     "ngxtension": "^3.2.0",
-    "rxjs": "~7.8.1"
+    "rxjs": "~7.8.1",
+    "@ng-matero/extensions": "^18.0.3"
   },
   "dependencies": {},
   "sideEffects": false
