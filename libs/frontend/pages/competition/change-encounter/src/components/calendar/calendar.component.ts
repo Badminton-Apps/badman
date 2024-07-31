@@ -490,10 +490,12 @@ export class CalendarComponent implements OnInit {
                   home {
                     id
                     name
+                    clubId
                   }
                   away {
                     id
                     name
+                    clubId
                   }
                 }
               }
@@ -551,10 +553,12 @@ export class CalendarComponent implements OnInit {
                   home {
                     id
                     name
+                    clubId
                   }
                   away {
                     id
                     name
+                    clubId
                   }
                 }
               }
@@ -894,9 +898,11 @@ export class CalendarComponent implements OnInit {
 
       for (const exception of exceptions ?? []) {
         // find availibility for location
-        const availibility = dayInfo.locations.find((l) => l.locationId === exception.locationId);
+        const availibilities = dayInfo.locations.filter(
+          (l) => l.locationId === exception.locationId,
+        );
 
-        if (availibility) {
+        for (const availibility of availibilities) {
           availibility.space = Math.floor(exception.courts / 2);
         }
       }
@@ -905,7 +911,11 @@ export class CalendarComponent implements OnInit {
     if (encounters) {
       for (const encounter of encounters) {
         let infoIndex = -1;
-        if (dayInfo.locations.length  == 1 ) {
+        if (encounter.home?.clubId !== this.data.homeClubId) {
+          continue;
+        }
+
+        if (dayInfo.locations.length == 1) {
           infoIndex = 0;
         } else {
           // temp fix. locationId is still wrong, but it's not common for 2 locations on the same day
