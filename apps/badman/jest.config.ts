@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   // displayName: badman,
   preset: '../../jest.preset.js',

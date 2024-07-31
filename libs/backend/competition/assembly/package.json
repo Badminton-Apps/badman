@@ -16,7 +16,8 @@
     "graphql-type-json": "^0.3.2",
     "moment": "^2.30.1",
     "sequelize": "^6.37.3",
-    "tslib": "^2.6.2"
+    "tslib": "^2.6.2",
+    "@badman/backend-validation": "6.161.2"
   },
   "type": "commonjs",
   "main": "./src/index.js",

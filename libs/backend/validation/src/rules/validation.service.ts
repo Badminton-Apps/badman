@@ -1,6 +1,5 @@
 import { Rule } from '@badman/backend-database';
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { literal, Op } from 'sequelize';
 import { ValidationRule } from './_rule.base';
 
 type ruleType<T, V> = new () => ValidationRule<
@@ -111,15 +110,17 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
     this.logger.verbose(`Found ${configuredRules.length} rules for group ${this.group}`);
 
     // fetch all rules for the group
-    const validators = configuredRules.map((r) => {
-      const rule = this.rules.get(`${this.group}_${r.name}`);
+    const validators = configuredRules
+      .filter((r) => this.rules.has(`${this.group}_${r.name}`))
+      .map((r) => {
+        const rule = this.rules.get(`${this.group}_${r.name}`);
 
-      if (!rule) {
-        throw new Error(`Rule ${r.name} not found`);
-      }
+        if (!rule) {
+          throw new Error(`Rule ${r.name} not found`);
+        }
 
-      return new rule();
-    });
+        return new rule();
+      });
 
     // fetch data
     const data = await this.fetchData(args);
