@@ -1,3 +1,20 @@
+## 6.162.0 (2024-07-31)
+
+
+### 🚀 Features
+
+- allowing rules to be confugred via new validation service ([7f9c9e06f](https://github.com/Badminton-Apps/badman/commit/7f9c9e06f))
+- Rules can now be configured (de)activated for certain people,clubs and/or teams ([01abb12ab](https://github.com/Badminton-Apps/badman/commit/01abb12ab))
+
+### 🩹 Fixes
+
+- should refetch the encounter before sending mail ([6ddabd234](https://github.com/Badminton-Apps/badman/commit/6ddabd234))
+- when testing the in memory db couldnlt handle the query ([626a5aabf](https://github.com/Badminton-Apps/badman/commit/626a5aabf))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.161.4 (2024-07-31)
 
 
