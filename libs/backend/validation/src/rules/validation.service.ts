@@ -95,23 +95,34 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
           deactivatedForClubs: string[];
         };
 
-        return (
+        const containsId =
           ((runFor?.playerId && meta.activatedForUsers.includes(runFor.playerId)) ||
             (runFor?.teamId && meta.activatedForTeams.includes(runFor.teamId)) ||
-            (runFor?.clubId && meta.activatedForClubs.includes(runFor.clubId))) &&
-          !(
-            (runFor?.playerId && meta.deactivatedForUsers.includes(runFor.playerId)) ||
-            (runFor?.teamId && meta.deactivatedForTeams.includes(runFor.teamId)) ||
-            (runFor?.clubId && meta.deactivatedForClubs.includes(runFor.clubId))
-          )
-        );
-      })
-      .map((r) => activatedRules.push(r));
+            (runFor?.clubId && meta.activatedForClubs.includes(runFor.clubId))) ??
+          false;
 
-    this.logger.verbose(`Found ${configuredRules.length} rules for group ${this.group}`);
+        const doesntContainsId =
+          ((runFor?.playerId && meta.deactivatedForUsers.includes(runFor.playerId)) ||
+            (runFor?.teamId && meta.deactivatedForTeams.includes(runFor.teamId)) ||
+            (runFor?.clubId && meta.deactivatedForClubs.includes(runFor.clubId))) ??
+          false;
+
+        this.logger.verbose(
+          `Rule ${r.name} activated for ${containsId} and deactivated for ${doesntContainsId}, resulting in ${containsId && !doesntContainsId}`,
+        );
+
+        return containsId && !doesntContainsId;
+      })
+      .map((r) => {
+        this.logger.verbose(`Activating rule ${r.name}`);
+
+        return activatedRules.push(r);
+      });
+
+    this.logger.verbose(`Found ${activatedRules.length} rules for group ${this.group}`);
 
     // fetch all rules for the group
-    const validators = configuredRules
+    const validators = activatedRules
       .filter((r) => this.rules.has(`${this.group}_${r.name}`))
       .map((r) => {
         const rule = this.rules.get(`${this.group}_${r.name}`);
