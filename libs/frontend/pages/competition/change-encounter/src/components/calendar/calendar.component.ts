@@ -481,6 +481,7 @@ export class CalendarComponent implements OnInit {
                   homeTeamId
                   awayTeamId
                   encounterChange {
+                    id
                     accepted
                     dates {
                       locationId
@@ -544,6 +545,7 @@ export class CalendarComponent implements OnInit {
                   homeTeamId
                   awayTeamId
                   encounterChange {
+                    id
                     accepted
                     dates {
                       locationId

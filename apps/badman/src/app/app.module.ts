@@ -104,6 +104,10 @@ const APP_ROUTES: Routes = [
     loadChildren: () => import('@badman/frontend-jobs').then((m) => m.JobModule),
   },
   {
+    path: 'rules',
+    loadChildren: () => import('@badman/frontend-rules').then((m) => m.RuleModule),
+  },
+  {
     path: 'transfers',
     loadChildren: () => import('@badman/frontend-transfers').then((m) => m.TransferModule),
   },

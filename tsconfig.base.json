@@ -42,6 +42,7 @@
       "@badman/backend-translate": ["libs/backend/translate/src/index.ts"],
       "@badman/backend-twizzit": ["libs/backend/twizzit/src/index.ts"],
       "@badman/backend-utils": ["libs/backend/utils/src/index.ts"],
+      "@badman/backend-validation": ["libs/backend/validation/src/index.ts"],
       "@badman/backend-visual": ["libs/backend/visual/src/index.ts"],
       "@badman/backend-websockets": ["libs/backend/websockets/src/index.ts"],
       "@badman/backend/comp-tet": ["libs/backend/comp-tet/src/index.ts"],
@@ -68,6 +69,7 @@
       "@badman/frontend-queue": ["libs/frontend/modules/queue/src/index.ts"],
       "@badman/frontend-ranking": ["libs/frontend/pages/ranking/src/index.ts"],
       "@badman/frontend-role": ["libs/frontend/pages/role/src/index.ts"],
+      "@badman/frontend-rules": ["libs/frontend/pages/rules/src/index.ts"],
       "@badman/frontend-seo": ["libs/frontend/modules/seo/src/index.ts"],
       "@badman/frontend-team": ["libs/frontend/pages/team/src/index.ts"],
       "@badman/frontend-team-assembly": [

@@ -1,0 +1,28 @@
+<badman-page-header>
+  <div title>{{ 'all.rukes.title' | translate }}</div>
+
+  <div actions>
+    <button
+      (click)="$event.stopPropagation()"
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+      title="more options"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>add</mat-icon>
+        <span>{{ 'all.ranking.menu.add-ranking' | translate }}</span>
+      </button>
+    </mat-menu>
+  </div>
+</badman-page-header>
+
+<mtx-grid [data]="list" [columns]="columns" />
+
+<!-- @for (item of this.topLevel; track $index) {
+  <h3>{{ item.name }}</h3>
+  <mtx-grid [data]="item.childs" [columns]="this.topLevelColumns" />
+} -->

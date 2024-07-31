@@ -1,6 +1,6 @@
 import { Player } from '@badman/backend-database';
 import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export type PlayerMaxGamesRuleParams = {
@@ -12,6 +12,7 @@ export type PlayerMaxGamesRuleParams = {
  * Checks if a player has max 1 single game and 2 double game
  */
 export class PlayerMaxGamesRule extends Rule {
+  static override description = 'all.rules.team-assembly.player-max-games';
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { single1, single2, single3, single4, double1, double2, double3, double4, type } =
       assembly;

@@ -12,59 +12,78 @@ import {
   SubEventCompetition,
   Team,
 } from '@badman/backend-database';
+import { ValidationService } from '@badman/backend-validation';
 import { getBestPlayers, getBestPlayersFromTeam, SubEventTypeEnum } from '@badman/utils';
-import { Injectable, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import moment from 'moment';
 import { Op } from 'sequelize';
-import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../models';
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../models';
 import {
   PlayerCompStatusRule,
   PlayerGenderRule,
   PlayerMaxGamesRule,
   PlayerMinLevelRule,
   PlayerOrderRule,
-  Rule,
   TeamBaseIndexRule,
   TeamClubBaseRule,
   TeamSubeventIndexRule,
 } from './rules';
 
-@Injectable()
-export class AssemblyValidationService {
+export class AssemblyValidationService extends ValidationService<
+  AssemblyValidationData,
+  AssemblyValidationError<unknown>
+> {
+  override group = 'team-assembly';
+
   private readonly _logger = new Logger(AssemblyValidationService.name);
+  override async onApplicationBootstrap() {
+    this._logger.log('Initializing rules');
 
-  async getValidationData(
-    teamId: string,
-    encounterId: string,
+    await this.clearRules();
 
-    systemId?: string,
+    await this.registerRule(PlayerCompStatusRule, PlayerCompStatusRule.description);
+    await this.registerRule(TeamBaseIndexRule, TeamBaseIndexRule.description);
+    await this.registerRule(TeamSubeventIndexRule, TeamSubeventIndexRule.description);
+    await this.registerRule(TeamClubBaseRule, TeamClubBaseRule.description);
+    await this.registerRule(PlayerOrderRule, PlayerOrderRule.description);
+    await this.registerRule(PlayerMinLevelRule, PlayerMinLevelRule.description);
+    await this.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description);
+    await this.registerRule(PlayerGenderRule, PlayerGenderRule.description);
 
-    single1?: string,
-    single2?: string,
-    single3?: string,
-    single4?: string,
+    this._logger.log('Rules initialized');
+  }
+  override async fetchData(args: {
+    teamId: string;
+    encounterId: string;
 
-    double1?: string[],
-    double2?: string[],
-    double3?: string[],
-    double4?: string[],
+    systemId?: string;
 
-    subtitudes?: string[],
-  ): Promise<AssemblyValidationData> {
+    single1?: string;
+    single2?: string;
+    single3?: string;
+    single4?: string;
+
+    double1?: string[];
+    double2?: string[];
+    double3?: string[];
+    double4?: string[];
+
+    subtitudes?: string[];
+  }): Promise<AssemblyValidationData> {
     const idPlayers = [
-      single1,
-      single2,
-      single3,
-      single4,
-      ...(double1?.flat(1) ?? []),
-      ...(double2?.flat(1) ?? []),
-      ...(double3?.flat(1) ?? []),
-      ...(double4?.flat(1) ?? []),
+      args.single1,
+      args.single2,
+      args.single3,
+      args.single4,
+      ...(args.double1?.flat(1) ?? []),
+      ...(args.double2?.flat(1) ?? []),
+      ...(args.double3?.flat(1) ?? []),
+      ...(args.double4?.flat(1) ?? []),
     ]?.filter((p) => p !== undefined && p !== null) as string[];
 
-    const idSubs = subtitudes?.filter((p) => p !== undefined && p !== null);
+    const idSubs = args.subtitudes?.filter((p) => p !== undefined && p !== null);
 
-    const team = await Team.findByPk(teamId, {
+    const team = await Team.findByPk(args.teamId, {
       attributes: ['id', 'name', 'type', 'teamNumber', 'clubId'],
     });
 
@@ -72,13 +91,12 @@ export class AssemblyValidationService {
       throw new Error('Team not found');
     }
 
-    const encounter = await EncounterCompetition.findByPk(encounterId) || undefined;
-    
+    const encounter = (await EncounterCompetition.findByPk(args.encounterId)) || undefined;
+
     let draw: DrawCompetition | null = null;
     let subEvent: SubEventCompetition | null = null;
-    
-    if (encounter) {
 
+    if (encounter) {
       draw = await encounter?.getDrawCompetition({
         attributes: ['id', 'name', 'subeventId'],
       });
@@ -130,7 +148,9 @@ export class AssemblyValidationService {
       attributes: ['id', 'teamId', 'subEventId', 'meta'],
       where: {
         teamId: clubTeams?.map((t) => t.id),
-        subEventId: sameYearSubEvents?.map((e) => e.subEventCompetitions?.map((s) => s.id)).flat(1) as string[],
+        subEventId: sameYearSubEvents
+          ?.map((e) => e.subEventCompetitions?.map((s) => s.id))
+          .flat(1) as string[],
       },
     });
 
@@ -142,8 +162,8 @@ export class AssemblyValidationService {
     });
 
     const system =
-      systemId !== null && systemId !== undefined
-        ? await RankingSystem.findByPk(systemId)
+      args.systemId !== null && args.systemId !== undefined
+        ? await RankingSystem.findByPk(args.systemId)
         : await RankingSystem.findOne({ where: { primary: true } });
 
     if (!system) {
@@ -151,7 +171,7 @@ export class AssemblyValidationService {
     }
 
     // Filter out this team's meta
-    let meta = filteredMemberships?.find((m) => m.teamId == teamId)?.meta;
+    let meta = filteredMemberships?.find((m) => m.teamId == args.teamId)?.meta;
 
     // If  meta is found, create a new one
     if (!meta) {
@@ -171,7 +191,7 @@ export class AssemblyValidationService {
 
     // Other teams meta
     const otherMeta = (filteredMemberships
-      ?.filter((m) => m.teamId !== teamId)
+      ?.filter((m) => m.teamId !== args.teamId)
       ?.map((m) => m.meta) ?? []) as MetaEntry[];
 
     const year = event?.season;
@@ -300,27 +320,27 @@ export class AssemblyValidationService {
 
       system,
 
-      single1: players?.find((p) => p.id === single1),
-      single2: players?.find((p) => p.id === single2),
-      single3: players?.find((p) => p.id === single3),
-      single4: players?.find((p) => p.id === single4),
+      single1: players?.find((p) => p.id === args.single1),
+      single2: players?.find((p) => p.id === args.single2),
+      single3: players?.find((p) => p.id === args.single3),
+      single4: players?.find((p) => p.id === args.single4),
 
       double1: players
-        ?.filter((p) => double1?.flat(1)?.includes(p.id))
+        ?.filter((p) => args.double1?.flat(1)?.includes(p.id))
         ?.sort(
           (a, b) =>
             (a.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels) -
             (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels),
         ) as [Player, Player],
       double2: players
-        ?.filter((p) => double2?.flat(1)?.includes(p.id))
+        ?.filter((p) => args.double2?.flat(1)?.includes(p.id))
         ?.sort(
           (a, b) =>
             (a.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels) -
             (b.rankingLastPlaces?.[0]?.double ?? system.amountOfLevels),
         ) as [Player, Player],
       double3: players
-        ?.filter((p) => double3?.flat(1)?.includes(p.id))
+        ?.filter((p) => args.double3?.flat(1)?.includes(p.id))
         ?.sort((a, b) => {
           const ranking = type === SubEventTypeEnum.MX ? 'mix' : 'double';
           return (
@@ -329,7 +349,7 @@ export class AssemblyValidationService {
           );
         }) as [Player, Player],
       double4: players
-        ?.filter((p) => double4?.flat(1)?.includes(p.id))
+        ?.filter((p) => args.double4?.flat(1)?.includes(p.id))
         ?.sort((a, b) => {
           const ranking = type === SubEventTypeEnum.MX ? 'mix' : 'double';
           return (
@@ -342,39 +362,15 @@ export class AssemblyValidationService {
     };
   }
 
+
   /**
    * Validate the assembly
    *
    * @param assembly Assembly configuaration
    * @returns Whether the assembly is valid or not
    */
-  async validate(assembly: AssemblyValidationData, validators: Rule[]): Promise<AssemblyOutput> {
-    // get all errors and warnings from the validators in parallel
-    const results = await Promise.all(validators.map((v) => v.validate(assembly)));
-
-    const errors = results
-      ?.map((r) => r.errors)
-      ?.flat(1)
-      ?.filter((e) => !!e) as AssemblyValidationError<unknown>[];
-    const warnings = results
-      ?.map((r) => r.warnings)
-      ?.flat(1)
-      ?.filter((e) => !!e) as AssemblyValidationError<unknown>[];
-
-    return {
-      valid: errors.length === 0,
-      errors: errors,
-      warnings: warnings,
-      systemId: assembly.system?.id,
-      titularsIndex: assembly.teamIndex,
-      titularsPlayerData: assembly.teamPlayers,
-      baseTeamIndex: assembly.meta?.competition?.teamIndex,
-      basePlayersData: assembly.meta?.competition?.players,
-    };
-  }
-
-  async fetchAndValidate(
-    data: {
+  override async validate(
+    args: {
       teamId: string;
       encounterId: string;
 
@@ -392,35 +388,30 @@ export class AssemblyValidationService {
 
       subtitudes?: string[];
     },
-    validators: Rule[],
+    runFor?: {
+      playerId?: string;
+      teamId?: string;
+      clubId?: string;
+    },
   ) {
-    const dbData = await this.getValidationData(
-      data.teamId,
-      data.encounterId,
-      data.systemId,
-      data.single1,
-      data.single2,
-      data.single3,
-      data.single4,
-      data.double1,
-      data.double2,
-      data.double3,
-      data.double4,
-      data.subtitudes,
-    );
-    return this.validate(dbData, validators);
-  }
+    const team = await Team.findByPk(args.teamId, {
+      attributes: ['clubId'],
+    });
+    const data = await super.validate(args, {
+      ...runFor,
+      teamId: args.teamId,
+      clubId: team?.clubId,
+    });
 
-  static defaultValidators(): Rule[] {
-    return [
-      new TeamBaseIndexRule(),
-      new TeamSubeventIndexRule(),
-      new TeamClubBaseRule(),
-      new PlayerOrderRule(),
-      new PlayerCompStatusRule(),
-      new PlayerMinLevelRule(),
-      new PlayerMaxGamesRule(),
-      new PlayerGenderRule(),
-    ];
+    return {
+      valid: data.valid,
+      errors: data.errors,
+      warnings: data.warnings,
+      systemId: data.system?.id,
+      titularsIndex: data.teamIndex,
+      titularsPlayerData: data.teamPlayers,
+      baseTeamIndex: data.meta?.competition?.teamIndex,
+      basePlayersData: data.meta?.competition?.players,
+    } as AssemblyOutput;
   }
 }

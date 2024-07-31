@@ -83,10 +83,7 @@ export class EncounterChangeCompetitionResolver {
   async validateChangeEncounter(
     @Args('ChangeEncounter') data: ChangeEncounterInput,
   ): Promise<ChangeEncounterOutput> {
-    return this.changeEncounterService.fetchAndValidate(
-      data,
-      ChangeEncounterValidationService.defaultValidators(),
-    );
+    return this.changeEncounterService.validate(data);
   }
 
   @ResolveField(() => [EncounterChangeDate])
@@ -257,15 +254,20 @@ export class EncounterChangeCompetitionResolver {
     }
 
     // Notify the user
+    const updatedEncounter = await EncounterCompetition.findByPk(newChangeEncounter.encounterId);
+    if (!updatedEncounter) {
+      throw new NotFoundException(newChangeEncounter.encounterId);
+    }
+
     if (newChangeEncounter.accepted) {
-      this.notificationService.notifyEncounterChangeFinished(encounter, locationHasChanged);
+      this.notificationService.notifyEncounterChangeFinished(updatedEncounter, locationHasChanged);
 
       // check if the location has changed
       if (locationHasChanged) {
         // this.notificationService.notifyEncounterLocationChanged(encounter);
       }
     } else {
-      this.notificationService.notifyEncounterChange(encounter, newChangeEncounter.home ?? false);
+      this.notificationService.notifyEncounterChange(updatedEncounter, newChangeEncounter.home ?? false);
     }
 
     return encounterChange;
