@@ -209,14 +209,14 @@ export class RecentGamesService {
           id: filter.playerId,
           where: {
             playedAt: {
-              $lte: moment().format('YYYY-MM-DD'),
+              $lte: moment().format('YYYY-MM-DD HH:mm:ss'),
             },
             gameType: {
               $in: filter?.choices ?? ['S', 'D', 'MX'],
             },
           },
           whereRanking: {
-            systemId: this.systemService.systemId(),
+            systemId: filter.systemId,
           },
           order: [
             {
