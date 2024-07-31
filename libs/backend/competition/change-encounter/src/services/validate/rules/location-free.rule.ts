@@ -17,10 +17,10 @@ export type LocationRuleParams = {
  * Checks if there are enough locations available for the encounters
  */
 export class LocationRule extends Rule {
+  static override description = 'all.rules.change-encounter.location';
   private readonly logger = new Logger(LocationRule.name);
 
   async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
-    this.logger.verbose(`Validating rule`);
     const errors = [] as ChangeEncounterValidationError<LocationRuleParams>[];
     const warnings = [] as ChangeEncounterValidationError<LocationRuleParams>[];
     const valid = true;

@@ -18,6 +18,7 @@ export type ExceptionRuleParams = {
  * Checks if encounters against the same team are in a different semester
  */
 export class ExceptionRule extends Rule {
+  static override description = 'all.rules.change-encounter.exceptions';
   private readonly logger = new Logger(ExceptionRule.name);
 
   async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
@@ -68,17 +69,17 @@ export class ExceptionRule extends Rule {
   }
 
   findEncountersOnExceptionDays(encounters: EncounterCompetition[], infoEvents: InfoEvent[]) {
-    const errors: ChangeEncounterValidationError<ExceptionRuleParams>[] = [];
+    const warms: ChangeEncounterValidationError<ExceptionRuleParams>[] = [];
 
     if (!infoEvents) {
-      return errors;
+      return warms;
     }
 
     for (const infoEvent of infoEvents) {
       if (!(infoEvent.allowCompetition ?? false)) {
         for (const encounter of encounters) {
           if (moment(encounter.date).isBetween(infoEvent.start, infoEvent.end, 'day', '[]')) {
-            errors.push({
+            warms.push({
               message: 'all.competition.change-encounter.errors.exception-day',
               params: {
                 encounterId: encounter.id,
@@ -90,6 +91,6 @@ export class ExceptionRule extends Rule {
       }
     }
 
-    return errors.flat();
+    return warms.flat();
   }
 }

@@ -36,7 +36,22 @@ export class AssemblyValidationService extends ValidationService<
   override group = 'team-assembly';
 
   private readonly _logger = new Logger(AssemblyValidationService.name);
+  override async onModuleInit() {
+    this._logger.log('Initializing rules');
 
+    await this.clearRules();
+
+    await this.registerRule(PlayerCompStatusRule, PlayerCompStatusRule.description);
+    await this.registerRule(TeamBaseIndexRule, TeamBaseIndexRule.description);
+    await this.registerRule(TeamSubeventIndexRule, TeamSubeventIndexRule.description);
+    await this.registerRule(TeamClubBaseRule, TeamClubBaseRule.description);
+    await this.registerRule(PlayerOrderRule, PlayerOrderRule.description);
+    await this.registerRule(PlayerMinLevelRule, PlayerMinLevelRule.description);
+    await this.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description);
+    await this.registerRule(PlayerGenderRule, PlayerGenderRule.description);
+
+    this._logger.log('Rules initialized');
+  }
   override async fetchData(args: {
     teamId: string;
     encounterId: string;
@@ -347,22 +362,6 @@ export class AssemblyValidationService extends ValidationService<
     };
   }
 
-  override async onModuleInit() {
-    this._logger.log('Initializing rules');
-
-    await this.clearRules();
-
-    await this.registerRule(PlayerCompStatusRule, PlayerCompStatusRule.description);
-    await this.registerRule(TeamBaseIndexRule, TeamBaseIndexRule.description);
-    await this.registerRule(TeamSubeventIndexRule, TeamSubeventIndexRule.description);
-    await this.registerRule(TeamClubBaseRule, TeamClubBaseRule.description);
-    await this.registerRule(PlayerOrderRule, PlayerOrderRule.description);
-    await this.registerRule(PlayerMinLevelRule, PlayerMinLevelRule.description);
-    await this.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description);
-    await this.registerRule(PlayerGenderRule, PlayerGenderRule.description);
-
-    this._logger.log('Rules initialized');
-  }
 
   /**
    * Validate the assembly
