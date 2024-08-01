@@ -1,3 +1,14 @@
+## 6.162.2 (2024-08-01)
+
+
+### 🩹 Fixes
+
+- user wasn't passed ([fe4ff4b4b](https://github.com/Badminton-Apps/badman/commit/fe4ff4b4b))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.162.1 (2024-07-31)
 
 
