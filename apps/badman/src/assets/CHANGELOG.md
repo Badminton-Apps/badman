@@ -1,3 +1,19 @@
+## 6.162.3 (2024-08-01)
+
+
+### 🩹 Fixes
+
+- fetch the club when only team is provided ([f5e8b9421](https://github.com/Badminton-Apps/badman/commit/f5e8b9421))
+- provide team for change encounter ([b3da1dcff](https://github.com/Badminton-Apps/badman/commit/b3da1dcff))
+- view enrollments ([ee5794f99](https://github.com/Badminton-Apps/badman/commit/ee5794f99))
+- **assembly:** return validators ([9b5f0187f](https://github.com/Badminton-Apps/badman/commit/9b5f0187f))
+- **change-encounter:** return validators ([2c234d8bf](https://github.com/Badminton-Apps/badman/commit/2c234d8bf))
+- **team-assembly:** provide team id for validation ([234984a92](https://github.com/Badminton-Apps/badman/commit/234984a92))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.162.2 (2024-08-01)
 
 
