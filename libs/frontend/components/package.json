@@ -19,6 +19,7 @@
     "@badman/frontend-graphql": "*",
     "@badman/frontend-auth": "*",
     "@badman/frontend-seo": "*",
+    "@badman/frontend-html-injects": "*",
     "@badman/frontend-translation": "*",
     "@angular/material": "18.1.0",
     "@ng-matero/extensions": "^18.0.1",
