@@ -23,7 +23,7 @@ export class AssemblyResolver {
     @User() user: Player,
     @Args('assembly') assembly: AssemblyInput,
   ): Promise<AssemblyOutput> {
-    return this.assemblyService.validate(assembly, { playerId: user.id });
+    return this.assemblyService.validate(assembly, { playerId: user.id, teamId: assembly.teamId });
   }
 
   @ResolveField(() => [PlayerRankingType])

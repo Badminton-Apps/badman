@@ -257,6 +257,7 @@ export class ShowRequestsComponent implements OnInit {
           query ValidateChangeEncounter($data: ChangeEncounterInput!) {
             validateChangeEncounter(ChangeEncounter: $data) {
               valid
+              validators
               errors {
                 message
                 params
