@@ -18,7 +18,6 @@
     "@badman/frontend-utils": "*",
     "@badman/frontend-graphql": "*",
     "@badman/frontend-auth": "*",
-    "@badman/frontend-html-injects": "*",
     "@badman/frontend-seo": "*",
     "@badman/frontend-translation": "*",
     "@angular/material": "18.1.0",
