@@ -6,7 +6,6 @@
     "@badman/frontend-models": "*",
     "@badman/utils": "*",
     "@badman/frontend-auth": "*",
-    "@badman/frontend-html-injects": "*",
     "@badman/frontend-seo": "*",
     "@badman/frontend-utils": "*",
     "@badman/frontend-graphql": "*",
