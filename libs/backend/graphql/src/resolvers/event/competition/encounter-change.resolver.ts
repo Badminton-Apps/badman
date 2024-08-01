@@ -268,7 +268,10 @@ export class EncounterChangeCompetitionResolver {
         // this.notificationService.notifyEncounterLocationChanged(encounter);
       }
     } else {
-      this.notificationService.notifyEncounterChange(updatedEncounter, newChangeEncounter.home ?? false);
+      this.notificationService.notifyEncounterChange(
+        updatedEncounter,
+        newChangeEncounter.home ?? false,
+      );
     }
 
     return encounterChange;
