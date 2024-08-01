@@ -1,4 +1,4 @@
-import { Rule } from '@badman/backend-database';
+import { Rule, Team } from '@badman/backend-database';
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ValidationRule } from './_rule.base';
 
@@ -80,6 +80,14 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
       },
     });
 
+    // if we provide a team but no club we can fetch it
+    if (runFor?.teamId && !runFor.clubId) {
+      const team = await Team.findByPk(runFor.teamId, {
+        attributes: ['clubId'],
+      });
+      runFor.clubId = team?.clubId;
+    }
+
     const activatedRules = configuredRules.filter((r) => r.activated);
 
     configuredRules
@@ -95,7 +103,6 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
           deactivatedForClubs: string[];
         };
 
-
         const containsId =
           ((runFor?.playerId && meta.activatedForUsers.includes(runFor.playerId)) ||
             (runFor?.teamId && meta.activatedForTeams.includes(runFor.teamId)) ||
@@ -107,10 +114,6 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
             (runFor?.teamId && meta.deactivatedForTeams.includes(runFor.teamId)) ||
             (runFor?.clubId && meta.deactivatedForClubs.includes(runFor.clubId))) ??
           false;
-
-        this.logger.verbose(
-          `Rule ${r.name} activated for ${containsId} (player: ${runFor?.playerId}) and deactivated for ${doesntContainsId}, resulting in ${containsId && !doesntContainsId}`,
-        );
 
         return containsId && !doesntContainsId;
       })
