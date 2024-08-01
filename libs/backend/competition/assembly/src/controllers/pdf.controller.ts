@@ -58,7 +58,7 @@ export class AssemblyController {
     @User() user: Player,
   ) {
     // compile the template that returns a buffer of the pdf
-    const pdf$ = await this.getTeamAssemblyPdf(req.body as inputBody);
+    const pdf$ = await this.getTeamAssemblyPdf(req.body as inputBody, user);
 
     if (!pdf$) {
       throw new Error('Pdf could not be generated');
@@ -81,27 +81,11 @@ export class AssemblyController {
     return new StreamableFile(pdf);
   }
 
-  private async getTeamAssemblyPdf(input: inputBody) {
-    const data = await this.assemblyService.getValidationData(
-      input.teamId,
-      input.encounterId,
-
-      input.systemId,
-      input.single1,
-      input.single2,
-      input.single3,
-      input.single4,
-      input.double1,
-      input.double2,
-      input.double3,
-      input.double4,
-      input.subtitudes,
-    );
-
-    const validation = await this.assemblyService.validate(
-      data,
-      AssemblyValidationService.defaultValidators(),
-    );
+  private async getTeamAssemblyPdf(input: inputBody, user: Player) {
+    const data = await this.assemblyService.fetchData(input);
+    const validation = await this.assemblyService.validate(input, {
+      playerId: user.id,
+    });
 
     let homeTeam: Team;
     let awayTeam: Team | null;
@@ -138,7 +122,9 @@ export class AssemblyController {
 
     const date = moment(data.encounter?.date).tz('Europe/Brussels').format('DD-MM-YYYY HH:mm');
 
-    this.logger.debug(`Generating assembly for ${homeTeam.name} vs ${awayTeam?.name || 'empty'} on ${date}`);
+    this.logger.debug(
+      `Generating assembly for ${homeTeam.name} vs ${awayTeam?.name || 'empty'} on ${date}`,
+    );
 
     const indexed: string[] = [];
     const based: string[] = [];

@@ -1,7 +1,7 @@
-import { SubEventTypeEnum } from '@badman/utils';
-import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
-import { Rule } from './_rule.base';
 import { Player } from '@badman/backend-database';
+import { SubEventTypeEnum } from '@badman/utils';
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
+import { Rule } from './_rule.base';
 
 export type PlayerMinLevelRuleParams = {
   player: Partial<Player> & { ranking: number };
@@ -15,6 +15,7 @@ export type PlayerMinLevelRuleParams = {
  * If the player has a level exception, the player is allowed to be better than the max level
  */
 export class PlayerMinLevelRule extends Rule {
+  static override description = 'all.rules.team-assembly.player-min-level';
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       system,

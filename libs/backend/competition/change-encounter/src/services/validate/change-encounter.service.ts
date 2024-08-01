@@ -1,30 +1,41 @@
-import { EncounterCompetition, Team, Location } from '@badman/backend-database';
-import { Injectable, Logger } from '@nestjs/common';
+import { EncounterCompetition, Location, Team } from '@badman/backend-database';
+import { ValidationService } from '@badman/backend-validation';
+import { Logger } from '@nestjs/common';
 import { Op } from 'sequelize';
 import {
   ChangeEncounterOutput,
   ChangeEncounterValidationData,
   ChangeEncounterValidationError,
 } from '../../models';
-import {
-  DatePeriodRule,
-  ExceptionRule,
-  Rule,
-  SemesterRule,
-  TeamClubRule,
-  LocationRule,
-} from './rules';
+import { DatePeriodRule, ExceptionRule, LocationRule, SemesterRule, TeamClubRule } from './rules';
 
-@Injectable()
-export class ChangeEncounterValidationService {
+export class ChangeEncounterValidationService extends ValidationService<
+  ChangeEncounterValidationData,
+  ChangeEncounterValidationError<unknown>
+> {
+  override group = 'change-encounter';
+
   private readonly _logger = new Logger(ChangeEncounterValidationService.name);
 
-  async getValidationData(
-    teamId: string,
-    workingencounterId?: string,
-    suggestedDates?: Date[],
-  ): Promise<ChangeEncounterValidationData> {
-    const team = await Team.findByPk(teamId, {
+  override async onApplicationBootstrap() {
+    this._logger.log('Initializing rules');
+    await this.clearRules();
+
+    await this.registerRule(SemesterRule, SemesterRule.description);
+    await this.registerRule(DatePeriodRule, DatePeriodRule.description);
+    await this.registerRule(TeamClubRule, TeamClubRule.description);
+    await this.registerRule(ExceptionRule, ExceptionRule.description);
+    await this.registerRule(LocationRule, LocationRule.description, { activated: false });
+
+    this._logger.log('Rules initialized');
+  }
+
+  override async fetchData(args: {
+    teamId: string;
+    workingencounterId?: string;
+    suggestedDates?: Date[];
+  }): Promise<ChangeEncounterValidationData> {
+    const team = await Team.findByPk(args.teamId, {
       attributes: ['id', 'name', 'type', 'teamNumber', 'clubId', 'season'],
     });
 
@@ -106,8 +117,8 @@ export class ChangeEncounterValidationService {
 
       lowestYear,
 
-      workingencounterId,
-      suggestedDates,
+      workingencounterId: args.workingencounterId,
+      suggestedDates: args.suggestedDates,
     };
   }
 
@@ -117,52 +128,17 @@ export class ChangeEncounterValidationService {
    * @param changeEncounter ChangeEncounter configuaration
    * @returns Whether the ChangeEncounter is valid or not
    */
-  async validate(
-    changeEncounter: ChangeEncounterValidationData,
-    validators: Rule[],
-  ): Promise<ChangeEncounterOutput> {
-    // get all errors and warnings from the validators in parallel
-    const results = await Promise.all(validators.map((v) => v.validate(changeEncounter)));
-
-    const errors = results
-      ?.map((r) => r.errors)
-      ?.flat(1)
-      ?.filter((e) => !!e) as ChangeEncounterValidationError<unknown>[];
-    const warnings = results
-      ?.map((r) => r.warnings)
-      ?.flat(1)
-      ?.filter((e) => !!e) as ChangeEncounterValidationError<unknown>[];
+  override async validate(
+    args: { teamId: string; workingencounterId?: string; suggestedDates?: Date[] },
+    runFor?: { playerId?: string; teamId?: string; clubId?: string },
+  ) {
+    const data = await super.validate(args, runFor);
 
     return {
-      valid: errors.length === 0,
-      errors: errors,
-      warnings: warnings,
-    };
-  }
-
-  async fetchAndValidate(
-    data: {
-      teamId: string;
-      workingencounterId?: string;
-      suggestedDates?: Date[];
-    },
-    validators: Rule[],
-  ) {
-    const dbData = await this.getValidationData(
-      data.teamId,
-      data.workingencounterId,
-      data.suggestedDates,
-    );
-    return this.validate(dbData, validators);
-  }
-
-  static defaultValidators(): Rule[] {
-    return [
-      new SemesterRule(),
-      new DatePeriodRule(),
-      new TeamClubRule(),
-      new ExceptionRule(),
-      // new LocationRule(), // BUG: LocationIds are wrong
-    ];
+      valid: data.valid,
+      errors: data.errors,
+      warnings: data.warnings,
+      validators: data.validators,
+    } as ChangeEncounterOutput;
   }
 }

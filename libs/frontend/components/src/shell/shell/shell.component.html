@@ -128,6 +128,14 @@
                     >{{ 'all.shell.sidebar.transfer.title' | translate }}</a
                   >
                 </badman-has-claim>
+                <badman-has-claim [any]="['change:rules']">
+                  <a
+                    mat-list-item
+                    (click)="isHandset() && drawer.close()"
+                    [routerLink]="['/rules']"
+                    >{{ 'all.shell.sidebar.rules.title' | translate }}</a
+                  >
+                </badman-has-claim>
               </mat-nav-list>
             </div>
           </badman-has-claim>
