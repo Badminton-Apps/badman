@@ -84,7 +84,7 @@ export class EncounterChangeCompetitionResolver {
     @User() user: Player,
     @Args('ChangeEncounter') data: ChangeEncounterInput,
   ): Promise<ChangeEncounterOutput> {
-    return this.changeEncounterService.validate(data, { playerId: user.id });
+    return this.changeEncounterService.validate(data, { playerId: user.id, teamId: data.teamId });
   }
 
   @ResolveField(() => [EncounterChangeDate])
