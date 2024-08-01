@@ -154,15 +154,11 @@
         <badman-competition-map [eventId]="this.eventCompetition.id" />
       </ng-template>
     </mat-tab>
-  }
-  @if (this.canViewEncounter()) {
     <mat-tab [label]="'all.club.titles.encounters' | translate">
       <ng-template matTabContent>
         <badman-competition-encounters [eventId]="this.eventCompetition.id" />
       </ng-template>
     </mat-tab>
-  }
-  @if (this.canViewEnrollments()) {
     <mat-tab [label]="'all.competition.team-enrollment.title' | translate">
       <ng-template matTabContent>
         <badman-competition-enrollments [eventId]="this.eventCompetition.id" />
