@@ -112,7 +112,7 @@ export class DetailPageComponent implements OnInit {
       `${this.eventCompetition.id}_view:enrollment-competition`,
     ]),
   );
-  canViewEncounter = computed(() => this.hasPermission() || this.versionInfo.beta);
+  canViewEncounter = computed(() => this.canViewEnrollments());
   copyYearControl = new FormControl();
 
   eventCompetition!: EventCompetition;
