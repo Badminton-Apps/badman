@@ -95,6 +95,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
           deactivatedForClubs: string[];
         };
 
+
         const containsId =
           ((runFor?.playerId && meta.activatedForUsers.includes(runFor.playerId)) ||
             (runFor?.teamId && meta.activatedForTeams.includes(runFor.teamId)) ||
@@ -108,7 +109,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
           false;
 
         this.logger.verbose(
-          `Rule ${r.name} activated for ${containsId} and deactivated for ${doesntContainsId}, resulting in ${containsId && !doesntContainsId}`,
+          `Rule ${r.name} activated for ${containsId} (player: ${runFor?.playerId}) and deactivated for ${doesntContainsId}, resulting in ${containsId && !doesntContainsId}`,
         );
 
         return containsId && !doesntContainsId;
