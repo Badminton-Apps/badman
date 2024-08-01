@@ -860,7 +860,7 @@ export class AssemblyComponent implements OnInit {
                 mix
               }
               valid
-
+              validators
               errors {
                 params
                 message
