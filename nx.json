@@ -144,7 +144,10 @@
     },
     "@nx/angular:library": {
       "linter": "eslint",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "jest",
+      "style": "scss",
+      "prefix": "app",
+      "buildable": true
     },
     "@nx/angular:component": {
       "style": "css"

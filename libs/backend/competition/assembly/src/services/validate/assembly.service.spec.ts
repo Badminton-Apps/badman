@@ -69,11 +69,13 @@ describe('AssemblyValidationService', () => {
       ],
     }).compile();
 
-    service = module.get<AssemblyValidationService>(AssemblyValidationService);
 
     // Setup db
     const sequelize = module.get<Sequelize>(Sequelize);
     await sequelize.sync({ force: true });
+
+    service = module.get<AssemblyValidationService>(AssemblyValidationService);
+    await service.onApplicationBootstrap();
 
     const group = SystemGroupBuilder.Create();
     system = await SystemBuilder.Create(RankingSystems.BVL, 12, 75, 50)
@@ -97,7 +99,7 @@ describe('AssemblyValidationService', () => {
       .WithSubEvent(subEventBuilder.WithDraw(drawBuilder.WithEnouncter(encounterBuilder)))
       .Build();
 
-    draw = await drawBuilder.Build();
+    draw = await drawBuilder.Build(); 
     subEvent = await subEventBuilder.Build();
     encounter = await encounterBuilder.Build();
   }, 50000);
@@ -227,28 +229,32 @@ describe('AssemblyValidationService', () => {
     });
 
     it('should be a valid assembly', async () => {
-      const validation = await service.fetchAndValidate(
-        {
-          systemId: system.id,
-          teamId: team?.id,
-          encounterId: encounter.id,
-          single1: player666.id,
-          single2: player777.id,
-          single3: player888.id,
-          single4: player999.id,
-          double1: [player666.id, player777.id],
-          double2: [player666.id, player888.id],
-          double3: [player777.id, player999.id],
-          double4: [player888.id, player999.id],
-        },
-        AssemblyValidationService.defaultValidators(),
-      );
+      const validation = await service.validate({
+        systemId: system.id,
+        teamId: team?.id,
+        encounterId: encounter.id,
+        single1: player666.id,
+        single2: player777.id,
+        single3: player888.id,
+        single4: player999.id,
+        double1: [player666.id, player777.id],
+        double2: [player666.id, player888.id],
+        double3: [player777.id, player999.id],
+        double4: [player888.id, player999.id],
+      });
 
       expect(validation).toBeDefined();
       expect(validation.valid).toBeTruthy();
     });
 
     describe('Rule [PlayerOrderRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerOrderRule, PlayerOrderRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         const valid = [
           [1, 2],
@@ -257,16 +263,13 @@ describe('AssemblyValidationService', () => {
         ];
 
         test.each(valid)('Single %p is better then Single %p', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`single${p2}`]: player888.id,
-              [`single${p1}`]: player777.id,
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`single${p2}`]: player888.id,
+            [`single${p1}`]: player777.id,
+          });
 
           expect(validation).toBeDefined();
 
@@ -277,16 +280,13 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(valid)('Double %p is  better then Double %p', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${p2}`]: [player777.id, player888.id],
-              [`double${p1}`]: [player666.id, player888.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${p2}`]: [player777.id, player888.id],
+            [`double${p1}`]: [player666.id, player888.id],
+          });
 
           expect(validation).toBeDefined();
 
@@ -297,16 +297,13 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(valid)('Double %p is not better then Double %p by level', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${p2}`]: [player777.id, player888.id],
-              [`double${p1}`]: [player666.id, player999.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${p2}`]: [player777.id, player888.id],
+            [`double${p1}`]: [player666.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
 
@@ -325,16 +322,13 @@ describe('AssemblyValidationService', () => {
         ];
 
         test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`single${p1}`]: player888.id,
-              [`single${p2}`]: player777.id,
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`single${p1}`]: player888.id,
+            [`single${p2}`]: player777.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -354,16 +348,13 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(invalid)('Double %p is better then Double %p', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${p1}`]: [player777.id, player888.id],
-              [`double${p2}`]: [player666.id, player888.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${p1}`]: [player777.id, player888.id],
+            [`double${p2}`]: [player666.id, player888.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -389,16 +380,13 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(invalid)('Double %p is not better then Double %p by level', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${p1}`]: [player777.id, player888.id],
-              [`double${p2}`]: [player666.id, player999.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${p1}`]: [player777.id, player888.id],
+            [`double${p2}`]: [player666.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -425,20 +413,23 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [TeamSubeventIndexRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(TeamSubeventIndexRule, TeamSubeventIndexRule.description, {
+          activated: true,
+        });
+      });
       describe('valid', () => {
         it('should be valid', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new TeamSubeventIndexRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
 
@@ -451,18 +442,15 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it('should be invalid if team index lower then the base', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player111.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new TeamSubeventIndexRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player111.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -480,21 +468,25 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [TeamSubsIndexRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(TeamSubsIndexRule, TeamSubsIndexRule.description, {
+          activated: true,
+        });
+      });
+
       describe('warning', () => {
         it.skip('should give warning if the sub is better than one of the players', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-              subtitudes: [player888.id],
-            },
-            [new TeamSubsIndexRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+            subtitudes: [player888.id],
+          });
 
           expect(validation).toBeDefined();
 
@@ -509,20 +501,24 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [PlayerCompStatusRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerCompStatusRule, PlayerCompStatusRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerCompStatusRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
 
@@ -535,18 +531,15 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it("should be invalid if the player doesn't have competition status on true ", async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player555.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerCompStatusRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -560,18 +553,15 @@ describe('AssemblyValidationService', () => {
         });
 
         it("should be invalid if the players doesn't have competition status on true ", async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player111.id,
-              single2: player555.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerCompStatusRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player111.id,
+            single2: player555.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -587,20 +577,24 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [PlayerMaxGamesRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid single', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -612,18 +606,15 @@ describe('AssemblyValidationService', () => {
         });
 
         it('should be valid double', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double1: [player666.id, player777.id],
-              double2: [player666.id, player888.id],
-              double3: [player777.id, player999.id],
-              double4: [player888.id, player999.id],
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double1: [player666.id, player777.id],
+            double2: [player666.id, player888.id],
+            double3: [player777.id, player999.id],
+            double4: [player888.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -637,18 +628,15 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it('should be invalid if the player has more then 1 single game ', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player555.id,
-              single2: player555.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
+            single2: player555.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -662,18 +650,15 @@ describe('AssemblyValidationService', () => {
         });
 
         it('should be invalid if the player has more then 2 doubles', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double1: [player666.id, player777.id],
-              double2: [player666.id, player888.id],
-              double3: [player666.id, player999.id],
-              double4: [player888.id, player999.id],
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double1: [player666.id, player777.id],
+            double2: [player666.id, player888.id],
+            double3: [player666.id, player999.id],
+            double4: [player888.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -689,24 +674,28 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [PlayerGenderRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerGenderRule, PlayerGenderRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid single', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double1: [player666.id, player777.id],
-              double2: [player666.id, player888.id],
-              double3: [player777.id, player999.id],
-              double4: [player888.id, player999.id],
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerGenderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double1: [player666.id, player777.id],
+            double2: [player666.id, player888.id],
+            double3: [player777.id, player999.id],
+            double4: [player888.id, player999.id],
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -725,15 +714,12 @@ describe('AssemblyValidationService', () => {
         const games = [[2]];
 
         test.each(games)('should be invalid single if the player the wrong gender', async (g) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`single${g}`]: player555.id,
-            },
-            [new PlayerGenderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`single${g}`]: player555.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -747,15 +733,12 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(games)('should be invalid double if the player the wrong gender', async (g) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${g}`]: [player555.id, player666.id],
-            },
-            [new PlayerGenderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${g}`]: [player555.id, player666.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -878,18 +861,22 @@ describe('AssemblyValidationService', () => {
       team = await teamB.Build();
     });
     describe('Rule [PlayerOrderRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerOrderRule, PlayerOrderRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('Double 3 is better then Double 4', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double3: [player666.id, player999.id],
-              double4: [player777.id, player888.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double3: [player666.id, player999.id],
+            double4: [player777.id, player888.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -908,16 +895,13 @@ describe('AssemblyValidationService', () => {
         ];
 
         test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`single${p1}`]: player888.id,
-              [`single${p2}`]: player777.id,
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`single${p1}`]: player888.id,
+            [`single${p2}`]: player777.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -936,16 +920,13 @@ describe('AssemblyValidationService', () => {
         });
 
         it('Mixed double is better then other', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double3: [player777.id, player888.id],
-              double4: [player666.id, player888.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double3: [player777.id, player888.id],
+            double4: [player666.id, player888.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -970,16 +951,13 @@ describe('AssemblyValidationService', () => {
         });
 
         it('Mixed double is better then other by level', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double3: [player777.id, player888.id],
-              double4: [player666.id, player999.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double3: [player777.id, player888.id],
+            double4: [player666.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1006,20 +984,24 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [PlayerMaxGamesRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid doubles', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double1: [player666.id, player888.id],
-              double2: [player777.id, player999.id],
-              double3: [player666.id, player777.id],
-              double4: [player888.id, player999.id],
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double1: [player666.id, player888.id],
+            double2: [player777.id, player999.id],
+            double3: [player666.id, player777.id],
+            double4: [player888.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -1033,16 +1015,13 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it('should be invalid if the player has more then 1 mixed', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double3: [player666.id, player999.id],
-              double4: [player888.id, player999.id],
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double3: [player666.id, player999.id],
+            double4: [player888.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1058,20 +1037,24 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [PlayerGenderRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerGenderRule, PlayerGenderRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid doubles', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double1: [player666.id, player777.id],
-              double2: [player888.id, player999.id],
-              double3: [player666.id, player888.id],
-              double4: [player777.id, player999.id],
-            },
-            [new PlayerGenderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double1: [player666.id, player777.id],
+            double2: [player888.id, player999.id],
+            double3: [player666.id, player888.id],
+            double4: [player777.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -1087,16 +1070,13 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it('should be invalid if a mixed 3 has 2 of the same gender', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double3: [player666.id, player777.id],
-              double4: [player888.id, player777.id],
-            },
-            [new PlayerGenderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double3: [player666.id, player777.id],
+            double4: [player888.id, player777.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1111,16 +1091,13 @@ describe('AssemblyValidationService', () => {
         });
 
         it('should be invalid if a mixed 4 has 2 of the same gender', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double3: [player666.id, player999.id],
-              double4: [player888.id, player999.id],
-            },
-            [new PlayerGenderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double3: [player666.id, player999.id],
+            double4: [player888.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1136,21 +1113,25 @@ describe('AssemblyValidationService', () => {
       });
     });
 
-    describe('Rule [PlayerMinLevel]', () => {
+    describe('Rule [PlayerMinLevelRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerMinLevelRule, PlayerMinLevelRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerMinLevelRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
 
@@ -1163,18 +1144,15 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it("should be invalid if the player doesn't have competition status on true ", async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player555.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerMinLevelRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1377,20 +1355,24 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [TeamBaseIndexRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(TeamBaseIndexRule, TeamBaseIndexRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('First team is allowed to have higher team index then base', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: teamA?.id,
-              encounterId: encounter.id,
-              single1: player555.id,
-              single2: playerT1r777.id,
-              single3: playerT1r888.id,
-              single4: playerT1r999.id,
-            },
-            [new TeamBaseIndexRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: teamA?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
+            single2: playerT1r777.id,
+            single3: playerT1r888.id,
+            single4: playerT1r999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -1402,18 +1384,15 @@ describe('AssemblyValidationService', () => {
         });
 
         it('Second team not', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: teamA?.id,
-              encounterId: encounter.id,
-              single1: playerT1r666.id,
-              single2: playerT1r777.id,
-              single3: playerT1r888.id,
-              single4: playerT1r999.id,
-            },
-            [new TeamBaseIndexRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: teamA?.id,
+            encounterId: encounter.id,
+            single1: playerT1r666.id,
+            single2: playerT1r777.id,
+            single3: playerT1r888.id,
+            single4: playerT1r999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -1422,18 +1401,15 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it.skip('Second team not', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: teamB?.id,
-              encounterId: encounter.id,
-              single1: player555.id,
-              single2: playerT1r777.id,
-              single3: playerT1r888.id,
-              single4: playerT1r999.id,
-            },
-            [new TeamBaseIndexRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: teamB?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
+            single2: playerT1r777.id,
+            single3: playerT1r888.id,
+            single4: playerT1r999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1449,21 +1425,25 @@ describe('AssemblyValidationService', () => {
       });
     });
 
-    describe('Rule [TeamBaseIndexRule]', () => {
+    describe('Rule [TeamClubBaseRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(TeamClubBaseRule, TeamClubBaseRule.description, {
+          activated: true,
+        });
+      });
+
       describe('invalid', () => {
         it('Second team not', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: teamA?.id,
-              encounterId: encounter.id,
-              single1: playerT2r666.id,
-              single2: playerT1r777.id,
-              single3: playerT1r888.id,
-              single4: playerT1r999.id,
-            },
-            [new TeamClubBaseRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: teamA?.id,
+            encounterId: encounter.id,
+            single1: playerT2r666.id,
+            single2: playerT1r777.id,
+            single3: playerT1r888.id,
+            single4: playerT1r999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1478,21 +1458,25 @@ describe('AssemblyValidationService', () => {
       });
     });
 
-    describe('Rule [PlayerMinLevel]', () => {
+    describe('Rule [PlayerMinLevelRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerMinLevelRule, PlayerMinLevelRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: teamA?.id,
-              encounterId: encounter.id,
-              single1: player555.id,
-              single2: playerT1r777.id,
-              single3: playerT1r888.id,
-              single4: playerT1r999.id,
-            },
-            [new PlayerMinLevelRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: teamA?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
+            single2: playerT1r777.id,
+            single3: playerT1r888.id,
+            single4: playerT1r999.id,
+          });
 
           expect(validation).toBeDefined();
 
@@ -1505,18 +1489,15 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it("should be invalid if the player doesn't have competition status on true ", async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: teamB?.id,
-              encounterId: encounter.id,
-              single1: player555.id,
-              single2: playerT2r777.id,
-              single3: playerT2r888.id,
-              single4: playerT2r999.id,
-            },
-            [new PlayerMinLevelRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: teamB?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
+            single2: playerT2r777.id,
+            single3: playerT2r888.id,
+            single4: playerT2r999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1653,28 +1634,32 @@ describe('AssemblyValidationService', () => {
     });
 
     it('should be a valid assembly', async () => {
-      const validation = await service.fetchAndValidate(
-        {
-          systemId: system.id,
-          teamId: team?.id,
-          encounterId: encounter.id,
-          single1: player666.id,
-          single2: player777.id,
-          single3: player888.id,
-          single4: player999.id,
-          double1: [player666.id, player777.id],
-          double2: [player666.id, player888.id],
-          double3: [player777.id, player999.id],
-          double4: [player888.id, player999.id],
-        },
-        AssemblyValidationService.defaultValidators(),
-      );
+      const validation = await service.validate({
+        systemId: system.id,
+        teamId: team?.id,
+        encounterId: encounter.id,
+        single1: player666.id,
+        single2: player777.id,
+        single3: player888.id,
+        single4: player999.id,
+        double1: [player666.id, player777.id],
+        double2: [player666.id, player888.id],
+        double3: [player777.id, player999.id],
+        double4: [player888.id, player999.id],
+      });
 
       expect(validation).toBeDefined();
       expect(validation.valid).toBeTruthy();
     });
 
     describe('Rule [PlayerOrderRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerOrderRule, PlayerOrderRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         const valid = [
           [1, 2],
@@ -1683,16 +1668,13 @@ describe('AssemblyValidationService', () => {
         ];
 
         test.each(valid)('Single %p is better then Single %p', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`single${p2}`]: player888.id,
-              [`single${p1}`]: player777.id,
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`single${p2}`]: player888.id,
+            [`single${p1}`]: player777.id,
+          });
 
           expect(validation).toBeDefined();
 
@@ -1703,16 +1685,13 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(valid)('Double %p is  better then Double %p', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${p2}`]: [player777.id, player888.id],
-              [`double${p1}`]: [player666.id, player888.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${p2}`]: [player777.id, player888.id],
+            [`double${p1}`]: [player666.id, player888.id],
+          });
 
           expect(validation).toBeDefined();
 
@@ -1723,16 +1702,13 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(valid)('Double %p is not better then Double %p by level', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${p2}`]: [player777.id, player888.id],
-              [`double${p1}`]: [player666.id, player999.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${p2}`]: [player777.id, player888.id],
+            [`double${p1}`]: [player666.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
 
@@ -1751,16 +1727,13 @@ describe('AssemblyValidationService', () => {
         ];
 
         test.each(invalid)('Single %p is not better then Single %p', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`single${p1}`]: player888.id,
-              [`single${p2}`]: player777.id,
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`single${p1}`]: player888.id,
+            [`single${p2}`]: player777.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1779,16 +1752,13 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(invalid)('Double %p is better then Double %p', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${p1}`]: [player777.id, player888.id],
-              [`double${p2}`]: [player666.id, player888.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${p1}`]: [player777.id, player888.id],
+            [`double${p2}`]: [player666.id, player888.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1813,16 +1783,13 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(invalid)('Double %p is not better then Double %p by level', async (p1, p2) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${p1}`]: [player777.id, player888.id],
-              [`double${p2}`]: [player666.id, player999.id],
-            },
-            [new PlayerOrderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${p1}`]: [player777.id, player888.id],
+            [`double${p2}`]: [player666.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1849,20 +1816,24 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [TeamSubeventIndexRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(TeamSubeventIndexRule, TeamSubeventIndexRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new TeamSubeventIndexRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
 
@@ -1875,18 +1846,15 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it('should be invalid if team index lower then the base', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player111.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new TeamSubeventIndexRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player111.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1904,20 +1872,24 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [PlayerCompStatusRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerCompStatusRule, PlayerCompStatusRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerCompStatusRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
 
@@ -1930,18 +1902,15 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it("should be invalid if the player doesn't have competition status on true ", async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player555.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerCompStatusRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1955,18 +1924,15 @@ describe('AssemblyValidationService', () => {
         });
 
         it("should be invalid if the players doesn't have competition status on true ", async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player111.id,
-              single2: player555.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerCompStatusRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player111.id,
+            single2: player555.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -1982,20 +1948,24 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [PlayerMaxGamesRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid single', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -2007,18 +1977,15 @@ describe('AssemblyValidationService', () => {
         });
 
         it('should be valid double', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double1: [player666.id, player777.id],
-              double2: [player666.id, player888.id],
-              double3: [player777.id, player999.id],
-              double4: [player888.id, player999.id],
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double1: [player666.id, player777.id],
+            double2: [player666.id, player888.id],
+            double3: [player777.id, player999.id],
+            double4: [player888.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -2032,18 +1999,15 @@ describe('AssemblyValidationService', () => {
 
       describe('invalid', () => {
         it('should be invalid if the player has more then 1 single game ', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              single1: player555.id,
-              single2: player555.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            single1: player555.id,
+            single2: player555.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -2057,18 +2021,15 @@ describe('AssemblyValidationService', () => {
         });
 
         it('should be invalid if the player has more then 2 doubles', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double1: [player666.id, player777.id],
-              double2: [player666.id, player888.id],
-              double3: [player666.id, player999.id],
-              double4: [player888.id, player999.id],
-            },
-            [new PlayerMaxGamesRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double1: [player666.id, player777.id],
+            double2: [player666.id, player888.id],
+            double3: [player666.id, player999.id],
+            double4: [player888.id, player999.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -2084,24 +2045,28 @@ describe('AssemblyValidationService', () => {
     });
 
     describe('Rule [PlayerGenderRule]', () => {
+      beforeEach(async () => {
+        await service.clearRules();
+        await service.registerRule(PlayerGenderRule, PlayerGenderRule.description, {
+          activated: true,
+        });
+      });
+
       describe('valid', () => {
         it('should be valid single', async () => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              double1: [player666.id, player777.id],
-              double2: [player666.id, player888.id],
-              double3: [player777.id, player999.id],
-              double4: [player888.id, player999.id],
-              single1: player666.id,
-              single2: player777.id,
-              single3: player888.id,
-              single4: player999.id,
-            },
-            [new PlayerGenderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            double1: [player666.id, player777.id],
+            double2: [player666.id, player888.id],
+            double3: [player777.id, player999.id],
+            double4: [player888.id, player999.id],
+            single1: player666.id,
+            single2: player777.id,
+            single3: player888.id,
+            single4: player999.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeTruthy();
@@ -2120,15 +2085,12 @@ describe('AssemblyValidationService', () => {
         const games = [[2]];
 
         test.each(games)('should be invalid single if the player the wrong gender', async (g) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`single${g}`]: player555.id,
-            },
-            [new PlayerGenderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`single${g}`]: player555.id,
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();
@@ -2142,15 +2104,12 @@ describe('AssemblyValidationService', () => {
         });
 
         test.each(games)('should be invalid double if the player the wrong gender', async (g) => {
-          const validation = await service.fetchAndValidate(
-            {
-              systemId: system.id,
-              teamId: team?.id,
-              encounterId: encounter.id,
-              [`double${g}`]: [player555.id, player666.id],
-            },
-            [new PlayerGenderRule()],
-          );
+          const validation = await service.validate({
+            systemId: system.id,
+            teamId: team?.id,
+            encounterId: encounter.id,
+            [`double${g}`]: [player555.id, player666.id],
+          });
 
           expect(validation).toBeDefined();
           expect(validation.valid).toBeFalsy();

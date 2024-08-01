@@ -1,3 +1,44 @@
+## 6.162.2 (2024-08-01)
+
+
+### 🩹 Fixes
+
+- user wasn't passed ([fe4ff4b4b](https://github.com/Badminton-Apps/badman/commit/fe4ff4b4b))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.162.1 (2024-07-31)
+
+
+### 🩹 Fixes
+
+- this should have been from de backend ([dfb844a7b](https://github.com/Badminton-Apps/badman/commit/dfb844a7b))
+- returing validators ([2d77c95fa](https://github.com/Badminton-Apps/badman/commit/2d77c95fa))
+- some finetuning ([2d395b55a](https://github.com/Badminton-Apps/badman/commit/2d395b55a))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.162.0 (2024-07-31)
+
+
+### 🚀 Features
+
+- allowing rules to be confugred via new validation service ([7f9c9e06f](https://github.com/Badminton-Apps/badman/commit/7f9c9e06f))
+- Rules can now be configured (de)activated for certain people,clubs and/or teams ([01abb12ab](https://github.com/Badminton-Apps/badman/commit/01abb12ab))
+
+### 🩹 Fixes
+
+- should refetch the encounter before sending mail ([6ddabd234](https://github.com/Badminton-Apps/badman/commit/6ddabd234))
+- when testing the in memory db couldnlt handle the query ([626a5aabf](https://github.com/Badminton-Apps/badman/commit/626a5aabf))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.161.4 (2024-07-31)
 
 

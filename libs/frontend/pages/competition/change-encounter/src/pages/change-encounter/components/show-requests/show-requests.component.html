@@ -42,7 +42,7 @@
                     [group]="date"
                     [encounter]="this.encounter"
                     [home]="this.home"
-                    [warnings]="this.getWarnings(date?.value?.calendar?.date)()"
+                    [warnings]="this.getWarnings(date?.getRawValue()?.calendar?.date)()"
                     (removeDate)="this.removeDate(dateControls, i)"
                   ></badman-request-date>
                 }
