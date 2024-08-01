@@ -362,7 +362,6 @@ export class AssemblyValidationService extends ValidationService<
     };
   }
 
-
   /**
    * Validate the assembly
    *
@@ -394,13 +393,9 @@ export class AssemblyValidationService extends ValidationService<
       clubId?: string;
     },
   ) {
-    const team = await Team.findByPk(args.teamId, {
-      attributes: ['clubId'],
-    });
     const data = await super.validate(args, {
       ...runFor,
       teamId: args.teamId,
-      clubId: team?.clubId,
     });
 
     return {

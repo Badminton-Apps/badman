@@ -33,7 +33,6 @@ import {
 } from '@badman/frontend-components';
 import { CpService } from '@badman/frontend-cp';
 import { ExcelService } from '@badman/frontend-excel';
-import { VERSION_INFO } from '@badman/frontend-html-injects';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
 import { JobsService } from '@badman/frontend-queue';
 import { SeoService } from '@badman/frontend-seo';
@@ -92,17 +91,12 @@ export class DetailPageComponent implements OnInit {
   private cpService = inject(CpService);
   private excelService = inject(ExcelService);
   // injectors
-  private authService = inject(ClaimService);
   private injector = inject(Injector);
   private claimService = inject(ClaimService);
-  private versionInfo: {
-    beta: boolean;
-    version: string;
-  } = inject(VERSION_INFO);
+
   private destroy$ = injectDestroy();
 
   // signals
-
   currentTab = signal(0);
 
   hasPermission = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
@@ -112,7 +106,6 @@ export class DetailPageComponent implements OnInit {
       `${this.eventCompetition.id}_view:enrollment-competition`,
     ]),
   );
-  canViewEncounter = computed(() => this.hasPermission() || this.versionInfo.beta);
   copyYearControl = new FormControl();
 
   eventCompetition!: EventCompetition;
