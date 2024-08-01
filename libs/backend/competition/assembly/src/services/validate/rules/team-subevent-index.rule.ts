@@ -1,4 +1,4 @@
-import { AssemblyValidationData, AssemblyOutput, AssemblyValidationError } from '../../../models';
+import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export type TeamSubeventIndexRuleParams = {
@@ -10,6 +10,7 @@ export type TeamSubeventIndexRuleParams = {
  * Checks if the teamIndex is not lower then the allowed minIndex of the subevent
  */
 export class TeamSubeventIndexRule extends Rule {
+  static override description = 'all.rules.team-assembly.team-subevent-index';
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { teamIndex, subEvent } = assembly;
 

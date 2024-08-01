@@ -1,5 +1,4 @@
+import { ValidationRule } from '@badman/backend-validation';
 import { AssemblyValidationData, AssemblyOutput } from '../../../models';
 
-export abstract class Rule {
-  abstract validate(assembly: AssemblyValidationData): Promise<AssemblyOutput>;
-}
+export abstract class Rule extends ValidationRule<AssemblyValidationData, AssemblyOutput> {}

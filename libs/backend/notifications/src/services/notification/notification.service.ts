@@ -122,7 +122,7 @@ export class NotificationService {
     encounter.away = awayTeam;
 
     if (homeTeam.captain && homeTeam.email) {
-      const validation = await this._getValidationMessage(homeTeam.id);
+      const validation = await this._getValidationMessage(homeTeam);
       notifierFinished.notify(
         homeTeam.captain,
         encounter.id,
@@ -132,7 +132,7 @@ export class NotificationService {
     }
 
     if (awayTeam.captain && awayTeam.email) {
-      const validation = await this._getValidationMessage(awayTeam.id);
+      const validation = await this._getValidationMessage(awayTeam);
 
       notifierFinished.notify(
         awayTeam.captain,
@@ -382,10 +382,10 @@ export class NotificationService {
     }
   }
 
-  private async _getValidationMessage(teamId: string) {
-    const validation = await this.changeEncounterValidation.fetchAndValidate(
-      { teamId },
-      ChangeEncounterValidationService.defaultValidators(),
+  private async _getValidationMessage(team: Team, captainId?: string) {
+    const validation = await this.changeEncounterValidation.validate(
+      { teamId: team.id },
+      { playerId: captainId, teamId: team.id, clubId: team.clubId },
     );
 
     if (validation.valid) {

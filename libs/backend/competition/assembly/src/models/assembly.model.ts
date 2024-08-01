@@ -68,7 +68,10 @@ export class AssemblyOutput {
   warnings?: AssemblyValidationError<unknown>[];
 
   @Field(() => Boolean, { nullable: true })
-  valid?: boolean;
+  valid!: boolean;
+
+  @Field(() => [String], { nullable: 'itemsAndList' })
+  validators?: string[];
 
   @Field(() => Int, { nullable: true })
   baseTeamIndex?: number;

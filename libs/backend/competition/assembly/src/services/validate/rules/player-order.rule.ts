@@ -28,6 +28,7 @@ export type PlayerOrderRuleParams = PlayerOrderRuleSingleParams | PlayerOrderRul
  * Doubles: the team with the lowest ranking should be first, if the ranking is the same, the best player should be first
  */
 export class PlayerOrderRule extends Rule {
+  static override description = 'all.rules.team-assembly.player-order';
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { single1, single2, single3, single4, double1, double2, double3, double4, type, system } =
       assembly;
