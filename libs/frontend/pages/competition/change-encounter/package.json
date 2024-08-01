@@ -9,6 +9,7 @@
     "@badman/frontend-seo": "*",
     "@badman/frontend-utils": "*",
     "@badman/frontend-graphql": "*",
+    "@badman/frontend-html-injects": "*",
     "@angular/common": "18.1.0",
     "@angular/core": "18.1.0",
     "@angular/router": "18.1.0",
