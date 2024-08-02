@@ -228,6 +228,7 @@ export class ClubEditLocationComponent implements OnInit {
     this.dialog
       .open(ChoosePeriodDialogComponent, {
         data: dayControl,
+        maxWidth: '350px',
       })
       .afterClosed()
       .subscribe(() => {
