@@ -13,7 +13,8 @@
     "rxjs": "~7.8.1",
     "@ngx-translate/http-loader": "^8.0.0",
     "@ng-matero/extensions-moment-adapter": "^18.0.0",
-    "ngx-moment": "^6.0.2"
+    "ngx-moment": "^6.0.2",
+    "@ng-matero/extensions": "^18.0.3"
   },
   "dependencies": {},
   "sideEffects": false
