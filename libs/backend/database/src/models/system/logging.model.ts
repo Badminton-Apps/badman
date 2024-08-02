@@ -13,7 +13,7 @@ import {
 import { Relation } from '../../wrapper';
 import { Player } from '../player.model';
 import { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import { LoggingAction } from '@badman/utils';
+import { LoggingAction, NotificationType } from '@badman/utils';
 
 @Table({
   timestamps: true,
@@ -39,7 +39,7 @@ export class Logging extends Model<InferAttributes<Logging>, InferCreationAttrib
   playerId?: string;
 
   @Column(DataType.STRING)
-  action!: LoggingAction;
+  action!: LoggingAction | NotificationType;
 
   @Column({
     type: DataType.JSON,

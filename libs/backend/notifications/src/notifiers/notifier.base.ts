@@ -1,6 +1,6 @@
-import { Player, Notification, NotificationOptionsTypes } from '@badman/backend-database';
+import { Player, Notification, NotificationOptionsTypes, Logging } from '@badman/backend-database';
 import { MailingService } from '@badman/backend-mailing';
-import { NotificationType } from '@badman/utils';
+import { LoggingAction, NotificationType } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import { PushService } from '../services';
 import { unitOfTime } from 'moment';
@@ -68,6 +68,12 @@ export abstract class Notifier<T, A = { email: string }> {
         linkType: this.linkType,
         type: this.type,
       },
+    });
+
+    await Logging.create({
+      action: type,
+      playerId: player.id,
+      meta: { linkId, linkType: this.linkType },
     });
 
     if (notification) {

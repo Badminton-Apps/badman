@@ -337,6 +337,8 @@ export class EditPageComponent {
                       startTime
                       endTime
                       courts
+                      from
+                      to
                     }
                     exceptions {
                       start

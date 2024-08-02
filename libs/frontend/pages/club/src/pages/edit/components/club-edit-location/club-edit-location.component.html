@@ -20,20 +20,6 @@
   </badman-block-header>
   <mat-divider></mat-divider>
   <badman-block-content>
-    <!-- <span *ngIf="this.location().street">{{ this.location().street }} </span>
-  <span *ngIf="this.location().streetNumber">{{
-    this.location().streetNumber
-  }}</span>
-  <br />
-  <span *ngIf="this.location().postalcode"
-    >{{ this.location().postalcode }}
-  </span>
-  <span *ngIf="this.location().city">{{ this.location().city }}</span
-    ><br />
-    <span *ngIf="this.location().state">{{ this.location().state }}</span
-      ><br />
-      <span *ngIf="this.location().phone">{{ this.location().phone }}</span>
-      <span *ngIf="this.location().fax">{{ this.location().fax }}</span> -->
     @if (this.internalControl) {
       <section class="availibilty" [formGroup]="this.internalControl">
         <div class="days">
@@ -72,6 +58,18 @@
                         <mat-option value="sunday">{{ 'all.days.sunday' | translate }}</mat-option>
                       </mat-select>
                     </mat-form-field>
+                  </div>
+                  <div class="period">
+                    <button
+                      mat-icon-button
+                      (click)="this.setPeriods(day)"
+                      class="hide-text"
+                      [matTooltip]="'all.locations.period' | translate"
+                      [matBadge]="day.get('from')?.value ? '.' : null"
+                      matBadgeSize="small"
+                    >
+                      <mat-icon>free_cancellation</mat-icon>
+                    </button>
                   </div>
                   <div class="startTime">
                     <mat-form-field>

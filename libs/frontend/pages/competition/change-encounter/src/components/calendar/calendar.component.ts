@@ -108,6 +108,8 @@ export class CalendarComponent implements OnInit {
       locationId: string;
       time: string;
       courts: number;
+      from?: Date;
+      to?: Date;
     }[]
   > = new Map();
 
@@ -287,6 +289,12 @@ export class CalendarComponent implements OnInit {
             const format = wDay.format('YYYY-MM-DD');
 
             if (wDay.locale('en').format('dddd').toLocaleLowerCase() === aDay.day) {
+              if (aDay.from && aDay.to) {
+                if (!wDay.isBetween(aDay.from, aDay.to, 'day', '[]')) {
+                  continue;
+                }
+              }
+
               if (!this.availabilities.has(format)) {
                 this.availabilities.set(format, []);
               }
@@ -294,7 +302,7 @@ export class CalendarComponent implements OnInit {
               this.availabilities.get(format)?.push({
                 locationId: location.id ?? '',
                 time: aDay.startTime ?? '',
-                courts: aDay.courts ?? 0,
+                courts: aDay.courts ?? 0
               });
             }
 
@@ -710,6 +718,8 @@ export class CalendarComponent implements OnInit {
                       startTime
                       endTime
                       day
+                      from
+                      to
                     }
                     exceptions {
                       start

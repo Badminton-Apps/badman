@@ -597,6 +597,15 @@ export type I18nTranslations = {
             "days": string;
             "exceptions": string;
             "hint": string;
+            "period": {
+                "description": string;
+                "errors": {
+                    "invalid-end": string;
+                    "invalid-start": string;
+                };
+                "label": string;
+                "title": string;
+            };
             "title": string;
         };
         "management": {
