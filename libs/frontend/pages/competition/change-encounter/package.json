@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-change-encounter",
-  "version": "6.163.0",
+  "version": "6.163.1",
   "peerDependencies": {
     "@badman/frontend-components": "*",
     "@badman/frontend-models": "*",
