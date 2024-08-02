@@ -6,6 +6,7 @@
     "agree": "Ok",
     "all": "Alles",
     "cancel": "Annuleren",
+    "clear": "Wissen",
     "clone": "Dupliceer",
     "close": "Sluiten",
     "copy": "Kopiëren",
@@ -596,7 +597,7 @@
         "invalid-end": "Incorrecte eind datum",
         "invalid-start": "Incorrecte start datum"
       },
-      "label": "Vul een range in",
+      "label": "Selecteer periode",
       "title": "Stel periode in"
     },
     "title": "Locatie(s)"

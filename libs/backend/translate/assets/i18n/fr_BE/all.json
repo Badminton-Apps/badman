@@ -6,6 +6,7 @@
     "agree": "Ok",
     "all": "Tout",
     "cancel": "Annuler",
+    "clear": "Effacer",
     "clone": "Copie",
     "close": "Fermer",
     "copy": "Copier",
@@ -596,7 +597,7 @@
         "invalid-end": "Date de fin incorrecte",
         "invalid-start": "Date de début incorrecte"
       },
-      "label": "Saisir une plage",
+      "label": "Sélectionner la période",
       "title": "Période définie"
     },
     "title": "Lieu(x)"
