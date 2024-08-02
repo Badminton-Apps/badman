@@ -1,4 +1,4 @@
-import { EncounterCompetition, Location } from '@badman/backend-database';
+import { AvailabilityDay, EncounterCompetition, Location } from '@badman/backend-database';
 import { Logger } from '@nestjs/common';
 import moment from 'moment-timezone';
 import {
@@ -91,7 +91,7 @@ export class LocationRule extends Rule {
 
       const location = locations.find((r) => r.id === enc.locationId);
 
-      let slot = null;
+      let slot: AvailabilityDay | null = null;
 
       for (const availability of location?.availabilities ?? []) {
         const filteredDays = availability.days?.filter(
@@ -102,6 +102,13 @@ export class LocationRule extends Rule {
         const filteredSlots = filteredDays?.find(
           (r) => moment(enc.date).tz('Europe/Brussels').format('HH:mm') == r.startTime,
         );
+
+        for (const day of filteredDays ?? []) {
+          const test = moment(enc.date).tz('Europe/Brussels').format('HH:mm');
+          this.logger.debug(
+            `Checking day ${day.day} with start ${day.startTime} against encounter ${enc.date} ${test}`,
+          );
+        }
 
         if (filteredSlots != null && !slot) {
           slot = filteredSlots;
