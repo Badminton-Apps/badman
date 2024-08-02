@@ -598,7 +598,7 @@
         "invalid-start": "Incorrecte start datum"
       },
       "label": "Selecteer periode",
-      "title": "Periode dat ",
+      "title": "Stel periode in",
       "tooltip": "Als je dag maar voor een periode beschikbaar is, kan je hier de data instellen"
     },
     "title": "Locatie(s)"
