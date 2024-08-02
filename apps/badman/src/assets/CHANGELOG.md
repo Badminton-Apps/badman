@@ -1,3 +1,16 @@
+## 6.163.1 (2024-08-02)
+
+
+### 🩹 Fixes
+
+- translation key updates ([9c30f54d1](https://github.com/Badminton-Apps/badman/commit/9c30f54d1))
+- improve tooltip / description ([1101184d5](https://github.com/Badminton-Apps/badman/commit/1101184d5))
+- improve tooltip / description ([51df3595e](https://github.com/Badminton-Apps/badman/commit/51df3595e))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.163.0 (2024-08-02)
 
 
