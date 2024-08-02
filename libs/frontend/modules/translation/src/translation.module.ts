@@ -1,5 +1,8 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import myLocaleEn from '@angular/common/locales/en';
+import myLocaleFr from '@angular/common/locales/fr-BE';
+import myLocaleNl from '@angular/common/locales/nl-BE';
 import {
   APP_INITIALIZER,
   InjectionToken,
@@ -17,14 +20,22 @@ import {
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { langulageInitializer } from './factory';
 import { ITranslateConfig } from './interfaces';
-import { provideMomentDatetimeAdapter } from '@ng-matero/extensions-moment-adapter';
 
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { AuthenticateService } from '@badman/frontend-auth';
+import { MomentDatetimeAdapter, provideMomentDatetimeAdapter } from '@ng-matero/extensions-moment-adapter';
+import { DatetimeAdapter } from '@ng-matero/extensions/core';
 import { MomentModule } from 'ngx-moment';
 import { SingleBracketInterpolation } from './services';
-
 export const TRANSLATE_CONFIG = new InjectionToken<ITranslateConfig>('TRANSLATE_CONFIG');
+
+// Register locales
+import 'moment/locale/fr'
+import 'moment/locale/nl-be'
+registerLocaleData(myLocaleNl, 'nl-BE');
+registerLocaleData(myLocaleFr, 'fr-BE');
+registerLocaleData(myLocaleEn, 'en');
+
 
 @NgModule({
   imports: [
@@ -50,8 +61,12 @@ export const TRANSLATE_CONFIG = new InjectionToken<ITranslateConfig>('TRANSLATE_
     {
       provide: APP_INITIALIZER,
       useFactory: langulageInitializer,
-      deps: [TranslateService, Injector, DateAdapter, AuthenticateService],
+      deps: [TranslateService, Injector, DateAdapter, DatetimeAdapter, AuthenticateService],
       multi: true,
+    },
+    {
+      provide: DatetimeAdapter,
+      useClass: MomentDatetimeAdapter,
     },
     provideMomentDatetimeAdapter(),
   ],

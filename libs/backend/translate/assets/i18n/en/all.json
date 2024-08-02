@@ -590,6 +590,15 @@
     "days": "Game days",
     "exceptions": "Exceptions",
     "hint": "You can add below periods when the hall is not (or reduced) available, for this you have to choose a start and an end date each time. If these are the same, just choose 2x the same day.\n\nIf you have a reduced number of fields, you can set them by clicking on the icon to the right.",
+    "period": {
+      "description": "If your day is only available for a period of time, you can set the dates here",
+      "errors": {
+        "invalid-end": "Incorrect end date",
+        "invalid-start": "Incorrect start date"
+      },
+      "label": "Enter a date range",
+      "title": "Set period"
+    },
     "title": "Location(s)"
   },
   "management": {

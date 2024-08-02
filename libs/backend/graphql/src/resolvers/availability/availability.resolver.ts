@@ -1,11 +1,12 @@
 import { User } from '@badman/backend-authorization';
 import {
   Availability,
-  ExceptionType,
   AvailabilityNewInput,
   AvailabilityUpdateInput,
+  AvailiblyDayType,
+  ExceptionType,
   Location,
-  Player,
+  Player
 } from '@badman/backend-database';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
@@ -30,10 +31,14 @@ export class AvailabilitysResolver {
     return Availability.findAndCountAll(ListArgs.toFindOptions(listArgs));
   }
 
-  // @ResolveField(() => [AvailiblyDayType])
-  // async days(@Parent() availability: Availability): Promise<AvailiblyDay[]> {
-  //   return availability.days;
-  // }
+  @ResolveField(() => [AvailiblyDayType], { nullable: true })
+  async days(@Parent() availability: Availability) {
+    return availability.days?.map((day) => ({
+      ...day,
+      from: day.from ? new Date(day.from as Date) : undefined,
+      to: day.to ? new Date(day.to as Date) : undefined,
+    }));
+  }
 
   @ResolveField(() => [ExceptionType], { nullable: true })
   async exceptions(@Parent() availability: Availability) {
@@ -117,7 +122,7 @@ export class AvailabilitysResolver {
           exception.start = exception.end;
         }
       }
-      
+
       await dbAvailability.update(
         { ...dbAvailability.toJSON(), ...updateAvailibilityData },
         { transaction },

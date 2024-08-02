@@ -8,6 +8,8 @@ import { AvaliableLanguages, languages } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { setLanguage } from '../../factory';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MomentDatetimeAdapter } from '@ng-matero/extensions-moment-adapter';
+import { DatetimeAdapter } from '@ng-matero/extensions/core';
 
 @Component({
   selector: 'badman-language',
@@ -19,6 +21,10 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 export class LanguageComponent implements OnInit {
   public translate = inject(TranslateService);
   private _adapter = inject<DateAdapter<MomentDateAdapter>>(DateAdapter<MomentDateAdapter>);
+  private _dateTimeadapter = inject<DatetimeAdapter<MomentDatetimeAdapter>>(
+    DatetimeAdapter<MomentDatetimeAdapter>,
+  );
+
   current!: string;
   langs!: AvaliableLanguages[];
 
@@ -34,7 +40,14 @@ export class LanguageComponent implements OnInit {
       return;
     }
 
-    await setLanguage(values.translate, values.moment, this._adapter, this.translate);
+    await setLanguage(
+      values.translate,
+      values.moment,
+      values.adapter,
+      this._adapter,
+      this._dateTimeadapter,
+      this.translate,
+    );
 
     // Store
     this.current = lang;
