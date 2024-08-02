@@ -592,13 +592,14 @@
     "exceptions": "Des exceptions",
     "hint": "Vous pouvez ajouter des périodes où le lieu n'est pas (ou peu) disponible. Pour cela, vous devez choisir une date de début et une date de fin à chaque fois. Si ces dates sont identiques, il suffit de choisir 2 fois le même jour.\n\nSi vous disposez d'un nombre réduit de champs, vous pouvez le définir en cliquant sur l'icône à droite.",
     "period": {
-      "description": "Si votre journée n'est disponible que pour une certaine période, vous pouvez définir les dates ici.",
+      "description": "Ci-dessous, vous pouvez choisir la période pendant laquelle le jour et l'heure du match sont disponibles. Tout en dehors de cette période ne sera pas inscrit à l'ordre du jour",
       "errors": {
         "invalid-end": "Date de fin incorrecte",
         "invalid-start": "Date de début incorrecte"
       },
       "label": "Sélectionner la période",
-      "title": "Période définie"
+      "title": "Période définie",
+      "tooltip": "Si votre journée n'est disponible que pour une certaine période, vous pouvez définir les dates ici."
     },
     "title": "Lieu(x)"
   },
