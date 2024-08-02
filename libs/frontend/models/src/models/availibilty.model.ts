@@ -50,10 +50,16 @@ export class AvailabilityDay {
   endTime?: string;
   courts?: number;
 
+  from?: Date;
+  to?: Date;
+
   constructor(args?: Partial<AvailabilityDay>) {
     this.day = args?.day;
     this.startTime = args?.startTime;
     this.endTime = args?.endTime;
     this.courts = args?.courts;
+
+    this.from = args?.from ? new Date(args.from) : undefined;
+    this.to = args?.to ? new Date(args.to) : undefined;
   }
 }

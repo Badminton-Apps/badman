@@ -110,6 +110,11 @@ body {
   }
 }
 
+.mat-badge.hide-text .mat-badge-content {
+  color: transparent;
+}
+
+
 xng-breadcrumb .xng-breadcrumb-list {
   margin: 16px 16px 0 16px;
 }
