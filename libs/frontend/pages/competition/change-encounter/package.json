@@ -1,15 +1,15 @@
 {
   "name": "@badman/frontend-change-encounter",
-  "version": "6.162.2",
+  "version": "6.162.3",
   "peerDependencies": {
     "@badman/frontend-components": "*",
     "@badman/frontend-models": "*",
     "@badman/utils": "*",
     "@badman/frontend-auth": "*",
-    "@badman/frontend-html-injects": "*",
     "@badman/frontend-seo": "*",
     "@badman/frontend-utils": "*",
     "@badman/frontend-graphql": "*",
+    "@badman/frontend-html-injects": "*",
     "@angular/common": "18.1.0",
     "@angular/core": "18.1.0",
     "@angular/router": "18.1.0",
