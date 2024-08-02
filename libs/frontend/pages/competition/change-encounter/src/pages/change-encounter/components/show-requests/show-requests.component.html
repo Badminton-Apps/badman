@@ -112,7 +112,7 @@
                 <div class="caption">
                   <p>
                     {{ 'all.competition.change-encounter.warnings.closing' | translate }}
-                    <strong class="warning">{{ requestClosing | amCalendar }}</strong>
+                    <strong class="warning">{{ requestClosing | amDateFormat: 'llll' }}</strong>
                   </p>
                 </div>
               }

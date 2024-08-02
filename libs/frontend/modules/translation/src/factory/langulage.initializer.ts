@@ -4,6 +4,8 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter } from '@angular/material/core';
 import { AuthenticateService } from '@badman/frontend-auth';
 import { AvaliableLanguages, languages } from '@badman/utils';
+import { MomentDatetimeAdapter } from '@ng-matero/extensions-moment-adapter';
+import { DatetimeAdapter } from '@ng-matero/extensions/core';
 import { TranslateService } from '@ngx-translate/core';
 import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
@@ -12,6 +14,7 @@ export function langulageInitializer(
   translate: TranslateService,
   injector: Injector,
   adapter: DateAdapter<MomentDateAdapter>,
+  dateTimeAdapter: DatetimeAdapter<MomentDatetimeAdapter>,
   authenticateService: AuthenticateService,
 ) {
   return async () => {
@@ -26,7 +29,14 @@ export function langulageInitializer(
         return;
       }
 
-      await setLanguage(values.translate, values.moment, adapter, translate);
+      await setLanguage(
+        values.translate,
+        values.moment,
+        values.adapter,
+        adapter,
+        dateTimeAdapter,
+        translate,
+      );
     };
 
     try {
@@ -67,11 +77,14 @@ export function langulageInitializer(
 export async function setLanguage(
   translateFormat: string,
   momentFormat: string,
+  adapterFormat: string,
   dateAdapater: DateAdapter<MomentDateAdapter>,
+  dateTimeAdapter: DatetimeAdapter<MomentDatetimeAdapter>,
   translateService: TranslateService,
 ) {
   // Set values
   await lastValueFrom(translateService.use(translateFormat));
   moment.locale(momentFormat);
-  dateAdapater.setLocale(moment.locale());
+  dateAdapater.setLocale(adapterFormat);
+  dateTimeAdapter.setLocale(adapterFormat);
 }
