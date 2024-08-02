@@ -5,12 +5,14 @@ import {
   Component,
   OnInit,
   computed,
-  inject,
+  inject
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
+import { DateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import { ClaimService } from '@badman/frontend-auth';
 import { HasClaimComponent } from '@badman/frontend-components';
 import {
   EncounterChangeDate,
@@ -30,15 +33,14 @@ import {
   Team,
 } from '@badman/frontend-models';
 import { getSeason, getSeasonPeriod, sortTeams } from '@badman/utils';
+import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
+import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { randomLightColor } from 'seed-to-color';
-import { MtxDatetimepickerModule } from '@ng-matero/extensions/datetimepicker';
-import { MtxMomentDatetimeModule } from '@ng-matero/extensions-moment-adapter';
-import { ClaimService } from '@badman/frontend-auth';
 
 @Component({
   selector: 'badman-calendar',
@@ -74,6 +76,7 @@ export class CalendarComponent implements OnInit {
   private readonly snack = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
   private readonly claimService = inject(ClaimService);
+  private _adapter = inject<DateAdapter<MomentDateAdapter>>(DateAdapter<MomentDateAdapter>);
 
   isAdmin = computed(() => this.claimService.hasAnyClaims(['change-any:encounter']));
 
@@ -108,6 +111,8 @@ export class CalendarComponent implements OnInit {
       locationId: string;
       time: string;
       courts: number;
+      from?: Date;
+      to?: Date;
     }[]
   > = new Map();
 
@@ -287,6 +292,12 @@ export class CalendarComponent implements OnInit {
             const format = wDay.format('YYYY-MM-DD');
 
             if (wDay.locale('en').format('dddd').toLocaleLowerCase() === aDay.day) {
+              if (aDay.from && aDay.to) {
+                if (!wDay.isBetween(aDay.from, aDay.to, 'day', '[]')) {
+                  continue;
+                }
+              }
+
               if (!this.availabilities.has(format)) {
                 this.availabilities.set(format, []);
               }
@@ -710,6 +721,8 @@ export class CalendarComponent implements OnInit {
                       startTime
                       endTime
                       day
+                      from
+                      to
                     }
                     exceptions {
                       start
