@@ -93,6 +93,9 @@ export interface AvailabilityDay {
   startTime?: string;
   endTime?: string;
   courts?: number;
+
+  from?: Date;
+  to?: Date;
 }
 
 @InputType()

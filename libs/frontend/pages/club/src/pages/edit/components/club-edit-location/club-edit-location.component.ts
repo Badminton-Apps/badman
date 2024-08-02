@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, input, inject, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -7,9 +15,11 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,12 +34,15 @@ import { Club, Location } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, MutationResult, gql } from 'apollo-angular';
 import { Observable, forkJoin } from 'rxjs';
+import { ChoosePeriodDialogComponent } from './dialogs/choose-period-dialog.component';
 
 export type LocationavDayType = FormGroup<{
   day: FormControl<string | undefined>;
   startTime: FormControl<string | undefined>;
   endTime: FormControl<string | undefined>;
   courts: FormControl<number | undefined>;
+  from: FormControl<Date | undefined>;
+  to: FormControl<Date | undefined>;
 }>;
 export type LocationExceptionType = FormGroup<{
   start: FormControl<Date | undefined>;
@@ -80,6 +93,8 @@ export type LocationForm = FormGroup<{
     MatSelectModule,
     MatInputModule,
     MatSnackBarModule,
+    MatDialogModule,
+    MatBadgeModule,
     HasClaimComponent,
     BadmanBlockModule,
   ],
@@ -87,7 +102,9 @@ export type LocationForm = FormGroup<{
 export class ClubEditLocationComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private apollo = inject(Apollo);
+  private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private changeDetectorRef = inject(ChangeDetectorRef);
   whenEdit = output<Location>();
   whenDelete = output<Location>();
 
@@ -126,6 +143,8 @@ export class ClubEditLocationComponent implements OnInit {
           startTime: this.formBuilder.control(day.startTime),
           endTime: this.formBuilder.control(day.endTime),
           courts: this.formBuilder.control(day.courts),
+          from: this.formBuilder.control(day.from),
+          to: this.formBuilder.control(day.to),
         }),
       ) ?? [],
     ) as FormArray<LocationavDayType>;
@@ -172,6 +191,8 @@ export class ClubEditLocationComponent implements OnInit {
         startTime: new FormControl(),
         endTime: new FormControl(),
         courts: new FormControl(),
+        from: new FormControl(),
+        to: new FormControl(),
       }) as LocationavDayType,
     );
     this.expanded.days = true;
@@ -200,6 +221,18 @@ export class ClubEditLocationComponent implements OnInit {
 
   removeException(index: number) {
     this.exceptions.removeAt(index);
+  }
+
+  setPeriods(dayControl: FormGroup) {
+    console.log(dayControl);
+    this.dialog
+      .open(ChoosePeriodDialogComponent, {
+        data: dayControl,
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.changeDetectorRef.detectChanges();
+      });
   }
 
   save() {
