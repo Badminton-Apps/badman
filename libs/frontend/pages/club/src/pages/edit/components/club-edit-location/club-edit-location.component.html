@@ -64,7 +64,6 @@
                       mat-icon-button
                       (click)="this.setPeriods(day)"
                       class="hide-text"
-                      matTooltipClass="tooltip-multi-line"
                       [matTooltip]="'all.locations.period.tooltip' | translate"
                       [matBadge]="day.get('from')?.value ? '.' : null"
                       matBadgeSize="small"
