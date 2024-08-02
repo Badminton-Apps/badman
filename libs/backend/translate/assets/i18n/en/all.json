@@ -592,13 +592,14 @@
     "exceptions": "Exceptions",
     "hint": "You can add below periods when the hall is not (or reduced) available, for this you have to choose a start and an end date each time. If these are the same, just choose 2x the same day.\n\nIf you have a reduced number of fields, you can set them by clicking on the icon to the right.",
     "period": {
-      "description": "If your day is only available for a period of time, you can set the dates here",
+      "description": "Below you can choose the period that the day and time is available. Anything outside this period will not appear in the calendar",
       "errors": {
         "invalid-end": "Incorrect end date",
         "invalid-start": "Incorrect start date"
       },
       "label": "Select period",
-      "title": "Set period"
+      "title": "Set period",
+      "tooltip": "If your day is only available for a period of time, you can set the dates here"
     },
     "title": "Location(s)"
   },
