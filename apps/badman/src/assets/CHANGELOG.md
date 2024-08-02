@@ -1,3 +1,18 @@
+## 6.163.0 (2024-08-02)
+
+
+### 🚀 Features
+
+- allowing periods for location ([b226e43e4](https://github.com/Badminton-Apps/badman/commit/b226e43e4))
+
+### 🩹 Fixes
+
+- translations are now working for all moment adapters (special for Flor!) ([38241e963](https://github.com/Badminton-Apps/badman/commit/38241e963))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.162.3 (2024-08-01)
 
 
