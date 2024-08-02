@@ -592,7 +592,7 @@
     "exceptions": "Uitzonderingen",
     "hint": "Je kan hieronder periodes toevoegen waarin de zaal niet (of verminderd) beschikbaar is, hiervoor moet je telkens een begin- en een einddatum kiezen. Indien deze dezelfde is, kies dan 2x dezelfde dag.\n\nAls je een verminderd aantal velden hebt, kan je deze instellen door op het icoontje rechts te klikken",
     "period": {
-      "description": "Hieronder kan je de periode kiezen waar de speeldag en tijdstip beschikbaar is. Alles buiten deze periode zal niet in de agenda komen te staan",
+      "description": "Hieronder kan je de periode kiezen waar de speeldag en tijdstip beschikbaar zijn. Alles buiten deze periode zal niet in de agenda komen te staan",
       "errors": {
         "invalid-end": "Incorrecte eind datum",
         "invalid-start": "Incorrecte start datum"

@@ -592,7 +592,7 @@
     "exceptions": "Exceptions",
     "hint": "You can add below periods when the hall is not (or reduced) available, for this you have to choose a start and an end date each time. If these are the same, just choose 2x the same day.\n\nIf you have a reduced number of fields, you can set them by clicking on the icon to the right.",
     "period": {
-      "description": "Below you can choose the period where the game day and time is available. Everything outside this period will not appear in the calendar",
+      "description": "Below you can choose the period where the match day and time are available. Everything outside this period will not be included in the agenda",
       "errors": {
         "invalid-end": "Incorrect end date",
         "invalid-start": "Incorrect start date"
