@@ -606,6 +606,7 @@ export type I18nTranslations = {
                 };
                 "label": string;
                 "title": string;
+                "tooltip": string;
             };
             "title": string;
         };
