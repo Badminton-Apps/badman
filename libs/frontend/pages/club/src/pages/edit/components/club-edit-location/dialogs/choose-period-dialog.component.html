@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>{{ 'all.locations.period.title' | translate }}</h2>
 <mat-dialog-content>
-  <p>{{ 'all.locations.period' | translate }}</p>
+  <p>{{ 'all.locations.period.description' | translate }}</p>
   @if (range) {
     <mat-form-field>
       <mat-label>{{ 'all.locations.period.label' | translate }}</mat-label>
@@ -23,7 +23,7 @@
   }
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="onClear()">Clear</button>
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" [matDialogClose]="">Confirm</button>
+  <button mat-button (click)="onClear()">{{'all.button.clear' | translate}}</button>
+  <button mat-button (click)="onCancel()">{{'all.button.cancel' | translate}}</button>
+  <button mat-raised-button color="primary" [matDialogClose]="">{{'all.button.agree' | translate}}</button>
 </mat-dialog-actions>

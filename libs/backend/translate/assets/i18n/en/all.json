@@ -6,6 +6,7 @@
     "agree": "Ok",
     "all": "All",
     "cancel": "Cancel",
+    "clear": "Clear",
     "clone": "Clone",
     "close": "Close",
     "copy": "Copy",
@@ -596,7 +597,7 @@
         "invalid-end": "Incorrect end date",
         "invalid-start": "Incorrect start date"
       },
-      "label": "Enter a date range",
+      "label": "Select period",
       "title": "Set period"
     },
     "title": "Location(s)"
