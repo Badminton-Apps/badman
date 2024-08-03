@@ -4,7 +4,7 @@
 const NodeGeocoder = require('node-geocoder');
 const geocoder = NodeGeocoder({
   provider: 'google',
-  apiKey: 'AIzaSyDXVu9H8XXk5rOY9DhP48PHyAij0MCADZI',
+  apiKey: '',
 });
 
 /** @type {import('sequelize-cli').Migration} */
