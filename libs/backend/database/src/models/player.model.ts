@@ -311,7 +311,7 @@ export class Player extends Model<InferAttributes<Player>, InferCreationAttribut
       let memberId = '';
 
       while (tries < 10) {
-        (memberId = `unknown-${Math.floor(Math.random() * 90000) + 10000}`), 10;
+        memberId = `unknown-${Math.floor(Math.random() * 90000) + 10000}`;
         const result = await Player.findOne({
           where: { memberId },
           transaction: options.transaction,
