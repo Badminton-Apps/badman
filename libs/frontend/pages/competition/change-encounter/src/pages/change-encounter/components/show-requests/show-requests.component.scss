@@ -51,4 +51,24 @@ form,
     gap: 1rem;
     align-items: center;
   }
+
+  
+
+  @media (max-width: 768px) {
+    > div {
+      flex-wrap: wrap;
+
+      button {
+        flex: 0 1 45%;
+      }
+    }
+
+    badman-has-claim {
+      display: flex;
+      flex: 1;
+      button {
+        flex: 0 1 90%;
+      }
+    }
+  }
 }
