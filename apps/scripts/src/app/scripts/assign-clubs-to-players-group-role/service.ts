@@ -79,7 +79,7 @@ export class AssignClubToPlayers {
             exportClub: row.groupname,
             clubId: activeClub?.id ?? '',
             newClubId: club.id,
-            flemish: row.memberid[0] === '5',
+            flemish: row.memberid.startsWith('5'),
           });
         }
       }

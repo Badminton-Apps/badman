@@ -15,10 +15,7 @@
     }
 
     .animation-block {
-      //  background: darkgray;
-      // background: linear-gradient(to right, #eeeeee 10%, #dddddd 18%, #eeeeee 33%);
       @if $isDark {
-        background-color: lighten($background-color, 20%);
         background: linear-gradient(
           to right,
           lighten($background-color, 20%) 10%,
@@ -26,7 +23,6 @@
           lighten($background-color, 20%) 33%
         );
       } @else {
-        background-color: darken($background-color, 20%);
         background: linear-gradient(
           to right,
           darken($background-color, 20%) 10%,
