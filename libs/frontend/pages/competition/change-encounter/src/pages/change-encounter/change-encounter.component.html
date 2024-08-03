@@ -30,7 +30,10 @@
           [updateUrl]="true"
           [group]="formGroup"
         ></badman-list-encounters>
-        <badman-show-requests [group]="formGroup"></badman-show-requests>
+        <badman-show-requests
+          [showCompact]="isHandset()"
+          [group]="formGroup"
+        ></badman-show-requests>
       </div>
     </div>
   </div>

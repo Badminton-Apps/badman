@@ -6,7 +6,16 @@
         <mat-label>{{ 'all.pickers.select-encounter' | translate }}</mat-label>
         <mat-select [formControl]="this.internalControl">
           @for (option of this.encountersSem1; track option) {
-            <mat-option class="list-encounter" [value]="option">
+            <mat-option class="list-encounter" [value]="option" (click)="selectEncounter(option)">
+              @if (getInfo(option); as info) {
+                <mat-icon
+                  matListItemIcon
+                  [matTooltip]="info.tooltip"
+                  matTooltipClass="tooltip-multi-line"
+                  [ngClass]="info.infoClass"
+                  >{{ info.icon }}</mat-icon
+                >
+              }
               <span class="team">
                 {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}</span
               >
@@ -23,7 +32,16 @@
           }
           <mat-divider></mat-divider>
           @for (option of this.encountersSem2; track option) {
-            <mat-option class="list-encounter" [value]="option">
+            <mat-option class="list-encounter" [value]="option" (click)="selectEncounter(option)">
+              @if (getInfo(option); as info) {
+                <mat-icon
+                  matListItemIcon
+                  [matTooltip]="info.tooltip"
+                  matTooltipClass="tooltip-multi-line"
+                  [ngClass]="info.infoClass"
+                  >{{ info.icon }}</mat-icon
+                >
+              }
               <span class="team">
                 {{ option.showingForHomeTeam ? option.away!.name : option.home!.name }}</span
               >

@@ -123,6 +123,7 @@ export type I18nTranslations = {
                 "re-open": string;
                 "requested": string;
                 "requested-failed": string;
+                "selected": string;
                 "show-not-availible": {
                     "plural": string;
                     "singular": string;
