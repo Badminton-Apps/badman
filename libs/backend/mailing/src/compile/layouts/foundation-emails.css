@@ -12,7 +12,6 @@ body {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   margin: 0;
-  margin: 0;
   padding: 0;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -20,7 +19,6 @@ body {
 }
 
 #backgroundTable {
-  margin: 0;
   margin: 0;
   padding: 0;
   width: 100% !important;
@@ -47,8 +45,7 @@ a img {
 }
 
 p {
-  margin: 0 0 0 10px;
-  margin: 0 0 0 10px;
+  margin-bottom: 10px;
 }
 
 table {
@@ -89,7 +86,6 @@ table.container {
   background: #fefefe;
   width: 580px;
   margin: 0 auto;
-  margin: 0 auto;
   text-align: inherit;
 }
 
@@ -114,7 +110,6 @@ td.columns,
 td.column,
 th.columns,
 th.column {
-  margin: 0 auto;
   margin: 0 auto;
   padding-left: 16px;
   padding-bottom: 16px;
@@ -897,7 +892,6 @@ img.float-right {
 img.float-center,
 img.text-center {
   margin: 0 auto;
-  margin: 0 auto;
   float: none;
   text-align: center;
 }
@@ -905,7 +899,6 @@ img.text-center {
 table.float-center,
 td.float-center,
 th.float-center {
-  margin: 0 auto;
   margin: 0 auto;
   float: none;
   text-align: center;
@@ -976,7 +969,6 @@ a {
   font-weight: normal;
   padding: 0;
   margin: 0;
-  margin: 0;
   text-align: left;
   line-height: 1.3;
 }
@@ -991,7 +983,6 @@ h6 {
   word-wrap: normal;
   font-family: Helvetica, Arial, sans-serif;
   font-weight: normal;
-  margin-bottom: 10px;
   margin-bottom: 10px;
 }
 
@@ -1028,17 +1019,12 @@ th {
   line-height: 1.3;
 }
 
-p {
-  margin-bottom: 10px;
-  margin-bottom: 10px;
-}
+
 p.lead {
   font-size: 20px;
   line-height: 1.6;
 }
 p.subheader {
-  margin-top: 4px;
-  margin-bottom: 8px;
   margin-top: 4px;
   margin-bottom: 8px;
   font-weight: normal;
@@ -1083,7 +1069,6 @@ h6 a:visited {
 pre {
   background: #f3f3f3;
   margin: 30px 0;
-  margin: 30px 0;
 }
 pre code {
   color: #cacaca;
@@ -1108,7 +1093,6 @@ table.hr th {
   border-bottom: 1px solid #0a0a0a;
   border-left: 0;
   margin: 20px auto;
-  margin: 20px auto;
   clear: both;
 }
 
@@ -1117,7 +1101,6 @@ table.hr th {
   line-height: 1;
 }
 p + .stat {
-  margin-top: -16px;
   margin-top: -16px;
 }
 
@@ -1136,7 +1119,6 @@ span.preheader {
 
 table.button {
   width: auto;
-  margin: 0 0 16px 0;
   margin: 0 0 16px 0;
 }
 table.button table td {
@@ -1318,7 +1300,6 @@ table.button.warning:hover table a {
 }
 
 table.callout {
-  margin-bottom: 16px;
   margin-bottom: 16px;
 }
 
@@ -1514,56 +1495,45 @@ body.outlook p {
   table.body td.small-offset-1,
   table.body th.small-offset-1 {
     margin-left: 8.33333% !important;
-    margin-left: 8.33333% !important;
   }
   table.body td.small-offset-2,
   table.body th.small-offset-2 {
-    margin-left: 16.66667% !important;
     margin-left: 16.66667% !important;
   }
   table.body td.small-offset-3,
   table.body th.small-offset-3 {
     margin-left: 25% !important;
-    margin-left: 25% !important;
   }
   table.body td.small-offset-4,
   table.body th.small-offset-4 {
-    margin-left: 33.33333% !important;
     margin-left: 33.33333% !important;
   }
   table.body td.small-offset-5,
   table.body th.small-offset-5 {
     margin-left: 41.66667% !important;
-    margin-left: 41.66667% !important;
   }
   table.body td.small-offset-6,
   table.body th.small-offset-6 {
-    margin-left: 50% !important;
     margin-left: 50% !important;
   }
   table.body td.small-offset-7,
   table.body th.small-offset-7 {
     margin-left: 58.33333% !important;
-    margin-left: 58.33333% !important;
   }
   table.body td.small-offset-8,
   table.body th.small-offset-8 {
-    margin-left: 66.66667% !important;
     margin-left: 66.66667% !important;
   }
   table.body td.small-offset-9,
   table.body th.small-offset-9 {
     margin-left: 75% !important;
-    margin-left: 75% !important;
   }
   table.body td.small-offset-10,
   table.body th.small-offset-10 {
     margin-left: 83.33333% !important;
-    margin-left: 83.33333% !important;
   }
   table.body td.small-offset-11,
   table.body th.small-offset-11 {
-    margin-left: 91.66667% !important;
     margin-left: 91.66667% !important;
   }
   table.body table.columns td.expander,
