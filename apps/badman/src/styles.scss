@@ -6,7 +6,6 @@
 @use './theme-functions' as theme;
 @use './badman.theme' as root-theme;
 
-
 @use '../../../libs/frontend/components/theme' as frontend-components;
 @use '../../../libs/frontend/pages/competition/team-assembly/theme' as frontend-assembly;
 @use '../../../libs/frontend/pages/club/theme' as frontend-club;
@@ -114,7 +113,6 @@ body {
   color: transparent;
 }
 
-
 xng-breadcrumb .xng-breadcrumb-list {
   margin: 16px 16px 0 16px;
 }
@@ -155,8 +153,6 @@ mat-sidenav-container {
 mat-dialog-content {
   overflow: inherit;
 }
-
-
 
 // Spinner for button
 .spinner {

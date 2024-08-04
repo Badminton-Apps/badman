@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  padding: 1rem 1rem 0;
+  @media (max-width: 760px) {
+    padding: 0.5rem 0.5rem 0;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+
+  .row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+}
+
+badman-page-header {
+  margin-bottom: 1rem;
+}
