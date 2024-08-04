@@ -33,6 +33,7 @@ import { DateSelectorComponent } from '../../../../components';
   styleUrls: ['./request-date.component.scss'],
 })
 export class RequestDateComponent implements OnInit {
+  showCompact = input<boolean | undefined>(false);
   translate = inject(TranslateService);
   encounter = input.required<EncounterCompetition>();
 

@@ -60,9 +60,7 @@
 
   @if (this.canViewEncounter()) {
     <mat-tab [label]="'all.club.titles.encounters' | translate">
-      <ng-template matTabContent>
-        <badman-club-encounters [clubId]="this.club()?.id!" [filter]="this.filter" />
-      </ng-template>
+      <badman-club-encounters />
     </mat-tab>
   }
   @if (this.canViewEnrollments()) {

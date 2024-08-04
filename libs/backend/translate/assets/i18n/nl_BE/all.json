@@ -114,8 +114,10 @@
       "not-possible": "Niet beschikbaar",
       "possible": "Beschikbaar",
       "re-open": "De vorige aanvraag is afgewerkt, je kan deze heropenen en dan zullen de oorspronkelijk voorgestelde data opnieuw zichtbaar zijn. De nieuwe aanvraag is pas opnieuw verstuurd eenmaal je op verzenden hebt geklikt na het heropenen.",
+      "request-finished": "Verplaatsing afgewerkt",
       "requested": "Verzoek ingediend",
       "requested-failed": "Verzoek mislukt, contacteer Badminton Vlaanderen indien het probleem aanhoud.",
+      "selected": "Gebruik deze datum",
       "show-not-availible": {
         "plural": "Er zijn {count} dagen waarop één van de teams niet beschikbaar is. Klik hier om deze dagen te bekijken.",
         "singular": "Als je hier klikt, kun je de dag zien waarop een team niet beschikbaar is."
@@ -148,6 +150,7 @@
         "title": "Er zijn problemen gevonden met je opstelling"
       }
     },
+    "date": "Datum",
     "delete": {
       "description": "Weet je zeker dat je deze competitie wilt verwijderen?",
       "title": "Verwijder competitie"
@@ -204,6 +207,7 @@
       "open-enrollment-year": "De openingsdatum lijkt op een verkeerd jaar gezet te zijn",
       "open-requests": "Datum opening"
     },
+    "originalDate": "Originele datum",
     "overview": {
       "official": "Officieel",
       "only-official": "Alleen officiele"
@@ -598,7 +602,7 @@
         "invalid-start": "Incorrecte start datum"
       },
       "label": "Selecteer periode",
-      "title": "Periode dat ",
+      "title": "Stel periode in",
       "tooltip": "Als je dag maar voor een periode beschikbaar is, kan je hier de data instellen"
     },
     "title": "Locatie(s)"

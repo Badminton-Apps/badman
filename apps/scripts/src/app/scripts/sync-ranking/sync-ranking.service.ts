@@ -40,7 +40,6 @@ export class SyncRankingService {
 
     if (!player) {
       throw new NotFoundException(`Player ${playerId} not found`);
-      return;
     }
 
     this.logger.debug(`Syncing ranking for ${player.fullName} (${player.memberId})`);
