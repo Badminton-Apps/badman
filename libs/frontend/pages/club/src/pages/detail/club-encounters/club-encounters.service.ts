@@ -1,10 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, computed, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { EncounterCompetition, EventCompetition } from '@badman/frontend-models';
+import { EncounterCompetition } from '@badman/frontend-models';
 import { getSeasonPeriod, sortTeams } from '@badman/utils';
 import { Apollo, gql } from 'apollo-angular';
-import { date } from 'joi';
 import moment from 'moment';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge } from 'rxjs';
@@ -15,8 +14,7 @@ import {
   filter,
   map,
   startWith,
-  switchMap,
-  tap,
+  switchMap
 } from 'rxjs/operators';
 
 export interface ClubEncounterState {
