@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -8,10 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent, PlayerSearchComponent } from '@badman/frontend-components';
-import { Player, Location } from '@badman/frontend-models';
+import { Location, Player, Role } from '@badman/frontend-models';
 import { SubEventType } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { startWith } from 'rxjs/operators';
+import { Apollo, gql } from 'apollo-angular';
+import { Observable } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-team-fields',
@@ -32,9 +34,12 @@ import { startWith } from 'rxjs/operators';
     MatSelectModule,
     HasClaimComponent,
     PlayerSearchComponent,
+    RouterModule,
   ],
 })
 export class TeamFieldComponent implements OnInit {
+  private readonly apollo = inject(Apollo);
+
   teamNumbers = input<
     | {
         [key in SubEventType]: number[];
@@ -47,6 +52,8 @@ export class TeamFieldComponent implements OnInit {
   options?: number[];
 
   group = input.required<FormGroup>();
+
+  captainNotInRoles$?: Observable<boolean>;
 
   ngOnInit(): void {
     if (!this.group()) {
@@ -92,6 +99,51 @@ export class TeamFieldComponent implements OnInit {
           this.group()?.get('teamNumber')?.enable();
         }
       });
+
+    this.captainNotInRoles$ = this.group().controls['captainId'].valueChanges.pipe(
+      startWith(this.group().controls['captainId'].value),
+      switchMap(() =>
+        this.apollo.query<{
+          roles: {
+            id: string;
+            name: string;
+            players: Player[];
+          }[];
+        }>({
+          query: gql`
+            query GetClubRoles($where: JSONObject) {
+              roles(where: $where) {
+                id
+                name
+                players {
+                  slug
+                  id
+                  firstName
+                  lastName
+                }
+              }
+            }
+          `,
+          variables: {
+            where: {
+              name: 'Team captains',
+              linkId: this.group()?.get('clubId')?.value,
+              linkType: 'club',
+            },
+          },
+        }),
+      ),
+      map((result) => result.data.roles?.map((role) => new Role(role))),
+      map((roles) => {
+        if (!roles) {
+          return true;
+        }
+
+        return !roles.some((role) =>
+          role.players?.some((player) => player.id === this.group()?.get('captainId')?.value),
+        );
+      }),
+    );
   }
 
   async onCaptainSelect(player: Partial<Player>) {

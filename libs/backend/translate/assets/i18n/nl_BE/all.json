@@ -52,6 +52,10 @@
       "open-requests": "Openstaande verplaatsingsaanvragen"
     },
     "end": "Einde",
+    "hints": {
+      "captain-not-in-role": "Deze kapitein zit niet in de kapitein rol, en zal dus niet de permissies hebben om bv de wedstrijd te verplaatsen. Je kan deze rol toekennen in het bewerk scherm van de club",
+      "here": "hier"
+    },
     "membership-types": {
       "loan": "Uitgeleende speler",
       "normal": "Hoofdclub"

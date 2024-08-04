@@ -52,6 +52,10 @@
       "open-requests": "Open transfer requests"
     },
     "end": "End",
+    "hints": {
+      "captain-not-in-role": "This captain is not in the captain role, and thus will not have the permissions to e.g. move the match. You can assign this role in the club edit screen",
+      "here": "here"
+    },
     "membership-types": {
       "loan": "Player on loan",
       "normal": "Main club"

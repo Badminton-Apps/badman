@@ -236,6 +236,7 @@ const APP_ROUTES: Routes = [
         libraries: ['places'],
       },
     },
+
     provideHttpClient(withInterceptorsFromDi()),
   ],
 })
