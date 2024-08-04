@@ -52,6 +52,10 @@
       "open-requests": "Ouvrir les demandes de transfert"
     },
     "end": "Fin",
+    "hints": {
+      "captain-not-in-role": "Ce capitaine n'a pas le rôle de capitaine et n'a donc pas le droit de déplacer le match, par exemple. Vous pouvez attribuer ce rôle dans l'écran d'édition du club.",
+      "here": "ici"
+    },
     "membership-types": {
       "loan": "Joueur prêté",
       "normal": "Club principal"
