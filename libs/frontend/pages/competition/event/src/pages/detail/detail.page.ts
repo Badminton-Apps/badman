@@ -125,7 +125,7 @@ export class DetailPageComponent implements OnInit {
 
         this.subEvents = this.eventCompetition.subEventCompetitions?.sort(sortSubEvents)?.reduce(
           (acc, subEventCompetition) => {
-            const eventType = subEventCompetition.eventType || 'Unknown';
+            const eventType = subEventCompetition.eventType ?? 'Unknown';
             const subEvents = acc.find((x) => x.eventType === eventType)?.subEvents;
             if (subEvents) {
               subEvents.push(subEventCompetition);
@@ -139,7 +139,7 @@ export class DetailPageComponent implements OnInit {
 
         const eventCompetitionName = `${this.eventCompetition.name}`;
         this.copyYearControl.setValue(
-          (this.eventCompetition.season || new Date().getFullYear()) + 1,
+          (this.eventCompetition.season ?? new Date().getFullYear()) + 1,
         );
 
         this.seoService.update({
