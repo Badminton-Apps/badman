@@ -1,0 +1,45 @@
+<mtx-grid
+  [showToolbar]="true"
+  [toolbarTemplate]="toolbar"
+  [data]="encounters()"
+  [loading]="loading()"
+  [columns]="columns"
+  [multiSelectable]="true"
+  [hideRowSelectionCheckbox]="false"
+  sortActive="date"
+  sortDirection="desc"
+>
+</mtx-grid>
+
+<ng-template #toolbar>
+  <div class="actions">
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Select Club</mat-label>
+        <mtx-select
+          [items]="clubs()"
+          bindLabel="name"
+          bindValue="id"
+          (change)="this.filterClub($event)"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Select Team</mat-label>
+        <mtx-select
+          [items]="teams()"
+          bindLabel="name"
+          bindValue="id"
+          (change)="this.filterTeam($event)"
+        />
+      </mat-form-field>
+
+      <!-- switch only changed -->
+      <mat-slide-toggle (change)="this.toggleOnlyChanged($event)"
+        >{{ 'all.competition.encounters.open-requests' | translate }}
+      </mat-slide-toggle>
+      <mat-slide-toggle (change)="this.toggleOpenRequests($event)"
+        >{{ 'all.competition.encounters.change-date' | translate }}
+      </mat-slide-toggle>
+    </div>
+  </div>
+</ng-template>
