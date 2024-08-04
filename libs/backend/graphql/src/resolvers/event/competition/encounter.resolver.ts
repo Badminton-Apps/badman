@@ -59,7 +59,19 @@ export class EncounterCompetitionResolver {
   async encounterCompetitions(
     @Args() listArgs: ListArgs,
   ): Promise<{ count: number; rows: EncounterCompetition[] }> {
-    return EncounterCompetition.findAndCountAll(ListArgs.toFindOptions(listArgs));
+    return EncounterCompetition.findAndCountAll({
+      ...ListArgs.toFindOptions(listArgs),
+      include: [
+        {
+          model: Team,
+          as: 'home',
+        },
+        {
+          model: Team,
+          as: 'away',
+        },
+      ],
+    });
   }
 
   @ResolveField(() => DrawCompetition)

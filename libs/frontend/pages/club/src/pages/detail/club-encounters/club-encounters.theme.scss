@@ -1,0 +1,20 @@
+// info: https://material.angular.io/guide/theming-your-components
+
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin color($theme) {
+  badman-club-encounters {
+    
+    a {
+      text-decoration: none;
+      color: mat.get-theme-color($theme, foreground, 'base');
+    }
+  }
+}
+
+@mixin typography($theme) {
+  // badman-club-encounters {
+  //   //
+  // }
+}
