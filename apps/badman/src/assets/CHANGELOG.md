@@ -1,3 +1,15 @@
+## 6.164.0 (2024-08-04)
+
+
+### 🚀 Features
+
+- some small mobile updates ([b07d53d23](https://github.com/Badminton-Apps/badman/commit/b07d53d23))
+- new component for showing encounters in event/club detail ([affc81c49](https://github.com/Badminton-Apps/badman/commit/affc81c49))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.163.1 (2024-08-02)
 
 
