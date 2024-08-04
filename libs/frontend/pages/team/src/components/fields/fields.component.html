@@ -43,6 +43,18 @@
     ></badman-player-search>
     <badman-has-claim [any]="['details-any:team', this.group().value.clubId + '_details:team']">
       <div class="captain-info">
+        @if (this.captainNotInRoles$ | async) {
+          <p>
+            {{ 'all.club.hints.captain-not-in-role' | translate }}
+            <!--
+              TODO: Add link to club edit page, however the dialog is not closing
+              
+             <a [routerLink]="['/', 'club', this.group().value.clubId, 'edit']">{{
+              'all.club.hints.here' | translate
+            }}</a> -->
+          </p>
+        }
+
         <div class="row">
           <mat-form-field class="email">
             <mat-label>{{ 'all.input.email' | translate }}</mat-label>
