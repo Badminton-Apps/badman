@@ -114,6 +114,7 @@
       "not-possible": "Not available",
       "possible": "Available",
       "re-open": "The previous request has been completed, you can reopen it and then the originally proposed data will be visible again. The new request is only resent once you clicked submit after reopening",
+      "request-finished": "Change request finished",
       "requested": "Request submitted",
       "requested-failed": "Request failed, contact Badminton Vlaanderen if the problem persists",
       "selected": "Use this date",
@@ -149,6 +150,7 @@
         "title": "Problems were found with your assembly"
       }
     },
+    "date": "Date",
     "delete": {
       "description": "Are you sure you want to delete this competition?",
       "title": "Remove competition"
@@ -205,6 +207,7 @@
       "open-enrollment-year": "The opening date seems to be set to the wrong year",
       "open-requests": "Date of opening"
     },
+    "originalDate": "Original date",
     "overview": {
       "official": "Officially",
       "only-official": "Official only"
