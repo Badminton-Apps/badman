@@ -34,7 +34,8 @@
     "@angular/cdk": "18.1.0",
     "@angular/platform-browser": "18.1.0",
     "@angular/google-maps": "~18.1.0",
-    "@ng-matero/extensions": "^18.1.2"
+    "@ng-matero/extensions": "^18.1.2",
+    "moment": "^2.30.1"
   },
   "dependencies": {},
   "sideEffects": false
