@@ -44,9 +44,10 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { combineLatest, lastValueFrom } from 'rxjs';
 import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
-import { CompetitionEncountersComponent } from './competition-encounters/competition-encounters.component';
+import { CompetitionEncountersComponent } from './competition-encounters';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
+import { CompetitionEncounterService } from './competition-encounters/competition-encounters.service';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -94,6 +95,8 @@ export class DetailPageComponent implements OnInit {
   private injector = inject(Injector);
   private claimService = inject(ClaimService);
 
+  private readonly competitionEncounterService = inject(CompetitionEncounterService);
+
   private destroy$ = injectDestroy();
 
   // signals
@@ -116,9 +119,13 @@ export class DetailPageComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(([data, translations]) => {
         this.eventCompetition = data['eventCompetition'];
+        this.competitionEncounterService.filter.patchValue({
+          eventId: this.eventCompetition.id,
+        });
+
         this.subEvents = this.eventCompetition.subEventCompetitions?.sort(sortSubEvents)?.reduce(
           (acc, subEventCompetition) => {
-            const eventType = subEventCompetition.eventType || 'Unknown';
+            const eventType = subEventCompetition.eventType ?? 'Unknown';
             const subEvents = acc.find((x) => x.eventType === eventType)?.subEvents;
             if (subEvents) {
               subEvents.push(subEventCompetition);
@@ -132,7 +139,7 @@ export class DetailPageComponent implements OnInit {
 
         const eventCompetitionName = `${this.eventCompetition.name}`;
         this.copyYearControl.setValue(
-          (this.eventCompetition.season || new Date().getFullYear()) + 1,
+          (this.eventCompetition.season ?? new Date().getFullYear()) + 1,
         );
 
         this.seoService.update({
