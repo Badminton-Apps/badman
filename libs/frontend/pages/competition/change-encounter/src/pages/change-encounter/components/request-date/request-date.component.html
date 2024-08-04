@@ -31,7 +31,11 @@
   </mat-form-field>
   <div class="actions">
     <div [matTooltip]="tootltipSelected ?? '' | translate">
-      <mat-checkbox class="selected" formControlName="selected"> </mat-checkbox>
+      <mat-checkbox class="selected" formControlName="selected">
+        @if (this.showCompact()) {
+          {{ 'all.competition.change-encounter.selected' | translate }}
+        }
+      </mat-checkbox>
     </div>
     @if (!group().get('id')!.value) {
       <div class="delete">

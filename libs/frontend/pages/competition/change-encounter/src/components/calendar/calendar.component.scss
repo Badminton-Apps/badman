@@ -99,13 +99,10 @@
   padding-bottom: 0.5rem;
 
   .day-event {
-    // max-width: 200px;
     color: black;
     border-radius: 4px;
     padding-left: 0.5rem;
     text-overflow: ellipsis;
-    // overflow: hidden;
-    // white-space: nowrap;
   }
 }
 
@@ -172,7 +169,6 @@
       }
 
       &:hover {
-        // background-color: #f1f3f4;
         border-radius: 4px;
       }
 
@@ -186,7 +182,6 @@
           align-items: center;
           flex: none;
           justify-content: center;
-          margin-right: 6px;
 
           & .event-color {
             border-radius: 8px;
@@ -225,8 +220,6 @@ mat-chip-avatar {
 }
 
 .event-detail {
-  // @include mat.elevation(8);
-  // background-color: white;
   border-radius: 8px;
   min-width: 300px;
 }

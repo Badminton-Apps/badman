@@ -134,7 +134,7 @@ export class TournamentSyncGameProcessor extends StepProcessor {
             ) &&
             // And not both players null
             (xmlMatch?.Team2?.Player1?.MemberID !== null ||
-              xmlMatch?.Team2?.Player1?.MemberID !== null)
+              xmlMatch?.Team2?.Player2?.MemberID !== null)
           ) {
             gameStatus = GameStatus.WALKOVER;
           } else {

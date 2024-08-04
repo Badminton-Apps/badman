@@ -12,6 +12,10 @@
 
 .availability {
   flex: 0 1 175px;
+
+  @media (max-width: 768px) {
+    flex: 1 1 100%;
+  }
 }
 
 // .delete,
@@ -32,6 +36,10 @@ $gap: 0.5rem;
   justify-content: left;
   align-items: center;
   gap: $gap;
+
+  @media (max-width: 768px) {
+    flex: 1 1 100%;
+  }
 }
 
 badman-date-selector {
