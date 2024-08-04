@@ -94,18 +94,16 @@ export class ResyncBaseTeamsService {
         place.double = row['Klassement dubbel'];
         place.mix = row['Klassement gemengd'];
         await place.save({ transaction });
-      } else {
-        if (p.competitionPlayer) {
-          const rankingPlace = new RankingPlace({
-            playerId: p.id,
-            systemId: primarySystem.id,
-            rankingDate: this.rankingDate,
-            single: row['Klassement enkel'],
-            double: row['Klassement dubbel'],
-            mix: row['Klassement gemengd'],
-          });
-          await rankingPlace.save({ transaction });
-        }
+      } else if (p.competitionPlayer) {
+        const rankingPlace = new RankingPlace({
+          playerId: p.id,
+          systemId: primarySystem.id,
+          rankingDate: this.rankingDate,
+          single: row['Klassement enkel'],
+          double: row['Klassement dubbel'],
+          mix: row['Klassement gemengd'],
+        });
+        await rankingPlace.save({ transaction });
       }
     }
   }

@@ -29,11 +29,11 @@ export class FillNotification {
       }
 
       settings.encounterNotAcceptedNotification =
-        settings.encounterNotAcceptedNotification ?? 0 != 0
+        (settings.encounterNotAcceptedNotification ?? 0) != 0
           ? settings.encounterNotAcceptedNotification
           : NotificationType.EMAIL | NotificationType.PUSH;
       settings.encounterNotEnteredNotification =
-        settings.encounterNotEnteredNotification ?? 0 != 0
+        (settings.encounterNotEnteredNotification ?? 0) != 0
           ? settings.encounterNotEnteredNotification
           : NotificationType.EMAIL | NotificationType.PUSH;
 

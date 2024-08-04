@@ -201,7 +201,7 @@ export class ClubViewComponent implements OnInit {
         clubs = clubs.map?.((club) => {
           club.hasLocation =
             club?.locations?.some(
-              (location) => location?.availabilities?.[0]?.days?.length ?? 0 <= 0,
+              (location) => (location?.availabilities?.[0]?.days?.length ?? 0) <= 0,
             ) ?? false;
 
           club.teams = club.teams?.filter((team) => {

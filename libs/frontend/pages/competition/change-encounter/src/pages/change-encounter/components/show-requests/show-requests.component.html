@@ -39,6 +39,7 @@
               <ng-container formArrayName="dates">
                 @for (date of dateControls.controls; track date; let i = $index) {
                   <badman-request-date
+                    [showCompact]="this.showCompact()"
                     [group]="date"
                     [encounter]="this.encounter"
                     [home]="this.home"
@@ -68,6 +69,7 @@
                   <div class="date-list" formArrayName="notAvailibleDates">
                     @for (date of dateControlsNotAvailible.controls; track date; let i = $index) {
                       <badman-request-date
+                        [showCompact]="this.showCompact()"
                         [group]="date"
                         [encounter]="this.encounter"
                         [home]="this.home"

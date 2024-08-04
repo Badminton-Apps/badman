@@ -99,6 +99,7 @@ const CHANGE_QUERY = gql`
   ],
 })
 export class ShowRequestsComponent implements OnInit {
+  showCompact = input<boolean | undefined>(false);
   private readonly destroy$ = injectDestroy();
   private cache = inject<InMemoryCache>(APOLLO_CACHE);
   private readonly apollo = inject(Apollo);

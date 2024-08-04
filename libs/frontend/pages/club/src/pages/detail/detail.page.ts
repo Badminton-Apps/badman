@@ -24,10 +24,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { Player } from '@badman/frontend-models';
 import { ClubAssemblyComponent } from './club-assembly/club-assembly.component';
 import { ClubCompetitionComponent } from './club-competition/club-competition.component';
-import { ClubEncountersComponent } from './club-encounters/club-encounters.component';
+import { ClubEncountersComponent } from './club-encounters';
 import { ClubPlayersComponent } from './club-players/club-players.component';
 import { ClubTeamsComponent } from './club-teams/club-teams.component';
 import { ClubAssemblyService } from './club-assembly/club-assembly.service';
+import { ClubEncounterService } from './club-encounters/club-encounters.service';
 
 @Component({
   selector: 'badman-club-detail',
@@ -58,6 +59,7 @@ import { ClubAssemblyService } from './club-assembly/club-assembly.service';
 export class DetailPageComponent {
   private readonly clubDetailService = inject(ClubDetailService);
   private readonly clubAssemblyService = inject(ClubAssemblyService);
+  private readonly clubEncountersService = inject(ClubEncounterService);
 
   private readonly twizzitService = inject(TwizzitService);
   private readonly dialog = inject(MatDialog);
@@ -97,6 +99,12 @@ export class DetailPageComponent {
             clubId: this.club()?.id,
             season: filter.season,
             choices: undefined,
+          });
+
+
+          this.clubEncountersService.filter.patchValue({
+            clubId: this.club()?.id,
+            season: filter.season,
           });
         });
     });

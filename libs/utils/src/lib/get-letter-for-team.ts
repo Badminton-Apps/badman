@@ -13,7 +13,7 @@ export const getLetterForRegion = (type?: SubEventTypeEnum, region?: 'vl' | 'wl'
 
   switch (type) {
     case SubEventTypeEnum.F:
-      return region === 'vl' ? 'D' : 'D';
+      return 'D';
     case SubEventTypeEnum.M:
       return region === 'vl' ? 'H' : 'M';
     case SubEventTypeEnum.MX:
