@@ -1,3 +1,14 @@
+## 6.164.2 (2024-08-05)
+
+
+### 🩹 Fixes
+
+- allowing combination of filters ([2eb7c01bc](https://github.com/Badminton-Apps/badman/commit/2eb7c01bc))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.164.1 (2024-08-05)
 
 
