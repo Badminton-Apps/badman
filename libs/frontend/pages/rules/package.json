@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-rule",
-  "version": "6.164.0",
+  "version": "6.164.1",
   "peerDependencies": {
     "@badman/frontend-auth": "*",
     "@badman/frontend-components": "*",
