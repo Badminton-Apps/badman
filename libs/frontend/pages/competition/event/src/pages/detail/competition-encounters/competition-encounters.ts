@@ -80,15 +80,15 @@ export class CompetitionEncountersComponent {
   ];
 
   filterClub(club: Club) {
-    this.service.state.filterClub(club?.id);
+    this.service.state.filterOnClub(club?.id);
   }
 
   filterTeam(team: Team) {
-    this.service.state.filterTeam(team?.id);
+    this.service.state.filterOnTeam(team?.id);
   }
 
   toggleOnlyChanged(state: MatSlideToggleChange) {
-    this.service.state.filterChanged(state.checked);
+    this.service.state.filterOnChangedRequest(state.checked);
   }
 
   toggleOpenRequests(state: MatSlideToggleChange) {
