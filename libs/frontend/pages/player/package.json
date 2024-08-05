@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-player",
-  "version": "6.164.1",
+  "version": "6.164.2",
   "peerDependencies": {
     "@badman/frontend-graphql": "*",
     "@badman/frontend-models": "*",
