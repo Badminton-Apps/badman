@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -67,16 +67,23 @@ export class DetailPageComponent {
   private readonly claimService = inject(ClaimService);
 
   private readonly clubId = injectParams('id');
-  readonly currentTab = injectQueryParams('tab');
+  private readonly quaryTab = injectQueryParams('tab');
+
+  currentTab = signal(0);
 
   club = this.clubDetailService.club;
   filter = this.clubDetailService.filter;
 
-  canViewEncounter = this.claimService.hasClaimSignal('edit-any:club');
-  canViewEnrollments = this.claimService.hasAnyClaimsSignal([
-    'view-any:enrollment-competition',
-    `${this.club()?.id}_view:enrollment-competition`,
-  ]);
+  canViewEncounter = computed(() =>
+    this.claimService.hasAnyClaims(['edit-any:club', `${this.club()?.id}_edit:club`]),
+  );
+
+  canViewEnrollments = computed(() =>
+    this.claimService.hasAnyClaims([
+      'view-any:enrollment-competition',
+      `${this.club()?.id}_view:enrollment-competition`,
+    ]),
+  );
 
   constructor() {
     effect(() => {
@@ -101,13 +108,27 @@ export class DetailPageComponent {
             choices: undefined,
           });
 
-
           this.clubEncountersService.filter.patchValue({
             clubId: this.club()?.id,
             season: filter.season,
           });
         });
     });
+
+    effect(
+      () => {
+        // if the canViewEnrollments is loaded
+        if (this.canViewEncounter?.() || this.canViewEnrollments?.()) {
+          const queryParam = this.quaryTab();
+          if (queryParam) {
+            this.currentTab.set(parseInt(queryParam, 10));
+          }
+        }
+      },
+      {
+        allowSignalWrites: true,
+      },
+    );
   }
 
   async downloadTwizzit() {
