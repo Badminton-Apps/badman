@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -72,11 +72,16 @@ export class DetailPageComponent {
   club = this.clubDetailService.club;
   filter = this.clubDetailService.filter;
 
-  canViewEncounter = this.claimService.hasClaimSignal('edit-any:club');
-  canViewEnrollments = this.claimService.hasAnyClaimsSignal([
-    'view-any:enrollment-competition',
-    `${this.club()?.id}_view:enrollment-competition`,
-  ]);
+  canViewEncounter = computed(() =>
+    this.claimService.hasAnyClaims(['edit-any:club', `${this.club()?.id}_edit:club`]),
+  );
+
+  canViewEnrollments = computed(() =>
+    this.claimService.hasAnyClaims([
+      'view-any:enrollment-competition',
+      `${this.club()?.id}_view:enrollment-competition`,
+    ]),
+  );
 
   constructor() {
     effect(() => {
@@ -100,7 +105,6 @@ export class DetailPageComponent {
             season: filter.season,
             choices: undefined,
           });
-
 
           this.clubEncountersService.filter.patchValue({
             clubId: this.club()?.id,
