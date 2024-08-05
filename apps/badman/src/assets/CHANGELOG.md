@@ -1,3 +1,16 @@
+## 6.164.1 (2024-08-05)
+
+
+### 🩹 Fixes
+
+- racing condiion for event overview ([65bb8d1e8](https://github.com/Badminton-Apps/badman/commit/65bb8d1e8))
+- setting the tab should wait for permissions to be loaded ([3898526a6](https://github.com/Badminton-Apps/badman/commit/3898526a6))
+- **club:** filter for open requests was reversed ([595e09f03](https://github.com/Badminton-Apps/badman/commit/595e09f03))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.164.0 (2024-08-04)
 
 
