@@ -14,7 +14,7 @@ import {
   filter,
   map,
   startWith,
-  switchMap
+  switchMap,
 } from 'rxjs/operators';
 
 export interface ClubEncounterState {
