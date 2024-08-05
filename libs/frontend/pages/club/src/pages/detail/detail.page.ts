@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -67,7 +67,9 @@ export class DetailPageComponent {
   private readonly claimService = inject(ClaimService);
 
   private readonly clubId = injectParams('id');
-  readonly currentTab = injectQueryParams('tab');
+  private readonly quaryTab = injectQueryParams('tab');
+
+  currentTab = signal(0);
 
   club = this.clubDetailService.club;
   filter = this.clubDetailService.filter;
@@ -112,6 +114,21 @@ export class DetailPageComponent {
           });
         });
     });
+
+    effect(
+      () => {
+        // if the canViewEnrollments is loaded
+        if (this.canViewEncounter?.() || this.canViewEnrollments?.()) {
+          const queryParam = this.quaryTab();
+          if (queryParam) {
+            this.currentTab.set(parseInt(queryParam, 10));
+          }
+        }
+      },
+      {
+        allowSignalWrites: true,
+      },
+    );
   }
 
   async downloadTwizzit() {
