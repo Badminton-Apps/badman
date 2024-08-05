@@ -26,10 +26,10 @@
       </mat-form-field>
 
       <!-- switch only changed -->
-      <mat-slide-toggle (change)="this.toggleOnlyChanged($event)"
+      <mat-slide-toggle (change)="this.toggleOpenRequests($event)"
         >{{ 'all.club.encounters.open-requests' | translate }}
       </mat-slide-toggle>
-      <mat-slide-toggle (change)="this.toggleOpenRequests($event)"
+      <mat-slide-toggle (change)="this.toggleOnlyChanged($event)"
         >{{ 'all.club.encounters.change-date' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle (change)="this.toggleHomeGames($event)"
