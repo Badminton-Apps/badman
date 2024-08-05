@@ -4,9 +4,9 @@ import { distinctUntilChanged, map, shareReplay, startWith } from 'rxjs/operator
 
 import { toObservable } from '@angular/core/rxjs-interop';
 import { APOLLO_CACHE } from '@badman/frontend-graphql';
-import { computedAsync } from 'ngxtension/computed-async';
 import { BehaviorSubject, ReplaySubject, combineLatest } from 'rxjs';
 import { AuthenticateService } from './authenticate.service';
+import { derivedAsync } from 'ngxtension/derived-async';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class ClaimService {
   claims$ = new ReplaySubject<string[] | undefined>(1);
   private update$ = new BehaviorSubject(null);
 
-  claims = computedAsync(() => this.claims$);
+  claims = derivedAsync(() => this.claims$);
   user$ = toObservable(this.authService.user);
 
   constructor() {
@@ -60,6 +60,8 @@ export class ClaimService {
   hasAnyClaimsSignal(claims: string[]) {
     return computed(() => this.hasAnyClaims(claims));
   }
+
+
 
   reloadProfile(): void {
     this.update$.next(null);
