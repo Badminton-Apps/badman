@@ -12,7 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ClaimService } from '@badman/frontend-auth';
 import {
   ConfirmDialogComponent,
@@ -32,15 +32,15 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
+import { injectQueryParams } from 'ngxtension/inject-query-params';
 import { injectRouteData } from 'ngxtension/inject-route-data';
 import { combineLatest, lastValueFrom } from 'rxjs';
-import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { CompetitionEncountersComponent } from './competition-encounters';
 import { CompetitionEncounterService } from './competition-encounters/competition-encounters.service';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
-import { injectQueryParams } from 'ngxtension/inject-query-params';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -75,7 +75,6 @@ import { injectQueryParams } from 'ngxtension/inject-query-params';
 export class DetailPageComponent implements OnInit {
   private seoService = inject(SeoService);
   private translate = inject(TranslateService);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
   private breadcrumbsService = inject(BreadcrumbService);
   private apollo = inject(Apollo);
