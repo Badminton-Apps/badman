@@ -32,7 +32,6 @@ export async function hasTime(
     for (const row of rows) {
       const header = await row.$('th');
       if (header) {
-        // logger.verbose(`Processing row`);
         const text = await header.evaluate((el) => el.textContent);
         if (text?.indexOf('Tijdstip') !== -1) {
           const td = await row.$('td');

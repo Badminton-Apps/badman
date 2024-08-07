@@ -218,7 +218,6 @@ export class CpGeneratorService {
       const subEvent = subEvents[i];
       const gender = this._getGender(subEvent.eventType);
       const queryEvent = `INSERT INTO Event(name, gender, eventtype, league, sortorder) VALUES("${subEvent.name}", ${gender}, 2, ${gender},${i});`;
-      // this.logger.verbose(`Query: ${queryEvent}`);
       const eventRes = await connection.execute<Identity>(queryEvent, `SELECT @@Identity AS id`);
 
       const responseEvent = eventRes[0];
@@ -231,7 +230,6 @@ export class CpGeneratorService {
       };
       for (const stage of this.stages) {
         const queryStage = `INSERT INTO stage(name, event, displayorder, stagetype) VALUES("${stage.name}","${responseEvent.id}", "${stage.displayOrder}", "${stage.stagetype}");`;
-        // this.logger.verbose(`Query: ${queryStage}`);
         const stageRes = await connection.execute<Identity>(queryStage, `SELECT @@Identity AS id`);
         const responseStage = stageRes[0];
 
@@ -279,7 +277,6 @@ export class CpGeneratorService {
           const queryClub = `INSERT INTO Club(name, clubId, country, abbreviation) VALUES ("${this._sqlEscaped(
             club.name || '',
           )}", "${club.clubId}", 19, "${club.abbreviation}")`;
-          // this.logger.verbose(`Query: ${queryClub}`);
           const clubRes = await connection.execute<Identity>(queryClub, `SELECT @@Identity AS id`);
           const responseClub = clubRes[0];
           clubList.set(club.id, {
@@ -320,7 +317,6 @@ export class CpGeneratorService {
         )}", "${this._sqlEscaped(location.street || '')} ${location.streetNumber}", "${location.postalcode}", "${
           location.city
         }", "${location.phone}", ${cpId} )`;
-        // this.logger.verbose(`Query: ${queryLocation}`);
         const locationRes = await connection.execute<Identity>(
           queryLocation,
           `SELECT @@Identity AS id`,
@@ -408,7 +404,6 @@ export class CpGeneratorService {
       )`;
 
           try {
-            // this.logger.verbose(`Query: ${queryTeam}`);
             const teamRes = await connection.execute<Identity>(
               queryTeam,
               `SELECT @@Identity AS id`,
@@ -498,7 +493,6 @@ export class CpGeneratorService {
         "${this._sqlEscaped(dbPlayer.lastName)}", "${this._sqlEscaped(
           dbPlayer.firstName,
         )}", ${gender}, ${this._sqlEscaped(dbPlayer?.memberId)}, ${internalClubId?.cpId}, NULL, NULL)`;
-        // this.logger.verbose(`Query: ${queryPlayer}`);
         const playerRes = await connection.execute<Identity>(
           queryPlayer,
           `SELECT @@Identity AS id`,
@@ -574,11 +568,9 @@ export class CpGeneratorService {
       const subEvent = events.get(dbEntry.subEventId);
 
       const entryQuery = `INSERT INTO Entry(event, team) VALUES ("${subEvent?.cpId}", "${cpId}")`;
-      // this.logger.verbose(`Query: ${entryQuery}`);
       const entryRes = await connection.execute<Identity>(entryQuery, `SELECT @@Identity AS id`);
 
       const stageQuery = `INSERT INTO stageentry(entry, stage) VALUES (${entryRes[0].id}, ${subEvent?.['Main Draw']})`;
-      // this.logger.verbose(`Query: ${stageQuery}`);
       await connection.execute(stageQuery);
     }
   }

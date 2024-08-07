@@ -108,7 +108,8 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         xmlMatch.Sets.Set = [xmlMatch?.Sets?.Set];
       }
 
-      let gameStatus = GameStatus.NORMAL;
+      let gameStatus: GameStatus;
+
       switch (xmlMatch.ScoreStatus) {
         case XmlScoreStatus.Retirement:
           gameStatus = GameStatus.RETIREMENT;
@@ -122,8 +123,8 @@ export class CompetitionSyncGameProcessor extends StepProcessor {
         case XmlScoreStatus.Walkover:
           gameStatus = GameStatus.WALKOVER;
           break;
-        default:
         case XmlScoreStatus.Normal:
+        default:
           gameStatus = GameStatus.NORMAL;
           break;
       }

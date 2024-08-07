@@ -28,7 +28,7 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
 
     const teamIds = this.encounters
       .map((encounter) => encounter.encounter.homeTeamId ?? null)
-      .filter((id) => id !== null) as string[];
+      .filter((id) => id !== null);
 
     const teams = await Team.findAll({
       where: {
@@ -94,7 +94,7 @@ export class CompetitionSyncEncounterLocationProcessor extends StepProcessor {
       // get the location for the club
       const locations = club.locations?.filter((location) => location.availabilities?.length);
 
-      if (!locations || !locations.length) {
+      if (!locations?.length) {
         this.logger.warn(
           `No locations found for club ${club.id} for encounter ${encounter.encounter.id}`,
         );

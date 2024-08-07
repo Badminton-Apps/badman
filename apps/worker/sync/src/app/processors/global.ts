@@ -17,11 +17,4 @@ export class GlobalConsumer {
   onError(job: string, err: Error) {
     this.logger.error(`Job ${job} failed`, err);
   }
-
-  // @OnQueueActive()
-  // handleQueueActive(job: Job) {
-  //   this.logger.log(`[SYNC] Queue ${job.name} is active`);
-
-  //   // super.handleQueueActive(job);
-  // }
 }

@@ -51,7 +51,6 @@ export class TeamClubRule extends Rule {
         throw new Error('Working encounter not found');
       }
 
-      // this.logger.debug(`Encounter found in semester ${semseter1 ? 1 : 2}`);
       const encountersSemester1 = [...encountersSem1];
       const encountersSemester2 = [...encountersSem2];
 

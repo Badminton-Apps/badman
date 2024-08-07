@@ -34,7 +34,6 @@ export async function detailEntered(
     let enteredOn: Date | null = null;
     const enteredBy: string | null = null;
     for (const row of rows) {
-      // logger.verbose(`Processing row`);
       const th = await row.$('th');
       if (th) {
         const headerTxt = (await th.evaluate((el) => el.textContent)) || '';
