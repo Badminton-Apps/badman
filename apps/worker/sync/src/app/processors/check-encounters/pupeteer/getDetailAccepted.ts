@@ -36,13 +36,11 @@ export async function detailAccepted(
     for (const row of rows) {
       const th = await row.$('th');
       if (th) {
-        // logger.verbose(`Processing row`);
         const thTxt = (await th.evaluate((el) => el.textContent)) || '';
         if (thTxt.indexOf('Teamwedstrijd bevestigd') !== -1) {
           const td = await row.$('td');
           if (td) {
             const tdTxt = (await td.evaluate((el) => el.textContent)) || '';
-            // logger.verbose(`Processing td: ${text}`);
             if (tdTxt !== 'Nee') {
               hasAccepted = true;
 
@@ -61,6 +59,6 @@ export async function detailAccepted(
       }
     }
 
-    return { accepted: hasAccepted ? true : false, acceptedOn, acceptedBy };
+    return { accepted: !!hasAccepted, acceptedOn, acceptedBy };
   }
 }
