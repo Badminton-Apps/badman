@@ -1,10 +1,10 @@
 {
   "name": "@badman/backend-validation",
-  "version": "6.164.2",
+  "version": "6.165.0",
   "dependencies": {
     "@nestjs/common": "^10.3.8",
     "@swc/helpers": "^0.5.11",
-    "@badman/backend-database": "6.164.2"
+    "@badman/backend-database": "6.165.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",
