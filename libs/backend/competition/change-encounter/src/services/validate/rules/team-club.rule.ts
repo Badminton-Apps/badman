@@ -16,7 +16,7 @@ export type TeamClubRuleParams = {
  * Checks if encounters against the same team are in a different semester
  */
 export class TeamClubRule extends Rule {
-  static override description = 'all.rules.change-encounter.team-club';
+  static override readonly description = 'all.rules.change-encounter.team-club';
   private readonly logger = new Logger(TeamClubRule.name);
 
   async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
@@ -65,9 +65,6 @@ export class TeamClubRule extends Rule {
 
       for (const suggestedDate of suggestedDates) {
         const suggestedSemester1 = suggestedDate.getFullYear() === lowestYear;
-        // this.logger.verbose(
-        //   `Checking suggested date: ${suggestedDate.toISOString()}, new semester: ${suggestedSemester1 ? 'Semester 1' : 'Semester 2'}`,
-        // );
 
         encounter.date = suggestedDate;
         const encountersSemester = suggestedSemester1 ? encountersSemester1 : encountersSemester2;

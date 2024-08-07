@@ -5,7 +5,7 @@ import {
   Component,
   OnInit,
   computed,
-  inject
+  inject,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -846,6 +846,35 @@ export class CalendarComponent implements OnInit {
       );
       return;
     }
+
+    // check if it the date is not a exception
+    const format = date.format('YYYY-MM-DD');
+    if (this.dayEvents.has(format)) {
+      this.snack.open(
+        this.translate.instant('all.competition.change-encounter.calendar.no-availibility'),
+        'Ok',
+        {
+          // duration: 4000,
+          panelClass: 'error',
+        },
+      );
+      return;
+    }
+
+    // check if it is out of season
+    const seasonP = getSeasonPeriod(this.season);
+    if (!moment(date).isBetween(seasonP[0], seasonP[1])) {
+      this.snack.open(
+        this.translate.instant('all.competition.change-encounter.calendar.out-of-season'),
+        'Ok',
+        {
+          // duration: 4000,
+          panelClass: 'error',
+        },
+      );
+      return;
+    }
+
 
     if (time) {
       // splite time to hour and minute
