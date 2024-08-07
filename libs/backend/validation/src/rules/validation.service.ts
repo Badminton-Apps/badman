@@ -24,9 +24,9 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
 
   async registerRule(
     rule: ruleType<T, V>,
-    description: string,
     args?: { meta?: object; activated?: boolean },
   ): Promise<void> {
+
     // find or create rule
     await Rule.findOrCreate({
       where: {
@@ -36,7 +36,7 @@ export abstract class ValidationService<T, V> implements OnApplicationBootstrap 
       defaults: {
         group: this.group,
         name: rule.name,
-        description: description,
+        description: rule.prototype.constructor.description,
         activated: args?.activated ?? true,
         meta: {
           activatedForUsers: [],

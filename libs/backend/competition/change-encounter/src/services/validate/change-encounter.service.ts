@@ -21,11 +21,11 @@ export class ChangeEncounterValidationService extends ValidationService<
     this._logger.log('Initializing rules');
     await this.clearRules();
 
-    await this.registerRule(SemesterRule, SemesterRule.description);
-    await this.registerRule(DatePeriodRule, DatePeriodRule.description);
-    await this.registerRule(TeamClubRule, TeamClubRule.description);
-    await this.registerRule(ExceptionRule, ExceptionRule.description);
-    await this.registerRule(LocationRule, LocationRule.description, { activated: false });
+    await this.registerRule(SemesterRule);
+    await this.registerRule(DatePeriodRule);
+    await this.registerRule(TeamClubRule);
+    await this.registerRule(ExceptionRule);
+    await this.registerRule(LocationRule, { activated: false });
 
     this._logger.log('Rules initialized');
   }
