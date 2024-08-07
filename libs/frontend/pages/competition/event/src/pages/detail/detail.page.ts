@@ -1,14 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  OnInit,
-  TemplateRef,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, OnInit, TemplateRef, computed, effect, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -41,13 +32,15 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
+import { injectRouteData } from 'ngxtension/inject-route-data';
 import { combineLatest, lastValueFrom } from 'rxjs';
 import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { CompetitionEncountersComponent } from './competition-encounters';
+import { CompetitionEncounterService } from './competition-encounters/competition-encounters.service';
 import { CompetitionEnrollmentsComponent } from './competition-enrollments';
 import { CompetitionMapComponent } from './competition-map';
-import { CompetitionEncounterService } from './competition-encounters/competition-encounters.service';
+import { injectQueryParams } from 'ngxtension/inject-query-params';
 
 @Component({
   selector: 'badman-competition-detail',
@@ -92,7 +85,6 @@ export class DetailPageComponent implements OnInit {
   private cpService = inject(CpService);
   private excelService = inject(ExcelService);
   // injectors
-  private injector = inject(Injector);
   private claimService = inject(ClaimService);
 
   private readonly competitionEncounterService = inject(CompetitionEncounterService);
@@ -102,46 +94,72 @@ export class DetailPageComponent implements OnInit {
   // signals
   currentTab = signal(0);
 
+  readonly eventCompetition = injectRouteData<EventCompetition>('eventCompetition');
+  private readonly quaryTab = injectQueryParams('tab');
+
   hasPermission = computed(() => this.claimService.hasAnyClaims(['edit-any:club']));
   canViewEnrollments = computed(() =>
     this.claimService.hasAnyClaims([
       'view-any:enrollment-competition',
-      `${this.eventCompetition.id}_view:enrollment-competition`,
+      `${this.eventCompetition()?.id}_view:enrollment-competition`,
     ]),
   );
   copyYearControl = new FormControl();
 
-  eventCompetition!: EventCompetition;
-  subEvents?: { eventType: string; subEvents: SubEventCompetition[] }[];
+  subEvents = computed(() =>
+    this.eventCompetition()
+      ?.subEventCompetitions?.sort(sortSubEvents)
+      ?.reduce(
+        (acc, subEventCompetition) => {
+          const eventType = subEventCompetition.eventType ?? 'Unknown';
+          const subEvents = acc.find((x) => x.eventType === eventType)?.subEvents;
+          if (subEvents) {
+            subEvents.push(subEventCompetition);
+          } else {
+            acc.push({ eventType, subEvents: [subEventCompetition] });
+          }
+          return acc;
+        },
+        [] as { eventType: string; subEvents: SubEventCompetition[] }[],
+      ),
+  );
+
+  constructor() {
+    effect(() => {
+      if (!this.eventCompetition()?.id) {
+        return;
+      }
+
+      this.competitionEncounterService.filter.patchValue({
+        eventId: this.eventCompetition()?.id,
+      });
+
+      this.copyYearControl.setValue(
+        (this.eventCompetition()?.season ?? new Date().getFullYear()) + 1,
+      );
+    });
+
+    effect(
+      () => {
+        // if the canViewEnrollments is loaded
+        if (this.canViewEnrollments?.() !== undefined) {
+          const queryParam = this.quaryTab();
+          if (queryParam) {
+            this.currentTab.set(parseInt(queryParam, 10));
+          }
+        }
+      },
+      {
+        allowSignalWrites: true,
+      },
+    );
+  }
 
   ngOnInit(): void {
-    combineLatest([this.route.data, this.translate.get(['all.competition.title'])])
+    combineLatest([this.translate.get(['all.competition.title'])])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(([data, translations]) => {
-        this.eventCompetition = data['eventCompetition'];
-        this.competitionEncounterService.filter.patchValue({
-          eventId: this.eventCompetition.id,
-        });
-
-        this.subEvents = this.eventCompetition.subEventCompetitions?.sort(sortSubEvents)?.reduce(
-          (acc, subEventCompetition) => {
-            const eventType = subEventCompetition.eventType ?? 'Unknown';
-            const subEvents = acc.find((x) => x.eventType === eventType)?.subEvents;
-            if (subEvents) {
-              subEvents.push(subEventCompetition);
-            } else {
-              acc.push({ eventType, subEvents: [subEventCompetition] });
-            }
-            return acc;
-          },
-          [] as { eventType: string; subEvents: SubEventCompetition[] }[],
-        );
-
-        const eventCompetitionName = `${this.eventCompetition.name}`;
-        this.copyYearControl.setValue(
-          (this.eventCompetition.season ?? new Date().getFullYear()) + 1,
-        );
-
+      .subscribe(([translations]) => {
+        const eventCompetitionName = `${this.eventCompetition()?.name}`;
         this.seoService.update({
           title: eventCompetitionName,
           description: `Competition ${eventCompetitionName}`,
@@ -150,26 +168,6 @@ export class DetailPageComponent implements OnInit {
         });
         this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
         this.breadcrumbsService.set('competition', translations['all.competition.title']);
-
-        effect(
-          () => {
-            // if the canViewEnrollments is loaded
-            if (this.canViewEnrollments?.() !== undefined) {
-              // check if the query params contian tabindex
-              this.route.queryParams
-                .pipe(
-                  startWith(this.route.snapshot.queryParams),
-                  take(1),
-                  filter((params) => params['tab']),
-                  map((params) => params['tab']),
-                )
-                .subscribe((tabindex) => {
-                  this.currentTab.set(parseInt(tabindex, 10));
-                });
-            }
-          },
-          { injector: this.injector, allowSignalWrites: true },
-        );
       });
   }
 
@@ -197,7 +195,7 @@ export class DetailPageComponent implements OnInit {
           }
         `,
         variables: {
-          id: this.eventCompetition.id,
+          id: this.eventCompetition()?.id,
           year,
         },
       }),
@@ -210,9 +208,9 @@ export class DetailPageComponent implements OnInit {
     // open dialog
     const ref = this.dialog.open(OpenCloseDateDialogComponent, {
       data: {
-        openDate: this.eventCompetition.openDate,
-        closeDate: this.eventCompetition.closeDate,
-        season: this.eventCompetition.season,
+        openDate: this.eventCompetition()?.openDate,
+        closeDate: this.eventCompetition()?.closeDate,
+        season: this.eventCompetition()?.season,
         title: 'all.competition.menu.open_close_enrollments',
       },
       width: '400px',
@@ -220,8 +218,13 @@ export class DetailPageComponent implements OnInit {
 
     ref.afterClosed().subscribe((result) => {
       if (result) {
-        this.eventCompetition.openDate = result.openDate;
-        this.eventCompetition.closeDate = result.closeDate;
+        const event = this.eventCompetition();
+        if (!event) {
+          return;
+        }
+
+        event.openDate = result.openDate;
+        event.closeDate = result.closeDate;
 
         this.apollo
           .mutate({
@@ -234,20 +237,16 @@ export class DetailPageComponent implements OnInit {
             `,
             variables: {
               data: {
-                id: this.eventCompetition.id,
-                openDate: this.eventCompetition.openDate,
-                closeDate: this.eventCompetition.closeDate,
+                id: event?.id,
+                openDate: event?.openDate,
+                closeDate: event?.closeDate,
               },
             },
           })
           .subscribe(() => {
-            this.matSnackBar.open(
-              `Competition ${this.eventCompetition.name} open/close dates updated`,
-              'Close',
-              {
-                duration: 2000,
-              },
-            );
+            this.matSnackBar.open(`Competition ${event?.name} open/close dates updated`, 'Close', {
+              duration: 2000,
+            });
           });
       }
     });
@@ -257,18 +256,25 @@ export class DetailPageComponent implements OnInit {
     // open dialog
     const ref = this.dialog.open(OpenCloseChangeEncounterDateDialogComponent, {
       data: {
-        openDate: this.eventCompetition.changeOpenDate,
-        closeDate: this.eventCompetition.changeCloseDate,
-        requestDate: this.eventCompetition.changeCloseRequestDate,
+        openDate: this.eventCompetition()?.changeOpenDate,
+        closeDate: this.eventCompetition()?.changeCloseDate,
+        requestDate: this.eventCompetition()?.changeCloseRequestDate,
       },
       width: '400px',
     });
 
     ref.afterClosed().subscribe((result) => {
       if (result) {
-        this.eventCompetition.changeOpenDate = result.openDate;
-        this.eventCompetition.changeCloseDate = result.closeDate;
-        this.eventCompetition.changeCloseRequestDate = result.requestDate;
+        const eventCompetition = this.eventCompetition();
+
+        if (!eventCompetition) {
+          console.error('Event competition not found');
+          return;
+        }
+
+        eventCompetition.changeOpenDate = result.openDate;
+        eventCompetition.changeCloseDate = result.closeDate;
+        eventCompetition.changeCloseRequestDate = result.requestDate;
 
         this.apollo
           .mutate({
@@ -281,16 +287,16 @@ export class DetailPageComponent implements OnInit {
             `,
             variables: {
               data: {
-                id: this.eventCompetition.id,
-                changeOpenDate: this.eventCompetition.changeOpenDate,
-                changeCloseDate: this.eventCompetition.changeCloseDate,
-                changeCloseRequestDate: this.eventCompetition.changeCloseRequestDate,
+                id: eventCompetition.id,
+                changeOpenDate: eventCompetition.changeOpenDate,
+                changeCloseDate: eventCompetition.changeCloseDate,
+                changeCloseRequestDate: eventCompetition.changeCloseRequestDate,
               },
             },
           })
           .subscribe(() => {
             this.matSnackBar.open(
-              `Competition ${this.eventCompetition.name} open/close dates updated`,
+              `Competition ${eventCompetition.name} open/close dates updated`,
               'Close',
               {
                 duration: 2000,
@@ -313,37 +319,60 @@ export class DetailPageComponent implements OnInit {
         `,
         variables: {
           data: {
-            id: this.eventCompetition.id,
+            id: this.eventCompetition()?.id,
             official: offical,
           },
         },
       })
       .subscribe(() => {
         this.matSnackBar.open(
-          `Competition ${this.eventCompetition.name} is ${offical ? 'official' : 'unofficial'}`,
+          `Competition ${this.eventCompetition()?.name} is ${offical ? 'official' : 'unofficial'}`,
           'Close',
           {
             duration: 2000,
           },
         );
-        this.eventCompetition.official = offical;
+
+        const eventCompetition = this.eventCompetition();
+
+        if (!eventCompetition) {
+          console.error('Event competition not found');
+          return;
+        }
+        const event = this.eventCompetition();
+        if (!event) {
+          return;
+        }
+
+        event.official = offical;
       });
   }
 
   async syncEvent() {
-    if (!this.eventCompetition.visualCode) {
+    const visualCode = this.eventCompetition()?.visualCode;
+    if (!visualCode) {
       return;
     }
 
-    await lastValueFrom(this.jobsService.syncEventById({ id: this.eventCompetition.visualCode }));
+    await lastValueFrom(this.jobsService.syncEventById({ id: visualCode }));
   }
 
   async downloadCpFile() {
-    await lastValueFrom(this.cpService.downloadCp(this.eventCompetition));
+    const event = this.eventCompetition();
+    if (!event) {
+      return;
+    }
+
+    await lastValueFrom(this.cpService.downloadCp(event));
   }
 
   async downloadBasePlayers() {
-    await lastValueFrom(this.excelService.getBaseplayersEnrollment(this.eventCompetition));
+    const event = this.eventCompetition();
+    if (!event) {
+      return;
+    }
+
+    await lastValueFrom(this.excelService.getBaseplayersEnrollment(event));
   }
 
   setTab(index: number) {
@@ -380,7 +409,7 @@ export class DetailPageComponent implements OnInit {
             }
           `,
           variables: {
-            id: this.eventCompetition.id,
+            id: this.eventCompetition()?.id,
           },
           refetchQueries: ['EventCompetition'],
         })

@@ -14,14 +14,18 @@ import {
   filter,
   map,
   startWith,
-  switchMap
+  switchMap,
 } from 'rxjs/operators';
 
 export interface ClubEncounterState {
   encounters: EncounterCompetition[];
-  filtered: EncounterCompetition[];
   error: string | null;
   loaded: boolean;
+
+  filterHomeGames: boolean;
+  filterOpenRequests: boolean;
+  filterChangedRequest: boolean;
+  filterTeam: string | null;
 }
 
 @Injectable({
@@ -37,13 +41,43 @@ export class ClubEncounterService {
 
   initialState: ClubEncounterState = {
     encounters: [],
-    filtered: [],
     error: null,
     loaded: false,
+
+    filterHomeGames: false,
+    filterOpenRequests: false,
+    filterChangedRequest: false,
+    filterTeam: null,
   };
 
   // selectors
-  encounters = computed(() => this.state().filtered);
+  encounters = computed(() => {
+    let filtered = this.state().encounters;
+
+    if (this.state().filterHomeGames) {
+      filtered = filtered.filter(
+        (encounter) => encounter.home?.clubId === this.filter.value.clubId,
+      );
+    }
+
+    if (this.state().filterOpenRequests) {
+      filtered = filtered.filter((encounter) => !!encounter.encounterChange?.accepted);
+    }
+
+    if (this.state().filterChangedRequest) {
+      filtered = filtered.filter((encounter) => !!encounter.originalDate);
+    }
+
+    if (this.state().filterTeam) {
+      filtered = filtered.filter(
+        (encounter) =>
+          encounter.home?.id === this.state().filterTeam ||
+          encounter.away?.id === this.state().filterTeam,
+      );
+    }
+
+    return filtered;
+  });
 
   clubs = computed(() =>
     this.state()
@@ -96,61 +130,29 @@ export class ClubEncounterService {
     initialState: this.initialState,
     sources: [this.sources$],
     actionSources: {
-      filterTeam: (_state, action$: Observable<string>) =>
+      filterOnTeam: (_state, action$: Observable<string>) =>
         action$.pipe(
-          map((id) => {
-            return {
-              filtered: _state().encounters.filter((encounter) => {
-                if (!id) {
-                  return true;
-                }
-
-                return encounter.home?.id === id || encounter.away?.id === id;
-              }),
-            };
-          }),
+          map((filterTeam) => ({
+            filterTeam,
+          })),
         ),
-      filterChanged: (_state, action$: Observable<boolean>) =>
+      filterOnChangedRequest: (_state, action$: Observable<boolean>) =>
         action$.pipe(
-          map((changed) => {
-            return {
-              filtered: _state().encounters.filter((encounter) => {
-                if (!changed) {
-                  return true;
-                }
-
-                return !!encounter.originalDate;
-              }),
-            };
-          }),
+          map((filterChangedRequest) => ({
+            filterChangedRequest,
+          })),
         ),
       filterOnOpenRequests: (_state, action$: Observable<boolean>) =>
         action$.pipe(
-          map((changed) => {
-            return {
-              filtered: _state().encounters.filter((encounter) => {
-                if (!changed) {
-                  return true;
-                }
-
-                return !!encounter.encounterChange?.accepted;
-              }),
-            };
-          }),
+          map((filterOpenRequests) => ({
+            filterOpenRequests,
+          })),
         ),
       filterOnHomeGames: (_state, action$: Observable<boolean>) =>
         action$.pipe(
-          map((changed) => {
-            return {
-              filtered: _state().encounters.filter((encounter) => {
-                if (!changed) {
-                  return true;
-                }
-
-                return encounter.home?.clubId === this.filter.value.clubId;
-              }),
-            };
-          }),
+          map((filterHomeGames) => ({
+            filterHomeGames,
+          })),
         ),
     },
   });

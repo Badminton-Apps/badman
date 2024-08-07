@@ -1,3 +1,39 @@
+## 6.164.2 (2024-08-05)
+
+
+### 🩹 Fixes
+
+- allowing combination of filters ([2eb7c01bc](https://github.com/Badminton-Apps/badman/commit/2eb7c01bc))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.164.1 (2024-08-05)
+
+
+### 🩹 Fixes
+
+- racing condiion for event overview ([65bb8d1e8](https://github.com/Badminton-Apps/badman/commit/65bb8d1e8))
+- setting the tab should wait for permissions to be loaded ([3898526a6](https://github.com/Badminton-Apps/badman/commit/3898526a6))
+- **club:** filter for open requests was reversed ([595e09f03](https://github.com/Badminton-Apps/badman/commit/595e09f03))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.164.0 (2024-08-04)
+
+
+### 🚀 Features
+
+- some small mobile updates ([b07d53d23](https://github.com/Badminton-Apps/badman/commit/b07d53d23))
+- new component for showing encounters in event/club detail ([affc81c49](https://github.com/Badminton-Apps/badman/commit/affc81c49))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.163.1 (2024-08-02)
 
 
