@@ -14,7 +14,7 @@ export type TeamSubsIndexRuleParams = {
  * Checks if the substitudes are not better then players from active team (titulars)
  */
 export class TeamSubsIndexRule extends Rule {
-  static override description = 'all.rules.team-assembly.team-subs-index';
+  static override readonly description = 'all.rules.team-assembly.team-subs-index';
   
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { meta, type, team, subtitudes, system } = assembly;

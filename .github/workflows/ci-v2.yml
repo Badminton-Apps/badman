@@ -73,6 +73,9 @@ jobs:
           ## for copy pasting in shell
           # bun playwright show-report
 
+      - name: coverage reports
+        run: npx --yes lcov-result-merger 'coverage/**/lcov.info' 'coverage/lcov.info'
+
       - name: stop agents
         run: bun nx-cloud complete-ci-run
         if: always()
@@ -83,3 +86,17 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
+          retention-days: 30
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+

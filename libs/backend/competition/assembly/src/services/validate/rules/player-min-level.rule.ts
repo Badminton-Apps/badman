@@ -15,7 +15,7 @@ export type PlayerMinLevelRuleParams = {
  * If the player has a level exception, the player is allowed to be better than the max level
  */
 export class PlayerMinLevelRule extends Rule {
-  static override description = 'all.rules.team-assembly.player-min-level';
+  static override readonly description = 'all.rules.team-assembly.player-min-level';
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const {
       system,
