@@ -52,7 +52,6 @@ export class SemesterRule extends Rule {
         throw new Error('Working encounter not found');
       }
 
-      // this.logger.verbose(`Encounter found in semester ${semseter1 ? 1 : 2}`);
       const encountersSemester1 = [...encountersSem1];
       const encountersSemester2 = [...encountersSem2];
 
@@ -66,9 +65,6 @@ export class SemesterRule extends Rule {
 
       for (const suggestedDate of suggestedDates) {
         const suggestedSemester1 = suggestedDate.getFullYear() === lowestYear;
-        // this.logger.verbose(
-        //   `Checking suggested date: ${suggestedDate.toISOString()}, new semester: ${suggestedSemester1 ? 'Semester 1' : 'Semester 2'}`,
-        // );
 
         encounter.date = suggestedDate;
         const encountersSemester = suggestedSemester1 ? encountersSemester1 : encountersSemester2;
