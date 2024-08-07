@@ -61,11 +61,13 @@ export class ClubEncounterService {
     }
 
     if (this.state().filterOpenRequests) {
-      filtered = filtered.filter((encounter) => !!encounter.encounterChange?.accepted);
+      filtered = filtered.filter((encounter) => !(encounter.encounterChange?.accepted ?? true));
     }
 
     if (this.state().filterChangedRequest) {
-      filtered = filtered.filter((encounter) => !!encounter.originalDate);
+      filtered = filtered.filter(
+        (encounter) => !moment(encounter.originalDate).isSame(encounter.date),
+      );
     }
 
     if (this.state().filterTeam) {
