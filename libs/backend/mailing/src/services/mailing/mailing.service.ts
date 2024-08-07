@@ -554,8 +554,6 @@ export class MailingService {
       }
 
       await this._transporter?.sendMail(options);
-      // this.logger.debug('Message sent: %s', info.messageId);
-      // this.logger.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       this.logger.debug(`Message sent: ${options.subject}, to: ${options.to}`);
     } catch (e) {
       this.logger.error(e);
