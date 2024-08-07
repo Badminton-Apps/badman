@@ -12,7 +12,7 @@ export type PlayerMaxGamesRuleParams = {
  * Checks if a player has max 1 single game and 2 double game
  */
 export class PlayerMaxGamesRule extends Rule {
-  static override description = 'all.rules.team-assembly.player-max-games';
+  static override readonly description = 'all.rules.team-assembly.player-max-games';
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { single1, single2, single3, single4, double1, double2, double3, double4, type } =
       assembly;

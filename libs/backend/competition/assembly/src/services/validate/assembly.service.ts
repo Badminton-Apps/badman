@@ -41,14 +41,14 @@ export class AssemblyValidationService extends ValidationService<
 
     await this.clearRules();
 
-    await this.registerRule(PlayerCompStatusRule, PlayerCompStatusRule.description);
-    await this.registerRule(TeamBaseIndexRule, TeamBaseIndexRule.description);
-    await this.registerRule(TeamSubeventIndexRule, TeamSubeventIndexRule.description);
-    await this.registerRule(TeamClubBaseRule, TeamClubBaseRule.description);
-    await this.registerRule(PlayerOrderRule, PlayerOrderRule.description);
-    await this.registerRule(PlayerMinLevelRule, PlayerMinLevelRule.description);
-    await this.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description);
-    await this.registerRule(PlayerGenderRule, PlayerGenderRule.description);
+    await this.registerRule(PlayerCompStatusRule);
+    await this.registerRule(TeamBaseIndexRule);
+    await this.registerRule(TeamSubeventIndexRule);
+    await this.registerRule(TeamClubBaseRule);
+    await this.registerRule(PlayerOrderRule);
+    await this.registerRule(PlayerMinLevelRule);
+    await this.registerRule(PlayerMaxGamesRule);
+    await this.registerRule(PlayerGenderRule);
 
     this._logger.log('Rules initialized');
   }

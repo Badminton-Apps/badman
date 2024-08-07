@@ -53,7 +53,7 @@
     },
     "end": "Einde",
     "hints": {
-      "captain-not-in-role": "Deze kapitein zit niet in de kapitein rol, en zal dus niet de permissies hebben om bv de wedstrijd te verplaatsen. Je kan deze rol toekennen in het bewerk scherm van de club",
+      "captain-not-in-role": "Deze kapitein zit niet in de kapitein rol, en zal dus niet de permissies hebben om bv de wedstrijd te verplaatsen. Je kan deze rol toekennen in het bewerk scherm van de club.",
       "here": "hier"
     },
     "membership-types": {
@@ -83,10 +83,12 @@
     "change-encounter": {
       "add-date": "Voeg datum toe",
       "calendar": {
+        "no-availibility": "Deze dag is niet toegelaten",
         "no-competition": "Er is geen competitie toegestaan op deze dag",
         "no-space": "Geen plaats meer.",
         "option": "{amount} in optie",
         "other-games": "Andere ontmoetingen die dag",
+        "out-of-season": "Gekozen datum ligt buiten het seizoen",
         "remaining": "nog {amount} mogelijk",
         "removed": "Wordt verplaatst",
         "requested": "Voorstel"
