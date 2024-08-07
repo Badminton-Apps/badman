@@ -80,14 +80,20 @@ export class CompetitionSyncDrawProcessor extends StepProcessor {
         dbDraw = new DrawCompetition({
           visualCode: `${xmlDraw.Code}`,
           subeventId: subEvent.id,
-          type:
-            xmlDraw.TypeID === XmlDrawTypeID.Elimination
-              ? DrawType.KO
-              : xmlDraw.TypeID === XmlDrawTypeID.RoundRobin ||
-                  xmlDraw.TypeID === XmlDrawTypeID.FullRoundRobin
-                ? DrawType.POULE
-                : DrawType.QUALIFICATION,
+          type: getDrawType(xmlDraw.TypeID),
         });
+
+        function getDrawType(typeID: XmlDrawTypeID): DrawType {
+          switch (typeID) {
+            case XmlDrawTypeID.Elimination:
+              return DrawType.KO;
+            case XmlDrawTypeID.RoundRobin:
+            case XmlDrawTypeID.FullRoundRobin:
+              return DrawType.POULE;
+            default:
+              return DrawType.QUALIFICATION;
+          }
+        }
       }
       // update the draw
       dbDraw.size = xmlDraw.Size;

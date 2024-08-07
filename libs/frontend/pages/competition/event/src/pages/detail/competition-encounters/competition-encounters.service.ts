@@ -78,8 +78,6 @@ export class CompetitionEncounterService {
       filtered = filtered.filter((encounter) => !(encounter.encounterChange?.accepted ?? true));
     }
 
-    console.log('filtered', this.state());
-
     return filtered;
   });
 
