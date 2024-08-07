@@ -90,10 +90,12 @@ export type I18nTranslations = {
             "change-encounter": {
                 "add-date": string;
                 "calendar": {
+                    "no-availibility": string;
                     "no-competition": string;
                     "no-space": string;
                     "option": string;
                     "other-games": string;
+                    "out-of-season": string;
                     "remaining": string;
                     "removed": string;
                     "requested": string;
