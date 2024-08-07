@@ -89,3 +89,7 @@ jobs:
           name: coverage-report
           path: coverage/**/lcov.info
           retention-days: 30
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
