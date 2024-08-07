@@ -40,15 +40,6 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
 
     if (!event) {
       existed = false;
-      const dates: Moment[] = [];
-      for (
-        let date = moment(this.visualTournament.StartDate);
-        date.diff(this.visualTournament.EndDate, 'days') <= 0;
-        date.add(1, 'days')
-      ) {
-        dates.push(date.clone());
-      }
-
       const visualTournament = await this.visualService.getTournament(this.visualTournament.Code);
 
       this.logger.debug(`EventCompetition ${visualTournament.Name} not found, creating`);
@@ -57,11 +48,10 @@ export class CompetitionSyncEventProcessor extends StepProcessor {
         visualCode: visualTournament.Code,
         season: moment(visualTournament.StartDate).year(),
       });
-    } else {
-      // Later we will change the search function to use the tournament code
-      if (event.visualCode === null || event.visualCode !== this.visualTournament.Code) {
-        event.visualCode = this.visualTournament.Code;
-      }
+    }
+    // Later we will change the search function to use the tournament code
+    else if (event.visualCode === null || event.visualCode !== this.visualTournament.Code) {
+      event.visualCode = this.visualTournament.Code;
     }
 
     event.lastSync = new Date();

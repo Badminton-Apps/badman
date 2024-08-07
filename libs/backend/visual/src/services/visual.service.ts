@@ -296,7 +296,6 @@ export class VisualService {
       }
     }
 
-    // logger.silly(`Getting from ${url}, max requests per second: ${(this.http as any).getMaxRPS()}`);
     const result = await this._http.get(url, {
       withCredentials: true,
       auth: {
