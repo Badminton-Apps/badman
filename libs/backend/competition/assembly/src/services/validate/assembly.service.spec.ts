@@ -69,7 +69,6 @@ describe('AssemblyValidationService', () => {
       ],
     }).compile();
 
-
     // Setup db
     const sequelize = module.get<Sequelize>(Sequelize);
     await sequelize.sync({ force: true });
@@ -99,7 +98,7 @@ describe('AssemblyValidationService', () => {
       .WithSubEvent(subEventBuilder.WithDraw(drawBuilder.WithEnouncter(encounterBuilder)))
       .Build();
 
-    draw = await drawBuilder.Build(); 
+    draw = await drawBuilder.Build();
     subEvent = await subEventBuilder.Build();
     encounter = await encounterBuilder.Build();
   }, 50000);
@@ -250,7 +249,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerOrderRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerOrderRule, PlayerOrderRule.description, {
+        await service.registerRule(PlayerOrderRule, {
           activated: true,
         });
       });
@@ -415,7 +414,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [TeamSubeventIndexRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(TeamSubeventIndexRule, TeamSubeventIndexRule.description, {
+        await service.registerRule(TeamSubeventIndexRule, {
           activated: true,
         });
       });
@@ -470,7 +469,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [TeamSubsIndexRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(TeamSubsIndexRule, TeamSubsIndexRule.description, {
+        await service.registerRule(TeamSubsIndexRule, {
           activated: true,
         });
       });
@@ -503,7 +502,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerCompStatusRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerCompStatusRule, PlayerCompStatusRule.description, {
+        await service.registerRule(PlayerCompStatusRule, {
           activated: true,
         });
       });
@@ -579,7 +578,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerMaxGamesRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description, {
+        await service.registerRule(PlayerMaxGamesRule, {
           activated: true,
         });
       });
@@ -676,7 +675,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerGenderRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerGenderRule, PlayerGenderRule.description, {
+        await service.registerRule(PlayerGenderRule, {
           activated: true,
         });
       });
@@ -863,7 +862,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerOrderRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerOrderRule, PlayerOrderRule.description, {
+        await service.registerRule(PlayerOrderRule, {
           activated: true,
         });
       });
@@ -986,7 +985,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerMaxGamesRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description, {
+        await service.registerRule(PlayerMaxGamesRule, {
           activated: true,
         });
       });
@@ -1039,7 +1038,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerGenderRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerGenderRule, PlayerGenderRule.description, {
+        await service.registerRule(PlayerGenderRule, {
           activated: true,
         });
       });
@@ -1116,7 +1115,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerMinLevelRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerMinLevelRule, PlayerMinLevelRule.description, {
+        await service.registerRule(PlayerMinLevelRule, {
           activated: true,
         });
       });
@@ -1357,7 +1356,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [TeamBaseIndexRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(TeamBaseIndexRule, TeamBaseIndexRule.description, {
+        await service.registerRule(TeamBaseIndexRule, {
           activated: true,
         });
       });
@@ -1428,7 +1427,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [TeamClubBaseRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(TeamClubBaseRule, TeamClubBaseRule.description, {
+        await service.registerRule(TeamClubBaseRule, {
           activated: true,
         });
       });
@@ -1461,7 +1460,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerMinLevelRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerMinLevelRule, PlayerMinLevelRule.description, {
+        await service.registerRule(PlayerMinLevelRule, {
           activated: true,
         });
       });
@@ -1655,7 +1654,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerOrderRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerOrderRule, PlayerOrderRule.description, {
+        await service.registerRule(PlayerOrderRule, {
           activated: true,
         });
       });
@@ -1818,7 +1817,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [TeamSubeventIndexRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(TeamSubeventIndexRule, TeamSubeventIndexRule.description, {
+        await service.registerRule(TeamSubeventIndexRule, {
           activated: true,
         });
       });
@@ -1874,7 +1873,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerCompStatusRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerCompStatusRule, PlayerCompStatusRule.description, {
+        await service.registerRule(PlayerCompStatusRule, {
           activated: true,
         });
       });
@@ -1950,7 +1949,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerMaxGamesRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerMaxGamesRule, PlayerMaxGamesRule.description, {
+        await service.registerRule(PlayerMaxGamesRule, {
           activated: true,
         });
       });
@@ -2047,7 +2046,7 @@ describe('AssemblyValidationService', () => {
     describe('Rule [PlayerGenderRule]', () => {
       beforeEach(async () => {
         await service.clearRules();
-        await service.registerRule(PlayerGenderRule, PlayerGenderRule.description, {
+        await service.registerRule(PlayerGenderRule, {
           activated: true,
         });
       });
