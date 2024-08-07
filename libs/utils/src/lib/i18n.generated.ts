@@ -59,6 +59,10 @@ export type I18nTranslations = {
                 "open-requests": string;
             };
             "end": string;
+            "hints": {
+                "captain-not-in-role": string;
+                "here": string;
+            };
             "membership-types": {
                 "loan": string;
                 "normal": string;
