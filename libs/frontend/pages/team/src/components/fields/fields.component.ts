@@ -40,6 +40,7 @@ import { map, startWith, switchMap } from 'rxjs/operators';
 export class TeamFieldComponent implements OnInit {
   private readonly apollo = inject(Apollo);
 
+
   teamNumbers = input<
     | {
         [key in SubEventType]: number[];
