@@ -17,7 +17,7 @@ export type LocationRuleParams = {
  * Checks if there are enough locations available for the encounters
  */
 export class LocationRule extends Rule {
-  static override description = 'all.rules.change-encounter.location';
+  static override readonly description = 'all.rules.change-encounter.location';
   private readonly logger = new Logger(LocationRule.name);
 
   async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
@@ -95,7 +95,7 @@ export class LocationRule extends Rule {
 
       for (const availability of location?.availabilities ?? []) {
         const filteredDays = availability.days?.filter(
-          (r) => r.day === moment(enc.date).format('dddd').toLowerCase(),
+          (r) => r.day === moment(enc.date).tz('Europe/Brussels').format('dddd').toLowerCase(),
         );
 
         // any day can have multipple slots, check in which slot the encounter is by checking start and endtime of the day against the encounter da
@@ -126,6 +126,11 @@ export class LocationRule extends Rule {
           });
         }
       } else {
+        // log some dettailed info for figuring out why on production no time slot is found
+        this.logger.error(
+          `No timeslot found for location ${enc.locationId} on ${enc.date} for encounter ${enc.id}`,
+        );
+
         errors.push({
           message: 'all.competition.change-encounter.errors.location-no-timeslot',
           params: {
