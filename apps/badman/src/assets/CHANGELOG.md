@@ -1,3 +1,23 @@
+## 6.165.0 (2024-08-07)
+
+
+### 🚀 Features
+
+- adding hint for when the captain is not int he captains group ([315215d44](https://github.com/Badminton-Apps/badman/commit/315215d44))
+- saving some extra info when an encounter is changed ([a55591921](https://github.com/Badminton-Apps/badman/commit/a55591921))
+
+### 🩹 Fixes
+
+- filter wasn't applied correctly ([ee828a88d](https://github.com/Badminton-Apps/badman/commit/ee828a88d))
+- more restrictions on selecting days ([6576591a8](https://github.com/Badminton-Apps/badman/commit/6576591a8))
+- might be resolving timeslot issue ([a45e9068c](https://github.com/Badminton-Apps/badman/commit/a45e9068c))
+- we can access the description from the prototype ([d1869c21f](https://github.com/Badminton-Apps/badman/commit/d1869c21f))
+- **event:** loading correct info ([f97905738](https://github.com/Badminton-Apps/badman/commit/f97905738))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.164.2 (2024-08-05)
 
 
