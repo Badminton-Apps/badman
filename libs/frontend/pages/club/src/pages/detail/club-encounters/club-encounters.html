@@ -8,6 +8,8 @@
   [hideRowSelectionCheckbox]="false"
   sortActive="date"
   sortDirection="desc"
+  [pageSize]="15"
+  [pageSizeOptions]="[15, 30, 50, 100, 150, 200]"
 >
 </mtx-grid>
 
@@ -26,10 +28,10 @@
       </mat-form-field>
 
       <!-- switch only changed -->
-      <mat-slide-toggle (change)="this.toggleOnlyChanged($event)"
+      <mat-slide-toggle (change)="this.toggleOpenRequests($event)"
         >{{ 'all.club.encounters.open-requests' | translate }}
       </mat-slide-toggle>
-      <mat-slide-toggle (change)="this.toggleOpenRequests($event)"
+      <mat-slide-toggle (change)="this.toggleOnlyChanged($event)"
         >{{ 'all.club.encounters.change-date' | translate }}
       </mat-slide-toggle>
       <mat-slide-toggle (change)="this.toggleHomeGames($event)"
