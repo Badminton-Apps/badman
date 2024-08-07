@@ -6,6 +6,7 @@ import {
   EncounterCompetition,
   EventCompetition,
   Location,
+  Logging,
   Player,
   SubEventCompetition,
 } from '@badman/backend-database';
@@ -26,19 +27,20 @@ import moment from 'moment-timezone';
 import { ListArgs } from '../../../utils';
 
 import { User } from '@badman/backend-authorization';
+import {
+  ChangeEncounterInput,
+  ChangeEncounterOutput,
+  ChangeEncounterValidationService,
+} from '@badman/backend-change-encounter';
 import { NotificationService } from '@badman/backend-notifications';
 import { SyncQueue } from '@badman/backend-queue';
+import { LoggingAction } from '@badman/utils';
 import { InjectQueue } from '@nestjs/bull';
 import { UnauthorizedException } from '@nestjs/common';
 import { Mutation } from '@nestjs/graphql';
 import { Queue } from 'bull';
 import { Transaction } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import {
-  ChangeEncounterInput,
-  ChangeEncounterOutput,
-  ChangeEncounterValidationService,
-} from '@badman/backend-change-encounter';
 
 @ObjectType()
 export class PagedEncounterChange {
@@ -191,6 +193,16 @@ export class EncounterChangeCompetitionResolver {
         // Save cahnges
         // Must be before Sync Queue is triggered (othrwise wrong date is passed)
         await encounter.save({ transaction });
+
+        await Logging.create({
+          action: LoggingAction.EncounterChanged,
+          playerId: user.id,
+          meta: {
+            encounterId: encounter.id,
+            date: encounter.date,
+            originalDate: encounter.originalDate,
+          },
+        });
 
         // Accept
         await this.syncQueue.add(
