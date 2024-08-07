@@ -10,7 +10,7 @@ export type TeamBaseIndexRuleParams = {
  * Checks if the teamIndex is beter than the baseIndex
  */
 export class TeamBaseIndexRule extends Rule {
-  static override description = 'all.rules.team-assembly.team-base-index';
+  static override readonly description = 'all.rules.team-assembly.team-base-index';
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { team, teamIndex, meta } = assembly;
 

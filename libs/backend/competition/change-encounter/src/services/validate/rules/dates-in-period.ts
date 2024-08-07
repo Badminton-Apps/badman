@@ -17,7 +17,7 @@ export type DatePeriodRuleParams = {
  * Checks if all encounters are in the correct period
  */
 export class DatePeriodRule extends Rule {
-  static override description = 'all.rules.change-encounter.date-period';
+  static override readonly description = 'all.rules.change-encounter.date-period';
   private readonly logger = new Logger(DatePeriodRule.name);
 
   async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
