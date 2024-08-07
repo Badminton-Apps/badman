@@ -3,6 +3,7 @@ import { Injectable, computed, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { EncounterCompetition, EventCompetition } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
+import moment from 'moment';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge } from 'rxjs';
 import {
@@ -68,12 +69,16 @@ export class CompetitionEncounterService {
     }
 
     if (this.state().filterChangedRequest) {
-      filtered = filtered.filter((encounter) => !!encounter.originalDate);
+      filtered = filtered.filter(
+        (encounter) => !moment(encounter.originalDate).isSame(encounter.date),
+      );
     }
 
     if (this.state().filterOpenRequests) {
-      filtered = filtered.filter((encounter) => !!encounter.encounterChange?.accepted);
+      filtered = filtered.filter((encounter) => !(encounter.encounterChange?.accepted ?? true));
     }
+
+    console.log('filtered', this.state());
 
     return filtered;
   });

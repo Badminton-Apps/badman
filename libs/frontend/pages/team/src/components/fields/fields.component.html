@@ -58,6 +58,12 @@
         {{ 'all.team.no-perm.email-phone' | translate }}
       </div>
     </badman-has-claim>
+
+    @if (this.captainNotInRoles$ | async) {
+      <p class="hint warn">
+        {{ 'all.club.hints.captain-not-in-role' | translate }}
+      </p>
+    }
     <h2>{{ 'all.team.prefferd.title' | translate }}</h2>
     <div class="prefferd">
       <div class="row">

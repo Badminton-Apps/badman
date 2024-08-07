@@ -36,17 +36,15 @@ jobs:
           # Set NX_BASE to the last tag
           echo "NX_BASE=$LAST_TAG_HASH" >> $GITHUB_ENV
 
-
-
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       # - run: bun nx-cloud start-ci-run --distribute-on=".nx/workflows/dynamic-changesets.yaml"
-      
+
       - run: bun install --no-cache
 
-      - run: bun nx affected -t lint test build
+      - run: bun nx affected -t lint test build -c ci
 
       - name: Run Playwright tests
         run: bun nx affected --parallel 1 -t e2e-ci
@@ -75,6 +73,8 @@ jobs:
           ## for copy pasting in shell
           # bun playwright show-report
 
+      - name: coverage reports
+        run: npx --yes lcov-result-merger 'coverage/**/lcov.info' 'coverage/lcov.info'
 
       - name: stop agents
         run: bun nx-cloud complete-ci-run
@@ -86,3 +86,17 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
+          retention-days: 30
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+

@@ -10,7 +10,7 @@ export type PlayerCompStatusRuleParams = {
  * Checks if all players have the competition status active
  */
 export class PlayerCompStatusRule extends Rule {
-  static override description = 'all.rules.team-assembly.player-comp-status';
+  static override readonly description = 'all.rules.team-assembly.player-comp-status';
 
   async validate(assembly: AssemblyValidationData): Promise<AssemblyOutput> {
     const { single1, single2, single3, single4, double1, double2, double3, double4, subtitudes } =

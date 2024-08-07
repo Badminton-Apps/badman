@@ -47,12 +47,13 @@
       "cache": true,
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
       "options": {
-        "passWithNoTests": true
+        "codeCoverage": true,
+        "passWithNoTests": true,
+        "coverageReporters": ["text-summary", "lcov"]
       },
       "configurations": {
         "ci": {
-          "ci": true,
-          "codeCoverage": true
+          "ci": true
         }
       }
     },
@@ -86,7 +87,8 @@
       "plugin": "@nx/jest/plugin",
       "exclude": ["e2e/**/*"],
       "options": {
-        "targetName": "test"
+        "targetName": "test",
+        "coverageReporters": ["text-summary", "lcov"]
       }
     },
     {
