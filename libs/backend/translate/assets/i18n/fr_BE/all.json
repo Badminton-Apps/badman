@@ -83,10 +83,12 @@
     "change-encounter": {
       "add-date": "Ajouter une date",
       "calendar": {
+        "no-availibility": "Ce jour n'est pas autorisé",
         "no-competition": "Aucune compétition n'est autorisée ce jour-là",
         "no-space": "Plus de pièces.",
         "option": "{amount} facultatif",
         "other-games": "Autres rencontres ce jour-là",
+        "out-of-season": "La date choisie est hors saison ",
         "remaining": "encore {amount} possible",
         "removed": "À déplacer",
         "requested": "Proposition"
