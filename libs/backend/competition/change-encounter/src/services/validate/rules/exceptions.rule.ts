@@ -17,7 +17,7 @@ export type ExceptionRuleParams = {
  * Checks if encounters against the same team are in a different semester
  */
 export class ExceptionRule extends Rule {
-  static override description = 'all.rules.change-encounter.exceptions';
+  static override readonly description = 'all.rules.change-encounter.exceptions';
   private readonly logger = new Logger(ExceptionRule.name);
 
   async validate(changeEncounter: ChangeEncounterValidationData): Promise<ChangeEncounterOutput> {
