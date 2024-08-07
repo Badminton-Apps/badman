@@ -71,7 +71,7 @@ jobs:
       
       - run: bun install --no-cache
 
-      - run: bun nx affected -t lint test build
+      - run: bun nx affected -t lint test build -c ci
 
       - name: Run Playwright tests
         run: bun nx affected --parallel 1 -t e2e-ci
@@ -99,6 +99,8 @@ jobs:
 
           ## for copy pasting in shell
           # bun playwright show-report
+      - name: coverage reports
+        run: npx --yes lcov-result-merger 'coverage/**/lcov.info' 'coverage/lcov.info'
 
       - name: Set Git config
         run: |
@@ -122,6 +124,19 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
+          retention-days: 30
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}          
 
       - name: Merge main -> develop
         uses: devmasx/merge-branch@master
