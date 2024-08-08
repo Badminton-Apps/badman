@@ -94,21 +94,18 @@ export class LocationRule extends Rule {
       let slot: AvailabilityDay | null = null;
 
       for (const availability of location?.availabilities ?? []) {
-        const filteredDays = availability.days?.filter(
-          (r) => r.day === moment(enc.date).tz('Europe/Brussels').format('dddd').toLowerCase(),
-        );
+        const encounterDate = moment(enc.date).tz('Europe/Brussels');
+        const encounterDay = encounterDate.format('dddd').toLowerCase();
+        const encounterTime = encounterDate.format('HH:mm');
 
-        // any day can have multipple slots, check in which slot the encounter is by checking start and endtime of the day against the encounter da
-        const filteredSlots = filteredDays?.find(
-          (r) => moment(enc.date).tz('Europe/Brussels').format('HH:mm') == r.startTime,
-        );
+        const filteredDays = availability.days?.filter((r) => r.day === encounterDay);
+        const filteredSlots = filteredDays?.find((r) => r.startTime === encounterTime);
 
-        for (const day of filteredDays ?? []) {
-          const test = moment(enc.date).tz('Europe/Brussels').format('HH:mm');
-          this.logger.debug(
-            `Checking day ${day.day} with start ${day.startTime} against encounter ${enc.date} ${test}`,
-          );
+        this.logger.debug(`encounter day: ${encounterDay}, encounter time: ${encounterTime}`);
+        for (const day of availability.days ?? []) {
+          this.logger.debug(`availability day: ${day.day}, start time: ${day.startTime}`);
         }
+        this.logger.debug(`Found slot: ${filteredSlots != null}`);
 
         if (filteredSlots != null && !slot) {
           slot = filteredSlots;
