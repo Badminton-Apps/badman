@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -41,7 +41,7 @@ export class SettingsPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private breadcrumbsService = inject(BreadcrumbService);
   private snackBar = inject(MatSnackBar);
-  private platformId = inject<string>(PLATFORM_ID);
+  private changeDetectorRef = inject(ChangeDetectorRef);
   settingsForm!: FormGroup;
 
   saving = false;
@@ -71,20 +71,24 @@ export class SettingsPageComponent implements OnInit {
   ];
 
   settings$?: Observable<Setting | undefined>;
+  player: Player | undefined;
 
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
-      const player = data['player'];
+      this.player = data['player'];
+      if (!this.player) {
+        return;
+      }
 
       this.seoService.update({
         title: this.translate.instant('all.settings.title'),
-        description: `Player ${player.fullName}`,
+        description: `Player ${this.player.fullName}`,
         type: 'website',
         keywords: ['player', 'badminton'],
       });
-      this.breadcrumbsService.set('player/:id', player.fullName);
+      this.breadcrumbsService.set('player/:id', this.player.fullName);
 
-      this.settings$ = this._loadSettings(player).pipe(
+      this.settings$ = this._loadSettings(this.player).pipe(
         tap((setting) => {
           if (setting === null || setting === undefined) {
             return;
@@ -166,6 +170,7 @@ export class SettingsPageComponent implements OnInit {
             $syncSuccessNotification: Int!
             $syncFailedNotification: Int!
             $language: String!
+            $playerId: ID!
           ) {
             updateSetting(
               settings: {
@@ -177,6 +182,7 @@ export class SettingsPageComponent implements OnInit {
                 syncSuccessNotification: $syncSuccessNotification
                 syncFailedNotification: $syncFailedNotification
                 language: $language
+                playerId: $playerId
               }
             )
           }
@@ -211,11 +217,12 @@ export class SettingsPageComponent implements OnInit {
               .get('syncFailedNotification')
               ?.value?.reduce((a: number, b: number) => a + b, 0) ?? 0,
           language: this.settingsForm.get('language')?.value ?? 'en',
+          playerId: this.player?.id,
         },
       })
-
       .subscribe(() => {
         this.saving = false;
+        this.changeDetectorRef.detectChanges();
         this.snackBar.open('Saved', undefined, {
           duration: 1000,
           panelClass: 'success',
