@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-job",
-  "version": "6.165.1",
+  "version": "6.165.2",
   "peerDependencies": {
     "@badman/frontend-auth": "*",
     "@badman/frontend-components": "*",

@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-ranking",
-  "version": "6.165.1",
+  "version": "6.165.2",
   "peerDependencies": {
     "@badman/frontend-components": "*",
     "@badman/frontend-models": "*",
