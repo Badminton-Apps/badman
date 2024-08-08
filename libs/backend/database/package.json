@@ -1,12 +1,12 @@
 {
   "name": "@badman/backend-database",
-  "version": "6.165.4",
+  "version": "6.165.5",
   "dependencies": {
     "@swc/helpers": "~0.5.2",
     "@nestjs/graphql": "^12.0.11",
-    "@badman/utils": "6.165.4",
-    "@badman/backend-cache": "6.165.4",
-    "@badman/backend-queue": "6.165.4",
+    "@badman/utils": "6.165.5",
+    "@badman/backend-cache": "6.165.5",
+    "@badman/backend-queue": "6.165.5",
     "sequelize-typescript": "^2.1.6",
     "sequelize": "^6.35.2",
     "geojson": "^0.5.0",
