@@ -342,9 +342,9 @@ export class PlayersResolver {
 
   @Mutation(() => Boolean)
   async updateSetting(
-    @User() user: Player,
     @Args('settings') settingsInput: SettingUpdateInput,
   ): Promise<boolean> {
+    const user = await Player.findByPk(settingsInput.playerId);
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -358,6 +358,7 @@ export class PlayersResolver {
         setting = new Setting({
           playerId: user.id,
         });
+        await setting.save({ transaction });
       }
 
       // Update club
