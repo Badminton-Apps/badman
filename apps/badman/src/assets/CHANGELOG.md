@@ -1,3 +1,17 @@
+## 6.165.4 (2024-08-08)
+
+
+### 🩹 Fixes
+
+- extra check if the user is of the home team ([2d0a8a211](https://github.com/Badminton-Apps/badman/commit/2d0a8a211))
+- better logging way for notifications ([546993042](https://github.com/Badminton-Apps/badman/commit/546993042))
+- don't autosave on ranking edit ([76f875fd1](https://github.com/Badminton-Apps/badman/commit/76f875fd1))
+- force this to be in english ([44cd389f3](https://github.com/Badminton-Apps/badman/commit/44cd389f3))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.165.3 (2024-08-08)
 
 
