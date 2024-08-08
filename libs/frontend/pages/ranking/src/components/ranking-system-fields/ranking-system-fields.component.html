@@ -1,5 +1,15 @@
 <form [formGroup]="rankingSystemForm">
   <h4>Ranking</h4>
+  <div>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="this.whenUpdated.emit(this.rankingSystemForm.value)"
+      [disabled]="!this.rankingSystemForm.valid"
+    >
+      {{ 'all.button.save' | translate }}
+    </button>
+  </div>
   <div class="mat-subheading-2">
     When field isn't required (see '*') leave empty for disable limitation
   </div>
@@ -35,19 +45,6 @@
         required
       />
     </mat-form-field>
-    <!-- <mat-form-field appearance="outline">
-        <mat-label>Starting Type</mat-label>
-        <mat-select
-          formControlName="startingType"
-          alt="startingType"
-          autocomplete="startingType"
-          required
-          >
-          <mat-option value="formula">Formula</mat-option>
-          <mat-option value="tableLFBB">Table LFBB</mat-option>
-          <mat-option value="tableBVL">Table BVL</mat-option>
-        </mat-select>
-      </mat-form-field> -->
   </div>
   <div class="row">
     <mat-form-field appearance="outline">
