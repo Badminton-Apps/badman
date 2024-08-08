@@ -20,7 +20,7 @@
     "run:worker": "node ./dist/apps/worker/ranking/main.js",
     "run:belgium-flanders-places": "node ./dist/apps/worker/belgium/flanders/places/main.js",
     "run:belgium-flanders-points": "node ./dist/apps/worker/belgium/flanders/points/main.js",
-    "run:ranking": "concurrently \"npm run run:worker\" \"npm run run:belgium-flanders-places\" \"npm run run:belgium-flanders-points\""
+    "run:ranking": "concurrently \"bun run run:worker\" \"bun run run:belgium-flanders-places\" \"bun run run:belgium-flanders-points\""
   },
   "private": true,
   "dependencies": {
