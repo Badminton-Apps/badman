@@ -71,9 +71,9 @@ export abstract class Notifier<T, A = { email: string }> {
     });
 
     await Logging.create({
-      action: type,
+      action: LoggingAction.SendNotification,
       playerId: player.id,
-      meta: { linkId, linkType: this.linkType },
+      meta: { linkId, linkType: this.linkType, type: NotificationType[type] },
     });
 
     if (notification) {
