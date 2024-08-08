@@ -94,7 +94,7 @@ export class LocationRule extends Rule {
       let slot: AvailabilityDay | null = null;
 
       for (const availability of location?.availabilities ?? []) {
-        const encounterDate = moment(enc.date).tz('Europe/Brussels');
+        const encounterDate = moment(enc.date).tz('Europe/Brussels').locale('en');
         const encounterDay = encounterDate.format('dddd').toLowerCase();
         const encounterTime = encounterDate.format('HH:mm');
 
