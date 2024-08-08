@@ -15,7 +15,6 @@ import { PageHeaderComponent } from '@badman/frontend-components';
 import { RankingGroup, RankingSystem } from '@badman/frontend-models';
 import { TranslateModule } from '@ngx-translate/core';
 import { MomentModule } from 'ngx-moment';
-import { throttleTime } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -130,12 +129,6 @@ export class RankingSystemFieldsComponent implements OnInit {
     });
 
     this.rakingGroupForm = new FormControl(this.system().rankingGroups);
-
-    this.rankingSystemForm.valueChanges.pipe(throttleTime(600)).subscribe((value) => {
-      if (this.rankingSystemForm.valid) {
-        this.whenUpdated.emit(value);
-      }
-    });
   }
 
   onGroupChange(event: MatSelectChange) {

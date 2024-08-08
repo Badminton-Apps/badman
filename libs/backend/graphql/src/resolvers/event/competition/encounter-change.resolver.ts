@@ -146,6 +146,7 @@ export class EncounterChangeCompetitionResolver {
     ) {
       throw new UnauthorizedException(`You do not have permission to edit this encounter`);
     }
+
     const transaction = await this._sequelize.transaction();
     let encounterChange: EncounterChange;
     let locationHasChanged = false;
@@ -163,9 +164,10 @@ export class EncounterChangeCompetitionResolver {
       }
 
       const dates = await encounterChange.getDates();
+      const isSuperUser = await user.hasAnyPermission(['change-any:encounter']);
 
-      // Set the state
-      if (newChangeEncounter.accepted) {
+      // Set the state if it is the home team or the user has the change-any:encounter permission
+      if (newChangeEncounter.accepted && (newChangeEncounter.home || isSuperUser)) {
         const selectedDates = newChangeEncounter.dates?.filter((r) => r.selected === true);
         if (selectedDates?.length !== 1) {
           // Multiple dates were selected
