@@ -359,6 +359,7 @@ export class RankingSystemResolver {
     copyToEndDate: Date | undefined,
     transaction: Transaction,
   ) {
+    this.logger.log(`Copy places and points from ${sourceSystem.name} to ${destinationSystem.name}`);
     await RankingLastPlace.destroy({
       where: {
         systemId: destinationSystem.id,
@@ -432,6 +433,8 @@ export class RankingSystemResolver {
         `Copied places and points from ${sourceSystem.name} to ${destinationSystem.name} between ${from} and ${to}`,
       );
     }
+
+    this.logger.log(`Copied places and points from ${sourceSystem.name} to ${destinationSystem.name}`);
   }
 
   private async _copyRankingPlaces(
