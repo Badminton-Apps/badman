@@ -1,3 +1,14 @@
+## 6.165.1 (2024-08-08)
+
+
+### 🩹 Fixes
+
+- changed some code ([c368fed1b](https://github.com/Badminton-Apps/badman/commit/c368fed1b))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.165.0 (2024-08-07)
 
 
