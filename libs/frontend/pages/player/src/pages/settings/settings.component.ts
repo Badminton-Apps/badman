@@ -251,7 +251,7 @@ export class SettingsPageComponent implements OnInit {
       })
       .pipe(
         map((result) => {
-          return new Player(result.data.player)?.setting;
+          return new Player(result.data.player)?.setting ?? new Setting({});
         }),
       );
   }
