@@ -4,4 +4,6 @@ export enum LoggingAction {
   EnrollmentSubmitted = 'EnrollmentSubmitted',
 
   EncounterChanged = 'EncounterChanged',
+
+  SendNotification = 'SendNotification',
 }
