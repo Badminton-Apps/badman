@@ -1,11 +1,11 @@
 {
   "name": "@badman/backend-orchestrator",
-  "version": "6.165.3",
+  "version": "6.165.4",
   "dependencies": {
-    "@badman/backend-database": "6.165.3",
-    "@badman/backend-queue": "6.165.3",
-    "@badman/utils": "6.165.3",
-    "@badman/backend-websockets": "6.165.3",
+    "@badman/backend-database": "6.165.4",
+    "@badman/backend-queue": "6.165.4",
+    "@badman/utils": "6.165.4",
+    "@badman/backend-websockets": "6.165.4",
     "@nestjs/bull": "^10.1.1",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
