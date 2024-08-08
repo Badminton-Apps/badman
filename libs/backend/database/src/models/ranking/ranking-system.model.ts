@@ -361,6 +361,8 @@ export class RankingSystem extends Model {
       }
     });
 
+    this._pointsWhenWinningAgainst = this._pointsWhenWinningAgainst.map((p) => Math.round(p));
+    
     this._levelArrayOneMinus.forEach((x) => {
       this._pointsToGoUp[x] = Math.round(
         (this._pointsWhenWinningAgainst[x] * this.procentWinning) / 100,
@@ -372,7 +374,6 @@ export class RankingSystem extends Model {
       );
     });
 
-    this._pointsWhenWinningAgainst = this._pointsWhenWinningAgainst.map((p) => Math.round(p));
   }
 
   private _lfbbCaps() {
