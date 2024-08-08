@@ -1,3 +1,15 @@
+## 6.165.5 (2024-08-08)
+
+
+### 🩹 Fixes
+
+- make it so the change encounter takes the priorty icon ([c1354b0af](https://github.com/Badminton-Apps/badman/commit/c1354b0af))
+- added some logging so I know when this is finished ([0745c78d9](https://github.com/Badminton-Apps/badman/commit/0745c78d9))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.165.4 (2024-08-08)
 
 
