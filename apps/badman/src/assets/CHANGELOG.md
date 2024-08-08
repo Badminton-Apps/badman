@@ -1,3 +1,25 @@
+## 6.165.2 (2024-08-08)
+
+
+### 🩹 Fixes
+
+- setting when no settings are known ([0f617e729](https://github.com/Badminton-Apps/badman/commit/0f617e729))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
+## 6.165.1 (2024-08-08)
+
+
+### 🩹 Fixes
+
+- changed some code ([c368fed1b](https://github.com/Badminton-Apps/badman/commit/c368fed1b))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.165.0 (2024-08-07)
 
 
