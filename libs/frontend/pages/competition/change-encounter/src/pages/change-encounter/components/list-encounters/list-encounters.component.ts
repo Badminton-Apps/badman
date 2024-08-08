@@ -168,7 +168,7 @@ export class ListEncountersComponent implements OnInit {
 
           const params = this.activatedRoute.snapshot.queryParams;
 
-          if (params && params[this.controlName()]) {
+          if (params?.[this.controlName()]) {
             const foundEncounter = encounters.find((r) => r.id == params[this.controlName()]);
 
             if (foundEncounter) {
@@ -189,12 +189,13 @@ export class ListEncountersComponent implements OnInit {
 
   getInfo(encounter: EncounterCompetition) {
     let icon = 'check';
-    let infoClass = '';
+    let infoClass = 'success';
     let tooltip = [];
 
     // if not accepted, show info icon
     if ((encounter.encounterChange?.accepted ?? true) == false) {
       icon = 'info';
+      infoClass = 'warning';
       tooltip.push('all.competition.change-encounter.errors.not-accepted');
     }
 
@@ -203,15 +204,19 @@ export class ListEncountersComponent implements OnInit {
     );
 
     if (warnings.length > 0) {
-      icon = 'warning';
       infoClass = 'warning';
+      if (icon == 'check') {
+        icon = 'warning';
+      }
       tooltip = tooltip.concat(warnings.map((e) => e.message));
     }
 
     const errors = this.validation.errors.filter((e) => e.params['encounterId'] == encounter.id);
 
     if (errors.length > 0) {
-      icon = 'error';
+      if (icon == 'check') {
+        icon = 'error';
+      }
       infoClass = 'error';
 
       tooltip = tooltip.concat(errors.map((e) => e.message));
