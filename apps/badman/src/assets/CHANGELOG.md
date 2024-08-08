@@ -1,3 +1,14 @@
+## 6.165.3 (2024-08-08)
+
+
+### 🩹 Fixes
+
+- should use playerId not current userId ([afc0a045e](https://github.com/Badminton-Apps/badman/commit/afc0a045e))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.165.2 (2024-08-08)
 
 
