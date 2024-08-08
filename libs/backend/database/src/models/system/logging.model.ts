@@ -1,3 +1,5 @@
+import { LoggingAction } from '@badman/utils';
+import { CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import {
   BelongsTo,
   Column,
@@ -12,8 +14,6 @@ import {
 } from 'sequelize-typescript';
 import { Relation } from '../../wrapper';
 import { Player } from '../player.model';
-import { InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import { LoggingAction, NotificationType } from '@badman/utils';
 
 @Table({
   timestamps: true,
@@ -39,7 +39,7 @@ export class Logging extends Model<InferAttributes<Logging>, InferCreationAttrib
   playerId?: string;
 
   @Column(DataType.STRING)
-  action!: LoggingAction | NotificationType;
+  action!: LoggingAction;
 
   @Column({
     type: DataType.JSON,
