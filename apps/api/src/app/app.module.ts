@@ -68,7 +68,7 @@ console.log('envFilePath', envFilePath, process.env.NODE_ENV);
     TranslateModule,
     OrchestratorModule,
     SocketModule,
-    TransferLoanModule
+    TransferLoanModule,
   ],
   controllers: [AppController, ImageController],
   providers: [Logger],
