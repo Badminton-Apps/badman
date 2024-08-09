@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, TemplateRef, ViewChild, inject } from '@angular/core';
+import { Component, TemplateRef, ViewChild, computed, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -10,11 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { HasClaimComponent, PageHeaderComponent } from '@badman/frontend-components';
 import { CronJob } from '@badman/frontend-models';
+import { MtxGrid, MtxGridColumn } from '@ng-matero/extensions/grid';
 import { TranslateModule } from '@ngx-translate/core';
+import moment from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { CronJobService } from '../../services/cronjob.service';
 
@@ -29,9 +30,9 @@ import { CronJobService } from '../../services/cronjob.service';
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
+    MtxGrid,
     MomentModule,
     MatButtonModule,
-    MatTableModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
@@ -55,11 +56,50 @@ export class OverviewPageComponent {
   @ViewChild('rankingTemplate', { static: true })
   rankingTemplate!: TemplateRef<HTMLElement>;
 
-  displayedColumns: string[] = ['name', 'cronTime', 'lastRun', 'nextRun', 'running', 'options'];
+  cronJobs = this.service.state.cronJobs;
+  loaded = this.service.state.loaded;
+  loading = computed(() => !this.loaded());
+
+  columns: MtxGridColumn<CronJob>[] = [
+    { header: 'Name', field: 'name', sortable: true  },
+    { header: 'Cron Time', field: 'cronTime', sortable: true },
+    {
+      header: 'Last Run',
+      field: 'lastRun',
+      sortable: true,
+      formatter: (data) => moment(data.lastRun).calendar(),
+    },
+    {
+      header: 'Next Run',
+      field: 'nextRun',
+      sortable: true,
+      formatter: (data) => moment(data.nextRun).calendar(),
+    },
+    { header: 'Running', field: 'running', type: 'boolean', sortable: true },
+    { header: 'Active', field: 'active', type: 'boolean', sortable: true },
+    {
+      header: 'Operation',
+      field: 'operation',
+      pinned: 'right',
+      right: '0px',
+      type: 'button',
+      buttons: [
+        {
+          type: 'basic',
+          text: 'Toogle',
+          click: (row) => this.toggleActive(row),
+        },
+        {
+          type: 'basic',
+          text: 'Queue',
+          click: (row) => this.openDialog(row),
+        },
+      ],
+    },
+  ];
 
   openDialog(cron: CronJob) {
     let template: TemplateRef<HTMLElement>;
-
 
     switch (cron.type) {
       case 'sync':
@@ -103,4 +143,9 @@ export class OverviewPageComponent {
       }
     });
   }
+
+  toggleActive(job: CronJob) {
+    this.service.state.toggleActive(job);
+  }
+  
 }

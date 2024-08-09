@@ -294,7 +294,7 @@ export class TeamsResolver {
         let dbEntry = await teamDb.getEntry({ transaction });
 
         if (!dbEntry) {
-          [dbEntry] = await EventEntry.findCreateFind({
+          [dbEntry] = await EventEntry.findOrCreate({
             where: {
               teamId: teamDb.id,
               subEventId: newTeamData.entry.subEventId,
