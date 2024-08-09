@@ -9,7 +9,7 @@
             '/competition',
             this.entry()?.subEventCompetition?.eventCompetition?.slug,
             'draw',
-            this.entry()?.drawCompetition?.id
+            this.entry()?.drawCompetition?.id,
           ]"
           >{{ this.entry()?.subEventCompetition?.eventCompetition?.name }}</a
         >
@@ -22,22 +22,6 @@
       }
     </ng-content>
   }
-  <ng-content actions>
-    <!-- <button mat-icon-button class="favorite" title="favorite">
-      <mat-icon>star_outline</mat-icon>
-    </button> -->
-    <!-- <badman-has-claim [any]="['edit-any:club', this.team().clubId + '_edit:club']">
-      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item>
-          <mat-icon>delete</mat-icon>
-          <span>Delete</span>
-        </button>
-      </mat-menu>
-    </badman-has-claim> -->
-  </ng-content>
 </badman-page-header>
 <section class="games">
   <section class="recent-games">
