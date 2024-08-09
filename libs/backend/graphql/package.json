@@ -31,7 +31,8 @@
     "class-validator": "^0.14.1",
     "graphql-type-json": "^0.3.2",
     "@apollo/server": "^4.10.4",
-    "@badman/backend-change-encounter": "6.165.5"
+    "@badman/backend-change-encounter": "6.165.5",
+    "@badman/backend-orchestrator": "6.165.5"
   },
   "type": "commonjs",
   "main": "./src/index.js",
