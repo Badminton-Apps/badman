@@ -817,6 +817,9 @@ export type I18nTranslations = {
                 "update-ranking": string;
             };
         };
+        "rules": {
+            "title": string;
+        };
         "search": {
             "placeholder": string;
             "type": {
@@ -913,6 +916,9 @@ export type I18nTranslations = {
                     "games": string;
                 };
                 "ranking": {
+                    "title": string;
+                };
+                "rules": {
                     "title": string;
                 };
                 "tournament": {
