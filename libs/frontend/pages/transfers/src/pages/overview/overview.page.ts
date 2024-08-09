@@ -53,7 +53,7 @@ export class OverviewPageComponent {
         ?.filter((c) => !!c?.id)
         ?.filter((club) => {
           if (!club?.id) {
-            throw `No club Id provided`;
+            throw new Error(`No club Id provided`);
           }
           if (!uniqueClubIds.has(club?.id)) {
             uniqueClubIds.add(club.id);
@@ -73,7 +73,7 @@ export class OverviewPageComponent {
         ?.filter((c) => !!c?.id)
         ?.filter((club) => {
           if (!club?.id) {
-            throw `No club Id provided`;
+            throw new Error(`No club Id provided`);
           }
           if (!uniqueClubIds.has(club?.id)) {
             uniqueClubIds.add(club.id);

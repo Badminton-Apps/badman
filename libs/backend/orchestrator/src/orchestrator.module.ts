@@ -19,5 +19,6 @@ import { SocketModule } from '@badman/backend-websockets';
     OrchestratorRanking,
   ],
   imports: [QueueModule, SocketModule, ScheduleModule.forRoot(), ConfigModule],
+  exports: [CronService],
 })
 export class OrchestratorModule {}
