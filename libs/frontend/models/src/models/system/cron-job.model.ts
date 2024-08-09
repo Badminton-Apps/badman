@@ -10,6 +10,7 @@ export class CronJob {
   lastRun?: Moment;
   nextRun?: Moment;
   running?: boolean;
+  active?: boolean;
 
   constructor(args: Partial<CronJob>) {
     this.id = args?.id;
@@ -21,6 +22,7 @@ export class CronJob {
     } as QueueCronJob;
 
     this.running = args?.running;
+    this.active = args?.active;
     this.type = args?.type;
 
     const parsed = moment(args?.lastRun);
