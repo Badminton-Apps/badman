@@ -810,6 +810,9 @@
       "update-ranking": "Update klassementen volgens file"
     }
   },
+  "rules": {
+    "title": "Validatie regels"
+  },
   "search": {
     "placeholder": "Zoeken",
     "type": {
@@ -907,6 +910,9 @@
       },
       "ranking": {
         "title": "Ranking"
+      },
+      "rules": {
+        "title": "Validatie regels"
       },
       "tournament": {
         "title": "Toernooien"

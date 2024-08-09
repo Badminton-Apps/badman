@@ -810,6 +810,9 @@
       "update-ranking": "Mise à jour des classements en fonction du dossier"
     }
   },
+  "rules": {
+    "title": "Règles de validation"
+  },
   "search": {
     "placeholder": "Recherchez",
     "type": {
@@ -907,6 +910,9 @@
       },
       "ranking": {
         "title": "Classement"
+      },
+      "rules": {
+        "title": "Règles de validation"
       },
       "tournament": {
         "title": "Tournois"

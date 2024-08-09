@@ -61,7 +61,7 @@ export class OverviewPageComponent {
   loading = computed(() => !this.loaded());
 
   columns: MtxGridColumn<CronJob>[] = [
-    { header: 'Name', field: 'name', sortable: true  },
+    { header: 'Name', field: 'name', sortable: true },
     { header: 'Cron Time', field: 'cronTime', sortable: true },
     {
       header: 'Last Run',
@@ -147,5 +147,4 @@ export class OverviewPageComponent {
   toggleActive(job: CronJob) {
     this.service.state.toggleActive(job);
   }
-  
 }
