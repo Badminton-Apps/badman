@@ -1,9 +1,10 @@
 import { getIndexFromPlayers } from '@badman/utils';
-import { NotFoundException } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import moment from 'moment';
 import {
   BelongsToGetAssociationMixin,
+  BelongsToGetAssociationMixinOptions,
   BelongsToSetAssociationMixin,
   CreationOptional,
   HasOneGetAssociationMixin,
@@ -156,11 +157,16 @@ export class EventEntry extends Model<
   getPlayer2!: BelongsToGetAssociationMixin<Player>;
   setPlayer2!: BelongsToSetAssociationMixin<Player, string>;
 
-  getPlayers() {
+  getPlayers(options?: BelongsToGetAssociationMixinOptions) {
+    if (!this.player1Id && !this.player2Id) {
+      Logger.warn("No id's set?");
+      return Promise.resolve([]);
+    }
+
     if (this.player1Id && this.player2Id) {
-      return Promise.all([this.getPlayer1(), this.getPlayer2()]);
+      return Promise.all([this.getPlayer1(options), this.getPlayer2(options)]);
     } else {
-      return Promise.all([this.getPlayer1()]);
+      return Promise.all([this.getPlayer1(options)]);
     }
   }
 

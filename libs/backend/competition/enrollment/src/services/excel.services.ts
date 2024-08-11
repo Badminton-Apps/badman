@@ -36,7 +36,7 @@ export class ExcelService {
       const draws = await subEvent?.getDrawCompetitions();
 
       for (const draw of draws ?? []) {
-        const entries = await draw?.getEntries({
+        const entries = await draw?.getEventEntries({
           include: [{ model: Team }],
           order: [['team', 'name', 'ASC']],
         });

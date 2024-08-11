@@ -65,6 +65,9 @@
     <button (click)="this.addGame()" mat-stroked-button>
       {{ 'all.ranking.breakdown.add-game.title' | translate }}
     </button>
+    <button (click)="this.exportToExcel()" mat-stroked-button>
+      {{ 'all.ranking.breakdown.export' | translate }}
+    </button>
   </div>
 </form>
 <mat-table #breakdownTable [dataSource]="dataSource">

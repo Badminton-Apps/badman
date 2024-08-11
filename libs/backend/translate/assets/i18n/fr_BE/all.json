@@ -723,6 +723,7 @@
       "downgrade": "Rétrograder",
       "drops-next-period": "Ne compte pas dans la période suivante",
       "evolution": "Évolution",
+      "export": "Exporter le filtre actuel",
       "hint": "Cliquez sur un classement pour une simulation et une analyse",
       "ignored": "Non compté",
       "includeOutOfScope": "Hors champ",

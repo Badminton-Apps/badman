@@ -723,6 +723,7 @@
       "downgrade": "Downgrade",
       "drops-next-period": "Drops next period",
       "evolution": "Evolution",
+      "export": "Export current filter",
       "hint": "Click on a level for simulation and breakdown",
       "ignored": "Doesn't count",
       "includeOutOfScope": "Out of scope",
