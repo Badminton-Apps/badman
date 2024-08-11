@@ -24,6 +24,8 @@ import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs';
 import { AddGameComponent } from '../../dialogs/add-game';
+import saveAs from 'file-saver';
+import xlsx from 'xlsx';
 
 @Component({
   selector: 'badman-list-games',
@@ -206,6 +208,8 @@ export class ListGamesComponent implements OnInit {
 
       if (type !== GameBreakdownType.LOST_IGNORED) {
         validGames++;
+      } else {
+        console.log('invalid game', game.id);
       }
     }
 
@@ -221,6 +225,8 @@ export class ListGamesComponent implements OnInit {
     this.lostGamesIgnored =
       gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_IGNORED) ?? [];
     this.outOfScopeGames = gameBreakdown.filter((g) => g.type == GameBreakdownType.OUT_SCOPE) ?? [];
+
+    console.log('Won games', this.wonGames);
   }
 
   fillLostGames() {
@@ -373,17 +379,6 @@ export class ListGamesComponent implements OnInit {
 
       this.canUpgrade = upgradePoints >= (nextLevel ?? 0);
       this.canDowngrade = downgradePoints <= (prevLevel ?? 0);
-
-      // console.log(
-      //   `Upgrade ${level} -> ${level - 1}: ${upgradePoints} >= ${nextLevel} = ${
-      //     this.canUpgrade
-      //   }`,
-      // );
-      // console.log(
-      //   `Downgrade ${level} -> ${
-      //     level + 1
-      //   }: ${downgradePoints} <= ${prevLevel} = ${this.canDowngrade}`,
-      // );
     }
   }
 
@@ -479,6 +474,70 @@ export class ListGamesComponent implements OnInit {
           this.fillGames();
         }
       });
+  }
+
+  exportToExcel() {
+    const wb = xlsx.utils.book_new();
+
+    // Convert JSON data to sheet
+    const ws = xlsx.utils.json_to_sheet(
+      this.dataSource.data.map((x) => {
+        return {
+          type: x.type,
+          Date: {
+            v: x.playedAt,
+            t: 'd',
+          },
+          Player1: x.team?.[0]?.fullName,
+          Player2: x.team?.[1]?.fullName,
+          Opponent1: x.opponent?.[0]?.fullName,
+          Opponent2: x.opponent?.[1]?.fullName,
+          Points: x.points,
+        };
+      }),
+    );
+
+    // Define the range of your data (adjust as needed)
+    const dataRange = `A2:A${this.dataSource.data.length + 1}`;
+    const pointsRange = `G2:G${this.dataSource.data.length + 1}`;
+
+    const countLostUpgrade = `COUNTIF(${dataRange}, "LOST_UPGRADE")`;
+    const countLostDowngrade = `COUNTIF(${dataRange}, "LOST_DOWNGRADE")`;
+    const countWon = `COUNTIF(${dataRange}, "WON")`;
+
+    // Excel formulas for calculating sums and averages
+    const avgUpgradeFormula = `=SUM(${pointsRange}) / SUM( ${countLostUpgrade}, ${countLostDowngrade}, ${countWon})`;
+    const avgDowngradeFormula = `=SUM(${pointsRange}) / SUM(${countLostDowngrade}, ${countWon})`;
+
+    // add 2 empty rows
+    xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', '']], {
+      origin: 'A',
+    });
+    xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', '']], {
+      origin: 'A',
+    });
+
+    // Add calculated averages to the sheet
+    xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', 'avg Upgrade', 'avg Downgrade']], {
+      origin: 'A',
+    });
+    xlsx.utils.sheet_add_aoa(
+      ws,
+      [['', '', '', '', '', '', { f: avgUpgradeFormula }, { f: avgDowngradeFormula }]],
+      {
+        origin: 'A',
+      },
+    );
+
+    // apply filter on the data range
+    ws['!autofilter'] = { ref: `A1:G${this.dataSource.data.length + 1}` };
+
+    // Append sheet to workbook
+    xlsx.utils.book_append_sheet(wb, ws, 'Games');
+
+    // Save the workbook
+    const end = moment(this.formGroup()?.get('period')?.get('end')?.value).format('YYYY-MM-DD');
+    xlsx.writeFile(wb, `ranking-breakdown-${this.player()?.fullName}-${end}.xlsx`);
   }
 }
 

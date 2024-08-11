@@ -108,7 +108,7 @@ export class DrawCompetition extends Model {
       entryType: 'competition',
     },
   })
-  entries?: Relation<EventEntry[]>;
+  eventEntries?: Relation<EventEntry[]>;
 
   // Belongs to SubEvent
   getSubEventCompetition!: BelongsToGetAssociationMixin<SubEventCompetition>;
@@ -125,16 +125,16 @@ export class DrawCompetition extends Model {
   hasEncounterCompetitions!: HasManyHasAssociationsMixin<EncounterCompetition, string>;
   countEncounterCompetitions!: HasManyCountAssociationsMixin;
 
-  // Has many Entries
-  getEntries!: HasManyGetAssociationsMixin<EventEntry>;
-  setEntries!: HasManySetAssociationsMixin<EventEntry, string>;
-  addEntries!: HasManyAddAssociationsMixin<EventEntry, string>;
-  addEntry!: HasManyAddAssociationMixin<EventEntry, string>;
-  removeEntries!: HasManyRemoveAssociationMixin<EventEntry, string>;
-  removeEntry!: HasManyRemoveAssociationsMixin<EventEntry, string>;
-  hasEntries!: HasManyHasAssociationMixin<EventEntry, string>;
-  hasEntry!: HasManyHasAssociationsMixin<EventEntry, string>;
-  countEntries!: HasManyCountAssociationsMixin;
+  // Has many EventEntrie
+  getEventEntries!: HasManyGetAssociationsMixin<EventEntry>;
+  setEventEntries!: HasManySetAssociationsMixin<EventEntry, string>;
+  addEventEntries!: HasManyAddAssociationsMixin<EventEntry, string>;
+  addEventEntry!: HasManyAddAssociationMixin<EventEntry, string>;
+  removeEventEntry!: HasManyRemoveAssociationMixin<EventEntry, string>;
+  removeEventEntries!: HasManyRemoveAssociationsMixin<EventEntry, string>;
+  hasEventEntry!: HasManyHasAssociationMixin<EventEntry, string>;
+  hasEventEntries!: HasManyHasAssociationsMixin<EventEntry, string>;
+  countEventEntries!: HasManyCountAssociationsMixin;
 }
 
 @InputType()

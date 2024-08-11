@@ -42,7 +42,7 @@ export class DrawCompetitionResolver {
 
   @ResolveField(() => [EventEntry])
   async eventEntries(@Parent() draw: DrawCompetition): Promise<EventEntry[]> {
-    return draw.getEntries();
+    return draw.getEventEntries();
   }
 
   @ResolveField(() => [EncounterCompetition])
@@ -76,7 +76,7 @@ export class DrawCompetitionResolver {
         drawCompetitionDb.risers !== updateDrawCompetitionData.risers ||
         drawCompetitionDb.fallers !== updateDrawCompetitionData.fallers
       ) {
-        const entries = await drawCompetitionDb.getEntries({ transaction });
+        const entries = await drawCompetitionDb.getEventEntries({ transaction });
         const standings: Standing[] = [];
         for (const entry of entries) {
           const standing = await entry.getStanding({ transaction });
