@@ -730,6 +730,14 @@ export type I18nTranslations = {
                 "downgrade": string;
                 "drops-next-period": string;
                 "evolution": string;
+                "export": {
+                    "LOST_DOWNGRADE": string;
+                    "LOST_IGNORED": string;
+                    "LOST_UPGRADE": string;
+                    "OUT_SCOPE": string;
+                    "title": string;
+                    "WON": string;
+                };
                 "hint": string;
                 "ignored": string;
                 "includeOutOfScope": string;

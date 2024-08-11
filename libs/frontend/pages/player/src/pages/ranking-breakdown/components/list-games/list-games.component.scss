@@ -36,7 +36,7 @@ form {
 
 .mat-column-team,
 .mat-column-opponent {
-  flex: 50 0 125px;
+  flex: 50 0 125px; 
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
@@ -60,4 +60,9 @@ form {
 
 .mat-row:hover .hidden-when-not-hovered {
   display: block;
+}
+
+.options {
+  display: flex;
+  gap: 1rem;
 }

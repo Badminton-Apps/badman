@@ -723,7 +723,14 @@
       "downgrade": "Downgrade",
       "drops-next-period": "Telt niet meer mee in volgende periode",
       "evolution": "Evolutie",
-      "export": "Export huidige filter",
+      "export": {
+        "LOST_DOWNGRADE": "Promotie + Degradatie",
+        "LOST_IGNORED": "Telt niet mee",
+        "LOST_UPGRADE": "Promotie",
+        "OUT_SCOPE": "Buiten scope",
+        "title": "Export huidige filter",
+        "WON": "Gewonnen"
+      },
       "hint": "Klik op een klassement voor simulatie en analyse",
       "ignored": "Niet meegeteld",
       "includeOutOfScope": "Out of scope",
