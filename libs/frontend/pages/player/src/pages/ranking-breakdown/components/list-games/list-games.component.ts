@@ -4,28 +4,27 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnInit,
   computed,
-  input,
   inject,
+  input
 } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Game, GamePlayer, Player, RankingSystem } from '@badman/frontend-models';
 import { GameBreakdownType, GameStatus, getGameResultType } from '@badman/utils';
+import { MtxGridModule } from '@ng-matero/extensions/grid';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
 import { MomentModule } from 'ngx-moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { distinctUntilChanged, map, takeUntil } from 'rxjs';
-import { AddGameComponent } from '../../dialogs/add-game';
-import saveAs from 'file-saver';
+import { takeUntil } from 'rxjs';
 import xlsx from 'xlsx';
+import { ListGamesService } from './list-games.service';
 
 @Component({
   selector: 'badman-list-games',
@@ -44,20 +43,21 @@ import xlsx from 'xlsx';
     MatTooltipModule,
     MatButtonModule,
     LayoutModule,
+    MtxGridModule,
   ],
 })
-export class ListGamesComponent implements OnInit {
+export class ListGamesComponent {
   private translateService = inject(TranslateService);
+   readonly listGamesService = inject(ListGamesService);
+
   private destroy$ = injectDestroy();
 
-  games = input<Game[]>([]);
+  games = this.listGamesService.state.games;
+  loaded = this.listGamesService.state.loaded;
+
   private dialog = inject(MatDialog);
   system = input.required<RankingSystem>();
   player = input.required<Player>();
-  formGroup = input.required<FormGroup>();
-
-  dataSource = new MatTableDataSource<GameBreakdown>([]);
-  dataSourceRemoved = new MatTableDataSource<Game>([]);
 
   playerId = computed(() => this.player()?.id);
   rankingPlace = computed(() =>
@@ -66,7 +66,9 @@ export class ListGamesComponent implements OnInit {
 
   type!: 'single' | 'double' | 'mix';
 
-  startPeriod = computed(() => this.formGroup()?.get('period')?.get('start')?.value as Moment);
+  startPeriod = computed(
+    () => this.listGamesService.filter.get('period')?.get('start')?.value as unknown as Moment,
+  );
   prevGames = computed(() =>
     this.games().filter((x) => moment(x.playedAt).isBefore(this.startPeriod())),
   );
@@ -98,6 +100,17 @@ export class ListGamesComponent implements OnInit {
     'average-upgrade',
     'average-downgrade',
     'delete',
+  ];
+
+  columns = [
+    { header: 'all.ranking.breakdown.count', field: 'count' },
+    { header: 'all.ranking.breakdown.drops-next-period', field: 'dropsNextPeriod' },
+    { header: 'all.ranking.breakdown.date', field: 'playedAt' },
+    { header: 'all.ranking.breakdown.team', field: 'team' },
+    { header: 'all.ranking.breakdown.opponent', field: 'opponent' },
+    { header: 'all.ranking.breakdown.points', field: 'points' },
+    { header: 'all.ranking.breakdown.average-upgrade', field: 'avgUpgrade' },
+    { header: 'all.ranking.breakdown.average-downgrade', field: 'avgDowngrade' },
   ];
 
   dateFormat?: string;
@@ -132,29 +145,14 @@ export class ListGamesComponent implements OnInit {
       });
   }
 
-  ngOnInit(): void {
-    this.type = this.formGroup()?.get('gameType')?.value;
+  // ngOnInit(): void {
+  //   this.type = this.formGroup()?.get('gameType')?.value;
 
-    this.calculateAvg();
-    this.fillGames();
-    this.fillLostGames();
+  //   this.calculateAvg();
+  //   this.fillGames();
+  //   this.fillLostGames();
 
-    this.formGroup()
-      ?.valueChanges.pipe(
-        map((value) => {
-          return {
-            includedIgnored: value.includedIgnored,
-            includedUpgrade: value.includedUpgrade,
-            includedDowngrade: value.includedDowngrade,
-            includeOutOfScope: value.includeOutOfScope,
-          };
-        }, distinctUntilChanged()),
-      )
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.fillGames();
-      });
-  }
+  // }
 
   calculateAvg() {
     const gameBreakdown: ListGame[] = [];
@@ -208,8 +206,6 @@ export class ListGamesComponent implements OnInit {
 
       if (type !== GameBreakdownType.LOST_IGNORED) {
         validGames++;
-      } else {
-        console.log('invalid game', game.id);
       }
     }
 
@@ -225,144 +221,142 @@ export class ListGamesComponent implements OnInit {
     this.lostGamesIgnored =
       gameBreakdown.filter((g) => g.type == GameBreakdownType.LOST_IGNORED) ?? [];
     this.outOfScopeGames = gameBreakdown.filter((g) => g.type == GameBreakdownType.OUT_SCOPE) ?? [];
-
-    console.log('Won games', this.wonGames);
   }
 
-  fillLostGames() {
-    const gameBreakdownPrev: {
-      id: string;
-      playedAt?: Date;
-      team: (GamePlayer | undefined)[];
-      opponent: (GamePlayer | undefined)[];
-      type: GameBreakdownType;
-      points: number | undefined;
-    }[] = [];
+  // fillLostGames() {
+  //   const gameBreakdownPrev: {
+  //     id: string;
+  //     playedAt?: Date;
+  //     team: (GamePlayer | undefined)[];
+  //     opponent: (GamePlayer | undefined)[];
+  //     type: GameBreakdownType;
+  //     points: number | undefined;
+  //   }[] = [];
 
-    for (const game of this.prevGames()) {
-      if (!game?.id) {
-        throw new Error('Game not found');
-      }
-      const me = game.players?.find((x) => x.id == this.playerId());
-      if (!me) {
-        throw new Error('Player not found');
-      }
-      if (!game.gameType) {
-        console.warn(`Game ${game.id} has no gameType`);
-        continue;
-      }
+  //   for (const game of this.prevGames()) {
+  //     if (!game?.id) {
+  //       throw new Error('Game not found');
+  //     }
+  //     const me = game.players?.find((x) => x.id == this.playerId());
+  //     if (!me) {
+  //       throw new Error('Player not found');
+  //     }
+  //     if (!game.gameType) {
+  //       console.warn(`Game ${game.id} has no gameType`);
+  //       continue;
+  //     }
 
-      const rankingPoint = game.rankingPoints?.find((x) => x.playerId == this.playerId());
+  //     const rankingPoint = game.rankingPoints?.find((x) => x.playerId == this.playerId());
 
-      const teamP1 = game.players?.find((x) => x.team == me.team && x.player == 1);
-      const teamP2 = game.players?.find((x) => x.team == me.team && x.player == 2);
+  //     const teamP1 = game.players?.find((x) => x.team == me.team && x.player == 1);
+  //     const teamP2 = game.players?.find((x) => x.team == me.team && x.player == 2);
 
-      const opponentP1 = game.players?.find((x) => x.team !== me.team && x.player == 1);
-      const opponentP2 = game.players?.find((x) => x.team !== me.team && x.player == 2);
+  //     const opponentP1 = game.players?.find((x) => x.team !== me.team && x.player == 1);
+  //     const opponentP2 = game.players?.find((x) => x.team !== me.team && x.player == 2);
 
-      const type = getGameResultType(game.winner == me.team, game.gameType, {
-        differenceInLevel: rankingPoint?.differenceInLevel ?? 0,
-        system: this.system(),
-      });
+  //     const type = getGameResultType(game.winner == me.team, game.gameType, {
+  //       differenceInLevel: rankingPoint?.differenceInLevel ?? 0,
+  //       system: this.system(),
+  //     });
 
-      gameBreakdownPrev.push({
-        id: game.id,
-        playedAt: game.playedAt,
-        team: [teamP1, teamP2],
-        opponent: [opponentP1, opponentP2],
-        type,
-        points: rankingPoint?.points ?? undefined,
-      });
-    }
+  //     gameBreakdownPrev.push({
+  //       id: game.id,
+  //       playedAt: game.playedAt,
+  //       team: [teamP1, teamP2],
+  //       opponent: [opponentP1, opponentP2],
+  //       type,
+  //       points: rankingPoint?.points ?? undefined,
+  //     });
+  //   }
 
-    gameBreakdownPrev.sort((a, b) => {
-      return a.type.localeCompare(b.type);
-    });
+  //   gameBreakdownPrev.sort((a, b) => {
+  //     return a.type.localeCompare(b.type);
+  //   });
 
-    this.dataSourceRemoved.data = gameBreakdownPrev;
-  }
+  //   this.dataSourceRemoved.data = gameBreakdownPrev;
+  // }
 
-  fillGames() {
-    this.gameBreakdown = [];
+  // fillGames() {
+  //   this.gameBreakdown = [];
 
-    if (this.formGroup()?.get('includeOutOfScope')?.value) {
-      this.addLostGames(this.outOfScopeGames);
-    }
+  //   if (this.listGamesService.filter.get('includeOutOfScope')?.value) {
+  //     this.addLostGames(this.outOfScopeGames);
+  //   }
 
-    if (this.formGroup()?.get('includedUpgrade')?.value) {
-      this.addLostGames(this.lostGamesUpgrade);
-    }
+  //   if (this.listGamesService.filter.get('includedUpgrade')?.value) {
+  //     this.addLostGames(this.lostGamesUpgrade);
+  //   }
 
-    if (this.formGroup()?.get('includedDowngrade')?.value) {
-      this.addLostGames(this.lostGamesDowngrade);
-    }
+  //   if (this.listGamesService.filter.get('includedDowngrade')?.value) {
+  //     this.addLostGames(this.lostGamesDowngrade);
+  //   }
 
-    const startingIndex = this.gameBreakdown.length;
-    let totalPoints = 0;
+  //   const startingIndex = this.gameBreakdown.length;
+  //   let totalPoints = 0;
 
-    for (let i = 0; i < this.wonGames.length; i++) {
-      const { game, points, team, opponent, type } = this.wonGames[i];
-      if (!game?.id) {
-        throw new Error('Game not found');
-      }
+  //   for (let i = 0; i < this.wonGames.length; i++) {
+  //     const { game, points, team, opponent, type } = this.wonGames[i];
+  //     if (!game?.id) {
+  //       throw new Error('Game not found');
+  //     }
 
-      totalPoints += points ?? 0;
-      const devideUpgrade = this.lostGamesUpgrade.length + this.lostGamesDowngrade.length + i + 1; // 0 based
-      const devideDowngrade = this.lostGamesDowngrade.length + i + 1; // 0 based;
+  //     totalPoints += points ?? 0;
+  //     const devideUpgrade = this.lostGamesUpgrade.length + this.lostGamesDowngrade.length + i + 1; // 0 based
+  //     const devideDowngrade = this.lostGamesDowngrade.length + i + 1; // 0 based;
 
-      const devideUpgradeCorrected =
-        devideUpgrade < (this.system().minNumberOfGamesUsedForUpgrade ?? 0)
-          ? this.system().minNumberOfGamesUsedForUpgrade ?? 0
-          : devideUpgrade;
+  //     const devideUpgradeCorrected =
+  //       devideUpgrade < (this.system().minNumberOfGamesUsedForUpgrade ?? 0)
+  //         ? this.system().minNumberOfGamesUsedForUpgrade ?? 0
+  //         : devideUpgrade;
 
-      const devideDowngradeCorrected =
-        devideDowngrade < (this.system().minNumberOfGamesUsedForDowngrade ?? 0)
-          ? this.system().minNumberOfGamesUsedForDowngrade ?? 0
-          : devideDowngrade;
+  //     const devideDowngradeCorrected =
+  //       devideDowngrade < (this.system().minNumberOfGamesUsedForDowngrade ?? 0)
+  //         ? this.system().minNumberOfGamesUsedForDowngrade ?? 0
+  //         : devideDowngrade;
 
-      const avgUpgrade = Math.round(totalPoints / devideUpgradeCorrected);
-      const avgDowngrade = Math.round(totalPoints / devideDowngradeCorrected);
+  //     const avgUpgrade = Math.round(totalPoints / devideUpgradeCorrected);
+  //     const avgDowngrade = Math.round(totalPoints / devideDowngradeCorrected);
 
-      if (avgUpgrade > (this.gameBreakdown[this.indexUsedForUpgrade]?.avgUpgrade ?? -1)) {
-        this.indexUsedForUpgrade = startingIndex + i;
-      }
+  //     if (avgUpgrade > (this.gameBreakdown[this.indexUsedForUpgrade]?.avgUpgrade ?? -1)) {
+  //       this.indexUsedForUpgrade = startingIndex + i;
+  //     }
 
-      if (avgDowngrade > (this.gameBreakdown[this.indexUsedForDowngrade]?.avgDowngrade ?? -1)) {
-        this.indexUsedForDowngrade = startingIndex + i;
-      }
+  //     if (avgDowngrade > (this.gameBreakdown[this.indexUsedForDowngrade]?.avgDowngrade ?? -1)) {
+  //       this.indexUsedForDowngrade = startingIndex + i;
+  //     }
 
-      // decide if the player is going to upgrade
+  //     // decide if the player is going to upgrade
 
-      this.gameBreakdown.push({
-        id: game.id,
-        playedAt: game.playedAt,
-        totalPoints,
-        team,
-        opponent,
-        type,
-        points,
-        avgUpgrade,
-        avgDowngrade,
-        devideDowngrade,
-        devideUpgrade,
-        devideUpgradeCorrected,
-      });
-    }
+  //     this.gameBreakdown.push({
+  //       id: game.id,
+  //       playedAt: game.playedAt,
+  //       totalPoints,
+  //       team,
+  //       opponent,
+  //       type,
+  //       points,
+  //       avgUpgrade,
+  //       avgDowngrade,
+  //       devideDowngrade,
+  //       devideUpgrade,
+  //       devideUpgradeCorrected,
+  //     });
+  //   }
 
-    if (this.formGroup()?.get('includedIgnored')?.value) {
-      this.addLostGames(this.lostGamesIgnored);
-    }
+  //   if (this.listGamesService.filter.get('includedIgnored')?.value) {
+  //     this.addLostGames(this.lostGamesIgnored);
+  //   }
 
-    // mark all games that would dissapear  next period
-    const nextPeriod = this.formGroup()?.get('period')?.get('next')?.value as Moment;
-    this.gameBreakdown = this.gameBreakdown?.map((x) => ({
-      ...x,
-      dropsNextPeriod: moment(x.playedAt).isBefore(nextPeriod),
-    }));
+  //   // mark all games that would dissapear  next period
+  //   const nextPeriod = this.listGamesService.filter.get('period')?.get('next')?.value as unknown as Moment;
+  //   this.gameBreakdown = this.gameBreakdown?.map((x) => ({
+  //     ...x,
+  //     dropsNextPeriod: moment(x.playedAt).isBefore(nextPeriod),
+  //   }));
 
-    this.dataSource.data = this.gameBreakdown;
-    this.canUpgradeOrDowngrade();
-  }
+  //   this.dataSource.data = this.gameBreakdown;
+  //   this.canUpgradeOrDowngrade();
+  // }
 
   canUpgradeOrDowngrade() {
     if (this.rankingPlace()) {
@@ -446,98 +440,139 @@ export class ListGamesComponent implements OnInit {
     return tooltip;
   }
 
-  deleteGame(game: GameBreakdown) {
-    const index = this.currGames().findIndex((x) => x.id == game.id);
-    if (index != -1) {
-      this.currGames().splice(index, 1);
-    }
-    this.calculateAvg();
-    this.fillGames();
-  }
+  // deleteGame(game: GameBreakdown) {
+  //   const index = this.currGames().findIndex((x) => x.id == game.id);
+  //   if (index != -1) {
+  //     this.currGames().splice(index, 1);
+  //   }
+  //   this.calculateAvg();
+  //   this.fillGames();
+  // }
 
-  addGame() {
-    this.dialog
-      .open(AddGameComponent, {
-        minWidth: '450px',
-        data: {
-          playerId: this.playerId(),
-          type: this.type,
-          system: this.system(),
-        },
-      })
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((game: Game) => {
-        if (game) {
-          this.currGames().push(game);
-          this.calculateAvg();
-          this.fillGames();
-        }
-      });
-  }
+  // addGame() {
+  //   this.dialog
+  //     .open(AddGameComponent, {
+  //       minWidth: '450px',
+  //       data: {
+  //         playerId: this.playerId(),
+  //         type: this.type,
+  //         system: this.system(),
+  //       },
+  //     })
+  //     .afterClosed()
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe((game: Game) => {
+  //       if (game) {
+  //         this.currGames().push(game);
+  //         this.calculateAvg();
+  //         this.fillGames();
+  //       }
+  //     });
+  // }
 
   exportToExcel() {
     const wb = xlsx.utils.book_new();
 
+    const wonTranslation = this.translateService.instant('all.ranking.breakdown.export.WON');
+    const lostUpgradeTranslation = this.translateService.instant(
+      'all.ranking.breakdown.export.LOST_UPGRADE',
+    );
+    const lostDowngradeTranslation = this.translateService.instant(
+      'all.ranking.breakdown.export.LOST_DOWNGRADE',
+    );
+    const lostIgnoredTranslation = this.translateService.instant(
+      'all.ranking.breakdown.export.LOST_IGNORED',
+    );
+    const outOfScopeTranslation = this.translateService.instant(
+      'all.ranking.breakdown.export.OUT_OF_SCOPE',
+    );
+
+    console.log(lostIgnoredTranslation);
+
     // Convert JSON data to sheet
-    const ws = xlsx.utils.json_to_sheet(
-      this.dataSource.data.map((x) => {
-        return {
-          type: x.type,
-          Date: {
-            v: x.playedAt,
-            t: 'd',
-          },
-          Player1: x.team?.[0]?.fullName,
-          Player2: x.team?.[1]?.fullName,
-          Opponent1: x.opponent?.[0]?.fullName,
-          Opponent2: x.opponent?.[1]?.fullName,
-          Points: x.points,
-        };
-      }),
-    );
+    // const ws = xlsx.utils.json_to_sheet(
+    //   this.dataSource.data.map((x) => {
+    //     let type = '';
+    //     switch (x.type) {
+    //       case GameBreakdownType.WON:
+    //         type = wonTranslation;
+    //         break;
+    //       case GameBreakdownType.LOST_UPGRADE:
+    //         type = lostUpgradeTranslation;
+    //         break;
+    //       case GameBreakdownType.LOST_DOWNGRADE:
+    //         type = lostDowngradeTranslation;
+    //         break;
+    //       case GameBreakdownType.LOST_IGNORED:
+    //         type = lostIgnoredTranslation;
+    //         break;
+    //       case GameBreakdownType.OUT_SCOPE:
+    //         type = outOfScopeTranslation;
+    //         break;
+    //     }
 
-    // Define the range of your data (adjust as needed)
-    const dataRange = `A2:A${this.dataSource.data.length + 1}`;
-    const pointsRange = `G2:G${this.dataSource.data.length + 1}`;
+    //     return {
+    //       'Counts for': type,
+    //       Date: {
+    //         v: x.playedAt,
+    //         t: 'd',
+    //       },
+    //       Player1: `${x.team?.[0]?.fullName} (${x.team?.[0]?.[this.type] ?? ''})`,
+    //       Player2:
+    //         x.team?.[1]?.fullName != undefined
+    //           ? `${x.team?.[1]?.fullName} (${x.team?.[1]?.[this.type] ?? ''})`
+    //           : '',
+    //       Opponent1: `${x.opponent?.[0]?.fullName} (${x.opponent?.[0]?.[this.type] ?? ''})`,
+    //       Opponent2:
+    //         x.opponent?.[1]?.fullName != undefined
+    //           ? `${x.opponent?.[1]?.fullName} (${x.opponent?.[1]?.[this.type] ?? ''})`
+    //           : '',
+    //       Points: x.points,
+    //     };
+    //   }),
+    // );
 
-    const countLostUpgrade = `COUNTIF(${dataRange}, "LOST_UPGRADE")`;
-    const countLostDowngrade = `COUNTIF(${dataRange}, "LOST_DOWNGRADE")`;
-    const countWon = `COUNTIF(${dataRange}, "WON")`;
+    // // Define the range of your data (adjust as needed)
+    // const dataRange = `A2:A${this.dataSource.data.length + 1}`;
+    // const pointsRange = `G2:G${this.dataSource.data.length + 1}`;
 
-    // Excel formulas for calculating sums and averages
-    const avgUpgradeFormula = `=SUM(${pointsRange}) / SUM( ${countLostUpgrade}, ${countLostDowngrade}, ${countWon})`;
-    const avgDowngradeFormula = `=SUM(${pointsRange}) / SUM(${countLostDowngrade}, ${countWon})`;
+    // const countLostUpgrade = `COUNTIF(${dataRange}, "${lostUpgradeTranslation}")`;
+    // const countLostDowngrade = `COUNTIF(${dataRange}, "${lostDowngradeTranslation}")`;
+    // const countWon = `COUNTIF(${dataRange}, "${wonTranslation}")`;
 
-    // add 2 empty rows
-    xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', '']], {
-      origin: 'A',
-    });
-    xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', '']], {
-      origin: 'A',
-    });
+    // // Excel formulas for calculating sums and averages
+    // const avgUpgradeFormula = `=SUM(${pointsRange}) / SUM( ${countLostUpgrade}, ${countLostDowngrade}, ${countWon})`;
+    // const avgDowngradeFormula = `=SUM(${pointsRange}) / SUM(${countLostDowngrade}, ${countWon})`;
 
-    // Add calculated averages to the sheet
-    xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', 'avg Upgrade', 'avg Downgrade']], {
-      origin: 'A',
-    });
-    xlsx.utils.sheet_add_aoa(
-      ws,
-      [['', '', '', '', '', '', { f: avgUpgradeFormula }, { f: avgDowngradeFormula }]],
-      {
-        origin: 'A',
-      },
-    );
+    // // add 2 empty rows
+    // xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', '']], {
+    //   origin: 'A',
+    // });
+    // xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', '']], {
+    //   origin: 'A',
+    // });
 
-    // apply filter on the data range
-    ws['!autofilter'] = { ref: `A1:G${this.dataSource.data.length + 1}` };
+    // // Add calculated averages to the sheet
+    // xlsx.utils.sheet_add_aoa(ws, [['', '', '', '', '', '', 'Avg. Upgrade', 'Avg. Downgrade']], {
+    //   origin: 'A',
+    // });
+    // xlsx.utils.sheet_add_aoa(
+    //   ws,
+    //   [['', '', '', '', '', '', { f: avgUpgradeFormula }, { f: avgDowngradeFormula }]],
+    //   {
+    //     origin: 'A',
+    //   },
+    // );
 
-    // Append sheet to workbook
-    xlsx.utils.book_append_sheet(wb, ws, 'Games');
+    // // apply filter on the data range
+    // ws['!autofilter'] = { ref: `A1:G${this.dataSource.data.length + 1}` };
 
-    // Save the workbook
-    const end = moment(this.formGroup()?.get('period')?.get('end')?.value).format('YYYY-MM-DD');
-    xlsx.writeFile(wb, `ranking-breakdown-${this.player()?.fullName}-${end}.xlsx`);
+    // // Append sheet to workbook
+    // xlsx.utils.book_append_sheet(wb, ws, 'Games');
+
+    // // Save the workbook
+    // const end = moment(this.listGamesService.filter.get('period')?.get('end')?.value).format('YYYY-MM-DD');
+    // xlsx.writeFile(wb, `ranking-breakdown-${this.player()?.fullName}-${end}.xlsx`);
   }
 }
 

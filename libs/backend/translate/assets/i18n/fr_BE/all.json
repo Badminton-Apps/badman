@@ -723,7 +723,14 @@
       "downgrade": "Rétrograder",
       "drops-next-period": "Ne compte pas dans la période suivante",
       "evolution": "Évolution",
-      "export": "Exporter le filtre actuel",
+      "export": {
+        "LOST_DOWNGRADE": "Promotion + Dégradation",
+        "LOST_IGNORED": "Ne compte pas",
+        "LOST_UPGRADE": "Promotion",
+        "OUT_SCOPE": "Hors champ d'application",
+        "title": "Exporter le filtre actuel",
+        "WON": "Gagné"
+      },
       "hint": "Cliquez sur un classement pour une simulation et une analyse",
       "ignored": "Non compté",
       "includeOutOfScope": "Hors champ",

@@ -37,14 +37,7 @@ import { MomentModule } from 'ngx-moment';
   ],
 })
 export class PeriodSelectionComponent {
-  period = input.required<
-    FormGroup<{
-      start: FormControl<Moment>;
-      end: FormControl<Moment>;
-      game: FormControl<Moment>;
-      next: FormControl<Moment>;
-    }>
-  >();
+  period = input.required<FormGroup>();
   system = input.required<RankingSystem>();
 
   @ViewChild(MatMenuTrigger) trigger?: MatMenuTrigger;
