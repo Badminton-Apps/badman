@@ -723,7 +723,14 @@
       "downgrade": "Downgrade",
       "drops-next-period": "Drops next period",
       "evolution": "Evolution",
-      "export": "Export current filter",
+      "export": {
+        "LOST_DOWNGRADE": "Promotion + Degradation",
+        "LOST_IGNORED": "Does not count",
+        "LOST_UPGRADE": "Promotion",
+        "OUT_SCOPE": "Out of scope",
+        "title": "Export current filter",
+        "WON": "Won"
+      },
       "hint": "Click on a level for simulation and breakdown",
       "ignored": "Doesn't count",
       "includeOutOfScope": "Out of scope",
