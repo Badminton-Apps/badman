@@ -1,6 +1,7 @@
 import { LevelType, UsedRankingTiming } from '@badman/utils';
 import { Field, ID, InputType, Int, ObjectType, OmitType, PartialType } from '@nestjs/graphql';
 import {
+  CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -10,6 +11,8 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
+  InferAttributes,
+  InferCreationAttributes,
 } from 'sequelize';
 import {
   Column,
@@ -43,13 +46,16 @@ import { SubEventCompetition, SubEventCompetitionUpdateInput } from './sub-event
   schema: 'event',
 } as TableOptions)
 @ObjectType({ description: 'A EventCompetition' })
-export class EventCompetition extends Model {
+export class EventCompetition extends Model<
+  InferAttributes<EventCompetition>,
+  InferCreationAttributes<EventCompetition>
+> {
   @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
@@ -148,13 +154,20 @@ export class EventCompetition extends Model {
 
   @Field(() => Int)
   @Column(DataType.NUMBER)
-  usedRankingAmount!: number;
+  usedRankingAmount?: number;
 
   @Field(() => String)
   @Column(DataType.ENUM('months', 'weeks', 'days'))
-  usedRankingUnit!: 'months' | 'weeks' | 'days';
+  usedRankingUnit?: 'months' | 'weeks' | 'days';
 
   get usedRanking(): UsedRankingTiming {
+    if (!this.usedRankingAmount || !this.usedRankingUnit) {
+      return {
+        amount: 0,
+        unit: 'days',
+      };
+    }
+
     return {
       amount: this.usedRankingAmount,
       unit: this.usedRankingUnit,
