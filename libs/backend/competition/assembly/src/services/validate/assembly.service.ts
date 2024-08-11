@@ -194,6 +194,10 @@ export class AssemblyValidationService extends ValidationService<
       ?.filter((m) => m.teamId !== args.teamId)
       ?.map((m) => m.meta) ?? []) as MetaEntry[];
 
+    if (!event.usedRankingUnit || !event.usedRankingAmount) {
+      throw new Error('EventCompetition usedRankingUnit is not set');
+    }
+
     const year = event?.season;
     const usedRankingDate = moment();
     usedRankingDate.set('year', year);

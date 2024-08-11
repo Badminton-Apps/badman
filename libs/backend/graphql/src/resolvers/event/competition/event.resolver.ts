@@ -1,18 +1,18 @@
 import { User } from '@badman/backend-authorization';
 import {
-  ExceptionType,
   Comment,
   DrawCompetition,
   EncounterCompetition,
   EventCompetition,
   EventCompetitionUpdateInput,
+  ExceptionType,
   Game,
+  InfoEventType,
   Player,
   RankingGroup,
   RankingPoint,
   RankingSystem,
   SubEventCompetition,
-  InfoEventType,
 } from '@badman/backend-database';
 import { PointsService, StartVisualRankingDate } from '@badman/backend-ranking';
 import { IsUUID } from '@badman/utils';
@@ -102,7 +102,7 @@ export class EventCompetitionResolver {
   async exceptions(@Parent() event: EventCompetition) {
     // return availability.exceptions and map the start en end as date
     return event.exceptions
-      ?.filter((exception) => exception && exception.start && exception.end)
+      ?.filter((exception) => exception?.start && exception?.end)
       ?.map((exception) => ({
         ...exception,
         start: new Date(exception.start as Date),
@@ -114,7 +114,7 @@ export class EventCompetitionResolver {
   async infoEvents(@Parent() event: EventCompetition) {
     // return availability.exceptions and map the start en end as date
     return event.infoEvents
-      ?.filter((info) => info && info.start && info.end)
+      ?.filter((info) => info?.start && info?.end)
       ?.map((info) => ({
         ...info,
         start: new Date(info.start as Date),
@@ -165,7 +165,7 @@ export class EventCompetitionResolver {
             transaction,
           });
 
-          if (updateEventCompetitionData.official == true) {
+          if (updateEventCompetitionData.official) {
             this.logger.debug(`Adding ranking groups and points`);
             for (const subEvent of subEvents) {
               await subEvent.setRankingGroups(groups, {

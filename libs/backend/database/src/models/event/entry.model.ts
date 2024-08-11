@@ -11,7 +11,7 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Op,
-  SaveOptions
+  SaveOptions,
 } from 'sequelize';
 import {
   BeforeCreate,
@@ -223,6 +223,13 @@ export class EventEntry extends Model<
     if (!instance.meta?.competition) {
       // not a competition meta
       return;
+    }
+
+    if (
+      !dbSubEvent.eventCompetition.usedRankingUnit ||
+      !dbSubEvent.eventCompetition.usedRankingAmount
+    ) {
+      throw new Error('EventCompetition usedRanking is not set');
     }
 
     const usedRankingDate = moment();
