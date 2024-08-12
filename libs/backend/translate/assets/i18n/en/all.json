@@ -810,6 +810,9 @@
       "update-ranking": "Update rankings according to file"
     }
   },
+  "rules": {
+    "title": "Validation rules"
+  },
   "search": {
     "placeholder": "Search",
     "type": {
@@ -907,6 +910,9 @@
       },
       "ranking": {
         "title": "Ranking"
+      },
+      "rules": {
+        "title": "Validation rules"
       },
       "tournament": {
         "title": "Tournaments"
