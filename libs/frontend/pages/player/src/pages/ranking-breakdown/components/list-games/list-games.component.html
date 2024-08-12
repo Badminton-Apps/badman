@@ -1,80 +1,191 @@
-<form [formGroup]="this.listGamesService.filter">
+<div class="options">
   <div>
-    <mat-slide-toggle formControlName="includedIgnored">
-      {{ 'all.ranking.breakdown.notUsed' | translate }}:
-      {{
-        lostGamesIgnored.length
-          | i18nPlural
-            : {
-                '=0': 'all.ranking.breakdown.lostGames.none',
-                '=1': 'all.ranking.breakdown.lostGames.one',
-                other: 'all.ranking.breakdown.lostGames.other',
-              }
-          | translate: { count: lostGamesIgnored.length }
-      }}</mat-slide-toggle
-    >
+    <button mat-stroked-button [matMenuTriggerFor]="menu">filter</button>
+    <mat-menu #menu="matMenu">
+      <form [formGroup]="this.breakdownService.filter">
+        <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedIgnored">
+          {{ 'all.ranking.breakdown.notUsed' | translate }}:
+          {{
+            lostGamesIgnored()
+              | i18nPlural
+                : {
+                    '=0': 'all.ranking.breakdown.lostGames.none',
+                    '=1': 'all.ranking.breakdown.lostGames.one',
+                    other: 'all.ranking.breakdown.lostGames.other',
+                  }
+              | translate: { count: lostGamesIgnored() }
+          }}</mat-slide-toggle
+        >
+
+        <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedUpgrade">
+          {{ 'all.ranking.breakdown.used-for-upgrade' | translate }}:
+          {{
+            lostGamesUpgrade()
+              | i18nPlural
+                : {
+                    '=0': 'all.ranking.breakdown.lostGames.none',
+                    '=1': 'all.ranking.breakdown.lostGames.one',
+                    other: 'all.ranking.breakdown.lostGames.other',
+                  }
+              | translate: { count: lostGamesUpgrade() }
+          }}
+        </mat-slide-toggle>
+
+        <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedDowngrade">
+          {{ 'all.ranking.breakdown.used-for-downgrade' | translate }}:
+          {{
+            lostGamesDowngrade()
+              | i18nPlural
+                : {
+                    '=0': 'all.ranking.breakdown.lostGames.none',
+                    '=1': 'all.ranking.breakdown.lostGames.one',
+                    other: 'all.ranking.breakdown.lostGames.other',
+                  }
+              | translate: { count: lostGamesDowngrade() }
+          }}
+        </mat-slide-toggle>
+        @if ((this.system().latestXGamesToUse ?? 0) > 0) {
+          <mat-slide-toggle
+            (click)="$event.stopPropagation()"
+            formControlName="includeOutOfScopeDowngrade"
+          >
+            {{ 'all.ranking.breakdown.outOfScopeDowngrade' | translate }}:
+            {{
+              outOfScopeGamesUpgrade()
+                | i18nPlural
+                  : {
+                      '=0': 'all.ranking.breakdown.outOfScope.none',
+                      '=1': 'all.ranking.breakdown.outOfScope.one',
+                      other: 'all.ranking.breakdown.outOfScope.other',
+                    }
+                | translate: { count: outOfScopeGamesUpgrade() }
+            }}
+          </mat-slide-toggle>
+
+          <mat-slide-toggle
+            (click)="$event.stopPropagation()"
+            formControlName="includeOutOfScopeUpgrade"
+          >
+            {{ 'all.ranking.breakdown.outOfScopeUpgrade' | translate }}:
+            {{
+              outOfScopeGamesDowngrade()
+                | i18nPlural
+                  : {
+                      '=0': 'all.ranking.breakdown.outOfScope.none',
+                      '=1': 'all.ranking.breakdown.outOfScope.one',
+                      other: 'all.ranking.breakdown.outOfScope.other',
+                    }
+                | translate: { count: outOfScopeGamesDowngrade() }
+            }}
+          </mat-slide-toggle>
+
+          <mat-slide-toggle
+            (click)="$event.stopPropagation()"
+            formControlName="includeOutOfScopeWonGames"
+          >
+            {{ 'all.ranking.breakdown.outOfScopeWonGames' | translate }}:
+            {{
+              wonGames()
+                | i18nPlural
+                  : {
+                      '=0': 'all.ranking.breakdown.outOfScope.none',
+                      '=1': 'all.ranking.breakdown.outOfScope.one',
+                      other: 'all.ranking.breakdown.outOfScope.other',
+                    }
+                | translate: { count: wonGames() }
+            }}
+          </mat-slide-toggle>
+        }
+      </form>
+    </mat-menu>
   </div>
-  <div>
-    <mat-slide-toggle formControlName="includedUpgrade">
-      {{ 'all.ranking.breakdown.usedForUpgrade' | translate }}:
-      {{
-        lostGamesUpgrade.length
-          | i18nPlural
-            : {
-                '=0': 'all.ranking.breakdown.lostGames.none',
-                '=1': 'all.ranking.breakdown.lostGames.one',
-                other: 'all.ranking.breakdown.lostGames.other',
-              }
-          | translate: { count: lostGamesUpgrade.length }
-      }}
-    </mat-slide-toggle>
-  </div>
-  <div>
-    <mat-slide-toggle formControlName="includedDowngrade">
-      {{ 'all.ranking.breakdown.usedForDowngrade' | translate }}:
-      {{
-        lostGamesDowngrade.length
-          | i18nPlural
-            : {
-                '=0': 'all.ranking.breakdown.lostGames.none',
-                '=1': 'all.ranking.breakdown.lostGames.one',
-                other: 'all.ranking.breakdown.lostGames.other',
-              }
-          | translate: { count: lostGamesDowngrade.length }
-      }}
-    </mat-slide-toggle>
-  </div>
-  @if ((this.system().latestXGamesToUse ?? 0) > 0) {
-    <div>
-      <mat-slide-toggle formControlName="includeOutOfScope">
-        {{ 'all.ranking.breakdown.includeOutOfScope' | translate }}:
-        {{
-          outOfScopeGames.length
-            | i18nPlural
-              : {
-                  '=0': 'all.ranking.breakdown.outOfScope.none',
-                  '=1': 'all.ranking.breakdown.outOfScope.one',
-                  other: 'all.ranking.breakdown.outOfScope.other',
-                }
-            | translate: { count: outOfScopeGames.length }
-        }}
-      </mat-slide-toggle>
-    </div>
-  }
-  <div class="options">
-    <!-- <button (click)="this.addGame()" mat-stroked-button>
-      {{ 'all.ranking.breakdown.add-game.title' | translate }}
-    </button> -->
-    <button (click)="this.exportToExcel()" mat-stroked-button>
-      {{ 'all.ranking.breakdown.export.title' | translate }}
-    </button>
-  </div>
-</form>
+
+  <button (click)="this.addGame()" mat-stroked-button>
+    {{ 'all.ranking.breakdown.add-game.title' | translate }}
+  </button>
+  <button (click)="this.exportToExcel()" mat-stroked-button>
+    {{ 'all.ranking.breakdown.export.title' | translate }}
+  </button>
+</div>
 
 <mtx-grid
-  [data]="currGames()"
+  [data]="filterdGames()"
   [loading]="!loaded()"
   [columns]="columns"
+  [pageSize]="99999"
   [showPaginator]="false"
-  [pageSize]="99"
+  [showToolbar]="true"
+  [cellTemplate]="{
+    usedForDowngrade: gamesDowngradeTmpl,
+    usedForUpgrade: gamesUpgradeTmpl,
+    avgUpgrade: avgUpgradeTmpl,
+    avgDowngrade: avgDowngradeTmpl,
+    dropsNextPeriod: dropsTmpl,
+  }"
 />
+
+<ng-template #gamesUpgradeTmpl let-row let-index="index" let-col="colDef">
+  @if (row.usedForUpgrade) {
+    @if (row.devideUpgrade !== row.devideUpgradeCorrected) {
+      <span
+        [matTooltip]="
+          'all.ranking.breakdown.corrected'
+            | translate
+              : {
+                  original: row.devideUpgrade,
+                  corrected: row.devideUpgradeCorrected,
+                }
+        "
+        >{{ 'all.button.yes' | translate }}</span
+      >
+    } @else {
+      <span>{{ 'all.button.yes' | translate }}</span>
+    }
+  } @else {
+    <span>{{ 'all.button.no' | translate }}</span>
+  }
+</ng-template>
+<ng-template #gamesDowngradeTmpl let-row let-index="index" let-col="colDef">
+  @if (row.usedForDowngrade) {
+    @if (row.devideDowngrade !== row.devideDowngradeCorrected) {
+      <span
+        [matTooltip]="
+          'all.ranking.breakdown.corrected'
+            | translate
+              : {
+                  original: row.devideUpgrade,
+                  corrected: row.devideUpgradeCorrected,
+                }
+        "
+        >{{ 'all.button.yes' | translate }}</span
+      >
+    } @else {
+      <span>{{ 'all.button.yes' | translate }}</span>
+    }
+  } @else {
+    <span>{{ 'all.button.no' | translate }}</span>
+  }
+</ng-template>
+
+<ng-template #avgUpgradeTmpl let-row let-index="index" let-col="colDef">
+  <span
+    [matTooltip]="getTooltip(row, true, row.usedForUpgrade)"
+    matTooltipClass="tooltip-multi-line tooltip-center-text"
+    >{{ row.avgUpgrade | number: '1.0-0' }}</span
+  >
+</ng-template>
+<ng-template #avgDowngradeTmpl let-row let-index="index" let-col="colDef">
+  <span
+    [matTooltip]="getTooltip(row, false, row.usedForDowngrade)"
+    matTooltipClass="tooltip-multi-line tooltip-center-text"
+    >{{ row.avgDowngrade | number: '1.0-0' }}</span
+  >
+</ng-template>
+
+<ng-template #dropsTmpl let-row let-index="index" let-col="colDef">
+  @if (row.dropsNextPeriod) {
+    <div class="drops" [matTooltip]="'all.ranking.breakdown.drops-next-period' | translate">
+      <mat-icon>update_disabled</mat-icon>
+    </div>
+  }
+</ng-template>

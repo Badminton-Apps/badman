@@ -720,7 +720,7 @@
       "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met minimum {corrected} wedstrijden.",
       "date": "Datum",
       "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
-      "downgrade": "Downgrade",
+      "downgrade-average": "Avg. degradatie",
       "drops-next-period": "Telt niet meer mee in volgende periode",
       "evolution": "Evolutie",
       "export": {
@@ -731,6 +731,8 @@
         "title": "Export huidige filter",
         "WON": "Gewonnen"
       },
+      "games-downgrade": "# Wedstrijden degradatie",
+      "games-upgrade": "# Wedstrijden Upgrade",
       "hint": "Klik op een klassement voor simulatie en analyse",
       "ignored": "Niet meegeteld",
       "includeOutOfScope": "Out of scope",
@@ -748,6 +750,9 @@
         "one": "1 wedstrijd",
         "other": "{count} wedstrijden"
       },
+      "outOfScopeDowngrade": "Buiten scope voor degradatie",
+      "outOfScopeUpgrade": "Buiten scope voor upgrade",
+      "outOfScopeWonGames": "Niet gebruikte gewonnen wedstrijden",
       "period": {
         "last-point-update": "Afgelopen punten update",
         "last-ranking-update": "Afgelopen klassementen update",
@@ -766,9 +771,9 @@
         "point": "Punten update",
         "ranking": "Ranking update"
       },
-      "upgrade": "Upgrade",
-      "usedForDowngrade": "Gebruikt voor downgrade en upgrade",
-      "usedForUpgrade": "Gebruikt enkel voor upgrade"
+      "upgrade-average": "Avg. upgrade",
+      "used-for-downgrade": "Gebruikt voor degradatie",
+      "used-for-upgrade": "Gebruikt voor upgrade"
     },
     "clone-points": "Kopieer punten naar dit systeem",
     "double": "Dubbel",
