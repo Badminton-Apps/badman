@@ -8,7 +8,7 @@ export class CompetitionEncounterChangeConfirmationRequestNotifier extends Notif
 }> {
   protected linkType = 'encounterCompetition';
   protected type: keyof NotificationOptionsTypes = 'encounterChangeConfirmationNotification';
-  protected override allowedInterval: unitOfTime.Diff = 'minute';
+  protected override allowedInterval: unitOfTime.Diff = 'second';
 
   private readonly options = (encounter: EncounterCompetition) => {
     return {
