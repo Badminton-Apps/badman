@@ -67,6 +67,11 @@ export class CronJob extends Model<InferAttributes<CronJob>, InferCreationAttrib
   })
   running?: boolean;
 
+  @Field(() => Boolean, { nullable: false })
+  @Default(false)
+  @Column(DataType.BOOLEAN)
+  active!: boolean;
+
   @Field(() => Int, { nullable: false })
   @Default(0)
   @Column(DataType.INTEGER)
@@ -75,7 +80,7 @@ export class CronJob extends Model<InferAttributes<CronJob>, InferCreationAttrib
 
 @InputType()
 export class CronJobUpdateInput extends PartialType(
-  OmitType(CronJob, ['createdAt', 'updatedAt'] as const),
+  OmitType(CronJob, ['createdAt', 'updatedAt', 'meta'] as const),
   InputType,
 ) {}
 

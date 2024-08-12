@@ -1,3 +1,18 @@
+## 6.166.0 (2024-08-09)
+
+
+### 🚀 Features
+
+- jobs can be queded on command ([6bdf86571](https://github.com/Badminton-Apps/badman/commit/6bdf86571))
+
+### 🩹 Fixes
+
+- some sonar cloud stuff ([13e86df22](https://github.com/Badminton-Apps/badman/commit/13e86df22))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.165.5 (2024-08-08)
 
 
