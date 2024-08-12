@@ -1,3 +1,14 @@
+## 6.166.1 (2024-08-12)
+
+
+### 🩹 Fixes
+
+- competition is allowed ([2b9398650](https://github.com/Badminton-Apps/badman/commit/2b9398650))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.166.0 (2024-08-09)
 
 
