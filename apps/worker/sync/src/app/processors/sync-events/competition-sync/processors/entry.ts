@@ -50,7 +50,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       transaction: this.transaction,
     });
 
-    const drawEntries = await draw.getEntries({
+    const drawEntries = await draw.getEventEntries({
       transaction: this.transaction,
     });
 
@@ -110,7 +110,7 @@ export class CompetitionSyncEntryProcessor extends StepProcessor {
       this._entries.push({ entry, xmlTeamName: item });
     }
 
-    const entries = await draw.getEntries({
+    const entries = await draw.getEventEntries({
       transaction: this.transaction,
       include: [{ model: Team }],
     });

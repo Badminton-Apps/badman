@@ -12,7 +12,6 @@ import { RankingSystemService } from '@badman/frontend-graphql';
 import { Player, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo } from 'apollo-angular';
 import moment from 'moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectParams } from 'ngxtension/inject-params';
@@ -21,8 +20,8 @@ import { injectRouteData } from 'ngxtension/inject-route-data';
 import { takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ListGamesComponent, PeriodSelectionComponent } from './components';
-import { ListGamesService } from './components/list-games/list-games.service';
 import { RankingEvolutionComponent } from './components/ranking-evolution';
+import { RankingBreakdownService } from './services/ranking-breakdown.service';
 
 @Component({
   templateUrl: './ranking-breakdown.page.html',
@@ -51,13 +50,12 @@ export class RankingBreakdownPageComponent {
   private router = inject(Router);
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
-  private apollo = inject(Apollo);
   private destroy$ = injectDestroy();
   systemService = inject(RankingSystemService);
-  private readonly listGamesService = inject(ListGamesService);
+  private readonly breakdownService = inject(RankingBreakdownService);
 
   // route
-  filter = this.listGamesService.filter;
+  filter = this.breakdownService.filter;
 
   // Computed
   player = injectRouteData<Player>('player');
@@ -70,7 +68,10 @@ export class RankingBreakdownPageComponent {
   includedIgnored = injectQueryParams('includedIgnored');
   includedUpgrade = injectQueryParams('includedUpgrade');
   includedDowngrade = injectQueryParams('includedDowngrade');
-  includeOutOfScope = injectQueryParams('includeOutOfScope');
+  includeOutOfScopeUpgrade = injectQueryParams('includeOutOfScopeUpgrade');
+  includeOutOfScopeDowngrade = injectQueryParams('includeOutOfScopeDowngrade');
+  includeOutOfScopeWonGames = injectQueryParams('includeOutOfScopeWonGames');
+  
 
   // Games
   constructor() {
@@ -81,23 +82,10 @@ export class RankingBreakdownPageComponent {
       keywords: ['ranking', 'breakdown', 'player', 'badminton'],
     });
     this.breadcrumbService.set('player/:id', `${this.player()?.fullName}`);
+    this.breakdownService.state.reset();
 
     effect(() => {
-      this.listGamesService.filter.patchValue(
-        {
-          systemId: this.system().id,
-          playerId: this.player()?.id,
-          gameType: this.type(),
-        },
-        {
-          // Don't emit event, as we path the url query params
-          emitEvent: false,
-        },
-      );
-    });
-
-    effect(() => {
-      this._loadQueryParamFilter();
+      this._loadFilter();
     });
 
     this.filter.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -105,7 +93,7 @@ export class RankingBreakdownPageComponent {
     });
   }
 
-  private _loadQueryParamFilter() {
+  private _loadFilter() {
     const end = this.periodEndRoute() ?? null;
 
     // Default we take next update interval, if no end is given
@@ -130,7 +118,10 @@ export class RankingBreakdownPageComponent {
         this.systemService.system()?.calculationIntervalUnit,
       );
 
-    this.listGamesService.filter.patchValue({
+    this.breakdownService.filter.patchValue({
+      systemId: this.system().id,
+      playerId: this.player()?.id,
+      gameType: this.type(),
       start: startPeriod,
       end: endPeriod,
       game: gamePeriod,
@@ -138,7 +129,9 @@ export class RankingBreakdownPageComponent {
       includedIgnored: this.includedIgnored() === 'true',
       includedUpgrade: (this.includedUpgrade() ?? 'true') === 'true',
       includedDowngrade: (this.includedDowngrade() ?? 'true') === 'true',
-      includeOutOfScope: this.includeOutOfScope() === 'true',
+      includeOutOfScopeUpgrade: this.includeOutOfScopeUpgrade() === 'true',
+      includeOutOfScopeDowngrade: this.includeOutOfScopeDowngrade() === 'true',
+      includeOutOfScopeWonGames: this.includeOutOfScopeWonGames() === 'true',
     });
   }
 
@@ -146,18 +139,26 @@ export class RankingBreakdownPageComponent {
     const systemLastUpdate = moment(this.systemService.system()?.calculationLastUpdate);
 
     const queryParams: { [key: string]: string | boolean | null | undefined } = {
-      includedIgnored: this.listGamesService.filter.value.includedIgnored ? true : undefined,
-      includedUpgrade: this.listGamesService.filter.value.includedUpgrade ? undefined : false,
-      includedDowngrade: this.listGamesService.filter.value.includedDowngrade ? undefined : false,
-      includeOutOfScope: this.listGamesService.filter.value.includeOutOfScope ? true : undefined,
-      end: systemLastUpdate.isSame(this.listGamesService.filter.value.end, 'day')
+      includedIgnored: this.breakdownService.filter.value.includedIgnored ? true : undefined,
+      includedUpgrade: this.breakdownService.filter.value.includedUpgrade ? undefined : false,
+      includedDowngrade: this.breakdownService.filter.value.includedDowngrade ? undefined : false,
+      includeOutOfScopeUpgrade: this.breakdownService.filter.value.includeOutOfScopeUpgrade
+        ? true
+        : undefined,
+      includeOutOfScopeDowngrade: this.breakdownService.filter.value.includeOutOfScopeDowngrade
+        ? true
+        : undefined,
+      includeOutOfScopeWonGames: this.breakdownService.filter.value.includeOutOfScopeWonGames
+        ? true
+        : undefined,
+      end: systemLastUpdate.isSame(this.breakdownService.filter.value.end, 'day')
         ? null
-        : this.listGamesService.filter.value.end?.format('YYYY-MM-DD'),
+        : this.breakdownService.filter.value.end?.format('YYYY-MM-DD'),
     };
 
     const url =
-      this.listGamesService.filter.value.gameType !== this.type()
-        ? ['..', `${this.listGamesService.filter.value.gameType}`]
+      this.breakdownService.filter.value.gameType !== this.type()
+        ? ['..', `${this.breakdownService.filter.value.gameType}`]
         : [];
 
     // check if the current url is the same as the new url

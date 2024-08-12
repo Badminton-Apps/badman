@@ -727,7 +727,7 @@ export type I18nTranslations = {
                 "corrected": string;
                 "date": string;
                 "disclaimer": string;
-                "downgrade": string;
+                "downgrade-average": string;
                 "drops-next-period": string;
                 "evolution": string;
                 "export": {
@@ -738,6 +738,8 @@ export type I18nTranslations = {
                     "title": string;
                     "WON": string;
                 };
+                "games-downgrade": string;
+                "games-upgrade": string;
                 "hint": string;
                 "ignored": string;
                 "includeOutOfScope": string;
@@ -755,6 +757,9 @@ export type I18nTranslations = {
                     "one": string;
                     "other": string;
                 };
+                "outOfScopeDowngrade": string;
+                "outOfScopeUpgrade": string;
+                "outOfScopeWonGames": string;
                 "period": {
                     "last-point-update": string;
                     "last-ranking-update": string;
@@ -773,9 +778,9 @@ export type I18nTranslations = {
                     "point": string;
                     "ranking": string;
                 };
-                "upgrade": string;
-                "usedForDowngrade": string;
-                "usedForUpgrade": string;
+                "upgrade-average": string;
+                "used-for-downgrade": string;
+                "used-for-upgrade": string;
             };
             "clone-points": string;
             "double": string;
