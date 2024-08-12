@@ -6,6 +6,7 @@ import {
   computed,
   inject,
   input,
+  Signal,
   untracked,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -25,6 +26,9 @@ import { derivedAsync } from 'ngxtension/derived-async';
 import { RankingBreakdownService } from '../../services/ranking-breakdown.service';
 import { MatMenuModule } from '@angular/material/menu';
 import * as xlsx from 'xlsx';
+import { AddGameComponent } from '../../dialogs/add-game';
+import { take } from 'rxjs';
+import { injectParams } from 'ngxtension/inject-params';
 
 @Component({
   selector: 'badman-list-games',
@@ -63,9 +67,7 @@ export class ListGamesComponent {
 
   startPeriod = derivedAsync<Moment>(() => this.breakdownService.filter.get('start')?.valueChanges);
   next = derivedAsync<Moment>(() => this.breakdownService.filter.get('next')?.valueChanges);
-  type = derivedAsync<'single' | 'double' | 'mix'>(
-    () => this.breakdownService.filter.get('type')?.valueChanges,
-  );
+  type = injectParams('type') as Signal<'single' | 'double' | 'mix'>;
 
   includedIgnored = derivedAsync<boolean | null>(
     () => this.breakdownService.filter.get('includedIgnored')?.valueChanges,
@@ -549,8 +551,29 @@ export class ListGamesComponent {
     return tooltip;
   }
 
+  deleteGame(game: GameBreakdown) {
+    this.breakdownService.state.removeGame(game);
+  }
+
   addGame() {
-    console.log('add game');
+    console.log(this.type());
+    this.dialog
+      .open(AddGameComponent, {
+        minWidth: '450px',
+        data: {
+          playerId: this.player().id,
+          type: this.type(),
+          system: this.system(),
+        },
+      })
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((game: GameBreakdown) => {
+        if (!game) {
+          return;
+        }
+        this.breakdownService.state.addGame(game);
+      });
   }
   exportToExcel() {
     console.log(this.filterdGames().length);
@@ -576,7 +599,35 @@ export class ListGamesComponent {
       'all.ranking.breakdown.outOfScopeWonGames',
     );
 
-    console.log(lostIgnoredTranslation);
+    const dateTranslation = this.translateService.instant('all.ranking.breakdown.export.date');
+    const player1Translation = this.translateService.instant(
+      'all.ranking.breakdown.export.player1',
+    );
+    const player2Translation = this.translateService.instant(
+      'all.ranking.breakdown.export.player2',
+    );
+    const opponent1Translation = this.translateService.instant(
+      'all.ranking.breakdown.export.opponent1',
+    );
+    const opponent2Translation = this.translateService.instant(
+      'all.ranking.breakdown.export.opponent2',
+    );
+    const pointsTranslation = this.translateService.instant('all.ranking.breakdown.export.points');
+    const usedForUpgradeTranslation = this.translateService.instant(
+      'all.ranking.breakdown.export.usedForUpgrade',
+    );
+    const usedForDowngradeTranslation = this.translateService.instant(
+      'all.ranking.breakdown.export.usedForDowngrade',
+    );
+    const avgUpgradeTranslation = this.translateService.instant(
+      'all.ranking.breakdown.export.avgUpgrade',
+    );
+    const avgDowngradeTranslation = this.translateService.instant(
+      'all.ranking.breakdown.export.avgDowngrade',
+    );
+    const countsForTranslation = this.translateService.instant(
+      'all.ranking.breakdown.export.countsFor',
+    );
 
     // Convert JSON data to sheet
     const data = [];
@@ -616,38 +667,38 @@ export class ListGamesComponent {
       }
 
       data.push({
-        'Counts for': countsFor,
-        Date: {
+        [countsForTranslation]: countsFor,
+        [dateTranslation]: {
           v: x.playedAt,
           t: 'd',
         },
-        Player1: `${x.team?.[0]?.fullName} (${x.team?.[0]?.[type] ?? ''})`,
-        Player2:
+        [player1Translation]: `${x.team?.[0]?.fullName} (${x.team?.[0]?.[type] ?? ''})`,
+        [player2Translation]:
           x.team?.[1]?.fullName != undefined
             ? `${x.team?.[1]?.fullName} (${x.team?.[1]?.[type] ?? ''})`
             : '',
-        Opponent1: `${x.opponent?.[0]?.fullName} (${x.opponent?.[0]?.[type] ?? ''})`,
-        Opponent2:
+        [opponent1Translation]: `${x.opponent?.[0]?.fullName} (${x.opponent?.[0]?.[type] ?? ''})`,
+        [opponent2Translation]:
           x.opponent?.[1]?.fullName != undefined
             ? `${x.opponent?.[1]?.fullName} (${x.opponent?.[1]?.[type] ?? ''})`
             : '',
 
-        Points: x.points,
+        [pointsTranslation]: x.points,
 
         // hidden columns
-        usedForUpgrade: {
+        [usedForUpgradeTranslation]: {
           v: x.usedForUpgrade,
           t: 'b',
         },
-        usedForDowngrade: {
+        [usedForDowngradeTranslation]: {
           v: x.usedForDowngrade,
           t: 'b',
         },
-        AvgUpgrade: {
+        [avgUpgradeTranslation]: {
           f: `AVERAGEIF(H2:H${i + 2}, TRUE, G2:G${i + 2})`,
           z: '0.00',
         },
-        AvgDowngrade: {
+        [avgDowngradeTranslation]: {
           f: `AVERAGEIF(I2:I${i + 2}, TRUE, G2:G${i + 2})`,
           z: '0.00',
         },
