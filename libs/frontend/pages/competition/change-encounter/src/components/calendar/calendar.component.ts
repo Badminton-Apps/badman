@@ -849,7 +849,8 @@ export class CalendarComponent implements OnInit {
 
     // check if it the date is not a exception
     const format = date.format('YYYY-MM-DD');
-    if (this.dayEvents.has(format)) {
+    const dayEvent = this.dayEvents.get(format);
+    if (dayEvent?.some((e) => !e.allowCompetition) ?? false) {
       this.snack.open(
         this.translate.instant('all.competition.change-encounter.calendar.no-availibility'),
         'Ok',
