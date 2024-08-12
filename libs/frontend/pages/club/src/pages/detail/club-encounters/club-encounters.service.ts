@@ -66,7 +66,7 @@ export class ClubEncounterService {
 
     if (this.state().filterChangedRequest) {
       filtered = filtered.filter(
-        (encounter) => !moment(encounter.originalDate).isSame(encounter.date),
+        (encounter) => !moment(encounter.originalDate ?? encounter.date).isSame(encounter.date),
       );
     }
 
@@ -178,6 +178,7 @@ export class ClubEncounterService {
               rows {
                 id
                 date
+                originalDate
                 home {
                   id
                   name
