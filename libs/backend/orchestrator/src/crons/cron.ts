@@ -22,18 +22,23 @@ export class CronService implements OnModuleInit {
 
   async onModuleInit() {
     this.logger.verbose('Scheduling crons');
+
+    this._deleteAllJobs();
+
     await this.queueSystems();
     await this.queueCrons();
 
-    this._getCrons();
+    this._logIntervals();
   }
 
   async queueCrons() {
     const syncJobs = await CronJob.findAll({
       where: {
         type: 'sync',
+        active: true,
       },
     });
+
     for (const job of syncJobs) {
       this._queueSyncJob(job);
     }
@@ -43,8 +48,10 @@ export class CronService implements OnModuleInit {
     const rankingJobs = await CronJob.findAll({
       where: {
         type: 'ranking',
+        active: true,
       },
     });
+
     await this._queueJobsForSystems(rankingJobs);
     for (const job of rankingJobs) {
       this._queueRankingJob(job);
@@ -61,7 +68,7 @@ export class CronService implements OnModuleInit {
         throw new Error(`Queue ${queueName} not found`);
     }
   }
-  private _getCrons() {
+  private _logIntervals() {
     const jobs = this.schedulerRegistry.getCronJobs();
     jobs.forEach((value, key) => {
       let next;
@@ -71,6 +78,14 @@ export class CronService implements OnModuleInit {
         next = 'error: next fire date is in the past!';
       }
       this.logger.debug(`job: ${key} -> next: ${next}`);
+    });
+  }
+
+  private _deleteAllJobs() {
+    const jobs = this.schedulerRegistry.getCronJobs();
+    jobs.forEach((value, key) => {
+      value.stop();
+      this.schedulerRegistry.deleteCronJob(key);
     });
   }
 
@@ -112,11 +127,7 @@ export class CronService implements OnModuleInit {
   }
 
   private async _queueJobsForSystems(jobs: CronJob[]) {
-    const systems = await RankingSystem.findAll({
-      where: {
-        calculateUpdates: true,
-      },
-    });
+    const systems = await RankingSystem.findAll();
 
     // find or create jobs for each system
     for (const system of systems) {
@@ -130,24 +141,33 @@ export class CronService implements OnModuleInit {
         continue;
       }
 
-      const newJob = await CronJob.create({
-        name: jobName,
-        cronTime,
-        running: false,
-        type: 'ranking',
-        meta: {
-          queueName: RankingQueue,
-          jobName: Ranking.UpdateRanking,
-          arguments: {
-            systemId: system.id,
-            // the points are calculated when running sync
-            calculatePoints: false,
-            recalculatePoints: false,
-          } as UpdateRankingJob,
+      const [newJob] = await CronJob.findOrCreate({
+        where: {
+          name: jobName,
+          type: 'ranking',
+        },
+        defaults: {
+          name: jobName,
+          cronTime,
+          running: false,
+          type: 'ranking',
+          active: system.calculateUpdates,
+          meta: {
+            queueName: RankingQueue,
+            jobName: Ranking.UpdateRanking,
+            arguments: {
+              systemId: system.id,
+              // the points are calculated when running sync
+              calculatePoints: false,
+              recalculatePoints: false,
+            } as UpdateRankingJob,
+          },
         },
       });
 
-      jobs.push(newJob);
+      if (newJob.active) {
+        jobs.push(newJob);
+      }
     }
 
     this.logger.verbose(`Removing old jobs`);
@@ -199,7 +219,7 @@ export class CronService implements OnModuleInit {
           ).length > 0;
 
         if (!hasUpdates) {
-          this.logger.verbose(`No updates for ${job.name} on ${moment()}`);
+          this.logger.verbose(`No updates for ${job.name} on ${moment().format('llll')}`);
           return;
         }
 
