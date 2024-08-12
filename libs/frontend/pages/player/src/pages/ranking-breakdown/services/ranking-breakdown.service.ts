@@ -101,6 +101,24 @@ export class RankingBreakdownService {
             return this.initialState;
           }),
         ),
+      addGame: (_state, action$: Observable<Game>) =>
+        action$.pipe(
+          map((game) => {
+            return {
+              ..._state(),
+              games: [..._state().games, game],
+            };
+          }),
+        ),
+      removeGame: (_state, action$: Observable<Game>) =>
+        action$.pipe(
+          map((game) => {
+            return {
+              ..._state(),
+              games: _state().games.filter((g) => g.id !== game.id),
+            };
+          }),
+        ),
     },
   });
 

@@ -731,11 +731,21 @@ export type I18nTranslations = {
                 "drops-next-period": string;
                 "evolution": string;
                 "export": {
+                    "avgDowngrade": string;
+                    "avgUpgrade": string;
+                    "date": string;
                     "LOST_DOWNGRADE": string;
                     "LOST_IGNORED": string;
                     "LOST_UPGRADE": string;
+                    "opponent1": string;
+                    "opponent2": string;
                     "OUT_SCOPE": string;
+                    "player1": string;
+                    "player2": string;
+                    "points": string;
                     "title": string;
+                    "usedForDowngrade": string;
+                    "usedForUpgrade": string;
                     "WON": string;
                 };
                 "games-downgrade": string;

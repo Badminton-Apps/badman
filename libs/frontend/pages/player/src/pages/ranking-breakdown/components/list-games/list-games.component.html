@@ -1,6 +1,6 @@
 <div class="options">
   <div>
-    <button mat-stroked-button [matMenuTriggerFor]="menu">filter</button>
+    <button mat-stroked-button [matMenuTriggerFor]="menu">Filter</button>
     <mat-menu #menu="matMenu">
       <form [formGroup]="this.breakdownService.filter">
         <mat-slide-toggle (click)="$event.stopPropagation()" formControlName="includedIgnored">
