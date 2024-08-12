@@ -1,3 +1,14 @@
+## 6.166.3 (2024-08-12)
+
+
+### 🩹 Fixes
+
+- faster mailing ([4614ebe17](https://github.com/Badminton-Apps/badman/commit/4614ebe17))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.166.2 (2024-08-12)
 
 
