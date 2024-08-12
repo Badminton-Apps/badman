@@ -1,3 +1,14 @@
+## 6.166.2 (2024-08-12)
+
+
+### 🩹 Fixes
+
+- use date if the original date is unavailible ([18853c16b](https://github.com/Badminton-Apps/badman/commit/18853c16b))
+
+### ❤️  Thank You
+
+- Glenn Latomme
+
 ## 6.166.1 (2024-08-12)
 
 
