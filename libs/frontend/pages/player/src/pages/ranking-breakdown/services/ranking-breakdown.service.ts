@@ -1,21 +1,20 @@
 import { Injectable, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Game, Player, RankingSystem } from '@badman/frontend-models';
+import { Game, Player } from '@badman/frontend-models';
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
-import { EMPTY, Subject, merge } from 'rxjs';
+import { EMPTY, Observable, Subject, merge } from 'rxjs';
 import {
   catchError,
   distinctUntilChanged,
   filter,
   map,
-  tap,
   startWith,
   switchMap,
   throttleTime,
 } from 'rxjs/operators';
 
-export interface ListGamesState {
+export interface RankingBreakdownState {
   games: Game[];
   error: string | null;
   loaded: boolean;
@@ -24,7 +23,7 @@ export interface ListGamesState {
 @Injectable({
   providedIn: 'root',
 })
-export class ListGamesService {
+export class RankingBreakdownService {
   private readonly apollo = inject(Apollo);
   private readonly error$ = new Subject<string>();
 
@@ -34,7 +33,9 @@ export class ListGamesService {
     includedIgnored: new FormControl<boolean>(false),
     includedUpgrade: new FormControl<boolean>(true),
     includedDowngrade: new FormControl<boolean>(true),
-    includeOutOfScope: new FormControl<boolean>(false),
+    includeOutOfScopeUpgrade: new FormControl<boolean>(false),
+    includeOutOfScopeDowngrade: new FormControl<boolean>(false),
+    includeOutOfScopeWonGames: new FormControl<boolean>(false),
     gameType: new FormControl<string>(''),
     start: new FormControl(),
     end: new FormControl(),
@@ -42,7 +43,7 @@ export class ListGamesService {
     next: new FormControl(),
   });
 
-  initialState: ListGamesState = {
+  initialState: RankingBreakdownState = {
     games: [],
     loaded: false,
     error: null,
@@ -50,9 +51,6 @@ export class ListGamesService {
 
   private filterChanged$ = this.filter.valueChanges.pipe(
     startWith(this.filter.value),
-    tap((filter) => {
-      console.log('filter', filter);
-    }),
     filter(
       (filter) =>
         !!filter.systemId &&
@@ -61,14 +59,21 @@ export class ListGamesService {
         !!filter.end &&
         !!filter.playerId,
     ),
-    distinctUntilChanged(),
+    distinctUntilChanged(
+      (a, b) =>
+        a.systemId === b.systemId &&
+        a.gameType === b.gameType &&
+        a.start === b.start &&
+        a.end === b.end &&
+        a.playerId === b.playerId,
+    ),
   );
 
   // sources
-  private rankingLoaded = this.filterChanged$.pipe(
+  private dataLoaded = this.filterChanged$.pipe(
     throttleTime(300),
     switchMap((filter) => this.getGames(filter)),
-    map((ranking) => ({ ranking, loaded: true })),
+    map((games) => ({ games, loaded: true })),
     catchError((err) => {
       this.error$.next(err);
       return EMPTY;
@@ -76,9 +81,9 @@ export class ListGamesService {
   );
 
   sources$ = merge(
-    this.rankingLoaded,
+    this.dataLoaded,
     this.error$.pipe(map((error) => ({ error }))),
-    this.filterChanged$.pipe(map(() => ({ loaded: false }))),
+    this.filterChanged$.pipe(map(() => ({ loaded: false, games: [] }))),
   );
 
   state = signalSlice({
@@ -89,16 +94,20 @@ export class ListGamesService {
         return state().loaded && state().error;
       },
     }),
+    actionSources: {
+      reset: (_state, action$: Observable<void>) =>
+        action$.pipe(
+          map(() => {
+            return this.initialState;
+          }),
+        ),
+    },
   });
 
   private getGames(
     filter: Partial<{
       systemId: string | null;
       playerId: string | null;
-      includedIgnored: boolean | null;
-      includedUpgrade: boolean | null;
-      includedDowngrade: boolean | null;
-      includeOutOfScope: boolean | null;
       gameType: string | null;
       start: string | null;
       end: string | null;
@@ -142,6 +151,8 @@ export class ListGamesService {
             playedAt: {
               $between: [filter.start, filter.end],
             },
+            set1Team1: { $ne: null },
+            set1Team2: { $ne: null },
           },
           playerId: filter.playerId,
           systemId: filter.systemId,

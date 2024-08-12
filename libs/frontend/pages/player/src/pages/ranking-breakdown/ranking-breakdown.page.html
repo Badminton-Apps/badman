@@ -17,7 +17,7 @@
         <mat-option value="mix">{{ 'all.ranking.mix' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
-    <badman-period-selection [system]="system()" [period]="this.filter"></badman-period-selection>
+    <badman-period-selection [system]="system()"></badman-period-selection>
   </form>
   <badman-list-games [system]="system()" [player]="player()!"></badman-list-games>
 }

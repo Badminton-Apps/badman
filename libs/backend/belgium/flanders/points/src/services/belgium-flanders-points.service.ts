@@ -6,7 +6,7 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/backend-database';
-import { GameType, getRankingProtected } from '@badman/utils';
+import { GameStatus, GameType, getRankingProtected } from '@badman/utils';
 import { Injectable } from '@nestjs/common';
 import { Op, Transaction } from 'sequelize';
 
@@ -28,7 +28,10 @@ export class BelgiumFlandersPointsService {
     }
 
     // ignore WO's
-    if ((game.set1Team1 ?? null) === null && (game.set1Team2 ?? null) === null) {
+    if (
+      game.status == GameStatus.WALKOVER ||
+      ((game.set1Team1 ?? null) === null && (game.set1Team2 ?? null) === null)
+    ) {
       return [];
     }
 

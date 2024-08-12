@@ -720,7 +720,7 @@
       "corrected": "Originally {original} games, average is being calculated with minimum {corrected} games.",
       "date": "Date",
       "disclaimer": "Currently, this is a proof of concept. This is because we don't have the full data set from an external system to show the following correctly. We are working on this.",
-      "downgrade": "Downgrade",
+      "downgrade-average": "Avg. Downgrade",
       "drops-next-period": "Drops next period",
       "evolution": "Evolution",
       "export": {
@@ -731,6 +731,8 @@
         "title": "Export current filter",
         "WON": "Won"
       },
+      "games-downgrade": "# Matches Downgrade",
+      "games-upgrade": "# Matches Upgrade",
       "hint": "Click on a level for simulation and breakdown",
       "ignored": "Doesn't count",
       "includeOutOfScope": "Out of scope",
@@ -748,6 +750,9 @@
         "one": "One game",
         "other": "{count} games"
       },
+      "outOfScopeDowngrade": "Out of scope for downgrade",
+      "outOfScopeUpgrade": "Out of scope for upgrade",
+      "outOfScopeWonGames": "Unused matches won",
       "period": {
         "last-point-update": "Past points update",
         "last-ranking-update": "Past rankings update",
@@ -766,9 +771,9 @@
         "point": "Points update",
         "ranking": "Ranking update"
       },
-      "upgrade": "Upgrade",
-      "usedForDowngrade": "Used for up- and downgrade",
-      "usedForUpgrade": "Used for upgrade"
+      "upgrade-average": "Avg. upgrade",
+      "used-for-downgrade": "Used for downgrade",
+      "used-for-upgrade": "Used for upgrade"
     },
     "clone-points": "Copy points to this system",
     "double": "Double",

@@ -720,7 +720,7 @@
       "corrected": " {original} correspondances d'origine, la moyenne est calculée avec un minimum de {corrected} correspondances.",
       "date": "Date",
       "disclaimer": "Il s'agit actuellement d'une preuve de concept. En effet, nous ne pouvons pas demander toutes les données d'un système externe pour afficher correctement ce qui suit. Nous y travaillons.",
-      "downgrade": "Rétrograder",
+      "downgrade-average": "Moyenne des déclassements",
       "drops-next-period": "Ne compte pas dans la période suivante",
       "evolution": "Évolution",
       "export": {
@@ -731,6 +731,8 @@
         "title": "Exporter le filtre actuel",
         "WON": "Gagné"
       },
+      "games-downgrade": "# Nombre de matches déclassés",
+      "games-upgrade": "# Nombre d'allumettes Mise à niveau",
       "hint": "Cliquez sur un classement pour une simulation et une analyse",
       "ignored": "Non compté",
       "includeOutOfScope": "Hors champ",
@@ -748,6 +750,9 @@
         "one": "1 match",
         "other": "{count}  correspondances"
       },
+      "outOfScopeDowngrade": "Hors de portée d'une révision à la baisse",
+      "outOfScopeUpgrade": "Hors de portée de la mise à niveau",
+      "outOfScopeWonGames": "Matchs gagnés non utilisés",
       "period": {
         "last-point-update": "Mise à jour des points précédents",
         "last-ranking-update": "Mise à jour des classements antérieurs",
@@ -766,9 +771,9 @@
         "point": "Mise à jour des points",
         "ranking": "Mise à jour du classement"
       },
-      "upgrade": "Surclassement",
-      "usedForDowngrade": "Utilisé pour la rétrogradation et la mise à niveau",
-      "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
+      "upgrade-average": "Mise à niveau moyenne",
+      "used-for-downgrade": "Utilisé pour le déclassement",
+      "used-for-upgrade": "Utilisé pour la mise à niveau"
     },
     "clone-points": "Copier les points vers ce système",
     "double": "Double",
