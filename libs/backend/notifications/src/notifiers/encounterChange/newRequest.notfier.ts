@@ -9,7 +9,7 @@ export class CompetitionEncounterChangeNewRequestNotifier extends Notifier<{
 }> {
   protected linkType = 'encounterCompetition';
   protected type: keyof NotificationOptionsTypes = 'encounterChangeNewNotification';
-  protected override allowedInterval: unitOfTime.Diff = 'hour';
+  protected override allowedInterval: unitOfTime.Diff = 'second';
 
   private readonly options = (encounter: EncounterCompetition) => {
     return {
