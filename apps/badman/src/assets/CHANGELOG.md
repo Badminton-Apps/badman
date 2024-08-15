@@ -1,3 +1,25 @@
+## 6.167.0 (2024-08-15)
+
+
+### 🚀 Features
+
+- export ranking breakdown ([29ade2ce0](https://github.com/Badminton-Apps/badman/commit/29ade2ce0))
+- new ranking breakdown + export to excel ([e0dbfa26b](https://github.com/Badminton-Apps/badman/commit/e0dbfa26b))
+- option to trigger a re-calculate of the points ([b8c3f64d6](https://github.com/Badminton-Apps/badman/commit/b8c3f64d6))
+
+### 🩹 Fixes
+
+- more sonar cloud implementations and stricter models ([1210cff44](https://github.com/Badminton-Apps/badman/commit/1210cff44))
+- allow faster mailing ([8c9273e1d](https://github.com/Badminton-Apps/badman/commit/8c9273e1d))
+- support for adding new games ([f0428a0bd](https://github.com/Badminton-Apps/badman/commit/f0428a0bd))
+- top level translations weren't loaded ([64cd3b36b](https://github.com/Badminton-Apps/badman/commit/64cd3b36b))
+- they should use the in-app translations ([4cfe9f4a7](https://github.com/Badminton-Apps/badman/commit/4cfe9f4a7))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.166.3 (2024-08-12)
 
 
