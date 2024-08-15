@@ -1,9 +1,9 @@
-import { Team, Location } from '@badman/backend-database';
+import { Team, Location, EncounterCompetition } from '@badman/backend-database';
 import { Controller, Get, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { ICalCalendar } from 'ical-generator';
 import moment from 'moment';
-import { Includeable } from 'sequelize';
+import { Includeable, Op } from 'sequelize';
 
 @Controller('calendar')
 export class CalendarController {
@@ -24,19 +24,29 @@ export class CalendarController {
       return res.status(404).send('Team not found');
     }
 
-    const include = [
-      { model: Team, as: 'home' },
-      { model: Team, as: 'away' },
-      {
-        model: Location,
-        as: 'location',
+    const enconuters = await EncounterCompetition.findAll({
+      where: {
+        [Op.or]: [{ homeTeamId: team.id }, { awayTeamId: team.id }],
       },
-    ] as Includeable[];
+      include: [
+        {
+          model: Location,
+          as: 'location',
+        },
+        {
+          model: Team,
+          as: 'home',
+        },
+        {
+          model: Team,
+          as: 'away',
+        },
+      ],
+    });
 
-    const encH = await team.getHomeEncounters({ include });
-    const encA = await team.getAwayEncounters({ include });
+    console.log(`found ${enconuters.length} away encounters`);
 
-    const events = [...encH, ...encA].map((enc) => ({
+    const events = enconuters.map((enc) => ({
       title: `${enc.home.name} vs ${enc.away.name}`,
       startTime: enc.date,
       endTime: moment(enc.date).add(3, 'hours').toDate(),
@@ -65,7 +75,7 @@ export class CalendarController {
     });
 
     res.header('Content-Type', 'text/calendar');
-    res.header('Content-Disposition', 'attachment; filename="calendar.ics"');
+    res.header('Content-Disposition', `attachment; filename="calendar-${team.name}.ics"`);
 
     // Send the calendar data as an .ics file
     res.send(calendar.toString());
