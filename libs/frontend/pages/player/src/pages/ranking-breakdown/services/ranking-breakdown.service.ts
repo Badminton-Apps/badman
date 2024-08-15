@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Game, Player } from '@badman/frontend-models';
-import { GameType } from '@badman/utils';
+import { GameType, Ranking } from '@badman/utils';
 
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
@@ -38,7 +38,7 @@ export class RankingBreakdownService {
     includeOutOfScopeUpgrade: new FormControl<boolean>(false),
     includeOutOfScopeDowngrade: new FormControl<boolean>(false),
     includeOutOfScopeWonGames: new FormControl<boolean>(false),
-    gameType: new FormControl<GameType | null>(null),
+    gameType: new FormControl<Ranking | null>(null),
     start: new FormControl(),
     end: new FormControl(),
     game: new FormControl(),
@@ -128,11 +128,24 @@ export class RankingBreakdownService {
     filter: Partial<{
       systemId: string | null;
       playerId: string | null;
-      gameType: GameType | null;
+      gameType: Ranking | null;
       start: string | null;
       end: string | null;
     }>,
   ) {
+    let gameType = GameType.S;
+    switch (filter.gameType) {
+      case 'single':
+        gameType = GameType.S;
+        break;
+      case 'double':
+        gameType = GameType.D;
+        break;
+      case 'mix':
+        gameType = GameType.MX;
+        break;
+    }
+
     return this.apollo
       .query<{ player: Player }>({
         fetchPolicy: 'no-cache',
@@ -167,7 +180,7 @@ export class RankingBreakdownService {
         `,
         variables: {
           where: {
-            gameType: filter.gameType,
+            gameType,
             playedAt: {
               $between: [filter.start, filter.end],
             },

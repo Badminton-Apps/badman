@@ -17,17 +17,17 @@
       @if (this.player()?.id) {
         <div class="levels">
           <badman-show-level
-            [routerLink]="['ranking', 'S']"
+            [routerLink]="['ranking', 'single']"
             [playerId]="this.playerId()"
             type="single"
           />
           <badman-show-level
-            [routerLink]="['ranking', 'D']"
+            [routerLink]="['ranking', 'double']"
             [playerId]="this.playerId()"
             type="double"
           />
           <badman-show-level
-            [routerLink]="['ranking', 'MX']"
+            [routerLink]="['ranking', 'mix']"
             [playerId]="this.playerId()"
             type="mix"
           />

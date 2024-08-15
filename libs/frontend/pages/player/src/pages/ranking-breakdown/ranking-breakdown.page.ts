@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  Signal,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -22,7 +29,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ListGamesComponent, PeriodSelectionComponent } from './components';
 import { RankingEvolutionComponent } from './components/ranking-evolution';
 import { RankingBreakdownService } from './services/ranking-breakdown.service';
-import { GameType } from '@badman/utils';
+import {  Ranking } from '@badman/utils';
 
 @Component({
   templateUrl: './ranking-breakdown.page.html',
@@ -61,7 +68,7 @@ export class RankingBreakdownPageComponent {
   // Computed
   player = injectRouteData<Player>('player');
   id = injectParams('id');
-  type = injectParams('type');
+  type = injectParams('type') as Signal<Ranking>;
   system = computed(() => this.systemService.system() as RankingSystem);
 
   // specific computed value so the effect only triggers when the end date changes
@@ -72,7 +79,6 @@ export class RankingBreakdownPageComponent {
   includeOutOfScopeUpgrade = injectQueryParams('includeOutOfScopeUpgrade');
   includeOutOfScopeDowngrade = injectQueryParams('includeOutOfScopeDowngrade');
   includeOutOfScopeWonGames = injectQueryParams('includeOutOfScopeWonGames');
-  
 
   // Games
   constructor() {
@@ -119,24 +125,10 @@ export class RankingBreakdownPageComponent {
         this.systemService.system()?.calculationIntervalUnit,
       );
 
-    let gameType = GameType.S
-    switch (this.type()) {
-      case 'single':
-        gameType = GameType.S;
-        break;
-      case 'double':
-        gameType = GameType.D;
-        break;
-      case 'mix':
-        gameType = GameType.MX;
-        break;
-    }
-      
-
     this.breakdownService.filter.patchValue({
       systemId: this.system().id,
       playerId: this.player()?.id,
-      gameType,
+      gameType: this.type(),
       start: startPeriod,
       end: endPeriod,
       game: gamePeriod,
@@ -173,7 +165,7 @@ export class RankingBreakdownPageComponent {
 
     const url =
       this.breakdownService.filter.value.gameType !== this.type()
-        ? ['..', `${this.breakdownService.filter.value.gameType}`]
+        ? ['..', this.breakdownService.filter.value.gameType]
         : [];
 
     // check if the current url is the same as the new url
