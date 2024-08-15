@@ -684,6 +684,7 @@
     "claimed": "Claimed",
     "ical": {
       "click": "Kopieer naar klembord",
+      "copied": "Link gekopieerd naar klembord",
       "description": "De link voor alle seizoen blijft dan de ploeg volgen als deze promoveert/degradeert. zelfs als de ploeg van nummer veranderd (zolang de competitie verantwoordelijke de ploeg overzet van het vorig jaar)",
       "linked": "Alle seizoenen",
       "team-season": "Enkel dit seizoen"
