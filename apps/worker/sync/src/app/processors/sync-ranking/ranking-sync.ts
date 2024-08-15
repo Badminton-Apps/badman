@@ -1,7 +1,7 @@
 import { Player, RankingLastPlace, RankingPlace, RankingSystem } from '@badman/backend-database';
 import { Sync } from '@badman/backend-queue';
 import { VisualService } from '@badman/backend-visual';
-import { RankingSystems } from '@badman/utils';
+import { RankingSystems, Ranking, Gender } from '@badman/utils';
 import { Logger } from '@nestjs/common';
 import { Queue } from 'bull';
 import { XMLParser } from 'fast-xml-parser';
@@ -164,7 +164,7 @@ export class RankingSyncer {
             date: momentDate,
           } as VisualPublication;
         });
-      pubs = pubs?.sort((a, b) => a.date.diff(b.date));
+      pubs = pubs?.slice()?.sort((a, b) => a.date.diff(b.date));
 
       // get latest publication
       const last = pubs?.slice(-1)?.[0];
@@ -186,7 +186,7 @@ export class RankingSyncer {
       return {
         visiblePublications: pubs,
         hiddenPublications: publications
-          ?.filter((publication) => publication.Visible == false)
+          ?.filter((publication) => !publication.Visible)
           ?.map((publication) => {
             const momentDate = moment(publication.PublicationDate, 'YYYY-MM-DD');
             return momentDate;
@@ -213,8 +213,8 @@ export class RankingSyncer {
         category: string | null,
         places: Map<string, RankingPlace>,
         newPlayers: Map<string, Player>,
-        type: 'single' | 'double' | 'mix',
-        gender: 'M' | 'F',
+        type: Ranking,
+        gender: Gender,
       ) => {
         if (!category) {
           this.logger.error(`No category defined?`);
@@ -304,7 +304,7 @@ export class RankingSyncer {
 
           // Check if other publication has create the ranking place
           if (places.has(foundPlayer.id)) {
-            const place = places.get(foundPlayer.id) as RankingPlace;
+            const place = places.get(foundPlayer.id);
 
             place[type] = points.Level;
             place[`${type}Points`] = points.Totalpoints;
@@ -329,7 +329,7 @@ export class RankingSyncer {
             const place = foundPlayer.rankingLastPlaces.find(
               (r) => r.systemId === ranking.system.id,
             );
-            if (place != null && place[type] != null && place[type] !== points.Level) {
+            if (place?.[type] != null && place[type] !== points.Level) {
               place[type] = points.Level;
               await place.save({ transaction: args.transaction });
             }
@@ -346,7 +346,7 @@ export class RankingSyncer {
           (!ranking.stopDate || publication.date.isBefore(ranking.stopDate))
         ) {
           if (publication.usedForUpdate) {
-            this.logger.log(`Updating ranking on ${publication.date}`);
+            this.logger.log(`Updating ranking on ${publication.date.format('LLL')}`);
           }
 
           this.logger.debug(`Getting single levels for ${publication.date.format('LLL')}`);
@@ -505,7 +505,7 @@ export class RankingSyncer {
 
       // For now we only check if it's the last update
 
-      const lastPublication = visiblePublications?.sort(
+      const lastPublication = visiblePublications.slice()?.sort(
         (a, b) => b.date.valueOf() - a.date.valueOf(),
       )?.[0];
 

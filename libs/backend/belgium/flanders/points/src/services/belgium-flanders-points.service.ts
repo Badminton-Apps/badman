@@ -6,7 +6,7 @@ import {
   RankingPoint,
   RankingSystem,
 } from '@badman/backend-database';
-import { GameStatus, GameType, getRankingProtected } from '@badman/utils';
+import { GameStatus, GameType, getRankingProtected, Ranking } from '@badman/utils';
 import { Injectable } from '@nestjs/common';
 import { Op, Transaction } from 'sequelize';
 
@@ -210,7 +210,7 @@ export class BelgiumFlandersPointsService {
       system,
     );
 
-    let pointsFrom: 'single' | 'mix' | 'double' | undefined = undefined;
+    let pointsFrom: Ranking | undefined = undefined;
 
     switch (game.gameType) {
       case GameType.S:
@@ -256,32 +256,28 @@ export class BelgiumFlandersPointsService {
         // Store the difference in levels
         points.differenceInLevel = levelP1T2 - levelP1T1;
       }
+    } else if (game.winner === 1) {
+      const wonPoints = Math.round(
+        (this._getWinningPoints(system, levelP1T2) + this._getWinningPoints(system, levelP2T2)) / 2,
+      );
+      points.player1Team1Points = wonPoints;
+      points.player2Team1Points = wonPoints;
+      points.player1Team2Points = 0;
+      points.player2Team2Points = 0;
+
+      // Store the difference in levels
+      points.differenceInLevel = (levelP1T1 + levelP2T1 - (levelP1T2 + levelP2T2)) / 2;
     } else {
-      if (game.winner === 1) {
-        const wonPoints = Math.round(
-          (this._getWinningPoints(system, levelP1T2) + this._getWinningPoints(system, levelP2T2)) /
-            2,
-        );
-        points.player1Team1Points = wonPoints;
-        points.player2Team1Points = wonPoints;
-        points.player1Team2Points = 0;
-        points.player2Team2Points = 0;
+      const wonPoints = Math.round(
+        (this._getWinningPoints(system, levelP1T1) + this._getWinningPoints(system, levelP2T1)) / 2,
+      );
+      points.player1Team2Points = wonPoints;
+      points.player2Team2Points = wonPoints;
+      points.player1Team1Points = 0;
+      points.player2Team1Points = 0;
 
-        // Store the difference in levels
-        points.differenceInLevel = (levelP1T1 + levelP2T1 - (levelP1T2 + levelP2T2)) / 2;
-      } else {
-        const wonPoints = Math.round(
-          (this._getWinningPoints(system, levelP1T1) + this._getWinningPoints(system, levelP2T1)) /
-            2,
-        );
-        points.player1Team2Points = wonPoints;
-        points.player2Team2Points = wonPoints;
-        points.player1Team1Points = 0;
-        points.player2Team1Points = 0;
-
-        // Store the difference in levels
-        points.differenceInLevel = (levelP1T2 + levelP2T2 - (levelP1T1 + levelP2T1)) / 2;
-      }
+      // Store the difference in levels
+      points.differenceInLevel = (levelP1T2 + levelP2T2 - (levelP1T1 + levelP2T1)) / 2;
     }
 
     return points;
