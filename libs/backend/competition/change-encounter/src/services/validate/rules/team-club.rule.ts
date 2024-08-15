@@ -63,9 +63,9 @@ export class TeamClubRule extends Rule {
       } as EncounterCompetition;
 
       for (const suggestedDate of suggestedDates) {
-        const suggestedSemester1 = suggestedDate.getFullYear() === lowestYear;
+        const suggestedSemester1 = suggestedDate.date.getFullYear() === lowestYear;
 
-        encounter.date = suggestedDate;
+        encounter.date = suggestedDate.date
         const encountersSemester = suggestedSemester1 ? encountersSemester1 : encountersSemester2;
         const warns = this.findIfSameClubIsFirst([...encountersSemester, encounter], team.id);
 
@@ -74,7 +74,7 @@ export class TeamClubRule extends Rule {
             message: 'all.competition.change-encounter.errors.same-club',
             params: {
               encounterId: warn.id,
-              date: suggestedDate,
+              date: suggestedDate.date
             },
           });
         });
@@ -103,7 +103,7 @@ export class TeamClubRule extends Rule {
 
     const errors = [];
     let differentClubPassed = 0;
-    for (const enc of encounters.sort(
+    for (const enc of encounters.slice().sort(
       (a, b) => (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0),
     )) {
       const otherClub = enc.home?.id == currentTeamId ? enc.away?.clubId : enc.home?.clubId;
