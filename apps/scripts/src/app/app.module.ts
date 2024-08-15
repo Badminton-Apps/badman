@@ -2,10 +2,10 @@ import { DatabaseModule } from '@badman/backend-database';
 import { configSchema, load } from '@badman/utils';
 import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AssignClubToPlayers } from './scripts/assign-clubs-to-players-group-role/service';
+import { PlayersWrongRankingRunner } from './scripts/players-with-wrong-ranking/players-with-wrong-ranking';
 
 @Module({
-  providers: [AssignClubToPlayers],
+  providers: [PlayersWrongRankingRunner],
   imports: [
     ConfigModule.forRoot({
       cache: true,
@@ -18,7 +18,7 @@ import { AssignClubToPlayers } from './scripts/assign-clubs-to-players-group-rol
 export class ScriptModule implements OnModuleInit {
   private readonly logger = new Logger(ScriptModule.name);
 
-  constructor(private fixer: AssignClubToPlayers) {}
+  constructor(private fixer: PlayersWrongRankingRunner) {}
 
   async onModuleInit() {
     this.logger.log('Running script');

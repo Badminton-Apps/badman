@@ -1,5 +1,5 @@
 import { RankingSystem, Game, Player } from '@badman/backend-database';
-import { GameType } from '@badman/utils';
+import { GameType, Ranking } from '@badman/utils';
 
 export class PointCalculator {
   constructor(private _type: RankingSystem) {}
@@ -42,7 +42,7 @@ export class PointCalculator {
     const rankingPlayer1Team2 = player1Team2.rankingLastPlaces?.[0] ?? maxRanking;
     const rankingPlayer2Team2 = player2Team2.rankingLastPlaces?.[0] ?? maxRanking;
 
-    let pointsFrom: 'single' | 'mix' | 'double' | undefined = undefined;
+    let pointsFrom: Ranking | undefined = undefined;
 
     switch (game.gameType) {
       case GameType.S:

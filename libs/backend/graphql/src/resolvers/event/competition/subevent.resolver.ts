@@ -1,26 +1,37 @@
+import { User } from '@badman/backend-authorization';
+import { CACHE_TTL } from '@badman/backend-cache';
 import {
   DrawCompetition,
+  EncounterCompetition,
   EventCompetition,
   EventEntry,
+  Game,
+  Player,
   RankingGroup,
   RankingLastPlace,
   RankingSystem,
   SubEventCompetition,
   SubEventCompetitionAverageLevel,
 } from '@badman/backend-database';
+import { PointsService } from '@badman/backend-ranking';
 import { SubEventTypeEnum } from '@badman/utils';
-import { Inject, Logger, NotFoundException } from '@nestjs/common';
-import { Args, ID, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { ListArgs } from '../../../utils';
-import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { CACHE_TTL } from '@badman/backend-cache';
+import { Inject, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Cache } from 'cache-manager';
+import { Sequelize } from 'sequelize-typescript';
+import { ListArgs } from '../../../utils';
 
 @Resolver(() => SubEventCompetition)
 export class SubEventCompetitionResolver {
   private readonly logger = new Logger(SubEventCompetitionResolver.name);
 
-  constructor(@Inject(CACHE_MANAGER) private readonly _cacheManager: Cache) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private readonly _cacheManager: Cache,
+
+    private _sequelize: Sequelize,
+    private _pointService: PointsService,
+  ) {}
 
   @Query(() => SubEventCompetition)
   async subEventCompetition(
@@ -175,7 +186,7 @@ export class SubEventCompetitionResolver {
       if (!cur?.single) {
         return acc;
       }
-      const count = countPerMale.get(cur.playerId) || 0;
+      const count = countPerMale.get(cur.playerId) ?? 0;
       singleMales += count;
       return acc + cur.single * count;
     }, 0);
@@ -189,7 +200,7 @@ export class SubEventCompetitionResolver {
       if (!cur?.double) {
         return acc;
       }
-      const count = countPerMale.get(cur.playerId) || 0;
+      const count = countPerMale.get(cur.playerId) ?? 0;
       doubleMales += count;
       return acc + cur.double * count;
     }, 0);
@@ -203,7 +214,7 @@ export class SubEventCompetitionResolver {
       if (!cur?.mix) {
         return acc;
       }
-      const count = countPerMale.get(cur.playerId) || 0;
+      const count = countPerMale.get(cur.playerId) ?? 0;
       mixMales += count;
       return acc + cur.mix * count;
     }, 0);
@@ -247,7 +258,7 @@ export class SubEventCompetitionResolver {
       if (!cur?.single) {
         return acc;
       }
-      const count = countPerFemale.get(cur.playerId) || 0;
+      const count = countPerFemale.get(cur.playerId) ?? 0;
       singleFemales += count;
       return acc + cur.single * count;
     }, 0);
@@ -261,7 +272,7 @@ export class SubEventCompetitionResolver {
       if (!cur?.double) {
         return acc;
       }
-      const count = countPerFemale.get(cur.playerId) || 0;
+      const count = countPerFemale.get(cur.playerId) ?? 0;
       doubleFemales += count;
       return acc + cur.double * count;
     }, 0);
@@ -274,7 +285,7 @@ export class SubEventCompetitionResolver {
       if (!cur?.mix) {
         return acc;
       }
-      const count = countPerFemale.get(cur.playerId) || 0;
+      const count = countPerFemale.get(cur.playerId) ?? 0;
       mixFemales += count;
       return acc + cur.mix * count;
     }, 0);
@@ -288,5 +299,70 @@ export class SubEventCompetitionResolver {
       mix: averageLevelMixedFemale / mixFemales,
       mixCount: mixFemales,
     } as SubEventCompetitionAverageLevel;
+  }
+
+  @Mutation(() => Boolean)
+  async recalculateSubEventCompetitionRankingPoints(
+    @User() user: Player,
+    @Args('subEventId', { type: () => ID }) subEventId: string,
+    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+  ): Promise<boolean> {
+    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+      throw new UnauthorizedException(`You do not have permission to sync points`);
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const where = systemId ? { id: systemId } : { primary: true };
+      const system = await RankingSystem.findOne({
+        where,
+      });
+
+      if (!system) {
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+      }
+
+      // find all games
+      const subEvent = await SubEventCompetition.findByPk(subEventId, {
+        transaction,
+      });
+
+      if (!subEvent) {
+        throw new NotFoundException(`${SubEventCompetition.name}  not found for ${subEventId}`);
+      }
+
+      const draws = await subEvent.getDrawCompetitions({
+        transaction,
+        include: [{ model: EncounterCompetition, include: [{ model: Game }] }],
+      });
+
+      const games = draws.reduce((acc, draw) => {
+        acc.push(
+          ...(draw.encounterCompetitions ?? []).reduce(
+            (acc, enc) => acc.concat(enc.games ?? []),
+            [] as Game[],
+          ),
+        );
+        return acc;
+      }, [] as Game[]);
+
+      for (const game of games ?? []) {
+        await this._pointService.createRankingPointforGame(system, game, {
+          transaction,
+        });
+      }
+
+      this.logger.log(`Recalculated ${games.length} ranking points for draw ${subEventId}`);
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
   }
 }

@@ -4,6 +4,7 @@ import {
   SubEventTypeEnum,
   TeamMembershipType,
   getSeason,
+  LevelType,
 } from '@badman/utils';
 import { ClubBuilder } from './clubBuilder';
 import { EventCompetitionBuilder } from './eventCompetitionBuilder';
@@ -114,7 +115,7 @@ export async function loadTest() {
     logger.log('Done building test data');
   } catch (error) {
     console.error(error);
-    throw 'Loading test data failed';
+    throw new Error('Loading test data failed');
   }
 }
 
@@ -138,26 +139,22 @@ function addEncounters(season: number) {
   const drawM = DrawCompetitionBuilder.Create().WithName('Test draw M');
   const drawF = DrawCompetitionBuilder.Create().WithName('Test draw F');
 
-  const subEventMX = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX)
-    .WithName('Test SubEvent')
+  const subEventMX = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX, 'Test SubEvent')
     .WithIndex(53, 70)
     .WitnMaxLevel(6);
 
   const subEventM = SubEventCompetitionBuilder.Create(SubEventTypeEnum.M)
-    .WithName('Test SubEvent')
     .WithIndex(53, 70)
     .WitnMaxLevel(6);
 
   const subEventF = SubEventCompetitionBuilder.Create(SubEventTypeEnum.F)
-    .WithName('Test SubEvent')
     .WithIndex(53, 70)
     .WitnMaxLevel(6);
 
-  const event = EventCompetitionBuilder.Create()
-    .WithYear(season)
-    .WithOfficial(true)
-    .WithUsedRanking({ amount: 4, unit: 'months' })
-    .WithName('Test Event');
+  const event = EventCompetitionBuilder.Create(LevelType.PROV, true, season, {
+    amount: 4,
+    unit: 'months',
+  }).WithName('Test Event');
 
   event.WithSubEvent(subEventMX);
   event.WithSubEvent(subEventM);

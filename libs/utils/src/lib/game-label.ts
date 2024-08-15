@@ -1,5 +1,7 @@
+import { SubEventTypeEnum } from './enums';
+
 export const gameLabel = (
-  gameType: 'MX' | 'M' | 'F',
+  gameType: SubEventTypeEnum,
   gameNumber: number,
 ): [
   'all.game.types.short.male' | 'all.game.types.short.female' | 'all.game.types.short.mix',

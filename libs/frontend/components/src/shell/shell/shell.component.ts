@@ -37,9 +37,9 @@ import { Banner } from '@badman/frontend-models';
 import { DEVICE } from '@badman/frontend-utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
-import { computedAsync } from 'ngxtension/computed-async';
+import { derivedAsync  } from 'ngxtension/derived-async';
 import { filter, map } from 'rxjs/operators';
-import { BreadcrumbComponent } from 'xng-breadcrumb';
+import { BreadcrumbComponent, BreadcrumbItemDirective } from 'xng-breadcrumb';
 import { HasClaimComponent } from '../../has-claim';
 import {
   BannerComponent,
@@ -64,6 +64,7 @@ import {
     ServiceStatusComponent,
     ServiceWorkerModule,
     BreadcrumbComponent,
+    BreadcrumbItemDirective,
     TranslateModule,
     MatSidenavModule,
     MatSlideToggleModule,
@@ -108,7 +109,7 @@ export class ShellComponent {
   canAnyChange = this.auth.hasClaimSignal('change-any:encounter');
   canViewChange = this.auth.hasClaimSignal('*change:encounter');
 
-  openEnrollments = computedAsync(() =>
+  openEnrollments = derivedAsync (() =>
     this.apollo
       .query<{
         eventTournaments: { count: number };
@@ -138,7 +139,7 @@ export class ShellComponent {
       ),
   );
 
-  openChangeEncounter = computedAsync(() =>
+  openChangeEncounter = derivedAsync (() =>
     this.apollo
       .query<{
         eventTournaments: { count: number };

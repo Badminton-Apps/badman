@@ -60,6 +60,8 @@ export class AddGameComponent implements OnInit {
   fragment: DocumentNode;
 
   constructor() {
+    console.log(this.data)
+
     this.fragment = gql`
       fragment AddGameInfo on Player {
         rankingLastPlaces {

@@ -94,7 +94,7 @@ export class EnrollmentValidationService {
 
     const subEvents = await SubEventCompetition.findAll({
       where: {
-        id: teams.map((e) => e.subEventId),
+        id: teams.map((e) => e.subEventId)?.filter((e) => !!e) as string[],
       },
       include: [
         {

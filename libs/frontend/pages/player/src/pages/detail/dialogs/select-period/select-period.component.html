@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>
+  {{ 'all.player.re-calculate.title' | translate }}
+</h2>
+<mat-dialog-content>
+  <!-- date time picker -->
+  @if (fromControl) {
+    <div>
+      <mat-form-field>
+        <mat-label>{{ 'all.player.re-calculate.from' | translate }}</mat-label>
+
+        <mtx-datetimepicker #datetimePicker type="datetime" [timeInput]="true"></mtx-datetimepicker>
+        <input [mtxDatetimepicker]="datetimePicker" [formControl]="fromControl" matInput />
+        <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
+      </mat-form-field>
+    </div>
+  }
+  @if (toControl) {
+    <div>
+      <mat-form-field>
+        <mat-label>{{ 'all.player.re-calculate.to' | translate }}</mat-label>
+        <mtx-datetimepicker #datetimePicker type="datetime" [timeInput]="true"></mtx-datetimepicker>
+        <input [mtxDatetimepicker]="datetimePicker" [formControl]="toControl" matInput />
+        <mtx-datetimepicker-toggle [for]="datetimePicker" matSuffix></mtx-datetimepicker-toggle>
+      </mat-form-field>
+    </div>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="">
+    {{ 'all.button.close' | translate }}
+  </button>
+  <button mat-raised-button color="primary" (click)="this.save()">
+    {{ 'all.player.re-calculate.calculate' | translate }}
+  </button>
+</mat-dialog-actions>
