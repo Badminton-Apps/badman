@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Game, Player } from '@badman/frontend-models';
+import { GameType } from '@badman/utils';
+
 import { Apollo, gql } from 'apollo-angular';
 import { signalSlice } from 'ngxtension/signal-slice';
 import { EMPTY, Observable, Subject, merge } from 'rxjs';
@@ -36,7 +38,7 @@ export class RankingBreakdownService {
     includeOutOfScopeUpgrade: new FormControl<boolean>(false),
     includeOutOfScopeDowngrade: new FormControl<boolean>(false),
     includeOutOfScopeWonGames: new FormControl<boolean>(false),
-    gameType: new FormControl<string>(''),
+    gameType: new FormControl<GameType | null>(null),
     start: new FormControl(),
     end: new FormControl(),
     game: new FormControl(),
@@ -126,7 +128,7 @@ export class RankingBreakdownService {
     filter: Partial<{
       systemId: string | null;
       playerId: string | null;
-      gameType: string | null;
+      gameType: GameType | null;
       start: string | null;
       end: string | null;
     }>,
@@ -165,7 +167,7 @@ export class RankingBreakdownService {
         `,
         variables: {
           where: {
-            gameType: filter.gameType == 'single' ? 'S' : filter.gameType == 'double' ? 'D' : 'MX',
+            gameType: filter.gameType,
             playedAt: {
               $between: [filter.start, filter.end],
             },

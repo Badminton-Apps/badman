@@ -1,6 +1,7 @@
+import { User } from '@badman/backend-authorization';
 import { CompileService } from '@badman/backend-compile';
 import { Logging, Player, RankingLastPlace, Team } from '@badman/backend-database';
-import { I18nTranslations, LoggingAction, gameLabel } from '@badman/utils';
+import { I18nTranslations, LoggingAction, SubEventTypeEnum, gameLabel } from '@badman/utils';
 import { Controller, Logger, Post, Req, Res, StreamableFile } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { readFile } from 'fs/promises';
@@ -9,7 +10,6 @@ import { I18nService } from 'nestjs-i18n';
 import { lastValueFrom, take } from 'rxjs';
 import { AssemblyValidationData, AssemblyValidationError } from '../models';
 import { AssemblyValidationService } from '../services';
-import { User } from '@badman/backend-authorization';
 
 type gameType =
   | 'single1'
@@ -123,7 +123,7 @@ export class AssemblyController {
     const date = moment(data.encounter?.date).tz('Europe/Brussels').format('DD-MM-YYYY HH:mm');
 
     this.logger.debug(
-      `Generating assembly for ${homeTeam.name} vs ${awayTeam?.name || 'empty'} on ${date}`,
+      `Generating assembly for ${homeTeam.name} vs ${awayTeam?.name ?? 'empty'} on ${date}`,
     );
 
     const indexed: string[] = [];
@@ -246,7 +246,7 @@ export class AssemblyController {
   private getLabels(data: AssemblyValidationData): string[] {
     const labels: string[] = [];
     for (let i = 0; i < 8; i++) {
-      const gameLabels = gameLabel(data.subEvent?.eventType as 'M' | 'F' | 'MX', i + 1);
+      const gameLabels = gameLabel(data.subEvent?.eventType as SubEventTypeEnum, i + 1);
       let labelMessage = '';
 
       for (const label of gameLabels) {

@@ -96,58 +96,58 @@ export class EventTournamentResolver {
         throw new NotFoundException(`${EventTournament.name}: ${updateEventTournamentData.id}`);
       }
 
-      // if ( eventTournamentDb.official !== updateEventTournamentData.official) {
-      //   // we are making it official
-      //   const ranking = await RankingSystem.findOne({
-      //     where: {
-      //       primary: true,
-      //     },
-      //     transaction,
-      //   });
+      if (eventTournamentDb.official !== updateEventTournamentData.official) {
+        // we are making it official
+        const ranking = await RankingSystem.findOne({
+          where: {
+            primary: true,
+          },
+          transaction,
+        });
 
-      //   if (!ranking) {
-      //     throw new NotFoundException(`${RankingSystem.name}: primary`);
-      //   }
+        if (!ranking) {
+          throw new NotFoundException(`${RankingSystem.name}: primary`);
+        }
 
-      //   const groups = await ranking.getRankingGroups({
-      //     transaction,
-      //   });
-      //      const subEvents = await eventTournamentDb.getSubEventTournaments({
-      //     transaction,
-      //   });
+        const groups = await ranking.getRankingGroups({
+          transaction,
+        });
+        const subEvents = await eventTournamentDb.getSubEventTournaments({
+          transaction,
+        });
 
-      //   if (updateEventTournamentData.official) {
-      //     for (const subEvent of subEvents) {
-      //       await subEvent.setRankingGroups(groups, {
-      //         transaction,
-      //       });
-      //     }
+        if (updateEventTournamentData.official) {
+          for (const subEvent of subEvents) {
+            await subEvent.setRankingGroups(groups, {
+              transaction,
+            });
+          }
 
-      //     for (const group of groups) {
-      //       await this.addGamePointsForSubEvents(
-      //         group,
-      //         subEvents?.map((s) => s.id),
-      //         transaction,
-      //       );
-      //     }
-      //   } else {
-      //     // we are making it unofficial
-      //     for (const subEvent of subEvents) {
-      //       await subEvent.removeRankingGroups(groups, {
-      //         transaction,
-      //       });
-      //     }
+          for (const group of groups) {
+            await this.addGamePointsForSubEvents(
+              group,
+              subEvents?.map((s) => s.id),
+              transaction,
+            );
+          }
+        } else {
+          // we are making it unofficial
+          for (const subEvent of subEvents) {
+            await subEvent.removeRankingGroups(groups, {
+              transaction,
+            });
+          }
 
-      //     // Remove ranking points
-      //     for (const group of groups) {
-      //       await this.removeGamePointsForSubEvents(
-      //         group,
-      //         subEvents?.map((s) => s.id),
-      //         transaction,
-      //       );
-      //     }
-      //   }
-      // }
+          // Remove ranking points
+          for (const group of groups) {
+            await this.removeGamePointsForSubEvents(
+              group,
+              subEvents?.map((s) => s.id),
+              transaction,
+            );
+          }
+        }
+      }
 
       // Update db
       const result = await eventTournamentDb.update(updateEventTournamentData, {
