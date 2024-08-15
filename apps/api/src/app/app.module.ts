@@ -22,6 +22,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import versionPackage from '../version.json';
 import { CleanEnvironmentModule } from './clean-environment.module';
+import { CalendarController } from './controllers/ical.controller';
 
 const productionModules = [];
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test') {
@@ -70,7 +71,7 @@ console.log('envFilePath', envFilePath, process.env.NODE_ENV);
     SocketModule,
     TransferLoanModule,
   ],
-  controllers: [AppController, ImageController],
+  controllers: [AppController, ImageController, CalendarController],
   providers: [Logger],
 })
 export class AppModule {

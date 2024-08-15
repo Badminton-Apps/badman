@@ -17,17 +17,17 @@
       @if (this.player()?.id) {
         <div class="levels">
           <badman-show-level
-            [routerLink]="['ranking', 'single']"
+            [routerLink]="['ranking', 'S']"
             [playerId]="this.playerId()"
             type="single"
           />
           <badman-show-level
-            [routerLink]="['ranking', 'double']"
+            [routerLink]="['ranking', 'D']"
             [playerId]="this.playerId()"
             type="double"
           />
           <badman-show-level
-            [routerLink]="['ranking', 'mix']"
+            [routerLink]="['ranking', 'MX']"
             [playerId]="this.playerId()"
             type="mix"
           />
@@ -53,7 +53,7 @@
             <span>{{ 'all.player.menu.edit' | translate }}</span>
           </button>
         </badman-has-claim>
-        
+
         <badman-has-claim [all]="['re-sync:points']">
           <button mat-menu-item (click)="reCalculatePoints()">
             <mat-icon>sync</mat-icon>

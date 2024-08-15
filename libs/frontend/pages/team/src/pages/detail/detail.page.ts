@@ -1,20 +1,20 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  Injector,
   PLATFORM_ID,
+  TemplateRef,
   TransferState,
-  computed,
   effect,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import {
   HasClaimComponent,
   PageHeaderComponent,
@@ -28,6 +28,7 @@ import { getSeason } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
+import { injectRouteData } from 'ngxtension/inject-route-data';
 import { map, takeUntil } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 
@@ -47,31 +48,30 @@ import { BreadcrumbService } from 'xng-breadcrumb';
     UpcomingGamesComponent,
     PageHeaderComponent,
     HasClaimComponent,
+    MatDialogModule,
   ],
 })
 export class DetailPageComponent {
-  private route = inject(ActivatedRoute);
   private apollo = inject(Apollo);
   private stateTransfer = inject(TransferState);
   private platformId = inject(PLATFORM_ID);
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
-  private injector = inject(Injector);
+  private dialog = inject(MatDialog);
   private destroy$ = injectDestroy();
 
-  // route
-  private queryParams = toSignal(this.route.queryParamMap);
-  private routeParams = toSignal(this.route.paramMap);
-  private routeData = toSignal(this.route.data);
+  calendarTmpl = viewChild.required<TemplateRef<HTMLElement>>('calendar');
 
-  team = computed(() => this.routeData()?.['team'] as Team);
+  // route
+
+  team = injectRouteData<Team>('team');
 
   entry = signal<EventEntry | null>(null);
 
   constructor() {
     effect(() => {
-      const teamName = `${this.team().name}`;
-      const clubName = `${this.team().club?.name}`;
+      const teamName = `${this.team()?.name}`;
+      const clubName = `${this.team()?.club?.name}`;
 
       this.seoService.update({
         title: teamName,
@@ -118,12 +118,16 @@ export class DetailPageComponent {
           }
         `,
         variables: {
-          teamId: this.team().id,
+          teamId: this.team()?.id,
         },
       })
       .pipe(
         takeUntil(this.destroy$),
-        transferState(`teamEntries-${this.team().id}-${year}`, this.stateTransfer, this.platformId),
+        transferState(
+          `teamEntries-${this.team()?.id}-${year}`,
+          this.stateTransfer,
+          this.platformId,
+        ),
         map((result) => {
           if (!result?.data?.team?.entry) {
             return undefined;
@@ -139,5 +143,12 @@ export class DetailPageComponent {
 
         this.entry.set(entry);
       });
+  }
+
+  showCalendar() {
+    this.dialog.open(this.calendarTmpl(), {
+      panelClass: 'calendar-dialog',
+      maxWidth: '500px',
+    });
   }
 }

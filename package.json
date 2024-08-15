@@ -109,6 +109,7 @@
     "geojson": "^0.5.0",
     "graphql": "16.9.0",
     "graphql-type-json": "^0.3.2",
+    "ical-generator": "^7.2.0",
     "joi": "^17.13.3",
     "juice": "^10.0.0",
     "jwks-rsa": "^3.1.0",

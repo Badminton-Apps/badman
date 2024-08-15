@@ -682,6 +682,13 @@
     "backup": "Joueur de réserve",
     "base": "Joueur de base",
     "claimed": "Revendiqué",
+    "ical": {
+      "click": "Lien",
+      "description": "Cliquez avec le bouton droit de la souris sur le lien ci-dessous et ajoutez-le en tant qu'URL dans votre application de calendrier.",
+      "linked": "Toutes les saisons",
+      "linked-description": "Le lien pour toute la saison continue à suivre l'équipe au fur et à mesure de sa promotion/dégradation, même si l'équipe change de numéro (à condition que la ligue responsable transfère l'équipe de l'année précédente).",
+      "team-season": "Juste cette saison :"
+    },
     "menu": {
       "add": "Nouveau joueur",
       "claim": "Réclamer un compte",
@@ -691,7 +698,7 @@
     "no-memberid": "Numéro de membre inconnu",
     "no-players": "Aucun joueur",
     "re-calculate": {
-      "calculate": "Calculer",
+      "calculate": "",
       "from": "De",
       "title": "Récupérer des points pour le joueur dans la période suivante",
       "to": "Pour"

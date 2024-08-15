@@ -4,13 +4,18 @@
 @use '@angular/material' as mat;
 
 @mixin color($theme) {
-  badman-team-detail {
-    
+  // badman-team-detail {
+  // }
+
+  .calendar-dialog {
+    a {
+      text-decoration: none;
+      color: mat.get-theme-color($theme, foreground, 'base');
+    }
   }
 }
 
 @mixin typography($theme) {
-  badman-team-detail {
-    
-  }
+  // badman-team-detail {
+  // }
 }
