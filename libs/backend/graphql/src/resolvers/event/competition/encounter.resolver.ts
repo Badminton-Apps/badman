@@ -8,6 +8,7 @@ import {
   Game,
   Location,
   Player,
+  RankingSystem,
   Team,
 } from '@badman/backend-database';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
@@ -27,6 +28,8 @@ import { ListArgs } from '../../../utils';
 import { InjectQueue } from '@nestjs/bull';
 import { Sync, SyncQueue } from '@badman/backend-queue';
 import { Queue } from 'bull';
+import { Sequelize } from 'sequelize-typescript';
+import { PointsService } from '@badman/backend-ranking';
 
 @ObjectType()
 export class PagedEncounterCompetition {
@@ -41,7 +44,11 @@ export class PagedEncounterCompetition {
 export class EncounterCompetitionResolver {
   private readonly logger = new Logger(EncounterCompetitionResolver.name);
 
-  constructor(@InjectQueue(SyncQueue) private syncQueue: Queue) {}
+  constructor(
+    @InjectQueue(SyncQueue) private syncQueue: Queue,
+    private _sequelize: Sequelize,
+    private _pointService: PointsService,
+  ) {}
 
   @Query(() => EncounterCompetition)
   async encounterCompetition(
@@ -182,5 +189,57 @@ export class EncounterCompetitionResolver {
     }
 
     return true;
+  }
+
+  @Mutation(() => Boolean)
+  async recalculateEncounterCompetitionRankingPoints(
+    @User() user: Player,
+    @Args('encounterId', { type: () => ID }) encounterId: string,
+    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+  ): Promise<boolean> {
+    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+      throw new UnauthorizedException(`You do not have permission to sync points`);
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const where = systemId ? { id: systemId } : { primary: true };
+      const system = await RankingSystem.findOne({
+        where,
+      });
+
+      if (!system) {
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+      }
+
+      // find all games
+      const enc = await EncounterCompetition.findByPk(encounterId, {
+        transaction,
+      });
+
+      if (!enc) {
+        throw new NotFoundException(`${EncounterCompetition.name}  not found for ${encounterId}`);
+      }
+
+      const games = await enc.getGames({ transaction });
+
+      for (const game of games) {
+        await this._pointService.createRankingPointforGame(system, game, {
+          transaction,
+        });
+      }
+
+      this.logger.log(`Recalculated ${games.length} ranking points for encounter ${encounterId}`);
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
   }
 }

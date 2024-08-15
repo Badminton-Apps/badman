@@ -33,9 +33,9 @@ export class RankingEvolutionComponent implements OnInit {
   system = input.required<RankingSystem>();
 
   rankingPlaces$?: Observable<{
-    single: rankingPlace[];
-    mix: rankingPlace[];
-    double: rankingPlace[];
+    single: RankingPlaceDetail[];
+    mix: RankingPlaceDetail[];
+    double: RankingPlaceDetail[];
   }>;
 
   get isBrowser(): boolean {
@@ -52,9 +52,9 @@ export class RankingEvolutionComponent implements OnInit {
         return x.reduce(
           (
             acc: {
-              single: rankingPlace[];
-              mix: rankingPlace[];
-              double: rankingPlace[];
+              single: RankingPlaceDetail[];
+              mix: RankingPlaceDetail[];
+              double: RankingPlaceDetail[];
             },
             value,
           ) => {
@@ -67,7 +67,7 @@ export class RankingEvolutionComponent implements OnInit {
                   points: value.singlePoints,
                   pointsDowngrade: value.singlePointsDowngrade,
                   updatePossible: value.updatePossible,
-                } as rankingPlace,
+                } as RankingPlaceDetail,
               ],
               double: [
                 ...acc.double,
@@ -77,7 +77,7 @@ export class RankingEvolutionComponent implements OnInit {
                   points: value.doublePoints,
                   pointsDowngrade: value.doublePointsDowngrade,
                   updatePossible: value.updatePossible,
-                } as rankingPlace,
+                } as RankingPlaceDetail,
               ],
               mix: [
                 ...acc.mix,
@@ -87,7 +87,7 @@ export class RankingEvolutionComponent implements OnInit {
                   points: value.mixPoints,
                   pointsDowngrade: value.mixPointsDowngrade,
                   updatePossible: value.updatePossible,
-                } as rankingPlace,
+                } as RankingPlaceDetail,
               ],
             };
           },
@@ -141,7 +141,7 @@ export class RankingEvolutionComponent implements OnInit {
   }
 }
 
-interface rankingPlace {
+interface RankingPlaceDetail {
   level: number;
   rankingDate: Date;
   points: number;

@@ -1,69 +1,80 @@
 <badman-page-header>
-  <ng-content title>{{ this.encounterCompetitionName }}</ng-content>
+  <ng-content title>{{ this.encounterCompetitionName() }}</ng-content>
   <ng-content actions>
-    @if (eventCompetition.visualCode && encounterCompetition.visualCode) {
+    @if (eventCompetition()?.visualCode && encounterCompetition()?.visualCode) {
       <a
         mat-icon-button
         target="_blank"
+        rel="noopener"
         [href]="
           'https://www.toernooi.nl/sport/teammatch.aspx?id=' +
-          this.eventCompetition.visualCode +
+          this.eventCompetition()?.visualCode +
           '&match=' +
-          this.encounterCompetition.visualCode
+          this.encounterCompetition()?.visualCode
         "
         [matTooltip]="'all.button.open-in-new-tab' | translate"
       >
         <mat-icon>open_in_new</mat-icon>
       </a>
     }
-    <badman-has-claim [any]="['edit:competition']">
+    <badman-has-claim [any]="['edit:competition', 're-sync:points']">
       <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item [routerLink]="'edit'">
-          <mat-icon>edit</mat-icon>
-          <span>Edit</span>
-        </button>
-        <button mat-menu-item (click)="syncNotifications()">
-          <mat-icon>sync</mat-icon>
-          <span>Check notifications</span>
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item>
-          <mat-icon>delete</mat-icon>
-          <span>Delete</span>
-        </button>
+        <badman-has-claim [all]="['edit:competition']">
+          <button mat-menu-item [routerLink]="'edit'">
+            <mat-icon>edit</mat-icon>
+            <span>{{ 'all.button.edit' | translate }}</span>
+          </button>
+          <button mat-menu-item (click)="syncNotifications()">
+            <mat-icon>edit_notifications</mat-icon>
+            <span>Check notifications</span>
+          </button>
+        </badman-has-claim>
+        <badman-has-claim [all]="['re-sync:points']">
+          <button mat-menu-item (click)="reCalculatePoints()">
+            <mat-icon>sync</mat-icon>
+            <span>{{ 'all.button.re-sync' | translate }}</span>
+          </button>
+        </badman-has-claim>
+        <badman-has-claim [all]="['edit:competition']">
+          <mat-divider></mat-divider>
+          <button mat-menu-item>
+            <mat-icon>delete</mat-icon>
+            <span>{{ 'all.button.delete' | translate }}</span>
+          </button>
+        </badman-has-claim>
       </mat-menu>
     </badman-has-claim>
   </ng-content>
   <ng-content subTitle>
     <mat-chip-listbox>
-      @if (encounterCompetition.date) {
-        <mat-chip> {{ encounterCompetition.date | amDateFormat: 'llll' }}</mat-chip>
+      @if (encounterCompetition()?.date) {
+        <mat-chip> {{ encounterCompetition()?.date | amDateFormat: 'llll' }}</mat-chip>
       }
-      @if (encounterCompetition.location?.name) {
-        <mat-chip> {{ encounterCompetition.location?.name }}</mat-chip>
+      @if (encounterCompetition()?.location?.name) {
+        <mat-chip> {{ encounterCompetition()?.location?.name }}</mat-chip>
       }
-      @if (encounterCompetition.shuttle) {
+      @if (encounterCompetition()?.shuttle) {
         <mat-chip [matTooltip]="'all.competition.encounters.shuttle' | translate">
-          {{ encounterCompetition.shuttle }}</mat-chip
+          {{ encounterCompetition()?.shuttle }}</mat-chip
         >
       }
-      @if (encounterCompetition.startHour && encounterCompetition.endHour) {
+      @if (encounterCompetition()?.startHour && encounterCompetition()?.endHour) {
         <mat-chip>
-          {{ encounterCompetition.startHour }} - {{ encounterCompetition.endHour }}
+          {{ encounterCompetition()?.startHour }} - {{ encounterCompetition()?.endHour }}
         </mat-chip>
       }
-      @if (encounterCompetition.gameLeader?.fullName) {
+      @if (encounterCompetition()?.gameLeader?.fullName) {
         <mat-chip [matTooltip]="'all.competition.encounters.gameleader' | translate">
-          {{ encounterCompetition.gameLeader?.fullName }}
+          {{ encounterCompetition()?.gameLeader?.fullName }}
         </mat-chip>
       }
     </mat-chip-listbox>
   </ng-content>
 </badman-page-header>
-@for (game of encounterCompetition.games; track game; let index = $index) {
+@for (game of encounterCompetition()?.games; track game; let index = $index) {
   <div class="game">
     <div class="label">
       @for (label of getGameLabel(index); track label) {
