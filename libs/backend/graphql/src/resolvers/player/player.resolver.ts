@@ -419,14 +419,14 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Boolean)
-  async resyncPoints(
+  async recalculatePlayerRankingPoints(
     @User() user: Player,
     @Args('playerId', { type: () => ID }) playerId: string,
     @Args('startDate', { nullable: true }) startDate?: Date,
     @Args('endDate', { nullable: true }) endDate?: Date,
     @Args('systemId', { nullable: true }) systemId?: string,
   ): Promise<boolean> {
-    if (!(await user.hasAnyPermission(['resync:points']))) {
+    if (!(await user.hasAnyPermission(['re-sync:points']))) {
       throw new UnauthorizedException(`You do not have permission to resync points`);
     }
 
@@ -461,6 +461,8 @@ export class PlayersResolver {
           transaction,
         });
       }
+
+      this.logger.log(`Recalculated ${games.length} ranking points for player ${playerId}`);
 
       // Commit transaction
       await transaction.commit();

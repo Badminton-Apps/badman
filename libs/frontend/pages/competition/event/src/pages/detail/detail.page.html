@@ -11,7 +11,9 @@
         <mat-icon>open_in_new</mat-icon>
       </a>
     }
-    <badman-has-claim [any]="['edit-any:competition', 'delete-any:competition', 'change:job']">
+    <badman-has-claim
+      [any]="['edit-any:competition', 'delete-any:competition', 'change:job', 're-sync:points']"
+    >
       <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
         <mat-icon>more_vert</mat-icon>
       </button>
@@ -29,6 +31,12 @@
               </button>
             </badman-has-claim>
           }
+          <badman-has-claim [all]="['re-sync:points']">
+            <button mat-menu-item (click)="reCalculatePoints()">
+              <mat-icon>sync</mat-icon>
+              <span>{{ 'all.button.re-sync' | translate }}</span>
+            </button>
+          </badman-has-claim>
           <button mat-menu-item [matMenuTriggerFor]="actions">
             <mat-icon> more_horiz </mat-icon>
             <span>{{ 'all.competition.menu.actions' | translate }}</span>

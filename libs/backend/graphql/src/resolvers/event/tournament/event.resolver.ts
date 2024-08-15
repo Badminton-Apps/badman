@@ -96,59 +96,58 @@ export class EventTournamentResolver {
         throw new NotFoundException(`${EventTournament.name}: ${updateEventTournamentData.id}`);
       }
 
-      if (eventTournamentDb.official !== updateEventTournamentData.official) {
-        const subEvents = await eventTournamentDb.getSubEventTournaments({
-          transaction,
-        });
+      // if ( eventTournamentDb.official !== updateEventTournamentData.official) {
+      //   // we are making it official
+      //   const ranking = await RankingSystem.findOne({
+      //     where: {
+      //       primary: true,
+      //     },
+      //     transaction,
+      //   });
 
-        // we are making it official
-        const ranking = await RankingSystem.findOne({
-          where: {
-            primary: true,
-          },
-          transaction,
-        });
+      //   if (!ranking) {
+      //     throw new NotFoundException(`${RankingSystem.name}: primary`);
+      //   }
 
-        if (!ranking) {
-          throw new NotFoundException(`${RankingSystem.name}: primary`);
-        }
+      //   const groups = await ranking.getRankingGroups({
+      //     transaction,
+      //   });
+      //      const subEvents = await eventTournamentDb.getSubEventTournaments({
+      //     transaction,
+      //   });
 
-        const groups = await ranking.getRankingGroups({
-          transaction,
-        });
+      //   if (updateEventTournamentData.official) {
+      //     for (const subEvent of subEvents) {
+      //       await subEvent.setRankingGroups(groups, {
+      //         transaction,
+      //       });
+      //     }
 
-        if (updateEventTournamentData.official == true) {
-          for (const subEvent of subEvents) {
-            await subEvent.setRankingGroups(groups, {
-              transaction,
-            });
-          }
+      //     for (const group of groups) {
+      //       await this.addGamePointsForSubEvents(
+      //         group,
+      //         subEvents?.map((s) => s.id),
+      //         transaction,
+      //       );
+      //     }
+      //   } else {
+      //     // we are making it unofficial
+      //     for (const subEvent of subEvents) {
+      //       await subEvent.removeRankingGroups(groups, {
+      //         transaction,
+      //       });
+      //     }
 
-          for (const group of groups) {
-            await this.addGamePointsForSubEvents(
-              group,
-              subEvents?.map((s) => s.id),
-              transaction,
-            );
-          }
-        } else {
-          // we are making it unofficial
-          for (const subEvent of subEvents) {
-            await subEvent.removeRankingGroups(groups, {
-              transaction,
-            });
-          }
-
-          // Remove ranking points
-          for (const group of groups) {
-            await this.removeGamePointsForSubEvents(
-              group,
-              subEvents?.map((s) => s.id),
-              transaction,
-            );
-          }
-        }
-      }
+      //     // Remove ranking points
+      //     for (const group of groups) {
+      //       await this.removeGamePointsForSubEvents(
+      //         group,
+      //         subEvents?.map((s) => s.id),
+      //         transaction,
+      //       );
+      //     }
+      //   }
+      // }
 
       // Update db
       const result = await eventTournamentDb.update(updateEventTournamentData, {
@@ -317,6 +316,70 @@ export class EventTournamentResolver {
       this.logger.debug(
         `Removed points for ${games.length} games in system ${system.name}(${system.id})`,
       );
+    }
+  }
+
+  @Mutation(() => Boolean)
+  async recalculateEventTournamentRankingPoints(
+    @User() user: Player,
+    @Args('eventId', { type: () => ID }) eventId: string,
+    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+  ): Promise<boolean> {
+    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+      throw new UnauthorizedException(`You do not have permission to sync points`);
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const where = systemId ? { id: systemId } : { primary: true };
+      const system = await RankingSystem.findOne({
+        where,
+      });
+
+      if (!system) {
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+      }
+
+      // find all games
+      const event = await EventTournament.findByPk(eventId, {
+        transaction,
+      });
+
+      if (!event) {
+        throw new NotFoundException(`${EventTournament.name}  not found for ${eventId}`);
+      }
+
+      const subevents = await event.getSubEventTournaments({
+        transaction,
+        include: [{ model: DrawTournament, include: [{ model: Game }] }],
+      });
+      const games = subevents.reduce((acc, draw) => {
+        acc.push(
+          ...(draw.drawTournaments ?? []).reduce(
+            (acc, enc) => acc.concat(enc.games ?? []),
+            [] as Game[],
+          ),
+        );
+        return acc;
+      }, [] as Game[]);
+
+      for (const game of games ?? []) {
+        await this._pointService.createRankingPointforGame(system, game, {
+          transaction,
+        });
+      }
+
+      this.logger.log(`Recalculated ${games.length} ranking points for draw ${eventId}`);
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
     }
   }
 }

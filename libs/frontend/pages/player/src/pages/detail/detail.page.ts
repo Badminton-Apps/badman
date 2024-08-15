@@ -1,23 +1,14 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Injector,
-  PLATFORM_ID,
-  TransferState,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, Signal, computed, effect, inject, signal, untracked } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthenticateService, ClaimService } from '@badman/frontend-auth';
 import {
   ConfirmDialogComponent,
@@ -27,16 +18,14 @@ import {
   RecentGamesComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { Game, Player, Team } from '@badman/frontend-models';
+import { Game, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
-import { transferState } from '@badman/frontend-utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { lastValueFrom } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { injectParams } from 'ngxtension/inject-params';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ShowLevelComponent } from './components/show-level.component';
+import { PlayerDetailService } from './detail.service';
+import { SelectPeriodDialogComponent } from './dialogs/select-period/select-period.component';
 
 @Component({
   selector: 'badman-player-detail',
@@ -52,6 +41,7 @@ import { ShowLevelComponent } from './components/show-level.component';
     MatButtonModule,
     MatMenuModule,
     MatChipsModule,
+    MatProgressBarModule,
     MatDialogModule,
     RecentGamesComponent,
     UpcomingGamesComponent,
@@ -62,70 +52,73 @@ import { ShowLevelComponent } from './components/show-level.component';
 })
 export class DetailPageComponent {
   // private
-  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly seoService = inject(SeoService);
-  private readonly apollo = inject(Apollo);
-  private readonly stateTransfer = inject(TransferState);
-  private readonly platformId = inject(PLATFORM_ID);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
   private readonly claim = inject(ClaimService);
   private readonly auth = inject(AuthenticateService);
-  private readonly destroy$ = injectDestroy();
-  private readonly injector = inject(Injector);
 
-  // route
-  // private queryParams = toSignal(this.route.queryParamMap);
-  // private routeParams = toSignal(this.route.paramMap);
-  private routeData = toSignal(this.route.data);
+  readonly playerId = injectParams('id') as Signal<string>;
+  private readonly detailService = inject(PlayerDetailService);
 
-  player = computed(() => this.routeData()?.['player'] as Player);
-  playerId = computed(() => this.player()?.id as string);
-  club = computed(() => this.player().club);
+  player = this.detailService.player;
+  teams = this.detailService.teams;
+  loaded = this.detailService.loaded;
+  errors = this.detailService.error;
 
+  club = computed(() => this.player()?.club);
   initials = computed(() => {
-    const lastNames = `${this.player().lastName}`.split(' ');
-    return `${this.player().firstName?.[0]}${lastNames?.[lastNames.length - 1][0]}`.toUpperCase();
+    const lastNames = `${this.player()?.lastName}`.split(' ');
+    return `${this.player()?.firstName?.[0]}${lastNames?.[lastNames.length - 1][0]}`.toUpperCase();
   });
 
-  teams = signal<Team[]>([]);
   hasTeams = computed(() => this.teams()?.length > 0);
-
-  hasMenu = computed(() => (
-    this.auth.loggedIn() &&
-    (this.claim.hasAnyClaims([
-      'edit-any:player',
-      this.player().id + '_edit:player',
-      'change:job',
-    ]) ||
-      this.canClaim())
-  ));
-
+  hasMenu = computed(() => this.auth.loggedIn() && (this.hasPermission() || this.canClaim()));
   canClaim = computed(() => {
-    return this.auth.loggedIn() && !this.auth.user()?.id && !this.player().sub;
+    return this.auth.loggedIn() && !this.auth.user()?.id && !this.player()?.sub;
   });
+  hasPermission = this.claim.hasAnyClaimsSignal([
+    'edit-any:player',
+    this.player()?.id + '_edit:player',
+    'change:job',
+    're-sync:points',
+  ]);
 
   constructor() {
-    effect(
-      () => {
-        this._loadTeamsForPlayer();
+    effect(() => {
+      const playerId = this.playerId();
 
-        this.seoService.update({
-          title: `${this.player().fullName}`,
-          description: `Player ${this.player().fullName}`,
-          type: 'website',
-          keywords: ['player', 'badminton'],
-        });
-        this.breadcrumbService.set('player/:id', this.player().fullName);
-      },
-      {
-        // allowSignalWrites: true,
-        injector: this.injector,
-      },
-    );
+      if (!playerId) {
+        return;
+      }
+
+      this.detailService.filter.patchValue({
+        playerId,
+      });
+    });
+
+    effect(() => {
+      const player = this.player();
+
+      if (!player) {
+        return;
+      }
+
+      this.seoService.update({
+        title: `${player.fullName}`,
+        description: `Player ${player.fullName}`,
+        type: 'website',
+        keywords: ['player', 'badminton'],
+      });
+      this.breadcrumbService.set('player/:id', player.fullName ?? '');
+
+      untracked(() => {
+        this.detailService.state.loadTeams();
+      });
+    });
   }
 
   getPlayer(game: Game, player: number, team: number) {
@@ -133,59 +126,8 @@ export class DetailPageComponent {
     return playerInGame?.fullName || 'Unknown';
   }
 
-  private _loadTeamsForPlayer() {
-    this.apollo
-      .query<{ player: { teams: Partial<Team>[] } }>({
-        query: gql`
-          query ClubsAndTeams($playerId: ID!) {
-            player(id: $playerId) {
-              id
-              teams {
-                id
-                clubId
-                slug
-                teamMembership {
-                  id
-                  membershipType
-                }
-              }
-            }
-          }
-        `,
-        variables: {
-          playerId: this.player().id,
-        },
-      })
-      .pipe(
-        takeUntil(this.destroy$),
-        map((result) => result.data.player.teams?.map((t) => new Team(t))),
-        transferState(`teamsPlayer-${this.player().id}`, this.stateTransfer, this.platformId),
-      )
-      .subscribe((teams) => {
-        if (!teams) {
-          return;
-        }
-
-        this.teams.set(teams);
-      });
-  }
-
   async claimAccount() {
-    await lastValueFrom(
-      this.apollo.mutate({
-        mutation: gql`
-          mutation ClaimAccount($playerId: String!) {
-            claimAccount(playerId: $playerId) {
-              id
-            }
-          }
-        `,
-        variables: {
-          playerId: this.player().id,
-        },
-      }),
-    );
-
+    await this.detailService.state.claimAccount();
     this.snackBar.open(this.translate.instant('all.player.claimed'), 'OK', {
       duration: 5000,
     });
@@ -203,30 +145,34 @@ export class DetailPageComponent {
       data: dialogData,
     });
 
-    dialogRef.afterClosed().subscribe((dialogResult) => {
+    dialogRef.afterClosed().subscribe(async (dialogResult) => {
       if (!dialogResult) {
         return;
       }
 
-      this.apollo
-        .mutate({
-          mutation: gql`
-            mutation RemovePlayer($id: ID!) {
-              removePlayer(id: $id)
-            }
-          `,
-          variables: {
-            id: this.player().id,
-          },
-          refetchQueries: ['Teams'],
-        })
-        .subscribe(() => {
-          this.snackBar.open('Deleted', undefined, {
-            duration: 1000,
-            panelClass: 'success',
-          });
-          this.router.navigate(['/']);
-        });
+      await this.detailService.state.removePlayer();
+
+      this.snackBar.open('Deleted', undefined, {
+        duration: 1000,
+        panelClass: 'success',
+      });
+      this.router.navigate(['/']);
     });
+  }
+
+  reCalculatePoints() {
+    this.dialog
+      .open(SelectPeriodDialogComponent)
+      .afterClosed()
+      .subscribe((result) => {
+        if (!result) {
+          return;
+        }
+
+        this.detailService.state.reCalculatePoints({
+          from: result.from,
+          to: result.to,
+        });
+      });
   }
 }

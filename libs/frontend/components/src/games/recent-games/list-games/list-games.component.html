@@ -59,7 +59,7 @@
         @if (this.getPoints(game, 1); as points) {
           <div class="game__points">
             <span
-              [matTooltip]="points.tooltip ?? '' | translate"
+              [matTooltip]="points.tooltip | translate"
               [matTooltipDisabled]="!points.tooltip"
               [matTooltipPosition]="'right'"
             >
@@ -116,7 +116,7 @@
         @if (this.getPoints(game, 2); as points) {
           <div class="game__points">
             <span
-              [matTooltip]="points.tooltip ?? '' | translate"
+              [matTooltip]="points.tooltip | translate"
               [matTooltipDisabled]="!points.tooltip"
               [matTooltipPosition]="'left'"
             >
