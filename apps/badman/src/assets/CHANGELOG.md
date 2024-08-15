@@ -1,3 +1,14 @@
+## 6.168.3 (2024-08-15)
+
+
+### 🩹 Fixes
+
+- switching ([3ea25fc68](https://github.com/Badminton-Apps/badman/commit/3ea25fc68))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.168.2 (2024-08-15)
 
 
