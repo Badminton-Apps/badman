@@ -12,7 +12,6 @@ import { EncounterCompetition, GamePlayer } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { gameLabel } from '@badman/utils';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo } from 'apollo-angular';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ReplacePlayerComponent } from '../../dialogs';
 

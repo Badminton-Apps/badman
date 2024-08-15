@@ -246,7 +246,11 @@ export class AssemblyController {
   private getLabels(data: AssemblyValidationData): string[] {
     const labels: string[] = [];
     for (let i = 0; i < 8; i++) {
-      const gameLabels = gameLabel(data.subEvent?.eventType as SubEventTypeEnum, i + 1);
+      if (!data.subEvent?.eventType) {
+        continue;
+      }
+
+      const gameLabels = gameLabel(data.subEvent?.eventType, i + 1);
       let labelMessage = '';
 
       for (const label of gameLabels) {
