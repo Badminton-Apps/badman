@@ -94,8 +94,6 @@ export class ListGamesComponent {
       return [];
     }
 
-    console.log('currGames');
-
     let games: GameBreakdown[] = [];
 
     untracked(() => {
