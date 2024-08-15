@@ -1,3 +1,15 @@
+## 6.168.2 (2024-08-15)
+
+
+### 🩹 Fixes
+
+- now directly copy to clipboard ([e5de0f9c2](https://github.com/Badminton-Apps/badman/commit/e5de0f9c2))
+- show tooltip that it was copied ([6396f6b24](https://github.com/Badminton-Apps/badman/commit/6396f6b24))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.168.1 (2024-08-15)
 
 
