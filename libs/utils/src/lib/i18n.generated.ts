@@ -29,6 +29,7 @@ export type I18nTranslations = {
             "none": string;
             "open-in-new-tab": string;
             "prev": string;
+            "re-sync": string;
             "save": string;
             "save-and-continue": string;
             "set-primary": string;
@@ -696,6 +697,12 @@ export type I18nTranslations = {
             };
             "no-memberid": string;
             "no-players": string;
+            "re-calculate": {
+                "calculate": string;
+                "from": string;
+                "title": string;
+                "to": string;
+            };
             "regular": string;
             "search": {
                 "backup-player": string;
@@ -733,6 +740,7 @@ export type I18nTranslations = {
                 "export": {
                     "avgDowngrade": string;
                     "avgUpgrade": string;
+                    "countsFor": string;
                     "date": string;
                     "LOST_DOWNGRADE": string;
                     "LOST_IGNORED": string;

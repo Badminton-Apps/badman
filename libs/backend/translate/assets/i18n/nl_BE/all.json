@@ -22,6 +22,7 @@
     "none": "Geen",
     "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Vorige",
+    "re-sync": "Herbereken punten",
     "save": "Opslaan",
     "save-and-continue": "Opslaan en verdergaan",
     "set-primary": "Maak primair",
@@ -689,6 +690,12 @@
     },
     "no-memberid": "Onbekend lidnummer",
     "no-players": "Geen spelers",
+    "re-calculate": {
+      "calculate": "Bereken",
+      "from": "Van",
+      "title": "Herberekenen van de punten voor speler  in periode:",
+      "to": "Tot"
+    },
     "regular": "Vaste speler",
     "search": {
       "backup-player": "Speler staat bij reservespelers",
