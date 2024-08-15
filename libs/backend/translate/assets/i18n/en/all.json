@@ -684,6 +684,7 @@
     "claimed": "Claimed",
     "ical": {
       "click": "Copy to clipboard",
+      "copied": "Link copied to clipboard",
       "description": "The link for all season then continues to follow the team as it promotes/degrades. even if the team changes numbers (as long as the league responsible transfers the team from the previous year)",
       "linked": "All seasons",
       "team-season": "Just this season"

@@ -25,13 +25,14 @@ import { EventEntry, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { transferState } from '@badman/frontend-utils';
 import { getSeason } from '@badman/utils';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectRouteData } from 'ngxtension/inject-route-data';
 import { map, takeUntil } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   templateUrl: './detail.page.html',
@@ -59,7 +60,9 @@ export class DetailPageComponent {
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
   private dialog = inject(MatDialog);
+  private snackbar = inject(MatSnackBar);
   private clipboard = inject(Clipboard);
+  private translate = inject(TranslateService);
   private destroy$ = injectDestroy();
 
   calendarTmpl = viewChild.required<TemplateRef<HTMLElement>>('calendar');
@@ -156,5 +159,8 @@ export class DetailPageComponent {
 
   copyToClipboard(suffix: string) {
     this.clipboard.copy(`${window.location.origin}/api/v1/calendar/team/${suffix}`);
+    this.snackbar.open(this.translate.instant('all.player.ical.copied'), 'X', {
+      duration: 2000,
+    });
   }
 }

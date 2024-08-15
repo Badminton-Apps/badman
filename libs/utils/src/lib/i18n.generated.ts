@@ -691,6 +691,7 @@ export type I18nTranslations = {
             "claimed": string;
             "ical": {
                 "click": string;
+                "copied": string;
                 "description": string;
                 "linked": string;
                 "team-season": string;
