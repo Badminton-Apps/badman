@@ -689,6 +689,13 @@ export type I18nTranslations = {
             "backup": string;
             "base": string;
             "claimed": string;
+            "ical": {
+                "click": string;
+                "description": string;
+                "linked": string;
+                "linked-description": string;
+                "team-season": string;
+            };
             "menu": {
                 "add": string;
                 "claim": string;

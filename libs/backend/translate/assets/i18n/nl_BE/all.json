@@ -682,6 +682,13 @@
     "backup": "Reservespeler",
     "base": "Basisspeler",
     "claimed": "Claimed",
+    "ical": {
+      "click": "Link",
+      "description": "Rechter klik op onderstaande link en voeg deze toe als URL in je agenda toepassing",
+      "linked": "Alle seizoenen",
+      "linked-description": "De link voor alle seizoen blijft dan de ploeg volgen als deze promoveert/degradeert. zelfs als de ploeg van nummer veranderd (zolang de competitie verantwoordelijke de ploeg overzet van het vorig jaar)",
+      "team-season": "Enkel dit seizoen:"
+    },
     "menu": {
       "add": "Nieuwe speler",
       "claim": "Claim account",

@@ -682,6 +682,13 @@
     "backup": "Backup player",
     "base": "Baseplayer",
     "claimed": "Claimed",
+    "ical": {
+      "click": "Link",
+      "description": "Right click on the link below and add it as a URL in your calendar application",
+      "linked": "All seasons",
+      "linked-description": "The link for all season then continues to follow the team as it promotes/degrades. even if the team changes numbers (as long as the league responsible transfers the team from the previous year)",
+      "team-season": "Just this season:"
+    },
     "menu": {
       "add": "New player",
       "claim": "Claim account",

@@ -12,9 +12,9 @@
     <mat-form-field>
       <mat-label>{{ 'all.game.types.title' | translate }}</mat-label>
       <mat-select formControlName="gameType">
-        <mat-option value="single">{{ 'all.ranking.single' | translate }}</mat-option>
-        <mat-option value="double">{{ 'all.ranking.double' | translate }}</mat-option>
-        <mat-option value="mix">{{ 'all.ranking.mix' | translate }}</mat-option>
+        <mat-option value="S">{{ 'all.ranking.single' | translate }}</mat-option>
+        <mat-option value="D">{{ 'all.ranking.double' | translate }}</mat-option>
+        <mat-option value="MX">{{ 'all.ranking.mix' | translate }}</mat-option>
       </mat-select>
     </mat-form-field>
     <badman-period-selection [system]="system()"></badman-period-selection>
