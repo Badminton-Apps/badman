@@ -88,5 +88,7 @@ export class ChangeEncounterComponent implements OnInit {
         this.breadcrumbsService.set('competition/change-encounter', result[changeEncounterKey]);
         this.breadcrumbsService.set('competition', result[competition]);
       });
+
+      
   }
 }

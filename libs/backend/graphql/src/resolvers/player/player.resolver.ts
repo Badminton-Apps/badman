@@ -31,12 +31,16 @@ import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nest
 import { Op } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { ListArgs, WhereArgs, queryFixer } from '../../utils';
+import { PointsService } from '@badman/backend-ranking';
 
 @Resolver(() => Player)
 export class PlayersResolver {
   protected readonly logger = new Logger(PlayersResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private pointService: PointsService,
+  ) {}
 
   @Query(() => Player)
   async player(@Args('id', { type: () => ID }) id: string): Promise<Player> {
@@ -341,9 +345,7 @@ export class PlayersResolver {
   }
 
   @Mutation(() => Boolean)
-  async updateSetting(
-    @Args('settings') settingsInput: SettingUpdateInput,
-  ): Promise<boolean> {
+  async updateSetting(@Args('settings') settingsInput: SettingUpdateInput): Promise<boolean> {
     const user = await Player.findByPk(settingsInput.playerId);
     if (!user) {
       throw new UnauthorizedException();
@@ -414,6 +416,63 @@ export class PlayersResolver {
     }
 
     return true;
+  }
+
+  @Mutation(() => Boolean)
+  async recalculatePlayerRankingPoints(
+    @User() user: Player,
+    @Args('playerId', { type: () => ID }) playerId: string,
+    @Args('startDate', { nullable: true }) startDate?: Date,
+    @Args('endDate', { nullable: true }) endDate?: Date,
+    @Args('systemId', { nullable: true }) systemId?: string,
+  ): Promise<boolean> {
+    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+      throw new UnauthorizedException(`You do not have permission to resync points`);
+    }
+
+    const player = await Player.findByPk(playerId);
+    if (!player) {
+      throw new NotFoundException(`${Player.name}: ${playerId}`);
+    }
+
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const where = systemId ? { id: systemId } : { primary: true };
+      const system = await RankingSystem.findOne({
+        where,
+      });
+
+      if (!system) {
+        throw new NotFoundException(`No ranking system found for ${systemId || 'primary'}`);
+      }
+
+      // find all games
+      const games = await player.getGames({
+        where: {
+          playedAt: {
+            [Op.between]: [startDate, endDate],
+          },
+        },
+      });
+
+      for (const game of games) {
+        await this.pointService.createRankingPointforGame(system, game, {
+          transaction,
+        });
+      }
+
+      this.logger.log(`Recalculated ${games.length} ranking points for player ${playerId}`);
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
   }
 }
 

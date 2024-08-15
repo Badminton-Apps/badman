@@ -3,5 +3,9 @@
   "github-actions.workflows.pinned.workflows": [
     ".github/workflows/main.yml"
   ],
-  "exportall.config.folderListener": []
+  "exportall.config.folderListener": [],
+  "sonarlint.connectedMode.project": {
+    "connectionId": "badman",
+    "projectKey": "Badminton-Apps_badman"
+  }
 }
