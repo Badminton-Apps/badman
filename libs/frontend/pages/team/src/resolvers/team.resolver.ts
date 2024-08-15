@@ -22,6 +22,7 @@ export class TeamResolver {
               id
               name
               slug
+              link
               teamNumber
               season
               captainId
