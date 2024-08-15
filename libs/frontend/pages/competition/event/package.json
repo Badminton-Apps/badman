@@ -1,6 +1,6 @@
 {
   "name": "@badman/frontend-event",
-  "version": "6.167.0",
+  "version": "6.168.0",
   "peerDependencies": {
     "@badman/frontend-team-assembly": "*",
     "@badman/frontend-team-enrollment": "*",
