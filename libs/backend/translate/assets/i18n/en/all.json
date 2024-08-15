@@ -22,6 +22,7 @@
     "none": "None",
     "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Previous",
+    "re-sync": "Recalculate points",
     "save": "Save",
     "save-and-continue": "Save and continue",
     "set-primary": "Make primary",
@@ -689,6 +690,12 @@
     },
     "no-memberid": "Unknown member id",
     "no-players": "No Players",
+    "re-calculate": {
+      "calculate": "Calculate",
+      "from": "From",
+      "title": "Recover points for player in next period",
+      "to": "To"
+    },
     "regular": "Regular player",
     "search": {
       "backup-player": "Player is listed with reserve players",

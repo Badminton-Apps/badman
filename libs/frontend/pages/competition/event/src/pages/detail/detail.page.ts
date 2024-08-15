@@ -35,7 +35,7 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectQueryParams } from 'ngxtension/inject-query-params';
 import { injectRouteData } from 'ngxtension/inject-route-data';
 import { combineLatest, lastValueFrom } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { CompetitionEncountersComponent } from './competition-encounters';
 import { CompetitionEncounterService } from './competition-encounters/competition-encounters.service';
@@ -72,9 +72,8 @@ import { CompetitionMapComponent } from './competition-map';
     CompetitionEncountersComponent,
   ],
 })
-export class DetailPageComponent implements OnInit {
+export class DetailPageComponent {
   private seoService = inject(SeoService);
-  private translate = inject(TranslateService);
   private router = inject(Router);
   private breadcrumbsService = inject(BreadcrumbService);
   private apollo = inject(Apollo);
@@ -87,8 +86,6 @@ export class DetailPageComponent implements OnInit {
   private claimService = inject(ClaimService);
 
   private readonly competitionEncounterService = inject(CompetitionEncounterService);
-
-  private destroy$ = injectDestroy();
 
   // signals
   currentTab = signal(0);
@@ -136,6 +133,15 @@ export class DetailPageComponent implements OnInit {
       this.copyYearControl.setValue(
         (this.eventCompetition()?.season ?? new Date().getFullYear()) + 1,
       );
+
+      const eventCompetitionName = `${this.eventCompetition()?.name}`;
+      this.seoService.update({
+        title: eventCompetitionName,
+        description: `Competition ${eventCompetitionName}`,
+        type: 'website',
+        keywords: ['event', 'competition', 'badminton'],
+      });
+      this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
     });
 
     effect(
@@ -154,20 +160,20 @@ export class DetailPageComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {
-    combineLatest([this.translate.get(['all.competition.title'])])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([translations]) => {
-        const eventCompetitionName = `${this.eventCompetition()?.name}`;
-        this.seoService.update({
-          title: eventCompetitionName,
-          description: `Competition ${eventCompetitionName}`,
-          type: 'website',
-          keywords: ['event', 'competition', 'badminton'],
-        });
-        this.breadcrumbsService.set('@eventCompetition', eventCompetitionName);
-        this.breadcrumbsService.set('competition', translations['all.competition.title']);
-      });
+  reCalculatePoints() {
+    this.apollo
+      .mutate({
+        mutation: gql`
+          mutation RecalculateEventCompetitionRankingPoints($eventId: ID!) {
+            recalculateEventCompetitionRankingPoints(eventId: $eventId)
+          }
+        `,
+        variables: {
+          eventId: this.eventCompetition()?.id,
+        },
+      })
+      .pipe(take(1))
+      .subscribe();
   }
 
   async copy(templateRef: TemplateRef<object>) {

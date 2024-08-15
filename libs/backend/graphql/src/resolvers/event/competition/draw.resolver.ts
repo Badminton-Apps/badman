@@ -3,7 +3,9 @@ import {
   DrawCompetitionUpdateInput,
   EncounterCompetition,
   EventEntry,
+  Game,
   Player,
+  RankingSystem,
   Standing,
   SubEventCompetition,
 } from '@badman/backend-database';
@@ -13,12 +15,16 @@ import { ListArgs } from '../../../utils';
 import { User } from '@badman/backend-authorization';
 import { Sequelize } from 'sequelize-typescript';
 import { sortStanding } from '@badman/utils';
+import { PointsService } from '@badman/backend-ranking';
 
 @Resolver(() => DrawCompetition)
 export class DrawCompetitionResolver {
   private readonly logger = new Logger(DrawCompetitionResolver.name);
 
-  constructor(private _sequelize: Sequelize) {}
+  constructor(
+    private _sequelize: Sequelize,
+    private _pointService: PointsService,
+  ) {}
 
   @Query(() => DrawCompetition)
   async drawCompetition(@Args('id', { type: () => ID }) id: string): Promise<DrawCompetition> {
@@ -131,16 +137,63 @@ export class DrawCompetitionResolver {
     }
   }
 
-  // @Mutation(returns => DrawCompetition)
-  // async addDrawCompetition(
-  //   @Args('newDrawCompetitionData') newDrawCompetitionData: NewDrawCompetitionInput,
-  // ): Promise<DrawCompetition> {
-  //   const recipe = await this.recipesService.create(newDrawCompetitionData);
-  //   return recipe;
-  // }
+  @Mutation(() => Boolean)
+  async recalculateDrawCompetitionRankingPoints(
+    @User() user: Player,
+    @Args('drawId', { type: () => ID }) drawId: string,
+    @Args('systemId', { type: () => ID, nullable: true }) systemId: string,
+  ): Promise<boolean> {
+    if (!(await user.hasAnyPermission(['re-sync:points']))) {
+      throw new UnauthorizedException(`You do not have permission to sync points`);
+    }
 
-  // @Mutation(returns => Boolean)
-  // async removeDrawCompetition(@Args('id') id: string) {
-  //   return this.recipesService.remove(id);
-  // }
+    // Do transaction
+    const transaction = await this._sequelize.transaction();
+    try {
+      const where = systemId ? { id: systemId } : { primary: true };
+      const system = await RankingSystem.findOne({
+        where,
+      });
+
+      if (!system) {
+        throw new NotFoundException(`${RankingSystem.name} not found for ${systemId || 'primary'}`);
+      }
+
+      // find all games
+      const draw = await DrawCompetition.findByPk(drawId, {
+        transaction,
+      });
+
+      if (!draw) {
+        throw new NotFoundException(`${DrawCompetition.name}  not found for ${drawId}`);
+      }
+
+      const encounters = await draw.getEncounterCompetitions({
+        transaction,
+        include: [{ model: Game }],
+      });
+
+      const games = encounters.reduce((acc, enc) => {
+        acc.push(...(enc.games ?? []));
+        return acc;
+      }, [] as Game[]);
+
+      for (const game of games ?? []) {
+        await this._pointService.createRankingPointforGame(system, game, {
+          transaction,
+        });
+      }
+
+      this.logger.log(`Recalculated ${games.length} ranking points for draw ${drawId}`);
+
+      // Commit transaction
+      await transaction.commit();
+
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      await transaction.rollback();
+      throw error;
+    }
+  }
 }
