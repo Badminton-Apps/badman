@@ -683,11 +683,10 @@
     "base": "Joueur de base",
     "claimed": "Revendiqué",
     "ical": {
-      "click": "Lien",
-      "description": "Cliquez avec le bouton droit de la souris sur le lien ci-dessous et ajoutez-le en tant qu'URL dans votre application de calendrier.",
+      "click": "Copier dans le presse-papiers",
+      "description": "Le lien pour toute la saison continue à suivre l'équipe au fur et à mesure de sa promotion/dégradation, même si l'équipe change de numéro (à condition que la ligue responsable transfère l'équipe de l'année précédente).",
       "linked": "Toutes les saisons",
-      "linked-description": "Le lien pour toute la saison continue à suivre l'équipe au fur et à mesure de sa promotion/dégradation, même si l'équipe change de numéro (à condition que la ligue responsable transfère l'équipe de l'année précédente).",
-      "team-season": "Juste cette saison :"
+      "team-season": "Juste cette saison "
     },
     "menu": {
       "add": "Nouveau joueur",
