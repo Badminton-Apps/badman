@@ -96,7 +96,7 @@ export class ListEncountersComponent implements OnInit, OnChanges {
       return null;
     }
 
-    const gameType = encounter.drawCompetition?.subEventCompetition?.eventType as 'M' | 'F' | 'MX';
+    const gameType = encounter.drawCompetition?.subEventCompetition?.eventType;
     const gameNumber = game.order ?? 0;
 
     return gameLabel(gameType, gameNumber) as string[];
