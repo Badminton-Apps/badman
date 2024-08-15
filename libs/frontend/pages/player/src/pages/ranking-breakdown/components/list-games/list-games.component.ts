@@ -17,7 +17,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Game, GamePlayer, Player, RankingSystem } from '@badman/frontend-models';
-import { GameBreakdownType, GameType, getGameResultType } from '@badman/utils';
+import { GameBreakdownType, GameType, getGameResultType, Ranking } from '@badman/utils';
 import { MtxGridColumn, MtxGridModule } from '@ng-matero/extensions/grid';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import moment, { Moment } from 'moment';
@@ -67,7 +67,7 @@ export class ListGamesComponent {
 
   startPeriod = derivedAsync<Moment>(() => this.breakdownService.filter.get('start')?.valueChanges);
   next = derivedAsync<Moment>(() => this.breakdownService.filter.get('next')?.valueChanges);
-  type = injectParams('type') as Signal<'single' | 'double' | 'mix'>;
+  type = injectParams('type') as Signal<Ranking>;
 
   includedIgnored = derivedAsync<boolean | null>(
     () => this.breakdownService.filter.get('includedIgnored')?.valueChanges,
@@ -349,7 +349,7 @@ export class ListGamesComponent {
     let validGamesDowngrade = 0;
 
     // sort games by playedAt newest first
-    for (const game of games.sort((a, b) => {
+    for (const game of games.slice().sort((a, b) => {
       if (!a.playedAt || !b.playedAt) {
         return 0;
       }

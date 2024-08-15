@@ -22,6 +22,7 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 import { ListGamesComponent, PeriodSelectionComponent } from './components';
 import { RankingEvolutionComponent } from './components/ranking-evolution';
 import { RankingBreakdownService } from './services/ranking-breakdown.service';
+import { GameType } from '@badman/utils';
 
 @Component({
   templateUrl: './ranking-breakdown.page.html',
@@ -118,10 +119,24 @@ export class RankingBreakdownPageComponent {
         this.systemService.system()?.calculationIntervalUnit,
       );
 
+    let gameType = GameType.S
+    switch (this.type()) {
+      case 'single':
+        gameType = GameType.S;
+        break;
+      case 'double':
+        gameType = GameType.D;
+        break;
+      case 'mix':
+        gameType = GameType.MX;
+        break;
+    }
+      
+
     this.breakdownService.filter.patchValue({
       systemId: this.system().id,
       playerId: this.player()?.id,
-      gameType: this.type(),
+      gameType,
       start: startPeriod,
       end: endPeriod,
       game: gamePeriod,
