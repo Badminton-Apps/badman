@@ -1,6 +1,6 @@
 <badman-page-header>
   <ng-content avatar>{{ this.initials() }}</ng-content>
-  <ng-content title>{{ this.player().fullName }}</ng-content>
+  <ng-content title>{{ this.player()?.fullName }}</ng-content>
   <ng-content subTitle>
     <div class="info">
       <div class="sub-text">
@@ -9,12 +9,12 @@
             this.club()?.name
           }}</a></ng-container
         >
-        @if (this.club()?.name && this.player().memberId) {
+        @if (this.club()?.name && this.player()?.memberId) {
           -
         }
-        {{ this.player().memberId }}
+        {{ this.player()?.memberId }}
       </div>
-      @if (this.player().id) {
+      @if (this.player()?.id) {
         <div class="levels">
           <badman-show-level
             [routerLink]="['ranking', 'single']"
@@ -47,12 +47,20 @@
             {{ 'all.player.menu.claim' | translate }}
           </button>
         }
-        <badman-has-claim [any]="['edit-any:player', this.player().id + '_edit:player']">
+        <badman-has-claim [any]="['edit-any:player', this.player()?.id + '_edit:player']">
           <button mat-menu-item [routerLink]="'edit'">
             <mat-icon>edit</mat-icon>
             <span>{{ 'all.player.menu.edit' | translate }}</span>
           </button>
         </badman-has-claim>
+        
+        <badman-has-claim [all]="['re-sync:points']">
+          <button mat-menu-item (click)="reCalculatePoints()">
+            <mat-icon>sync</mat-icon>
+            <span>{{ 'all.button.re-sync' | translate }}</span>
+          </button>
+        </badman-has-claim>
+
         <badman-has-claim [any]="['delete:player']">
           <button mat-menu-item (click)="this.removePlayer()">
             <mat-icon>delete</mat-icon>
@@ -63,21 +71,25 @@
     }
   </ng-content>
 </badman-page-header>
-<section class="games">
-  <section class="recent-games">
-    <h3>
-      <mat-icon color="primary">history</mat-icon>
-      {{ 'all.game.recent.title' | translate }}
-    </h3>
-    <badman-recent-games [playerId]="this.player().id"></badman-recent-games>
+@if (loaded()) {
+  <section class="games">
+    <section class="recent-games">
+      <h3>
+        <mat-icon color="primary">history</mat-icon>
+        {{ 'all.game.recent.title' | translate }}
+      </h3>
+      <badman-recent-games [playerId]="this.player()?.id"></badman-recent-games>
+    </section>
+    <section class="upcoming-games">
+      <h3>
+        <mat-icon color="primary">calendar_month</mat-icon>
+        {{ 'all.game.upcoming.title' | translate }}
+      </h3>
+      @if (this.hasTeams()) {
+        <badman-upcoming-games [clubId]="club()?.id" [teams]="this.teams()"></badman-upcoming-games>
+      }
+    </section>
   </section>
-  <section class="upcoming-games">
-    <h3>
-      <mat-icon color="primary">calendar_month</mat-icon>
-      {{ 'all.game.upcoming.title' | translate }}
-    </h3>
-    @if (this.hasTeams()) {
-      <badman-upcoming-games [clubId]="club()?.id" [teams]="this.teams()"></badman-upcoming-games>
-    }
-  </section>
-</section>
+} @else {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}

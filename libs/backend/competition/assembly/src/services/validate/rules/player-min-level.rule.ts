@@ -1,12 +1,12 @@
 import { Player } from '@badman/backend-database';
-import { SubEventTypeEnum } from '@badman/utils';
+import { Ranking, SubEventTypeEnum } from '@badman/utils';
 import { AssemblyOutput, AssemblyValidationData, AssemblyValidationError } from '../../../models';
 import { Rule } from './_rule.base';
 
 export type PlayerMinLevelRuleParams = {
   player: Partial<Player> & { ranking: number };
   minLevel: number;
-  rankingType: 'single' | 'double' | 'mix';
+  rankingType: Ranking;
 };
 
 /**

@@ -1,15 +1,15 @@
 <badman-page-header>
-  <div title>{{ drawCompetition().name }}</div>
+  <div title>{{ drawCompetition()?.name }}</div>
   <div actions>
-    @if (drawCompetition().visualCode && eventCompetition().visualCode) {
+    @if (drawCompetition()?.visualCode && eventCompetition()?.visualCode) {
       <a
         mat-icon-button
         target="_blank"
         [href]="
           'https://www.toernooi.nl/sport/league/draw?id=' +
-          this.eventCompetition().visualCode +
+          this.eventCompetition()?.visualCode +
           '&draw=' +
-          this.drawCompetition().visualCode
+          this.drawCompetition()?.visualCode
         "
         [matTooltip]="'all.button.open-in-new-tab' | translate"
         rel="noopener"
@@ -17,11 +17,26 @@
         <mat-icon>open_in_new</mat-icon>
       </a>
     }
+
+    <badman-has-claim [any]="['re-sync:points']">
+      <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <badman-has-claim [all]="['re-sync:points']">
+          <button mat-menu-item (click)="reCalculatePoints()">
+            <mat-icon>sync</mat-icon>
+            <span>{{ 'all.button.re-sync' | translate }}</span>
+          </button>
+        </badman-has-claim>
+      </mat-menu>
+    </badman-has-claim>
+    
   </div>
 </badman-page-header>
 <section class="standing">
   <h3>{{ 'all.event.standing.title' | translate }}</h3>
-  <badman-standing [type]="'team'" [entries]="drawCompetition().eventEntries!"></badman-standing>
+  <badman-standing [type]="'team'" [entries]="drawCompetition()?.eventEntries!"></badman-standing>
 </section>
 @if (teams()) {
   <section class="games">

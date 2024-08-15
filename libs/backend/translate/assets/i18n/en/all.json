@@ -22,6 +22,7 @@
     "none": "None",
     "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Previous",
+    "re-sync": "Recalculate points",
     "save": "Save",
     "save-and-continue": "Save and continue",
     "set-primary": "Make primary",
@@ -689,6 +690,12 @@
     },
     "no-memberid": "Unknown member id",
     "no-players": "No Players",
+    "re-calculate": {
+      "calculate": "Calculate",
+      "from": "From",
+      "title": "Recover points for player in next period",
+      "to": "To"
+    },
     "regular": "Regular player",
     "search": {
       "backup-player": "Player is listed with reserve players",
@@ -720,9 +727,30 @@
       "corrected": "Originally {original} games, average is being calculated with minimum {corrected} games.",
       "date": "Date",
       "disclaimer": "Currently, this is a proof of concept. This is because we don't have the full data set from an external system to show the following correctly. We are working on this.",
-      "downgrade": "Downgrade",
+      "downgrade-average": "Avg. Downgrade",
       "drops-next-period": "Drops next period",
       "evolution": "Evolution",
+      "export": {
+        "avgDowngrade": "Degradation average",
+        "avgUpgrade": "Pomotion average",
+        "countsFor": "Counts for",
+        "date": "Date",
+        "LOST_DOWNGRADE": "Promotion + Degradation",
+        "LOST_IGNORED": "Does not count",
+        "LOST_UPGRADE": "Promotion",
+        "opponent1": "Opponent 1",
+        "opponent2": "Opponent 2",
+        "OUT_SCOPE": "Out of scope",
+        "player1": "Player 1",
+        "player2": "Player 2",
+        "points": "Points",
+        "title": "Export current filter",
+        "usedForDowngrade": "Used for degradation",
+        "usedForUpgrade": "Used for promotion",
+        "WON": "Won"
+      },
+      "games-downgrade": "# Matches Downgrade",
+      "games-upgrade": "# Matches Upgrade",
       "hint": "Click on a level for simulation and breakdown",
       "ignored": "Doesn't count",
       "includeOutOfScope": "Out of scope",
@@ -740,6 +768,9 @@
         "one": "One game",
         "other": "{count} games"
       },
+      "outOfScopeDowngrade": "Out of scope for downgrade",
+      "outOfScopeUpgrade": "Out of scope for upgrade",
+      "outOfScopeWonGames": "Unused matches won",
       "period": {
         "last-point-update": "Past points update",
         "last-ranking-update": "Past rankings update",
@@ -758,9 +789,9 @@
         "point": "Points update",
         "ranking": "Ranking update"
       },
-      "upgrade": "Upgrade",
-      "usedForDowngrade": "Used for up- and downgrade",
-      "usedForUpgrade": "Used for upgrade"
+      "upgrade-average": "Avg. upgrade",
+      "used-for-downgrade": "Used for downgrade",
+      "used-for-upgrade": "Used for upgrade"
     },
     "clone-points": "Copy points to this system",
     "double": "Double",

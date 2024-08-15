@@ -1,17 +1,19 @@
 <badman-page-header>
   <ng-content actions>
-    @if (this.eventTournament().visualCode) {
+    @if (this.eventTournament()?.visualCode) {
       <a
         mat-icon-button
         target="_blank"
-        [href]="'https://www.toernooi.nl/tournament/' + this.eventTournament().visualCode"
+        [href]="'https://www.toernooi.nl/tournament/' + this.eventTournament()?.visualCode"
         [matTooltip]="'all.button.open-in-new-tab' | translate"
         rel="noopener"
       >
         <mat-icon>open_in_new</mat-icon>
       </a>
     }
-    <badman-has-claim [any]="['edit-any:tournament', 'delete-any:tournament', 'change:job']">
+    <badman-has-claim
+      [any]="['edit-any:tournament', 'delete-any:tournament', 'change:job', 're-snyc:points']"
+    >
       <button mat-icon-button [matMenuTriggerFor]="menu" title="more options">
         <mat-icon>more_vert</mat-icon>
       </button>
@@ -23,13 +25,19 @@
           </button>
           <button mat-menu-item (click)="this.makeOfficial()">
             <mat-icon>verified_user</mat-icon>
-            <span>{{ this.eventTournament().official ? 'Unmake' : 'Make' }} official</span>
+            <span>{{ this.eventTournament()?.official ? 'Unmake' : 'Make' }} official</span>
           </button>
         </badman-has-claim>
         <badman-has-claim [any]="['change:job']">
           <button mat-menu-item (click)="syncEvent()">
             <mat-icon>sync</mat-icon>
-            <span>Sync</span>
+            <span>{{ 'all.competition.menu.sync' | translate }}</span>
+          </button>
+        </badman-has-claim>
+        <badman-has-claim [all]="['re-sync:points']">
+          <button mat-menu-item (click)="reCalculatePoints()">
+            <mat-icon>sync</mat-icon>
+            <span>{{ 'all.button.re-sync' | translate }}</span>
           </button>
         </badman-has-claim>
         <badman-has-claim [any]="['edit-any:tournament']">
@@ -53,55 +61,60 @@
       </mat-menu>
     </badman-has-claim>
   </ng-content>
-  <ng-content title>{{ this.eventTournament().name }}</ng-content>
+  <ng-content title>{{ this.eventTournament()?.name }}</ng-content>
   <ng-content subTitle>
     <mat-chip-listbox>
       <mat-chip
         >{{ 'all.tournament.enrollment.title' | translate }}:
         {{
-          (this.eventTournament().allowEnlisting ?? false
+          (this.eventTournament()?.allowEnlisting ?? false
             ? 'all.tournament.enrollment.open'
             : 'all.tournament.enrollment.closed'
           ) | translate
         }}</mat-chip
       >
-      @if (this.eventTournament().lastSync) {
+      @if (this.eventTournament()?.lastSync) {
         <mat-chip>
           {{ 'all.event.last-sync' | translate }}:
-          {{ this.eventTournament().lastSync | amCalendar }}
+          {{ this.eventTournament()?.lastSync | amCalendar }}
         </mat-chip>
       }
     </mat-chip-listbox>
   </ng-content>
 </badman-page-header>
-@if (this.subEvents()) {
-  <div class="subEvents">
-    @for (type of this.subEvents(); track type) {
-      <div class="type">
-        <h3>{{ 'all.game.types.long.' + type.eventType | translate }}</h3>
-        @for (sub of type.subEvents; track sub) {
-          <mat-card class="subEvent">
-            <mat-card-header>
-              <mat-card-title
-                >{{ sub.name }} {{ sub.eventType }}
-                @if ((sub?.rankingGroups?.length ?? 0) > 0) {
-                  <span>*</span>
+
+@if (loaded()) {
+  @if (this.subEvents()) {
+    <div class="subEvents">
+      @for (type of this.subEvents(); track type) {
+        <div class="type">
+          <h3>{{ 'all.game.types.long.' + type.eventType | translate }}</h3>
+          @for (sub of type.subEvents; track sub) {
+            <mat-card class="subEvent">
+              <mat-card-header>
+                <mat-card-title
+                  >{{ sub.name }} {{ sub.eventType }}
+                  @if ((sub?.rankingGroups?.length ?? 0) > 0) {
+                    <span>*</span>
+                  }
+                </mat-card-title>
+                <mat-card-subtitle></mat-card-subtitle>
+              </mat-card-header>
+              <div class="draw">
+                @for (draw of sub.drawTournaments; track draw) {
+                  <div>
+                    <button mat-button [routerLink]="['draw', draw.id]">
+                      {{ draw.name }} ({{ draw.size }} entries)
+                    </button>
+                  </div>
                 }
-              </mat-card-title>
-              <mat-card-subtitle></mat-card-subtitle>
-            </mat-card-header>
-            <div class="draw">
-              @for (draw of sub.drawTournaments; track draw) {
-                <div>
-                  <button mat-button [routerLink]="['draw', draw.id]">
-                    {{ draw.name }} ({{ draw.size }} entries)
-                  </button>
-                </div>
-              }
-            </div>
-          </mat-card>
-        }
-      </div>
-    }
-  </div>
+              </div>
+            </mat-card>
+          }
+        </div>
+      }
+    </div>
+  }
+} @else {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 }

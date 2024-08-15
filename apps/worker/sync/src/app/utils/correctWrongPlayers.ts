@@ -1,10 +1,12 @@
+import { Gender } from '@badman/utils';
+
 export const correctWrongPlayers = (player: {
   id?: string;
   memberId?: string;
   firstName?: string;
   lastName?: string;
   birthDate?: Date;
-  gender?: 'M' | 'F';
+  gender?: Gender;
   club?: number;
 }): {
   id?: string;
@@ -12,7 +14,7 @@ export const correctWrongPlayers = (player: {
   firstName?: string;
   lastName?: string;
   birthDate?: Date;
-  gender?: 'M' | 'F';
+  gender?: Gender;
   club?: number;
 } => {
   // Yaro Van Delsen
@@ -5260,14 +5262,6 @@ export const correctWrongPlayers = (player: {
     };
   }
 
-  // // Fixme
-  // if (player.memberId === '') {
-  //   return {
-  //     ...player,
-  //     memberId: 'Fixme'
-  //   };
-  // }
-  //
 
   return player;
 };
