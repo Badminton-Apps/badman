@@ -1,3 +1,14 @@
+## 6.168.1 (2024-08-15)
+
+
+### 🩹 Fixes
+
+- calendar wasn't showing th right events ([7b788bcda](https://github.com/Badminton-Apps/badman/commit/7b788bcda))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.168.0 (2024-08-15)
 
 
