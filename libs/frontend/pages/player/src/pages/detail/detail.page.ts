@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Signal, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Component, Signal, computed, effect, inject, untracked } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -18,7 +18,7 @@ import {
   RecentGamesComponent,
   UpcomingGamesComponent,
 } from '@badman/frontend-components';
-import { Game, Team } from '@badman/frontend-models';
+import { Game } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { injectParams } from 'ngxtension/inject-params';
@@ -123,7 +123,7 @@ export class DetailPageComponent {
 
   getPlayer(game: Game, player: number, team: number) {
     const playerInGame = game.players?.find((p) => p.player === player && p.team === team);
-    return playerInGame?.fullName || 'Unknown';
+    return playerInGame?.fullName ?? 'Unknown';
   }
 
   async claimAccount() {
