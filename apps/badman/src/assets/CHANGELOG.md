@@ -1,3 +1,18 @@
+## 6.168.0 (2024-08-15)
+
+
+### 🚀 Features
+
+- add you calendars to your agenda ([c0f60fb83](https://github.com/Badminton-Apps/badman/commit/c0f60fb83))
+
+### 🩹 Fixes
+
+- location check now also loads the changed location. ([a8a26720e](https://github.com/Badminton-Apps/badman/commit/a8a26720e))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
 ## 6.167.0 (2024-08-15)
 
 
