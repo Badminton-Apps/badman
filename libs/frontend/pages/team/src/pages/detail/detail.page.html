@@ -45,20 +45,20 @@
   <ng-template #calendar>
     <h2 matDialogTitle>{{ 'all.player.menu.add' | translate }}</h2>
     <mat-dialog-content>
-      <p>{{ 'all.player.ical.description' | translate }}</p>
       <p>
-        {{ 'all.player.ical.team-season' | translate }}:
-        <a [href]="'./api/v1/calendar/team?teamId=' + team.id">{{
-          'all.player.ical.click' | translate
-        }}</a
-        ><br />
-        {{ 'all.player.ical.linked' | translate }}:
-        <a [href]="'./api/v1/calendar/team?linkId=' + team.link">{{
-          'all.player.ical.click' | translate
-        }}</a>
+        <small>{{ 'all.player.ical.description' | translate }}</small>
       </p>
       <p>
-        <small>{{ 'all.player.ical.linked-description' | translate }}</small>
+        {{ 'all.player.ical.team-season' | translate }}:
+        <button mat-flat-button (click)="this.copyToClipboard('?teamId=' + team.id)">
+          {{ 'all.player.ical.click' | translate }}
+        </button>
+
+        <br />
+        {{ 'all.player.ical.linked' | translate }}:
+        <button mat-flat-button (click)="this.copyToClipboard('?linkId=' + team.link)">
+          {{ 'all.player.ical.click' | translate }}
+        </button>
       </p>
     </mat-dialog-content>
     <mat-dialog-actions align="end">

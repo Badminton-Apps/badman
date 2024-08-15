@@ -31,6 +31,7 @@ import { injectDestroy } from 'ngxtension/inject-destroy';
 import { injectRouteData } from 'ngxtension/inject-route-data';
 import { map, takeUntil } from 'rxjs';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   templateUrl: './detail.page.html',
@@ -58,6 +59,7 @@ export class DetailPageComponent {
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
   private dialog = inject(MatDialog);
+  private clipboard = inject(Clipboard);
   private destroy$ = injectDestroy();
 
   calendarTmpl = viewChild.required<TemplateRef<HTMLElement>>('calendar');
@@ -150,5 +152,9 @@ export class DetailPageComponent {
       panelClass: 'calendar-dialog',
       maxWidth: '500px',
     });
+  }
+
+  copyToClipboard(suffix: string) {
+    this.clipboard.copy(`${window.location.origin}/api/v1/calendar/team/${suffix}`);
   }
 }

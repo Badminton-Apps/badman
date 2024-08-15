@@ -693,7 +693,6 @@ export type I18nTranslations = {
                 "click": string;
                 "description": string;
                 "linked": string;
-                "linked-description": string;
                 "team-season": string;
             };
             "menu": {
