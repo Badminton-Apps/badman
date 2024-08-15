@@ -16,24 +16,24 @@ export class ClubBuilder {
     return new ClubBuilder(id);
   }
 
-  WithName(name: string): ClubBuilder {
+  WithName(name: string): this {
     this.club.name = name;
 
     return this;
   }
   
-  WithTeamName(name: string): ClubBuilder {
+  WithTeamName(name: string): this {
     this.club.teamName = name;
 
     return this;
   }
 
-  WithId(id: string): ClubBuilder {
+  WithId(id: string): this {
     this.club.id = id;
     return this;
   }
 
-  WithTeam(team: TeamBuilder): ClubBuilder {
+  WithTeam(team: TeamBuilder): this {
     team.ForClub(this.club);
     this.teams.push(team);
     return this;
