@@ -1,17 +1,12 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Injector,
-  computed,
-  effect,
-  inject
-} from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import {
+  HasClaimComponent,
   PageHeaderComponent,
   RecentGamesComponent,
   StandingComponent,
@@ -20,10 +15,12 @@ import {
 import { DrawCompetition, EventCompetition, Team } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Apollo, gql } from 'apollo-angular';
+import { injectDestroy } from 'ngxtension/inject-destroy';
+import { injectRouteData } from 'ngxtension/inject-route-data';
+import { take, takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { DrawLocationMapComponent } from './components';
-import { injectDestroy } from 'ngxtension/inject-destroy';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'badman-detail-draw-competition',
@@ -37,27 +34,26 @@ import { takeUntil } from 'rxjs/operators';
     TranslateModule,
     MatTooltipModule,
     MatIconModule,
+    MatButtonModule,
+
     StandingComponent,
     RecentGamesComponent,
     UpcomingGamesComponent,
     PageHeaderComponent,
     DrawLocationMapComponent,
+    HasClaimComponent,
+    MatMenuModule,
   ],
 })
 export class DetailDrawCompetitionComponent {
   private readonly destroy$ = injectDestroy();
   private readonly translateService = inject(TranslateService);
- 
-  private readonly route = inject(ActivatedRoute);
-  // private readonly router = inject(Router);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly seoService = inject(SeoService);
-  private readonly injector = inject(Injector);
+  private readonly apollo = inject(Apollo);
 
-  private routeData = toSignal(this.route.data);
-
-  drawCompetition = computed(() => this.routeData()?.['drawCompetition'] as DrawCompetition);
-  eventCompetition = computed(() => this.routeData()?.['eventCompetition'] as EventCompetition);
+  drawCompetition = injectRouteData<DrawCompetition>('drawCompetition');
+  eventCompetition = injectRouteData<EventCompetition>('eventCompetition');
   teams = computed(() => this.drawCompetition()?.eventEntries?.map((e) => e.team as Team));
 
   constructor() {
@@ -67,24 +63,35 @@ export class DetailDrawCompetitionComponent {
       .get([compTitle])
       .pipe(takeUntil(this.destroy$))
       .subscribe((translations) => {
-        this.breadcrumbService.set('competition', translations[compTitle]);
+        this.breadcrumbService.set('competitwion', translations[compTitle]);
       });
-    
-    effect(
-      () => {
-        const drawCompetitionName = `${this.drawCompetition().name}`;
-        this.seoService.update({
-          title: drawCompetitionName,
-          description: `Competition draw ${drawCompetitionName}`,
-          type: 'website',
-          keywords: ['event', 'competition', 'badminton'],
-        });
-        this.breadcrumbService.set('@eventCompetition', this.eventCompetition().name || '');
-        this.breadcrumbService.set('@drawCompetition', drawCompetitionName);
-      },
-      {
-        injector: this.injector,
-      },
-    );
+
+    effect(() => {
+      const drawCompetitionName = `${this.drawCompetition()?.name}`;
+      this.seoService.update({
+        title: drawCompetitionName,
+        description: `Competition draw ${drawCompetitionName}`,
+        type: 'website',
+        keywords: ['event', 'competition', 'badminton'],
+      });
+      this.breadcrumbService.set('@eventCompetition', this.eventCompetition()?.name ?? '');
+      this.breadcrumbService.set('@drawCompetition', drawCompetitionName);
+    });
+  }
+
+  reCalculatePoints() {
+    this.apollo
+      .mutate({
+        mutation: gql`
+          mutation RecalculateDrawCompetitionRankingPoints($drawId: ID!) {
+            recalculateDrawCompetitionRankingPoints(drawId: $drawId)
+          }
+        `,
+        variables: {
+          drawId: this.drawCompetition()?.id,
+        },
+      })
+      .pipe(take(1))
+      .subscribe();
   }
 }
