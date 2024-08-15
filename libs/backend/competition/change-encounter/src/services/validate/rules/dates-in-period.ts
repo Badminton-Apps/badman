@@ -40,7 +40,7 @@ export class DatePeriodRule extends Rule {
     // if we have suggested dates for the working encounter, we need to check if that date would give a warning
     if (suggestedDates && changeEncounter.workingencounterId) {
       const warns = suggestedDates.map((suggestedDate) =>
-        this.isBetween(suggestedDate, [...period], changeEncounter.workingencounterId),
+        this.isBetween(suggestedDate.date, [...period], changeEncounter.workingencounterId),
       );
 
       for (const warn of warns) {

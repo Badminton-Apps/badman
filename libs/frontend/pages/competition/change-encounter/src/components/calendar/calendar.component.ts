@@ -369,7 +369,7 @@ export class CalendarComponent implements OnInit {
     }
 
     const dayEvent = this.dayEvents.get(format);
-    if (dayEvent && dayEvent.some((e) => e.allowCompetition == false)) {
+    if (dayEvent?.some((e) => !e.allowCompetition)) {
       return false;
     }
 
@@ -696,7 +696,7 @@ export class CalendarComponent implements OnInit {
           map((result) => {
             return result.data?.club.teams?.map((team) => new Team(team));
           }),
-          map((teams) => teams.sort(sortTeams)),
+          map((teams) => teams.slice().sort(sortTeams)),
         ),
     );
   }
@@ -876,7 +876,6 @@ export class CalendarComponent implements OnInit {
       return;
     }
 
-
     if (time) {
       // splite time to hour and minute
       const timeSplit = time?.split(':');
@@ -971,11 +970,10 @@ export class CalendarComponent implements OnInit {
           // if there is an request
           if (encounter.encounterChange && !encounter.encounterChange.accepted) {
             dayInfo.locations[infoIndex].removed.push(encounter);
-          } else {
-            // if the home team is visible
-            if (this._isVisible(encounter.homeTeamId)) {
-              dayInfo.locations[infoIndex].encounters.push(encounter);
-            }
+          }
+          // if the home team is visible
+          else if (this._isVisible(encounter.homeTeamId)) {
+            dayInfo.locations[infoIndex].encounters.push(encounter);
           }
 
           dayInfo.locations[infoIndex].space = Math.max(0, dayInfo.locations[infoIndex].space - 1);
