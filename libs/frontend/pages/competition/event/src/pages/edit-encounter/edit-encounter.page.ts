@@ -37,7 +37,6 @@ export class EditEncounterComponent implements OnInit {
   private seoService = inject(SeoService);
   private route = inject(ActivatedRoute);
   private breadcrumbsService = inject(BreadcrumbService);
-  private apollo = inject(Apollo);
   private platformId = inject<string>(PLATFORM_ID);
   private formBuilder = inject(FormBuilder);
   private matdialog = inject(MatDialog);
@@ -146,10 +145,7 @@ export class EditEncounterComponent implements OnInit {
   }
 
   getGameLabel(game: number) {
-    const gameType = this.encounterCompetition.drawCompetition?.subEventCompetition?.eventType as
-      | 'M'
-      | 'F'
-      | 'MX';
+    const gameType = this.encounterCompetition.drawCompetition?.subEventCompetition?.eventType;
 
     if (!gameType) {
       return [];

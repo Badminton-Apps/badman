@@ -5,7 +5,7 @@ import {
   PLATFORM_ID,
   computed,
   effect,
-  inject
+  inject,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -108,8 +108,7 @@ export class DetailEncounterComponent {
   }
 
   getGameLabel(game: number) {
-    const gameType = this.encounterCompetition()?.drawCompetition?.subEventCompetition
-      ?.eventType as 'M' | 'F' | 'MX';
+    const gameType = this.encounterCompetition()?.drawCompetition?.subEventCompetition?.eventType;
 
     if (!gameType) {
       return [];
