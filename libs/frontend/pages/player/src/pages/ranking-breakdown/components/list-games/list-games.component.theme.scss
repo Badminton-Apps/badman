@@ -28,6 +28,10 @@
     .downgrade {
       color: mat.m2-get-color-from-palette($warn-palette, 300);
     }
+
+    .center-text {
+      text-align: center;
+    }
   }
 }
 

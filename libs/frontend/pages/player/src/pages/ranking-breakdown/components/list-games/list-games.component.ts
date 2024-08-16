@@ -6,6 +6,7 @@ import {
   computed,
   inject,
   input,
+  signal,
   Signal,
   untracked,
 } from '@angular/core';
@@ -29,6 +30,7 @@ import * as xlsx from 'xlsx';
 import { AddGameComponent } from '../../dialogs/add-game';
 import { take } from 'rxjs';
 import { injectParams } from 'ngxtension/inject-params';
+import { DEVICE } from '@badman/frontend-utils';
 
 @Component({
   selector: 'badman-list-games',
@@ -54,6 +56,7 @@ import { injectParams } from 'ngxtension/inject-params';
 export class ListGamesComponent {
   private translateService = inject(TranslateService);
   readonly breakdownService = inject(RankingBreakdownService);
+  readonly isMobile = inject(DEVICE);
 
   games = this.breakdownService.state.games;
   loaded = this.breakdownService.state.loaded;
@@ -135,45 +138,43 @@ export class ListGamesComponent {
     });
   });
 
-  filterdGames = computed(() => {
-    return this.currGames()
-      .filter((x) => {
-        if (
-          this.includeOutOfScopeDowngrade() &&
-          x.type == GameBreakdownType.LOST_DOWNGRADE &&
-          !x.usedForUpgrade
-        ) {
-          return true;
-        }
+  filterdGames = computed(() =>
+    this.currGames().filter((x) => {
+      if (
+        this.includeOutOfScopeDowngrade() &&
+        x.type == GameBreakdownType.LOST_DOWNGRADE &&
+        !x.usedForUpgrade
+      ) {
+        return true;
+      }
 
-        if (
-          this.includeOutOfScopeUpgrade() &&
-          x.type == GameBreakdownType.LOST_UPGRADE &&
-          !x.usedForDowngrade
-        ) {
-          return true;
-        }
+      if (
+        this.includeOutOfScopeUpgrade() &&
+        x.type == GameBreakdownType.LOST_UPGRADE &&
+        !x.usedForDowngrade
+      ) {
+        return true;
+      }
 
-        if (this.includedIgnored() && x.type == GameBreakdownType.LOST_IGNORED) {
-          return true;
-        }
+      if (this.includedIgnored() && x.type == GameBreakdownType.LOST_IGNORED) {
+        return true;
+      }
 
-        if (this.includedUpgrade() && x.usedForUpgrade) {
-          return true;
-        }
+      if (this.includedUpgrade() && this.showUpgrade() && x.usedForUpgrade) {
+        return true;
+      }
 
-        if (this.includedDowngrade() && x.usedForDowngrade) {
-          return true;
-        }
+      if (this.includedDowngrade() && this.showDowngrade() && x.usedForDowngrade) {
+        return true;
+      }
 
-        if (this.includeOutOfScopeWonGames() && x.type == GameBreakdownType.WON) {
-          return true;
-        }
+      if (this.includeOutOfScopeWonGames() && x.type == GameBreakdownType.WON) {
+        return true;
+      }
 
-        return false;
-      })
-      ?.map((x, i) => ({ ...x, count: i + 1 }));
-  });
+      return false;
+    }),
+  );
 
   prevGames = computed(() =>
     this.games().filter((x) => moment(x.playedAt).isBefore(this.startPeriod())),
@@ -200,115 +201,133 @@ export class ListGamesComponent {
       ).length,
   );
 
-  columns: MtxGridColumn<GameBreakdown>[] = [
-    {
-      field: 'count',
-      header: '#',
-      width: '30px',
+  showUpgrade = signal(true);
+  showDowngrade = signal(false);
 
-      formatter: (x) => `${x.count}`,
-    },
-    {
-      width: '50px',
-      field: 'dropsNextPeriod',
-    },
-    {
-      header: this.translateService.stream('all.ranking.breakdown.date'),
-      field: 'playedAt',
-      type: 'date',
-      formatter: (x) => moment(x.playedAt).format('llll'),
-    },
-    {
-      header: this.translateService.stream('all.ranking.breakdown.team'),
-      field: 'team',
-      formatter: (x) => {
-        let ranking: 'single' | 'double' | 'mix' = 'single';
-        switch (x.gameType) {
-          case GameType.S:
-            ranking = 'single';
-            break;
-          case GameType.D:
-            ranking = 'double';
-            break;
+  columns = computed(
+    () =>
+      [
+        {
+          field: 'countUpgrade',
+          header: this.translateService.stream('all.ranking.breakdown.countsForUpgrade'),
+          width: '30px',
+          class: 'center-text',
+          hide: this.isMobile() || !this.showUpgrade(),
+        },
+        {
+          field: 'countDowngrade',
+          header: this.translateService.stream('all.ranking.breakdown.countsForDowngrade'),
+          width: '30px',
+          class: 'center-text',
+          hide: this.isMobile() || !this.showDowngrade(),
+        },
+        {
+          width: '50px',
+          field: 'dropsNextPeriod',
+          hide: this.isMobile(),
+        },
+        {
+          header: this.translateService.stream('all.ranking.breakdown.date'),
+          field: 'playedAt',
+          type: 'date',
+          formatter: (x) => moment(x.playedAt).format('llll'),
+        },
+        {
+          header: this.translateService.stream('all.ranking.breakdown.team'),
+          field: 'team',
+          formatter: (x) => {
+            let ranking: 'single' | 'double' | 'mix' = 'single';
+            switch (x.gameType) {
+              case GameType.S:
+                ranking = 'single';
+                break;
+              case GameType.D:
+                ranking = 'double';
+                break;
 
-          case GameType.MX:
-            ranking = 'mix';
-            break;
-        }
+              case GameType.MX:
+                ranking = 'mix';
+                break;
+            }
 
-        return x.team?.map((p) => `${p?.fullName} (${p?.[ranking]})`).join('<br/>');
-      },
-    },
-    {
-      header: this.translateService.stream('all.ranking.breakdown.opponent'),
-      field: 'opponent',
-      formatter: (x) => {
-        let ranking: 'single' | 'double' | 'mix' = 'single';
-        switch (x.gameType) {
-          case GameType.S:
-            ranking = 'single';
-            break;
-          case GameType.D:
-            ranking = 'double';
-            break;
+            return x.team?.map((p) => `${p?.fullName} (${p?.[ranking]})`).join('<br/>');
+          },
+        },
+        {
+          header: this.translateService.stream('all.ranking.breakdown.opponent'),
+          field: 'opponent',
+          formatter: (x) => {
+            let ranking: 'single' | 'double' | 'mix' = 'single';
+            switch (x.gameType) {
+              case GameType.S:
+                ranking = 'single';
+                break;
+              case GameType.D:
+                ranking = 'double';
+                break;
 
-          case GameType.MX:
-            ranking = 'mix';
-            break;
-        }
+              case GameType.MX:
+                ranking = 'mix';
+                break;
+            }
 
-        return x.opponent?.map((p) => `${p?.fullName} (${p?.[ranking]})`).join('<br/>');
-      },
-    },
-    { header: this.translateService.stream('all.ranking.breakdown.points'), field: 'points' },
-    {
-      header: this.translateService.stream('all.ranking.breakdown.used-for-upgrade'),
-      field: 'usedForUpgrade',
-    },
-    {
-      header: this.translateService.stream('all.ranking.breakdown.upgrade-average'),
-      field: 'avgUpgrade',
-      type: 'number',
-      formatter: (x) => (x.avgUpgrade ? x.avgUpgrade.toFixed() : ''),
-      class: (x) => {
-        const classes: string[] = [];
+            return x.opponent?.map((p) => `${p?.fullName} (${p?.[ranking]})`).join('<br/>');
+          },
+        },
+        { header: this.translateService.stream('all.ranking.breakdown.points'), field: 'points' },
+        {
+          header: this.translateService.stream('all.ranking.breakdown.used-for-upgrade'),
+          field: 'usedForUpgrade',
+          hide: !this.showUpgrade(),
+        },
+        {
+          header: this.translateService.stream('all.ranking.breakdown.upgrade-average'),
+          field: 'avgUpgrade',
+          type: 'number',
+          hide: !this.showUpgrade(),
+          formatter: (x) => (x.avgUpgrade ? x.avgUpgrade.toFixed() : ''),
+          class: (x) => {
+            const classes: string[] = [];
 
-        if (x?.highestAvgUpgrade) {
-          classes.push('highest-avg');
-        }
+            if (x?.highestAvgUpgrade) {
+              classes.push('highest-avg');
+            }
 
-        if (x?.canUpgrade) {
-          classes.push('upgrade');
-        }
+            if (x?.canUpgrade) {
+              classes.push('upgrade');
+            }
 
-        return classes.join(' ');
-      },
-    },
+            return classes.join(' ');
+          },
+        },
 
-    {
-      header: this.translateService.stream('all.ranking.breakdown.used-for-downgrade'),
-      field: 'usedForDowngrade',
-    },
-    {
-      header: this.translateService.stream('all.ranking.breakdown.downgrade-average'),
-      field: 'avgDowngrade',
-      type: 'number',
-      formatter: (x) => (x.avgDowngrade ? x.avgDowngrade.toFixed() : ''),
-      class: (x) => {
-        const classes: string[] = [];
+        {
+          header: this.translateService.stream('all.ranking.breakdown.used-for-downgrade'),
+          field: 'usedForDowngrade',
+          hide: !this.showDowngrade(),
+        },
+        {
+          header: this.translateService.stream('all.ranking.breakdown.downgrade-average'),
+          field: 'avgDowngrade',
+          type: 'number',
+          hide: !this.showDowngrade(),
+          formatter: (x) => (x.avgDowngrade ? x.avgDowngrade.toFixed() : ''),
+          class: (x) => {
+            const classes: string[] = [];
 
-        if (x?.highestAvgDowngrade) {
-          classes.push('highest-avg');
-        }
+            if (x?.highestAvgDowngrade) {
+              classes.push('highest-avg');
+            }
 
-        if (x?.canDowngrade) {
-          classes.push('downgrade');
-        }
+            if (x?.canDowngrade) {
+              classes.push('downgrade');
+            }
 
-        return classes.join(' ');
-      },
-    },
-  ] as const;
+            return classes.join(' ');
+          },
+        },
+      ] as MtxGridColumn<GameBreakdown>[],
+  );
 
   private _addBreakdownInfo(games: GameBreakdown[]) {
     for (const game of games) {
@@ -422,6 +441,7 @@ export class ListGamesComponent {
     for (const game of games.filter((x) => x.usedForUpgrade)) {
       gamesProssecedUpgrade++;
       game.devideUpgrade = gamesProssecedUpgrade;
+      game.countUpgrade = gamesProssecedUpgrade;
 
       let divider = gamesProssecedUpgrade;
       if (divider < (this.system().minNumberOfGamesUsedForUpgrade ?? 1)) {
@@ -446,6 +466,7 @@ export class ListGamesComponent {
     for (const game of games.filter((x) => x.usedForDowngrade)) {
       gamesProssecedDowngrade++;
       game.devideDowngrade = gamesProssecedDowngrade;
+      game.countDowngrade = gamesProssecedDowngrade;
 
       let divider = gamesProssecedDowngrade;
       if (divider < (this.system().minNumberOfGamesUsedForDowngrade ?? 1)) {
@@ -816,5 +837,6 @@ interface GameBreakdown extends Game {
   type: GameBreakdownType;
   team: (GamePlayer | undefined)[];
   opponent: (GamePlayer | undefined)[];
-  count: number;
+  countUpgrade?: number;
+  countDowngrade?: number;
 }
