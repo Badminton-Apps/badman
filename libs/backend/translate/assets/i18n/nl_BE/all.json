@@ -732,6 +732,8 @@
       "can-not-upgrade": "Meer dan {points} = stijgen van {level} naar {newLevel}",
       "can-upgrade": "Met dit aantal punten (>{points}) zal de speler stijgen van {level} naar {newLevel}",
       "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met minimum {corrected} wedstrijden.",
+      "countsForDowngrade": "# Promotie",
+      "countsForUpgrade": "# Degradatie",
       "date": "Datum",
       "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
       "downgrade-average": "Avg. degradatie",
@@ -757,7 +759,7 @@
         "WON": "Gewonnen"
       },
       "games-downgrade": "# Wedstrijden degradatie",
-      "games-upgrade": "# Wedstrijden Upgrade",
+      "games-upgrade": "# Wedstrijden promotie",
       "hint": "Klik op een klassement voor simulatie en analyse",
       "ignored": "Niet meegeteld",
       "includeOutOfScope": "Out of scope",
@@ -776,7 +778,7 @@
         "other": "{count} wedstrijden"
       },
       "outOfScopeDowngrade": "Buiten scope voor degradatie",
-      "outOfScopeUpgrade": "Buiten scope voor upgrade",
+      "outOfScopeUpgrade": "Buiten scope voor promotie",
       "outOfScopeWonGames": "Niet gebruikte gewonnen wedstrijden",
       "period": {
         "last-point-update": "Afgelopen punten update",
@@ -796,9 +798,9 @@
         "point": "Punten update",
         "ranking": "Ranking update"
       },
-      "upgrade-average": "Avg. upgrade",
+      "upgrade-average": "Avg. promotie",
       "used-for-downgrade": "Gebruikt voor degradatie",
-      "used-for-upgrade": "Gebruikt voor upgrade"
+      "used-for-upgrade": "Gebruikt voor promotie"
     },
     "clone-points": "Kopieer punten naar dit systeem",
     "double": "Dubbel",
