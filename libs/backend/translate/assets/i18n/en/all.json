@@ -732,9 +732,11 @@
       "can-not-upgrade": "More than {points} = rising from {level} to {newLevel}",
       "can-upgrade": "With this number of points (>{points}), the player will rise from {level} to {newLevel}",
       "corrected": "Originally {original} games, average is being calculated with minimum {corrected} games.",
+      "countsForDowngrade": "# Promotion",
+      "countsForUpgrade": "# Degradation",
       "date": "Date",
       "disclaimer": "Currently, this is a proof of concept. This is because we don't have the full data set from an external system to show the following correctly. We are working on this.",
-      "downgrade-average": "Avg. Downgrade",
+      "downgrade-average": "Avg. demotion",
       "drops-next-period": "Drops next period",
       "evolution": "Evolution",
       "export": {
@@ -756,8 +758,8 @@
         "usedForUpgrade": "Used for promotion",
         "WON": "Won"
       },
-      "games-downgrade": "# Matches Downgrade",
-      "games-upgrade": "# Matches Upgrade",
+      "games-downgrade": "# Games relegation",
+      "games-upgrade": "# Matches promotion",
       "hint": "Click on a level for simulation and breakdown",
       "ignored": "Doesn't count",
       "includeOutOfScope": "Out of scope",
@@ -776,7 +778,7 @@
         "other": "{count} games"
       },
       "outOfScopeDowngrade": "Out of scope for downgrade",
-      "outOfScopeUpgrade": "Out of scope for upgrade",
+      "outOfScopeUpgrade": "Out of scope for promotion",
       "outOfScopeWonGames": "Unused matches won",
       "period": {
         "last-point-update": "Past points update",
@@ -796,9 +798,9 @@
         "point": "Points update",
         "ranking": "Ranking update"
       },
-      "upgrade-average": "Avg. upgrade",
+      "upgrade-average": "Avg. promotion",
       "used-for-downgrade": "Used for downgrade",
-      "used-for-upgrade": "Used for upgrade"
+      "used-for-upgrade": "Used for promotion"
     },
     "clone-points": "Copy points to this system",
     "double": "Double",

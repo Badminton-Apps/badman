@@ -739,6 +739,8 @@ export type I18nTranslations = {
                 "can-not-upgrade": string;
                 "can-upgrade": string;
                 "corrected": string;
+                "countsForDowngrade": string;
+                "countsForUpgrade": string;
                 "date": string;
                 "disclaimer": string;
                 "downgrade-average": string;

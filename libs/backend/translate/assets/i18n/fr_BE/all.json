@@ -732,6 +732,8 @@
       "can-not-upgrade": "Plus de {points} = passer de {level} à {newLevel}",
       "can-upgrade": "Avec ce nombre de points (>{points}), le joueur passera de {level} à {newLevel}",
       "corrected": " {original} correspondances d'origine, la moyenne est calculée avec un minimum de {corrected} correspondances.",
+      "countsForDowngrade": "# Promotion",
+      "countsForUpgrade": "# Dégradation",
       "date": "Date",
       "disclaimer": "Il s'agit actuellement d'une preuve de concept. En effet, nous ne pouvons pas demander toutes les données d'un système externe pour afficher correctement ce qui suit. Nous y travaillons.",
       "downgrade-average": "Moyenne des déclassements",
@@ -756,8 +758,8 @@
         "usedForUpgrade": "Utilisé pour la promotion",
         "WON": "Gagné"
       },
-      "games-downgrade": "# Nombre de matches déclassés",
-      "games-upgrade": "# Nombre d'allumettes Mise à niveau",
+      "games-downgrade": "# Jeux relégation",
+      "games-upgrade": "# Correspond à la promotion",
       "hint": "Cliquez sur un classement pour une simulation et une analyse",
       "ignored": "Non compté",
       "includeOutOfScope": "Hors champ",
@@ -776,7 +778,7 @@
         "other": "{count}  correspondances"
       },
       "outOfScopeDowngrade": "Hors de portée d'une révision à la baisse",
-      "outOfScopeUpgrade": "Hors de portée de la mise à niveau",
+      "outOfScopeUpgrade": "Pas de possibilité de promotion",
       "outOfScopeWonGames": "Matchs gagnés non utilisés",
       "period": {
         "last-point-update": "Mise à jour des points précédents",
@@ -796,9 +798,9 @@
         "point": "Mise à jour des points",
         "ranking": "Mise à jour du classement"
       },
-      "upgrade-average": "Mise à niveau moyenne",
+      "upgrade-average": "Moyenne. promotion",
       "used-for-downgrade": "Utilisé pour le déclassement",
-      "used-for-upgrade": "Utilisé pour la mise à niveau"
+      "used-for-upgrade": "Utilisé pour la promotion"
     },
     "clone-points": "Copier les points vers ce système",
     "double": "Double",

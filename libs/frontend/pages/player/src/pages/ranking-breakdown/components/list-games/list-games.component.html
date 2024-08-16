@@ -106,12 +106,20 @@
   <button (click)="this.exportToExcel()" mat-stroked-button>
     {{ 'all.ranking.breakdown.export.title' | translate }}
   </button>
+  <mat-slide-toggle (change)="this.showUpgrade.set($event.checked)" [checked]="this.showUpgrade()"
+    >Show upgrade</mat-slide-toggle
+  >
+  <mat-slide-toggle
+    (change)="this.showDowngrade.set($event.checked)"
+    [checked]="this.showDowngrade()"
+    >Show downgrade</mat-slide-toggle
+  >
 </div>
 
 <mtx-grid
   [data]="filterdGames()"
   [loading]="!loaded()"
-  [columns]="columns"
+  [columns]="columns()"
   [pageSize]="99999"
   [showPaginator]="false"
   [showToolbar]="true"
