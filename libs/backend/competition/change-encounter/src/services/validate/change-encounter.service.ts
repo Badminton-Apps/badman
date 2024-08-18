@@ -122,7 +122,6 @@ export class ChangeEncounterValidationService extends ValidationService<
       where: {
         [Op.or]: loactionFinder,
       },
-      logging: console.log,
       include: [
         {
           association: 'availabilities',
