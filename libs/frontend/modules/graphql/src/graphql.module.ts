@@ -46,7 +46,6 @@ export function createApollo(
 
   const isBrowser = isPlatformBrowser(platformId);
   const isServer = isPlatformServer(platformId);
-  // const hasKey = transferState.hasKey(STATE_KEY);
 
   const auth = setContext(async (_, { headers }) => {
     if (isBrowser) {

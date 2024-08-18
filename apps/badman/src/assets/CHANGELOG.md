@@ -1,3 +1,74 @@
+## 6.168.3 (2024-08-15)
+
+
+### 🩹 Fixes
+
+- switching ([3ea25fc68](https://github.com/Badminton-Apps/badman/commit/3ea25fc68))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.168.2 (2024-08-15)
+
+
+### 🩹 Fixes
+
+- now directly copy to clipboard ([e5de0f9c2](https://github.com/Badminton-Apps/badman/commit/e5de0f9c2))
+- show tooltip that it was copied ([6396f6b24](https://github.com/Badminton-Apps/badman/commit/6396f6b24))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.168.1 (2024-08-15)
+
+
+### 🩹 Fixes
+
+- calendar wasn't showing th right events ([7b788bcda](https://github.com/Badminton-Apps/badman/commit/7b788bcda))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.168.0 (2024-08-15)
+
+
+### 🚀 Features
+
+- add you calendars to your agenda ([c0f60fb83](https://github.com/Badminton-Apps/badman/commit/c0f60fb83))
+
+### 🩹 Fixes
+
+- location check now also loads the changed location. ([a8a26720e](https://github.com/Badminton-Apps/badman/commit/a8a26720e))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+
+## 6.167.0 (2024-08-15)
+
+
+### 🚀 Features
+
+- export ranking breakdown ([29ade2ce0](https://github.com/Badminton-Apps/badman/commit/29ade2ce0))
+- new ranking breakdown + export to excel ([e0dbfa26b](https://github.com/Badminton-Apps/badman/commit/e0dbfa26b))
+- option to trigger a re-calculate of the points ([b8c3f64d6](https://github.com/Badminton-Apps/badman/commit/b8c3f64d6))
+
+### 🩹 Fixes
+
+- more sonar cloud implementations and stricter models ([1210cff44](https://github.com/Badminton-Apps/badman/commit/1210cff44))
+- allow faster mailing ([8c9273e1d](https://github.com/Badminton-Apps/badman/commit/8c9273e1d))
+- support for adding new games ([f0428a0bd](https://github.com/Badminton-Apps/badman/commit/f0428a0bd))
+- top level translations weren't loaded ([64cd3b36b](https://github.com/Badminton-Apps/badman/commit/64cd3b36b))
+- they should use the in-app translations ([4cfe9f4a7](https://github.com/Badminton-Apps/badman/commit/4cfe9f4a7))
+
+### ❤️  Thank You
+
+- cskiwi @cskiwi
+- Glenn Latomme
+
 ## 6.166.3 (2024-08-12)
 
 

@@ -1,3 +1,4 @@
+import { LevelType, SubEventTypeEnum } from '@badman/utils';
 import {
   Field,
   Float,
@@ -20,7 +21,7 @@ import {
   BelongsToManyRemoveAssociationsMixin,
   BelongsToManySetAssociationsMixin,
   BelongsToSetAssociationMixin,
-  BuildOptions,
+  CreationOptional,
   HasManyAddAssociationMixin,
   HasManyAddAssociationsMixin,
   HasManyCountAssociationsMixin,
@@ -30,6 +31,8 @@ import {
   HasManyRemoveAssociationMixin,
   HasManyRemoveAssociationsMixin,
   HasManySetAssociationsMixin,
+  InferAttributes,
+  InferCreationAttributes
 } from 'sequelize';
 import {
   BelongsTo,
@@ -45,30 +48,27 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { LevelType, SubEventTypeEnum } from '@badman/utils';
+import { Relation } from '../../../wrapper';
 import { RankingGroup } from '../../ranking';
 import { EventEntry } from '../entry.model';
 import { DrawCompetition } from './draw-competition.model';
 import { EventCompetition } from './event-competition.model';
 import { RankingGroupSubEventCompetitionMembership } from './group-subevent-membership.model';
-import { Relation } from '../../../wrapper';
-
 @Table({
   timestamps: true,
   schema: 'event',
 })
 @ObjectType({ description: 'A SubEventCompetition' })
-export class SubEventCompetition extends Model {
-  constructor(values?: Partial<SubEventCompetition>, options?: BuildOptions) {
-    super(values, options);
-  }
-
+export class SubEventCompetition extends Model<
+  InferAttributes<SubEventCompetition>,
+  InferCreationAttributes<SubEventCompetition>
+> {
+  @Field(() => ID)
   @Default(DataType.UUIDV4)
   @IsUUID(4)
   @PrimaryKey
-  @Field(() => ID)
   @Column(DataType.UUIDV4)
-  override id!: string;
+  declare id: CreationOptional<string>;
 
   @Field(() => Date, { nullable: true })
   override updatedAt?: Date;
@@ -98,9 +98,9 @@ export class SubEventCompetition extends Model {
    * If the event competition type is LIGA, the modifier is 100.
    * If the event competition type is NATIONAL, the modifier is 1.
    * The level is multiplied by the modifier to get the final level with modifier.
-   * 
+   *
    * Developer note: This is now allowing 100 levels for each type of competition. if we need more levels we can add more zeros to the modifier.
-   * 
+   *
    * @throws {Error} If the EventCompetition is not set.
    * @returns {number} The level of the sub-event competition with a modifier.
    */
@@ -170,7 +170,7 @@ export class SubEventCompetition extends Model {
   @Unique('SubEventCompetitions_unique_constraint')
   @Field(() => ID)
   @Column(DataType.UUIDV4)
-  visualCode!: string;
+  visualCode?: string;
 
   // Belongs to many Group
   getRankingGroups!: BelongsToManyGetAssociationsMixin<RankingGroup>;

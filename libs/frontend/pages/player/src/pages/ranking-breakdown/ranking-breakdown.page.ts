@@ -5,10 +5,9 @@ import {
   computed,
   effect,
   inject,
-  signal,
+  Signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,17 +16,20 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RankingSystemService } from '@badman/frontend-graphql';
-import { Game, Player, RankingSystem } from '@badman/frontend-models';
+import { Player, RankingSystem } from '@badman/frontend-models';
 import { SeoService } from '@badman/frontend-seo';
 import { TranslateModule } from '@ngx-translate/core';
-import { Apollo, gql } from 'apollo-angular';
 import moment from 'moment';
 import { injectDestroy } from 'ngxtension/inject-destroy';
-import { combineLatest, of } from 'rxjs';
-import { distinctUntilChanged, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { injectParams } from 'ngxtension/inject-params';
+import { injectQueryParams } from 'ngxtension/inject-query-params';
+import { injectRouteData } from 'ngxtension/inject-route-data';
+import { takeUntil } from 'rxjs/operators';
 import { BreadcrumbService } from 'xng-breadcrumb';
 import { ListGamesComponent, PeriodSelectionComponent } from './components';
 import { RankingEvolutionComponent } from './components/ranking-evolution';
+import { RankingBreakdownService } from './services/ranking-breakdown.service';
+import {  Ranking } from '@badman/utils';
 
 @Component({
   templateUrl: './ranking-breakdown.page.html',
@@ -56,77 +58,49 @@ export class RankingBreakdownPageComponent {
   private router = inject(Router);
   private breadcrumbService = inject(BreadcrumbService);
   private seoService = inject(SeoService);
-  private apollo = inject(Apollo);
   private destroy$ = injectDestroy();
   systemService = inject(RankingSystemService);
+  private readonly breakdownService = inject(RankingBreakdownService);
 
   // route
-  private queryParams = toSignal(this.route.queryParamMap);
-  private routeParams = toSignal(this.route.paramMap);
-  private routeData = toSignal(this.route.data);
-
-  // filters
-  periodFilter = new FormGroup({
-    start: new FormControl(),
-    end: new FormControl(),
-    game: new FormControl(),
-    next: new FormControl(),
-  });
-
-  gameFilter = new FormGroup({
-    gameType: new FormControl(this.routeParams()?.get('type')),
-    period: this.periodFilter,
-    includedIgnored: new FormControl(this.routeParams()?.get('includedIgnored') ?? false),
-    includedUpgrade: new FormControl(this.routeParams()?.get('includedUpgrade') ?? true),
-    includedDowngrade: new FormControl(this.routeParams()?.get('includedDowngrade') ?? true),
-    includeOutOfScope: new FormControl(this.routeParams()?.get('includeOutOfScope') ?? false),
-  });
-
-  // Signals
-  games = toSignal(this._loadGames());
-  loadingGames = signal(true);
+  filter = this.breakdownService.filter;
 
   // Computed
-  player = computed(() => this.routeData()?.['player'] as Player);
-  id = computed(() => this.routeParams()?.get('id'));
+  player = injectRouteData<Player>('player');
+  id = injectParams('id');
+  type = injectParams('type') as Signal<Ranking>;
   system = computed(() => this.systemService.system() as RankingSystem);
 
   // specific computed value so the effect only triggers when the end date changes
-  periodEndRoute = computed(() => this.queryParams()?.get('end'));
+  periodEndRoute = injectQueryParams('end');
+  includedIgnored = injectQueryParams('includedIgnored');
+  includedUpgrade = injectQueryParams('includedUpgrade');
+  includedDowngrade = injectQueryParams('includedDowngrade');
+  includeOutOfScopeUpgrade = injectQueryParams('includeOutOfScopeUpgrade');
+  includeOutOfScopeDowngrade = injectQueryParams('includeOutOfScopeDowngrade');
+  includeOutOfScopeWonGames = injectQueryParams('includeOutOfScopeWonGames');
 
   // Games
   constructor() {
     this.seoService.update({
-      title: `Ranking breakdown ${this.player().fullName}`,
-      description: `Ranking breakdown ${this.player().fullName}`,
+      title: `Ranking breakdown ${this.player()?.fullName}`,
+      description: `Ranking breakdown ${this.player()?.fullName}`,
       type: 'website',
       keywords: ['ranking', 'breakdown', 'player', 'badminton'],
     });
-    this.breadcrumbService.set('player/:id', this.player().fullName);
+    this.breadcrumbService.set('player/:id', `${this.player()?.fullName}`);
+    this.breakdownService.state.reset();
 
-    effect(
-      () => {
-        if (!this.player()) {
-          return;
-        }
+    effect(() => {
+      this._loadFilter();
+    });
 
-        if (!this.systemService.system()) {
-          return;
-        }
-
-        this._loadPeriodFilter();
-      },
-      {
-        allowSignalWrites: true,
-      },
-    );
-
-    this.gameFilter.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.filter.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this._updateUrl();
     });
   }
 
-  private _loadPeriodFilter() {
+  private _loadFilter() {
     const end = this.periodEndRoute() ?? null;
 
     // Default we take next update interval, if no end is given
@@ -151,90 +125,47 @@ export class RankingBreakdownPageComponent {
         this.systemService.system()?.calculationIntervalUnit,
       );
 
-    this.periodFilter.setValue({
+    this.breakdownService.filter.patchValue({
+      systemId: this.system().id,
+      playerId: this.player()?.id,
+      gameType: this.type(),
       start: startPeriod,
       end: endPeriod,
       game: gamePeriod,
       next: nextPeriod,
+      includedIgnored: this.includedIgnored() === 'true',
+      includedUpgrade: (this.includedUpgrade() ?? 'true') === 'true',
+      includedDowngrade: (this.includedDowngrade() ?? 'true') === 'true',
+      includeOutOfScopeUpgrade: this.includeOutOfScopeUpgrade() === 'true',
+      includeOutOfScopeDowngrade: this.includeOutOfScopeDowngrade() === 'true',
+      includeOutOfScopeWonGames: this.includeOutOfScopeWonGames() === 'true',
     });
-  }
-
-  private _loadGames() {
-    return combineLatest([
-      this.gameFilter
-        .get('gameType')
-        ?.valueChanges.pipe(startWith(this.gameFilter.value.gameType)) ?? of(null),
-      this.periodFilter.get('game')?.valueChanges ?? of(null),
-      this.periodFilter.get('end')?.valueChanges ?? of(null),
-    ]).pipe(
-      distinctUntilChanged(),
-      tap(() => this.loadingGames.set(true)),
-      switchMap(([gameType, start, end]) =>
-        this.apollo.query<{ player: Player }>({
-          fetchPolicy: 'no-cache',
-          query: gql`
-            query PlayerGames($where: JSONObject, $playerId: ID!, $systemId: ID!) {
-              player(id: $playerId) {
-                id
-                games(where: $where) {
-                  id
-                  playedAt
-                  winner
-                  status
-                  gameType
-                  players {
-                    id
-                    team
-                    player
-                    fullName
-                    single
-                    double
-                    mix
-                  }
-                  rankingPoints(where: { systemId: $systemId }) {
-                    id
-                    differenceInLevel
-                    playerId
-                    points
-                  }
-                }
-              }
-            }
-          `,
-          variables: {
-            where: {
-              gameType: gameType == 'single' ? 'S' : gameType == 'double' ? 'D' : 'MX',
-              playedAt: {
-                $between: [start, end],
-              },
-            },
-            playerId: this.player().id,
-            systemId: this.systemService.system()?.id,
-          },
-        }),
-      ),
-      map((x) => x.data.player.games?.map((g) => new Game(g)) ?? []),
-      map((games) => games.filter((game) => (game.rankingPoints?.length ?? 0) > 0)),
-      tap(() => this.loadingGames.set(false)),
-    );
   }
 
   private _updateUrl() {
     const systemLastUpdate = moment(this.systemService.system()?.calculationLastUpdate);
 
     const queryParams: { [key: string]: string | boolean | null | undefined } = {
-      includedIgnored: this.gameFilter.value.includedIgnored ? true : undefined,
-      includedUpgrade: this.gameFilter.value.includedUpgrade ? undefined : false,
-      includedDowngrade: this.gameFilter.value.includedDowngrade ? undefined : false,
-      includeOutOfScope: this.gameFilter.value.includeOutOfScope ? true : undefined,
-      end: systemLastUpdate.isSame(this.periodFilter.value.end, 'day')
+      includedIgnored: this.breakdownService.filter.value.includedIgnored ? true : undefined,
+      includedUpgrade: this.breakdownService.filter.value.includedUpgrade ? undefined : false,
+      includedDowngrade: this.breakdownService.filter.value.includedDowngrade ? undefined : false,
+      includeOutOfScopeUpgrade: this.breakdownService.filter.value.includeOutOfScopeUpgrade
+        ? true
+        : undefined,
+      includeOutOfScopeDowngrade: this.breakdownService.filter.value.includeOutOfScopeDowngrade
+        ? true
+        : undefined,
+      includeOutOfScopeWonGames: this.breakdownService.filter.value.includeOutOfScopeWonGames
+        ? true
+        : undefined,
+      end: systemLastUpdate.isSame(this.breakdownService.filter.value.end, 'day')
         ? null
-        : this.periodFilter.value.end?.format('YYYY-MM-DD'),
+        : this.breakdownService.filter.value.end?.format('YYYY-MM-DD'),
     };
 
     const url =
-      this.gameFilter.value.gameType !== this.routeParams()?.get('type')
-        ? ['..', `${this.gameFilter.value.gameType}`]
+      this.breakdownService.filter.value.gameType !== this.type()
+        ? ['..', this.breakdownService.filter.value.gameType]
         : [];
 
     // check if the current url is the same as the new url

@@ -1,9 +1,9 @@
 <div class="border">
   <label>{{ 'all.ranking.breakdown.period.title' | translate }}</label>
   <div class="items">
-    <div class="period()">
-      {{ period().value.start | amDateFormat: 'DD MMM YYYY' }} -
-      {{ period().value.end | amDateFormat: 'DD MMM YYYY' }}
+    <div class="period">
+      {{ filter.value.start | amDateFormat: 'DD MMM YYYY' }} -
+      {{ filter.value.end | amDateFormat: 'DD MMM YYYY' }}
     </div>
 
     <button mat-icon-button [matMenuTriggerFor]="appMenu">

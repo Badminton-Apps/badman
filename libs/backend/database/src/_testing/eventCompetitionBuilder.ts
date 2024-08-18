@@ -1,4 +1,4 @@
-import { UsedRankingTiming } from '@badman/utils';
+import { LevelType, UsedRankingTiming } from '@badman/utils';
 import { EventCompetition } from '../models';
 import { SubEventCompetitionBuilder } from './eventCompetitionSubEventBuilder';
 
@@ -9,42 +9,58 @@ export class EventCompetitionBuilder {
 
   private subEvents: SubEventCompetitionBuilder[] = [];
 
-  constructor(id?: string) {
+  constructor(
+    type: LevelType,
+    official = true,
+    season = 2022,
+    usedRanking?: UsedRankingTiming,
+    id?: string,
+  ) {
     this.event = new EventCompetition({
       id,
+      type,
+      official,
+      usedRanking: usedRanking ?? { amount: 0, unit: 'days' },
+      season,
     });
   }
 
-  static Create(id?: string): EventCompetitionBuilder {
-    return new EventCompetitionBuilder(id);
+  static Create(
+    type: LevelType,
+    official = true,
+    season = 2022,
+    usedRanking?: UsedRankingTiming,
+    id?: string,
+  ): EventCompetitionBuilder {
+    return new EventCompetitionBuilder(type, official, season, usedRanking, id);
   }
 
-  WithName(name: string): EventCompetitionBuilder {
+  WithName(name: string): this {
     this.event.name = name;
 
     return this;
   }
 
-  WithYear(year: number): EventCompetitionBuilder {
+  WithYear(year: number): this {
     this.event.season = year;
 
     return this;
   }
 
-  WithOfficial(official: boolean): EventCompetitionBuilder {
+  WithOfficial(official: boolean): this {
     this.event.official = official;
 
     return this;
   }
 
-  WithUsedRanking(usedRanking: UsedRankingTiming): EventCompetitionBuilder {
+  WithUsedRanking(usedRanking: UsedRankingTiming): this {
     this.event.usedRankingAmount = usedRanking.amount;
     this.event.usedRankingUnit = usedRanking.unit;
 
     return this;
   }
 
-  WithSubEvent(subEvent: SubEventCompetitionBuilder): EventCompetitionBuilder {
+  WithSubEvent(subEvent: SubEventCompetitionBuilder): this {
     this.subEvents.push(subEvent);
     return this;
   }

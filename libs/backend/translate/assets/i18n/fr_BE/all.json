@@ -22,6 +22,7 @@
     "none": "Non",
     "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Précédent",
+    "re-sync": "Recalculer les points",
     "save": "Enregistrer",
     "save-and-continue": "Sauvegarder et continuer",
     "set-primary": "Rendre primaire",
@@ -681,6 +682,13 @@
     "backup": "Joueur de réserve",
     "base": "Joueur de base",
     "claimed": "Revendiqué",
+    "ical": {
+      "click": "Copier dans le presse-papiers",
+      "copied": "Lien copié dans le presse-papiers",
+      "description": "Le lien pour toute la saison continue à suivre l'équipe au fur et à mesure de sa promotion/dégradation, même si l'équipe change de numéro (à condition que la ligue responsable transfère l'équipe de l'année précédente).",
+      "linked": "Toutes les saisons",
+      "team-season": "Juste cette saison "
+    },
     "menu": {
       "add": "Nouveau joueur",
       "claim": "Réclamer un compte",
@@ -689,6 +697,12 @@
     },
     "no-memberid": "Numéro de membre inconnu",
     "no-players": "Aucun joueur",
+    "re-calculate": {
+      "calculate": "",
+      "from": "De",
+      "title": "Récupérer des points pour le joueur dans la période suivante",
+      "to": "Pour"
+    },
     "regular": "Joueur régulier",
     "search": {
       "backup-player": "Le joueur est répertorié avec les joueurs de réserve",
@@ -718,11 +732,34 @@
       "can-not-upgrade": "Plus de {points} = passer de {level} à {newLevel}",
       "can-upgrade": "Avec ce nombre de points (>{points}), le joueur passera de {level} à {newLevel}",
       "corrected": " {original} correspondances d'origine, la moyenne est calculée avec un minimum de {corrected} correspondances.",
+      "countsForDowngrade": "# Promotion",
+      "countsForUpgrade": "# Dégradation",
       "date": "Date",
       "disclaimer": "Il s'agit actuellement d'une preuve de concept. En effet, nous ne pouvons pas demander toutes les données d'un système externe pour afficher correctement ce qui suit. Nous y travaillons.",
-      "downgrade": "Rétrograder",
+      "downgrade-average": "Moyenne des déclassements",
       "drops-next-period": "Ne compte pas dans la période suivante",
       "evolution": "Évolution",
+      "export": {
+        "avgDowngrade": "Moyenne de dégradation",
+        "avgUpgrade": "Moyenne de la promotion",
+        "countsFor": "Compte pour",
+        "date": "Date",
+        "LOST_DOWNGRADE": "Promotion + Dégradation",
+        "LOST_IGNORED": "Ne compte pas",
+        "LOST_UPGRADE": "Promotion",
+        "opponent1": "Opposant 1",
+        "opponent2": "Opposant 2",
+        "OUT_SCOPE": "Hors champ d'application",
+        "player1": "Joueur 1",
+        "player2": "Joueur 2",
+        "points": "Points",
+        "title": "Exporter le filtre actuel",
+        "usedForDowngrade": "Utilisé pour la dégradation",
+        "usedForUpgrade": "Utilisé pour la promotion",
+        "WON": "Gagné"
+      },
+      "games-downgrade": "# Jeux relégation",
+      "games-upgrade": "# Correspond à la promotion",
       "hint": "Cliquez sur un classement pour une simulation et une analyse",
       "ignored": "Non compté",
       "includeOutOfScope": "Hors champ",
@@ -740,6 +777,9 @@
         "one": "1 match",
         "other": "{count}  correspondances"
       },
+      "outOfScopeDowngrade": "Hors de portée d'une révision à la baisse",
+      "outOfScopeUpgrade": "Pas de possibilité de promotion",
+      "outOfScopeWonGames": "Matchs gagnés non utilisés",
       "period": {
         "last-point-update": "Mise à jour des points précédents",
         "last-ranking-update": "Mise à jour des classements antérieurs",
@@ -758,9 +798,9 @@
         "point": "Mise à jour des points",
         "ranking": "Mise à jour du classement"
       },
-      "upgrade": "Surclassement",
-      "usedForDowngrade": "Utilisé pour la rétrogradation et la mise à niveau",
-      "usedForUpgrade": "Utilisé pour la mise à niveau uniquement"
+      "upgrade-average": "Moyenne. promotion",
+      "used-for-downgrade": "Utilisé pour le déclassement",
+      "used-for-upgrade": "Utilisé pour la promotion"
     },
     "clone-points": "Copier les points vers ce système",
     "double": "Double",

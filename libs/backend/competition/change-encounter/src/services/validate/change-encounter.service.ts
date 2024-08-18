@@ -1,7 +1,7 @@
 import { EncounterCompetition, Location, Team } from '@badman/backend-database';
 import { ValidationService } from '@badman/backend-validation';
 import { Logger } from '@nestjs/common';
-import { Op } from 'sequelize';
+import { Op, WhereOptions } from 'sequelize';
 import {
   ChangeEncounterOutput,
   ChangeEncounterValidationData,
@@ -33,7 +33,10 @@ export class ChangeEncounterValidationService extends ValidationService<
   override async fetchData(args: {
     teamId: string;
     workingencounterId?: string;
-    suggestedDates?: Date[];
+    suggestedDates?: {
+      date: Date;
+      locationId: string;
+    }[];
   }): Promise<ChangeEncounterValidationData> {
     const team = await Team.findByPk(args.teamId, {
       attributes: ['id', 'name', 'type', 'teamNumber', 'clubId', 'season'],
@@ -45,7 +48,7 @@ export class ChangeEncounterValidationService extends ValidationService<
 
     // get encounters for the team
     const encounters = await EncounterCompetition.findAll({
-      attributes: ['id', 'date', 'drawId', 'locationId'],
+      attributes: ['id', 'date', 'drawId', 'locationId', 'homeTeamId'],
       where: {
         [Op.or]: [
           {
@@ -69,9 +72,23 @@ export class ChangeEncounterValidationService extends ValidationService<
       ],
     });
 
-    const lowestYear = Math.min(...encounters.map((r) => r.date?.getFullYear() || 0));
+    const lowestYear = Math.min(...encounters.map((r) => r.date?.getFullYear() ?? 0));
     const encountersSem1 = encounters.filter((r) => r.date?.getFullYear() === lowestYear);
     const encountersSem2 = encounters.filter((r) => r.date?.getFullYear() !== lowestYear);
+
+    // find the home clubId
+    const currentGame = encounters.find((r) => r.id == args.workingencounterId);
+
+    let homeTeam: Team | null = null;
+    if (currentGame) {
+      if (currentGame?.homeTeamId !== team.id) {
+        homeTeam = await Team.findByPk(currentGame?.homeTeamId, {
+          attributes: ['id', 'clubId'],
+        });
+      } else {
+        homeTeam = team;
+      }
+    }
 
     if (encountersSem1.length === 0 || encountersSem2.length === 0) {
       throw new Error('Not enough encounters');
@@ -93,11 +110,19 @@ export class ChangeEncounterValidationService extends ValidationService<
       ],
     });
 
+    const loactionFinder: WhereOptions<Location> = [
+      { id: encounters.map((r) => r.locationId)?.filter((r) => !!r) as string[] },
+    ];
+    if (homeTeam) {
+      loactionFinder.push({ clubId: homeTeam.clubId });
+    }
+
     const locations = await Location.findAll({
       attributes: ['id', 'name'],
       where: {
-        id: encounters.map((r) => r.locationId)?.filter((r) => !!r) as string[],
+        [Op.or]: loactionFinder,
       },
+      logging: console.log,
       include: [
         {
           association: 'availabilities',
@@ -129,7 +154,14 @@ export class ChangeEncounterValidationService extends ValidationService<
    * @returns Whether the ChangeEncounter is valid or not
    */
   override async validate(
-    args: { teamId: string; workingencounterId?: string; suggestedDates?: Date[] },
+    args: {
+      teamId: string;
+      workingencounterId?: string;
+      suggestedDates?: {
+        date: Date;
+        locationId: string;
+      }[];
+    },
     runFor?: { playerId?: string; teamId?: string; clubId?: string },
   ) {
     const data = await super.validate(args, runFor);

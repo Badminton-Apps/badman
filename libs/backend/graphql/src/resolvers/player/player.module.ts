@@ -6,9 +6,10 @@ import {
   PlayersResolver,
   PlayerTeamResolver,
 } from './player.resolver';
+import { RankingModule } from '@badman/backend-ranking';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, RankingModule],
   providers: [PlayersResolver, PlayerClubResolver, GamePlayersResolver, PlayerTeamResolver],
 })
 export class PlayerResolverModule {}

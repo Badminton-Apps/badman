@@ -6,7 +6,7 @@ import {
   AvailiblyDayType,
   ExceptionType,
   Location,
-  Player
+  Player,
 } from '@badman/backend-database';
 import { Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
@@ -35,8 +35,8 @@ export class AvailabilitysResolver {
   async days(@Parent() availability: Availability) {
     return availability.days?.map((day) => ({
       ...day,
-      from: day.from ? new Date(day.from as Date) : undefined,
-      to: day.to ? new Date(day.to as Date) : undefined,
+      from: day.from ? new Date(day.from) : undefined,
+      to: day.to ? new Date(day.to) : undefined,
     }));
   }
 
@@ -44,7 +44,7 @@ export class AvailabilitysResolver {
   async exceptions(@Parent() availability: Availability) {
     // return availability.exceptions and map the start en end as date
     return availability.exceptions
-      ?.filter((exception) => exception && exception.start && exception.end)
+      ?.filter((exception) => exception?.start && exception?.end)
       ?.map((exception) => ({
         ...exception,
         start: new Date(exception.start as Date),
@@ -128,7 +128,6 @@ export class AvailabilitysResolver {
         { transaction },
       );
 
-      // await dbLocation.update(location, { transaction });
       await transaction.commit();
       return dbAvailability;
     } catch (e) {

@@ -53,7 +53,7 @@ export class ExceptionRule extends Rule {
       } as EncounterCompetition;
 
       for (const suggestedDate of suggestedDates) {
-        encounter.date = suggestedDate;
+        encounter.date = suggestedDate.date;
         const warning = this.findEncountersOnExceptionDays([encounter], infoEvents);
         warnings.push(...warning);
       }

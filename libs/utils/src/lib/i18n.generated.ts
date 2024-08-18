@@ -29,6 +29,7 @@ export type I18nTranslations = {
             "none": string;
             "open-in-new-tab": string;
             "prev": string;
+            "re-sync": string;
             "save": string;
             "save-and-continue": string;
             "set-primary": string;
@@ -688,6 +689,13 @@ export type I18nTranslations = {
             "backup": string;
             "base": string;
             "claimed": string;
+            "ical": {
+                "click": string;
+                "copied": string;
+                "description": string;
+                "linked": string;
+                "team-season": string;
+            };
             "menu": {
                 "add": string;
                 "claim": string;
@@ -696,6 +704,12 @@ export type I18nTranslations = {
             };
             "no-memberid": string;
             "no-players": string;
+            "re-calculate": {
+                "calculate": string;
+                "from": string;
+                "title": string;
+                "to": string;
+            };
             "regular": string;
             "search": {
                 "backup-player": string;
@@ -725,11 +739,34 @@ export type I18nTranslations = {
                 "can-not-upgrade": string;
                 "can-upgrade": string;
                 "corrected": string;
+                "countsForDowngrade": string;
+                "countsForUpgrade": string;
                 "date": string;
                 "disclaimer": string;
-                "downgrade": string;
+                "downgrade-average": string;
                 "drops-next-period": string;
                 "evolution": string;
+                "export": {
+                    "avgDowngrade": string;
+                    "avgUpgrade": string;
+                    "countsFor": string;
+                    "date": string;
+                    "LOST_DOWNGRADE": string;
+                    "LOST_IGNORED": string;
+                    "LOST_UPGRADE": string;
+                    "opponent1": string;
+                    "opponent2": string;
+                    "OUT_SCOPE": string;
+                    "player1": string;
+                    "player2": string;
+                    "points": string;
+                    "title": string;
+                    "usedForDowngrade": string;
+                    "usedForUpgrade": string;
+                    "WON": string;
+                };
+                "games-downgrade": string;
+                "games-upgrade": string;
                 "hint": string;
                 "ignored": string;
                 "includeOutOfScope": string;
@@ -747,6 +784,9 @@ export type I18nTranslations = {
                     "one": string;
                     "other": string;
                 };
+                "outOfScopeDowngrade": string;
+                "outOfScopeUpgrade": string;
+                "outOfScopeWonGames": string;
                 "period": {
                     "last-point-update": string;
                     "last-ranking-update": string;
@@ -765,9 +805,9 @@ export type I18nTranslations = {
                     "point": string;
                     "ranking": string;
                 };
-                "upgrade": string;
-                "usedForDowngrade": string;
-                "usedForUpgrade": string;
+                "upgrade-average": string;
+                "used-for-downgrade": string;
+                "used-for-upgrade": string;
             };
             "clone-points": string;
             "double": string;

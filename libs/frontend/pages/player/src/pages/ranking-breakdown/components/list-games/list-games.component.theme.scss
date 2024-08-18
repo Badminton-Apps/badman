@@ -9,13 +9,16 @@
     $success-palette: map.get($theme, success);
     $warn-palette: map.get($theme, warn);
 
-
     .drops {
       @if ($isDark) {
         color: darken(mat.get-theme-color($theme, foreground, 'base'), 60%);
       } @else {
         color: lighten(mat.get-theme-color($theme, foreground, 'base'), 80%);
       }
+    }
+
+    .highest-avg {
+      font-weight: bold;
     }
 
     .upgrade {
@@ -25,11 +28,15 @@
     .downgrade {
       color: mat.m2-get-color-from-palette($warn-palette, 300);
     }
+
+    .center-text {
+      text-align: center;
+    }
   }
 }
 
 @mixin typography($theme) {
-  badman-list-games {
-    
-  }
+  // badman-list-games {
+
+  // }
 }
