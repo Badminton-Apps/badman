@@ -5,8 +5,8 @@ import {
   OnInit,
   TemplateRef,
   ViewChild,
-  input,
   inject,
+  input,
   output,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';

@@ -240,6 +240,16 @@ export class ShowRequestsComponent implements OnInit {
   }
 
   validate() {
+    const suggestedDates = this.dateControls
+      .getRawValue()
+      .map((r) => r['calendar'])
+      ?.map((r) => ({
+        date: r.date,
+        locationId: r.locationId,
+      }));
+
+    console.log('suggestedDates', suggestedDates);
+
     return this.apollo
       .query<{
         validateChangeEncounter: {
@@ -274,7 +284,7 @@ export class ShowRequestsComponent implements OnInit {
           data: {
             teamId: this.group().get('team')?.value,
             workingencounterId: this.encounter.id,
-            suggestedDates: this.dateControls.getRawValue().map((r) => r['calendar'].date),
+            suggestedDates,
           },
         },
       })
@@ -291,7 +301,7 @@ export class ShowRequestsComponent implements OnInit {
       // get the last date
       lastDate = dates
         .map((d) => d?.['calendar']?.['date'])
-        .reduce((a, b) => (a > b ? a : b)) as Date;
+        .reduce((a, b) => (a > b ? a : b), new Date()) as Date;
     }
 
     let newDate = moment(lastDate).add(1, 'week');
@@ -363,7 +373,7 @@ export class ShowRequestsComponent implements OnInit {
     );
     const ids = dates.map((o) => o.date?.getTime());
     change.dates = dates.filter(({ date }, index) => !ids.includes(date?.getTime(), index + 1));
-    change.accepted = change.dates.some((r) => r.selected == true);
+    change.accepted = change.dates.some((r) => r.selected);
 
     if (change.dates == null || (change.dates?.length ?? 0) == 0) {
       if (this.home) {
@@ -424,13 +434,6 @@ export class ShowRequestsComponent implements OnInit {
           },
         });
 
-        // const teamControl = this.group().get('team');
-        // if (!teamControl) {
-        //   throw new Error('Team control not found');
-        // }
-
-        // teamControl.setValue(teamControl.value);
-        // this.group().get(this.dependsOn())?.setValue(null);
         this.snackBar.open(
           await this.translate.instant('all.competition.change-encounter.requested'),
           'OK',
@@ -454,7 +457,7 @@ export class ShowRequestsComponent implements OnInit {
     };
 
     if (change.accepted) {
-      const changed = change.dates.find((r) => r.selected == true);
+      const changed = change.dates.find((r) => r.selected);
       const dialog = this.dialog.open(this.confirmDialog, {
         data: {
           changedLocation: changed?.locationId != this.encounter?.location?.id,

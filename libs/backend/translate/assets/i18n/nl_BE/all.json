@@ -22,6 +22,7 @@
     "none": "Geen",
     "open-in-new-tab": "Open in toernooi.nl",
     "prev": "Vorige",
+    "re-sync": "Herbereken punten",
     "save": "Opslaan",
     "save-and-continue": "Opslaan en verdergaan",
     "set-primary": "Maak primair",
@@ -681,6 +682,13 @@
     "backup": "Reservespeler",
     "base": "Basisspeler",
     "claimed": "Claimed",
+    "ical": {
+      "click": "Kopieer naar klembord",
+      "copied": "Link gekopieerd naar klembord",
+      "description": "De link voor alle seizoen blijft dan de ploeg volgen als deze promoveert/degradeert. zelfs als de ploeg van nummer veranderd (zolang de competitie verantwoordelijke de ploeg overzet van het vorig jaar)",
+      "linked": "Alle seizoenen",
+      "team-season": "Enkel dit seizoen"
+    },
     "menu": {
       "add": "Nieuwe speler",
       "claim": "Claim account",
@@ -689,6 +697,12 @@
     },
     "no-memberid": "Onbekend lidnummer",
     "no-players": "Geen spelers",
+    "re-calculate": {
+      "calculate": "Bereken",
+      "from": "Van",
+      "title": "Herberekenen van de punten voor speler  in periode:",
+      "to": "Tot"
+    },
     "regular": "Vaste speler",
     "search": {
       "backup-player": "Speler staat bij reservespelers",
@@ -718,11 +732,34 @@
       "can-not-upgrade": "Meer dan {points} = stijgen van {level} naar {newLevel}",
       "can-upgrade": "Met dit aantal punten (>{points}) zal de speler stijgen van {level} naar {newLevel}",
       "corrected": "Origineel {original} wedstrijden, gemiddelde wordt berekend met minimum {corrected} wedstrijden.",
+      "countsForDowngrade": "# Promotie",
+      "countsForUpgrade": "# Degradatie",
       "date": "Datum",
       "disclaimer": "Momenteel is dit een proof of concept. Dit komt omdat we niet alle data kunnen opvragen van een extern systeem om onderstaande correct te tonen. We werken hieraan.",
-      "downgrade": "Downgrade",
+      "downgrade-average": "Avg. degradatie",
       "drops-next-period": "Telt niet meer mee in volgende periode",
       "evolution": "Evolutie",
+      "export": {
+        "avgDowngrade": "Degradatie gemiddelde",
+        "avgUpgrade": "Pomotie gemiddelde",
+        "countsFor": "Telt voor",
+        "date": "Datum",
+        "LOST_DOWNGRADE": "Promotie + Degradatie",
+        "LOST_IGNORED": "Telt niet mee",
+        "LOST_UPGRADE": "Promotie",
+        "opponent1": "Tegenstander 1",
+        "opponent2": "Tegenstander 2",
+        "OUT_SCOPE": "Buiten scope",
+        "player1": "Speler 1",
+        "player2": "Speler 2",
+        "points": "Punten",
+        "title": "Export huidige filter",
+        "usedForDowngrade": "Gebruikt voor degradatie",
+        "usedForUpgrade": "Gebruikt voor promotie",
+        "WON": "Gewonnen"
+      },
+      "games-downgrade": "# Wedstrijden degradatie",
+      "games-upgrade": "# Wedstrijden promotie",
       "hint": "Klik op een klassement voor simulatie en analyse",
       "ignored": "Niet meegeteld",
       "includeOutOfScope": "Out of scope",
@@ -740,6 +777,9 @@
         "one": "1 wedstrijd",
         "other": "{count} wedstrijden"
       },
+      "outOfScopeDowngrade": "Buiten scope voor degradatie",
+      "outOfScopeUpgrade": "Buiten scope voor promotie",
+      "outOfScopeWonGames": "Niet gebruikte gewonnen wedstrijden",
       "period": {
         "last-point-update": "Afgelopen punten update",
         "last-ranking-update": "Afgelopen klassementen update",
@@ -758,9 +798,9 @@
         "point": "Punten update",
         "ranking": "Ranking update"
       },
-      "upgrade": "Upgrade",
-      "usedForDowngrade": "Gebruikt voor downgrade en upgrade",
-      "usedForUpgrade": "Gebruikt enkel voor upgrade"
+      "upgrade-average": "Avg. promotie",
+      "used-for-downgrade": "Gebruikt voor degradatie",
+      "used-for-upgrade": "Gebruikt voor promotie"
     },
     "clone-points": "Kopieer punten naar dit systeem",
     "double": "Dubbel",

@@ -23,7 +23,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Sequelize } from 'sequelize-typescript';
 
-import { RankingSystems, SubEventTypeEnum, TeamMembershipType } from '@badman/utils';
+import { LevelType, RankingSystems, SubEventTypeEnum, TeamMembershipType } from '@badman/utils';
 import { AssemblyValidationError } from '../../models';
 import { AssemblyValidationService } from './assembly.service';
 import {
@@ -84,14 +84,13 @@ describe('AssemblyValidationService', () => {
 
     const drawBuilder = DrawCompetitionBuilder.Create().WithName('Test draw');
 
-    const subEventBuilder = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX)
-      .WithName('Test SubEvent')
+    const subEventBuilder = SubEventCompetitionBuilder.Create(SubEventTypeEnum.MX, 'Test SubEvent')
       .WithIndex(53, 70)
       .WitnMaxLevel(6);
 
     const encounterBuilder = EncounterCompetitionBuilder.Create();
 
-    event = await EventCompetitionBuilder.Create()
+    event = await EventCompetitionBuilder.Create(LevelType.PROV)
       .WithYear(2020)
       .WithUsedRanking({ amount: 4, unit: 'months' })
       .WithName('Test Event')

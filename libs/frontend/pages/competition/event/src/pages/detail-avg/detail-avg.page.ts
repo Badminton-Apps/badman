@@ -6,6 +6,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LoadingBlockComponent } from '@badman/frontend-components';
 import { EventCompetition, SubEventCompetition } from '@badman/frontend-models';
+import { Ranking } from '@badman/utils';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Apollo, gql } from 'apollo-angular';
 import { ApexAxisChartSeries, ApexOptions, NgApexchartsModule } from 'ng-apexcharts';
@@ -38,7 +39,7 @@ export class DetailAvgPageComponent implements OnInit {
   eventCompetition!: EventCompetition;
 
   genders: ('M' | 'F')[] = ['M', 'F'];
-  chartTypes: ('single' | 'double' | 'mix')[] = ['single', 'double', 'mix'];
+  chartTypes: Ranking[] = ['single', 'double', 'mix'];
   eventTypes: ('M' | 'F' | 'MX')[] = ['M', 'F', 'MX'];
 
   chartOptions: ApexOptions = {
